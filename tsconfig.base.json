@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "allowJs": true,
+    "jsx": "react",
+    "noImplicitReturns": true,
+    
+    "esModuleInterop": true,
+    "strict": true,
+    "experimentalDecorators": true,
+
+    "newLine": "lf",
+    "outDir": "",
+    "declaration": true,
+    "types": ["react"]
+  },
+  "include": [
+    "packages"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}

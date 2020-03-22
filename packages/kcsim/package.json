@@ -1,0 +1,10 @@
+{
+  "name": "@fleethub/kcsim",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "author": "madono (https://github.com/MadonoHaru)",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  }
+}

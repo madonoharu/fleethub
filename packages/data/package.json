@@ -1,0 +1,21 @@
+{
+  "name": "@fleethub/data",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "author": "madono (https://github.com/MadonoHaru)",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "esm",
+    "json"
+  ],
+  "scripts": {
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc -p tsconfig.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "tsnode": "yarn run ts-node --project ../../tsconfig.node.json --files",
+    "update": "yarn tsnode scripts/update"
+  }
+}
