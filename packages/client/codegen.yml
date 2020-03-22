@@ -1,0 +1,16 @@
+overwrite: true
+schema: http://localhost:8000/___graphql
+documents:
+  - ./src/**/*.{ts,tsx}
+  - ../../node_modules/gatsby-*/**/*.js
+config:
+  namingConvention:
+    enumValues: keep
+generates:
+  ./src/graphqlTypes.ts:
+    hooks:
+      afterOneFileWrite:
+        - yarn run eslint --fix
+    plugins:
+      - typescript
+      - typescript-operations
