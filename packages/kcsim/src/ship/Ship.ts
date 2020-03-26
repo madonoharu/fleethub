@@ -1,10 +1,25 @@
-import { ShipStats } from "./ShipStat"
+import { Equipment } from "../equipment/Equipment"
+
+import { ShipStats } from "./ShipStats"
 import { ShipBase } from "./MasterShip"
+import { Health } from "./Health"
 
-type PickedShipBase = Pick<ShipBase, "sortId" | "shipClass" | "shipType" | "name" | "ruby" | "remodelGroup">
+type PickedShipBase = Pick<ShipBase, "id" | "sortId" | "shipClass" | "shipType" | "name" | "ruby" | "remodelGroup">
 
-export default class Ship implements PickedShipBase, ShipStats {
-  constructor(private base: { id: ShipBase["id"] } & PickedShipBase, private stats: ShipStats) {}
+export type Ship = {
+  shipId: number
+  level: number
+  equipment: Equipment
+} & Omit<PickedShipBase, "id"> &
+  ShipStats
+
+export class ShipImpl implements Ship {
+  constructor(
+    private base: PickedShipBase,
+    private stats: ShipStats,
+    public equipment: Equipment,
+    public health: Health
+  ) {}
 
   get shipId() {
     return this.base.id
@@ -26,6 +41,10 @@ export default class Ship implements PickedShipBase, ShipStats {
   }
   get remodelGroup() {
     return this.base.remodelGroup
+  }
+
+  get level() {
+    return this.stats.level
   }
 
   get firepower() {

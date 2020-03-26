@@ -4,29 +4,43 @@ import { GearBase } from "./MasterGear"
 
 export type GearState = {
   gearId: number
-  star: number
-  exp: number
+  stars?: number
+  exp?: number
 }
 
-export type Gear = GearState & {
-  state: GearState
-  deck: DeckGear
-}
+export type Gear = Required<GearState> &
+  Omit<GearBase, "id"> & {
+    state: GearState
+    deck: DeckGear
+  }
 
-export default class GearImpl implements Gear {
+export class GearImpl implements Gear {
   constructor(public state: GearState, private base: GearBase) {}
 
   get gearId() {
     return this.state.gearId
   }
-  get star() {
-    return this.state.star
+  get stars() {
+    return this.state.stars ?? 0
   }
   get exp() {
-    return this.state.exp
+    return this.state.exp ?? 0
   }
-  set exp(value: number) {
-    this.state.exp = value
+
+  get name() {
+    return this.base.name
+  }
+  get category() {
+    return this.base.category
+  }
+  get iconId() {
+    return this.base.iconId
+  }
+  get attrs() {
+    return this.base.attrs
+  }
+  get equippableCategory() {
+    return this.base.equippableCategory
   }
 
   get categoryIn() {
@@ -37,8 +51,63 @@ export default class GearImpl implements Gear {
     return this.base.in
   }
 
+  get hp() {
+    return this.base.hp
+  }
+  get firepower() {
+    return this.base.firepower
+  }
+  get armor() {
+    return this.base.armor
+  }
+  get torpedo() {
+    return this.base.torpedo
+  }
+  get antiAir() {
+    return this.base.antiAir
+  }
+  get speed() {
+    return this.base.speed
+  }
+  get bombing() {
+    return this.base.bombing
+  }
+  get asw() {
+    return this.base.asw
+  }
+  get los() {
+    return this.base.los
+  }
+  get luck() {
+    return this.base.luck
+  }
+  get accuracy() {
+    return this.base.accuracy
+  }
+  get evasion() {
+    return this.base.evasion
+  }
+  get antiBomber() {
+    return this.base.antiBomber
+  }
+  get interception() {
+    return this.base.interception
+  }
+  get range() {
+    return this.base.range
+  }
+  get radius() {
+    return this.base.radius
+  }
+  get cost() {
+    return this.base.cost
+  }
+  get improvable() {
+    return this.base.improvable
+  }
+
   get deck() {
     const mas = Proficiency.expToLevel(this.exp)
-    return { id: this.gearId, mas, rf: this.star }
+    return { id: this.gearId, mas, rf: this.stars }
   }
 }

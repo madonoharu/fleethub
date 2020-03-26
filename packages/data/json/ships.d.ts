@@ -28,7 +28,7 @@ export interface ShipData {
   ammo: number
 
   slots: number[]
-  gears: Array<number | { gearId: number; star?: number }>
+  gears: Array<number | { gearId: number; stars?: number }>
 
   nextId?: number
   nextLevel?: number

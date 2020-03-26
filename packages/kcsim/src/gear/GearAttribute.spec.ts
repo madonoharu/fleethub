@@ -75,10 +75,10 @@ describe("GearAttribute", () => {
       ["二式12cm迫撃砲改 集中配備", "Mortar"],
 
       ["艦載型 四式20cm対地噴進砲", "AntiGroundRocketLauncher"],
-      ["四式20cm対地噴進砲 集中配備", "AntiGroundRocketLauncher"]
+      ["四式20cm対地噴進砲 集中配備", "AntiGroundRocketLauncher"],
     ]
 
-    table.forEach(line => {
+    table.forEach((line) => {
       const data = defToData(line[0])
 
       if (line[1] === "not") {

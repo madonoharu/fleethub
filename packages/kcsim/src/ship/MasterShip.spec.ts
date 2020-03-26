@@ -21,7 +21,7 @@ const defaultData: ShipData = {
   fuel: 0,
   ammo: 0,
   slots: [],
-  gears: []
+  gears: [],
 }
 
 const getShipData = (def: Partial<ShipData>): ShipData => {
@@ -50,14 +50,14 @@ describe("MasterShip", () => {
       fuel: 0,
       ammo: 0,
       slots: [],
-      gears: []
+      gears: [],
     })
 
     expect(new MasterShip({ hp: 5 })).toMatchObject<Partial<MasterShip>>({ hp: [5, 5] })
     expect(new MasterShip({ hp: [10, 15] })).toMatchObject<Partial<MasterShip>>({ hp: [10, 15] })
 
-    expect(new MasterShip({ gears: [1, 2, { gearId: 3, star: 4 }] })).toMatchObject<Partial<MasterShip>>({
-      gears: [{ gearId: 1 }, { gearId: 2 }, { gearId: 3, star: 4 }]
+    expect(new MasterShip({ gears: [1, 2, { gearId: 3, stars: 4 }] })).toMatchObject<Partial<MasterShip>>({
+      gears: [{ gearId: 1 }, { gearId: 2 }, { gearId: 3, stars: 4 }],
     })
   })
 

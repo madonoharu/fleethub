@@ -23,7 +23,7 @@ export type Health = {
   lte: (damage: HealthDamage) => boolean
 } & HealthModifiers
 
-export default class HealthImpl implements Health {
+export class HealthImpl implements Health {
   public currentHp: number
 
   constructor(public maxHp: number, currentHp?: number) {

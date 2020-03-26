@@ -16,25 +16,13 @@ type GearLabelProps = {
 }
 
 const GearLabel: React.FC<GearLabelProps> = ({ gear, onReselect }) => {
-  const { entity, actions } = useGear(gear)
+  const { kcGear, actions } = useGear(gear)
 
-  if (!entity) {
+  if (!kcGear) {
     return <Typography color="error">error</Typography>
   }
 
-  return (
-    <Label
-      gear={{
-        ...entity,
-        iconId: 1,
-        name: "長いいいいいいいいいいいいいいいいいいいいいいいいいいい装備名",
-        hasProficiency: true,
-      }}
-      onUpdate={actions.update}
-      onRemove={actions.remove}
-      onReselect={onReselect}
-    />
-  )
+  return <Label gear={kcGear} onUpdate={actions.update} onRemove={actions.remove} onReselect={onReselect} />
 }
 
 type ContainerProps = {

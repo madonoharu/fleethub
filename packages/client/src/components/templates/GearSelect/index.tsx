@@ -20,7 +20,7 @@ const Component: React.FC<ComponentProps> = ({ onSelect }) => {
   return (
     <>
       {gears
-        .filter((gear) => gear.id < 15)
+        .filter((gear) => gear.name.length > 25)
         .map((gear) => (
           <Button key={gear.id} id={gear.id.toString()} onClick={handleSelect}>
             <GearIcon iconId={gear.iconId} />

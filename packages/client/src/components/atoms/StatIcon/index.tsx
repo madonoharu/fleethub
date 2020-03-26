@@ -6,15 +6,14 @@ import styled from "styled-components"
 import { GearIconsQuery } from "../../../graphqlTypes"
 
 type Props = {
-  className?: string
   size?: "small"
-  iconId: number
+  icon: string
 }
 
-const Component: React.FC<Props> = ({ className, iconId }) => {
+const Component: React.FCX<Props> = ({ className, icon }) => {
   const { allFile } = useStaticQuery<GearIconsQuery>(graphql`
-    query GearIcons {
-      allFile(filter: { relativeDirectory: { eq: "gears" } }) {
+    query StatIcons {
+      allFile(filter: { relativeDirectory: { eq: "icons" } }) {
         edges {
           node {
             name
@@ -29,9 +28,9 @@ const Component: React.FC<Props> = ({ className, iconId }) => {
     }
   `)
 
-  const childImageSharp = allFile.edges.find((n) => n.node.name === iconId.toString())?.node.childImageSharp
+  const childImageSharp = allFile.edges.find((n) => n.node.name === icon)?.node.childImageSharp
 
-  if (!childImageSharp) return <Img className={className} fluid={allFile.edges[0].node.childImageSharp?.fluid} />
+  if (!childImageSharp) return null
 
   return <Img className={className} fluid={childImageSharp.fluid} />
 }

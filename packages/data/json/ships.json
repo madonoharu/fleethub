@@ -26688,7 +26688,7 @@
       45,
       {
         "gearId": 174,
-        "star": 3
+        "stars": 3
       }
     ]
   },
@@ -27772,7 +27772,7 @@
       15,
       {
         "gearId": 40,
-        "star": 3
+        "stars": 3
       }
     ]
   },
@@ -31087,11 +31087,11 @@
     "gears": [
       {
         "gearId": 266,
-        "star": 5
+        "stars": 5
       },
       {
         "gearId": 40,
-        "star": 5
+        "stars": 5
       },
       47
     ]
@@ -31152,11 +31152,11 @@
     "gears": [
       {
         "gearId": 266,
-        "star": 5
+        "stars": 5
       },
       {
         "gearId": 45,
-        "star": 5
+        "stars": 5
       },
       40
     ]

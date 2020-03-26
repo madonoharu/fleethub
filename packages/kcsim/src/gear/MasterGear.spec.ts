@@ -31,7 +31,7 @@ describe("MasterGear", () => {
 
       hp: 18,
       speed: 19,
-      luck: 20
+      luck: 20,
     }
     const master = new MasterGear(data)
 

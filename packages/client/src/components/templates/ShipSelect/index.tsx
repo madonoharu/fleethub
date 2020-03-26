@@ -21,7 +21,7 @@ const Component: React.FC<Props> = ({ onSelect }) => {
   return (
     <>
       {ships
-        .filter((ship) => ship.id < 10)
+        .filter((ship) => ship.name.length > 12)
         .map((ship) => (
           <Button key={ship.id} id={ship.id.toString()} onClick={handleSelect}>
             {ship.name}

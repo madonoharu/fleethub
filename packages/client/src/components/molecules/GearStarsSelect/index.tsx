@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { range } from "lodash-es"
 
-import MuiButton from "@material-ui/core/Button"
+import Button from "@material-ui/core/Button"
 import Tooltip from "@material-ui/core/Tooltip"
 import Popover from "@material-ui/core/Popover"
 import Typography from "@material-ui/core/Typography"
@@ -40,9 +40,9 @@ const Component: React.FC<Props> = ({ className, stars, onChange }) => {
   return (
     <>
       <Tooltip title="改修値選択">
-        <Typography className={className} onClick={onOpen} variant="subtitle2">
+        <Button className={className} onClick={onOpen}>
           {starsToString(stars)}
-        </Typography>
+        </Button>
       </Tooltip>
 
       <Popover anchorOrigin={anchorOrigin} {...hendler}>
@@ -54,6 +54,8 @@ const Component: React.FC<Props> = ({ className, stars, onChange }) => {
 
 const StyledComponent = styled(Component)`
   width: 24px;
+  height: 100%;
+  padding: 0;
   color: ${({ theme, stars }) => (stars === 0 ? theme.palette.action.disabled : theme.kc.stars)};
 `
 
