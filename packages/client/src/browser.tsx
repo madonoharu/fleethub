@@ -5,6 +5,8 @@ import { ThemeProvider as StyledThemeProvider } from "styled-components"
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles"
 import CssBaseline from "@material-ui/core/CssBaseline"
 
+import "./i18n"
+
 import { setupStore } from "./store"
 import theme from "./theme"
 import { AppBar } from "./components"

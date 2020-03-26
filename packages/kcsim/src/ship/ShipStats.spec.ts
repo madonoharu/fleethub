@@ -1,7 +1,7 @@
-import { createShipStats, ShipStats, BasicStat, IncreasingStat, ShipStat, ShipLuck } from "./ShipStat"
+import { createShipStats, ShipStats, BasicStat, IncreasingStat, ShipStat, ShipLuck } from "./ShipStats"
 import { ShipDef, defToData } from "../utils/testUtils"
 
-describe("ShipStat", () => {
+describe("ShipStats", () => {
   it("createShipStats", () => {
     const base: Parameters<typeof createShipStats>[1] = {
       firepower: [1, 2],
@@ -14,7 +14,7 @@ describe("ShipStat", () => {
       evasion: [13, 14],
 
       hp: [15, 16],
-      luck: [17, 18]
+      luck: [17, 18],
     }
 
     const equipment = { sumBy: () => 1 }
@@ -31,7 +31,7 @@ describe("ShipStat", () => {
       los: { left: 11, right: 12 },
       evasion: { left: 13, right: 14 },
 
-      luck: { left: 17, right: 18 }
+      luck: { left: 17, right: 18 },
     })
 
     expect(stats.firepower).toBeInstanceOf(BasicStat)
@@ -54,7 +54,7 @@ describe("ShipStat", () => {
       modernization: 4,
       bonus: 5,
       naked: 2 + 4,
-      value: 2 + 4 + 3 + 5
+      displayed: 2 + 4 + 3 + 5,
     })
   })
 
@@ -66,7 +66,7 @@ describe("ShipStat", () => {
       modernization: 4,
       bonus: 5,
       naked: ((100 - 1) / 99) * 5 + 1 + 4,
-      value: ((100 - 1) / 99) * 5 + 1 + 4 + 3 + 5
+      displayed: ((100 - 1) / 99) * 5 + 1 + 4 + 3 + 5,
     })
   })
 })

@@ -6,7 +6,7 @@ import {
   ShipTypeKey,
   equippable,
   RemodelGroup,
-  ShipId
+  ShipId,
 } from "@fleethub/data"
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
 import { SpeedGroup } from "./Speed"
@@ -15,7 +15,7 @@ enum SpeedValue {
   Slow = 5,
   Fast = 10,
   FastPlus = 15,
-  Fastest = 20
+  Fastest = 20,
 }
 
 type Equippable = {
@@ -48,7 +48,7 @@ export interface RequiredShipData extends Required<ShipData> {
 
   luck: StatBase
 
-  gears: Array<{ gearId: number; star?: number }>
+  gears: Array<{ gearId: number; stars?: number }>
 }
 
 export interface ShipBase extends RequiredShipData {
@@ -93,7 +93,7 @@ export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData
   ammo: partial.ammo ?? 0,
 
   slots: (partial.slots ?? []).concat(),
-  gears: (partial.gears ?? []).map(gear => {
+  gears: (partial.gears ?? []).map((gear) => {
     if (typeof gear === "number") {
       return { gearId: gear }
     }
@@ -101,7 +101,7 @@ export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData
   }),
 
   nextId: partial.nextId ?? 0,
-  nextLevel: partial.nextLevel ?? 0
+  nextLevel: partial.nextLevel ?? 0,
 })
 
 export default class MasterShip implements ShipBase {
@@ -132,7 +132,7 @@ export default class MasterShip implements ShipBase {
   public readonly ammo: number
 
   public readonly slots: number[]
-  public readonly gears: Array<{ gearId: number; star?: number }>
+  public readonly gears: Array<{ gearId: number; stars?: number }>
 
   public readonly nextId: number
   public readonly nextLevel: number
@@ -191,9 +191,9 @@ export default class MasterShip implements ShipBase {
 
   public readonly remodelGroup = 0
 
-  public shipClassIn = (...keys: ShipClassKey[]) => keys.some(key => ShipClass[key] === this.shipClass)
+  public shipClassIn = (...keys: ShipClassKey[]) => keys.some((key) => ShipClass[key] === this.shipClass)
 
-  public shipTypeIn = (...keys: ShipTypeKey[]) => keys.some(key => ShipType[key] === this.shipType)
+  public shipTypeIn = (...keys: ShipTypeKey[]) => keys.some((key) => ShipType[key] === this.shipType)
 
   get speedGroup(): SpeedGroup {
     const { id: shipId, remodelGroup } = this

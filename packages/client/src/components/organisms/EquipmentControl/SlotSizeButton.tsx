@@ -14,28 +14,32 @@ import { NumberInput } from "../../../components"
 import { useOpen } from "../../../hooks"
 
 type SlotSizeFormProps = {
-  value: number
-  max: number
+  current: number
+  inital: number
   onChange?: (value: number) => void
 }
 
-const SlotSizeForm: React.FCX<SlotSizeFormProps> = ({ className, value, max, onChange }) => {
+const SlotSizeForm: React.FCX<SlotSizeFormProps> = ({ className, current, inital, onChange }) => {
   const handleSliderChange = React.useCallback(
     (event: unknown, value: number | number[]) => {
       if (typeof value === "number" && onChange) onChange(value)
     },
     [onChange]
   )
+
+  const handleInit = React.useCallback(() => {
+    onChange && onChange(inital)
+  }, [onChange, inital])
   return (
     <>
       <DialogTitle>搭載数を変更</DialogTitle>
       <DialogContent>
         <Box display="flex">
-          <NumberInput variant="outlined" value={value} max={max} onChange={onChange} />
-          <Button>初期値({max})</Button>
+          <NumberInput variant="outlined" value={current} min={0} onChange={onChange} />
+          <Button onClick={handleInit}>初期値({inital})</Button>
         </Box>
 
-        <Slider value={value} max={max} onChange={handleSliderChange} />
+        <Slider value={current} max={inital} onChange={handleSliderChange} />
       </DialogContent>
     </>
   )
@@ -44,15 +48,15 @@ const SlotSizeForm: React.FCX<SlotSizeFormProps> = ({ className, value, max, onC
 type Props = {
   className?: string
 
-  value?: number
-  max?: number
+  current?: number
+  inital?: number
   onChange?: (value: number) => void
 }
 
-const Component: React.FC<Props> = ({ className, value, max, onChange }) => {
+const Component: React.FC<Props> = ({ className, current, inital, onChange }) => {
   const { onOpen, ...hendler } = useOpen()
 
-  if (value === undefined || max === undefined) {
+  if (current === undefined || inital === undefined) {
     return (
       <Button className={className} variant="text" disabled>
         <BuildIcon fontSize="inherit" />
@@ -64,11 +68,11 @@ const Component: React.FC<Props> = ({ className, value, max, onChange }) => {
     <>
       <Tooltip title="搭載数を変更">
         <Button className={className} size="small" variant="text" onClick={onOpen}>
-          {value}
+          {current}
         </Button>
       </Tooltip>
       <Dialog {...hendler}>
-        <SlotSizeForm value={value} max={max} onChange={onChange} />
+        <SlotSizeForm current={current} inital={inital} onChange={onChange} />
       </Dialog>
     </>
   )

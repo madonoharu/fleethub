@@ -11,16 +11,17 @@ import { GearIndex } from "../../../store"
 import SlotSizeButton from "./SlotSizeButton"
 
 type ListItemProps = {
-  slot?: number
-  max?: number
+  currentSlot?: number
+  initalSlot?: number
   gear?: EntityId
   onAdd: () => void
+  onSlotChange: (value: number) => void
 }
 
-const ListItem: React.FCX<ListItemProps> = ({ className, slot, max, gear, onAdd }) => {
+const ListItem: React.FCX<ListItemProps> = ({ className, currentSlot, initalSlot, gear, onAdd, onSlotChange }) => {
   return (
     <div className={className}>
-      <SlotSizeButton value={slot} max={max} />
+      <SlotSizeButton current={currentSlot} inital={initalSlot} onChange={onSlotChange} />
       <GearControlLabel gear={gear} onAdd={onAdd} />
     </div>
   )
@@ -37,23 +38,38 @@ const StyledListItem = styled(ListItem)`
 `
 
 type Props = {
-  slots: number[]
+  currentSlots: number[]
+  initalSlots: number[]
   gears: NullableArray<EntityId>
   onAdd: (index: GearIndex) => void
+  onSlotsChange: (slots: number[]) => void
 }
 
-const Componemt: React.FCX<Props> = ({ className, gears, onAdd }) => {
-  const slots = [1, 20, 300]
+const Componemt: React.FCX<Props> = ({ className, currentSlots, initalSlots, gears, onAdd, onSlotsChange }) => {
+  const handleSlotChange = (index: number) => (value: number) => {
+    const next = currentSlots.concat()
+    next[index] = value
+    onSlotsChange(next)
+  }
+
   return (
     <div className={className}>
       {gears.map((gear, index) => (
-        <StyledListItem key={index} gear={gear} slot={slots[index]} max={slots[index]} onAdd={() => onAdd(index)} />
+        <StyledListItem
+          key={index}
+          gear={gear}
+          currentSlot={currentSlots[index]}
+          initalSlot={initalSlots[index]}
+          onAdd={() => onAdd(index)}
+          onSlotChange={handleSlotChange(index)}
+        />
       ))}
     </div>
   )
 }
 
 const StyledComponemt = styled(Componemt)`
+  width: 100%;
   ${StyledListItem} {
     height: 24px;
   }

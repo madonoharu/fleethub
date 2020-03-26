@@ -31,7 +31,7 @@ const withIconButton = (WrappedIcon: typeof SvgIcon & React.FC) => {
   }
 
   WithIconButton.displayName = `WithIconButton(${WrappedIcon.name || WrappedIcon.displayName})`
-  return WithIconButton
+  return styled(WithIconButton)``
 }
 
 export default withIconButton

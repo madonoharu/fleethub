@@ -1,16 +1,20 @@
 import { createEntityAdapter, EntityId, EntitySelectors } from "@reduxjs/toolkit"
-import { GearEntity } from "./gear"
-import { getUid, NullableArray } from "../../utils"
-import { ShipState, normalizeShip, ShipEntity } from "./ship"
+import { ShipState } from "@fleethub/kcsim"
+
+import { NullableArray } from "../../utils"
+
+import { GearEntity } from "./gears"
+import { normalizeShip, ShipEntity } from "./ships"
+import { selectId, Entity, getUid } from "./entity"
 
 export type FleetRole = "main" | "escort"
 
 export type FleetRecord = Partial<Record<FleetRole, NullableArray<ShipState>>>
-export type FleetState = FleetRecord
+export type FleetState = FleetRecord & {
+  name?: string
+}
 
-type FleetEntity = {
-  uid: EntityId
-} & Record<FleetRole, NullableArray<EntityId>>
+export type FleetEntity = Entity & Record<FleetRole, NullableArray<EntityId>> & Required<Omit<FleetState, FleetRole>>
 
 export type NormalizedFleet = {
   fleet: FleetEntity
@@ -35,14 +39,12 @@ export const normalizeFleet = (fleetState: FleetState): NormalizedFleet => {
   const main = shipsToIds(fleetState.main ?? [])
   const escort = shipsToIds(fleetState.escort ?? [])
 
-  const fleet = { uid: getUid(), main, escort }
+  const fleet = { name: "", uid: getUid(), main, escort }
 
   return { fleet, gears, ships }
 }
 
-export const fleetsAdapter = createEntityAdapter<FleetEntity>({
-  selectId: (entity) => entity.uid,
-})
+export const fleetsAdapter = createEntityAdapter<FleetEntity>({ selectId })
 
 export const fleetsSelectors: EntitySelectors<FleetEntity> = fleetsAdapter.getSelectors(
   (state) => state.entities.fleets

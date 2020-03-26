@@ -7,7 +7,7 @@ export enum SpeedGroup {
   FastA,
   FastB1SlowA,
   FastB2SlowB,
-  OtherC
+  OtherC,
 }
 
 /**
@@ -22,7 +22,7 @@ export default class Speed {
 
   public static fromNumber = (value: number): Speed => {
     const found = [Speed.Land, Speed.Slow, Speed.Fast, Speed.FastPlus, Speed.Fastest].find(
-      speed => value <= speed.value
+      (speed) => value <= speed.value
     )
     return found ? found : Speed.Fastest
   }

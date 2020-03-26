@@ -1,8 +1,9 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
+import { ShipState } from "@fleethub/kcsim"
 
-import { entitiesSlice, fleetsSelectors, ShipState, FleetRole } from "../store"
+import { entitiesSlice, fleetsSelectors, FleetRole } from "../store"
 import { useShipSelect } from "./useShipSelect"
 
 export const useFleet = (uid: EntityId) => {
@@ -14,6 +15,9 @@ export const useFleet = (uid: EntityId) => {
     () => ({
       remove: () => {
         dispatch(entitiesSlice.actions.removeFleet(uid))
+      },
+      update: (changes: Partial<{ name: string }>) => {
+        dispatch(entitiesSlice.actions.updateFleet({ id: uid, changes }))
       },
       createShip: (role: FleetRole, index: number, ship: ShipState) => {
         dispatch(entitiesSlice.actions.createShip({ fleet: uid, role, index, ship }))

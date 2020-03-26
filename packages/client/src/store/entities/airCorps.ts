@@ -1,5 +1,7 @@
 import { EntityId, createEntityAdapter } from "@reduxjs/toolkit"
-import { GearEntity, GearState, gearToEntity } from "./gear"
+import { GearState } from "@fleethub/kcsim"
+
+import { GearEntity, gearToEntity } from "./gears"
 import { getUid, isNonNullable, NullableArray } from "../../utils"
 
 type AirCorpsState = {

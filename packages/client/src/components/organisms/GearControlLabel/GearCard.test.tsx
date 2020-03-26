@@ -7,12 +7,7 @@ import { useGear } from "../../../hooks"
 jest.mock("../../../hooks")
 
 const mockFn = mocked(useGear).mockReturnValue({
-  entity: {
-    uid: "mock id",
-    gearId: 0,
-    stars: 0,
-    exp: 0,
-  },
+  kcGear: {} as any,
   actions: {
     remove: jest.fn(),
     update: jest.fn(),

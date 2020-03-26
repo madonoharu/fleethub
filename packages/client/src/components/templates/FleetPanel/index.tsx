@@ -5,9 +5,9 @@ import { EntityId } from "@reduxjs/toolkit"
 import Container from "@material-ui/core/Container"
 import Button from "@material-ui/core/Button"
 import Typography from "@material-ui/core/Typography"
-import DeleteIcon from "@material-ui/icons/Delete"
+import TextField from "@material-ui/core/TextField"
 
-import { ShipControlCard, RemoveButton } from "../../../components"
+import { ShipControlCard, RemoveButton, Select } from "../../../components"
 import { useFleet } from "../../../hooks"
 import { NullableArray } from "../../../utils"
 import { ShipPosition } from "../../../store"
@@ -24,11 +24,16 @@ const FleetPanel: React.FC<Props> = ({ className, uid }) => {
   const { entity, actions, openShipSelect } = useFleet(uid)
 
   if (!entity) {
-    return <>fleet not found</>
+    return <Typography color="error">error</Typography>
   }
 
   return (
-    <Container className={className}>
+    <Container className={className} maxWidth="md">
+      <TextField
+        placeholder="編成名"
+        value={entity.name}
+        onChange={(event) => actions.update({ name: event.currentTarget.value })}
+      />
       <div>
         fleet {uid} <RemoveButton onClick={actions.remove} />
       </div>

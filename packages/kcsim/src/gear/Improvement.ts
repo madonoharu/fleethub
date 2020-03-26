@@ -27,5 +27,5 @@ export type ImprovementModifiers = {
 }
 
 export default class Improvement {
-  constructor(private gear: GearBase, private star: number) {}
+  constructor(private gear: GearBase, private stars: number) {}
 }

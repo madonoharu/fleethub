@@ -1,23 +1,17 @@
 import React from "react"
 import styled from "styled-components"
+import { Gear, GearState } from "@fleethub/kcsim"
 
 import Typography from "@material-ui/core/Typography"
 
 import { GearIcon, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton, Flexbox } from "../../../components"
-import { GearState } from "../../../store"
 
 const Name = styled(Typography)`
+  font-size: 12px;
+  line-height: 1.5;
   overflow: hidden;
   white-space: nowrap;
 `
-
-type Gear = {
-  stars: number
-  exp: number
-  iconId: number
-  name: string
-  hasProficiency: boolean
-}
 
 type Props = {
   className?: string
@@ -58,13 +52,11 @@ export const Component: React.FC<Props> = ({
     <div className={className} style={style}>
       <GearIcon size="small" iconId={gear.iconId} />
 
-      <Name variant="body2" color={equippable ? "initial" : "secondary"}>
-        {gear.name}
-      </Name>
+      <Name color={equippable ? "initial" : "secondary"}>{gear.name}</Name>
       <UpdateButton title="変更" size={size} tooltipProps={tooltipProps} onClick={onReselect} />
       <ClearButton title="削除" size={size} tooltipProps={tooltipProps} onClick={onRemove} />
 
-      {gear.hasProficiency && <GearExpSelect size={size} exp={gear.exp} onChange={handleExpChange} />}
+      <GearExpSelect size={size} exp={gear.exp} onChange={handleExpChange} />
       <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
     </div>
   )
@@ -85,13 +77,13 @@ const StyledComponent = styled(Component)`
     margin-left: auto;
   }
 
-  > button {
+  ${UpdateButton}, ${ClearButton} {
     display: none;
   }
 
   :hover {
     background: ${(props) => props.theme.palette.action.hover};
-    > button {
+    ${UpdateButton}, ${ClearButton} {
       display: block;
     }
     ${Name} {

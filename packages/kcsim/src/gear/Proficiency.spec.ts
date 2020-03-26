@@ -17,7 +17,7 @@ describe("Proficiency", () => {
       [85, 6],
       [99, 6],
       [100, 7],
-      [120, 7]
+      [120, 7],
     ]
     expLevelTable.forEach(([exp, expected]) => {
       expect(Proficiency.expToLevel(exp)).toBe(expected)
@@ -38,7 +38,7 @@ describe("Proficiency", () => {
       [70, Math.sqrt(70 / 10) + 14],
       [99, Math.sqrt(99 / 10) + 14],
       [100, Math.sqrt(100 / 10) + 22],
-      [120, Math.sqrt(120 / 10) + 22]
+      [120, Math.sqrt(120 / 10) + 22],
     ]
     fighterTable.forEach(([exp, expected]) => {
       expect(new Proficiency(exp, "Fighter").fighterPowerModifier).toBe(expected)
@@ -52,7 +52,7 @@ describe("Proficiency", () => {
       [70, Math.sqrt(70 / 10) + 3],
       [99, Math.sqrt(99 / 10) + 3],
       [100, Math.sqrt(100 / 10) + 6],
-      [120, Math.sqrt(120 / 10) + 6]
+      [120, Math.sqrt(120 / 10) + 6],
     ]
     seaplaneBomberTable.forEach(([exp, expected]) => {
       expect(new Proficiency(exp, "SeaplaneBomber").fighterPowerModifier).toBe(expected)

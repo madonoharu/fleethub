@@ -1,18 +1,26 @@
-import { ShipBase, StatBase } from "./MasterShip"
+import { ShipBase } from "./MasterShip"
 
 const calcStatAtLevel = (at1: number, at99: number, level: number) => Math.floor(((at99 - at1) * level) / 99 + at1)
+
+type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor"
+type IncreasingStatKey = "asw" | "los" | "evasion"
+
+type EquipmentRelatedStatKey = BasicStatKey | IncreasingStatKey
 
 export type ShipStat = {
   left: number
   right: number
 
-  equipment: number
   modernization: number
-  bonus: number
 
-  naked: number
-  value: number
+  equipment?: number
+  bonus?: number
+  naked?: number
+
+  displayed: number
 }
+
+type EquipmentRelatedStat = Required<ShipStat>
 
 const getMarriageBonus = (left: number) => {
   if (left >= 90) return 9
@@ -23,7 +31,7 @@ const getMarriageBonus = (left: number) => {
   return 4
 }
 
-export class BasicStat implements ShipStat {
+export class BasicStat implements EquipmentRelatedStat {
   constructor(
     public left: number,
     public right: number,
@@ -37,13 +45,13 @@ export class BasicStat implements ShipStat {
     return right + modernization
   }
 
-  get value() {
+  get displayed() {
     const { naked, equipment, bonus } = this
     return naked + equipment + bonus
   }
 }
 
-export class IncreasingStat implements ShipStat {
+export class IncreasingStat implements EquipmentRelatedStat {
   constructor(
     public left: number,
     public right: number,
@@ -58,70 +66,70 @@ export class IncreasingStat implements ShipStat {
     return calcStatAtLevel(left, right, level) + modernization
   }
 
-  get value() {
+  get displayed() {
     const { naked, equipment, bonus } = this
     return naked + equipment + bonus
   }
 }
 
-export class ShipMaxHp {
+export class ShipMaxHp implements ShipStat {
   constructor(public left: number, public right: number, public modernization = 0, private isMarried: boolean) {}
 
-  get value() {
+  get displayed() {
     const { left, right, modernization, isMarried } = this
-    let value = left + modernization
+    let displayed = left + modernization
 
     if (isMarried) {
-      value += getMarriageBonus(left)
+      displayed += getMarriageBonus(left)
     }
 
-    return Math.min(value, right)
+    return Math.min(displayed, right)
   }
 }
 
-export class ShipLuck {
+export class ShipLuck implements ShipStat {
   constructor(public left: number, public right: number, public modernization = 0) {}
 
-  get value() {
+  get displayed() {
     const { left, modernization } = this
     return left + modernization
   }
 }
 
-type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor"
-type IncreasingStatKey = "asw" | "los" | "evasion"
-
-export type ShipStats = Record<BasicStatKey | IncreasingStatKey, ShipStat> & {
-  maxHp: ShipMaxHp
-  luck: ShipLuck
+export type ShipStats = Record<EquipmentRelatedStatKey, EquipmentRelatedStat> & {
+  level: number
+  maxHp: ShipStat
+  luck: ShipStat
 }
 
-export type ModernizationRecord = Partial<Record<BasicStatKey | IncreasingStatKey | "maxHp" | "luck", number>>
+export type ModernizationRecord = Partial<Record<EquipmentRelatedStatKey | "maxHp" | "luck", number>>
 
-type ShipStatsRecord = Partial<Record<BasicStatKey | IncreasingStatKey | "hp" | "luck", number>>
+type StatBonusRecord = Partial<Record<EquipmentRelatedStatKey | "hp" | "luck", number>>
 
 type Equipment = {
-  sumBy: (key: BasicStatKey | IncreasingStatKey) => number
+  sumBy: (key: EquipmentRelatedStatKey) => number
 }
 
 export const createShipStats = (
   level: number,
-  base: Pick<ShipBase, keyof ShipStatsRecord>,
+  base: Pick<ShipBase, keyof StatBonusRecord>,
   equipment: Equipment,
   modernization: ModernizationRecord,
-  bonus: ShipStatsRecord
+  bonuses: StatBonusRecord
 ): ShipStats => {
   const createBasicStat = (key: BasicStatKey) => {
-    return new BasicStat(base[key][0], base[key][1], equipment.sumBy(key), modernization[key], bonus[key])
+    return new BasicStat(base[key][0], base[key][1], equipment.sumBy(key), modernization[key], bonuses[key])
   }
 
   const createIncreasingStat = (key: IncreasingStatKey) => {
-    return new IncreasingStat(base[key][0], base[key][1], equipment.sumBy(key), modernization[key], bonus[key], level)
+    return new IncreasingStat(base[key][0], base[key][1], equipment.sumBy(key), modernization[key], bonuses[key], level)
   }
 
   const isMarried = level >= 100
 
   return {
+    level,
+
     firepower: createBasicStat("firepower"),
     armor: createBasicStat("armor"),
     torpedo: createBasicStat("torpedo"),
@@ -132,6 +140,6 @@ export const createShipStats = (
     evasion: createIncreasingStat("evasion"),
 
     maxHp: new ShipMaxHp(base.hp[0], base.hp[1], modernization.maxHp, isMarried),
-    luck: new ShipLuck(base.luck[0], base.luck[1], modernization.luck)
+    luck: new ShipLuck(base.luck[0], base.luck[1], modernization.luck),
   }
 }

@@ -2,18 +2,18 @@ import { GearData, GearId, GearCategory, GearCategoryKey } from "@fleethub/data"
 
 type GearMatcher = (gear: Required<GearData>) => boolean
 
-const gearIdIn = (...gearIds: GearId[]): GearMatcher => data => gearIds.includes(data.id)
+const gearIdIn = (...gearIds: GearId[]): GearMatcher => (data) => gearIds.includes(data.id)
 
-const categoryIn = (...keys: GearCategoryKey[]): GearMatcher => data =>
-  keys.map(key => GearCategory[key]).includes(data.category)
+const categoryIn = (...keys: GearCategoryKey[]): GearMatcher => (data) =>
+  keys.map((key) => GearCategory[key]).includes(data.category)
 
-const and = (...args: GearMatcher[]): GearMatcher => gear => args.every(arg => arg(gear))
+const and = (...args: GearMatcher[]): GearMatcher => (gear) => args.every((arg) => arg(gear))
 
 /** 深海装備 */
-const Abyssal: GearMatcher = gear => gear.id > 500
+const Abyssal: GearMatcher = (gear) => gear.id > 500
 
 /** 高角砲 */
-const HighAngleMount: GearMatcher = gear => gear.iconId === 16
+const HighAngleMount: GearMatcher = (gear) => gear.iconId === 16
 
 /** 主砲 */
 const MainGun = categoryIn("SmallCaliberMainGun", "MediumCaliberMainGun", "LargeCaliberMainGun")
@@ -85,11 +85,11 @@ const matchers = {
   AdditionalDepthCharge,
   Mortar,
 
-  AntiGroundRocketLauncher
+  AntiGroundRocketLauncher,
 }
 
 export type GearAttribute = keyof typeof matchers
 
 const allAttrs = Object.keys(matchers) as GearAttribute[]
 
-export const createGearAttrs = (data: Required<GearData>) => allAttrs.filter(attr => matchers[attr](data))
+export const createGearAttrs = (data: Required<GearData>) => allAttrs.filter((attr) => matchers[attr](data))

@@ -26,7 +26,7 @@ const defaultStats = {
   radius: 0,
   cost: 0,
 
-  improvable: false
+  improvable: false,
 }
 
 export const toRequiredGearData = (data: Partial<GearData>): Required<GearData> => ({ ...defaultStats, ...data })

@@ -1,21 +1,18 @@
 import { createEntityAdapter, EntityId, EntitySelectors } from "@reduxjs/toolkit"
-import { GearState, GearEntity, gearToEntity, gearsAdapter } from "./gear"
+import { ShipState } from "@fleethub/kcsim"
+
+import { isNonNullable, NullableArray } from "../../utils"
+
+import { Entity, selectId, getUid } from "./entity"
+import { GearEntity, gearToEntity, gearsAdapter } from "./gears"
 import { Entities } from "."
-import { getUid, isNonNullable, NullableArray } from "../../utils"
-import { fleetsAdapter } from "./fleet"
 
 export type GearIndex = number
 
-export type ShipState = {
-  shipId: number
-  gears?: NullableArray<GearState>
-}
-
-export type ShipEntity = {
-  uid: EntityId
-  shipId: number
-  gears: NullableArray<EntityId>
-}
+export type ShipEntity = Entity &
+  Omit<ShipState, "gears"> & {
+    gears: NullableArray<EntityId>
+  }
 
 export type NormalizedShip = {
   ship: ShipEntity
@@ -31,9 +28,7 @@ export const normalizeShip = (shipState: ShipState): NormalizedShip => {
   return { ship, gears: gears.filter(isNonNullable) }
 }
 
-export const shipsAdapter = createEntityAdapter<ShipEntity>({
-  selectId: (gear) => gear.uid,
-})
+export const shipsAdapter = createEntityAdapter<ShipEntity>({ selectId })
 
 export const shipsSelectors: EntitySelectors<ShipEntity> = shipsAdapter.getSelectors((state) => state.entities.ships)
 
@@ -72,7 +67,7 @@ export class ShipModel {
     const { state, id } = this
     this.removeAllGears()
     shipsAdapter.removeOne(state.ships, id)
-    Object.values(state.fleets).forEach((fleet) => {
+    Object.values(state.fleets.entities).forEach((fleet) => {
       if (!fleet) return
       const removeShip = (ships: NullableArray<EntityId>) => {
         const index = ships.indexOf(id)
