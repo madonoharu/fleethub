@@ -11,7 +11,7 @@ type HealthModifiers = {
   shellingPowerModifier: number
   torpedoPowerModifier: number
   aswPowerModifier: number
-  nightAttackPowerModifier: number
+  nightPowerModifier: number
 }
 
 export type Health = {
@@ -89,7 +89,7 @@ export class HealthImpl implements Health {
     return this.shellingPowerModifier
   }
 
-  get nightAttackPowerModifier() {
+  get nightPowerModifier() {
     if (this.lte("Taiha")) {
       return 0
     }

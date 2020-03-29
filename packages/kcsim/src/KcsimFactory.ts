@@ -34,7 +34,7 @@ export default class KcsimFactory {
     const size = initialSlots.length
 
     const gears = range(size).map((index) => {
-      const gearState = gearStates?.[index]
+      const gearState = gearStates[index]
       return gearState && this.createGear(gearState)
     })
 

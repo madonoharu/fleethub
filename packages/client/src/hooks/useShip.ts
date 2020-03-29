@@ -1,5 +1,5 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector, useDispatch, shallowEqual } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 import { kcsimFactory, GearState } from "@fleethub/kcsim"
 
@@ -48,6 +48,13 @@ export const useShip = (id: EntityId) => {
   )
 
   const entity = useSelector((state) => shipsSelectors.selectEntities(state)[id])
+  const shipState = useSelector((state) => {
+    const entity = shipsSelectors.selectEntities(state)[id]
+    const gears = entity?.gears.map((gearId) =>
+      isEntityId(gearId) ? gearsSelectors.selectEntities(state)[gearId] : undefined
+    )
+    return { ...entity, gears }
+  })
 
   const kcShip = useSelector((state) => {
     if (!entity) return
@@ -58,6 +65,10 @@ export const useShip = (id: EntityId) => {
 
     return kcsimFactory.createShip({ ...entity, gears })
   })
+
+  React.useEffect(() => {
+    console.log(id)
+  }, [id, kcShip])
 
   const gears = [...Array((kcShip?.equipment.initialSlots.length ?? 0) + 1)].map((_, index) => entity?.gears[index])
 

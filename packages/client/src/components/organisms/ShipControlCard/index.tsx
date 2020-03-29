@@ -9,20 +9,12 @@ import Box from "@material-ui/core/Box"
 import Paper from "@material-ui/core/Paper"
 
 import { useShip } from "../../../hooks"
-import { EquipmentControl, ShipBanner, UpdateButton, ClearButton, InfoButton } from "../../../components"
+import { EquipmentControl, ShipBanner } from "../../../components"
 import { NullableArray } from "../../../utils"
 import { ShipEntity } from "../../../store"
 
-import LevelButton from "./LevelButton"
-import StatLabel from "./StatLabel"
+import ShipHeader, { IconButtonGroup } from "./Header"
 import ShipStats from "./ShipStats"
-
-const IconButtonGroup = styled.div`
-  display: flex;
-  justify-content: end;
-`
-
-const Name = styled(Typography)``
 
 const Content = styled.div`
   display: flex;
@@ -34,14 +26,6 @@ const Content = styled.div`
     min-width: 0;
   }
 `
-
-const AddShipButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
-  return (
-    <Button variant="outlined" onClick={onClick}>
-      add ship
-    </Button>
-  )
-}
 
 type ComponentProps = {
   className?: string
@@ -67,16 +51,7 @@ const Component: React.FC<ComponentProps> = ({
   }
   return (
     <Paper className={className}>
-      <Box ml={1} display="flex" justifyContent="space-between">
-        <Name variant="subtitle2" noWrap>
-          {ship.name}
-        </Name>
-        <IconButtonGroup>
-          <InfoButton size="small" />
-          <UpdateButton size="small" />
-          <ClearButton size="small" onClick={onRemove} />
-        </IconButtonGroup>
-      </Box>
+      <ShipHeader name={ship.name} level={ship.level} onLevelChange={handleLevelChange} onRemove={onRemove} />
 
       <Content>
         <Box width={160}>
@@ -134,6 +109,14 @@ const ShipCard: React.FC<ShipCardProps> = ({ ship, onAdd }) => {
       onUpdate={actions.update}
       onRemove={actions.remove}
     />
+  )
+}
+
+const AddShipButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  return (
+    <Button variant="outlined" onClick={onClick}>
+      add ship
+    </Button>
   )
 }
 

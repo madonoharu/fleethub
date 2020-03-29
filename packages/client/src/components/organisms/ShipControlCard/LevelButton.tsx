@@ -18,7 +18,6 @@ type Props = {
 }
 
 const Form: React.FC<Props> = ({ value, onChange }) => {
-  console.log(value)
   const set1 = React.useCallback(() => onChange(1), [onChange])
   const set99 = React.useCallback(() => onChange(99), [onChange])
   const set175 = React.useCallback(() => onChange(175), [onChange])
@@ -38,13 +37,13 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
   )
 }
 
-const Component: React.FC<Props> = ({ value, onChange }) => {
+const Component: React.FCX<Props> = ({ className, value, onChange }) => {
   const { onOpen, ...hendler } = useOpen()
 
   return (
     <>
       <Tooltip title="levelを変更">
-        <Button size="small" variant="text" onClick={onOpen}>
+        <Button className={className} onClick={onOpen}>
           Lv{value}
         </Button>
       </Tooltip>

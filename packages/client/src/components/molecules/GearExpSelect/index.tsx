@@ -39,14 +39,16 @@ const Component: React.FC<Props> = ({ className, size, exp, onChange }) => {
   return (
     <div className={className}>
       <Tooltip title="熟練度選択">
-        <ProficiencyIcon size={size} onClick={onOpen} exp={exp} />
+        <Button onClick={onOpen}>
+          <ProficiencyIcon size={size} exp={exp} />
+        </Button>
       </Tooltip>
 
       <Popover anchorOrigin={anchorOrigin} {...hendler}>
         <Flexbox>
           {exps.map((boundary) => (
             <Button key={boundary} id={boundary.toString()} onClick={handleChange}>
-              <ProficiencyIcon exp={boundary} />
+              <ProficiencyIcon size="small" exp={boundary} />
             </Button>
           ))}
           <NumberInput value={exp} onChange={onChange} min={0} max={maxExp} />
@@ -57,6 +59,9 @@ const Component: React.FC<Props> = ({ className, size, exp, onChange }) => {
 }
 
 const StyledComponent = styled(Component)`
+  button {
+    padding: 0;
+  }
   input {
     width: 64px;
     margin: 0 8px;
