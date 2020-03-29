@@ -2,6 +2,21 @@ import { GearBase } from "./MasterGear"
 import { GearAttribute } from "./GearAttribute"
 import { GearCategory } from "@fleethub/data"
 
+type CalculationMethod = number | "average" | "sum"
+
+type AttackModifiers = {
+  power: number
+  accuracy: number
+  evasion: number
+}
+
+type CombatModifiers = {
+  shelling: AttackModifiers
+  asw: AttackModifiers
+  torpedo: AttackModifiers
+  night: AttackModifiers
+}
+
 export type ImprovementModifiers = {
   contactSelectionModifier: number
 
@@ -19,8 +34,8 @@ export type ImprovementModifiers = {
   torpedoAccuracyModifier: number
   torpedoEvasionModifier: number
 
-  nightAttackPowerModifier: number
-  nightAttackAccuracyModifier: number
+  nightPowerModifier: number
+  nightAccuracyModifier: number
 
   effectiveLosModifier: number
   defensePowerModifier: number

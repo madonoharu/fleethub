@@ -8,10 +8,7 @@ import { entitiesSlice, gearsSelectors } from "../store"
 export const useGear = (uid: EntityId) => {
   const dispatch = useDispatch()
 
-  const kcGear = useSelector((state) => {
-    const entity = gearsSelectors.selectEntities(state)[uid]
-    return entity && kcsimFactory.createGear(entity)
-  })
+  const entity = useSelector((state) => gearsSelectors.selectEntities(state)[uid])
 
   const actions = React.useMemo(
     () => ({
@@ -24,6 +21,8 @@ export const useGear = (uid: EntityId) => {
     }),
     [dispatch, uid]
   )
+
+  const kcGear = React.useMemo(() => entity && kcsimFactory.createGear(entity), [entity])
 
   return { kcGear, actions }
 }

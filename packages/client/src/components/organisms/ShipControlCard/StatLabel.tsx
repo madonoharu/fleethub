@@ -8,23 +8,6 @@ import Tooltip from "@material-ui/core/Tooltip"
 
 import { StatIcon } from "../.."
 
-const rangeToName = (range: number) => {
-  switch (range) {
-    case 0:
-      return "無"
-    case 1:
-      return "短"
-    case 2:
-      return "中"
-    case 3:
-      return "長"
-  }
-  if (range >= 4) {
-    return "超長"
-  }
-  return "不明"
-}
-
 const valueToString = (value?: number) => {
   if (!value) {
     return ""
@@ -49,7 +32,7 @@ const StatLabel: React.FCX<Props> = (props) => {
 
   const label = (
     <div className={className}>
-      <StatIcon size="small" icon={statKey} />
+      <StatIcon icon={statKey} />
       <Typography>{stat.displayed}</Typography>
       {visibleBonus && (
         <>
@@ -79,9 +62,6 @@ export default styled(StatLabel)`
     line-height: 1.5;
   }
   ${StatIcon} {
-    height: 15px;
-    width: 15px;
-    filter: contrast(180%) opacity(0.9);
     margin: 0 4px;
   }
 `

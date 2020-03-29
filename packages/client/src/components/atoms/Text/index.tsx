@@ -1,8 +1,10 @@
 import React from "react"
-import Typography from "@material-ui/core/Typography"
-import { styled } from "@material-ui/core/styles"
+import styled from "styled-components"
 
-export default styled(Typography)({
-  fontSize: "0.75rem",
-  lineHeight: 1.5,
-})
+import Typography from "@material-ui/core/Typography"
+
+const Component = styled(Typography)`
+  font-size: 0.75rem;
+`
+
+export default Component

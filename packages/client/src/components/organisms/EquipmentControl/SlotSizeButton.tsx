@@ -51,6 +51,8 @@ type Props = {
   current?: number
   inital?: number
   onChange?: (value: number) => void
+
+  disabled?: boolean
 }
 
 const Component: React.FC<Props> = ({ className, current, inital, onChange }) => {
@@ -67,7 +69,7 @@ const Component: React.FC<Props> = ({ className, current, inital, onChange }) =>
   return (
     <>
       <Tooltip title="搭載数を変更">
-        <Button className={className} size="small" variant="text" onClick={onOpen}>
+        <Button className={className} size="small" onClick={onOpen}>
           {current}
         </Button>
       </Tooltip>
@@ -83,7 +85,12 @@ const StyledComponent = styled(Component)`
   align-items: center;
   justify-content: end;
   width: 24px;
-  color: ${(props) => props.theme.palette.grey[500]};
+  color: ${({ current = 0, inital = 0, disabled, theme }) => {
+    const { palette } = theme
+    if (current === 0 || disabled) return palette.action.disabled
+    if (current > inital) return palette.secondary.light
+    return palette.text.primary
+  }};
 `
 
 export default StyledComponent

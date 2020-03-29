@@ -6,7 +6,6 @@ import styled from "styled-components"
 import { GearIconsQuery } from "../../../graphqlTypes"
 
 type Props = {
-  size?: "small"
   icon: string
 }
 
@@ -36,7 +35,9 @@ const Component: React.FCX<Props> = ({ className, icon }) => {
 }
 
 const StyledComponent = styled(Component)`
-  width: ${(props) => (props.size === "small" ? 24 : 32)}px;
+  height: 15px;
+  width: 15px;
+  filter: contrast(180%) opacity(0.9);
 `
 
 export default StyledComponent

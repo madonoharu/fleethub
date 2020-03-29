@@ -4,11 +4,10 @@ import { Gear, GearState } from "@fleethub/kcsim"
 
 import Typography from "@material-ui/core/Typography"
 
-import { GearIcon, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton, Flexbox } from "../../../components"
+import { GearIcon, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
 
 const Name = styled(Typography)`
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: inherit;
   overflow: hidden;
   white-space: nowrap;
 `
@@ -67,6 +66,8 @@ const StyledComponent = styled(Component)`
   align-items: center;
   width: 100%;
   transition: 250ms;
+
+  font-size: 0.75rem;
 
   > :not(${Name}) {
     flex-shrink: 0;
