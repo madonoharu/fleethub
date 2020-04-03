@@ -8,7 +8,7 @@ export type GearSelectState = {
 const initialState: GearSelectState = {}
 
 export default createSlice({
-  name: "shipSelect",
+  name: "gearSelect",
   initialState,
   reducers: {
     set: (state, { payload }: PayloadAction<GearSelectState>) => {

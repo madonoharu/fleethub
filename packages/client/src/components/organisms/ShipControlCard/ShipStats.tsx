@@ -43,6 +43,6 @@ export default styled(Component)`
   button {
     height: 20px;
     padding: 0;
-    justify-content: start;
+    justify-content: flex-start;
   }
 `

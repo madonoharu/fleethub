@@ -9,7 +9,7 @@ import "./i18n"
 
 import { setupStore } from "./store"
 import theme from "./theme"
-import { AppBar } from "./components"
+import { AppBar, GlobalDialogs } from "./components"
 
 export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({ element }) => {
   const store = setupStore()
@@ -19,6 +19,7 @@ export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({ element }) =
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <AppBar />
+          <GlobalDialogs />
           {element}
         </MuiThemeProvider>
       </StyledThemeProvider>

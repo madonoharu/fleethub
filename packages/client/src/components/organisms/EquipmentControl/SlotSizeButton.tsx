@@ -83,7 +83,8 @@ const Component: React.FC<Props> = ({ className, current, inital, onChange }) =>
 const StyledComponent = styled(Component)`
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end;
+  padding: 0 4px;
   width: 24px;
   color: ${({ current = 0, inital = 0, disabled, theme }) => {
     const { palette } = theme

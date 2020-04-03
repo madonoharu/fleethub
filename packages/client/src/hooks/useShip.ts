@@ -2,6 +2,7 @@ import React from "react"
 import { useSelector, useDispatch, shallowEqual } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 import { kcsimFactory, GearState } from "@fleethub/kcsim"
+import { range } from "lodash-es"
 
 import { entitiesSlice, ShipEntity } from "../store"
 import { shipsSelectors, gearsSelectors } from "../store/entities"
@@ -16,6 +17,11 @@ const isEntityId = (id: unknown): id is EntityId => {
   }
   return false
 }
+
+const useKcsimShip = (entity?: ShipEntity) =>
+  useSelector((state) => {
+    if (!entity) return
+  })
 
 export const useShip = (id: EntityId) => {
   const dispatch = useDispatch()
@@ -39,38 +45,29 @@ export const useShip = (id: EntityId) => {
     [dispatch, id]
   )
 
-  const gearSelect = useGearSelect()
+  const onSelectOpen = useGearSelect().onOpen
   const openGearSelect = React.useCallback(
     (index: number) => {
-      gearSelect.open({ position: { ship: id, index } })
+      onSelectOpen({ position: { ship: id, index } })
     },
-    [gearSelect]
+    [id, onSelectOpen]
   )
 
   const entity = useSelector((state) => shipsSelectors.selectEntities(state)[id])
-  const shipState = useSelector((state) => {
-    const entity = shipsSelectors.selectEntities(state)[id]
+  const gearEntities = useSelector((state) => {
     const gears = entity?.gears.map((gearId) =>
       isEntityId(gearId) ? gearsSelectors.selectEntities(state)[gearId] : undefined
     )
-    return { ...entity, gears }
-  })
+    return gears
+  }, shallowEqual)
 
-  const kcShip = useSelector((state) => {
-    if (!entity) return
+  const kcShip = React.useMemo(() => {
+    if (!entity || !gearEntities) return
 
-    const gears = entity.gears.map((gearId) =>
-      isEntityId(gearId) ? gearsSelectors.selectEntities(state)[gearId] : undefined
-    )
+    return kcsimFactory.createShip({ ...entity, gears: gearEntities })
+  }, [entity, gearEntities])
 
-    return kcsimFactory.createShip({ ...entity, gears })
-  })
-
-  React.useEffect(() => {
-    console.log(id)
-  }, [id, kcShip])
-
-  const gears = [...Array((kcShip?.equipment.initialSlots.length ?? 0) + 1)].map((_, index) => entity?.gears[index])
+  const gears = range((kcShip?.equipment.initialSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
 
   return { entity, actions, openGearSelect, gears, kcShip }
 }

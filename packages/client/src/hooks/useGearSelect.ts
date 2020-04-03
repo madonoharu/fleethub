@@ -1,35 +1,30 @@
-import React from "react"
-import { navigate } from "gatsby"
+import { useCallback, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { gearSelectSlice, entitiesSlice, GearSelectState } from "../store"
 
 export const useGearSelect = () => {
   const dispatch = useDispatch()
-  const position = useSelector((state) => state.gearSelect.position)
+  const state = useSelector((state) => state.gearSelect)
 
-  return React.useMemo(() => {
-    const setState = (state: GearSelectState) => {
-      dispatch(gearSelectSlice.actions.set(state))
-    }
+  const open = Boolean(state.position)
 
-    const open = (state: GearSelectState) => {
-      setState(state)
-      navigate("./gears")
-    }
+  const { setState, onOpen, onClose } = useMemo(() => {
+    const setState = (state: GearSelectState) => dispatch(gearSelectSlice.actions.set(state))
+    const onOpen = setState
+    const onClose = () => setState({ position: undefined })
+    return { setState, onOpen, onClose }
+  }, [dispatch])
 
-    const close = () => {
-      setState({ position: undefined })
-      navigate("./")
-    }
+  const onSelect = useCallback(
+    (gearId: number) => {
+      if (!state.position) return
 
-    const onSelect = (gearId: number) => {
-      if (!position) return
+      dispatch(entitiesSlice.actions.createGear({ ...state.position, gear: { gearId } }))
+      onClose()
+    },
+    [state, onClose]
+  )
 
-      dispatch(entitiesSlice.actions.createGear({ ...position, gear: { gearId } }))
-      close()
-    }
-
-    return { open, close, onSelect }
-  }, [dispatch, position])
+  return { state, setState, open, onOpen, onClose, onSelect }
 }
