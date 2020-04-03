@@ -6,31 +6,31 @@ import { ShipState } from "@fleethub/kcsim"
 import { entitiesSlice, fleetsSelectors, FleetRole } from "../store"
 import { useShipSelect } from "./useShipSelect"
 
-export const useFleet = (uid: EntityId) => {
+export const useFleet = (id: EntityId) => {
   const dispatch = useDispatch()
   const shipSelect = useShipSelect()
-  const entity = useSelector((state) => fleetsSelectors.selectEntities(state)[uid])
+  const entity = useSelector((state) => fleetsSelectors.selectEntities(state)[id])
 
   const actions = React.useMemo(
     () => ({
       remove: () => {
-        dispatch(entitiesSlice.actions.removeFleet(uid))
+        dispatch(entitiesSlice.actions.removeFleet(id))
       },
       update: (changes: Partial<{ name: string }>) => {
-        dispatch(entitiesSlice.actions.updateFleet({ id: uid, changes }))
+        dispatch(entitiesSlice.actions.updateFleet({ id, changes }))
       },
       createShip: (role: FleetRole, index: number, ship: ShipState) => {
-        dispatch(entitiesSlice.actions.createShip({ fleet: uid, role, index, ship }))
+        dispatch(entitiesSlice.actions.createShip({ fleet: id, role, index, ship }))
       },
     }),
-    [dispatch, uid]
+    [dispatch, id]
   )
 
   const openShipSelect = React.useCallback(
     (role: FleetRole, index: number) => {
-      shipSelect.open({ position: { fleet: uid, role, index } })
+      shipSelect.onOpen({ position: { fleet: id, role, index } })
     },
-    [shipSelect]
+    [id, shipSelect]
   )
 
   return { entity, actions, openShipSelect }

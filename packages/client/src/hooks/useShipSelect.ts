@@ -6,30 +6,28 @@ import { shipSelectSlice, entitiesSlice, ShipSelectState } from "../store"
 
 export const useShipSelect = () => {
   const dispatch = useDispatch()
-  const position = useSelector((state) => state.shipSelect.position)
+  const state = useSelector((state) => state.shipSelect)
 
   return React.useMemo(() => {
     const setState = (state: ShipSelectState) => {
       dispatch(shipSelectSlice.actions.set(state))
     }
 
-    const open = (state: ShipSelectState) => {
-      setState(state)
-      navigate("./ships")
-    }
+    const open = Boolean(state.position)
 
-    const close = () => {
+    const onOpen = (state: ShipSelectState) => setState(state)
+
+    const onClose = () => {
       setState({ position: undefined })
-      navigate("./")
     }
 
     const onSelect = (shipId: number) => {
-      if (!position) return
+      if (!state.position) return
 
-      dispatch(entitiesSlice.actions.createShip({ ...position, ship: { shipId } }))
-      close()
+      dispatch(entitiesSlice.actions.createShip({ ...state.position, ship: { shipId } }))
+      onClose()
     }
 
-    return { setState, open, close, onSelect }
-  }, [dispatch, position])
+    return { state, onOpen, open, onClose, onSelect }
+  }, [dispatch, state])
 }

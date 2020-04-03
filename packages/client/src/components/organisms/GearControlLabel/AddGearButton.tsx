@@ -20,6 +20,7 @@ const Component: React.FCX<Props> = ({ className, onClick }) => {
 const StyledComponent = styled(Component)`
   height: 100%;
   width: 100%;
+  padding: 0;
   color: ${(props) => props.theme.palette.action.disabled};
   transition: 250ms;
   :hover {

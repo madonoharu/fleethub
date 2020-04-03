@@ -2,6 +2,7 @@ lib/
 esm/
 dist/
 private/
+reduxcache*/
 
 # Logs
 logs

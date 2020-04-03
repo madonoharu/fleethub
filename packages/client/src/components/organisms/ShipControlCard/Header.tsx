@@ -9,7 +9,7 @@ import LevelButton from "./LevelButton"
 
 export const IconButtonGroup = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 `
 
 type Props = {
