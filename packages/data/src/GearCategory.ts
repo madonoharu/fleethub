@@ -163,7 +163,7 @@ export enum GearCategory {
   JetPoweredTorpedoBomber = 58,
 
   /** 噴式索敵機 */
-  JetPoweredReconnaissanceAircraft = 59
+  JetPoweredReconnaissanceAircraft = 59,
 }
 
 /** 特殊装備カテゴリ */
@@ -175,7 +175,7 @@ export enum GearCategory2 {
   LargeRadar2 = 93,
 
   /** 艦上偵察機(II) */
-  CarrierBasedReconnaissanceAircraft2 = 94
+  CarrierBasedReconnaissanceAircraft2 = 94,
 }
 
 export type GearCategoryKey = keyof typeof GearCategory

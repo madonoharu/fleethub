@@ -7,8 +7,8 @@ const getTfdb = async (type: string) => {
 
   return res.data
     .split("\n")
-    .filter(str => str !== "")
-    .map(str => JSON.parse(str))
+    .filter((str) => str !== "")
+    .map((str) => JSON.parse(str))
 }
 
 type TfdbShip = {

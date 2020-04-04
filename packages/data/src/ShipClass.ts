@@ -472,7 +472,7 @@ export enum ShipClass {
   /** バタビア沖棲姫 */
   BataviaPrincess = 2067,
   /** 防空巡棲姫 */
-  AirDefenseCruiserPrincess = 2068
+  AirDefenseCruiserPrincess = 2068,
 }
 
 export type ShipClassKey = keyof typeof ShipClass
@@ -666,5 +666,5 @@ export enum ShipClassJp {
   "深海地中海棲姫" = 2065,
   "アンツィオ沖棲姫" = 2066,
   "バタビア沖棲姫" = 2067,
-  "防空巡棲姫" = 2068
+  "防空巡棲姫" = 2068,
 }
