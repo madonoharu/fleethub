@@ -64,7 +64,7 @@ export enum ShipType {
   TrainingCruiser = 21,
 
   /** 補給艦 */
-  FleetOiler = 22
+  FleetOiler = 22,
 }
 
 export type ShipTypeKey = keyof typeof ShipType

@@ -1,7 +1,7 @@
 import { GearData, GearCategory2, GearId, GearCategory, GearCategoryKey } from "@fleethub/data"
 import { GearAttribute, createGearAttrs } from "./GearAttribute"
 
-const defaultStats = {
+const defaultStats: Required<GearData> = {
   id: 0,
 
   category: 0,
@@ -73,6 +73,10 @@ export default class MasterGear implements GearBase {
 
   constructor(partial: Partial<GearData>) {
     const data = toRequiredGearData(partial)
+
+    ;(["id", "category"] as const).forEach((key) => {
+      this[key] = data[key]
+    })
 
     this.id = data.id
 

@@ -241,5 +241,5 @@ export const enum RemodelGroup {
   "Ташкент" = 516,
   "Gotland" = 574,
   "De Ruyter" = 604,
-  "Perth" = 613
+  "Perth" = 613,
 }

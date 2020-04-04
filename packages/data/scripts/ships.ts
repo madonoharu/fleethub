@@ -48,7 +48,7 @@ class ShipUpdater {
         slots: getSlots(mstShip),
         gears: [],
         nextId: nextId || undefined,
-        nextLevel: api_afterlv || undefined
+        nextLevel: api_afterlv || undefined,
       }
     }
 
@@ -73,13 +73,13 @@ class ShipUpdater {
       fuel: 0,
       ammo: 0,
       slots: getSlots(mstShip),
-      gears: []
+      gears: [],
     }
   }
 
   private mergeAbyssalShipClass = (ships: ShipData[]) => {
     const classMap = createAbyssalShipClassJpMap(this.start2)
-    return ships.map(ship => {
+    return ships.map((ship) => {
       if (ship.id < 1500) {
         return ship
       }
@@ -94,7 +94,7 @@ class ShipUpdater {
   }
 
   public merge = (ships: ShipData[]) => {
-    const merged = this.start2.api_mst_ship.map(mstShip => {
+    const merged = this.start2.api_mst_ship.map((mstShip) => {
       const shipData = ships.find(({ id }) => id === mstShip.api_id)
 
       if (!shipData) {
@@ -120,10 +120,10 @@ class ShipUpdater {
   }
 }
 
-export const writeShips = async (start2: Start2) => {
+export const writeShips = (start2: Start2) => {
   const updater = new ShipUpdater(start2)
   const next = updater.merge(ships)
 
-  await fs.promises.writeFile("json/ships.json", JSON.stringify(next))
+  fs.writeFileSync("json/ships.json", JSON.stringify(next))
   signale.complete()
 }

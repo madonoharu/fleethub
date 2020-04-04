@@ -463,5 +463,5 @@ export const enum GearId {
   "深海8inch連装速射砲" = 600,
   "深海8inch三連装砲 Mk.9" = 601,
   "深海5inch連装両用砲(集中配備)" = 602,
-  "深海対空レーダーMark.III+FCS" = 603
+  "深海対空レーダーMark.III+FCS" = 603,
 }

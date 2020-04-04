@@ -36,7 +36,7 @@ class EquippableUpdater {
         return {
           id,
           categories,
-          exslot: exslot.length > 0 ? exslot : undefined
+          exslot: exslot.length > 0 ? exslot : undefined,
         }
       })
       .filter((eq): eq is NonNullable<typeof eq> => Boolean(eq))
@@ -45,13 +45,13 @@ class EquippableUpdater {
   public getEquippable = (): EquippableData => ({
     shipType: this.getShipTypeEquippableData(),
     ship: this.getShipEquippableData(),
-    exslot: this.start2.api_mst_equip_exslot
+    exslot: this.start2.api_mst_equip_exslot,
   })
 }
 
-export const writeEquippable = async (start2: Start2) => {
+export const writeEquippable = (start2: Start2) => {
   const equippable = new EquippableUpdater(start2).getEquippable()
 
-  await fs.promises.writeFile("json/equippable.json", JSON.stringify(equippable))
+  fs.writeFileSync("json/equippable.json", JSON.stringify(equippable))
   signale.complete()
 }

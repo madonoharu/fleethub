@@ -50,20 +50,20 @@ const mstItemToData = (mstItem: MstSlotitem, improvableIds: number[]): GearData 
     radius: mstItem.api_distance,
     cost: mstItem.api_cost,
 
-    improvable
+    improvable,
   }
 
   const keys = Object.keys(data) as Array<keyof typeof data>
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (key in data && data[key] === 0) delete data[key]
   })
 
   return data
 }
 
-export const writeGears = async (start2: Start2, improvableIds: number[]) => {
-  const gears = start2.api_mst_slotitem.map(mstItem => mstItemToData(mstItem, improvableIds))
+export const writeGears = (start2: Start2, improvableIds: number[]) => {
+  const gears = start2.api_mst_slotitem.map((mstItem) => mstItemToData(mstItem, improvableIds))
 
-  await fs.promises.writeFile("json/gears.json", JSON.stringify(gears))
+  fs.writeFileSync("json/gears.json", JSON.stringify(gears))
   signale.complete()
 }
