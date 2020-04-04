@@ -74,10 +74,6 @@ export default class MasterGear implements GearBase {
   constructor(partial: Partial<GearData>) {
     const data = toRequiredGearData(partial)
 
-    ;(["id", "category"] as const).forEach((key) => {
-      this[key] = data[key]
-    })
-
     this.id = data.id
 
     this.category = data.category
