@@ -4,8 +4,15 @@ import { Dialog as MuiDialog, DialogProps } from "@material-ui/core"
 
 import { useShipSelect, useGearSelect } from "../../../hooks"
 import { ShipSelect, GearSelect } from "../../../components"
+import styled from "styled-components"
 
-const Dialog: React.FC<DialogProps> = (props) => <MuiDialog fullWidth maxWidth="md" {...props} />
+const Dialog: React.FC<DialogProps> = ({ children, ...rest }) => {
+  return (
+    <MuiDialog maxWidth="md" PaperProps={{ style: { minHeight: "80vh" } }} {...rest}>
+      <div>{children}</div>
+    </MuiDialog>
+  )
+}
 
 const GlobalDialogs: React.FC = () => {
   const shipSelect = useShipSelect()
@@ -13,14 +20,10 @@ const GlobalDialogs: React.FC = () => {
   return (
     <>
       <Dialog open={shipSelect.open} onClose={shipSelect.onClose}>
-        <div>
-          <ShipSelect />
-        </div>
+        <ShipSelect />
       </Dialog>
       <Dialog open={gearSelect.open} onClose={gearSelect.onClose}>
-        <div>
-          <GearSelect />
-        </div>
+        <GearSelect />
       </Dialog>
     </>
   )

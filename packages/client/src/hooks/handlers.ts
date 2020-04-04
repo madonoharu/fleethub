@@ -32,7 +32,8 @@ export const useSelect = <T>(options: readonly T[], defaultOption: T = options[0
     if (!options.includes(value)) {
       onChange(defaultOption)
     }
-  }, [options])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options, onChange])
 
   useEffect(() => onChange(defaultOption), [defaultOption])
 

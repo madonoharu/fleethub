@@ -34,6 +34,7 @@ const Component: React.FC<Props> = ({ className, stars, onChange }) => {
       onChange && onChange(value)
       hendler.onClose()
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [onChange, hendler.onClose]
   )
 

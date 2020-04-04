@@ -7,7 +7,7 @@ import createPalette from "@material-ui/core/styles/createPalette"
 const fontFamily = `
 -apple-system, 
 BlinkMacSystemFont,
-"Segoe UI",
+"Segoe UI Regular",
 Roboto,
 "Hiragino Sans",
 "Noto Sans CJK JP",

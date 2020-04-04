@@ -33,6 +33,7 @@ const Component: React.FC<Props> = ({ className, size, exp, onChange }) => {
       onChange && onChange(Number(event.currentTarget.id))
       hendler.onClose()
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [onChange, hendler.onClose]
   )
 
