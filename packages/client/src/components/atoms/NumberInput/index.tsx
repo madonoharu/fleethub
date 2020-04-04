@@ -1,53 +1,35 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react"
-import clsx from "clsx"
+import React, { useState, useEffect, useCallback, useMemo } from "react"
 import { round } from "lodash-es"
+import styled from "styled-components"
 
 import TextField, { TextFieldProps } from "@material-ui/core/TextField"
 import InputAdornment from "@material-ui/core/InputAdornment"
 import MuiButton from "@material-ui/core/Button"
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
-import { makeStyles, styled } from "@material-ui/core/styles"
 
 import usePress from "./usePress"
 
-const Button = styled(MuiButton)({
-  display: "block",
-  padding: 0,
-  width: 24,
-  height: 16,
-  lineHeight: 1,
-})
-
-const useStyles = makeStyles({
-  root: {
-    "&:hover $adornment": {
-      visibility: "visible",
-    },
-  },
-  input: {
-    width: 8 * 15,
-  },
-  label: {
-    whiteSpace: "nowrap",
-  },
-  adornment: {
-    visibility: "hidden",
-  },
-})
+const Button = styled(MuiButton)`
+  display: block;
+  padding: 0;
+  width: 24px;
+  height: 16px;
+  line-height: 1;
+`
+const inputLabelProps = { style: { whiteSpace: "nowrap" } } as const
 
 const stepValue = (value: number, step: number) => {
   const precision = Math.ceil(-Math.log10(Math.abs(step)))
   return round(value + step, precision)
 }
 
-type NumberInputAdornmentProps = {
-  className?: string
+type AdornmentProps = {
   increase: () => void
   decrease: () => void
 }
 
-const NumberInputAdornment: React.FC<NumberInputAdornmentProps> = ({ className, increase, decrease }) => {
+const Adornment: React.FCX<AdornmentProps> = ({ className, increase, decrease }) => {
   const increaseProps = usePress(increase)
   const decreaseProps = usePress(decrease)
 
@@ -64,6 +46,10 @@ const NumberInputAdornment: React.FC<NumberInputAdornmentProps> = ({ className, 
     </InputAdornment>
   )
 }
+
+const StyledAdornment = styled(Adornment)`
+  visibility: hidden;
+`
 
 const toHalf = (str: string) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
@@ -83,6 +69,7 @@ type NumberInputProps = {
 } & Omit<TextFieldProps, "type" | "inputProps" | "onChange" | "onInput">
 
 const NumberInput: React.FC<NumberInputProps> = ({
+  className,
   value,
   onChange,
   min,
@@ -91,8 +78,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
   variant,
   ...textFieldProps
 }) => {
-  const classes = useStyles()
-
   const changeValue = useCallback(
     (next: number) => {
       if (!onChange) return
@@ -128,21 +113,18 @@ const NumberInput: React.FC<NumberInputProps> = ({
     [changeValue, setInputStr]
   )
 
-  const inputLabelProps = useMemo(() => ({ className: classes.label }), [])
-
   const InputProps = useMemo(() => {
     const increase = () => changeValue(stepValue(value, step))
     const decrease = () => changeValue(stepValue(value, -step))
 
     return {
-      endAdornment: <NumberInputAdornment className={classes.adornment} increase={increase} decrease={decrease} />,
+      endAdornment: <StyledAdornment increase={increase} decrease={decrease} />,
     }
   }, [value, step, changeValue])
 
   return (
-    <div className={classes.root}>
+    <div className={className}>
       <TextField
-        className={clsx(!textFieldProps.fullWidth && classes.input)}
         value={inputStr}
         onChange={handleChange}
         onFocus={handleFocus}
@@ -156,4 +138,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
   )
 }
 
-export default NumberInput
+export default styled(NumberInput)`
+  :hover ${StyledAdornment} {
+    visibility: visible;
+  }
+  input {
+    width: 120px;
+  }
+`

@@ -10,7 +10,8 @@
   ],
   "plugins": [
     "@typescript-eslint",
-    "react"
+    "react",
+    "react-hooks"
   ],
   "parser": "@typescript-eslint/parser",
   "env": { "browser": true, "node": true, "es6": true },
@@ -24,8 +25,11 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
-    
+
     "react/prop-types": "off",
-    "react/display-name": "off"
+    "react/display-name": "off",
+
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   }
 }

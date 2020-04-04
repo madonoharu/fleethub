@@ -23,7 +23,7 @@ export const useGearSelect = () => {
       dispatch(entitiesSlice.actions.createGear({ ...state.position, gear: { gearId } }))
       onClose()
     },
-    [state, onClose]
+    [state.position, dispatch, onClose]
   )
 
   return { state, setState, open, onOpen, onClose, onSelect }

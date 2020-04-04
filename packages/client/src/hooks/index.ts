@@ -14,7 +14,7 @@ export const usePlan = (uid = "") => {
         dispatch(entitiesSlice.actions.createFleet({ main: [...Array(6)], escort: [...Array(6)] }))
       },
     }),
-    [dispatch, uid]
+    [dispatch]
   )
 
   return { actions, allIds }
