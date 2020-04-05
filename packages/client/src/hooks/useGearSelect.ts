@@ -10,7 +10,7 @@ export const useGearSelect = () => {
   const open = Boolean(state.position)
 
   const { setState, onOpen, onClose } = useMemo(() => {
-    const setState = (state: GearSelectState) => dispatch(gearSelectSlice.actions.set(state))
+    const setState = (state: Partial<GearSelectState>) => dispatch(gearSelectSlice.actions.set(state))
     const onOpen = setState
     const onClose = () => setState({ position: undefined })
     return { setState, onOpen, onClose }
