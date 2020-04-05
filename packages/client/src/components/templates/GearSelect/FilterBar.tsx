@@ -6,7 +6,7 @@ import { kcsimFactory, MasterGear } from "@fleethub/kcsim"
 import { AppBar, Toolbar, Checkbox } from "@material-ui/core"
 
 import { useGearSelect } from "../../../hooks"
-import { Flexbox, SelectButtons } from "../../../components"
+import { Flexbox, SelectButtons, Select } from "../../../components"
 
 import FilterButtons, { nameToFilterFn } from "./FilterButtons"
 import { defaultComparer } from "./comparers"
@@ -50,12 +50,12 @@ type Props = {
 const FilterBar: React.FC<Props> = ({ gears, children }) => {
   const { state, setState } = useGearSelect()
 
-  const [selectedCategory, setSelectedCategory] = React.useState(0)
-  const [isAbyssalMode, setIsAbyssalMode] = React.useState(false)
-
   const handleFilterChange = (filter: string) => {
-    setState({ filter })
-    setSelectedCategory(0)
+    setState({ filter, category: 0 })
+  }
+
+  const handleCategoryChange = (category: number) => {
+    setState({ category })
   }
 
   const visibleGears = gears
@@ -68,7 +68,7 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
 
   const visibleCategories = getVisibleCategories(visibleGears)
 
-  const categoryFilter = (gear: MasterGear) => selectedCategory === 0 || selectedCategory === gear.category
+  const categoryFilter = (gear: MasterGear) => state.category === 0 || state.category === gear.category
   const entries = Array.from(createCategoryGearMap(visibleGears.filter(categoryFilter)))
 
   return (
@@ -78,12 +78,11 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
           <FilterButtons value={state.filter} onChange={handleFilterChange} />
           <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
         </Flexbox>
-        <SelectButtons
-          value={selectedCategory}
+        <Select
+          value={state.category}
           options={visibleCategories}
-          onChange={(category) => setSelectedCategory(category)}
+          onChange={handleCategoryChange}
           getOptionLabel={categoryToName}
-          buttonProps={{ size: "small" }}
         />
       </div>
       <div>{children(entries)}</div>

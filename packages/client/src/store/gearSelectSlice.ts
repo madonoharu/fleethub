@@ -4,17 +4,19 @@ import { GearPosition } from "./entities"
 export type GearSelectState = {
   position?: GearPosition
   filter?: string
-  category?: number
+  category: number
   abyssal?: boolean
 }
 
-const initialState: GearSelectState = {}
+const initialState: GearSelectState = {
+  category: 0,
+}
 
 export default createSlice({
   name: "gearSelect",
   initialState,
   reducers: {
-    set: (state, { payload }: PayloadAction<GearSelectState>) => {
+    set: (state, { payload }: PayloadAction<Partial<GearSelectState>>) => {
       Object.assign(state, payload)
     },
   },

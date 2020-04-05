@@ -1,9 +1,12 @@
 import React, { useCallback } from "react"
 
-import MuiSelect, { SelectProps as MuiSelectProps } from "@material-ui/core/Select"
-import MenuItem from "@material-ui/core/MenuItem"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
+import {
+  Select as MuiSelect,
+  SelectProps as MuiSelectProps,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@material-ui/core"
 
 export const getDefaultOptionLabel = (option: unknown): string => {
   switch (typeof option) {
@@ -39,7 +42,7 @@ export type SelectComponent<P = {}> = {
   <T>(props: SelectComponentProps<T> & P): React.ReactElement
 }
 
-type MuiProps = Omit<MuiSelectProps, keyof SelectComponent<unknown>>
+type MuiProps = Omit<MuiSelectProps, keyof SelectComponentProps<unknown>>
 
 const Select: SelectComponent<MuiProps> = (props) => {
   const { options, value, onChange, label, getOptionLabel = getDefaultOptionLabel, ...muiProps } = props
