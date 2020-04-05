@@ -79,6 +79,7 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
           <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
         </Flexbox>
         <Select
+          label="category"
           value={state.category}
           options={visibleCategories}
           onChange={handleCategoryChange}
