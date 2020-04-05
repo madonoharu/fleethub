@@ -23,7 +23,7 @@ const Component: React.FCX<Props> = ({ className, name, level, onLevelChange, on
   return (
     <div className={className}>
       <LevelButton value={level} onChange={onLevelChange} />
-      <Typography variant="subtitle2" noWrap>
+      <Typography variant="body2" noWrap>
         {name}
       </Typography>
       <IconButtonGroup>

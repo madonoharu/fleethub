@@ -56,6 +56,7 @@ const Component: React.FC<Props> = ({ className, stars, onChange }) => {
 const StyledComponent = styled(Component)`
   width: 24px;
   height: 100%;
+  padding: 0;
   color: ${({ theme, stars }) => (stars === 0 ? theme.palette.action.disabled : theme.kc.stars)};
 `
 

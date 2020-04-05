@@ -54,6 +54,8 @@ const Component: React.FCX<Props> = ({ className, value, onChange }) => {
   )
 }
 
-const StyledComponent = styled(Component)``
+const StyledComponent = styled(Component)`
+  padding: 0 4px;
+`
 
 export default StyledComponent
