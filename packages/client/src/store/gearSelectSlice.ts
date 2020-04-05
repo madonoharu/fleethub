@@ -3,6 +3,9 @@ import { GearPosition } from "./entities"
 
 export type GearSelectState = {
   position?: GearPosition
+  filter?: string
+  category?: number
+  abyssal?: boolean
 }
 
 const initialState: GearSelectState = {}

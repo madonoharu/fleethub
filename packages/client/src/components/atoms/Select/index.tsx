@@ -27,17 +27,21 @@ export const getDefaultOptionLabel = (option: unknown): string => {
   return ""
 }
 
-export type BaseSelectProps<T> = {
+export type SelectComponentProps<T> = {
+  className?: string
   options: readonly T[]
   value: T
   onChange: (option: T) => void
-  label?: string
   getOptionLabel?: (option: T) => React.ReactNode
 }
 
-export type SelectProps<T> = BaseSelectProps<T> & Omit<MuiSelectProps, keyof BaseSelectProps<T>>
+export type SelectComponent<P = {}> = {
+  <T>(props: SelectComponentProps<T> & P): React.ReactElement
+}
 
-export default function Select<OptionType>(props: SelectProps<OptionType>) {
+type MuiProps = Omit<MuiSelectProps, keyof SelectComponent<unknown>>
+
+const Select: SelectComponent<MuiProps> = (props) => {
   const { options, value, onChange, label, getOptionLabel = getDefaultOptionLabel, ...muiProps } = props
 
   const handleChange = useCallback(
@@ -58,3 +62,5 @@ export default function Select<OptionType>(props: SelectProps<OptionType>) {
     </FormControl>
   )
 }
+
+export default Select

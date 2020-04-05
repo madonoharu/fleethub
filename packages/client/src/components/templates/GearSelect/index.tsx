@@ -1,25 +1,15 @@
 import React from "react"
 import styled from "styled-components"
-import { gears, GearData, GearCategory } from "@fleethub/data"
+import { kcsimFactory, MasterGear } from "@fleethub/kcsim"
 
-import { Button, Checkbox } from "@material-ui/core"
+import { Button, Divider, Container as MuiContainer } from "@material-ui/core"
 
 import { useGearSelect } from "../../../hooks"
-import { GearIcon } from "../../../components"
+import { GearIcon, SelectButtons } from "../../../components"
 
-type Key = { [K in keyof GearData]-?: Required<GearData>[K] extends number ? K : never }[keyof GearData]
+import FilterBar from "./FilterBar"
 
-type Comparer = (left: GearData, right: GearData) => number
-const createComparer = (keys: Key[]): Comparer => (left, right) => {
-  for (const key of keys) {
-    const value = (right[key] ?? 0) - (left[key] ?? 0)
-    if (value === 0) continue
-    return value
-  }
-  return 0
-}
-
-const GearButton: React.FCX<{ gear: GearData; onClick: () => void }> = ({ gear, onClick }) => {
+const GearButton: React.FCX<{ gear: MasterGear; onClick: () => void }> = ({ gear, onClick }) => {
   return (
     <Button onClick={onClick}>
       <GearIcon iconId={gear.iconId} />
@@ -38,45 +28,40 @@ const GearContiner = styled.div`
   }
 `
 
-const categories = Object.values(GearCategory).filter((value): value is number => typeof value === "number")
-
 type Props = {
   onSelect?: (gearId: number) => void
 }
 
 const Component: React.FC<Props> = ({ onSelect }) => {
-  const [category, setCategory] = React.useState(categories[0])
-  const [isAbyssalMode, setIsAbyssalMode] = React.useState(false)
   const handleSelect: React.MouseEventHandler<HTMLButtonElement> = React.useCallback(
     (event) => {
       onSelect && onSelect(Number(event.currentTarget.id))
     },
     [onSelect]
   )
+
   return (
-    <>
-      <Checkbox checked={isAbyssalMode} onClick={() => setIsAbyssalMode((value) => !value)} />
-      {categories.map((category) => (
-        <Button key={category} onClick={() => setCategory(category)}>
-          {category}
-        </Button>
-      ))}
-      <GearContiner>
-        {gears
-          .filter((gear) => gear.category === category)
-          .filter((gear) => {
-            if (isAbyssalMode) return gear.id > 500
-            return gear.id < 500
+    <div style={{ width: 960, padding: 8 }}>
+      <FilterBar gears={kcsimFactory.masterGears}>
+        {(entries) =>
+          entries.map(([category, gears]) => {
+            return (
+              <div key={`category-${category}`}>
+                <Divider />
+                <GearContiner>
+                  {gears.map((gear) => (
+                    <Button key={gear.id} id={gear.id.toString()} onClick={handleSelect}>
+                      <GearIcon iconId={gear.iconId} />
+                      {gear.name}
+                    </Button>
+                  ))}
+                </GearContiner>
+              </div>
+            )
           })
-          .sort(createComparer(["firepower", "torpedo"]))
-          .map((gear) => (
-            <Button key={gear.id} id={gear.id.toString()} onClick={handleSelect}>
-              <GearIcon iconId={gear.iconId} />
-              {gear.name}
-            </Button>
-          ))}
-      </GearContiner>
-    </>
+        }
+      </FilterBar>
+    </div>
   )
 }
 

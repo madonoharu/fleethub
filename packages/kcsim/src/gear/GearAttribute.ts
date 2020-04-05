@@ -151,4 +151,5 @@ export type GearAttribute = keyof typeof matchers
 
 const allAttrs = Object.keys(matchers) as GearAttribute[]
 
-export const createGearAttrs = (data: Required<GearData>) => allAttrs.filter((attr) => matchers[attr](data))
+export const createGearAttrs = (data: Required<GearData>): GearAttribute[] =>
+  allAttrs.filter((attr) => matchers[attr](data))

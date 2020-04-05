@@ -5,6 +5,7 @@ import { default as equippable, EquippableData, ShipEquippable } from "../json/e
 export { ships, ShipData, gears, GearData, equippable, EquippableData, ShipEquippable }
 
 export * from "./GearCategory"
+export * from "./GearCategoryName"
 export * from "./ShipClass"
 export * from "./ShipType"
 

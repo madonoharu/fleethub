@@ -8,7 +8,7 @@ import styled from "styled-components"
 
 const Dialog: React.FC<DialogProps> = ({ children, ...rest }) => {
   return (
-    <MuiDialog maxWidth="md" PaperProps={{ style: { minHeight: "80vh" } }} {...rest}>
+    <MuiDialog maxWidth="md" PaperProps={{ style: { height: "80vh" } }} {...rest}>
       <div>{children}</div>
     </MuiDialog>
   )

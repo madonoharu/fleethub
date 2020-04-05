@@ -9,15 +9,15 @@ type Props = {
   icon: string
 }
 
-const Component: React.FCX<Props> = ({ className, icon }) => {
+const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
   const { allFile } = useStaticQuery<GearIconsQuery>(graphql`
-    query StatIcons {
-      allFile(filter: { relativeDirectory: { eq: "stats" } }) {
+    query FilterIcons {
+      allFile(filter: { relativeDirectory: { eq: "filters" } }) {
         edges {
           node {
             name
             childImageSharp {
-              fluid(maxWidth: 32) {
+              fluid(maxWidth: 40) {
                 ...GatsbyImageSharpFluid
               }
             }
@@ -34,10 +34,7 @@ const Component: React.FCX<Props> = ({ className, icon }) => {
   return <Img className={className} fluid={childImageSharp.fluid} />
 }
 
-const StyledComponent = styled(Component)`
-  height: 15px;
-  width: 15px;
-  filter: contrast(180%) opacity(0.9);
+export default styled(FilterIcon)`
+  width: 40px;
+  filter: brightness(120%);
 `
-
-export default StyledComponent
