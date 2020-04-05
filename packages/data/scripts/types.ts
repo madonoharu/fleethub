@@ -102,6 +102,11 @@ class TypeUpdater {
     return createLiteralType("GearName", gearNames)
   }
 
+  public createGearCategoryName = () => {
+    const data = this.start2.api_mst_slotitem_equiptype.map(({ api_id, api_name }) => [api_name, api_id] as const)
+    return createEnum("GearCategoryName", data, false)
+  }
+
   public createAbyssalShipClassJp = () => {
     const data = createAbyssalShipClassJpMap(this.start2)
     return createEnum("AbyssalShipClassJp", data)
@@ -123,6 +128,7 @@ class TypeUpdater {
 
     fs.writeFileSync("src/ShipId.ts", this.createShipId())
     fs.writeFileSync("src/GearId.ts", this.createGearId())
+    fs.writeFileSync("src/GearCategoryName.ts", this.createGearCategoryName())
     fs.writeFileSync("src/RemodelGroup.ts", this.createRemodelGroup())
 
     fs.writeFileSync("scripts/AbyssalShipClassJp.ts", this.createAbyssalShipClassJp())

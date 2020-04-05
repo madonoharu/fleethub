@@ -12,7 +12,7 @@ type Props = {
 const Component: React.FCX<Props> = ({ className, icon }) => {
   const { allFile } = useStaticQuery<GearIconsQuery>(graphql`
     query StatIcons {
-      allFile(filter: { relativeDirectory: { eq: "icons" } }) {
+      allFile(filter: { relativeDirectory: { eq: "stats" } }) {
         edges {
           node {
             name
