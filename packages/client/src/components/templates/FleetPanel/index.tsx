@@ -2,10 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { EntityId } from "@reduxjs/toolkit"
 
-import Container from "@material-ui/core/Container"
-import Button from "@material-ui/core/Button"
-import Typography from "@material-ui/core/Typography"
-import TextField from "@material-ui/core/TextField"
+import { Container, Typography, TextField } from "@material-ui/core"
 
 import { ShipControlCard, RemoveButton, Select } from "../../../components"
 import { useFleet } from "../../../hooks"

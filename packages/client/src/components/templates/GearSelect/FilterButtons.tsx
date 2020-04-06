@@ -68,8 +68,20 @@ type Props = {
   onChange: (value: string) => void
 }
 
-const GearFilterButtons: React.FCX<Props> = ({ value = "all", onChange }) => {
-  return <SelectButtons options={filterNames} value={value} onChange={onChange} getOptionLabel={getOptionLabel} />
+const GearFilterButtons: React.FCX<Props> = ({ className, value = "all", onChange }) => {
+  return (
+    <SelectButtons
+      className={className}
+      options={filterNames}
+      value={value}
+      onChange={onChange}
+      getOptionLabel={getOptionLabel}
+    />
+  )
 }
 
-export default GearFilterButtons
+export default styled(GearFilterButtons)`
+  button {
+    padding: 4px 0;
+  }
+`

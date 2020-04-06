@@ -2,15 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { Gear, GearState } from "@fleethub/kcsim"
 
-import Typography from "@material-ui/core/Typography"
-
-import { GearIcon, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
-
-const Name = styled(Typography)`
-  font-size: inherit;
-  overflow: hidden;
-  white-space: nowrap;
-`
+import { GearNameplate, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
 
 type Props = {
   className?: string
@@ -49,9 +41,7 @@ export const Component: React.FC<Props> = ({
 
   return (
     <div className={className} style={style}>
-      <GearIcon size="small" iconId={gear.iconId} />
-
-      <Name color={equippable ? "initial" : "secondary"}>{gear.name}</Name>
+      <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
       <UpdateButton title="変更" size={size} tooltipProps={tooltipProps} onClick={onReselect} />
       <ClearButton title="削除" size={size} tooltipProps={tooltipProps} onClick={onRemove} />
 
@@ -67,9 +57,11 @@ const StyledComponent = styled(Component)`
   width: 100%;
   transition: 250ms;
 
-  font-size: 0.75rem;
+  > * {
+    min-width: 0;
+  }
 
-  > :not(${Name}) {
+  > :not(${GearNameplate}) {
     flex-shrink: 0;
     margin-right: 4px;
   }
@@ -87,7 +79,7 @@ const StyledComponent = styled(Component)`
     ${UpdateButton}, ${ClearButton} {
       display: block;
     }
-    ${Name} {
+    ${GearNameplate} p {
       display: none;
     }
   }
