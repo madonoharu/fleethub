@@ -1,8 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import Button from "@material-ui/core/Button"
-import BuildIcon from "@material-ui/icons/Build"
+import { Button } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"
 
 type Props = {
@@ -11,7 +10,7 @@ type Props = {
 
 const Component: React.FCX<Props> = ({ className, onClick }) => {
   return (
-    <Button className={className} variant="text" onClick={onClick}>
+    <Button className={className} onClick={onClick}>
       <AddIcon fontSize="small" />
     </Button>
   )

@@ -60,7 +60,7 @@ const Component: React.FC<Props> = ({ className, current, inital, onChange }) =>
 
   if (current === undefined || inital === undefined) {
     return (
-      <Button className={className} variant="text" disabled>
+      <Button className={className} disabled>
         <BuildIcon fontSize="inherit" />
       </Button>
     )

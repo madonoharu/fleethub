@@ -26,7 +26,7 @@ const Component: React.FCX<Props> = ({ className, onChange }) => {
   return (
     <div className={className}>
       {range(11).map((stars) => (
-        <Button key={stars} id={stars.toString()} size="small" variant="text" onClick={handleChange}>
+        <Button key={stars} id={stars.toString()} size="small" onClick={handleChange}>
           {starsToString(stars)}
         </Button>
       ))}

@@ -13,6 +13,8 @@ const createComparer = (...keys: Key[]): Comparer => (left, right) => {
   return 0
 }
 
+const reverse = (comparer: Comparer): Comparer => (left, right) => comparer(right, left)
+
 const gunComparer = createComparer("firepower", "torpedo", "accuracy", "armor", "evasion")
 const torpedoComparer = createComparer("torpedo", "firepower", "accuracy", "armor", "evasion")
 const seaplaneComparer = createComparer("los", "firepower", "accuracy", "armor", "evasion")
@@ -29,3 +31,5 @@ export const defaultComparer: Comparer = (left, right) => {
   if (left.is("DiveBomber")) return bomberComparer(left, right)
   return gunComparer(left, right)
 }
+
+export const idComparer = reverse(createComparer("category", "iconId", "id"))

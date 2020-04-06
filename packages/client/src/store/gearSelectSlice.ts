@@ -5,11 +5,12 @@ export type GearSelectState = {
   position?: GearPosition
   filter?: string
   category: number
-  abyssal?: boolean
+  abyssal: boolean
 }
 
 const initialState: GearSelectState = {
   category: 0,
+  abyssal: false,
 }
 
 export default createSlice({

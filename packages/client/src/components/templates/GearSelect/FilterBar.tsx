@@ -9,7 +9,7 @@ import { useGearSelect } from "../../../hooks"
 import { Flexbox, SelectButtons, Select } from "../../../components"
 
 import FilterButtons, { nameToFilterFn } from "./FilterButtons"
-import { defaultComparer } from "./comparers"
+import { defaultComparer, idComparer } from "./comparers"
 
 const getCategoryName = (category: number) => {
   const name = GearCategoryName[category]
@@ -64,7 +64,7 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
       if (state.abyssal) return gear.is("Abyssal")
       return !gear.is("Abyssal")
     })
-    .sort(defaultComparer)
+    .sort(idComparer)
 
   const visibleCategories = getVisibleCategories(visibleGears)
 
@@ -77,14 +77,16 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
         <Flexbox>
           <FilterButtons value={state.filter} onChange={handleFilterChange} />
           <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
+          <Select
+            style={{ minWidth: 160 }}
+            MenuProps={{ MenuListProps: { dense: true } }}
+            label="category"
+            value={state.category}
+            options={visibleCategories}
+            onChange={handleCategoryChange}
+            getOptionLabel={categoryToName}
+          />
         </Flexbox>
-        <Select
-          label="category"
-          value={state.category}
-          options={visibleCategories}
-          onChange={handleCategoryChange}
-          getOptionLabel={categoryToName}
-        />
       </div>
       <div>{children(entries)}</div>
     </>

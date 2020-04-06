@@ -6,7 +6,6 @@ import styled from "styled-components"
 import { GearIconsQuery } from "../../../graphqlTypes"
 
 type Props = {
-  size?: "small"
   iconId: number
 }
 
@@ -18,7 +17,7 @@ const Component: React.FCX<Props> = ({ className, iconId }) => {
           node {
             name
             childImageSharp {
-              fluid(maxWidth: 32) {
+              fluid(maxWidth: 24) {
                 ...GatsbyImageSharpFluid
               }
             }
@@ -30,13 +29,11 @@ const Component: React.FCX<Props> = ({ className, iconId }) => {
 
   const childImageSharp = allFile.edges.find((n) => n.node.name === iconId.toString())?.node.childImageSharp
 
-  if (!childImageSharp) return <Img className={className} fluid={allFile.edges[0].node.childImageSharp?.fluid} />
+  if (!childImageSharp) return null
 
   return <Img className={className} fluid={childImageSharp.fluid} />
 }
 
-const StyledComponent = styled(Component)`
-  width: ${(props) => (props.size === "small" ? 24 : 32)}px;
+export default styled(Component)`
+  width: 24px;
 `
-
-export default StyledComponent
