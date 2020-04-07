@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { GearState } from "@fleethub/kcsim"
 
 import { gearSelectSlice, entitiesSlice, GearSelectState } from "../store"
 
@@ -17,13 +18,14 @@ export const useGearSelect = () => {
   }, [dispatch])
 
   const onSelect = useCallback(
-    (gearId: number) => {
+    (gear: GearState) => {
       if (!state.position) return
 
-      dispatch(entitiesSlice.actions.createGear({ ...state.position, gear: { gearId } }))
+      dispatch(entitiesSlice.actions.createGear({ ...state.position, gear }))
       onClose()
     },
-    [state.position, dispatch, onClose]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.position, onClose]
   )
 
   return { state, setState, open, onOpen, onClose, onSelect }

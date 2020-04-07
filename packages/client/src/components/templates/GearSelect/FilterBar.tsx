@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
-import { kcsimFactory, MasterGear } from "@fleethub/kcsim"
+import { MasterGear } from "@fleethub/kcsim"
 
 import { AppBar, Toolbar, Checkbox } from "@material-ui/core"
 
@@ -76,16 +76,17 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
       <div>
         <Flexbox>
           <FilterButtons value={state.filter} onChange={handleFilterChange} />
-          <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
+        </Flexbox>
+        <Flexbox alignItems="flex-end">
           <Select
             style={{ minWidth: 160 }}
             MenuProps={{ MenuListProps: { dense: true } }}
-            label="category"
             value={state.category}
             options={visibleCategories}
             onChange={handleCategoryChange}
             getOptionLabel={categoryToName}
           />
+          <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
         </Flexbox>
       </div>
       <div>{children(entries)}</div>

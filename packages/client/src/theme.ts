@@ -1,7 +1,5 @@
-import blue from "@material-ui/core/colors/blue"
-import cyan from "@material-ui/core/colors/cyan"
-import pink from "@material-ui/core/colors/pink"
-import { createMuiTheme } from "@material-ui/core/styles"
+import { blue, cyan, pink, grey } from "@material-ui/core/colors"
+import { createMuiTheme } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
 
 const fontFamily = `
@@ -42,6 +40,28 @@ const muiTheme = createMuiTheme({
     },
   },
   overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        body: {
+          overflowY: "hidden",
+        },
+
+        "*": {
+          scrollbarColor: `${grey[700]} transparent`,
+          scrollbarWidth: "thin",
+        },
+
+        "::-webkit-scrollbar": {
+          width: 8,
+        },
+        "::-webkit-scrollbar-track": {
+          background: "transparent",
+        },
+        "::-webkit-scrollbar-thumb": {
+          background: grey[700],
+        },
+      },
+    },
     MuiButton: {
       root: {
         textTransform: "none",

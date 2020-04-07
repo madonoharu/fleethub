@@ -52,4 +52,14 @@ const GearList: React.FC<Props> = ({ entries, onSelect }) => {
   )
 }
 
+const Sim: React.FC<Props> = ({ entries, onSelect }) => {
+  return (
+    <div>
+      {entries.map(([category, gears]) => (
+        <CategoryContainer key={category} category={category} gears={gears} onSelect={onSelect} />
+      ))}
+    </div>
+  )
+}
+
 export default GearList
