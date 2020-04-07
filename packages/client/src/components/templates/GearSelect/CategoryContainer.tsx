@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
-import { kcsimFactory, MasterGear } from "@fleethub/kcsim"
+import { kcsim, MasterGear } from "@fleethub/kcsim"
 
 import { Typography, Divider as MuiDivider, Button } from "@material-ui/core"
 
@@ -17,15 +17,17 @@ let GearButton: React.FCX<{ gear: MasterGear; onClick?: () => void }> = ({ class
 }
 
 GearButton = styled(GearButton)`
-  width: 400px;
   justify-content: flex-start;
-  overflow: hidden;
-  white-space: nowrap;
 `
 
 const Divider = styled(MuiDivider)`
   flex-grow: 1;
   margin-left: 8px;
+`
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 `
 
 type Props = {
@@ -44,9 +46,11 @@ const CategoryContainer: React.FCX<Props> = ({ className, category, gears, onSel
         </Typography>
         <Divider />
       </div>
-      {gears.map((gear) => (
-        <GearButton key={`gear-${gear.id}`} gear={gear} onClick={() => onSelect && onSelect(gear.id)} />
-      ))}
+      <Grid>
+        {gears.map((gear) => (
+          <GearButton key={`gear-${gear.id}`} gear={gear} onClick={() => onSelect && onSelect(gear.id)} />
+        ))}
+      </Grid>
     </div>
   )
 }

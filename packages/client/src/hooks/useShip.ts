@@ -1,7 +1,7 @@
 import React from "react"
 import { useSelector, useDispatch, shallowEqual } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
-import { kcsimFactory, GearState } from "@fleethub/kcsim"
+import { kcsim, GearState } from "@fleethub/kcsim"
 import { range } from "lodash-es"
 
 import { entitiesSlice, ShipEntity } from "../store"
@@ -64,7 +64,7 @@ export const useShip = (id: EntityId) => {
   const kcShip = React.useMemo(() => {
     if (!entity || !gearEntities) return
 
-    return kcsimFactory.createShip({ ...entity, gears: gearEntities })
+    return kcsim.createShip({ ...entity, gears: gearEntities })
   }, [entity, gearEntities])
 
   const gears = range((kcShip?.equipment.initialSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
