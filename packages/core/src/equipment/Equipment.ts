@@ -6,8 +6,15 @@ type SlotIndex = typeof slotIndexes[number]
 
 type GearIteratee<R> = (gear: Gear, index: SlotIndex) => R
 
+type EquipmentState = {
+  gears: NullableArray<Gear>
+  exslot?: Gear
+  defaultSlots: number[]
+  currentSlots: number[]
+}
+
 export type Equipment = {
-  initialSlots: number[]
+  defaultSlots: number[]
   currentSlots: number[]
 
   forEach: (fn: GearIteratee<void>) => void
@@ -22,8 +29,8 @@ export class EquipmentImpl implements Equipment {
 
   private entries: Array<[Gear, SlotIndex]> = []
 
-  constructor(gears: NullableArray<Gear>, public initialSlots: number[], public currentSlots = initialSlots) {
-    this.size = initialSlots.length
+  constructor(gears: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
+    this.size = defaultSlots.length
 
     slotIndexes.forEach((slotIndex, index) => {
       const gear = gears[index]
