@@ -7,11 +7,6 @@ import { UpdateButton, ClearButton, InfoButton } from "../../../components"
 
 import LevelButton from "./LevelButton"
 
-export const IconButtonGroup = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`
-
 type Props = {
   name: string
   level: number
@@ -26,11 +21,9 @@ const Component: React.FCX<Props> = ({ className, name, level, onLevelChange, on
       <Typography variant="body2" noWrap>
         {name}
       </Typography>
-      <IconButtonGroup>
-        <InfoButton size="small" />
-        <UpdateButton size="small" />
-        <ClearButton size="small" onClick={onRemove} />
-      </IconButtonGroup>
+      <InfoButton size="small" />
+      <UpdateButton size="small" />
+      <ClearButton size="small" onClick={onRemove} />
     </div>
   )
 }
@@ -42,7 +35,7 @@ export default styled(Component)`
   ${LevelButton} {
     height: 24px;
   }
-  ${IconButtonGroup} {
+  ${InfoButton} {
     margin-left: auto;
   }
 `

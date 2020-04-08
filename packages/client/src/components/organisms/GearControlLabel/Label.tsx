@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { Gear, GearState } from "@fleethub/kcsim"
 
-import { GearNameplate, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
+import { Flexbox, GearNameplate, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
 
 type Props = {
   className?: string
@@ -40,26 +40,20 @@ export const Component: React.FC<Props> = ({
   const size = "small"
 
   return (
-    <div className={className} style={style}>
+    <Flexbox className={className} style={style}>
       <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
       <UpdateButton title="変更" size={size} tooltipProps={tooltipProps} onClick={onReselect} />
       <ClearButton title="削除" size={size} tooltipProps={tooltipProps} onClick={onRemove} />
 
       <GearExpSelect size={size} exp={gear.exp} onChange={handleExpChange} />
       <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
-    </div>
+    </Flexbox>
   )
 }
 
 const StyledComponent = styled(Component)`
-  display: flex;
-  align-items: center;
   width: 100%;
   transition: 250ms;
-
-  > * {
-    min-width: 0;
-  }
 
   > :not(${GearNameplate}) {
     flex-shrink: 0;

@@ -13,7 +13,7 @@ import { EquipmentControl, ShipBanner } from "../../../components"
 import { NullableArray } from "../../../utils"
 import { ShipEntity } from "../../../store"
 
-import ShipHeader, { IconButtonGroup } from "./Header"
+import ShipHeader from "./Header"
 import ShipStats from "./ShipStats"
 
 const Content = styled.div`
@@ -75,14 +75,12 @@ const StyledComponent = styled(Component)`
   min-height: ${24 * 7}px;
   min-width: 400px;
 
-  ${IconButtonGroup} {
+  ${ShipHeader} svg {
     opacity: 0;
   }
 
-  :hover {
-    ${IconButtonGroup} {
-      opacity: 1;
-    }
+  :hover ${ShipHeader} svg {
+    opacity: 1;
   }
 `
 
@@ -92,9 +90,9 @@ type ShipCardProps = {
 }
 
 const ShipCard: React.FC<ShipCardProps> = ({ ship, onAdd }) => {
-  const { entity, actions, gears, openGearSelect, kcShip } = useShip(ship)
+  const { actions, gears, openGearSelect, kcShip } = useShip(ship)
 
-  const handleSlotsChange = (slots: number[]) => actions.update({ slots })
+  const handleSlotsChange = React.useCallback((slots: number[]) => actions.update({ slots }), [actions])
 
   if (!kcShip) {
     return <Typography color="error">error</Typography>

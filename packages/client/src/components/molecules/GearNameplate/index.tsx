@@ -1,9 +1,9 @@
 import React from "react"
-import styled, { css, CSSObject } from "styled-components"
+import styled, { css } from "styled-components"
 
 import { Typography } from "@material-ui/core"
 
-import { GearIcon } from "../../../components"
+import { GearIcon, Flexbox } from "../../../components"
 
 type Props = {
   name: string
@@ -14,12 +14,12 @@ type Props = {
 
 export const GearNameplate: React.FCX<Props> = ({ className, name, iconId, size, equippable = true }) => {
   return (
-    <div className={className}>
+    <Flexbox className={className}>
       <GearIcon iconId={iconId} />
       <Typography variant="body2" color={equippable ? "initial" : "secondary"}>
         {name}
       </Typography>
-    </div>
+    </Flexbox>
   )
 }
 
@@ -29,10 +29,6 @@ const smallText = css`
 `
 
 export default styled(GearNameplate)`
-  display: flex;
-  align-items: center;
-  max-width: 100%;
-
   p {
     overflow: hidden;
     white-space: nowrap;
