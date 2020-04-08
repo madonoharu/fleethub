@@ -22,34 +22,22 @@ export type Ship = Omit<PickedShipBase, "id" | "equippable"> &
   }
 
 export class ShipImpl implements Ship {
+  public readonly shipId = this.base.id
+  public readonly sortId = this.base.sortId
+  public readonly shipClass = this.base.shipClass
+  public readonly shipType = this.base.shipType
+  public readonly name = this.base.name
+  public readonly ruby = this.base.ruby
+  public readonly remodelGroup = this.base.remodelGroup
+
+  public readonly is = this.base.is
+
   constructor(
     private base: PickedShipBase,
     private stats: ShipStats,
     public equipment: Equipment,
     public health: Health
   ) {}
-
-  get shipId() {
-    return this.base.id
-  }
-  get sortId() {
-    return this.base.sortId
-  }
-  get shipClass() {
-    return this.base.shipClass
-  }
-  get shipType() {
-    return this.base.shipClass
-  }
-  get name() {
-    return this.base.name
-  }
-  get ruby() {
-    return this.base.ruby
-  }
-  get remodelGroup() {
-    return this.base.remodelGroup
-  }
 
   get level() {
     return this.stats.level
@@ -83,10 +71,6 @@ export class ShipImpl implements Ship {
   }
   get luck() {
     return this.stats.luck
-  }
-
-  get is() {
-    return this.base.is
   }
 
   private isExslot = (index: number) => this.equipment.initialSlots.length <= index
