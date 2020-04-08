@@ -1,4 +1,5 @@
 import { createEntityAdapter, EntitySelectors } from "@reduxjs/toolkit"
+import { DefaultRootState } from "react-redux"
 import { GearState } from "@fleethub/kcsim"
 
 import { Entity, selectId, getUid } from "./entity"
@@ -11,4 +12,6 @@ export const gearToEntity = (state: GearState): GearEntity => {
 
 export const gearsAdapter = createEntityAdapter<GearEntity>({ selectId })
 
-export const gearsSelectors: EntitySelectors<GearEntity> = gearsAdapter.getSelectors((state) => state.entities.gears)
+export const gearsSelectors: EntitySelectors<GearEntity, DefaultRootState> = gearsAdapter.getSelectors(
+  (state) => state.entities.gears
+)

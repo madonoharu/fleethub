@@ -15,15 +15,6 @@ declare module "react-redux" {
 }
 
 declare module "@reduxjs/toolkit" {
-  export type EntityId = number | string
-
-  export interface EntitySelectors<T> {
-    selectIds: (state: StoreState) => EntityId[]
-    selectEntities: (state: StoreState) => Dictionary<T>
-    selectAll: (state: StoreState) => T[]
-    selectTotal: (state: StoreState) => number
-  }
-
   export type AppThunk = ThunkAction<void, StoreState, unknown, Action<string>>
 }
 

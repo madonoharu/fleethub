@@ -6,7 +6,6 @@ import { GearBase } from "../gear"
 import { ShipStats } from "./ShipStats"
 import { ShipBase } from "./MasterShip"
 import { Health } from "./Health"
-import { ShipAttribute } from "./ShipAttribute"
 
 type PickedShipBase = Pick<
   ShipBase,

@@ -1,4 +1,5 @@
 import { createEntityAdapter, EntityId, EntitySelectors } from "@reduxjs/toolkit"
+import { DefaultRootState } from "react-redux"
 import { ShipState } from "@fleethub/kcsim"
 
 import { NullableArray } from "../../utils"
@@ -46,6 +47,6 @@ export const normalizeFleet = (fleetState: FleetState): NormalizedFleet => {
 
 export const fleetsAdapter = createEntityAdapter<FleetEntity>({ selectId })
 
-export const fleetsSelectors: EntitySelectors<FleetEntity> = fleetsAdapter.getSelectors(
+export const fleetsSelectors: EntitySelectors<FleetEntity, DefaultRootState> = fleetsAdapter.getSelectors(
   (state) => state.entities.fleets
 )
