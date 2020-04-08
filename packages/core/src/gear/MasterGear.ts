@@ -1,7 +1,7 @@
 import { GearData, GearCategory2, GearId, GearCategory, GearCategoryKey } from "@fleethub/data"
 import { GearAttribute, createGearAttrs } from "./GearAttribute"
 
-export interface GearBase extends Required<GearData> {
+export interface GearBase extends Omit<Required<GearData>, "id"> {
   attrs: GearAttribute[]
   specialCategory: number
 
@@ -12,7 +12,7 @@ export interface GearBase extends Required<GearData> {
   categoryIn: (...categories: GearCategoryKey[]) => boolean
 }
 
-export default class MasterGear implements GearBase {
+export default class MasterGear implements GearBase, Required<GearData> {
   public readonly id = 0
 
   public readonly category = 0
@@ -44,8 +44,8 @@ export default class MasterGear implements GearBase {
 
   public readonly attrs: GearAttribute[]
 
-  constructor(partial: Partial<GearData>) {
-    Object.assign(this, partial)
+  constructor(data: Partial<GearData>) {
+    Object.assign(this, data)
     this.attrs = createGearAttrs(this)
   }
 

@@ -10,107 +10,45 @@ export type GearState = {
 }
 
 export type Gear = Required<GearState> &
-  Omit<GearBase, "id"> & {
-    is: (attr: GearAttribute) => boolean
-    state: GearState
+  GearBase & {
     deck: DeckGear
   }
 
 export class GearImpl implements Gear {
-  constructor(public state: GearState, private base: GearBase) {}
+  public readonly gearId = this.state.gearId
+  public readonly stars = this.state.stars || 0
+  public readonly exp = this.state.exp || 0
 
-  get gearId() {
-    return this.state.gearId
-  }
-  get stars() {
-    return this.state.stars ?? 0
-  }
-  get exp() {
-    return this.state.exp ?? 0
-  }
+  public readonly name = this.base.name
+  public readonly category = this.base.category
+  public readonly iconId = this.base.iconId
+  public readonly attrs = this.base.attrs
+  public readonly specialCategory = this.base.specialCategory
 
-  get name() {
-    return this.base.name
-  }
-  get category() {
-    return this.base.category
-  }
-  get iconId() {
-    return this.base.iconId
-  }
-  get attrs() {
-    return this.base.attrs
-  }
-  get specialCategory() {
-    return this.base.specialCategory
-  }
+  public readonly categoryIn = this.base.categoryIn
+  public readonly is = this.base.is
+  public readonly in = this.base.in
 
-  get categoryIn() {
-    return this.base.categoryIn
-  }
+  public readonly hp = this.base.hp
+  public readonly firepower = this.base.firepower
+  public readonly armor = this.base.armor
+  public readonly torpedo = this.base.torpedo
+  public readonly antiAir = this.base.antiAir
+  public readonly speed = this.base.speed
+  public readonly bombing = this.base.bombing
+  public readonly asw = this.base.asw
+  public readonly los = this.base.los
+  public readonly luck = this.base.luck
+  public readonly accuracy = this.base.accuracy
+  public readonly evasion = this.base.evasion
+  public readonly antiBomber = this.base.antiBomber
+  public readonly interception = this.base.interception
+  public readonly range = this.base.range
+  public readonly radius = this.base.radius
+  public readonly cost = this.base.cost
+  public readonly improvable = this.base.improvable
 
-  get is() {
-    return this.base.is
-  }
-
-  get in() {
-    return this.base.in
-  }
-
-  get hp() {
-    return this.base.hp
-  }
-  get firepower() {
-    return this.base.firepower
-  }
-  get armor() {
-    return this.base.armor
-  }
-  get torpedo() {
-    return this.base.torpedo
-  }
-  get antiAir() {
-    return this.base.antiAir
-  }
-  get speed() {
-    return this.base.speed
-  }
-  get bombing() {
-    return this.base.bombing
-  }
-  get asw() {
-    return this.base.asw
-  }
-  get los() {
-    return this.base.los
-  }
-  get luck() {
-    return this.base.luck
-  }
-  get accuracy() {
-    return this.base.accuracy
-  }
-  get evasion() {
-    return this.base.evasion
-  }
-  get antiBomber() {
-    return this.base.antiBomber
-  }
-  get interception() {
-    return this.base.interception
-  }
-  get range() {
-    return this.base.range
-  }
-  get radius() {
-    return this.base.radius
-  }
-  get cost() {
-    return this.base.cost
-  }
-  get improvable() {
-    return this.base.improvable
-  }
+  constructor(private state: GearState, private base: GearBase) {}
 
   get deck() {
     const mas = Proficiency.expToLevel(this.exp)
