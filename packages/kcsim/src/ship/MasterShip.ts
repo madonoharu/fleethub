@@ -4,7 +4,7 @@ import {
   ShipType,
   ShipClassKey,
   ShipTypeKey,
-  equippable,
+  equippable as equippableData,
   RemodelGroup,
   ShipId,
 } from "@fleethub/data"
@@ -21,15 +21,26 @@ enum SpeedValue {
 type Equippable = {
   /** 装備カテゴリによる設定 */
   categories: number[]
+  /** 補強増設に装備カテゴリ */
+  exslotCategories: number[]
   /** 補強増設に装備できる追加ID一覧 */
   exslot: number[]
 }
 
 const createEquippable = (shipId: number, shipType: number): Equippable => {
-  const shipTypeEquippable = equippable.shipType.find(({ id }) => id === shipType)
-  const shipEquippable = equippable.ship.find(({ id }) => id === shipId)
+  const shipTypeEquippable = equippableData.shipType.find(({ id }) => id === shipType)
 
-  return { categories: [], exslot: [], ...shipTypeEquippable, ...shipEquippable }
+  const shipEquippable = equippableData.ship.find(({ id }) => id === shipId)
+
+  const exslotCategories = equippableData.exslot
+
+  return {
+    categories: [],
+    exslot: [],
+    ...shipTypeEquippable,
+    ...shipEquippable,
+    exslotCategories,
+  }
 }
 
 export type StatBase = [number, number]
@@ -56,6 +67,9 @@ export interface ShipBase extends RequiredShipData {
   canRemodel: boolean
   rank: number
   remodelGroup: number
+  equippable: Equippable
+
+  is: (attr: ShipAttribute) => boolean
 }
 
 const toStatBase = (stat: ShipData["firepower"] = 0): StatBase => {
@@ -190,6 +204,8 @@ export default class MasterShip implements ShipBase {
   }
 
   public readonly remodelGroup = 0
+
+  public is = (attr: ShipAttribute) => this.attrs.includes(attr)
 
   public shipClassIn = (...keys: ShipClassKey[]) => keys.some((key) => ShipClass[key] === this.shipClass)
 

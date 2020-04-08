@@ -33,8 +33,11 @@ export const toRequiredGearData = (data: Partial<GearData>): Required<GearData> 
 
 export interface GearBase extends Required<GearData> {
   attrs: GearAttribute[]
-  equippableCategory: number
+  specialCategory: number
 
+  gearId: number
+
+  is: (attr: GearAttribute) => boolean
   in: (...attrs: GearAttribute[]) => boolean
   categoryIn: (...categories: GearCategoryKey[]) => boolean
 }
@@ -103,7 +106,11 @@ export default class MasterGear implements GearBase {
     this.attrs = createGearAttrs(this)
   }
 
-  get equippableCategory() {
+  get gearId() {
+    return this.id
+  }
+
+  get specialCategory() {
     switch (this.id) {
       case GearId["試製51cm連装砲"]:
       case GearId["51cm連装砲"]:
