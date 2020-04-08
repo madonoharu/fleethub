@@ -9,10 +9,7 @@ export type GearState = {
   exp?: number
 }
 
-export type Gear = Required<GearState> &
-  GearBase & {
-    deck: DeckGear
-  }
+export type Gear = Readonly<Required<GearState> & GearBase & { deck: DeckGear }>
 
 export class GearImpl implements Gear {
   public readonly gearId = this.state.gearId
