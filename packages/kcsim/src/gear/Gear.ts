@@ -1,6 +1,7 @@
 import { DeckGear } from "../utils"
 import Proficiency from "./Proficiency"
 import { GearBase } from "./MasterGear"
+import { GearAttribute } from "./GearAttribute"
 
 export type GearState = {
   gearId: number
@@ -10,6 +11,7 @@ export type GearState = {
 
 export type Gear = Required<GearState> &
   Omit<GearBase, "id"> & {
+    is: (attr: GearAttribute) => boolean
     state: GearState
     deck: DeckGear
   }
@@ -39,12 +41,16 @@ export class GearImpl implements Gear {
   get attrs() {
     return this.base.attrs
   }
-  get equippableCategory() {
-    return this.base.equippableCategory
+  get specialCategory() {
+    return this.base.specialCategory
   }
 
   get categoryIn() {
     return this.base.categoryIn
+  }
+
+  get is() {
+    return this.base.is
   }
 
   get in() {
