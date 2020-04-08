@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { GearCategory, GearCategoryName } from "@fleethub/data"
+import { GearCategory } from "@fleethub/data"
 import { MasterGear } from "@fleethub/kcsim"
 
 import { AppBar, Toolbar, Checkbox } from "@material-ui/core"
@@ -9,13 +9,8 @@ import { useGearSelect } from "../../../hooks"
 import { Flexbox, SelectButtons, Select } from "../../../components"
 
 import FilterButtons, { nameToFilterFn } from "./FilterButtons"
+import CategorySelect from "./CategorySelect"
 import { defaultComparer, idComparer } from "./comparers"
-
-const getCategoryName = (category: number) => {
-  const name = GearCategoryName[category]
-  if (!name) return "不明"
-  return name
-}
 
 const allCategories = Object.values(GearCategory).filter(
   (category): category is GearCategory => typeof category === "number"
@@ -29,11 +24,6 @@ const createCategoryGearMap = (gears: MasterGear[]) => {
   })
 
   return map
-}
-
-const categoryToName = (category: number) => {
-  if (!category) return "All"
-  return getCategoryName(category)
 }
 
 const getVisibleCategories = (gears: MasterGear[]) => {
@@ -78,14 +68,7 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
           <FilterButtons value={state.filter} onChange={handleFilterChange} />
         </Flexbox>
         <Flexbox alignItems="flex-end">
-          <Select
-            style={{ minWidth: 160 }}
-            MenuProps={{ MenuListProps: { dense: true } }}
-            value={state.category}
-            options={visibleCategories}
-            onChange={handleCategoryChange}
-            getOptionLabel={categoryToName}
-          />
+          <CategorySelect value={state.category} options={visibleCategories} onChange={handleCategoryChange} />
           <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
         </Flexbox>
       </div>

@@ -28,7 +28,7 @@ export enum AirCorpsMode {
   Sortie,
   AirDefense,
   Retreat,
-  Rest
+  Rest,
 }
 
 export type DeckAirCorps = {
