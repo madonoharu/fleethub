@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { kcsim, GearState } from "@fleethub/core"
+import { fhSystem, GearState } from "@fleethub/core"
 
 import { Button } from "@material-ui/core"
 
@@ -18,7 +18,7 @@ const Component: React.FC<Props> = ({ onSelect }) => {
   const handleSelect = (gearId: number) => onSelect && onSelect({ gearId })
   return (
     <div style={{ margin: "0 8px" }}>
-      <FilterBar gears={kcsim.factory.masterGears}>
+      <FilterBar gears={fhSystem.factory.masterGears}>
         {(entries) => <GearList entries={entries} onSelect={handleSelect} />}
       </FilterBar>
     </div>

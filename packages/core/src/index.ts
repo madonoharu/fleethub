@@ -1,10 +1,10 @@
 import { gears, ships } from "@fleethub/data"
 
-import KcsimFactory from "./KcsimFactory"
-import Kcsim from "./Kcsim"
+import Factory from "./Factory"
+import FhSystem from "./FhSystem"
 
-const kcsimFactory = new KcsimFactory({ gears, ships })
-export const kcsim = new Kcsim(kcsimFactory)
+const factory = new Factory({ gears, ships })
+export const fhSystem = new FhSystem(factory)
 
 export * from "./ship"
 export * from "./gear"

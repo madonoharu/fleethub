@@ -1,7 +1,7 @@
 import React from "react"
 import { useSelector, useDispatch, shallowEqual, DefaultRootState } from "react-redux"
 import { EntityId, createSelector } from "@reduxjs/toolkit"
-import { kcsim, GearState } from "@fleethub/core"
+import { fhSystem, GearState } from "@fleethub/core"
 import { range } from "lodash-es"
 
 import { isEntityId, createShallowEqualSelector } from "../utils"
@@ -9,7 +9,7 @@ import { entitiesSlice, ShipEntity, shipsSelectors, gearsSelectors } from "../st
 
 import { useGearSelect } from "./useGearSelect"
 
-const createKcsimShipSelector = (id: EntityId) => {
+const createFhShipSelector = (id: EntityId) => {
   const getShipEntity = (state: DefaultRootState) => shipsSelectors.selectEntities(state)[id]
 
   const getGearEntities = (state: DefaultRootState) =>
@@ -21,7 +21,7 @@ const createKcsimShipSelector = (id: EntityId) => {
 
   return createSelector(getShipEntity, gearEntitiesSelector, (shipEntity, gearEntities) => {
     if (shipEntity === undefined || gearEntities === undefined) return
-    return kcsim.createShip({ ...shipEntity, gears: gearEntities })
+    return fhSystem.createShip({ ...shipEntity, gears: gearEntities })
   })
 }
 
@@ -55,12 +55,12 @@ export const useShip = (id: EntityId) => {
     [id, onSelectOpen]
   )
 
-  const kcShipSelector = React.useCallback(createKcsimShipSelector(id), [id])
-  const kcShip = useSelector(kcShipSelector)
+  const fhShipSelector = React.useCallback(createFhShipSelector(id), [id])
+  const fhShip = useSelector(fhShipSelector)
 
   const entity = useSelector((state) => shipsSelectors.selectEntities(state)[id])
 
-  const gears = range((kcShip?.equipment.initialSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
+  const gears = range((fhShip?.equipment.initialSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
 
-  return { actions, openGearSelect, gears, kcShip }
+  return { actions, openGearSelect, gears, fhShip }
 }

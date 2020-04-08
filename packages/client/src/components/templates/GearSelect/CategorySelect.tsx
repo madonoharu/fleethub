@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
-import { kcsim } from "@fleethub/core"
+import { fhSystem } from "@fleethub/core"
 
 import { AppBar, Toolbar, Checkbox } from "@material-ui/core"
 
@@ -21,7 +21,7 @@ const getCategoryName = (category: number) => {
 
 const getCategoryLabel = (category: number) => {
   const name = getCategoryName(category)
-  const iconId = kcsim.categoryIconIdMap.get(category)
+  const iconId = fhSystem.categoryIconIdMap.get(category)
 
   return <GearNameplate iconId={iconId ?? 0} name={name} />
 }

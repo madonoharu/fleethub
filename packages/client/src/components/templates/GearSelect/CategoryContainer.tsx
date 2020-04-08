@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
-import { kcsim, MasterGear } from "@fleethub/core"
+import { MasterGear } from "@fleethub/core"
 
 import { Typography, Divider as MuiDivider, Button } from "@material-ui/core"
 
