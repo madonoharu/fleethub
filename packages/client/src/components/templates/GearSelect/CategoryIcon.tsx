@@ -1,5 +1,5 @@
 import React from "react"
-import { kcsim } from "@fleethub/kcsim"
+import { kcsim } from "@fleethub/core"
 
 import { GearIcon } from "../../../components"
 import { GearCategory } from "@fleethub/data"

@@ -1,4 +1,4 @@
-import { MasterGear } from "@fleethub/kcsim"
+import { MasterGear } from "@fleethub/core"
 
 type Key = { [K in keyof MasterGear]-?: Required<MasterGear>[K] extends number ? K : never }[keyof MasterGear]
 

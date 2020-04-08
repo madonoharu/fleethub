@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, EntityId, Update } from "@reduxjs/toolkit"
-import { GearState, ShipState, isNonNullable } from "@fleethub/kcsim"
+import { GearState, ShipState, isNonNullable } from "@fleethub/core"
 
 import { normalizeShip, shipsAdapter, shipsSelectors, NormalizedShip, ShipModel } from "./ships"
 import { gearToEntity, gearsAdapter, gearsSelectors, GearEntity } from "./gears"

@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { EntityId } from "@reduxjs/toolkit"
-import { Ship } from "@fleethub/kcsim"
+import { Ship } from "@fleethub/core"
 
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"

@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { kcsim, GearState } from "@fleethub/kcsim"
+import { kcsim, GearState } from "@fleethub/core"
 
 import { Button } from "@material-ui/core"
 

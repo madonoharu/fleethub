@@ -1,5 +1,5 @@
 import { EntityId, createEntityAdapter } from "@reduxjs/toolkit"
-import { GearState } from "@fleethub/kcsim"
+import { GearState } from "@fleethub/core"
 
 import { GearEntity, gearToEntity } from "./gears"
 import { getUid, isNonNullable, NullableArray } from "../../utils"

@@ -1,7 +1,7 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
-import { ShipState } from "@fleethub/kcsim"
+import { ShipState } from "@fleethub/core"
 
 import { entitiesSlice, fleetsSelectors, FleetRole } from "../store"
 import { useShipSelect } from "./useShipSelect"

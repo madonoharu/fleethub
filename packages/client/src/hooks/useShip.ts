@@ -1,27 +1,29 @@
 import React from "react"
-import { useSelector, useDispatch, shallowEqual } from "react-redux"
-import { EntityId } from "@reduxjs/toolkit"
-import { kcsim, GearState } from "@fleethub/kcsim"
+import { useSelector, useDispatch, shallowEqual, DefaultRootState } from "react-redux"
+import { EntityId, createSelector } from "@reduxjs/toolkit"
+import { kcsim, GearState } from "@fleethub/core"
 import { range } from "lodash-es"
 
-import { entitiesSlice, ShipEntity } from "../store"
-import { shipsSelectors, gearsSelectors } from "../store/entities"
+import { isEntityId, createShallowEqualSelector } from "../utils"
+import { entitiesSlice, ShipEntity, shipsSelectors, gearsSelectors } from "../store"
 
 import { useGearSelect } from "./useGearSelect"
 
-const isEntityId = (id: unknown): id is EntityId => {
-  switch (typeof id) {
-    case "string":
-    case "number":
-      return true
-  }
-  return false
-}
+const createKcsimShipSelector = (id: EntityId) => {
+  const getShipEntity = (state: DefaultRootState) => shipsSelectors.selectEntities(state)[id]
 
-const useKcsimShip = (entity?: ShipEntity) =>
-  useSelector((state) => {
-    if (!entity) return
+  const getGearEntities = (state: DefaultRootState) =>
+    getShipEntity(state)?.gears.map((gearId) =>
+      isEntityId(gearId) ? gearsSelectors.selectEntities(state)[gearId] : undefined
+    )
+
+  const gearEntitiesSelector = createShallowEqualSelector(getGearEntities, (entities) => entities)
+
+  return createSelector(getShipEntity, gearEntitiesSelector, (shipEntity, gearEntities) => {
+    if (shipEntity === undefined || gearEntities === undefined) return
+    return kcsim.createShip({ ...shipEntity, gears: gearEntities })
   })
+}
 
 export const useShip = (id: EntityId) => {
   const dispatch = useDispatch()
@@ -53,21 +55,12 @@ export const useShip = (id: EntityId) => {
     [id, onSelectOpen]
   )
 
+  const kcShipSelector = React.useCallback(createKcsimShipSelector(id), [id])
+  const kcShip = useSelector(kcShipSelector)
+
   const entity = useSelector((state) => shipsSelectors.selectEntities(state)[id])
-  const gearEntities = useSelector((state) => {
-    const gears = entity?.gears.map((gearId) =>
-      isEntityId(gearId) ? gearsSelectors.selectEntities(state)[gearId] : undefined
-    )
-    return gears
-  }, shallowEqual)
-
-  const kcShip = React.useMemo(() => {
-    if (!entity || !gearEntities) return
-
-    return kcsim.createShip({ ...entity, gears: gearEntities })
-  }, [entity, gearEntities])
 
   const gears = range((kcShip?.equipment.initialSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
 
-  return { entity, actions, openGearSelect, gears, kcShip }
+  return { actions, openGearSelect, gears, kcShip }
 }

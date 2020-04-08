@@ -3,12 +3,13 @@ import { GearPosition } from "./entities"
 
 export type GearSelectState = {
   position?: GearPosition
-  filter?: string
+  filter: string
   category: number
   abyssal: boolean
 }
 
 const initialState: GearSelectState = {
+  filter: "all",
   category: 0,
   abyssal: false,
 }
