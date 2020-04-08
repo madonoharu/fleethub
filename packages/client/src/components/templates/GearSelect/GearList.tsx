@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { VariableSizeList, ListChildComponentProps } from "react-window"
-import { MasterGear } from "@fleethub/kcsim"
+import { MasterGear } from "@fleethub/core"
 import { GearCategory } from "@fleethub/data"
 
 import { Button, Divider } from "@material-ui/core"

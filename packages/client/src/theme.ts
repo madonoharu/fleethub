@@ -6,6 +6,7 @@ const fontFamily = `
 -apple-system, 
 BlinkMacSystemFont,
 "Segoe UI Regular",
+"Segoe UI",
 Roboto,
 "Hiragino Sans",
 "Noto Sans CJK JP",

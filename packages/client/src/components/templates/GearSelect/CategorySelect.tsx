@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
-import { kcsim } from "@fleethub/kcsim"
+import { kcsim } from "@fleethub/core"
 
 import { AppBar, Toolbar, Checkbox } from "@material-ui/core"
 

@@ -1,8 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { MasterGear } from "@fleethub/kcsim"
-
-import { Button } from "@material-ui/core"
+import { MasterGear } from "@fleethub/core"
 
 import { SelectButtons } from "../../../components"
 import FilterIcon from "./FilterIcon"
@@ -52,7 +50,7 @@ export const filters: GearFilter[] = [
   { icon: "other", fn: (gear) => !basicFilters.some(({ fn }) => fn(gear)) },
 ]
 
-export const nameToFilterFn = (name?: string) => {
+export const filterNameToFn = (name?: string) => {
   const found = filters.find((filter) => filter.icon === name)
   if (found) return found.fn
 
@@ -61,18 +59,18 @@ export const nameToFilterFn = (name?: string) => {
 
 export const getOptionLabel = (filterName: string) => <FilterIcon icon={filterName} />
 
-const filterNames = filters.map(({ icon }) => icon)
-
 type Props = {
-  value?: string
+  value: string
   onChange: (value: string) => void
+  equippableGears: MasterGear[]
 }
 
-const GearFilterButtons: React.FCX<Props> = ({ className, value = "all", onChange }) => {
+const GearFilterButtons: React.FCX<Props> = ({ className, value, onChange, equippableGears }) => {
+  const options = filters.filter((gearFilter) => equippableGears.some(gearFilter.fn)).map(({ icon }) => icon)
   return (
     <SelectButtons
       className={className}
-      options={filterNames}
+      options={options}
       value={value}
       onChange={onChange}
       getOptionLabel={getOptionLabel}

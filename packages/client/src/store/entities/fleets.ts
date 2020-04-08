@@ -1,6 +1,6 @@
 import { createEntityAdapter, EntityId, EntitySelectors } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
-import { ShipState } from "@fleethub/kcsim"
+import { ShipState } from "@fleethub/core"
 
 import { NullableArray } from "../../utils"
 

@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { ShipStat } from "@fleethub/kcsim"
+import { ShipStat } from "@fleethub/core"
 import { useTranslation } from "react-i18next"
 
 import Typography from "@material-ui/core/Typography"

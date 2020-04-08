@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship, ShipStat } from "@fleethub/kcsim"
+import { Ship, ShipStat } from "@fleethub/core"
 
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"

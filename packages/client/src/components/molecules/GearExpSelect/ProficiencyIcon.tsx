@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Img from "gatsby-image"
-import { Proficiency } from "@fleethub/kcsim"
+import { Proficiency } from "@fleethub/core"
 
 import Typography from "@material-ui/core/Typography"
 

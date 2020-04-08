@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Gear, GearState } from "@fleethub/kcsim"
+import { Gear, GearState } from "@fleethub/core"
 
 import { Flexbox, GearNameplate, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
 

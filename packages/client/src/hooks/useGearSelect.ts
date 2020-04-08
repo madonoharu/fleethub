@@ -2,15 +2,17 @@ import React from "react"
 
 import { useCallback, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { GearState, kcsim, MasterGear } from "@fleethub/kcsim"
+import { GearState, kcsim, MasterGear } from "@fleethub/core"
 
 import { gearSelectSlice, entitiesSlice, GearSelectState, GearPosition, shipsSelectors } from "../store"
 
+import { useWhatChanged } from "@simbathesailor/use-what-changed"
+
 const useEquippableFilter = (position?: GearPosition) => {
-  const shipEntity = useSelector((state) => position && shipsSelectors.selectEntities(state)[position.ship])
+  const entity = useSelector((state) => position && shipsSelectors.selectEntities(state)[position.ship])
   const kcShip = React.useMemo(() => {
-    return shipEntity && kcsim.createShip(shipEntity)
-  }, [shipEntity])
+    return entity && kcsim.createShip(entity)
+  }, [entity])
 
   return React.useCallback(
     (gear: MasterGear) => {

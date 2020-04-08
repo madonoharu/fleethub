@@ -1,6 +1,6 @@
 import { createEntityAdapter, EntitySelectors } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
-import { GearState } from "@fleethub/kcsim"
+import { GearState } from "@fleethub/core"
 
 import { Entity, selectId, getUid } from "./entity"
 

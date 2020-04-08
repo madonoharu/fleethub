@@ -1,14 +1,14 @@
 import React from "react"
 import styled from "styled-components"
 import { GearCategory } from "@fleethub/data"
-import { MasterGear } from "@fleethub/kcsim"
+import { MasterGear } from "@fleethub/core"
 
 import { AppBar, Toolbar, Checkbox } from "@material-ui/core"
 
 import { useGearSelect } from "../../../hooks"
 import { Flexbox, SelectButtons, Select } from "../../../components"
 
-import FilterButtons, { nameToFilterFn } from "./FilterButtons"
+import FilterButtons, { filterNameToFn } from "./FilterButtons"
 import CategorySelect from "./CategorySelect"
 import { defaultComparer, idComparer } from "./comparers"
 
@@ -37,7 +37,7 @@ type Props = {
   children: (entries: Array<[GearCategory, MasterGear[]]>) => React.ReactNode
 }
 
-const FilterBar: React.FC<Props> = ({ gears, children }) => {
+const FilterBar: React.FCX<Props> = ({ className, gears, children }) => {
   const { state, setState, equippableFilter } = useGearSelect()
 
   const handleFilterChange = (filter: string) => {
@@ -48,14 +48,14 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
     setState({ category })
   }
 
-  const visibleGears = gears
-    .filter(equippableFilter)
-    .filter(nameToFilterFn(state.filter))
+  const equippableGears = gears
     .filter((gear) => {
       if (state.abyssal) return gear.is("Abyssal")
       return !gear.is("Abyssal")
     })
-    .sort(idComparer)
+    .filter(equippableFilter)
+
+  const visibleGears = equippableGears.filter(filterNameToFn(state.filter)).sort(idComparer)
 
   const visibleCategories = getVisibleCategories(visibleGears)
 
@@ -64,16 +64,16 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
 
   return (
     <>
-      <div>
+      <div className={className}>
         <Flexbox>
-          <FilterButtons value={state.filter} onChange={handleFilterChange} />
+          <FilterButtons value={state.filter} onChange={handleFilterChange} equippableGears={equippableGears} />
         </Flexbox>
-        <Flexbox alignItems="flex-end">
+        <Flexbox>
           <CategorySelect value={state.category} options={visibleCategories} onChange={handleCategoryChange} />
           <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
         </Flexbox>
       </div>
-      <div>{children(entries)}</div>
+      {children(entries)}
     </>
   )
 }

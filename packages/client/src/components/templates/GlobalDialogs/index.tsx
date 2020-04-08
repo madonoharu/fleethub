@@ -1,10 +1,10 @@
 import React from "react"
+import styled from "styled-components"
 
 import { Dialog as MuiDialog, DialogProps } from "@material-ui/core"
 
 import { useShipSelect, useGearSelect } from "../../../hooks"
 import { ShipSelect, GearSelect } from "../../../components"
-import styled from "styled-components"
 
 const Dialog: React.FC<DialogProps> = ({ children, ...rest }) => {
   return (
@@ -23,7 +23,7 @@ const GlobalDialogs: React.FC = () => {
         <ShipSelect />
       </Dialog>
       <Dialog open={gearSelect.open} onClose={gearSelect.onClose}>
-        <GearSelect />
+        {gearSelect.open && <GearSelect />}
       </Dialog>
     </>
   )
