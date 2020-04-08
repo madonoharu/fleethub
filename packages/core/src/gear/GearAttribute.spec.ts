@@ -2,7 +2,36 @@ import { createGearAttrs, GearAttribute } from "./GearAttribute"
 import { GearCategory, GearName, GearData } from "@fleethub/data"
 
 import { getGearData } from "../utils/testUtils"
-import { toRequiredGearData } from "./MasterGear"
+
+const defaultStats: Required<GearData> = {
+  id: 0,
+
+  category: 0,
+  iconId: 0,
+  name: "",
+
+  hp: 0,
+  firepower: 0,
+  armor: 0,
+  torpedo: 0,
+  antiAir: 0,
+  speed: 0,
+  bombing: 0,
+  asw: 0,
+  los: 0,
+  luck: 0,
+  accuracy: 0,
+  evasion: 0,
+  antiBomber: 0,
+  interception: 0,
+  range: 0,
+  radius: 0,
+  cost: 0,
+
+  improvable: false,
+}
+
+const toRequiredGearData = (data: Partial<GearData>): Required<GearData> => ({ ...defaultStats, ...data })
 
 type GearDef = Partial<GearData> | GearName
 
