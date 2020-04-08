@@ -52,10 +52,33 @@ const Unremodeled: ShipMatcher = (ship) => ship.sortId % 10 === 1
 const Kai2: ShipMatcher = (ship) => ship.sortId % 10 >= 6 && ship.sortId % 10 < 9
 
 /**
+ * 軽巡級
+ * 軽巡,雷巡,練巡
+ */
+const LightCruiserClass = shipTypeIn("LightCruiser", "TorpedoCruiser", "TrainingCruiser")
+
+/**
+ * 重巡級
+ * 重巡,航巡
+ */
+const HeavyCruiserClass = shipTypeIn("HeavyCruiser", "AviationCruiser")
+
+/**
  * 戦艦級
  * 戦艦,巡洋戦艦,航空戦艦,超弩級戦艦
  */
 const BattleshipClass = shipTypeIn("Battlecruiser", "Battleship", "AviationBattleship", "SuperDreadnoughts")
+
+/**
+ * 空母級
+ * 軽空母,正規空母,装甲空母
+ */
+const AircraftCarrierClass = shipTypeIn("LightAircraftCarrier", "AircraftCarrier", "ArmoredAircraftCarrier")
+
+/**
+ * 潜水級
+ */
+const SubmarineClass = shipTypeIn("Submarine", "SubmarineAircraftCarrier")
 
 const matchers = {
   Abyssal,
@@ -73,7 +96,11 @@ const matchers = {
   Unremodeled,
   Kai2,
 
+  LightCruiserClass,
+  HeavyCruiserClass,
   BattleshipClass,
+  AircraftCarrierClass,
+  SubmarineClass,
 }
 
 export type ShipAttribute = keyof typeof matchers
