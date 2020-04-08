@@ -61,7 +61,7 @@ const Component: React.FC<ComponentProps> = ({
 
         <EquipmentControl
           currentSlots={ship.equipment.currentSlots}
-          initalSlots={ship.equipment.initialSlots}
+          initalSlots={ship.equipment.defaultSlots}
           gears={gears}
           onAdd={onAddGear}
           onSlotsChange={onSlotsChange}

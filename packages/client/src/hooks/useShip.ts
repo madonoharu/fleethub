@@ -60,7 +60,7 @@ export const useShip = (id: EntityId) => {
 
   const entity = useSelector((state) => shipsSelectors.selectEntities(state)[id])
 
-  const gears = range((fhShip?.equipment.initialSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
+  const gears = range((fhShip?.equipment.defaultSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
 
   return { actions, openGearSelect, gears, fhShip }
 }

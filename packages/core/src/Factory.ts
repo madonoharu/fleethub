@@ -30,15 +30,15 @@ export default class Factory {
     return new GearImpl(state, base)
   }
 
-  private createEquipment = (gearStates: NullableArray<GearState>, initialSlots: number[], currentSlots?: number[]) => {
-    const size = initialSlots.length
+  private createEquipment = (gearStates: NullableArray<GearState>, defaultSlots: number[], currentSlots?: number[]) => {
+    const size = defaultSlots.length
 
     const gears = range(size).map((index) => {
       const gearState = gearStates[index]
       return gearState && this.createGear(gearState)
     })
 
-    return new EquipmentImpl(gears, initialSlots, currentSlots)
+    return new EquipmentImpl(gears, defaultSlots, currentSlots)
   }
 
   public createShip = (state: ShipState) => {

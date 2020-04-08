@@ -73,7 +73,7 @@ export class ShipImpl implements Ship {
     return this.stats.luck
   }
 
-  private isExslot = (index: number) => this.equipment.initialSlots.length <= index
+  private isExslot = (index: number) => this.equipment.defaultSlots.length <= index
 
   public canEquip = (index: number, gear: GearBase) => {
     const { shipId, shipClass } = this
