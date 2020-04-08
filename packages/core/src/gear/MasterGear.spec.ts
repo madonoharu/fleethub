@@ -1,5 +1,5 @@
 import MasterGear from "./MasterGear"
-import { GearData, GearCategory2 } from "@fleethub/data"
+import { GearData, GearCategory2, GearCategory } from "@fleethub/data"
 import { getGearData } from "../utils/testUtils"
 
 describe("MasterGear", () => {
@@ -38,13 +38,15 @@ describe("MasterGear", () => {
     expect(master).toMatchObject(data)
   })
 
-  it("equippableCategory", () => {
-    expect(new MasterGear(getGearData("試製51cm連装砲")).equippableCategory).toBe(GearCategory2.LargeCaliberMainGun2)
-    expect(new MasterGear(getGearData("51cm連装砲")).equippableCategory).toBe(GearCategory2.LargeCaliberMainGun2)
+  it("specialCategory", () => {
+    expect(new MasterGear(getGearData("12.7cm単装砲")).specialCategory).toBe(GearCategory.SmallCaliberMainGun)
 
-    expect(new MasterGear(getGearData("15m二重測距儀+21号電探改二")).equippableCategory).toBe(GearCategory2.LargeRadar2)
+    expect(new MasterGear(getGearData("試製51cm連装砲")).specialCategory).toBe(GearCategory2.LargeCaliberMainGun2)
+    expect(new MasterGear(getGearData("51cm連装砲")).specialCategory).toBe(GearCategory2.LargeCaliberMainGun2)
 
-    expect(new MasterGear(getGearData("試製景雲(艦偵型)")).equippableCategory).toBe(
+    expect(new MasterGear(getGearData("15m二重測距儀+21号電探改二")).specialCategory).toBe(GearCategory2.LargeRadar2)
+
+    expect(new MasterGear(getGearData("試製景雲(艦偵型)")).specialCategory).toBe(
       GearCategory2.CarrierBasedReconnaissanceAircraft2
     )
   })
