@@ -38,7 +38,7 @@ type Props = {
 }
 
 const FilterBar: React.FC<Props> = ({ gears, children }) => {
-  const { state, setState } = useGearSelect()
+  const { state, setState, equippableFilter } = useGearSelect()
 
   const handleFilterChange = (filter: string) => {
     setState({ filter, category: 0 })
@@ -49,6 +49,7 @@ const FilterBar: React.FC<Props> = ({ gears, children }) => {
   }
 
   const visibleGears = gears
+    .filter(equippableFilter)
     .filter(nameToFilterFn(state.filter))
     .filter((gear) => {
       if (state.abyssal) return gear.is("Abyssal")
