@@ -90,17 +90,17 @@ type ShipCardProps = {
 }
 
 const ShipCard: React.FC<ShipCardProps> = ({ ship, onAdd }) => {
-  const { actions, gears, openGearSelect, kcShip } = useShip(ship)
+  const { actions, gears, openGearSelect, fhShip } = useShip(ship)
 
   const handleSlotsChange = React.useCallback((slots: number[]) => actions.update({ slots }), [actions])
 
-  if (!kcShip) {
+  if (!fhShip) {
     return <Typography color="error">error</Typography>
   }
 
   return (
     <StyledComponent
-      ship={kcShip}
+      ship={fhShip}
       gears={gears}
       onAddGear={openGearSelect}
       onSlotsChange={handleSlotsChange}

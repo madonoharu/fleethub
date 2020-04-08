@@ -6,16 +6,16 @@ import { MasterShip, EquipmentState, ShipState, createShip } from "./ship"
 import { EquipmentImpl } from "./equipment"
 import { NullableArray } from "./utils"
 
-export type KcsimRawData = {
+export type FactoryRawData = {
   gears: GearData[]
   ships: ShipData[]
 }
 
-export default class KcsimFactory {
+export default class Factory {
   public masterGears: MasterGear[]
   public masterShips: MasterShip[]
 
-  constructor(data: KcsimRawData) {
+  constructor(data: FactoryRawData) {
     this.masterGears = data.gears.map((raw) => new MasterGear(raw))
     this.masterShips = data.ships.map((raw) => new MasterShip(raw))
   }
