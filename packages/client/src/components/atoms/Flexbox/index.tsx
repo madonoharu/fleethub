@@ -1,9 +1,10 @@
 import React from "react"
-import Box, { BoxProps } from "@material-ui/core/Box"
+import styled from "styled-components"
 
-const Flexbox = React.forwardRef<{}, BoxProps>((props, ref) => {
-  const boxProps = { ref, display: "flex", alignItems: "center", ...props } as any
-  return <Box {...boxProps} />
-})
-
-export default Flexbox
+export default styled.div`
+  display: flex;
+  align-items: center;
+  > * {
+    min-width: 0;
+  }
+`

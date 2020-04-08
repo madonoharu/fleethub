@@ -55,7 +55,7 @@ type Props = {
   disabled?: boolean
 }
 
-const Component: React.FC<Props> = ({ className, current, inital, onChange }) => {
+const SlotSizeButton: React.FC<Props> = ({ className, current, inital, onChange }) => {
   const { onOpen, ...hendler } = useOpen()
 
   if (current === undefined || inital === undefined) {
@@ -80,9 +80,7 @@ const Component: React.FC<Props> = ({ className, current, inital, onChange }) =>
   )
 }
 
-const StyledComponent = styled(Component)`
-  display: flex;
-  align-items: center;
+export default styled(SlotSizeButton)`
   justify-content: flex-end;
   padding: 0 4px;
   width: 24px;
@@ -93,5 +91,3 @@ const StyledComponent = styled(Component)`
     return palette.text.primary
   }};
 `
-
-export default StyledComponent
