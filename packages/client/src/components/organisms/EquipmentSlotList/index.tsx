@@ -1,19 +1,9 @@
 import React from "react"
-import { EntityId } from "@reduxjs/toolkit"
 import styled from "styled-components"
 
-import { NullableArray } from "../../../utils"
-import { GearIndex } from "../../../store"
+import SlotListItem, { Props as SlotListItemProps } from "./SlotListItem"
 
-import SlotListItem from "./SlotListItem"
-
-type Props = {
-  currentSlots: number[]
-  initalSlots: number[]
-  gears: NullableArray<EntityId>
-  onAdd: (index: GearIndex) => void
-  onSlotsChange: (slots: number[]) => void
-}
+type Props = Omit<SlotListItemProps, "index">
 
 const EquipmentControl: React.FCX<Props> = ({ className, ...props }) => {
   return (
