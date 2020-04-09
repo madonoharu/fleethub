@@ -4,7 +4,7 @@ import styled from "styled-components"
 
 import Button from "@material-ui/core/Button"
 
-import { GearLabel, Flexbox } from "../../../components"
+import { GearLabel, Flexbox } from "../.."
 import { NullableArray } from "../../../utils"
 import { GearIndex } from "../../../store"
 
@@ -19,9 +19,9 @@ type Props = {
   onSlotsChange: (slots: number[]) => void
 }
 
-type SlotGearProps = Props & { index: number }
+type SlotListItemProps = Props & { index: number }
 
-const SlotGear: React.FCX<SlotGearProps> = ({
+const SlotListItem: React.FCX<SlotListItemProps> = ({
   className,
   index,
   currentSlots,
@@ -53,6 +53,4 @@ const SlotGear: React.FCX<SlotGearProps> = ({
   )
 }
 
-export default styled(SlotGear)`
-  height: 24px;
-`
+export default SlotListItem

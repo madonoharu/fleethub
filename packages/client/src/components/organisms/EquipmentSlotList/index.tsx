@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { NullableArray } from "../../../utils"
 import { GearIndex } from "../../../store"
 
-import EquipmentSlot from "./EquipmentSlot"
+import SlotListItem from "./SlotListItem"
 
 type Props = {
   currentSlots: number[]
@@ -19,7 +19,7 @@ const EquipmentControl: React.FCX<Props> = ({ className, ...props }) => {
   return (
     <div className={className}>
       {props.gears.map((gear, index) => (
-        <EquipmentSlot key={index} index={index} {...props} />
+        <SlotListItem key={index} index={index} {...props} />
       ))}
     </div>
   )
@@ -27,6 +27,10 @@ const EquipmentControl: React.FCX<Props> = ({ className, ...props }) => {
 
 const Styled = styled(EquipmentControl)`
   width: 100%;
+
+  > * {
+    height: 24px;
+  }
 `
 
 export default React.memo(Styled)

@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box"
 import Paper from "@material-ui/core/Paper"
 
 import { useShip } from "../../../hooks"
-import { EquipmentControl, ShipBanner } from "../../../components"
+import { EquipmentSlotList, ShipBanner } from "../../../components"
 import { NullableArray } from "../../../utils"
 import { ShipEntity } from "../../../store"
 
@@ -59,7 +59,7 @@ const Component: React.FC<ComponentProps> = ({
           <ShipStats ship={ship} onUpdate={onUpdate} />
         </Box>
 
-        <EquipmentControl
+        <EquipmentSlotList
           currentSlots={ship.equipment.currentSlots}
           initalSlots={ship.equipment.defaultSlots}
           gears={gears}

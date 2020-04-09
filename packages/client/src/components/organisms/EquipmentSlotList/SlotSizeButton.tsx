@@ -1,13 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import Box from "@material-ui/core/Box"
-import Dialog from "@material-ui/core/Dialog"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import DialogContent from "@material-ui/core/DialogContent"
-import Slider from "@material-ui/core/Slider"
-import Button from "@material-ui/core/Button"
-import Tooltip from "@material-ui/core/Tooltip"
+import { Box, Slider, Button, Tooltip, Dialog, DialogTitle, DialogContent } from "@material-ui/core"
 import BuildIcon from "@material-ui/icons/Build"
 
 import { NumberInput } from "../../../components"
