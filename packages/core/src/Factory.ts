@@ -1,8 +1,7 @@
 import { GearData, ShipData } from "@fleethub/data"
-import { range } from "lodash-es"
 
 import { MasterGear, GearState, GearImpl } from "./gear"
-import { MasterShip, EquipmentState, ShipState, createShip } from "./ship"
+import { MasterShip, ShipState, createShip } from "./ship"
 import { EquipmentImpl } from "./equipment"
 import { NullableArray } from "./utils"
 
@@ -31,13 +30,7 @@ export default class Factory {
   }
 
   private createEquipment = (gearStates: NullableArray<GearState>, defaultSlots: number[], currentSlots?: number[]) => {
-    const size = defaultSlots.length
-
-    const gears = range(size).map((index) => {
-      const gearState = gearStates[index]
-      return gearState && this.createGear(gearState)
-    })
-
+    const gears = gearStates.map((state) => state && this.createGear(state))
     return new EquipmentImpl(gears, defaultSlots, currentSlots)
   }
 

@@ -7,19 +7,16 @@ import { ShipBase } from "./MasterShip"
 import { createShipStats, ModernizationRecord, ShipStats } from "./ShipStats"
 import { HealthImpl } from "./Health"
 
-export type EquipmentState = {
-  gears?: NullableArray<GearState>
-  slots?: number[]
-}
-
 export type ShipState = {
   shipId: number
 
   level?: number
   morale?: number
   currentHp?: number
-} & ModernizationRecord &
-  EquipmentState
+
+  gears?: NullableArray<GearState>
+  slots?: number[]
+} & ModernizationRecord
 
 export const createShip = (state: ShipState, base: ShipBase, equipment: Equipment) => {
   const { level = 99, currentHp } = state
