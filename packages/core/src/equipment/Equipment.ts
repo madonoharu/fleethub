@@ -1,17 +1,7 @@
 import { Gear } from "../gear"
 import { NullableArray, PickByValue } from "../utils"
 
-const slotIndexes = ["slot1", "slot2", "slot3", "slot4", "slot5", "exslot"] as const
-type SlotIndex = typeof slotIndexes[number]
-
-type GearIteratee<R> = (gear: Gear, index: SlotIndex) => R
-
-type EquipmentState = {
-  gears: NullableArray<Gear>
-  exslot?: Gear
-  defaultSlots: number[]
-  currentSlots: number[]
-}
+type GearIteratee<R> = (gear: Gear, index: number) => R
 
 export type Equipment = {
   defaultSlots: number[]
@@ -27,15 +17,12 @@ export type Equipment = {
 export class EquipmentImpl implements Equipment {
   public readonly size: number
 
-  private entries: Array<[Gear, SlotIndex]> = []
+  private entries: Array<[Gear, number]> = []
 
   constructor(gears: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
     this.size = defaultSlots.length
-
-    slotIndexes.forEach((slotIndex, index) => {
-      const gear = gears[index]
-      const inExslot = index >= this.size
-      if (gear) this.entries.push([gear, inExslot ? "exslot" : slotIndex])
+    gears.forEach((gear, index) => {
+      if (gear) this.entries.push([gear, index])
     })
   }
 
