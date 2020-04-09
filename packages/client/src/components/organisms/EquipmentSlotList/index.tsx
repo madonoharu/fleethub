@@ -5,7 +5,7 @@ import SlotListItem, { Props as SlotListItemProps } from "./SlotListItem"
 
 type Props = Omit<SlotListItemProps, "index">
 
-const EquipmentControl: React.FCX<Props> = ({ className, ...props }) => {
+const EquipmentSlotList: React.FCX<Props> = ({ className, ...props }) => {
   return (
     <div className={className}>
       {props.gears.map((gear, index) => (
@@ -15,7 +15,7 @@ const EquipmentControl: React.FCX<Props> = ({ className, ...props }) => {
   )
 }
 
-const Styled = styled(EquipmentControl)`
+const Styled = styled(EquipmentSlotList)`
   width: 100%;
 
   > * {
