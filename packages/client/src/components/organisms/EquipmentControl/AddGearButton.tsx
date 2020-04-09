@@ -8,7 +8,7 @@ type Props = {
   onClick?: () => void
 }
 
-const Component: React.FCX<Props> = ({ className, onClick }) => {
+const AddGearButton: React.FCX<Props> = ({ className, onClick }) => {
   return (
     <Button className={className} onClick={onClick}>
       <AddIcon fontSize="small" />
@@ -16,7 +16,7 @@ const Component: React.FCX<Props> = ({ className, onClick }) => {
   )
 }
 
-const StyledComponent = styled(Component)`
+export default styled(AddGearButton)`
   height: 100%;
   width: 100%;
   padding: 0;
@@ -26,5 +26,3 @@ const StyledComponent = styled(Component)`
     color: ${(props) => props.theme.palette.action.active};
   }
 `
-
-export default StyledComponent
