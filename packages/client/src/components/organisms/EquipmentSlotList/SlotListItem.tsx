@@ -11,7 +11,9 @@ import { GearIndex } from "../../../store"
 import SlotSizeButton from "./SlotSizeButton"
 import AddGearButton from "./AddGearButton"
 
-type Props = {
+export type Props = {
+  index: number
+
   currentSlots: number[]
   initalSlots: number[]
   gears: NullableArray<EntityId>
@@ -19,9 +21,7 @@ type Props = {
   onSlotsChange: (slots: number[]) => void
 }
 
-type SlotListItemProps = Props & { index: number }
-
-const SlotListItem: React.FCX<SlotListItemProps> = ({
+const SlotListItem: React.FCX<Props> = ({
   className,
   index,
   currentSlots,
