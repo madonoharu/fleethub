@@ -29,11 +29,10 @@ export const useGearSelect = () => {
 
   const open = Boolean(state.position)
 
-  const { setState, onOpen, onClose } = useMemo(() => {
+  const { setState, onClose } = useMemo(() => {
     const setState = (state: Partial<GearSelectState>) => dispatch(gearSelectSlice.actions.set(state))
-    const onOpen = setState
     const onClose = () => setState({ position: undefined })
-    return { setState, onOpen, onClose }
+    return { setState, onClose }
   }, [dispatch])
 
   const onSelect = useCallback(
@@ -49,5 +48,5 @@ export const useGearSelect = () => {
 
   const equippableFilter = useEquippableFilter(state.position)
 
-  return { state, setState, open, onOpen, onClose, onSelect, equippableFilter }
+  return { state, setState, open, onClose, onSelect, equippableFilter }
 }

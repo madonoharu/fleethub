@@ -4,6 +4,8 @@ import { NullableArray, PickByValue } from "../utils"
 type GearIteratee<R> = (gear: Gear, index: number) => R
 
 export type Equipment = {
+  size: number
+
   defaultSlots: number[]
   currentSlots: number[]
 
@@ -20,7 +22,8 @@ export class EquipmentImpl implements Equipment {
   private entries: Array<[Gear, number]> = []
 
   constructor(gears: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
-    this.size = defaultSlots.length
+    this.size = defaultSlots.length + 1
+
     gears.forEach((gear, index) => {
       if (gear) this.entries.push([gear, index])
     })
