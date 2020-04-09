@@ -1,13 +1,13 @@
 import React from "react"
 import { useSelector, useDispatch, shallowEqual, DefaultRootState } from "react-redux"
 import { EntityId, createSelector } from "@reduxjs/toolkit"
-import { fhSystem, GearState } from "@fleethub/core"
+import { fhSystem, GearState, NullableArray } from "@fleethub/core"
 import { range } from "lodash-es"
 
 import { isEntityId, createShallowEqualSelector } from "../utils"
-import { entitiesSlice, ShipEntity, shipsSelectors, gearsSelectors } from "../store"
+import { entitiesSlice, ShipEntity, shipsSelectors, gearsSelectors, gearSelectSlice } from "../store"
 
-import { useGearSelect } from "./useGearSelect"
+import { useWhatChanged } from "@simbathesailor/use-what-changed"
 
 const createFhShipSelector = (id: EntityId) => {
   const getShipEntity = (state: DefaultRootState) => shipsSelectors.selectEntities(state)[id]
@@ -30,10 +30,6 @@ export const useShip = (id: EntityId) => {
 
   const actions = React.useMemo(
     () => ({
-      createGear: (index: number, gear: GearState) => {
-        const position = { ship: id, index }
-        dispatch(entitiesSlice.actions.createGear({ ...position, gear }))
-      },
       update: (changes: Partial<ShipEntity>) => {
         dispatch(entitiesSlice.actions.updateShip({ id, changes }))
       },
@@ -43,24 +39,24 @@ export const useShip = (id: EntityId) => {
       remove: () => {
         dispatch(entitiesSlice.actions.removeShip(id))
       },
+
+      openGearSelect: (index: number) => {
+        const position = { ship: id, index }
+        dispatch(gearSelectSlice.actions.set({ position }))
+      },
     }),
     [dispatch, id]
-  )
-
-  const onSelectOpen = useGearSelect().onOpen
-  const openGearSelect = React.useCallback(
-    (index: number) => {
-      onSelectOpen({ position: { ship: id, index } })
-    },
-    [id, onSelectOpen]
   )
 
   const fhShipSelector = React.useCallback(createFhShipSelector(id), [id])
   const fhShip = useSelector(fhShipSelector)
 
-  const entity = useSelector((state) => shipsSelectors.selectEntities(state)[id])
+  const gears = useSelector((state) => {
+    const entityGears = shipsSelectors.selectEntities(state)[id]?.gears
+    if (!fhShip || !entityGears) return []
 
-  const gears = range((fhShip?.equipment.defaultSlots.length ?? 0) + 1).map((index) => entity?.gears[index])
+    return range(fhShip.equipment.size).map((index) => entityGears[index])
+  }, shallowEqual)
 
-  return { actions, openGearSelect, gears, fhShip }
+  return { actions, gears, fhShip }
 }

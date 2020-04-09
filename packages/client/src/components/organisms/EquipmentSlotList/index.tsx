@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 
 import SlotListItem, { Props as SlotListItemProps } from "./SlotListItem"
-
 type Props = Omit<SlotListItemProps, "index">
 
 const EquipmentSlotList: React.FCX<Props> = ({ className, ...props }) => {
@@ -23,4 +22,4 @@ const Styled = styled(EquipmentSlotList)`
   }
 `
 
-export default React.memo(Styled)
+export default Styled
