@@ -10,17 +10,26 @@ import GearLabel from "./GearLabel"
 
 type GearLabelContainerProps = {
   gear: EntityId
+  equippable?: boolean
   onReselect: () => void
 }
 
-const GearLabelContainer: React.FC<GearLabelContainerProps> = ({ gear, onReselect }) => {
+const GearLabelContainer: React.FC<GearLabelContainerProps> = ({ gear, equippable, onReselect }) => {
   const { kcGear, actions } = useGear(gear)
 
   if (!kcGear) {
     return <Typography color="error">error</Typography>
   }
 
-  return <GearLabel gear={kcGear} onUpdate={actions.update} onRemove={actions.remove} onReselect={onReselect} />
+  return (
+    <GearLabel
+      gear={kcGear}
+      equippable={equippable}
+      onUpdate={actions.update}
+      onRemove={actions.remove}
+      onReselect={onReselect}
+    />
+  )
 }
 
 export default GearLabelContainer
