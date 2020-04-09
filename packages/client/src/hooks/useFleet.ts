@@ -1,14 +1,11 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
-import { ShipState } from "@fleethub/core"
 
-import { entitiesSlice, fleetsSelectors, FleetRole } from "../store"
-import { useShipSelect } from "./useShipSelect"
+import { entitiesSlice, shipSelectSlice, fleetsSelectors, FleetRole } from "../store"
 
 export const useFleet = (id: EntityId) => {
   const dispatch = useDispatch()
-  const shipSelect = useShipSelect()
   const entity = useSelector((state) => fleetsSelectors.selectEntities(state)[id])
 
   const actions = React.useMemo(
@@ -19,19 +16,14 @@ export const useFleet = (id: EntityId) => {
       update: (changes: Partial<{ name: string }>) => {
         dispatch(entitiesSlice.actions.updateFleet({ id, changes }))
       },
-      createShip: (role: FleetRole, index: number, ship: ShipState) => {
-        dispatch(entitiesSlice.actions.createShip({ fleet: id, role, index, ship }))
+
+      openShipSelect: (role: FleetRole, index: number) => {
+        const position = { fleet: id, role, index }
+        dispatch(shipSelectSlice.actions.set({ position }))
       },
     }),
     [dispatch, id]
   )
 
-  const openShipSelect = React.useCallback(
-    (role: FleetRole, index: number) => {
-      shipSelect.onOpen({ position: { fleet: id, role, index } })
-    },
-    [id, shipSelect]
-  )
-
-  return { entity, actions, openShipSelect }
+  return { entity, actions }
 }

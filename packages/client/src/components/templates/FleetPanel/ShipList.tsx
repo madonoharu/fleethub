@@ -8,15 +8,16 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import { ShipControlCard, RemoveButton } from "../../."
 import { useFleet, useRenderCount } from "../../../hooks"
 import { NullableArray } from "../../../utils"
-import { ShipPosition } from "../../../store"
+import { ShipPosition, FleetRole } from "../../../store"
 
 type Props = {
   ships: NullableArray<EntityId>
-  onAdd: ReturnType<typeof useFleet>["openShipSelect"]
+  onAdd: (role: FleetRole, index: number) => void
 } & Omit<ShipPosition, "index">
 
 const ShipList: React.FCX<Props> = React.memo(({ className, fleet, role, ships, onAdd }) => {
   useRenderCount()
+  console.log(1)
   return (
     <div className={className}>
       {ships.map((ship, index) => (
