@@ -18,7 +18,7 @@ type Props = {
 }
 
 const FleetPanel: React.FC<Props> = ({ className, uid }) => {
-  const { entity, actions, openShipSelect } = useFleet(uid)
+  const { entity, actions } = useFleet(uid)
 
   if (!entity) {
     return <Typography color="error">error</Typography>
@@ -36,9 +36,9 @@ const FleetPanel: React.FC<Props> = ({ className, uid }) => {
       </div>
       <div>
         <Typography>連合第一</Typography>
-        <ShipList fleet={uid} ships={entity.main} role="main" onAdd={openShipSelect} />
+        <ShipList fleet={uid} ships={entity.main} role="main" onAdd={actions.openShipSelect} />
         <Typography>連合第二</Typography>
-        <ShipList fleet={uid} ships={entity.escort} role="escort" onAdd={openShipSelect} />
+        <ShipList fleet={uid} ships={entity.escort} role="escort" onAdd={actions.openShipSelect} />
       </div>
     </Container>
   )
