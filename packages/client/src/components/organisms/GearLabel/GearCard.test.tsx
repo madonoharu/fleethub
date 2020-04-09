@@ -18,7 +18,7 @@ const mockAdd = jest.fn()
 
 describe("GearCard", () => {
   it("renders correctly", () => {
-    const tree = create(<GearControlLabel gear="" onAdd={mockAdd} />).toJSON()
+    const tree = create(<GearControlLabel gear="" onReselect={mockAdd} />).toJSON()
 
     expect(useGear).toHaveBeenCalled()
     console.log(tree)

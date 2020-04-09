@@ -16,9 +16,7 @@ type Props = {
   onReselect?: () => void
 }
 
-const tooltipProps = { placement: "top" } as const
-
-export const Component: React.FC<Props> = ({
+export const GearLabel: React.FC<Props> = ({
   className,
   style,
 
@@ -42,8 +40,8 @@ export const Component: React.FC<Props> = ({
   return (
     <Flexbox className={className} style={style}>
       <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
-      <UpdateButton title="変更" size={size} tooltipProps={tooltipProps} onClick={onReselect} />
-      <ClearButton title="削除" size={size} tooltipProps={tooltipProps} onClick={onRemove} />
+      <UpdateButton title="変更" size={size} onClick={onReselect} />
+      <ClearButton title="削除" size={size} onClick={onRemove} />
 
       <GearExpSelect size={size} exp={gear.exp} onChange={handleExpChange} />
       <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
@@ -51,7 +49,7 @@ export const Component: React.FC<Props> = ({
   )
 }
 
-const StyledComponent = styled(Component)`
+const Styled = styled(GearLabel)`
   width: 100%;
   transition: 250ms;
 
@@ -79,4 +77,4 @@ const StyledComponent = styled(Component)`
   }
 `
 
-export default StyledComponent
+export default Styled

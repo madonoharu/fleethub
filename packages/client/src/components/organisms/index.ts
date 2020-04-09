@@ -1,4 +1,4 @@
-export { default as GearControlLabel } from "./GearControlLabel"
+export { default as GearLabel } from "./GearLabel"
 export { default as ShipControlCard } from "./ShipControlCard"
 export { default as EquipmentControl } from "./EquipmentControl"
 

@@ -1,0 +1,58 @@
+import React from "react"
+import { EntityId } from "@reduxjs/toolkit"
+import styled from "styled-components"
+
+import Button from "@material-ui/core/Button"
+
+import { GearLabel, Flexbox } from "../../../components"
+import { NullableArray } from "../../../utils"
+import { GearIndex } from "../../../store"
+
+import SlotSizeButton from "./SlotSizeButton"
+import AddGearButton from "./AddGearButton"
+
+type Props = {
+  currentSlots: number[]
+  initalSlots: number[]
+  gears: NullableArray<EntityId>
+  onAdd: (index: GearIndex) => void
+  onSlotsChange: (slots: number[]) => void
+}
+
+type SlotGearProps = Props & { index: number }
+
+const SlotGear: React.FCX<SlotGearProps> = ({
+  className,
+  index,
+  currentSlots,
+  initalSlots,
+  gears,
+  onAdd,
+  onSlotsChange,
+}) => {
+  const handleSlotChange = React.useCallback(
+    (value: number) => {
+      const next = currentSlots.concat()
+      next[index] = value
+      onSlotsChange(next)
+    },
+    [index, currentSlots, onSlotsChange]
+  )
+
+  const handleAdd = React.useCallback(() => onAdd(index), [index, onAdd])
+
+  const gear = gears[index]
+  const currentSlot = currentSlots[index]
+  const initalSlot = initalSlots[index]
+
+  return (
+    <Flexbox className={className}>
+      <SlotSizeButton current={currentSlot} inital={initalSlot} onChange={handleSlotChange} />
+      {gear ? <GearLabel gear={gear} onReselect={handleAdd} /> : <AddGearButton onClick={handleAdd} />}
+    </Flexbox>
+  )
+}
+
+export default styled(SlotGear)`
+  height: 24px;
+`
