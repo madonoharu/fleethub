@@ -2,9 +2,10 @@ import React from "react"
 
 import Button from "@material-ui/core/Button"
 
-import { ships } from "@fleethub/data"
 import { ShipBanner } from "../../."
-import { useShipSelect } from "../../../hooks"
+import { useShipSelect, useFhSystem } from "../../../hooks"
+
+import FilterBar from "./FilterBar"
 
 type Props = {
   onSelect?: (shipId: number) => void
@@ -18,16 +19,11 @@ const Component: React.FC<Props> = ({ onSelect }) => {
     [onSelect]
   )
 
+  const ships = useFhSystem().factory.masterShips
+
   return (
     <>
-      {ships
-        .filter((ship) => ship.name.length > 12)
-        .map((ship) => (
-          <Button key={ship.id} id={ship.id.toString()} onClick={handleSelect}>
-            {ship.name}
-            <ShipBanner shipId={ship.id} />
-          </Button>
-        ))}
+      <FilterBar ships={ships} />
     </>
   )
 }
