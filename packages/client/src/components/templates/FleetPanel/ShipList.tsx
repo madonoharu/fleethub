@@ -5,8 +5,7 @@ import styled from "styled-components"
 import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
 
-import { ShipControlCard, RemoveButton } from "../../."
-import { useFleet, useRenderCount } from "../../../hooks"
+import { ShipControlCard, RemoveButton } from "../../../components"
 import { NullableArray } from "../../../utils"
 import { ShipPosition, FleetRole } from "../../../store"
 
@@ -16,8 +15,6 @@ type Props = {
 } & Omit<ShipPosition, "index">
 
 const ShipList: React.FCX<Props> = React.memo(({ className, fleet, role, ships, onAdd }) => {
-  useRenderCount()
-  console.log(1)
   return (
     <div className={className}>
       {ships.map((ship, index) => (

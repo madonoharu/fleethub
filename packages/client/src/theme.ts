@@ -32,6 +32,9 @@ const muiTheme = createMuiTheme({
   },
   palette,
   props: {
+    MuiContainer: {
+      maxWidth: "md",
+    },
     MuiLink: {
       target: "_blank",
       rel: "noopener",

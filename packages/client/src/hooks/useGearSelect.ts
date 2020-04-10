@@ -2,11 +2,9 @@ import React from "react"
 
 import { useCallback, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { GearState, fhSystem, MasterGear } from "@fleethub/core"
+import { GearState, fhSystem, GearBase } from "@fleethub/core"
 
 import { gearSelectSlice, entitiesSlice, GearSelectState, GearPosition, shipsSelectors } from "../store"
-
-import { useWhatChanged } from "@simbathesailor/use-what-changed"
 
 const useEquippableFilter = (position?: GearPosition) => {
   const entity = useSelector((state) => position && shipsSelectors.selectEntities(state)[position.ship])
@@ -15,7 +13,7 @@ const useEquippableFilter = (position?: GearPosition) => {
   }, [entity])
 
   return React.useCallback(
-    (gear: MasterGear) => {
+    (gear: GearBase) => {
       if (!position || !fhShip) return true
       return fhShip.canEquip(position.index, gear)
     },
@@ -38,7 +36,6 @@ export const useGearSelect = () => {
   const onSelect = useCallback(
     (gear: GearState) => {
       if (!state.position) return
-
       dispatch(entitiesSlice.actions.createGear({ ...state.position, gear }))
       onClose()
     },

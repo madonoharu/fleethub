@@ -1,18 +1,12 @@
 import React from "react"
 import styled from "styled-components"
-import { GearCategory, GearCategoryName } from "@fleethub/data"
+import { GearCategoryName } from "@fleethub/data"
 import { fhSystem } from "@fleethub/core"
 
-import { AppBar, Toolbar, Checkbox } from "@material-ui/core"
-
-import { useGearSelect } from "../../../hooks"
-import { Flexbox, Text, Select, GearNameplate } from "../../../components"
-
-import CategoryIcon from "./CategoryIcon"
-import { defaultComparer, idComparer } from "./comparers"
+import { Select, GearNameplate } from "../../../components"
 
 const getCategoryName = (category: number) => {
-  if (!category) return "All"
+  if (!category) return "カテゴリ"
   const name = GearCategoryName[category]
   if (!name) return "不明"
 
@@ -23,10 +17,10 @@ const getCategoryLabel = (category: number) => {
   const name = getCategoryName(category)
   const iconId = fhSystem.categoryIconIdMap.get(category)
 
-  return <GearNameplate iconId={iconId ?? 0} name={name} />
+  return <GearNameplate size="small" iconId={iconId ?? 0} name={name} />
 }
 
-const MenuProps = { MenuListProps: { dense: true } }
+const menuProps = { style: { maxHeight: 400 } }
 
 type Props = {
   value: number
@@ -34,8 +28,11 @@ type Props = {
   onChange: (value: number) => void
 }
 
-const CategorySelect: React.FC<Props> = (props) => {
-  return <Select style={{ minWidth: 160 }} MenuProps={MenuProps} getOptionLabel={getCategoryLabel} {...props} />
+const CategorySelect: React.FCX<Props> = (props) => {
+  return <Select MenuProps={menuProps} getOptionLabel={getCategoryLabel} {...props} />
 }
 
-export default CategorySelect
+export default styled(CategorySelect)`
+  width: 140px;
+  height: 36px;
+`
