@@ -64,7 +64,7 @@ export interface RequiredShipData extends Required<ShipData> {
 
 export interface ShipBase extends RequiredShipData {
   attrs: ShipAttribute[]
-  canRemodel: boolean
+  isCommonly: boolean
   rank: number
   remodelGroup: number
   equippable: Equippable
@@ -80,6 +80,14 @@ const toStatBase = (stat: ShipData["firepower"] = 0): StatBase => {
   }
   return stat
 }
+
+const toShipBaseGears = (gears: ShipData["gears"] = []) =>
+  gears.map((gear) => {
+    if (typeof gear === "number") {
+      return { gearId: gear }
+    }
+    return gear
+  })
 
 export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData => ({
   id: partial.id ?? 0,
@@ -122,91 +130,51 @@ export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData
 })
 
 export default class MasterShip implements ShipBase {
-  public readonly id: number
+  public readonly id = this.data.id || 0
 
-  public readonly shipClass: number
-  public readonly shipType: number
-  public readonly name: string
-  public readonly ruby: string
+  public readonly shipClass = this.data.shipClass || 0
+  public readonly shipType = this.data.shipType || 0
+  public readonly name = this.data.name || ""
+  public readonly ruby = this.data.ruby || ""
 
-  public readonly sortNo: number
-  public readonly sortId: number
+  public readonly sortNo = this.data.sortNo || 0
+  public readonly sortId = this.data.sortId || 0
 
-  public readonly hp: StatBase
-  public readonly armor: StatBase
-  public readonly firepower: StatBase
-  public readonly torpedo: StatBase
-  public readonly antiAir: StatBase
-  public readonly luck: StatBase
-  public readonly asw: StatBase
-  public readonly evasion: StatBase
-  public readonly los: StatBase
+  public readonly hp = toStatBase(this.data.hp)
+  public readonly armor = toStatBase(this.data.armor)
+  public readonly firepower = toStatBase(this.data.firepower)
+  public readonly torpedo = toStatBase(this.data.torpedo)
+  public readonly antiAir = toStatBase(this.data.antiAir)
+  public readonly luck = toStatBase(this.data.luck)
+  public readonly asw = toStatBase(this.data.asw)
+  public readonly evasion = toStatBase(this.data.evasion)
+  public readonly los = toStatBase(this.data.los)
 
-  public readonly speed: number
-  public readonly range: number
+  public readonly speed = this.data.speed || 0
+  public readonly range = this.data.range || 0
 
-  public readonly fuel: number
-  public readonly ammo: number
+  public readonly fuel = this.data.fuel || 0
+  public readonly ammo = this.data.ammo || 0
 
-  public readonly slots: number[]
-  public readonly gears: Array<{ gearId: number; stars?: number }>
+  public readonly slots = this.data.slots || []
+  public readonly gears = toShipBaseGears(this.data.gears)
 
-  public readonly nextId: number
-  public readonly nextLevel: number
-  public readonly convertible: boolean
+  public readonly nextId = this.data.nextId || 0
+  public readonly nextLevel = this.data.nextLevel || 0
+  public readonly convertible = this.data.convertible || false
 
   public readonly equippable: Equippable
 
   public readonly attrs: ShipAttribute[]
 
-  constructor(partial: Partial<ShipData>) {
-    const data = toRequiredShipData(partial)
-    this.id = data.id
-
-    this.shipClass = data.shipClass
-    this.shipType = data.shipType
-    this.name = data.name
-    this.ruby = data.ruby
-
-    this.sortNo = data.sortNo
-    this.sortId = data.sortId
-
-    this.hp = data.hp
-    this.armor = data.armor
-    this.firepower = data.firepower
-    this.torpedo = data.torpedo
-    this.antiAir = data.antiAir
-    this.luck = data.luck
-    this.asw = data.asw
-    this.evasion = data.evasion
-    this.los = data.los
-
-    this.speed = data.speed
-    this.range = data.range
-
-    this.fuel = data.fuel
-    this.ammo = data.ammo
-
-    this.slots = data.slots
-
-    this.gears = data.gears
-
-    this.nextId = data.nextId
-    this.nextLevel = data.nextLevel
-    this.convertible = data.convertible
-
-    this.equippable = createEquippable(data.id, data.shipType)
-
+  constructor(private data: Partial<ShipData>) {
+    this.equippable = createEquippable(this.id, this.shipType)
     this.attrs = createShipAttrs(this)
   }
 
-  get canRemodel() {
-    return this.nextId > 0
-  }
-
   get isCommonly() {
-    const { canRemodel, convertible, id } = this
-    return !canRemodel || convertible || [ShipId["千代田甲"], ShipId["千代田航"], ShipId["大鯨"]].includes(id)
+    const { nextId, convertible, id } = this
+    return nextId === 0 || convertible || [ShipId["千歳"], ShipId["千代田航"], ShipId["大鯨"]].includes(id)
   }
 
   get rank() {

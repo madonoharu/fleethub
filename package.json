@@ -12,7 +12,7 @@
     "build:data": "yarn wd build",
     "start": "yarn wc start",
     "wc": "yarn workspace @fleethub/client",
-    "wd": "yarn workspace @fleethub/data",
+    "data": "yarn workspace @fleethub/data",
     "core": "yarn workspace @fleethub/core",
     "ts-check": "yarn tsc --noEmit"
   },
