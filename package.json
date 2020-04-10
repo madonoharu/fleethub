@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build:data": "yarn wd build",
-    "start": "yarn wc start",
+    "start": "yarn client start",
     "client": "yarn workspace @fleethub/client",
     "data": "yarn workspace @fleethub/data",
     "core": "yarn workspace @fleethub/core",
