@@ -1,34 +1,39 @@
 import React from "react"
-import { ShipBase } from "@fleethub/core"
 
-import { Button, Checkbox } from "@material-ui/core"
+import { Checkbox, Typography, FormControlLabel } from "@material-ui/core"
 
-import { ShipBanner, SelectButtons } from "../../../components"
-import { useShipSelect, shipTypeFilterKeys } from "../../../hooks"
+import { SelectButtons, Flexbox } from "../../../components"
+import { shipTypeFilterKeys } from "../../../hooks"
+import { ShipSelectState } from "../../../store"
 
 type Props = {
-  ships: ShipBase[]
+  state: ShipSelectState
+  onChange: (state: Partial<ShipSelectState>) => void
 }
 
-const FilterBar: React.FCX<Props> = ({ ships }) => {
-  const { state, setState, filterFn } = useShipSelect()
-  const visibleShips = ships.filter(filterFn)
+const FilterBar: React.FCX<Props> = ({ state, onChange }) => {
+  const toggleCommonly = () => onChange({ commonly: !state.commonly })
+  const toggleAbyssal = () => onChange({ abyssal: !state.abyssal })
 
   return (
     <div>
-      <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
-      <Checkbox checked={state.commonly} onClick={() => setState({ commonly: !state.commonly })} />
-      <SelectButtons
-        options={shipTypeFilterKeys}
-        value={state.shipTypeFilter}
-        onChange={(key) => setState({ shipTypeFilter: key })}
+      <FormControlLabel
+        label="未改造表示"
+        control={<Checkbox size="small" checked={state.commonly} onClick={toggleCommonly} />}
       />
-      {visibleShips.map((ship) => (
-        <Button key={`ship-${ship.id}`}>
-          <ShipBanner shipId={ship.id} />
-          {ship.name}
-        </Button>
-      ))}
+
+      <Flexbox>
+        <SelectButtons
+          options={shipTypeFilterKeys}
+          value={state.shipTypeFilter}
+          onChange={(key) => onChange({ shipTypeFilter: key })}
+        />
+        <FormControlLabel
+          style={{ marginLeft: "auto" }}
+          label="深海"
+          control={<Checkbox size="small" checked={state.abyssal} onClick={toggleAbyssal} />}
+        />
+      </Flexbox>
     </div>
   )
 }
