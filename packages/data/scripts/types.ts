@@ -27,7 +27,7 @@ export const createEnum = (enumName: string, data: Array<readonly [string, numbe
   return `export${isConst ? " const" : ""} enum ${enumName} {${inner}}`
 }
 
-export const createAbyssalShipClassJpMap = (start2: Start2) => {
+export const createAbyssalShipClassNameMap = (start2: Start2) => {
   const classNames = chain(start2.api_mst_ship)
     .filter(isAbyssalShip)
     .map((ship) => abyssalNameToClass(ship.api_name))
@@ -107,9 +107,9 @@ class TypeUpdater {
     return createEnum("GearCategoryName", data, false)
   }
 
-  public createAbyssalShipClassJp = () => {
-    const data = createAbyssalShipClassJpMap(this.start2)
-    return createEnum("AbyssalShipClassJp", data)
+  public createAbyssalShipClassName = () => {
+    const data = createAbyssalShipClassNameMap(this.start2)
+    return createEnum("AbyssalShipClassName", data)
   }
 
   public createRemodelGroup = () => {
@@ -131,7 +131,7 @@ class TypeUpdater {
     fs.writeFileSync("src/GearCategoryName.ts", this.createGearCategoryName())
     fs.writeFileSync("src/RemodelGroup.ts", this.createRemodelGroup())
 
-    fs.writeFileSync("scripts/AbyssalShipClassJp.ts", this.createAbyssalShipClassJp())
+    fs.writeFileSync("scripts/AbyssalShipClassName.ts", this.createAbyssalShipClassName())
   }
 }
 
