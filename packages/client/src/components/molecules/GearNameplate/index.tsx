@@ -9,6 +9,7 @@ type Props = {
   name: string
   iconId: number
   size?: "small"
+  wrap?: boolean
   equippable?: boolean
 }
 
@@ -28,10 +29,14 @@ const smallText = css`
   line-height: 1.66;
 `
 
+const noWrapCss = css`
+  overflow: hidden;
+  white-space: nowrap;
+`
+
 export default styled(GearNameplate)`
   p {
-    overflow: hidden;
-    white-space: nowrap;
+    ${({ wrap }) => !wrap && noWrapCss}
     ${({ size, theme }) => size === "small" && smallText}
   }
 
