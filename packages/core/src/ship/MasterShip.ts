@@ -118,6 +118,7 @@ export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData
 
   nextId: partial.nextId ?? 0,
   nextLevel: partial.nextLevel ?? 0,
+  convertible: false,
 })
 
 export default class MasterShip implements ShipBase {
@@ -152,6 +153,7 @@ export default class MasterShip implements ShipBase {
 
   public readonly nextId: number
   public readonly nextLevel: number
+  public readonly convertible: boolean
 
   public readonly equippable: Equippable
 
@@ -191,6 +193,7 @@ export default class MasterShip implements ShipBase {
 
     this.nextId = data.nextId
     this.nextLevel = data.nextLevel
+    this.convertible = data.convertible
 
     this.equippable = createEquippable(data.id, data.shipType)
 
