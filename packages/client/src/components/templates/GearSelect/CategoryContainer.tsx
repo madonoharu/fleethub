@@ -5,15 +5,17 @@ import { GearBase } from "@fleethub/core"
 
 import { Button } from "@material-ui/core"
 
-import { GearNameplate } from "../../../components"
+import { GearNameplate, GearTooltip } from "../../../components"
 
 import CategoryDivider from "./CategoryDivider"
 
 let GearButton: React.FCX<{ gear: GearBase; onClick?: () => void }> = ({ className, gear, onClick }) => {
   return (
-    <Button className={className} onClick={onClick}>
-      <GearNameplate name={gear.name} iconId={gear.iconId} />
-    </Button>
+    <GearTooltip gear={gear}>
+      <Button className={className} onClick={onClick}>
+        <GearNameplate name={gear.name} iconId={gear.iconId} />
+      </Button>
+    </GearTooltip>
   )
 }
 
