@@ -1,7 +1,7 @@
 import React from "react"
 import { ShipBase } from "@fleethub/core"
 
-import { Button } from "@material-ui/core"
+import { Button, Checkbox } from "@material-ui/core"
 
 import { ShipBanner, SelectButtons } from "../../../components"
 import { useShipSelect, shipTypeFilterKeys } from "../../../hooks"
@@ -16,6 +16,8 @@ const FilterBar: React.FCX<Props> = ({ ships }) => {
 
   return (
     <div>
+      <Checkbox checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
+      <Checkbox checked={state.commonly} onClick={() => setState({ commonly: !state.commonly })} />
       <SelectButtons
         options={shipTypeFilterKeys}
         value={state.shipTypeFilter}

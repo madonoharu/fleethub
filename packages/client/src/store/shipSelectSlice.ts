@@ -4,12 +4,14 @@ import { ShipPosition } from "./entities"
 
 export type ShipSelectState = {
   abyssal: boolean
+  commonly: boolean
   shipTypeFilter: string
   position?: ShipPosition
 }
 
 const initialState: ShipSelectState = {
   abyssal: false,
+  commonly: true,
   shipTypeFilter: "戦艦級",
 }
 

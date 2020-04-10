@@ -42,6 +42,10 @@ const createFilterFn = (state: ShipSelectState): FilterFn => {
     if (fn) fns.push(fn)
   }
 
+  if (state.commonly) {
+    fns.push((ship) => ship.isCommonly)
+  }
+
   return (ship) => fns.every((fn) => fn(ship))
 }
 
