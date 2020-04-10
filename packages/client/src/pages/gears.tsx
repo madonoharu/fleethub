@@ -6,7 +6,7 @@ import { Container } from "@material-ui/core"
 import { GearSelect } from "../components"
 
 const GearsPage: React.FC<PageProps> = () => (
-  <Container maxWidth="md">
+  <Container>
     <GearSelect />
   </Container>
 )

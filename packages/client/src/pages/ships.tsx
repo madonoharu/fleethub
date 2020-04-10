@@ -6,7 +6,7 @@ import { Container } from "@material-ui/core"
 import { ShipSelect } from "../components"
 
 const ShipsPage: React.FC<PageProps> = () => (
-  <Container>
+  <Container disableGutters fixed>
     <ShipSelect />
   </Container>
 )

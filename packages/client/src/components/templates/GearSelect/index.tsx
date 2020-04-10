@@ -17,7 +17,7 @@ type Props = {
 const Component: React.FC<Props> = ({ onSelect }) => {
   const handleSelect = (gearId: number) => onSelect && onSelect({ gearId })
   return (
-    <div style={{ margin: "8px" }}>
+    <div>
       <FilterBar gears={fhSystem.factory.masterGears}>
         {(entries) => <GearList entries={entries} onSelect={handleSelect} />}
       </FilterBar>
