@@ -9,3 +9,5 @@ export const fhSystem = new FhSystem(factory)
 export * from "./ship"
 export * from "./gear"
 export * from "./utils"
+
+export { ShipClass, ShipClassKey, ShipType, ShipTypeKey } from "@fleethub/data"
