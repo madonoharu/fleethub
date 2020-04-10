@@ -1,4 +1,5 @@
 import React from "react"
+import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Img from "gatsby-image"
 
@@ -8,7 +9,7 @@ type Props = {
   shipId: number
 }
 
-const Component: React.FC<Props> = ({ shipId }) => {
+const ShipBanner: React.FCX<Props> = ({ className, shipId }) => {
   const { allFile } = useStaticQuery<ShipImagesQuery>(graphql`
     query ShipImages {
       allFile(filter: { relativeDirectory: { eq: "ships" } }) {
@@ -16,7 +17,7 @@ const Component: React.FC<Props> = ({ shipId }) => {
           node {
             name
             childImageSharp {
-              fixed(width: 120) {
+              fixed(height: 24) {
                 ...GatsbyImageSharpFixed_withWebp
               }
             }
@@ -28,9 +29,9 @@ const Component: React.FC<Props> = ({ shipId }) => {
 
   const childImageSharp = allFile.edges.find((n) => n.node.name === shipId.toString())?.node.childImageSharp
 
-  if (!childImageSharp) return <Img fixed={allFile.edges[0].node.childImageSharp?.fixed} />
+  if (!childImageSharp) return <Img className={className} fixed={allFile.edges[0].node.childImageSharp?.fixed} />
 
-  return <Img fixed={childImageSharp.fixed} />
+  return <Img className={className} fixed={childImageSharp.fixed} />
 }
 
-export default Component
+export default styled(ShipBanner)``
