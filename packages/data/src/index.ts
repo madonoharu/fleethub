@@ -7,6 +7,7 @@ export { ships, ShipData, gears, GearData, equippable, EquippableData, ShipEquip
 export * from "./GearCategory"
 export * from "./GearCategoryName"
 export * from "./ShipClass"
+export * from "./ShipClassName"
 export * from "./ShipType"
 
 export * from "./GearId"

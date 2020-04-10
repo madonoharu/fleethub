@@ -11,7 +11,7 @@
   "scripts": {
     "build:data": "yarn wd build",
     "start": "yarn wc start",
-    "wc": "yarn workspace @fleethub/client",
+    "client": "yarn workspace @fleethub/client",
     "data": "yarn workspace @fleethub/data",
     "core": "yarn workspace @fleethub/core",
     "ts-check": "yarn tsc --noEmit"
