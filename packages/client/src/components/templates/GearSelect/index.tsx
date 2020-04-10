@@ -5,7 +5,7 @@ import { fhSystem, GearState } from "@fleethub/core"
 import { Button } from "@material-ui/core"
 
 import { useGearSelect } from "../../../hooks"
-import { GearIcon, SelectButtons } from "../../../components"
+import { GearIcon } from "../../../components"
 
 import FilterBar from "./FilterBar"
 import GearList from "./GearList"
@@ -17,7 +17,7 @@ type Props = {
 const Component: React.FC<Props> = ({ onSelect }) => {
   const handleSelect = (gearId: number) => onSelect && onSelect({ gearId })
   return (
-    <div style={{ margin: "0 8px" }}>
+    <div style={{ margin: "8px" }}>
       <FilterBar gears={fhSystem.factory.masterGears}>
         {(entries) => <GearList entries={entries} onSelect={handleSelect} />}
       </FilterBar>

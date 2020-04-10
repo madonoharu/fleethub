@@ -1,8 +1,8 @@
-import { MasterGear } from "@fleethub/core"
+import { GearBase } from "@fleethub/core"
 
-type Key = { [K in keyof MasterGear]-?: Required<MasterGear>[K] extends number ? K : never }[keyof MasterGear]
+type Key = { [K in keyof GearBase]-?: Required<GearBase>[K] extends number ? K : never }[keyof GearBase]
 
-type Comparer = (left: MasterGear, right: MasterGear) => number
+type Comparer = (left: GearBase, right: GearBase) => number
 
 const createComparer = (...keys: Key[]): Comparer => (left, right) => {
   for (const key of keys) {
@@ -23,7 +23,7 @@ const attackerComparer = createComparer("torpedo", "firepower", "los", "antiAir"
 const bomberComparer = createComparer("bombing", "firepower", "los", "antiAir", "accuracy", "armor", "evasion")
 
 export const defaultComparer: Comparer = (left, right) => {
-  if (left.is("MainGun") || left.categoryIs("SecondaryGun")) return gunComparer(left, right)
+  if (left.is("MainGun") || left.categoryIn("SecondaryGun")) return gunComparer(left, right)
   if (left.categoryIn("Torpedo", "SubmarineTorpedo", "MidgetSubmarine")) return torpedoComparer(left, right)
   if (left.is("Seaplane")) return seaplaneComparer(left, right)
   if (left.is("Fighter")) return fighterComparer(left, right)

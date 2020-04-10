@@ -1,11 +1,11 @@
 import React from "react"
 import styled from "styled-components"
-import { MasterGear } from "@fleethub/core"
+import { GearBase } from "@fleethub/core"
 
 import { SelectButtons } from "../../../components"
 import FilterIcon from "./FilterIcon"
 
-export type GearFilterFn = (gear: MasterGear) => boolean
+export type GearFilterFn = (gear: GearBase) => boolean
 
 export type GearFilter = { icon: string; fn: GearFilterFn }
 
@@ -62,7 +62,7 @@ export const getOptionLabel = (filterName: string) => <FilterIcon icon={filterNa
 type Props = {
   value: string
   onChange: (value: string) => void
-  equippableGears: MasterGear[]
+  equippableGears: GearBase[]
 }
 
 const GearFilterButtons: React.FCX<Props> = ({ className, value, onChange, equippableGears }) => {

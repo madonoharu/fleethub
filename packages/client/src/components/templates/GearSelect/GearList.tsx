@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { VariableSizeList, ListChildComponentProps } from "react-window"
-import { MasterGear } from "@fleethub/core"
+import { GearBase } from "@fleethub/core"
 import { GearCategory } from "@fleethub/data"
 
 import { Button, Divider } from "@material-ui/core"
@@ -11,7 +11,7 @@ import CategoryContainer from "./CategoryContainer"
 const List = styled(VariableSizeList)``
 
 type Props = {
-  entries: Array<[GearCategory, MasterGear[]]>
+  entries: Array<[GearCategory, GearBase[]]>
   onSelect?: (gearId: number) => void
 }
 
@@ -42,7 +42,7 @@ const GearList: React.FC<Props> = ({ entries, onSelect }) => {
     <List
       ref={ref}
       itemKey={(index) => `category-${entries[index][0]}`}
-      height={560}
+      height={640}
       itemCount={entries.length}
       itemSize={getItemSize}
       width={900}

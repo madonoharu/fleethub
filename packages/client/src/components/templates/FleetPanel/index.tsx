@@ -4,11 +4,8 @@ import { EntityId } from "@reduxjs/toolkit"
 
 import { Container, Typography, TextField } from "@material-ui/core"
 
-import { ShipControlCard, RemoveButton, Select } from "../../../components"
+import { RemoveButton, Select } from "../../../components"
 import { useFleet } from "../../../hooks"
-import { NullableArray } from "../../../utils"
-import { ShipPosition } from "../../../store"
-import { withIconButton } from "../../../hocs"
 
 import ShipList from "./ShipList"
 
