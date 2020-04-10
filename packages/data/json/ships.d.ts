@@ -32,6 +32,7 @@ export interface ShipData {
 
   nextId?: number
   nextLevel?: number
+  convertible?: boolean
 }
 
 declare const ships: ShipData[]
