@@ -204,6 +204,11 @@ export default class MasterShip implements ShipBase {
     return this.nextId > 0
   }
 
+  get isCommonly() {
+    const { canRemodel, convertible, id } = this
+    return !canRemodel || convertible || [ShipId["千代田甲"], ShipId["千代田航"], ShipId["大鯨"]].includes(id)
+  }
+
   get rank() {
     return this.sortId % 10
   }
