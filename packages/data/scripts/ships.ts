@@ -4,6 +4,7 @@ import signale from "signale"
 import { MstShip, Start2, isPlayerShip } from "./start2"
 import { ships, ShipData } from "../src"
 import { abyssalNameToClass, createAbyssalShipClassJpMap } from "./types"
+import { setConvertible } from "./convertible"
 
 const getSlots = (mstShip: MstShip, shipData?: ShipData) => {
   const { api_slot_num } = mstShip
@@ -123,6 +124,7 @@ class ShipUpdater {
 export const writeShips = (start2: Start2) => {
   const updater = new ShipUpdater(start2)
   const next = updater.merge(ships)
+  setConvertible(next)
 
   fs.writeFileSync("json/ships.json", JSON.stringify(next))
   signale.complete()
