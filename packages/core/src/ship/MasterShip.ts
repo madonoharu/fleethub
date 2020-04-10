@@ -69,6 +69,8 @@ export interface ShipBase extends RequiredShipData {
   remodelGroup: number
   equippable: Equippable
 
+  shipClassIn: (...keys: ShipClassKey[]) => boolean
+  shipTypeIn: (...keys: ShipTypeKey[]) => boolean
   is: (attr: ShipAttribute) => boolean
 }
 
