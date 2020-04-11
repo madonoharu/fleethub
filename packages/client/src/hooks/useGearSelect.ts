@@ -2,15 +2,35 @@ import React from "react"
 
 import { useCallback, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { GearState, fhSystem, GearBase } from "@fleethub/core"
+import { GearState, GearBase } from "@fleethub/core"
 
 import { gearSelectSlice, entitiesSlice, GearSelectState, GearPosition, shipsSelectors } from "../store"
+import { useFhSystem } from "./useFhSystem"
+
+import { getFilter, getVisibleFilterKeys } from "../components/templates/GearSelect/filters"
+
+export type GearFilterFn = (gear: GearBase) => boolean
+
+const createFilterFn = (state: GearSelectState, equippableGears: GearBase[]): GearFilterFn => {
+  const visibleFilterKeys = getVisibleFilterKeys(equippableGears)
+
+  const fns: GearFilterFn[] = []
+
+  if (state.abyssal) fns.push((gear) => gear.is("Abyssal"))
+  else fns.push((gear) => !gear.is("Abyssal"))
+
+  const gearFilterFn = getFilter(state.filter)
+  if (gearFilterFn) fns.push(gearFilterFn)
+
+  return (gear) => fns.every((fn) => fn(gear))
+}
 
 const useEquippableFilter = (position?: GearPosition) => {
+  const fhSystem = useFhSystem()
   const entity = useSelector((state) => position && shipsSelectors.selectEntities(state)[position.ship])
   const fhShip = React.useMemo(() => {
     return entity && fhSystem.createShip(entity)
-  }, [entity])
+  }, [fhSystem, entity])
 
   return React.useCallback(
     (gear: GearBase) => {
