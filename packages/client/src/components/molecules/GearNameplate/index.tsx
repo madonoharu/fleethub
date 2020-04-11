@@ -35,6 +35,7 @@ const noWrapCss = css`
 `
 
 export default styled(GearNameplate)`
+  max-width: 100%;
   p {
     ${({ wrap }) => !wrap && noWrapCss}
     ${({ size, theme }) => size === "small" && smallText}

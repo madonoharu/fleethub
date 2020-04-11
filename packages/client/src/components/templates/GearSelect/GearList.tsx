@@ -16,7 +16,7 @@ type Props = {
 }
 
 const GearList: React.FC<Props> = ({ entries, onSelect }) => {
-  const columnCount = 2
+  const columnCount = 4
 
   const ref = React.useRef<VariableSizeList>(null)
 
