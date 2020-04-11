@@ -18,6 +18,7 @@ sans-serif,
 "Noto Sans Emoji"
 `
 
+const dark = "rgba(15, 20, 20, 0.9)"
 const clear = "rgba(20, 20, 20, 0.1)"
 const blueGrey = "rgba(66, 66, 77, 0.95)"
 
@@ -75,6 +76,11 @@ const muiTheme = createMuiTheme({
       root: {
         textTransform: "none",
         minWidth: 0,
+      },
+    },
+    MuiTooltip: {
+      tooltip: {
+        backgroundColor: dark,
       },
     },
     MuiAppBar: {
