@@ -5,11 +5,12 @@ import { GearBase } from "@fleethub/core"
 
 import { AppBar, Toolbar, Checkbox, FormControlLabel, Box, Typography } from "@material-ui/core"
 
-import { useGearSelect } from "../../../hooks"
+import { GearSelectState } from "../../../store"
 import { Flexbox, SelectButtons, Select } from "../../../components"
 
-import FilterButtons, { filterNameToFn } from "./FilterButtons"
+import FilterButtons from "./FilterButtons"
 import CategorySelect from "./CategorySelect"
+import { getFilter } from "./filters"
 import { defaultComparer, idComparer } from "./comparers"
 
 const Right = styled(Flexbox)`
@@ -17,54 +18,27 @@ const Right = styled(Flexbox)`
   margin-bottom: -2px;
 `
 
-const allCategories = Object.values(GearCategory).filter(
-  (category): category is GearCategory => typeof category === "number"
-)
-
-const createCategoryGearMap = (gears: GearBase[]) => {
-  const map = new Map<GearCategory, GearBase[]>()
-  allCategories.forEach((category) => {
-    const filtered = gears.filter((gear) => gear.category === category)
-    if (filtered.length > 0) map.set(category, filtered)
-  })
-
-  return map
-}
-
 const getVisibleCategories = (gears: GearBase[]) => {
   const categories = [...new Set(gears.map((gear) => gear.category))]
   return categories.concat(0).sort((a, b) => a - b)
 }
 
 type Props = {
-  gears: GearBase[]
-  children: (entries: Array<[GearCategory, GearBase[]]>) => React.ReactNode
+  equippableGears: GearBase[]
+  state: GearSelectState
+  setState: (state: Partial<GearSelectState>) => void
 }
 
-const FilterBar: React.FCX<Props> = ({ className, gears, children }) => {
-  const { state, setState, equippableFilter } = useGearSelect()
+const FilterBar: React.FCX<Props> = ({ className, equippableGears, state, setState }) => {
+  const handleFilterChange = (filter: string) => setState({ filter, category: 0 })
 
-  const handleFilterChange = (filter: string) => {
-    setState({ filter, category: 0 })
-  }
+  const handleCategoryChange = (category: number) => setState({ category })
 
-  const handleCategoryChange = (category: number) => {
-    setState({ category })
-  }
+  const toggleAbyssal = () => setState({ abyssal: !state.abyssal })
 
-  const equippableGears = gears
-    .filter((gear) => {
-      if (state.abyssal) return gear.is("Abyssal")
-      return !gear.is("Abyssal")
-    })
-    .filter(equippableFilter)
-
-  const visibleGears = equippableGears.filter(filterNameToFn(state.filter)).sort(idComparer)
+  const visibleGears = equippableGears.filter(getFilter(state.filter)).sort(idComparer)
 
   const visibleCategories = getVisibleCategories(visibleGears)
-
-  const categoryFilter = (gear: GearBase) => state.category === 0 || state.category === gear.category
-  const entries = Array.from(createCategoryGearMap(visibleGears.filter(categoryFilter)))
 
   return (
     <>
@@ -72,11 +46,12 @@ const FilterBar: React.FCX<Props> = ({ className, gears, children }) => {
         <FilterButtons value={state.filter} onChange={handleFilterChange} equippableGears={equippableGears} />
         <CategorySelect value={state.category} options={visibleCategories} onChange={handleCategoryChange} />
         <Right>
-          <Checkbox size="small" checked={state.abyssal} onClick={() => setState({ abyssal: !state.abyssal })} />
-          <Typography variant="body2">深海</Typography>
+          <FormControlLabel
+            label="深海"
+            control={<Checkbox size="small" checked={state.abyssal} onClick={toggleAbyssal} />}
+          />
         </Right>
       </div>
-      {children(entries)}
     </>
   )
 }

@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
-import { fhSystem, GearState } from "@fleethub/core"
+import { fhSystem, GearBase } from "@fleethub/core"
+import { GearCategory } from "@fleethub/data"
 
 import { Button } from "@material-ui/core"
 
@@ -9,25 +10,59 @@ import { GearIcon } from "../../../components"
 
 import FilterBar from "./FilterBar"
 import GearList from "./GearList"
+import { getFilter } from "./filters"
+import { idComparer } from "./comparers"
 
-type Props = {
-  onSelect?: (gear: GearState) => void
+const allCategories = Object.values(GearCategory).filter(
+  (category): category is GearCategory => typeof category === "number"
+)
+
+const createCategoryGearEntries = (gears: GearBase[]) => {
+  const entries: Array<[GearCategory, GearBase[]]> = []
+
+  allCategories.forEach((category) => {
+    const filtered = gears.filter((gear) => gear.category === category)
+    if (filtered.length > 0) entries.push([category, filtered])
+  })
+
+  return entries
 }
 
-const GearSelect: React.FC<Props> = ({ onSelect }) => {
+const getVisibleCategories = (gears: GearBase[]) => {
+  const categories = [...new Set(gears.map((gear) => gear.category))]
+  return categories.concat(0).sort((a, b) => a - b)
+}
+
+type Props = Pick<ReturnType<typeof useGearSelect>, "state" | "setState" | "equippableFilter" | "onSelect">
+
+const GearSelect: React.FC<Props> = ({ state, setState, equippableFilter, onSelect }) => {
   const handleSelect = (gearId: number) => onSelect && onSelect({ gearId })
+
+  const equippableGears = fhSystem.factory.masterGears
+    .filter((gear) => {
+      if (state.abyssal) return gear.is("Abyssal")
+      return !gear.is("Abyssal")
+    })
+    .filter(equippableFilter)
+
+  const visibleGears = equippableGears.filter(getFilter(state.filter)).sort(idComparer)
+
+  const visibleCategories = getVisibleCategories(visibleGears)
+
+  const categoryFilter = (gear: GearBase) => state.category === 0 || state.category === gear.category
+  const entries = createCategoryGearEntries(visibleGears.filter(categoryFilter))
+
   return (
     <div>
-      <FilterBar gears={fhSystem.factory.masterGears}>
-        {(entries) => <GearList entries={entries} onSelect={handleSelect} />}
-      </FilterBar>
+      <FilterBar equippableGears={equippableGears} state={state} setState={setState} />
+      <GearList entries={entries} onSelect={handleSelect} />
     </div>
   )
 }
 
 const Container: React.FC = () => {
-  const { onSelect } = useGearSelect()
-  return <GearSelect onSelect={onSelect} />
+  const { state, setState, equippableFilter, onSelect } = useGearSelect()
+  return <GearSelect state={state} setState={setState} equippableFilter={equippableFilter} onSelect={onSelect} />
 }
 
 export default Container
