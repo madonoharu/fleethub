@@ -14,6 +14,7 @@ const Table = styled(MuiTable)`
 const TableCell = styled(MuiTableCell)`
   padding: 0 4px;
   border: none;
+  font-size: 0.75rem;
 `
 
 const keys = [
