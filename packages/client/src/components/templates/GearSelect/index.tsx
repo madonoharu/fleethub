@@ -14,7 +14,7 @@ type Props = {
   onSelect?: (gear: GearState) => void
 }
 
-const Component: React.FC<Props> = ({ onSelect }) => {
+const GearSelect: React.FC<Props> = ({ onSelect }) => {
   const handleSelect = (gearId: number) => onSelect && onSelect({ gearId })
   return (
     <div>
@@ -27,7 +27,7 @@ const Component: React.FC<Props> = ({ onSelect }) => {
 
 const Container: React.FC = () => {
   const { onSelect } = useGearSelect()
-  return <Component onSelect={onSelect} />
+  return <GearSelect onSelect={onSelect} />
 }
 
 export default Container

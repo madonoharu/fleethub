@@ -19,3 +19,4 @@ export const getUid = () => `${uidCount++}`
 
 export type NullableArray<T> = import("@fleethub/core").NullableArray<T>
 export { isNonNullable }
+export * from "./FhDictionary"

@@ -66,7 +66,6 @@ export const useShipSelect = () => {
 
     const onSelect = (shipId: number) => {
       if (!state.position) return
-
       dispatch(entitiesSlice.actions.createShip({ ...state.position, ship: { shipId } }))
       onClose()
     }

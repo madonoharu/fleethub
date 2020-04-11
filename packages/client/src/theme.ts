@@ -19,11 +19,16 @@ sans-serif,
 `
 
 const clear = "rgba(20, 20, 20, 0.1)"
+const blueGrey = "rgba(66, 66, 77, 0.95)"
 
 const palette = createPalette({
   type: "dark",
   primary: blue,
   secondary: pink,
+  background: {
+    default: blueGrey,
+    paper: blueGrey,
+  },
 })
 
 const muiTheme = createMuiTheme({

@@ -27,7 +27,6 @@ const createFhShipSelector = (id: EntityId) => {
 
 export const useShip = (id: EntityId) => {
   const dispatch = useDispatch()
-
   const actions = React.useMemo(
     () => ({
       update: (changes: Partial<ShipEntity>) => {

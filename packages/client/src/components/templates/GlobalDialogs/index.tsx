@@ -22,7 +22,7 @@ const GlobalDialogs: React.FC = () => {
   return (
     <>
       <Dialog open={shipSelect.open} onClose={shipSelect.onClose}>
-        <ShipSelect />
+        {shipSelect.open && <ShipSelect />}
       </Dialog>
       <Dialog open={gearSelect.open} onClose={gearSelect.onClose}>
         {gearSelect.open && <GearSelect />}
