@@ -43,6 +43,8 @@ const keys = [
 type Key = typeof keys[number]
 type StatEntry = [Key, number | string]
 
+export type EquipmentBonuses = Partial<Record<Key, number>>
+
 export const toStatEntries = (gear: GearBase) =>
   keys
     .map((key): StatEntry | undefined => {
@@ -54,9 +56,9 @@ export const toStatEntries = (gear: GearBase) =>
     })
     .filter(isNonNullable)
 
-type Props = {
+export type Props = {
   gear: GearBase
-  bonuses?: Partial<Record<Key, number>>
+  bonuses?: EquipmentBonuses
 }
 
 const GearStatList: React.FC<Props> = ({ gear, bonuses }) => {
