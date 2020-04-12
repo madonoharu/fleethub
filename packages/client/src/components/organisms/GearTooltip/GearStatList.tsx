@@ -17,34 +17,26 @@ const TableCell = styled(MuiTableCell)`
   font-size: 0.75rem;
 `
 const keys = [
-  "armor",
   "firepower",
   "torpedo",
-  "speed",
-  "bombing",
   "antiAir",
   "asw",
+  "bombing",
   "accuracy",
-  "interception",
   "evasion",
+  "interception",
   "antiBomber",
   "los",
-  "luck",
-
+  "armor",
   "range",
   "radius",
-  "cost",
 ] as const
 
 type Key = typeof keys[number]
 type StatEntry = [Key, number | string]
 
-type Props = {
-  gear: GearBase
-}
-
-const GearStatList: React.FC<Props> = ({ gear }) => {
-  const stats = keys
+export const toStatEntries = (gear: GearBase) =>
+  keys
     .map((key): StatEntry | undefined => {
       const value = gear[key]
       if (value === 0) return
@@ -54,11 +46,17 @@ const GearStatList: React.FC<Props> = ({ gear }) => {
     })
     .filter(isNonNullable)
 
+type Props = {
+  gear: GearBase
+}
+
+const GearStatList: React.FC<Props> = ({ gear }) => {
+  const entries = toStatEntries(gear)
   return (
     <>
       <Table size="small">
         <TableBody>
-          {stats.map(([key, value]) => (
+          {entries.map(([key, value]) => (
             <TableRow key={key}>
               <TableCell>
                 <StatIcon icon={key} />
@@ -67,6 +65,12 @@ const GearStatList: React.FC<Props> = ({ gear }) => {
               <TableCell align="right">{value}</TableCell>
             </TableRow>
           ))}
+          {Boolean(gear.cost) && (
+            <TableRow>
+              <TableCell>{StatKeyDictionary.cost}</TableCell>
+              <TableCell>{gear.cost}</TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       <Text align="right">ID {gear.gearId}</Text>
