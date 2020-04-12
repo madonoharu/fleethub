@@ -10,10 +10,11 @@ import GearStatList from "./GearStatList"
 
 type Props = {
   gear: GearBase
+  bonuses?: Partial<{ firepower: number }>
   children: React.ReactElement
 }
 
-const GearTooltip: React.FC<Props> = ({ gear, ...rest }) => {
+const GearTooltip: React.FC<Props> = ({ gear, bonuses, ...rest }) => {
   return (
     <Tooltip
       enterDelay={300}
@@ -21,7 +22,7 @@ const GearTooltip: React.FC<Props> = ({ gear, ...rest }) => {
       title={
         <Box>
           <GearNameplate wrap size="small" iconId={gear.iconId} name={gear.name} />
-          <GearStatList gear={gear} />
+          <GearStatList gear={gear} bonuses={bonuses} />
         </Box>
       }
       {...rest}

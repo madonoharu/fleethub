@@ -4,7 +4,7 @@ import styled from "styled-components"
 
 import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell } from "@material-ui/core"
 
-import { StatIcon, Text } from "../../../components"
+import { StatIcon, Text, Flexbox } from "../../../components"
 import { StatKeyDictionary, getRangeName } from "../../../utils"
 
 const Table = styled(MuiTable)`
@@ -14,8 +14,16 @@ const Table = styled(MuiTable)`
 const TableCell = styled(MuiTableCell)`
   padding: 0 4px;
   border: none;
-  font-size: 0.75rem;
 `
+const BonusCell = styled(TableCell)`
+  color: ${({ theme }) => theme.kc.bonus};
+`
+
+const SpaceBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
 const keys = [
   "firepower",
   "torpedo",
@@ -48,9 +56,10 @@ export const toStatEntries = (gear: GearBase) =>
 
 type Props = {
   gear: GearBase
+  bonuses?: Partial<Record<Key, number>>
 }
 
-const GearStatList: React.FC<Props> = ({ gear }) => {
+const GearStatList: React.FC<Props> = ({ gear, bonuses }) => {
   const entries = toStatEntries(gear)
   return (
     <>
@@ -63,17 +72,15 @@ const GearStatList: React.FC<Props> = ({ gear }) => {
               </TableCell>
               <TableCell>{StatKeyDictionary[key]}</TableCell>
               <TableCell align="right">{value}</TableCell>
+              <BonusCell>{bonuses?.[key] && `+${bonuses[key]}`}</BonusCell>
             </TableRow>
           ))}
-          {Boolean(gear.cost) && (
-            <TableRow>
-              <TableCell>{StatKeyDictionary.cost}</TableCell>
-              <TableCell>{gear.cost}</TableCell>
-            </TableRow>
-          )}
         </TableBody>
       </Table>
-      <Text align="right">ID {gear.gearId}</Text>
+      <SpaceBetween>
+        <Text>{gear.cost > 0 && `${StatKeyDictionary.cost} ${gear.cost}`}</Text>
+        <Text>ID {gear.gearId}</Text>
+      </SpaceBetween>
     </>
   )
 }
