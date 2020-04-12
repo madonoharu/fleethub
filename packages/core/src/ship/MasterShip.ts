@@ -63,6 +63,8 @@ export interface RequiredShipData extends Required<ShipData> {
 }
 
 export interface ShipBase extends RequiredShipData {
+  shipId: number
+
   attrs: ShipAttribute[]
   isCommonly: boolean
   rank: number
@@ -170,6 +172,10 @@ export default class MasterShip implements ShipBase {
   constructor(private data: Partial<ShipData>) {
     this.equippable = createEquippable(this.id, this.shipType)
     this.attrs = createShipAttrs(this)
+  }
+
+  get shipId() {
+    return this.id
   }
 
   get isCommonly() {
