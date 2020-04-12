@@ -1,4 +1,4 @@
-import { blue, cyan, pink, grey } from "@material-ui/core/colors"
+import { blue, cyan, pink, grey, lightBlue } from "@material-ui/core/colors"
 import { createMuiTheme } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
 
@@ -91,7 +91,10 @@ const muiTheme = createMuiTheme({
   },
 })
 
-const kc = { stars: cyan[500] }
+const kc = {
+  stars: cyan[400],
+  bonus: lightBlue[400],
+}
 const theme = { ...muiTheme, kc }
 export type Theme = typeof theme
 
