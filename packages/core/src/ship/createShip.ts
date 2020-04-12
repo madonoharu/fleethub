@@ -1,3 +1,5 @@
+import { createEquipmentBonuses } from "equipment-bonus"
+
 import { GearState } from "../gear"
 import { Equipment } from "../equipment"
 import { NullableArray } from "../utils"
@@ -6,7 +8,6 @@ import { ShipImpl } from "./Ship"
 import { ShipBase } from "./MasterShip"
 import { createShipStats, ModernizationRecord } from "./ShipStats"
 import { HealthImpl } from "./Health"
-import { createEquipmentBonuses } from "./EquipmentBonuses"
 
 export type ShipState = {
   shipId: number
