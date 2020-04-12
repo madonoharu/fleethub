@@ -20,12 +20,11 @@ const anchorOrigin = {
 
 type Props = {
   className?: string
-  size?: "small"
   exp: number
   onChange?: (value: number) => void
 }
 
-const Component: React.FC<Props> = ({ className, size, exp, onChange }) => {
+const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
   const { onOpen, ...hendler } = usePopover()
 
   const handleChange: React.MouseEventHandler = React.useCallback(
@@ -41,7 +40,7 @@ const Component: React.FC<Props> = ({ className, size, exp, onChange }) => {
     <div className={className}>
       <Tooltip title="熟練度選択">
         <Button onClick={onOpen}>
-          <ProficiencyIcon size={size} exp={exp} />
+          <ProficiencyIcon exp={exp} />
         </Button>
       </Tooltip>
 
@@ -49,7 +48,7 @@ const Component: React.FC<Props> = ({ className, size, exp, onChange }) => {
         <Flexbox>
           {exps.map((boundary) => (
             <Button key={boundary} id={boundary.toString()} onClick={handleChange}>
-              <ProficiencyIcon size="small" exp={boundary} />
+              <ProficiencyIcon exp={boundary} />
             </Button>
           ))}
           <NumberInput value={exp} onChange={onChange} min={0} max={maxExp} />
@@ -59,7 +58,7 @@ const Component: React.FC<Props> = ({ className, size, exp, onChange }) => {
   )
 }
 
-const StyledComponent = styled(Component)`
+export default styled(GearExpSelect)`
   button {
     padding: 0;
   }
@@ -68,5 +67,3 @@ const StyledComponent = styled(Component)`
     margin: 0 8px;
   }
 `
-
-export default StyledComponent
