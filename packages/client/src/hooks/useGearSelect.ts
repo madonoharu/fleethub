@@ -1,69 +1,71 @@
 import React from "react"
-
-import { useCallback, useMemo } from "react"
-import { useSelector, useDispatch } from "react-redux"
+import { createSelector } from "@reduxjs/toolkit"
+import { useSelector, useDispatch, DefaultRootState } from "react-redux"
 import { GearState, GearBase } from "@fleethub/core"
 
-import { gearSelectSlice, entitiesSlice, GearSelectState, GearPosition, shipsSelectors } from "../store"
-import { useFhSystem } from "./useFhSystem"
+import { createEquipmentBonuses, EquipmentBonuses } from "equipment-bonus"
 
-import { getFilter, getVisibleFilterKeys } from "../components/templates/GearSelect/filters"
+import { gearSelectSlice, entitiesSlice, GearSelectState } from "../store"
+import { createFhShipSelector } from "./useShip"
+
+type Key = keyof EquipmentBonuses
+export const subtract = (left: EquipmentBonuses, right: EquipmentBonuses) => {
+  const diff: EquipmentBonuses = { ...left }
+
+  for (const key in left) {
+    diff[key as Key] = (left[key as Key] || 0) - (right[key as Key] || 0)
+  }
+
+  return diff
+}
 
 export type GearFilterFn = (gear: GearBase) => boolean
 
-const createFilterFn = (state: GearSelectState, equippableGears: GearBase[]): GearFilterFn => {
-  const visibleFilterKeys = getVisibleFilterKeys(equippableGears)
-
-  const fns: GearFilterFn[] = []
-
-  if (state.abyssal) fns.push((gear) => gear.is("Abyssal"))
-  else fns.push((gear) => !gear.is("Abyssal"))
-
-  const gearFilterFn = getFilter(state.filter)
-  if (gearFilterFn) fns.push(gearFilterFn)
-
-  return (gear) => fns.every((fn) => fn(gear))
-}
-
-const useEquippableFilter = (position?: GearPosition) => {
-  const fhSystem = useFhSystem()
-  const entity = useSelector((state) => position && shipsSelectors.selectEntities(state)[position.ship])
-  const fhShip = React.useMemo(() => {
-    return entity && fhSystem.createShip(entity)
-  }, [fhSystem, entity])
-
-  return React.useCallback(
-    (gear: GearBase) => {
-      if (!position || !fhShip) return true
-      return fhShip.canEquip(position.index, gear)
-    },
-    [position, fhShip]
-  )
-}
+const getGearSelectState = (state: DefaultRootState) => state.gearSelect
+const getShipId = (state: DefaultRootState) => getGearSelectState(state).target?.ship
+const createFhShipSelectorByTarget = createSelector(getShipId, (id) => id && createFhShipSelector(id))
+const selectFhShipByTarget = createSelector(
+  createFhShipSelectorByTarget,
+  (state) => state,
+  (fhShipSelector, state) => fhShipSelector && fhShipSelector(state)
+)
 
 export const useGearSelect = () => {
   const dispatch = useDispatch()
-  const state = useSelector((state) => state.gearSelect)
+  const state = useSelector(getGearSelectState)
+  const fhShip = useSelector(selectFhShipByTarget)
 
-  const open = Boolean(state.position)
+  const { target } = state
+  const open = Boolean(state.target)
 
-  const { setState, onClose } = useMemo(() => {
+  const actions = React.useMemo(() => {
     const setState = (state: Partial<GearSelectState>) => dispatch(gearSelectSlice.actions.set(state))
-    const onClose = () => setState({ position: undefined })
-    return { setState, onClose }
-  }, [dispatch])
 
-  const onSelect = useCallback(
-    (gear: GearState) => {
-      if (!state.position) return
-      dispatch(entitiesSlice.actions.createGear({ ...state.position, gear }))
+    const onClose = () => setState({ target: undefined })
+
+    const onSelect = (gear: GearState) => {
+      if (!target) return
+      dispatch(entitiesSlice.actions.createGear({ ...target, gear }))
       onClose()
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [state.position, onClose]
-  )
+    }
 
-  const equippableFilter = useEquippableFilter(state.position)
+    return { setState, onClose, onSelect }
+  }, [dispatch, target])
 
-  return { state, setState, open, onClose, onSelect, equippableFilter }
+  const shipFns = React.useMemo(() => {
+    if (!target || !fhShip) return {}
+
+    const equippableFilter = (gear: GearBase) => fhShip.canEquip(target.index, gear)
+
+    const gears = fhShip.equipment.filter((gear, index) => index !== target.index)
+    const currentBonuses = createEquipmentBonuses(fhShip, gears)
+    const getBonuses = (gear: GearBase) => {
+      const nextBonuses = createEquipmentBonuses(fhShip, [...gears, gear])
+      return subtract(nextBonuses, currentBonuses)
+    }
+
+    return { equippableFilter, getBonuses }
+  }, [fhShip, target])
+
+  return { state, open, ...actions, ...shipFns }
 }

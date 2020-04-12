@@ -1,10 +1,10 @@
 import React from "react"
-import { GearBase, isNonNullable } from "@fleethub/core"
+import { GearBase, isNonNullable, EquipmentBonuses } from "@fleethub/core"
 import styled from "styled-components"
 
 import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell } from "@material-ui/core"
 
-import { StatIcon, Text, Flexbox } from "../../../components"
+import { StatIcon, Text } from "../../../components"
 import { StatKeyDictionary, getRangeName } from "../../../utils"
 
 const Table = styled(MuiTable)`
@@ -43,8 +43,6 @@ const keys = [
 type Key = typeof keys[number]
 type StatEntry = [Key, number | string]
 
-export type EquipmentBonuses = Partial<Record<Key, number>>
-
 export const toStatEntries = (gear: GearBase) =>
   keys
     .map((key): StatEntry | undefined => {
@@ -55,6 +53,15 @@ export const toStatEntries = (gear: GearBase) =>
       return [key, value]
     })
     .filter(isNonNullable)
+
+const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
+  if (!bonuses || key === "radius") return ""
+  const bonus = bonuses[key]
+
+  if (!bonus) return ""
+  if (bonus > 0) return `+${bonus}`
+  return bonus
+}
 
 export type Props = {
   gear: GearBase
@@ -74,7 +81,7 @@ const GearStatList: React.FC<Props> = ({ gear, bonuses }) => {
               </TableCell>
               <TableCell>{StatKeyDictionary[key]}</TableCell>
               <TableCell align="right">{value}</TableCell>
-              <BonusCell>{bonuses?.[key] && `+${bonuses[key]}`}</BonusCell>
+              <BonusCell>{getBonusText(bonuses, key)}</BonusCell>
             </TableRow>
           ))}
         </TableBody>

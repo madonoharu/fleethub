@@ -21,7 +21,7 @@ export const useGear = (id: EntityId) => {
   )
 
   const entity = useSelector((state) => gearsSelectors.selectEntities(state)[id])
-  const kcGear = React.useMemo(() => entity && fhSystem.createGear(entity), [entity])
+  const fhGear = React.useMemo(() => entity && fhSystem.createGear(entity), [entity])
 
-  return { kcGear, actions }
+  return { fhGear, actions }
 }

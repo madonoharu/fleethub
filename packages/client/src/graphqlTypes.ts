@@ -6,7 +6,12 @@ export type Scalars = {
   Boolean: boolean
   Int: number
   Float: number
+  /**
+   * A date string, such as 2007-12-03, compliant with the ISO 8601 standard for
+   * representation of dates and times using the Gregorian calendar.
+   */
   Date: any
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any
 }
 
@@ -367,6 +372,7 @@ export type File = Node & {
   birthtimeMs?: Maybe<Scalars["Float"]>
   blksize?: Maybe<Scalars["Int"]>
   blocks?: Maybe<Scalars["Int"]>
+  /** Copy file to static directory and return public url to it */
   publicURL?: Maybe<Scalars["String"]>
   childImageSharp?: Maybe<ImageSharp>
   id: Scalars["ID"]
@@ -1271,6 +1277,7 @@ export type IntQueryOperatorInput = {
   nin?: Maybe<Array<Maybe<Scalars["Int"]>>>
 }
 
+/** Node Interface */
 export type Node = {
   id: Scalars["ID"]
   parent?: Maybe<Node>
@@ -2517,24 +2524,6 @@ export type GatsbyImageSharpSizes_WithWebp_NoBase64Fragment = { __typename?: "Im
   "aspectRatio" | "src" | "srcSet" | "srcWebp" | "srcSetWebp" | "sizes"
 >
 
-export type ProficiencyIconsQueryVariables = {}
-
-export type ProficiencyIconsQuery = { __typename?: "Query" } & {
-  allFile: { __typename?: "FileConnection" } & {
-    edges: Array<
-      { __typename?: "FileEdge" } & {
-        node: { __typename?: "File" } & Pick<File, "name"> & {
-            childImageSharp?: Maybe<
-              { __typename?: "ImageSharp" } & {
-                fluid?: Maybe<{ __typename?: "ImageSharpFluid" } & GatsbyImageSharpFluidFragment>
-              }
-            >
-          }
-      }
-    >
-  }
-}
-
 export type GearIconsQueryVariables = {}
 
 export type GearIconsQuery = { __typename?: "Query" } & {
@@ -2544,7 +2533,7 @@ export type GearIconsQuery = { __typename?: "Query" } & {
         node: { __typename?: "File" } & Pick<File, "name"> & {
             childImageSharp?: Maybe<
               { __typename?: "ImageSharp" } & {
-                fluid?: Maybe<{ __typename?: "ImageSharpFluid" } & GatsbyImageSharpFluidFragment>
+                fixed?: Maybe<{ __typename?: "ImageSharpFixed" } & GatsbyImageSharpFixedFragment>
               }
             >
           }
@@ -2563,6 +2552,60 @@ export type ShipImagesQuery = { __typename?: "Query" } & {
             childImageSharp?: Maybe<
               { __typename?: "ImageSharp" } & {
                 fixed?: Maybe<{ __typename?: "ImageSharpFixed" } & GatsbyImageSharpFixed_WithWebpFragment>
+              }
+            >
+          }
+      }
+    >
+  }
+}
+
+export type StatIconsQueryVariables = {}
+
+export type StatIconsQuery = { __typename?: "Query" } & {
+  allFile: { __typename?: "FileConnection" } & {
+    edges: Array<
+      { __typename?: "FileEdge" } & {
+        node: { __typename?: "File" } & Pick<File, "name"> & {
+            childImageSharp?: Maybe<
+              { __typename?: "ImageSharp" } & {
+                fixed?: Maybe<{ __typename?: "ImageSharpFixed" } & GatsbyImageSharpFixedFragment>
+              }
+            >
+          }
+      }
+    >
+  }
+}
+
+export type ProficiencyIconsQueryVariables = {}
+
+export type ProficiencyIconsQuery = { __typename?: "Query" } & {
+  allFile: { __typename?: "FileConnection" } & {
+    edges: Array<
+      { __typename?: "FileEdge" } & {
+        node: { __typename?: "File" } & Pick<File, "name"> & {
+            childImageSharp?: Maybe<
+              { __typename?: "ImageSharp" } & {
+                fluid?: Maybe<{ __typename?: "ImageSharpFluid" } & GatsbyImageSharpFluidFragment>
+              }
+            >
+          }
+      }
+    >
+  }
+}
+
+export type FilterIconsQueryVariables = {}
+
+export type FilterIconsQuery = { __typename?: "Query" } & {
+  allFile: { __typename?: "FileConnection" } & {
+    edges: Array<
+      { __typename?: "FileEdge" } & {
+        node: { __typename?: "File" } & Pick<File, "name"> & {
+            childImageSharp?: Maybe<
+              { __typename?: "ImageSharp" } & {
+                fixed?: Maybe<{ __typename?: "ImageSharpFixed" } & GatsbyImageSharpFixedFragment>
               }
             >
           }

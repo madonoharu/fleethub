@@ -3,22 +3,22 @@ import { graphql, useStaticQuery } from "gatsby"
 import Img from "gatsby-image"
 import styled from "styled-components"
 
-import { GearIconsQuery } from "../../../graphqlTypes"
+import { FilterIconsQuery } from "../../../graphqlTypes"
 
 type Props = {
   icon: string
 }
 
 const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
-  const { allFile } = useStaticQuery<GearIconsQuery>(graphql`
+  const { allFile } = useStaticQuery<FilterIconsQuery>(graphql`
     query FilterIcons {
       allFile(filter: { relativeDirectory: { eq: "filters" } }) {
         edges {
           node {
             name
             childImageSharp {
-              fluid(maxWidth: 40) {
-                ...GatsbyImageSharpFluid
+              fixed(height: 18) {
+                ...GatsbyImageSharpFixed
               }
             }
           }
@@ -31,10 +31,9 @@ const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
 
   if (!childImageSharp) return null
 
-  return <Img className={className} fluid={childImageSharp.fluid} />
+  return <Img className={className} fixed={childImageSharp.fixed} />
 }
 
 export default styled(FilterIcon)`
-  width: 40px;
   filter: brightness(120%);
 `

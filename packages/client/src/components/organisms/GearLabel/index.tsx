@@ -15,15 +15,15 @@ type GearLabelContainerProps = {
 }
 
 const GearLabelContainer: React.FC<GearLabelContainerProps> = ({ gear, equippable, onReselect }) => {
-  const { kcGear, actions } = useGear(gear)
+  const { fhGear, actions } = useGear(gear)
 
-  if (!kcGear) {
+  if (!fhGear) {
     return <Typography color="error">error</Typography>
   }
 
   return (
     <GearLabel
-      gear={kcGear}
+      gear={fhGear}
       equippable={equippable}
       onUpdate={actions.update}
       onRemove={actions.remove}

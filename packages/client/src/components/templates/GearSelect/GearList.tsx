@@ -1,21 +1,27 @@
 import React from "react"
 import styled from "styled-components"
 import { VariableSizeList, ListChildComponentProps } from "react-window"
-import { GearBase } from "@fleethub/core"
-import { GearCategory } from "@fleethub/data"
+import { GearBase, EquipmentBonuses } from "@fleethub/core"
+import { GearCategory, GearCategoryName } from "@fleethub/data"
 
-import { Button, Divider } from "@material-ui/core"
+import { Divider } from "../../../components"
 
-import CategoryContainer from "./CategoryContainer"
+import GearButton from "./GearButton"
 
 const List = styled(VariableSizeList)``
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+`
 
 type Props = {
   entries: Array<[GearCategory, GearBase[]]>
   onSelect?: (gearId: number) => void
+  getBonuses?: (gear: GearBase) => EquipmentBonuses
 }
 
-const GearList: React.FC<Props> = ({ entries, onSelect }) => {
+const GearList: React.FC<Props> = ({ entries, onSelect, getBonuses }) => {
   const columnCount = 4
 
   const ref = React.useRef<VariableSizeList>(null)
@@ -28,7 +34,17 @@ const GearList: React.FC<Props> = ({ entries, onSelect }) => {
     const [category, gears] = entries[index]
     return (
       <div style={style}>
-        <CategoryContainer category={category} gears={gears} onSelect={onSelect} />
+        <Divider label={GearCategoryName[category]} />
+        <Grid>
+          {gears.map((gear) => (
+            <GearButton
+              key={`gear-${gear.gearId}`}
+              gear={gear}
+              onClick={() => onSelect && onSelect(gear.gearId)}
+              bonuses={getBonuses && getBonuses(gear)}
+            />
+          ))}
+        </Grid>
       </div>
     )
   }
@@ -49,16 +65,6 @@ const GearList: React.FC<Props> = ({ entries, onSelect }) => {
     >
       {renderItem}
     </List>
-  )
-}
-
-const Sim: React.FC<Props> = ({ entries, onSelect }) => {
-  return (
-    <div>
-      {entries.map(([category, gears]) => (
-        <CategoryContainer key={category} category={category} gears={gears} onSelect={onSelect} />
-      ))}
-    </div>
   )
 }
 
