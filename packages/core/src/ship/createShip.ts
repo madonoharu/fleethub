@@ -1,10 +1,10 @@
 import { GearState } from "../gear"
 import { Equipment } from "../equipment"
-import { NullableArray, isNonNullable } from "../utils"
+import { NullableArray } from "../utils"
 
 import { ShipImpl } from "./Ship"
 import { ShipBase } from "./MasterShip"
-import { createShipStats, ModernizationRecord, ShipStats } from "./ShipStats"
+import { createShipStats, ModernizationRecord } from "./ShipStats"
 import { HealthImpl } from "./Health"
 import { createEquipmentBonuses } from "./EquipmentBonuses"
 
@@ -26,5 +26,5 @@ export const createShip = (state: ShipState, base: ShipBase, equipment: Equipmen
   const stats = createShipStats(level, base, equipment, state, bonuses)
   const health = new HealthImpl(stats.maxHp.displayed, currentHp)
 
-  return new ShipImpl(base, stats, bonuses, equipment, health)
+  return new ShipImpl(base, stats, equipment, health)
 }
