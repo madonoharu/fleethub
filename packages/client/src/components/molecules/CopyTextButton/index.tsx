@@ -7,7 +7,7 @@ import Alert from "@material-ui/lab/Alert"
 import { withStyles } from "@material-ui/core/styles"
 
 import { useOpen } from "../../../hooks"
-import { withIconButton } from "../../../hocs"
+import { withIconButton } from "../IconButtons"
 
 const AssignmentButton = withIconButton(Assignment)
 
