@@ -14,6 +14,8 @@ import ShareIcon from "@material-ui/icons/Share"
 
 import withIconButton from "./withIconButton"
 
+export { withIconButton }
+
 export const AddButton = withIconButton(AddIcon)
 export const IncreaseButton = AddButton
 export const DecreaseButton = withIconButton(RemoveIcon)
