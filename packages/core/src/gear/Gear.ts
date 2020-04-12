@@ -8,7 +8,7 @@ export type GearState = {
   exp?: number
 }
 
-export type Gear = Readonly<Required<GearState> & GearBase & { deck: DeckGear }>
+export type Gear = Readonly<Required<GearState> & GearBase & { ace: number; deck: DeckGear }>
 
 export class GearImpl implements Gear {
   public readonly gearId = this.state.gearId
@@ -48,8 +48,11 @@ export class GearImpl implements Gear {
 
   constructor(private state: GearState, private base: GearBase) {}
 
+  get ace() {
+    return Proficiency.expToLevel(this.exp)
+  }
+
   get deck() {
-    const mas = Proficiency.expToLevel(this.exp)
-    return { id: this.gearId, mas, rf: this.stars }
+    return { id: this.gearId, mas: this.ace, rf: this.stars }
   }
 }
