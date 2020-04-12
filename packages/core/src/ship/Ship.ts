@@ -6,7 +6,7 @@ import { GearBase, Gear } from "../gear"
 import { ShipStats } from "./ShipStats"
 import { ShipBase } from "./MasterShip"
 import { Health } from "./Health"
-import { getNextEquipmentBonuses } from "./EquipmentBonuses"
+import { getNextEquipmentBonuses, EquipmentBonuses, createEquipmentBonuses, subtract } from "./EquipmentBonuses"
 
 type PickedShipBase = Pick<
   ShipBase,
@@ -36,6 +36,7 @@ export class ShipImpl implements Ship {
   constructor(
     private base: PickedShipBase,
     private stats: ShipStats,
+    private bonuses: EquipmentBonuses,
     public equipment: Equipment,
     public health: Health
   ) {}
@@ -125,7 +126,12 @@ export class ShipImpl implements Ship {
     return true
   }
 
-  public getNextEquipmentBonuses = (index: number, gear: Gear | GearBase) => {
-    return getNextEquipmentBonuses(this, index, gear)
+  public getNextEquipmentBonuses = (omitIndex: number, gear: Gear | GearBase) => {
+    const current = this.bonuses
+
+    const gears = this.equipment.filter((gear, index) => index !== omitIndex)
+    const next = createEquipmentBonuses(this, [...gears, gear])
+
+    return subtract(current, next)
   }
 }

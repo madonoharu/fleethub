@@ -7,7 +7,7 @@ export type EquipmentBonuses = import("equipment-bonus").EquipmentBonuses
 
 type Key = keyof EquipmentBonuses
 
-const subtract = (left: EquipmentBonuses, right: EquipmentBonuses) => {
+export const subtract = (left: EquipmentBonuses, right: EquipmentBonuses) => {
   const diff: EquipmentBonuses = { ...left }
 
   for (const key in left) {

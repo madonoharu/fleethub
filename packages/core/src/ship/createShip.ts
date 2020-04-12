@@ -26,5 +26,5 @@ export const createShip = (state: ShipState, base: ShipBase, equipment: Equipmen
   const stats = createShipStats(level, base, equipment, state, bonuses)
   const health = new HealthImpl(stats.maxHp.displayed, currentHp)
 
-  return new ShipImpl(base, stats, equipment, health)
+  return new ShipImpl(base, stats, bonuses, equipment, health)
 }
