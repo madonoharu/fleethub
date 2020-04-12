@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { GearPosition } from "./entities"
 
 export type GearSelectState = {
-  position?: GearPosition
+  target?: GearPosition
   filter: string
   category: number
   abyssal: boolean

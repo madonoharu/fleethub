@@ -33,9 +33,12 @@ const getVisibleCategories = (gears: GearBase[]) => {
   return categories.concat(0).sort((a, b) => a - b)
 }
 
-type Props = Pick<ReturnType<typeof useGearSelect>, "state" | "setState" | "equippableFilter" | "onSelect">
+type Props = Pick<
+  ReturnType<typeof useGearSelect>,
+  "state" | "setState" | "onSelect" | "equippableFilter" | "getBonuses"
+>
 
-const GearSelect: React.FC<Props> = ({ state, setState, equippableFilter, onSelect }) => {
+const GearSelect: React.FC<Props> = ({ state, setState, onSelect, equippableFilter = () => true, getBonuses }) => {
   const handleSelect = (gearId: number) => onSelect && onSelect({ gearId })
 
   const equippableGears = fhSystem.factory.masterGears
@@ -55,14 +58,14 @@ const GearSelect: React.FC<Props> = ({ state, setState, equippableFilter, onSele
   return (
     <div>
       <FilterBar equippableGears={equippableGears} state={state} setState={setState} />
-      <GearList entries={entries} onSelect={handleSelect} />
+      <GearList entries={entries} onSelect={handleSelect} getBonuses={getBonuses} />
     </div>
   )
 }
 
 const Container: React.FC = () => {
-  const { state, setState, equippableFilter, onSelect } = useGearSelect()
-  return <GearSelect state={state} setState={setState} equippableFilter={equippableFilter} onSelect={onSelect} />
+  const props = useGearSelect()
+  return <GearSelect {...props} />
 }
 
 export default Container

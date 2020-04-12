@@ -18,8 +18,8 @@ export const useFleet = (id: EntityId) => {
       },
 
       openShipSelect: (role: FleetRole, index: number) => {
-        const position = { fleet: id, role, index }
-        dispatch(shipSelectSlice.actions.set({ position }))
+        const target = { fleet: id, role, index }
+        dispatch(shipSelectSlice.actions.set({ target }))
       },
     }),
     [dispatch, id]

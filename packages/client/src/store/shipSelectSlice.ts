@@ -6,7 +6,7 @@ export type ShipSelectState = {
   abyssal: boolean
   commonly: boolean
   shipTypeFilter: string
-  position?: ShipPosition
+  target?: ShipPosition
 }
 
 const initialState: ShipSelectState = {

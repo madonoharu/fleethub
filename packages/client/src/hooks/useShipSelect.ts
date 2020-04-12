@@ -58,15 +58,15 @@ export const useShipSelect = () => {
       dispatch(shipSelectSlice.actions.set(state))
     }
 
-    const open = Boolean(state.position)
+    const open = Boolean(state.target)
 
     const onClose = () => {
-      setState({ position: undefined })
+      setState({ target: undefined })
     }
 
     const onSelect = (shipId: number) => {
-      if (!state.position) return
-      dispatch(entitiesSlice.actions.createShip({ ...state.position, ship: { shipId } }))
+      if (!state.target) return
+      dispatch(entitiesSlice.actions.createShip({ ...state.target, ship: { shipId } }))
       onClose()
     }
 

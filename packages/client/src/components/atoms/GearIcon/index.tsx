@@ -9,7 +9,7 @@ type Props = {
   iconId: number
 }
 
-const Component: React.FCX<Props> = ({ className, iconId }) => {
+const GearIcon: React.FCX<Props> = ({ className, iconId }) => {
   const { allFile } = useStaticQuery<GearIconsQuery>(graphql`
     query GearIcons {
       allFile(filter: { relativeDirectory: { eq: "gears" } }) {
@@ -17,8 +17,8 @@ const Component: React.FCX<Props> = ({ className, iconId }) => {
           node {
             name
             childImageSharp {
-              fluid(maxWidth: 24) {
-                ...GatsbyImageSharpFluid
+              fixed(height: 24) {
+                ...GatsbyImageSharpFixed
               }
             }
           }
@@ -31,9 +31,7 @@ const Component: React.FCX<Props> = ({ className, iconId }) => {
 
   if (!childImageSharp) return null
 
-  return <Img className={className} fluid={childImageSharp.fluid} />
+  return <Img className={className} fixed={childImageSharp.fixed} />
 }
 
-export default styled(Component)`
-  width: 24px;
-`
+export default styled(GearIcon)``

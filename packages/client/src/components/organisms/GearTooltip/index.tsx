@@ -1,12 +1,12 @@
 import React from "react"
-import { GearBase } from "@fleethub/core"
+import { GearBase, EquipmentBonuses } from "@fleethub/core"
 import styled from "styled-components"
 
 import { Tooltip, Box } from "@material-ui/core"
 
 import { GearNameplate } from "../../../components"
 
-import GearStatList, { EquipmentBonuses } from "./GearStatList"
+import GearStatList from "./GearStatList"
 
 type Props = {
   gear: GearBase

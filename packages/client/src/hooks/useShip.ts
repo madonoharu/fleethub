@@ -7,9 +7,7 @@ import { range } from "lodash-es"
 import { isEntityId, createShallowEqualSelector } from "../utils"
 import { entitiesSlice, ShipEntity, shipsSelectors, gearsSelectors, gearSelectSlice } from "../store"
 
-import { useWhatChanged } from "@simbathesailor/use-what-changed"
-
-const createFhShipSelector = (id: EntityId) => {
+export const createFhShipSelector = (id: EntityId) => {
   const getShipEntity = (state: DefaultRootState) => shipsSelectors.selectEntities(state)[id]
 
   const getGearEntities = (state: DefaultRootState) =>
@@ -40,8 +38,8 @@ export const useShip = (id: EntityId) => {
       },
 
       openGearSelect: (index: number) => {
-        const position = { ship: id, index }
-        dispatch(gearSelectSlice.actions.set({ position }))
+        const target = { ship: id, index }
+        dispatch(gearSelectSlice.actions.set({ target }))
       },
     }),
     [dispatch, id]
