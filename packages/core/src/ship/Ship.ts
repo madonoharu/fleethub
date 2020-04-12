@@ -1,11 +1,12 @@
 import { GearId, ShipId, GearCategory, ShipClass } from "@fleethub/data"
 
 import { Equipment } from "../equipment"
-import { GearBase } from "../gear"
+import { GearBase, Gear } from "../gear"
 
 import { ShipStats } from "./ShipStats"
 import { ShipBase } from "./MasterShip"
 import { Health } from "./Health"
+import { getNextEquipmentBonuses } from "./EquipmentBonuses"
 
 type PickedShipBase = Pick<
   ShipBase,
@@ -122,5 +123,9 @@ export class ShipImpl implements Ship {
     }
 
     return true
+  }
+
+  public getNextEquipmentBonuses = (index: number, gear: Gear | GearBase) => {
+    return getNextEquipmentBonuses(this, index, gear)
   }
 }

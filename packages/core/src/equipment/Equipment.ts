@@ -1,14 +1,16 @@
 import { Gear } from "../gear"
-import { NullableArray, PickByValue } from "../utils"
+import { NullableArray, PickByValue, isNonNullable } from "../utils"
 
 type GearIteratee<R> = (gear: Gear, index: number) => R
 
 export type Equipment = {
+  src: NullableArray<Gear>
   size: number
 
-  gears: NullableArray<Gear>
   defaultSlots: number[]
   currentSlots: number[]
+
+  gears: Gear[]
 
   forEach: (fn: GearIteratee<void>) => void
   has: (fn: GearIteratee<boolean>) => boolean
@@ -21,13 +23,15 @@ export type Equipment = {
 
 export class EquipmentImpl implements Equipment {
   public readonly size: number
+  public readonly gears: Gear[]
 
   private entries: Array<[Gear, number]> = []
 
-  constructor(public gears: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
+  constructor(public src: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
     this.size = defaultSlots.length + 1
+    this.gears = src.filter(isNonNullable)
 
-    gears.forEach((gear, index) => {
+    src.forEach((gear, index) => {
       if (gear) this.entries.push([gear, index])
     })
   }
