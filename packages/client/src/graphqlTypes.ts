@@ -2587,7 +2587,7 @@ export type ProficiencyIconsQuery = { __typename?: "Query" } & {
         node: { __typename?: "File" } & Pick<File, "name"> & {
             childImageSharp?: Maybe<
               { __typename?: "ImageSharp" } & {
-                fluid?: Maybe<{ __typename?: "ImageSharpFluid" } & GatsbyImageSharpFluidFragment>
+                fixed?: Maybe<{ __typename?: "ImageSharpFixed" } & GatsbyImageSharpFixedFragment>
               }
             >
           }

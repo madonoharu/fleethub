@@ -2,7 +2,15 @@ import React from "react"
 import styled from "styled-components"
 import { Gear, GearState } from "@fleethub/core"
 
-import { Flexbox, GearNameplate, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
+import {
+  Flexbox,
+  GearNameplate,
+  GearStarsSelect,
+  GearExpSelect,
+  UpdateButton,
+  ClearButton,
+  GearTooltip,
+} from "../../../components"
 
 type Props = {
   className?: string
@@ -38,14 +46,16 @@ export const GearLabel: React.FC<Props> = ({
   const size = "small"
 
   return (
-    <Flexbox className={className} style={style}>
-      <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
-      <UpdateButton title="変更" size={size} onClick={onReselect} />
-      <ClearButton title="削除" size={size} onClick={onRemove} />
+    <GearTooltip gear={gear}>
+      <Flexbox className={className} style={style}>
+        <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
+        <UpdateButton title="変更" size={size} onClick={onReselect} />
+        <ClearButton title="削除" size={size} onClick={onRemove} />
 
-      <GearExpSelect size={size} exp={gear.exp} onChange={handleExpChange} />
-      <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
-    </Flexbox>
+        <GearExpSelect exp={gear.exp} onChange={handleExpChange} />
+        <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
+      </Flexbox>
+    </GearTooltip>
   )
 }
 

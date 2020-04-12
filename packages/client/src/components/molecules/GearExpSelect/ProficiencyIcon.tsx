@@ -22,10 +22,9 @@ const imgStyle = { objectFit: "contain" }
 
 type ProficiencyIconProps = Pick<React.ComponentProps<"div">, "className" | "onClick"> & {
   exp: number
-  size?: "small"
 }
 
-const Component = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props, ref) => {
+const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props, ref) => {
   const { exp, ...divProps } = props
   const level = Proficiency.expToLevel(exp)
 
@@ -36,8 +35,8 @@ const Component = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props,
           node {
             name
             childImageSharp {
-              fluid(maxHeight: 32) {
-                ...GatsbyImageSharpFluid
+              fixed(height: 24) {
+                ...GatsbyImageSharpFixed
               }
             }
           }
@@ -50,7 +49,7 @@ const Component = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props,
 
   let img: React.ReactNode = null
   if (childImageSharp) {
-    img = <Img className={divProps.className} fluid={childImageSharp.fluid} imgStyle={imgStyle} />
+    img = <Img className={divProps.className} fixed={childImageSharp.fixed} imgStyle={imgStyle} />
   }
 
   return (
@@ -61,11 +60,7 @@ const Component = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props,
   )
 })
 
-const StyledComponent = styled(Component)`
-  position: relative;
-  height: ${(props) => (props.size === "small" ? 24 : 32)}px;
-  width: ${(props) => (props.size === "small" ? 18 : 24)}px;
+export default styled(ProficiencyIcon)`
+  display: block !important;
   filter: brightness(110%) contrast(110%) saturate(100%);
 `
-
-export default StyledComponent
