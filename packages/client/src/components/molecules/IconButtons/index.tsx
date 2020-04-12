@@ -12,7 +12,7 @@ import InfoIcon from "@material-ui/icons/Info"
 import SaveIcon from "@material-ui/icons/Save"
 import ShareIcon from "@material-ui/icons/Share"
 
-import { withIconButton } from "../../../hocs"
+import withIconButton from "./withIconButton"
 
 export const AddButton = withIconButton(AddIcon)
 export const IncreaseButton = AddButton
