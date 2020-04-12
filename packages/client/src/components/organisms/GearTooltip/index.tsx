@@ -6,11 +6,11 @@ import { Tooltip, Box } from "@material-ui/core"
 
 import { GearNameplate } from "../../../components"
 
-import GearStatList from "./GearStatList"
+import GearStatList, { EquipmentBonuses } from "./GearStatList"
 
 type Props = {
   gear: GearBase
-  bonuses?: Partial<{ firepower: number }>
+  bonuses?: EquipmentBonuses
   children: React.ReactElement
 }
 
