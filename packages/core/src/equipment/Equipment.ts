@@ -6,6 +6,7 @@ type GearIteratee<R> = (gear: Gear, index: number) => R
 export type Equipment = {
   size: number
 
+  gears: NullableArray<Gear>
   defaultSlots: number[]
   currentSlots: number[]
 
@@ -21,7 +22,7 @@ export class EquipmentImpl implements Equipment {
 
   private entries: Array<[Gear, number]> = []
 
-  constructor(gears: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
+  constructor(public gears: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
     this.size = defaultSlots.length + 1
 
     gears.forEach((gear, index) => {
