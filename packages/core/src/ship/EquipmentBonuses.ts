@@ -16,14 +16,3 @@ export const subtract = (left: EquipmentBonuses, right: EquipmentBonuses) => {
 
   return diff
 }
-
-export const getNextEquipmentBonuses = (ship: Ship, omitIndex: number, gear: GearData) => {
-  const shipData = { ...ship, id: ship.shipId }
-
-  const gears = ship.equipment.filter((gear, index) => index !== omitIndex)
-  const current = createEquipmentBonuses(shipData, gears)
-
-  const next = createEquipmentBonuses(shipData, [...gears, gear])
-
-  return subtract(next, current)
-}
