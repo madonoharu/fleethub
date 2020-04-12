@@ -1,7 +1,6 @@
 import { DeckGear } from "../utils"
 import Proficiency from "./Proficiency"
 import { GearBase } from "./MasterGear"
-import { GearAttribute } from "./GearAttribute"
 
 export type GearState = {
   gearId: number
@@ -26,24 +25,26 @@ export class GearImpl implements Gear {
   public readonly is = this.base.is
   public readonly in = this.base.in
 
-  public readonly hp = this.base.hp
   public readonly firepower = this.base.firepower
-  public readonly armor = this.base.armor
   public readonly torpedo = this.base.torpedo
   public readonly antiAir = this.base.antiAir
-  public readonly speed = this.base.speed
   public readonly bombing = this.base.bombing
   public readonly asw = this.base.asw
-  public readonly los = this.base.los
-  public readonly luck = this.base.luck
   public readonly accuracy = this.base.accuracy
   public readonly evasion = this.base.evasion
   public readonly antiBomber = this.base.antiBomber
   public readonly interception = this.base.interception
+  public readonly los = this.base.los
+  public readonly armor = this.base.armor
+
   public readonly range = this.base.range
   public readonly radius = this.base.radius
   public readonly cost = this.base.cost
   public readonly improvable = this.base.improvable
+
+  public readonly luck = this.base.luck
+  public readonly hp = this.base.hp
+  public readonly speed = this.base.speed
 
   constructor(private state: GearState, private base: GearBase) {}
 
