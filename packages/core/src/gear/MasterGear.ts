@@ -20,17 +20,16 @@ export default class MasterGear implements GearBase, Required<GearData> {
   public readonly name = ""
 
   public readonly firepower = 0
-  public readonly armor = 0
   public readonly torpedo = 0
   public readonly antiAir = 0
   public readonly bombing = 0
   public readonly asw = 0
-  public readonly los = 0
-
   public readonly accuracy = 0
   public readonly evasion = 0
   public readonly antiBomber = 0
   public readonly interception = 0
+  public readonly los = 0
+  public readonly armor = 0
 
   public readonly range = 0
   public readonly radius = 0
