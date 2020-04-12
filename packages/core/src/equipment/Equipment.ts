@@ -13,8 +13,10 @@ export type Equipment = {
   forEach: (fn: GearIteratee<void>) => void
   has: (fn: GearIteratee<boolean>) => boolean
   count: (fn?: GearIteratee<boolean>) => number
-  map: <R>(fn: GearIteratee<R>) => R[]
   sumBy: (fn: GearIteratee<number> | keyof PickByValue<Gear, number>) => number
+
+  map: <R>(fn: GearIteratee<R>) => R[]
+  filter: (fn: GearIteratee<boolean>) => Gear[]
 }
 
 export class EquipmentImpl implements Equipment {
@@ -42,12 +44,14 @@ export class EquipmentImpl implements Equipment {
     return this.entries.filter((entry) => fn(...entry)).length
   }
 
-  public map: Equipment["map"] = (fn) => this.entries.map((entry) => fn(...entry))
-
   public sumBy: Equipment["sumBy"] = (fn) => {
     if (typeof fn === "function") {
       return this.map(fn).reduce((a, b) => a + b, 0)
     }
     return this.map((gear) => gear[fn]).reduce((a, b) => a + b, 0)
   }
+
+  public map: Equipment["map"] = (fn) => this.entries.map((entry) => fn(...entry))
+
+  public filter: Equipment["filter"] = (fn) => this.entries.filter((entry) => fn(...entry)).map(([gear]) => gear)
 }
