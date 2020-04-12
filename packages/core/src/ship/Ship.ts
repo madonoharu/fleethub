@@ -132,6 +132,6 @@ export class ShipImpl implements Ship {
     const gears = this.equipment.filter((gear, index) => index !== omitIndex)
     const next = createEquipmentBonuses(this, [...gears, gear])
 
-    return subtract(current, next)
+    return subtract(next, current)
   }
 }
