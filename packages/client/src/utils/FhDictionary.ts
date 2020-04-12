@@ -17,3 +17,11 @@ export const StatKeyDictionary = {
   radius: "行動半径",
   cost: "コスト",
 }
+
+export const getRangeName = (range: number) => {
+  const str = ["無", "短", "中", "長"][range]
+
+  if (str) return str
+  if (range >= 4) return "超長"
+  return "不明"
+}
