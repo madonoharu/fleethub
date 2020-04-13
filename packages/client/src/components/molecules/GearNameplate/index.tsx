@@ -13,11 +13,11 @@ type Props = {
   equippable?: boolean
 }
 
-export const GearNameplate: React.FCX<Props> = ({ className, name, iconId, size, equippable = true }) => {
+export const GearNameplate: React.FCX<Props> = ({ className, name, iconId, wrap, equippable = true }) => {
   return (
     <Flexbox className={className}>
       <GearIcon iconId={iconId} />
-      <Typography variant="body2" color={equippable ? "initial" : "secondary"}>
+      <Typography variant="body2" align="left" noWrap={!wrap} color={equippable ? "initial" : "secondary"}>
         {name}
       </Typography>
     </Flexbox>
@@ -29,16 +29,10 @@ const smallText = css`
   line-height: 1.66;
 `
 
-const noWrapCss = css`
-  overflow: hidden;
-  white-space: nowrap;
-`
-
 export default styled(GearNameplate)`
   max-width: 100%;
   p {
-    ${({ wrap }) => !wrap && noWrapCss}
-    ${({ size, theme }) => size === "small" && smallText}
+    ${({ size }) => size === "small" && smallText}
   }
 
   ${GearIcon} {
