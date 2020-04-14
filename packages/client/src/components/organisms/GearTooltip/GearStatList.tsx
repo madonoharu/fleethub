@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell, TableCellProps } from "@material-ui/core"
 
 import { StatIcon } from "../../../components"
-import { StatKeyDictionary, getRangeName } from "../../../utils"
+import { StatKeyDictionary, getRangeName, withSign } from "../../../utils"
 
 const keys = [
   "firepower",
@@ -44,10 +44,7 @@ const BonusCell = styled(TableCell)`
 const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
   if (!bonuses || key === "radius") return ""
   const bonus = bonuses[key]
-
-  if (!bonus) return ""
-  if (bonus > 0) return `+${bonus}`
-  return bonus
+  return withSign(bonus)
 }
 
 export const toStatEntries = (gear: GearBase, bonuses?: EquipmentBonuses) =>
