@@ -8,7 +8,7 @@ import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip"
 export interface WithIconButtonProps extends IconButtonProps {
   label?: string
   title?: string
-  tooltipProps?: Partial<TooltipProps>
+  tooltipProps?: Omit<TooltipProps, "title">
 }
 
 const withIconButton = (WrappedIcon: typeof SvgIcon & React.FC) => {
@@ -20,7 +20,7 @@ const withIconButton = (WrappedIcon: typeof SvgIcon & React.FC) => {
       </IconButton>
     )
 
-    if (title || (tooltipProps && tooltipProps.title)) {
+    if (title) {
       return (
         <Tooltip title={title} {...tooltipProps}>
           {WrappedButton}
