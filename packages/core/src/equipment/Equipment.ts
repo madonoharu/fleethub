@@ -3,6 +3,8 @@ import { NullableArray, PickByValue, isNonNullable } from "../utils"
 
 type GearIteratee<R> = (gear: Gear, index: number) => R
 
+type NumberKey = keyof PickByValue<Gear, number>
+
 export type Equipment = {
   src: NullableArray<Gear>
   size: number
@@ -13,12 +15,15 @@ export type Equipment = {
   gears: Gear[]
 
   forEach: (fn: GearIteratee<void>) => void
+  filter: (fn: GearIteratee<boolean>) => Gear[]
+  map<R>(fn: GearIteratee<R>): R[]
+  map(fn: GearIteratee<number> | NumberKey): number[]
+
+  sumBy: (fn: GearIteratee<number> | NumberKey) => number
+  maxValueBy: (fn: GearIteratee<number> | NumberKey) => number
+
   has: (fn: GearIteratee<boolean>) => boolean
   count: (fn?: GearIteratee<boolean>) => number
-  sumBy: (fn: GearIteratee<number> | keyof PickByValue<Gear, number>) => number
-
-  map: <R>(fn: GearIteratee<R>) => R[]
-  filter: (fn: GearIteratee<boolean>) => Gear[]
 }
 
 export class EquipmentImpl implements Equipment {
@@ -37,6 +42,15 @@ export class EquipmentImpl implements Equipment {
   }
 
   public forEach = (fn: GearIteratee<void>) => this.entries.forEach((entry) => fn(...entry))
+  public filter: Equipment["filter"] = (fn) => this.entries.filter((entry) => fn(...entry)).map(([gear]) => gear)
+
+  public map: Equipment["map"] = <R>(arg: GearIteratee<R> | NumberKey) => {
+    if (typeof arg === "function") return this.entries.map((entry) => arg(...entry))
+    return this.entries.map((entry) => entry[0][arg])
+  }
+
+  public sumBy: Equipment["sumBy"] = (arg) => this.map(arg).reduce((a, b) => a + b, 0)
+  public maxValueBy: Equipment["maxValueBy"] = (arg) => Math.max(...this.map(arg))
 
   public has: Equipment["has"] = (fn) => this.entries.some((entry) => fn(...entry))
 
@@ -47,15 +61,4 @@ export class EquipmentImpl implements Equipment {
 
     return this.entries.filter((entry) => fn(...entry)).length
   }
-
-  public sumBy: Equipment["sumBy"] = (fn) => {
-    if (typeof fn === "function") {
-      return this.map(fn).reduce((a, b) => a + b, 0)
-    }
-    return this.map((gear) => gear[fn]).reduce((a, b) => a + b, 0)
-  }
-
-  public map: Equipment["map"] = (fn) => this.entries.map((entry) => fn(...entry))
-
-  public filter: Equipment["filter"] = (fn) => this.entries.filter((entry) => fn(...entry)).map(([gear]) => gear)
 }
