@@ -8,7 +8,7 @@ import Popover from "@material-ui/core/Popover"
 
 import ProficiencyIcon from "./ProficiencyIcon"
 import { Flexbox, NumberInput } from "../../../components"
-import { usePopover } from "../../../hooks"
+import { useAnchorEl } from "../../../hooks"
 
 const { expTable, maxExp } = Proficiency
 const exps = expTable.concat(maxExp)
@@ -25,15 +25,14 @@ type Props = {
 }
 
 const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
-  const { onOpen, ...hendler } = usePopover()
+  const { onOpen, ...hendler } = useAnchorEl()
 
   const handleChange: React.MouseEventHandler = React.useCallback(
     (event) => {
       onChange && onChange(Number(event.currentTarget.id))
       hendler.onClose()
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onChange, hendler.onClose]
+    [onChange, hendler]
   )
 
   return (
