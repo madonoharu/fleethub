@@ -29,7 +29,7 @@ const hasBonus = ({ bonuses }: Props) => {
 
 const bonusCss = css`
   box-sizing: border-box;
-  border: ${({ theme }) => `1px solid ${theme.kc.bonus}`};
+  border: ${({ theme }) => `1px solid ${theme.kc.palette.bonus}`};
 `
 
 export default styled(GearButton)`

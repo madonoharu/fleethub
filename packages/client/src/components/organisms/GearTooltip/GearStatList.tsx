@@ -38,7 +38,7 @@ const TableCell = styled(({ statKey, ...props }: { statKey?: Key } & TableCellPr
 `
 
 const BonusCell = styled(TableCell)`
-  color: ${({ theme }) => theme.kc.bonus};
+  color: ${({ theme }) => theme.kc.palette.bonus};
 `
 
 const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
