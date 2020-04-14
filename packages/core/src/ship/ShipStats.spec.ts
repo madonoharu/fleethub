@@ -1,4 +1,4 @@
-import { createShipStats, ShipStats, BasicStat, IncreasingStat, ShipStat, ShipLuck } from "./ShipStats"
+import { createShipStats, ShipStats, BasicStat, IncreasingStat, ShipStat, ShipLuck, ShipRange } from "./ShipStats"
 import { ShipDef, defToData } from "../utils/testUtils"
 
 describe("ShipStats", () => {
@@ -15,9 +15,10 @@ describe("ShipStats", () => {
 
       hp: [15, 16],
       luck: [17, 18],
+      range: 1,
     }
 
-    const equipment = { sumBy: () => 1 }
+    const equipment = { sumBy: () => 1, maxValueBy: () => 2 }
 
     const stats = createShipStats(0, base, equipment, {}, {})
 
@@ -32,6 +33,7 @@ describe("ShipStats", () => {
       evasion: { left: 13, right: 14 },
 
       luck: { left: 17, right: 18 },
+      range: { naked: 1, equipment: 2 },
     })
 
     expect(stats.firepower).toBeInstanceOf(BasicStat)
@@ -44,6 +46,7 @@ describe("ShipStats", () => {
     expect(stats.evasion).toBeInstanceOf(IncreasingStat)
 
     expect(stats.luck).toBeInstanceOf(ShipLuck)
+    expect(stats.range).toBeInstanceOf(ShipRange)
   })
 
   it("BasicStat", () => {
