@@ -14,7 +14,7 @@ export const StatKeyDictionary = {
   luck: "運",
 
   range: "射程",
-  radius: "行動半径",
+  radius: "半径",
   cost: "コスト",
 }
 

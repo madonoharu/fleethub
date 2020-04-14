@@ -44,30 +44,36 @@ export const GearLabel: React.FC<Props> = ({
   )
 
   return (
-    <GearTooltip gear={gear}>
-      <Flexbox className={className} style={style}>
-        <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
-        <UpdateButton title="変更" size="small" onClick={onReselect} />
-        <ClearButton title="削除" size="small" onClick={onRemove} />
+    <Flexbox className={className} style={style}>
+      <GearTooltip gear={gear}>
+        <div>
+          <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
+        </div>
+      </GearTooltip>
 
-        <GearExpSelect exp={gear.exp} onChange={handleExpChange} />
-        <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
-      </Flexbox>
-    </GearTooltip>
+      <UpdateButton title="変更" size="small" onClick={onReselect} />
+      <ClearButton title="削除" size="small" onClick={onRemove} />
+
+      <GearExpSelect exp={gear.exp} onChange={handleExpChange} />
+      <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
+    </Flexbox>
   )
 }
 
 const Styled = styled(GearLabel)`
   width: 100%;
   transition: 250ms;
+  padding: 0 4px;
 
-  > :not(${GearNameplate}) {
+  > :not(:first-child) {
     flex-shrink: 0;
-    margin-right: 4px;
   }
 
   ${GearExpSelect} {
     margin-left: auto;
+  }
+
+  ${GearStarsSelect} {
   }
 
   ${UpdateButton}, ${ClearButton} {

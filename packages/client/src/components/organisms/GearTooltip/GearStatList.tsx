@@ -2,27 +2,10 @@ import React from "react"
 import { GearBase, isNonNullable, EquipmentBonuses } from "@fleethub/core"
 import styled from "styled-components"
 
-import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell } from "@material-ui/core"
+import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell, TableCellProps } from "@material-ui/core"
 
-import { StatIcon, Text } from "../../../components"
+import { StatIcon } from "../../../components"
 import { StatKeyDictionary, getRangeName } from "../../../utils"
-
-const Table = styled(MuiTable)`
-  width: auto;
-`
-
-const TableCell = styled(MuiTableCell)`
-  padding: 0 4px;
-  border: none;
-`
-const BonusCell = styled(TableCell)`
-  color: ${({ theme }) => theme.kc.bonus};
-`
-
-const SpaceBetween = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
 
 const keys = [
   "firepower",
@@ -41,18 +24,22 @@ const keys = [
 ] as const
 
 type Key = typeof keys[number]
-type StatEntry = [Key, number | string]
+type Value = number | string
+type StatEntry = [Key, Value, Value?]
 
-export const toStatEntries = (gear: GearBase) =>
-  keys
-    .map((key): StatEntry | undefined => {
-      const value = gear[key]
-      if (value === 0) return
+const Table = styled(MuiTable)`
+  width: auto;
+`
 
-      if (key === "range") return [key, getRangeName(value)]
-      return [key, value]
-    })
-    .filter(isNonNullable)
+const TableCell = styled(({ statKey, ...props }: { statKey?: Key } & TableCellProps) => <MuiTableCell {...props} />)`
+  padding: 0 4px;
+  border: none;
+  color: ${({ theme, statKey }) => statKey && theme.kc.palette[statKey]};
+`
+
+const BonusCell = styled(TableCell)`
+  color: ${({ theme }) => theme.kc.bonus};
+`
 
 const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
   if (!bonuses || key === "radius") return ""
@@ -63,34 +50,43 @@ const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
   return bonus
 }
 
+export const toStatEntries = (gear: GearBase, bonuses?: EquipmentBonuses) =>
+  keys
+    .map((key): StatEntry | undefined => {
+      const value = gear[key]
+      const bonus = getBonusText(bonuses, key)
+
+      if (!value && !bonus) return
+
+      if (key === "range") return [key, getRangeName(value), bonus]
+      return [key, value, bonus]
+    })
+    .filter(isNonNullable)
+
 export type Props = {
   gear: GearBase
   bonuses?: EquipmentBonuses
 }
 
 const GearStatList: React.FC<Props> = ({ gear, bonuses }) => {
-  const entries = toStatEntries(gear)
+  const entries = toStatEntries(gear, bonuses)
   return (
-    <>
-      <Table size="small">
-        <TableBody>
-          {entries.map(([key, value]) => (
-            <TableRow key={key}>
-              <TableCell>
-                <StatIcon icon={key} />
-              </TableCell>
-              <TableCell>{StatKeyDictionary[key]}</TableCell>
-              <TableCell align="right">{value}</TableCell>
-              <BonusCell>{getBonusText(bonuses, key)}</BonusCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <SpaceBetween>
-        <Text>{gear.cost > 0 && `${StatKeyDictionary.cost} ${gear.cost}`}</Text>
-        <Text>ID {gear.gearId}</Text>
-      </SpaceBetween>
-    </>
+    <Table size="small">
+      <TableBody>
+        {entries.map(([key, value, bonus]) => (
+          <TableRow key={key}>
+            <TableCell>
+              <StatIcon icon={key} />
+            </TableCell>
+            <TableCell statKey={key}>{StatKeyDictionary[key]}</TableCell>
+            <TableCell statKey={key} align="right">
+              {value}
+            </TableCell>
+            <BonusCell>{bonus}</BonusCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   )
 }
 

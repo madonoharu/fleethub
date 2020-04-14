@@ -1,6 +1,7 @@
-import { blue, cyan, pink, grey, lightBlue } from "@material-ui/core/colors"
-import { createMuiTheme } from "@material-ui/core"
+import { createMuiTheme, colors } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
+
+const { blue, cyan, pink, grey, lightBlue } = colors
 
 const fontFamily = `
 -apple-system, 
@@ -18,7 +19,7 @@ sans-serif,
 "Noto Sans Emoji"
 `
 
-const dark = "rgba(15, 20, 20, 0.9)"
+const dark = "rgba(15, 20, 20, 1)"
 const clear = "rgba(20, 20, 20, 0.1)"
 const blueGrey = "rgba(66, 66, 77, 0.95)"
 
@@ -119,9 +120,26 @@ const muiTheme = createMuiTheme({
   },
 })
 
+const kcPalette = {
+  firepower: colors.pink[300],
+  torpedo: colors.blue[300],
+  antiAir: colors.green[300],
+  asw: colors.cyan[300],
+  bombing: colors.pink[300],
+  accuracy: colors.deepOrange[200],
+  evasion: colors.lightBlue[300],
+  antiBomber: colors.deepOrange[200],
+  interception: colors.lightBlue[300],
+  los: colors.lime[300],
+  armor: colors.amber[300],
+  range: colors.purple[200],
+  radius: colors.lightGreen[300],
+}
+
 const kc = {
   stars: cyan[400],
   bonus: lightBlue[400],
+  palette: kcPalette,
 }
 const theme = { ...muiTheme, kc }
 export type Theme = typeof theme
