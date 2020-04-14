@@ -23,7 +23,7 @@ const dark = "rgba(15, 20, 20, 1)"
 const clear = "rgba(20, 20, 20, 0.1)"
 const blueGrey = "rgba(66, 66, 77, 0.95)"
 
-const palette = createPalette({
+const muiPalette = createPalette({
   type: "dark",
   primary: blue,
   secondary: pink,
@@ -37,7 +37,7 @@ const muiTheme = createMuiTheme({
   typography: {
     fontFamily,
   },
-  palette,
+  palette: muiPalette,
   props: {
     MuiContainer: {
       maxWidth: "md",
@@ -105,6 +105,7 @@ const muiTheme = createMuiTheme({
       root: {
         textTransform: "none",
         minWidth: 0,
+        fontWeight: 400,
       },
     },
     MuiTooltip: {
@@ -114,7 +115,7 @@ const muiTheme = createMuiTheme({
     },
     MuiAppBar: {
       colorPrimary: {
-        backgroundColor: palette.grey[800],
+        backgroundColor: muiPalette.grey[800],
       },
     },
   },
@@ -134,11 +135,14 @@ const kcPalette = {
   armor: colors.amber[300],
   range: colors.purple[200],
   radius: colors.lightGreen[300],
+
+  maxHp: muiPalette.text.primary,
+
+  stars: cyan[400],
+  bonus: lightBlue[400],
 }
 
 const kc = {
-  stars: cyan[400],
-  bonus: lightBlue[400],
   palette: kcPalette,
 }
 const theme = { ...muiTheme, kc }
