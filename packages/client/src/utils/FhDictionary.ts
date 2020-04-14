@@ -16,6 +16,8 @@ export const StatKeyDictionary = {
   range: "射程",
   radius: "半径",
   cost: "コスト",
+
+  maxHp: "耐久",
 }
 
 export const getRangeName = (range: number) => {
