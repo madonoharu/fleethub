@@ -14,7 +14,7 @@ type Props = {
 
 const GearButton: React.FCX<Props> = ({ className, gear, onClick, bonuses }) => {
   return (
-    <GearTooltip gear={gear} bonuses={bonuses}>
+    <GearTooltip gear={gear} bonuses={bonuses} enterDelay={300} enterNextDelay={300}>
       <Button className={className} onClick={onClick}>
         <GearNameplate name={gear.name} iconId={gear.iconId} />
       </Button>
