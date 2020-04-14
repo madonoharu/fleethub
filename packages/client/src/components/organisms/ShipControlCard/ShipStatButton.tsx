@@ -3,32 +3,30 @@ import styled from "styled-components"
 import { ShipStat } from "@fleethub/core"
 import { useTranslation } from "react-i18next"
 
-import { Button, Tooltip, Dialog } from "@material-ui/core"
+import { Button, Tooltip } from "@material-ui/core"
 
-import { StatIcon } from "../../../components"
+import { StatIcon, DialogButton } from "../../../components"
 import { StatKeyDictionary } from "../../../utils"
 
 import ShipStatText from "./ShipStatText"
 import ShipStatForm, { ShipStatProps } from "./ShipStatForm"
-import { useOpen } from "../../../hooks"
 
 type Props = ShipStatProps
 
 const ShipStatButton: React.FCX<Props> = ({ className, statKey, stat, onUpdate }) => {
-  const { onOpen, ...handler } = useOpen()
+  const button = (
+    <Tooltip title={StatKeyDictionary[statKey]}>
+      <Button className={className}>
+        <StatIcon icon={statKey} />
+        <ShipStatText stat={stat} />
+      </Button>
+    </Tooltip>
+  )
 
   return (
-    <>
-      <Tooltip title={StatKeyDictionary[statKey]}>
-        <Button className={className} onClick={onOpen}>
-          <StatIcon icon={statKey} />
-          <ShipStatText stat={stat} />
-        </Button>
-      </Tooltip>
-      <Dialog {...handler}>
-        <ShipStatForm statKey={statKey} stat={stat} onUpdate={onUpdate} />
-      </Dialog>
-    </>
+    <DialogButton button={button}>
+      <ShipStatForm statKey={statKey} stat={stat} onUpdate={onUpdate} />
+    </DialogButton>
   )
 }
 
