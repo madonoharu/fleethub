@@ -30,6 +30,8 @@ export type FleetState = import("./fleets").FleetState
 export type FleetRole = import("./fleets").FleetRole
 export type ShipEntity = import("./ships").ShipEntity
 
+export type ShipChanges = Partial<ShipEntity>
+
 export { gearsSelectors, shipsSelectors, fleetsSelectors }
 
 export { selectId } from "./entity"
