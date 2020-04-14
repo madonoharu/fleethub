@@ -7,7 +7,7 @@ import Tooltip from "@material-ui/core/Tooltip"
 import Popover from "@material-ui/core/Popover"
 import Typography from "@material-ui/core/Typography"
 
-import { usePopover } from "../../../hooks"
+import { useAnchorEl } from "../../../hooks"
 
 import Buttons from "./Buttons"
 
@@ -27,7 +27,7 @@ type Props = {
 const anchorOrigin = { vertical: "bottom", horizontal: "center" } as const
 
 const Component: React.FC<Props> = ({ className, stars, onChange }) => {
-  const { onOpen, ...hendler } = usePopover()
+  const { onOpen, ...hendler } = useAnchorEl()
 
   const handleChange = React.useCallback(
     (value: number) => {

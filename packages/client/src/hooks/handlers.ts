@@ -11,7 +11,7 @@ export const useOpen = (initialOpen = false) => {
   }
 }
 
-export const usePopover = () => {
+export const useAnchorEl = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const onOpen = useCallback((event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget), [setAnchorEl])
