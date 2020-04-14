@@ -6,8 +6,10 @@ type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor"
 type IncreasingStatKey = "asw" | "los" | "evasion"
 
 type EquipmentRelatedStatKey = BasicStatKey | IncreasingStatKey
+export type ShipStatKey = EquipmentRelatedStatKey | "maxHp" | "luck" | "range"
 
 export type ShipStat = {
+  key: ShipStatKey
   displayed: number
   left?: number
   right?: number
@@ -30,6 +32,7 @@ const getMarriageBonus = (left: number) => {
 
 export class BasicStat implements EquipmentRelatedStat {
   constructor(
+    public key: BasicStatKey,
     public left: number,
     public right: number,
     public equipment: number,
@@ -50,6 +53,7 @@ export class BasicStat implements EquipmentRelatedStat {
 
 export class IncreasingStat implements EquipmentRelatedStat {
   constructor(
+    public key: IncreasingStatKey,
     public left: number,
     public right: number,
     public equipment: number,
@@ -70,6 +74,8 @@ export class IncreasingStat implements EquipmentRelatedStat {
 }
 
 export class ShipMaxHp implements ShipStat {
+  public readonly key = "maxHp"
+
   constructor(public left: number, public right: number, public modernization = 0, private isMarried: boolean) {}
 
   get displayed() {
@@ -85,6 +91,8 @@ export class ShipMaxHp implements ShipStat {
 }
 
 export class ShipLuck implements ShipStat {
+  public readonly key = "luck"
+
   constructor(public left: number, public right: number, public modernization = 0) {}
 
   get displayed() {
@@ -94,6 +102,8 @@ export class ShipLuck implements ShipStat {
 }
 
 export class ShipRange implements ShipStat {
+  public readonly key = "range"
+
   constructor(public naked: number, public equipment: number, public bonus = 0) {}
 
   get displayed() {
@@ -126,11 +136,19 @@ export const createShipStats = (
   bonuses: StatBonusRecord
 ): ShipStats => {
   const createBasicStat = (key: BasicStatKey) => {
-    return new BasicStat(base[key][0], base[key][1], equipment.sumBy(key), modernization[key], bonuses[key])
+    return new BasicStat(key, base[key][0], base[key][1], equipment.sumBy(key), modernization[key], bonuses[key])
   }
 
   const createIncreasingStat = (key: IncreasingStatKey) => {
-    return new IncreasingStat(base[key][0], base[key][1], equipment.sumBy(key), modernization[key], bonuses[key], level)
+    return new IncreasingStat(
+      key,
+      base[key][0],
+      base[key][1],
+      equipment.sumBy(key),
+      modernization[key],
+      bonuses[key],
+      level
+    )
   }
 
   const isMarried = level >= 100

@@ -50,7 +50,8 @@ describe("ShipStats", () => {
   })
 
   it("BasicStat", () => {
-    expect(new BasicStat(1, 2, 3, 4, 5)).toMatchObject<ShipStat>({
+    expect(new BasicStat("firepower", 1, 2, 3, 4, 5)).toMatchObject<ShipStat>({
+      key: "firepower",
       left: 1,
       right: 2,
       equipment: 3,
@@ -62,7 +63,8 @@ describe("ShipStats", () => {
   })
 
   it("IncreasingStat", () => {
-    expect(new IncreasingStat(5, 1, 100, 3, 4, 5)).toMatchObject<ShipStat>({
+    expect(new IncreasingStat("asw", 5, 1, 100, 3, 4, 5)).toMatchObject<ShipStat>({
+      key: "asw",
       left: 1,
       right: 100,
       equipment: 3,
