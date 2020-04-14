@@ -13,11 +13,11 @@ import ShipStatForm, { ShipStatProps } from "./ShipStatForm"
 
 type Props = ShipStatProps
 
-const ShipStatButton: React.FCX<Props> = ({ className, statKey, stat, onUpdate }) => {
+const ShipStatButton: React.FCX<Props> = ({ className, stat, onUpdate }) => {
   const button = (
-    <Tooltip title={StatKeyDictionary[statKey]}>
+    <Tooltip title={StatKeyDictionary[stat.key]}>
       <Button className={className}>
-        <StatIcon icon={statKey} />
+        <StatIcon icon={stat.key} />
         <ShipStatText stat={stat} />
       </Button>
     </Tooltip>
@@ -26,7 +26,7 @@ const ShipStatButton: React.FCX<Props> = ({ className, statKey, stat, onUpdate }
   return (
     <DialogButton button={button}>
       <DialogContent>
-        <ShipStatForm statKey={statKey} stat={stat} onUpdate={onUpdate} />
+        <ShipStatForm stat={stat} onUpdate={onUpdate} />
       </DialogContent>
     </DialogButton>
   )
