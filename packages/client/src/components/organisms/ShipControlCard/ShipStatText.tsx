@@ -11,7 +11,7 @@ const ModernizationText = styled.span`
 `
 
 const BonusText = styled.span`
-  color: ${({ theme }) => theme.kc.bonus};
+  color: ${({ theme }) => theme.kc.palette.bonus};
 `
 
 type Props = {

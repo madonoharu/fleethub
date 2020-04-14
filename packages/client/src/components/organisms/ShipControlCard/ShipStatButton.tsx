@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { ShipStat } from "@fleethub/core"
 import { useTranslation } from "react-i18next"
 
-import { Button, Tooltip } from "@material-ui/core"
+import { Button, Tooltip, DialogTitle, DialogContent } from "@material-ui/core"
 
 import { StatIcon, DialogButton } from "../../../components"
 import { StatKeyDictionary } from "../../../utils"
@@ -25,7 +25,9 @@ const ShipStatButton: React.FCX<Props> = ({ className, statKey, stat, onUpdate }
 
   return (
     <DialogButton button={button}>
-      <ShipStatForm statKey={statKey} stat={stat} onUpdate={onUpdate} />
+      <DialogContent>
+        <ShipStatForm statKey={statKey} stat={stat} onUpdate={onUpdate} />
+      </DialogContent>
     </DialogButton>
   )
 }
