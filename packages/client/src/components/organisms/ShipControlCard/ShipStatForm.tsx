@@ -8,34 +8,31 @@ import { NumberInput, Flexbox } from "../../../components"
 import { StatKeyDictionary } from "../../../utils"
 import { ShipChanges } from "../../../store"
 
-import { StatKey } from "./ShipStats"
-
 export type ShipStatProps = {
-  statKey: StatKey
   stat: ShipStat
   onUpdate: (changes: ShipChanges) => void
 }
 
 type Props = ShipStatProps
 
-const ShipStatForm: React.FCX<Props> = ({ className, statKey, stat, onUpdate }) => {
+const ShipStatForm: React.FCX<Props> = ({ className, stat, onUpdate }) => {
   const { displayed, modernization = 0, equipment, bonus, naked } = stat
 
   const raw = displayed - modernization
 
   const setModernization = (value: number) => {
     const next = value === 0 ? undefined : value
-    onUpdate({ [statKey]: next })
+    onUpdate({ [stat.key]: next })
   }
 
   const handleDisplayedChange = (value: number) => setModernization(value - raw)
 
   return (
     <div className={className}>
-      <Typography variant="subtitle1">{StatKeyDictionary[statKey]}</Typography>
+      <Typography variant="subtitle1">{StatKeyDictionary[stat.key]}</Typography>
       <Flexbox>
         <NumberInput label="表示ステータス" value={displayed} onChange={handleDisplayedChange} />
-        <Button onClick={() => onUpdate({ [statKey]: undefined })}>初期化</Button>
+        <Button onClick={() => onUpdate({ [stat.key]: undefined })}>初期化</Button>
       </Flexbox>
 
       <NumberInput label="上昇値" value={modernization} onChange={setModernization} />
@@ -48,6 +45,6 @@ const ShipStatForm: React.FCX<Props> = ({ className, statKey, stat, onUpdate }) 
 
 export default styled(ShipStatForm)`
   h6 {
-    color: ${({ theme, statKey }) => theme.kc.palette[statKey]};
+    color: ${({ theme, stat }) => theme.kc.palette[stat.key]};
   }
 `

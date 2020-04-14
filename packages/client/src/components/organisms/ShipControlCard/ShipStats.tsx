@@ -1,25 +1,31 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship } from "@fleethub/core"
+import { Ship, ShipStatKey } from "@fleethub/core"
 
+import { StatIcon, Flexbox } from "../../../components"
 import { ShipChanges } from "../../../store"
 
 import ShipStatButton from "./ShipStatButton"
+import ShipStatText from "./ShipStatText"
 
 type Props = {
   ship: Ship
   onUpdate: (changes: ShipChanges) => void
 }
 
-const keys = ["maxHp", "firepower", "torpedo", "antiAir", "armor", "asw", "los", "evasion", "luck"] as const
-export type StatKey = typeof keys[number]
+const keys: ShipStatKey[] = ["maxHp", "firepower", "torpedo", "antiAir", "armor", "asw", "los", "evasion", "luck"]
 
 const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
     <div className={className}>
       {keys.map((key) => (
-        <ShipStatButton key={key} statKey={key} stat={ship[key]} onUpdate={onUpdate} />
+        <ShipStatButton key={key} stat={ship[key]} onUpdate={onUpdate} />
       ))}
+
+      <Flexbox>
+        <StatIcon icon="range" />
+        <ShipStatText stat={ship.range} />
+      </Flexbox>
     </div>
   )
 }
