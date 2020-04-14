@@ -5,11 +5,11 @@ import createPalette from "@material-ui/core/styles/createPalette"
 const fontFamily = `
 -apple-system, 
 BlinkMacSystemFont,
-"Segoe UI Regular",
 "Segoe UI",
 Roboto,
 "Hiragino Sans",
 "Noto Sans CJK JP",
+"Original Yu Gothic",
 "Yu Gothic",
 sans-serif,
 "Apple Color Emoji",
@@ -70,6 +70,34 @@ const muiTheme = createMuiTheme({
         "::-webkit-scrollbar-thumb": {
           background: grey[700],
         },
+
+        "@font-face": [
+          {
+            fontFamily: "Original Yu Gothic",
+            src: "local('Yu Gothic Medium')",
+            fontWeight: 100,
+          },
+          {
+            fontFamily: "Original Yu Gothic",
+            src: "local('Yu Gothic Medium')",
+            fontWeight: 200,
+          },
+          {
+            fontFamily: "Original Yu Gothic",
+            src: "local('Yu Gothic Medium')",
+            fontWeight: 300,
+          },
+          {
+            fontFamily: "Original Yu Gothic",
+            src: "local('Yu Gothic Medium')",
+            fontWeight: 400,
+          },
+          {
+            fontFamily: "Original Yu Gothic",
+            src: "local('Yu Gothic Bold')",
+            fontWeight: "bold",
+          },
+        ],
       },
     },
     MuiButton: {
