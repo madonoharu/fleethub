@@ -6,38 +6,30 @@ import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import Box from "@material-ui/core/Box"
 
-import { EquipmentControl, ShipBanner, UpdateButton, ClearButton, StatIcon } from "../../../components"
-import { ShipEntity } from "../../../store"
+import { StatIcon } from "../../../components"
+import { ShipChanges } from "../../../store"
 
-import LevelButton from "./LevelButton"
-import StatLabel from "./StatLabel"
+import ShipStatButton from "./ShipStatButton"
 
 type Props = {
   ship: Ship
-  onUpdate: (changes: Partial<ShipEntity>) => void
+  onUpdate: (changes: ShipChanges) => void
 }
 
-const keys = ["firepower", "torpedo", "antiAir", "armor", "asw", "los", "evasion"] as const
+const keys = ["maxHp", "firepower", "torpedo", "antiAir", "armor", "asw", "los", "evasion"] as const
+export type StatKey = typeof keys[number]
 
-const Component: React.FCX<Props> = ({ className, ship, onUpdate }) => {
-  const handleLevelChange = (level: number) => {
-    onUpdate({ level })
-  }
+const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
     <Box className={className}>
-      <Button>
-        <StatLabel statKey="hp" stat={ship.maxHp} />
-      </Button>
       {keys.map((key) => (
-        <Button key={key}>
-          <StatLabel statKey={key} stat={ship[key]} />
-        </Button>
+        <ShipStatButton key={key} statKey={key} stat={ship[key]} onUpdate={onUpdate} />
       ))}
     </Box>
   )
 }
 
-export default styled(Component)`
+export default styled(ShipStats)`
   display: grid;
   grid-template-columns: 50% 50%;
   button {
