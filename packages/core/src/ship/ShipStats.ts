@@ -8,16 +8,13 @@ type IncreasingStatKey = "asw" | "los" | "evasion"
 type EquipmentRelatedStatKey = BasicStatKey | IncreasingStatKey
 
 export type ShipStat = {
-  left: number
-  right: number
-
-  modernization: number
-
+  displayed: number
+  left?: number
+  right?: number
+  modernization?: number
   equipment?: number
   bonus?: number
   naked?: number
-
-  displayed: number
 }
 
 type EquipmentRelatedStat = Required<ShipStat>
@@ -96,23 +93,34 @@ export class ShipLuck implements ShipStat {
   }
 }
 
+export class ShipRange implements ShipStat {
+  constructor(public naked: number, public equipment: number, public bonus = 0) {}
+
+  get displayed() {
+    const { naked, equipment, bonus } = this
+    return Math.max(naked, equipment) + bonus
+  }
+}
+
 export type ShipStats = Record<EquipmentRelatedStatKey, EquipmentRelatedStat> & {
   level: number
   maxHp: ShipStat
+  range: ShipStat
   luck: ShipStat
 }
 
 export type ModernizationRecord = Partial<Record<EquipmentRelatedStatKey | "maxHp" | "luck", number>>
 
-type StatBonusRecord = Partial<Record<EquipmentRelatedStatKey | "hp" | "luck", number>>
+type StatBonusRecord = Partial<Record<EquipmentRelatedStatKey | "luck" | "range", number>>
 
 type Equipment = {
   sumBy: (key: EquipmentRelatedStatKey) => number
+  maxValueBy: (key: "range") => number
 }
 
 export const createShipStats = (
   level: number,
-  base: Pick<ShipBase, keyof StatBonusRecord>,
+  base: Pick<ShipBase, EquipmentRelatedStatKey | "hp" | "luck" | "range">,
   equipment: Equipment,
   modernization: ModernizationRecord,
   bonuses: StatBonusRecord
@@ -140,6 +148,7 @@ export const createShipStats = (
     evasion: createIncreasingStat("evasion"),
 
     maxHp: new ShipMaxHp(base.hp[0], base.hp[1], modernization.maxHp, isMarried),
+    range: new ShipRange(base.range, equipment.maxValueBy("range"), bonuses.range),
     luck: new ShipLuck(base.luck[0], base.luck[1], modernization.luck),
   }
 }

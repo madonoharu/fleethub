@@ -30,6 +30,21 @@ export class ShipImpl implements Ship {
   public readonly ruby = this.base.ruby
   public readonly remodelGroup = this.base.remodelGroup
 
+  public readonly level = this.stats.level
+
+  public readonly firepower = this.stats.firepower
+  public readonly torpedo = this.stats.torpedo
+  public readonly antiAir = this.stats.antiAir
+  public readonly armor = this.stats.armor
+
+  public readonly asw = this.stats.asw
+  public readonly los = this.stats.los
+  public readonly evasion = this.stats.evasion
+
+  public readonly maxHp = this.stats.maxHp
+  public readonly range = this.stats.range
+  public readonly luck = this.stats.luck
+
   public readonly is = this.base.is
 
   constructor(
@@ -38,40 +53,6 @@ export class ShipImpl implements Ship {
     public equipment: Equipment,
     public health: Health
   ) {}
-
-  get level() {
-    return this.stats.level
-  }
-
-  get firepower() {
-    return this.stats.firepower
-  }
-  get torpedo() {
-    return this.stats.torpedo
-  }
-  get antiAir() {
-    return this.stats.antiAir
-  }
-  get armor() {
-    return this.stats.armor
-  }
-
-  get asw() {
-    return this.stats.asw
-  }
-  get los() {
-    return this.stats.los
-  }
-  get evasion() {
-    return this.stats.evasion
-  }
-
-  get maxHp() {
-    return this.stats.maxHp
-  }
-  get luck() {
-    return this.stats.luck
-  }
 
   private isExslot = (index: number) => this.equipment.defaultSlots.length <= index
 
