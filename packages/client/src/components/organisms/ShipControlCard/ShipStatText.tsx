@@ -4,7 +4,7 @@ import { ShipStat } from "@fleethub/core"
 
 import Typography from "@material-ui/core/Typography"
 
-import { withSign } from "../../../utils"
+import { withSign, getRangeName } from "../../../utils"
 
 const ModernizationText = styled.span`
   color: ${({ theme }) => theme.palette.secondary.light};
@@ -15,13 +15,19 @@ const BonusText = styled.span`
 `
 
 type Props = {
-  stat: Partial<ShipStat>
+  stat: ShipStat
 }
 
 const StatLabel: React.FCX<Props> = (props) => {
   const { className, stat } = props
-
-  const { displayed, bonus, modernization } = stat
+  const { key, displayed, bonus, modernization } = stat
+  if (key === "range") {
+    return (
+      <Typography className={className} variant="inherit">
+        {getRangeName(displayed)}
+      </Typography>
+    )
+  }
   const visibleBonus = Boolean(modernization || bonus)
 
   return (

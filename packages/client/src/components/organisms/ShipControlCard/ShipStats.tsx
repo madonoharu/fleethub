@@ -13,7 +13,18 @@ type Props = {
   onUpdate: (changes: ShipChanges) => void
 }
 
-const keys: ShipStatKey[] = ["maxHp", "firepower", "torpedo", "antiAir", "armor", "asw", "los", "evasion", "luck"]
+const keys: ShipStatKey[] = [
+  "maxHp",
+  "firepower",
+  "armor",
+  "torpedo",
+  "evasion",
+  "antiAir",
+  "asw",
+  "los",
+  "range",
+  "luck",
+]
 
 const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
@@ -21,11 +32,6 @@ const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
       {keys.map((key) => (
         <ShipStatButton key={key} stat={ship[key]} onUpdate={onUpdate} />
       ))}
-
-      <Flexbox>
-        <StatIcon icon="range" />
-        <ShipStatText stat={ship.range} />
-      </Flexbox>
     </div>
   )
 }
