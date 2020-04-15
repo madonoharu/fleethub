@@ -32,4 +32,4 @@ export const defaultComparer: Comparer = (left, right) => {
   return gunComparer(left, right)
 }
 
-export const idComparer = reverse(createComparer("category", "iconId", "id"))
+export const idComparer = reverse(createComparer("category", "iconId", "gearId"))
