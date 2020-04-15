@@ -7,7 +7,7 @@ import { useGear } from "../../../hooks"
 jest.mock("../../../hooks")
 
 const mockFn = mocked(useGear).mockReturnValue({
-  kcGear: {} as any,
+  fhGear: {} as any,
   actions: {
     remove: jest.fn(),
     update: jest.fn(),

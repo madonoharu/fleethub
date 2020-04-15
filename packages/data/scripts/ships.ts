@@ -3,7 +3,7 @@ import signale from "signale"
 
 import { MstShip, Start2, isPlayerShip } from "./start2"
 import { ships, ShipData } from "../src"
-import { abyssalNameToClass, createAbyssalShipClassJpMap } from "./types"
+import { abyssalNameToClass, createAbyssalShipClassNameMap } from "./types"
 import { setConvertible } from "./convertible"
 
 const getSlots = (mstShip: MstShip, shipData?: ShipData) => {
@@ -79,7 +79,7 @@ class ShipUpdater {
   }
 
   private mergeAbyssalShipClass = (ships: ShipData[]) => {
-    const classMap = createAbyssalShipClassJpMap(this.start2)
+    const classMap = createAbyssalShipClassNameMap(this.start2)
     return ships.map((ship) => {
       if (ship.id < 1500) {
         return ship
