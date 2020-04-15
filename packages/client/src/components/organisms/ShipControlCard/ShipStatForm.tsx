@@ -36,9 +36,9 @@ const ShipStatForm: React.FCX<Props> = ({ className, stat, onUpdate }) => {
       </Flexbox>
 
       <NumberInput label="上昇値" value={modernization} onChange={setModernization} />
-      <Typography>装備無し {naked}</Typography>
-      <Typography>装備合計 {equipment}</Typography>
-      <Typography>装備ボーナス {bonus}</Typography>
+      {naked !== undefined && <Typography>装備無し {naked}</Typography>}
+      {equipment !== undefined && <Typography>装備合計 {equipment}</Typography>}
+      {bonus !== undefined && <Typography>装備ボーナス {bonus}</Typography>}
     </div>
   )
 }

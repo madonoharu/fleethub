@@ -1,7 +1,5 @@
 import { ShipBase } from "./MasterShip"
 
-const calcStatAtLevel = (at1: number, at99: number, level: number) => Math.floor(((at99 - at1) * level) / 99 + at1)
-
 type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor"
 type IncreasingStatKey = "asw" | "los" | "evasion"
 
@@ -20,15 +18,6 @@ export type ShipStat = {
 }
 
 type EquipmentRelatedStat = Required<ShipStat>
-
-const getMarriageBonus = (left: number) => {
-  if (left >= 90) return 9
-  if (left >= 70) return 8
-  if (left >= 50) return 7
-  if (left >= 40) return 6
-  if (left >= 30) return 5
-  return 4
-}
 
 export class BasicStat implements EquipmentRelatedStat {
   constructor(
@@ -63,14 +52,24 @@ export class IncreasingStat implements EquipmentRelatedStat {
   ) {}
 
   get naked() {
-    const { left, right, level, modernization } = this
-    return calcStatAtLevel(left, right, level) + modernization
+    const { left: at1, right: at99, level, modernization } = this
+
+    return Math.floor(((at99 - at1) * level) / 99 + at1) + modernization
   }
 
   get displayed() {
     const { naked, equipment, bonus } = this
     return naked + equipment + bonus
   }
+}
+
+const getMarriageBonus = (left: number) => {
+  if (left >= 90) return 9
+  if (left >= 70) return 8
+  if (left >= 50) return 7
+  if (left >= 40) return 6
+  if (left >= 30) return 5
+  return 4
 }
 
 export class ShipMaxHp implements ShipStat {
