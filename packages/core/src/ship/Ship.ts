@@ -57,7 +57,7 @@ export class ShipImpl implements Ship {
   private isExslot = (index: number) => this.equipment.defaultSlots.length <= index
 
   public canEquip = (index: number, gear: GearBase) => {
-    const { shipId, shipClass } = this
+    const { shipClass } = this
     const { equippable } = this.base
     const { gearId, specialCategory } = gear
 
@@ -69,24 +69,16 @@ export class ShipImpl implements Ship {
       return false
     }
 
-    // Richelieu
-    if (
-      [ShipId["Richelieu"], ShipId["Richelieu改"]].includes(shipId) &&
-      specialCategory === GearCategory.SeaplaneBomber
-    ) {
-      return gearId === GearId["Laté 298B"]
-    }
-
-    if (this.is("RoyalNavy") && this.is("BattleshipClass") && specialCategory === GearCategory.SeaplaneBomber) {
-      return [GearId["Swordfish(水上機型)"], GearId["Swordfish Mk.III改(水上機型)"]].includes(gearId)
-    }
-
     if (this.isExslot(index)) {
       return (
         equippable.exslotCategories.includes(specialCategory) ||
-        equippable.exslot.includes(gearId) ||
+        equippable.exslotIds.includes(gearId) ||
         gearId === GearId["改良型艦本式タービン"]
       )
+    }
+
+    if (shipClass === ShipClass.RichelieuClass && specialCategory === GearCategory.SeaplaneBomber) {
+      return gearId === GearId["Laté 298B"]
     }
 
     if (shipClass === ShipClass.IseClass && this.is("Kai2")) {

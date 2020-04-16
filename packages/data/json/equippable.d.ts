@@ -10,7 +10,7 @@ export type ShipEquippable = {
   /** 装備カテゴリによる設定 */
   categories?: number[]
   /** 補強増設に装備できるID一覧 */
-  exslot?: number[]
+  exslotIds?: number[]
 }
 
 export type EquippableData = {
