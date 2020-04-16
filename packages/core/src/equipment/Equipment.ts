@@ -16,14 +16,14 @@ export type Equipment = {
 
   forEach: (fn: GearIteratee<void>) => void
   filter: (fn: GearIteratee<boolean>) => Gear[]
-  map<R>(fn: GearIteratee<R>): R[]
-  map(fn: GearIteratee<number> | NumberKey): number[]
+  map<R>(arg: GearIteratee<R>): R[]
+  map(arg: GearIteratee<number> | NumberKey): number[]
 
-  sumBy: (fn: GearIteratee<number> | NumberKey) => number
-  maxValueBy: (fn: GearIteratee<number> | NumberKey) => number
+  sumBy: (arg: GearIteratee<number> | NumberKey) => number
+  maxValueBy: (arg: GearIteratee<number> | NumberKey) => number
 
-  has: (fn: GearIteratee<boolean>) => boolean
-  count: (fn?: GearIteratee<boolean>) => number
+  has: (arg: GearIteratee<boolean> | number) => boolean
+  count: (arg?: GearIteratee<boolean> | number) => number
 }
 
 export class EquipmentImpl implements Equipment {
@@ -52,13 +52,23 @@ export class EquipmentImpl implements Equipment {
   public sumBy: Equipment["sumBy"] = (arg) => this.map(arg).reduce((a, b) => a + b, 0)
   public maxValueBy: Equipment["maxValueBy"] = (arg) => Math.max(...this.map(arg))
 
-  public has: Equipment["has"] = (fn) => this.entries.some((entry) => fn(...entry))
+  public has: Equipment["has"] = (arg) => {
+    if (typeof arg === "number") {
+      return this.entries.some(([gear]) => gear.gearId === arg)
+    }
 
-  public count: Equipment["count"] = (fn) => {
-    if (!fn) {
+    return this.entries.some((entry) => arg(...entry))
+  }
+
+  public count: Equipment["count"] = (arg) => {
+    if (typeof arg === "number") {
+      return this.entries.filter(([gear]) => gear.gearId === arg).length
+    }
+
+    if (!arg) {
       return this.entries.length
     }
 
-    return this.entries.filter((entry) => fn(...entry)).length
+    return this.entries.filter((entry) => arg(...entry)).length
   }
 }
