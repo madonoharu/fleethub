@@ -86,7 +86,7 @@ export interface ShipBase extends RequiredShipData {
   speedGroup: SpeedGroup
 }
 
-const toStatBase = (stat: ShipData["firepower"] = 0): StatBase => {
+export const toStatBase = (stat: ShipData["firepower"] = 0): StatBase => {
   if (typeof stat === "number") {
     return [stat, stat]
   }
@@ -100,46 +100,6 @@ const toShipBaseGears = (gears: ShipData["gears"] = []) =>
     }
     return gear
   })
-
-export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData => ({
-  id: partial.id ?? 0,
-
-  shipClass: partial.shipClass ?? 0,
-  shipType: partial.shipType ?? 0,
-  name: partial.name ?? "",
-  ruby: partial.ruby ?? "",
-
-  sortNo: partial.sortNo ?? 0,
-  sortId: partial.sortId ?? 0,
-
-  hp: toStatBase(partial.hp),
-  armor: toStatBase(partial.armor),
-  firepower: toStatBase(partial.firepower),
-  torpedo: toStatBase(partial.torpedo),
-  antiAir: toStatBase(partial.antiAir),
-  luck: toStatBase(partial.luck),
-  asw: toStatBase(partial.asw),
-  evasion: toStatBase(partial.evasion),
-  los: toStatBase(partial.los),
-
-  speed: partial.speed ?? 0,
-  range: partial.range ?? 0,
-
-  fuel: partial.fuel ?? 0,
-  ammo: partial.ammo ?? 0,
-
-  slots: (partial.slots ?? []).concat(),
-  gears: (partial.gears ?? []).map((gear) => {
-    if (typeof gear === "number") {
-      return { gearId: gear }
-    }
-    return gear
-  }),
-
-  nextId: partial.nextId ?? 0,
-  nextLevel: partial.nextLevel ?? 0,
-  convertible: false,
-})
 
 export default class MasterShip implements ShipBase {
   public readonly id = this.data.id || 0

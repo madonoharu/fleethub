@@ -51,10 +51,10 @@ describe("ShipAttribute", () => {
       [{ sortId: 215 }, "not", "Kai2"],
       [{ sortId: 216 }, "Kai2"],
       [{ sortId: 218 }, "Kai2"],
-      [{ sortId: 219 }, "not", "Kai2"]
+      [{ sortId: 219 }, "not", "Kai2"],
     ]
 
-    table.forEach(line => {
+    table.forEach((line) => {
       const base = defToData(line[0])
       if (line[1] === "not") {
         expect(createShipAttrs(base)).not.toContain<ShipAttribute>(line[2])
