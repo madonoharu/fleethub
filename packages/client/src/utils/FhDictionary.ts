@@ -21,9 +21,9 @@ export const StatKeyDictionary = {
 }
 
 export const getRangeName = (range: number) => {
-  const str = ["無", "短", "中", "長"][range]
+  const str = ["無", "短", "中", "長", "超長"][range]
 
   if (str) return str
-  if (range >= 4) return "超長"
+  if (range >= 5) return `超長${range}`
   return "不明"
 }
