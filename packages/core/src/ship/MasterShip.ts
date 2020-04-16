@@ -1,9 +1,9 @@
 import {
   ShipData,
   ShipClass,
-  ShipType,
   ShipClassKey,
-  ShipTypeKey,
+  ShipType,
+  HullCode,
   equippable as equippableData,
   RemodelGroup,
   ShipId,
@@ -72,8 +72,10 @@ export interface ShipBase extends RequiredShipData {
   equippable: Equippable
 
   shipClassIn: (...keys: ShipClassKey[]) => boolean
-  shipTypeIn: (...keys: ShipTypeKey[]) => boolean
+  shipTypeIn: (...keys: HullCode[]) => boolean
   is: (attr: ShipAttribute) => boolean
+
+  speedGroup: SpeedGroup
 }
 
 const toStatBase = (stat: ShipData["firepower"] = 0): StatBase => {
@@ -193,16 +195,16 @@ export default class MasterShip implements ShipBase {
 
   public shipClassIn = (...keys: ShipClassKey[]) => keys.some((key) => ShipClass[key] === this.shipClass)
 
-  public shipTypeIn = (...keys: ShipTypeKey[]) => keys.some((key) => ShipType[key] === this.shipType)
+  public shipTypeIn = (...keys: HullCode[]) => keys.some((key) => ShipType[key] === this.shipType)
 
   get speedGroup(): SpeedGroup {
     const { id: shipId, remodelGroup } = this
 
-    const isFastAV = this.speed === SpeedValue.Fast && this.shipTypeIn("SeaplaneTender")
+    const isFastAV = this.speed === SpeedValue.Fast && this.shipType === ShipType.AV
 
     if (
       isFastAV ||
-      this.shipTypeIn("Submarine", "SubmarineAircraftCarrier") ||
+      this.is("SubmarineClass") ||
       [ShipId["夕張"], ShipId["夕張改"]].includes(shipId) ||
       this.shipClassIn("KagaClass", "AkitsuMaruClass", "RepairShip", "RevisedKazahayaClass")
     ) {
