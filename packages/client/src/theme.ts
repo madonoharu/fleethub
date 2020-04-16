@@ -137,6 +137,7 @@ const kcPalette = {
   radius: colors.lightGreen[300],
 
   maxHp: muiPalette.text.primary,
+  speed: muiPalette.text.primary,
   luck: colors.yellow[300],
 
   stars: cyan[400],

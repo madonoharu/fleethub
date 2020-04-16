@@ -4,7 +4,7 @@ import { ShipStat } from "@fleethub/core"
 
 import Typography from "@material-ui/core/Typography"
 
-import { withSign, getRangeName } from "../../../utils"
+import { withSign, getRangeName, getSpeedName } from "../../../utils"
 
 const ModernizationText = styled.span`
   color: ${({ theme }) => theme.palette.secondary.light};
@@ -14,24 +14,15 @@ const BonusText = styled.span`
   color: ${({ theme }) => theme.kc.palette.bonus};
 `
 
-type Props = {
-  stat: ShipStat
-}
-
-const StatLabel: React.FCX<Props> = (props) => {
-  const { className, stat } = props
+const getStatText = (stat: ShipStat): React.ReactChild => {
   const { key, displayed, bonus, modernization } = stat
-  if (key === "range") {
-    return (
-      <Typography className={className} variant="inherit">
-        {getRangeName(displayed)}
-      </Typography>
-    )
-  }
-  const visibleBonus = Boolean(modernization || bonus)
 
+  if (key === "speed") return getSpeedName(displayed)
+  if (key === "range") return getRangeName(displayed)
+
+  const visibleBonus = Boolean(modernization || bonus)
   return (
-    <Typography className={className} variant="inherit">
+    <>
       <span>{displayed}</span>
       {visibleBonus && (
         <>
@@ -39,6 +30,22 @@ const StatLabel: React.FCX<Props> = (props) => {
           <BonusText>{withSign(bonus)}</BonusText>)
         </>
       )}
+    </>
+  )
+}
+
+type Props = {
+  stat: ShipStat
+}
+
+const StatLabel: React.FCX<Props> = (props) => {
+  const { className, stat } = props
+
+  const text = getStatText(stat)
+
+  return (
+    <Typography className={className} variant="inherit">
+      {text}
     </Typography>
   )
 }

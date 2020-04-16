@@ -20,6 +20,12 @@ export const StatKeyDictionary = {
   maxHp: "耐久",
 }
 
+export const getSpeedName = (speed: number) => {
+  const str = ["陸上", "低速", "高速", "高速+", "最速"][speed / 5]
+  if (str) return str
+  return "不明"
+}
+
 export const getRangeName = (range: number) => {
   const str = ["無", "短", "中", "長", "超長"][range]
 
