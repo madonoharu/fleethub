@@ -69,6 +69,14 @@ const AntiGroundRocketLauncher = gearIdIn(GearId["艦載型 四式20cm対地噴�
 /** 水上機 */
 const Seaplane = categoryIn("ReconnaissanceSeaplane", "SeaplaneBomber", "SeaplaneFighter", "LargeFlyingBoat")
 
+/** 艦上機 */
+const CarrierBasedAircraft = categoryIn(
+  "CarrierBasedFighterAircraft",
+  "CarrierBasedDiveBomber",
+  "CarrierBasedTorpedoBomber",
+  "CarrierBasedReconnaissanceAircraft"
+)
+
 /** 陸上機 */
 const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedReconnaissanceAircraft")
 
@@ -135,6 +143,7 @@ const matchers = {
   AntiGroundRocketLauncher,
 
   Seaplane,
+  CarrierBasedAircraft,
   LandBasedAircraft,
   JetPoweredAircraft,
 
