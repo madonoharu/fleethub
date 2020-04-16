@@ -7,10 +7,7 @@ import { ShipStats } from "./ShipStats"
 import { ShipBase } from "./MasterShip"
 import { Health } from "./Health"
 
-type PickedShipBase = Pick<
-  ShipBase,
-  "id" | "sortId" | "shipClass" | "shipType" | "name" | "ruby" | "remodelGroup" | "equippable" | "is"
->
+type PickedShipBase = Pick<ShipBase, "id" | "sortId" | "shipClass" | "shipType" | "name" | "ruby" | "equippable" | "is">
 
 export type Ship = Omit<PickedShipBase, "id" | "equippable"> &
   ShipStats & {
@@ -28,7 +25,6 @@ export class ShipImpl implements Ship {
   public readonly shipType = this.base.shipType
   public readonly name = this.base.name
   public readonly ruby = this.base.ruby
-  public readonly remodelGroup = this.base.remodelGroup
 
   public readonly level = this.stats.level
 

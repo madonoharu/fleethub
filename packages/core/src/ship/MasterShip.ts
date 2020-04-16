@@ -5,8 +5,8 @@ import {
   ShipType,
   HullCode,
   equippable as equippableData,
-  RemodelGroup,
   ShipId,
+  ShipRuby,
 } from "@fleethub/data"
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
 import { SpeedGroup } from "./Speed"
@@ -68,7 +68,6 @@ export interface ShipBase extends RequiredShipData {
   attrs: ShipAttribute[]
   isCommonly: boolean
   rank: number
-  remodelGroup: number
   equippable: Equippable
 
   shipClassIn: (...keys: ShipClassKey[]) => boolean
@@ -189,8 +188,6 @@ export default class MasterShip implements ShipBase {
     return this.sortId % 10
   }
 
-  public readonly remodelGroup = 0
-
   public is = (attr: ShipAttribute) => this.attrs.includes(attr)
 
   public shipClassIn = (...keys: ShipClassKey[]) => keys.some((key) => ShipClass[key] === this.shipClass)
@@ -198,7 +195,7 @@ export default class MasterShip implements ShipBase {
   public shipTypeIn = (...keys: HullCode[]) => keys.some((key) => ShipType[key] === this.shipType)
 
   get speedGroup(): SpeedGroup {
-    const { id: shipId, remodelGroup } = this
+    const { shipId } = this
 
     const isFastAV = this.speed === SpeedValue.Fast && this.shipType === ShipType.AV
 
@@ -221,9 +218,10 @@ export default class MasterShip implements ShipBase {
       return SpeedGroup.FastB1SlowA
     }
 
-    const isAmatsukaze = remodelGroup === RemodelGroup["天津風"]
-    const isUnryuu = remodelGroup === RemodelGroup["雲龍"]
-    const isAmagi = remodelGroup === RemodelGroup["天城"]
+    const ruby = this.ruby as ShipRuby
+    const isAmatsukaze = ruby === "あまつかぜ"
+    const isUnryuu = ruby === "うんりゅう"
+    const isAmagi = ruby === "あまぎ"
     const isNagatoKai2 = shipId === ShipId["長門改二"]
 
     if (isAmatsukaze || isUnryuu || isAmagi || isNagatoKai2) {
