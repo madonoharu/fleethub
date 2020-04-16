@@ -1,17 +1,40 @@
 import { GearId, ShipId, GearCategory, ShipClass } from "@fleethub/data"
 
 import { Equipment } from "../equipment"
-import { GearBase, Gear } from "../gear"
+import { GearBase } from "../gear"
 
-import { ShipStats } from "./ShipStats"
 import { ShipBase } from "./MasterShip"
 import { Health } from "./Health"
 
-type PickedShipBase = Pick<ShipBase, "id" | "sortId" | "shipClass" | "shipType" | "name" | "ruby" | "equippable" | "is">
+type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor"
+type IncreasingStatKey = "asw" | "los" | "evasion"
 
-export type Ship = Omit<PickedShipBase, "id" | "equippable"> &
+type EquipmentRelatedStatKey = BasicStatKey | IncreasingStatKey
+export type ShipStatKey = EquipmentRelatedStatKey | "maxHp" | "speed" | "luck" | "range"
+
+export type ShipStat = {
+  key: ShipStatKey
+  displayed: number
+  left?: number
+  right?: number
+  modernization?: number
+  equipment?: number
+  bonus?: number
+  naked?: number
+}
+
+type EquipmentRelatedStat = Required<ShipStat>
+
+export type ShipStats = Record<EquipmentRelatedStatKey, EquipmentRelatedStat> & {
+  level: number
+  maxHp: ShipStat
+  speed: ShipStat
+  range: ShipStat
+  luck: ShipStat
+}
+
+export type Ship = Pick<ShipBase, "shipId" | "sortId" | "shipClass" | "shipType" | "name" | "ruby" | "is"> &
   ShipStats & {
-    shipId: number
     level: number
     equipment: Equipment
 
@@ -19,7 +42,7 @@ export type Ship = Omit<PickedShipBase, "id" | "equippable"> &
   }
 
 export class ShipImpl implements Ship {
-  public readonly shipId = this.base.id
+  public readonly shipId = this.base.shipId
   public readonly sortId = this.base.sortId
   public readonly shipClass = this.base.shipClass
   public readonly shipType = this.base.shipType
@@ -38,17 +61,13 @@ export class ShipImpl implements Ship {
   public readonly evasion = this.stats.evasion
 
   public readonly maxHp = this.stats.maxHp
+  public readonly speed = this.stats.speed
   public readonly range = this.stats.range
   public readonly luck = this.stats.luck
 
   public readonly is = this.base.is
 
-  constructor(
-    private base: PickedShipBase,
-    private stats: ShipStats,
-    public equipment: Equipment,
-    public health: Health
-  ) {}
+  constructor(private base: ShipBase, private stats: ShipStats, public equipment: Equipment, public health: Health) {}
 
   private isExslot = (index: number) => this.equipment.defaultSlots.length <= index
 

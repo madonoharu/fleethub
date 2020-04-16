@@ -2,7 +2,7 @@ import { GearData, GearName, gears, ShipName, ShipData, ships } from "@fleethub/
 import { RequiredShipData, toRequiredShipData } from "../ship/MasterShip"
 
 export const getGearData = (name: GearName): GearData => {
-  const found = gears.find(data => data.name === name)
+  const found = gears.find((data) => data.name === name)
 
   if (!found) {
     throw `${name} not found`
@@ -12,7 +12,7 @@ export const getGearData = (name: GearName): GearData => {
 }
 
 export const getShipData = (name: ShipName): ShipData => {
-  const found = ships.find(data => data.name === name)
+  const found = ships.find((data) => data.name === name)
 
   if (!found) {
     throw `${name} not found`

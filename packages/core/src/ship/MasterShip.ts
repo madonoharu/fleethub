@@ -9,7 +9,16 @@ import {
   ShipRuby,
 } from "@fleethub/data"
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
-import { SpeedGroup } from "./Speed"
+
+/**
+ * 潜在艦速区分
+ */
+export enum SpeedGroup {
+  FastA,
+  FastB1SlowA,
+  FastB2SlowB,
+  OtherC,
+}
 
 enum SpeedValue {
   Slow = 5,

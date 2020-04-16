@@ -61,11 +61,6 @@ describe("MasterShip", () => {
     })
   })
 
-  it("canRemodel nextId > 0 なら true", () => {
-    expect(new MasterShip({ nextId: 0 }).canRemodel).toBe(false)
-    expect(new MasterShip({ nextId: 1 }).canRemodel).toBe(true)
-  })
-
   it("rankはsortIdの下一桁", () => {
     expect(new MasterShip({ sortId: 51 }).rank).toBe(1)
     expect(new MasterShip({ sortId: 162 }).rank).toBe(2)
