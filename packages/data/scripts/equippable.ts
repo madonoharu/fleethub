@@ -2,12 +2,12 @@ import fs from "fs"
 import signale from "signale"
 
 import { Start2 } from "./start2"
-import { EquippableData } from "../src"
+import { EquippableData, ShipEquippable, ShipTypeEquippable } from "../src"
 
 class EquippableUpdater {
   constructor(private start2: Start2) {}
 
-  private getShipTypeEquippableData = () => {
+  private getShipTypeEquippableData = (): ShipTypeEquippable[] => {
     return this.start2.api_mst_stype.map(({ api_id, api_equip_type }) => {
       const categories = Object.entries(api_equip_type)
         .filter(([category, equippable]) => equippable === 1)
@@ -17,7 +17,7 @@ class EquippableUpdater {
     })
   }
 
-  private getShipEquippableData = () => {
+  private getShipEquippableData = (): ShipEquippable[] => {
     const { api_mst_ship } = this.start2
     return api_mst_ship
       .map(({ api_id: id }) => {
@@ -25,18 +25,18 @@ class EquippableUpdater {
 
         const categories = api_mst_equip_ship.find(({ api_ship_id }) => api_ship_id === id)?.api_equip_type
 
-        const exslot = api_mst_equip_exslot_ship
+        const exslotIds = api_mst_equip_exslot_ship
           .filter(({ api_ship_ids }) => api_ship_ids.includes(id))
           .map(({ api_slotitem_id }) => api_slotitem_id)
 
-        if (!categories && exslot.length === 0) {
+        if (!categories && exslotIds.length === 0) {
           return undefined
         }
 
         return {
           id,
           categories,
-          exslot: exslot.length > 0 ? exslot : undefined,
+          exslotIds: exslotIds.length > 0 ? exslotIds : undefined,
         }
       })
       .filter((eq): eq is NonNullable<typeof eq> => Boolean(eq))

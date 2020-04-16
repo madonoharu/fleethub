@@ -1,8 +1,8 @@
 import { default as ships, ShipData } from "../json/ships"
 import { default as gears, GearData } from "../json/gears"
-import { default as equippable, EquippableData, ShipEquippable } from "../json/equippable"
+import { default as equippable, EquippableData, ShipEquippable, ShipTypeEquippable } from "../json/equippable"
 
-export { ships, ShipData, gears, GearData, equippable, EquippableData, ShipEquippable }
+export { ships, ShipData, gears, GearData, equippable, EquippableData, ShipEquippable, ShipTypeEquippable }
 
 export * from "./GearCategory"
 export * from "./GearCategoryName"

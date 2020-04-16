@@ -24,7 +24,7 @@ type Equippable = {
   /** 補強増設に装備カテゴリ */
   exslotCategories: number[]
   /** 補強増設に装備できる追加ID一覧 */
-  exslot: number[]
+  exslotIds: number[]
 }
 
 const createEquippable = (shipId: number, shipType: number): Equippable => {
@@ -36,7 +36,7 @@ const createEquippable = (shipId: number, shipType: number): Equippable => {
 
   return {
     categories: [],
-    exslot: [],
+    exslotIds: [],
     ...shipTypeEquippable,
     ...shipEquippable,
     exslotCategories,
