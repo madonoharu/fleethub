@@ -16,9 +16,14 @@ describe("ShipStats", () => {
       hp: [15, 16],
       luck: [17, 18],
       range: 1,
+      speed: 5,
+
+      shipId: 0,
+      shipClass: 0,
+      speedGroup: 0,
     }
 
-    const equipment = { sumBy: () => 1, maxValueBy: () => 2 }
+    const equipment = { sumBy: () => 1, maxValueBy: () => 2, count: () => 0, has: () => false }
 
     const stats = createShipStats(0, base, equipment, {}, {})
 

@@ -1,10 +1,11 @@
-import { ShipBase } from "./MasterShip"
+import { ShipBase, SpeedGroup } from "./MasterShip"
+import { GearId, ShipClass, ShipId } from "@fleethub/data"
 
 type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor"
 type IncreasingStatKey = "asw" | "los" | "evasion"
 
 type EquipmentRelatedStatKey = BasicStatKey | IncreasingStatKey
-export type ShipStatKey = EquipmentRelatedStatKey | "maxHp" | "luck" | "range"
+export type ShipStatKey = EquipmentRelatedStatKey | "maxHp" | "speed" | "luck" | "range"
 
 export type ShipStat = {
   key: ShipStatKey
@@ -18,6 +19,18 @@ export type ShipStat = {
 }
 
 type EquipmentRelatedStat = Required<ShipStat>
+
+type PickedShipBase = Pick<
+  ShipBase,
+  EquipmentRelatedStatKey | "hp" | "speed" | "luck" | "range" | "shipId" | "shipClass" | "speedGroup"
+>
+
+type Equipment = {
+  sumBy: (key: EquipmentRelatedStatKey) => number
+  maxValueBy: (key: "range") => number
+  has: (id: GearId) => boolean
+  count: (id: GearId) => number
+}
 
 export class BasicStat implements EquipmentRelatedStat {
   constructor(
@@ -111,9 +124,48 @@ export class ShipRange implements ShipStat {
   }
 }
 
+const createSpeedBonus = (ship: PickedShipBase, equipment: Equipment) => {
+  if (!equipment.has(GearId["改良型艦本式タービン"])) return 0
+
+  const { shipId, shipClass, speedGroup } = ship
+  const enhancedBoilerCount = equipment.count(GearId["強化型艦本式缶"])
+  const newModelBoilerCount = equipment.count(GearId["新型高温高圧缶"])
+  const totalBoilerCount = enhancedBoilerCount + newModelBoilerCount
+
+  if (speedGroup === SpeedGroup.FastA) {
+    if (newModelBoilerCount >= 1 || totalBoilerCount >= 2) return 10
+  }
+
+  if (speedGroup === SpeedGroup.FastB1SlowA && newModelBoilerCount >= 1) {
+    if (totalBoilerCount >= 3) return 15
+    if (totalBoilerCount >= 2) return 10
+  }
+
+  if (speedGroup === SpeedGroup.FastB2SlowB) {
+    if (newModelBoilerCount >= 2 || totalBoilerCount >= 3) return 10
+  }
+
+  if (shipClass === ShipClass.JohnCButlerClass || shipId === ShipId["夕張改二特"]) {
+    return 5
+  }
+
+  return 0
+}
+
+class ShipSpeed implements ShipStat {
+  public readonly key = "speed"
+
+  constructor(public naked: number, public bonus: number) {}
+
+  get displayed() {
+    return this.naked + this.bonus
+  }
+}
+
 export type ShipStats = Record<EquipmentRelatedStatKey, EquipmentRelatedStat> & {
   level: number
   maxHp: ShipStat
+  speed: ShipStat
   range: ShipStat
   luck: ShipStat
 }
@@ -122,14 +174,9 @@ export type ModernizationRecord = Partial<Record<EquipmentRelatedStatKey | "maxH
 
 type StatBonusRecord = Partial<Record<EquipmentRelatedStatKey | "luck" | "range", number>>
 
-type Equipment = {
-  sumBy: (key: EquipmentRelatedStatKey) => number
-  maxValueBy: (key: "range") => number
-}
-
 export const createShipStats = (
   level: number,
-  base: Pick<ShipBase, EquipmentRelatedStatKey | "hp" | "luck" | "range">,
+  base: PickedShipBase,
   equipment: Equipment,
   modernization: ModernizationRecord,
   bonuses: StatBonusRecord
@@ -152,6 +199,8 @@ export const createShipStats = (
 
   const isMarried = level >= 100
 
+  const speedBonus = createSpeedBonus(base, equipment)
+
   return {
     level,
 
@@ -165,6 +214,7 @@ export const createShipStats = (
     evasion: createIncreasingStat("evasion"),
 
     maxHp: new ShipMaxHp(base.hp[0], base.hp[1], modernization.maxHp, isMarried),
+    speed: new ShipSpeed(base.speed, speedBonus),
     range: new ShipRange(base.range, equipment.maxValueBy("range"), bonuses.range),
     luck: new ShipLuck(base.luck[0], base.luck[1], modernization.luck),
   }
