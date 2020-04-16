@@ -21,6 +21,7 @@ const keys: ShipStatKey[] = [
   "evasion",
   "antiAir",
   "asw",
+  "speed",
   "los",
   "range",
   "luck",
