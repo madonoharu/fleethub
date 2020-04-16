@@ -9,22 +9,22 @@ export const abyssalNameToClass = (name: string) => name.replace(/後期型|-壊
 const isAbyssalShip = (ship: MstShip) => !isPlayerShip(ship)
 
 export const createLiteralType = (typeName: string, types: string[]) => {
-  const inner = types.map((type) => `  | "${type}"`).join("\n")
-  return `export type ${typeName} =\n${inner}\n`
+  const inner = types.map((type) => `"${type}"`).join("|")
+  return `export type ${typeName} = ${inner}\n`
 }
 
-export const createEnum = (enumName: string, data: Array<readonly [string, number]>, isConst = true) => {
+export const createEnum = (enumName: string, data: Array<readonly [string, number | string]>, isConst = true) => {
   const names = data.map(([name]) => name)
   const duplicatedNames = names.filter((name) => names.indexOf(name) !== names.lastIndexOf(name))
   const inner = data
     .map(([name, value]) => {
       const key = duplicatedNames.includes(name) ? `${name} id${value}` : name
-      const line = `  "${key}" = ${value}`
+      const line = `"${key}" = ${typeof value === "number" ? value : `"${value}"`}`
       return line
     })
     .join(",")
 
-  return `export${isConst ? " const" : ""} enum ${enumName} {${inner}}`
+  return `export${isConst ? " const" : ""} enum ${enumName} {${inner}}\n`
 }
 
 export const createAbyssalShipClassNameMap = (start2: Start2) => {
@@ -58,10 +58,10 @@ class TypeUpdater {
     return chain(this.start2.api_mst_ship)
       .sortBy("api_sort_id")
       .map((ship) => {
-        const { api_id, api_name: name, api_sort_id } = ship
+        const { api_id: shipId, api_name: name, api_yomi: ruby, api_sort_id } = ship
         const rank = api_sort_id % 10
         const individual = (api_sort_id - rank) / 10
-        return { shipId: api_id, name, rank, individual }
+        return { shipId, name, ruby, rank, individual }
       })
   }
 
@@ -122,6 +122,16 @@ class TypeUpdater {
     return createEnum("RemodelGroup", data)
   }
 
+  public createShipRuby = () => {
+    const data = this.dataChain
+      .map("ruby")
+      .uniq()
+      .filter((ruby) => !["", "-"].includes(ruby))
+      .value()
+
+    return createLiteralType("ShipRuby", data)
+  }
+
   public write = () => {
     fs.writeFileSync("src/ShipName.ts", this.createShipName())
     fs.writeFileSync("src/GearName.ts", this.createGearName())
@@ -130,6 +140,7 @@ class TypeUpdater {
     fs.writeFileSync("src/GearId.ts", this.createGearId())
     fs.writeFileSync("src/GearCategoryName.ts", this.createGearCategoryName())
     fs.writeFileSync("src/RemodelGroup.ts", this.createRemodelGroup())
+    fs.writeFileSync("src/ShipRuby.ts", this.createShipRuby())
 
     fs.writeFileSync("scripts/AbyssalShipClassName.ts", this.createAbyssalShipClassName())
   }
