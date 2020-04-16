@@ -1,11 +1,11 @@
-import Health from "./Health"
+import { HealthImpl } from "./Health"
 
 describe("ship/Health", () => {
-  const less = new Health(100, 100)
-  const shouha = new Health(100, 75)
-  const chuuha = new Health(100, 50)
-  const taiha = new Health(100, 25)
-  const sunk = new Health(100, 0)
+  const less = new HealthImpl(100, 100)
+  const shouha = new HealthImpl(100, 75)
+  const chuuha = new HealthImpl(100, 50)
+  const taiha = new HealthImpl(100, 25)
+  const sunk = new HealthImpl(100, 0)
 
   it("damage", () => {
     expect(less.damage).toBe("Less")
@@ -14,11 +14,11 @@ describe("ship/Health", () => {
     expect(taiha.damage).toBe("Taiha")
     expect(sunk.damage).toBe("Sunk")
 
-    expect(new Health(100, 76).damage).toBe("Less")
-    expect(new Health(100, 51).damage).toBe("Shouha")
-    expect(new Health(100, 26).damage).toBe("Chuuha")
-    expect(new Health(100, 1).damage).toBe("Taiha")
-    expect(new Health(100, 0).damage).toBe("Sunk")
+    expect(new HealthImpl(100, 76).damage).toBe("Less")
+    expect(new HealthImpl(100, 51).damage).toBe("Shouha")
+    expect(new HealthImpl(100, 26).damage).toBe("Chuuha")
+    expect(new HealthImpl(100, 1).damage).toBe("Taiha")
+    expect(new HealthImpl(100, 0).damage).toBe("Sunk")
   })
 
   it("gte", () => {
@@ -42,12 +42,12 @@ describe("ship/Health", () => {
   })
 
   it("shellingPowerModifier", () => {
-    const expectation: Array<[Health, number]> = [
+    const expectation: Array<[HealthImpl, number]> = [
       [less, 1],
       [shouha, 1],
       [chuuha, 0.7],
       [taiha, 0.4],
-      [sunk, 0]
+      [sunk, 0],
     ]
     expectation.forEach(([health, value]) => {
       expect(health.shellingPowerModifier).toBe(value)
@@ -55,12 +55,12 @@ describe("ship/Health", () => {
   })
 
   it("torpedoPowerModifier", () => {
-    const expectation: Array<[Health, number]> = [
+    const expectation: Array<[HealthImpl, number]> = [
       [less, 1],
       [shouha, 1],
       [chuuha, 0.8],
       [taiha, 0],
-      [sunk, 0]
+      [sunk, 0],
     ]
     expectation.forEach(([health, value]) => {
       expect(health.torpedoPowerModifier).toBe(value)
@@ -68,15 +68,15 @@ describe("ship/Health", () => {
   })
 
   it("nightAttackPowerModifier", () => {
-    const expectation: Array<[Health, number]> = [
+    const expectation: Array<[HealthImpl, number]> = [
       [less, 1],
       [shouha, 1],
       [chuuha, 0.7],
       [taiha, 0],
-      [sunk, 0]
+      [sunk, 0],
     ]
     expectation.forEach(([health, value]) => {
-      expect(health.nightAttackPowerModifier).toBe(value)
+      expect(health.nightPowerModifier).toBe(value)
     })
   })
 })
