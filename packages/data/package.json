@@ -16,6 +16,7 @@
     "build:cjs": "tsc -p tsconfig.json",
     "build:esm": "tsc -p tsconfig.esm.json",
     "tsnode": "yarn run ts-node --project ../../tsconfig.node.json --files",
-    "update": "yarn tsnode scripts/update && yarn eslint --fix src/* scripts/*"
+    "update": "yarn tsnode scripts/update && yarn lint",
+    "lint": "eslint --fix src/* scripts/* && prettier --write json/*.json"
   }
 }
