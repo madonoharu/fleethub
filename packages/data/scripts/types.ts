@@ -60,8 +60,7 @@ class TypeUpdater {
       .map((ship) => {
         const { api_id: shipId, api_name: name, api_yomi: ruby, api_sort_id } = ship
         const rank = api_sort_id % 10
-        const individual = (api_sort_id - rank) / 10
-        return { shipId, name, ruby, rank, individual }
+        return { shipId, name, ruby, rank }
       })
   }
 
@@ -112,16 +111,6 @@ class TypeUpdater {
     return createEnum("AbyssalShipClassName", data)
   }
 
-  public createRemodelGroup = () => {
-    const data = this.dataChain
-      .filter((ship) => ship.shipId < 1500 && ship.rank === 1)
-      .uniqBy("individual")
-      .map((ship) => [ship.name, ship.shipId] as const)
-      .value()
-
-    return createEnum("RemodelGroup", data)
-  }
-
   public createShipRuby = () => {
     const data = this.dataChain
       .map("ruby")
@@ -139,7 +128,6 @@ class TypeUpdater {
     fs.writeFileSync("src/ShipId.ts", this.createShipId())
     fs.writeFileSync("src/GearId.ts", this.createGearId())
     fs.writeFileSync("src/GearCategoryName.ts", this.createGearCategoryName())
-    fs.writeFileSync("src/RemodelGroup.ts", this.createRemodelGroup())
     fs.writeFileSync("src/ShipRuby.ts", this.createShipRuby())
 
     fs.writeFileSync("scripts/AbyssalShipClassName.ts", this.createAbyssalShipClassName())
