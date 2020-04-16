@@ -149,6 +149,10 @@ const createSpeedBonus = (ship: PickedShipBase, equipment: Equipment) => {
     return 5
   }
 
+  if (totalBoilerCount >= 1) {
+    return 5
+  }
+
   return 0
 }
 
