@@ -32,7 +32,7 @@ const createEquippable = (shipId: number, shipType: number): Equippable => {
 
   const shipEquippable = equippableData.ship.find(({ id }) => id === shipId)
 
-  const exslotCategories = equippableData.exslot
+  const { exslotCategories } = equippableData
 
   return {
     categories: [],

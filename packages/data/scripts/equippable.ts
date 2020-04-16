@@ -45,7 +45,7 @@ class EquippableUpdater {
   public getEquippable = (): EquippableData => ({
     shipType: this.getShipTypeEquippableData(),
     ship: this.getShipEquippableData(),
-    exslot: this.start2.api_mst_equip_exslot,
+    exslotCategories: this.start2.api_mst_equip_exslot,
   })
 }
 
