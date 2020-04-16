@@ -26,4 +26,4 @@ export * from "./ship"
 export * from "./gear"
 export * from "./utils"
 
-export { ShipClass, ShipClassKey, ShipType, ShipTypeKey } from "@fleethub/data"
+export { ShipClass, ShipClassKey, ShipType, HullCode } from "@fleethub/data"

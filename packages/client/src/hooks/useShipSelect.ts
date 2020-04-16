@@ -13,8 +13,8 @@ const shipTypeFilterRecord: ShipTypeFilterRecord = {
   航空母艦: (ship) => ship.is("AircraftCarrierClass"),
   重巡級: (ship) => ship.is("HeavyCruiserClass"),
   軽巡級: (ship) => ship.is("LightCruiserClass"),
-  駆逐艦: (ship) => ship.shipType === ShipType.Destroyer,
-  海防艦: (ship) => ship.shipType === ShipType.CoastalDefenseShip,
+  駆逐艦: (ship) => ship.shipType === ShipType.DD,
+  海防艦: (ship) => ship.shipType === ShipType.DE,
   潜水艦: (ship) => ship.is("SubmarineClass"),
   補助艦艇: (ship) =>
     ship.shipTypeIn(

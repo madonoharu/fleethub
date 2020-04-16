@@ -1,4 +1,4 @@
-import { ShipClass, ShipId, ShipTypeKey, ShipType } from "@fleethub/data"
+import { ShipClass, ShipId, ShipType, HullCode } from "@fleethub/data"
 import { RequiredShipData } from "./MasterShip"
 
 const or = <T>(...fs: Array<(arg: T) => boolean>) => (arg: T) => fs.some((f) => f(arg))
@@ -10,8 +10,8 @@ type ShipClassKey = keyof typeof ShipClass
 const shipClassIn = (...keys: ShipClassKey[]): ShipMatcher => (ship) =>
   keys.map((key) => ShipClass[key]).includes(ship.shipClass)
 
-const shipTypeIn = (...keys: ShipTypeKey[]): ShipMatcher => (ship) =>
-  keys.map((key) => ShipType[key]).includes(ship.shipType)
+const shipTypeIn = (...args: HullCode[]): ShipMatcher => (ship) =>
+  args.map((arg) => ShipType[arg]).includes(ship.shipType)
 
 const shipIdIn = (...ids: ShipId[]): ShipMatcher => (ship) => ids.includes(ship.id)
 
@@ -55,30 +55,30 @@ const Kai2: ShipMatcher = (ship) => ship.sortId % 10 >= 6 && ship.sortId % 10 < 
  * 軽巡級
  * 軽巡,雷巡,練巡
  */
-const LightCruiserClass = shipTypeIn("LightCruiser", "TorpedoCruiser", "TrainingCruiser")
+const LightCruiserClass = shipTypeIn("CL", "CLT", "CT")
 
 /**
  * 重巡級
  * 重巡,航巡
  */
-const HeavyCruiserClass = shipTypeIn("HeavyCruiser", "AviationCruiser")
+const HeavyCruiserClass = shipTypeIn("CA", "CAV")
 
 /**
  * 戦艦級
  * 戦艦,巡洋戦艦,航空戦艦,超弩級戦艦
  */
-const BattleshipClass = shipTypeIn("Battlecruiser", "Battleship", "AviationBattleship", "SuperDreadnoughts")
+const BattleshipClass = shipTypeIn("FBB", "BB", "BBV")
 
 /**
  * 空母級
  * 軽空母,正規空母,装甲空母
  */
-const AircraftCarrierClass = shipTypeIn("LightAircraftCarrier", "AircraftCarrier", "ArmoredAircraftCarrier")
+const AircraftCarrierClass = shipTypeIn("CVL", "CV", "CVB")
 
 /**
  * 潜水級
  */
-const SubmarineClass = shipTypeIn("Submarine", "SubmarineAircraftCarrier")
+const SubmarineClass = shipTypeIn("SS", "SSV")
 
 const matchers = {
   Abyssal,
