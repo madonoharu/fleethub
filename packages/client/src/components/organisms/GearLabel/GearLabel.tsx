@@ -54,7 +54,7 @@ export const GearLabel: React.FC<Props> = ({
       <UpdateButton title="変更" size="small" onClick={onReselect} />
       <ClearButton title="削除" size="small" onClick={onRemove} />
 
-      <GearExpSelect exp={gear.exp} onChange={handleExpChange} />
+      {gear.hasProficiency && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}
       <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
     </Flexbox>
   )
@@ -69,11 +69,8 @@ const Styled = styled(GearLabel)`
     flex-shrink: 0;
   }
 
-  ${GearExpSelect} {
+  > :nth-child(4) {
     margin-left: auto;
-  }
-
-  ${GearStarsSelect} {
   }
 
   ${UpdateButton}, ${ClearButton} {
