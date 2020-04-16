@@ -16,8 +16,8 @@ export type ShipEquippable = {
 export type EquippableData = {
   shipType: ShipTypeEquippable[]
   ship: ShipEquippable[]
-  /** 増設のデフォルト装備可能設定 */
-  exslot: number[]
+  /** 増設のデフォルト装備可能カテゴリ */
+  exslotCategories: number[]
 }
 
 declare const equippable: EquippableData
