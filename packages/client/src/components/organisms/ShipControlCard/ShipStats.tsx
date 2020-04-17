@@ -1,12 +1,29 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship, ShipStatKey } from "@fleethub/core"
+import { Ship, ShipStatKey, ShipStat } from "@fleethub/core"
 
-import { StatIcon, Flexbox } from "../../../components"
+import { Text } from "../../../components"
 import { ShipChanges } from "../../../store"
 
 import ShipStatButton from "./ShipStatButton"
-import ShipStatText from "./ShipStatText"
+import ShipStatLabel from "./ShipStatLabel"
+
+type ShipStatItemProps = {
+  index: number
+  stat: ShipStat
+  onUpdate: (changes: ShipChanges) => void
+}
+
+const ShipStatItem: React.FCX<ShipStatItemProps> = ({ className, stat, onUpdate }) => {
+  if (["speed", "range"].includes(stat.key)) {
+    return <ShipStatLabel className={className} stat={stat} />
+  }
+  return <ShipStatButton className={className} stat={stat} onUpdate={onUpdate} />
+}
+
+const StyledStatItem = styled(ShipStatItem)`
+  order: ${({ index }) => index};
+`
 
 type Props = {
   ship: Ship
@@ -30,9 +47,10 @@ const keys: ShipStatKey[] = [
 const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
     <div className={className}>
-      {keys.map((key) => (
-        <ShipStatButton key={key} stat={ship[key]} onUpdate={onUpdate} />
+      {keys.map((key, index) => (
+        <StyledStatItem key={key} index={index} stat={ship[key]} onUpdate={onUpdate} />
       ))}
+      <Text id="fp">制空</Text>
     </div>
   )
 }
@@ -40,6 +58,11 @@ const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
 export default styled(ShipStats)`
   display: grid;
   grid-template-columns: 50% 50%;
+
+  > #fp {
+    order: 5;
+  }
+
   button {
     height: 20px;
     padding: 0;
