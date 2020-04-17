@@ -1,13 +1,11 @@
 import React from "react"
 import styled from "styled-components"
 import { EntityId } from "@reduxjs/toolkit"
-import { Ship } from "@fleethub/core"
+import { Ship, NullableArray } from "@fleethub/core"
 
 import { Box, Paper } from "@material-ui/core"
 
 import { EquipmentSlotList, ShipBanner } from "../../../components"
-
-import { NullableArray } from "../../../utils"
 import { ShipEntity } from "../../../store"
 
 import ShipHeader from "./Header"

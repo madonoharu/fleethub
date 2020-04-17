@@ -1,12 +1,9 @@
 import React from "react"
 import { EntityId } from "@reduxjs/toolkit"
 import styled from "styled-components"
+import { NullableArray } from "@fleethub/core"
 
-import AddIcon from "@material-ui/icons/Add"
-import DeleteIcon from "@material-ui/icons/Delete"
-
-import { ShipControlCard, RemoveButton } from "../../../components"
-import { NullableArray } from "../../../utils"
+import { ShipCard, RemoveButton } from "../../../components"
 import { ShipPosition, FleetRole } from "../../../store"
 
 type Props = {
@@ -18,7 +15,7 @@ const ShipList: React.FCX<Props> = React.memo(({ className, fleet, role, ships, 
   return (
     <div className={className}>
       {ships.map((ship, index) => (
-        <ShipControlCard key={`${fleet}-${role}-${index}`} ship={ship} onAdd={() => onAdd(role, index)} />
+        <ShipCard key={`${fleet}-${role}-${index}`} ship={ship} onAdd={() => onAdd(role, index)} />
       ))}
     </div>
   )
