@@ -1,16 +1,15 @@
 import { EntityId, createEntityAdapter } from "@reduxjs/toolkit"
-import { GearState } from "@fleethub/core"
+import { GearState, isNonNullable, NullableArray } from "@fleethub/core"
 
 import { GearEntity, gearToEntity } from "./gears"
-import { getUid, isNonNullable, NullableArray } from "../../utils"
+import { getUid, Entity } from "./entity"
 
 type AirCorpsState = {
   slots: number[]
   gears: NullableArray<GearState>
 }
 
-type AirCorpsEntity = {
-  uid: EntityId
+type AirCorpsEntity = Entity & {
   slots: number[]
   gears: NullableArray<EntityId>
 }
