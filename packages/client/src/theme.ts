@@ -142,6 +142,7 @@ const kcPalette = {
 
   stars: cyan[400],
   bonus: lightBlue[400],
+  modernization: muiPalette.secondary.light,
 }
 
 const kc = {
