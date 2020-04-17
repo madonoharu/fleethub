@@ -7,6 +7,7 @@ const gearIdIn = (...gearIds: GearId[]): GearMatcher => (data) => gearIds.includ
 const categoryIn = (...keys: GearCategoryKey[]): GearMatcher => (data) =>
   keys.map((key) => GearCategory[key]).includes(data.category)
 
+const or = (...args: GearMatcher[]): GearMatcher => (gear) => args.some((arg) => arg(gear))
 const and = (...args: GearMatcher[]): GearMatcher => (gear) => args.every((arg) => arg(gear))
 
 /** 深海装備 */
@@ -77,9 +78,6 @@ const CarrierBasedAircraft = categoryIn(
   "CarrierBasedReconnaissanceAircraft"
 )
 
-/** 陸上機 */
-const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedReconnaissanceAircraft")
-
 /** 噴式機 */
 const JetPoweredAircraft = categoryIn(
   "JetPoweredFighter",
@@ -87,6 +85,9 @@ const JetPoweredAircraft = categoryIn(
   "JetPoweredTorpedoBomber",
   "JetPoweredReconnaissanceAircraft"
 )
+
+/** 陸上機 */
+const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedReconnaissanceAircraft")
 
 /** 戦闘機 */
 const Fighter = categoryIn("CarrierBasedFighterAircraft", "SeaplaneFighter", "LandBasedFighter", "JetPoweredFighter")
@@ -104,6 +105,15 @@ const ReconnaissanceAircraft = categoryIn(
   "LargeFlyingBoat",
   "JetPoweredReconnaissanceAircraft",
   "LandBasedReconnaissanceAircraft"
+)
+
+/** 航空機 */
+const Aircraft = or(
+  Seaplane,
+  CarrierBasedAircraft,
+  JetPoweredAircraft,
+  LandBasedAircraft,
+  categoryIn("AntiSubmarinePatrolAircraft", "Autogyro")
 )
 
 /** 爆戦 */
@@ -146,6 +156,7 @@ const matchers = {
   CarrierBasedAircraft,
   LandBasedAircraft,
   JetPoweredAircraft,
+  Aircraft,
 
   Fighter,
   DiveBomber,
