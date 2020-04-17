@@ -32,9 +32,9 @@ const FleetPanel: React.FC<Props> = ({ className, uid }) => {
         fleet {uid} <RemoveButton onClick={actions.remove} />
       </div>
       <div>
-        <Typography>連合第一</Typography>
+        <Typography>第一</Typography>
         <ShipList fleet={uid} ships={entity.main} role="main" onAdd={actions.openShipSelect} />
-        <Typography>連合第二</Typography>
+        <Typography>第二</Typography>
         <ShipList fleet={uid} ships={entity.escort} role="escort" onAdd={actions.openShipSelect} />
       </div>
     </Container>
