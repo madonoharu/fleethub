@@ -2,6 +2,8 @@ export const softcap = (cap: number, value: number) => (value <= cap ? value : c
 
 export const isNonNullable = <T>(item: T): item is NonNullable<T> => item !== undefined && item !== null
 
+export const isString = (value: unknown): value is string => typeof value === "string"
+
 export const mapValues = <T, R>(obj: T, fn: (value: T[keyof T], key: keyof T) => R): Record<keyof T, R> => {
   const nextObj: Record<string, R> = {}
 
