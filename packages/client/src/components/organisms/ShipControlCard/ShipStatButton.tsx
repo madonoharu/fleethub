@@ -8,7 +8,7 @@ import { Button, Tooltip, DialogTitle, DialogContent } from "@material-ui/core"
 import { StatIcon, DialogButton } from "../../../components"
 import { StatKeyDictionary } from "../../../utils"
 
-import ShipStatText from "./ShipStatText"
+import ShipStatLabel from "./ShipStatLabel"
 import ShipStatForm, { ShipStatProps } from "./ShipStatForm"
 
 type Props = ShipStatProps
@@ -17,8 +17,7 @@ const ShipStatButton: React.FCX<Props> = ({ className, stat, onUpdate }) => {
   const button = (
     <Tooltip title={StatKeyDictionary[stat.key]}>
       <Button className={className}>
-        <StatIcon icon={stat.key} />
-        <ShipStatText stat={stat} />
+        <ShipStatLabel stat={stat} />
       </Button>
     </Tooltip>
   )
@@ -32,15 +31,4 @@ const ShipStatButton: React.FCX<Props> = ({ className, stat, onUpdate }) => {
   )
 }
 
-export default styled(ShipStatButton)`
-  display: flex;
-  align-items: center;
-
-  font-size: 0.75rem;
-  line-height: 1.5;
-  font-weight: 400;
-
-  ${StatIcon} {
-    margin: 0 4px;
-  }
-`
+export default styled(ShipStatButton)``
