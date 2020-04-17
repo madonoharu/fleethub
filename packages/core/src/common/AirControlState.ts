@@ -13,7 +13,7 @@ export default class AirControlState {
       AirSupremacy: Math.ceil(3 * fp),
       AirSuperiority: Math.ceil(1.5 * fp),
       AirParity: Math.floor((2 / 3) * fp) + 1,
-      AirDenial: Math.floor((1 / 3) * fp) + 1
+      AirDenial: Math.floor((1 / 3) * fp) + 1,
     }
   }
 
@@ -35,7 +35,7 @@ export default class AirControlState {
   }
 
   public static fromId(id: number) {
-    return AirControlState.values.find(airState => airState.id === id)
+    return AirControlState.values.find((airState) => airState.id === id)
   }
 
   private constructor(public readonly id: number, public readonly name: string, public readonly constant: number) {
