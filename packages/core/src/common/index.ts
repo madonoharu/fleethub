@@ -1,5 +1,5 @@
 export { default as AirControlState } from "./AirControlState"
-export { default as Formation } from "./Formation"
+export { Formation } from "./Formation"
 export { default as Engagement } from "./Engagement"
 export { default as FleetTypeName } from "./FleetTypeName"
 export { default as BattleType } from "./BattleType"

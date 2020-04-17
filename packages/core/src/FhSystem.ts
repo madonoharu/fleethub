@@ -1,5 +1,6 @@
-import Factory from "./Factory"
 import { GearCategory } from "@fleethub/data"
+
+import Factory from "./Factory"
 
 const allCategories = Object.values(GearCategory).filter((value): value is number => typeof value === "number")
 

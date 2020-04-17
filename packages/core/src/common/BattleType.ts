@@ -15,7 +15,7 @@ enum BattleType {
   AerialBattle = "AerialBattle",
 
   /** 長距離空襲戦 */
-  AirDefenseBattle = "AirDefenseBattle"
+  AirDefenseBattle = "AirDefenseBattle",
 }
 
 export default BattleType

@@ -16,7 +16,7 @@ enum FleetTypeName {
   TransportEscort = "TransportEscort",
 
   /** 敵連合 */
-  Combined = "Combined"
+  Combined = "Combined",
 }
 
 export default FleetTypeName
