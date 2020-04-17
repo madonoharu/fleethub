@@ -1,7 +1,7 @@
 import { Gear } from "../gear"
 import { NullableArray, PickByValue, isNonNullable } from "../utils"
 
-type GearIteratee<R> = (gear: Gear, index: number) => R
+type GearIteratee<R> = (gear: Gear, index: number, slotSize?: number) => R
 
 type NumberKey = keyof PickByValue<Gear, number>
 
@@ -24,20 +24,30 @@ export type Equipment = {
 
   has: (arg: GearIteratee<boolean> | number) => boolean
   count: (arg?: GearIteratee<boolean> | number) => number
+
+  /** 0機以上の航空機 */
+  hasAircraft: (arg: GearIteratee<boolean>) => boolean
+  /** 0機以上の航空機 */
+  countAircraft: (arg: GearIteratee<boolean>) => number
 }
 
 export class EquipmentImpl implements Equipment {
   public readonly size: number
   public readonly gears: Gear[]
 
-  private entries: Array<[Gear, number]> = []
+  private entries: Array<[Gear, number, number?]> = []
+  private aircraftEntries: Array<[Gear, number, number?]> = []
 
   constructor(public src: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
     this.size = defaultSlots.length + 1
     this.gears = src.filter(isNonNullable)
 
     src.forEach((gear, index) => {
-      if (gear) this.entries.push([gear, index])
+      if (gear) this.entries.push([gear, index, currentSlots[index]])
+    })
+
+    this.entries.forEach((entry) => {
+      if (entry[0].in("Aircraft")) this.aircraftEntries.push(entry)
     })
   }
 
@@ -70,5 +80,13 @@ export class EquipmentImpl implements Equipment {
     }
 
     return this.entries.filter((entry) => arg(...entry)).length
+  }
+
+  public hasAircraft: Equipment["hasAircraft"] = (arg) => {
+    return this.aircraftEntries.some((entry) => Boolean(entry[1]) && arg(...entry))
+  }
+
+  public countAircraft: Equipment["countAircraft"] = (arg) => {
+    return this.aircraftEntries.filter((entry) => Boolean(entry[1]) && arg(...entry)).length
   }
 }
