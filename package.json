@@ -15,8 +15,8 @@
     "core": "yarn workspace @fleethub/core",
     "data": "yarn workspace @fleethub/data",
     "start": "yarn client start",
-    "ts-check": "tsc --noEmit",
-    "test:core": "jest packages/core/src"
+    "test:core": "jest packages/core/src",
+    "ts-check": "tsc --noEmit"
   },
   "husky": {
     "hooks": {
@@ -27,6 +27,9 @@
     "*.{js,jsx,ts,tsx}": "eslint --fix"
   },
   "jest": {
+    "moduleNameMapper": {
+      "^lodash-es$": "lodash"
+    },
     "preset": "ts-jest"
   },
   "devDependencies": {

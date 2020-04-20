@@ -5,6 +5,6 @@
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.build.json"
   }
 }
