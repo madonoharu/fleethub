@@ -126,40 +126,46 @@ describe("getPossibleNightSpecialAttackTypes", () => {
   })
 
   describe("夜襲CI", () => {
-    it("夜戦空母 & 夜戦2 & 夜攻1 -> AerialAttack1", () => {
-      expect(getTypes({ isNightCarrier: true, nightFighterCount: 2, nightAttackerCount: 1 })).toContain("AerialAttack1")
-    })
-
-    it("夜戦空母 & 夜戦1 & 夜攻1 -> AerialAttack2", () => {
-      expect(getTypes({ isNightCarrier: true, nightFighterCount: 1, nightAttackerCount: 1 })).toContain("AerialAttack2")
-    })
-
-    it("夜戦空母 & 光電管彗星 & (夜戦 + 夜攻)　>= 1 -> SuiseiAttack", () => {
-      expect(getTypes({ isNightCarrier: true, hasFuzeBomber: true, nightFighterCount: 1 })).toContain("SuiseiAttack")
-      expect(getTypes({ isNightCarrier: true, hasFuzeBomber: true, nightAttackerCount: 1 })).toContain("SuiseiAttack")
-    })
-
-    it("夜戦空母 & (夜戦 + 準夜間機) >= 3 -> AerialAttack3", () => {
-      expect(getTypes({ isNightCarrier: true, nightFighterCount: 3 })).toContain("AerialAttack3")
-      expect(getTypes({ isNightCarrier: true, nightFighterCount: 2, semiNightPlaneCount: 1 })).toContain(
-        "AerialAttack3"
-      )
-    })
-
-    it("夜戦空母 & 夜戦1 & (夜攻 + 準夜間機) >= 2 -> AerialAttack3", () => {
-      expect(
-        getTypes({ isNightCarrier: true, nightFighterCount: 1, nightAttackerCount: 1, semiNightPlaneCount: 1 })
-      ).toContain("AerialAttack3")
-      expect(getTypes({ isNightCarrier: true, nightFighterCount: 1, semiNightPlaneCount: 2 })).toContain(
-        "AerialAttack3"
-      )
-      expect(getTypes({ isNightCarrier: true, nightFighterCount: 1, nightAttackerCount: 2 })).toContain("AerialAttack3")
-    })
-
     it("夜戦空母でないなら夜襲CI不可", () => {
       expect(
         getTypes({ nightFighterCount: 2, nightAttackerCount: 2, hasFuzeBomber: true, semiNightPlaneCount: 2 })
       ).toHaveLength(0)
     })
+
+    it.each`
+      type               | nightFighterCount | nightAttackerCount | semiNightPlaneCount | hasFuzeBomber | expected
+      ${"AerialAttack1"} | ${2}              | ${1}               | ${0}                | ${false}      | ${"可"}
+      ${"AerialAttack1"} | ${1}              | ${1}               | ${0}                | ${false}      | ${"不可"}
+      ${"AerialAttack1"} | ${2}              | ${0}               | ${0}                | ${false}      | ${"不可"}
+      ${"AerialAttack2"} | ${1}              | ${1}               | ${0}                | ${false}      | ${"可"}
+      ${"AerialAttack2"} | ${0}              | ${1}               | ${0}                | ${false}      | ${"不可"}
+      ${"AerialAttack2"} | ${1}              | ${0}               | ${0}                | ${false}      | ${"不可"}
+      ${"SuiseiAttack"}  | ${1}              | ${0}               | ${0}                | ${true}       | ${"可"}
+      ${"SuiseiAttack"}  | ${0}              | ${1}               | ${0}                | ${true}       | ${"可"}
+      ${"SuiseiAttack"}  | ${1}              | ${0}               | ${0}                | ${true}       | ${"可"}
+      ${"SuiseiAttack"}  | ${0}              | ${0}               | ${0}                | ${true}       | ${"不可"}
+      ${"AerialAttack3"} | ${3}              | ${0}               | ${0}                | ${false}      | ${"可"}
+      ${"AerialAttack3"} | ${2}              | ${0}               | ${1}                | ${false}      | ${"可"}
+      ${"AerialAttack3"} | ${2}              | ${1}               | ${0}                | ${false}      | ${"不可"}
+      ${"AerialAttack3"} | ${2}              | ${0}               | ${0}                | ${false}      | ${"不可"}
+      ${"AerialAttack3"} | ${1}              | ${2}               | ${0}                | ${false}      | ${"可"}
+      ${"AerialAttack3"} | ${1}              | ${1}               | ${1}                | ${false}      | ${"可"}
+      ${"AerialAttack3"} | ${1}              | ${0}               | ${2}                | ${false}      | ${"可"}
+      ${"AerialAttack3"} | ${1}              | ${0}               | ${1}                | ${false}      | ${"不可"}
+      ${"AerialAttack3"} | ${1}              | ${1}               | ${0}                | ${false}      | ${"不可"}
+      ${"AerialAttack3"} | ${0}              | ${2}               | ${2}                | ${false}      | ${"不可"}
+    `(
+      "$type: 夜戦$nightFighterCount, 夜攻$nightAttackerCount, 準夜間機$semiNightPlaneCount, 光電管彗星$hasFuzeBomber  -> 発動$expected",
+      ({ nightFighterCount, nightAttackerCount, semiNightPlaneCount, hasFuzeBomber, type, expected }) => {
+        const types = getTypes({
+          isNightCarrier: true,
+          nightFighterCount,
+          nightAttackerCount,
+          semiNightPlaneCount,
+          hasFuzeBomber,
+        })
+        expect(types.includes(type)).toBe(expected === "可")
+      }
+    )
   })
 })

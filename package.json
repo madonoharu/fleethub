@@ -15,6 +15,7 @@
     "core": "yarn workspace @fleethub/core",
     "data": "yarn workspace @fleethub/data",
     "start": "yarn client start",
+    "test": "yarn test:core",
     "test:core": "jest packages/core/src",
     "ts-check": "tsc --noEmit"
   },
