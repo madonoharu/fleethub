@@ -121,7 +121,6 @@ const FighterBomber = and(categoryIn("CarrierBasedDiveBomber"), (gear) => gear.a
 
 /** 対地艦爆 */
 const AntiInstallationBomber = gearIdIn(
-  GearId["零式艦戦62型(爆戦)"],
   GearId["Ju87C改"],
   GearId["Ju87C改二(KMX搭載機)"],
   GearId["Ju87C改二(KMX搭載機/熟練)"],
@@ -129,6 +128,22 @@ const AntiInstallationBomber = gearIdIn(
   GearId["F4U-1D"],
   GearId["FM-2"],
   GearId["彗星一二型(六三四空/三号爆弾搭載機)"]
+)
+
+const SwordfishTorpedoBomber = gearIdIn(
+  GearId["Swordfish"],
+  GearId["Swordfish Mk.II(熟練)"],
+  GearId["Swordfish Mk.III(熟練)"]
+)
+
+/** 夜間戦闘機 */
+const NightFighter: GearMatcher = (gear) => gear.iconId === 45
+/** 夜間攻撃機 */
+const NightAttacker: GearMatcher = (gear) => gear.iconId === 46
+/** 準夜間機 */
+const SemiNightPlane = or(
+  SwordfishTorpedoBomber,
+  gearIdIn(GearId["零戦62型(爆戦/岩井隊)"], GearId["彗星一二型(三一号光電管爆弾搭載機)"])
 )
 
 const matchers = {
@@ -165,6 +180,11 @@ const matchers = {
 
   FighterBomber,
   AntiInstallationBomber,
+  SwordfishTorpedoBomber,
+
+  NightFighter,
+  NightAttacker,
+  SemiNightPlane,
 }
 
 export type GearAttribute = keyof typeof matchers
