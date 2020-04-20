@@ -15,7 +15,8 @@
     "core": "yarn workspace @fleethub/core",
     "data": "yarn workspace @fleethub/data",
     "start": "yarn client start",
-    "ts-check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit",
+    "test:core": "jest packages/core/src"
   },
   "husky": {
     "hooks": {
