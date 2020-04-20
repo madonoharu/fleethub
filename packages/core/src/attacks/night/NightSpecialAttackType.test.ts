@@ -46,8 +46,8 @@ describe("getPossibleNightSpecialAttackTypes", () => {
   it("主魚魚 -> TorpTorp", () => {
     expect(getTypes({ mainGunCount: 1, torpedoCount: 2 })).toContain<NightSpecialAttackType>("TorpTorp")
   })
-  it("主主魚魚 -> MainTorp", () => {
-    expect(getTypes({ mainGunCount: 2, torpedoCount: 2 })).toContain<NightSpecialAttackType>("MainTorp")
+  it("主主魚 -> MainTorp", () => {
+    expect(getTypes({ mainGunCount: 2, torpedoCount: 1 })).toContain<NightSpecialAttackType>("MainTorp")
   })
 
   it("主1 & 魚1 -> MainTorp", () => {
