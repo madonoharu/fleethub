@@ -116,6 +116,9 @@ const Aircraft = or(
   categoryIn("AntiSubmarinePatrolAircraft", "Autogyro")
 )
 
+/** 水上観測機 */
+const ObservationSeaplane = categoryIn("ReconnaissanceSeaplane", "SeaplaneBomber")
+
 /** 爆戦 */
 const FighterBomber = and(categoryIn("CarrierBasedDiveBomber"), (gear) => gear.antiAir >= 4)
 
@@ -178,6 +181,7 @@ const matchers = {
   TorpedoBomber,
   ReconnaissanceAircraft,
 
+  ObservationSeaplane,
   FighterBomber,
   AntiInstallationBomber,
   SwordfishTorpedoBomber,
