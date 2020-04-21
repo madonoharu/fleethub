@@ -68,15 +68,15 @@ describe("ShipStats", () => {
   })
 
   it("IncreasingStat", () => {
-    expect(new IncreasingStat("asw", 5, 1, 100, 3, 4, 5)).toMatchObject<ShipStat>({
+    expect(new IncreasingStat("asw", 1, 100, 3, 4, 5, 7)).toMatchObject<ShipStat>({
       key: "asw",
       left: 1,
       right: 100,
       equipment: 3,
       modernization: 4,
       bonus: 5,
-      naked: ((100 - 1) / 99) * 5 + 1 + 4,
-      displayed: ((100 - 1) / 99) * 5 + 1 + 4 + 3 + 5,
+      naked: ((100 - 1) / 99) * 7 + 1 + 4,
+      displayed: ((100 - 1) / 99) * 7 + 1 + 4 + 3 + 5,
     })
   })
 })
