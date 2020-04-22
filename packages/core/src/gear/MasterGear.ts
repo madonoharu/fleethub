@@ -12,7 +12,7 @@ export interface GearBase extends Omit<Required<GearData>, "id"> {
   categoryIn: (...categories: GearCategoryKey[]) => boolean
 }
 
-export default class MasterGear implements GearBase, Required<GearData> {
+export default class MasterGear implements GearBase {
   public readonly id = this.data.id || 0
   public readonly category = this.data.category || 0
   public readonly iconId = this.data.iconId || 0
