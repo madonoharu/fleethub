@@ -39,6 +39,8 @@ export type Ship = Pick<ShipBase, "shipId" | "sortId" | "shipClass" | "shipType"
     equipment: Equipment
 
     canEquip: (index: number, gear: GearBase) => boolean
+
+    fleetLosFactor: number
   }
 
 export class ShipImpl implements Ship {
@@ -110,5 +112,15 @@ export class ShipImpl implements Ship {
     }
 
     return true
+  }
+
+  get fleetLosFactor() {
+    const observationSeaplaneModifier = this.equipment.sumBy((gear, i, slotSize) => {
+      if (!slotSize || !gear.is("ObservationSeaplane")) return 0
+
+      return gear.los * Math.floor(Math.sqrt(slotSize))
+    })
+
+    return this.los.naked + observationSeaplaneModifier
   }
 }
