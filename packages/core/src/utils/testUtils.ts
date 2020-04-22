@@ -1,5 +1,6 @@
 import { GearData, GearName, gears, ShipName, ShipData, ships } from "@fleethub/data"
 import { RequiredShipData, toStatBase } from "../ship/MasterShip"
+import { fhSystem } from ".."
 
 export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData => ({
   id: partial.id ?? 0,
@@ -68,4 +69,35 @@ export const defToData = (def: ShipDef): RequiredShipData => {
     return toRequiredShipData(getShipData(def))
   }
   return toRequiredShipData(def)
+}
+
+const shipNameToId = (shipName: ShipName) => {
+  const found = fhSystem.factory.masterShips.find((master) => master.name === shipName)
+  if (!found) {
+    throw `${shipName} not found`
+  }
+
+  return found.shipId
+}
+type GearDef = GearName | { name: GearName; stars?: number; exp?: number }
+
+const gearNameToState = (name: GearName) => {
+  const gearId = fhSystem.factory.masterGears.find((master) => master.name === name)?.gearId
+  if (!gearId) {
+    throw `${name} not found`
+  }
+
+  return { gearId }
+}
+
+export const makeShip = (shipName: ShipName, ...gearDefs: GearName[]) => {
+  const shipId = shipNameToId(shipName)
+  const gears = gearDefs.map(gearNameToState)
+  const ship = fhSystem.createShip({ shipId, gears })
+
+  if (!ship) {
+    throw `${shipName} failed`
+  }
+
+  return ship
 }
