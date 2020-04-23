@@ -79,20 +79,40 @@ const shipNameToId = (shipName: ShipName) => {
 
   return found.shipId
 }
+
 type GearDef = GearName | { name: GearName; stars?: number; exp?: number }
 
-const gearNameToState = (name: GearName) => {
+const gearDefToState = (def: GearDef) => {
+  let name: string
+  let stars: number | undefined
+  let exp: number | undefined
+
+  if (typeof def === "string") {
+    name = def
+  } else {
+    name = def.name
+    stars = def.stars
+    exp = def.exp
+  }
+
   const gearId = fhSystem.factory.masterGears.find((master) => master.name === name)?.gearId
   if (!gearId) {
     throw `${name} not found`
   }
 
-  return { gearId }
+  return { gearId, stars, exp }
 }
 
-export const makeShip = (shipName: ShipName, ...gearDefs: GearName[]) => {
+export const makeGear = (def: GearDef) => {
+  const state = gearDefToState(def)
+  const gear = fhSystem.createGear(state)
+  if (!gear) throw `${def} not found`
+  return gear
+}
+
+export const makeShip = (shipName: ShipName, ...gearDefs: GearDef[]) => {
   const shipId = shipNameToId(shipName)
-  const gears = gearDefs.map(gearNameToState)
+  const gears = gearDefs.map(gearDefToState)
   const ship = fhSystem.createShip({ shipId, gears })
 
   if (!ship) {
