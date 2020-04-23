@@ -5,7 +5,6 @@ import { range } from "lodash-es"
 
 import { GearBaseStub } from "../utils/GearBaseStub"
 import { makeGear } from "../utils/testUtils"
-import { GearBase } from "./MasterGear"
 
 type Case = [GearName, number, number]
 

@@ -1,5 +1,4 @@
 import { GearBase } from "./MasterGear"
-import { GearAttribute } from "./GearAttribute"
 import { GearCategory, GearId } from "@fleethub/data"
 
 type CalculationMethod = number | "average" | "sum"
@@ -149,6 +148,18 @@ const calcShellingPowerBonus: ImprovementBonusCalculator = ({ gearId, is, catego
 
   if (categoryIn("Sonar", "LargeSonar") || is("DepthChargeProjector") || is("Mortar")) {
     return 0.75 * Math.sqrt(stars)
+  }
+
+  return 0
+}
+
+const calcShellingAccuracyBonus: ImprovementBonusCalculator = ({ is, categoryIn }, stars) => {
+  if (is("SurfaceRadar")) {
+    return 1.7 * Math.sqrt(stars)
+  }
+
+  if (is("Radar") || is("MainGun") || categoryIn("SecondaryGun", "ArmorPiercingShell", "AntiAircraftFireDirector")) {
+    return Math.sqrt(stars)
   }
 
   return 0
