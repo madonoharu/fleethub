@@ -165,6 +165,23 @@ const calcShellingAccuracyBonus: ImprovementBonusCalculator = ({ is, categoryIn 
   return 0
 }
 
+const calcAswPowerBonus: ImprovementBonusCalculator = ({ category, categoryIn, asw }, stars) => {
+  if (category === GearCategory.CarrierBasedTorpedoBomber) {
+    return 0.2 * stars
+  }
+
+  if (categoryIn("DepthCharge", "Sonar")) {
+    return Math.sqrt(stars)
+  }
+
+  if (category === GearCategory.Autogyro) {
+    const multiplier = asw > 10 ? 0.3 : 0.2
+    return multiplier * stars
+  }
+
+  return 0
+}
+
 export const createImprovement = (gear: GearBase, stars: number) => ({
   contactSelectionBonus: calcContactSelectionBonus(gear, stars),
 
@@ -173,4 +190,5 @@ export const createImprovement = (gear: GearBase, stars: number) => ({
   fleetAntiAirBonus: calcFleetAntiAirBonus(gear, stars),
   shellingPowerBonus: calcShellingPowerBonus(gear, stars),
   shellingAccuracyBonus: calcShellingAccuracyBonus(gear, stars),
+  aswPowerBonus: calcAswPowerBonus(gear, stars),
 })

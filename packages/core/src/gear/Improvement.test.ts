@@ -32,6 +32,7 @@ describe("createImprovement", () => {
       fleetAntiAirBonus: 0,
       shellingPowerBonus: 0,
       shellingAccuracyBonus: 0,
+      aswPowerBonus: 0,
     })
   })
 
