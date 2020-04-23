@@ -17,7 +17,7 @@ type CombatModifiers = {
   night: AttackModifiers
 }
 
-export type ImprovementModifiers = {
+export type ImprovementBonuses = {
   contactSelectionModifier: number
 
   fighterPowerModifier: number
@@ -44,9 +44,8 @@ export type ImprovementModifiers = {
 type GearParams = Pick<GearBase, "gearId" | "category" | "is" | "antiAir" | "los">
 
 /**
- * https://t.co/Ou8KzFANPK
- * https://twitter.com/shiro_sh39/status/1103281372548878337
- *
+ * @see https://t.co/Ou8KzFANPK
+ * @see https://twitter.com/shiro_sh39/status/1103281372548878337
  */
 const calcContactSelectionModifier = (gear: GearParams, stars: number) => {
   const { category, los } = gear
@@ -73,22 +72,20 @@ const calcContactSelectionModifier = (gear: GearParams, stars: number) => {
   return 0
 }
 
+/**
+ * @see https://twitter.com/yukicacoon/status/1212566867933450241
+ */
 const calcFighterPowerModifier = (gear: GearParams, stars: number) => {
-  if (gear.antiAir === 0) {
-    return 0
-  }
-  // 装備定数B
-  let multiplier = 0
+  if (gear.is("Fighter")) return 0.2 * stars
+  if (gear.is("FighterBomber")) return 0.25 * stars
+  if (gear.category === GearCategory.LandBasedAttackAircraft) return 0.5 * Math.sqrt(stars)
 
-  if (gear.category === GearCategory.AntiAircraftFireDirector || gear.is("HighAngleMount")) {
-    multiplier = gear.antiAir <= 7 ? 2 : 3
-  } else if (gear.is("AirRadar")) {
-    multiplier = 1.5
-  }
-
-  return multiplier * Math.sqrt(stars)
+  return 0
 }
 
+/**
+ * @see  https://twitter.com/CitrusJ9N/status/1056224720712921088
+ */
 const calcAdjustedAntiAirModifier = (gear: GearParams, stars: number) => {
   const { antiAir, category } = gear
   if (antiAir === 0) {
@@ -97,7 +94,6 @@ const calcAdjustedAntiAirModifier = (gear: GearParams, stars: number) => {
 
   let multiplier = 0
   if (category === GearCategory.AntiAircraftGun) {
-    // https://twitter.com/CitrusJ9N/status/1056224720712921088
     multiplier = antiAir <= 7 ? 4 : 6
   } else if (category === GearCategory.AntiAircraftFireDirector || gear.is("HighAngleMount")) {
     multiplier = antiAir <= 7 ? 2 : 3
@@ -105,7 +101,7 @@ const calcAdjustedAntiAirModifier = (gear: GearParams, stars: number) => {
   return multiplier * Math.sqrt(stars)
 }
 
-export const createImprovementModifiers = (gear: GearParams, stars: number) => ({
+export const createImprovementBonuses = (gear: GearParams, stars: number) => ({
   contactSelection: calcContactSelectionModifier(gear, stars),
 
   fighterPower: calcFighterPowerModifier(gear, stars),
