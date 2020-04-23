@@ -33,6 +33,7 @@ describe("createImprovement", () => {
       shellingPowerBonus: 0,
       shellingAccuracyBonus: 0,
       aswPowerBonus: 0,
+      aswAccuracyBonus: 0,
     })
   })
 

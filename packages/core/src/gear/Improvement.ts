@@ -182,6 +182,14 @@ const calcAswPowerBonus: ImprovementBonusCalculator = ({ category, categoryIn, a
   return 0
 }
 
+const calcAswAccuracyBonus: ImprovementBonusCalculator = ({ categoryIn }, stars) => {
+  if (categoryIn("Sonar", "LargeSonar", "DepthCharge")) {
+    return 1.3 * Math.sqrt(stars)
+  }
+
+  return 0
+}
+
 export const createImprovement = (gear: GearBase, stars: number) => ({
   contactSelectionBonus: calcContactSelectionBonus(gear, stars),
 
@@ -191,4 +199,5 @@ export const createImprovement = (gear: GearBase, stars: number) => ({
   shellingPowerBonus: calcShellingPowerBonus(gear, stars),
   shellingAccuracyBonus: calcShellingAccuracyBonus(gear, stars),
   aswPowerBonus: calcAswPowerBonus(gear, stars),
+  aswAccuracyBonus: calcAswPowerBonus(gear, stars),
 })
