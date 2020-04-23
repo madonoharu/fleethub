@@ -172,4 +172,5 @@ export const createImprovement = (gear: GearBase, stars: number) => ({
   adjustedAntiAirBonus: calcAdjustedAntiAirBonus(gear, stars),
   fleetAntiAirBonus: calcFleetAntiAirBonus(gear, stars),
   shellingPowerBonus: calcShellingPowerBonus(gear, stars),
+  shellingAccuracyBonus: calcShellingAccuracyBonus(gear, stars),
 })
