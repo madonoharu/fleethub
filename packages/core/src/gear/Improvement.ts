@@ -74,32 +74,27 @@ const calcFighterPowerBonus: ImprovementBonusCalculator = (gear, stars) => {
 /**
  * @see  https://twitter.com/CitrusJ9N/status/1056224720712921088
  */
-const calcAdjustedAntiAirBonus: ImprovementBonusCalculator = (gear, stars) => {
-  const { antiAir, category } = gear
-  if (antiAir === 0) {
-    return 0
-  }
-
+const calcAdjustedAntiAirBonus: ImprovementBonusCalculator = ({ antiAir, category, is }, stars) => {
   let multiplier = 0
   if (category === GearCategory.AntiAircraftGun) {
     multiplier = antiAir <= 7 ? 4 : 6
-  } else if (category === GearCategory.AntiAircraftFireDirector || gear.is("HighAngleMount")) {
+  }
+  if (category === GearCategory.AntiAircraftFireDirector || is("HighAngleMount")) {
     multiplier = antiAir <= 7 ? 2 : 3
   }
+
   return multiplier * Math.sqrt(stars)
 }
 
 const calcFleetAntiAirBonus = ({ antiAir, is, category }: GearParams, stars: number) => {
-  if (antiAir === 0) {
-    return 0
-  }
-  // 装備定数B
   let multiplier = 0
   if (category === GearCategory.AntiAircraftFireDirector || is("HighAngleMount")) {
     multiplier = antiAir <= 7 ? 2 : 3
-  } else if (is("AirRadar")) {
+  }
+  if (is("AirRadar")) {
     multiplier = 1.5
   }
+
   return multiplier * Math.sqrt(stars)
 }
 
