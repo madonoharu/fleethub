@@ -1,4 +1,4 @@
-import { createImprovement, Improvement } from "./Improvement"
+import { createImprovement } from "./Improvement"
 
 import { GearName } from "@fleethub/data"
 import { range } from "lodash-es"
@@ -141,10 +141,8 @@ describe("createImprovement", () => {
       expectMultiplierSqrtStars((stars) => createImprovement(ham, stars).fleetAntiAirBonus, expected)
     })
 
-    it("対空1以上の電探 -> 1.5 * sqrt(☆)", () => {
-      const gear = GearBaseStub.fromAttrs("Radar")
-      gear.antiAir = 1
-
+    it("対空電探 -> 1.5 * sqrt(☆)", () => {
+      const gear = GearBaseStub.fromAttrs("AirRadar")
       const expected = 1.5
 
       expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).fleetAntiAirBonus, expected)
