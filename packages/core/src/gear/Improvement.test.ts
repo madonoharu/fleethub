@@ -56,28 +56,28 @@ describe("createImprovement", () => {
       ["零式水上偵察機", 0.14],
       ["Ro.43水偵", 0.14],
       ["九八式水上偵察機(夜偵)", 0.1],
-    ])("%s -> %s * ☆", (name, expected) => {
+    ])("%s -> %s * 改修値", (name, expected) => {
       const gear = makeGear(name)
       expectMultiplierStars((stars) => createImprovement(gear, stars).contactSelectionBonus, expected)
     })
   })
 
   describe("fighterPowerBonus ", () => {
-    it("戦闘機 -> 0.2 * ☆", () => {
+    it("戦闘機 -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromAttrs("Fighter")
       const expected = 0.2
 
       expectMultiplierStars((stars) => createImprovement(gear, stars).fighterPowerBonus, expected)
     })
 
-    it("爆戦 -> 0.25 * ☆", () => {
+    it("爆戦 -> 0.25 * 改修値", () => {
       const gear = GearBaseStub.fromAttrs("FighterBomber")
       const expected = 0.25
 
       expectMultiplierStars((stars) => createImprovement(gear, stars).fighterPowerBonus, expected)
     })
 
-    it("陸攻 -> 0.5 * sqrt(☆)", () => {
+    it("陸攻 -> 0.5 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("LbAttacker")
       const expected = 0.5
 
@@ -86,7 +86,7 @@ describe("createImprovement", () => {
   })
 
   describe("adjustedAntiAirBonus", () => {
-    it("対空8以上の対空機銃 -> 6 * sqrt(☆)", () => {
+    it("対空8以上の対空機銃 -> 6 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("AntiAirGun")
       gear.antiAir = 8
       const expected = 6
@@ -94,7 +94,7 @@ describe("createImprovement", () => {
       expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).adjustedAntiAirBonus, expected)
     })
 
-    it("対空7以下の対空機銃 -> 4 * sqrt(☆)", () => {
+    it("対空7以下の対空機銃 -> 4 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("AntiAirGun")
       gear.antiAir = 7
       const expected = 4
@@ -102,7 +102,7 @@ describe("createImprovement", () => {
       expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).adjustedAntiAirBonus, expected)
     })
 
-    it("対空8以上の高射装置,高角砲 -> 3 * sqrt(☆)", () => {
+    it("対空8以上の高射装置,高角砲 -> 3 * sqrt(改修値)", () => {
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 8
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
@@ -114,7 +114,7 @@ describe("createImprovement", () => {
       expectMultiplierSqrtStars((stars) => createImprovement(ham, stars).adjustedAntiAirBonus, expected)
     })
 
-    it("対空7以下の高射装置,高角砲 -> 2 * sqrt(☆)", () => {
+    it("対空7以下の高射装置,高角砲 -> 2 * sqrt(改修値)", () => {
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 7
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
@@ -128,7 +128,7 @@ describe("createImprovement", () => {
   })
 
   describe("fleetAntiAirBonus", () => {
-    it("対空8以上の高射装置,高角砲 -> 3 * sqrt(☆)", () => {
+    it("対空8以上の高射装置,高角砲 -> 3 * sqrt(改修値)", () => {
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 8
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
@@ -140,7 +140,7 @@ describe("createImprovement", () => {
       expectMultiplierSqrtStars((stars) => createImprovement(ham, stars).fleetAntiAirBonus, expected)
     })
 
-    it("対空7以下の高射装置,高角砲 -> 2 * sqrt(☆)", () => {
+    it("対空7以下の高射装置,高角砲 -> 2 * sqrt(改修値)", () => {
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 7
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
@@ -152,7 +152,7 @@ describe("createImprovement", () => {
       expectMultiplierSqrtStars((stars) => createImprovement(ham, stars).fleetAntiAirBonus, expected)
     })
 
-    it("対空電探 -> 1.5 * sqrt(☆)", () => {
+    it("対空電探 -> 1.5 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromAttrs("AirRadar")
       const expected = 1.5
 
@@ -161,7 +161,7 @@ describe("createImprovement", () => {
   })
 
   describe("shellingPowerBonus", () => {
-    it("火力13以上 -> 1.5 * sqrt(☆)", () => {
+    it("火力13以上 -> 1.5 * sqrt(改修値)", () => {
       const fire12 = GearBaseStub.from({ firepower: 12 })
       const fire13 = GearBaseStub.from({ firepower: 13 })
 
@@ -169,21 +169,21 @@ describe("createImprovement", () => {
       expectMultiplierSqrtStars((stars) => createImprovement(fire13, stars).shellingPowerBonus, 1.5)
     })
 
-    it("艦上攻撃機 -> 0.2 * ☆", () => {
+    it("艦上攻撃機 -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromCategory("CbTorpedoBomber")
 
       expectMultiplierStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.2)
     })
 
     it.each<GearName>(["12.7cm連装高角砲", "8cm高角砲", "8cm高角砲改+増設機銃", "10cm連装高角砲改+増設機銃"])(
-      "%s -> 0.2 * ☆",
+      "%s -> 0.2 * 改修値",
       (name) => {
         const gear = makeGear(name)
         expectMultiplierStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.2)
       }
     )
 
-    it.each<GearName>(["15.5cm三連装副砲", "15.5cm三連装副砲改", "15.2cm三連装砲"])("%s -> 0.3 * ☆", (name) => {
+    it.each<GearName>(["15.5cm三連装副砲", "15.5cm三連装副砲改", "15.2cm三連装砲"])("%s -> 0.3 * 改修値", (name) => {
       const gear = makeGear(name)
       expectMultiplierStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.3)
     })
@@ -201,12 +201,12 @@ describe("createImprovement", () => {
       "AntiGroundEquipment",
       "LandingCraft",
       "SpecialAmphibiousTank",
-    ])("%s -> sqrt(☆)", (category) => {
+    ])("%s -> sqrt(改修値)", (category) => {
       const gear = GearBaseStub.fromCategory(category)
       expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 1)
     })
 
-    it("ソナー,大型ソナー,爆雷投射機,迫撃砲 -> 0.75 * sqrt(☆)", () => {
+    it("ソナー,大型ソナー,爆雷投射機,迫撃砲 -> 0.75 * sqrt(改修値)", () => {
       const sonor = GearBaseStub.fromCategory("Sonar")
       const largeSonar = GearBaseStub.fromCategory("LargeSonar")
       const depthChargeProjector = GearBaseStub.fromAttrs("DepthChargeProjector")
@@ -219,12 +219,12 @@ describe("createImprovement", () => {
   })
 
   describe("shellingAccuracyBonus", () => {
-    it("水上電探 -> 1.7 * sqrt(☆)", () => {
+    it("水上電探 -> 1.7 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromAttrs("SurfaceRadar")
       expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingAccuracyBonus, 1.7)
     })
 
-    it("電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(☆)", () => {
+    it("電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(改修値)", () => {
       const radar = GearBaseStub.fromAttrs("Radar")
       const aps = GearBaseStub.fromCategory("ApShell")
       const aas = GearBaseStub.fromCategory("AntiAirShell")
