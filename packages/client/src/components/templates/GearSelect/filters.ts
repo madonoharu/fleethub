@@ -8,10 +8,8 @@ const basicFilterRecord: Record<string, GearFilterFn> = {
   bomber: (gear) =>
     gear.categoryIn("CarrierBasedDiveBomber", "CarrierBasedTorpedoBomber", "JetFighterBomber", "JetTorpedoBomber"),
 
-  reconnaissance: (gear) =>
-    gear.is("ReconnaissanceAircraft") ||
-    gear.is("Seaplane") ||
-    gear.categoryIn("Autogyro", "AntiSubmarinePatrolAircraft"),
+  recon: (gear) =>
+    gear.is("ReconAircraft") || gear.is("Seaplane") || gear.categoryIn("Autogyro", "AntiSubmarinePatrolAircraft"),
 
   mainGun: (gear) => gear.is("MainGun"),
 

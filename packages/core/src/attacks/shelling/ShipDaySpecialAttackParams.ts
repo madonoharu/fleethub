@@ -27,7 +27,7 @@ export class ShipDaySpecialAttackParams implements DaySpecialAttackParams {
     return this.ship.is("AircraftCarrierClass")
   }
   get hasObservationSeaplane() {
-    return this.hasAircraft((gear) => gear.categoryIn("ReconnaissanceSeaplane", "SeaplaneBomber"))
+    return this.hasAircraft((gear) => gear.categoryIn("ReconSeaplane", "SeaplaneBomber"))
   }
 
   get mainGunCount() {
