@@ -139,7 +139,7 @@ export enum GearCategory {
   SpecialAmphibiousTank = 46,
 
   /** 陸上攻撃機 */
-  LbAttackAircraft = 47,
+  LbAttacker = 47,
 
   /** 局地戦闘機 */
   LbFighter = 48,
