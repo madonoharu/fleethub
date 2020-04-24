@@ -68,21 +68,21 @@ const Mortar = gearIdIn(GearId["二式12cm迫撃砲改"], GearId["二式12cm迫�
 const AntiGroundRocketLauncher = gearIdIn(GearId["艦載型 四式20cm対地噴進砲"], GearId["四式20cm対地噴進砲 集中配備"])
 
 /** 水上機 */
-const Seaplane = categoryIn("ReconnaissanceSeaplane", "SeaplaneBomber", "SeaplaneFighter", "LargeFlyingBoat")
+const Seaplane = categoryIn("ReconSeaplane", "SeaplaneBomber", "SeaplaneFighter", "LargeFlyingBoat")
 
 /** 艦上機 */
 const CarrierBasedAircraft = categoryIn(
   "CarrierBasedFighterAircraft",
   "CarrierBasedDiveBomber",
   "CarrierBasedTorpedoBomber",
-  "CarrierBasedReconnaissanceAircraft"
+  "CarrierBasedReconAircraft"
 )
 
 /** 噴式機 */
-const JetAircraft = categoryIn("JetFighter", "JetFighterBomber", "JetTorpedoBomber", "JetReconnaissanceAircraft")
+const JetAircraft = categoryIn("JetFighter", "JetFighterBomber", "JetTorpedoBomber", "JetReconAircraft")
 
 /** 陸上機 */
-const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedReconnaissanceAircraft")
+const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedReconAircraft")
 
 /** 戦闘機 */
 const Fighter = categoryIn("CarrierBasedFighterAircraft", "SeaplaneFighter", "LandBasedFighter", "JetFighter")
@@ -94,12 +94,12 @@ const DiveBomber = categoryIn("CarrierBasedDiveBomber", "SeaplaneBomber", "JetFi
 const TorpedoBomber = categoryIn("CarrierBasedTorpedoBomber", "JetTorpedoBomber", "LandBasedAttackAircraft")
 
 /** 偵察機 */
-const ReconnaissanceAircraft = categoryIn(
-  "CarrierBasedReconnaissanceAircraft",
-  "ReconnaissanceSeaplane",
+const ReconAircraft = categoryIn(
+  "CarrierBasedReconAircraft",
+  "ReconSeaplane",
   "LargeFlyingBoat",
-  "JetReconnaissanceAircraft",
-  "LandBasedReconnaissanceAircraft"
+  "JetReconAircraft",
+  "LandBasedReconAircraft"
 )
 
 /** 航空機 */
@@ -112,7 +112,7 @@ const Aircraft = or(
 )
 
 /** 水上観測機 */
-const ObservationSeaplane = categoryIn("ReconnaissanceSeaplane", "SeaplaneBomber")
+const ObservationSeaplane = categoryIn("ReconSeaplane", "SeaplaneBomber")
 
 /** 爆戦 */
 const FighterBomber = and(categoryIn("CarrierBasedDiveBomber"), (gear) => gear.antiAir >= 4)
@@ -174,7 +174,7 @@ const matchers = {
   Fighter,
   DiveBomber,
   TorpedoBomber,
-  ReconnaissanceAircraft,
+  ReconAircraft,
 
   ObservationSeaplane,
   FighterBomber,
