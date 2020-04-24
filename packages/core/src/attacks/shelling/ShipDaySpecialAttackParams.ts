@@ -33,8 +33,8 @@ export class ShipDaySpecialAttackParams implements DaySpecialAttackParams {
   get mainGunCount() {
     return this.count((gear) => gear.is("MainGun"))
   }
-  get hasAPShell() {
-    return this.has((gear) => gear.category === GearCategory.ArmorPiercingShell)
+  get hasApShell() {
+    return this.has((gear) => gear.category === GearCategory.ApShell)
   }
   get secondaryGunCount() {
     return this.count((gear) => gear.category === GearCategory.SecondaryGun)

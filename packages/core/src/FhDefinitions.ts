@@ -118,7 +118,7 @@ export const defaultFhDefinitions: FhDefinitions = {
     Suisei: { priority: 2, baseRate: 130, power: 1.3, accuracy: 1 },
 
     MainMain: { priority: 3, baseRate: 150, power: 1.5, accuracy: 1.2 },
-    MainAPShell: { priority: 4, baseRate: 140, power: 1.3, accuracy: 1.3 },
+    MainApShell: { priority: 4, baseRate: 140, power: 1.3, accuracy: 1.3 },
     MainRader: { priority: 5, baseRate: 130, power: 1.2, accuracy: 1.5 },
     MainSecond: { priority: 6, baseRate: 120, power: 1.1, accuracy: 1.3 },
     DoubleAttack: { priority: 7, baseRate: 130, power: 1.2, accuracy: 1.1 },

@@ -1,22 +1,22 @@
 import { ShipClass } from "@fleethub/data"
 
-type APShellModifiersParams = {
-  hasAPShell: boolean
+type ApShellModifiersParams = {
+  hasApShell: boolean
   hasMainGun: boolean
   hasSecondaryGun: boolean
   hasRader: boolean
 }
 
-type APShellModifiers = { power: number; accuracy: number }
+type ApShellModifiers = { power: number; accuracy: number }
 /**
  * 徹甲弾補正
  */
-export const getAPShellModifiers = (params: APShellModifiersParams): APShellModifiers => {
+export const getApShellModifiers = (params: ApShellModifiersParams): ApShellModifiers => {
   const modifier = { power: 1, accuracy: 1 }
 
-  const { hasAPShell, hasMainGun, hasRader, hasSecondaryGun } = params
+  const { hasApShell, hasMainGun, hasRader, hasSecondaryGun } = params
 
-  if (!hasAPShell || !hasMainGun) {
+  if (!hasApShell || !hasMainGun) {
     return modifier
   }
 
@@ -64,5 +64,5 @@ export const getShellingType = ({
 
 type ShellingParams = {
   shellingType: ShellingType
-  apshellModifiers: APShellModifiers
+  apShellModifiers: ApShellModifiers
 }

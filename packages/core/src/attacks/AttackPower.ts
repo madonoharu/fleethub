@@ -6,7 +6,7 @@ type PrecapModifierPosition = "a12" | "b12" | "a13" | "b13" | "a13next" | "b13ne
 type PostcapModifierPosition = "a5" | "b5" | "a6" | "b6" | "a11" | "b11"
 
 type PrecapModifiers = NumberRecord<PrecapModifierPosition | "airPower">
-type PostcapModifiers = NumberRecord<PostcapModifierPosition | "apshellModifier" | "proficiencyCriticalModifier">
+type PostcapModifiers = NumberRecord<PostcapModifierPosition | "apShellModifier" | "proficiencyCriticalModifier">
 
 const applyPrecapModifiers = (basic: number, modifiers: PrecapModifiers) => {
   const {
@@ -44,7 +44,7 @@ const applyPostcapModifiers = (capped: number, modifiers: PostcapModifiers) => {
     b6 = 0,
     a11 = 1,
     b11 = 0,
-    apshellModifier,
+    apShellModifier,
     proficiencyCriticalModifier = 1,
   } = modifiers
   let normal = capped
@@ -53,8 +53,8 @@ const applyPostcapModifiers = (capped: number, modifiers: PostcapModifiers) => {
   normal = Math.floor(normal * a6 + b6)
   normal = normal * a11 + b11
 
-  if (apshellModifier !== undefined) {
-    normal = Math.floor(normal * apshellModifier)
+  if (apShellModifier !== undefined) {
+    normal = Math.floor(normal * apShellModifier)
   }
 
   const critical = Math.floor(normal * 1.5 * proficiencyCriticalModifier)

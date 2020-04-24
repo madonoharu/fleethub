@@ -22,7 +22,7 @@ const modifiers0: Omit<Required<AttackPowerParams>, "basic" | "cap" | "airPower"
   b6: 1.12,
   a11: 1.13,
   b11: 1.14,
-  apshellModifier: 1.15,
+  apShellModifier: 1.15,
   proficiencyCriticalModifier: 1.16,
 }
 
@@ -81,15 +81,15 @@ describe("calcAttackPower", () => {
     const a11 = 1.1
 
     expect(calcAttackPower({ basic, cap, a11 }).normal).toBe(basic * a11)
-    expect(calcAttackPower({ basic, cap, a11, apshellModifier: 1 }).normal).toBe(Math.floor(basic * a11))
-    expect(calcAttackPower({ basic, cap, a11, apshellModifier: 1.2 }).normal).toBe(Math.floor(basic * a11 * 1.2))
+    expect(calcAttackPower({ basic, cap, a11, apShellModifier: 1 }).normal).toBe(Math.floor(basic * a11))
+    expect(calcAttackPower({ basic, cap, a11, apShellModifier: 1.2 }).normal).toBe(Math.floor(basic * a11 * 1.2))
   })
 
   it("critical = [normal * 1.5 * proficiencyCriticalModifier]", () => {
     const cases: AttackPowerParams[] = [
       { basic: 10, cap: 180 },
       { basic: 158, cap: 150 },
-      { basic: 205, cap: 180, apshellModifier: 1.1 },
+      { basic: 205, cap: 180, apShellModifier: 1.1 },
       { basic: 56, cap: 180, proficiencyCriticalModifier: 1.3 },
       { basic: 150, cap: 180, airPower: 80, proficiencyCriticalModifier: 1.3 },
     ]

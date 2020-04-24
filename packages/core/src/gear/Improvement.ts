@@ -129,7 +129,7 @@ const calcShellingPowerBonus: ImprovementBonusCalculator = ({ gearId, is, catego
       "MediumCaliberMainGun",
       "LargeCaliberMainGun",
       "SecondaryGun",
-      "ArmorPiercingShell",
+      "ApShell",
       "AntiAircraftFireDirector",
       "Searchlight",
       "AntiAircraftGun",
@@ -162,7 +162,7 @@ const calcShellingAccuracyBonus: ImprovementBonusCalculator = ({ is, categoryIn 
   if (
     is("Radar") ||
     is("MainGun") ||
-    categoryIn("SecondaryGun", "ArmorPiercingShell", "AntiAircraftShell", "AntiAircraftFireDirector")
+    categoryIn("SecondaryGun", "ApShell", "AntiAircraftShell", "AntiAircraftFireDirector")
   ) {
     return Math.sqrt(stars)
   }
@@ -241,7 +241,7 @@ const calcNightPowerBonus: ImprovementBonusCalculator = ({ gearId, categoryIn },
       "MediumCaliberMainGun",
       "LargeCaliberMainGun",
       "SecondaryGun",
-      "ArmorPiercingShell",
+      "ApShell",
       "AntiAircraftShell",
       "Searchlight",
       "LargeSearchlight",

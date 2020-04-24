@@ -1,6 +1,6 @@
 export type DaySpecialAttackType =
   | "MainMain"
-  | "MainAPShell"
+  | "MainApShell"
   | "MainRader"
   | "MainSecond"
   | "DoubleAttack"
@@ -17,7 +17,7 @@ export type DaySpecialAttackParams = {
 
   mainGunCount: number
   secondaryGunCount: number
-  hasAPShell: boolean
+  hasApShell: boolean
   hasRader: boolean
 
   zuiunCount: number
@@ -34,14 +34,14 @@ const getArtillerySpottings = (params: DaySpecialAttackParams) => {
   if (params.mainGunCount >= 2) {
     types.push("DoubleAttack")
 
-    if (params.hasAPShell) types.push("MainMain")
+    if (params.hasApShell) types.push("MainMain")
   }
 
   if (params.secondaryGunCount >= 1) {
     types.push("MainSecond")
 
     if (params.hasRader) types.push("MainRader")
-    if (params.hasAPShell) types.push("MainAPShell")
+    if (params.hasApShell) types.push("MainApShell")
   }
 
   return types

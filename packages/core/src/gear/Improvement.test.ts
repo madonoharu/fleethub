@@ -192,7 +192,7 @@ describe("createImprovement", () => {
       "SmallCaliberMainGun",
       "MediumCaliberMainGun",
       "SecondaryGun",
-      "ArmorPiercingShell",
+      "ApShell",
       "AntiAircraftShell",
       "AntiAircraftFireDirector",
       "AntiAircraftGun",
@@ -226,11 +226,11 @@ describe("createImprovement", () => {
 
     it("電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(☆)", () => {
       const radar = GearBaseStub.fromAttrs("Radar")
-      const apshell = GearBaseStub.fromCategory("ArmorPiercingShell")
-      const aashell = GearBaseStub.fromCategory("AntiAircraftShell")
+      const aps = GearBaseStub.fromCategory("ApShell")
+      const aas = GearBaseStub.fromCategory("AntiAircraftShell")
       const aafd = GearBaseStub.fromCategory("AntiAircraftFireDirector")
 
-      ;[radar, apshell, aashell, aafd].forEach((gear) => {
+      ;[radar, aps, aas, aafd].forEach((gear) => {
         expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingAccuracyBonus, 1)
       })
     })
