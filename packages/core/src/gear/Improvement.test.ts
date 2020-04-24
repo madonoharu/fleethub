@@ -87,7 +87,7 @@ describe("createImprovement", () => {
 
   describe("adjustedAntiAirBonus", () => {
     it("対空8以上の対空機銃 -> 6 * sqrt(☆)", () => {
-      const gear = GearBaseStub.fromCategory("AntiAircraftGun")
+      const gear = GearBaseStub.fromCategory("AntiAirGun")
       gear.antiAir = 8
       const expected = 6
 
@@ -95,7 +95,7 @@ describe("createImprovement", () => {
     })
 
     it("対空7以下の対空機銃 -> 4 * sqrt(☆)", () => {
-      const gear = GearBaseStub.fromCategory("AntiAircraftGun")
+      const gear = GearBaseStub.fromCategory("AntiAirGun")
       gear.antiAir = 7
       const expected = 4
 
@@ -103,7 +103,7 @@ describe("createImprovement", () => {
     })
 
     it("対空8以上の高射装置,高角砲 -> 3 * sqrt(☆)", () => {
-      const aafd = GearBaseStub.fromCategory("AntiAircraftFireDirector")
+      const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 8
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 8
@@ -115,7 +115,7 @@ describe("createImprovement", () => {
     })
 
     it("対空7以下の高射装置,高角砲 -> 2 * sqrt(☆)", () => {
-      const aafd = GearBaseStub.fromCategory("AntiAircraftFireDirector")
+      const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 7
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 7
@@ -129,7 +129,7 @@ describe("createImprovement", () => {
 
   describe("fleetAntiAirBonus", () => {
     it("対空8以上の高射装置,高角砲 -> 3 * sqrt(☆)", () => {
-      const aafd = GearBaseStub.fromCategory("AntiAircraftFireDirector")
+      const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 8
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 8
@@ -141,7 +141,7 @@ describe("createImprovement", () => {
     })
 
     it("対空7以下の高射装置,高角砲 -> 2 * sqrt(☆)", () => {
-      const aafd = GearBaseStub.fromCategory("AntiAircraftFireDirector")
+      const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 7
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 7
@@ -193,9 +193,9 @@ describe("createImprovement", () => {
       "MediumCaliberMainGun",
       "SecondaryGun",
       "ApShell",
-      "AntiAircraftShell",
-      "AntiAircraftFireDirector",
-      "AntiAircraftGun",
+      "AntiAirShell",
+      "AntiAirFireDirector",
+      "AntiAirGun",
       "Searchlight",
       "LargeSearchlight",
       "AntiGroundEquipment",
@@ -227,8 +227,8 @@ describe("createImprovement", () => {
     it("電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(☆)", () => {
       const radar = GearBaseStub.fromAttrs("Radar")
       const aps = GearBaseStub.fromCategory("ApShell")
-      const aas = GearBaseStub.fromCategory("AntiAircraftShell")
-      const aafd = GearBaseStub.fromCategory("AntiAircraftFireDirector")
+      const aas = GearBaseStub.fromCategory("AntiAirShell")
+      const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
 
       ;[radar, aps, aas, aafd].forEach((gear) => {
         expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingAccuracyBonus, 1)
