@@ -29,7 +29,7 @@ describe("MasterGear", () => {
 
       improvable: true,
 
-      hp: 18,
+      maxHp: 18,
       speed: 19,
       luck: 20,
     }

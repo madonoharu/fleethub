@@ -50,7 +50,7 @@ export class GearImpl implements Gear {
   public readonly improvable = this.base.improvable
 
   public readonly luck = this.base.luck
-  public readonly hp = this.base.hp
+  public readonly maxHp = this.base.maxHp
   public readonly speed = this.base.speed
 
   constructor(private state: GearState, private base: GearBase) {}

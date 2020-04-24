@@ -61,7 +61,7 @@ export enum GearCategory {
   ApShell = 19,
 
   /** VT信管 */
-  VTFuze = 20,
+  VtFuze = 20,
 
   /** 対空機銃 */
   AntiAirGun = 21,

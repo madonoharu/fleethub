@@ -25,7 +25,7 @@ export class GearBaseStub implements GearBase {
   public radius = 0
   public cost = 0
   public improvable = false
-  public hp = 0
+  public maxHp = 0
   public speed = 0
   public luck = 0
   public attrs: GearAttribute[] = []

@@ -13,7 +13,7 @@ export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData
   sortNo: partial.sortNo ?? 0,
   sortId: partial.sortId ?? 0,
 
-  hp: toStatBase(partial.hp),
+  maxHp: toStatBase(partial.maxHp),
   armor: toStatBase(partial.armor),
   firepower: toStatBase(partial.firepower),
   torpedo: toStatBase(partial.torpedo),
