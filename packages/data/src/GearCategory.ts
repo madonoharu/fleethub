@@ -58,7 +58,7 @@ export enum GearCategory {
   AntiAircraftShell = 18,
 
   /** 対艦強化弾 */
-  ArmorPiercingShell = 19,
+  ApShell = 19,
 
   /** VT信管 */
   VTFuze = 20,

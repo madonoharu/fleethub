@@ -13,7 +13,7 @@ export type ShellingPowerParams = Partial<{
   healthModifier: number
 
   cruiserFitBonus: number
-  apshellModifier: number
+  apShellModifier: number
   specialAttackModifier: number
   isCritical: boolean
   isAntiInstallation: boolean
@@ -39,7 +39,7 @@ export const calcShellingPower = (params: ShellingPowerParams) => {
     cruiserFitBonus,
     specialAttackModifier,
 
-    apshellModifier,
+    apShellModifier,
   } = params
 
   const basic = calcBasicPower(params)
@@ -48,7 +48,7 @@ export const calcShellingPower = (params: ShellingPowerParams) => {
   const b14 = cruiserFitBonus
   const a11 = specialAttackModifier
 
-  return calcAttackPower({ basic, cap: ShellingCap, a14, b14, a11, apshellModifier })
+  return calcAttackPower({ basic, cap: ShellingCap, a14, b14, a11, apShellModifier })
 }
 
 class ShipShellingCalculator {

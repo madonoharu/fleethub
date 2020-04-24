@@ -7,7 +7,7 @@ const defaultParams: DaySpecialAttackParams = {
 
   mainGunCount: 0,
   secondaryGunCount: 0,
-  hasAPShell: false,
+  hasApShell: false,
   hasRader: false,
 
   zuiunCount: 0,
@@ -27,7 +27,7 @@ describe("getPossibleDaySpecialAttackTypes", () => {
         hasObservationSeaplane: false,
         mainGunCount: 0,
         secondaryGunCount: 1,
-        hasAPShell: true,
+        hasApShell: true,
         hasRader: true,
       }
       expect(getTypes(params)).toHaveLength(0)
@@ -45,20 +45,20 @@ describe("getPossibleDaySpecialAttackTypes", () => {
           hasObservationSeaplane: true,
           mainGunCount: 2,
           secondaryGunCount: 1,
-          hasAPShell: true,
+          hasApShell: true,
           hasRader: true,
         })
       ).toHaveLength(5)
     })
 
     it.each`
-      type              | mainGunCount | secondaryGunCount | hasAPShell | hasRader | expected
+      type              | mainGunCount | secondaryGunCount | hasApShell | hasRader | expected
       ${"MainMain"}     | ${2}         | ${0}              | ${true}    | ${false} | ${"可"}
       ${"MainMain"}     | ${1}         | ${0}              | ${true}    | ${false} | ${"不可"}
       ${"MainMain"}     | ${2}         | ${0}              | ${false}   | ${false} | ${"不可"}
-      ${"MainAPShell"}  | ${1}         | ${1}              | ${true}    | ${false} | ${"可"}
-      ${"MainAPShell"}  | ${1}         | ${0}              | ${true}    | ${false} | ${"不可"}
-      ${"MainAPShell"}  | ${1}         | ${1}              | ${false}   | ${false} | ${"不可"}
+      ${"MainApShell"}  | ${1}         | ${1}              | ${true}    | ${false} | ${"可"}
+      ${"MainApShell"}  | ${1}         | ${0}              | ${true}    | ${false} | ${"不可"}
+      ${"MainApShell"}  | ${1}         | ${1}              | ${false}   | ${false} | ${"不可"}
       ${"MainRader"}    | ${1}         | ${1}              | ${false}   | ${true}  | ${"可"}
       ${"MainRader"}    | ${1}         | ${0}              | ${false}   | ${true}  | ${"不可"}
       ${"MainRader"}    | ${1}         | ${1}              | ${false}   | ${false} | ${"不可"}
@@ -67,9 +67,9 @@ describe("getPossibleDaySpecialAttackTypes", () => {
       ${"DoubleAttack"} | ${2}         | ${0}              | ${false}   | ${false} | ${"可"}
       ${"DoubleAttack"} | ${1}         | ${1}              | ${false}   | ${false} | ${"不可"}
     `(
-      "$type: 主$mainGunCount, 副$secondaryGunCount, 徹甲弾$hasAPShell, 電探$hasRader -> 発動$expected",
-      ({ mainGunCount, secondaryGunCount, hasAPShell, hasRader, type, expected }) => {
-        const types = getTypes({ hasObservationSeaplane: true, mainGunCount, secondaryGunCount, hasAPShell, hasRader })
+      "$type: 主$mainGunCount, 副$secondaryGunCount, 徹甲弾$hasApShell, 電探$hasRader -> 発動$expected",
+      ({ mainGunCount, secondaryGunCount, hasApShell, hasRader, type, expected }) => {
+        const types = getTypes({ hasObservationSeaplane: true, mainGunCount, secondaryGunCount, hasApShell, hasRader })
         expect(types.includes(type)).toBe(expected === "可")
       }
     )
@@ -138,7 +138,7 @@ describe("getPossibleDaySpecialAttackTypes", () => {
     it("立体攻撃は弾着観測射撃とも重複する", () => {
       const types = getTypes({
         hasObservationSeaplane: true,
-        hasAPShell: true,
+        hasApShell: true,
 
         isIseClassK2: true,
         mainGunCount: 2,
