@@ -1,6 +1,6 @@
 import { createImprovement } from "./Improvement"
 
-import { GearName } from "@fleethub/data"
+import { GearName, GearCategory, GearCategoryKey } from "@fleethub/data"
 import { range } from "lodash-es"
 
 import { GearBaseStub } from "../utils/GearBaseStub"
@@ -22,6 +22,10 @@ const expectMultiplierStars = (getBonus: (stars: number) => number, multiplier: 
   expect(bonuses).toEqual(expected)
 }
 
+const expectNoBonus = (getBonus: (stars: number) => number) => {
+  expectMultiplierStars(getBonus, 0)
+}
+
 describe("createImprovement", () => {
   it("デフォルトの戻り値は0", () => {
     const gear = new GearBaseStub()
@@ -34,6 +38,13 @@ describe("createImprovement", () => {
       shellingAccuracyBonus: 0,
       aswPowerBonus: 0,
       aswAccuracyBonus: 0,
+      torpedoPowerBonus: 0,
+      torpedoAccuracyBonus: 0,
+      torpedoEvasionBonus: 0,
+      nightPowerBonus: 0,
+      nightAccuracyBonus: 0,
+      effectiveLosBonus: 0,
+      defensePowerBonus: 0,
     })
   })
 
@@ -162,6 +173,66 @@ describe("createImprovement", () => {
       const gear = GearBaseStub.fromCategory("CarrierBasedTorpedoBomber")
 
       expectMultiplierStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.2)
+    })
+
+    it.each<GearName>(["12.7cm連装高角砲", "8cm高角砲", "8cm高角砲改+増設機銃", "10cm連装高角砲改+増設機銃"])(
+      "%s -> 0.2 * ☆",
+      (name) => {
+        const gear = makeGear(name)
+        expectMultiplierStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.2)
+      }
+    )
+
+    it.each<GearName>(["15.5cm三連装副砲", "15.5cm三連装副砲改", "15.2cm三連装砲"])("%s -> 0.3 * ☆", (name) => {
+      const gear = makeGear(name)
+      expectMultiplierStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.3)
+    })
+
+    it.each<GearCategoryKey>([
+      "SmallCaliberMainGun",
+      "MediumCaliberMainGun",
+      "SecondaryGun",
+      "ArmorPiercingShell",
+      "AntiAircraftShell",
+      "AntiAircraftFireDirector",
+      "AntiAircraftGun",
+      "Searchlight",
+      "LargeSearchlight",
+      "AntiGroundEquipment",
+      "LandingCraft",
+      "SpecialAmphibiousTank",
+    ])("%s -> sqrt(☆)", (category) => {
+      const gear = GearBaseStub.fromCategory(category)
+      expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 1)
+    })
+
+    it("ソナー,大型ソナー,爆雷投射機,迫撃砲 -> 0.75 * sqrt(☆)", () => {
+      const sonor = GearBaseStub.fromCategory("Sonar")
+      const largeSonar = GearBaseStub.fromCategory("LargeSonar")
+      const depthChargeProjector = GearBaseStub.fromAttrs("DepthChargeProjector")
+      const mortar = GearBaseStub.fromAttrs("Mortar")
+
+      ;[sonor, largeSonar, depthChargeProjector, mortar].forEach((gear) => {
+        expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.75)
+      })
+    })
+  })
+
+  describe("shellingAccuracyBonus", () => {
+    it("水上電探 -> 1.7 * sqrt(☆)", () => {
+      const gear = GearBaseStub.fromAttrs("SurfaceRadar")
+      expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingAccuracyBonus, 1.7)
+    })
+
+    it("電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(☆)", () => {
+      const radar = GearBaseStub.fromAttrs("Radar")
+      const apshell = GearBaseStub.fromCategory("ArmorPiercingShell")
+      const aashell = GearBaseStub.fromCategory("AntiAircraftShell")
+      const aafd = GearBaseStub.fromCategory("AntiAircraftFireDirector")
+
+      ;[radar, apshell, aashell, aafd].forEach((gear) => {
+        expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).shellingAccuracyBonus, 1)
+      })
     })
   })
 })
