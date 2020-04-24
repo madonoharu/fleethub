@@ -13,7 +13,7 @@ describe("ShipStats", () => {
       los: [11, 12],
       evasion: [13, 14],
 
-      hp: [15, 16],
+      maxHp: [15, 16],
       luck: [17, 18],
       range: 1,
       speed: 5,

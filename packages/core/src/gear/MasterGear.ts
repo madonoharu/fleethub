@@ -34,7 +34,7 @@ export default class MasterGear implements GearBase {
   public readonly cost = this.data.cost || 0
   public readonly improvable = this.data.improvable || false
 
-  public readonly hp = this.data.hp || 0
+  public readonly maxHp = this.data.maxHp || 0
   public readonly speed = this.data.speed || 0
   public readonly luck = this.data.luck || 0
 

@@ -20,10 +20,7 @@ export type ShipStat = {
 
 type EquipmentRelatedStat = Required<ShipStat>
 
-type PickedShipBase = Pick<
-  ShipBase,
-  EquipmentRelatedStatKey | "hp" | "speed" | "luck" | "range" | "shipId" | "shipClass" | "speedGroup"
->
+type PickedShipBase = Pick<ShipBase, ShipStatKey | "shipId" | "shipClass" | "speedGroup">
 
 type Equipment = {
   sumBy: (key: EquipmentRelatedStatKey) => number
@@ -217,7 +214,7 @@ export const createShipStats = (
     los: createIncreasingStat("los"),
     evasion: createIncreasingStat("evasion"),
 
-    maxHp: new ShipMaxHp(base.hp[0], base.hp[1], modernization.maxHp, isMarried),
+    maxHp: new ShipMaxHp(base.maxHp[0], base.maxHp[1], modernization.maxHp, isMarried),
     speed: new ShipSpeed(base.speed, speedBonus),
     range: new ShipRange(base.range, equipment.maxValueBy("range"), bonuses.range),
     luck: new ShipLuck(base.luck[0], base.luck[1], modernization.luck),

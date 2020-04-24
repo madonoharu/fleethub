@@ -30,7 +30,7 @@ const mstItemToData = (mstItem: MstSlotitem, improvableIds: number[]): GearData 
     iconId: mstItem.api_type[3],
     name: mstItem.api_name,
 
-    hp: mstItem.api_taik,
+    maxHp: mstItem.api_taik,
     armor: mstItem.api_souk,
     firepower: mstItem.api_houg,
     torpedo: mstItem.api_raig,

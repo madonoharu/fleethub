@@ -11,7 +11,7 @@ export interface ShipData {
   shipType: number
   shipClass: number
 
-  hp: ShipStat
+  maxHp: ShipStat
   firepower: ShipStat
   armor: ShipStat
   torpedo: ShipStat

@@ -4,7 +4,7 @@ export type GearData = {
   iconId: number
   name: string
 
-  hp?: number
+  maxHp?: number
   firepower?: number
   armor?: number
   torpedo?: number

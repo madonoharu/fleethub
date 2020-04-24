@@ -7,7 +7,7 @@ const defaultData: ShipData = {
   ruby: "",
   shipClass: 0,
   shipType: 0,
-  hp: 0,
+  maxHp: 0,
   firepower: 0,
   armor: 0,
   torpedo: 0,
@@ -36,7 +36,7 @@ describe("MasterShip", () => {
       ruby: "",
       shipClass: 0,
       shipType: 0,
-      hp: [0, 0],
+      maxHp: [0, 0],
       firepower: [0, 0],
       armor: [0, 0],
       torpedo: [0, 0],
@@ -53,8 +53,8 @@ describe("MasterShip", () => {
       gears: [],
     })
 
-    expect(new MasterShip({ hp: 5 })).toMatchObject<Partial<MasterShip>>({ hp: [5, 5] })
-    expect(new MasterShip({ hp: [10, 15] })).toMatchObject<Partial<MasterShip>>({ hp: [10, 15] })
+    expect(new MasterShip({ maxHp: 5 })).toMatchObject<Partial<MasterShip>>({ maxHp: [5, 5] })
+    expect(new MasterShip({ maxHp: [10, 15] })).toMatchObject<Partial<MasterShip>>({ maxHp: [10, 15] })
 
     expect(new MasterShip({ gears: [1, 2, { gearId: 3, stars: 4 }] })).toMatchObject<Partial<MasterShip>>({
       gears: [{ gearId: 1 }, { gearId: 2 }, { gearId: 3, stars: 4 }],

@@ -55,7 +55,7 @@ const createEquippable = (shipId: number, shipType: number): Equippable => {
 export type StatBase = [number, number]
 
 export interface RequiredShipData extends Required<ShipData> {
-  hp: StatBase
+  maxHp: StatBase
 
   firepower: StatBase
   armor: StatBase
@@ -112,7 +112,7 @@ export default class MasterShip implements ShipBase {
   public readonly sortNo = this.data.sortNo || 0
   public readonly sortId = this.data.sortId || 0
 
-  public readonly hp = toStatBase(this.data.hp)
+  public readonly maxHp = toStatBase(this.data.maxHp)
   public readonly armor = toStatBase(this.data.armor)
   public readonly firepower = toStatBase(this.data.firepower)
   public readonly torpedo = toStatBase(this.data.torpedo)

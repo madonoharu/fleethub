@@ -10,7 +10,7 @@ const defaultStats: Required<GearData> = {
   iconId: 0,
   name: "",
 
-  hp: 0,
+  maxHp: 0,
   firepower: 0,
   armor: 0,
   torpedo: 0,
