@@ -78,7 +78,7 @@ describe("createImprovement", () => {
     })
 
     it("陸攻 -> 0.5 * sqrt(☆)", () => {
-      const gear = GearBaseStub.fromCategory("LandBasedAttackAircraft")
+      const gear = GearBaseStub.fromCategory("LbAttackAircraft")
       const expected = 0.5
 
       expectMultiplierSqrtStars((stars) => createImprovement(gear, stars).fighterPowerBonus, expected)
