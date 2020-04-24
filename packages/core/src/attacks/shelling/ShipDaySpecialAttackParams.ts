@@ -44,13 +44,13 @@ export class ShipDaySpecialAttackParams implements DaySpecialAttackParams {
   }
 
   get bomberCount() {
-    return this.equipment.countAircraft((gear) => gear.categoryIn("CarrierBasedDiveBomber"))
+    return this.equipment.countAircraft((gear) => gear.categoryIn("CbDiveBomber"))
   }
   get hasTorpedoBomber() {
-    return this.equipment.hasAircraft((gear) => gear.categoryIn("CarrierBasedTorpedoBomber"))
+    return this.equipment.hasAircraft((gear) => gear.categoryIn("CbTorpedoBomber"))
   }
   get hasFighter() {
-    return this.equipment.hasAircraft((gear) => gear.categoryIn("CarrierBasedFighter"))
+    return this.equipment.hasAircraft((gear) => gear.categoryIn("CbFighter"))
   }
 
   get zuiunCount() {

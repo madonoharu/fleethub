@@ -46,6 +46,6 @@ describe("MasterGear", () => {
 
     expect(new MasterGear(getGearData("15m二重測距儀+21号電探改二")).specialCategory).toBe(GearCategory2.LargeRadar2)
 
-    expect(new MasterGear(getGearData("試製景雲(艦偵型)")).specialCategory).toBe(GearCategory2.CarrierBasedRecon2)
+    expect(new MasterGear(getGearData("試製景雲(艦偵型)")).specialCategory).toBe(GearCategory2.CbRecon2)
   })
 })

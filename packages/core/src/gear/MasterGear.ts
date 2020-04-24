@@ -56,7 +56,7 @@ export default class MasterGear implements GearBase {
       case GearId["15m二重測距儀+21号電探改二"]:
         return GearCategory2.LargeRadar2
       case GearId["試製景雲(艦偵型)"]:
-        return GearCategory2.CarrierBasedRecon2
+        return GearCategory2.CbRecon2
     }
 
     return this.category
