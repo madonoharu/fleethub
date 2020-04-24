@@ -63,7 +63,7 @@ const calcContactSelectionBonus: ImprovementBonusCalculator = (gear, stars) => {
 const calcFighterPowerBonus: ImprovementBonusCalculator = (gear, stars) => {
   if (gear.is("Fighter")) return 0.2 * stars
   if (gear.is("FighterBomber")) return 0.25 * stars
-  if (gear.category === GearCategory.LbAttackAircraft) return 0.5 * Math.sqrt(stars)
+  if (gear.category === GearCategory.LbAttacker) return 0.5 * Math.sqrt(stars)
 
   return 0
 }

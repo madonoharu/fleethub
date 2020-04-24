@@ -77,7 +77,7 @@ const CbAircraft = categoryIn("CbFighter", "CbDiveBomber", "CbTorpedoBomber", "C
 const JetAircraft = categoryIn("JetFighter", "JetFighterBomber", "JetTorpedoBomber", "JetRecon")
 
 /** 陸上機 */
-const LbAircraft = categoryIn("LbAttackAircraft", "LbFighter", "LbRecon")
+const LbAircraft = categoryIn("LbAttacker", "LbFighter", "LbRecon")
 
 /** 戦闘機 */
 const Fighter = categoryIn("CbFighter", "SeaplaneFighter", "LbFighter", "JetFighter")
@@ -86,7 +86,7 @@ const Fighter = categoryIn("CbFighter", "SeaplaneFighter", "LbFighter", "JetFigh
 const DiveBomber = categoryIn("CbDiveBomber", "SeaplaneBomber", "JetFighterBomber")
 
 /** 攻撃機 */
-const TorpedoBomber = categoryIn("CbTorpedoBomber", "JetTorpedoBomber", "LbAttackAircraft")
+const TorpedoBomber = categoryIn("CbTorpedoBomber", "JetTorpedoBomber", "LbAttacker")
 
 /** 偵察機 */
 const Recon = categoryIn("CbRecon", "ReconSeaplane", "LargeFlyingBoat", "JetRecon", "LbRecon")
