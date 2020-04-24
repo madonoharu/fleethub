@@ -154,16 +154,16 @@ export enum GearCategory {
   SubmarineEquipment = 51,
 
   /** 噴式戦闘機 */
-  JetPoweredFighter = 56,
+  JetFighter = 56,
 
   /** 噴式戦闘爆撃機 */
-  JetPoweredFighterBomber = 57,
+  JetFighterBomber = 57,
 
   /** 噴式攻撃機 */
-  JetPoweredTorpedoBomber = 58,
+  JetTorpedoBomber = 58,
 
   /** 噴式索敵機 */
-  JetPoweredReconnaissanceAircraft = 59,
+  JetReconnaissanceAircraft = 59,
 }
 
 /** 特殊装備カテゴリ */

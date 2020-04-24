@@ -56,7 +56,7 @@ export class GearImpl implements Gear {
   constructor(private state: GearState, private base: GearBase) {}
 
   get hasProficiency() {
-    return this.in("Seaplane", "CarrierBasedAircraft", "LandBasedAircraft", "JetPoweredAircraft")
+    return this.in("Seaplane", "CarrierBasedAircraft", "LandBasedAircraft", "JetAircraft")
   }
 
   get ace() {
