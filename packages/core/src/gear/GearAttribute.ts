@@ -117,11 +117,8 @@ const AntiInstallationBomber = gearIdIn(
   GearId["彗星一二型(六三四空/三号爆弾搭載機)"]
 )
 
-const SwordfishTorpedoBomber = gearIdIn(
-  GearId["Swordfish"],
-  GearId["Swordfish Mk.II(熟練)"],
-  GearId["Swordfish Mk.III(熟練)"]
-)
+/** 艦上Swordfish */
+const CbSwordfish = gearIdIn(GearId["Swordfish"], GearId["Swordfish Mk.II(熟練)"], GearId["Swordfish Mk.III(熟練)"])
 
 /** 夜間戦闘機 */
 const NightFighter: GearMatcher = (gear) => gear.iconId === 45
@@ -129,7 +126,7 @@ const NightFighter: GearMatcher = (gear) => gear.iconId === 45
 const NightAttacker: GearMatcher = (gear) => gear.iconId === 46
 /** 準夜間機 */
 const SemiNightPlane = or(
-  SwordfishTorpedoBomber,
+  CbSwordfish,
   gearIdIn(GearId["零戦62型(爆戦/岩井隊)"], GearId["彗星一二型(三一号光電管爆弾搭載機)"])
 )
 
@@ -168,7 +165,7 @@ const matchers = {
   ObservationSeaplane,
   FighterBomber,
   AntiInstallationBomber,
-  SwordfishTorpedoBomber,
+  CbSwordfish,
 
   NightFighter,
   NightAttacker,
