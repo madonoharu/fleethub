@@ -139,13 +139,13 @@ export enum GearCategory {
   SpecialAmphibiousTank = 46,
 
   /** 陸上攻撃機 */
-  LandBasedAttackAircraft = 47,
+  LbAttackAircraft = 47,
 
   /** 局地戦闘機 */
-  LandBasedFighter = 48,
+  LbFighter = 48,
 
   /** 陸上偵察機 */
-  LandBasedRecon = 49,
+  LbRecon = 49,
 
   /** 輸送機材 */
   TransportationMaterial = 50,

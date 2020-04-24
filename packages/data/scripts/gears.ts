@@ -14,7 +14,7 @@ const mstItemToData = (mstItem: MstSlotitem, improvableIds: number[]): GearData 
   let antiBomber: number | undefined
   let interception: number | undefined
 
-  if (category === GearCategory.LandBasedFighter) {
+  if (category === GearCategory.LbFighter) {
     antiBomber = mstItem.api_houm
     interception = mstItem.api_houk
   } else {

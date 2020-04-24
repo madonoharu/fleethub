@@ -24,7 +24,7 @@ const basicFilterRecord: Record<string, GearFilterFn> = {
 
   ration: (gear) => gear.categoryIn("CombatRation", "Supplies"),
 
-  landBased: (gear) => gear.is("LandBasedAircraft"),
+  landBased: (gear) => gear.is("LbAircraft"),
 }
 
 const filterRecord: Record<string, GearFilterFn> = {
