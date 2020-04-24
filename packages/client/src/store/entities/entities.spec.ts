@@ -1,13 +1,13 @@
 import entitiesSlice, { getInitialState } from "."
 import { PayloadAction } from "@reduxjs/toolkit"
-import { NormalizedFleet } from "./fleet"
+import { NormalizedFleet } from "./fleets"
 
 describe("entities", () => {
   const { reducer, actions } = entitiesSlice
   it("", () => {
     expect(entitiesSlice.actions.createFleet({ main: [] })).toMatchObject<PayloadAction<NormalizedFleet>>({
       type: "entities/createFleet",
-      payload: { fleet: { uid: "0", main: [], escort: [] }, gears: [], ships: [] },
+      payload: { fleet: { uid: "0", name: "", main: [], escort: [] }, gears: [], ships: [] },
     })
   })
 

@@ -1,8 +1,6 @@
 import { createEntityAdapter, EntityId, EntitySelectors } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
-import { ShipState } from "@fleethub/core"
-
-import { NullableArray } from "../../utils"
+import { ShipState, NullableArray } from "@fleethub/core"
 
 import { GearEntity } from "./gears"
 import { normalizeShip, ShipEntity } from "./ships"
