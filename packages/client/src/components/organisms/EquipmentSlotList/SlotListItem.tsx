@@ -4,12 +4,12 @@ import styled from "styled-components"
 
 import Button from "@material-ui/core/Button"
 
-import { GearLabel, Flexbox } from "../.."
-import { NullableArray } from "../../../utils"
+import { GearLabel, Flexbox } from "../../../components"
 import { GearIndex } from "../../../store"
 
 import SlotSizeButton from "./SlotSizeButton"
 import AddGearButton from "./AddGearButton"
+import { NullableArray } from "@fleethub/core"
 
 export type Props = {
   index: number
