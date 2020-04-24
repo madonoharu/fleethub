@@ -73,10 +73,10 @@ const calcFighterPowerBonus: ImprovementBonusCalculator = (gear, stars) => {
  */
 const calcAdjustedAntiAirBonus: ImprovementBonusCalculator = ({ antiAir, category, is }, stars) => {
   let multiplier = 0
-  if (category === GearCategory.AntiAircraftGun) {
+  if (category === GearCategory.AntiAirGun) {
     multiplier = antiAir <= 7 ? 4 : 6
   }
-  if (category === GearCategory.AntiAircraftFireDirector || is("HighAngleMount")) {
+  if (category === GearCategory.AntiAirFireDirector || is("HighAngleMount")) {
     multiplier = antiAir <= 7 ? 2 : 3
   }
 
@@ -85,7 +85,7 @@ const calcAdjustedAntiAirBonus: ImprovementBonusCalculator = ({ antiAir, categor
 
 const calcFleetAntiAirBonus: ImprovementBonusCalculator = ({ antiAir, is, category }, stars) => {
   let multiplier = 0
-  if (category === GearCategory.AntiAircraftFireDirector || is("HighAngleMount")) {
+  if (category === GearCategory.AntiAirFireDirector || is("HighAngleMount")) {
     multiplier = antiAir <= 7 ? 2 : 3
   }
   if (is("AirRadar")) {
@@ -130,13 +130,13 @@ const calcShellingPowerBonus: ImprovementBonusCalculator = ({ gearId, is, catego
       "LargeCaliberMainGun",
       "SecondaryGun",
       "ApShell",
-      "AntiAircraftFireDirector",
+      "AntiAirFireDirector",
       "Searchlight",
-      "AntiAircraftGun",
+      "AntiAirGun",
       "LandingCraft",
       "LargeSearchlight",
       "SpecialAmphibiousTank",
-      "AntiAircraftShell",
+      "AntiAirShell",
       "AntiGroundEquipment"
     )
   ) {
@@ -159,11 +159,7 @@ const calcShellingAccuracyBonus: ImprovementBonusCalculator = ({ is, categoryIn 
     return 1.7 * Math.sqrt(stars)
   }
 
-  if (
-    is("Radar") ||
-    is("MainGun") ||
-    categoryIn("SecondaryGun", "ApShell", "AntiAircraftShell", "AntiAircraftFireDirector")
-  ) {
+  if (is("Radar") || is("MainGun") || categoryIn("SecondaryGun", "ApShell", "AntiAirShell", "AntiAirFireDirector")) {
     return Math.sqrt(stars)
   }
 
@@ -202,7 +198,7 @@ const calcAswAccuracyBonus: ImprovementBonusCalculator = ({ categoryIn }, stars)
  * 甲標的は補正無し
  */
 const calcTorpedoPowerBonus: ImprovementBonusCalculator = ({ categoryIn }, stars) => {
-  if (categoryIn("Torpedo", "AntiAircraftGun")) {
+  if (categoryIn("Torpedo", "AntiAirGun")) {
     return 1.2 * Math.sqrt(stars)
   }
   return 0
@@ -213,7 +209,7 @@ const calcTorpedoPowerBonus: ImprovementBonusCalculator = ({ categoryIn }, stars
  * @see [機銃は補正あり？](http://jbbs.shitaraba.net/bbs/read.cgi/netgame/13745/1439793270/169)
  */
 const calcTorpedoAccuracyBonus: ImprovementBonusCalculator = ({ categoryIn }, stars) => {
-  if (categoryIn("Torpedo", "AntiAircraftGun")) {
+  if (categoryIn("Torpedo", "AntiAirGun")) {
     return 1.2 * Math.sqrt(stars)
   }
   return 0
@@ -242,10 +238,10 @@ const calcNightPowerBonus: ImprovementBonusCalculator = ({ gearId, categoryIn },
       "LargeCaliberMainGun",
       "SecondaryGun",
       "ApShell",
-      "AntiAircraftShell",
+      "AntiAirShell",
       "Searchlight",
       "LargeSearchlight",
-      "AntiAircraftFireDirector",
+      "AntiAirFireDirector",
       "LandingCraft",
       "SpecialAmphibiousTank",
       "AntiGroundEquipment",

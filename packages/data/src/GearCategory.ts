@@ -55,7 +55,7 @@ export enum GearCategory {
   EngineImprovement = 17,
 
   /** 対空強化弾 */
-  AntiAircraftShell = 18,
+  AntiAirShell = 18,
 
   /** 対艦強化弾 */
   ApShell = 19,
@@ -64,7 +64,7 @@ export enum GearCategory {
   VTFuze = 20,
 
   /** 対空機銃 */
-  AntiAircraftGun = 21,
+  AntiAirGun = 21,
 
   /** 特殊潜航艇 */
   MidgetSubmarine = 22,
@@ -109,7 +109,7 @@ export enum GearCategory {
   AviationPersonnel = 35,
 
   /** 高射装置 */
-  AntiAircraftFireDirector = 36,
+  AntiAirFireDirector = 36,
 
   /** 対地装備 */
   AntiGroundEquipment = 37,

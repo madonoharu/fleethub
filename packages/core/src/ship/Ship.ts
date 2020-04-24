@@ -107,7 +107,7 @@ export class ShipImpl implements Ship {
         return false
       }
       if (index === 4) {
-        return gear.categoryIn("AntiAircraftGun", "SmallRadar", "CombatRation")
+        return gear.categoryIn("AntiAirGun", "SmallRadar", "CombatRation")
       }
     }
 
