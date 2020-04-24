@@ -35,7 +35,7 @@ type ImprovementBonusCalculator = (gear: GearBase, stars: number) => number
 const calcContactSelectionBonus: ImprovementBonusCalculator = (gear, stars) => {
   const { category, los } = gear
 
-  if (category === GearCategory.CarrierBasedReconAircraft) {
+  if (category === GearCategory.CarrierBasedRecon) {
     // 二式艦偵 [0.25, 3) または√☆
     if (los === 7) return 0.25 * stars
 
@@ -288,7 +288,7 @@ const calEffectiveLosBonus: ImprovementBonusCalculator = ({ category, categoryIn
     return 1.4 * Math.sqrt(stars)
   }
 
-  if (categoryIn("CarrierBasedReconAircraft", "ReconSeaplane")) {
+  if (categoryIn("CarrierBasedRecon", "ReconSeaplane")) {
     return 1.2 * Math.sqrt(stars)
   }
 

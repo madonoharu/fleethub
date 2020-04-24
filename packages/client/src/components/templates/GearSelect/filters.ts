@@ -3,13 +3,13 @@ import { GearState, GearBase } from "@fleethub/core"
 export type GearFilterFn = (gear: GearBase) => boolean
 
 const basicFilterRecord: Record<string, GearFilterFn> = {
-  fighter: (gear) => gear.categoryIn("CarrierBasedFighterAircraft", "JetFighter"),
+  fighter: (gear) => gear.categoryIn("CarrierBasedFighter", "JetFighter"),
 
   bomber: (gear) =>
     gear.categoryIn("CarrierBasedDiveBomber", "CarrierBasedTorpedoBomber", "JetFighterBomber", "JetTorpedoBomber"),
 
   recon: (gear) =>
-    gear.is("ReconAircraft") || gear.is("Seaplane") || gear.categoryIn("Autogyro", "AntiSubmarinePatrolAircraft"),
+    gear.is("Recon") || gear.is("Seaplane") || gear.categoryIn("Autogyro", "AntiSubmarinePatrolAircraft"),
 
   mainGun: (gear) => gear.is("MainGun"),
 
