@@ -72,20 +72,20 @@ const Seaplane = categoryIn("ReconSeaplane", "SeaplaneBomber", "SeaplaneFighter"
 
 /** 艦上機 */
 const CarrierBasedAircraft = categoryIn(
-  "CarrierBasedFighterAircraft",
+  "CarrierBasedFighter",
   "CarrierBasedDiveBomber",
   "CarrierBasedTorpedoBomber",
-  "CarrierBasedReconAircraft"
+  "CarrierBasedRecon"
 )
 
 /** 噴式機 */
-const JetAircraft = categoryIn("JetFighter", "JetFighterBomber", "JetTorpedoBomber", "JetReconAircraft")
+const JetAircraft = categoryIn("JetFighter", "JetFighterBomber", "JetTorpedoBomber", "JetRecon")
 
 /** 陸上機 */
-const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedReconAircraft")
+const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedRecon")
 
 /** 戦闘機 */
-const Fighter = categoryIn("CarrierBasedFighterAircraft", "SeaplaneFighter", "LandBasedFighter", "JetFighter")
+const Fighter = categoryIn("CarrierBasedFighter", "SeaplaneFighter", "LandBasedFighter", "JetFighter")
 
 /** 爆撃機 */
 const DiveBomber = categoryIn("CarrierBasedDiveBomber", "SeaplaneBomber", "JetFighterBomber")
@@ -94,13 +94,7 @@ const DiveBomber = categoryIn("CarrierBasedDiveBomber", "SeaplaneBomber", "JetFi
 const TorpedoBomber = categoryIn("CarrierBasedTorpedoBomber", "JetTorpedoBomber", "LandBasedAttackAircraft")
 
 /** 偵察機 */
-const ReconAircraft = categoryIn(
-  "CarrierBasedReconAircraft",
-  "ReconSeaplane",
-  "LargeFlyingBoat",
-  "JetReconAircraft",
-  "LandBasedReconAircraft"
-)
+const Recon = categoryIn("CarrierBasedRecon", "ReconSeaplane", "LargeFlyingBoat", "JetRecon", "LandBasedRecon")
 
 /** 航空機 */
 const Aircraft = or(
@@ -174,7 +168,7 @@ const matchers = {
   Fighter,
   DiveBomber,
   TorpedoBomber,
-  ReconAircraft,
+  Recon,
 
   ObservationSeaplane,
   FighterBomber,

@@ -19,7 +19,7 @@ export enum GearCategory {
   Torpedo = 5,
 
   /** 艦上戦闘機 */
-  CarrierBasedFighterAircraft = 6,
+  CarrierBasedFighter = 6,
 
   /** 艦上爆撃機 */
   CarrierBasedDiveBomber = 7,
@@ -28,7 +28,7 @@ export enum GearCategory {
   CarrierBasedTorpedoBomber = 8,
 
   /** 艦上偵察機 */
-  CarrierBasedReconAircraft = 9,
+  CarrierBasedRecon = 9,
 
   /** 水上偵察機 */
   ReconSeaplane = 10,
@@ -145,7 +145,7 @@ export enum GearCategory {
   LandBasedFighter = 48,
 
   /** 陸上偵察機 */
-  LandBasedReconAircraft = 49,
+  LandBasedRecon = 49,
 
   /** 輸送機材 */
   TransportationMaterial = 50,
@@ -163,7 +163,7 @@ export enum GearCategory {
   JetTorpedoBomber = 58,
 
   /** 噴式索敵機 */
-  JetReconAircraft = 59,
+  JetRecon = 59,
 }
 
 /** 特殊装備カテゴリ */
@@ -175,7 +175,7 @@ export enum GearCategory2 {
   LargeRadar2 = 93,
 
   /** 艦上偵察機(II) */
-  CarrierBasedReconAircraft2 = 94,
+  CarrierBasedRecon2 = 94,
 }
 
 export type GearCategoryKey = keyof typeof GearCategory
