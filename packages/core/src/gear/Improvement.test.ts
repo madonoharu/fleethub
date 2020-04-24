@@ -170,7 +170,7 @@ describe("createImprovement", () => {
     })
 
     it("艦上攻撃機 -> 0.2 * ☆", () => {
-      const gear = GearBaseStub.fromCategory("CarrierBasedTorpedoBomber")
+      const gear = GearBaseStub.fromCategory("CbTorpedoBomber")
 
       expectMultiplierStars((stars) => createImprovement(gear, stars).shellingPowerBonus, 0.2)
     })

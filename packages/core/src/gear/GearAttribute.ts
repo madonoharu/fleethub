@@ -35,8 +35,8 @@ const AswGear = categoryIn(
   "DepthCharge",
   "LargeSonar",
 
-  "CarrierBasedDiveBomber",
-  "CarrierBasedTorpedoBomber",
+  "CbDiveBomber",
+  "CbTorpedoBomber",
   "SeaplaneBomber",
   "Autogyro",
   "AntiSubmarinePatrolAircraft"
@@ -46,8 +46,8 @@ const AswGear = categoryIn(
 const AswAircraft = and(
   ({ asw }) => asw > 0,
   categoryIn(
-    "CarrierBasedDiveBomber",
-    "CarrierBasedTorpedoBomber",
+    "CbDiveBomber",
+    "CbTorpedoBomber",
     "SeaplaneBomber",
     "Autogyro",
     "AntiSubmarinePatrolAircraft",
@@ -71,12 +71,7 @@ const AntiGroundRocketLauncher = gearIdIn(GearId["艦載型 四式20cm対地噴�
 const Seaplane = categoryIn("ReconSeaplane", "SeaplaneBomber", "SeaplaneFighter", "LargeFlyingBoat")
 
 /** 艦上機 */
-const CarrierBasedAircraft = categoryIn(
-  "CarrierBasedFighter",
-  "CarrierBasedDiveBomber",
-  "CarrierBasedTorpedoBomber",
-  "CarrierBasedRecon"
-)
+const CbAircraft = categoryIn("CbFighter", "CbDiveBomber", "CbTorpedoBomber", "CbRecon")
 
 /** 噴式機 */
 const JetAircraft = categoryIn("JetFighter", "JetFighterBomber", "JetTorpedoBomber", "JetRecon")
@@ -85,21 +80,21 @@ const JetAircraft = categoryIn("JetFighter", "JetFighterBomber", "JetTorpedoBomb
 const LandBasedAircraft = categoryIn("LandBasedAttackAircraft", "LandBasedFighter", "LandBasedRecon")
 
 /** 戦闘機 */
-const Fighter = categoryIn("CarrierBasedFighter", "SeaplaneFighter", "LandBasedFighter", "JetFighter")
+const Fighter = categoryIn("CbFighter", "SeaplaneFighter", "LandBasedFighter", "JetFighter")
 
 /** 爆撃機 */
-const DiveBomber = categoryIn("CarrierBasedDiveBomber", "SeaplaneBomber", "JetFighterBomber")
+const DiveBomber = categoryIn("CbDiveBomber", "SeaplaneBomber", "JetFighterBomber")
 
 /** 攻撃機 */
-const TorpedoBomber = categoryIn("CarrierBasedTorpedoBomber", "JetTorpedoBomber", "LandBasedAttackAircraft")
+const TorpedoBomber = categoryIn("CbTorpedoBomber", "JetTorpedoBomber", "LandBasedAttackAircraft")
 
 /** 偵察機 */
-const Recon = categoryIn("CarrierBasedRecon", "ReconSeaplane", "LargeFlyingBoat", "JetRecon", "LandBasedRecon")
+const Recon = categoryIn("CbRecon", "ReconSeaplane", "LargeFlyingBoat", "JetRecon", "LandBasedRecon")
 
 /** 航空機 */
 const Aircraft = or(
   Seaplane,
-  CarrierBasedAircraft,
+  CbAircraft,
   JetAircraft,
   LandBasedAircraft,
   categoryIn("AntiSubmarinePatrolAircraft", "Autogyro")
@@ -109,7 +104,7 @@ const Aircraft = or(
 const ObservationSeaplane = categoryIn("ReconSeaplane", "SeaplaneBomber")
 
 /** 爆戦 */
-const FighterBomber = and(categoryIn("CarrierBasedDiveBomber"), (gear) => gear.antiAir >= 4)
+const FighterBomber = and(categoryIn("CbDiveBomber"), (gear) => gear.antiAir >= 4)
 
 /** 対地艦爆 */
 const AntiInstallationBomber = gearIdIn(
@@ -160,7 +155,7 @@ const matchers = {
   AntiGroundRocketLauncher,
 
   Seaplane,
-  CarrierBasedAircraft,
+  CbAircraft,
   LandBasedAircraft,
   JetAircraft,
   Aircraft,
