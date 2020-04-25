@@ -20,12 +20,12 @@ export type DaySpecialAttackParams = {
   hasApShell: boolean
   hasRader: boolean
 
-  zuiunCount: number
-  suisei634Count: number
+  zuiunAircraftCount: number
+  suisei634AircraftCount: number
 
-  hasFighter: boolean
-  bomberCount: number
-  hasTorpedoBomber: boolean
+  hasCbFighterAircraft: boolean
+  cbBomberAircraftCount: number
+  hasCbTorpedoBomberAircraft: boolean
 }
 
 const getArtillerySpottings = (params: DaySpecialAttackParams) => {
@@ -47,25 +47,29 @@ const getArtillerySpottings = (params: DaySpecialAttackParams) => {
   return types
 }
 
-const getIseClassCutins = ({ zuiunCount, suisei634Count }: DaySpecialAttackParams) => {
+const getIseClassCutins = ({ zuiunAircraftCount, suisei634AircraftCount }: DaySpecialAttackParams) => {
   const types: DaySpecialAttackType[] = []
 
-  if (zuiunCount >= 2) types.push("Zuiun")
-  if (suisei634Count >= 2) types.push("Suisei")
+  if (zuiunAircraftCount >= 2) types.push("Zuiun")
+  if (suisei634AircraftCount >= 2) types.push("Suisei")
 
   return types
 }
 
-const getCarrierCutins = ({ bomberCount, hasTorpedoBomber, hasFighter }: DaySpecialAttackParams) => {
+const getCarrierCutins = ({
+  cbBomberAircraftCount,
+  hasCbTorpedoBomberAircraft,
+  hasCbFighterAircraft,
+}: DaySpecialAttackParams) => {
   const types: DaySpecialAttackType[] = []
 
-  if (bomberCount === 0 || !hasTorpedoBomber) {
+  if (cbBomberAircraftCount === 0 || !hasCbTorpedoBomberAircraft) {
     return types
   }
 
   types.push("BA")
-  if (bomberCount >= 2) types.push("BBA")
-  if (hasFighter) types.push("FBA")
+  if (cbBomberAircraftCount >= 2) types.push("BBA")
+  if (hasCbFighterAircraft) types.push("FBA")
 
   return types
 }
