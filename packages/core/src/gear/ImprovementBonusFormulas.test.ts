@@ -149,43 +149,39 @@ describe("createImprovementBonusFormulas", () => {
 
     it("艦攻 -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromCategory("CbTorpedoBomber")
-      expect(toFormula(gear)).toBe({ multiplier: 0.2, type: "Linear" })
+      expect(toFormula(gear)).toEqual({ multiplier: 0.2, type: "Linear" })
     })
 
     it.each<GearName>(["12.7cm連装高角砲", "8cm高角砲", "8cm高角砲改+増設機銃", "10cm連装高角砲改+増設機銃"])(
       "%s -> 0.2 * 改修値",
       (name) => {
         const gear = makeGear(name)
-        expect(toFormula(gear)).toBe({ multiplier: 0.2, type: "Linear" })
+        expect(toFormula(gear)).toEqual({ multiplier: 0.2, type: "Linear" })
       }
     )
 
     it.each<GearName>(["15.5cm三連装副砲", "15.5cm三連装副砲改", "15.2cm三連装砲"])("%s -> 0.3 * 改修値", (name) => {
       const gear = makeGear(name)
-      expect(toFormula(gear)).toBe({ multiplier: 0.3, type: "Linear" })
+      expect(toFormula(gear)).toEqual({ multiplier: 0.3, type: "Linear" })
     })
 
-    it("主砲, 副砲, 徹甲弾, 対空弾, 高射装置, 機銃, 探照灯, 大型探照灯, 対地装備, 上陸用舟艇, 内火艇 -> 1 * sqrt(改修値)", () => {
-      const categories: GearCategoryKey[] = [
-        "SmallCaliberMainGun",
-        "MediumCaliberMainGun",
-        "LargeCaliberMainGun",
-        "SecondaryGun",
-        "ApShell",
-        "AntiAirShell",
-        "AntiAirFireDirector",
-        "AntiAirGun",
-        "Searchlight",
-        "LargeSearchlight",
-        "AntiGroundEquipment",
-        "LandingCraft",
-        "SpecialAmphibiousTank",
-      ]
-
-      categories.forEach((category) => {
-        const gear = GearBaseStub.fromCategory(category)
-        expect(toFormula(gear)).toBe({ multiplier: 1, type: "Sqrt" })
-      })
+    it.each<keyof typeof GearCategoryName>([
+      "小口径主砲",
+      "中口径主砲",
+      "大口径主砲",
+      "副砲",
+      "対艦強化弾",
+      "対空強化弾",
+      "対空機銃",
+      "探照灯",
+      "大型探照灯",
+      "高射装置",
+      "上陸用舟艇",
+      "特型内火艇",
+      "対地装備",
+    ])("%s -> 1 * sqrt(改修値)", (name) => {
+      const gear = GearBaseStub.fromCategoryName(name)
+      expect(toFormula(gear)).toEqual({ multiplier: 1, type: "Sqrt" })
     })
 
     it("ソナー, 大型ソナー, 爆雷投射機, 迫撃砲 -> 0.75 * sqrt(改修値)", () => {
@@ -195,7 +191,7 @@ describe("createImprovementBonusFormulas", () => {
       const mortar = GearBaseStub.fromAttrs("Mortar")
 
       ;[sonor, largeSonar, depthChargeProjector, mortar].forEach((gear) => {
-        expect(toFormula(gear)).toBe({ multiplier: 0.75, type: "Sqrt" })
+        expect(toFormula(gear)).toEqual({ multiplier: 0.75, type: "Sqrt" })
       })
     })
   })
@@ -208,13 +204,15 @@ describe("createImprovementBonusFormulas", () => {
       expect(toFormula(gear)).toEqual({ multiplier: 1.7, type: "Sqrt" })
     })
 
-    it("電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(改修値)", () => {
+    it("主砲, 電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(改修値)", () => {
+      const main = GearBaseStub.fromAttrs("MainGun")
+      const second = GearBaseStub.fromCategory("SecondaryGun")
       const radar = GearBaseStub.fromAttrs("Radar")
       const aps = GearBaseStub.fromCategory("ApShell")
       const aas = GearBaseStub.fromCategory("AntiAirShell")
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
 
-      ;[radar, aps, aas, aafd].forEach((gear) => {
+      ;[main, second, radar, aps, aas, aafd].forEach((gear) => {
         expect(toFormula(gear)).toEqual({ multiplier: 1, type: "Sqrt" })
       })
     })
@@ -228,8 +226,8 @@ describe("createImprovementBonusFormulas", () => {
       expect(toFormula(gear)).toEqual({ multiplier: 0.2, type: "Linear" })
     })
 
-    it("爆雷, ソナー -> 1 * 改修値", () => {
-      const expected: ImprovementBonusFormula = { multiplier: 1, type: "Linear" }
+    it("爆雷, ソナー -> 1 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 1, type: "Sqrt" }
 
       const depthCharge = GearBaseStub.fromCategory("DepthCharge")
       expect(toFormula(depthCharge)).toEqual(expected)
@@ -272,6 +270,7 @@ describe("createImprovementBonusFormulas", () => {
 
       const torpedo = GearBaseStub.fromCategory("Torpedo")
       expect(toFormula(torpedo)).toEqual(expected)
+
       const aaGun = GearBaseStub.fromCategory("AntiAirGun")
       expect(toFormula(aaGun)).toEqual(expected)
     })
@@ -310,13 +309,13 @@ describe("createImprovementBonusFormulas", () => {
       "%s -> 0.2 * 改修値",
       (name) => {
         const gear = makeGear(name)
-        expect(toFormula(gear)).toBe({ multiplier: 0.2, type: "Linear" })
+        expect(toFormula(gear)).toEqual({ multiplier: 0.2, type: "Linear" })
       }
     )
 
     it.each<GearName>(["15.5cm三連装副砲", "15.5cm三連装副砲改", "15.2cm三連装砲"])("%s -> 0.3 * 改修値", (name) => {
       const gear = makeGear(name)
-      expect(toFormula(gear)).toBe({ multiplier: 0.3, type: "Linear" })
+      expect(toFormula(gear)).toEqual({ multiplier: 0.3, type: "Linear" })
     })
 
     it.each<keyof typeof GearCategoryName>([
@@ -324,7 +323,7 @@ describe("createImprovementBonusFormulas", () => {
       "中口径主砲",
       "大口径主砲",
       "副砲",
-      "対空強化弾",
+      "対艦強化弾",
       "対空強化弾",
       "探照灯",
       "大型探照灯",
@@ -336,7 +335,7 @@ describe("createImprovementBonusFormulas", () => {
       "特殊潜航艇",
     ])("%s -> 1 * sqrt(改修値)", (name) => {
       const gear = GearBaseStub.from({ category: GearCategoryName[name] })
-      expect(toFormula(gear)).toBe({ multiplier: 1, type: "Sqrt" })
+      expect(toFormula(gear)).toEqual({ multiplier: 1, type: "Sqrt" })
     })
   })
 
@@ -345,17 +344,17 @@ describe("createImprovementBonusFormulas", () => {
 
     it("水上電探 -> 1.6 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromAttrs("SurfaceRadar")
-      expect(toFormula(gear)).toBe({ multiplier: 1.6, type: "Sqrt" })
+      expect(toFormula(gear)).toEqual({ multiplier: 1.6, type: "Sqrt" })
     })
 
     it("電探, 中口径主砲 -> 1.3 * sqrt(改修値)", () => {
       const expected: ImprovementBonusFormula = { multiplier: 1.3, type: "Sqrt" }
 
       const radar = GearBaseStub.fromAttrs("Radar")
-      expect(toFormula(radar)).toBe(expected)
+      expect(toFormula(radar)).toEqual(expected)
 
       const mediumGun = GearBaseStub.fromCategory("MediumCaliberMainGun")
-      expect(toFormula(mediumGun)).toBe(expected)
+      expect(toFormula(mediumGun)).toEqual(expected)
     })
   })
 
@@ -364,12 +363,12 @@ describe("createImprovementBonusFormulas", () => {
 
     it("中型バルジ -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromCategory("MediumExtraArmor")
-      expect(toFormula(gear)).toBe({ multiplier: 0.2, type: "Linear" })
+      expect(toFormula(gear)).toEqual({ multiplier: 0.2, type: "Linear" })
     })
 
     it("大型バルジ -> 0.3 * 改修値", () => {
       const gear = GearBaseStub.fromCategory("LargeExtraArmor")
-      expect(toFormula(gear)).toBe({ multiplier: 0.3, type: "Linear" })
+      expect(toFormula(gear)).toEqual({ multiplier: 0.3, type: "Linear" })
     })
   })
 
@@ -378,27 +377,27 @@ describe("createImprovementBonusFormulas", () => {
 
     it("小型電探 -> 1.25 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("SmallRadar")
-      expect(toFormula(gear)).toBe({ multiplier: 1.25, type: "Sqrt" })
+      expect(toFormula(gear)).toEqual({ multiplier: 1.25, type: "Sqrt" })
     })
 
     it("大型電探 -> 1.4 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("LargeRadar")
-      expect(toFormula(gear)).toBe({ multiplier: 1.4, type: "Sqrt" })
+      expect(toFormula(gear)).toEqual({ multiplier: 1.4, type: "Sqrt" })
     })
 
     it("艦偵, 水偵 -> 1.2 * sqrt(改修値)", () => {
       const expected: ImprovementBonusFormula = { multiplier: 1.2, type: "Sqrt" }
 
       const cbRecon = GearBaseStub.fromCategory("CbRecon")
-      expect(toFormula(cbRecon)).toBe(expected)
+      expect(toFormula(cbRecon)).toEqual(expected)
 
       const reconSeaplane = GearBaseStub.fromCategory("ReconSeaplane")
-      expect(toFormula(reconSeaplane)).toBe(expected)
+      expect(toFormula(reconSeaplane)).toEqual(expected)
     })
 
     it("水爆 -> 1.15 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("SeaplaneBomber")
-      expect(toFormula(gear)).toBe({ multiplier: 1.15, type: "Sqrt" })
+      expect(toFormula(gear)).toEqual({ multiplier: 1.15, type: "Sqrt" })
     })
   })
 })
