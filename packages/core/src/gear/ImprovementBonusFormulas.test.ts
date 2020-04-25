@@ -339,4 +339,66 @@ describe("createImprovementBonusFormulas", () => {
       expect(toFormula(gear)).toBe({ multiplier: 1, type: "Sqrt" })
     })
   })
+
+  describe("nightAccuracyBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).nightAccuracyBonus
+
+    it("水上電探 -> 1.6 * sqrt(改修値)", () => {
+      const gear = GearBaseStub.fromAttrs("SurfaceRadar")
+      expect(toFormula(gear)).toBe({ multiplier: 1.6, type: "Sqrt" })
+    })
+
+    it("電探, 中口径主砲 -> 1.3 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 1.3, type: "Sqrt" }
+
+      const radar = GearBaseStub.fromAttrs("Radar")
+      expect(toFormula(radar)).toBe(expected)
+
+      const mediumGun = GearBaseStub.fromCategory("MediumCaliberMainGun")
+      expect(toFormula(mediumGun)).toBe(expected)
+    })
+  })
+
+  describe("defensePowerBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).defensePowerBonus
+
+    it("中型バルジ -> 0.2 * 改修値", () => {
+      const gear = GearBaseStub.fromCategory("MediumExtraArmor")
+      expect(toFormula(gear)).toBe({ multiplier: 0.2, type: "Linear" })
+    })
+
+    it("大型バルジ -> 0.3 * 改修値", () => {
+      const gear = GearBaseStub.fromCategory("LargeExtraArmor")
+      expect(toFormula(gear)).toBe({ multiplier: 0.3, type: "Linear" })
+    })
+  })
+
+  describe("effectiveLosBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).effectiveLosBonus
+
+    it("小型電探 -> 1.25 * sqrt(改修値)", () => {
+      const gear = GearBaseStub.fromCategory("SmallRadar")
+      expect(toFormula(gear)).toBe({ multiplier: 1.25, type: "Sqrt" })
+    })
+
+    it("大型電探 -> 1.4 * sqrt(改修値)", () => {
+      const gear = GearBaseStub.fromCategory("LargeRadar")
+      expect(toFormula(gear)).toBe({ multiplier: 1.4, type: "Sqrt" })
+    })
+
+    it("艦偵, 水偵 -> 1.2 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 1.2, type: "Sqrt" }
+
+      const cbRecon = GearBaseStub.fromCategory("CbRecon")
+      expect(toFormula(cbRecon)).toBe(expected)
+
+      const reconSeaplane = GearBaseStub.fromCategory("ReconSeaplane")
+      expect(toFormula(reconSeaplane)).toBe(expected)
+    })
+
+    it("水爆 -> 1.15 * sqrt(改修値)", () => {
+      const gear = GearBaseStub.fromCategory("SeaplaneBomber")
+      expect(toFormula(gear)).toBe({ multiplier: 1.15, type: "Sqrt" })
+    })
+  })
 })
