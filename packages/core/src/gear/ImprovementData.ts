@@ -1,6 +1,5 @@
 import { GearBase } from "./MasterGear"
 import { GearCategory, GearId } from "@fleethub/data"
-import { mapValues } from "../utils"
 
 export type ImprovementBonuses = {
   contactSelectionBonus: number
@@ -338,11 +337,3 @@ export const createImprovementData = (gear: GearBase): ImprovementData => ({
 
   effectiveLosBonus: createEffectiveLosBonus(gear),
 })
-
-const toBonuses = (formulas: ImprovementData, stars: number): ImprovementBonuses =>
-  mapValues(formulas, (formula) => {
-    if (!formula) return 0
-    const { multiplier, type } = formula
-    if (type === "Linear") return multiplier * stars
-    return multiplier * Math.sqrt(stars)
-  })
