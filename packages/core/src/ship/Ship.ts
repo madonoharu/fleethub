@@ -37,7 +37,7 @@ export type Ship = Pick<ShipBase, "shipId" | "sortId" | "shipClass" | "shipType"
   ShipStats & {
     level: number
     equipment: Equipment
-
+    health: Health
     canEquip: (index: number, gear: GearBase) => boolean
 
     fleetLosFactor: number
