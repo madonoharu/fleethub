@@ -1,6 +1,6 @@
 import { createImprovementBonusFormulas, ImprovementBonusFormula } from "./ImprovementBonusFormulas"
 
-import { GearName, GearCategory, GearCategoryKey } from "@fleethub/data"
+import { GearName, GearCategory, GearCategoryKey, GearCategoryName } from "@fleethub/data"
 
 import { GearBaseStub } from "../utils/GearBaseStub"
 import { makeGear } from "../utils/testUtils"
@@ -290,7 +290,7 @@ describe("createImprovementBonusFormulas", () => {
     })
   })
 
-  describe("torpedoAccuracyBonus", () => {
+  describe("torpedoEvasionBonus", () => {
     const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoEvasionBonus
 
     it("ソナー, 大型ソナー -> 1.5 * sqrt(改修値)", () => {
@@ -300,6 +300,43 @@ describe("createImprovementBonusFormulas", () => {
       expect(toFormula(sonar)).toEqual(expected)
       const largeSonar = GearBaseStub.fromCategory("LargeSonar")
       expect(toFormula(largeSonar)).toEqual(expected)
+    })
+  })
+
+  describe("nightPowerBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).nightPowerBonus
+
+    it.each<GearName>(["12.7cm連装高角砲", "8cm高角砲", "8cm高角砲改+増設機銃", "10cm連装高角砲改+増設機銃"])(
+      "%s -> 0.2 * 改修値",
+      (name) => {
+        const gear = makeGear(name)
+        expect(toFormula(gear)).toBe({ multiplier: 0.2, type: "Linear" })
+      }
+    )
+
+    it.each<GearName>(["15.5cm三連装副砲", "15.5cm三連装副砲改", "15.2cm三連装砲"])("%s -> 0.3 * 改修値", (name) => {
+      const gear = makeGear(name)
+      expect(toFormula(gear)).toBe({ multiplier: 0.3, type: "Linear" })
+    })
+
+    it.each<keyof typeof GearCategoryName>([
+      "小口径主砲",
+      "中口径主砲",
+      "大口径主砲",
+      "副砲",
+      "対空強化弾",
+      "対空強化弾",
+      "探照灯",
+      "大型探照灯",
+      "高射装置",
+      "上陸用舟艇",
+      "特型内火艇",
+      "対地装備",
+      "魚雷",
+      "特殊潜航艇",
+    ])("%s -> 1 * sqrt(改修値)", (name) => {
+      const gear = GearBaseStub.from({ category: GearCategoryName[name] })
+      expect(toFormula(gear)).toBe({ multiplier: 1, type: "Sqrt" })
     })
   })
 })
