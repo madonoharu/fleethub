@@ -219,7 +219,7 @@ const createTorpedoPowerBonus: FormulaCreator = ({ categoryIn }) => {
  */
 const createTorpedoAccuracyBonus: FormulaCreator = ({ categoryIn }) => {
   if (categoryIn("Torpedo", "AntiAirGun")) {
-    return toSqrt(1.2)
+    return toSqrt(2)
   }
   return undefined
 }
