@@ -1,5 +1,9 @@
 import { GearData, GearCategory2, GearId, GearCategory, GearCategoryKey } from "@fleethub/data"
+
+import { mapValues } from "../utils"
+
 import { GearAttribute, createGearAttrs } from "./GearAttribute"
+import { createImprovementData, ImprovementBonuses } from "./ImprovementData"
 
 export interface GearBase extends Omit<Required<GearData>, "id"> {
   attrs: GearAttribute[]
@@ -69,4 +73,17 @@ export default class MasterGear implements GearBase {
   public categoryIs = (key: GearCategoryKey) => this.category === GearCategory[key]
 
   public categoryIn = (...keys: GearCategoryKey[]) => keys.some(this.categoryIs)
+
+  get improvementData() {
+    return createImprovementData(this)
+  }
+
+  public toImprovementBonuses = (stars: number): ImprovementBonuses => {
+    return mapValues(this.improvementData, (formula) => {
+      if (!formula) return 0
+      const { multiplier, type } = formula
+      if (type === "Linear") return multiplier * stars
+      return multiplier * Math.sqrt(stars)
+    })
+  }
 }
