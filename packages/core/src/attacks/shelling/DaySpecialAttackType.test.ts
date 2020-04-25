@@ -10,11 +10,11 @@ const defaultParams: DaySpecialAttackParams = {
   hasApShell: false,
   hasRader: false,
 
-  zuiunCount: 0,
-  suisei634Count: 0,
-  bomberCount: 0,
-  hasTorpedoBomber: false,
-  hasFighter: false,
+  zuiunAircraftCount: 0,
+  suisei634AircraftCount: 0,
+  cbBomberAircraftCount: 0,
+  hasCbTorpedoBomberAircraft: false,
+  hasCbFighterAircraft: false,
 }
 
 const getTypes = (partial: Partial<DaySpecialAttackParams>) =>
@@ -79,9 +79,9 @@ describe("getPossibleDaySpecialAttackTypes", () => {
     it("戦爆連合は空母砲撃でのみ発動する", () => {
       const params: Partial<DaySpecialAttackParams> = {
         isCarrierShelling: false,
-        hasFighter: true,
-        bomberCount: 2,
-        hasTorpedoBomber: true,
+        hasCbFighterAircraft: true,
+        cbBomberAircraftCount: 2,
+        hasCbTorpedoBomberAircraft: true,
       }
       expect(getTypes(params)).toHaveLength(0)
 
@@ -92,29 +92,34 @@ describe("getPossibleDaySpecialAttackTypes", () => {
       expect(
         getTypes({
           isCarrierShelling: true,
-          hasFighter: true,
-          bomberCount: 2,
-          hasTorpedoBomber: true,
+          hasCbFighterAircraft: true,
+          cbBomberAircraftCount: 2,
+          hasCbTorpedoBomberAircraft: true,
         })
       ).toHaveLength(3)
     })
 
     it.each`
-      type     | hasFighter | bomberCount | hasTorpedoBomber | expected
-      ${"FBA"} | ${true}    | ${1}        | ${true}          | ${"可"}
-      ${"FBA"} | ${false}   | ${1}        | ${true}          | ${"不可"}
-      ${"FBA"} | ${true}    | ${0}        | ${true}          | ${"不可"}
-      ${"FBA"} | ${true}    | ${1}        | ${false}         | ${"不可"}
-      ${"BBA"} | ${false}   | ${2}        | ${true}          | ${"可"}
-      ${"BBA"} | ${false}   | ${1}        | ${true}          | ${"不可"}
-      ${"BBA"} | ${false}   | ${2}        | ${false}         | ${"不可"}
-      ${"BA"}  | ${false}   | ${1}        | ${true}          | ${"可"}
-      ${"BA"}  | ${false}   | ${0}        | ${true}          | ${"不可"}
-      ${"BA"}  | ${false}   | ${1}        | ${false}         | ${"不可"}
+      type     | hasCbFighterAircraft | cbBomberAircraftCount | hasCbTorpedoBomberAircraft | expected
+      ${"FBA"} | ${true}              | ${1}                  | ${true}                    | ${"可"}
+      ${"FBA"} | ${false}             | ${1}                  | ${true}                    | ${"不可"}
+      ${"FBA"} | ${true}              | ${0}                  | ${true}                    | ${"不可"}
+      ${"FBA"} | ${true}              | ${1}                  | ${false}                   | ${"不可"}
+      ${"BBA"} | ${false}             | ${2}                  | ${true}                    | ${"可"}
+      ${"BBA"} | ${false}             | ${1}                  | ${true}                    | ${"不可"}
+      ${"BBA"} | ${false}             | ${2}                  | ${false}                   | ${"不可"}
+      ${"BA"}  | ${false}             | ${1}                  | ${true}                    | ${"可"}
+      ${"BA"}  | ${false}             | ${0}                  | ${true}                    | ${"不可"}
+      ${"BA"}  | ${false}             | ${1}                  | ${false}                   | ${"不可"}
     `(
-      "$type: 艦戦$hasFighter, 艦爆$bomberCount, 艦攻$hasTorpedoBomber -> 発動$expected",
-      ({ hasFighter, bomberCount, hasTorpedoBomber, type, expected }) => {
-        const types = getTypes({ isCarrierShelling: true, hasFighter, bomberCount, hasTorpedoBomber })
+      "$type: 艦戦$hasCbFighterAircraft, 艦爆$cbBomberAircraftCount, 艦攻$hasCbTorpedoBomberAircraft -> 発動$expected",
+      ({ hasCbFighterAircraft, cbBomberAircraftCount, hasCbTorpedoBomberAircraft, type, expected }) => {
+        const types = getTypes({
+          isCarrierShelling: true,
+          hasCbFighterAircraft,
+          cbBomberAircraftCount,
+          hasCbTorpedoBomberAircraft,
+        })
         expect(types.includes(type)).toBe(expected === "可")
       }
     )
@@ -125,8 +130,8 @@ describe("getPossibleDaySpecialAttackTypes", () => {
       const params: Partial<DaySpecialAttackParams> = {
         isIseClassK2: false,
         mainGunCount: 0,
-        zuiunCount: 2,
-        suisei634Count: 2,
+        zuiunAircraftCount: 2,
+        suisei634AircraftCount: 2,
       }
       expect(getTypes(params)).toHaveLength(0)
       expect(getTypes({ ...params, isIseClassK2: true })).toHaveLength(0)
@@ -142,8 +147,8 @@ describe("getPossibleDaySpecialAttackTypes", () => {
 
         isIseClassK2: true,
         mainGunCount: 2,
-        zuiunCount: 2,
-        suisei634Count: 2,
+        zuiunAircraftCount: 2,
+        suisei634AircraftCount: 2,
       })
       expect(types).toEqual(
         expect.arrayContaining<DaySpecialAttackType>(["Zuiun", "Suisei", "MainMain", "DoubleAttack"])
