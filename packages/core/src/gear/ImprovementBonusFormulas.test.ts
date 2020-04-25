@@ -69,35 +69,37 @@ describe("createImprovementBonusFormulas", () => {
     it("対空8以上の対空機銃 -> 6 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("AntiAirGun")
       gear.antiAir = 8
-
       expect(toFormula(gear)).toEqual({ multiplier: 6, type: "Sqrt" })
     })
 
     it("対空7以下の対空機銃 -> 4 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("AntiAirGun")
       gear.antiAir = 7
-
       expect(toFormula(gear)).toEqual({ multiplier: 4, type: "Sqrt" })
     })
 
     it("対空8以上の高射装置,高角砲 -> 3 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 3, type: "Sqrt" }
+
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 8
-      expect(toFormula(aafd)).toEqual({ multiplier: 3, type: "Sqrt" })
+      expect(toFormula(aafd)).toEqual(expected)
 
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 8
-      expect(toFormula(ham)).toEqual({ multiplier: 3, type: "Sqrt" })
+      expect(toFormula(ham)).toEqual(expected)
     })
 
     it("対空7以下の高射装置,高角砲 -> 2 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 2, type: "Sqrt" }
+
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 7
-      expect(toFormula(aafd)).toEqual({ multiplier: 2, type: "Sqrt" })
+      expect(toFormula(aafd)).toEqual(expected)
 
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 7
-      expect(toFormula(ham)).toEqual({ multiplier: 2, type: "Sqrt" })
+      expect(toFormula(ham)).toEqual(expected)
     })
   })
 
@@ -105,23 +107,27 @@ describe("createImprovementBonusFormulas", () => {
     const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).fleetAntiAirBonus
 
     it("対空8以上の高射装置,高角砲 -> 3 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 3, type: "Sqrt" }
+
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 8
-      expect(toFormula(aafd)).toEqual({ multiplier: 3, type: "Sqrt" })
+      expect(toFormula(aafd)).toEqual(expected)
 
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 8
-      expect(toFormula(ham)).toEqual({ multiplier: 3, type: "Sqrt" })
+      expect(toFormula(ham)).toEqual(expected)
     })
 
     it("対空7以下の高射装置,高角砲 -> 2 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 2, type: "Sqrt" }
+
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
       aafd.antiAir = 7
-      expect(toFormula(aafd)).toEqual({ multiplier: 2, type: "Sqrt" })
+      expect(toFormula(aafd)).toEqual(expected)
 
       const ham = GearBaseStub.fromAttrs("HighAngleMount")
       ham.antiAir = 7
-      expect(toFormula(ham)).toEqual({ multiplier: 2, type: "Sqrt" })
+      expect(toFormula(ham)).toEqual(expected)
     })
 
     it("対空電探 -> 1.5 * sqrt(改修値)", () => {
@@ -223,11 +229,13 @@ describe("createImprovementBonusFormulas", () => {
     })
 
     it("爆雷, ソナー -> 1 * 改修値", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 1, type: "Linear" }
+
       const depthCharge = GearBaseStub.fromCategory("DepthCharge")
-      expect(toFormula(depthCharge)).toEqual({ multiplier: 1, type: "Sqrt" })
+      expect(toFormula(depthCharge)).toEqual(expected)
 
       const sonor = GearBaseStub.fromCategory("Sonar")
-      expect(toFormula(sonor)).toEqual({ multiplier: 1, type: "Sqrt" })
+      expect(toFormula(sonor)).toEqual(expected)
     })
 
     it("対潜10以下のオートジャイロ -> 0.2 * 改修値", () => {
@@ -247,11 +255,12 @@ describe("createImprovementBonusFormulas", () => {
     const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).aswAccuracyBonus
 
     it("ソナー, 大型ソナー -> 1.3 * sqrt(改修値)", () => {
-      const sonar = GearBaseStub.fromCategory("Sonar")
-      expect(toFormula(sonar)).toEqual({ multiplier: 1.3, type: "Sqrt" })
+      const expected: ImprovementBonusFormula = { multiplier: 1.3, type: "Sqrt" }
 
+      const sonar = GearBaseStub.fromCategory("Sonar")
+      expect(toFormula(sonar)).toEqual(expected)
       const largeSonar = GearBaseStub.fromCategory("LargeSonar")
-      expect(toFormula(largeSonar)).toEqual({ multiplier: 1.3, type: "Sqrt" })
+      expect(toFormula(largeSonar)).toEqual(expected)
     })
   })
 
@@ -259,11 +268,12 @@ describe("createImprovementBonusFormulas", () => {
     const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoPowerBonus
 
     it("魚雷, 機銃 -> 1.2 * sqrt(改修値)", () => {
-      const torpedo = GearBaseStub.fromCategory("Torpedo")
-      expect(toFormula(torpedo)).toEqual({ multiplier: 1.2, type: "Sqrt" })
+      const expected: ImprovementBonusFormula = { multiplier: 1.2, type: "Sqrt" }
 
+      const torpedo = GearBaseStub.fromCategory("Torpedo")
+      expect(toFormula(torpedo)).toEqual(expected)
       const aaGun = GearBaseStub.fromCategory("AntiAirGun")
-      expect(toFormula(aaGun)).toEqual({ multiplier: 1.2, type: "Sqrt" })
+      expect(toFormula(aaGun)).toEqual(expected)
     })
   })
 
@@ -271,11 +281,12 @@ describe("createImprovementBonusFormulas", () => {
     const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoAccuracyBonus
 
     it("魚雷, 機銃 -> 2 * sqrt(改修値)", () => {
-      const torpedo = GearBaseStub.fromCategory("Torpedo")
-      expect(toFormula(torpedo)).toEqual({ multiplier: 2, type: "Sqrt" })
+      const expected: ImprovementBonusFormula = { multiplier: 2, type: "Sqrt" }
 
+      const torpedo = GearBaseStub.fromCategory("Torpedo")
+      expect(toFormula(torpedo)).toEqual(expected)
       const aaGun = GearBaseStub.fromCategory("AntiAirGun")
-      expect(toFormula(aaGun)).toEqual({ multiplier: 2, type: "Sqrt" })
+      expect(toFormula(aaGun)).toEqual(expected)
     })
   })
 
