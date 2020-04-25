@@ -141,7 +141,7 @@ describe("createImprovementBonusFormulas", () => {
       expect(toFormula(fire13)).toEqual({ multiplier: 1.5, type: "Sqrt" })
     })
 
-    it("艦上攻撃機 -> 0.2 * 改修値", () => {
+    it("艦攻 -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromCategory("CbTorpedoBomber")
       expect(toFormula(gear)).toBe({ multiplier: 0.2, type: "Linear" })
     })
@@ -182,7 +182,7 @@ describe("createImprovementBonusFormulas", () => {
       })
     })
 
-    it("ソナー,大型ソナー,爆雷投射機,迫撃砲 -> 0.75 * sqrt(改修値)", () => {
+    it("ソナー, 大型ソナー, 爆雷投射機, 迫撃砲 -> 0.75 * sqrt(改修値)", () => {
       const sonor = GearBaseStub.fromCategory("Sonar")
       const largeSonar = GearBaseStub.fromCategory("LargeSonar")
       const depthChargeProjector = GearBaseStub.fromAttrs("DepthChargeProjector")
@@ -211,6 +211,84 @@ describe("createImprovementBonusFormulas", () => {
       ;[radar, aps, aas, aafd].forEach((gear) => {
         expect(toFormula(gear)).toEqual({ multiplier: 1, type: "Sqrt" })
       })
+    })
+  })
+
+  describe("aswPowerBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).aswPowerBonus
+
+    it("艦攻 -> 0.2 * 改修値", () => {
+      const gear = GearBaseStub.fromCategory("CbTorpedoBomber")
+      expect(toFormula(gear)).toEqual({ multiplier: 0.2, type: "Linear" })
+    })
+
+    it("爆雷, ソナー -> 1 * 改修値", () => {
+      const depthCharge = GearBaseStub.fromCategory("DepthCharge")
+      expect(toFormula(depthCharge)).toEqual({ multiplier: 1, type: "Sqrt" })
+
+      const sonor = GearBaseStub.fromCategory("Sonar")
+      expect(toFormula(sonor)).toEqual({ multiplier: 1, type: "Sqrt" })
+    })
+
+    it("対潜10以下のオートジャイロ -> 0.2 * 改修値", () => {
+      const autogyro = GearBaseStub.fromCategory("Autogyro")
+      autogyro.asw = 10
+      expect(toFormula(autogyro)).toEqual({ multiplier: 0.2, type: "Linear" })
+    })
+
+    it("対潜11以上のオートジャイロ -> 0.3 * 改修値", () => {
+      const autogyro = GearBaseStub.fromCategory("Autogyro")
+      autogyro.asw = 11
+      expect(toFormula(autogyro)).toEqual({ multiplier: 0.3, type: "Linear" })
+    })
+  })
+
+  describe("aswAccuracyBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).aswAccuracyBonus
+
+    it("ソナー, 大型ソナー -> 1.3 * sqrt(改修値)", () => {
+      const sonar = GearBaseStub.fromCategory("Sonar")
+      expect(toFormula(sonar)).toEqual({ multiplier: 1.3, type: "Sqrt" })
+
+      const largeSonar = GearBaseStub.fromCategory("LargeSonar")
+      expect(toFormula(largeSonar)).toEqual({ multiplier: 1.3, type: "Sqrt" })
+    })
+  })
+
+  describe("torpedoPowerBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoPowerBonus
+
+    it("魚雷, 機銃 -> 1.2 * sqrt(改修値)", () => {
+      const torpedo = GearBaseStub.fromCategory("Torpedo")
+      expect(toFormula(torpedo)).toEqual({ multiplier: 1.2, type: "Sqrt" })
+
+      const aaGun = GearBaseStub.fromCategory("AntiAirGun")
+      expect(toFormula(aaGun)).toEqual({ multiplier: 1.2, type: "Sqrt" })
+    })
+  })
+
+  describe("torpedoAccuracyBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoAccuracyBonus
+
+    it("魚雷, 機銃 -> 2 * sqrt(改修値)", () => {
+      const torpedo = GearBaseStub.fromCategory("Torpedo")
+      expect(toFormula(torpedo)).toEqual({ multiplier: 2, type: "Sqrt" })
+
+      const aaGun = GearBaseStub.fromCategory("AntiAirGun")
+      expect(toFormula(aaGun)).toEqual({ multiplier: 2, type: "Sqrt" })
+    })
+  })
+
+  describe("torpedoAccuracyBonus", () => {
+    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoEvasionBonus
+
+    it("ソナー, 大型ソナー -> 1.5 * sqrt(改修値)", () => {
+      const expected: ImprovementBonusFormula = { multiplier: 1.5, type: "Sqrt" }
+
+      const sonar = GearBaseStub.fromCategory("Sonar")
+      expect(toFormula(sonar)).toEqual(expected)
+      const largeSonar = GearBaseStub.fromCategory("LargeSonar")
+      expect(toFormula(largeSonar)).toEqual(expected)
     })
   })
 })
