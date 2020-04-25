@@ -1,10 +1,12 @@
 import { GearBase, GearAttribute } from "../gear"
-import { GearCategoryKey, GearCategory } from "@fleethub/data"
+import { GearCategoryKey, GearCategory, GearCategoryName } from "@fleethub/data"
 
 export class GearBaseStub implements GearBase {
   public static from = (src: Partial<GearBase>) => Object.assign(new GearBaseStub(), src)
   public static fromAttrs = (...attrs: GearAttribute[]) => GearBaseStub.from({ attrs })
   public static fromCategory = (key: GearCategoryKey) => GearBaseStub.from({ category: GearCategory[key] })
+  public static fromCategoryName = (name: keyof typeof GearCategoryName) =>
+    GearBaseStub.from({ category: GearCategoryName[name] })
 
   public gearId = 0
   public category = 0
