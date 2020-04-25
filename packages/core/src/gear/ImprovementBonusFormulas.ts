@@ -22,9 +22,9 @@ export type ImprovementBonuses = {
   nightPowerBonus: number
   nightAccuracyBonus: number
 
-  effectiveLosBonus: number
-
   defensePowerBonus: number
+
+  effectiveLosBonus: number
 }
 
 type FormulaType = "Sqrt" | "Linear"
@@ -284,6 +284,16 @@ const createNightAccuracyBonus: FormulaCreator = ({ is, category }) => {
   return undefined
 }
 
+const createDefensePowerBonus: FormulaCreator = ({ category }) => {
+  if (category === GearCategory.MediumExtraArmor) {
+    return toLinear(0.2)
+  }
+  if (category === GearCategory.LargeExtraArmor) {
+    return toLinear(0.3)
+  }
+  return undefined
+}
+
 const createEffectiveLosBonus: FormulaCreator = ({ category, categoryIn }) => {
   if (category === GearCategory.SmallRadar) {
     return toSqrt(1.25)
@@ -301,16 +311,6 @@ const createEffectiveLosBonus: FormulaCreator = ({ category, categoryIn }) => {
     return toSqrt(1.15)
   }
 
-  return undefined
-}
-
-const createDefensePowerBonus: FormulaCreator = ({ category }) => {
-  if (category === GearCategory.MediumExtraArmor) {
-    return toLinear(0.2)
-  }
-  if (category === GearCategory.LargeExtraArmor) {
-    return toLinear(0.3)
-  }
   return undefined
 }
 
@@ -334,9 +334,9 @@ export const createImprovementBonusFormulas = (gear: GearBase): ImprovementBonus
   nightPowerBonus: createNightPowerBonus(gear),
   nightAccuracyBonus: createNightAccuracyBonus(gear),
 
-  effectiveLosBonus: createEffectiveLosBonus(gear),
-
   defensePowerBonus: createDefensePowerBonus(gear),
+
+  effectiveLosBonus: createEffectiveLosBonus(gear),
 })
 
 const toBonuses = (formulas: ImprovementBonusFormulas, stars: number): ImprovementBonuses =>
