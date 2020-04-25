@@ -1,4 +1,4 @@
-import { createImprovementBonusFormulas, ImprovementBonusFormula } from "./ImprovementBonusFormulas"
+import { createImprovementData, ImprovementBonusFormula } from "./ImprovementData"
 
 import { GearName, GearCategory, GearCategoryKey, GearCategoryName } from "@fleethub/data"
 
@@ -6,10 +6,10 @@ import { GearBaseStub } from "../utils/GearBaseStub"
 import { makeGear } from "../utils/testUtils"
 import { GearBase } from "./MasterGear"
 
-describe("createImprovementBonusFormulas", () => {
+describe("createImprovementData", () => {
   it("デフォルトの戻り値はundefined", () => {
     const gear = new GearBaseStub()
-    expect(createImprovementBonusFormulas(gear)).toEqual<ReturnType<typeof createImprovementBonusFormulas>>({
+    expect(createImprovementData(gear)).toEqual<ReturnType<typeof createImprovementData>>({
       contactSelectionBonus: undefined,
       fighterPowerBonus: undefined,
       adjustedAntiAirBonus: undefined,
@@ -29,7 +29,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("contactSelectionBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).contactSelectionBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).contactSelectionBonus
 
     it.each<[GearName, number]>([
       ["二式艦上偵察機", 0.25],
@@ -45,7 +45,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("fighterPowerBonus ", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).fighterPowerBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).fighterPowerBonus
 
     it("戦闘機 -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromAttrs("Fighter")
@@ -64,7 +64,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("adjustedAntiAirBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).adjustedAntiAirBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).adjustedAntiAirBonus
 
     it("対空8以上の対空機銃 -> 6 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("AntiAirGun")
@@ -104,7 +104,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("fleetAntiAirBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).fleetAntiAirBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).fleetAntiAirBonus
 
     it("対空8以上の高射装置,高角砲 -> 3 * sqrt(改修値)", () => {
       const expected: ImprovementBonusFormula = { multiplier: 3, type: "Sqrt" }
@@ -137,7 +137,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("shellingPowerBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).shellingPowerBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).shellingPowerBonus
 
     it("火力13以上 -> 1.5 * sqrt(改修値)", () => {
       const fire12 = GearBaseStub.from({ firepower: 12 })
@@ -197,7 +197,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("shellingAccuracyBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).shellingAccuracyBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).shellingAccuracyBonus
 
     it("水上電探 -> 1.7 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromAttrs("SurfaceRadar")
@@ -219,7 +219,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("aswPowerBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).aswPowerBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).aswPowerBonus
 
     it("艦攻 -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromCategory("CbTorpedoBomber")
@@ -250,7 +250,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("aswAccuracyBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).aswAccuracyBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).aswAccuracyBonus
 
     it("ソナー, 大型ソナー -> 1.3 * sqrt(改修値)", () => {
       const expected: ImprovementBonusFormula = { multiplier: 1.3, type: "Sqrt" }
@@ -263,7 +263,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("torpedoPowerBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoPowerBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).torpedoPowerBonus
 
     it("魚雷, 機銃 -> 1.2 * sqrt(改修値)", () => {
       const expected: ImprovementBonusFormula = { multiplier: 1.2, type: "Sqrt" }
@@ -277,7 +277,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("torpedoAccuracyBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoAccuracyBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).torpedoAccuracyBonus
 
     it("魚雷, 機銃 -> 2 * sqrt(改修値)", () => {
       const expected: ImprovementBonusFormula = { multiplier: 2, type: "Sqrt" }
@@ -290,7 +290,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("torpedoEvasionBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).torpedoEvasionBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).torpedoEvasionBonus
 
     it("ソナー, 大型ソナー -> 1.5 * sqrt(改修値)", () => {
       const expected: ImprovementBonusFormula = { multiplier: 1.5, type: "Sqrt" }
@@ -303,7 +303,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("nightPowerBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).nightPowerBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).nightPowerBonus
 
     it.each<GearName>(["12.7cm連装高角砲", "8cm高角砲", "8cm高角砲改+増設機銃", "10cm連装高角砲改+増設機銃"])(
       "%s -> 0.2 * 改修値",
@@ -340,7 +340,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("nightAccuracyBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).nightAccuracyBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).nightAccuracyBonus
 
     it("水上電探 -> 1.6 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromAttrs("SurfaceRadar")
@@ -359,7 +359,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("defensePowerBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).defensePowerBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).defensePowerBonus
 
     it("中型バルジ -> 0.2 * 改修値", () => {
       const gear = GearBaseStub.fromCategory("MediumExtraArmor")
@@ -373,7 +373,7 @@ describe("createImprovementBonusFormulas", () => {
   })
 
   describe("effectiveLosBonus", () => {
-    const toFormula = (gear: GearBase) => createImprovementBonusFormulas(gear).effectiveLosBonus
+    const toFormula = (gear: GearBase) => createImprovementData(gear).effectiveLosBonus
 
     it("小型電探 -> 1.25 * sqrt(改修値)", () => {
       const gear = GearBaseStub.fromCategory("SmallRadar")

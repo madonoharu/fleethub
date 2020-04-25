@@ -31,7 +31,7 @@ type FormulaType = "Sqrt" | "Linear"
 
 export type ImprovementBonusFormula = { multiplier: number; type: FormulaType }
 
-export type ImprovementBonusFormulas = Record<keyof ImprovementBonuses, ImprovementBonusFormula | undefined>
+export type ImprovementData = Record<keyof ImprovementBonuses, ImprovementBonusFormula | undefined>
 
 type FormulaCreator = (gear: GearBase) => ImprovementBonusFormula | undefined
 
@@ -314,7 +314,7 @@ const createEffectiveLosBonus: FormulaCreator = ({ category, categoryIn }) => {
   return undefined
 }
 
-export const createImprovementBonusFormulas = (gear: GearBase): ImprovementBonusFormulas => ({
+export const createImprovementData = (gear: GearBase): ImprovementData => ({
   contactSelectionBonus: createContactSelectionBonus(gear),
 
   fighterPowerBonus: createFighterPowerBonus(gear),
@@ -339,7 +339,7 @@ export const createImprovementBonusFormulas = (gear: GearBase): ImprovementBonus
   effectiveLosBonus: createEffectiveLosBonus(gear),
 })
 
-const toBonuses = (formulas: ImprovementBonusFormulas, stars: number): ImprovementBonuses =>
+const toBonuses = (formulas: ImprovementData, stars: number): ImprovementBonuses =>
   mapValues(formulas, (formula) => {
     if (!formula) return 0
     const { multiplier, type } = formula
