@@ -1,6 +1,7 @@
 import { DeckGear } from "../utils"
 import Proficiency from "./Proficiency"
 import { GearBase } from "./MasterGear"
+import { ImprovementBonuses } from "./ImprovementData"
 
 export type GearState = {
   gearId: number
@@ -14,6 +15,8 @@ export type Gear = Readonly<
       hasProficiency: boolean
       ace: number
       deck: DeckGear
+
+      improvement: ImprovementBonuses
     }
 >
 
@@ -53,7 +56,7 @@ export class GearImpl implements Gear {
   public readonly maxHp = this.base.maxHp
   public readonly speed = this.base.speed
 
-  constructor(private state: GearState, private base: GearBase) {}
+  constructor(private state: GearState, private base: GearBase, public readonly improvement: ImprovementBonuses) {}
 
   get hasProficiency() {
     return this.in("Seaplane", "CbAircraft", "LbAircraft", "JetAircraft")
