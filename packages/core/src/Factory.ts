@@ -26,7 +26,9 @@ export default class Factory {
   public createGear = (state: GearState) => {
     const base = this.findMasterGear(state.gearId)
     if (!base) return
-    return new GearImpl(state, base)
+
+    const improvement = base.toImprovementBonuses(state.stars || 0)
+    return new GearImpl(state, base, improvement)
   }
 
   private createEquipment = (gearStates: NullableArray<GearState>, defaultSlots: number[], currentSlots?: number[]) => {
