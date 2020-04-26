@@ -5,10 +5,11 @@
  * @see https://github.com/Nishisonic/UnexpectedDamage/blob/develop/攻撃力資料/キャップ前攻撃力.md#軽巡軽量砲補正
  * @see https://github.com/Nishisonic/UnexpectedDamage/blob/develop/攻撃力資料/キャップ前攻撃力.md#伊重巡フィット砲補正
  */
-const calcCruiserFitBonus = (params: {
+export const calcCruiserFitBonus = (params: {
   isLightCruiserClass: boolean
   singleGunCount: number
   twinGunCount: number
+
   isZaraClass: boolean
   zaraGunCount: number
 }) => {
@@ -22,5 +23,3 @@ const calcCruiserFitBonus = (params: {
   }
   return 0
 }
-
-export default calcCruiserFitBonus
