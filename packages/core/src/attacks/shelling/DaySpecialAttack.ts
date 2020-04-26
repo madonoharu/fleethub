@@ -1,7 +1,5 @@
-import { Ship } from "../../ship"
-import { mapValues } from "../../utils"
-
-import { DaySpecialAttackType, DaySpecialAttackParams, getPossibleDaySpecialAttackTypes } from "./DaySpecialAttackType"
+import { DaySpecialAttackType } from "./DaySpecialAttackType"
+import { fhDefinitions } from "../../FhDefinitions"
 import { AirControlState } from "../../common"
 import RateMap from "../RateMap"
 
@@ -15,7 +13,7 @@ type DaySpecialAttackDefinition = {
 export type DaySpecialAttackDefinitions = Record<DaySpecialAttackType, DaySpecialAttackDefinition>
 
 type DaySpecialAttack = {
-  key: DaySpecialAttackType
+  type: DaySpecialAttackType
 } & DaySpecialAttackDefinition
 
 export const calcObservationTerm = ({
@@ -44,12 +42,18 @@ export const calcObservationTerm = ({
   return 0
 }
 
+export const createDaySpecialAttack = (type: DaySpecialAttackType): DaySpecialAttack => {
+  const def = fhDefinitions.daySpecialAttacks[type]
+  return { type, ...def }
+}
+
 export const createRateMap = (attacks: DaySpecialAttack[], observationTerm: number) => {
   const rateMap = new RateMap()
 
   attacks.forEach((attack) => {
-    const currentRate = rateMap.complement * (observationTerm / attack.baseRate)
-    rateMap.set(attack, currentRate)
+    const attackRate = Math.min(observationTerm / attack.baseRate, 1)
+    const effectiveRate = rateMap.complement * attackRate
+    rateMap.set(attack, effectiveRate)
   })
 
   return rateMap
