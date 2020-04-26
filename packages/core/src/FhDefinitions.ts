@@ -1,12 +1,18 @@
+import deepmerge from "deepmerge"
 import { DaySpecialAttackDefinitions } from "./attacks/shelling/DaySpecialAttack"
 import { FormationDefinitions } from "./common/Formation"
 import { NightSpecialAttackDefinitions } from "./attacks/night/NightSpecialAttack"
 
-export type FhDefinitions = {
+type DeepReadonly<T> = T extends {} ? { readonly [K in keyof T]: DeepReadonly<T[K]> } : T
+type DeepPartial<T> = T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> } : T
+
+export type FhDefinitions = DeepReadonly<{
   formations: FormationDefinitions
   daySpecialAttacks: DaySpecialAttackDefinitions
   nightSpecialAttacks: NightSpecialAttackDefinitions
-}
+}>
+
+export type FhOptions = DeepPartial<FhDefinitions>
 
 export const defaultFhDefinitions: FhDefinitions = {
   formations: {
@@ -150,4 +156,10 @@ export const defaultFhDefinitions: FhDefinitions = {
     SuiseiAttack: { priority: 3, baseRate: 115, power: 1.2, accuracy: 1 },
     AerialAttack3: { priority: 4, baseRate: 125, power: 1.18, accuracy: 1 },
   },
+}
+
+export let fhDefinitions: FhDefinitions = deepmerge({}, defaultFhDefinitions)
+
+export const setFhOptions = (options: FhOptions) => {
+  fhDefinitions = deepmerge(defaultFhDefinitions, options) as FhDefinitions
 }
