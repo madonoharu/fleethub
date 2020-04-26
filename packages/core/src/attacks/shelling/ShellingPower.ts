@@ -14,7 +14,6 @@ export type ShellingPowerParams = Partial<{
   cruiserFitBonus: number
   apShellModifier: number
   specialAttackModifier: number
-  isCritical: boolean
   isAntiInstallation: boolean
 }>
 
