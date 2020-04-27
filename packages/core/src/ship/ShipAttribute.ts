@@ -1,9 +1,9 @@
 import { ShipClass, ShipId, ShipType, HullCode } from "@fleethub/data"
-import { RequiredShipData } from "./MasterShip"
+import { ShipAttributeParams } from "./MasterShip"
 
 const or = <T>(...fs: Array<(arg: T) => boolean>) => (arg: T) => fs.some((f) => f(arg))
 
-export type ShipMatcher = (ship: RequiredShipData) => boolean
+export type ShipMatcher = (ship: ShipAttributeParams) => boolean
 
 type ShipClassKey = keyof typeof ShipClass
 
@@ -13,10 +13,10 @@ const shipClassIn = (...keys: ShipClassKey[]): ShipMatcher => (ship) =>
 const shipTypeIn = (...args: HullCode[]): ShipMatcher => (ship) =>
   args.map((arg) => ShipType[arg]).includes(ship.shipType)
 
-const shipIdIn = (...ids: ShipId[]): ShipMatcher => (ship) => ids.includes(ship.id)
+const shipIdIn = (...ids: ShipId[]): ShipMatcher => (ship) => ids.includes(ship.shipId)
 
 /** 深海棲艦 */
-const Abyssal: ShipMatcher = (ship) => ship.id > 1500
+const Abyssal: ShipMatcher = (ship) => ship.shipId > 1500
 
 const RoyalNavy = shipClassIn("QueenElizabethClass", "NelsonClass", "ArkRoyalClass", "JClass")
 const UsNavy = shipClassIn(
@@ -106,4 +106,5 @@ const matchers = {
 export type ShipAttribute = keyof typeof matchers
 const allAttrs = Object.keys(matchers) as ShipAttribute[]
 
-export const createShipAttrs = (ship: RequiredShipData) => allAttrs.filter((attr) => matchers[attr](ship))
+export const createShipAttrs = (ship: ShipAttributeParams): ShipAttribute[] =>
+  allAttrs.filter((attr) => matchers[attr](ship))
