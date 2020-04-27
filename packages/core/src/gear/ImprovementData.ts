@@ -161,13 +161,18 @@ const createShellingPowerBonus: FormulaCreator = ({ gearId, is, category, catego
 /**
  * @see [機銃は補正無し](http://jbbs.shitaraba.net/bbs/read.cgi/netgame/13745/1439793270/169)
  * @see [三式弾はありそう](https://twitter.com/CowardS_kan/status/1126877213511471104)
+ * @see [陸戦隊](https://twitter.com/CitrusJ9N/status/1254804421973733377)
  */
 const createShellingAccuracyBonus: FormulaCreator = ({ is, categoryIn }) => {
   if (is("SurfaceRadar")) {
     return toSqrt(1.7)
   }
 
-  if (is("Radar") || is("MainGun") || categoryIn("SecondaryGun", "ApShell", "AntiAirShell", "AntiAirFireDirector")) {
+  if (
+    is("Radar") ||
+    is("MainGun") ||
+    categoryIn("SecondaryGun", "ApShell", "AntiAirShell", "AntiAirFireDirector", "LandingCraft")
+  ) {
     return toSqrt(1)
   }
 
