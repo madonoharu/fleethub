@@ -1,9 +1,7 @@
-import { GearId, ShipId, GearCategory, ShipClass } from "@fleethub/data"
-
 import { Equipment } from "../equipment"
 import { GearBase } from "../gear"
 
-import { ShipBase } from "./MasterShip"
+import { ShipCommonBase } from "./MasterShip"
 import { Health } from "./Health"
 
 type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor"
@@ -33,9 +31,8 @@ export type ShipStats = Record<EquipmentRelatedStatKey, EquipmentRelatedStat> & 
   luck: ShipStat
 }
 
-export type Ship = Pick<ShipBase, "shipId" | "sortId" | "shipClass" | "shipType" | "name" | "ruby" | "is"> &
+export type Ship = ShipCommonBase &
   ShipStats & {
-    level: number
     equipment: Equipment
     health: Health
     canEquip: (index: number, gear: GearBase) => boolean
@@ -68,51 +65,14 @@ export class ShipImpl implements Ship {
   public readonly luck = this.stats.luck
 
   public readonly is = this.base.is
+  public readonly canEquip = this.base.canEquip
 
-  constructor(private base: ShipBase, private stats: ShipStats, public equipment: Equipment, public health: Health) {}
-
-  private isExslot = (index: number) => this.equipment.defaultSlots.length <= index
-
-  public canEquip = (index: number, gear: GearBase) => {
-    const { shipClass } = this
-    const { equippable } = this.base
-    const { gearId, specialCategory } = gear
-
-    if (this.is("Abyssal")) {
-      return true
-    }
-
-    if (!equippable.categories.includes(specialCategory)) {
-      return false
-    }
-
-    if (this.isExslot(index)) {
-      return (
-        equippable.exslotCategories.includes(specialCategory) ||
-        equippable.exslotIds.includes(gearId) ||
-        gearId === GearId["改良型艦本式タービン"]
-      )
-    }
-
-    if (shipClass === ShipClass.RichelieuClass && specialCategory === GearCategory.SeaplaneBomber) {
-      return gearId === GearId["Laté 298B"]
-    }
-
-    if (shipClass === ShipClass.IseClass && this.is("Kai2")) {
-      return !(index > 1 && gear.is("MainGun"))
-    }
-
-    if (shipClass === ShipClass.YuubariClass && this.is("Kai2")) {
-      if (index >= 3 && (gear.is("MainGun") || gear.categoryIn("Torpedo", "MidgetSubmarine"))) {
-        return false
-      }
-      if (index === 4) {
-        return gear.categoryIn("AntiAirGun", "SmallRadar", "CombatRation")
-      }
-    }
-
-    return true
-  }
+  constructor(
+    private base: ShipCommonBase,
+    private stats: ShipStats,
+    public equipment: Equipment,
+    public health: Health
+  ) {}
 
   get fleetLosFactor() {
     const observationSeaplaneModifier = this.equipment.sumBy((gear, i, slotSize) => {
