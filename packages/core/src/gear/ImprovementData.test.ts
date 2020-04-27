@@ -204,15 +204,16 @@ describe("createImprovementData", () => {
       expect(toFormula(gear)).toEqual({ multiplier: 1.7, type: "Sqrt" })
     })
 
-    it("主砲, 電探, 徹甲弾, 対空弾, 高射装置 -> 1 * sqrt(改修値)", () => {
+    it("主砲, 電探, 徹甲弾, 対空弾, 高射装置, 大発 -> 1 * sqrt(改修値)", () => {
       const main = GearBaseStub.fromAttrs("MainGun")
       const second = GearBaseStub.fromCategory("SecondaryGun")
       const radar = GearBaseStub.fromAttrs("Radar")
       const aps = GearBaseStub.fromCategory("ApShell")
       const aas = GearBaseStub.fromCategory("AntiAirShell")
       const aafd = GearBaseStub.fromCategory("AntiAirFireDirector")
+      const lc = GearBaseStub.fromCategory("LandingCraft")
 
-      ;[main, second, radar, aps, aas, aafd].forEach((gear) => {
+      ;[main, second, radar, aps, aas, aafd, lc].forEach((gear) => {
         expect(toFormula(gear)).toEqual({ multiplier: 1, type: "Sqrt" })
       })
     })
