@@ -55,9 +55,23 @@ const createEquippable = (shipId: number, shipType: number): Equippable => {
   }
 }
 
+export type ShipIdentityBase = Required<
+  Pick<ShipData, "sortId" | "shipClass" | "shipType" | "name" | "ruby"> & {
+    shipId: ShipData["id"]
+  }
+>
+
+export type ShipAttributeParams = ShipIdentityBase & { speed: number }
+
+export type ShipIdentity = ShipIdentityBase & { is: (attr: ShipAttribute) => boolean }
+
+export type ShipCommonBase = ShipIdentity & {
+  canEquip: (index: number, gear: GearBase) => boolean
+}
+
 export type StatBase = [number, number]
 
-export type ShipStatsBase = {
+export type ShipStatsData = {
   maxHp: StatBase
   firepower: StatBase
   armor: StatBase
@@ -69,22 +83,18 @@ export type ShipStatsBase = {
   luck: StatBase
 }
 
-export type RequiredShipData = ShipStatsBase &
-  Required<ShipData> & {
+export type ShipCommonBaseWithStatsData = ShipCommonBase & ShipStatsData
+
+export type RequiredShipData = ShipStatsData &
+  Required<Omit<ShipData, keyof ShipStatsData>> & {
     gears: Array<{ gearId: number; stars?: number }>
   }
 
-export interface ShipBase extends RequiredShipData {
-  shipId: number
-
+export interface ShipBase extends ShipCommonBaseWithStatsData, RequiredShipData {
   attrs: ShipAttribute[]
   isCommonly: boolean
   rank: number
   equippable: Equippable
-
-  shipClassIn: (...keys: ShipClassKey[]) => boolean
-  shipTypeIn: (...keys: HullCode[]) => boolean
-  is: (attr: ShipAttribute) => boolean
 
   speedGroup: SpeedGroup
 }
