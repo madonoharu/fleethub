@@ -5,7 +5,7 @@ import { Equipment } from "../equipment"
 import { NullableArray } from "../utils"
 
 import { ShipImpl } from "./Ship"
-import { ShipBase } from "./MasterShip"
+import { ShipCommonBaseWithStatsData } from "./MasterShip"
 import { createShipStats, ModernizationRecord } from "./ShipStats"
 import { HealthImpl } from "./Health"
 
@@ -20,7 +20,7 @@ export type ShipState = {
   slots?: number[]
 } & ModernizationRecord
 
-export const createShip = (state: ShipState, base: ShipBase, equipment: Equipment) => {
+export const createShip = (state: ShipState, base: ShipCommonBaseWithStatsData, equipment: Equipment) => {
   const { level = 99, currentHp } = state
 
   const bonuses = createEquipmentBonuses(base, equipment.gears)
