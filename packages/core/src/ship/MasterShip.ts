@@ -81,6 +81,10 @@ export type ShipStatsData = {
   asw: StatBase
   los: StatBase
   luck: StatBase
+
+  speed: number
+  range: number
+  speedGroup: number
 }
 
 export type ShipCommonBaseWithStatsData = ShipCommonBase & ShipStatsData
