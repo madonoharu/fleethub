@@ -69,20 +69,7 @@ export type ShipStatsBase = {
   luck: StatBase
 }
 
-export interface RequiredShipData extends Required<ShipData> {
-  maxHp: StatBase
-
-  firepower: StatBase
-  armor: StatBase
-  torpedo: StatBase
-  antiAir: StatBase
-
-  evasion: StatBase
-  asw: StatBase
-  los: StatBase
-
-  luck: StatBase
-
+export interface RequiredShipData extends Required<ShipData>, ShipStatsBase {
   gears: Array<{ gearId: number; stars?: number }>
 }
 
