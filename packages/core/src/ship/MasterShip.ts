@@ -69,9 +69,10 @@ export type ShipStatsBase = {
   luck: StatBase
 }
 
-export interface RequiredShipData extends Required<ShipData>, ShipStatsBase {
-  gears: Array<{ gearId: number; stars?: number }>
-}
+export type RequiredShipData = ShipStatsBase &
+  Required<ShipData> & {
+    gears: Array<{ gearId: number; stars?: number }>
+  }
 
 export interface ShipBase extends RequiredShipData {
   shipId: number
