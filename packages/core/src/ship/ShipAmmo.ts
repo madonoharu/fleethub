@@ -11,7 +11,7 @@ export class ShipAmmoImpl implements ShipAmmo {
     const { max, current } = this
     if (max <= 0) return 1
 
-    const rate = current / max
-    return Math.min(2 * rate, 1)
+    const percent = Math.floor((current / max) * 100)
+    return Math.min(percent / 50, 1)
   }
 }
