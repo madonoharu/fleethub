@@ -5,8 +5,7 @@ export type ShipFuel = {
 }
 
 export class ShipFuelImpl implements ShipFuel {
-  public max = 0
-  public current = 0
+  constructor(public readonly max = 0, public current = max) {}
 
   get penalty() {
     const { max, current } = this
