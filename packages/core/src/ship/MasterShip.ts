@@ -7,8 +7,11 @@ import {
   equippable as equippableData,
   ShipId,
   ShipRuby,
+  GearId,
+  GearCategory,
 } from "@fleethub/data"
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
+import { GearBase } from "../gear"
 
 /**
  * 潜在艦速区分
@@ -53,6 +56,18 @@ const createEquippable = (shipId: number, shipType: number): Equippable => {
 }
 
 export type StatBase = [number, number]
+
+export type ShipStatsBase = {
+  maxHp: StatBase
+  firepower: StatBase
+  armor: StatBase
+  torpedo: StatBase
+  antiAir: StatBase
+  evasion: StatBase
+  asw: StatBase
+  los: StatBase
+  luck: StatBase
+}
 
 export interface RequiredShipData extends Required<ShipData> {
   maxHp: StatBase
@@ -113,9 +128,9 @@ export default class MasterShip implements ShipBase {
   public readonly sortId = this.data.sortId || 0
 
   public readonly maxHp = toStatBase(this.data.maxHp)
-  public readonly armor = toStatBase(this.data.armor)
   public readonly firepower = toStatBase(this.data.firepower)
   public readonly torpedo = toStatBase(this.data.torpedo)
+  public readonly armor = toStatBase(this.data.armor)
   public readonly antiAir = toStatBase(this.data.antiAir)
   public readonly luck = toStatBase(this.data.luck)
   public readonly asw = toStatBase(this.data.asw)
@@ -198,5 +213,46 @@ export default class MasterShip implements ShipBase {
     }
 
     return SpeedGroup.FastB2SlowB
+  }
+
+  public canEquip = (index: number, gear: GearBase) => {
+    const { shipClass, equippable, slots } = this
+    const isExslot = slots.length <= index
+    const { gearId, specialCategory } = gear
+
+    if (this.is("Abyssal")) {
+      return true
+    }
+
+    if (!equippable.categories.includes(specialCategory)) {
+      return false
+    }
+
+    if (isExslot) {
+      return (
+        equippable.exslotCategories.includes(specialCategory) ||
+        equippable.exslotIds.includes(gearId) ||
+        gearId === GearId["改良型艦本式タービン"]
+      )
+    }
+
+    if (shipClass === ShipClass.RichelieuClass && specialCategory === GearCategory.SeaplaneBomber) {
+      return gearId === GearId["Laté 298B"]
+    }
+
+    if (shipClass === ShipClass.IseClass && this.is("Kai2")) {
+      return !(index > 1 && gear.is("MainGun"))
+    }
+
+    if (shipClass === ShipClass.YuubariClass && this.is("Kai2")) {
+      if (index >= 3 && (gear.is("MainGun") || gear.categoryIn("Torpedo", "MidgetSubmarine"))) {
+        return false
+      }
+      if (index === 4) {
+        return gear.categoryIn("AntiAirGun", "SmallRadar", "CombatRation")
+      }
+    }
+
+    return true
   }
 }
