@@ -1,6 +1,7 @@
 export type ShipFuel = {
   max: number
   current: number
+  /** 0~75の整数 */
   penalty: number
 }
 
@@ -9,11 +10,10 @@ export class ShipFuelImpl implements ShipFuel {
 
   get penalty() {
     const { max, current } = this
-    if (max <= 0) return 1
+    if (max <= 0) return 0
 
-    const rate = current / max
-    if (rate >= 0.75) return 1
-
-    return 0.75 - rate
+    const percent = Math.floor((current / max) * 100)
+    if (percent >= 75) return 0
+    return 75 - percent
   }
 }
