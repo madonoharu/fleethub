@@ -1,19 +1,4 @@
-/**
- * Less 無傷
- * Shouha 小破
- * Chuuha 中破
- * Taiha 大破
- * Sunk 轟沈
- */
-export type DamageState = "Less" | "Shouha" | "Chuuha" | "Taiha" | "Sunk"
-
-export type Health = {
-  maxHp: number
-  currentHp: number
-  damage: DamageState
-  commonPowerModifier: number
-  torpedoPowerModifier: number
-}
+import { Health } from "./types"
 
 export class ShipHealth implements Health {
   constructor(public readonly maxHp: number, public currentHp = maxHp) {}
