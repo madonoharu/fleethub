@@ -1,11 +1,11 @@
-export type ShipFuel = {
+export type Fuel = {
   max: number
   current: number
   /** 0~75の整数 */
   penalty: number
 }
 
-export class ShipFuelImpl implements ShipFuel {
+export class ShipFuel implements Fuel {
   constructor(public readonly max = 0, public current = max) {}
 
   get penalty() {
