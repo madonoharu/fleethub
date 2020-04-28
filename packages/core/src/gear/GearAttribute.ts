@@ -103,8 +103,8 @@ const Aircraft = or(
 /** 水上観測機 */
 const ObservationSeaplane = categoryIn("ReconSeaplane", "SeaplaneBomber")
 
-/** 爆戦 */
-const FighterBomber = and(categoryIn("CbDiveBomber"), (gear) => gear.antiAir >= 4)
+/** 艦上爆戦 */
+const CbFighterBomber = and(categoryIn("CbDiveBomber"), (gear) => gear.antiAir >= 1)
 
 /** 対地艦爆 */
 const AntiInstallationBomber = gearIdIn(
@@ -163,7 +163,7 @@ const matchers = {
   Recon,
 
   ObservationSeaplane,
-  FighterBomber,
+  CbFighterBomber,
   AntiInstallationBomber,
   CbSwordfish,
 
