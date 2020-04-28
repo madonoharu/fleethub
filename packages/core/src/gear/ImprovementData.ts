@@ -71,7 +71,7 @@ const createContactSelectionBonus: FormulaCreator = (gear) => {
  */
 const createFighterPowerBonus: FormulaCreator = (gear) => {
   if (gear.is("Fighter")) return toLinear(0.2)
-  if (gear.is("FighterBomber")) return toLinear(0.25)
+  if (gear.is("CbFighterBomber")) return toLinear(0.25)
   if (gear.category === GearCategory.LbAttacker) return toSqrt(0.5)
 
   return undefined
