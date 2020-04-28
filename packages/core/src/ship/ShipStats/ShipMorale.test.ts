@@ -1,5 +1,6 @@
+import { MoraleState } from "../types"
+
 import { ShipMorale } from "./ShipMorale"
-import { MoraleState } from "./types"
 
 describe("ShipMorale", () => {
   it("valueのデフォルトは49", () => {

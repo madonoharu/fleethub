@@ -1,4 +1,4 @@
-import { Morale } from "./types"
+import { Morale } from "../types"
 
 export class ShipMorale implements Morale {
   constructor(public value = 49) {}

@@ -1,4 +1,4 @@
-import { Ammo } from "./types"
+import { Ammo } from "../types"
 
 export class ShipAmmo implements Ammo {
   constructor(public readonly max = 0, public current = max) {}
