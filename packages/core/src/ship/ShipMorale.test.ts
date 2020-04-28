@@ -1,8 +1,8 @@
-import { ShipMoraleImpl, MoraleState } from "./ShipMorale"
+import { ShipMorale, MoraleState } from "./ShipMorale"
 
-describe("ShipMoraleImpl", () => {
+describe("ShipMorale", () => {
   it("valueのデフォルトは49", () => {
-    expect(new ShipMoraleImpl().value).toBe(49)
+    expect(new ShipMorale().value).toBe(49)
   })
 
   it.each<[number, MoraleState]>([
@@ -15,14 +15,14 @@ describe("ShipMoraleImpl", () => {
     [19, "Red"],
     [0, "Red"],
   ])("morale value %s -> %s", (value, expected) => {
-    expect(new ShipMoraleImpl(value).state).toBe(expected)
+    expect(new ShipMorale(value).state).toBe(expected)
   })
 
   const moraleMap = {
-    Sparkling: new ShipMoraleImpl(50),
-    Normal: new ShipMoraleImpl(30),
-    Orange: new ShipMoraleImpl(20),
-    Red: new ShipMoraleImpl(0),
+    Sparkling: new ShipMorale(50),
+    Normal: new ShipMorale(30),
+    Orange: new ShipMorale(20),
+    Red: new ShipMorale(0),
   }
 
   it.each`
