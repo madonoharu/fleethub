@@ -1,6 +1,6 @@
 export type MoraleState = "Sparkling" | "Normal" | "Orange" | "Red"
 
-export type ShipMorale = {
+export type Morale = {
   value: number
   state: MoraleState
   commonAccuracyModifier: number
@@ -10,7 +10,7 @@ export type ShipMorale = {
 
 export type BattleType = "shelling" | "asw" | "torpedo" | "night"
 
-export class ShipMoraleImpl implements ShipMorale {
+export class ShipMorale implements Morale {
   constructor(public value = 49) {}
 
   get state() {
