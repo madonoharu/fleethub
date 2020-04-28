@@ -13,15 +13,7 @@ import {
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
 import { GearBase } from "../gear"
 
-/**
- * 潜在艦速区分
- */
-export enum SpeedGroup {
-  FastA,
-  FastB1SlowA,
-  FastB2SlowB,
-  OtherC,
-}
+import { StatBase, ShipStatsBase, ShipCommonBaseWithStatsBase, SpeedGroup } from "./types"
 
 enum SpeedValue {
   Slow = 5,
@@ -55,46 +47,12 @@ const createEquippable = (shipId: number, shipType: number): Equippable => {
   }
 }
 
-export type ShipIdentityBase = Required<
-  Pick<ShipData, "sortId" | "shipClass" | "shipType" | "name" | "ruby"> & {
-    shipId: ShipData["id"]
-  }
->
-
-export type ShipAttributeParams = ShipIdentityBase & { speed: number }
-
-export type ShipIdentity = ShipIdentityBase & { is: (attr: ShipAttribute) => boolean }
-
-export type ShipCommonBase = ShipIdentity & {
-  canEquip: (index: number, gear: GearBase) => boolean
-}
-
-export type StatBase = [number, number]
-
-export type ShipStatsData = {
-  maxHp: StatBase
-  firepower: StatBase
-  armor: StatBase
-  torpedo: StatBase
-  antiAir: StatBase
-  evasion: StatBase
-  asw: StatBase
-  los: StatBase
-  luck: StatBase
-
-  speed: number
-  range: number
-  speedGroup: number
-}
-
-export type ShipCommonBaseWithStatsData = ShipCommonBase & ShipStatsData
-
-export type RequiredShipData = ShipStatsData &
-  Required<Omit<ShipData, keyof ShipStatsData>> & {
+export type RequiredShipData = ShipStatsBase &
+  Required<Omit<ShipData, keyof ShipStatsBase>> & {
     gears: Array<{ gearId: number; stars?: number }>
   }
 
-export interface ShipBase extends ShipCommonBaseWithStatsData, RequiredShipData {
+export interface ShipBase extends ShipCommonBaseWithStatsBase, RequiredShipData {
   attrs: ShipAttribute[]
   isCommonly: boolean
   rank: number
