@@ -7,7 +7,7 @@
  */
 export type DamageState = "Less" | "Shouha" | "Chuuha" | "Taiha" | "Sunk"
 
-type Health = {
+export type Health = {
   maxHp: number
   currentHp: number
   damage: DamageState
