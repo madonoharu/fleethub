@@ -1,4 +1,4 @@
-import { Health } from "./types"
+import { Health } from "../types"
 
 export class ShipHealth implements Health {
   constructor(public readonly maxHp: number, public currentHp = maxHp) {}

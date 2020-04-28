@@ -1,4 +1,4 @@
-import { Range } from "./types"
+import { Range } from "../types"
 
 export class ShipRange implements Range {
   constructor(public naked: number, public equipment: number, public bonus: number) {}
