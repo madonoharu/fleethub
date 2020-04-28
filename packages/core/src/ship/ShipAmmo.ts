@@ -1,10 +1,10 @@
-export type ShipAmmo = {
+export type Ammo = {
   max: number
   current: number
   penalty: number
 }
 
-export class ShipAmmoImpl implements ShipAmmo {
+export class ShipAmmo implements Ammo {
   constructor(public readonly max = 0, public current = max) {}
 
   get penalty() {
