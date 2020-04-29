@@ -1,12 +1,13 @@
 import { Equipment } from "../equipment"
 import { GearBase } from "../gear"
 
-import { ShipStats, ShipCommonBase } from "./types"
+import { ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
 
 export type Ship = ShipCommonBase &
   ShipStats & {
     equipment: Equipment
     canEquip: (index: number, gear: GearBase) => boolean
+    getNextBonuses: (excludedIndex: number, gear: GearBase) => EquipmentBonuses
 
     fleetLosFactor: number
   }
@@ -42,7 +43,12 @@ export class ShipImpl implements Ship {
   public readonly is = this.base.is
   public readonly canEquip = this.base.canEquip
 
-  constructor(private base: ShipCommonBase, private stats: ShipStats, public equipment: Equipment) {}
+  constructor(
+    private base: ShipCommonBase,
+    private stats: ShipStats,
+    public equipment: Ship["equipment"],
+    public getNextBonuses: Ship["getNextBonuses"]
+  ) {}
 
   get fleetLosFactor() {
     const observationSeaplaneModifier = this.equipment.sumBy((gear, i, slotSize) => {
