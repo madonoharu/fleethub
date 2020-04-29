@@ -1,7 +1,5 @@
-import { EquipmentBonuses } from "equipment-bonus"
-
 import { Equipment } from "../../equipment"
-import { ShipStatsBase, ShipStatsState, BasicStatKey } from "../types"
+import { ShipStatsBase, ShipStatsState, BasicStatKey, EquipmentBonuses } from "../types"
 
 import { ShipBasicStat, ShipBasicStatWithLevel } from "./ShipBasicStat"
 import { ShipMaxHp } from "./ShipMaxHp"
@@ -45,7 +43,7 @@ export const createShipStats = (
     evasion: createBasicStat("evasion"),
 
     maxHp,
-    speed: new ShipSpeed(base.speed, NaN),
+    speed: new ShipSpeed(base.speed, bonuses.speed),
     range: new ShipRange(base.range, equipment.maxValueBy("range"), bonuses.range),
     luck: new ShipLuck(base.luck, state.luck),
 
