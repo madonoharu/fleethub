@@ -1,7 +1,7 @@
 import { createShipStats } from "./createShipStats"
 
-import EquipmentMock from "../../utils/EquipmentMock"
 import { ShipStatsBase, ShipStatsState, BasicStatKey, EquipmentBonuses } from "../types"
+import { EquipmentMock } from "../../utils"
 
 import { ShipBasicStat, ShipBasicStatWithLevel } from "./ShipBasicStat"
 import { ShipLuck } from "./ShipLuck"

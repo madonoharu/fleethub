@@ -1,4 +1,4 @@
-import { GearBase, GearAttribute } from "../gear"
+import { Gear, GearBase, GearAttribute } from "../gear"
 import { GearCategoryKey, GearCategory, GearCategoryName } from "@fleethub/data"
 
 export class GearBaseStub implements GearBase {
@@ -40,4 +40,16 @@ export class GearBaseStub implements GearBase {
   public categoryIs = (key: GearCategoryKey) => this.category === GearCategory[key]
 
   public categoryIn = (...keys: GearCategoryKey[]) => keys.some(this.categoryIs)
+}
+
+export class GearStub extends GearBaseStub implements Gear {
+  public static from = (src: Partial<Gear>) => Object.assign(new GearStub(), src)
+  public static fromAttrs = (...attrs: GearAttribute[]) => GearBaseStub.from({ attrs })
+
+  public stars = NaN
+  public exp = NaN
+  public ace = NaN
+  public deck = {} as Gear["deck"]
+  public hasProficiency = false
+  public improvement = {} as Gear["improvement"]
 }

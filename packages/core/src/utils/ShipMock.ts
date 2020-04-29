@@ -1,11 +1,28 @@
-import { Equipment } from "../equipment"
-import { Ship, ShipStat } from "../ship"
-import { HealthImpl } from "../ship/Health"
+import { Ship } from "../ship"
+import { ShipStats } from "../ship/types"
 
-import EquipmentMock from "./EquipmentMock"
-import { ShipStatStub } from "./ShipStatsStub"
+import { EquipmentMock } from "./EquipmentMock"
 
-export default class ShipMock implements Ship {
+export class ShipStatsStub implements ShipStats {
+  level = NaN
+  firepower = {} as ShipStats["firepower"]
+  torpedo = {} as ShipStats["torpedo"]
+  antiAir = {} as ShipStats["antiAir"]
+  armor = {} as ShipStats["armor"]
+  asw = {} as ShipStats["asw"]
+  los = {} as ShipStats["los"]
+  evasion = {} as ShipStats["evasion"]
+  maxHp = {} as ShipStats["maxHp"]
+  speed = {} as ShipStats["speed"]
+  luck = {} as ShipStats["luck"]
+  range = {} as ShipStats["range"]
+  health = {} as ShipStats["health"]
+  morale = {} as ShipStats["morale"]
+  ammo = {} as ShipStats["ammo"]
+  fuel = {} as ShipStats["fuel"]
+}
+
+export class ShipMock extends ShipStatsStub implements Ship {
   public name = ""
   public ruby = ""
   public shipId = 0
@@ -15,24 +32,9 @@ export default class ShipMock implements Ship {
 
   public equipment = new EquipmentMock()
 
-  public level = 0
-
-  public firepower = new ShipStatStub()
-  public torpedo = new ShipStatStub()
-  public antiAir = new ShipStatStub()
-  public armor = new ShipStatStub()
-  public asw = new ShipStatStub()
-  public los = new ShipStatStub()
-  public evasion = new ShipStatStub()
-  public maxHp = new ShipStatStub()
-  public speed = new ShipStatStub()
-  public range = new ShipStatStub()
-  public luck = new ShipStatStub()
-
-  public health = new HealthImpl(0)
-
   public is = jest.fn()
   public canEquip = jest.fn()
+  public getNextBonuses = jest.fn()
 
   public fleetLosFactor = 0
 }

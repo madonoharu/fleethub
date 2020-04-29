@@ -1,13 +1,14 @@
 import { Equipment } from "../equipment"
+import {} from "ts-jest/utils"
 
-export default class EquipmentMock implements Equipment {
-  public src = []
-  public size = 0
+export class EquipmentMock implements Equipment {
+  public src: any
+  public size: any
 
-  public defaultSlots = []
-  public currentSlots = []
+  public defaultSlots: any
+  public currentSlots: any
 
-  public gears = []
+  public gears: any
 
   public forEach = jest.fn()
   public filter = jest.fn()
