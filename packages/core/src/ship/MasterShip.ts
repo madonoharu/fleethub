@@ -6,21 +6,13 @@ import {
   HullCode,
   equippable as equippableData,
   ShipId,
-  ShipRuby,
   GearId,
   GearCategory,
 } from "@fleethub/data"
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
 import { GearBase } from "../gear"
 
-import { StatBase, ShipStatsBase, ShipCommonBaseWithStatsBase, SpeedGroup } from "./types"
-
-enum SpeedValue {
-  Slow = 5,
-  Fast = 10,
-  FastPlus = 15,
-  Fastest = 20,
-}
+import { StatBase, ShipStatsBase, ShipCommonBaseWithStatsBase } from "./types"
 
 type Equippable = {
   /** 装備カテゴリによる設定 */
@@ -57,8 +49,6 @@ export interface ShipBase extends ShipCommonBaseWithStatsBase, RequiredShipData 
   isCommonly: boolean
   rank: number
   equippable: Equippable
-
-  speedGroup: SpeedGroup
 }
 
 export const toStatBase = (stat: ShipData["firepower"] = 0): StatBase => {
@@ -137,43 +127,6 @@ export default class MasterShip implements ShipBase {
   public shipClassIn = (...keys: ShipClassKey[]) => keys.some((key) => ShipClass[key] === this.shipClass)
 
   public shipTypeIn = (...keys: HullCode[]) => keys.some((key) => ShipType[key] === this.shipType)
-
-  get speedGroup(): SpeedGroup {
-    const { shipId } = this
-
-    const isFastAV = this.speed === SpeedValue.Fast && this.shipType === ShipType.AV
-
-    if (
-      isFastAV ||
-      this.is("SubmarineClass") ||
-      [ShipId["夕張"], ShipId["夕張改"]].includes(shipId) ||
-      this.shipClassIn("KagaClass", "AkitsuMaruClass", "RepairShip", "RevisedKazahayaClass")
-    ) {
-      return SpeedGroup.OtherC
-    }
-
-    if (
-      this.shipClassIn("ShimakazeClass", "TashkentClass", "TaihouClass", "ShoukakuClass", "ToneClass", "MogamiClass")
-    ) {
-      return SpeedGroup.FastA
-    }
-
-    if (this.shipClassIn("AganoClass", "SouryuuClass", "HiryuuClass", "KongouClass", "YamatoClass", "IowaClass")) {
-      return SpeedGroup.FastB1SlowA
-    }
-
-    const ruby = this.ruby as ShipRuby
-    const isAmatsukaze = ruby === "あまつかぜ"
-    const isUnryuu = ruby === "うんりゅう"
-    const isAmagi = ruby === "あまぎ"
-    const isNagatoKai2 = shipId === ShipId["長門改二"]
-
-    if (isAmatsukaze || isUnryuu || isAmagi || isNagatoKai2) {
-      return SpeedGroup.FastB1SlowA
-    }
-
-    return SpeedGroup.FastB2SlowB
-  }
 
   public canEquip = (index: number, gear: GearBase) => {
     const { shipClass, equippable, slots } = this
