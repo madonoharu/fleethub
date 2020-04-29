@@ -1,9 +1,10 @@
 import { createImprovementData, ImprovementBonusFormula } from "./ImprovementData"
 
-import { GearName, GearCategory, GearCategoryKey, GearCategoryName } from "@fleethub/data"
+import { GearName, GearCategoryName } from "@fleethub/data"
 
-import { GearBaseStub } from "../utils/GearBaseStub"
+import { GearBaseStub } from "../utils"
 import { makeGear } from "../utils/testUtils"
+
 import { GearBase } from "./MasterGear"
 
 describe("createImprovementData", () => {

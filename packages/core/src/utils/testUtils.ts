@@ -2,46 +2,6 @@ import { GearData, GearName, gears, ShipName, ShipData, ships } from "@fleethub/
 import { RequiredShipData, toStatBase } from "../ship/MasterShip"
 import { fhSystem } from ".."
 
-export const toRequiredShipData = (partial: Partial<ShipData>): RequiredShipData => ({
-  id: partial.id ?? 0,
-
-  shipClass: partial.shipClass ?? 0,
-  shipType: partial.shipType ?? 0,
-  name: partial.name ?? "",
-  ruby: partial.ruby ?? "",
-
-  sortNo: partial.sortNo ?? 0,
-  sortId: partial.sortId ?? 0,
-
-  maxHp: toStatBase(partial.maxHp),
-  armor: toStatBase(partial.armor),
-  firepower: toStatBase(partial.firepower),
-  torpedo: toStatBase(partial.torpedo),
-  antiAir: toStatBase(partial.antiAir),
-  luck: toStatBase(partial.luck),
-  asw: toStatBase(partial.asw),
-  evasion: toStatBase(partial.evasion),
-  los: toStatBase(partial.los),
-
-  speed: partial.speed ?? 0,
-  range: partial.range ?? 0,
-
-  fuel: partial.fuel ?? 0,
-  ammo: partial.ammo ?? 0,
-
-  slots: (partial.slots ?? []).concat(),
-  gears: (partial.gears ?? []).map((gear) => {
-    if (typeof gear === "number") {
-      return { gearId: gear }
-    }
-    return gear
-  }),
-
-  nextId: partial.nextId ?? 0,
-  nextLevel: partial.nextLevel ?? 0,
-  convertible: false,
-})
-
 export const getGearData = (name: GearName): GearData => {
   const found = gears.find((data) => data.name === name)
 
@@ -64,14 +24,7 @@ export const getShipData = (name: ShipName): ShipData => {
 
 export type ShipDef = Partial<RequiredShipData> | ShipName
 
-export const defToData = (def: ShipDef): RequiredShipData => {
-  if (typeof def === "string") {
-    return toRequiredShipData(getShipData(def))
-  }
-  return toRequiredShipData(def)
-}
-
-const shipNameToId = (shipName: ShipName) => {
+export const shipNameToId = (shipName: ShipName) => {
   const found = fhSystem.factory.masterShips.find((master) => master.name === shipName)
   if (!found) {
     throw `${shipName} not found`
@@ -80,7 +33,7 @@ const shipNameToId = (shipName: ShipName) => {
   return found.shipId
 }
 
-type GearDef = GearName | { name: GearName; stars?: number; exp?: number }
+export type GearDef = GearName | { name: GearName; stars?: number; exp?: number }
 
 const gearDefToState = (def: GearDef) => {
   let name: string
@@ -108,6 +61,14 @@ export const makeGear = (def: GearDef) => {
   const gear = fhSystem.createGear(state)
   if (!gear) throw `${def} not found`
   return gear
+}
+
+export const getMasterShip = (name: ShipName) => {
+  const found = fhSystem.factory.masterShips.find((ship) => ship.name === name)
+  if (!found) {
+    throw `${name} not found`
+  }
+  return found
 }
 
 export const makeShip = (shipName: ShipName, ...gearDefs: GearDef[]) => {
