@@ -16,43 +16,32 @@ import { NullableArray } from "../utils"
 
 export type StatBase = readonly [number, number]
 
-/**
- * 潜在艦速区分
- */
-export enum SpeedGroup {
-  FastA,
-  FastB1SlowA,
-  FastB2SlowB,
-  OtherC,
-}
-
-export type ShipIdentityBase = Required<
+export type ShipIdentity = Required<
   Pick<ShipData, "sortId" | "shipClass" | "shipType" | "name" | "ruby"> & {
     shipId: ShipData["id"]
   }
 >
 
-export type ShipAttributeParams = ShipIdentityBase & { speed: number }
-
-export type ShipIdentity = ShipIdentityBase & { is: (attr: ShipAttribute) => boolean }
+export type ShipIdentityWithSpeed = ShipIdentity & { speed: number }
 
 export type ShipCommonBase = ShipIdentity & {
+  is: (attr: ShipAttribute) => boolean
   canEquip: (index: number, gear: GearBase) => boolean
 }
 
 export type ShipCommonBaseWithStatsBase = ShipCommonBase & ShipStatsBase
 
 export type ShipStatsBase = {
-  maxHp: StatBase
   firepower: StatBase
-  armor: StatBase
   torpedo: StatBase
   antiAir: StatBase
+  armor: StatBase
   evasion: StatBase
   asw: StatBase
   los: StatBase
-  luck: StatBase
 
+  maxHp: StatBase
+  luck: StatBase
   speed: number
   range: number
 
@@ -176,3 +165,19 @@ export type ShipState = {
   gears?: NullableArray<GearState>
   slots?: number[]
 } & ShipStatsState
+
+export type EquipmentBonuses = {
+  firepower: number
+  torpedo: number
+  antiAir: number
+  armor: number
+  evasion: number
+  asw: number
+  los: number
+  bombing: number
+  accuracy: number
+  range: number
+
+  speed: number
+  effectiveLos: number
+}
