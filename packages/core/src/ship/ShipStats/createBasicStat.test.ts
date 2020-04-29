@@ -64,6 +64,7 @@ describe("createShipStats", () => {
     accuracy: 9,
     range: 3,
     speed: 5,
+    effectiveLos: 10,
   }
 
   const stats = createShipStats(base, state, equipment, bonuses)

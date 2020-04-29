@@ -238,7 +238,7 @@ describe("calcSpeedBonus", () => {
           enhancedBoilerCount,
           newModelBoilerCount,
           hasTurbine: true,
-          hasSpecialBonus: true,
+          hasSpecialBonus: false,
         })
       ).toBe(expected)
     })
@@ -260,7 +260,7 @@ describe("calcSpeedBonus", () => {
           enhancedBoilerCount,
           newModelBoilerCount,
           hasTurbine: true,
-          hasSpecialBonus: true,
+          hasSpecialBonus: false,
         })
       ).toBe(expected)
     })
@@ -283,7 +283,7 @@ describe("calcSpeedBonus", () => {
           enhancedBoilerCount,
           newModelBoilerCount,
           hasTurbine: true,
-          hasSpecialBonus: true,
+          hasSpecialBonus: false,
         })
       ).toBe(expected)
     })
@@ -301,7 +301,7 @@ describe("calcSpeedBonus", () => {
           enhancedBoilerCount,
           newModelBoilerCount,
           hasTurbine: true,
-          hasSpecialBonus: true,
+          hasSpecialBonus: false,
         })
       ).toBe(expected)
     })
