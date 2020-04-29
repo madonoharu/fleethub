@@ -53,7 +53,7 @@ describe("createImprovementData", () => {
     })
 
     it("爆戦 -> 0.25 * 改修値", () => {
-      const gear = GearBaseStub.fromAttrs("FighterBomber")
+      const gear = GearBaseStub.fromAttrs("CbFighterBomber")
       expect(toFormula(gear)).toEqual({ multiplier: 0.25, type: "Linear" })
     })
 
