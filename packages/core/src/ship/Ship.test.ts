@@ -75,4 +75,22 @@ describe("ShipImpl", () => {
     equipment.count.mockReturnValueOnce(2)
     expect(ship.cruiserFitBonus).toBe(Math.sqrt(2))
   })
+
+  it("対艦空撃力 = [装備雷装 + [1.3 * 装備爆装]] + 15", () => {
+    const [base, stats, equipment, getNextBonusesMockFn] = getMocks()
+    const ship = new ShipImpl(base, stats, equipment, getNextBonusesMockFn)
+    stats.torpedo.equipment = 12
+    equipment.sumBy.mockReturnValueOnce(6)
+
+    expect(ship.calcAirPower()).toBe(Math.floor(12 + Math.floor(1.3 * 6)) + 15)
+  })
+
+  it("対地空撃力 = [1.3 * 対地爆装] + 15", () => {
+    const [base, stats, equipment, getNextBonusesMockFn] = getMocks()
+    const ship = new ShipImpl(base, stats, equipment, getNextBonusesMockFn)
+    stats.torpedo.equipment = 100
+    equipment.sumBy.mockReturnValueOnce(6)
+
+    expect(ship.calcAirPower(true)).toBe(Math.floor(1.3 * 6) + 15)
+  })
 })
