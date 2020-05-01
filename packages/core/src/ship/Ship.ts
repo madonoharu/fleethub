@@ -13,6 +13,8 @@ export type Ship = ShipCommonBase &
     fleetLosFactor: number
     cruiserFitBonus: number
     calcAirPower: (isAntiInstallation?: boolean) => number
+
+    basicAccuracyTerm: number
   }
 
 export class ShipImpl implements Ship {
@@ -96,5 +98,10 @@ export class ShipImpl implements Ship {
     }
 
     return Math.floor(Math.floor(1.3 * bombing) + equipmentTorpedo) + 15
+  }
+
+  get basicAccuracyTerm() {
+    const { level, luck } = this
+    return 2 * Math.sqrt(level) + 1.5 * Math.sqrt(luck.displayed)
   }
 }
