@@ -2,6 +2,7 @@ import { Equipment } from "../equipment"
 import { GearBase } from "../gear"
 
 import { ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
+import { GearId, ShipClass } from "@fleethub/data"
 
 export type Ship = ShipCommonBase &
   ShipStats & {
@@ -10,6 +11,8 @@ export type Ship = ShipCommonBase &
     getNextBonuses: (excludedIndex: number, gear: GearBase) => EquipmentBonuses
 
     fleetLosFactor: number
+    cruiserFitBonus: number
+    calcAirPower: (isAntiInstallation?: boolean) => number
   }
 
 export class ShipImpl implements Ship {
@@ -52,11 +55,46 @@ export class ShipImpl implements Ship {
 
   get fleetLosFactor() {
     const observationSeaplaneModifier = this.equipment.sumBy((gear, i, slotSize) => {
-      if (!slotSize || !gear.is("ObservationSeaplane")) return 0
-
-      return gear.los * Math.floor(Math.sqrt(slotSize))
+      if (slotSize && gear.is("ObservationSeaplane")) {
+        return gear.los * Math.floor(Math.sqrt(slotSize))
+      }
+      return 0
     })
 
     return this.los.naked + observationSeaplaneModifier
+  }
+
+  get cruiserFitBonus() {
+    const { is, shipClass, equipment } = this
+    if (is("LightCruiserClass")) {
+      const singleGunCount = equipment.count(({ gearId }) =>
+        [GearId["14cm単装砲"], GearId["15.2cm単装砲"]].includes(gearId)
+      )
+      const twinGunCount = equipment.count(({ gearId }) =>
+        [GearId["15.2cm連装砲"], GearId["14cm連装砲"], GearId["15.2cm連装砲改"]].includes(gearId)
+      )
+      return Math.sqrt(singleGunCount) + 2 * Math.sqrt(twinGunCount)
+    }
+
+    if (shipClass === ShipClass.ZaraClass) {
+      return Math.sqrt(equipment.count((gear) => gear.gearId === GearId["203mm/53 連装砲"]))
+    }
+
+    return 0
+  }
+
+  public calcAirPower = (isAntiInstallation = false) => {
+    let equipmentTorpedo: number
+    let bombing: number
+
+    if (isAntiInstallation) {
+      equipmentTorpedo = 0
+      bombing = this.equipment.sumBy((gear) => (gear.is("AntiInstallationBomber") ? gear.bombing : 0))
+    } else {
+      equipmentTorpedo = this.torpedo.equipment
+      bombing = this.equipment.sumBy("bombing")
+    }
+
+    return Math.floor(Math.floor(1.3 * bombing) + equipmentTorpedo) + 15
   }
 }
