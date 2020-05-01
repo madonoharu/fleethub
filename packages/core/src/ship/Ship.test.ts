@@ -93,4 +93,13 @@ describe("ShipImpl", () => {
 
     expect(ship.calcAirPower(true)).toBe(Math.floor(1.3 * 6) + 15)
   })
+
+  it("艦娘命中項 = 2 * sqrt(level) + 1.5 * sqrt(luck)", () => {
+    const [base, stats, equipment, getNextBonusesMockFn] = getMocks()
+    stats.level = 175
+    stats.luck.displayed = 110
+    const ship = new ShipImpl(base, stats, equipment, getNextBonusesMockFn)
+
+    expect(ship.basicAccuracyTerm).toBe(2 * Math.sqrt(175) + 1.5 * Math.sqrt(110))
+  })
 })
