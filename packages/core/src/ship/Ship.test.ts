@@ -1,16 +1,18 @@
+import { ShipClass } from "@fleethub/data"
+
 import { ShipImpl } from "./Ship"
 import { ShipCommonBase } from "./types"
 
 import { ShipStatsStub, EquipmentMock, GearStub } from "../utils"
 
 const getMocks = () => {
-  const base: ShipCommonBase = {
-    shipId: 1,
-    shipClass: 2,
-    shipType: 3,
-    sortId: 4,
-    name: "5",
-    ruby: "6",
+  const base = {
+    shipId: 0,
+    shipClass: 0,
+    shipType: 0,
+    sortId: 0,
+    name: "",
+    ruby: "",
     is: jest.fn(),
     canEquip: jest.fn(),
   }
@@ -52,5 +54,25 @@ describe("ShipImpl", () => {
 
     equipment.sumBy.mockImplementationOnce((cb) => cb(observation, null, 5))
     expect(ship.fleetLosFactor).toBe(37 + 8 * Math.floor(Math.sqrt(5)))
+  })
+
+  it("軽巡軽量砲補正 = sqrt(singleGunCount) + 2 * sqrt(twinGunCount)", () => {
+    const [base, stats, equipment, getNextBonusesMockFn] = getMocks()
+    const ship = new ShipImpl(base, stats, equipment, getNextBonusesMockFn)
+
+    expect(ship.cruiserFitBonus).toBe(0)
+
+    base.is.mockReturnValueOnce(true)
+    equipment.count.mockReturnValueOnce(2).mockReturnValueOnce(3)
+    expect(ship.cruiserFitBonus).toBe(Math.sqrt(2) + 2 * Math.sqrt(3))
+  })
+
+  it("Zara砲補正 = sqrt(203mm/53 連装砲の本数)", () => {
+    const [base, stats, equipment, getNextBonusesMockFn] = getMocks()
+    base.shipClass = ShipClass.ZaraClass
+    const ship = new ShipImpl(base, stats, equipment, getNextBonusesMockFn)
+
+    equipment.count.mockReturnValueOnce(2)
+    expect(ship.cruiserFitBonus).toBe(Math.sqrt(2))
   })
 })
