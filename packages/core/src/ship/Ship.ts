@@ -104,4 +104,9 @@ export class ShipImpl implements Ship {
     const { level, luck } = this
     return 2 * Math.sqrt(level) + 1.5 * Math.sqrt(luck.displayed)
   }
+
+  get basicEvasionTerm() {
+    const { evasion, luck } = this
+    return evasion.displayed + Math.sqrt(2 * luck.displayed)
+  }
 }
