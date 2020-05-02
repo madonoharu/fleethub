@@ -147,7 +147,7 @@ export type ShipStats = ShipBasicStats & {
   speed: Speed
   range: Range
   luck: Luck
-  accrucy: Accuracy
+  accuracy: Accuracy
 
   health: Health
   morale: Morale

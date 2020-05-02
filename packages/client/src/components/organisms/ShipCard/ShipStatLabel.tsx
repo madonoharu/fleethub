@@ -13,7 +13,13 @@ type StatProps<K extends keyof ShipStats> = {
   stat: ShipStats[K]
 }
 
-type Props = StatProps<BasicStatKey> | StatProps<"maxHp"> | StatProps<"speed"> | StatProps<"range"> | StatProps<"luck">
+type Props =
+  | StatProps<BasicStatKey>
+  | StatProps<"maxHp">
+  | StatProps<"speed">
+  | StatProps<"range">
+  | StatProps<"luck">
+  | StatProps<"accuracy">
 
 const getStatText = (props: Props): React.ReactChild => {
   if (props.statKey === "maxHp") {
@@ -33,6 +39,10 @@ const getStatText = (props: Props): React.ReactChild => {
   if (props.statKey === "luck") {
     const { displayed } = props.stat
     return <Text>{displayed}</Text>
+  }
+  if (props.statKey === "accuracy") {
+    const { displayed } = props.stat
+    return displayed
   }
 
   const { displayed, increase, bonus } = props.stat
