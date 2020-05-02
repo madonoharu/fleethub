@@ -16,6 +16,7 @@ export class ShipStatsStub implements ShipStats {
   speed = {} as ShipStats["speed"]
   luck = {} as ShipStats["luck"]
   range = {} as ShipStats["range"]
+  accrucy = {} as ShipStats["accrucy"]
   health = {} as ShipStats["health"]
   morale = {} as ShipStats["morale"]
   ammo = {} as ShipStats["ammo"]

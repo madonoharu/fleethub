@@ -82,6 +82,12 @@ export type Luck = {
   displayed: number
 }
 
+export type Accuracy = {
+  equipment: number
+  bonus: number
+  displayed: number
+}
+
 /**
  * |||
  * |---|---|
@@ -141,6 +147,7 @@ export type ShipStats = ShipBasicStats & {
   speed: Speed
   range: Range
   luck: Luck
+  accrucy: Accuracy
 
   health: Health
   morale: Morale
