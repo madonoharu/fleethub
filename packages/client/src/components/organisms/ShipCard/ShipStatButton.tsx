@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import { ShipStat } from "@fleethub/core"
 import { useTranslation } from "react-i18next"
 
 import { Button, Tooltip, DialogTitle, DialogContent } from "@material-ui/core"
@@ -15,7 +14,7 @@ type Props = ShipStatProps
 
 const ShipStatButton: React.FCX<Props> = ({ className, stat, onUpdate }) => {
   const button = (
-    <Tooltip title={StatKeyDictionary[stat.key]}>
+    <Tooltip title={"火力"}>
       <Button className={className}>
         <ShipStatLabel stat={stat} />
       </Button>
