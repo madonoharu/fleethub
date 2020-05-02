@@ -40,7 +40,7 @@ export class ShipImpl implements Ship {
   public readonly speed = this.stats.speed
   public readonly range = this.stats.range
   public readonly luck = this.stats.luck
-  public readonly accrucy = this.stats.accrucy
+  public readonly accuracy = this.stats.accuracy
 
   public readonly health = this.stats.health
   public readonly morale = this.stats.morale

@@ -47,7 +47,7 @@ export const createShipStats = (
     speed: new ShipSpeed(base.speed, bonuses.speed),
     range: new ShipRange(base.range, equipment.maxValueBy("range"), bonuses.range),
     luck: new ShipLuck(base.luck, state.luck),
-    accrucy: new ShipAccuracy(equipment.sumBy("accuracy"), bonuses.accuracy),
+    accuracy: new ShipAccuracy(equipment.sumBy("accuracy"), bonuses.accuracy),
 
     health: new ShipHealth(maxHp.displayed, state.currentHp),
     morale: new ShipMorale(state.morale),

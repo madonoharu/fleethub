@@ -102,8 +102,8 @@ describe("createShipStats", () => {
     expect(stats.range).toEqual(new ShipRange(base.range, 2, bonuses.range))
   })
 
-  it("stats.accrucy -> ShipAccuracy", () => {
-    expect(stats.accrucy).toEqual(new ShipAccuracy(1, bonuses.accuracy))
+  it("stats.accuracy -> ShipAccuracy", () => {
+    expect(stats.accuracy).toEqual(new ShipAccuracy(1, bonuses.accuracy))
   })
 
   it("stats.health -> ShipHealth", () => {
