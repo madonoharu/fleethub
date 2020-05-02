@@ -152,7 +152,7 @@ export const createShipEquipmentBonuses = (ship: ShipIdentityWithSpeed, equipmen
     const filtered = equipment.filter((gear, index) => index !== excludedIndex)
     const nextGears = [...filtered, gear]
     const next = createEquipmentBonuses(ship, nextGears)
-    return subtract(current, next)
+    return subtract(next, current)
   }
 
   return { bonuses: current, getNextBonuses }
