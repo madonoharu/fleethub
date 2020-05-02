@@ -38,6 +38,7 @@ export class ShipMock extends ShipStatsStub implements Ship {
 
   public fleetLosFactor = 0
   public cruiserFitBonus = 0
+  public isCarrierLike = false
   public calcAirPower = jest.fn()
 
   public basicAccuracyTerm = 0
