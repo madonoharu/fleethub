@@ -11,6 +11,7 @@ import { ShipMaxHp } from "./ShipMaxHp"
 import { ShipHealth } from "./ShipHealth"
 import { ShipMorale } from "./ShipMorale"
 import { ShipAmmo } from "./ShipAmmo"
+import { ShipAccuracy } from "./ShipAccuracy"
 
 describe("createShipStats", () => {
   const base: ShipStatsBase = {
@@ -101,6 +102,10 @@ describe("createShipStats", () => {
     expect(stats.range).toEqual(new ShipRange(base.range, 2, bonuses.range))
   })
 
+  it("stats.accrucy -> ShipAccuracy", () => {
+    expect(stats.accrucy).toEqual(new ShipAccuracy(1, bonuses.accuracy))
+  })
+
   it("stats.health -> ShipHealth", () => {
     expect(stats.health).toEqual(new ShipHealth(stats.maxHp.displayed, state.currentHp))
   })
@@ -110,10 +115,10 @@ describe("createShipStats", () => {
   })
 
   it("stats.ammo -> ShipAmmo", () => {
-    expect(state.ammo).toEqual(new ShipAmmo(base.ammo, state.ammo))
+    expect(stats.ammo).toEqual(new ShipAmmo(base.ammo, state.ammo))
   })
 
   it("stats.fuel -> ShipFuel", () => {
-    expect(state.fuel).toEqual(new ShipAmmo(base.fuel, state.fuel))
+    expect(stats.fuel).toEqual(new ShipAmmo(base.fuel, state.fuel))
   })
 })
