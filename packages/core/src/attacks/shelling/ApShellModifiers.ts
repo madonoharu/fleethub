@@ -1,5 +1,3 @@
-import { ShipClass } from "@fleethub/data"
-
 type ApShellModifiersParams = {
   hasApShell: boolean
   hasMainGun: boolean
