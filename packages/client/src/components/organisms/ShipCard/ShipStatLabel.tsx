@@ -1,13 +1,13 @@
 import React from "react"
 import styled from "styled-components"
-import { ShipStat } from "@fleethub/core"
+import { ShipStats, BasicStatKey } from "@fleethub/core"
 
 import { StatIcon, Text } from "../../../components"
 import { withSign, getRangeName, getSpeedName } from "../../../utils"
 import { Flexbox } from "../../atoms"
 
-const getStatText = (stat: ShipStat): React.ReactChild => {
-  const { key, displayed, bonus, modernization } = stat
+const getStatText = (stat: any): React.ReactChild => {
+  const { key, displayed, bonus, increase } = stat
 
   if (key === "speed") {
     const str = getSpeedName(displayed)
@@ -18,13 +18,13 @@ const getStatText = (stat: ShipStat): React.ReactChild => {
     return bonus ? <Text color="bonus">{str}</Text> : str
   }
 
-  const visibleBonus = Boolean(modernization || bonus)
+  const visibleBonus = Boolean(increase || bonus)
   return (
     <>
       <Text>{displayed}</Text>
       {visibleBonus && (
         <>
-          (<Text color="modernization">{withSign(modernization)}</Text>
+          (<Text color="increase">{withSign(increase)}</Text>
           <Text color="bonus">{withSign(bonus)}</Text>)
         </>
       )}
@@ -33,7 +33,7 @@ const getStatText = (stat: ShipStat): React.ReactChild => {
 }
 
 type Props = {
-  stat: ShipStat
+  stat: any
 }
 
 const ShipStatLabel: React.FCX<Props> = (props) => {

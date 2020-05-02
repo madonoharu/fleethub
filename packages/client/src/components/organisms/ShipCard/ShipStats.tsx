@@ -1,56 +1,63 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship, ShipStatKey, ShipStat } from "@fleethub/core"
+import { Ship } from "@fleethub/core"
 
-import { Text } from "../../../components"
+import { Text, StatIcon } from "../../../components"
 import { ShipChanges } from "../../../store"
-
-import ShipStatButton from "./ShipStatButton"
-import ShipStatLabel from "./ShipStatLabel"
-
-type ShipStatItemProps = {
-  index: number
-  stat: ShipStat
-  onUpdate: (changes: ShipChanges) => void
-}
-
-const ShipStatItem: React.FCX<ShipStatItemProps> = ({ className, stat, onUpdate }) => {
-  if (["speed", "range"].includes(stat.key)) {
-    return <ShipStatLabel className={className} stat={stat} />
-  }
-  return <ShipStatButton className={className} stat={stat} onUpdate={onUpdate} />
-}
-
-const StyledStatItem = styled(ShipStatItem)`
-  order: ${({ index }) => index};
-`
 
 type Props = {
   ship: Ship
   onUpdate: (changes: ShipChanges) => void
 }
 
-const keys: ShipStatKey[] = [
-  "maxHp",
-  "firepower",
-  "armor",
-  "torpedo",
-  "evasion",
-  "antiAir",
-  "asw",
-  "speed",
-  "los",
-  "range",
-  "luck",
-]
-
 const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
     <div className={className}>
-      {keys.map((key, index) => (
-        <StyledStatItem key={key} index={index} stat={ship[key]} onUpdate={onUpdate} />
-      ))}
+      <Text>
+        <StatIcon icon="maxHp" />
+        {ship.maxHp.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="firepower" />
+        {ship.firepower.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="armor" />
+        {ship.armor.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="torpedo" />
+        {ship.torpedo.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="evasion" />
+        {ship.evasion.displayed}
+      </Text>
       <Text id="fp">制空</Text>
+      <Text>
+        <StatIcon icon="antiAir" />
+        {ship.antiAir.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="asw" />
+        {ship.asw.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="speed" />
+        {ship.speed.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="los" />
+        {ship.los.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="range" />
+        {ship.range.displayed}
+      </Text>
+      <Text>
+        <StatIcon icon="luck" />
+        {ship.luck.displayed}
+      </Text>
     </div>
   )
 }
@@ -58,10 +65,6 @@ const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
 export default styled(ShipStats)`
   display: grid;
   grid-template-columns: 50% 50%;
-
-  > #fp {
-    order: 5;
-  }
 
   button {
     height: 20px;

@@ -16,7 +16,8 @@ const shipTypeFilterRecord: ShipTypeFilterRecord = {
   駆逐艦: (ship) => ship.shipType === ShipType.DD,
   海防艦: (ship) => ship.shipType === ShipType.DE,
   潜水艦: (ship) => ship.is("SubmarineClass"),
-  補助艦艇: (ship) => ship.shipTypeIn("AP", "AV", "LHA", "AR", "AS", "AO"),
+  補助艦艇: (ship) =>
+    [ShipType.AP, ShipType.AV, ShipType.LHA, ShipType.AR, ShipType.AS, ShipType.AO].includes(ship.shipType),
 }
 
 export const shipTypeFilterKeys = Object.keys(shipTypeFilterRecord)
