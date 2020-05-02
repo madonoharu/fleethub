@@ -19,6 +19,7 @@ const keys = [
   "antiBomber",
   "los",
   "armor",
+  "speed",
   "range",
   "radius",
 ] as const
@@ -41,9 +42,19 @@ const BonusCell = styled(TableCell)`
   color: ${({ theme }) => theme.kc.palette.bonus};
 `
 
+const StyledStatIcon = styled(StatIcon)`
+  display: block !important;
+`
+
 const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
-  if (!bonuses || key === "radius") return ""
+  if (!bonuses || key === "interception" || key === "antiBomber" || key === "radius") return ""
+
   const bonus = bonuses[key]
+
+  if (key === "speed") {
+    return `${bonus / 5}段階上昇`
+  }
+
   return withSign(bonus)
 }
 
@@ -56,6 +67,7 @@ export const toStatEntries = (gear: GearBase, bonuses?: EquipmentBonuses) =>
       if (!value && !bonus) return
 
       if (key === "range") return [key, getRangeName(value), bonus]
+      if (key === "speed") return [key, "", bonus]
       return [key, value, bonus]
     })
     .filter(isNonNullable)
@@ -73,7 +85,7 @@ const GearStatList: React.FC<Props> = ({ gear, bonuses }) => {
         {entries.map(([key, value, bonus]) => (
           <TableRow key={key}>
             <TableCell>
-              <StatIcon icon={key} />
+              <StyledStatIcon icon={key} />
             </TableCell>
             <TableCell statKey={key}>{StatKeyDictionary[key]}</TableCell>
             <TableCell statKey={key} align="right">

@@ -1,9 +1,7 @@
 import React from "react"
 import { createSelector } from "@reduxjs/toolkit"
 import { useSelector, useDispatch, DefaultRootState } from "react-redux"
-import { GearState, GearBase } from "@fleethub/core"
-
-import { createEquipmentBonuses, EquipmentBonuses } from "equipment-bonus"
+import { GearState, GearBase, EquipmentBonuses } from "@fleethub/core"
 
 import { gearSelectSlice, entitiesSlice, GearSelectState } from "../store"
 import { createFhShipSelector } from "./useShip"
@@ -56,13 +54,7 @@ export const useGearSelect = () => {
     if (!target || !fhShip) return {}
 
     const equippableFilter = (gear: GearBase) => fhShip.canEquip(target.index, gear)
-
-    const gears = fhShip.equipment.filter((gear, index) => index !== target.index)
-    const currentBonuses = createEquipmentBonuses(fhShip, gears)
-    const getBonuses = (gear: GearBase) => {
-      const nextBonuses = createEquipmentBonuses(fhShip, [...gears, gear])
-      return subtract(nextBonuses, currentBonuses)
-    }
+    const getBonuses = (gear: GearBase) => fhShip.getNextBonuses(target.index, gear)
 
     return { equippableFilter, getBonuses }
   }, [fhShip, target])
