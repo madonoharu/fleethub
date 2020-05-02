@@ -5,6 +5,8 @@ import { Ship } from "@fleethub/core"
 import { Text, StatIcon } from "../../../components"
 import { ShipChanges } from "../../../store"
 
+import ShipStatLabel from "./ShipStatLabel"
+
 type Props = {
   ship: Ship
   onUpdate: (changes: ShipChanges) => void
@@ -13,51 +15,15 @@ type Props = {
 const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
     <div className={className}>
-      <Text>
-        <StatIcon icon="maxHp" />
-        {ship.maxHp.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="firepower" />
-        {ship.firepower.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="armor" />
-        {ship.armor.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="torpedo" />
-        {ship.torpedo.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="evasion" />
-        {ship.evasion.displayed}
-      </Text>
+      {(["maxHp", "firepower", "armor", "torpedo", "evasion", "antiAir"] as const).map((statKey) => (
+        <ShipStatLabel key={statKey} statKey={statKey} stat={ship[statKey]} />
+      ))}
+
       <Text id="fp">制空</Text>
-      <Text>
-        <StatIcon icon="antiAir" />
-        {ship.antiAir.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="asw" />
-        {ship.asw.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="speed" />
-        {ship.speed.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="los" />
-        {ship.los.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="range" />
-        {ship.range.displayed}
-      </Text>
-      <Text>
-        <StatIcon icon="luck" />
-        {ship.luck.displayed}
-      </Text>
+
+      {(["asw", "speed", "los", "range", "luck"] as const).map((statKey) => (
+        <ShipStatLabel key={statKey} statKey={statKey} stat={ship[statKey]} />
+      ))}
     </div>
   )
 }

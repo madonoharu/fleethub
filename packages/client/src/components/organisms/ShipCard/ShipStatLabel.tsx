@@ -1,22 +1,41 @@
 import React from "react"
 import styled from "styled-components"
-import { ShipStats, BasicStatKey } from "@fleethub/core"
+import { BasicStatKey, ShipStats } from "@fleethub/core"
+
+import { Tooltip } from "@material-ui/core"
 
 import { StatIcon, Text } from "../../../components"
-import { withSign, getRangeName, getSpeedName } from "../../../utils"
+import { withSign, getRangeName, getSpeedName, StatKeyDictionary } from "../../../utils"
 import { Flexbox } from "../../atoms"
 
-const getStatText = (stat: any): React.ReactChild => {
-  const { key, displayed, bonus, increase } = stat
+type StatProps<K extends keyof ShipStats> = {
+  statKey: K
+  stat: ShipStats[K]
+}
 
-  if (key === "speed") {
+type Props = StatProps<BasicStatKey> | StatProps<"maxHp"> | StatProps<"speed"> | StatProps<"range"> | StatProps<"luck">
+
+const getStatText = (props: Props): React.ReactChild => {
+  if (props.statKey === "maxHp") {
+    const { displayed, increase } = props.stat
+    return displayed
+  }
+  if (props.statKey === "speed") {
+    const { displayed, bonus } = props.stat
     const str = getSpeedName(displayed)
     return bonus ? <Text color="bonus">{str}</Text> : str
   }
-  if (key === "range") {
+  if (props.statKey === "range") {
+    const { displayed, bonus } = props.stat
     const str = getRangeName(displayed)
     return bonus ? <Text color="bonus">{str}</Text> : str
   }
+  if (props.statKey === "luck") {
+    const { displayed } = props.stat
+    return <Text>{displayed}</Text>
+  }
+
+  const { displayed, increase, bonus } = props.stat
 
   const visibleBonus = Boolean(increase || bonus)
   return (
@@ -32,20 +51,17 @@ const getStatText = (stat: any): React.ReactChild => {
   )
 }
 
-type Props = {
-  stat: any
-}
-
 const ShipStatLabel: React.FCX<Props> = (props) => {
-  const { className, stat } = props
-
-  const text = getStatText(stat)
+  const { className, statKey } = props
+  const text = getStatText(props)
 
   return (
-    <Flexbox className={className}>
-      <StatIcon icon={stat.key} />
-      {text}
-    </Flexbox>
+    <Tooltip title={StatKeyDictionary[statKey]}>
+      <Flexbox className={className}>
+        <StatIcon icon={statKey} />
+        {text}
+      </Flexbox>
+    </Tooltip>
   )
 }
 

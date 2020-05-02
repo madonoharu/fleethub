@@ -16,7 +16,7 @@ const ShipStatButton: React.FCX<Props> = ({ className, stat, onUpdate }) => {
   const button = (
     <Tooltip title={"火力"}>
       <Button className={className}>
-        <ShipStatLabel stat={stat} />
+        <ShipStatLabel statKey="firepower" stat={stat} />
       </Button>
     </Tooltip>
   )
