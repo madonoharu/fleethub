@@ -6,84 +6,37 @@ import { getPossibleDaySpecialAttackTypes } from "./DaySpecialAttackType"
 import { createDaySpecialAttack, calcObservationTerm } from "./DaySpecialAttack"
 import RateMap from "../RateMap"
 import { AirControlState } from "../../common"
+import { getApShellModifiers } from "./ApShellModifiers"
 
 const ShellingCap = 180
 
-export type ShellingPowerParams = Partial<{
-  firepower: number
-  improvementBonus: number
+type PowerParams = {
+  targetIs: Ship["is"]
   fleetFactor: number
 
   formationModifier: number
   engagementModifier: number
-  healthModifier: number
-
-  cruiserFitBonus: number
-  apShellModifier: number
   specialAttackModifier: number
-  isCritical: boolean
-  isAntiInstallation: boolean
-}>
-
-type ShipParams = {
-  firepower: number
-  improvementBonus: number
-  healthModifier: number
-  cruiserFitBonus: number
 }
 
-const calcBasicPower = ({ firepower = 0, improvementBonus = 0, fleetFactor = 0 }: ShellingPowerParams) => {
-  return 5 + firepower + improvementBonus + fleetFactor
-}
-
-export const calcShellingPower = (params: ShellingPowerParams) => {
-  const {
-    formationModifier = 1,
-    engagementModifier = 1,
-    healthModifier = 1,
-
-    cruiserFitBonus,
-    specialAttackModifier,
-
-    apShellModifier,
-  } = params
-
-  const basic = calcBasicPower(params)
-
-  const a14 = formationModifier * engagementModifier * healthModifier
-  const b14 = cruiserFitBonus
-  const a11 = specialAttackModifier
-
-  return calcAttackPower({ basic, cap: ShellingCap, a14, b14, a11, apShellModifier })
-}
-
-type Params = {
-  fleetFactor: number
-}
-
-export default class ShipShellingCalculator {
+export class ShipShellingCalculator {
   constructor(private ship: Ship) {}
 
-  private get isCarrierShelling() {
-    const { ship } = this
-    if (ship.is("AircraftCarrierClass")) {
-      return true
-    }
-
-    if (ship.shipClass !== ShipClass.RevisedKazahayaClass && !ship.is("Installation")) {
-      return false
-    }
-
-    return ship.equipment.hasAircraft((gear) =>
-      gear.categoryIn("CbTorpedoBomber", "CbDiveBomber", "JetTorpedoBomber", "JetFighterBomber")
-    )
+  private get apShellModifiers() {
+    const { equipment } = this.ship
+    return getApShellModifiers({
+      hasMainGun: equipment.has((gear) => gear.is("MainGun")),
+      hasApShell: equipment.has((gear) => gear.category === GearCategory.ApShell),
+      hasRader: equipment.has((gear) => gear.is("Radar")),
+      hasSecondaryGun: equipment.has((gear) => gear.category === GearCategory.SecondaryGun),
+    })
   }
 
   private getPossibleDaySpecialAttackTypes() {
-    const { isCarrierShelling, ship } = this
+    const { ship } = this
     const { equipment } = ship
     return getPossibleDaySpecialAttackTypes({
-      isCarrierShelling,
+      isCarrierShelling: ship.isCarrierLike,
       isIseClassK2: ship.shipClass === ShipClass.IseClass && ship.is("Kai2"),
       hasObservationSeaplane: equipment.hasAircraft((gear) => gear.is("ObservationSeaplane")),
 
@@ -142,35 +95,44 @@ export default class ShipShellingCalculator {
     return rateMap
   }
 
-  private calcAirPower() {
-    const torpedo = this.ship.torpedo.displayed
-    const bombing = this.ship.equipment.sumBy("bombing")
-    return Math.floor(Math.floor(1.3 * bombing) + torpedo) + 15
-  }
-
-  public createPower = ({ fleetFactor }: Params) => {
+  public createPower = ({
+    targetIs,
+    fleetFactor,
+    formationModifier,
+    engagementModifier,
+    specialAttackModifier,
+  }: PowerParams) => {
     const { ship } = this
+    const { cruiserFitBonus } = ship
     const firepower = ship.firepower.displayed
     const improvementBonus = ship.equipment.sumBy((gear) => gear.improvement.shellingPowerBonus)
 
     const basic = 5 + firepower + improvementBonus + fleetFactor
+    const airPower = ship.isCarrierLike ? ship.calcAirPower(targetIs("Installation")) : undefined
 
-    let airPower: number | undefined
+    const healthModifier = ship.health.commonPowerModifier
 
-    if (this.isCarrierShelling) {
-      airPower = this.calcAirPower()
-    }
+    const apShellModifier = targetIs("Armored") ? this.apShellModifiers.power : undefined
 
-    const healthModifier = ship.health.shellingPowerModifier
+    const a14 = formationModifier * engagementModifier * healthModifier
+    const b14 = cruiserFitBonus
+    const a11 = specialAttackModifier
+
+    const attackPower = calcAttackPower({ basic, airPower, cap: ShellingCap, a14, b14, a11, apShellModifier })
 
     return {
       basic,
-
-      firepower,
-      improvementBonus,
+      airPower,
       fleetFactor,
 
-      airPower,
+      formationModifier,
+      engagementModifier,
+      healthModifier,
+      cruiserFitBonus,
+      specialAttackModifier,
+      apShellModifier,
+
+      ...attackPower,
     }
   }
 }
