@@ -81,6 +81,11 @@ const AircraftCarrierClass = shipTypeIn("CVL", "CV", "CVB")
  */
 const SubmarineClass = shipTypeIn("SS", "SSV")
 
+/**
+ * 徹甲弾が有効な艦種
+ */
+const Armored = shipTypeIn("CA", "CAV", "FBB", "BB", "BBV", "CV", "CVB")
+
 const matchers = {
   Abyssal,
 
@@ -102,6 +107,8 @@ const matchers = {
   BattleshipClass,
   AircraftCarrierClass,
   SubmarineClass,
+
+  Armored,
 }
 
 export type ShipAttribute = keyof typeof matchers
