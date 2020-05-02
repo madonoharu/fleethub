@@ -2,7 +2,7 @@ import { Equipment } from "../equipment"
 import { GearBase } from "../gear"
 
 import { ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
-import { GearId, ShipClass } from "@fleethub/data"
+import { GearId, ShipClass, ShipId } from "@fleethub/data"
 
 export type Ship = ShipCommonBase &
   ShipStats & {
@@ -12,6 +12,7 @@ export type Ship = ShipCommonBase &
 
     fleetLosFactor: number
     cruiserFitBonus: number
+    isCarrierLike: boolean
     calcAirPower: (isAntiInstallation?: boolean) => number
 
     basicAccuracyTerm: number
@@ -83,6 +84,21 @@ export class ShipImpl implements Ship {
     }
 
     return 0
+  }
+
+  get isCarrierLike() {
+    const { is, shipId, equipment } = this
+    if (is("AircraftCarrierClass")) {
+      return true
+    }
+
+    if (shipId !== ShipId["速吸改"] && !is("Installation")) {
+      return false
+    }
+
+    return equipment.has((gear) =>
+      gear.categoryIn("CbDiveBomber", "CbTorpedoBomber", "JetFighterBomber", "JetTorpedoBomber")
+    )
   }
 
   public calcAirPower = (isAntiInstallation = false) => {
