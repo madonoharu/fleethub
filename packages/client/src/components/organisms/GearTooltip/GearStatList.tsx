@@ -50,6 +50,7 @@ const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
   if (!bonuses || key === "interception" || key === "antiBomber" || key === "radius") return ""
 
   const bonus = bonuses[key]
+  if (!bonus) return ""
 
   if (key === "speed") {
     return `${bonus / 5}段階上昇`
