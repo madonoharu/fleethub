@@ -8,6 +8,10 @@ import { StatIcon, Text } from "../../../components"
 import { withSign, getRangeName, getSpeedName, StatKeyDictionary } from "../../../utils"
 import { Flexbox } from "../../atoms"
 
+import { getDisplayedStr } from "./ShipStatLabel"
+
+const isNumber = (value: unknown): value is number => typeof value === "number"
+
 type Stat = Partial<ShipStats["firepower"]>
 
 type StatProps<K extends keyof ShipStats> = {
@@ -31,10 +35,10 @@ const ShipStatTooltip: React.FC<Props & Pick<TooltipProps, "children">> = ({ sta
   const title = (
     <>
       <Text>{statNemae}</Text>
-      <Text>表示 {displayed}</Text>
-      <Text>装備ボーナス {bonus}</Text>
-      <Text>増加値 {increase}</Text>
-      <Text>装備合計 {equipment}</Text>
+      {isNumber(displayed) && <Text>表示 {getDisplayedStr(statKey, displayed)}</Text>}
+      {isNumber(bonus) && <Text>装備ボーナス {bonus}</Text>}
+      {isNumber(increase) && <Text>増加値 {increase}</Text>}
+      {isNumber(equipment) && <Text>装備合計 {equipment}</Text>}
     </>
   )
 
