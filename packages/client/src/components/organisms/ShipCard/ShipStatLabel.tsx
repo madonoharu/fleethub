@@ -2,11 +2,15 @@ import React from "react"
 import styled from "styled-components"
 import { BasicStatKey, ShipStats } from "@fleethub/core"
 
-import { Tooltip } from "@material-ui/core"
-
 import { StatIcon, Text } from "../../../components"
-import { withSign, getRangeName, getSpeedName, StatKeyDictionary } from "../../../utils"
+import { withSign, getRangeName, getSpeedName } from "../../../utils"
 import { Flexbox } from "../../atoms"
+
+import ShipStatTooltip from "./ShipStatTooltip"
+
+const DisplayedText = styled(Text)`
+  margin-left: 4px;
+`
 
 type StatProps<K extends keyof ShipStats> = {
   statKey: K
@@ -24,62 +28,47 @@ type Props =
 const getStatText = (props: Props): React.ReactChild => {
   if (props.statKey === "maxHp") {
     const { displayed, increase } = props.stat
-    return displayed
+    return <DisplayedText>{displayed}</DisplayedText>
   }
   if (props.statKey === "speed") {
     const { displayed, bonus } = props.stat
     const str = getSpeedName(displayed)
-    return bonus ? <Text color="bonus">{str}</Text> : str
+    return <DisplayedText>{str}</DisplayedText>
   }
   if (props.statKey === "range") {
     const { displayed, bonus } = props.stat
     const str = getRangeName(displayed)
-    return bonus ? <Text color="bonus">{str}</Text> : str
+    return <DisplayedText>{str}</DisplayedText>
   }
   if (props.statKey === "luck") {
     const { displayed } = props.stat
-    return <Text>{displayed}</Text>
+    return <DisplayedText>{displayed}</DisplayedText>
   }
   if (props.statKey === "accuracy") {
-    const { displayed } = props.stat
-    return displayed
+    const { displayed, bonus } = props.stat
+    return <DisplayedText>{displayed}</DisplayedText>
   }
 
   const { displayed, increase, bonus } = props.stat
 
-  const visibleBonus = Boolean(increase || bonus)
-  return (
-    <>
-      <Text>{displayed}</Text>
-      {visibleBonus && (
-        <>
-          (<Text color="increase">{withSign(increase)}</Text>
-          <Text color="bonus">{withSign(bonus)}</Text>)
-        </>
-      )}
-    </>
-  )
+  return <DisplayedText>{displayed}</DisplayedText>
 }
 
 const ShipStatLabel: React.FCX<Props> = (props) => {
-  const { className, statKey } = props
+  const { className, statKey, stat } = props
   const text = getStatText(props)
 
   return (
-    <Tooltip title={StatKeyDictionary[statKey]}>
+    <ShipStatTooltip {...props}>
       <Flexbox className={className}>
         <StatIcon icon={statKey} />
         {text}
       </Flexbox>
-    </Tooltip>
+    </ShipStatTooltip>
   )
 }
 
 export default styled(ShipStatLabel)`
   font-size: 0.75rem;
   line-height: 1.5;
-
-  ${StatIcon} {
-    margin: 0 4px;
-  }
 `
