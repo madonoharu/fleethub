@@ -3,7 +3,7 @@ import { EntityId } from "@reduxjs/toolkit"
 import styled from "styled-components"
 import { NullableArray } from "@fleethub/core"
 
-import { ShipCard, RemoveButton } from "../../../components"
+import { ShipCard } from "../../../components"
 import { ShipPosition, FleetRole } from "../../../store"
 
 type Props = {
@@ -24,5 +24,5 @@ const ShipList: React.FCX<Props> = React.memo(({ className, fleet, role, ships, 
 export default styled(ShipList)`
   display: grid;
   grid-gap: 8px;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
 `
