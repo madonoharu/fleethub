@@ -25,44 +25,21 @@ type Props =
   | StatProps<"luck">
   | StatProps<"accuracy">
 
-const getStatText = (props: Props): React.ReactChild => {
-  if (props.statKey === "maxHp") {
-    const { displayed, increase } = props.stat
-    return <DisplayedText>{displayed}</DisplayedText>
-  }
-  if (props.statKey === "speed") {
-    const { displayed, bonus } = props.stat
-    const str = getSpeedName(displayed)
-    return <DisplayedText>{str}</DisplayedText>
-  }
-  if (props.statKey === "range") {
-    const { displayed, bonus } = props.stat
-    const str = getRangeName(displayed)
-    return <DisplayedText>{str}</DisplayedText>
-  }
-  if (props.statKey === "luck") {
-    const { displayed } = props.stat
-    return <DisplayedText>{displayed}</DisplayedText>
-  }
-  if (props.statKey === "accuracy") {
-    const { displayed, bonus } = props.stat
-    return <DisplayedText>{displayed}</DisplayedText>
-  }
-
-  const { displayed, increase, bonus } = props.stat
-
-  return <DisplayedText>{displayed}</DisplayedText>
+export const getDisplayedStr = (key: string, value: number) => {
+  if (key === "speed") return getSpeedName(value)
+  if (key === "range") return getRangeName(value)
+  return value.toString()
 }
 
 const ShipStatLabel: React.FCX<Props> = (props) => {
   const { className, statKey, stat } = props
-  const text = getStatText(props)
+  const displayedStr = getDisplayedStr(statKey, stat.displayed)
 
   return (
     <ShipStatTooltip {...props}>
       <Flexbox className={className}>
         <StatIcon icon={statKey} />
-        {text}
+        <DisplayedText>{displayedStr}</DisplayedText>
       </Flexbox>
     </ShipStatTooltip>
   )
