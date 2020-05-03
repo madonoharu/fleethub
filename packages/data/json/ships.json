@@ -3769,7 +3769,9 @@
     "fuel": 100,
     "ammo": 125,
     "slots": [3, 3, 3, 3],
-    "gears": [8, 30, 35]
+    "gears": [8, 30, 35],
+    "nextId": 592,
+    "nextLevel": 90
   },
   {
     "id": 151,
@@ -13809,7 +13811,9 @@
     "fuel": 30,
     "ammo": 30,
     "slots": [1, 1, 1, 1],
-    "gears": []
+    "gears": [],
+    "nextId": 630,
+    "nextLevel": 85
   },
   {
     "id": 580,
@@ -14048,9 +14052,9 @@
     "shipType": 8,
     "shipClass": 6,
     "maxHp": [86, 99],
-    "firepower": [76, 98],
-    "armor": [72, 88],
-    "torpedo": [20, 42],
+    "firepower": [76, 99],
+    "armor": [72, 91],
+    "torpedo": [20, 44],
     "evasion": [40, 75],
     "asw": 0,
     "los": [17, 51],
@@ -14061,6 +14065,30 @@
     "fuel": 100,
     "ammo": 160,
     "slots": [2, 2, 3, 6],
+    "gears": []
+  },
+  {
+    "id": 592,
+    "sortNo": 392,
+    "sortId": 1027,
+    "name": "比叡改二丙",
+    "ruby": "ひえい",
+    "shipType": 8,
+    "shipClass": 6,
+    "maxHp": [86, 99],
+    "firepower": [76, 98],
+    "armor": [71, 90],
+    "torpedo": [18, 47],
+    "evasion": -1,
+    "asw": -1,
+    "los": -1,
+    "antiAir": [31, 85],
+    "speed": 10,
+    "range": 3,
+    "luck": [15, 88],
+    "fuel": 100,
+    "ammo": 160,
+    "slots": [2, 2, 2, 2],
     "gears": []
   },
   {
@@ -14674,6 +14702,30 @@
     "fuel": 15,
     "ammo": 20,
     "slots": [0, 0, 0],
+    "gears": []
+  },
+  {
+    "id": 630,
+    "sortNo": 430,
+    "sortId": 36416,
+    "name": "Gotland andra",
+    "ruby": "ゴトランド",
+    "shipType": 3,
+    "shipClass": 89,
+    "maxHp": [47, 67],
+    "firepower": [16, 60],
+    "armor": [22, 67],
+    "torpedo": [16, 73],
+    "evasion": -1,
+    "asw": -1,
+    "los": -1,
+    "antiAir": [30, 90],
+    "speed": 10,
+    "range": 2,
+    "luck": [26, 108],
+    "fuel": 30,
+    "ammo": 35,
+    "slots": [2, 2, 3, 7],
     "gears": []
   },
   {

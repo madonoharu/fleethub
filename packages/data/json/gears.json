@@ -137,7 +137,18 @@
     "improvable": true
   },
   { "id": 17, "category": 8, "iconId": 8, "name": "天山", "torpedo": 7, "asw": 3, "los": 1, "radius": 5, "cost": 6 },
-  { "id": 18, "category": 8, "iconId": 8, "name": "流星", "torpedo": 10, "asw": 4, "los": 1, "radius": 6, "cost": 7 },
+  {
+    "id": 18,
+    "category": 8,
+    "iconId": 8,
+    "name": "流星",
+    "torpedo": 10,
+    "antiAir": 1,
+    "asw": 4,
+    "los": 1,
+    "radius": 6,
+    "cost": 7
+  },
   {
     "id": 19,
     "category": 6,
@@ -262,7 +273,18 @@
     "improvable": true
   },
   { "id": 51, "category": 21, "iconId": 15, "name": "12cm30連装噴進砲", "antiAir": 8, "improvable": true },
-  { "id": 52, "category": 8, "iconId": 8, "name": "流星改", "torpedo": 13, "asw": 3, "los": 2, "radius": 6, "cost": 8 },
+  {
+    "id": 52,
+    "category": 8,
+    "iconId": 8,
+    "name": "流星改",
+    "torpedo": 13,
+    "antiAir": 1,
+    "asw": 3,
+    "los": 2,
+    "radius": 6,
+    "cost": 8
+  },
   { "id": 53, "category": 6, "iconId": 6, "name": "烈風 一一型", "antiAir": 12, "radius": 5, "cost": 8 },
   { "id": 54, "category": 9, "iconId": 9, "name": "彩雲", "los": 9, "accuracy": 2, "radius": 8, "cost": 9 },
   { "id": 55, "category": 6, "iconId": 6, "name": "紫電改二", "antiAir": 9, "evasion": 3, "radius": 3, "cost": 6 },
@@ -561,7 +583,8 @@
     "los": 4,
     "accuracy": 3,
     "radius": 4,
-    "cost": 5
+    "cost": 5,
+    "improvable": true
   },
   {
     "id": 94,
@@ -2189,7 +2212,8 @@
     "asw": 2,
     "evasion": 2,
     "radius": 4,
-    "cost": 4
+    "cost": 4,
+    "improvable": true
   },
   {
     "id": 249,
@@ -2745,7 +2769,8 @@
     "antiAir": 4,
     "accuracy": 3,
     "evasion": 1,
-    "range": 2
+    "range": 2,
+    "improvable": true
   },
   {
     "id": 304,
@@ -2757,7 +2782,8 @@
     "los": 4,
     "accuracy": 2,
     "radius": 3,
-    "cost": 3
+    "cost": 3,
+    "improvable": true
   },
   {
     "id": 305,
@@ -3422,7 +3448,8 @@
     "los": 3,
     "accuracy": 2,
     "radius": 3,
-    "cost": 6
+    "cost": 6,
+    "improvable": true
   },
   {
     "id": 369,
@@ -3448,7 +3475,8 @@
     "los": 5,
     "accuracy": 2,
     "radius": 3,
-    "cost": 5
+    "cost": 5,
+    "improvable": true
   },
   {
     "id": 371,
@@ -3463,6 +3491,43 @@
     "evasion": 1,
     "radius": 3,
     "cost": 6
+  },
+  {
+    "id": 373,
+    "category": 8,
+    "iconId": 46,
+    "name": "天山一二型甲改(空六号電探改装備機)",
+    "torpedo": 11,
+    "antiAir": 1,
+    "asw": 6,
+    "los": 5,
+    "accuracy": 1,
+    "radius": 5,
+    "cost": 8
+  },
+  {
+    "id": 374,
+    "category": 8,
+    "iconId": 46,
+    "name": "天山一二型甲改(熟練/空六号電探改装備機)",
+    "torpedo": 13,
+    "antiAir": 1,
+    "asw": 7,
+    "los": 6,
+    "accuracy": 2,
+    "radius": 6,
+    "cost": 8
+  },
+  {
+    "id": 375,
+    "category": 6,
+    "iconId": 6,
+    "name": "XF5U",
+    "antiAir": 12,
+    "los": 1,
+    "evasion": 2,
+    "radius": 4,
+    "cost": 12
   },
   { "id": 501, "category": 1, "iconId": 1, "name": "5inch単装砲", "firepower": 1, "range": 1 },
   { "id": 502, "category": 1, "iconId": 1, "name": "5inch連装砲", "firepower": 2, "range": 1 },

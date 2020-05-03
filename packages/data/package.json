@@ -15,7 +15,7 @@
     "build": "yarn build:cjs && yarn build:esm",
     "build:cjs": "tsc -p tsconfig.json",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "tsnode": "yarn ts-node -O '{\"module\":\"commonjs\"}'",
+    "tsnode": "yarn ts-node -O \"{\"\"module\"\":\"\"commonjs\"\"}\"",
     "update": "yarn tsnode scripts/update && yarn lint",
     "lint": "eslint --fix src/* scripts/* && prettier --write json/*.json"
   }
