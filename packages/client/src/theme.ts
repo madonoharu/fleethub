@@ -10,6 +10,7 @@ BlinkMacSystemFont,
 Roboto,
 "Hiragino Sans",
 "Noto Sans CJK JP",
+"Noto Sans Japanese",
 "Original Yu Gothic",
 "Yu Gothic",
 sans-serif,
@@ -141,7 +142,7 @@ const kcPalette = {
   luck: colors.yellow[300],
 
   stars: cyan[400],
-  bonus: lightBlue[400],
+  bonus: lightBlue[300],
   increase: muiPalette.secondary.light,
 }
 
