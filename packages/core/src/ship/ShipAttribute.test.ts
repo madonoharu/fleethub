@@ -17,4 +17,14 @@ describe("createShipAttrs", () => {
     expect(createShipAttrs(getStub({ shipId: 1500 }))).not.toContain<ShipAttribute>("Abyssal")
     expect(createShipAttrs(getStub({ shipId: 1501 }))).toContain<ShipAttribute>("Abyssal")
   })
+
+  it("speed === 0 なら Installation", () => {
+    expect(createShipAttrs(getStub({ speed: 0 }))).toContain<ShipAttribute>("Installation")
+    expect(createShipAttrs(getStub({ speed: 5 }))).not.toContain<ShipAttribute>("Installation")
+  })
+
+  it("sortIdの下一桁が1なら Unremodeled", () => {
+    expect(createShipAttrs(getStub({ sortId: 1 }))).toContain<ShipAttribute>("Unremodeled")
+    expect(createShipAttrs(getStub({ sortId: 2 }))).not.toContain<ShipAttribute>("Unremodeled")
+  })
 })
