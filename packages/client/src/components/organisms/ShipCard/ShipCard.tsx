@@ -59,7 +59,6 @@ const ShipCard: React.FCX<Props> = ({ className, ship, gears, onAddGear, onUpdat
 
 export default styled(ShipCard)`
   min-height: ${24 * 7}px;
-  min-width: 400px;
 
   ${ShipHeader} svg {
     opacity: 0;
