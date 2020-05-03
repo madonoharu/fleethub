@@ -2,10 +2,24 @@ import React from "react"
 import styled from "styled-components"
 import { Ship } from "@fleethub/core"
 
-import { Text, StatIcon } from "../../../components"
 import { ShipChanges } from "../../../store"
 
 import ShipStatLabel from "./ShipStatLabel"
+
+const keys = [
+  "maxHp",
+  "firepower",
+  "armor",
+  "torpedo",
+  "evasion",
+  "antiAir",
+  "accuracy",
+  "asw",
+  "speed",
+  "los",
+  "range",
+  "luck",
+] as const
 
 type Props = {
   ship: Ship
@@ -15,13 +29,7 @@ type Props = {
 const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
     <div className={className}>
-      {(["maxHp", "firepower", "armor", "torpedo", "evasion", "antiAir"] as const).map((statKey) => (
-        <ShipStatLabel key={statKey} statKey={statKey} stat={ship[statKey]} />
-      ))}
-
-      <Text id="fp">制空</Text>
-
-      {(["asw", "speed", "los", "range", "luck"] as const).map((statKey) => (
+      {keys.map((statKey) => (
         <ShipStatLabel key={statKey} statKey={statKey} stat={ship[statKey]} />
       ))}
     </div>
