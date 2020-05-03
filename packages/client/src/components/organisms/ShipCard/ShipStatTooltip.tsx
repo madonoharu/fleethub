@@ -8,9 +8,11 @@ import { StatIcon, Text } from "../../../components"
 import { withSign, getRangeName, getSpeedName, StatKeyDictionary } from "../../../utils"
 import { Flexbox } from "../../atoms"
 
+type Stat = Partial<ShipStats["firepower"]>
+
 type StatProps<K extends keyof ShipStats> = {
   statKey: K
-  stat: ShipStats[K]
+  stat: Stat
 }
 
 type Props =
@@ -23,7 +25,18 @@ type Props =
 
 const ShipStatTooltip: React.FC<Props & Pick<TooltipProps, "children">> = ({ statKey, stat, children }) => {
   const statNemae = StatKeyDictionary[statKey]
-  const title = <Text>{statNemae}</Text>
+
+  const { displayed, bonus, increase, equipment } = stat
+
+  const title = (
+    <>
+      <Text>{statNemae}</Text>
+      <Text>表示 {displayed}</Text>
+      <Text>装備ボーナス {bonus}</Text>
+      <Text>増加値 {increase}</Text>
+      <Text>装備合計 {equipment}</Text>
+    </>
+  )
 
   return <Tooltip title={title}>{children}</Tooltip>
 }
