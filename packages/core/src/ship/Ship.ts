@@ -8,7 +8,7 @@ export type Ship = ShipCommonBase &
   ShipStats & {
     equipment: Equipment
     canEquip: (index: number, gear: GearBase) => boolean
-    getNextBonuses: (excludedIndex: number, gear: GearBase) => EquipmentBonuses
+    createNextBonusesGetter: (excludedIndex: number) => (gear: GearBase) => EquipmentBonuses
 
     fleetLosFactor: number
     cruiserFitBonus: number
@@ -54,7 +54,7 @@ export class ShipImpl implements Ship {
     private base: ShipCommonBase,
     private stats: ShipStats,
     public equipment: Ship["equipment"],
-    public getNextBonuses: Ship["getNextBonuses"]
+    public createNextBonusesGetter: Ship["createNextBonusesGetter"]
   ) {}
 
   get fleetLosFactor() {

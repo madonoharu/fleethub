@@ -146,14 +146,27 @@ const subtract = (left: EquipmentBonuses, right: EquipmentBonuses): EquipmentBon
   mapValues(left, (value, key) => value - right[key])
 
 export const createShipEquipmentBonuses = (ship: ShipIdentityWithSpeed, equipment: Equipment) => {
-  const current = createEquipmentBonuses(ship, equipment.gears)
+  const bonuses = createEquipmentBonuses(ship, equipment.gears)
 
-  const getNextBonuses = (excludedIndex: number, gear: GearBase) => {
+  const createNextBonusesGetter = (excludedIndex: number) => {
     const filtered = equipment.filter((gear, index) => index !== excludedIndex)
-    const nextGears = [...filtered, gear]
-    const next = createEquipmentBonuses(ship, nextGears)
-    return subtract(next, current)
+    const current = createEquipmentBonuses(ship, filtered)
+
+    return (gear: GearBase) => {
+      const next = createEquipmentBonuses(ship, [...filtered, gear])
+      return subtract(next, current)
+    }
   }
 
-  return { bonuses: current, getNextBonuses }
+  return { bonuses, createNextBonusesGetter }
+}
+
+export const createNextBonusesGetter = (ship: ShipIdentityWithSpeed, equipment: Equipment, excludedIndex: number) => {
+  const filtered = equipment.filter((gear, index) => index !== excludedIndex)
+  const current = createEquipmentBonuses(ship, filtered)
+
+  return (gear: GearBase) => {
+    const next = createEquipmentBonuses(ship, [...filtered, gear])
+    return subtract(next, current)
+  }
 }
