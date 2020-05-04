@@ -135,4 +135,20 @@ export class ShipShellingCalculator {
       ...attackPower,
     }
   }
+
+  public createAccuracy = ({ fleetFactor, formationModifier }: { fleetFactor: number; formationModifier: number }) => {
+    const { accuracy, basicAccuracyTerm, morale, equipment } = this.ship
+
+    const fitGunBonus = NaN
+    const specialAttackModifier = NaN
+    const apShellModifier = NaN
+
+    const moraleModifier = morale.commonAccuracyModifier
+    const improvementModifier = equipment.sumBy((gear) => gear.improvement.shellingAccuracyBonus)
+
+    const base = Math.floor(fleetFactor + basicAccuracyTerm + accuracy.equipment + improvementModifier)
+    return Math.floor(
+      (base * formationModifier * moraleModifier + fitGunBonus) * specialAttackModifier * apShellModifier
+    )
+  }
 }
