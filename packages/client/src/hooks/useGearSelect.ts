@@ -54,7 +54,7 @@ export const useGearSelect = () => {
     if (!target || !fhShip) return {}
 
     const equippableFilter = (gear: GearBase) => fhShip.canEquip(target.index, gear)
-    const getBonuses = (gear: GearBase) => fhShip.getNextBonuses(target.index, gear)
+    const getBonuses = fhShip.createNextBonusesGetter(target.index)
 
     return { equippableFilter, getBonuses }
   }, [fhShip, target])
