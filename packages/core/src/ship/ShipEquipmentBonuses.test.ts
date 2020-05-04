@@ -1,15 +1,8 @@
 import { ShipName, ShipType, ShipClass, ShipId } from "@fleethub/data"
 
-import { EquipmentImpl } from "../equipment"
 import { makeGear, GearDef, getMasterShip } from "../utils/testUtils"
 
-import {
-  createShipEquipmentBonuses,
-  getSpeedGroup,
-  SpeedGroup,
-  SpeedValue,
-  calcSpeedBonus,
-} from "./ShipEquipmentBonuses"
+import { createEquipmentBonuses, getSpeedGroup, SpeedGroup, SpeedValue, calcSpeedBonus } from "./ShipEquipmentBonuses"
 import { EquipmentBonuses, ShipIdentityWithSpeed } from "./types"
 
 const emptyBonuses: EquipmentBonuses = {
@@ -30,9 +23,7 @@ const emptyBonuses: EquipmentBonuses = {
 const getBonuses = (shipName: ShipName, ...gearDefs: GearDef[]) => {
   const ship = getMasterShip(shipName)
   const gears = gearDefs.map(makeGear)
-  const equipment = new EquipmentImpl(gears, ship.slots)
-
-  return createShipEquipmentBonuses(ship, equipment).bonuses
+  return createEquipmentBonuses(ship, gears)
 }
 
 type Case = {
