@@ -60,7 +60,7 @@ export class EquipmentImpl implements Equipment {
   }
 
   public sumBy: Equipment["sumBy"] = (arg) => this.map(arg).reduce((a, b) => a + b, 0)
-  public maxValueBy: Equipment["maxValueBy"] = (arg) => Math.max(...this.map(arg))
+  public maxValueBy: Equipment["maxValueBy"] = (arg) => this.entries.length && Math.max(...this.map(arg))
 
   public has: Equipment["has"] = (arg) => {
     if (typeof arg === "number") {
