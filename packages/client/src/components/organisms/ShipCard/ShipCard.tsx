@@ -40,7 +40,7 @@ const ShipCard: React.FCX<Props> = ({ className, ship, gears, onAddGear, onUpdat
       <ShipHeader name={ship.name} level={ship.level} onLevelChange={handleLevelChange} onRemove={onRemove} />
 
       <Content>
-        <Box width={160}>
+        <Box width={128}>
           <ShipBanner shipId={ship.shipId} />
           <ShipStats ship={ship} onUpdate={onUpdate} />
         </Box>
