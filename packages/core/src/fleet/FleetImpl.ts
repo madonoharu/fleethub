@@ -3,6 +3,8 @@ import { sumBy } from "lodash-es"
 import { NullableArray, isNonNullable } from "../utils"
 import { Ship } from "../ship"
 
+import { calcShipTp } from "./transportPoint"
+
 const calcShipAviationDetectionScore = ({ equipment }: Ship) =>
   equipment.sumBy((gear, index, slotSize) => {
     if (!slotSize) return 0
@@ -21,6 +23,7 @@ const calcShipAviationDetectionScore = ({ equipment }: Ship) =>
 type Fleet = {
   fleetLosModifier: number
   aviationDetectionScore: number
+  transportPoint: number
 }
 
 export class FleetImpl implements Fleet {
@@ -35,5 +38,9 @@ export class FleetImpl implements Fleet {
 
   get aviationDetectionScore() {
     return this.sumBy(calcShipAviationDetectionScore)
+  }
+
+  get transportPoint() {
+    return this.sumBy(calcShipTp)
   }
 }
