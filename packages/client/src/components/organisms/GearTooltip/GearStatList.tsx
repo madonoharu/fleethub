@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell, TableCellProps } from "@material-ui/core"
 
 import { StatIcon } from "../../../components"
-import { StatKeyDictionary, getRangeName, withSign } from "../../../utils"
+import { StatKeyDictionary, getRangeName, getBonusText } from "../../../utils"
 
 const keys = [
   "firepower",
@@ -46,24 +46,15 @@ const StyledStatIcon = styled(StatIcon)`
   display: block !important;
 `
 
-const getBonusText = (bonuses: EquipmentBonuses | undefined, key: Key) => {
-  if (!bonuses || key === "interception" || key === "antiBomber" || key === "radius") return ""
-
-  const bonus = bonuses[key]
-  if (!bonus) return ""
-
-  if (key === "speed") {
-    return `${bonus / 5}段階上昇`
-  }
-
-  return withSign(bonus)
-}
-
 export const toStatEntries = (gear: GearBase, bonuses?: EquipmentBonuses) =>
   keys
     .map((key): StatEntry | undefined => {
       const value = gear[key]
-      const bonus = getBonusText(bonuses, key)
+
+      let bonus = ""
+      if (bonuses && key !== "interception" && key !== "antiBomber" && key !== "radius") {
+        bonus = getBonusText(key, bonuses[key])
+      }
 
       if (!value && !bonus) return
 
@@ -89,9 +80,7 @@ const GearStatList: React.FC<Props> = ({ gear, bonuses }) => {
               <StyledStatIcon icon={key} />
             </TableCell>
             <TableCell statKey={key}>{StatKeyDictionary[key]}</TableCell>
-            <TableCell statKey={key} align="right">
-              {value}
-            </TableCell>
+            <TableCell align="right">{value}</TableCell>
             <BonusCell>{bonus}</BonusCell>
           </TableRow>
         ))}
