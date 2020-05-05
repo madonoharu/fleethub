@@ -4,7 +4,7 @@ import { EntityId } from "@reduxjs/toolkit"
 
 import { Container, Typography, TextField } from "@material-ui/core"
 
-import { RemoveButton, Flexbox, SelectButtons } from "../../../components"
+import { RemoveButton, Flexbox, SelectButtons, FleetAnalysisPanel } from "../../../components"
 import { useFleet } from "../../../hooks"
 
 import ShipList from "./ShipList"
@@ -49,6 +49,7 @@ const FleetPanel: React.FC<Props> = ({ className, uid }) => {
           </>
         )}
       </div>
+      <FleetAnalysisPanel />
     </Container>
   )
 }
