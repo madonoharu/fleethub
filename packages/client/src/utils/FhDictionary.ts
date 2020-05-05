@@ -1,3 +1,5 @@
+import { withSign } from "."
+
 export const StatKeyDictionary = {
   armor: "装甲",
   firepower: "火力",
@@ -32,4 +34,14 @@ export const getRangeName = (range: number) => {
   if (str) return str
   if (range >= 5) return `超長${range}`
   return "不明"
+}
+
+export const getBonusText = (key: string, value: number) => {
+  if (!value) return ""
+
+  if (key === "speed") {
+    return `+${value / 5}段階`
+  }
+
+  return withSign(value)
 }
