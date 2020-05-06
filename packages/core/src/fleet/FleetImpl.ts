@@ -3,6 +3,7 @@ import { sumBy } from "lodash-es"
 import { NullableArray, isNonNullable } from "../utils"
 import { Ship } from "../ship"
 
+import { Fleet } from "./types"
 import { calcShipTp } from "./transportPoint"
 import { calcExpeditionBonus } from "./expedition"
 
@@ -20,13 +21,6 @@ const calcShipAviationDetectionScore = ({ equipment }: Ship) =>
 
     return 0
   })
-
-type Fleet = {
-  fleetLosModifier: number
-  aviationDetectionScore: number
-  transportPoint: number
-  expeditionBonus: number
-}
 
 export class FleetImpl implements Fleet {
   constructor(public ships: NullableArray<Ship>) {}
