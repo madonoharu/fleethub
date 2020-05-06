@@ -29,7 +29,10 @@ export const makeGetShipState = () => {
       const entity = getShipEntity(state, id)
       return entity && getGearStates(state, entity.gears)
     },
-    (entity, gears) => entity && gears && { ...entity, gears }
+    (entity, gears) => {
+      if (!entity || gears === undefined) return
+      return { ...entity, gears }
+    }
   )
 }
 
