@@ -4,6 +4,7 @@ import { NullableArray, isNonNullable } from "../utils"
 import { Ship } from "../ship"
 
 import { calcShipTp } from "./transportPoint"
+import { calcExpeditionBonus } from "./expedition"
 
 const calcShipAviationDetectionScore = ({ equipment }: Ship) =>
   equipment.sumBy((gear, index, slotSize) => {
@@ -24,6 +25,7 @@ type Fleet = {
   fleetLosModifier: number
   aviationDetectionScore: number
   transportPoint: number
+  expeditionBonus: number
 }
 
 export class FleetImpl implements Fleet {
@@ -42,5 +44,9 @@ export class FleetImpl implements Fleet {
 
   get transportPoint() {
     return this.sumBy(calcShipTp)
+  }
+
+  get expeditionBonus() {
+    return calcExpeditionBonus(this.ships.filter(isNonNullable))
   }
 }
