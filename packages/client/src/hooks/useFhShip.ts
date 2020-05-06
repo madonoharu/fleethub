@@ -7,9 +7,9 @@ import { makeGetShipState } from "../store"
 import { useFhSystem } from "./useFhSystem"
 
 export const useFhShip = (id: EntityId) => {
-  const getShipState = React.useMemo(makeGetShipState, [id])
   const fhSystem = useFhSystem()
-
+  const getShipState = React.useMemo(makeGetShipState, [id])
   const state = useSelector((state) => getShipState(state, id))
+
   return React.useMemo(() => state && fhSystem.createShip(state), [fhSystem, state])
 }
