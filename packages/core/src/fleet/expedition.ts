@@ -1,7 +1,6 @@
 import { ShipId, GearId } from "@fleethub/data"
 import { sumBy } from "lodash-es"
 
-import { isNonNullable } from "../utils"
 import { Gear } from "../gear"
 import { Ship } from "../ship"
 
@@ -37,16 +36,16 @@ const toGearExpeditionBonus = (gear: Gear) => {
 }
 
 export const calcExpeditionBonus = (ships: Ship[]) => {
-  const gears = ships.flatMap((ship) => ship.equipment.gears).filter(isNonNullable)
+  const gears = ships.flatMap((ship) => ship.equipment.gears)
   const expeditionGears = gears.filter(isExpeditionGear)
 
   const kinuBonus = ships.some((ship) => ship.shipId === ShipId["鬼怒改二"]) ? 0.05 : 0
   const bonus1 = Math.min(sumBy(gears, toGearExpeditionBonus) + kinuBonus, 0.2)
 
   const average = expeditionGears.length && sumBy(expeditionGears, (gear) => gear.stars) / expeditionGears.length
-  const averageStarBonus = 0.01 * bonus1 * average
+  const averageStarsBonus = 0.01 * bonus1 * average
 
   const bonus2 = getBonus2(gears)
 
-  return bonus1 + averageStarBonus + bonus2
+  return bonus1 + averageStarsBonus + bonus2
 }
