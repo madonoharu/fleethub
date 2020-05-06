@@ -1,9 +1,9 @@
 import { ShipId, GearId } from "@fleethub/data"
 import { sumBy } from "lodash-es"
-import { isNonNullable } from "./utils"
 
-import { Gear } from "./gear"
-import { Ship } from "./ship"
+import { isNonNullable } from "../utils"
+import { Gear } from "../gear"
+import { Ship } from "../ship"
 
 const getBonus2 = (gears: Gear[]) => {
   const lcCount = gears.filter((gear) => gear.gearId === GearId["大発動艇"]).length
