@@ -2,11 +2,21 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 
-import { entitiesSlice, shipSelectSlice, fleetsSelectors, FleetRole } from "../store"
+import { entitiesSlice, shipSelectSlice, fleetsSelectors, FleetRole, makeGetFleetState } from "../store"
+
+import { useFhSystem } from "./useFhSystem"
 
 export const useFleet = (id: EntityId) => {
   const dispatch = useDispatch()
+  const fhSystem = useFhSystem()
+
   const entity = useSelector((state) => fleetsSelectors.selectEntities(state)[id])
+
+  const getFleetState = React.useMemo(makeGetFleetState, [id])
+
+  const fleetState = useSelector((state) => getFleetState(state, id))
+
+  const fhFleet = fleetState && fhSystem.createFleet(fleetState)
 
   const actions = React.useMemo(
     () => ({
@@ -25,5 +35,5 @@ export const useFleet = (id: EntityId) => {
     [dispatch, id]
   )
 
-  return { entity, actions }
+  return { entity, actions, fhFleet }
 }
