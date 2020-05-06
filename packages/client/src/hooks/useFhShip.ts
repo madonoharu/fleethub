@@ -11,5 +11,5 @@ export const useFhShip = (id: EntityId) => {
   const fhSystem = useFhSystem()
 
   const state = useSelector((state) => getShipState(state, id))
-  return state && fhSystem.createShip(state)
+  return React.useMemo(() => state && fhSystem.createShip(state), [fhSystem, state])
 }
