@@ -13,7 +13,6 @@ export const useFleet = (id: EntityId) => {
   const entity = useSelector((state) => fleetsSelectors.selectEntities(state)[id])
 
   const getFleetState = React.useMemo(makeGetFleetState, [id])
-
   const fleetState = useSelector((state) => getFleetState(state, id))
 
   const fhFleet = fleetState && fhSystem.createFleet(fleetState)
