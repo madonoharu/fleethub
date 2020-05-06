@@ -36,6 +36,8 @@ export { gearsSelectors, shipsSelectors, fleetsSelectors }
 
 export { selectId } from "./entity"
 
+export * from "./selectors"
+
 const addReducer = <K extends keyof Entities, A>(key: K, reducer: (state: Entities[K], action: A) => Entities[K]) => (
   state: Entities,
   action: A
