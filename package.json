@@ -43,7 +43,7 @@
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "axios": "^0.19.2",
-    "babel-jest": "^25.5.1",
+    "babel-jest": "^26.0.1",
     "babel-preset-gatsby": "^0.4.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
@@ -52,12 +52,12 @@
     "eslint-plugin-react-hooks": "^4.0.0",
     "husky": "^4.2.5",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^25.5.4",
+    "jest": "^26.0.1",
     "lint-staged": "^10.2.2",
     "lodash-es": "^4.17.15",
     "prettier": "^2.0.5",
     "signale": "^1.4.0",
-    "ts-jest": "^25.4.0",
+    "ts-jest": "^25.5.1",
     "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
   }
