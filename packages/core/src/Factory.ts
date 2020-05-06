@@ -4,6 +4,7 @@ import { MasterGear, GearState, GearImpl } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
 import { EquipmentImpl } from "./equipment"
 import { NullableArray } from "./utils"
+import { FleetState, FleetImpl } from "./fleet"
 
 export type FactoryRawData = {
   gears: GearData[]
@@ -44,5 +45,9 @@ export default class Factory {
     const equipment = this.createEquipment(state.gears ?? [], base.slots, state.slots)
 
     return createShip(state, base, equipment)
+  }
+
+  public createFleet = (state: FleetState) => {
+    return new FleetImpl(state.map((shipState) => shipState && this.createShip(shipState)))
   }
 }

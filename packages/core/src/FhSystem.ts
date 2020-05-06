@@ -14,6 +14,10 @@ export default class FhSystem {
     })
   }
 
+  public masterGears = this.factory.masterGears
+  public masterShips = this.factory.masterShips
+
   public createGear = this.factory.createGear
   public createShip = this.factory.createShip
+  public createFleet = this.factory.createFleet
 }
