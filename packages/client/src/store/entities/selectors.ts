@@ -51,21 +51,16 @@ const denormalizeFleet = (entity: FleetEntity, shipEntities: ShipEntity[], gearE
 export const makeGetShipState = () => {
   const getGearEntities = makeGetGearEntities()
 
-  return createSelector(
+  return createShallowEqualSelector(
     (state: DefaultRootState, id: EntityId) => {
       const entity = getShipEntity(state, id)
       if (!entity) return
 
       const gearEntities = getGearEntities(state, entity.gears)
 
-      return { entity, gearEntities }
+      return [entity, gearEntities] as const
     },
-    (args) => {
-      if (!args) return
-      const { entity, gearEntities } = args
-
-      return denormalizeShip(entity, gearEntities)
-    }
+    (args) => args && denormalizeShip(...args)
   )
 }
 
@@ -86,13 +81,8 @@ export const makeGetFleetState = () => {
         shipEntities.flatMap(({ gears }) => gears)
       )
 
-      return { entity, shipEntities, gearEntities }
+      return [entity, shipEntities, gearEntities] as const
     },
-    (args) => {
-      if (!args) return
-      const { entity, shipEntities, gearEntities } = args
-
-      return denormalizeFleet(entity, shipEntities, gearEntities)
-    }
+    (args) => args && denormalizeFleet(...args)
   )
 }
