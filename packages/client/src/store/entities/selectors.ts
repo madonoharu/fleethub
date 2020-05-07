@@ -39,13 +39,11 @@ const denormalizeShip = (entity: ShipEntity, gearEntities: Dictionary<GearEntity
 }
 
 const denormalizeFleet = (entity: FleetEntity, shipEntities: ShipEntity[], gearEntities: Dictionary<GearEntity>) => {
-  const shipIds = entity.main
-
-  const ships = shipIds
+  const ships = entity.ships
     .map((shipId) => shipEntities.find(({ uid }) => shipId === uid))
     .map((shipEntity) => shipEntity && denormalizeShip(shipEntity, gearEntities))
 
-  return ships
+  return { ships }
 }
 
 export const makeGetShipState = () => {
@@ -73,9 +71,7 @@ export const makeGetFleetState = () => {
       const entity = getFleetEntity(state, id)
       if (!entity) return
 
-      const shipIds = entity.main
-
-      const shipEntities = getShipEntities(state, shipIds)
+      const shipEntities = getShipEntities(state, entity.ships)
       const gearEntities = getGearEntities(
         state,
         shipEntities.flatMap(({ gears }) => gears)

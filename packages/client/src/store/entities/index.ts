@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction, EntityId, Update } from "@reduxjs/toolkit"
-import { GearState, ShipState, isNonNullable } from "@fleethub/core"
+import { GearState, ShipState, FleetState, isNonNullable } from "@fleethub/core"
 
-import { normalizeShip, shipsAdapter, shipsSelectors, NormalizedShip, ShipModel } from "./ships"
+import { normalizeShip, shipsAdapter, shipsSelectors, NormalizedShip, ShipModel, ShipEntity } from "./ships"
 import { gearToEntity, gearsAdapter, gearsSelectors, GearEntity } from "./gears"
-import { normalizeFleet, fleetsAdapter, fleetsSelectors, NormalizedFleet, FleetEntity } from "./fleets"
+import { normalizeFleet, fleetsAdapter, fleetsSelectors, NormalizedFleet } from "./fleets"
 
 export type GearIndex = number
 
@@ -14,7 +14,6 @@ export type GearPosition = {
 
 export type ShipPosition = {
   fleet: EntityId
-  role: FleetRole
   index: number
 }
 
@@ -26,9 +25,8 @@ export const getInitialState = () => ({
 
 export type Entities = ReturnType<typeof getInitialState>
 
-export type FleetState = import("./fleets").FleetState
-export type FleetRole = import("./fleets").FleetRole
-export type ShipEntity = import("./ships").ShipEntity
+export type { ShipEntity }
+export type { FleetEntity } from "./fleets"
 
 export type ShipChanges = Partial<ShipEntity>
 
@@ -107,7 +105,7 @@ const slice = createSlice({
         shipsAdapter.addOne(state.ships, payload.ship)
 
         const fleet = state.fleets.entities[payload.fleet]
-        if (fleet) fleet[payload.role][payload.index] = payload.ship.uid
+        if (fleet) fleet.ships[payload.index] = payload.ship.uid
       },
       prepare: (props: { ship: ShipState } & ShipPosition) => ({
         payload: { ...props, ...normalizeShip(props.ship) },
@@ -136,8 +134,7 @@ const slice = createSlice({
     removeFleet: (state, { payload }: PayloadAction<EntityId>) => {
       const fleet = state.fleets.entities[payload]
       if (!fleet) return
-      const { main, escort } = fleet
-      main.concat(escort).forEach((ship) => {
+      fleet.ships.forEach((ship) => {
         ship && ShipModel.from(state, ship)?.remove()
       })
       fleetsAdapter.removeOne(state.fleets, payload)

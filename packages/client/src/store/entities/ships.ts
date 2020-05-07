@@ -74,8 +74,7 @@ export class ShipModel {
         const index = ships.indexOf(id)
         if (index >= 0) ships[index] = undefined
       }
-      removeShip(fleet.main)
-      removeShip(fleet.escort)
+      removeShip(fleet.ships)
     })
   }
 }
