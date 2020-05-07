@@ -9,7 +9,16 @@ type Props = {
 }
 
 const FleetAnalysisPanel: React.FC<Props> = ({ fleet }) => {
-  return <Paper>aaa: {fleet.transportPoint}</Paper>
+  const { fleetLosModifier, aviationDetectionScore, transportPoint, expeditionBonus } = fleet
+  return (
+    <Paper>
+      <p>艦隊索敵補正: {fleetLosModifier}</p>
+      <p>航空偵察スコア: {aviationDetectionScore}</p>
+      <p>TP(S勝利): {transportPoint}</p>
+      <p>TP(A勝利): {Math.floor(transportPoint * 0.7)}</p>
+      <p>遠征補正: {expeditionBonus}</p>
+    </Paper>
+  )
 }
 
 export default FleetAnalysisPanel
