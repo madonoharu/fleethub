@@ -1,6 +1,6 @@
 import { createEntityAdapter, EntityId, EntitySelectors } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
-import { ShipState, NullableArray } from "@fleethub/core"
+import { FleetState, ShipState, NullableArray } from "@fleethub/core"
 
 import { GearEntity } from "./gears"
 import { normalizeShip, ShipEntity } from "./ships"
@@ -9,11 +9,8 @@ import { selectId, Entity, getUid } from "./entity"
 export type FleetRole = "main" | "escort"
 
 export type FleetRecord = Partial<Record<FleetRole, NullableArray<ShipState>>>
-export type FleetState = FleetRecord & {
-  name?: string
-}
 
-export type FleetEntity = Entity & Record<FleetRole, NullableArray<EntityId>> & Required<Omit<FleetState, FleetRole>>
+export type FleetEntity = Entity & { ships: NullableArray<EntityId> } & Required<Omit<FleetState, "ships">>
 
 export type NormalizedFleet = {
   fleet: FleetEntity
@@ -25,20 +22,16 @@ export const normalizeFleet = (fleetState: FleetState): NormalizedFleet => {
   const gears: GearEntity[] = []
   const ships: ShipEntity[] = []
 
-  const shipsToIds = (shipStates: NullableArray<ShipState>) =>
-    shipStates.map((ship) => {
-      if (!ship) return
-      const normalized = normalizeShip(ship)
-      gears.push(...normalized.gears)
-      ships.push(normalized.ship)
+  const shipUids = fleetState.ships.map((ship) => {
+    if (!ship) return
+    const normalized = normalizeShip(ship)
+    gears.push(...normalized.gears)
+    ships.push(normalized.ship)
 
-      return normalized.ship.uid
-    })
+    return normalized.ship.uid
+  })
 
-  const main = shipsToIds(fleetState.main ?? [])
-  const escort = shipsToIds(fleetState.escort ?? [])
-
-  const fleet = { name: "", uid: getUid(), main, escort }
+  const fleet: FleetEntity = { uid: getUid(), ships: shipUids }
 
   return { fleet, gears, ships }
 }
