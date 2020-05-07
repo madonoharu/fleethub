@@ -4,18 +4,18 @@ import styled from "styled-components"
 import { NullableArray } from "@fleethub/core"
 
 import { ShipCard } from "../../../components"
-import { ShipPosition, FleetRole } from "../../../store"
+import { ShipPosition } from "../../../store"
 
 type Props = {
   ships: NullableArray<EntityId>
-  onAdd: (role: FleetRole, index: number) => void
-} & Omit<ShipPosition, "index">
+  onAdd: (index: number) => void
+}
 
-const ShipList: React.FCX<Props> = React.memo(({ className, fleet, role, ships, onAdd }) => {
+const ShipList: React.FCX<Props> = React.memo(({ className, ships, onAdd }) => {
   return (
     <div className={className}>
       {ships.map((ship, index) => (
-        <ShipCard key={`${fleet}-${role}-${index}`} ship={ship} onAdd={() => onAdd(role, index)} />
+        <ShipCard key={`fleet-${index}`} ship={ship} onAdd={() => onAdd(index)} />
       ))}
     </div>
   )
