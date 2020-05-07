@@ -8,4 +8,6 @@ export type Fleet = {
   expeditionBonus: number
 }
 
-export type FleetState = NullableArray<ShipState>
+export type FleetState = {
+  ships: NullableArray<ShipState>
+}
