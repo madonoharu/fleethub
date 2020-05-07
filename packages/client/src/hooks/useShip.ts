@@ -31,7 +31,7 @@ export const useShip = (id: EntityId) => {
   const fhShip = useFhShip(id)
 
   const gears = useSelector((state) => {
-    const entityGears = shipsSelectors.selectEntities(state)[id]?.gears
+    const entityGears = shipsSelectors.selectById(state, id)?.gears
     if (!fhShip || !entityGears) return []
 
     return range(fhShip.equipment.size).map((index) => entityGears[index])
