@@ -11,7 +11,7 @@ export const usePlan = (uid = "") => {
   const actions = React.useMemo(
     () => ({
       createFleet: () => {
-        dispatch(entitiesSlice.actions.createFleet({ main: [...Array(6)], escort: [...Array(6)] }))
+        dispatch(entitiesSlice.actions.createFleet({ ships: [...Array(6)] }))
       },
     }),
     [dispatch]
