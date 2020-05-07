@@ -1,10 +1,9 @@
 import React from "react"
-import { createSelector } from "@reduxjs/toolkit"
-import { useSelector, useDispatch, DefaultRootState } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { GearState, GearBase, EquipmentBonuses } from "@fleethub/core"
 
 import { gearSelectSlice, entitiesSlice, GearSelectState } from "../store"
-import { createFhShipSelector } from "./useShip"
+import { useFhShip } from "./useFhShip"
 
 type Key = keyof EquipmentBonuses
 export const subtract = (left: EquipmentBonuses, right: EquipmentBonuses) => {
@@ -19,22 +18,10 @@ export const subtract = (left: EquipmentBonuses, right: EquipmentBonuses) => {
 
 export type GearFilterFn = (gear: GearBase) => boolean
 
-const getGearSelectState = (state: DefaultRootState) => state.gearSelect
-const getShipId = (state: DefaultRootState) => getGearSelectState(state).target?.ship
-const createFhShipSelectorByTarget = createSelector(getShipId, (id) => id && createFhShipSelector(id))
-const selectFhShipByTarget = createSelector(
-  createFhShipSelectorByTarget,
-  (state) => state,
-  (fhShipSelector, state) => fhShipSelector && fhShipSelector(state)
-)
-
 export const useGearSelect = () => {
   const dispatch = useDispatch()
-  const state = useSelector(getGearSelectState)
-  const fhShip = useSelector(selectFhShipByTarget)
-
+  const state = useSelector((state) => state.gearSelect)
   const { target } = state
-  const open = Boolean(state.target)
 
   const actions = React.useMemo(() => {
     const setState = (state: Partial<GearSelectState>) => dispatch(gearSelectSlice.actions.set(state))
@@ -50,6 +37,7 @@ export const useGearSelect = () => {
     return { setState, onClose, onSelect }
   }, [dispatch, target])
 
+  const fhShip = useFhShip(target?.ship)
   const shipFns = React.useMemo(() => {
     if (!target || !fhShip) return {}
 
@@ -59,5 +47,5 @@ export const useGearSelect = () => {
     return { equippableFilter, getBonuses }
   }, [fhShip, target])
 
-  return { state, open, ...actions, ...shipFns }
+  return { state, open: Boolean(state.target), ...actions, ...shipFns }
 }
