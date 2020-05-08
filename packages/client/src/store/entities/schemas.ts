@@ -1,16 +1,12 @@
 import { nanoid } from "@reduxjs/toolkit"
 import { schema, normalize, denormalize, NormalizedSchema } from "normalizr"
-import { GearState, ShipState, FleetState } from "@fleethub/core"
+import { GearState, ShipState, FleetState, AirbaseState, PlanState } from "@fleethub/core"
 
 import { ShipEntity } from "./ships"
 import { GearEntity } from "./gears"
 import { FleetEntity } from "./fleets"
+import { AirbaseEntity } from "./airbases"
 import { PlanEntity } from "./plans"
-
-export type PlanState = {
-  name: string
-  fleets: FleetState[]
-}
 
 const gearSchema = new schema.Entity("gears")
 const shipSchema = new schema.Entity("ships", {
@@ -19,14 +15,19 @@ const shipSchema = new schema.Entity("ships", {
 const fleetSchema = new schema.Entity("fleets", {
   ships: [shipSchema],
 })
+const airbaseSchema = new schema.Entity("airbases", {
+  gears: [gearSchema],
+})
 const planSchema = new schema.Entity("plans", {
   fleets: [fleetSchema],
+  airbases: [airbaseSchema],
 })
 
 export type NormalizedEntities = {
   gears?: Record<string, GearEntity>
   ships?: Record<string, ShipEntity>
   fleets?: Record<string, FleetEntity>
+  airbases?: Record<string, AirbaseEntity>
   plans?: Record<string, PlanEntity>
 }
 
@@ -44,14 +45,21 @@ const setIdToFleet = (state: FleetState) => {
   return { ...state, ships, id: nanoid() }
 }
 
+const setIdToAirbase = (state: AirbaseState) => {
+  const gears = state.gears?.map((gear) => gear && setIdToGear(gear)) ?? []
+  return { ...state, gears, id: nanoid() }
+}
+
 const setIdToPlan = (state: PlanState) => {
   const fleets = state.fleets.map(setIdToFleet)
-  return { ...state, fleets }
+  const airbases = state.airbases?.map(setIdToAirbase)
+  return { ...state, fleets, airbases }
 }
 
 type GearStateWithId = ReturnType<typeof setIdToGear>
 type ShipStateWithId = ReturnType<typeof setIdToShip>
 type FleetStateWithId = ReturnType<typeof setIdToFleet>
+type AirbaseStateWithId = ReturnType<typeof setIdToAirbase>
 type PlanStateWithId = ReturnType<typeof setIdToPlan>
 
 export const normalizeShip = (state: ShipState): FhNormalizedSchema => normalize(setIdToShip(state), shipSchema)
