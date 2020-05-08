@@ -121,7 +121,6 @@ export class ShipShellingCalculator {
     const attackPower = calcAttackPower({ basic, airPower, cap: ShellingCap, a14, b14, a11, apShellModifier })
 
     return {
-      basic,
       airPower,
       fleetFactor,
 
