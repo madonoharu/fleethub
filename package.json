@@ -15,6 +15,7 @@
     "client": "yarn workspace @fleethub/client",
     "core": "yarn workspace @fleethub/core",
     "data": "yarn workspace @fleethub/data",
+    "lint": "eslint --cache packages",
     "start": "yarn client start",
     "test": "yarn test:core",
     "test:core": "jest packages/core/src",
@@ -26,7 +27,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --fix"
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix"
   },
   "jest": {
     "moduleNameMapper": {
