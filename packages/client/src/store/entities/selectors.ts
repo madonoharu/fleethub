@@ -1,50 +1,46 @@
-import { shallowEqual, DefaultRootState } from "react-redux"
-import { EntityId, createSelector, Dictionary } from "@reduxjs/toolkit"
-import { NullableArray, isNonNullable, ShipState } from "@fleethub/core"
-
-import { gearsSelectors, GearEntity } from "./gears"
-import { shipsSelectors, ShipEntity } from "./ships"
-import { fleetsSelectors, FleetEntity } from "./fleets"
+import { DefaultRootState } from "react-redux"
+import { NullableArray } from "@fleethub/core"
 
 import { createShallowEqualSelector } from "../../utils"
 
-const getGearEntity = (state: DefaultRootState, id: EntityId) => gearsSelectors.selectById(state, id)
+import { gearsAdapter } from "./gears"
+import { shipsAdapter } from "./ships"
+import { fleetsAdapter } from "./fleets"
+import { plansAdapter } from "./plans"
 
-const getShipEntity = (state: DefaultRootState, id: EntityId) => shipsSelectors.selectById(state, id)
+import { Entity } from "./entity"
+import { denormalizeShip, denormalizeFleet } from "./schemas"
+import { Entities as EntitiesState } from "."
+import { EntityId } from "@reduxjs/toolkit"
 
-const getFleetEntity = (state: DefaultRootState, id: EntityId) => fleetsSelectors.selectById(state, id)
+export const gearsSelectors = gearsAdapter.getSelectors(({ gears }: EntitiesState) => gears)
+export const shipsSelectors = shipsAdapter.getSelectors(({ ships }: EntitiesState) => ships)
+export const fleetsSelectors = fleetsAdapter.getSelectors(({ fleets }: EntitiesState) => fleets)
+export const plansSelectors = plansAdapter.getSelectors(({ plans }: EntitiesState) => plans)
 
-const makeGetGearEntities = () =>
+export const getGearEntity = (state: DefaultRootState, id: EntityId) => gearsSelectors.selectById(state.entities, id)
+export const getShipEntity = (state: DefaultRootState, id: EntityId) => shipsSelectors.selectById(state.entities, id)
+export const getFleetEntity = (state: DefaultRootState, id: EntityId) => fleetsSelectors.selectById(state.entities, id)
+
+const createEntitiesSelectorCreator = <T extends Entity>(
+  selectEntity: (state: DefaultRootState, id: EntityId) => T | undefined
+) => () =>
   createShallowEqualSelector(
     (state: DefaultRootState, ids: NullableArray<EntityId>) => {
-      const entities: Dictionary<GearEntity> = {}
+      const entities: Record<string, T> = {}
+
       for (const id of ids) {
-        if (id) entities[id] = getGearEntity(state, id)
+        const entity = id && selectEntity(state, id)
+        if (entity) entities[entity.id] = entity
       }
+
       return entities
     },
     (entities) => entities
   )
 
-const makeGetShipEntities = () =>
-  createShallowEqualSelector(
-    (state: DefaultRootState, ids: NullableArray<EntityId>) =>
-      ids.map((id) => (id ? getShipEntity(state, id) : undefined)).filter(isNonNullable),
-    (entities) => entities
-  )
-
-const denormalizeShip = (entity: ShipEntity, gearEntities: Dictionary<GearEntity>) => {
-  const gears = entity.gears.map((id) => (id ? gearEntities[id] : undefined))
-  return { ...entity, gears }
-}
-
-const denormalizeFleet = (entity: FleetEntity, shipEntities: ShipEntity[], gearEntities: Dictionary<GearEntity>) => {
-  const ships = entity.ships
-    .map((shipId) => shipEntities.find(({ uid }) => shipId === uid))
-    .map((shipEntity) => shipEntity && denormalizeShip(shipEntity, gearEntities))
-
-  return { ships }
-}
+const makeGetGearEntities = createEntitiesSelectorCreator(getGearEntity)
+const makeGetShipEntities = createEntitiesSelectorCreator(getShipEntity)
 
 export const makeGetShipState = () => {
   const getGearEntities = makeGetGearEntities()
@@ -58,7 +54,7 @@ export const makeGetShipState = () => {
 
       return [entity, gearEntities] as const
     },
-    (args) => args && denormalizeShip(...args)
+    (args) => args && denormalizeShip(args[0], { gears: args[1] })
   )
 }
 
@@ -74,11 +70,11 @@ export const makeGetFleetState = () => {
       const shipEntities = getShipEntities(state, entity.ships)
       const gearEntities = getGearEntities(
         state,
-        shipEntities.flatMap(({ gears }) => gears)
+        Object.values(shipEntities).flatMap(({ gears }) => gears)
       )
 
-      return [entity, shipEntities, gearEntities] as const
+      return [entity, gearEntities, shipEntities] as const
     },
-    (args) => args && denormalizeFleet(...args)
+    (args) => args && denormalizeFleet(args[0], { gears: args[1], ships: args[2] })
   )
 }

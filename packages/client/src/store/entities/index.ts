@@ -1,9 +1,19 @@
-import { createSlice, PayloadAction, EntityId, Update } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction, EntityId, createAction } from "@reduxjs/toolkit"
 import { GearState, ShipState, FleetState, isNonNullable } from "@fleethub/core"
 
-import { normalizeShip, shipsAdapter, shipsSelectors, NormalizedShip, ShipModel, ShipEntity } from "./ships"
-import { gearToEntity, gearsAdapter, gearsSelectors, GearEntity } from "./gears"
-import { normalizeFleet, fleetsAdapter, fleetsSelectors, NormalizedFleet } from "./fleets"
+import { shipsAdapter, ShipEntity } from "./ships"
+import { gearsAdapter, GearEntity } from "./gears"
+import { fleetsAdapter } from "./fleets"
+import { plansAdapter, PlanState } from "./plans"
+import {
+  setIdToGear,
+  normalizePlan,
+  normalizeShip,
+  NormalizedEntities,
+  FhNormalizedSchema,
+  normalizeFleet,
+} from "./schemas"
+import { shipsSelectors, fleetsSelectors, plansSelectors } from "./selectors"
 
 export type GearIndex = number
 
@@ -21,6 +31,7 @@ export const getInitialState = () => ({
   gears: gearsAdapter.getInitialState(),
   ships: shipsAdapter.getInitialState(),
   fleets: fleetsAdapter.getInitialState(),
+  plans: plansAdapter.getInitialState(),
 })
 
 export type Entities = ReturnType<typeof getInitialState>
@@ -29,8 +40,6 @@ export type { ShipEntity }
 export type { FleetEntity } from "./fleets"
 
 export type ShipChanges = Partial<ShipEntity>
-
-export { gearsSelectors, shipsSelectors, fleetsSelectors }
 
 export { selectId } from "./entity"
 
@@ -43,35 +52,64 @@ const addReducer = <K extends keyof Entities, A>(key: K, reducer: (state: Entiti
   reducer(state[key], action)
 }
 
+const addEntities = (state: Entities, { gears, ships, fleets, plans }: NormalizedEntities) => {
+  if (gears) gearsAdapter.addMany(state.gears, gears)
+  if (ships) shipsAdapter.addMany(state.ships, ships)
+  if (fleets) fleetsAdapter.addMany(state.fleets, fleets)
+  if (plans) plansAdapter.addMany(state.plans, plans)
+}
+
 const sweepGears = (state: Entities) => {
   const shipGears = Object.values(state.ships.entities)
     .flatMap((ship) => ship?.gears)
     .filter(isNonNullable)
 
   state.gears.ids.forEach((id) => {
-    if (!shipGears.includes(id)) {
+    if (!shipGears.includes(id as string)) {
       gearsAdapter.removeOne(state.gears, id)
     }
   })
+}
+
+const createEntityUpdater = <E extends NonNullable<Entities[keyof Entities]["entities"][string]>>(
+  getEntity: (state: Entities, id: EntityId) => E | undefined
+) => (state: Entities, id: EntityId, cb: (entity: E) => void) => {
+  const entity = getEntity(state, id)
+  return entity && cb(entity)
+}
+
+const updateShipEntity = createEntityUpdater(shipsSelectors.selectById)
+const updateFleetEntity = createEntityUpdater(fleetsSelectors.selectById)
+
+const removeShip = (state: Entities, id: EntityId) => {
+  shipsSelectors.selectById(state, id)?.gears.forEach((gearId) => gearId && gearsAdapter.removeOne(state.gears, gearId))
+  shipsAdapter.removeOne(state.ships, id)
+}
+
+const removeFleet = (state: Entities, id: EntityId) => {
+  fleetsSelectors.selectById(state, id)?.ships.forEach((shipId) => shipId && removeShip(state, shipId))
+  fleetsAdapter.removeOne(state.fleets, id)
+}
+
+const removePlan = (state: Entities, id: EntityId) => {
+  plansSelectors.selectById(state, id)?.fleets.forEach((fleetId) => removeFleet(state, fleetId))
+  plansAdapter.removeOne(state.plans, id)
 }
 
 const slice = createSlice({
   name: "entities",
   initialState: getInitialState(),
   reducers: {
-    createGear: {
-      reducer: (state, { payload }: PayloadAction<GearPosition & { gear: GearEntity }>) => {
-        gearsAdapter.addOne(state.gears, payload.gear)
+    createGear: (state, { payload }: PayloadAction<GearPosition & { gear: GearState }>) => {
+      const gear = setIdToGear(payload.gear)
+      gearsAdapter.addOne(state.gears, gear)
 
-        if (payload.ship) {
-          ShipModel.from(state, payload.ship)?.setGear(payload.index, payload.gear)
-        }
-        sweepGears(state)
-      },
-      prepare: (props: GearPosition & { gear: GearState }) => {
-        const gear = gearToEntity(props.gear)
-        return { payload: { ...props, gear } }
-      },
+      updateShipEntity(state, payload.ship, (ship) => {
+        const prev = ship.gears[payload.index]
+        if (prev) gearsAdapter.removeOne(state.gears, prev)
+
+        ship.gears[payload.index] = gear.id
+      })
     },
 
     updateGear: addReducer("gears", gearsAdapter.updateOne),
@@ -89,56 +127,45 @@ const slice = createSlice({
     swapGear: (state, { payload }: PayloadAction<{ drag: GearPosition; drop: GearPosition }>) => {
       const { drag, drop } = payload
 
-      const dragShip = ShipModel.from(state, drag.ship)
-      const dropShip = ShipModel.from(state, drop.ship)
+      const dragShip = shipsSelectors.selectById(state, drag.ship)
+      const dropShip = shipsSelectors.selectById(state, drop.ship)
 
       const dragGear = dragShip?.gears[drag.index]
       const dropGear = dropShip?.gears[drop.index]
 
-      dragShip?.setGear(drag.index, dropGear)
-      dropShip?.setGear(drop.index, dragGear)
+      if (dragShip) dragShip.gears[drag.index] = dropGear
+      if (dropShip) dropShip.gears[drop.index] = dragGear
     },
 
-    createShip: {
-      reducer: (state, { payload }: PayloadAction<NormalizedShip & ShipPosition>) => {
-        gearsAdapter.addMany(state.gears, payload.gears)
-        shipsAdapter.addOne(state.ships, payload.ship)
+    createShip: (state, { payload }: PayloadAction<ShipPosition & { ship: ShipState }>) => {
+      const schema = normalizeShip(payload.ship)
+      addEntities(state, schema.entities)
 
-        const fleet = state.fleets.entities[payload.fleet]
-        if (fleet) fleet.ships[payload.index] = payload.ship.uid
-      },
-      prepare: (props: { ship: ShipState } & ShipPosition) => ({
-        payload: { ...props, ...normalizeShip(props.ship) },
-      }),
+      updateFleetEntity(state, payload.fleet, (fleetEntity) => {
+        const prev = fleetEntity.ships[payload.index]
+        if (prev) removeShip(state, prev)
+
+        fleetEntity.ships[payload.index] = schema.result
+      })
     },
 
     updateShip: addReducer("ships", shipsAdapter.updateOne),
 
-    removeShip: (state, { payload }: PayloadAction<EntityId>) => {
-      ShipModel.from(state, payload)?.remove()
-    },
+    removeShip: (state, { payload }: PayloadAction<string>) => removeShip(state, payload),
 
-    createFleet: {
-      reducer: (state, { payload }: PayloadAction<NormalizedFleet>) => {
-        fleetsAdapter.addOne(state.fleets, payload.fleet)
-        gearsAdapter.addMany(state.gears, payload.gears)
-        shipsAdapter.addMany(state.ships, payload.ships)
-      },
-      prepare: (fleetState: FleetState) => {
-        return { payload: normalizeFleet(fleetState) }
-      },
+    createFleet: (state, { payload }: PayloadAction<FleetState>) => {
+      addEntities(state, normalizeFleet(payload).entities)
     },
 
     updateFleet: addReducer("fleets", fleetsAdapter.updateOne),
 
-    removeFleet: (state, { payload }: PayloadAction<EntityId>) => {
-      const fleet = state.fleets.entities[payload]
-      if (!fleet) return
-      fleet.ships.forEach((ship) => {
-        ship && ShipModel.from(state, ship)?.remove()
-      })
-      fleetsAdapter.removeOne(state.fleets, payload)
+    removeFleet: (state, { payload }: PayloadAction<EntityId>) => removeFleet(state, payload),
+
+    createPlan: (state, { payload }: PayloadAction<PlanState>) => {
+      addEntities(state, normalizePlan(payload).entities)
     },
+
+    removePlan: (state, { payload }: PayloadAction<EntityId>) => removePlan(state, payload),
   },
 })
 
