@@ -1,7 +1,5 @@
-import { EntityId, nanoid } from "@reduxjs/toolkit"
+import { EntityId } from "@reduxjs/toolkit"
 
-export type Entity = { uid: EntityId }
+export type Entity = { id: EntityId }
 
-export const selectId = (entity: Entity) => entity.uid
-
-export const getUid = nanoid
+export const selectId = (entity: Entity) => entity.id

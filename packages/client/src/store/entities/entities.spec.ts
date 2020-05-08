@@ -1,6 +1,4 @@
 import entitiesSlice, { getInitialState } from "."
-import { PayloadAction } from "@reduxjs/toolkit"
-import { NormalizedFleet } from "./fleets"
 
 describe("entities", () => {
   const { reducer, actions } = entitiesSlice
