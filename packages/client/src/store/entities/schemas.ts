@@ -35,7 +35,7 @@ export type FhNormalizedSchema = NormalizedSchema<NormalizedEntities, string>
 export const setIdToGear = (state: GearState) => ({ ...state, id: nanoid() })
 
 const setIdToShip = (state: ShipState) => {
-  const gears = state.gears?.map((gear) => gear && setIdToGear(gear))
+  const gears = state.gears?.map((gear) => gear && setIdToGear(gear)) ?? []
   return { ...state, gears, id: nanoid() }
 }
 

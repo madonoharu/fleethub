@@ -4,9 +4,9 @@ import { EntityId } from "@reduxjs/toolkit"
 
 import { entitiesSlice, fleetsSelectors } from "../store"
 
-export const usePlan = (uid = "") => {
+export const usePlan = (id = "") => {
   const dispatch = useDispatch()
-  const allIds: EntityId[] = useSelector(fleetsSelectors.selectIds)
+  const allIds: EntityId[] = useSelector((state) => fleetsSelectors.selectIds(state.entities))
 
   const actions = React.useMemo(
     () => ({
