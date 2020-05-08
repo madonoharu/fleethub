@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction, EntityId, createAction } from "@reduxjs/toolkit"
-import { GearState, ShipState, FleetState, isNonNullable } from "@fleethub/core"
+import { GearState, ShipState, FleetState, PlanState, isNonNullable } from "@fleethub/core"
 
 import { shipsAdapter, ShipEntity } from "./ships"
 import { gearsAdapter, GearEntity } from "./gears"
 import { fleetsAdapter } from "./fleets"
-import { plansAdapter, PlanState } from "./plans"
+import { plansAdapter } from "./plans"
 import {
   setIdToGear,
   normalizePlan,
@@ -14,12 +14,14 @@ import {
   normalizeFleet,
 } from "./schemas"
 import { shipsSelectors, fleetsSelectors, plansSelectors } from "./selectors"
+import { airbasesAdapter } from "./airbases"
 
 export type GearIndex = number
 
 export type GearPosition = {
-  ship: EntityId
-  index: GearIndex
+  type: "ship" | "airbase"
+  id: EntityId
+  index: number
 }
 
 export type ShipPosition = {
@@ -31,6 +33,7 @@ export const getInitialState = () => ({
   gears: gearsAdapter.getInitialState(),
   ships: shipsAdapter.getInitialState(),
   fleets: fleetsAdapter.getInitialState(),
+  airbases: airbasesAdapter.getInitialState(),
   plans: plansAdapter.getInitialState(),
 })
 
@@ -81,6 +84,11 @@ const createEntityUpdater = <E extends NonNullable<Entities[keyof Entities]["ent
 const updateShipEntity = createEntityUpdater(shipsSelectors.selectById)
 const updateFleetEntity = createEntityUpdater(fleetsSelectors.selectById)
 
+const getGearParent = (state: Entities, { type, id }: GearPosition) => {
+  if (type === "ship") return state.ships.entities[id]
+  return state.airbases.entities[id]
+}
+
 const removeShip = (state: Entities, id: EntityId) => {
   shipsSelectors.selectById(state, id)?.gears.forEach((gearId) => gearId && gearsAdapter.removeOne(state.gears, gearId))
   shipsAdapter.removeOne(state.ships, id)
@@ -100,16 +108,12 @@ const slice = createSlice({
   name: "entities",
   initialState: getInitialState(),
   reducers: {
-    createGear: (state, { payload }: PayloadAction<GearPosition & { gear: GearState }>) => {
+    createGear: (state, { payload }: PayloadAction<{ to: GearPosition; gear: GearState }>) => {
       const gear = setIdToGear(payload.gear)
       gearsAdapter.addOne(state.gears, gear)
 
-      updateShipEntity(state, payload.ship, (ship) => {
-        const prev = ship.gears[payload.index]
-        if (prev) gearsAdapter.removeOne(state.gears, prev)
-
-        ship.gears[payload.index] = gear.id
-      })
+      const entity = getGearParent(state, payload.to)
+      if (entity) entity.gears[payload.to.index] = gear.id
     },
 
     updateGear: addReducer("gears", gearsAdapter.updateOne),
@@ -127,25 +131,25 @@ const slice = createSlice({
     swapGear: (state, { payload }: PayloadAction<{ drag: GearPosition; drop: GearPosition }>) => {
       const { drag, drop } = payload
 
-      const dragShip = shipsSelectors.selectById(state, drag.ship)
-      const dropShip = shipsSelectors.selectById(state, drop.ship)
+      const dragParent = getGearParent(state, drag)
+      const dropParent = getGearParent(state, drop)
 
-      const dragGear = dragShip?.gears[drag.index]
-      const dropGear = dropShip?.gears[drop.index]
+      const dragGear = dragParent?.gears[drag.index]
+      const dropGear = dropParent?.gears[drop.index]
 
-      if (dragShip) dragShip.gears[drag.index] = dropGear
-      if (dropShip) dropShip.gears[drop.index] = dragGear
+      if (dragParent) dragParent.gears[drag.index] = dropGear
+      if (dropParent) dropParent.gears[drop.index] = dragGear
     },
 
-    createShip: (state, { payload }: PayloadAction<ShipPosition & { ship: ShipState }>) => {
+    createShip: (state, { payload }: PayloadAction<{ to: ShipPosition; ship: ShipState }>) => {
       const schema = normalizeShip(payload.ship)
       addEntities(state, schema.entities)
 
-      updateFleetEntity(state, payload.fleet, (fleetEntity) => {
-        const prev = fleetEntity.ships[payload.index]
+      updateFleetEntity(state, payload.to.fleet, (fleetEntity) => {
+        const prev = fleetEntity.ships[payload.to.index]
         if (prev) removeShip(state, prev)
 
-        fleetEntity.ships[payload.index] = schema.result
+        fleetEntity.ships[payload.to.index] = schema.result
       })
     },
 

@@ -21,8 +21,7 @@ export const useShip = (id: EntityId) => {
       },
 
       openGearSelect: (index: number) => {
-        const target = { ship: id, index }
-        dispatch(gearSelectSlice.actions.set({ target }))
+        dispatch(gearSelectSlice.actions.set({ target: { type: "ship", id, index } }))
       },
     }),
     [dispatch, id]

@@ -59,7 +59,7 @@ export const useShipSelect = () => {
 
     const onSelect = (shipId: number) => {
       if (!state.target) return
-      dispatch(entitiesSlice.actions.createShip({ ...state.target, ship: { shipId } }))
+      dispatch(entitiesSlice.actions.createShip({ to: state.target, ship: { shipId } }))
       onClose()
     }
 
