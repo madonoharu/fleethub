@@ -1,6 +1,6 @@
 import { nanoid } from "@reduxjs/toolkit"
-import { schema, normalize, denormalize } from "normalizr"
-import { GearState, ShipState, NullableArray, FleetState } from "@fleethub/core"
+import { schema, normalize, denormalize, NormalizedSchema } from "normalizr"
+import { GearState, ShipState, FleetState } from "@fleethub/core"
 
 import { ShipEntity } from "./ships"
 import { GearEntity } from "./gears"
@@ -30,7 +30,9 @@ export type NormalizedEntities = {
   plans?: Record<string, PlanEntity>
 }
 
-const setIdToGear = (state: GearState) => ({ ...state, id: nanoid() })
+export type FhNormalizedSchema = NormalizedSchema<NormalizedEntities, string>
+
+export const setIdToGear = (state: GearState) => ({ ...state, id: nanoid() })
 
 const setIdToShip = (state: ShipState) => {
   const gears = state.gears?.map((gear) => gear && setIdToGear(gear))
@@ -52,17 +54,17 @@ type ShipStateWithId = ReturnType<typeof setIdToShip>
 type FleetStateWithId = ReturnType<typeof setIdToFleet>
 type PlanStateWithId = ReturnType<typeof setIdToPlan>
 
-export const normalizeShip = (state: ShipState): NormalizedEntities =>
-  normalize(setIdToShip(state), shipSchema).entities
+export const normalizeShip = (state: ShipState): FhNormalizedSchema => normalize(setIdToShip(state), shipSchema)
+
 export const denormalizeShip = (entity: ShipEntity, entities: NormalizedEntities): ShipStateWithId =>
   denormalize(entity, shipSchema, entities)
 
-export const normalizeFleet = (state: FleetState): NormalizedEntities =>
-  normalize(setIdToFleet(state), fleetSchema).entities
+export const normalizeFleet = (state: FleetState): FhNormalizedSchema => normalize(setIdToFleet(state), fleetSchema)
+
 export const denormalizeFleet = (entity: FleetEntity, entities: NormalizedEntities): FleetStateWithId =>
   denormalize(entity, fleetSchema, entities)
 
-export const normalizePlan = (state: PlanState): NormalizedEntities =>
-  normalize(setIdToPlan(state), planSchema).entities
+export const normalizePlan = (state: PlanState): FhNormalizedSchema => normalize(setIdToPlan(state), planSchema)
+
 export const denormalizePlan = (entity: PlanEntity, entities: NormalizedEntities): PlanStateWithId =>
   denormalize(entity, planSchema, entities)
