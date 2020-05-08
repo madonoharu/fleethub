@@ -3,7 +3,7 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 import { range } from "lodash-es"
 
-import { entitiesSlice, ShipEntity, shipsSelectors, gearSelectSlice } from "../store"
+import { entitiesSlice, ShipEntity, getShipEntity, gearSelectSlice } from "../store"
 import { useFhShip } from "./useFhShip"
 
 export const useShip = (id: EntityId) => {
@@ -31,7 +31,7 @@ export const useShip = (id: EntityId) => {
   const fhShip = useFhShip(id)
 
   const gears = useSelector((state) => {
-    const entityGears = shipsSelectors.selectById(state, id)?.gears
+    const entityGears = getShipEntity(state, id)?.gears
     if (!fhShip || !entityGears) return []
 
     return range(fhShip.equipment.size).map((index) => entityGears[index])

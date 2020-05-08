@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 import { GearState, fhSystem } from "@fleethub/core"
 
-import { entitiesSlice, gearsSelectors } from "../store"
+import { entitiesSlice, getGearEntity } from "../store"
 
 export const useGear = (id: EntityId) => {
   const dispatch = useDispatch()
@@ -20,7 +20,7 @@ export const useGear = (id: EntityId) => {
     [dispatch, id]
   )
 
-  const entity = useSelector((state) => gearsSelectors.selectEntities(state)[id])
+  const entity = useSelector((state) => getGearEntity(state, id))
   const fhGear = React.useMemo(() => entity && fhSystem.createGear(entity), [entity])
 
   return { fhGear, actions }
