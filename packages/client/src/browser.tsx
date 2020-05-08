@@ -1,5 +1,5 @@
 import React from "react"
-import { Provider } from "react-redux"
+import { Provider as ReduxProvider } from "react-redux"
 import { GatsbyBrowser } from "gatsby"
 import styled, { ThemeProvider as StyledThemeProvider } from "styled-components"
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles"
@@ -19,7 +19,7 @@ const ScrollContainer = styled.div`
 export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({ element }) => {
   const store = setupStore()
   return (
-    <Provider store={store}>
+    <ReduxProvider store={store}>
       <StyledThemeProvider theme={theme}>
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
@@ -28,6 +28,6 @@ export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({ element }) =
           <ScrollContainer>{element}</ScrollContainer>
         </MuiThemeProvider>
       </StyledThemeProvider>
-    </Provider>
+    </ReduxProvider>
   )
 }
