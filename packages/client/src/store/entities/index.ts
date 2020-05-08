@@ -151,7 +151,7 @@ const slice = createSlice({
 
     updateShip: addReducer("ships", shipsAdapter.updateOne),
 
-    removeShip: (state, { payload }: PayloadAction<string>) => removeShip(state, payload),
+    removeShip: (state, { payload }: PayloadAction<EntityId>) => removeShip(state, payload),
 
     createFleet: (state, { payload }: PayloadAction<FleetState>) => {
       addEntities(state, normalizeFleet(payload).entities)
