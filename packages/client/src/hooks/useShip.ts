@@ -2,12 +2,16 @@ import React from "react"
 import { useSelector, useDispatch, shallowEqual } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 import { range } from "lodash-es"
+import { GearState } from "@fleethub/core"
 
-import { entitiesSlice, ShipEntity, getShipEntity, gearSelectSlice } from "../store"
+import { entitiesSlice, ShipEntity, getShipEntity } from "../store"
 import { useFhShip } from "./useFhShip"
+import { useGearSelectActions } from "./useGearSelect"
 
 export const useShip = (id: EntityId) => {
   const dispatch = useDispatch()
+  const fhShip = useFhShip(id)
+
   const actions = React.useMemo(
     () => ({
       update: (changes: Partial<ShipEntity>) => {
@@ -20,14 +24,25 @@ export const useShip = (id: EntityId) => {
         dispatch(entitiesSlice.actions.removeShip(id))
       },
 
-      openGearSelect: (index: number) => {
-        dispatch(gearSelectSlice.actions.set({ target: { type: "ship", id, index } }))
+      createGear: (index: number, gear: GearState) => {
+        dispatch(entitiesSlice.actions.createGear({ to: { type: "ship", id, index }, gear }))
       },
     }),
     [dispatch, id]
   )
 
-  const fhShip = useFhShip(id)
+  const gearSelectActions = useGearSelectActions()
+  const openGearSelect = (index: number) => {
+    if (!fhShip) return
+    gearSelectActions.update({
+      onSelect: (gear) => {
+        actions.createGear(index, gear)
+        gearSelectActions.close()
+      },
+      canEquip: (gear) => fhShip.canEquip(index, gear),
+      getBonuses: fhShip.createNextBonusesGetter(index),
+    })
+  }
 
   const gears = useSelector((state) => {
     const entityGears = getShipEntity(state, id)?.gears
@@ -36,5 +51,5 @@ export const useShip = (id: EntityId) => {
     return range(fhShip.equipment.size).map((index) => entityGears[index])
   }, shallowEqual)
 
-  return { actions, gears, fhShip }
+  return { actions, gears, fhShip, openGearSelect }
 }
