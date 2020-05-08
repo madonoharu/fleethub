@@ -30,14 +30,14 @@ export const useGearSelect = () => {
 
     const onSelect = (gear: GearState) => {
       if (!target) return
-      dispatch(entitiesSlice.actions.createGear({ ...target, gear }))
+      dispatch(entitiesSlice.actions.createGear({ to: target, gear }))
       onClose()
     }
 
     return { setState, onClose, onSelect }
   }, [dispatch, target])
 
-  const fhShip = useFhShip(target?.ship)
+  const fhShip = useFhShip(target?.id)
   const shipFns = React.useMemo(() => {
     if (!target || !fhShip) return {}
 
