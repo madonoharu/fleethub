@@ -21,6 +21,28 @@ type Props = {
   getBonuses?: (gear: GearBase) => EquipmentBonuses
 }
 
+const NormalGearList: React.FC<Props> = ({ entries, onSelect, getBonuses }) => {
+  return (
+    <>
+      {entries.map(([category, gears]) => (
+        <div key={`category-${category}`}>
+          <Divider label={GearCategoryName[category]} />
+          <Grid>
+            {gears.map((gear) => (
+              <GearButton
+                key={`gear-${gear.gearId}`}
+                gear={gear}
+                onClick={() => onSelect && onSelect(gear.gearId)}
+                bonuses={getBonuses && getBonuses(gear)}
+              />
+            ))}
+          </Grid>
+        </div>
+      ))}
+    </>
+  )
+}
+
 const GearList: React.FC<Props> = ({ entries, onSelect, getBonuses }) => {
   const columnCount = 4
 
@@ -68,4 +90,4 @@ const GearList: React.FC<Props> = ({ entries, onSelect, getBonuses }) => {
   )
 }
 
-export default GearList
+export default NormalGearList
