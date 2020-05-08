@@ -1,32 +1,19 @@
 import React from "react"
 import styled from "styled-components"
-import { GearBase } from "@fleethub/core"
 
 import { SelectButtons } from "../../../components"
 
 import FilterIcon from "./FilterIcon"
-import { getVisibleFilterKeys } from "./filters"
 
 const getFilterIcon = (key: string) => <FilterIcon icon={key} />
 
 type Props = {
   value: string
+  options: string[]
   onChange: (value: string) => void
-  equippableGears: GearBase[]
 }
 
-const GearFilterButtons: React.FCX<Props> = ({ className, value, onChange, equippableGears }) => {
-  const options = getVisibleFilterKeys(equippableGears)
-  return (
-    <SelectButtons
-      className={className}
-      options={options}
-      value={value}
-      onChange={onChange}
-      getOptionLabel={getFilterIcon}
-    />
-  )
-}
+const GearFilterButtons: React.FCX<Props> = (props) => <SelectButtons {...props} getOptionLabel={getFilterIcon} />
 
 export default styled(GearFilterButtons)`
   button {
