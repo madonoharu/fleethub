@@ -10,6 +10,7 @@ export * from "./ship"
 export * from "./gear"
 export * from "./fleet"
 export * from "./airbase"
+export * from "./plan"
 export * from "./utils"
 
 export { ShipClass, ShipClassKey, ShipType, HullCode } from "@fleethub/data"
