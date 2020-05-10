@@ -14,7 +14,7 @@ type ShipCardContainerProps = {
 }
 
 const ShipCardContainer: React.FC<ShipCardContainerProps> = ({ ship, onAdd }) => {
-  const { actions, gears, fhShip } = useShip(ship)
+  const { actions, gears, fhShip, openGearSelect } = useShip(ship)
   const handleSlotsChange = React.useCallback((slots: number[]) => actions.update({ slots }), [actions])
 
   if (!fhShip) {
@@ -25,7 +25,7 @@ const ShipCardContainer: React.FC<ShipCardContainerProps> = ({ ship, onAdd }) =>
     <ShipCard
       ship={fhShip}
       gears={gears}
-      onAddGear={actions.openGearSelect}
+      onAddGear={openGearSelect}
       onSlotsChange={handleSlotsChange}
       onUpdate={actions.update}
       onRemove={actions.remove}
