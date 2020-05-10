@@ -1,3 +1,5 @@
+export { default as PlanEditor } from "./PlanEditor"
+
 export { default as FleetPanel } from "./FleetPanel"
 export { default as PlanPanel } from "./PlanPanel"
 export { default as ShipSelect } from "./ShipSelect"
