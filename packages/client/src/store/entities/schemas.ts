@@ -53,7 +53,7 @@ const setIdToAirbase = (state: AirbaseState) => {
 const setIdToPlan = (state: PlanState) => {
   const fleets = state.fleets.map(setIdToFleet)
   const airbases = state.airbases?.map(setIdToAirbase)
-  return { ...state, fleets, airbases }
+  return { ...state, fleets, airbases, id: nanoid() }
 }
 
 type GearStateWithId = ReturnType<typeof setIdToGear>
