@@ -2,11 +2,11 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 
-import { entitiesSlice, fleetsSelectors } from "../store"
+import { entitiesSlice, plansSelectors } from "../store"
 
-export const usePlan = (id = "") => {
+export const usePlan = (id: EntityId) => {
   const dispatch = useDispatch()
-  const allIds: EntityId[] = useSelector((state) => fleetsSelectors.selectIds(state.entities))
+  const entity = useSelector((state) => plansSelectors.selectById(state.entities, id))
 
   const actions = React.useMemo(
     () => ({
@@ -17,7 +17,7 @@ export const usePlan = (id = "") => {
     [dispatch]
   )
 
-  return { actions, allIds }
+  return { actions, entity }
 }
 
 export const useRenderCount = () => {
@@ -38,5 +38,5 @@ export * from "./useGear"
 export * from "./useShip"
 export * from "./useFleet"
 
-export * from "./useGearSelect"
+export * from "./useGearSelectContext"
 export * from "./useShipSelect"
