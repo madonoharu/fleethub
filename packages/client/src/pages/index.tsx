@@ -1,19 +1,31 @@
 import React from "react"
+import { useSelector, useDispatch } from "react-redux"
 
-import { FleetPanel } from "../components"
-import { usePlan } from "../hooks"
+import { Button } from "@material-ui/core"
 
-import Button from "@material-ui/core/Button"
+import { PlanPanel } from "../components"
+import { entitiesSlice, plansSelectors } from "../store"
+
+const getInitalFleet = () => ({ ships: [...Array(6)] })
 
 const IndexPage: React.FC = () => {
-  const { allIds, actions } = usePlan()
+  const dispatch = useDispatch()
+  const planIds = useSelector((state) => plansSelectors.selectIds(state.entities))
+
+  const createPlan = () =>
+    dispatch(
+      entitiesSlice.actions.createPlan({
+        name: "a",
+        fleets: [getInitalFleet(), getInitalFleet(), getInitalFleet(), getInitalFleet()],
+        airbases: [],
+      })
+    )
 
   return (
     <>
-      <Button onClick={actions.createFleet}>add fleet</Button>
-
-      {allIds.map((id) => (
-        <FleetPanel key={id} uid={id} />
+      <Button onClick={createPlan}>add plan</Button>
+      {planIds.map((id) => (
+        <PlanPanel key={id} plan={id} />
       ))}
     </>
   )
