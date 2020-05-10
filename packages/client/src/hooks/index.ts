@@ -39,4 +39,4 @@ export * from "./useShip"
 export * from "./useFleet"
 
 export * from "./useGearSelectContext"
-export * from "./useShipSelect"
+export * from "./useShipSelectContext"
