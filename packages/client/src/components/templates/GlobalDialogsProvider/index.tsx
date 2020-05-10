@@ -3,8 +3,8 @@ import styled from "styled-components"
 
 import { Dialog as MuiDialog, DialogProps, useTheme } from "@material-ui/core"
 
-import { useShipSelect, useGearSelect } from "../../../hooks"
-import { ShipSelect, GearSelect } from "../../../components"
+import { useShipSelect, GearSelectProvider, useGearSelectContext } from "../../../hooks"
+import { ShipSelect, GearSelect } from "../.."
 
 const Dialog: React.FC<DialogProps> = ({ children, ...rest }) => {
   const theme = useTheme()
@@ -16,19 +16,28 @@ const Dialog: React.FC<DialogProps> = ({ children, ...rest }) => {
   )
 }
 
-const GlobalDialogs: React.FC = () => {
-  const shipSelect = useShipSelect()
-  const gearSelect = useGearSelect()
+const GearSelectDialog: React.FC = () => {
+  const { state, actions } = useGearSelectContext()
+  const open = Boolean(state.onSelect)
+
   return (
-    <>
-      <Dialog open={shipSelect.open} onClose={shipSelect.onClose}>
-        {shipSelect.open && <ShipSelect />}
-      </Dialog>
-      <Dialog open={gearSelect.open} onClose={gearSelect.onClose}>
-        {gearSelect.open && <GearSelect />}
-      </Dialog>
-    </>
+    <Dialog open={open} onClose={actions.close}>
+      {open && <GearSelect state={state} onUpdate={actions.update} />}
+    </Dialog>
   )
 }
 
-export default GlobalDialogs
+const GlobalDialogsProvider: React.FC = ({ children }) => {
+  const shipSelect = useShipSelect()
+  return (
+    <GearSelectProvider>
+      {children}
+      <GearSelectDialog />
+      <Dialog open={shipSelect.open} onClose={shipSelect.onClose}>
+        {shipSelect.open && <ShipSelect />}
+      </Dialog>
+    </GearSelectProvider>
+  )
+}
+
+export default GlobalDialogsProvider

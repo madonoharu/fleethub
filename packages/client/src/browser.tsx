@@ -9,7 +9,7 @@ import "./i18n"
 
 import { setupStore } from "./store"
 import theme from "./theme"
-import { AppBar, GlobalDialogs } from "./components"
+import { AppBar, GlobalDialogsProvider } from "./components"
 
 const ScrollContainer = styled.div`
   overflow-y: scroll;
@@ -22,10 +22,11 @@ export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({ element }) =
     <ReduxProvider store={store}>
       <StyledThemeProvider theme={theme}>
         <MuiThemeProvider theme={theme}>
-          <CssBaseline />
-          <AppBar />
-          <GlobalDialogs />
-          <ScrollContainer>{element}</ScrollContainer>
+          <GlobalDialogsProvider>
+            <CssBaseline />
+            <AppBar />
+            <ScrollContainer>{element}</ScrollContainer>
+          </GlobalDialogsProvider>
         </MuiThemeProvider>
       </StyledThemeProvider>
     </ReduxProvider>
