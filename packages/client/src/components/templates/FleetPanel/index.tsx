@@ -15,7 +15,7 @@ type Props = {
 }
 
 const FleetPanel: React.FC<Props> = ({ className, uid }) => {
-  const { entity, actions, fhFleet } = useFleet(uid)
+  const { entity, actions, fhFleet, openShipSelect } = useFleet(uid)
   if (!entity || !fhFleet) {
     return <Typography color="error">error</Typography>
   }
@@ -26,7 +26,7 @@ const FleetPanel: React.FC<Props> = ({ className, uid }) => {
         <RemoveButton onClick={actions.remove} />
       </Flexbox>
 
-      <ShipList ships={entity.ships} onAdd={actions.openShipSelect} />
+      <ShipList ships={entity.ships} onAdd={openShipSelect} />
       <FleetAnalysisPanel fleet={fhFleet} />
     </Container>
   )
