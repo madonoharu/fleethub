@@ -6,7 +6,7 @@ import { GearState } from "@fleethub/core"
 
 import { entitiesSlice, ShipEntity, getShipEntity } from "../store"
 import { useFhShip } from "./useFhShip"
-import { useGearSelectActions } from "./useGearSelect"
+import { useGearSelectActions } from "./useGearSelectContext"
 
 export const useShip = (id: EntityId) => {
   const dispatch = useDispatch()
