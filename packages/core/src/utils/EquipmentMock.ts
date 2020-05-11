@@ -2,8 +2,7 @@ import { Equipment } from "../equipment"
 import {} from "ts-jest/utils"
 
 export class EquipmentMock implements Equipment {
-  public src: any
-  public size: any
+  public items: any
 
   public defaultSlots: any
   public currentSlots: any

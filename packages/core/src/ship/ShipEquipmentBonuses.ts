@@ -1,7 +1,7 @@
 import { GearId, ShipClass, ShipType, ShipId, ShipRuby } from "@fleethub/data"
 import { createEquipmentBonuses as createBasicBonuses } from "equipment-bonus"
 
-import { Equipment } from "../equipment"
+import { Equipment, EquipmentKey } from "../equipment"
 
 import { ShipIdentityWithSpeed, EquipmentBonuses } from "./types"
 import { GearBase } from "../gear"
@@ -148,8 +148,8 @@ const subtract = (left: EquipmentBonuses, right: EquipmentBonuses): EquipmentBon
 export const createShipEquipmentBonuses = (ship: ShipIdentityWithSpeed, equipment: Equipment) => {
   const bonuses = createEquipmentBonuses(ship, equipment.gears)
 
-  const createNextBonusesGetter = (excludedIndex: number) => {
-    const filtered = equipment.filter((gear, index) => index !== excludedIndex)
+  const createNextBonusesGetter = (excludedKey: EquipmentKey) => {
+    const filtered = equipment.filter((gear, key) => key !== excludedKey)
     const current = createEquipmentBonuses(ship, filtered)
 
     return (gear: GearBase) => {
@@ -159,14 +159,4 @@ export const createShipEquipmentBonuses = (ship: ShipIdentityWithSpeed, equipmen
   }
 
   return { bonuses, createNextBonusesGetter }
-}
-
-export const createNextBonusesGetter = (ship: ShipIdentityWithSpeed, equipment: Equipment, excludedIndex: number) => {
-  const filtered = equipment.filter((gear, index) => index !== excludedIndex)
-  const current = createEquipmentBonuses(ship, filtered)
-
-  return (gear: GearBase) => {
-    const next = createEquipmentBonuses(ship, [...filtered, gear])
-    return subtract(next, current)
-  }
 }

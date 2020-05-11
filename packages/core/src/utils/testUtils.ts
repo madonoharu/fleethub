@@ -73,8 +73,8 @@ export const getMasterShip = (name: ShipName) => {
 
 export const makeShip = (shipName: ShipName, ...gearDefs: GearDef[]) => {
   const shipId = shipNameToId(shipName)
-  const gears = gearDefs.map(gearDefToState)
-  const ship = fhSystem.createShip({ shipId, gears })
+  const [g1, g2, g3, g4, g5] = gearDefs.map(gearDefToState)
+  const ship = fhSystem.createShip({ shipId, gears: { g1, g2, g3, g4, g5 } })
 
   if (!ship) {
     throw `${shipName} failed`
