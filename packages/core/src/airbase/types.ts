@@ -1,11 +1,9 @@
 import { GearState, Gear } from "../gear"
 import { NullableArray } from "../utils"
+import { EquipmentState, Equipment } from "../equipment"
 
-export type AirbaseState = {
-  gears: NullableArray<GearState>
-  slots: number[]
-}
+export type AirbaseState = EquipmentState
 
 export type Airbase = {
-  gears: NullableArray<Gear>
+  equipment: Equipment
 }

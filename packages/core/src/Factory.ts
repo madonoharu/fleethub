@@ -2,8 +2,7 @@ import { GearData, ShipData } from "@fleethub/data"
 
 import { MasterGear, GearState, GearImpl } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
-import { EquipmentImpl } from "./equipment"
-import { NullableArray } from "./utils"
+import { EquipmentImpl, EquipmentState, EquipmentItem, getEquipmentKeys } from "./equipment"
 import { FleetState, FleetImpl } from "./fleet"
 import { AirbaseState, AirbaseImpl } from "./airbase"
 
@@ -33,9 +32,21 @@ export default class Factory {
     return new GearImpl(state, base, improvement)
   }
 
-  private createEquipment = (gearStates: NullableArray<GearState>, defaultSlots: number[], currentSlots?: number[]) => {
-    const gears = gearStates.map((state) => state && this.createGear(state))
-    return new EquipmentImpl(gears, defaultSlots, currentSlots)
+  private createEquipment = (state: EquipmentState, maxSlots: number[]) => {
+    const stateGears = state.gears || {}
+    const stateSlots = state.slots || {}
+
+    const items: EquipmentItem[] = getEquipmentKeys(maxSlots.length).map((key, index) => {
+      const gearState = stateGears[key]
+      const gear = gearState && this.createGear(gearState)
+
+      const maxSlotSize = maxSlots[index]
+      const currentSlotSize = stateSlots[key] || maxSlotSize
+
+      return { key, gear, currentSlotSize, maxSlotSize }
+    })
+
+    return new EquipmentImpl(items)
   }
 
   public createShip = (state: ShipState) => {
@@ -43,7 +54,7 @@ export default class Factory {
     const base = this.findMasterShip(shipId)
     if (!base) return
 
-    const equipment = this.createEquipment(state.gears ?? [], base.slots, state.slots)
+    const equipment = this.createEquipment(state, base.slots)
 
     return createShip(state, base, equipment)
   }
@@ -55,6 +66,6 @@ export default class Factory {
   }
 
   public createAirbase = (state: AirbaseState) => {
-    return new AirbaseImpl(this.createEquipment(state.gears, state.slots, state.slots))
+    return new AirbaseImpl(this.createEquipment(state, [18, 18, 18, 18]))
   }
 }

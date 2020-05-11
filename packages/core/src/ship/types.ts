@@ -10,9 +10,12 @@ import {
   GearId,
   GearCategory,
 } from "@fleethub/data"
-import { ShipAttribute } from "./ShipAttribute"
+
 import { GearBase, GearState } from "../gear"
 import { NullableArray } from "../utils"
+import { EquipmentState } from "../equipment"
+
+import { ShipAttribute } from "./ShipAttribute"
 
 export type StatBase = readonly [number, number]
 
@@ -169,9 +172,8 @@ export type ShipStatsState = ShipBasicStatsState & {
 
 export type ShipState = {
   shipId: number
-  gears?: NullableArray<GearState>
-  slots?: number[]
-} & ShipStatsState
+} & ShipStatsState &
+  EquipmentState
 
 export type EquipmentBonuses = {
   firepower: number

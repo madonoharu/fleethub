@@ -1,21 +1,42 @@
 import { Gear, GearState } from "../gear"
-import { NullableArray, PickByValue, isNonNullable } from "../utils"
+import { PickByValue } from "../utils"
+import { range } from "lodash-es"
 
-type GearIteratee<R> = (gear: Gear, index: number, slotSize?: number) => R
+type EquipmentKeyWithoutExslot = "g1" | "g2" | "g3" | "g4" | "g5"
+type ExslotKey = "gx"
+export type EquipmentKey = EquipmentKeyWithoutExslot | ExslotKey
+
+export const getEquipmentKeys = (size: number) =>
+  range(size)
+    .map((index) => `g${index + 1}` as EquipmentKey)
+    .concat("gx")
+
+type GearIterateeArgsWithoutExslot = [Gear, EquipmentKeyWithoutExslot, number]
+type GearIterateeArgs = [Gear, EquipmentKey, number?]
+
+type GearIteratee<R> = (...args: GearIterateeArgs) => R
 
 type NumberKey = keyof PickByValue<Gear, number>
 
+export type EquipmentItem =
+  | {
+      key: EquipmentKeyWithoutExslot
+      gear?: Gear
+      currentSlotSize: number
+      maxSlotSize: number
+    }
+  | {
+      key: ExslotKey
+      gear?: Gear
+    }
+
 export type EquipmentState = {
-  slots?: number[]
-  gears?: NullableArray<GearState>
+  slots?: Partial<Record<EquipmentKey, number>>
+  gears?: Partial<Record<EquipmentKey, GearState>>
 }
 
 export type Equipment = {
-  src: NullableArray<Gear>
-  size: number
-
-  defaultSlots: number[]
-  currentSlots: number[]
+  items: EquipmentItem[]
 
   gears: Gear[]
 
@@ -37,22 +58,25 @@ export type Equipment = {
 }
 
 export class EquipmentImpl implements Equipment {
-  public readonly size: number
-  public readonly gears: Gear[]
+  public readonly gears: Gear[] = []
 
-  private entries: Array<[Gear, number, number?]> = []
-  private aircraftEntries: Array<[Gear, number, number?]> = []
+  private entries: GearIterateeArgs[] = []
+  private aircraftEntries: GearIterateeArgsWithoutExslot[] = []
 
-  constructor(public src: NullableArray<Gear>, public defaultSlots: number[], public currentSlots = defaultSlots) {
-    this.size = defaultSlots.length + 1
-    this.gears = src.filter(isNonNullable)
+  constructor(public items: EquipmentItem[]) {
+    items.forEach((item) => {
+      if (!item.gear) return
 
-    src.forEach((gear, index) => {
-      if (gear) this.entries.push([gear, index, currentSlots[index]])
-    })
+      this.gears.push(item.gear)
 
-    this.entries.forEach((entry) => {
-      if (entry[0].in("Aircraft")) this.aircraftEntries.push(entry)
+      if (item.key === "gx") {
+        this.entries.push([item.gear, item.key])
+      } else {
+        const entry: GearIterateeArgsWithoutExslot = [item.gear, item.key, item.currentSlotSize]
+        this.entries.push(entry)
+
+        if (item.gear.in("Aircraft")) this.aircraftEntries.push(entry)
+      }
     })
   }
 
