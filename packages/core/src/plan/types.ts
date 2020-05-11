@@ -3,6 +3,7 @@ import { AirbaseState, Airbase } from "../airbase"
 
 export type PlanState = {
   name: string
+
   fleets: FleetState[]
   airbases?: AirbaseState[]
 }

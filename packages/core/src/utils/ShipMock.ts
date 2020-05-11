@@ -31,6 +31,8 @@ export class ShipMock extends ShipStatsStub implements Ship {
   public shipType = 0
   public shipClass = 0
 
+  public state = {} as any
+
   public equipment = new EquipmentMock()
 
   public is = jest.fn()

@@ -12,6 +12,8 @@ export type GearState = {
 export type Gear = Readonly<
   Required<GearState> &
     GearBase & {
+      state: GearState
+
       hasProficiency: boolean
       ace: number
       deck: DeckGear
@@ -56,7 +58,7 @@ export class GearImpl implements Gear {
   public readonly maxHp = this.base.maxHp
   public readonly speed = this.base.speed
 
-  constructor(private state: GearState, private base: GearBase, public readonly improvement: ImprovementBonuses) {}
+  constructor(public state: GearState, private base: GearBase, public readonly improvement: ImprovementBonuses) {}
 
   get hasProficiency() {
     return this.in("Seaplane", "CbAircraft", "LbAircraft", "JetAircraft")
