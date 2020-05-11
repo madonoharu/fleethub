@@ -1,6 +1,9 @@
 import { EntityId } from "@reduxjs/toolkit"
 import { createSelectorCreator, defaultMemoize } from "reselect"
 import { shallowEqual } from "react-redux"
+import { Draft } from "immer"
+
+export type Update<T> = (f: (draft: Draft<T>) => void) => void
 
 export const withSign = (num?: number) => {
   if (!num) return ""
