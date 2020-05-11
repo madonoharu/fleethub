@@ -51,7 +51,7 @@ export default class Factory {
   public createFleet = (state: FleetState) => {
     const ships = state.ships.map((shipState) => shipState && this.createShip(shipState))
 
-    return new FleetImpl(ships)
+    return new FleetImpl(state, ships)
   }
 
   public createAirbase = (state: AirbaseState) => {

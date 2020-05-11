@@ -46,6 +46,8 @@ export class GearStub extends GearBaseStub implements Gear {
   public static from = (src: Partial<Gear>) => Object.assign(new GearStub(), src)
   public static fromAttrs = (...attrs: GearAttribute[]) => GearBaseStub.from({ attrs })
 
+  public state = {} as any
+
   public stars = NaN
   public exp = NaN
   public ace = NaN

@@ -1,11 +1,13 @@
 import { Equipment } from "../equipment"
 import { GearBase } from "../gear"
 
-import { ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
+import { ShipState, ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
 import { GearId, ShipClass, ShipId } from "@fleethub/data"
 
 export type Ship = ShipCommonBase &
   ShipStats & {
+    state: ShipState
+
     equipment: Equipment
     canEquip: (index: number, gear: GearBase) => boolean
     createNextBonusesGetter: (excludedIndex: number) => (gear: GearBase) => EquipmentBonuses
@@ -51,6 +53,7 @@ export class ShipImpl implements Ship {
   public readonly canEquip = this.base.canEquip
 
   constructor(
+    public state: ShipState,
     private base: ShipCommonBase,
     private stats: ShipStats,
     public equipment: Ship["equipment"],
