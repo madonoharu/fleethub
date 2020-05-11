@@ -11,6 +11,7 @@ import {
   ClearButton,
   GearTooltip,
 } from "../../../components"
+import { Update } from "../../../utils"
 
 type Props = {
   className?: string
@@ -19,8 +20,9 @@ type Props = {
   gear: Gear
   equippable?: boolean
 
+  update?: Update<GearState>
+
   onRemove?: () => void
-  onUpdate?: (changes: Partial<GearState>) => void
   onReselect?: () => void
 }
 
@@ -31,17 +33,26 @@ export const GearLabel: React.FC<Props> = ({
   gear,
   equippable = true,
 
-  onUpdate,
+  update,
+
   onRemove,
   onReselect,
 }) => {
-  const { handleStarsChange, handleExpChange } = React.useMemo(
-    () => ({
-      handleStarsChange: (stars: number) => onUpdate && onUpdate({ stars }),
-      handleExpChange: (exp: number) => onUpdate && onUpdate({ exp }),
-    }),
-    [onUpdate]
-  )
+  const { handleStarsChange, handleExpChange } = React.useMemo(() => {
+    if (!update) return {}
+
+    const handleStarsChange = (stars: number) =>
+      update((draft) => {
+        draft.stars = stars
+      })
+
+    const handleExpChange = (exp: number) =>
+      update((draft) => {
+        draft.exp = exp
+      })
+
+    return { handleStarsChange, handleExpChange }
+  }, [update])
 
   return (
     <Flexbox className={className} style={style}>
