@@ -1,9 +1,14 @@
-import { Gear } from "../gear"
+import { Gear, GearState } from "../gear"
 import { NullableArray, PickByValue, isNonNullable } from "../utils"
 
 type GearIteratee<R> = (gear: Gear, index: number, slotSize?: number) => R
 
 type NumberKey = keyof PickByValue<Gear, number>
+
+export type EquipmentState = {
+  slots?: number[]
+  gears?: NullableArray<GearState>
+}
 
 export type Equipment = {
   src: NullableArray<Gear>
