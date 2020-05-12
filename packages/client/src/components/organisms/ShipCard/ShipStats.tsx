@@ -23,10 +23,9 @@ const keys = [
 
 type Props = {
   ship: Ship
-  onUpdate: (changes: ShipChanges) => void
 }
 
-const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
+const ShipStats: React.FCX<Props> = ({ className, ship }) => {
   return (
     <div className={className}>
       {keys.map((statKey) => (

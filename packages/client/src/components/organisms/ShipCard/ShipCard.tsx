@@ -1,12 +1,12 @@
 import React from "react"
 import styled from "styled-components"
-import { EntityId } from "@reduxjs/toolkit"
-import { Ship, NullableArray } from "@fleethub/core"
+import { Ship, ShipState } from "@fleethub/core"
 
 import { Box, Paper } from "@material-ui/core"
 
-import { EquipmentSlotList, ShipBanner } from "../../../components"
+import { EquipmentList, ShipBanner } from "../../../components"
 import { ShipEntity } from "../../../store"
+import { Update } from "../../../utils"
 
 import ShipHeader from "./Header"
 import ShipStats from "./ShipStats"
@@ -24,17 +24,18 @@ const Content = styled.div`
 
 type Props = {
   ship: Ship
-  gears: NullableArray<EntityId>
-  onAddGear: (index: number) => void
+  update: Update<ShipState>
+
   onRemove: () => void
-  onUpdate: (changes: Partial<ShipEntity>) => void
-  onSlotsChange: (slots: number[]) => void
 }
 
-const ShipCard: React.FCX<Props> = ({ className, ship, gears, onAddGear, onUpdate, onRemove, onSlotsChange }) => {
+const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
   const handleLevelChange = (level: number) => {
-    onUpdate({ level })
+    update((draft) => {
+      draft.level = level
+    })
   }
+
   return (
     <Paper className={className}>
       <ShipHeader name={ship.name} level={ship.level} onLevelChange={handleLevelChange} onRemove={onRemove} />
@@ -42,16 +43,10 @@ const ShipCard: React.FCX<Props> = ({ className, ship, gears, onAddGear, onUpdat
       <Content>
         <Box width={128}>
           <ShipBanner shipId={ship.shipId} />
-          <ShipStats ship={ship} onUpdate={onUpdate} />
+          <ShipStats ship={ship} />
         </Box>
 
-        <EquipmentSlotList
-          currentSlots={ship.equipment.currentSlots}
-          initalSlots={ship.equipment.defaultSlots}
-          gears={gears}
-          onAdd={onAddGear}
-          onSlotsChange={onSlotsChange}
-        />
+        <EquipmentList equipment={ship.equipment} update={update} />
       </Content>
     </Paper>
   )
