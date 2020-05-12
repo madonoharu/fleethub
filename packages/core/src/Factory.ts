@@ -33,17 +33,16 @@ export default class Factory {
   }
 
   private createEquipment = (state: EquipmentState, maxSlots: number[]) => {
-    const stateGears = state.gears || {}
-    const stateSlots = state.slots || {}
+    const { g1, g2, g3, g4, g5, gx, slot1, slot2, slot3, slot4, slot5 } = state
 
-    const items: EquipmentItem[] = getEquipmentKeys(maxSlots.length).map((key, index) => {
-      const gearState = stateGears[key]
+    const items: EquipmentItem[] = getEquipmentKeys(maxSlots.length).map(([key, slotKey], index) => {
+      const gearState = state[key]
       const gear = gearState && this.createGear(gearState)
 
       if (key === "gx") return { key, gear }
 
       const maxSlotSize = maxSlots[index]
-      const currentSlotSize = stateSlots[key] ?? maxSlotSize
+      const currentSlotSize = state[slotKey] ?? maxSlotSize
 
       return { key, gear, currentSlotSize, maxSlotSize }
     })
