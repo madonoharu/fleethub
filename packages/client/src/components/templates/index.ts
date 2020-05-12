@@ -1,4 +1,4 @@
-export { default as PlanEditor } from "./PlanEditor"
+export { default as FleetEditor } from "./FleetEditor"
 
 export { default as FleetPanel } from "./FleetPanel"
 export { default as PlanPanel } from "./PlanPanel"
