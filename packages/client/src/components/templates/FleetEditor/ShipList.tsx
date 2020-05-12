@@ -5,16 +5,19 @@ import { NullableArray, Ship, ShipState, FleetState } from "@fleethub/core"
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
 import { ShipCard } from "../../../components"
-import { useShipSelectActions } from "../../../hooks"
+import { useShipSelectActions, useFhSystem } from "../../../hooks"
 import { Update } from "../../../utils"
 
 type ConnectedShipCardProps = {
-  ship?: Ship
+  state?: ShipState
   index: number
   updateFleet: Update<FleetState>
 }
 
-const useFleetShip = ({ index, updateFleet }: ConnectedShipCardProps) => {
+const useFleetShip = ({ state, index, updateFleet }: ConnectedShipCardProps) => {
+  const fhSystem = useFhSystem()
+  const ship = state && fhSystem.createShip(state)
+
   const shipSelectActions = useShipSelectActions()
 
   const { openShipSelect, updateShip } = React.useMemo(() => {
@@ -36,12 +39,11 @@ const useFleetShip = ({ index, updateFleet }: ConnectedShipCardProps) => {
     return { openShipSelect, updateShip }
   }, [index, updateFleet, shipSelectActions])
 
-  return { openShipSelect, updateShip }
+  return { openShipSelect, updateShip, ship }
 }
 
 const ConnectedShipCard: React.FC<ConnectedShipCardProps> = (props) => {
-  const { openShipSelect, updateShip } = useFleetShip(props)
-  const { ship } = props
+  const { openShipSelect, updateShip, ship } = useFleetShip(props)
 
   if (!ship) return <Button onClick={openShipSelect}>add</Button>
 
@@ -49,7 +51,7 @@ const ConnectedShipCard: React.FC<ConnectedShipCardProps> = (props) => {
 }
 
 type Props = {
-  ships: NullableArray<Ship>
+  ships: NullableArray<ShipState>
   updateFleet: Update<FleetState>
 }
 
@@ -57,7 +59,7 @@ const ShipList: React.FCX<Props> = React.memo(({ className, ships, updateFleet }
   return (
     <div className={className}>
       {ships.map((ship, index) => (
-        <ConnectedShipCard key={index} ship={ship} index={index} updateFleet={updateFleet} />
+        <ConnectedShipCard key={index} state={ship} index={index} updateFleet={updateFleet} />
       ))}
     </div>
   )
