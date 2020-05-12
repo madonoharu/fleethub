@@ -1,10 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import entitiesSlice from "./entities"
-import shipSelectSlice from "./shipSelectSlice"
 
 const rootReducer = combineReducers({
   entities: entitiesSlice.reducer,
-  shipSelect: shipSelectSlice.reducer,
 })
 
 export type StoreState = ReturnType<typeof rootReducer>
@@ -17,7 +15,6 @@ export const setupStore = () => {
 }
 
 export * from "./entities"
-export * from "./shipSelectSlice"
-export { entitiesSlice, shipSelectSlice }
+export { entitiesSlice }
 
 export type AppDispatch = ReturnType<typeof setupStore>["dispatch"]
