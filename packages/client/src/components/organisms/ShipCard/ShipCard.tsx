@@ -26,7 +26,7 @@ type Props = {
   ship: Ship
   update: Update<ShipState>
 
-  onRemove: () => void
+  onRemove?: () => void
 }
 
 const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {

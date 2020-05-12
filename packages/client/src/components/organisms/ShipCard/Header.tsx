@@ -11,7 +11,7 @@ type Props = {
   name: string
   level: number
   onLevelChange: (level: number) => void
-  onRemove: () => void
+  onRemove?: () => void
 }
 
 const Component: React.FCX<Props> = ({ className, name, level, onLevelChange, onRemove }) => {
