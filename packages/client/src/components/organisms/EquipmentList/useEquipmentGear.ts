@@ -6,11 +6,11 @@ import { Update } from "../../../utils"
 
 export type EquipmentGearProps = {
   state?: GearState
-  key: EquipmentKey
+  equipmentKey: EquipmentKey
   updateEquipment: Update<EquipmentState>
 }
 
-export const useEquipmentGear = ({ state, key, updateEquipment }: EquipmentGearProps) => {
+export const useEquipmentGear = ({ state, equipmentKey: key, updateEquipment }: EquipmentGearProps) => {
   const gearSelectActions = useGearSelectActions()
   const fhSystem = useFhSystem()
 
@@ -31,9 +31,11 @@ export const useEquipmentGear = ({ state, key, updateEquipment }: EquipmentGearP
     }
 
     const changeSlotSize = (next: number) => {
-      updateEquipment(({ slots }) => {
-        if (!slots) return
-        slots[key] = next
+      updateEquipment((draft) => {
+        if (!draft.slots) {
+          draft.slots = {}
+        }
+        draft.slots[key] = next
       })
     }
 

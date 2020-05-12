@@ -19,6 +19,7 @@ const EquipmentList: React.FCX<Props> = ({ className, equipment, update }) => {
       {equipment.items.map((item) => (
         <EquipmentListItem
           key={item.key}
+          equipmentKey={item.key}
           state={item.gear?.state}
           currentSlotSize={item.currentSlotSize}
           maxSlotSize={item.maxSlotSize}
