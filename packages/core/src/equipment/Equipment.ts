@@ -12,13 +12,16 @@ export const getEquipmentSlotKey = (gearKey: EquipmentGearKey) => {
   return gearKey.replace("g", "slot") as EquipmentSlotKey
 }
 
-export const getEquipmentKeys = (size: number) =>
-  range(size)
-    .map((index) => {
-      const num = index + 1
-      return [`g${num}`, `slot${num}`] as [EquipmentGearKey, EquipmentSlotKey]
-    })
-    .concat(["gx", "exslot"])
+export const getEquipmentKeys = (size: number) => {
+  const keys = range(size).map((index) => {
+    const num = index + 1
+    return [`g${num}`, `slot${num}`] as [EquipmentGearKey, EquipmentSlotKey]
+  })
+
+  keys.push(["gx", "exslot"])
+
+  return keys
+}
 
 type GearIterateeArgsWithoutExslot = [Gear, EquipmentGearKeyWithoutExslot, number]
 type GearIterateeArgs = [Gear, EquipmentGearKey, number?]
