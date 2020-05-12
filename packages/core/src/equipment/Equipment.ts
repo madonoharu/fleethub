@@ -28,6 +28,8 @@ export type EquipmentItem =
   | {
       key: ExslotKey
       gear?: Gear
+      currentSlotSize: undefined
+      maxSlotSize: undefined
     }
 
 export type EquipmentState = {

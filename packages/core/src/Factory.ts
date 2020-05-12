@@ -40,6 +40,8 @@ export default class Factory {
       const gearState = stateGears[key]
       const gear = gearState && this.createGear(gearState)
 
+      if (key === "gx") return { key, gear }
+
       const maxSlotSize = maxSlots[index]
       const currentSlotSize = stateSlots[key] || maxSlotSize
 
