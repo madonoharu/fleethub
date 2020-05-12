@@ -43,7 +43,7 @@ export default class Factory {
       if (key === "gx") return { key, gear }
 
       const maxSlotSize = maxSlots[index]
-      const currentSlotSize = stateSlots[key] || maxSlotSize
+      const currentSlotSize = stateSlots[key] ?? maxSlotSize
 
       return { key, gear, currentSlotSize, maxSlotSize }
     })
