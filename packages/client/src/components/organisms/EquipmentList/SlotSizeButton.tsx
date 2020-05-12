@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { Box, Slider, Button, Tooltip, Dialog, DialogTitle, DialogContent } from "@material-ui/core"
 import BuildIcon from "@material-ui/icons/Build"
 
-import { NumberInput } from "../../../components"
+import { NumberInput } from "../.."
 import { useOpen } from "../../../hooks"
 
 type SlotSizeFormProps = {
@@ -37,7 +37,7 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({ current, max, onChange }) =
   )
 }
 
-type Props = SlotSizeFormProps & {
+type Props = Partial<SlotSizeFormProps> & {
   disabled?: boolean
 }
 
