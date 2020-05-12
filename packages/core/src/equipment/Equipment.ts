@@ -7,6 +7,11 @@ export type EquipmentSlotKey = "slot1" | "slot2" | "slot3" | "slot4" | "slot5" |
 type EquipmentGearKeyWithoutExslot = "g1" | "g2" | "g3" | "g4" | "g5"
 export type EquipmentGearKey = EquipmentGearKeyWithoutExslot | "gx"
 
+export const getEquipmentSlotKey = (gearKey: EquipmentGearKey) => {
+  if (gearKey === "gx") return "exslot"
+  return gearKey.replace("g", "slot") as EquipmentSlotKey
+}
+
 export const getEquipmentKeys = (size: number) =>
   range(size)
     .map((index) => {
