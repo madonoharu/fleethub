@@ -1,4 +1,4 @@
-import { Equipment, EquipmentKey } from "../equipment"
+import { Equipment, EquipmentGearKey } from "../equipment"
 import { GearBase } from "../gear"
 
 import { ShipState, ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
@@ -10,7 +10,7 @@ export type Ship = ShipCommonBase &
 
     equipment: Equipment
     canEquip: (index: number, gear: GearBase) => boolean
-    createNextBonusesGetter: (excludedKey: EquipmentKey) => (gear: GearBase) => EquipmentBonuses
+    createNextBonusesGetter: (excludedKey: EquipmentGearKey) => (gear: GearBase) => EquipmentBonuses
 
     fleetLosFactor: number
     cruiserFitBonus: number

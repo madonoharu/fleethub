@@ -2,17 +2,21 @@ import { Gear, GearState } from "../gear"
 import { PickByValue } from "../utils"
 import { range } from "lodash-es"
 
-type EquipmentKeyWithoutExslot = "g1" | "g2" | "g3" | "g4" | "g5"
-type ExslotKey = "gx"
-export type EquipmentKey = EquipmentKeyWithoutExslot | ExslotKey
+export type EquipmentSlotKey = "slot1" | "slot2" | "slot3" | "slot4" | "slot5" | "exslot"
+
+type EquipmentGearKeyWithoutExslot = "g1" | "g2" | "g3" | "g4" | "g5"
+export type EquipmentGearKey = EquipmentGearKeyWithoutExslot | "gx"
 
 export const getEquipmentKeys = (size: number) =>
   range(size)
-    .map((index) => `g${index + 1}` as EquipmentKey)
-    .concat("gx")
+    .map((index) => {
+      const num = index + 1
+      return [`g${num}`, `slot${num}`] as [EquipmentGearKey, EquipmentSlotKey]
+    })
+    .concat(["gx", "exslot"])
 
-type GearIterateeArgsWithoutExslot = [Gear, EquipmentKeyWithoutExslot, number]
-type GearIterateeArgs = [Gear, EquipmentKey, number?]
+type GearIterateeArgsWithoutExslot = [Gear, EquipmentGearKeyWithoutExslot, number]
+type GearIterateeArgs = [Gear, EquipmentGearKey, number?]
 
 type GearIteratee<R> = (...args: GearIterateeArgs) => R
 
@@ -20,22 +24,19 @@ type NumberKey = keyof PickByValue<Gear, number>
 
 export type EquipmentItem =
   | {
-      key: EquipmentKeyWithoutExslot
+      key: EquipmentGearKeyWithoutExslot
       gear?: Gear
       currentSlotSize: number
       maxSlotSize: number
     }
   | {
-      key: ExslotKey
+      key: "gx"
       gear?: Gear
       currentSlotSize: undefined
       maxSlotSize: undefined
     }
 
-export type EquipmentState = {
-  slots?: Partial<Record<EquipmentKey, number>>
-  gears?: Partial<Record<EquipmentKey, GearState>>
-}
+export type EquipmentState = Partial<Record<EquipmentSlotKey, number> & Record<EquipmentGearKey, GearState>>
 
 export type Equipment = {
   items: EquipmentItem[]
