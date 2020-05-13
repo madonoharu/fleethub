@@ -33,6 +33,7 @@ export const useRenderCount = () => {
 export * from "./handlers"
 
 export * from "./useFhSystem"
+export * from "./useCachedFhFactory"
 
 export * from "./useGear"
 export * from "./useShip"
