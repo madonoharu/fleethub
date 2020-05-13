@@ -5,7 +5,6 @@ import { Ship, ShipState } from "@fleethub/core"
 import { Box, Paper } from "@material-ui/core"
 
 import { EquipmentList, ShipBanner } from "../../../components"
-import { ShipEntity } from "../../../store"
 import { Update } from "../../../utils"
 
 import ShipHeader from "./Header"
@@ -52,7 +51,7 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
   )
 }
 
-export default styled(ShipCard)`
+const Styled = styled(ShipCard)`
   min-height: ${24 * 7}px;
 
   ${ShipHeader} svg {
@@ -63,3 +62,5 @@ export default styled(ShipCard)`
     opacity: 1;
   }
 `
+
+export default React.memo(Styled)
