@@ -1,23 +1,21 @@
 import React from "react"
-import { FleetState, ShipState } from "@fleethub/core"
+import { FleetState, Fleet } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
-import { ShipCard } from "../../../components"
-import { useShipSelectActions, useFhSystem } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import ShipList from "./ShipList"
 
 type Props = {
-  state: FleetState
+  fleet: Fleet
   update: Update<FleetState>
 }
 
-const FleetEditor: React.FC<Props> = ({ state, update }) => {
+const FleetEditor: React.FC<Props> = ({ fleet, update }) => {
   return (
     <Paper>
-      <ShipList ships={state.ships} updateFleet={update} />
+      <ShipList ships={fleet.ships} updateFleet={update} />
     </Paper>
   )
 }

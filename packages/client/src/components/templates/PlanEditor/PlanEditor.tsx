@@ -1,11 +1,11 @@
 import React from "react"
-import { PlanState, FleetState, ShipState } from "@fleethub/core"
+import { PlanState, FleetState } from "@fleethub/core"
 import produce, { Draft } from "immer"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
 import { FleetEditor } from "../../../components"
-import { useShipSelectActions, useFhSystem } from "../../../hooks"
+import { useCachedFhFactory } from "../../../hooks"
 
 const getFleetState = (): FleetState => ({
   ships: [...Array(6)],
@@ -25,7 +25,10 @@ const PlanEditor: React.FC = (props) => {
 
   const update: Update<PlanState> = React.useCallback((updater) => setState(produce(updater)), [])
 
+  const { createFleet } = useCachedFhFactory()
+
   const fleetState = state.fleets[fleetIndex]
+  const fleet = createFleet(fleetState)
 
   const updateFleet: Update<FleetState> = React.useCallback(
     (updater) => {
@@ -35,8 +38,8 @@ const PlanEditor: React.FC = (props) => {
   )
 
   const fleetElement = React.useMemo(() => {
-    return <FleetEditor state={fleetState} update={updateFleet} />
-  }, [fleetState, updateFleet])
+    return <FleetEditor fleet={fleet} update={updateFleet} />
+  }, [fleet, updateFleet])
 
   return (
     <Container>

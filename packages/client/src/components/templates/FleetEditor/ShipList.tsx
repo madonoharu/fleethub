@@ -2,56 +2,60 @@ import React from "react"
 import styled from "styled-components"
 import { NullableArray, Ship, ShipState, FleetState } from "@fleethub/core"
 
-import { Container, Paper, TextField, Button } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 
 import { ShipCard } from "../../../components"
-import { useShipSelectActions, useFhSystem } from "../../../hooks"
+import { useShipSelectActions } from "../../../hooks"
 import { Update } from "../../../utils"
 
 type ConnectedShipCardProps = {
-  state?: ShipState
+  ship?: Ship
   index: number
   updateFleet: Update<FleetState>
 }
 
-const useFleetShip = ({ state, index, updateFleet }: ConnectedShipCardProps) => {
-  const fhSystem = useFhSystem()
-  const ship = state && fhSystem.createShip(state)
-
+const useFleetShip = ({ index, updateFleet }: ConnectedShipCardProps) => {
   const shipSelectActions = useShipSelectActions()
 
-  const { openShipSelect, updateShip } = React.useMemo(() => {
-    const createShip = (shipState: ShipState) => {
+  const actions = React.useMemo(() => {
+    const create = (shipState: ShipState) => {
       updateFleet((draft) => {
         draft.ships[index] = shipState
       })
     }
 
-    const openShipSelect = () => shipSelectActions.open(createShip)
+    const openShipSelect = () => shipSelectActions.open(create)
 
-    const updateShip: Update<ShipState> = (updater) => {
+    const remove = () => {
+      updateFleet((draft) => {
+        draft.ships[index] = undefined
+      })
+    }
+
+    const update: Update<ShipState> = (updater) => {
       updateFleet((draft) => {
         const next = draft.ships[index]
         next && updater(next)
       })
     }
 
-    return { openShipSelect, updateShip }
+    return { openShipSelect, create, update, remove }
   }, [index, updateFleet, shipSelectActions])
 
-  return { openShipSelect, updateShip, ship }
+  return { actions }
 }
 
 const ConnectedShipCard: React.FC<ConnectedShipCardProps> = (props) => {
-  const { openShipSelect, updateShip, ship } = useFleetShip(props)
+  const { ship } = props
+  const { actions } = useFleetShip(props)
 
-  if (!ship) return <Button onClick={openShipSelect}>add</Button>
+  if (!ship) return <Button onClick={actions.openShipSelect}>add</Button>
 
-  return <ShipCard ship={ship} update={updateShip} />
+  return <ShipCard ship={ship} update={actions.update} onRemove={actions.remove} />
 }
 
 type Props = {
-  ships: NullableArray<ShipState>
+  ships: NullableArray<Ship>
   updateFleet: Update<FleetState>
 }
 
@@ -59,7 +63,7 @@ const ShipList: React.FCX<Props> = React.memo(({ className, ships, updateFleet }
   return (
     <div className={className}>
       {ships.map((ship, index) => (
-        <ConnectedShipCard key={index} state={ship} index={index} updateFleet={updateFleet} />
+        <ConnectedShipCard key={index} ship={ship} index={index} updateFleet={updateFleet} />
       ))}
     </div>
   )
