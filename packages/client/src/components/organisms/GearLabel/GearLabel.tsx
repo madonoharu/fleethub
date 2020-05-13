@@ -14,27 +14,21 @@ import {
 import { Update } from "../../../utils"
 
 type Props = {
-  className?: string
-  style?: React.CSSProperties
-
   gear: Gear
   equippable?: boolean
 
   update?: Update<GearState>
-
   onRemove?: () => void
   onReselect?: () => void
 }
 
-export const GearLabel: React.FC<Props> = ({
+export const GearLabel: React.FCX<Props> = ({
   className,
-  style,
 
   gear,
   equippable = true,
 
   update,
-
   onRemove,
   onReselect,
 }) => {
@@ -55,7 +49,7 @@ export const GearLabel: React.FC<Props> = ({
   }, [update])
 
   return (
-    <Flexbox className={className} style={style}>
+    <Flexbox className={className}>
       <GearTooltip gear={gear}>
         <div>
           <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
