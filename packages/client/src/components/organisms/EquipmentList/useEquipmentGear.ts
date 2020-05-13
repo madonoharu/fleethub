@@ -21,11 +21,7 @@ export const useEquipmentGear = ({ state, gearKey, updateEquipment }: EquipmentG
       })
     }
 
-    const openGearSelect = () => {
-      gearSelectActions.update({
-        onSelect: createGear,
-      })
-    }
+    const openGearSelect = () => gearSelectActions.open(createGear)
 
     const slotKey = getEquipmentSlotKey(gearKey)
 

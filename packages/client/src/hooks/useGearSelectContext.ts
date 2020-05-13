@@ -26,7 +26,20 @@ export const useGearSelectState = () => {
 
     const close = () => update({ onSelect: undefined, canEquip: undefined, getBonuses: undefined })
 
-    return { update, close, setState }
+    const open = (
+      create: (state: GearState) => void,
+      canEquip?: GearSelectState["canEquip"],
+      getBonuses?: GearSelectState["getBonuses"]
+    ) => {
+      const onSelect: GearSelectState["onSelect"] = (state) => {
+        create(state)
+        close()
+      }
+
+      update({ onSelect, canEquip, getBonuses })
+    }
+
+    return { update, close, open, setState }
   }, [setState])
 
   return { state, actions }
