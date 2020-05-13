@@ -1,21 +1,22 @@
 import React from "react"
-import { GearState, EquipmentState, NullableArray } from "@fleethub/core"
+import { Gear, EquipmentState, NullableArray } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
-import { GearLabel, Flexbox } from "../.."
+import { GearLabel, Flexbox } from "../../../components"
 
 import SlotSizeButton from "./SlotSizeButton"
 import AddGearButton from "./AddGearButton"
 import { useEquipmentGear, EquipmentGearProps } from "./useEquipmentGear"
 
 type Props = EquipmentGearProps & {
+  gear?: Gear
   currentSlotSize?: number
   maxSlotSize?: number
 }
 
-const EquipmentListItem: React.FCX<Props> = ({ className, currentSlotSize, maxSlotSize, ...rest }) => {
-  const { gear, openGearSelect, updateGear, changeSlotSize, remove } = useEquipmentGear(rest)
+const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize, maxSlotSize, ...rest }) => {
+  const { openGearSelect, updateGear, changeSlotSize, remove } = useEquipmentGear(rest)
 
   return (
     <Flexbox className={className}>
