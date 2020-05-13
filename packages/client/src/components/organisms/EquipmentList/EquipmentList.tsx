@@ -20,7 +20,7 @@ const EquipmentList: React.FCX<Props> = ({ className, equipment, update }) => {
         <EquipmentListItem
           key={item.key}
           gearKey={item.key}
-          state={item.gear?.state}
+          gear={item.gear}
           currentSlotSize={item.currentSlotSize}
           maxSlotSize={item.maxSlotSize}
           updateEquipment={update}

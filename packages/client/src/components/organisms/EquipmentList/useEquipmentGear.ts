@@ -1,20 +1,19 @@
 import { useMemo } from "react"
 import { GearState, EquipmentState, EquipmentGearKey, getEquipmentSlotKey } from "@fleethub/core"
 
-import { useGearSelectActions, useFhSystem } from "../../../hooks"
+import { useGearSelectActions } from "../../../hooks"
 import { Update } from "../../../utils"
 
 export type EquipmentGearProps = {
-  state?: GearState
   gearKey: EquipmentGearKey
   updateEquipment: Update<EquipmentState>
 }
 
-export const useEquipmentGear = ({ state, gearKey, updateEquipment }: EquipmentGearProps) => {
+export const useEquipmentGear = ({ gearKey, updateEquipment }: EquipmentGearProps) => {
   const gearSelectActions = useGearSelectActions()
-  const fhSystem = useFhSystem()
 
   const actions = useMemo(() => {
+    console.log(gearKey)
     const createGear = (gearState: GearState) => {
       updateEquipment((draft) => {
         draft[gearKey] = gearState
@@ -46,7 +45,5 @@ export const useEquipmentGear = ({ state, gearKey, updateEquipment }: EquipmentG
     return { openGearSelect, updateGear, changeSlotSize, remove }
   }, [gearKey, updateEquipment, gearSelectActions])
 
-  const gear = state && fhSystem.createGear(state)
-
-  return { gear, ...actions }
+  return actions
 }
