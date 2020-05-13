@@ -6,6 +6,26 @@ import { EquipmentImpl, EquipmentState, EquipmentItem, getEquipmentKeys } from "
 import { FleetState, FleetImpl } from "./fleet"
 import { AirbaseState, AirbaseImpl } from "./airbase"
 
+const createEquipment = (
+  state: EquipmentState,
+  maxSlots: number[],
+  createGear: (state: GearState) => GearImpl | undefined
+) => {
+  const items: EquipmentItem[] = getEquipmentKeys(maxSlots.length).map(([key, slotKey], index) => {
+    const gearState = state[key]
+    const gear = gearState && createGear(gearState)
+
+    if (key === "gx") return { key, gear }
+
+    const maxSlotSize = maxSlots[index]
+    const currentSlotSize = state[slotKey] ?? maxSlotSize
+
+    return { key, gear, currentSlotSize, maxSlotSize }
+  })
+
+  return new EquipmentImpl(items)
+}
+
 export type FactoryRawData = {
   gears: GearData[]
   ships: ShipData[]
@@ -32,39 +52,25 @@ export default class Factory {
     return new GearImpl(state, base, improvement)
   }
 
-  private createEquipment = (state: EquipmentState, maxSlots: number[]) => {
-    const items: EquipmentItem[] = getEquipmentKeys(maxSlots.length).map(([key, slotKey], index) => {
-      const gearState = state[key]
-      const gear = gearState && this.createGear(gearState)
-
-      if (key === "gx") return { key, gear }
-
-      const maxSlotSize = maxSlots[index]
-      const currentSlotSize = state[slotKey] ?? maxSlotSize
-
-      return { key, gear, currentSlotSize, maxSlotSize }
-    })
-
-    return new EquipmentImpl(items)
-  }
-
-  public createShip = (state: ShipState) => {
+  public createShip = (state: ShipState, createGear = this.createGear) => {
     const { shipId } = state
     const base = this.findMasterShip(shipId)
     if (!base) return
 
-    const equipment = this.createEquipment(state, base.slots)
+    const equipment = createEquipment(state, base.slots, createGear)
 
     return createShip(state, base, equipment)
   }
 
-  public createFleet = (state: FleetState) => {
-    const ships = state.ships.map((shipState) => shipState && this.createShip(shipState))
+  public createFleet = (state: FleetState, createShip = this.createShip) => {
+    const ships = state.ships.map((shipState) => shipState && createShip(shipState))
 
     return new FleetImpl(state, ships)
   }
 
-  public createAirbase = (state: AirbaseState) => {
-    return new AirbaseImpl(this.createEquipment(state, [18, 18, 18, 18]))
+  public createAirbase = (state: AirbaseState, createGear = this.createGear) => {
+    const equipment = createEquipment(state, [18, 18, 18, 18], createGear)
+
+    return new AirbaseImpl(equipment)
   }
 }
