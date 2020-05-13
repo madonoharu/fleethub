@@ -1,10 +1,9 @@
 import React from "react"
 
-import { Checkbox, Typography, FormControlLabel } from "@material-ui/core"
+import { Checkbox, FormControlLabel } from "@material-ui/core"
 
 import { SelectButtons, Flexbox } from "../../../components"
-import { shipTypeFilterKeys } from "../../../hooks"
-import { ShipSelectState } from "../../../store"
+import { shipTypeFilterKeys, ShipSelectState } from "../../../hooks"
 
 type Props = {
   state: ShipSelectState
