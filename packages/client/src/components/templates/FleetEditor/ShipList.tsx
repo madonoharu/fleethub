@@ -14,10 +14,10 @@ type ConnectedShipCardProps = {
   updateFleet: Update<FleetState>
 }
 
-const useFleetShip = ({ index, updateFleet }: ConnectedShipCardProps) => {
+const useFleetShipActions = ({ index, updateFleet }: Pick<ConnectedShipCardProps, "index" | "updateFleet">) => {
   const shipSelectActions = useShipSelectActions()
 
-  const actions = React.useMemo(() => {
+  return React.useMemo(() => {
     const create = (shipState: ShipState) => {
       updateFleet((draft) => {
         draft.ships[index] = shipState
@@ -41,13 +41,10 @@ const useFleetShip = ({ index, updateFleet }: ConnectedShipCardProps) => {
 
     return { openShipSelect, create, update, remove }
   }, [index, updateFleet, shipSelectActions])
-
-  return { actions }
 }
 
-const ConnectedShipCard: React.FC<ConnectedShipCardProps> = (props) => {
-  const { ship } = props
-  const { actions } = useFleetShip(props)
+const ConnectedShipCard: React.FC<ConnectedShipCardProps> = ({ ship, ...rest }) => {
+  const actions = useFleetShipActions(rest)
 
   if (!ship) return <Button onClick={actions.openShipSelect}>add</Button>
 
