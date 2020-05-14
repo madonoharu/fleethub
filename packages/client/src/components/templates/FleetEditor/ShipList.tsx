@@ -43,13 +43,13 @@ const useFleetShipActions = ({ index, updateFleet }: Pick<ConnectedShipCardProps
   }, [index, updateFleet, shipSelectActions])
 }
 
-const ConnectedShipCard: React.FC<ConnectedShipCardProps> = ({ ship, ...rest }) => {
+const ConnectedShipCard: React.FC<ConnectedShipCardProps> = React.memo<ConnectedShipCardProps>(({ ship, ...rest }) => {
   const actions = useFleetShipActions(rest)
 
   if (!ship) return <Button onClick={actions.openShipSelect}>add</Button>
 
   return <ShipCard ship={ship} update={actions.update} onRemove={actions.remove} />
-}
+})
 
 type Props = {
   ships: NullableArray<Ship>

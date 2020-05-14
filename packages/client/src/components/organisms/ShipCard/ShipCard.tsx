@@ -63,4 +63,4 @@ const Styled = styled(ShipCard)`
   }
 `
 
-export default React.memo(Styled)
+export default Styled
