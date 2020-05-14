@@ -148,7 +148,7 @@ const subtract = (left: EquipmentBonuses, right: EquipmentBonuses): EquipmentBon
 export const createShipEquipmentBonuses = (ship: ShipIdentityWithSpeed, equipment: Equipment) => {
   const bonuses = createEquipmentBonuses(ship, equipment.gears)
 
-  const createNextBonusesGetter = (excludedKey: EquipmentGearKey) => {
+  const makeGetNextBonuses = (excludedKey: EquipmentGearKey) => {
     const filtered = equipment.filter((gear, key) => key !== excludedKey)
     const current = createEquipmentBonuses(ship, filtered)
 
@@ -158,5 +158,5 @@ export const createShipEquipmentBonuses = (ship: ShipIdentityWithSpeed, equipmen
     }
   }
 
-  return { bonuses, createNextBonusesGetter }
+  return { bonuses, makeGetNextBonuses }
 }

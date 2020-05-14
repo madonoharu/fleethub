@@ -40,7 +40,7 @@ export const useShip = (id: EntityId) => {
         gearSelectActions.close()
       },
       canEquip: (gear) => fhShip.canEquip(index, gear),
-      getBonuses: fhShip.createNextBonusesGetter(index),
+      getBonuses: fhShip.makeGetNextBonuses(index),
     })
   }
 
