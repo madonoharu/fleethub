@@ -8,8 +8,8 @@ import { ShipState, ShipCommonBaseWithStatsBase } from "./types"
 export type { ShipState }
 
 export const createShip = (state: ShipState, base: ShipCommonBaseWithStatsBase, equipment: Equipment) => {
-  const { bonuses, createNextBonusesGetter } = createShipEquipmentBonuses(base, equipment)
+  const { bonuses, makeGetNextBonuses } = createShipEquipmentBonuses(base, equipment)
   const stats = createShipStats(base, state, equipment, bonuses)
 
-  return new ShipImpl(state, base, stats, equipment, createNextBonusesGetter)
+  return new ShipImpl(state, base, stats, equipment, makeGetNextBonuses)
 }

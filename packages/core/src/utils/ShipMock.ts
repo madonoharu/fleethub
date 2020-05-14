@@ -37,7 +37,7 @@ export class ShipMock extends ShipStatsStub implements Ship {
 
   public is = jest.fn()
   public canEquip = jest.fn()
-  public createNextBonusesGetter = jest.fn()
+  public makeGetNextBonuses = jest.fn()
 
   public fleetLosFactor = 0
   public cruiserFitBonus = 0
