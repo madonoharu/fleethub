@@ -22,10 +22,7 @@ export const useCachedFhFactory = () => {
 
     const createShip = createCachedSelector(
       (state: ShipState) => state,
-      (state) => {
-        console.log("create ship", state)
-        return system.createShip(state, createGear)
-      }
+      (state) => system.createShip(state, createGear)
     )({
       keySelector: (state) => state,
       cacheObject: new LruMapCache({ cacheSize: shipCacheSize }),

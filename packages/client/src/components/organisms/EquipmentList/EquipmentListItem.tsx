@@ -23,7 +23,6 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
   const gearSelectActions = useGearSelectActions()
 
   return React.useMemo(() => {
-    console.log(gearKey)
     const createGear = (gearState: GearState) => {
       updateEquipment((draft) => {
         draft[gearKey] = gearState
