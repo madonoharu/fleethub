@@ -25,6 +25,7 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
   return React.useMemo(() => {
     const createGear = (gearState: GearState) => {
       updateEquipment((draft) => {
+        draft.g1?.gearId
         draft[gearKey] = gearState
       })
     }
@@ -33,13 +34,17 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
 
     const slotKey = getEquipmentSlotKey(gearKey)
 
-    const changeSlotSize = (next?: number) => {
+    const setSlotSize = (next?: number) => {
       updateEquipment((draft) => {
-        draft[slotKey] = next
+        if (next === undefined) {
+          delete draft[slotKey]
+        } else {
+          draft[slotKey] = next
+        }
       })
     }
 
-    const updateGear: Update<GearState> = (updater) =>
+    const update: Update<GearState> = (updater) =>
       updateEquipment((draft) => {
         const state = draft[gearKey]
         state && updater(state)
@@ -51,20 +56,20 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
       })
     }
 
-    return { openGearSelect, updateGear, changeSlotSize, remove }
+    return { openGearSelect, setSlotSize, update, remove }
   }, [gearKey, updateEquipment, gearSelectActions])
 }
 
 const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize, maxSlotSize, ...rest }) => {
-  const { openGearSelect, updateGear, changeSlotSize, remove } = useEquipmentGearActions(rest)
+  const actions = useEquipmentGearActions(rest)
 
   return (
     <Flexbox className={className}>
-      <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={changeSlotSize} />
+      <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={actions.setSlotSize} />
       {gear ? (
-        <GearLabel gear={gear} update={updateGear} onReselect={openGearSelect} onRemove={remove} />
+        <GearLabel gear={gear} update={actions.update} onReselect={actions.openGearSelect} onRemove={actions.remove} />
       ) : (
-        <AddGearButton onClick={openGearSelect} />
+        <AddGearButton onClick={actions.openGearSelect} />
       )}
     </Flexbox>
   )
