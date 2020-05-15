@@ -11,6 +11,7 @@ import {
 } from "@fleethub/data"
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
 import { GearBase } from "../gear"
+import { EquipmentGearKey } from "../equipment"
 
 import { StatBase, ShipStatsBase, ShipCommonBaseWithStatsBase } from "./types"
 
@@ -128,9 +129,8 @@ export default class MasterShip implements ShipBase {
 
   public shipTypeIn = (...keys: HullCode[]) => keys.some((key) => ShipType[key] === this.shipType)
 
-  public canEquip = (index: number, gear: GearBase) => {
-    const { shipClass, equippable, slots } = this
-    const isExslot = slots.length <= index
+  public canEquip = (key: EquipmentGearKey, gear: GearBase) => {
+    const { shipClass, equippable } = this
     const { gearId, specialCategory } = gear
 
     if (this.is("Abyssal")) {
@@ -141,7 +141,7 @@ export default class MasterShip implements ShipBase {
       return false
     }
 
-    if (isExslot) {
+    if (key === "gx") {
       return (
         equippable.exslotCategories.includes(specialCategory) ||
         equippable.exslotIds.includes(gearId) ||
@@ -154,14 +154,14 @@ export default class MasterShip implements ShipBase {
     }
 
     if (shipClass === ShipClass.IseClass && this.is("Kai2")) {
-      return !(index > 1 && gear.is("MainGun"))
+      return ["g1", "g2"].includes(key) || !gear.is("MainGun")
     }
 
     if (shipClass === ShipClass.YuubariClass && this.is("Kai2")) {
-      if (index >= 3 && (gear.is("MainGun") || gear.categoryIn("Torpedo", "MidgetSubmarine"))) {
-        return false
+      if (key === "g4") {
+        return !(gear.is("MainGun") || gear.categoryIn("Torpedo", "MidgetSubmarine"))
       }
-      if (index === 4) {
+      if (key === "g5") {
         return gear.categoryIn("AntiAirGun", "SmallRadar", "CombatRation")
       }
     }

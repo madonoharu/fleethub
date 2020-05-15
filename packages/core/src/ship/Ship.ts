@@ -1,13 +1,12 @@
 import { Equipment, EquipmentGearKey } from "../equipment"
 import { GearBase } from "../gear"
 
-import { ShipState, ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
+import { ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
 import { GearId, ShipClass, ShipId } from "@fleethub/data"
 
 export type Ship = ShipCommonBase &
   ShipStats & {
     equipment: Equipment
-    canEquip: (index: number, gear: GearBase) => boolean
     makeGetNextBonuses: (excludedKey: EquipmentGearKey) => (gear: GearBase) => EquipmentBonuses
 
     fleetLosFactor: number
