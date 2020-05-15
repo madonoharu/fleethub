@@ -11,9 +11,8 @@ import {
   GearCategory,
 } from "@fleethub/data"
 
-import { GearBase, GearState } from "../gear"
-import { NullableArray } from "../utils"
-import { EquipmentState } from "../equipment"
+import { GearBase } from "../gear"
+import { EquipmentState, EquipmentGearKey } from "../equipment"
 
 import { ShipAttribute } from "./ShipAttribute"
 
@@ -29,7 +28,7 @@ export type ShipIdentityWithSpeed = ShipIdentity & { speed: number }
 
 export type ShipCommonBase = ShipIdentity & {
   is: (attr: ShipAttribute) => boolean
-  canEquip: (index: number, gear: GearBase) => boolean
+  canEquip: (key: EquipmentGearKey, gear: GearBase) => boolean
 }
 
 export type ShipCommonBaseWithStatsBase = ShipCommonBase & ShipStatsBase
