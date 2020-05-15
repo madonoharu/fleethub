@@ -7,7 +7,7 @@ export type SlotKey = "slot1" | "slot2" | "slot3" | "slot4" | "slot5" | "slotx"
 type EquipmentKeyWithoutExslot = "g1" | "g2" | "g3" | "g4" | "g5"
 export type EquipmentKey = EquipmentKeyWithoutExslot | "gx"
 
-export const getSlotKey = (gearKey: EquipmentKey) => gearKey.replace("g", "slot") as SlotKey
+export const getSlotKey = (key: EquipmentKey) => key.replace("g", "slot") as SlotKey
 
 export const getEquipmentKeys = (size: number) => {
   const keys = range(size).map((index) => {
