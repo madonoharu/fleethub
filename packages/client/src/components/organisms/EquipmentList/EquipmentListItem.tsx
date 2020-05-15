@@ -25,7 +25,6 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
   return React.useMemo(() => {
     const createGear = (gearState: GearState) => {
       updateEquipment((draft) => {
-        draft.g1?.gearId
         draft[gearKey] = gearState
       })
     }
@@ -34,7 +33,7 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
 
     const slotKey = getEquipmentSlotKey(gearKey)
 
-    const setSlotSize = (next?: number) => {
+    const setSlotSize = (next: number | undefined) => {
       updateEquipment((draft) => {
         if (next === undefined) {
           delete draft[slotKey]
@@ -63,9 +62,17 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
 const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize, maxSlotSize, ...rest }) => {
   const actions = useEquipmentGearActions(rest)
 
+  const handleSlotSizeChange = (value: number) => {
+    if (value === maxSlotSize) {
+      actions.setSlotSize(undefined)
+    } else {
+      actions.setSlotSize(value)
+    }
+  }
+
   return (
     <Flexbox className={className}>
-      <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={actions.setSlotSize} />
+      <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={handleSlotSizeChange} />
       {gear ? (
         <GearLabel gear={gear} update={actions.update} onReselect={actions.openGearSelect} onRemove={actions.remove} />
       ) : (
