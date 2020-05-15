@@ -1,5 +1,5 @@
 import React from "react"
-import { Gear, GearState, getSlotKey, EquipmentState, EquipmentKey } from "@fleethub/core"
+import { Gear, GearState, getSlotKey, EquipmentState, EquipmentKey, GearBase } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
@@ -10,13 +10,15 @@ import { Update } from "../../../utils"
 import SlotSizeButton from "./SlotSizeButton"
 import AddGearButton from "./AddGearButton"
 
-type Props = {
+export type Props = {
   gear?: Gear
   currentSlotSize?: number
   maxSlotSize?: number
 
   equipmentKey: EquipmentKey
   updateEquipment: Update<EquipmentState>
+
+  canEquip?: (key: EquipmentKey, gear: GearBase) => boolean
 }
 
 const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
@@ -59,7 +61,7 @@ const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
   }, [equipmentKey, updateEquipment, gearSelectActions])
 }
 
-const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize, maxSlotSize, ...rest }) => {
+const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize, maxSlotSize, canEquip, ...rest }) => {
   const actions = useEquipmentGearActions(rest)
 
   const handleSlotSizeChange = (value: number) => {
@@ -74,7 +76,13 @@ const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize,
     <Flexbox className={className}>
       <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={handleSlotSizeChange} />
       {gear ? (
-        <GearLabel gear={gear} update={actions.update} onReselect={actions.openGearSelect} onRemove={actions.remove} />
+        <GearLabel
+          gear={gear}
+          equippable={canEquip && canEquip(rest.equipmentKey, gear)}
+          update={actions.update}
+          onReselect={actions.openGearSelect}
+          onRemove={actions.remove}
+        />
       ) : (
         <AddGearButton onClick={actions.openGearSelect} />
       )}

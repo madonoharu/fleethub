@@ -6,14 +6,16 @@ import { Container, Paper, TextField, Button } from "@material-ui/core"
 
 import { Update } from "../../../utils"
 
-import EquipmentListItem from "./EquipmentListItem"
+import EquipmentListItem, { Props as EquipmentListItemProps } from "./EquipmentListItem"
 
 type Props = {
   equipment: Equipment
   update: Update<EquipmentState>
+
+  canEquip?: EquipmentListItemProps["canEquip"]
 }
 
-const EquipmentList: React.FCX<Props> = ({ className, equipment, update }) => {
+const EquipmentList: React.FCX<Props> = ({ className, equipment, update, canEquip }) => {
   return (
     <div className={className}>
       {equipment.items.map((item) => (
@@ -24,6 +26,7 @@ const EquipmentList: React.FCX<Props> = ({ className, equipment, update }) => {
           currentSlotSize={item.currentSlotSize}
           maxSlotSize={item.maxSlotSize}
           updateEquipment={update}
+          canEquip={canEquip}
         />
       ))}
     </div>

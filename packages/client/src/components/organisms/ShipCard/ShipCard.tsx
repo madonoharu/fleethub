@@ -45,7 +45,7 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
           <ShipStats ship={ship} />
         </Box>
 
-        <EquipmentList equipment={ship.equipment} update={update} />
+        <EquipmentList equipment={ship.equipment} update={update} canEquip={ship.canEquip} />
       </Content>
     </Paper>
   )
