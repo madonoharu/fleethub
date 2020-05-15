@@ -15,23 +15,23 @@ type Props = {
   currentSlotSize?: number
   maxSlotSize?: number
 
-  gearKey: EquipmentKey
+  equipmentKey: EquipmentKey
   updateEquipment: Update<EquipmentState>
 }
 
-const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
+const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
   const gearSelectActions = useGearSelectActions()
 
   return React.useMemo(() => {
     const createGear = (gearState: GearState) => {
       updateEquipment((draft) => {
-        draft[gearKey] = gearState
+        draft[equipmentKey] = gearState
       })
     }
 
     const openGearSelect = () => gearSelectActions.open(createGear)
 
-    const slotKey = getSlotKey(gearKey)
+    const slotKey = getSlotKey(equipmentKey)
 
     const setSlotSize = (next: number | undefined) => {
       updateEquipment((draft) => {
@@ -45,18 +45,18 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
 
     const update: Update<GearState> = (updater) =>
       updateEquipment((draft) => {
-        const state = draft[gearKey]
+        const state = draft[equipmentKey]
         state && updater(state)
       })
 
     const remove = () => {
       updateEquipment((draft) => {
-        delete draft[gearKey]
+        delete draft[equipmentKey]
       })
     }
 
     return { openGearSelect, setSlotSize, update, remove }
-  }, [gearKey, updateEquipment, gearSelectActions])
+  }, [equipmentKey, updateEquipment, gearSelectActions])
 }
 
 const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize, maxSlotSize, ...rest }) => {
