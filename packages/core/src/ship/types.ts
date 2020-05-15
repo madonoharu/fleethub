@@ -12,7 +12,7 @@ import {
 } from "@fleethub/data"
 
 import { GearBase } from "../gear"
-import { EquipmentState, EquipmentGearKey } from "../equipment"
+import { EquipmentState, EquipmentKey } from "../equipment"
 
 import { ShipAttribute } from "./ShipAttribute"
 
@@ -28,7 +28,7 @@ export type ShipIdentityWithSpeed = ShipIdentity & { speed: number }
 
 export type ShipCommonBase = ShipIdentity & {
   is: (attr: ShipAttribute) => boolean
-  canEquip: (key: EquipmentGearKey, gear: GearBase) => boolean
+  canEquip: (key: EquipmentKey, gear: GearBase) => boolean
 }
 
 export type ShipCommonBaseWithStatsBase = ShipCommonBase & ShipStatsBase
