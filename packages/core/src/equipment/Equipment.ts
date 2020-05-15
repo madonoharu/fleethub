@@ -2,23 +2,20 @@ import { Gear, GearState } from "../gear"
 import { PickByValue } from "../utils"
 import { range } from "lodash-es"
 
-export type EquipmentSlotKey = "slot1" | "slot2" | "slot3" | "slot4" | "slot5" | "exslot"
+export type SlotKey = "slot1" | "slot2" | "slot3" | "slot4" | "slot5" | "slotx"
 
 type EquipmentGearKeyWithoutExslot = "g1" | "g2" | "g3" | "g4" | "g5"
 export type EquipmentGearKey = EquipmentGearKeyWithoutExslot | "gx"
 
-export const getEquipmentSlotKey = (gearKey: EquipmentGearKey) => {
-  if (gearKey === "gx") return "exslot"
-  return gearKey.replace("g", "slot") as EquipmentSlotKey
-}
+export const getSlotKey = (gearKey: EquipmentGearKey) => gearKey.replace("g", "slot") as SlotKey
 
 export const getEquipmentKeys = (size: number) => {
   const keys = range(size).map((index) => {
     const num = index + 1
-    return [`g${num}`, `slot${num}`] as [EquipmentGearKey, EquipmentSlotKey]
+    return [`g${num}`, `slot${num}`] as [EquipmentGearKey, SlotKey]
   })
 
-  keys.push(["gx", "exslot"])
+  keys.push(["gx", "slotx"])
 
   return keys
 }
@@ -44,7 +41,7 @@ export type EquipmentItem =
       maxSlotSize: undefined
     }
 
-export type EquipmentState = Partial<Record<EquipmentSlotKey, number> & Record<EquipmentGearKey, GearState>>
+export type EquipmentState = Partial<Record<SlotKey, number> & Record<EquipmentGearKey, GearState>>
 
 export type Equipment = {
   items: EquipmentItem[]

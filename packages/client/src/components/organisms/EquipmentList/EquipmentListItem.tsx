@@ -1,5 +1,5 @@
 import React from "react"
-import { Gear, GearState, getEquipmentSlotKey, EquipmentState, EquipmentGearKey } from "@fleethub/core"
+import { Gear, GearState, getSlotKey, EquipmentState, EquipmentGearKey } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
@@ -31,7 +31,7 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
 
     const openGearSelect = () => gearSelectActions.open(createGear)
 
-    const slotKey = getEquipmentSlotKey(gearKey)
+    const slotKey = getSlotKey(gearKey)
 
     const setSlotSize = (next: number | undefined) => {
       updateEquipment((draft) => {
