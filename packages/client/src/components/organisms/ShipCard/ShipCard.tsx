@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship, ShipState } from "@fleethub/core"
+import { Ship, ShipState, EquipmentKey } from "@fleethub/core"
 
 import { Box, Paper } from "@material-ui/core"
 
@@ -35,6 +35,9 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
     })
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const makeGetNextBonuses = React.useCallback(ship.makeGetNextBonuses, [ship.shipId, ...ship.equipment.gears])
+
   return (
     <Paper className={className}>
       <ShipHeader name={ship.name} level={ship.level} onLevelChange={handleLevelChange} onRemove={onRemove} />
@@ -45,7 +48,12 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
           <ShipStats ship={ship} />
         </Box>
 
-        <EquipmentList equipment={ship.equipment} update={update} canEquip={ship.canEquip} />
+        <EquipmentList
+          equipment={ship.equipment}
+          update={update}
+          canEquip={ship.canEquip}
+          makeGetNextBonuses={makeGetNextBonuses}
+        />
       </Content>
     </Paper>
   )

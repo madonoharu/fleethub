@@ -11,11 +11,9 @@ import EquipmentListItem, { Props as EquipmentListItemProps } from "./EquipmentL
 type Props = {
   equipment: Equipment
   update: Update<EquipmentState>
+} & Pick<EquipmentListItemProps, "canEquip" | "makeGetNextBonuses">
 
-  canEquip?: EquipmentListItemProps["canEquip"]
-}
-
-const EquipmentList: React.FCX<Props> = ({ className, equipment, update, canEquip }) => {
+const EquipmentList: React.FCX<Props> = ({ className, equipment, update, canEquip, makeGetNextBonuses }) => {
   return (
     <div className={className}>
       {equipment.items.map((item) => (
@@ -27,6 +25,7 @@ const EquipmentList: React.FCX<Props> = ({ className, equipment, update, canEqui
           maxSlotSize={item.maxSlotSize}
           updateEquipment={update}
           canEquip={canEquip}
+          makeGetNextBonuses={makeGetNextBonuses}
         />
       ))}
     </div>

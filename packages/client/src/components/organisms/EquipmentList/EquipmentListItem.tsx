@@ -1,5 +1,5 @@
 import React from "react"
-import { Gear, GearState, getSlotKey, EquipmentState, EquipmentKey, GearBase } from "@fleethub/core"
+import { Gear, GearState, getSlotKey, EquipmentState, EquipmentKey, GearBase, EquipmentBonuses } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
@@ -19,19 +19,16 @@ export type Props = {
   updateEquipment: Update<EquipmentState>
 
   canEquip?: (key: EquipmentKey, gear: GearBase) => boolean
+  makeGetNextBonuses?: (key: EquipmentKey) => (gear: GearBase) => EquipmentBonuses
 }
 
 const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
-  const gearSelectActions = useGearSelectActions()
-
   return React.useMemo(() => {
-    const createGear = (gearState: GearState) => {
+    const create = (gearState: GearState) => {
       updateEquipment((draft) => {
         draft[equipmentKey] = gearState
       })
     }
-
-    const openGearSelect = () => gearSelectActions.open(createGear)
 
     const slotKey = getSlotKey(equipmentKey)
 
@@ -57,12 +54,15 @@ const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
       })
     }
 
-    return { openGearSelect, setSlotSize, update, remove }
-  }, [equipmentKey, updateEquipment, gearSelectActions])
+    return { setSlotSize, create, update, remove }
+  }, [equipmentKey, updateEquipment])
 }
 
-const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize, maxSlotSize, canEquip, ...rest }) => {
-  const actions = useEquipmentGearActions(rest)
+const EquipmentListItem: React.FCX<Props> = (props) => {
+  const { className, equipmentKey, gear, currentSlotSize, maxSlotSize, canEquip, makeGetNextBonuses } = props
+
+  const actions = useEquipmentGearActions(props)
+  const gearSelectActions = useGearSelectActions()
 
   const handleSlotSizeChange = (value: number) => {
     if (value === maxSlotSize) {
@@ -72,19 +72,27 @@ const EquipmentListItem: React.FCX<Props> = ({ className, gear, currentSlotSize,
     }
   }
 
+  const handleOpenGearSelect = React.useCallback(() => {
+    gearSelectActions.open(
+      actions.create,
+      canEquip && ((gear) => canEquip(equipmentKey, gear)),
+      makeGetNextBonuses && makeGetNextBonuses(equipmentKey)
+    )
+  }, [actions.create, canEquip, equipmentKey, gearSelectActions, makeGetNextBonuses])
+
   return (
     <Flexbox className={className}>
       <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={handleSlotSizeChange} />
       {gear ? (
         <GearLabel
           gear={gear}
-          equippable={canEquip && canEquip(rest.equipmentKey, gear)}
+          equippable={canEquip && canEquip(equipmentKey, gear)}
           update={actions.update}
-          onReselect={actions.openGearSelect}
+          onReselect={handleOpenGearSelect}
           onRemove={actions.remove}
         />
       ) : (
-        <AddGearButton onClick={actions.openGearSelect} />
+        <AddGearButton onClick={handleOpenGearSelect} />
       )}
     </Flexbox>
   )
