@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { EquipmentState, Equipment } from "@fleethub/core"
+import { EquipmentState, Equipment, EquipmentKey, GearBase, EquipmentBonuses } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
@@ -19,7 +19,7 @@ const EquipmentList: React.FCX<Props> = ({ className, equipment, update }) => {
       {equipment.items.map((item) => (
         <EquipmentListItem
           key={item.key}
-          gearKey={item.key}
+          equipmentKey={item.key}
           gear={item.gear}
           currentSlotSize={item.currentSlotSize}
           maxSlotSize={item.maxSlotSize}
