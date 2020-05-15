@@ -11,5 +11,5 @@ export const createShip = (state: ShipState, base: ShipCommonBaseWithStatsBase, 
   const { bonuses, makeGetNextBonuses } = createShipEquipmentBonuses(base, equipment)
   const stats = createShipStats(base, state, equipment, bonuses)
 
-  return new ShipImpl(state, base, stats, equipment, makeGetNextBonuses)
+  return new ShipImpl(base, stats, equipment, makeGetNextBonuses)
 }
