@@ -1,5 +1,5 @@
 import React from "react"
-import { Gear, GearState, getSlotKey, EquipmentState, EquipmentGearKey } from "@fleethub/core"
+import { Gear, GearState, getSlotKey, EquipmentState, EquipmentKey } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
@@ -15,7 +15,7 @@ type Props = {
   currentSlotSize?: number
   maxSlotSize?: number
 
-  gearKey: EquipmentGearKey
+  gearKey: EquipmentKey
   updateEquipment: Update<EquipmentState>
 }
 
