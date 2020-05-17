@@ -72,13 +72,13 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
     }
   }
 
-  const handleOpenGearSelect = React.useCallback(() => {
+  const handleOpenGearSelect = () => {
     gearSelectActions.open(
       actions.create,
       canEquip && ((gear) => canEquip(equipmentKey, gear)),
       makeGetNextBonuses && makeGetNextBonuses(equipmentKey)
     )
-  }, [actions.create, canEquip, equipmentKey, gearSelectActions, makeGetNextBonuses])
+  }
 
   return (
     <Flexbox className={className}>
@@ -98,4 +98,4 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
   )
 }
 
-export default EquipmentListItem
+export default React.memo(EquipmentListItem)
