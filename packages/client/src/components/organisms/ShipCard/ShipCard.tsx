@@ -36,7 +36,10 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const makeGetNextBonuses = React.useCallback(ship.makeGetNextBonuses, [ship.shipId, ...ship.equipment.gears])
+  const makeGetNextBonuses = React.useCallback(ship.makeGetNextBonuses, [
+    ship.shipId,
+    ...ship.equipment.items.map(({ gear }) => gear),
+  ])
 
   return (
     <Paper className={className}>
