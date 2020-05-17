@@ -1,13 +1,10 @@
-import { DeckBuilder } from "gkcoi"
+import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "gkcoi"
 import { Ship, Fleet } from "@fleethub/core"
-
-type DeckBuilderFleet = NonNullable<DeckBuilder["f1"]>
-type DeckBuilderShip = NonNullable<DeckBuilderFleet["s1"]>
 
 const shipToDeck = (ship: Ship): DeckBuilderShip => {
   const items: DeckBuilderShip["items"] = {}
   ship.equipment.forEach((gear, index) => {
-    items[`i${index + 1}` as keyof typeof items] = {
+    items[index.replace("g", "i") as keyof typeof items] = {
       id: gear.gearId,
       rf: gear.stars,
       mas: gear.ace,
@@ -30,7 +27,7 @@ const shipToDeck = (ship: Ship): DeckBuilderShip => {
   }
 }
 
-const fleetToDeck = (fleet: Fleet): DeckBuilder => {
+export const fleetToDeck = (fleet: Fleet): DeckBuilder => {
   const f1: DeckBuilder["f1"] = {}
 
   fleet.ships.forEach((ship, index) => {
