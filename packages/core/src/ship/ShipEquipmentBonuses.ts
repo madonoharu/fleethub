@@ -6,6 +6,7 @@ import { Equipment, EquipmentKey } from "../equipment"
 import { ShipIdentityWithSpeed, EquipmentBonuses } from "./types"
 import { GearBase } from "../gear"
 import { mapValues } from "../utils"
+import { GearCategory } from "@fleethub/data/lib/GearCategory"
 
 export enum SpeedValue {
   Slow = 5,
@@ -121,11 +122,6 @@ export const calcSpeedBonus = ({
   return 0
 }
 
-const createEffectiveLosBonus = (ship: ShipIdentityWithSpeed, gears: GearBase[]) => {
-  const filtered = gears.filter((gear) => !gear.is("Radar"))
-  return createBasicBonuses(ship, filtered).los
-}
-
 export const createEquipmentBonuses = (ship: ShipIdentityWithSpeed, gears: GearBase[]): EquipmentBonuses => {
   const bonuses = createBasicBonuses(ship, gears)
 
@@ -137,7 +133,14 @@ export const createEquipmentBonuses = (ship: ShipIdentityWithSpeed, gears: GearB
     hasSpecialBonus: ship.shipClass === ShipClass.JohnCButlerClass || ship.shipId === ShipId["夕張改二特"],
   })
 
-  const effectiveLos = createEffectiveLosBonus(ship, gears)
+  let effectiveLos: number
+  const hasSmallRadar = gears.some((gear) => gear.category === GearCategory.SmallRadar)
+  if (hasSmallRadar) {
+    const filtered = gears.filter((gear) => gear.category !== GearCategory.SmallRadar)
+    effectiveLos = createBasicBonuses(ship, filtered).los
+  } else {
+    effectiveLos = bonuses.los
+  }
 
   return { ...bonuses, speed, effectiveLos }
 }
