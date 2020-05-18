@@ -7,9 +7,7 @@ import { Container, Paper, TextField, Button } from "@material-ui/core"
 import { FleetEditor } from "../../../components"
 import { useCachedFhFactory } from "../../../hooks"
 
-const getFleetState = (): FleetState => ({
-  ships: [...Array(6)],
-})
+const getFleetState = (): FleetState => ({})
 
 export type Update<T> = (updater: (draft: Draft<T>) => void) => void
 
