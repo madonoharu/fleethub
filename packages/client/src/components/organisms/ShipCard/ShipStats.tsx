@@ -2,8 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import { Ship } from "@fleethub/core"
 
-import { ShipChanges } from "../../../store"
-
 import ShipStatLabel from "./ShipStatLabel"
 
 const keys = [

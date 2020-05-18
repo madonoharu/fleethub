@@ -1,16 +1,15 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship } from "@fleethub/core"
+import { Ship, ShipState } from "@fleethub/core"
 
 import { Button, Typography } from "@material-ui/core"
 
 import { NumberInput, Flexbox } from "../../../components"
-import { StatKeyDictionary } from "../../../utils"
-import { ShipChanges } from "../../../store"
+import { Update } from "../../../utils"
 
 type Props = {
   ship: Ship
-  onUpdate: (changes: ShipChanges) => void
+  onUpdate: Update<ShipState>
 }
 
 const ShipStatsForm: React.FCX<Props> = ({ className, ship, onUpdate }) => {
