@@ -15,7 +15,7 @@ type Props = {
 const FleetEditor: React.FC<Props> = ({ fleet, update }) => {
   return (
     <Paper>
-      <ShipList ships={fleet.ships} updateFleet={update} />
+      <ShipList fleet={fleet} updateFleet={update} />
     </Paper>
   )
 }
