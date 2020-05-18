@@ -1,6 +1,6 @@
 import { sumBy } from "lodash-es"
 
-import { NullableArray, isNonNullable } from "../utils"
+import { isNonNullable } from "../utils"
 import { Ship } from "../ship"
 
 import { FleetState, Fleet } from "./types"
@@ -23,9 +23,13 @@ const calcShipAviationDetectionScore = ({ equipment }: Ship) =>
   })
 
 export class FleetImpl implements Fleet {
-  constructor(public state: FleetState, public ships: NullableArray<Ship>) {}
+  constructor(public state: FleetState, public entries: Fleet["entries"]) {}
 
-  public sumBy = (callbackFn: (ship: Ship) => number) => sumBy(this.ships.filter(isNonNullable), callbackFn)
+  get ships() {
+    return this.entries.map(([key, ship]) => ship).filter(isNonNullable)
+  }
+
+  public sumBy = (callbackFn: (ship: Ship) => number) => sumBy(this.ships, callbackFn)
 
   get fleetLosModifier() {
     const base = this.sumBy((ship) => ship.fleetLosFactor)
@@ -41,6 +45,6 @@ export class FleetImpl implements Fleet {
   }
 
   get expeditionBonus() {
-    return calcExpeditionBonus(this.ships.filter(isNonNullable))
+    return calcExpeditionBonus(this.ships)
   }
 }
