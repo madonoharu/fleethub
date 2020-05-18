@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { NullableArray, Ship, ShipState, FleetState } from "@fleethub/core"
+import { NullableArray, Ship, ShipState, FleetState, ShipKey } from "@fleethub/core"
 
 import { Button } from "@material-ui/core"
 
@@ -10,17 +10,17 @@ import { Update } from "../../../utils"
 
 type ConnectedShipCardProps = {
   ship?: Ship
-  index: number
+  shipKey: ShipKey
   updateFleet: Update<FleetState>
 }
 
-const useFleetShipActions = ({ index, updateFleet }: Pick<ConnectedShipCardProps, "index" | "updateFleet">) => {
+const useFleetShipActions = ({ shipKey, updateFleet }: Pick<ConnectedShipCardProps, "shipKey" | "updateFleet">) => {
   const shipSelectActions = useShipSelectActions()
 
   return React.useMemo(() => {
     const create = (shipState: ShipState) => {
       updateFleet((draft) => {
-        draft.ships[index] = shipState
+        draft[shipKey] = shipState
       })
     }
 
@@ -28,19 +28,19 @@ const useFleetShipActions = ({ index, updateFleet }: Pick<ConnectedShipCardProps
 
     const remove = () => {
       updateFleet((draft) => {
-        draft.ships[index] = undefined
+        delete draft[shipKey]
       })
     }
 
     const update: Update<ShipState> = (updater) => {
       updateFleet((draft) => {
-        const next = draft.ships[index]
+        const next = draft[shipKey]
         next && updater(next)
       })
     }
 
     return { openShipSelect, create, update, remove }
-  }, [index, updateFleet, shipSelectActions])
+  }, [shipKey, updateFleet, shipSelectActions])
 }
 
 const ConnectedShipCard: React.FC<ConnectedShipCardProps> = React.memo<ConnectedShipCardProps>(({ ship, ...rest }) => {
@@ -60,7 +60,7 @@ const ShipList: React.FCX<Props> = React.memo(({ className, ships, updateFleet }
   return (
     <div className={className}>
       {ships.map((ship, index) => (
-        <ConnectedShipCard key={index} ship={ship} index={index} updateFleet={updateFleet} />
+        <ConnectedShipCard key={index} ship={ship} shipKey={`s${index + 1}` as ShipKey} updateFleet={updateFleet} />
       ))}
     </div>
   )
