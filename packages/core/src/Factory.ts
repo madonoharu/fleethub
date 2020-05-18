@@ -64,9 +64,13 @@ export default class Factory {
 
   public createFleet = (state: FleetState, createShip = this.createShip) => {
     const shipKeys = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"] as const
-    const ships = shipKeys.map((key) => state[key]).map((shipState) => shipState && createShip(shipState))
+    const entries: FleetImpl["entries"] = shipKeys.map((key) => {
+      const shipState = state[key]
+      const ship = shipState && createShip(shipState)
+      return [key, ship]
+    })
 
-    return new FleetImpl(state, ships)
+    return new FleetImpl(state, entries)
   }
 
   public createAirbase = (state: AirbaseState, createGear = this.createGear) => {
