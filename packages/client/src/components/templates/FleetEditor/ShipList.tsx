@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { NullableArray, Ship, ShipState, FleetState, ShipKey } from "@fleethub/core"
+import { Ship, ShipState, FleetState, ShipKey, Fleet } from "@fleethub/core"
 
 import { Button } from "@material-ui/core"
 
@@ -52,15 +52,15 @@ const ConnectedShipCard: React.FC<ConnectedShipCardProps> = React.memo<Connected
 })
 
 type Props = {
-  ships: NullableArray<Ship>
+  fleet: Fleet
   updateFleet: Update<FleetState>
 }
 
-const ShipList: React.FCX<Props> = React.memo(({ className, ships, updateFleet }) => {
+const ShipList: React.FCX<Props> = React.memo(({ className, fleet, updateFleet }) => {
   return (
     <div className={className}>
-      {ships.map((ship, index) => (
-        <ConnectedShipCard key={index} ship={ship} shipKey={`s${index + 1}` as ShipKey} updateFleet={updateFleet} />
+      {fleet.entries.map(([key, ship]) => (
+        <ConnectedShipCard key={key} shipKey={key} ship={ship} updateFleet={updateFleet} />
       ))}
     </div>
   )
