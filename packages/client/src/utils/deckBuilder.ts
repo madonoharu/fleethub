@@ -30,10 +30,8 @@ const shipToDeck = (ship: Ship): DeckBuilderShip => {
 export const fleetToDeck = (fleet: Fleet): DeckBuilder => {
   const f1: DeckBuilder["f1"] = {}
 
-  fleet.ships.forEach((ship, index) => {
+  fleet.entries.forEach(([key, ship]) => {
     if (!ship) return
-
-    const key = `s${index + 1}` as "s1"
     f1[key] = shipToDeck(ship)
   })
 
