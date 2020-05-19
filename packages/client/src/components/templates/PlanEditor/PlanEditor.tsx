@@ -1,43 +1,34 @@
 import React from "react"
-import { PlanState, FleetState } from "@fleethub/core"
-import produce, { Draft } from "immer"
+import { PlanState } from "@fleethub/core"
+import produce from "immer"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
-import { FleetEditor } from "../../../components"
+import { SelectButtons } from "../../../components"
 import { useCachedFhFactory } from "../../../hooks"
+import { Update } from "../../../utils"
 
-const getFleetState = (): FleetState => ({})
-
-export type Update<T> = (updater: (draft: Draft<T>) => void) => void
+import FleetTabPanel from "./FleetTabPanel"
 
 const initialPlanState: PlanState = {
   name: "PlanEditor",
-  fleets: [getFleetState(), getFleetState()],
-  airbases: [],
+  f1: {},
+  f2: {},
+  a1: {},
 }
+
+const tabOptions = ["f1", "f2", "lb"] as const
 
 const PlanEditor: React.FC = (props) => {
   const [state, setState] = React.useState<PlanState>(initialPlanState)
-  const [fleetIndex, setFleetIndex] = React.useState(0)
+  const [tabKey, setTabKey] = React.useState<typeof tabOptions[number]>("f1")
 
   const update: Update<PlanState> = React.useCallback((updater) => setState(produce(updater)), [])
 
-  const { createFleet } = useCachedFhFactory()
+  const { createPlan } = useCachedFhFactory()
+  const plan = createPlan(state)
 
-  const fleetState = state.fleets[fleetIndex]
-  const fleet = createFleet(fleetState)
-
-  const updateFleet: Update<FleetState> = React.useCallback(
-    (updater) => {
-      update((draft) => updater(draft.fleets[fleetIndex]))
-    },
-    [fleetIndex, update]
-  )
-
-  const fleetElement = React.useMemo(() => {
-    return <FleetEditor fleet={fleet} update={updateFleet} />
-  }, [fleet, updateFleet])
+  const fleetEntry = plan.fleetEntries.find(([key]) => key === tabKey)
 
   return (
     <Container>
@@ -49,7 +40,8 @@ const PlanEditor: React.FC = (props) => {
           })
         }}
       />
-      {fleetElement}
+      <SelectButtons options={tabOptions} value={tabKey} onChange={setTabKey} />
+      {fleetEntry && <FleetTabPanel fleet={fleetEntry[1]} fleetKey={fleetEntry[0]} updatePlan={update} />}
     </Container>
   )
 }
