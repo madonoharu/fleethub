@@ -20,4 +20,6 @@ export default class FhSystem {
   public createGear = this.factory.createGear
   public createShip = this.factory.createShip
   public createFleet = this.factory.createFleet
+  public createAirbase = this.factory.createAirbase
+  public createPlan = this.factory.createPlan
 }
