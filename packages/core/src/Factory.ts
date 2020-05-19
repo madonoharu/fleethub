@@ -3,8 +3,10 @@ import { GearData, ShipData } from "@fleethub/data"
 import { MasterGear, GearState, GearImpl } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
 import { EquipmentImpl, EquipmentState, EquipmentItem, getEquipmentKeys } from "./equipment"
-import { FleetState, FleetImpl } from "./fleet"
-import { AirbaseState, AirbaseImpl } from "./airbase"
+import { FleetState, FleetImpl, Fleet } from "./fleet"
+import { AirbaseState, AirbaseImpl, Airbase } from "./airbase"
+import { PlanState, PlanImpl, FleetKey, AirbaseKey } from "./plan"
+import { isNonNullable } from "./utils"
 
 const createEquipment = (
   state: EquipmentState,
@@ -77,5 +79,28 @@ export default class Factory {
     const equipment = createEquipment(state, [18, 18, 18, 18], createGear)
 
     return new AirbaseImpl(equipment)
+  }
+
+  public createPlan = (state: PlanState, createFleet = this.createFleet, createAirbase = this.createAirbase) => {
+    const fleetKeys = ["f1", "f2", "f3", "f4"] as const
+    const airbaseKeys = ["a1", "a2", "a3"] as const
+
+    const fleetEntries = fleetKeys
+      .map((key): [FleetKey, Fleet] | undefined => {
+        const fleetState = state[key]
+        if (!fleetState) return
+        return [key, createFleet(fleetState)]
+      })
+      .filter(isNonNullable)
+
+    const airbaseEntries = airbaseKeys
+      .map((key): [AirbaseKey, Airbase] | undefined => {
+        const airbaseState = state[key]
+        if (!airbaseState) return
+        return [key, createAirbase(airbaseState)]
+      })
+      .filter(isNonNullable)
+
+    return new PlanImpl(fleetEntries, airbaseEntries)
   }
 }
