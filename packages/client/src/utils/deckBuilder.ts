@@ -1,5 +1,5 @@
 import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "gkcoi"
-import { Ship, Fleet } from "@fleethub/core"
+import { Ship, Fleet, Plan } from "@fleethub/core"
 
 const shipToDeck = (ship: Ship): DeckBuilderShip => {
   const items: DeckBuilderShip["items"] = {}
@@ -27,18 +27,24 @@ const shipToDeck = (ship: Ship): DeckBuilderShip => {
   }
 }
 
-export const fleetToDeck = (fleet: Fleet): DeckBuilder => {
-  const f1: DeckBuilder["f1"] = {}
+const fleetToDeck = (fleet: Fleet): DeckBuilderFleet => {
+  const deckFleet: DeckBuilderFleet = {}
 
   fleet.entries.forEach(([key, ship]) => {
     if (!ship) return
-    f1[key] = shipToDeck(ship)
+    deckFleet[key] = shipToDeck(ship)
   })
 
-  return {
-    lang: "en",
-    theme: "dark",
-    hqlv: 120,
-    f1,
-  }
+  return deckFleet
+}
+
+export const planToDeck = (plan: Plan) => {
+  const deck: DeckBuilder = { lang: "en", theme: "dark", hqlv: 120 }
+
+  plan.fleetEntries.forEach(([key, fleet]) => {
+    if (!fleet) return
+    deck[key] = fleetToDeck(fleet)
+  })
+
+  return deck
 }
