@@ -12,14 +12,14 @@ export type GearSelectState = {
   getBonuses?: (gear: GearBase) => EquipmentBonuses
 }
 
-const initalState: GearSelectState = {
+const initialState: GearSelectState = {
   abyssal: false,
   filterKey: "mainGun",
   category: 0,
 }
 
 export const useGearSelectState = () => {
-  const [state, setState] = React.useState<GearSelectState>(initalState)
+  const [state, setState] = React.useState<GearSelectState>(initialState)
 
   const actions = React.useMemo(() => {
     const update = (changes: Partial<GearSelectState>) => setState((state) => ({ ...state, ...changes }))
