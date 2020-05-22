@@ -5,15 +5,24 @@ import { EntityId } from "@reduxjs/toolkit"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
-import { useCachedFhFactory } from "../../../hooks"
-import { Update } from "../../../utils"
+import { RemoveButton } from "../../../components"
 import { plansSlice, plansSelectors, planEditorSlice } from "../../../store"
+import { usePlan } from "../../../hooks"
 
 const PlanListItem: React.FC<{ planId: EntityId }> = ({ planId }) => {
   const dispatch = useDispatch()
+  const { state, actions, plan } = usePlan(planId)
+  if (!state || !plan) return null
 
-  const handleClick = () => dispatch(planEditorSlice.actions.update({ planId }))
-  return <Button onClick={handleClick}>{planId}</Button>
+  const handleOpen = () => dispatch(planEditorSlice.actions.update({ planId }))
+
+  return (
+    <Paper>
+      <Button onClick={handleOpen}>{state.name}</Button>
+
+      <RemoveButton onClick={actions.remove} />
+    </Paper>
+  )
 }
 
 const PlanList: React.FC = (props) => {
@@ -21,7 +30,7 @@ const PlanList: React.FC = (props) => {
   const planEntities = useSelector((state) => plansSelectors.selectEntities(state))
 
   const actions = React.useMemo(() => {
-    const create = () => dispatch(plansSlice.actions.create({ name: "a", f1: {}, f2: {} }))
+    const create = (state: PlanState) => dispatch(plansSlice.actions.create(state))
     const remove = (id: EntityId) => dispatch(plansSlice.actions.remove(id))
 
     return { create, remove }
@@ -29,9 +38,14 @@ const PlanList: React.FC = (props) => {
 
   const plans = Object.values(planEntities).filter(isNonNullable)
 
+  const handleCreate = () => {
+    const name = `編成${plans.length + 1}`
+    actions.create({ name, f1: {}, f2: {} })
+  }
+
   return (
     <Container>
-      <Button onClick={actions.create}>add plan</Button>
+      <Button onClick={handleCreate}>add plan</Button>
       {plans.map((plan) => (
         <PlanListItem key={plan.id} planId={plan.id} />
       ))}
