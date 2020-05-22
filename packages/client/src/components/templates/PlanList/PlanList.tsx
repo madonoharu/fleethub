@@ -1,6 +1,5 @@
 import React from "react"
 import { PlanState, isNonNullable } from "@fleethub/core"
-import produce from "immer"
 import { useDispatch, useSelector } from "react-redux"
 import { EntityId } from "@reduxjs/toolkit"
 
@@ -8,12 +7,13 @@ import { Container, Paper, TextField, Button } from "@material-ui/core"
 
 import { useCachedFhFactory } from "../../../hooks"
 import { Update } from "../../../utils"
-import { plansSlice, plansSelectors } from "../../../store"
+import { plansSlice, plansSelectors, planEditorSlice } from "../../../store"
 
-import { Link } from "@reach/router"
+const PlanListItem: React.FC<{ planId: EntityId }> = ({ planId }) => {
+  const dispatch = useDispatch()
 
-const PlanListItem: React.FC<{ id: EntityId }> = ({ id }) => {
-  return <Link to={`plans?id=${id}`}>{id}</Link>
+  const handleClick = () => dispatch(planEditorSlice.actions.update({ planId }))
+  return <Button onClick={handleClick}>{planId}</Button>
 }
 
 const PlanList: React.FC = (props) => {
@@ -33,7 +33,7 @@ const PlanList: React.FC = (props) => {
     <Container>
       <Button onClick={actions.create}>add plan</Button>
       {plans.map((plan) => (
-        <PlanListItem key={plan.id} id={plan.id} />
+        <PlanListItem key={plan.id} planId={plan.id} />
       ))}
     </Container>
   )
