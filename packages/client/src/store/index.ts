@@ -1,14 +1,10 @@
-import { combineReducers, configureStore, createReducer } from "@reduxjs/toolkit"
+import { combineReducers, configureStore } from "@reduxjs/toolkit"
 
 import { plansSlice } from "./plansSlice"
 
 const rootReducer = combineReducers({
   plans: plansSlice.reducer,
 })
-
-export { plansSlice }
-
-export type StoreState = ReturnType<typeof rootReducer>
 
 export const setupStore = () => {
   const store = configureStore({
@@ -17,4 +13,7 @@ export const setupStore = () => {
   return store
 }
 
+export * from "./plansSlice"
+
+export type StoreState = ReturnType<typeof rootReducer>
 export type AppDispatch = ReturnType<typeof setupStore>["dispatch"]
