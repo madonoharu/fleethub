@@ -1,10 +1,12 @@
 import { combineReducers, configureStore, createReducer } from "@reduxjs/toolkit"
 
-const plan = createReducer({}, {})
+import { plansSlice } from "./plansSlice"
 
 const rootReducer = combineReducers({
-  plan,
+  plans: plansSlice.reducer,
 })
+
+export { plansSlice }
 
 export type StoreState = ReturnType<typeof rootReducer>
 
