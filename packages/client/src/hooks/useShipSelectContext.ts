@@ -50,7 +50,7 @@ const createFilterFn = (state: ShipSelectState): FilterFn => {
 
 const sortIdComparer = (a: ShipBase, b: ShipBase) => a.sortId - b.sortId
 
-const initalState: ShipSelectState = {
+const initialState: ShipSelectState = {
   abyssal: false,
   commonly: true,
   shipTypeFilter: "戦艦級",
@@ -58,7 +58,7 @@ const initalState: ShipSelectState = {
 
 const useShipSelectState = () => {
   const { masterShips } = useFhSystem()
-  const [state, setState] = React.useState<ShipSelectState>(initalState)
+  const [state, setState] = React.useState<ShipSelectState>(initialState)
 
   const actions = React.useMemo(() => {
     const update = (changes: Partial<ShipSelectState>) => setState((state) => ({ ...state, ...changes }))
