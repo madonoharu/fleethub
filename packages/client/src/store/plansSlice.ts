@@ -1,15 +1,23 @@
-import { createSlice, createEntityAdapter } from "@reduxjs/toolkit"
+import { createSlice, createEntityAdapter, PayloadAction, nanoid, EntityId } from "@reduxjs/toolkit"
 import { PlanState } from "@fleethub/core"
 import { DefaultRootState } from "react-redux"
 
-const plansAdapter = createEntityAdapter<PlanState>()
+type PlanStateWithId = PlanState & { id: EntityId }
+
+const plansAdapter = createEntityAdapter<PlanStateWithId>()
 export const plansSelectors = plansAdapter.getSelectors((state: DefaultRootState) => state.plans)
 
 export const plansSlice = createSlice({
   name: "plans",
   initialState: plansAdapter.getInitialState(),
   reducers: {
-    upsert: plansAdapter.upsertOne,
+    set: (state, { payload }: PayloadAction<PlanStateWithId>) => {
+      state.entities[payload.id] = payload
+    },
+    create: (state, { payload }: PayloadAction<PlanState>) => {
+      plansAdapter.addOne(state, { ...payload, id: nanoid() })
+    },
+    update: plansAdapter.updateOne,
     remove: plansAdapter.removeOne,
   },
 })

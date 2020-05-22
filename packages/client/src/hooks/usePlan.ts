@@ -13,8 +13,8 @@ const makeUpdatePlan = (id: EntityId, updater: Update<PlanState>): AppThunk => (
   const state = plansSelectors.selectById(getState(), id)
   if (!state) return
 
-  const payload = produce(state, updater)
-  dispatch(plansSlice.actions.upsert(payload))
+  const next = produce(state, updater)
+  dispatch(plansSlice.actions.set(next))
 }
 
 export const usePlan = (id: EntityId) => {
@@ -23,12 +23,14 @@ export const usePlan = (id: EntityId) => {
 
   const { createPlan } = useCachedFhFactory()
 
-  const update: Update<PlanState> = React.useCallback((updater) => dispatch(makeUpdatePlan(id, updater)), [
-    dispatch,
-    id,
-  ])
+  const actions = React.useMemo(() => {
+    const update: Update<PlanState> = (updater) => dispatch(makeUpdatePlan(id, updater))
+    const remove = () => dispatch(plansSlice.actions.remove(id))
+
+    return { update, remove }
+  }, [dispatch, id])
 
   const plan = state && createPlan(state)
 
-  return { state, update, plan }
+  return { state, actions, plan }
 }
