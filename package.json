@@ -35,9 +35,6 @@
     },
     "preset": "ts-jest"
   },
-  "engines": {
-    "npm": "Please use yarn"
-  },
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.1",
     "@types/jest": "^25.2.3",
@@ -64,5 +61,8 @@
     "ts-jest": "^26.0.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.3"
+  },
+  "engines": {
+    "npm": "Please use yarn"
   }
 }
