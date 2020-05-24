@@ -42,10 +42,10 @@ const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
       })
     }
 
-    const update: Update<GearState> = (updater) =>
+    const update: Update<GearState> = (recipe) =>
       updateEquipment((draft) => {
         const state = draft[equipmentKey]
-        state && updater(state)
+        state && recipe(state)
       })
 
     const remove = () => {
