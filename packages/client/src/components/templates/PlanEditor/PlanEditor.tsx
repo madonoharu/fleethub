@@ -15,17 +15,17 @@ type Props = {
 }
 
 const PlanEditor: React.FC<Props> = ({ planId }) => {
-  const { state, actions, plan } = usePlan(planId)
+  const { plan, actions } = usePlan(planId)
   const [tabKey, setTabKey] = React.useState<typeof tabOptions[number]>("f1")
 
-  if (!state || !plan) return null
+  if (!plan) return null
 
   const fleetEntry = plan.fleetEntries.find(([key]) => key === tabKey)
 
   return (
     <Container>
       <TextField
-        value={state.name}
+        value={plan.name}
         onChange={(event) => {
           actions.update((draft) => {
             draft.name = event.currentTarget.value

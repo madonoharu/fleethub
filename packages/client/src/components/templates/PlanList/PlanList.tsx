@@ -11,14 +11,14 @@ import { usePlan } from "../../../hooks"
 
 const PlanListItem: React.FC<{ planId: EntityId }> = ({ planId }) => {
   const dispatch = useDispatch()
-  const { state, actions, plan } = usePlan(planId)
-  if (!state || !plan) return null
+  const { plan, actions } = usePlan(planId)
+  if (!plan) return null
 
   const handleOpen = () => dispatch(planEditorSlice.actions.update({ planId }))
 
   return (
     <Paper>
-      <Button onClick={handleOpen}>{state.name}</Button>
+      <Button onClick={handleOpen}>{plan.name}</Button>
 
       <RemoveButton onClick={actions.remove} />
     </Paper>

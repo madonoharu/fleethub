@@ -101,6 +101,6 @@ export default class Factory {
       })
       .filter(isNonNullable)
 
-    return new PlanImpl(fleetEntries, airbaseEntries)
+    return new PlanImpl(state, fleetEntries, airbaseEntries)
   }
 }
