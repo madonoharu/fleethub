@@ -14,10 +14,10 @@ type Props = {
 
 const FleetTabPanel: React.FC<Props> = ({ fleet, fleetKey, updatePlan }) => {
   const updateFleet: Update<FleetState> = React.useCallback(
-    (updater) => {
+    (recipe) => {
       updatePlan((draft) => {
         const fleetState = draft[fleetKey]
-        if (fleetState) updater(fleetState)
+        if (fleetState) recipe(fleetState)
       })
     },
     [fleetKey, updatePlan]

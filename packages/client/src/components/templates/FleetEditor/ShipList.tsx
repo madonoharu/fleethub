@@ -32,10 +32,10 @@ const useFleetShipActions = ({ shipKey, updateFleet }: Pick<ConnectedShipCardPro
       })
     }
 
-    const update: Update<ShipState> = (updater) => {
+    const update: Update<ShipState> = (recipe) => {
       updateFleet((draft) => {
         const next = draft[shipKey]
-        next && updater(next)
+        next && recipe(next)
       })
     }
 
