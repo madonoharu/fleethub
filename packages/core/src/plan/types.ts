@@ -9,12 +9,14 @@ export type AirbaseKey = "a1" | "a2" | "a3"
 
 type AirbaseRecord = Partial<Record<AirbaseKey, AirbaseState>>
 
-export type PlanState = FleetRecord &
-  AirbaseRecord & {
-    name: string
-  }
+export type PlanStateBase = {
+  name?: string
+  hqLevel?: number
+}
 
-export type Plan = {
+export type PlanState = PlanStateBase & FleetRecord & AirbaseRecord
+
+export type Plan = Required<PlanStateBase> & {
   fleetEntries: Array<[FleetKey, Fleet]>
   airbaseEntries: Array<[AirbaseKey, Airbase]>
 }
