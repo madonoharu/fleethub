@@ -1,4 +1,6 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit"
+import { combineReducers, configureStore, CombinedState, Reducer } from "@reduxjs/toolkit"
+import { persistReducer, persistStore, PersistState } from "redux-persist"
+import storage from "localforage"
 
 import { plansSlice } from "./plansSlice"
 import { planEditorSlice } from "./planEditorSlice"
@@ -8,15 +10,22 @@ const rootReducer = combineReducers({
   planEditor: planEditorSlice.reducer,
 })
 
-export const setupStore = () => {
-  const store = configureStore({
-    reducer: rootReducer,
-  })
-  return store
+export type RootState = ReturnType<typeof rootReducer>
+
+const persistConfig = {
+  key: "root",
+  storage,
 }
+
+const persistedReducer: Reducer<RootState & PersistState> = persistReducer(persistConfig, rootReducer)
+
+export const store = configureStore({
+  reducer: persistedReducer,
+})
+
+export const persistor = persistStore(store)
 
 export * from "./plansSlice"
 export * from "./planEditorSlice"
 
-export type StoreState = ReturnType<typeof rootReducer>
-export type AppDispatch = ReturnType<typeof setupStore>["dispatch"]
+export type AppDispatch = typeof store.dispatch
