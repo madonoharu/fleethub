@@ -39,7 +39,6 @@
     "react-helmet": "^6.0.0",
     "react-i18next": "^11.5.0",
     "react-redux": "^7.2.0",
-    "react-window": "^1.8.5",
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
@@ -52,7 +51,6 @@
     "@types/react-helmet": "^6.0.0",
     "@types/react-redux": "^7.1.9",
     "@types/react-test-renderer": "^16.9.2",
-    "@types/react-window": "^1.8.2",
     "@types/styled-components": "^5.1.0",
     "react-test-renderer": "^16.13.1"
   }
