@@ -1,15 +1,13 @@
 import React from "react"
 
-import { Button } from "@material-ui/core"
-
-import { PlanEditor } from "../components"
+import { PlanList, PlanEditor } from "../components"
+import { useSelector } from "react-redux"
 
 const IndexPage: React.FC = () => {
-  return (
-    <>
-      <PlanEditor />
-    </>
-  )
+  const planId = useSelector((state) => state.planEditor.planId)
+
+  if (planId === undefined) return <PlanList />
+  return <PlanEditor planId={planId} />
 }
 
 export default IndexPage
