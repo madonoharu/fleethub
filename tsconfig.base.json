@@ -17,7 +17,6 @@
 
     "newLine": "lf",
     "outDir": "",
-    "declaration": true,
     "types": ["react"]
   },
   "include": [

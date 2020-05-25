@@ -1,5 +1,5 @@
-import { combineReducers, configureStore, CombinedState, Reducer } from "@reduxjs/toolkit"
-import { persistReducer, persistStore, PersistState } from "redux-persist"
+import { combineReducers, configureStore } from "@reduxjs/toolkit"
+import { persistReducer, persistStore } from "redux-persist"
 import storage from "localforage"
 
 import { plansSlice } from "./plansSlice"
@@ -17,7 +17,7 @@ const persistConfig = {
   storage,
 }
 
-const persistedReducer: Reducer<RootState & PersistState> = persistReducer(persistConfig, rootReducer)
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,
