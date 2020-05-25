@@ -2,7 +2,7 @@
 import { Action } from "@reduxjs/toolkit"
 import { ThunkAction } from "redux-thunk"
 
-import { StoreState, AppDispatch } from "./store"
+import { RootState, AppDispatch } from "./store"
 import { Theme } from "./theme"
 
 declare module "react" {
@@ -10,12 +10,12 @@ declare module "react" {
 }
 
 declare module "react-redux" {
-  interface DefaultRootState extends StoreState {}
+  interface DefaultRootState extends RootState {}
   export function useDispatch(): AppDispatch
 }
 
 declare module "@reduxjs/toolkit" {
-  export type AppThunk = ThunkAction<void, StoreState, unknown, Action<string>>
+  export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>
 }
 
 declare module "styled-components" {
