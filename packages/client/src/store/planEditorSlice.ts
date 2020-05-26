@@ -13,5 +13,8 @@ export const planEditorSlice = createSlice({
     update: (state, { payload }: PayloadAction<Partial<PlanEditorState>>) => {
       Object.assign(state, payload)
     },
+    close: (state) => {
+      delete state.planId
+    },
   },
 })

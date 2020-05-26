@@ -12,9 +12,10 @@ const tabOptions = ["f1", "f2", "lb"] as const
 
 type Props = {
   planId: EntityId
+  onClose?: () => void
 }
 
-const PlanEditor: React.FC<Props> = ({ planId }) => {
+const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
   const { plan, actions } = usePlan(planId)
   const [tabKey, setTabKey] = React.useState<typeof tabOptions[number]>("f1")
 
@@ -24,6 +25,7 @@ const PlanEditor: React.FC<Props> = ({ planId }) => {
 
   return (
     <Container>
+      <Button onClick={onClose}>back</Button>
       <TextField
         value={plan.name}
         onChange={(event) => {
