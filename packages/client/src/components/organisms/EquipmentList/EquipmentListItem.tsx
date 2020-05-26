@@ -1,5 +1,5 @@
 import React from "react"
-import { Gear, GearState, getSlotKey, EquipmentState, EquipmentKey, GearBase, EquipmentBonuses } from "@fleethub/core"
+import { Gear, GearState, getSlotKey, EquipmentState, GearKey, GearBase, EquipmentBonuses } from "@fleethub/core"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
@@ -15,22 +15,22 @@ export type Props = {
   currentSlotSize?: number
   maxSlotSize?: number
 
-  equipmentKey: EquipmentKey
+  gearKey: GearKey
   updateEquipment: Update<EquipmentState>
 
-  canEquip?: (key: EquipmentKey, gear: GearBase) => boolean
-  makeGetNextBonuses?: (key: EquipmentKey) => (gear: GearBase) => EquipmentBonuses
+  canEquip?: (key: GearKey, gear: GearBase) => boolean
+  makeGetNextBonuses?: (key: GearKey) => (gear: GearBase) => EquipmentBonuses
 }
 
-const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
+const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
   return React.useMemo(() => {
     const create = (gearState: GearState) => {
       updateEquipment((draft) => {
-        draft[equipmentKey] = gearState
+        draft[gearKey] = gearState
       })
     }
 
-    const slotKey = getSlotKey(equipmentKey)
+    const slotKey = getSlotKey(gearKey)
 
     const setSlotSize = (next: number | undefined) => {
       updateEquipment((draft) => {
@@ -44,22 +44,22 @@ const useEquipmentGearActions = ({ equipmentKey, updateEquipment }: Props) => {
 
     const update: Update<GearState> = (recipe) =>
       updateEquipment((draft) => {
-        const state = draft[equipmentKey]
+        const state = draft[gearKey]
         state && recipe(state)
       })
 
     const remove = () => {
       updateEquipment((draft) => {
-        delete draft[equipmentKey]
+        delete draft[gearKey]
       })
     }
 
     return { setSlotSize, create, update, remove }
-  }, [equipmentKey, updateEquipment])
+  }, [gearKey, updateEquipment])
 }
 
 const EquipmentListItem: React.FCX<Props> = (props) => {
-  const { className, equipmentKey, gear, currentSlotSize, maxSlotSize, canEquip, makeGetNextBonuses } = props
+  const { className, gearKey, gear, currentSlotSize, maxSlotSize, canEquip, makeGetNextBonuses } = props
 
   const actions = useEquipmentGearActions(props)
   const gearSelectActions = useGearSelectActions()
@@ -75,8 +75,8 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
   const handleOpenGearSelect = () => {
     gearSelectActions.open(
       actions.create,
-      canEquip && ((gear) => canEquip(equipmentKey, gear)),
-      makeGetNextBonuses && makeGetNextBonuses(equipmentKey)
+      canEquip && ((gear) => canEquip(gearKey, gear)),
+      makeGetNextBonuses && makeGetNextBonuses(gearKey)
     )
   }
 
@@ -86,7 +86,7 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
       {gear ? (
         <GearLabel
           gear={gear}
-          equippable={canEquip && canEquip(equipmentKey, gear)}
+          equippable={canEquip && canEquip(gearKey, gear)}
           update={actions.update}
           onReselect={handleOpenGearSelect}
           onRemove={actions.remove}

@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship, ShipState, EquipmentKey } from "@fleethub/core"
+import { Ship, ShipState, GearKey } from "@fleethub/core"
 
 import { Box, Paper } from "@material-ui/core"
 

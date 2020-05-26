@@ -11,7 +11,7 @@ import {
 } from "@fleethub/data"
 import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
 import { GearBase } from "../gear"
-import { EquipmentKey } from "../equipment"
+import { GearKey } from "../equipment"
 
 import { StatBase, ShipStatsBase, ShipCommonBaseWithStatsBase } from "./types"
 
@@ -129,7 +129,7 @@ export default class MasterShip implements ShipBase {
 
   public shipTypeIn = (...keys: HullCode[]) => keys.some((key) => ShipType[key] === this.shipType)
 
-  public canEquip = (key: EquipmentKey, gear: GearBase) => {
+  public canEquip = (key: GearKey, gear: GearBase) => {
     const { shipClass, equippable } = this
     const { gearId, specialCategory } = gear
 

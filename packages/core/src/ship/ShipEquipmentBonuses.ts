@@ -1,7 +1,7 @@
 import { GearId, ShipClass, ShipType, ShipId, ShipRuby } from "@fleethub/data"
 import { createEquipmentBonuses as createBasicBonuses } from "equipment-bonus"
 
-import { Equipment, EquipmentKey } from "../equipment"
+import { Equipment, GearKey } from "../equipment"
 
 import { ShipIdentityWithSpeed, EquipmentBonuses } from "./types"
 import { GearBase } from "../gear"
@@ -151,7 +151,7 @@ const subtract = (left: EquipmentBonuses, right: EquipmentBonuses): EquipmentBon
 export const createShipEquipmentBonuses = (ship: ShipIdentityWithSpeed, equipment: Equipment) => {
   const bonuses = createEquipmentBonuses(ship, equipment.gears)
 
-  const makeGetNextBonuses = (excludedKey: EquipmentKey) => {
+  const makeGetNextBonuses = (excludedKey: GearKey) => {
     const filtered = equipment.filter((gear, key) => key !== excludedKey)
     const current = createEquipmentBonuses(ship, filtered)
 

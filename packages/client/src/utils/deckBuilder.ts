@@ -3,8 +3,8 @@ import { Ship, Fleet, Plan } from "@fleethub/core"
 
 const shipToDeck = (ship: Ship): DeckBuilderShip => {
   const items: DeckBuilderShip["items"] = {}
-  ship.equipment.forEach((gear, index) => {
-    items[index.replace("g", "i") as keyof typeof items] = {
+  ship.equipment.forEach((gear, key) => {
+    items[key.replace("g", "i") as keyof typeof items] = {
       id: gear.gearId,
       rf: gear.stars,
       mas: gear.ace,
