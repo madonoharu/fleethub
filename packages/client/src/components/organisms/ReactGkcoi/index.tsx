@@ -3,6 +3,26 @@ import { generate, DeckBuilder } from "gkcoi"
 import styled from "styled-components"
 
 import { CircularProgress } from "@material-ui/core"
+import { Alert } from "@material-ui/lab"
+
+type GkcoiResult =
+  | { status: "loading" }
+  | { status: "error"; reason: any }
+  | { status: "success"; canvas: HTMLCanvasElement }
+
+const useGkcoi = (deck: DeckBuilder) => {
+  const [result, setResult] = React.useState<GkcoiResult>({ status: "loading" })
+
+  React.useEffect(() => {
+    generate(deck)
+      .then((canvas) => setResult({ status: "success", canvas }))
+      .catch((reason) => setResult({ status: "error", reason }))
+
+    return () => setResult({ status: "loading" })
+  }, [deck])
+
+  return result
+}
 
 const StyledCircularProgress = styled(CircularProgress)`
   display: block;
@@ -14,34 +34,29 @@ type Props = {
 }
 
 const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
-  const ref = React.useRef<HTMLCanvasElement | null>(null)
-  const [loaded, setLoaded] = React.useState(false)
+  const result = useGkcoi(deck)
 
-  React.useEffect(() => setLoaded(false), [deck])
+  if (result.status === "loading") return <StyledCircularProgress size={80} />
 
-  React.useEffect(() => {
-    const node = ref.current
-    if (!node || loaded) return
+  if (result.status === "error") {
+    return (
+      <Alert color="error" variant="outlined">
+        error
+      </Alert>
+    )
+  }
 
-    const ctx = node.getContext("2d")
-    ctx?.clearRect(0, 0, node.width, node.height)
-
-    generate(deck).then((gkcoiCanvas) => {
-      const { width, height } = gkcoiCanvas
-
-      node.width = width
-      node.height = height
-
-      ctx?.drawImage(gkcoiCanvas, 0, 0)
-      setLoaded(true)
-    })
-  }, [ref, loaded, deck])
+  const { canvas } = result
 
   return (
-    <div>
-      {!loaded && <StyledCircularProgress size={80} />}
-      <canvas ref={ref} className={className} />
-    </div>
+    <canvas
+      ref={(node) => {
+        node?.getContext("2d")?.drawImage(canvas, 0, 0)
+      }}
+      className={className}
+      width={canvas.width}
+      height={canvas.height}
+    />
   )
 }
 
@@ -49,4 +64,4 @@ const Styled = styled(ReactGkcoi)`
   width: 100%;
 `
 
-export default React.memo(Styled)
+export default Styled
