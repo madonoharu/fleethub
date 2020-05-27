@@ -48,11 +48,16 @@ const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
 
   const { canvas } = result
 
+  const handleClick = () => {
+    window.open(canvas.toDataURL("png"), "_blank")
+  }
+
   return (
     <canvas
       ref={(node) => {
         node?.getContext("2d")?.drawImage(canvas, 0, 0)
       }}
+      onClick={handleClick}
       className={className}
       width={canvas.width}
       height={canvas.height}
@@ -62,6 +67,7 @@ const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
 
 const Styled = styled(ReactGkcoi)`
   width: 100%;
+  cursor: pointer;
 `
 
 export default Styled
