@@ -5,10 +5,7 @@ import styled from "styled-components"
 import { CircularProgress } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 
-type GkcoiResult =
-  | { status: "loading" }
-  | { status: "error"; reason: any }
-  | { status: "success"; canvas: HTMLCanvasElement }
+type GkcoiResult = { status: "loading" } | { status: "error" } | { status: "success"; canvas: HTMLCanvasElement }
 
 const useGkcoi = (deck: DeckBuilder) => {
   const [result, setResult] = React.useState<GkcoiResult>({ status: "loading" })
@@ -16,7 +13,10 @@ const useGkcoi = (deck: DeckBuilder) => {
   React.useEffect(() => {
     generate(deck)
       .then((canvas) => setResult({ status: "success", canvas }))
-      .catch((reason) => setResult({ status: "error", reason }))
+      .catch((reason) => {
+        console.error(reason)
+        setResult({ status: "error" })
+      })
 
     return () => setResult({ status: "loading" })
   }, [deck])
@@ -41,7 +41,7 @@ const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
   if (result.status === "error") {
     return (
       <Alert color="error" variant="outlined">
-        error
+        Error
       </Alert>
     )
   }
