@@ -7,7 +7,7 @@ import { NumberInput, Flexbox, Select, SelectButtons, ReactGkcoi } from "../../.
 import { usePlan } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"
-import { planToDeck, gkcoiThemes, GkcoiTheme } from "../../../utils"
+import GkcoiTabPanel from "./GkcoiTabPanel"
 
 const tabOptions = ["f1", "f2", "lb", "Gkcoi"] as const
 
@@ -19,8 +19,6 @@ type Props = {
 const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
   const { plan, actions } = usePlan(planId)
   const [tabKey, setTabKey] = React.useState<typeof tabOptions[number]>("f1")
-
-  const [gkcoiTheme, setGkcoiTheme] = React.useState<GkcoiTheme>("dark")
 
   if (!plan) return null
 
@@ -47,12 +45,7 @@ const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
       </Flexbox>
       <SelectButtons options={tabOptions} value={tabKey} onChange={setTabKey} />
       {fleetEntry && <FleetTabPanel fleet={fleetEntry[1]} fleetKey={fleetEntry[0]} updatePlan={actions.update} />}
-      {tabKey === "Gkcoi" && (
-        <>
-          <Select options={gkcoiThemes} value={gkcoiTheme} onChange={setGkcoiTheme} />
-          <ReactGkcoi deck={planToDeck(plan, gkcoiTheme)} />
-        </>
-      )}
+      {tabKey === "Gkcoi" && <GkcoiTabPanel plan={plan} />}
     </Container>
   )
 }
