@@ -3,11 +3,11 @@ import { EntityId } from "@reduxjs/toolkit"
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
-import { NumberInput, Flexbox, SelectButtons, ReactGkcoi } from "../../../components"
+import { NumberInput, Flexbox, Select, SelectButtons, ReactGkcoi } from "../../../components"
 import { usePlan } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"
-import { planToDeck } from "../../../utils"
+import { planToDeck, gkcoiThemes, GkcoiTheme } from "../../../utils"
 
 const tabOptions = ["f1", "f2", "lb", "Gkcoi"] as const
 
@@ -19,6 +19,8 @@ type Props = {
 const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
   const { plan, actions } = usePlan(planId)
   const [tabKey, setTabKey] = React.useState<typeof tabOptions[number]>("f1")
+
+  const [gkcoiTheme, setGkcoiTheme] = React.useState<GkcoiTheme>("dark")
 
   if (!plan) return null
 
@@ -45,7 +47,12 @@ const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
       </Flexbox>
       <SelectButtons options={tabOptions} value={tabKey} onChange={setTabKey} />
       {fleetEntry && <FleetTabPanel fleet={fleetEntry[1]} fleetKey={fleetEntry[0]} updatePlan={actions.update} />}
-      {tabKey === "Gkcoi" && <ReactGkcoi deck={planToDeck(plan)} />}
+      {tabKey === "Gkcoi" && (
+        <>
+          <Select options={gkcoiThemes} value={gkcoiTheme} onChange={setGkcoiTheme} />
+          <ReactGkcoi deck={planToDeck(plan, gkcoiTheme)} />
+        </>
+      )}
     </Container>
   )
 }
