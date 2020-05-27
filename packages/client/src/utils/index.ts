@@ -22,5 +22,5 @@ export const isEntityId = (id: unknown): id is EntityId => {
   return false
 }
 
-export * from "./deckBuilder"
 export * from "./FhDictionary"
+export * from "./gkcoi"
