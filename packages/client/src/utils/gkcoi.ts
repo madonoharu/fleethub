@@ -38,7 +38,7 @@ const fleetToDeck = (fleet: Fleet): DeckBuilderFleet => {
   return deckFleet
 }
 
-type GkcoiTheme = DeckBuilder["theme"]
+export type GkcoiTheme = DeckBuilder["theme"]
 
 export const gkcoiThemes: GkcoiTheme[] = ["dark", "dark-ex", "official", "74lc", "74mc", "74sb"]
 
