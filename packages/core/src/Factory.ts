@@ -3,7 +3,7 @@ import { GearData, ShipData } from "@fleethub/data"
 import { MasterGear, GearState, GearImpl } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
 import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
-import { FleetState, FleetImpl, Fleet } from "./fleet"
+import { FleetState, FleetImpl, Fleet, ShipKey } from "./fleet"
 import { AirbaseState, AirbaseImpl, Airbase } from "./airbase"
 import { PlanState, PlanImpl, FleetKey, AirbaseKey } from "./plan"
 import { isNonNullable } from "./utils"
@@ -65,7 +65,9 @@ export default class Factory {
   }
 
   public createFleet = (state: FleetState, createShip = this.createShip) => {
-    const shipKeys = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"] as const
+    const shipKeys: ShipKey[] = ["s1", "s2", "s3", "s4", "s5", "s6"]
+    if (state.size === 7) shipKeys.push("s7")
+
     const entries: FleetImpl["entries"] = shipKeys.map((key) => {
       const shipState = state[key]
       const ship = shipState && createShip(shipState)

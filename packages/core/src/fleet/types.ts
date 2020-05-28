@@ -12,6 +12,7 @@ export type Fleet = {
   state: FleetState
 
   entries: Array<[ShipKey, Ship?]>
+  ships: Ship[]
 
   fleetLosModifier: number
   aviationDetectionScore: number
