@@ -46,7 +46,13 @@ const useFleetShipActions = ({ shipKey, updateFleet }: Pick<ConnectedShipCardPro
 const ConnectedShipCard: React.FC<ConnectedShipCardProps> = React.memo<ConnectedShipCardProps>(({ ship, ...rest }) => {
   const actions = useFleetShipActions(rest)
 
-  if (!ship) return <Button onClick={actions.openShipSelect}>add</Button>
+  if (!ship) {
+    return (
+      <Button variant="outlined" onClick={actions.openShipSelect}>
+        add
+      </Button>
+    )
+  }
 
   return <ShipCard ship={ship} update={actions.update} onRemove={actions.remove} />
 })
@@ -70,4 +76,7 @@ export default styled(ShipList)`
   display: grid;
   grid-gap: 8px;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  > * {
+    height: ${24 * 7}px;
+  }
 `
