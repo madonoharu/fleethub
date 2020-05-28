@@ -5,7 +5,7 @@ import { Ship, ShipState, GearKey } from "@fleethub/core"
 import { Box, Paper } from "@material-ui/core"
 
 import { EquipmentList, ShipBanner } from "../../../components"
-import { Update } from "../../../utils"
+import { Update, createShallowEqualSelector } from "../../../utils"
 
 import ShipHeader from "./Header"
 import ShipStats from "./ShipStats"
@@ -35,11 +35,11 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
     })
   }
 
+  const gears = ship.equipment.items.map(({ gear }) => gear)
+  gears.length = 6
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const makeGetNextBonuses = React.useCallback(ship.makeGetNextBonuses, [
-    ship.shipId,
-    ...ship.equipment.items.map(({ gear }) => gear),
-  ])
+  const makeGetNextBonuses = React.useCallback(ship.makeGetNextBonuses, [ship.shipId, ...gears])
 
   return (
     <Paper className={className}>
