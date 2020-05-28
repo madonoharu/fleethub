@@ -46,7 +46,7 @@ export const planToDeck = (plan: Plan, theme: GkcoiTheme = "dark") => {
   const deck: DeckBuilder = { lang: "en", theme, hqlv: plan.hqLevel }
 
   plan.fleetEntries.forEach(([key, fleet]) => {
-    if (!fleet) return
+    if (fleet.ships.length === 0) return
     deck[key] = fleetToDeck(fleet)
   })
 
