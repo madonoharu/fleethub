@@ -40,7 +40,7 @@ const PlanList: React.FC = (props) => {
 
   const handleCreate = () => {
     const name = `編成${plans.length + 1}`
-    actions.create({ name, f1: {}, f2: {}, a1: {}, a2: {}, a3: {} })
+    actions.create({ name })
   }
 
   return (

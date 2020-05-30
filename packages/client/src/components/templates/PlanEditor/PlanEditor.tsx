@@ -10,7 +10,7 @@ import FleetTabPanel from "./FleetTabPanel"
 import LandBaseTabPanel from "./LandBaseTabPanel"
 import GkcoiTabPanel from "./GkcoiTabPanel"
 
-const tabOptions = ["f1", "f2", "lb", "Gkcoi"] as const
+const tabOptions = ["f1", "f2", "f3", "f4", "lb", "Gkcoi"] as const
 
 type Props = {
   planId: EntityId
