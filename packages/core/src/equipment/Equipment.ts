@@ -9,13 +9,13 @@ export type GearKey = GearKeyWithoutExslot | "gx"
 
 export const getSlotKey = (key: GearKey) => key.replace("g", "slot") as SlotKey
 
-export const getGearKeys = (size: number) => {
+export const getGearKeys = (size: number, exslot = true) => {
   const keys = range(size).map((index) => {
     const num = index + 1
     return [`g${num}`, `slot${num}`] as [GearKey, SlotKey]
   })
 
-  keys.push(["gx", "slotx"])
+  if (exslot) keys.push(["gx", "slotx"])
 
   return keys
 }
