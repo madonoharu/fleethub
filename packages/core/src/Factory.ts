@@ -11,9 +11,10 @@ import { isNonNullable } from "./utils"
 const createEquipment = (
   state: EquipmentState,
   maxSlots: number[],
-  createGear: (state: GearState) => GearImpl | undefined
+  createGear: (state: GearState) => GearImpl | undefined,
+  exslot = true
 ) => {
-  const items: EquipmentItem[] = getGearKeys(maxSlots.length).map(([key, slotKey], index) => {
+  const items: EquipmentItem[] = getGearKeys(maxSlots.length, exslot).map(([key, slotKey], index) => {
     const gearState = state[key]
     const gear = gearState && createGear(gearState)
 
@@ -78,7 +79,7 @@ export default class Factory {
   }
 
   public createAirbase = (state: AirbaseState, createGear = this.createGear) => {
-    const equipment = createEquipment(state, [18, 18, 18, 18], createGear)
+    const equipment = createEquipment(state, [18, 18, 18, 18], createGear, false)
 
     return new AirbaseImpl(equipment)
   }
