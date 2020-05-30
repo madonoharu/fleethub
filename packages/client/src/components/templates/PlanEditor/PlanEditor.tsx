@@ -7,6 +7,7 @@ import { NumberInput, Flexbox, Select, SelectButtons, ReactGkcoi } from "../../.
 import { usePlan } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"
+import LandBaseTabPanel from "./LandBaseTabPanel"
 import GkcoiTabPanel from "./GkcoiTabPanel"
 
 const tabOptions = ["f1", "f2", "lb", "Gkcoi"] as const
@@ -45,6 +46,7 @@ const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
       </Flexbox>
       <SelectButtons options={tabOptions} value={tabKey} onChange={setTabKey} />
       {fleetEntry && <FleetTabPanel fleet={fleetEntry[1]} fleetKey={fleetEntry[0]} updatePlan={actions.update} />}
+      {tabKey === "lb" && <LandBaseTabPanel plan={plan} update={actions.update} />}
       {tabKey === "Gkcoi" && <GkcoiTabPanel plan={plan} />}
     </Container>
   )
