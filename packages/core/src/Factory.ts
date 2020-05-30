@@ -6,7 +6,6 @@ import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equ
 import { FleetState, FleetImpl, Fleet, ShipKey } from "./fleet"
 import { AirbaseState, AirbaseImpl, Airbase } from "./airbase"
 import { PlanState, PlanImpl, FleetKey, AirbaseKey } from "./plan"
-import { isNonNullable } from "./utils"
 
 const createEquipment = (
   state: EquipmentState,
@@ -88,21 +87,12 @@ export default class Factory {
     const fleetKeys = ["f1", "f2", "f3", "f4"] as const
     const airbaseKeys = ["a1", "a2", "a3"] as const
 
-    const fleetEntries = fleetKeys
-      .map((key): [FleetKey, Fleet] | undefined => {
-        const fleetState = state[key]
-        if (!fleetState) return
-        return [key, createFleet(fleetState)]
-      })
-      .filter(isNonNullable)
+    const fleetEntries: Array<[FleetKey, Fleet]> = fleetKeys.map((key) => [key, createFleet(state[key] || {})])
 
-    const airbaseEntries = airbaseKeys
-      .map((key): [AirbaseKey, Airbase] | undefined => {
-        const airbaseState = state[key]
-        if (!airbaseState) return
-        return [key, createAirbase(airbaseState)]
-      })
-      .filter(isNonNullable)
+    const airbaseEntries: Array<[AirbaseKey, Airbase]> = airbaseKeys.map((key) => [
+      key,
+      createAirbase(state[key] || {}),
+    ])
 
     return new PlanImpl(state, fleetEntries, airbaseEntries)
   }
