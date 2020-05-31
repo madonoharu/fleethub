@@ -16,8 +16,8 @@ const FleetTabPanel: React.FC<Props> = ({ fleet, fleetKey, updatePlan }) => {
   const updateFleet: Update<FleetState> = React.useCallback(
     (recipe) => {
       updatePlan((draft) => {
-        const fleetState = draft[fleetKey]
-        if (fleetState) recipe(fleetState)
+        const fleetState = draft[fleetKey] || (draft[fleetKey] = {})
+        recipe(fleetState)
       })
     },
     [fleetKey, updatePlan]
