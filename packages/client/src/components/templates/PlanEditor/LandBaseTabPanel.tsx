@@ -3,8 +3,9 @@ import { Plan, PlanState, Airbase, AirbaseState, AirbaseKey } from "@fleethub/co
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
-import { EquipmentList } from "../../../components"
+import { AirbaseCard, Flexbox } from "../../../components"
 import { Update } from "../../../utils"
+import styled from "styled-components"
 
 type ConnectedAirbaseCardProps = {
   airbase: Airbase
@@ -23,7 +24,7 @@ const ConnectedAirbaseCard: React.FC<ConnectedAirbaseCardProps> = ({ airbase, up
     [airbaseKey, updatePlan]
   )
 
-  return <EquipmentList equipment={airbase.equipment} update={updateAirbase} />
+  return <AirbaseCard airbase={airbase} update={updateAirbase} />
 }
 
 type Props = {
@@ -31,14 +32,19 @@ type Props = {
   update: Update<PlanState>
 }
 
-const LandBaseTabPanel: React.FC<Props> = ({ plan, update }) => {
+const LandBaseTabPanel: React.FCX<Props> = ({ className, plan, update }) => {
   return (
-    <div>
+    <Flexbox className={className}>
       {plan.airbaseEntries.map(([key, airbase]) => (
         <ConnectedAirbaseCard key={key} airbase={airbase} airbaseKey={key} updatePlan={update} />
       ))}
-    </div>
+    </Flexbox>
   )
 }
 
-export default LandBaseTabPanel
+export default styled(LandBaseTabPanel)`
+  > * {
+    flex-basis: 200px;
+    flex-grow: 1;
+  }
+`
