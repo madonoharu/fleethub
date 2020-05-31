@@ -11,14 +11,20 @@ const useGkcoi = (deck: DeckBuilder) => {
   const [result, setResult] = React.useState<GkcoiResult>({ status: "loading" })
 
   React.useEffect(() => {
+    let unmounted = false
+
     generate(deck)
-      .then((canvas) => setResult({ status: "success", canvas }))
+      .then((canvas) => !unmounted && setResult({ status: "success", canvas }))
       .catch((reason) => {
+        if (unmounted) return
         console.error(reason)
         setResult({ status: "error" })
       })
 
-    return () => setResult({ status: "loading" })
+    return () => {
+      unmounted = true
+      setResult({ status: "loading" })
+    }
   }, [deck])
 
   return result
