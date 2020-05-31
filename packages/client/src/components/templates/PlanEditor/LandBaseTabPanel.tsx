@@ -16,8 +16,8 @@ const ConnectedAirbaseCard: React.FC<ConnectedAirbaseCardProps> = ({ airbase, up
   const updateAirbase: Update<AirbaseState> = React.useCallback(
     (recipe) => {
       updatePlan((draft) => {
-        const state = draft[airbaseKey]
-        if (state) recipe(state)
+        const state = draft[airbaseKey] || (draft[airbaseKey] = {})
+        recipe(state)
       })
     },
     [airbaseKey, updatePlan]
