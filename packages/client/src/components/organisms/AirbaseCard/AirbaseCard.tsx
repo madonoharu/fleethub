@@ -16,7 +16,7 @@ const AirbaseCard: React.FCX<Props> = ({ className, airbase, update }) => {
   return (
     <Paper className={className}>
       制空: 100 半径: 10
-      <EquipmentList equipment={airbase.equipment} update={update} />
+      <EquipmentList equipment={airbase.equipment} update={update} canEquip={airbase.canEquip} />
     </Paper>
   )
 }

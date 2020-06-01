@@ -28,7 +28,7 @@ export type ShipIdentityWithSpeed = ShipIdentity & { speed: number }
 
 export type ShipCommonBase = ShipIdentity & {
   is: (attr: ShipAttribute) => boolean
-  canEquip: (key: GearKey, gear: GearBase) => boolean
+  canEquip: (gear: GearBase, key?: GearKey) => boolean
 }
 
 export type ShipCommonBaseWithStatsBase = ShipCommonBase & ShipStatsBase
