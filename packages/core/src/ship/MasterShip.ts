@@ -129,7 +129,7 @@ export default class MasterShip implements ShipBase {
 
   public shipTypeIn = (...keys: HullCode[]) => keys.some((key) => ShipType[key] === this.shipType)
 
-  public canEquip = (key: GearKey, gear: GearBase) => {
+  public canEquip = (gear: GearBase, key?: GearKey) => {
     const { shipClass, equippable } = this
     const { gearId, specialCategory } = gear
 
@@ -140,6 +140,8 @@ export default class MasterShip implements ShipBase {
     if (!equippable.categories.includes(specialCategory)) {
       return false
     }
+
+    if (!key) return true
 
     if (key === "gx") {
       return (

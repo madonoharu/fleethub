@@ -18,7 +18,7 @@ export type Props = {
   gearKey: GearKey
   updateEquipment: Update<EquipmentState>
 
-  canEquip?: (key: GearKey, gear: GearBase) => boolean
+  canEquip?: (gear: GearBase, key?: GearKey) => boolean
   makeGetNextBonuses?: (key: GearKey) => (gear: GearBase) => EquipmentBonuses
 }
 
@@ -75,7 +75,7 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
   const handleOpenGearSelect = () => {
     gearSelectActions.open(
       actions.create,
-      canEquip && ((gear) => canEquip(gearKey, gear)),
+      canEquip && ((gear) => canEquip(gear, gearKey)),
       makeGetNextBonuses && makeGetNextBonuses(gearKey)
     )
   }
@@ -86,7 +86,7 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
       {gear ? (
         <GearLabel
           gear={gear}
-          equippable={canEquip && canEquip(gearKey, gear)}
+          equippable={canEquip?.(gear, gearKey)}
           update={actions.update}
           onReselect={handleOpenGearSelect}
           onRemove={actions.remove}
