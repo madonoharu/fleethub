@@ -43,13 +43,11 @@ export class AirbaseImpl implements Airbase {
 
   get radius() {
     const min = Math.min(...this.equipment.map(({ radius }) => radius))
-    if (min < 0) return 0
+    if (min === Infinity) return 0
 
     const maxReconRadius = Math.max(...this.equipment.map((gear) => (gear.is("Recon") ? gear.radius : 0)))
+    const reconBonus = maxReconRadius ? Math.min(Math.sqrt(maxReconRadius - min), 3) : 0
 
-    if (maxReconRadius <= 0) return min
-
-    const reconBonus = Math.min(Math.sqrt(maxReconRadius - min), 3)
     return Math.round(min + reconBonus)
   }
 
@@ -62,6 +60,8 @@ export class AirbaseImpl implements Airbase {
       const multiplier = antiAir + 1.5 * interception + improvement.fighterPowerBonus
       return Math.floor(multiplier * Math.sqrt(slotSize) + proficiencyModifier)
     })
+
+    if (!total) return 0
 
     const reconModifier = Math.max(...this.equipment.map(getReconFighterPowerModifier))
     return Math.floor(total * reconModifier)
@@ -76,6 +76,8 @@ export class AirbaseImpl implements Airbase {
       const multiplier = antiAir + interception + 2 * antiBomber + improvement.fighterPowerBonus
       return Math.floor(multiplier * Math.sqrt(slotSize) + proficiencyModifier)
     })
+
+    if (!total) return 0
 
     const reconModifier = Math.max(...this.equipment.map(getReconInterceptionPowerModifier))
     return Math.floor(total * reconModifier)
