@@ -24,7 +24,7 @@ const ConnectedAirbaseCard: React.FC<ConnectedAirbaseCardProps> = ({ airbase, up
     [airbaseKey, updatePlan]
   )
 
-  return <AirbaseCard airbase={airbase} update={updateAirbase} />
+  return <AirbaseCard label={airbaseKey} airbase={airbase} update={updateAirbase} />
 }
 
 type Props = {
