@@ -7,4 +7,7 @@ export type AirbaseState = EquipmentState
 export type Airbase = {
   equipment: Equipment
   canEquip: (gear: GearBase) => boolean
+  radius: number
+  fighterPower: number
+  interceptionPower: number
 }
