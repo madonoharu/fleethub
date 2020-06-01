@@ -8,15 +8,17 @@ import { EquipmentList } from "../../../components"
 import { Update } from "../../../utils"
 
 type Props = {
+  label?: string
   airbase: Airbase
   update: Update<AirbaseState>
 }
 
-const AirbaseCard: React.FCX<Props> = ({ className, airbase, update }) => {
+const AirbaseCard: React.FCX<Props> = ({ className, label, airbase, update }) => {
   return (
     <Paper className={className}>
-      制空: {airbase.fighterPower} 半径: {airbase.radius}
+      {label}
       <EquipmentList equipment={airbase.equipment} update={update} canEquip={airbase.canEquip} />
+      制空: {airbase.fighterPower} 半径: {airbase.radius}
     </Paper>
   )
 }
