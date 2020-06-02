@@ -22,7 +22,7 @@ type Props = {
   onReselect?: () => void
 }
 
-export const GearLabel: React.FCX<Props> = ({
+const GearLabel: React.FCX<Props> = ({
   className,
 
   gear,
