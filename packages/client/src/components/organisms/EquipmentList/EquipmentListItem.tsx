@@ -4,7 +4,7 @@ import { Gear, GearState, getSlotKey, EquipmentState, GearKey, GearBase, Equipme
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
 import { GearLabel, Flexbox } from "../../../components"
-import { useGearSelectActions } from "../../../hooks"
+import { useGearSelectActions, useSwap } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import SlotSizeButton from "./SlotSizeButton"
@@ -24,7 +24,7 @@ export type Props = {
 
 const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
   return React.useMemo(() => {
-    const create = (gearState: GearState) => {
+    const set = (gearState?: GearState) => {
       updateEquipment((draft) => {
         draft[gearKey] = gearState
       })
@@ -48,13 +48,19 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
         state && recipe(state)
       })
 
+    const setState = (recipe: (prev?: GearState) => GearState | undefined) => {
+      updateEquipment((draft) => {
+        draft[gearKey] = recipe(draft[gearKey])
+      })
+    }
+
     const remove = () => {
       updateEquipment((draft) => {
         delete draft[gearKey]
       })
     }
 
-    return { setSlotSize, create, update, remove }
+    return { set, update, remove, setSlotSize }
   }, [gearKey, updateEquipment])
 }
 
@@ -63,6 +69,13 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
 
   const actions = useEquipmentGearActions(props)
   const gearSelectActions = useGearSelectActions()
+
+  const [{ isDragging }, ref] = useSwap({
+    type: "gear",
+    state: gear && { gearId: gear.gearId, stars: gear.stars, exp: gear.exp },
+    setState: actions.set,
+    canDrag: Boolean(gear),
+  })
 
   const handleSlotSizeChange = (value: number) => {
     if (value === maxSlotSize) {
@@ -74,14 +87,14 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
 
   const handleOpenGearSelect = () => {
     gearSelectActions.open(
-      actions.create,
+      actions.set,
       canEquip && ((gear) => canEquip(gear, gearKey)),
       makeGetNextBonuses && makeGetNextBonuses(gearKey)
     )
   }
 
   return (
-    <Flexbox className={className}>
+    <Flexbox ref={ref} className={className}>
       <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={handleSlotSizeChange} />
       {gear ? (
         <GearLabel

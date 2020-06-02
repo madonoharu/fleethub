@@ -11,6 +11,7 @@ export const useRenderCount = () => {
 }
 
 export * from "./handlers"
+export * from "./useSwap"
 
 export * from "./useFhSystem"
 export * from "./useCachedFhFactory"
