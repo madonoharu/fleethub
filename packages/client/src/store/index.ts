@@ -1,26 +1,18 @@
 import { combineReducers, configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist"
 import storage from "localforage"
+import undoable from "redux-undo"
 
 import { plansSlice } from "./plansSlice"
 import { planEditorSlice } from "./planEditorSlice"
 
 const rootReducer = combineReducers({
-  plans: plansSlice.reducer,
-  planEditor: planEditorSlice.reducer,
+  plans: persistReducer({ key: plansSlice.name, storage }, plansSlice.reducer),
+  planEditor: persistReducer({ key: planEditorSlice.name, storage }, planEditorSlice.reducer),
 })
 
-export type RootState = ReturnType<typeof rootReducer>
-
-const persistConfig = {
-  key: "root",
-  storage,
-}
-
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
@@ -30,7 +22,8 @@ export const store = configureStore({
 
 export const persistor = persistStore(store)
 
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+
 export * from "./plansSlice"
 export * from "./planEditorSlice"
-
-export type AppDispatch = typeof store.dispatch
