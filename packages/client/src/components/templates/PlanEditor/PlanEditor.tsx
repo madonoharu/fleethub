@@ -9,6 +9,7 @@ import { usePlan } from "../../../hooks"
 import FleetTabPanel from "./FleetTabPanel"
 import LandBaseTabPanel from "./LandBaseTabPanel"
 import GkcoiTabPanel from "./GkcoiTabPanel"
+import { useDispatch } from "react-redux"
 
 const tabOptions = ["f1", "f2", "f3", "f4", "lb", "Gkcoi"] as const
 
@@ -40,6 +41,7 @@ const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
   return (
     <Container>
       <Button onClick={onClose}>back</Button>
+      <Button>undo</Button>
       <Flexbox>
         <TextField value={plan.name} onChange={handleNameChange} />
         <NumberInput value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
