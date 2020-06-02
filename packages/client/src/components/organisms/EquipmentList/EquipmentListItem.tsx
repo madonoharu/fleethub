@@ -48,12 +48,6 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
         state && recipe(state)
       })
 
-    const setState = (recipe: (prev?: GearState) => GearState | undefined) => {
-      updateEquipment((draft) => {
-        draft[gearKey] = recipe(draft[gearKey])
-      })
-    }
-
     const remove = () => {
       updateEquipment((draft) => {
         delete draft[gearKey]
@@ -72,7 +66,7 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
 
   const [{ isDragging }, ref] = useSwap({
     type: "gear",
-    state: gear && { gearId: gear.gearId, stars: gear.stars, exp: gear.exp },
+    state: gear?.state,
     setState: actions.set,
     canDrag: Boolean(gear),
   })
