@@ -24,13 +24,13 @@ export type Props = {
 
 const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
   return React.useMemo(() => {
+    const slotKey = getSlotKey(gearKey)
+
     const set = (gearState?: GearState) => {
       updateEquipment((draft) => {
         draft[gearKey] = gearState
       })
     }
-
-    const slotKey = getSlotKey(gearKey)
 
     const setSlotSize = (next: number | undefined) => {
       updateEquipment((draft) => {
@@ -64,7 +64,7 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
   const actions = useEquipmentGearActions(props)
   const gearSelectActions = useGearSelectActions()
 
-  const [{ isDragging }, ref] = useSwap({
+  const [ref] = useSwap({
     type: "gear",
     state: gear?.state,
     setState: actions.set,
