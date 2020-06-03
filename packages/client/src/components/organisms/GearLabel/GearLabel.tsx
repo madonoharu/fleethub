@@ -67,7 +67,6 @@ const GearLabel: React.FCX<Props> = ({
 
 const Styled = styled(GearLabel)`
   width: 100%;
-  transition: 250ms;
   padding: 0 4px;
 
   > :not(:first-child) {
@@ -83,6 +82,7 @@ const Styled = styled(GearLabel)`
   }
 
   :hover {
+    transition: 250ms;
     background: ${(props) => props.theme.palette.action.hover};
     ${UpdateButton}, ${ClearButton} {
       display: block;
