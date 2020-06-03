@@ -9,6 +9,7 @@ import { useShipSelectActions, useSwap } from "../../../hooks"
 import { Update } from "../../../utils"
 
 type Props = {
+  className?: string
   ship?: Ship
   shipKey: ShipKey
   updateFleet: Update<FleetState>
@@ -52,10 +53,10 @@ const AddShipButton = styled<React.FC<ButtonProps>>((props) => (
   height: 100%;
 `
 
-const ConnectedShipCard = React.memo<Props>(({ ship, ...rest }) => {
+const ConnectedShipCard = React.memo<Props>(({ className, ship, ...rest }) => {
   const actions = useFleetShipActions(rest)
 
-  const [, ref] = useSwap({
+  const [ref] = useSwap({
     type: "ship",
     state: ship?.state,
     setState: actions.set,
@@ -69,7 +70,11 @@ const ConnectedShipCard = React.memo<Props>(({ ship, ...rest }) => {
     element = <AddShipButton variant="outlined" fullWidth onClick={actions.openShipSelect} />
   }
 
-  return <div ref={ref}>{element}</div>
+  return (
+    <div className={className} ref={ref}>
+      {element}
+    </div>
+  )
 })
 
 export default ConnectedShipCard

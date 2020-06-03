@@ -9,7 +9,7 @@ type SwappableItem<T> = DragObjectWithType & {
 }
 
 export const useSwap = <T>(item: SwappableItem<T>) => {
-  const [dragCollectedProps, dragRef, preview] = useDrag({
+  const [{ isDragging }, dragRef, preview] = useDrag({
     item,
     canDrag: item.canDrag,
     collect: (monitor) => ({ isDragging: monitor.isDragging() }),
@@ -23,9 +23,8 @@ export const useSwap = <T>(item: SwappableItem<T>) => {
         dragItem.setState(item.state)
       })
     },
+    canDrop: (dragItem) => dragItem.state !== item.state,
   })
-
-  const { isDragging } = dragCollectedProps
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -36,14 +35,14 @@ export const useSwap = <T>(item: SwappableItem<T>) => {
     dragRef(node)
     dropRef(node)
 
-    const initalVisibility = node.style.visibility
+    const inital = node.style.opacity
     if (isDragging) {
-      node.style.visibility = "hidden"
+      node.style.opacity = "0.3"
     }
     return () => {
-      node.style.visibility = initalVisibility
+      node.style.opacity = inital
     }
   }, [isDragging, dragRef, dropRef])
 
-  return [dragCollectedProps, ref, preview] as const
+  return [ref, preview] as const
 }
