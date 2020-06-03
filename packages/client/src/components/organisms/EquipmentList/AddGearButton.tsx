@@ -21,8 +21,9 @@ export default styled(AddGearButton)`
   width: 100%;
   padding: 0;
   color: ${(props) => props.theme.palette.action.disabled};
-  transition: 250ms;
+
   :hover {
+    transition: 250ms;
     color: ${(props) => props.theme.palette.action.active};
   }
 `
