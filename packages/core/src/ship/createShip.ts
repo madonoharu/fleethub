@@ -1,6 +1,6 @@
 import { Equipment } from "../equipment"
 
-import { ShipImpl, Ship } from "./Ship"
+import { ShipImpl } from "./Ship"
 import { createShipStats } from "./ShipStats"
 import { createShipEquipmentBonuses } from "./ShipEquipmentBonuses"
 import { ShipState, ShipCommonBaseWithStatsBase } from "./types"
@@ -11,5 +11,5 @@ export const createShip = (state: ShipState, base: ShipCommonBaseWithStatsBase, 
   const { bonuses, makeGetNextBonuses } = createShipEquipmentBonuses(base, equipment)
   const stats = createShipStats(base, state, equipment, bonuses)
 
-  return new ShipImpl(base, stats, equipment, makeGetNextBonuses)
+  return new ShipImpl(state, base, stats, equipment, makeGetNextBonuses)
 }

@@ -12,7 +12,7 @@ import {
 } from "@fleethub/data"
 
 import { GearBase } from "../gear"
-import { EquipmentState, GearKey } from "../equipment"
+import { EquipmentState, GearKey, Equipment } from "../equipment"
 
 import { ShipAttribute } from "./ShipAttribute"
 
@@ -189,3 +189,18 @@ export type EquipmentBonuses = {
   speed: number
   effectiveLos: number
 }
+
+export type Ship = ShipCommonBase &
+  ShipStats & {
+    state: ShipState
+
+    equipment: Equipment
+    makeGetNextBonuses: (excludedKey: GearKey) => (gear: GearBase) => EquipmentBonuses
+
+    fleetLosFactor: number
+    cruiserFitBonus: number
+    isCarrierLike: boolean
+    calcAirPower: (isAntiInstallation?: boolean) => number
+
+    basicAccuracyTerm: number
+  }
