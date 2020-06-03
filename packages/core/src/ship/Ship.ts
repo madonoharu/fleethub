@@ -1,21 +1,5 @@
-import { Equipment, GearKey } from "../equipment"
-import { GearBase } from "../gear"
-
-import { ShipStats, ShipCommonBase, EquipmentBonuses } from "./types"
+import { ShipStats, ShipCommonBase, Ship } from "./types"
 import { GearId, ShipClass, ShipId } from "@fleethub/data"
-
-export type Ship = ShipCommonBase &
-  ShipStats & {
-    equipment: Equipment
-    makeGetNextBonuses: (excludedKey: GearKey) => (gear: GearBase) => EquipmentBonuses
-
-    fleetLosFactor: number
-    cruiserFitBonus: number
-    isCarrierLike: boolean
-    calcAirPower: (isAntiInstallation?: boolean) => number
-
-    basicAccuracyTerm: number
-  }
 
 export class ShipImpl implements Ship {
   public readonly shipId = this.base.shipId
@@ -50,6 +34,7 @@ export class ShipImpl implements Ship {
   public readonly canEquip = this.base.canEquip
 
   constructor(
+    public state: Ship["state"],
     private base: ShipCommonBase,
     private stats: ShipStats,
     public equipment: Ship["equipment"],
