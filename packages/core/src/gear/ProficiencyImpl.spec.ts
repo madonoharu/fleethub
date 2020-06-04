@@ -1,4 +1,4 @@
-import Proficiency from "./Proficiency"
+import { ProficiencyImpl } from "./ProficiencyImpl"
 
 describe("Proficiency", () => {
   it("expToLevel", () => {
@@ -20,8 +20,7 @@ describe("Proficiency", () => {
       [120, 7],
     ]
     expLevelTable.forEach(([exp, expected]) => {
-      expect(Proficiency.expToLevel(exp)).toBe(expected)
-      expect(new Proficiency(exp, "Fighter").level).toBe(expected)
+      expect(new ProficiencyImpl(exp, "Fighter").ace).toBe(expected)
     })
   })
 
@@ -41,7 +40,7 @@ describe("Proficiency", () => {
       [120, Math.sqrt(120 / 10) + 22],
     ]
     fighterTable.forEach(([exp, expected]) => {
-      expect(new Proficiency(exp, "Fighter").fighterPowerModifier).toBe(expected)
+      expect(new ProficiencyImpl(exp, "Fighter").fighterPowerModifier).toBe(expected)
     })
 
     const seaplaneBomberTable = [
@@ -55,9 +54,9 @@ describe("Proficiency", () => {
       [120, Math.sqrt(120 / 10) + 6],
     ]
     seaplaneBomberTable.forEach(([exp, expected]) => {
-      expect(new Proficiency(exp, "SeaplaneBomber").fighterPowerModifier).toBe(expected)
+      expect(new ProficiencyImpl(exp, "SeaplaneBomber").fighterPowerModifier).toBe(expected)
     })
 
-    expect(new Proficiency(120, "Other").fighterPowerModifier).toBe(Math.sqrt(120 / 10))
+    expect(new ProficiencyImpl(120, "Other").fighterPowerModifier).toBe(Math.sqrt(120 / 10))
   })
 })

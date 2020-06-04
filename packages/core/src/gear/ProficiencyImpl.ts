@@ -4,6 +4,10 @@ export type ProficiencyType = "Fighter" | "SeaplaneBomber" | "Other"
 
 const expTable = [0, 10, 25, 40, 55, 70, 85, 100]
 
+const expToAce = (exp: number) => {
+  return expTable.filter((boundary) => boundary <= exp).length - 1
+}
+
 type LevelBonus = { level: number; value: number }
 
 const getLevelBonus = (bonuses: LevelBonus[], level: number) => {
@@ -54,14 +58,10 @@ export class ProficiencyImpl implements Proficiency {
 
   public static maxExp = 120
 
-  public static expToAce = (exp: number) => {
-    return expTable.filter((boundary) => boundary <= exp).length - 1
-  }
-
   constructor(private exp: number, private type: ProficiencyType) {}
 
   get ace() {
-    return ProficiencyImpl.expToAce(this.exp)
+    return expToAce(this.exp)
   }
 
   get fighterPowerModifier() {
