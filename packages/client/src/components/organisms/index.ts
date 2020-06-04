@@ -9,5 +9,6 @@ export { default as EquipmentList } from "./EquipmentList"
 export { default as FleetAnalysisPanel } from "./FleetAnalysisPanel"
 
 export { default as ReactGkcoi } from "./ReactGkcoi"
+export { default as NauticalChart } from "./NauticalChart/NauticalChart"
 
 export { default as AppBar } from "./AppBar"
