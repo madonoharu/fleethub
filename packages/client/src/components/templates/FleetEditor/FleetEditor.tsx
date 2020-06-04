@@ -1,8 +1,9 @@
 import React from "react"
 import { FleetState, Fleet } from "@fleethub/core"
 
-import { Container, Paper, TextField, Button } from "@material-ui/core"
+import { Container, Paper, TextField, Typography } from "@material-ui/core"
 
+import { Flexbox, Text } from "../../../components"
 import { Update } from "../../../utils"
 
 import ShipList from "./ShipList"
@@ -14,9 +15,13 @@ type Props = {
 
 const FleetEditor: React.FC<Props> = ({ fleet, update }) => {
   return (
-    <Paper>
+    <div>
+      <Flexbox>
+        <Text>制空</Text>
+        <Text>索敵</Text>
+      </Flexbox>
       <ShipList fleet={fleet} updateFleet={update} />
-    </Paper>
+    </div>
   )
 }
 
