@@ -1,3 +1,5 @@
+import { Proficiency } from "./types"
+
 export type ProficiencyType = "Fighter" | "SeaplaneBomber" | "Other"
 
 const expTable = [0, 10, 25, 40, 55, 70, 85, 100]
@@ -5,9 +7,7 @@ const expTable = [0, 10, 25, 40, 55, 70, 85, 100]
 type LevelBonus = { level: number; value: number }
 
 const getLevelBonus = (bonuses: LevelBonus[], level: number) => {
-  if (bonuses.length === 0) {
-    return 0
-  }
+  if (bonuses.length === 0) return 0
 
   return Math.max(...bonuses.filter((bonus) => bonus.level <= level).map((bonus) => bonus.value))
 }
@@ -31,7 +31,7 @@ const fighterPowerLevelBonusTable = {
 }
 
 /** 熟練度 */
-export default class Proficiency {
+export class ProficiencyImpl implements Proficiency {
   public static readonly fighterPowerLevelBonuses = {
     Fighter: [
       { level: 7, value: 22 },
@@ -54,24 +54,24 @@ export default class Proficiency {
 
   public static maxExp = 120
 
-  public static expToLevel = (exp: number) => {
+  public static expToAce = (exp: number) => {
     return expTable.filter((boundary) => boundary <= exp).length - 1
   }
 
   constructor(private exp: number, private type: ProficiencyType) {}
 
-  get level() {
-    return Proficiency.expToLevel(this.exp)
+  get ace() {
+    return ProficiencyImpl.expToAce(this.exp)
   }
 
   get fighterPowerModifier() {
-    const { exp, level, type } = this
+    const { exp, ace, type } = this
     if (exp <= 0) {
       return 0
     }
 
     const table = fighterPowerLevelBonusTable[type]
-    const levelBonus = getLevelBonus(table, level)
+    const levelBonus = getLevelBonus(table, ace)
 
     return levelBonus + Math.sqrt(exp / 10)
   }

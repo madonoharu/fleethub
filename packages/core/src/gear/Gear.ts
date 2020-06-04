@@ -1,7 +1,6 @@
-import { DeckGear } from "../utils"
-import Proficiency from "./Proficiency"
 import { GearBase } from "./MasterGear"
 import { ImprovementBonuses } from "./ImprovementData"
+import { Proficiency } from "./types"
 
 export type GearState = {
   gearId: number
@@ -16,9 +15,11 @@ export type Gear = Readonly<
 
       hasProficiency: boolean
       ace: number
-      deck: DeckGear
 
       improvement: ImprovementBonuses
+
+      calcFighterPower: (slotSize: number) => number
+      calcInterceptionPower: (slotSize: number) => number
     }
 >
 
@@ -58,17 +59,30 @@ export class GearImpl implements Gear {
   public readonly maxHp = this.base.maxHp
   public readonly speed = this.base.speed
 
-  constructor(public state: GearState, private base: GearBase, public readonly improvement: ImprovementBonuses) {}
+  constructor(
+    public state: GearState,
+    private base: GearBase,
+    public readonly improvement: ImprovementBonuses,
+    private proficiency: Proficiency
+  ) {}
 
   get hasProficiency() {
     return this.in("Seaplane", "CbAircraft", "LbAircraft", "JetAircraft")
   }
 
   get ace() {
-    return Proficiency.expToLevel(this.exp)
+    return this.proficiency.ace
   }
 
-  get deck() {
-    return { id: this.gearId, mas: this.ace, rf: this.stars }
+  public calcFighterPower = (slotSize: number) => {
+    const { antiAir, interception, improvement, proficiency } = this
+    const multiplier = antiAir + 1.5 * interception + improvement.fighterPowerBonus
+    return Math.floor(multiplier * Math.sqrt(slotSize) + proficiency.fighterPowerModifier)
+  }
+
+  public calcInterceptionPower = (slotSize: number) => {
+    const { antiAir, interception, antiBomber, improvement, proficiency } = this
+    const multiplier = antiAir + interception + 2 * antiBomber + improvement.fighterPowerBonus
+    return Math.floor(multiplier * Math.sqrt(slotSize) + proficiency.fighterPowerModifier)
   }
 }
