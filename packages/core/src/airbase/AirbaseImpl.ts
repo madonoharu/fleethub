@@ -52,14 +52,7 @@ export class AirbaseImpl implements Airbase {
   }
 
   get fighterPower() {
-    const total = this.equipment.sumBy((gear, key, slotSize) => {
-      if (!slotSize) return 0
-      const { antiAir, interception, improvement } = gear
-      const proficiencyModifier = 0
-
-      const multiplier = antiAir + 1.5 * interception + improvement.fighterPowerBonus
-      return Math.floor(multiplier * Math.sqrt(slotSize) + proficiencyModifier)
-    })
+    const total = this.equipment.calcFighterPower(true)
 
     if (!total) return 0
 
@@ -70,11 +63,7 @@ export class AirbaseImpl implements Airbase {
   get interceptionPower() {
     const total = this.equipment.sumBy((gear, key, slotSize) => {
       if (!slotSize) return 0
-      const { antiAir, interception, antiBomber, improvement } = gear
-      const proficiencyModifier = 0
-
-      const multiplier = antiAir + interception + 2 * antiBomber + improvement.fighterPowerBonus
-      return Math.floor(multiplier * Math.sqrt(slotSize) + proficiencyModifier)
+      return gear.calcInterceptionPower(slotSize)
     })
 
     if (!total) return 0

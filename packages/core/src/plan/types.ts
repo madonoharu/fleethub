@@ -19,4 +19,7 @@ export type PlanState = PlanStateBase & FleetRecord & AirbaseRecord
 export type Plan = Required<PlanStateBase> & {
   fleetEntries: Array<[FleetKey, Fleet]>
   airbaseEntries: Array<[AirbaseKey, Airbase]>
+
+  interceptionPower: number
+  highAltitudeInterceptionPower: number
 }

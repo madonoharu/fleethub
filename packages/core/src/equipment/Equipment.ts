@@ -63,6 +63,8 @@ export type Equipment = {
   hasAircraft: (arg: GearIteratee<boolean>) => boolean
   /** 0機以上の航空機 */
   countAircraft: (arg: GearIteratee<boolean>) => number
+
+  calcFighterPower: (recon?: boolean) => number
 }
 
 export class EquipmentImpl implements Equipment {
@@ -125,5 +127,19 @@ export class EquipmentImpl implements Equipment {
 
   public countAircraft: Equipment["countAircraft"] = (arg) => {
     return this.aircraftEntries.filter((entry) => Boolean(entry[1]) && arg(...entry)).length
+  }
+
+  public calcFighterPower = (recon = false) => {
+    return this.sumBy((gear, key, slotSize) => {
+      if (!slotSize || !gear.hasProficiency) {
+        return 0
+      }
+
+      if (!recon && gear.is("Recon")) {
+        return 0
+      }
+
+      return gear.calcFighterPower(slotSize)
+    })
   }
 }
