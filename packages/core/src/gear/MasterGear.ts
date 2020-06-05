@@ -3,7 +3,7 @@ import { GearData, GearCategory2, GearId, GearCategory, GearCategoryKey } from "
 import { mapValues } from "../utils"
 
 import { GearAttribute, createGearAttrs } from "./GearAttribute"
-import { createImprovementData } from "./ImprovementData"
+import { createImprovementData } from "./createImprovementData"
 import { GearBase, ImprovementBonuses } from "./types"
 
 export class MasterGear implements GearBase {
