@@ -51,7 +51,8 @@ export class GearStub extends GearBaseStub implements Gear {
   public stars = NaN
   public exp = NaN
   public ace = NaN
-  public deck = {} as Gear["deck"]
   public hasProficiency = false
   public improvement = {} as Gear["improvement"]
+  public calcFighterPower = jest.fn()
+  public calcInterceptionPower = jest.fn()
 }
