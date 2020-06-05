@@ -1,4 +1,4 @@
-import { GearState, GearImpl } from "./Gear"
+import { GearState, GearImpl } from "./GearImpl"
 import MasterGear from "./MasterGear"
 import { ProficiencyImpl, ProficiencyType } from "./ProficiencyImpl"
 
