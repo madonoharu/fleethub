@@ -11,4 +11,23 @@ export class PlanImpl implements Plan {
     this.name = name || ""
     this.hqLevel = hqLevel || 120
   }
+
+  get airbases() {
+    return this.airbaseEntries.map((entry) => entry[1])
+  }
+
+  get interceptionPower() {
+    return this.airbases.map((ab) => ab.interceptionPower).reduce((a, b) => a + b)
+  }
+
+  get highAltitudeInterceptionPower() {
+    const { interceptionPower, airbases } = this
+
+    const count = airbases
+      .map((ab) => ab.equipment.countAircraft((gear) => gear.is("HighAltitudeInterceptor")))
+      .reduce((a, b) => a + b)
+    const modifier = [0.5, 0.8, 1.1, 1.2][count] || 1.2
+
+    return Math.floor(interceptionPower * modifier)
+  }
 }

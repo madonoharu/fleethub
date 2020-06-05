@@ -130,6 +130,9 @@ const SemiNightPlane = or(
   gearIdIn(GearId["零戦62型(爆戦/岩井隊)"], GearId["彗星一二型(三一号光電管爆弾搭載機)"])
 )
 
+/** 高高度迎撃機 */
+const HighAltitudeInterceptor = gearIdIn(GearId["試製 秋水"], GearId["秋水"], GearId["Me163B"])
+
 const matchers = {
   Abyssal,
 
@@ -170,6 +173,8 @@ const matchers = {
   NightFighter,
   NightAttacker,
   SemiNightPlane,
+
+  HighAltitudeInterceptor,
 }
 
 export type GearAttribute = keyof typeof matchers
