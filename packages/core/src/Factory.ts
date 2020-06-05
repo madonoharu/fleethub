@@ -1,6 +1,6 @@
 import { GearData, ShipData } from "@fleethub/data"
 
-import { MasterGear, GearState, GearImpl } from "./gear"
+import { MasterGear, GearState, GearImpl, makeCreateGear } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
 import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
 import { FleetState, FleetImpl, Fleet, ShipKey } from "./fleet"
@@ -46,13 +46,7 @@ export default class Factory {
 
   public findMasterShip = (id: number) => this.masterShips.find((ship) => ship.id === id)
 
-  public createGear = (state: GearState) => {
-    const base = this.findMasterGear(state.gearId)
-    if (!base) return
-
-    const improvement = base.toImprovementBonuses(state.stars || 0)
-    return new GearImpl(state, base, improvement)
-  }
+  public createGear = makeCreateGear(this.findMasterGear)
 
   public createShip = (state: ShipState, createGear = this.createGear) => {
     const { shipId } = state
