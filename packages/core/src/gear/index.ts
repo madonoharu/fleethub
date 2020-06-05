@@ -1,5 +1,5 @@
 export { default as MasterGear, GearBase } from "./MasterGear"
-export { Gear, GearState, GearImpl } from "./Gear"
+export { Gear, GearState, GearImpl } from "./GearImpl"
 export { GearAttribute } from "./GearAttribute"
 export * from "./types"
 export * from "./makeCreateGear"
