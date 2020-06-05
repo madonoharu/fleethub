@@ -3,20 +3,10 @@ import { GearData, GearCategory2, GearId, GearCategory, GearCategoryKey } from "
 import { mapValues } from "../utils"
 
 import { GearAttribute, createGearAttrs } from "./GearAttribute"
-import { createImprovementData, ImprovementBonuses } from "./ImprovementData"
+import { createImprovementData } from "./ImprovementData"
+import { GearBase, ImprovementBonuses } from "./types"
 
-export interface GearBase extends Omit<Required<GearData>, "id"> {
-  attrs: GearAttribute[]
-  specialCategory: number
-
-  gearId: number
-
-  is: (attr: GearAttribute) => boolean
-  in: (...attrs: GearAttribute[]) => boolean
-  categoryIn: (...categories: GearCategoryKey[]) => boolean
-}
-
-export default class MasterGear implements GearBase {
+export class MasterGear implements GearBase {
   public readonly id = this.data.id || 0
   public readonly category = this.data.category || 0
   public readonly iconId = this.data.iconId || 0

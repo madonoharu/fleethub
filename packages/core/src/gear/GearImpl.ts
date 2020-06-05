@@ -1,27 +1,4 @@
-import { GearBase } from "./MasterGear"
-import { ImprovementBonuses } from "./ImprovementData"
-import { Proficiency } from "./types"
-
-export type GearState = {
-  gearId: number
-  stars?: number
-  exp?: number
-}
-
-export type Gear = Readonly<
-  Required<GearState> &
-    GearBase & {
-      state: GearState
-
-      hasProficiency: boolean
-      ace: number
-
-      improvement: ImprovementBonuses
-
-      calcFighterPower: (slotSize: number) => number
-      calcInterceptionPower: (slotSize: number) => number
-    }
->
+import { GearState, GearBase, Gear, ImprovementBonuses, Proficiency } from "./types"
 
 export class GearImpl implements Gear {
   public readonly gearId = this.state.gearId

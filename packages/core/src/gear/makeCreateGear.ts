@@ -1,6 +1,7 @@
-import { GearState, GearImpl } from "./GearImpl"
-import MasterGear from "./MasterGear"
+import { MasterGear } from "./MasterGear"
 import { ProficiencyImpl, ProficiencyType } from "./ProficiencyImpl"
+import { GearImpl } from "./GearImpl"
+import { GearState } from "./types"
 
 export const makeCreateGear = (getBase: (gearId: number) => MasterGear | undefined) => (state: GearState) => {
   const { gearId, stars = 0, exp = 0 } = state

@@ -1,36 +1,6 @@
-import { GearBase } from "./MasterGear"
 import { GearCategory, GearId } from "@fleethub/data"
 
-export type ImprovementBonuses = {
-  contactSelectionBonus: number
-
-  fighterPowerBonus: number
-  adjustedAntiAirBonus: number
-  fleetAntiAirBonus: number
-
-  shellingPowerBonus: number
-  shellingAccuracyBonus: number
-
-  aswPowerBonus: number
-  aswAccuracyBonus: number
-
-  torpedoPowerBonus: number
-  torpedoAccuracyBonus: number
-  torpedoEvasionBonus: number
-
-  nightPowerBonus: number
-  nightAccuracyBonus: number
-
-  defensePowerBonus: number
-
-  effectiveLosBonus: number
-}
-
-type FormulaType = "Sqrt" | "Linear"
-
-export type ImprovementBonusFormula = { multiplier: number; type: FormulaType }
-
-export type ImprovementData = Record<keyof ImprovementBonuses, ImprovementBonusFormula | undefined>
+import { GearBase, ImprovementBonusFormula, ImprovementData } from "./types"
 
 type FormulaCreator = (gear: GearBase) => ImprovementBonusFormula | undefined
 

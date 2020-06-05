@@ -1,6 +1,8 @@
-import MasterGear from "./MasterGear"
 import { GearData, GearCategory2, GearCategory } from "@fleethub/data"
+
 import { getGearData } from "../utils/testUtils"
+
+import { MasterGear } from "./MasterGear"
 
 describe("MasterGear", () => {
   it("constructor", () => {
