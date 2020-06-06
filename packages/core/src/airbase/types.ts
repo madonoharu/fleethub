@@ -16,4 +16,5 @@ export type Airbase = {
   radius: number
   fighterPower: number
   interceptionPower: number
+  highAltitudeInterceptorCount: number
 }
