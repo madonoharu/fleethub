@@ -47,4 +47,8 @@ export class FleetImpl implements Fleet {
   get expeditionBonus() {
     return calcExpeditionBonus(this.ships)
   }
+
+  public calcFighterPower = (lb: boolean) => {
+    return this.sumBy((ship) => ship.equipment.calcFighterPower(lb))
+  }
 }

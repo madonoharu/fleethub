@@ -16,4 +16,6 @@ export type Fleet = {
   aviationDetectionScore: number
   transportPoint: number
   expeditionBonus: number
+
+  calcFighterPower: (lb: boolean) => number
 }

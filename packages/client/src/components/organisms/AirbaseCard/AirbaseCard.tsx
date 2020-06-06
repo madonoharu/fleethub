@@ -4,7 +4,7 @@ import { Plan, PlanState, Airbase, AirbaseState, AirbaseKey } from "@fleethub/co
 
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
-import { EquipmentList } from "../../../components"
+import { EquipmentList, Select } from "../../../components"
 import { Update } from "../../../utils"
 
 type Props = {
@@ -14,15 +14,30 @@ type Props = {
 }
 
 const AirbaseCard: React.FCX<Props> = ({ className, label, airbase, update }) => {
+  const handleModeChange = (mode: AirbaseState["mode"]) => {
+    update((draft) => {
+      draft.mode = mode
+    })
+  }
+
   return (
     <Paper className={className}>
       {label}
+      <Select
+        options={["Standby", "Sortie1", "Sortie2", "AirDefense"] as const}
+        value={airbase.mode}
+        onChange={handleModeChange}
+      />
       <EquipmentList equipment={airbase.equipment} update={update} canEquip={airbase.canEquip} />
-      制空: {airbase.fighterPower} 半径: {airbase.radius}
+      制空: {airbase.fighterPower} 防空: {airbase.interceptionPower} 半径: {airbase.radius}
     </Paper>
   )
 }
 
 export default styled(AirbaseCard)`
   min-width: 160px;
+
+  ${EquipmentList} {
+    margin: 24px;
+  }
 `

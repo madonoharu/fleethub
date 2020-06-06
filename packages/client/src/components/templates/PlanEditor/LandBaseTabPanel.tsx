@@ -34,11 +34,15 @@ type Props = {
 
 const LandBaseTabPanel: React.FCX<Props> = ({ className, plan, update }) => {
   return (
-    <Flexbox className={className}>
-      {plan.airbaseEntries.map(([key, airbase]) => (
-        <ConnectedAirbaseCard key={key} airbase={airbase} airbaseKey={key} updatePlan={update} />
-      ))}
-    </Flexbox>
+    <>
+      防空: {plan.interceptionPower}
+      高高度防空: {plan.highAltitudeInterceptionPower}
+      <Flexbox className={className}>
+        {plan.airbaseEntries.map(([key, airbase]) => (
+          <ConnectedAirbaseCard key={key} airbase={airbase} airbaseKey={key} updatePlan={update} />
+        ))}
+      </Flexbox>
+    </>
   )
 }
 
