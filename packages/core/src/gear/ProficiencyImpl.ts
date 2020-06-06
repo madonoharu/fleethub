@@ -4,7 +4,7 @@ export type ProficiencyType = "Fighter" | "SeaplaneBomber" | "Other"
 
 const expTable = [0, 10, 25, 40, 55, 70, 85, 100]
 
-const expToAce = (exp: number) => {
+export const expToAce = (exp: number) => {
   return expTable.filter((boundary) => boundary <= exp).length - 1
 }
 
@@ -53,10 +53,6 @@ export class ProficiencyImpl implements Proficiency {
     ],
     Other: [],
   }
-
-  public static expTable = expTable
-
-  public static maxExp = 120
 
   constructor(private exp: number, private type: ProficiencyType) {}
 
