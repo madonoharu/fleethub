@@ -73,4 +73,8 @@ export class AirbaseImpl implements Airbase {
     const reconModifier = Math.max(...this.equipment.map(getReconInterceptionPowerModifier))
     return Math.floor(total * reconModifier)
   }
+
+  get highAltitudeInterceptorCount() {
+    return this.equipment.countAircraft((gear) => gear.is("HighAltitudeInterceptor"))
+  }
 }
