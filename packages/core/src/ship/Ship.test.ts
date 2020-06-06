@@ -1,7 +1,7 @@
 import { ShipClass, ShipId, GearId } from "@fleethub/data"
 
 import { ShipImpl } from "./Ship"
-import { ShipCommonBase } from "./types"
+import { ShipCommonBase, ShipState } from "./types"
 
 import { ShipStatsStub, EquipmentMock, GearStub } from "../utils"
 import { ShipAttribute } from "./ShipAttribute"
@@ -40,10 +40,12 @@ const getMocks = () => {
   return [base, stats, equipment] as const
 }
 
+const state = {} as ShipState
+
 describe("ShipImpl", () => {
   it("constructor", () => {
     const [base, stats, equipment] = getMocks()
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
     expect(base).toMatchObject(base)
     expect(ship.equipment).toBe(equipment)
@@ -57,7 +59,7 @@ describe("ShipImpl", () => {
 
   it("fleetLosFactor = 素索敵 + sum(観測機索敵 * [sqrt(slotSize)])", () => {
     const [base, stats, equipment] = getMocks()
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
     stats.los.naked = 37
 
     equipment.sumBy.mockImplementationOnce((cb) => cb(new GearStub(), null, 0))
@@ -74,7 +76,7 @@ describe("ShipImpl", () => {
 
   it("軽巡軽量砲補正 = sqrt(singleGunCount) + 2 * sqrt(twinGunCount)", () => {
     const [base, stats, equipment] = getMocks()
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
     expect(ship.cruiserFitBonus).toBe(0)
 
@@ -99,7 +101,7 @@ describe("ShipImpl", () => {
   it("Zara砲補正 = sqrt(203mm/53 連装砲の本数)", () => {
     const [base, stats, equipment] = getMocks()
     base.shipClass = ShipClass.ZaraClass
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
     equipment.count.mockReturnValueOnce(2)
     expect(ship.cruiserFitBonus).toBe(Math.sqrt(2))
@@ -107,7 +109,7 @@ describe("ShipImpl", () => {
 
   it("isCarrierLike", () => {
     const [base, stats, equipment] = getMocks()
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
     expect(ship.isCarrierLike).toBe(false)
 
@@ -122,7 +124,7 @@ describe("ShipImpl", () => {
   it("速吸改かつ(艦攻|艦爆|噴式爆|噴式攻)装備なら、isCarrierLikeはtrue", () => {
     const [base, stats, equipment] = getMocks()
     base.shipId = ShipId["速吸改"]
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
     equipment.has
       .mockImplementationOnce((cb) => cb(GearStub.fromCategory("CbDiveBomber")))
@@ -140,7 +142,13 @@ describe("ShipImpl", () => {
 
   it("陸上かつ(艦攻|艦爆|噴式爆|噴式攻)装備なら、isCarrierLikeはtrue", () => {
     const [base, stats, equipment] = getMocks()
-    const ship = new ShipImpl(ShipCommonBaseStub.fromAttrs("Installation"), stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(
+      state,
+      ShipCommonBaseStub.fromAttrs("Installation"),
+      stats,
+      equipment,
+      makeGetNextBonusesMockFn
+    )
 
     equipment.has
       .mockImplementationOnce((cb) => cb(GearStub.fromCategory("CbDiveBomber")))
@@ -158,7 +166,7 @@ describe("ShipImpl", () => {
 
   it("対艦空撃力 = [装備雷装 + [1.3 * 装備爆装]] + 15", () => {
     const [base, stats, equipment] = getMocks()
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
     stats.torpedo.equipment = 12
     equipment.sumBy.mockReturnValueOnce(6)
 
@@ -167,7 +175,7 @@ describe("ShipImpl", () => {
 
   it("対地空撃力 = [1.3 * 対地爆装] + 15", () => {
     const [base, stats, equipment] = getMocks()
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
     stats.torpedo.equipment = 100
     equipment.sumBy.mockReturnValueOnce(6)
 
@@ -178,7 +186,7 @@ describe("ShipImpl", () => {
     const [base, stats, equipment] = getMocks()
     stats.level = 175
     stats.luck.displayed = 110
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
     expect(ship.basicAccuracyTerm).toBe(2 * Math.sqrt(175) + 1.5 * Math.sqrt(110))
   })
@@ -187,7 +195,7 @@ describe("ShipImpl", () => {
     const [base, stats, equipment] = getMocks()
     stats.evasion.displayed = 120
     stats.luck.displayed = 110
-    const ship = new ShipImpl(base, stats, equipment, makeGetNextBonusesMockFn)
+    const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
     expect(ship.basicEvasionTerm).toBe(120 + Math.sqrt(2 * 110))
   })

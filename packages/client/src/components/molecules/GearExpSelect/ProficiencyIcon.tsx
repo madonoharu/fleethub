@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { graphql, useStaticQuery } from "gatsby"
 import Img from "gatsby-image"
-import { Proficiency } from "@fleethub/core"
+import { expToAce } from "@fleethub/core"
 
 import Typography from "@material-ui/core/Typography"
 
@@ -26,7 +26,7 @@ type ProficiencyIconProps = Pick<React.ComponentProps<"div">, "className" | "onC
 
 const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props, ref) => {
   const { exp, ...divProps } = props
-  const level = Proficiency.expToLevel(exp)
+  const ace = expToAce(exp)
 
   const { allFile } = useStaticQuery<ProficiencyIconsQuery>(graphql`
     query ProficiencyIcons {
@@ -45,7 +45,7 @@ const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((
     }
   `)
 
-  const childImageSharp = allFile.edges.find((n) => n.node.name === level.toString())?.node.childImageSharp
+  const childImageSharp = allFile.edges.find((n) => n.node.name === ace.toString())?.node.childImageSharp
 
   let img: React.ReactNode = null
   if (childImageSharp) {

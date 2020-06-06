@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import { Proficiency } from "@fleethub/core"
 
 import Button from "@material-ui/core/Button"
 import Tooltip from "@material-ui/core/Tooltip"
@@ -10,8 +9,7 @@ import ProficiencyIcon from "./ProficiencyIcon"
 import { Flexbox, NumberInput } from "../../../components"
 import { useAnchorEl } from "../../../hooks"
 
-const { expTable, maxExp } = Proficiency
-const exps = expTable.concat(maxExp)
+const exps = [0, 10, 25, 40, 55, 70, 85, 100, 120]
 
 const anchorOrigin = {
   vertical: "bottom",
@@ -50,7 +48,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
               <ProficiencyIcon exp={boundary} />
             </Button>
           ))}
-          <NumberInput value={exp} onChange={onChange} min={0} max={maxExp} />
+          <NumberInput value={exp} onChange={onChange} min={0} max={120} />
         </Flexbox>
       </Popover>
     </div>
