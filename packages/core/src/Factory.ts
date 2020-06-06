@@ -1,6 +1,6 @@
 import { GearData, ShipData } from "@fleethub/data"
 
-import { MasterGear, GearState, GearImpl, makeCreateGear } from "./gear"
+import { MasterGear, GearState, Gear, makeCreateGear } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
 import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
 import { FleetState, FleetImpl, Fleet, ShipKey } from "./fleet"
@@ -10,7 +10,7 @@ import { PlanState, PlanImpl, FleetKey, AirbaseKey } from "./plan"
 const createEquipment = (
   state: EquipmentState,
   maxSlots: number[],
-  createGear: (state: GearState) => GearImpl | undefined,
+  createGear: (state: GearState) => Gear | undefined,
   exslot = true
 ) => {
   const items: EquipmentItem[] = getGearKeys(maxSlots.length, exslot).map(([key, slotKey], index) => {

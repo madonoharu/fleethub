@@ -18,4 +18,5 @@ export class EquipmentMock implements Equipment {
   public count = jest.fn()
   public hasAircraft = jest.fn()
   public countAircraft = jest.fn()
+  public calcFighterPower = jest.fn()
 }
