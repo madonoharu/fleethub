@@ -1,4 +1,4 @@
-import { Airbase } from "./types"
+import { Airbase, AirbaseState } from "./types"
 import { Equipment } from "../equipment"
 import { Gear } from "../gear"
 
@@ -37,7 +37,9 @@ const getReconInterceptionPowerModifier = (gear: Gear) => {
 }
 
 export class AirbaseImpl implements Airbase {
-  constructor(public equipment: Equipment) {}
+  constructor(public state: AirbaseState, public equipment: Equipment) {}
+
+  public mode = this.state.mode || "Standby"
 
   public canEquip = canEquip
 

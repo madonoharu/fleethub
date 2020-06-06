@@ -74,7 +74,7 @@ export default class Factory {
   public createAirbase = (state: AirbaseState, createGear = this.createGear) => {
     const equipment = createEquipment(state, [18, 18, 18, 18], createGear, false)
 
-    return new AirbaseImpl(equipment)
+    return new AirbaseImpl(state, equipment)
   }
 
   public createPlan = (state: PlanState, createFleet = this.createFleet, createAirbase = this.createAirbase) => {
