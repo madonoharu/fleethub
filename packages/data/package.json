@@ -13,10 +13,11 @@
   ],
   "scripts": {
     "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc -p tsconfig.json",
-    "build:esm": "tsc -p tsconfig.esm.json",
-    "tsnode": "yarn ts-node -O \"{\"\"module\"\":\"\"commonjs\"\"}\"",
+    "build:cjs": "tsc -p ./tsconfig.build.json -m commonjs --outDir lib",
+    "build:esm": "tsc -p ./tsconfig.build.json -m esnext --outDir esm",
+    "lint": "eslint --fix src/* scripts/* && prettier --write json/*.json",
+    "tsnode": "yarn ts-node -O \"{\"\"module\"\":\"\"commonjs\"\", \"\"types\"\":[\"\"node\"\"]}\"",
     "update": "yarn tsnode scripts/update && yarn lint",
-    "lint": "eslint --fix src/* scripts/* && prettier --write json/*.json"
+    "update:maps": "yarn tsnode scripts/maps && prettier --write json/maps.json"
   }
 }
