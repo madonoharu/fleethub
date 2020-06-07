@@ -580,6 +580,8 @@ export const enum ShipId {
   "秋霜" = 625,
   "神州丸改" = 626,
   "敷波改二" = 627,
+  "Fletcher改 Mod.2" = 628,
+  "Fletcher Mk.II" = 629,
   "Gotland andra" = 630,
   "日振改" = 678,
   "大東改" = 679,

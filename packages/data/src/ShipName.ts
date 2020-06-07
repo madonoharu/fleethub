@@ -569,6 +569,8 @@ export type PlayerShipName =
   | "Atlanta改"
   | "Fletcher"
   | "Fletcher改"
+  | "Fletcher改 Mod.2"
+  | "Fletcher Mk.II"
   | "Johnston"
   | "Johnston改"
   | "Samuel B.Roberts"
