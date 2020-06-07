@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
+  "sideEffects": false,
   "main": "lib/index.js",
   "module": "esm/index.js",
   "scripts": {
