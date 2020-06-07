@@ -13,7 +13,7 @@ export const mapValues = <T, R>(obj: T, fn: (value: T[keyof T], key: keyof T) =>
   return nextObj as Record<keyof T, R>
 }
 
-export type Dict<T> = Record<string, T | undefined>
+export type Dict<K extends string | number | symbol, T> = Record<K, T | undefined>
 
 export type NullableArray<T> = Array<T | undefined>
 export type PickByValue<T, ValueType> = Pick<T, { [Key in keyof T]-?: T[Key] extends ValueType ? Key : never }[keyof T]>
