@@ -136,7 +136,18 @@
     "cost": 5,
     "improvable": true
   },
-  { "id": 17, "category": 8, "iconId": 8, "name": "天山", "torpedo": 7, "asw": 3, "los": 1, "radius": 5, "cost": 6 },
+  {
+    "id": 17,
+    "category": 8,
+    "iconId": 8,
+    "name": "天山",
+    "torpedo": 7,
+    "asw": 3,
+    "los": 1,
+    "radius": 5,
+    "cost": 6,
+    "improvable": true
+  },
   {
     "id": 18,
     "category": 8,
@@ -1364,7 +1375,8 @@
     "accuracy": 2,
     "evasion": 1,
     "radius": 3,
-    "cost": 6
+    "cost": 6,
+    "improvable": true
   },
   {
     "id": 172,
@@ -2508,7 +2520,8 @@
     "antiAir": 8,
     "los": 10,
     "accuracy": 1,
-    "evasion": 2
+    "evasion": 2,
+    "improvable": true
   },
   {
     "id": 279,
@@ -2666,7 +2679,8 @@
     "firepower": 1,
     "accuracy": 1,
     "evasion": 1,
-    "range": 1
+    "range": 1,
+    "improvable": true
   },
   {
     "id": 294,
@@ -3493,6 +3507,18 @@
     "cost": 6
   },
   {
+    "id": 372,
+    "category": 8,
+    "iconId": 8,
+    "name": "天山一二型甲",
+    "torpedo": 9,
+    "antiAir": 1,
+    "asw": 4,
+    "los": 2,
+    "radius": 5,
+    "cost": 7
+  },
+  {
     "id": 373,
     "category": 8,
     "iconId": 46,
@@ -3528,6 +3554,63 @@
     "evasion": 2,
     "radius": 4,
     "cost": 12
+  },
+  {
+    "id": 376,
+    "category": 5,
+    "iconId": 5,
+    "name": "533mm五連装魚雷(後期型)",
+    "armor": 1,
+    "firepower": 1,
+    "torpedo": 11,
+    "evasion": 1,
+    "range": 1
+  },
+  {
+    "id": 377,
+    "category": 15,
+    "iconId": 17,
+    "name": "RUR-4A Weapon Alpha改",
+    "armor": 1,
+    "asw": 17,
+    "accuracy": 1,
+    "evasion": 1
+  },
+  { "id": 378, "category": 15, "iconId": 17, "name": "対潜短魚雷(試作初期型)", "torpedo": 2, "asw": 20 },
+  {
+    "id": 379,
+    "category": 1,
+    "iconId": 16,
+    "name": "12.7cm単装高角砲改二",
+    "firepower": 1,
+    "antiAir": 5,
+    "asw": 2,
+    "accuracy": 1,
+    "evasion": 3,
+    "range": 1
+  },
+  {
+    "id": 380,
+    "category": 1,
+    "iconId": 16,
+    "name": "12.7cm連装高角砲改二",
+    "firepower": 2,
+    "antiAir": 6,
+    "asw": 2,
+    "accuracy": 1,
+    "evasion": 2,
+    "range": 1
+  },
+  {
+    "id": 381,
+    "category": 3,
+    "iconId": 3,
+    "name": "16inch三連装砲 Mk.6",
+    "armor": 1,
+    "firepower": 22,
+    "antiAir": 2,
+    "accuracy": 2,
+    "range": 3
   },
   { "id": 501, "category": 1, "iconId": 1, "name": "5inch単装砲", "firepower": 1, "range": 1 },
   { "id": 502, "category": 1, "iconId": 1, "name": "5inch連装砲", "firepower": 2, "range": 1 },
