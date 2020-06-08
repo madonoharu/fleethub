@@ -1,8 +1,11 @@
 import React from "react"
+import styled from "styled-components"
+import { MapData, MapNode } from "@fleethub/data"
+
 import { Graph } from "@vx/network"
 import { Zoom } from "@vx/zoom"
 import { Group } from "@vx/group"
-import { Tooltip, Typography, IconButton } from "@material-ui/core"
+import { Tooltip, Typography } from "@material-ui/core"
 
 const nodeTypes = [
   { id: -1, name: "Unknown", color: "#000000", background: "#dddddd", border: "#999999" },
@@ -33,45 +36,6 @@ const getNodeTypeStyle = (id: number) => {
   return nodeTypes.find((type) => type.id === id) || nodeTypes[0]
 }
 
-type MapRoute = Record<string, [string | null, string, number, number]>
-type MapSpots = Record<string, [number, number, string | null]>
-export type MapData = {
-  route: MapRoute
-  spots: MapSpots
-  distances: Record<string, number | undefined>
-}
-
-type MapNode = {
-  point: string
-  x: number
-  y: number
-  d?: number
-  type: number
-}
-
-type MapLink = {
-  source: [number, number, string | null]
-  target: [number, number, string | null]
-}
-
-const toGraph = ({ route, spots, distances }: MapData) => {
-  const nodes: MapNode[] = []
-  const links: MapLink[] = []
-
-  for (const [point, [x, y]] of Object.entries(spots)) {
-    const type = Object.values(route).find(([source, target]) => target === point)?.[2] ?? -1
-    nodes.push({ point, x, y, d: distances[point], type })
-  }
-
-  for (const [from, to] of Object.values(route)) {
-    const source = from && spots[from]
-    const target = to && spots[to]
-    if (source && target) links.push({ source, target })
-  }
-
-  return { nodes, links }
-}
-
 const NauticalChartNode: React.FC<{ node: MapNode; onClick?: (node: MapNode) => void }> = ({ node, onClick }) => {
   const r = 15
   const dOffset = Math.sin(Math.PI / 4) * r
@@ -79,8 +43,16 @@ const NauticalChartNode: React.FC<{ node: MapNode; onClick?: (node: MapNode) => 
 
   const handleClick = onClick && (() => onClick(node))
 
+  const distance = node.d && `距離: ${node.d}`
+
+  const tilte = (
+    <Typography>
+      {node.point} {typeStyle.name} {distance}
+    </Typography>
+  )
+
   return (
-    <Tooltip title={typeStyle.name}>
+    <Tooltip title={tilte}>
       <g cursor="pointer" onClick={handleClick} x={node.x} y={node.y}>
         <circle r={r} fill={typeStyle.background} stroke={typeStyle.border} strokeWidth={4} />
 
@@ -101,11 +73,20 @@ const NauticalChartNode: React.FC<{ node: MapNode; onClick?: (node: MapNode) => 
   )
 }
 
-const NauticalChartEdge: React.FC<{ link: MapLink }> = ({ link }) => {
-  const [x1, y1] = link.source
-  const [x2, y2] = link.target
+const NauticalChartEdge: React.FC<{ node1?: MapNode; node2?: MapNode }> = ({ node1, node2 }) => {
+  if (!node1 || !node2) return null
+
   return (
-    <line x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth={2} stroke="#999" strokeOpacity={0.6} markerEnd="url(#arrow)" />
+    <line
+      x1={node1.x}
+      y1={node1.y}
+      x2={node2.x}
+      y2={node2.y}
+      strokeWidth={2}
+      stroke="#999"
+      strokeOpacity={0.6}
+      markerEnd="url(#arrow)"
+    />
   )
 }
 
@@ -114,56 +95,63 @@ type Props = {
   onClick?: (node: MapNode) => void
 }
 
-const NauticalChart: React.FC<Props> = ({ data, onClick }) => {
+const NauticalChart: React.FCX<Props> = ({ className, data, onClick }) => {
+  const scale = 0.5
   const width = 1200
   const height = 700
   const r = 15
 
-  const graph = toGraph(data)
+  const getNode = (name: string) => data.nodes.find((node) => node.point === name)
+
+  const mapKey = `${Math.floor(data.id / 10)}-${data.id % 10}`
 
   return (
-    <Zoom width={width} height={height}>
+    <Zoom className={className} width={width} height={height} scaleXMin={1} scaleYMin={1}>
       {(zoom) => (
-        <svg width={width} height={height} style={{ cursor: zoom.isDragging ? "grabbing" : "grab" }}>
-          <g transform={zoom.toString()}>
-            <defs>
-              <marker
-                id="arrow"
-                viewBox="0 -5 10 10"
-                refX={r + 3}
-                markerWidth="8"
-                markerHeight="8"
-                orient="auto"
-                fill="#999"
-              >
-                <path d="M0,-5L10,0L0,5" />
-              </marker>
-            </defs>
-            <rect
-              width={width}
-              height={height}
-              rx={14}
-              fill="rgba(40,40,120,0.5)"
-              onTouchStart={zoom.dragStart}
-              onTouchMove={zoom.dragMove}
-              onTouchEnd={zoom.dragEnd}
-              onMouseDown={zoom.dragStart}
-              onMouseMove={zoom.dragMove}
-              onMouseUp={zoom.dragEnd}
-              onMouseLeave={() => {
-                if (zoom.isDragging) zoom.dragEnd()
-              }}
-            />
-            <Graph
-              graph={graph}
-              linkComponent={NauticalChartEdge}
-              nodeComponent={(props) => <NauticalChartNode {...props} onClick={onClick} />}
-            />
-          </g>
+        <svg width={width * scale} height={height * scale} style={{ cursor: zoom.isDragging ? "grabbing" : "grab" }}>
+          <Group transform={`scale(${scale}, ${scale})`}>
+            <g transform={zoom.toString()}>
+              <defs>
+                <marker
+                  id="arrow"
+                  viewBox="0 -5 10 10"
+                  refX={r + 3}
+                  markerWidth="8"
+                  markerHeight="8"
+                  orient="auto"
+                  fill="#999"
+                >
+                  <path d="M0,-5L10,0L0,5" />
+                </marker>
+              </defs>
+              <rect
+                width={width}
+                height={height}
+                rx={14}
+                fill="rgba(40,40,120,0.5)"
+                onTouchStart={zoom.dragStart}
+                onTouchMove={zoom.dragMove}
+                onTouchEnd={zoom.dragEnd}
+                onMouseDown={zoom.dragStart}
+                onMouseMove={zoom.dragMove}
+                onMouseUp={zoom.dragEnd}
+                onMouseLeave={() => {
+                  if (zoom.isDragging) zoom.dragEnd()
+                }}
+              />
+              <Graph
+                graph={data}
+                linkComponent={({ link }) => (
+                  <NauticalChartEdge node1={getNode(link.source)} node2={getNode(link.target)} />
+                )}
+                nodeComponent={(props) => <NauticalChartNode {...props} onClick={onClick} />}
+              />
+            </g>
+          </Group>
         </svg>
       )}
     </Zoom>
   )
 }
 
-export default NauticalChart
+export default styled(NauticalChart)``
