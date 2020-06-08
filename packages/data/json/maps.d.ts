@@ -26,3 +26,6 @@ export type MapData = {
   nodes: MapNode[]
   links: MapLink[]
 }
+
+declare const maps: MapData[]
+export default maps
