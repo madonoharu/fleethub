@@ -5,10 +5,10 @@ import { getKcnavMapData, KcnavMapData, KcnavNodeType, KcnavEnemyShip, KcnavEnem
 import { MapNode, MapLink, MapEnemyFleet } from "../src"
 
 const formatEnemyShip = (kcnavShip: KcnavEnemyShip) => kcnavShip.id
-const formatEnemyFleet = ({ mainFleet, escortFleet }: KcnavEnemyFleet) => {
+const formatEnemyFleet = ({ mainFleet, escortFleet, diff }: KcnavEnemyFleet) => {
   const main = mainFleet.map(formatEnemyShip)
   const escort = escortFleet.length ? escortFleet.map(formatEnemyShip) : undefined
-  return { main, escort }
+  return { main, escort, difficulty: diff }
 }
 const formatKcnavEnemies = (kcnavEnemies: KcnavEnemyFleet[]) => {
   const enemies: MapEnemyFleet[] = []
@@ -20,7 +20,7 @@ const formatKcnavEnemies = (kcnavEnemies: KcnavEnemyFleet[]) => {
     if (found) {
       found.formations.push(formation)
     } else {
-      enemies.push({ ...formatted, formations: [formation], difficulty: kcnavFleet.diff })
+      enemies.push({ ...formatted, formations: [formation] })
     }
   }
 
