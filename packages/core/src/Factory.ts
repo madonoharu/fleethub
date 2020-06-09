@@ -90,18 +90,4 @@ export default class Factory {
 
     return new PlanImpl(state, fleetEntries, airbaseEntries)
   }
-
-  public createShipById = (shipId: number, createGear = this.createGear) => {
-    const state: ShipState = { shipId }
-    const base = this.findMasterShip(shipId)
-    if (!base) return
-
-    if (base.is("Abyssal")) {
-      base.gears.forEach((gear, index) => {
-        state[`g${index + 1}` as GearKey] = gear
-      })
-    }
-
-    return this.createShip(state, createGear)
-  }
 }
