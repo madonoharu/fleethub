@@ -5,7 +5,7 @@ import { calcAttackPower } from "../AttackPower"
 import { getPossibleDaySpecialAttackTypes } from "./DaySpecialAttackType"
 import { createDaySpecialAttack, calcObservationTerm } from "./DaySpecialAttack"
 import RateMap from "../RateMap"
-import { AirControlState } from "../../common"
+import { AirState } from "../../common"
 import { getApShellModifiers } from "./ApShellModifiers"
 
 const ShellingCap = 180
@@ -71,14 +71,14 @@ export class ShipShellingCalculator {
     })
   }
 
-  public calcObservationTerm = (fleetLosModifier: number, isFlagship: boolean, airControlState: AirControlState) => {
+  public calcObservationTerm = (fleetLosModifier: number, isFlagship: boolean, airState: AirState) => {
     const { ship } = this
     return calcObservationTerm({
       luck: ship.luck.displayed,
       equipmentLos: ship.los.equipment,
       isFlagship,
       fleetLosModifier,
-      airControlState,
+      airState,
     })
   }
 

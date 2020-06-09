@@ -1,5 +1,5 @@
 /** 制空 */
-enum AirControlState {
+enum AirState {
   /** 制空権確保 */
   AirSupremacy = 1,
   /** 航空優勢 */
@@ -11,4 +11,4 @@ enum AirControlState {
   /** 制空権喪失 */
   AirIncapability = 4,
 }
-export default AirControlState
+export default AirState
