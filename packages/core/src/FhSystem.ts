@@ -1,6 +1,8 @@
 import { GearCategory } from "@fleethub/data"
 
 import Factory from "./Factory"
+import { ShipState } from "./ship"
+import { GearKey } from "./equipment"
 
 const allCategories = Object.values(GearCategory).filter((value): value is number => typeof value === "number")
 
@@ -22,4 +24,17 @@ export default class FhSystem {
   public createFleet = this.factory.createFleet
   public createAirbase = this.factory.createAirbase
   public createPlan = this.factory.createPlan
+
+  public getAbyssalShipState = (shipId: number) => {
+    const state: ShipState = { shipId }
+
+    const base = this.factory.findMasterShip(shipId)
+    if (!base || !base.is("Abyssal")) return
+
+    base.gears.forEach((gear, index) => {
+      state[`g${index + 1}` as GearKey] = gear
+    })
+
+    return state
+  }
 }
