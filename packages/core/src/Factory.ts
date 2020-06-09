@@ -2,7 +2,7 @@ import { GearData, ShipData } from "@fleethub/data"
 
 import { MasterGear, GearState, Gear, makeCreateGear } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
-import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
+import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys, GearKey } from "./equipment"
 import { FleetState, FleetImpl, Fleet, ShipKey } from "./fleet"
 import { AirbaseState, AirbaseImpl, Airbase } from "./airbase"
 import { PlanState, PlanImpl, FleetKey, AirbaseKey } from "./plan"
@@ -89,5 +89,19 @@ export default class Factory {
     ])
 
     return new PlanImpl(state, fleetEntries, airbaseEntries)
+  }
+
+  public createShipById = (shipId: number, createGear = this.createGear) => {
+    const state: ShipState = { shipId }
+    const base = this.findMasterShip(shipId)
+    if (!base) return
+
+    if (base.is("Abyssal")) {
+      base.gears.forEach((gear, index) => {
+        state[`g${index + 1}` as GearKey] = gear
+      })
+    }
+
+    return this.createShip(state, createGear)
   }
 }
