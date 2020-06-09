@@ -1,6 +1,6 @@
 import { DaySpecialAttackType } from "./DaySpecialAttackType"
 import { fhDefinitions } from "../../FhDefinitions"
-import { AirControlState } from "../../common"
+import { AirState } from "../../common"
 import RateMap from "../RateMap"
 
 type DaySpecialAttackDefinition = {
@@ -20,22 +20,22 @@ export const calcObservationTerm = ({
   luck,
   equipmentLos,
   isFlagship,
-  airControlState,
+  airState,
   fleetLosModifier,
 }: {
   luck: number
   equipmentLos: number
   isFlagship: boolean
-  airControlState: AirControlState
+  airState: AirState
   fleetLosModifier: number
 }) => {
   const luckFactor = Math.floor(Math.sqrt(luck) + 10)
   const flagshipModifier = isFlagship ? 15 : 0
 
-  if (airControlState === AirControlState.AirSupremacy) {
+  if (airState === AirState.AirSupremacy) {
     return Math.floor(luckFactor + 0.7 * (fleetLosModifier + 1.6 * equipmentLos) + 10) + flagshipModifier
   }
-  if (airControlState === AirControlState.AirSuperiority) {
+  if (airState === AirState.AirSuperiority) {
     return Math.floor(luckFactor + 0.6 * (fleetLosModifier + 1.2 * equipmentLos)) + flagshipModifier
   }
 
