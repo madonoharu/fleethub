@@ -20,7 +20,7 @@ const MapNodeEnemyList: React.FC<{ node: MapNode }> = ({ node }) => {
   return (
     <>
       {enemies.map((enemyFleet, index) => (
-        <StyledMapEnemyFleetCard key={index} enemyFleet={enemyFleet} />
+        <StyledMapEnemyFleetCard key={index} enemyFleet={enemyFleet} visibleAlbPower={node.d !== undefined} />
       ))}
     </>
   )
