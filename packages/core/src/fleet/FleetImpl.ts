@@ -1,6 +1,6 @@
+import { isNonNullable } from "@fleethub/utils"
 import { sumBy } from "lodash-es"
 
-import { isNonNullable } from "../utils"
 import { Ship } from "../ship"
 
 import { FleetState, Fleet } from "./types"
