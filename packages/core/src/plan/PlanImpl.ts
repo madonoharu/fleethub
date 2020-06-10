@@ -1,4 +1,4 @@
-import { Plan, PlanStateBase } from "./types"
+import { Plan, PlanStateBase, FleetKey } from "./types"
 
 export class PlanImpl implements Plan {
   public name: Plan["name"]
@@ -14,6 +14,23 @@ export class PlanImpl implements Plan {
 
   get airbases() {
     return this.airbaseEntries.map((entry) => entry[1])
+  }
+
+  private getFleet = (fleetKey: FleetKey) => {
+    const fleet = this.fleetEntries.find(([key]) => key === fleetKey)?.[1]
+    if (!fleet) throw "error"
+    return fleet
+  }
+
+  public calcFleetFighterPower = (combinedFleetBattle = false, lb = false) => {
+    const mainFp = this.getFleet("f1").calcFighterPower(lb)
+
+    if (combinedFleetBattle || lb) {
+      const escortFp = this.getFleet("f2").calcFighterPower(lb)
+      return mainFp + escortFp
+    }
+
+    return mainFp
   }
 
   get interceptionPower() {
