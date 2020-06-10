@@ -1,11 +1,14 @@
 import React from "react"
+import styled from "styled-components"
+import { PlanState, FleetState, ShipKey } from "@fleethub/core"
 import { MapEnemyFleet } from "@fleethub/data"
 
-import { Container, Paper, Button } from "@material-ui/core"
+import { Container, Paper, Button, Typography } from "@material-ui/core"
 
-import { ShipBanner } from "../../../components"
+import { ShipBanner, Flexbox } from "../../../components"
 import { useFhSystem } from "../../../hooks"
-import { PlanState, FleetState, ShipKey } from "@fleethub/core"
+
+import FighterPowerStats from "./FighterPowerStats"
 
 const getFormationName = (form: number) => {
   const dict: Record<number, string | undefined> = {
@@ -29,35 +32,42 @@ const FormationButton: React.FC<{ formation: number; onClick?: () => void }> = (
   return <Button onClick={onClick}>{name}</Button>
 }
 
-const mapEnemyFleetToPlan = (mapEnemyFleet: MapEnemyFleet): PlanState => {
-  const f1: FleetState = {}
-  const f2: FleetState = {}
-
-  mapEnemyFleet.main.forEach((shipId, index) => {
-    f1[`s${index + 1}` as ShipKey] = { shipId }
-  })
-
-  mapEnemyFleet.escort?.forEach((shipId, index) => {
-    f2[`s${index + 1}` as ShipKey] = { shipId }
-  })
-
-  return { f1, f2 }
-}
-
 type Props = {
   enemyFleet: MapEnemyFleet
+  visibleAlbPower?: boolean
 }
 
-const MapEnemyFleetCard: React.FCX<Props> = ({ className, enemyFleet }) => {
+const MapEnemyFleetCard: React.FCX<Props> = ({ className, enemyFleet, visibleAlbPower }) => {
   const { main, escort, formations } = enemyFleet
-  const plan = useFhSystem().createPlan(mapEnemyFleetToPlan(enemyFleet))
-  const fp = plan.fleetEntries
-    .map(([key, fleet]) => fleet)
-    .reduce((value, fleet) => value + fleet.calcFighterPower(false), 0)
+  const { getAbyssalShipState, createPlan } = useFhSystem()
+
+  const mapEnemyFleetToPlan = (mapEnemyFleet: MapEnemyFleet) => {
+    const f1: FleetState = {}
+    const f2: FleetState = {}
+
+    mapEnemyFleet.main.forEach((shipId, index) => {
+      f1[`s${index + 1}` as ShipKey] = getAbyssalShipState(shipId)
+    })
+
+    mapEnemyFleet.escort?.forEach((shipId, index) => {
+      f2[`s${index + 1}` as ShipKey] = getAbyssalShipState(shipId)
+    })
+
+    return createPlan({ f1, f2 })
+  }
+
+  const plan = mapEnemyFleetToPlan(enemyFleet)
+
+  const combinedFp = plan.calcFleetFighterPower(true)
+  const albPower = plan.calcFleetFighterPower(true, true)
 
   return (
     <Paper className={className}>
-      {fp}
+      <Flexbox>
+        <FighterPowerStats label="制空" value={combinedFp} />
+        {visibleAlbPower && <FighterPowerStats label="基地戦" value={albPower} />}
+      </Flexbox>
+
       <div>
         {main.map((shipId, index) => (
           <ShipBanner key={index} shipId={shipId} />
