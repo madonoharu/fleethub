@@ -1,5 +1,6 @@
 import { createMuiTheme, colors } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
+import { AirState } from "@fleethub/core"
 
 const { blue, cyan, pink, grey, lightBlue } = colors
 
@@ -19,7 +20,7 @@ sans-serif,
 "Noto Sans Emoji"
 `
 
-const dark = "rgba(15, 20, 20, 1)"
+const dark = "rgba(25, 25, 35, 1)"
 const clear = "rgba(20, 20, 20, 0.1)"
 const blueGrey = "rgba(66, 66, 77, 0.95)"
 
@@ -28,8 +29,8 @@ const muiPalette = createPalette({
   primary: blue,
   secondary: pink,
   background: {
-    default: blueGrey,
-    paper: blueGrey,
+    default: dark,
+    paper: dark,
   },
 })
 
@@ -143,6 +144,14 @@ const kcPalette = {
   stars: cyan[400],
   bonus: lightBlue[300],
   increase: muiPalette.secondary.light,
+
+  airState: {
+    [AirState.AirSupremacy]: colors.green[300],
+    [AirState.AirSuperiority]: colors.blue[300],
+    [AirState.AirParity]: colors.orange[300],
+    [AirState.AirDenial]: colors.pink[300],
+    [AirState.AirIncapability]: colors.red[300],
+  },
 }
 
 const kc = {
