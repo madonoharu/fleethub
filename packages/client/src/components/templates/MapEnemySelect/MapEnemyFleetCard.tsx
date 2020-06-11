@@ -32,40 +32,30 @@ const FormationButton: React.FC<{ formation: number; onClick?: () => void }> = (
   return <Button onClick={onClick}>{name}</Button>
 }
 
+export type EnemyFleetState = Pick<MapEnemyFleet, "main" | "escort"> & {
+  formation: number
+}
+
 type Props = {
   enemyFleet: MapEnemyFleet
   visibleAlbPower?: boolean
+  onSelect?: (enemy: EnemyFleetState) => void
 }
 
-const MapEnemyFleetCard: React.FCX<Props> = ({ className, enemyFleet, visibleAlbPower }) => {
+const MapEnemyFleetCard: React.FCX<Props> = ({ className, enemyFleet, visibleAlbPower, onSelect }) => {
   const { main, escort, formations } = enemyFleet
-  const { getAbyssalShipState, createPlan } = useFhSystem()
 
-  const mapEnemyFleetToPlan = (mapEnemyFleet: MapEnemyFleet) => {
-    const f1: FleetState = {}
-    const f2: FleetState = {}
-
-    mapEnemyFleet.main.forEach((shipId, index) => {
-      f1[`s${index + 1}` as ShipKey] = getAbyssalShipState(shipId)
-    })
-
-    mapEnemyFleet.escort?.forEach((shipId, index) => {
-      f2[`s${index + 1}` as ShipKey] = getAbyssalShipState(shipId)
-    })
-
-    return createPlan({ f1, f2 })
-  }
-
-  const plan = mapEnemyFleetToPlan(enemyFleet)
+  const { createPlanByMapEnemy } = useFhSystem()
+  const plan = createPlanByMapEnemy(enemyFleet)
 
   const combinedFp = plan.calcFleetFighterPower(true)
-  const albPower = plan.calcFleetFighterPower(true, true)
+  const albFp = plan.calcFleetFighterPower(true, true)
 
   return (
     <Paper className={className}>
       <Flexbox>
         <FighterPowerStats label="制空" value={combinedFp} />
-        {visibleAlbPower && <FighterPowerStats label="基地戦" value={albPower} />}
+        {visibleAlbPower && <FighterPowerStats label="基地戦" value={albFp} />}
       </Flexbox>
 
       <div>
@@ -78,8 +68,12 @@ const MapEnemyFleetCard: React.FCX<Props> = ({ className, enemyFleet, visibleAlb
           <ShipBanner key={index} shipId={shipId} />
         ))}
       </div>
-      {formations.map((form) => (
-        <FormationButton key={form} formation={form} />
+      {formations.map((formation) => (
+        <FormationButton
+          key={formation}
+          formation={formation}
+          onClick={() => onSelect?.({ main, escort, formation })}
+        />
       ))}
     </Paper>
   )

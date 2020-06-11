@@ -6,27 +6,38 @@ import { Container, Paper, Typography } from "@material-ui/core"
 
 import { NauticalChart, Select, ShipBanner } from "../../../components"
 
-import MapEnemyFleetCard from "./MapEnemyFleetCard"
+import MapEnemyFleetCard, { EnemyFleetState } from "./MapEnemyFleetCard"
 
 const StyledMapEnemyFleetCard = styled(MapEnemyFleetCard)`
   margin: 8px;
 `
 
-const MapNodeEnemyList: React.FC<{ node: MapNode }> = ({ node }) => {
-  const { enemies } = node
-
-  if (!enemies) return null
+const MapNodeStats: React.FC<{ node: MapNode; onEnemySelect?: (enemy: EnemyFleetState) => void }> = ({
+  node,
+  onEnemySelect,
+}) => {
+  const { point, enemies } = node
 
   return (
     <>
-      {enemies.map((enemyFleet, index) => (
-        <StyledMapEnemyFleetCard key={index} enemyFleet={enemyFleet} visibleAlbPower={node.d !== undefined} />
+      <Typography>{node.point}</Typography>
+      {enemies?.map((enemyFleet, index) => (
+        <StyledMapEnemyFleetCard
+          key={index}
+          enemyFleet={enemyFleet}
+          visibleAlbPower={node.d !== undefined}
+          onSelect={onEnemySelect}
+        />
       ))}
     </>
   )
 }
 
-const MapEnemySelect: React.FC = () => {
+type Props = {
+  onSelect?: (enemy: EnemyFleetState) => void
+}
+
+const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
   const [mapData, setMapData] = React.useState<MapData>(maps[0])
   const [node, setNode] = React.useState<MapNode>()
   return (
@@ -38,8 +49,7 @@ const MapEnemySelect: React.FC = () => {
           node.enemies && setNode(node)
         }}
       />
-      {node && <Typography>{node.point}</Typography>}
-      {node && <MapNodeEnemyList node={node} />}
+      {node && <MapNodeStats node={node} onEnemySelect={onSelect} />}
     </>
   )
 }
