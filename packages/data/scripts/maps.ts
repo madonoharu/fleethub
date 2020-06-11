@@ -1,7 +1,7 @@
 import fs from "fs-extra"
 import { range, isEqual } from "lodash"
 
-import { getKcnavMapData, KcnavMapData, KcnavNodeType, KcnavEnemyShip, KcnavEnemyFleet } from "./kcnav"
+import { getKcnavMapData, isBattleNode, KcnavMapData, KcnavNodeType, KcnavEnemyShip, KcnavEnemyFleet } from "./kcnav"
 import { MapNode, MapLink, MapEnemyFleet } from "../src"
 
 const formatEnemyShip = (kcnavShip: KcnavEnemyShip) => kcnavShip.id
@@ -35,7 +35,7 @@ const format = ({ id, route, spots, lbasdistance, enemycomps }: KcnavMapData) =>
 
     const edges = edgeEntries.map((entry) => entry[0]).join(",")
     const kcnavEnemies = enemycomps[edges]
-    const enemies = kcnavEnemies && formatKcnavEnemies(kcnavEnemies)
+    const enemies = isBattleNode(type) ? kcnavEnemies && formatKcnavEnemies(kcnavEnemies) : undefined
 
     nodes.push({ point, x, y, d: lbasdistance[point], type, enemies })
   }
