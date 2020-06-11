@@ -54,6 +54,7 @@ export enum KcnavNodeType {
   Bounty = 8,
   AerialReconnaissance = 9,
   AirDefense = 10,
+  NightBattle = 11,
   LongRangeRadarAmbush = 13,
   EmergencyAnchorageRepair = 14,
 
@@ -114,12 +115,13 @@ export type KcnavMapData = KcnavGraph & {
   enemycomps: Dict<string, KcnavEnemyFleet[]>
 }
 
-const isBattleNode = (type: KcnavNodeType) => {
+export const isBattleNode = (type: KcnavNodeType) => {
   switch (type) {
     case KcnavNodeType.Normal:
     case KcnavNodeType.Boss:
     case KcnavNodeType.Aerial:
     case KcnavNodeType.AirDefense:
+    case KcnavNodeType.NightBattle:
     case KcnavNodeType.LongRangeRadarAmbush:
       return true
   }
@@ -211,17 +213,15 @@ class KcnavMapClient {
       const signale = Signale.scope(`${this.key} ${name}`)
       signale.await()
 
-      const edgeEntries = Object.entries(route).filter(([edgeId, [source, target]]) => target === name)
-      const type = edgeEntries.length ? edgeEntries[0][1][2] : KcnavNodeType.Unknown
+      const edgeIds = Object.entries(route)
+        .filter(([edgeId, [source, target]]) => target === name)
+        .map(([edgeId]) => edgeId)
 
-      const edgeIds = edgeEntries.map((entry) => entry[0])
       const count = sum(edgeIds.map((id) => heatmaps[id]))
       const edges = edgeIds.join(",")
 
-      if (isBattleNode(type)) {
-        enemycomps[edges] = await this.getEnemycomps(edges, count)
-        signale.success()
-      }
+      enemycomps[edges] = await this.getEnemycomps(edges, count)
+      signale.success()
     }
 
     return { id: this.id, route, spots, lbasdistance, heatmaps, enemycomps }
