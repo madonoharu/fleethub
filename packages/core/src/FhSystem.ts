@@ -1,8 +1,10 @@
-import { GearCategory } from "@fleethub/data"
+import { GearCategory, MapEnemyFleet } from "@fleethub/data"
 
 import Factory from "./Factory"
 import { ShipState } from "./ship"
 import { GearKey } from "./equipment"
+import { ShipKey, FleetState } from "./fleet"
+import { EnemyFleetImpl, EnemyFleetState } from "./enemy"
 
 const allCategories = Object.values(GearCategory).filter((value): value is number => typeof value === "number")
 
@@ -36,5 +38,25 @@ export default class FhSystem {
     })
 
     return state
+  }
+
+  public createEnemyFleet = (state: EnemyFleetState) => {
+    const { main, escort = {} } = state
+    return new EnemyFleetImpl(state, this.createFleet(main), this.createFleet(escort))
+  }
+
+  public createEnemyFleetByMapEnemy = (mapEnemyFleet: MapEnemyFleet) => {
+    const main: FleetState = {}
+    const escort: FleetState = {}
+
+    mapEnemyFleet.main.forEach((shipId, index) => {
+      main[`s${index + 1}` as ShipKey] = this.getAbyssalShipState(shipId)
+    })
+
+    mapEnemyFleet.escort?.forEach((shipId, index) => {
+      escort[`s${index + 1}` as ShipKey] = this.getAbyssalShipState(shipId)
+    })
+
+    return this.createEnemyFleet({ main, escort })
   }
 }
