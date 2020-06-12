@@ -1,6 +1,9 @@
+import { MapNodeType } from "@fleethub/data"
+
 import { FleetState, Fleet } from "../fleet"
 import { AirbaseState, Airbase } from "../airbase"
 import { Formation } from "../common"
+import { EnemyFleetState } from "../enemy"
 
 export type FleetKey = "f1" | "f2" | "f3" | "f4"
 
@@ -10,19 +13,17 @@ export type AirbaseKey = "a1" | "a2" | "a3"
 
 type AirbaseRecord = Partial<Record<AirbaseKey, AirbaseState>>
 
-type BattleConfig = {
+export type NodePlan = {
+  type: MapNodeType
   formation?: Formation
-
-  enemy: {
-    formation: Formation
-    main: FleetState[]
-    escort?: FleetState[]
-  }
+  enemy?: EnemyFleetState
+  lbas?: AirbaseKey[]
 }
 
 export type PlanStateBase = {
   name?: string
   hqLevel?: number
+  nodes?: NodePlan[]
 }
 
 export type PlanState = PlanStateBase & FleetRecord & AirbaseRecord

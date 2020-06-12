@@ -3,13 +3,16 @@ import { Plan, PlanStateBase, FleetKey } from "./types"
 export class PlanImpl implements Plan {
   public name: Plan["name"]
   public hqLevel: Plan["hqLevel"]
+  public nodes: Plan["nodes"]
+
   constructor(
-    { name, hqLevel }: PlanStateBase,
+    base: PlanStateBase,
     public fleetEntries: Plan["fleetEntries"],
     public airbaseEntries: Plan["airbaseEntries"]
   ) {
-    this.name = name || ""
-    this.hqLevel = hqLevel || 120
+    this.name = base.name || ""
+    this.hqLevel = base.hqLevel || 120
+    this.nodes = base.nodes || []
   }
 
   get airbases() {
