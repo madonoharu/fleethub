@@ -16,7 +16,6 @@ export type NodePlan = {
   type: MapNodeType
   formation?: Formation
   enemy?: EnemyFleetState
-  lbas?: Dict<AirbaseKey, number>
 }
 
 export type PlanStateBase = {
