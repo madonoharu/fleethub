@@ -1,8 +1,8 @@
 import fs from "fs-extra"
 import { range, isEqual } from "lodash"
 
-import { getKcnavMapData, isBattleNode, KcnavMapData, KcnavNodeType, KcnavEnemyShip, KcnavEnemyFleet } from "./kcnav"
-import { MapNode, MapLink, MapEnemyFleet } from "../src"
+import { getKcnavMapData, KcnavMapData, KcnavEnemyShip, KcnavEnemyFleet } from "./kcnav"
+import { MapNodeType, MapNode, MapLink, MapEnemyFleet } from "../src"
 
 const formatEnemyShip = (kcnavShip: KcnavEnemyShip) => kcnavShip.id
 const formatEnemyFleet = ({ mainFleet, escortFleet, diff }: KcnavEnemyFleet) => {
@@ -27,11 +27,24 @@ const formatKcnavEnemies = (kcnavEnemies: KcnavEnemyFleet[]) => {
   return enemies
 }
 
+export const isBattleNode = (type: MapNodeType) => {
+  switch (type) {
+    case MapNodeType.Normal:
+    case MapNodeType.Boss:
+    case MapNodeType.Aerial:
+    case MapNodeType.AirDefense:
+    case MapNodeType.NightBattle:
+    case MapNodeType.LongRangeRadarAmbush:
+      return true
+  }
+  return false
+}
+
 const format = ({ id, route, spots, lbasdistance, enemycomps }: KcnavMapData) => {
   const nodes: MapNode[] = []
   for (const [point, [x, y]] of Object.entries(spots)) {
     const edgeEntries = Object.entries(route).filter(([edgeId, [source, target]]) => target === point)
-    const type = edgeEntries.length ? edgeEntries[0][1][2] : KcnavNodeType.Unknown
+    const type = edgeEntries.length ? edgeEntries[0][1][2] : MapNodeType.Unknown
 
     const edges = edgeEntries.map((entry) => entry[0]).join(",")
     const kcnavEnemies = enemycomps[edges]
