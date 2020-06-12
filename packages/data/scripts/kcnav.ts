@@ -1,9 +1,11 @@
 import fs from "fs-extra"
 import Axios from "axios"
-import Signale, { await } from "signale"
+import Signale from "signale"
 import { sum } from "lodash"
 import moment from "moment"
-import { Dict } from "@fleethub/utils/esm"
+import { Dict } from "@fleethub/utils"
+
+import { MapNodeType } from "../src"
 
 const client = Axios.create({ baseURL: "http://kc.piro.moe/api/routing" })
 
@@ -42,26 +44,6 @@ type KcnavParams = Partial<{
 
 type MapKey = string
 
-export enum KcnavNodeType {
-  Unknown = -1,
-  Start = 0,
-  Resource = 2,
-  Maelstrom = 3,
-  Normal = 4,
-  Boss = 5,
-  Transport = 6,
-  Aerial = 7,
-  Bounty = 8,
-  AerialReconnaissance = 9,
-  AirDefense = 10,
-  NightBattle = 11,
-  LongRangeRadarAmbush = 13,
-  EmergencyAnchorageRepair = 14,
-
-  NoEnemy = 90,
-  Selector = 91,
-}
-
 enum KcnavNodeEvent {
   Unknown = -1,
   Start = 0,
@@ -76,7 +58,7 @@ enum KcnavNodeEvent {
   EmergencyAnchorageRepair = 10,
 }
 
-type KcnavEdge = [MapKey | null, MapKey, KcnavNodeType, KcnavNodeEvent]
+type KcnavEdge = [MapKey | null, MapKey, MapNodeType, KcnavNodeEvent]
 type KcnavSpot = [number, number, "Start" | null]
 
 type KcnavGraph = {
@@ -113,19 +95,6 @@ export type KcnavMapData = KcnavGraph & {
   lbasdistance: KcnavLbasdistance
   heatmaps: KcnavHeatmaps
   enemycomps: Dict<string, KcnavEnemyFleet[]>
-}
-
-export const isBattleNode = (type: KcnavNodeType) => {
-  switch (type) {
-    case KcnavNodeType.Normal:
-    case KcnavNodeType.Boss:
-    case KcnavNodeType.Aerial:
-    case KcnavNodeType.AirDefense:
-    case KcnavNodeType.NightBattle:
-    case KcnavNodeType.LongRangeRadarAmbush:
-      return true
-  }
-  return false
 }
 
 const getStart = (duration = 0) => moment().add(duration, "d").format("YYYY-MM-DD")
