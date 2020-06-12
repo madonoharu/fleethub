@@ -1,7 +1,7 @@
 import { GearBase } from "../gear"
 import { EquipmentState, Equipment } from "../equipment"
 
-type AirbaseMode = "Standby" | "AirDefense" | "Sortie1" | "Sortie2"
+type AirbaseMode = "Sortie" | "AirDefense" | "Standby"
 
 export type AirbaseState = EquipmentState & {
   mode?: AirbaseMode
