@@ -11,6 +11,9 @@ export type EnemyFleet = {
   formation: Formation
   main: Fleet
   escort?: Fleet
+
+  fighterPower: number
+  antiLbFighterPower: number
 }
 
 export class EnemyFleetImpl implements EnemyFleet {
