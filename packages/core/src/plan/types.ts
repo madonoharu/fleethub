@@ -1,4 +1,4 @@
-import { MapNodeType } from "@fleethub/data"
+import { MapNode } from "@fleethub/data"
 import { Dict } from "@fleethub/utils"
 
 import { FleetState, Fleet } from "../fleet"
@@ -12,8 +12,7 @@ type FleetDict = Dict<FleetKey, FleetState>
 export type AirbaseKey = "a1" | "a2" | "a3"
 type AirbaseDict = Dict<AirbaseKey, AirbaseState>
 
-export type NodePlan = {
-  type: MapNodeType
+export type NodePlan = Pick<MapNode, "type" | "d" | "point"> & {
   formation?: Formation
   enemy?: EnemyFleetState
   lbas?: Dict<AirbaseKey, number>
