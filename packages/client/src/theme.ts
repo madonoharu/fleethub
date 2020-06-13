@@ -20,7 +20,7 @@ sans-serif,
 "Noto Sans Emoji"
 `
 
-const dark = "rgba(25, 25, 35, 1)"
+const backgroundColor = colors.grey[800]
 const clear = "rgba(20, 20, 20, 0.1)"
 const blueGrey = "rgba(66, 66, 77, 0.95)"
 
@@ -29,8 +29,8 @@ const muiPalette = createPalette({
   primary: blue,
   secondary: pink,
   background: {
-    default: dark,
-    paper: dark,
+    default: backgroundColor,
+    paper: backgroundColor,
   },
 })
 
@@ -111,7 +111,7 @@ const muiTheme = createMuiTheme({
     },
     MuiTooltip: {
       tooltip: {
-        backgroundColor: dark,
+        backgroundColor,
       },
     },
     MuiAppBar: {
