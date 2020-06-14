@@ -21,7 +21,7 @@
     "@material-ui/lab": "^4.0.0-alpha.55",
     "@reduxjs/toolkit": "^1.3.6",
     "@vx/network": "^0.0.197",
-    "@vx/zoom": "^0.0.197",
+    "@vx/responsive": "^0.0.197",
     "clsx": "^1.1.0",
     "constate": "^2.0.0",
     "copy-to-clipboard": "^3.3.1",
