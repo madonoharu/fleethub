@@ -2608,6 +2608,11 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.154.tgz#069e3c703fdb264e67be9e03b20a640bc0198ecc"
   integrity sha512-VoDZIJmg3P8vPEnTldLvgA+q7RkIbVkbYX4k0cAVFzGAOQwUehVgRHgIr2/wepwivDst/rVRqaiBSjCXRnoWwQ==
 
+"@types/lodash@^4.14.146":
+  version "4.14.155"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.155.tgz#e2b4514f46a261fd11542e47519c20ebce7bc23a"
+  integrity sha512-vEcX7S7aPhsBCivxMwAANQburHBtfN9RdyXFk84IJmu2Z4Hkg1tOFgaslRiEqqvoLtbCBi6ika1EMspE+NZ9Lg==
+
 "@types/mdast@^3.0.0":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/mdast/-/mdast-3.0.3.tgz#2d7d671b1cd1ea3deb306ea75036c2a0407d2deb"
@@ -2886,14 +2891,6 @@
   dependencies:
     wonka "^4.0.10"
 
-"@vx/event@0.0.197":
-  version "0.0.197"
-  resolved "https://registry.yarnpkg.com/@vx/event/-/event-0.0.197.tgz#4aff7648deae894f13dbfdd07b28d65b15d77d92"
-  integrity sha512-XXoehTuQArxCVCfjr0I2hVKu8uy9wMXNn413LHZV5z7Vsyabut9opsqdMriF/OjX4W6a3pigHqetYS2DP1VAaA==
-  dependencies:
-    "@types/react" "*"
-    "@vx/point" "0.0.197"
-
 "@vx/group@0.0.197":
   version "0.0.197"
   resolved "https://registry.yarnpkg.com/@vx/group/-/group-0.0.197.tgz#5dc06d21ccf1d519981545536f277b1c99faba46"
@@ -2915,19 +2912,16 @@
     classnames "^2.2.5"
     prop-types "^15.6.2"
 
-"@vx/point@0.0.197":
+"@vx/responsive@^0.0.197":
   version "0.0.197"
-  resolved "https://registry.yarnpkg.com/@vx/point/-/point-0.0.197.tgz#3685097b213d7abc301c87294931e96148821599"
-  integrity sha512-1CO2MM6HdAqE11gUk56uufBEkgbChdvzvePCsRCbA2a4KyvfLHxEICjycF+RRjRU5rlpMN97uxEcIReRI+WmIQ==
-
-"@vx/zoom@^0.0.197":
-  version "0.0.197"
-  resolved "https://registry.yarnpkg.com/@vx/zoom/-/zoom-0.0.197.tgz#17f90a5dc082a4307c06e20dc3a80f5039212ab1"
-  integrity sha512-uAhnn1ALBD6g2TIyHMVeAO6mklTT0Wl30eFsHNvkBv9OFFJyCCRjLiye5/9tVpg1MJwC7TggXR9++Oy1dBSxFQ==
+  resolved "https://registry.yarnpkg.com/@vx/responsive/-/responsive-0.0.197.tgz#e3ef1b7c2cdf3be8f579d618df637c0615f41586"
+  integrity sha512-Qv15PJ/Hy79LjyfJ/9E8z+zacKAnD43O2Jg9wvB6PFSNs73xPEDy/mHTYxH+FZv94ruAE3scBO0330W29sQpyg==
   dependencies:
+    "@types/lodash" "^4.14.146"
     "@types/react" "*"
-    "@vx/event" "0.0.197"
-    prop-types "^15.6.2"
+    lodash "^4.17.10"
+    prop-types "^15.6.1"
+    resize-observer-polyfill "1.5.1"
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
@@ -11163,7 +11157,7 @@ lodash.uniq@4.5.0, lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.15, lodash@^4.11.1, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
+lodash@4.17.15, lodash@^4.11.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -14418,6 +14412,11 @@ reselect@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
   integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
+
+resize-observer-polyfill@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
