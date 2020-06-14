@@ -14,11 +14,12 @@ type Props = {
 }
 
 const EnemyFleetContent: React.FCX<Props> = ({ className, enemy, visibleAlbFp }) => {
+  const albFp = visibleAlbFp && enemy.antiLbFighterPower
   return (
     <div className={className}>
       <Flexbox>
         <FighterPowerStats label="制空" value={enemy.fighterPower} />
-        {visibleAlbFp && <FighterPowerStats label="基地戦" value={enemy.antiLbFighterPower} />}
+        {albFp ? <FighterPowerStats label="基地戦" value={albFp} /> : null}
       </Flexbox>
 
       <div>
