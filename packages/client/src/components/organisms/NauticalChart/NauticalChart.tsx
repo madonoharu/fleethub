@@ -9,21 +9,23 @@ import { Tooltip, Typography } from "@material-ui/core"
 
 import NodeIcon, { getNodeTypeStyle } from "./NodeIcon"
 
+export const NodeLable: React.FC<{ node: MapNode }> = ({ node }) => {
+  const distance = node.d && `距離: ${node.d}`
+
+  return (
+    <Typography>
+      {node.point} {getNodeTypeStyle(node.type).name} {distance}
+    </Typography>
+  )
+}
+
 const NauticalChartNode: React.FC<{ node: MapNode; onClick?: (node: MapNode) => void }> = ({ node, onClick }) => {
   const handleClick = () => {
     onClick?.(node)
   }
 
-  const distance = node.d && `距離: ${node.d}`
-
-  const tilte = (
-    <Typography>
-      {node.point} {getNodeTypeStyle(node.type).name} {distance}
-    </Typography>
-  )
-
   return (
-    <Tooltip title={tilte}>
+    <Tooltip title={<NodeLable node={node} />}>
       <NodeIcon type={node.type} point={node.point} d={node.d} cursor="pointer" center onClick={handleClick} />
     </Tooltip>
   )
