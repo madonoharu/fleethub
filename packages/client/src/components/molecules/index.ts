@@ -1,3 +1,5 @@
+export { default as Dialog } from "./Dialog"
+
 export { default as GearStarsSelect } from "./GearStarsSelect"
 export { default as GearExpSelect } from "./GearExpSelect"
 
