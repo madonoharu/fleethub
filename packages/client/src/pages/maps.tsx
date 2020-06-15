@@ -7,7 +7,7 @@ import { MapEnemySelect } from "../components"
 const MapsPage: React.FC = () => {
   return (
     <Container>
-      <MapEnemySelect onSelect={console.log} />
+      <MapEnemySelect />
     </Container>
   )
 }
