@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 import { Dialog as MuiDialog, DialogProps, withStyles } from "@material-ui/core"
 
-import { CloseButton } from "../../../components"
+import { CloseButton } from "../IconButtons"
 
 const StyledCloseButton = styled(CloseButton)`
   position: absolute;
