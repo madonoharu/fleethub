@@ -1,14 +1,12 @@
 import React from "react"
 import styled from "styled-components"
-import { PlanState, FleetState, ShipKey } from "@fleethub/core"
+import { EnemyFleetState } from "@fleethub/core"
 import { MapEnemyFleet } from "@fleethub/data"
 
 import { Container, Paper, Button, Typography } from "@material-ui/core"
 
-import { ShipBanner, Flexbox } from "../../../components"
+import { EnemyFleetContent } from "../../../components"
 import { useFhSystem } from "../../../hooks"
-
-import FighterPowerStats from "./FighterPowerStats"
 
 const getFormationName = (form: number) => {
   const dict: Record<number, string | undefined> = {
@@ -32,48 +30,21 @@ const FormationButton: React.FC<{ formation: number; onClick?: () => void }> = (
   return <Button onClick={onClick}>{name}</Button>
 }
 
-export type EnemyFleetState = Pick<MapEnemyFleet, "main" | "escort"> & {
-  formation: number
-}
-
 type Props = {
-  enemyFleet: MapEnemyFleet
-  visibleAlbPower?: boolean
+  mapEnemyFleet: MapEnemyFleet
+  visibleAlbFp?: boolean
   onSelect?: (enemy: EnemyFleetState) => void
 }
 
-const MapEnemyFleetCard: React.FCX<Props> = ({ className, enemyFleet, visibleAlbPower, onSelect }) => {
-  const { main, escort, formations } = enemyFleet
-
-  const { createPlanByMapEnemy } = useFhSystem()
-  const plan = createPlanByMapEnemy(enemyFleet)
-
-  const combinedFp = plan.calcFleetFighterPower(true)
-  const albFp = plan.calcFleetFighterPower(true, true)
+const MapEnemyFleetCard: React.FCX<Props> = ({ className, mapEnemyFleet, visibleAlbFp, onSelect }) => {
+  const { createEnemyFleetByMapEnemy } = useFhSystem()
+  const enemyFleet = createEnemyFleetByMapEnemy(mapEnemyFleet)
 
   return (
     <Paper className={className}>
-      <Flexbox>
-        <FighterPowerStats label="制空" value={combinedFp} />
-        {visibleAlbPower && <FighterPowerStats label="基地戦" value={albFp} />}
-      </Flexbox>
-
-      <div>
-        {main.map((shipId, index) => (
-          <ShipBanner key={index} shipId={shipId} />
-        ))}
-      </div>
-      <div>
-        {escort?.map((shipId, index) => (
-          <ShipBanner key={index} shipId={shipId} />
-        ))}
-      </div>
-      {formations.map((formation) => (
-        <FormationButton
-          key={formation}
-          formation={formation}
-          onClick={() => onSelect?.({ main, escort, formation })}
-        />
+      <EnemyFleetContent enemy={enemyFleet} visibleAlbFp={visibleAlbFp} />
+      {mapEnemyFleet.formations.map((formation) => (
+        <FormationButton key={formation} formation={formation} onClick={() => onSelect?.(enemyFleet.state)} />
       ))}
     </Paper>
   )
