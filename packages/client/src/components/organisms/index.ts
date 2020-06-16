@@ -1,5 +1,4 @@
 export { default as Dialog } from "./Dialog"
-export { default as DialogButton } from "./DialogButton"
 
 export { default as AirbaseCard } from "./AirbaseCard/AirbaseCard"
 export { default as GearTooltip } from "./GearTooltip"
