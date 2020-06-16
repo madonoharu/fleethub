@@ -43,6 +43,9 @@ const muiTheme = createMuiTheme({
     MuiContainer: {
       maxWidth: "md",
     },
+    MuiDialog: {
+      maxWidth: "md",
+    },
     MuiLink: {
       target: "_blank",
       rel: "noopener",
