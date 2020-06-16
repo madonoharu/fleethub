@@ -10,6 +10,8 @@ export const useRenderCount = () => {
   })
 }
 
+export * from "./useModal"
+
 export * from "./handlers"
 export * from "./useSwap"
 
