@@ -158,6 +158,27 @@ const kc = {
 
 const isFirefox = window.navigator.userAgent.includes("Firefox")
 
+const gradientAnimation = css`
+  background-size: 400% 400%;
+  animation: gradient 120s ease infinite;
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+`
+
+const background = css`
+  background: linear-gradient(-45deg, #141e30, #243b55);
+`
+
 const acrylic = isFirefox
   ? css`
       background: rgba(60, 60, 70, 0.95);
@@ -167,7 +188,7 @@ const acrylic = isFirefox
       backdrop-filter: blur(8px);
     `
 
-const theme = { ...muiTheme, kc, acrylic }
+const theme = { ...muiTheme, kc, background, acrylic }
 export type Theme = typeof theme
 
 export default theme

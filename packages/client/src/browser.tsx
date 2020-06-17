@@ -21,6 +21,8 @@ import { AppBar, GlobalDialogsProvider } from "./components"
 const ScrollContainer = styled.div`
   overflow-y: scroll;
   height: calc(100vh - 24px);
+
+  ${({ theme }) => theme.background};
 `
 
 export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({ element }) => {
