@@ -10,8 +10,6 @@ import { Link, Select } from "../../../components"
 
 import LanguageSelect from "./LanguageSelect"
 
-const appBarHeight = 32
-
 const Component: React.FCX = ({ className }) => {
   const { t } = useTranslation()
 
@@ -36,6 +34,9 @@ const Component: React.FCX = ({ className }) => {
 export default styled(Component)`
   display: flex;
   flex-direction: row;
+
+  ${({ theme }) => theme.acrylic}
+
   > * {
     color: white;
   }
