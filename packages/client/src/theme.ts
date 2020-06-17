@@ -1,6 +1,7 @@
 import { createMuiTheme, colors } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
 import { AirState } from "@fleethub/core"
+import { css } from "styled-components"
 
 const { blue, cyan, pink, grey, lightBlue } = colors
 
@@ -21,7 +22,7 @@ sans-serif,
 `
 
 const backgroundColor = colors.grey[800]
-const clear = "rgba(20, 20, 20, 0.1)"
+const clear = "rgba(100, 100, 100, 0.1)"
 const blueGrey = "rgba(66, 66, 77, 0.95)"
 
 const muiPalette = createPalette({
@@ -29,8 +30,7 @@ const muiPalette = createPalette({
   primary: blue,
   secondary: pink,
   background: {
-    default: backgroundColor,
-    paper: backgroundColor,
+    paper: clear,
   },
 })
 
@@ -117,11 +117,6 @@ const muiTheme = createMuiTheme({
         backgroundColor,
       },
     },
-    MuiAppBar: {
-      colorPrimary: {
-        backgroundColor: muiPalette.grey[800],
-      },
-    },
   },
 })
 
@@ -160,7 +155,19 @@ const kcPalette = {
 const kc = {
   palette: kcPalette,
 }
-const theme = { ...muiTheme, kc }
+
+const isFirefox = window.navigator.userAgent.includes("Firefox")
+
+const acrylic = isFirefox
+  ? css`
+      background: rgba(60, 60, 70, 0.95);
+    `
+  : css`
+      background: rgba(60, 60, 70, 0.7);
+      backdrop-filter: blur(8px);
+    `
+
+const theme = { ...muiTheme, kc, acrylic }
 export type Theme = typeof theme
 
 export default theme
