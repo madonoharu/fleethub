@@ -3,7 +3,7 @@ import styled, { css } from "styled-components"
 
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps } from "@material-ui/core"
 
-import { CloseButton } from "../../../components"
+import { Acrylic, CloseButton } from "../../../components"
 
 const StyledCloseButton = styled(CloseButton)`
   position: absolute;
@@ -20,7 +20,7 @@ const Container: React.FCX<ContainerProps> = ({ fullHeight, ...divProps }) => <d
 const ScrollContainer = styled(Container)`
   max-width: 100%;
   max-height: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
 
   ${(props) =>
     props.fullHeight &&
@@ -34,7 +34,7 @@ export type DialogProps = Partial<MuiDialogProps> & {
 }
 
 const Dialog: React.FC<DialogProps> = ({ children, fullHeight, ...rest }) => (
-  <MuiDialog open={false} {...rest}>
+  <MuiDialog PaperComponent={Acrylic} open={false} transitionDuration={100} {...rest}>
     <StyledCloseButton size="small" onClick={(event) => rest.onClose?.(event, "backdropClick")} />
     <ScrollContainer fullHeight={fullHeight}>{children}</ScrollContainer>
   </MuiDialog>
