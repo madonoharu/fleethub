@@ -1,3 +1,4 @@
+export { default as Acrylic } from "./Acrylic"
 export { default as Link } from "./Link"
 export { default as Flexbox } from "./Flexbox"
 export { default as Select } from "./Select"
