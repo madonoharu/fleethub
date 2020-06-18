@@ -1,7 +1,11 @@
-import { createMuiTheme, colors } from "@material-ui/core"
+import React from "react"
+
+import { createMuiTheme, colors, ThemeProvider as MuiThemeProvider, CssBaseline } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
+import styled, { css, createGlobalStyle, ThemeProvider as StyledThemeProvider } from "styled-components"
 import { AirState } from "@fleethub/core"
-import { css } from "styled-components"
+
+import { AppBar } from "./components"
 
 const { blue, cyan, pink, grey, lightBlue } = colors
 
@@ -46,6 +50,7 @@ const muiTheme = createMuiTheme({
     MuiDialog: {
       maxWidth: "md",
     },
+
     MuiLink: {
       target: "_blank",
       rel: "noopener",
@@ -175,10 +180,6 @@ const gradientAnimation = css`
   }
 `
 
-const background = css`
-  background: linear-gradient(-45deg, #141e30, #243b55);
-`
-
 const acrylic = isFirefox
   ? css`
       background: rgba(60, 60, 70, 0.95);
@@ -188,7 +189,32 @@ const acrylic = isFirefox
       backdrop-filter: blur(8px);
     `
 
-const theme = { ...muiTheme, kc, background, acrylic }
+const theme = { ...muiTheme, kc, acrylic }
+
 export type Theme = typeof theme
 
-export default theme
+const GlobalStyle = createGlobalStyle`
+body {
+  background: linear-gradient(-45deg, #141e30, #243b55);
+}
+
+.MuiPopover-paper {
+  ${(props) => props.theme.acrylic}
+}
+`
+
+const ScrollContainer = styled.div`
+  overflow-y: scroll;
+  height: calc(100vh - 24px);
+`
+
+export const ThemeProvider: React.FC = ({ children }) => (
+  <MuiThemeProvider theme={theme}>
+    <StyledThemeProvider theme={theme}>
+      <CssBaseline />
+      <GlobalStyle />
+      <AppBar />
+      <ScrollContainer>{children}</ScrollContainer>
+    </StyledThemeProvider>
+  </MuiThemeProvider>
+)
