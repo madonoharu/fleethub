@@ -11,7 +11,7 @@ export const useRenderCount = () => {
 }
 
 export * from "./useModal"
-
+export * from "./usePopover"
 export * from "./handlers"
 export * from "./useSwap"
 
