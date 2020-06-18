@@ -1,13 +1,9 @@
 import React from "react"
 import styled from "styled-components"
-import { range } from "lodash-es"
 
-import Button from "@material-ui/core/Button"
-import Tooltip from "@material-ui/core/Tooltip"
-import Popover from "@material-ui/core/Popover"
-import Typography from "@material-ui/core/Typography"
+import { Button, Tooltip } from "@material-ui/core"
 
-import { useAnchorEl } from "../../../hooks"
+import { usePopover } from "../../../hooks"
 
 import Buttons from "./Buttons"
 
@@ -27,26 +23,26 @@ type Props = {
 const anchorOrigin = { vertical: "bottom", horizontal: "center" } as const
 
 const Component: React.FC<Props> = ({ className, stars, onChange }) => {
-  const { onOpen, ...hendler } = useAnchorEl()
+  const { openPopover, closePopover, Popover } = usePopover()
 
   const handleChange = React.useCallback(
     (value: number) => {
       onChange && onChange(value)
-      hendler.onClose()
+      closePopover()
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onChange, hendler.onClose]
+    [onChange, closePopover]
   )
 
   return (
     <>
       <Tooltip title="改修値選択">
-        <Button className={className} size="small" onClick={onOpen}>
+        <Button className={className} size="small" onClick={openPopover}>
           {starsToString(stars)}
         </Button>
       </Tooltip>
 
-      <Popover anchorOrigin={anchorOrigin} {...hendler}>
+      <Popover anchorOrigin={anchorOrigin}>
         <Buttons onChange={handleChange} />
       </Popover>
     </>

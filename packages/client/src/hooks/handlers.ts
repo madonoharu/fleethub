@@ -11,20 +11,6 @@ export const useOpen = (initialOpen = false) => {
   }
 }
 
-export const useAnchorEl = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-  const onOpen = useCallback((event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget), [setAnchorEl])
-  const onClose = useCallback(() => setAnchorEl(null), [setAnchorEl])
-
-  return {
-    onOpen,
-    anchorEl,
-    open,
-    onClose,
-  }
-}
-
 export const useSelect = <T>(options: readonly T[], defaultOption: T = options[0]) => {
   const [value, onChange] = useState(defaultOption)
 
