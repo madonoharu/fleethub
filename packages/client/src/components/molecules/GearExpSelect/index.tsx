@@ -1,13 +1,12 @@
 import React from "react"
 import styled from "styled-components"
 
-import Button from "@material-ui/core/Button"
-import Tooltip from "@material-ui/core/Tooltip"
-import Popover from "@material-ui/core/Popover"
+import { Button, Tooltip } from "@material-ui/core"
+
+import { Flexbox, NumberInput } from "../../../components"
+import { usePopover } from "../../../hooks"
 
 import ProficiencyIcon from "./ProficiencyIcon"
-import { Flexbox, NumberInput } from "../../../components"
-import { useAnchorEl } from "../../../hooks"
 
 const exps = [0, 10, 25, 40, 55, 70, 85, 100, 120]
 
@@ -23,25 +22,25 @@ type Props = {
 }
 
 const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
-  const { onOpen, ...hendler } = useAnchorEl()
+  const { openPopover, closePopover, Popover } = usePopover()
 
   const handleChange: React.MouseEventHandler = React.useCallback(
     (event) => {
       onChange && onChange(Number(event.currentTarget.id))
-      hendler.onClose()
+      closePopover()
     },
-    [onChange, hendler]
+    [onChange, closePopover]
   )
 
   return (
     <div className={className}>
       <Tooltip title="熟練度選択">
-        <Button onClick={onOpen}>
+        <Button onClick={openPopover}>
           <ProficiencyIcon exp={exp} />
         </Button>
       </Tooltip>
 
-      <Popover anchorOrigin={anchorOrigin} {...hendler}>
+      <Popover anchorOrigin={anchorOrigin}>
         <Flexbox>
           {exps.map((boundary) => (
             <Button key={boundary} id={boundary.toString()} onClick={handleChange}>
