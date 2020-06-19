@@ -1,0 +1,63 @@
+import React from "react"
+import { PlanState, Plan, NodePlan } from "@fleethub/core"
+import { MapNodeType } from "@fleethub/data"
+
+import { Container, Paper, TextField, Button } from "@material-ui/core"
+
+import { MapEnemySelect, RemoveButton } from "../../../components"
+import { useModal } from "../../../hooks"
+import { Update } from "../../../utils"
+
+import NodePlanCard from "./NodePlanCard"
+
+type Props = {
+  plan: Plan
+  updatePlan: Update<PlanState>
+}
+
+const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
+  const { openModal, closeModal, Modal } = useModal()
+  const addNodePlan = (node: NodePlan) => {
+    updatePlan((draft) => {
+      if (!draft.nodes) draft.nodes = []
+      draft.nodes.push(node)
+    })
+    closeModal()
+  }
+
+  const remove = (index: number) => {
+    updatePlan((draft) => {
+      draft.nodes?.splice(index, 1)
+      if (draft.nodes?.length === 0) delete draft.nodes
+    })
+  }
+
+  const handleRemoveAll = () => {
+    updatePlan((draft) => {
+      delete draft.nodes
+    })
+  }
+
+  return (
+    <div>
+      <Modal fullWidth fullHeight>
+        <MapEnemySelect onSelect={addNodePlan} />
+      </Modal>
+      <Button onClick={openModal}>戦闘マスを追加</Button>
+      <RemoveButton size="small" onClick={handleRemoveAll} />
+
+      {plan.nodes.map((node, index) => (
+        <NodePlanCard
+          key={index}
+          node={node}
+          update={(recipe) => {
+            updatePlan(({ nodes }) => nodes && recipe(nodes[index]))
+          }}
+          onRemove={() => remove(index)}
+        />
+      ))}
+    </div>
+  )
+}
+
+export default BattlePlanPanel
