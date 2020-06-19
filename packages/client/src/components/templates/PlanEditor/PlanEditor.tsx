@@ -9,7 +9,7 @@ import { usePlan } from "../../../hooks"
 import FleetTabPanel from "./FleetTabPanel"
 import LandBaseTabPanel from "./LandBaseTabPanel"
 import GkcoiTabPanel from "./GkcoiTabPanel"
-import { useDispatch } from "react-redux"
+import BattlePlanPanel from "./BattlePlanPanel"
 
 const tabOptions = ["f1", "f2", "f3", "f4", "lb", "Gkcoi"] as const
 
@@ -50,6 +50,8 @@ const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
       {fleetEntry && <FleetTabPanel fleet={fleetEntry[1]} fleetKey={fleetEntry[0]} updatePlan={actions.update} />}
       {tabKey === "lb" && <LandBaseTabPanel plan={plan} update={actions.update} />}
       {tabKey === "Gkcoi" && <GkcoiTabPanel plan={plan} />}
+
+      <BattlePlanPanel plan={plan} updatePlan={actions.update} />
     </Container>
   )
 }
