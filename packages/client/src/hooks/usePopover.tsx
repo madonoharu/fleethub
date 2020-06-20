@@ -6,20 +6,18 @@ type PopoverProps = Partial<MuiPopoverProps>
 
 export const usePopover = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const openPopover = useCallback((event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget), [
-    setAnchorEl,
-  ])
-  const closePopover = useCallback(() => setAnchorEl(null), [setAnchorEl])
+
+  const show = useCallback((event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget), [])
+  const hide = useCallback(() => setAnchorEl(null), [])
 
   const Popover: React.FC<PopoverProps> = useCallback(
-    (props) => <MuiPopover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={closePopover} {...props} />,
-    [anchorEl, closePopover]
+    (props) => <MuiPopover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={hide} {...props} />,
+    [anchorEl, hide]
   )
 
-  return {
+  return Object.assign(Popover, {
     isOpen: Boolean(anchorEl),
-    openPopover,
-    closePopover,
-    Popover,
-  }
+    show,
+    hide,
+  })
 }
