@@ -5,7 +5,7 @@ import { Box, Slider, Button, Tooltip, Dialog, DialogTitle, DialogContent } from
 import BuildIcon from "@material-ui/icons/Build"
 
 import { NumberInput } from "../.."
-import { useOpen } from "../../../hooks"
+import { useModal } from "../../../hooks"
 
 type SlotSizeFormProps = {
   current: number
@@ -42,7 +42,7 @@ type Props = Partial<SlotSizeFormProps> & {
 }
 
 const SlotSizeButton: React.FCX<Props> = ({ className, current, max, onChange }) => {
-  const { onOpen, ...hendler } = useOpen()
+  const Modal = useModal()
 
   if (current === undefined || max === undefined) {
     return (
@@ -55,13 +55,13 @@ const SlotSizeButton: React.FCX<Props> = ({ className, current, max, onChange })
   return (
     <>
       <Tooltip title="搭載数を変更">
-        <Button className={className} size="small" onClick={onOpen}>
+        <Button className={className} size="small" onClick={Modal.show}>
           {current}
         </Button>
       </Tooltip>
-      <Dialog {...hendler}>
+      <Modal>
         <SlotSizeForm current={current} max={max} onChange={onChange} />
-      </Dialog>
+      </Modal>
     </>
   )
 }

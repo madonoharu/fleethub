@@ -6,7 +6,6 @@ import Assignment from "@material-ui/icons/Assignment"
 import Alert from "@material-ui/lab/Alert"
 import { withStyles } from "@material-ui/core/styles"
 
-import { useOpen } from "../../../hooks"
 import { withIconButton } from "../IconButtons"
 
 const AssignmentButton = withIconButton(Assignment)
@@ -23,17 +22,17 @@ type Props = {
 }
 
 const Component: React.FC<Props> = ({ value, message = "copied" }) => {
-  const { open, onOpen, onClose } = useOpen()
+  const [open, setOpen] = React.useState(false)
 
   const handleClick = () => {
     const result = copy(value)
-    if (result) onOpen()
+    if (result) setOpen(true)
   }
 
   return (
     <Tooltip
       open={open}
-      onClose={onClose}
+      onClose={() => setOpen(false)}
       placement="top"
       title={
         <Alert variant="outlined" severity="success">

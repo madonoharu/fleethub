@@ -1,16 +1,10 @@
 import React from "react"
 import styled from "styled-components"
 
-import Box from "@material-ui/core/Box"
-import Dialog from "@material-ui/core/Dialog"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import DialogContent from "@material-ui/core/DialogContent"
-import Button from "@material-ui/core/Button"
-import Tooltip from "@material-ui/core/Tooltip"
-import BuildIcon from "@material-ui/icons/Build"
+import { Box, DialogContent, Button, Tooltip } from "@material-ui/core"
 
 import { NumberInput, Slider } from "../../../components"
-import { useOpen } from "../../../hooks"
+import { useModal } from "../../../hooks"
 
 type Props = {
   value: number
@@ -38,18 +32,18 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
 }
 
 const Component: React.FCX<Props> = ({ className, value, onChange }) => {
-  const { onOpen, ...hendler } = useOpen()
+  const Modal = useModal()
 
   return (
     <>
       <Tooltip title="levelを変更">
-        <Button className={className} onClick={onOpen}>
+        <Button className={className} onClick={Modal.show}>
           Lv{value}
         </Button>
       </Tooltip>
-      <Dialog {...hendler}>
+      <Modal>
         <Form value={value} onChange={onChange} />
-      </Dialog>
+      </Modal>
     </>
   )
 }
