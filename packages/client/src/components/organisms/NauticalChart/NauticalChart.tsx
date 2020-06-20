@@ -7,7 +7,7 @@ import { ScaleSVG } from "@vx/responsive"
 import { Group } from "@vx/group"
 import { Tooltip, Typography } from "@material-ui/core"
 
-import NodeIcon, { getNodeTypeStyle } from "./NodeIcon"
+import { NodeCircle, getNodeTypeStyle } from "./NodeIcon"
 
 export const NodeLable: React.FC<{ node: MapNode }> = ({ node }) => {
   const distance = node.d && `距離: ${node.d}`
@@ -26,7 +26,7 @@ const NauticalChartNode: React.FC<{ node: MapNode; onClick?: (node: MapNode) => 
 
   return (
     <Tooltip title={<NodeLable node={node} />}>
-      <NodeIcon type={node.type} point={node.point} d={node.d} cursor="pointer" center onClick={handleClick} />
+      <NodeCircle type={node.type} point={node.point} d={node.d} cursor="pointer" onClick={handleClick} />
     </Tooltip>
   )
 }

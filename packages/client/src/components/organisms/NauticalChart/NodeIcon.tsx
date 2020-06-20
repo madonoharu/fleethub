@@ -34,50 +34,52 @@ export const getNodeTypeStyle = (id: number) => {
   return nodeTypes.find((type) => type.id === id) || nodeTypes[0]
 }
 
-type NodeIconBaseProps = Pick<MapNode, "type" | "point" | "d"> & {
-  center?: boolean
-}
+type BaseProps = Pick<MapNode, "type" | "point" | "d">
 
-type Props = NodeIconBaseProps & Omit<React.SVGProps<SVGSVGElement>, keyof NodeIconBaseProps>
+type NodeCircleProps = BaseProps & Omit<React.SVGProps<SVGGElement>, keyof BaseProps>
 
-const NodeIcon = React.forwardRef<SVGSVGElement, Props>(({ type, point, d, center, ...svgProps }, ref) => {
-  const r1 = 15
-  const strokeWidth = 4
-  const r2 = 8
+const r1 = 15
+const strokeWidth = 4
+const r2 = 8
 
-  const c1 = r1 + strokeWidth
-  const c2 = Math.sin(Math.PI / 4) * r1
+const c1 = r1 + strokeWidth
+const c2 = Math.sin(Math.PI / 4) * r1
 
+export const NodeCircle = React.forwardRef<SVGGElement, NodeCircleProps>(({ type, point, d, ...rest }, ref) => {
   const typeStyle = getNodeTypeStyle(type)
 
-  const transform = center ? `translate(${-c1}, ${-c1})` : undefined
-
   return (
-    <svg ref={ref} width={c1 * 2} height={c1 * 2} transform={transform} {...svgProps}>
-      <Group left={c1} top={c1}>
-        <circle r={r1} fill={typeStyle.background} stroke={typeStyle.border} strokeWidth={strokeWidth} />
+    <Group innerRef={ref} {...rest}>
+      <circle r={r1} fill={typeStyle.background} stroke={typeStyle.border} strokeWidth={strokeWidth} />
 
-        <Typography
-          component="text"
-          style={{ fontWeight: "bold" }}
-          fill={typeStyle.color}
-          textAnchor="middle"
-          dominantBaseline="central"
-        >
-          {point}
-        </Typography>
+      <Typography
+        component="text"
+        style={{ fontWeight: "bold" }}
+        fill={typeStyle.color}
+        textAnchor="middle"
+        dominantBaseline="central"
+      >
+        {point}
+      </Typography>
 
-        {d && (
-          <Group top={c2} left={c2}>
-            <circle r={r2} fill="green" opacity={0.6} />
-            <Typography component="text" fill="white" textAnchor="middle" dominantBaseline="central">
-              {d}
-            </Typography>
-          </Group>
-        )}
-      </Group>
-    </svg>
+      {d && (
+        <Group top={c2} left={c2}>
+          <circle r={r2} fill="green" opacity={0.6} />
+          <Typography component="text" fill="white" textAnchor="middle" dominantBaseline="central">
+            {d}
+          </Typography>
+        </Group>
+      )}
+    </Group>
   )
 })
+
+type NodeIconProps = BaseProps & Omit<React.SVGProps<SVGSVGElement>, keyof BaseProps>
+
+const NodeIcon = React.forwardRef<SVGSVGElement, NodeIconProps>(({ type, point, d, ...rest }, ref) => (
+  <svg ref={ref} width={c1 * 2} height={c1 * 2} {...rest}>
+    <NodeCircle type={type} point={point} d={d} />
+  </svg>
+))
 
 export default NodeIcon
