@@ -22,20 +22,17 @@ type Props = {
 }
 
 const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
-  const { openPopover, closePopover, Popover } = usePopover()
+  const Popover = usePopover()
 
-  const handleChange: React.MouseEventHandler = React.useCallback(
-    (event) => {
-      onChange && onChange(Number(event.currentTarget.id))
-      closePopover()
-    },
-    [onChange, closePopover]
-  )
+  const handleChange: React.MouseEventHandler = (event) => {
+    onChange && onChange(Number(event.currentTarget.id))
+    Popover.hide()
+  }
 
   return (
     <div className={className}>
       <Tooltip title="熟練度選択">
-        <Button onClick={openPopover}>
+        <Button onClick={Popover.show}>
           <ProficiencyIcon exp={exp} />
         </Button>
       </Tooltip>

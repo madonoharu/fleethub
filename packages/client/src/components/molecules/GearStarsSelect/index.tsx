@@ -23,21 +23,17 @@ type Props = {
 const anchorOrigin = { vertical: "bottom", horizontal: "center" } as const
 
 const Component: React.FC<Props> = ({ className, stars, onChange }) => {
-  const { openPopover, closePopover, Popover } = usePopover()
+  const Popover = usePopover()
 
-  const handleChange = React.useCallback(
-    (value: number) => {
-      onChange && onChange(value)
-      closePopover()
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onChange, closePopover]
-  )
+  const handleChange = (value: number) => {
+    onChange && onChange(value)
+    Popover.hide()
+  }
 
   return (
     <>
       <Tooltip title="改修値選択">
-        <Button className={className} size="small" onClick={openPopover}>
+        <Button className={className} size="small" onClick={Popover.show}>
           {starsToString(stars)}
         </Button>
       </Tooltip>
