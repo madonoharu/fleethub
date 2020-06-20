@@ -61,7 +61,7 @@ const getLbasLabel = ({ lbas }: NodePlan) => {
 
 const NodePlanCard: React.FC<NodePlanCardProps> = ({ node, update, onRemove }) => {
   const { createEnemyFleet } = useFhSystem()
-  const { openModal, Modal } = useModal()
+  const Modal = useModal()
   const handleLbasChange = (next: NodePlan["lbas"]) => {
     update((draft) => {
       if (next) {
@@ -84,7 +84,7 @@ const NodePlanCard: React.FC<NodePlanCardProps> = ({ node, update, onRemove }) =
         <RemoveButton size="small" onClick={onRemove} />
       </Flexbox>
 
-      <Button size="small" variant="outlined" onClick={openModal}>
+      <Button size="small" variant="outlined" onClick={Modal.show}>
         基地設定 {getLbasLabel(node)}
       </Button>
       {node.enemy && <EnemyFleetContent enemy={createEnemyFleet(node.enemy)} visibleAlbFp={lbas} />}

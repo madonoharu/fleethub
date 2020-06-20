@@ -4,18 +4,17 @@ import { Dialog, DialogProps } from "../components"
 
 export const useModal = (initialOpen = false) => {
   const [isOpen, setIsOpen] = useState(initialOpen)
-  const openModal = useCallback(() => setIsOpen(true), [setIsOpen])
-  const closeModal = useCallback(() => setIsOpen(false), [setIsOpen])
+  const show = useCallback(() => setIsOpen(true), [])
+  const hide = useCallback(() => setIsOpen(false), [])
 
-  const Modal: React.FC<DialogProps> = useCallback(
-    (props) => <Dialog open={isOpen} onClose={closeModal} {...props} />,
-    [isOpen, closeModal]
-  )
-
-  return {
+  const Modal: React.FC<DialogProps> = useCallback((props) => <Dialog open={isOpen} onClose={hide} {...props} />, [
     isOpen,
-    openModal,
-    closeModal,
-    Modal,
-  }
+    hide,
+  ])
+
+  return Object.assign(Modal, {
+    isOpen,
+    show,
+    hide,
+  })
 }

@@ -1,8 +1,7 @@
 import React from "react"
 import { PlanState, Plan, NodePlan } from "@fleethub/core"
-import { MapNodeType } from "@fleethub/data"
 
-import { Container, Paper, TextField, Button } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 
 import { MapEnemySelect, RemoveButton } from "../../../components"
 import { useModal } from "../../../hooks"
@@ -16,13 +15,13 @@ type Props = {
 }
 
 const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
-  const { openModal, closeModal, Modal } = useModal()
+  const Modal = useModal()
   const addNodePlan = (node: NodePlan) => {
     updatePlan((draft) => {
       if (!draft.nodes) draft.nodes = []
       draft.nodes.push(node)
     })
-    closeModal()
+    Modal.hide()
   }
 
   const remove = (index: number) => {
@@ -43,7 +42,8 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
       <Modal fullWidth fullHeight>
         <MapEnemySelect onSelect={addNodePlan} />
       </Modal>
-      <Button onClick={openModal}>戦闘マスを追加</Button>
+
+      <Button onClick={Modal.show}>戦闘マスを追加</Button>
       <RemoveButton size="small" onClick={handleRemoveAll} />
 
       {plan.nodes.map((node, index) => (
