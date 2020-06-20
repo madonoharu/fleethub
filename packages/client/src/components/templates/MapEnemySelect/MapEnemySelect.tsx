@@ -3,12 +3,11 @@ import styled from "styled-components"
 import { EnemyFleetState, NodePlan } from "@fleethub/core"
 import { maps, MapData, MapNode } from "@fleethub/data"
 
-import { Button, Paper, Typography, Dialog } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 
 import { NauticalChart, Select } from "../../../components"
-import { useOpen } from "../../../hooks"
+import { useModal } from "../../../hooks"
 
-import MapEnemyFleetCard from "./MapEnemyFleetCard"
 import MapSelect from "./MapSelect"
 import MapNodeContent from "./MapNodeContent"
 
@@ -26,26 +25,41 @@ const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
   const [mapData, setMapData] = React.useState<MapData>(maps[0])
   const [node, setNode] = React.useState<MapNode>()
   const [diff, setDiff] = React.useState(4)
-  const { open, onClose, onOpen } = useOpen()
 
-  const handleMapSelect = (map: MapData) => {
-    setMapData(map)
-    onClose()
+  const { openModal, closeModal, Modal } = useModal()
+  const nodeModal = useModal()
+
+  const mapKey = idToKey(mapData.id)
+
+  const handleMapSelect = (nextMap: MapData) => {
+    if (nextMap !== mapData) {
+      setMapData(nextMap)
+      setNode(undefined)
+    }
+    closeModal()
   }
 
   const handleEnemySelect = (enemy: EnemyFleetState) => {
     if (!node || !onSelect) return
     const { type, point, d } = node
-    onSelect({ type, point, d, enemy })
+    const name = `${mapKey} ${point}`
+    onSelect({ type, point, d, name, enemy })
+  }
+
+  const handleNodeClick = (node: MapNode) => {
+    if (!node.enemies) return
+    setNode(node)
+    nodeModal.openModal()
   }
 
   return (
     <div>
-      <Dialog open={open} onClose={onClose}>
+      <Modal>
         <StyledMapSelect onSelect={handleMapSelect} />
-      </Dialog>
-      <Button onClick={onOpen} variant="outlined">
-        海域 {idToKey(mapData.id)}
+      </Modal>
+
+      <Button onClick={openModal} variant="outlined">
+        海域 {mapKey}
       </Button>
       <Select
         options={[4, 3, 2, 1]}
@@ -53,12 +67,7 @@ const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
         onChange={setDiff}
         getOptionLabel={(diff) => ["丁", "丙", "乙", "甲"][diff - 1]}
       />
-      <NauticalChart
-        data={mapData}
-        onClick={(node) => {
-          node.enemies && setNode(node)
-        }}
-      />
+      <NauticalChart data={mapData} onClick={handleNodeClick} />
       {node && <MapNodeContent node={node} difficulty={diff} onEnemySelect={handleEnemySelect} />}
     </div>
   )
