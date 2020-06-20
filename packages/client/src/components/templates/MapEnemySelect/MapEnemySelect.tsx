@@ -26,8 +26,7 @@ const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
   const [node, setNode] = React.useState<MapNode>()
   const [diff, setDiff] = React.useState(4)
 
-  const { openModal, closeModal, Modal } = useModal()
-  const nodeModal = useModal()
+  const Modal = useModal()
 
   const mapKey = idToKey(mapData.id)
 
@@ -36,7 +35,7 @@ const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
       setMapData(nextMap)
       setNode(undefined)
     }
-    closeModal()
+    Modal.hide()
   }
 
   const handleEnemySelect = (enemy: EnemyFleetState) => {
@@ -49,7 +48,6 @@ const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
   const handleNodeClick = (node: MapNode) => {
     if (!node.enemies) return
     setNode(node)
-    nodeModal.openModal()
   }
 
   return (
@@ -58,7 +56,7 @@ const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
         <StyledMapSelect onSelect={handleMapSelect} />
       </Modal>
 
-      <Button onClick={openModal} variant="outlined">
+      <Button onClick={Modal.show} variant="outlined">
         海域 {mapKey}
       </Button>
       <Select

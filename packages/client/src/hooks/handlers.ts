@@ -1,15 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
-
-export const useOpen = (initialOpen = false) => {
-  const [open, setOpen] = useState(initialOpen)
-  const onOpen = useCallback(() => setOpen(true), [setOpen])
-  const onClose = useCallback(() => setOpen(false), [setOpen])
-  return {
-    open,
-    onOpen,
-    onClose,
-  }
-}
+import { useState, useEffect } from "react"
 
 export const useSelect = <T>(options: readonly T[], defaultOption: T = options[0]) => {
   const [value, onChange] = useState(defaultOption)
