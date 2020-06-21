@@ -5,7 +5,7 @@ import { MapEnemyFleet } from "@fleethub/data"
 
 import { Container, Paper, Button, Typography } from "@material-ui/core"
 
-import { EnemyFleetContent } from "../../../components"
+import { EnemyFleetContent } from "../.."
 import { useFhSystem } from "../../../hooks"
 
 const getFormationName = (form: number) => {

@@ -1,11 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { EnemyFleetState } from "@fleethub/core"
-import { maps, MapData, MapNode } from "@fleethub/data"
-
-import { Button, Paper, Typography, Dialog } from "@material-ui/core"
-
-import { NauticalChart, Select } from "../../../components"
+import { MapNode } from "@fleethub/data"
 
 import MapEnemyFleetCard from "./MapEnemyFleetCard"
 import { NodeLable } from "../../organisms/NauticalChart"
