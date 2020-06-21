@@ -33,10 +33,10 @@ const useMapsContentState = () => {
 }
 
 type Props = {
-  onSelect?: (node: NodePlan) => void
+  onSelectNodePlan?: (node: NodePlan) => void
 }
 
-const MapsContent: React.FC<Props> = ({ onSelect }) => {
+const MapsContent: React.FC<Props> = ({ onSelectNodePlan }) => {
   const { map, setMap, node, setNode, difficulty, setDifficulty } = useMapsContentState()
 
   const Modal = useModal()
@@ -52,10 +52,10 @@ const MapsContent: React.FC<Props> = ({ onSelect }) => {
   }
 
   const handleEnemySelect = (enemy: EnemyFleetState) => {
-    if (!node || !onSelect) return
+    if (!node || !onSelectNodePlan) return
     const { type, point, d } = node
     const name = `${mapKey} ${point}`
-    onSelect({ type, point, d, name, enemy })
+    onSelectNodePlan({ type, point, d, name, enemy })
   }
 
   const handleNodeClick = (node: MapNode) => {

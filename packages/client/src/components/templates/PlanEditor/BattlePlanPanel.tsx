@@ -40,7 +40,7 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
   return (
     <div>
       <Modal fullWidth fullHeight>
-        <MapsContent onSelect={addNodePlan} />
+        <MapsContent onSelectNodePlan={addNodePlan} />
       </Modal>
 
       <Button onClick={Modal.show}>戦闘マスを追加</Button>
