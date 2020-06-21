@@ -13,6 +13,7 @@ export type AirbaseKey = "a1" | "a2" | "a3"
 type AirbaseDict = Dict<AirbaseKey, AirbaseState>
 
 export type NodePlan = Pick<MapNode, "type" | "d" | "point"> & {
+  name: string
   formation?: Formation
   enemy?: EnemyFleetState
   lbas?: Dict<AirbaseKey, number>
