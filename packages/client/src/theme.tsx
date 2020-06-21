@@ -25,16 +25,12 @@ sans-serif,
 "Noto Sans Emoji"
 `
 
-const backgroundColor = colors.grey[800]
-const clear = "rgba(100, 100, 100, 0.1)"
-const blueGrey = "rgba(66, 66, 77, 0.95)"
-
 const muiPalette = createPalette({
   type: "dark",
   primary: blue,
   secondary: pink,
   background: {
-    paper: clear,
+    paper: "rgba(100, 100, 100, 0.1)",
   },
 })
 
@@ -117,11 +113,6 @@ const muiTheme = createMuiTheme({
         fontWeight: 400,
       },
     },
-    MuiTooltip: {
-      tooltip: {
-        backgroundColor,
-      },
-    },
   },
 })
 
@@ -161,8 +152,6 @@ const kc = {
   palette: kcPalette,
 }
 
-const isFirefox = window.navigator.userAgent.includes("Firefox")
-
 const gradientAnimation = css`
   background-size: 400% 400%;
   animation: gradient 120s ease infinite;
@@ -179,6 +168,7 @@ const gradientAnimation = css`
     }
   }
 `
+const isFirefox = window.navigator.userAgent.includes("Firefox")
 
 const acrylic = isFirefox
   ? css`
@@ -193,15 +183,24 @@ const theme = { ...muiTheme, kc, acrylic }
 
 export type Theme = typeof theme
 
-const GlobalStyle = createGlobalStyle`
-body {
-  background: linear-gradient(-45deg, #141e30, #243b55);
-}
+const globalCss = css`
+  body {
+    background: linear-gradient(-45deg, #141e30, #243b55);
+  }
 
-.MuiPopover-paper {
-  ${(props) => props.theme.acrylic}
-}
+  .MuiPopover-paper {
+    ${(props) => props.theme.acrylic}
+  }
+
+  .MuiTooltip-popper {
+    will-change: auto !important;
+  }
+  .MuiTooltip-tooltip {
+    ${(props) => props.theme.acrylic}
+  }
 `
+
+const GlobalStyle = createGlobalStyle(() => globalCss)
 
 const ScrollContainer = styled.div`
   overflow-y: scroll;
