@@ -3,7 +3,7 @@ import { PlanState, Plan, NodePlan } from "@fleethub/core"
 
 import { Button } from "@material-ui/core"
 
-import { MapEnemySelect, RemoveButton } from "../../../components"
+import { MapsContent, RemoveButton } from "../../../components"
 import { useModal } from "../../../hooks"
 import { Update } from "../../../utils"
 
@@ -40,7 +40,7 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
   return (
     <div>
       <Modal fullWidth fullHeight>
-        <MapEnemySelect onSelect={addNodePlan} />
+        <MapsContent onSelect={addNodePlan} />
       </Modal>
 
       <Button onClick={Modal.show}>戦闘マスを追加</Button>

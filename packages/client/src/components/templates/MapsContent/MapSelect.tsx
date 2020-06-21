@@ -1,8 +1,7 @@
 import React from "react"
-import styled from "styled-components"
-import { maps, MapData, MapNode } from "@fleethub/data"
+import { maps, MapData } from "@fleethub/data"
 
-import { Button, Paper, Typography } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 
 import { Divider } from "../../../components"
 

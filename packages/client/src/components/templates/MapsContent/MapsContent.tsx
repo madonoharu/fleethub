@@ -17,22 +17,35 @@ const StyledMapSelect = styled(MapSelect)`
 
 const idToKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`
 
+const useMapsContentState = () => {
+  const [map, setMap] = React.useState<MapData>(maps[0])
+  const [node, setNode] = React.useState<MapNode>()
+  const [difficulty, setDifficulty] = React.useState(4)
+
+  return {
+    map,
+    setMap,
+    node,
+    setNode,
+    difficulty,
+    setDifficulty,
+  }
+}
+
 type Props = {
   onSelect?: (node: NodePlan) => void
 }
 
-const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
-  const [mapData, setMapData] = React.useState<MapData>(maps[0])
-  const [node, setNode] = React.useState<MapNode>()
-  const [diff, setDiff] = React.useState(4)
+const MapsContent: React.FC<Props> = ({ onSelect }) => {
+  const { map, setMap, node, setNode, difficulty, setDifficulty } = useMapsContentState()
 
   const Modal = useModal()
 
-  const mapKey = idToKey(mapData.id)
+  const mapKey = idToKey(map.id)
 
   const handleMapSelect = (nextMap: MapData) => {
-    if (nextMap !== mapData) {
-      setMapData(nextMap)
+    if (nextMap !== map) {
+      setMap(nextMap)
       setNode(undefined)
     }
     Modal.hide()
@@ -61,14 +74,14 @@ const MapEnemySelect: React.FC<Props> = ({ onSelect }) => {
       </Button>
       <Select
         options={[4, 3, 2, 1]}
-        value={diff}
-        onChange={setDiff}
+        value={difficulty}
+        onChange={setDifficulty}
         getOptionLabel={(diff) => ["丁", "丙", "乙", "甲"][diff - 1]}
       />
-      <NauticalChart data={mapData} onClick={handleNodeClick} />
-      {node && <MapNodeContent node={node} difficulty={diff} onEnemySelect={handleEnemySelect} />}
+      <NauticalChart data={map} onClick={handleNodeClick} />
+      {node && <MapNodeContent node={node} difficulty={difficulty} onEnemySelect={handleEnemySelect} />}
     </div>
   )
 }
 
-export default MapEnemySelect
+export default MapsContent
