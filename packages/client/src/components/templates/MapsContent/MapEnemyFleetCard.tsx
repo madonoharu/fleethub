@@ -3,9 +3,9 @@ import styled from "styled-components"
 import { EnemyFleetState } from "@fleethub/core"
 import { MapEnemyFleet } from "@fleethub/data"
 
-import { Container, Paper, Button, Typography } from "@material-ui/core"
+import { Paper, Button } from "@material-ui/core"
 
-import { EnemyFleetContent } from "../.."
+import { EnemyFleetContent } from "../../../components"
 import { useFhSystem } from "../../../hooks"
 
 const getFormationName = (form: number) => {
