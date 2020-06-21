@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { EnemyFleetState, NodePlan } from "@fleethub/core"
-import { maps, MapData, MapNode } from "@fleethub/data"
+import { maps, MapData, MapNode, MapNodeType } from "@fleethub/data"
 
 import { Button } from "@material-ui/core"
 
@@ -18,9 +18,25 @@ const StyledMapSelect = styled(MapSelect)`
 const idToKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`
 
 const useMapsContentState = () => {
-  const [map, setMap] = React.useState<MapData>(maps[0])
-  const [node, setNode] = React.useState<MapNode>()
+  const [mapId, setMapId] = React.useState(11)
+  const [point, setPoint] = React.useState("")
   const [difficulty, setDifficulty] = React.useState(4)
+
+  const map = maps.find((map) => map.id === mapId)
+  const node = map?.nodes.find((node) => node.point === point)
+
+  const setNode = (node: MapNode) => setPoint(node.point)
+
+  const setMap = (nextMap: MapData) => {
+    setMapId((prevMapId) => {
+      if (prevMapId === nextMap.id) return prevMapId
+
+      const boss = nextMap.nodes.find((node) => node.type === MapNodeType.Boss)
+      if (boss) setNode(boss)
+
+      return nextMap.id
+    })
+  }
 
   return {
     map,
@@ -41,13 +57,10 @@ const MapsContent: React.FC<Props> = ({ onSelectNodePlan }) => {
 
   const Modal = useModal()
 
-  const mapKey = idToKey(map.id)
+  const mapKey = map ? idToKey(map.id) : "不明"
 
   const handleMapSelect = (nextMap: MapData) => {
-    if (nextMap !== map) {
-      setMap(nextMap)
-      setNode(undefined)
-    }
+    setMap(nextMap)
     Modal.hide()
   }
 
@@ -78,7 +91,8 @@ const MapsContent: React.FC<Props> = ({ onSelectNodePlan }) => {
         onChange={setDifficulty}
         getOptionLabel={(diff) => ["丁", "丙", "乙", "甲"][diff - 1]}
       />
-      <NauticalChart data={map} onClick={handleNodeClick} />
+
+      {map && <NauticalChart data={map} onClick={handleNodeClick} />}
       {node && <MapNodeContent node={node} difficulty={difficulty} onEnemySelect={handleEnemySelect} />}
     </div>
   )
