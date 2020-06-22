@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, EntityId } from "@reduxjs/toolkit"
 
-type UiMapState = {
+type MapListState = {
   mapId: number
   point: string
   difficulty: number
@@ -8,11 +8,11 @@ type UiMapState = {
 
 type UiState = {
   planId?: EntityId
-  map: UiMapState
+  mapList: MapListState
 }
 
 const initialState: UiState = {
-  map: {
+  mapList: {
     mapId: 11,
     point: "A",
     difficulty: 4,
@@ -29,8 +29,9 @@ export const uiSlice = createSlice({
     closePlan: (state) => {
       delete state.planId
     },
-    updateMap: (state, { payload }: PayloadAction<Partial<UiMapState>>) => {
-      Object.assign(state.map, payload)
+
+    updateMap: (state, { payload }: PayloadAction<Partial<MapListState>>) => {
+      Object.assign(state.mapList, payload)
     },
   },
 })

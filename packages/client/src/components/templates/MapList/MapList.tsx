@@ -6,7 +6,7 @@ import { maps, MapData, MapNode, MapNodeType } from "@fleethub/data"
 
 import { Button } from "@material-ui/core"
 
-import { NauticalChart, Select } from "../../../components"
+import { NauticalChart, Select } from "../.."
 import { useModal } from "../../../hooks"
 import { uiSlice } from "../../../store"
 
@@ -19,8 +19,8 @@ const StyledMapSelect = styled(MapSelect)`
 
 const getMapKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`
 
-const useMapsContentState = () => {
-  const { mapId, point, difficulty } = useSelector((state) => state.ui.map)
+const useMapListState = () => {
+  const { mapId, point, difficulty } = useSelector((state) => state.ui.mapList)
   const dispatch = useDispatch()
 
   const map = maps.find((map) => map.id === mapId)
@@ -53,8 +53,8 @@ type Props = {
   onSelectNodePlan?: (node: NodePlan) => void
 }
 
-const MapsContent: React.FC<Props> = ({ onSelectNodePlan }) => {
-  const { map, setMap, node, setNode, difficulty, setDifficulty } = useMapsContentState()
+const MapList: React.FC<Props> = ({ onSelectNodePlan }) => {
+  const { map, setMap, node, setNode, difficulty, setDifficulty } = useMapListState()
 
   const Modal = useModal()
 
@@ -99,4 +99,4 @@ const MapsContent: React.FC<Props> = ({ onSelectNodePlan }) => {
   )
 }
 
-export default MapsContent
+export default MapList
