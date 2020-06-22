@@ -30,6 +30,7 @@ export class ShipMock extends ShipStatsStub implements Ship {
   public sortId = 0
   public shipType = 0
   public shipClass = 0
+  public category = "" as Ship["category"]
 
   public state = {} as any
 

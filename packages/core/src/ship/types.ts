@@ -1,15 +1,4 @@
-import {
-  ShipData,
-  ShipClass,
-  ShipClassKey,
-  ShipType,
-  HullCode,
-  equippable as equippableData,
-  ShipId,
-  ShipRuby,
-  GearId,
-  GearCategory,
-} from "@fleethub/data"
+import { ShipData } from "@fleethub/data"
 
 import { GearBase } from "../gear"
 import { EquipmentState, GearKey, Equipment } from "../equipment"
@@ -26,7 +15,21 @@ export type ShipIdentity = Required<
 
 export type ShipIdentityWithSpeed = ShipIdentity & { speed: number }
 
+export const shipCategoies = [
+  "Battleship",
+  "AircraftCarrier",
+  "HeavyCruiser",
+  "LightCruiser",
+  "Destroyer",
+  "CoastalDefenseShip",
+  "Submarine",
+  "SupportShip",
+] as const
+
+export type ShipCategory = typeof shipCategoies[number]
+
 export type ShipCommonBase = ShipIdentity & {
+  category: ShipCategory
   is: (attr: ShipAttribute) => boolean
   canEquip: (gear: GearBase, key?: GearKey) => boolean
 }
