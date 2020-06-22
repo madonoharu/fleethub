@@ -1,4 +1,5 @@
 import React from "react"
+import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { EnemyFleetState, NodePlan } from "@fleethub/core"
 import { maps, MapData, MapNode, MapNodeType } from "@fleethub/data"
@@ -7,6 +8,7 @@ import { Button } from "@material-ui/core"
 
 import { NauticalChart, Select } from "../../../components"
 import { useModal } from "../../../hooks"
+import { uiSlice } from "../../../store"
 
 import MapSelect from "./MapSelect"
 import MapNodeContent from "./MapNodeContent"
@@ -15,28 +17,27 @@ const StyledMapSelect = styled(MapSelect)`
   margin: 8px;
 `
 
-const idToKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`
+const getMapKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`
 
 const useMapsContentState = () => {
-  const [mapId, setMapId] = React.useState(11)
-  const [point, setPoint] = React.useState("")
-  const [difficulty, setDifficulty] = React.useState(4)
+  const { mapId, point, difficulty } = useSelector((state) => state.ui.map)
+  const dispatch = useDispatch()
 
   const map = maps.find((map) => map.id === mapId)
   const node = map?.nodes.find((node) => node.point === point)
 
-  const setNode = (node: MapNode) => setPoint(node.point)
+  const setNode = ({ point }: MapNode) => dispatch(uiSlice.actions.updateMap({ point }))
 
   const setMap = (nextMap: MapData) => {
-    setMapId((prevMapId) => {
-      if (prevMapId === nextMap.id) return prevMapId
+    if (mapId === nextMap.id) return
 
-      const boss = nextMap.nodes.find((node) => node.type === MapNodeType.Boss)
-      if (boss) setNode(boss)
+    const boss = nextMap.nodes.find((node) => node.type === MapNodeType.Boss)
+    if (boss) setNode(boss)
 
-      return nextMap.id
-    })
+    dispatch(uiSlice.actions.updateMap({ mapId: nextMap.id, point: boss?.point }))
   }
+
+  const setDifficulty = (difficulty: number) => uiSlice.actions.updateMap({ difficulty })
 
   return {
     map,
@@ -57,7 +58,7 @@ const MapsContent: React.FC<Props> = ({ onSelectNodePlan }) => {
 
   const Modal = useModal()
 
-  const mapKey = map ? idToKey(map.id) : "不明"
+  const mapKey = map ? getMapKey(map.id) : "不明"
 
   const handleMapSelect = (nextMap: MapData) => {
     setMap(nextMap)
