@@ -1,9 +1,9 @@
 import React from "react"
 import { EntityId } from "@reduxjs/toolkit"
 
-import { Container, Paper, TextField, Button } from "@material-ui/core"
+import { Container, TextField, Button } from "@material-ui/core"
 
-import { NumberInput, Flexbox, Select, SelectButtons, ReactGkcoi } from "../../../components"
+import { NumberInput, Flexbox, SelectButtons } from "../../../components"
 import { usePlan } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"

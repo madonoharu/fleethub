@@ -23,6 +23,12 @@ export const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
+    openPlan: (state, { payload }: PayloadAction<EntityId>) => {
+      state.planId = payload
+    },
+    closePlan: (state) => {
+      delete state.planId
+    },
     updateMap: (state, { payload }: PayloadAction<Partial<UiMapState>>) => {
       Object.assign(state.map, payload)
     },

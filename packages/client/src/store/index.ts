@@ -4,12 +4,10 @@ import storage from "localforage"
 import undoable from "redux-undo"
 
 import { plansSlice } from "./plansSlice"
-import { planEditorSlice } from "./planEditorSlice"
 import { uiSlice } from "./uiSlice"
 
 const rootReducer = combineReducers({
   plans: persistReducer({ key: plansSlice.name, storage }, plansSlice.reducer),
-  planEditor: persistReducer({ key: planEditorSlice.name, storage }, planEditorSlice.reducer),
   ui: uiSlice.reducer,
 })
 
@@ -29,4 +27,3 @@ export type AppDispatch = typeof store.dispatch
 
 export * from "./plansSlice"
 export * from "./uiSlice"
-export * from "./planEditorSlice"
