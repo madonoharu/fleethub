@@ -6,7 +6,7 @@ import { EntityId } from "@reduxjs/toolkit"
 import { Container, Paper, TextField, Button } from "@material-ui/core"
 
 import { RemoveButton } from "../../../components"
-import { plansSlice, plansSelectors, planEditorSlice } from "../../../store"
+import { plansSlice, plansSelectors, uiSlice } from "../../../store"
 import { usePlan } from "../../../hooks"
 
 const PlanListItem: React.FC<{ planId: EntityId }> = ({ planId }) => {
@@ -14,7 +14,7 @@ const PlanListItem: React.FC<{ planId: EntityId }> = ({ planId }) => {
   const { plan, actions } = usePlan(planId)
   if (!plan) return null
 
-  const handleOpen = () => dispatch(planEditorSlice.actions.update({ planId }))
+  const handleOpen = () => dispatch(uiSlice.actions.openPlan(planId))
 
   return (
     <Paper>
