@@ -123,6 +123,18 @@ export default class MasterShip implements ShipBase {
     return this.sortId % 10
   }
 
+  get category() {
+    const { shipTypeIn } = this
+    if (shipTypeIn("FBB", "BB", "BBV")) return "Battleship"
+    if (shipTypeIn("CVL", "CV", "CVB")) return "AircraftCarrier"
+    if (shipTypeIn("CA", "CAV")) return "HeavyCruiser"
+    if (shipTypeIn("CL", "CLT", "CT")) return "LightCruiser"
+    if (shipTypeIn("DD")) return "Destroyer"
+    if (shipTypeIn("DE")) return "CoastalDefenseShip"
+    if (shipTypeIn("SS", "SSV")) return "Submarine"
+    return "SupportShip"
+  }
+
   public is = (attr: ShipAttribute) => this.attrs.includes(attr)
 
   public shipClassIn = (...keys: ShipClassKey[]) => keys.some((key) => ShipClass[key] === this.shipClass)

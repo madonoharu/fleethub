@@ -1,7 +1,7 @@
 import { ShipClass, ShipId, GearId } from "@fleethub/data"
 
 import { ShipImpl } from "./Ship"
-import { ShipCommonBase, ShipState } from "./types"
+import { ShipCommonBase, ShipState, ShipCategory } from "./types"
 
 import { ShipStatsStub, EquipmentMock, GearStub } from "../utils"
 import { ShipAttribute } from "./ShipAttribute"
@@ -18,6 +18,7 @@ class ShipCommonBaseStub implements ShipCommonBase {
   name = ""
   ruby = ""
   attrs: ShipAttribute[] = []
+  category: ShipCategory = "SupportShip"
   is = (attr: ShipAttribute) => this.attrs.includes(attr)
   canEquip = () => false
 }
@@ -30,6 +31,7 @@ const getMocks = () => {
     sortId: 0,
     name: "",
     ruby: "",
+    category: "" as ShipCategory,
     is: jest.fn(),
     canEquip: jest.fn(),
   }

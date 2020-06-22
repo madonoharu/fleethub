@@ -30,6 +30,7 @@ export class ShipImpl implements Ship {
   public readonly ammo = this.stats.ammo
   public readonly fuel = this.stats.fuel
 
+  public readonly category = this.base.category
   public readonly is = this.base.is
   public readonly canEquip = this.base.canEquip
 
