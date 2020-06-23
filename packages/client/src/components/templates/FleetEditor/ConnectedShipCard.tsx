@@ -1,12 +1,14 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship, ShipState, FleetState, ShipKey, Fleet } from "@fleethub/core"
+import { Ship, ShipState, FleetState, ShipKey } from "@fleethub/core"
 
 import { Button, ButtonProps } from "@material-ui/core"
 
 import { ShipCard } from "../../../components"
-import { useShipSelectActions, useSwap } from "../../../hooks"
+import { useSwap, useModal } from "../../../hooks"
 import { Update } from "../../../utils"
+
+import ShipList from "../ShipList"
 
 type Props = {
   className?: string
@@ -16,16 +18,12 @@ type Props = {
 }
 
 const useFleetShipActions = ({ shipKey, updateFleet }: Pick<Props, "shipKey" | "updateFleet">) => {
-  const shipSelectActions = useShipSelectActions()
-
   return React.useMemo(() => {
     const set = (state?: ShipState) => {
       updateFleet((draft) => {
         draft[shipKey] = state
       })
     }
-
-    const openShipSelect = () => shipSelectActions.open(set)
 
     const remove = () => {
       updateFleet((draft) => {
@@ -40,8 +38,8 @@ const useFleetShipActions = ({ shipKey, updateFleet }: Pick<Props, "shipKey" | "
       })
     }
 
-    return { openShipSelect, set, update, remove }
-  }, [shipKey, updateFleet, shipSelectActions])
+    return { set, update, remove }
+  }, [shipKey, updateFleet])
 }
 
 const AddShipButton = styled<React.FC<ButtonProps>>((props) => (
@@ -55,6 +53,7 @@ const AddShipButton = styled<React.FC<ButtonProps>>((props) => (
 
 const ConnectedShipCard = React.memo<Props>(({ className, ship, ...rest }) => {
   const actions = useFleetShipActions(rest)
+  const Modal = useModal()
 
   const [ref] = useSwap({
     type: "ship",
@@ -63,16 +62,24 @@ const ConnectedShipCard = React.memo<Props>(({ className, ship, ...rest }) => {
     canDrag: Boolean(ship),
   })
 
+  const handleSelectShip = (ship: ShipState) => {
+    actions.set(ship)
+    Modal.hide()
+  }
+
   let element: React.ReactElement
   if (ship) {
     element = <ShipCard ship={ship} update={actions.update} onRemove={actions.remove} />
   } else {
-    element = <AddShipButton variant="outlined" fullWidth onClick={actions.openShipSelect} />
+    element = <AddShipButton variant="outlined" fullWidth onClick={Modal.show} />
   }
 
   return (
     <div className={className} ref={ref}>
       {element}
+      <Modal full>
+        <ShipList onSelect={handleSelectShip} />
+      </Modal>
     </div>
   )
 })
