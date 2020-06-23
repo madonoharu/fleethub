@@ -39,7 +39,7 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
 
   return (
     <div>
-      <Modal fullWidth fullHeight>
+      <Modal full>
         <MapList onSelectNodePlan={addNodePlan} />
       </Modal>
 

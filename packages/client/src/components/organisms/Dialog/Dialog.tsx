@@ -18,11 +18,11 @@ const ScrollContainer = styled.div`
 `
 
 export type DialogProps = Partial<MuiDialogProps> & {
-  fullHeight?: boolean
+  full?: boolean
 }
 
-const Dialog: React.FC<DialogProps> = ({ children, fullHeight, ...rest }) => (
-  <MuiDialog open={false} transitionDuration={100} {...rest}>
+const Dialog: React.FC<DialogProps> = ({ children, full, ...rest }) => (
+  <MuiDialog open={false} transitionDuration={100} fullWidth={full} {...rest}>
     <StyledCloseButton size="small" onClick={(event) => rest.onClose?.(event, "backdropClick")} />
     <ScrollContainer>{children}</ScrollContainer>
   </MuiDialog>
@@ -32,7 +32,7 @@ export default styled(Dialog)`
   .MuiDialog-paper {
     ${(props) => props.theme.acrylic}
     ${(props) =>
-      props.fullHeight &&
+      props.full &&
       css`
         height: calc(100vh - 64px);
       `}
