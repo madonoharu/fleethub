@@ -3,14 +3,11 @@ import { PageProps } from "gatsby"
 
 import { Container } from "@material-ui/core"
 
-import { ShipSelect } from "../components"
-import { ShipSelectProvider } from "../hooks"
+import { ShipList } from "../components"
 
 const ShipsPage: React.FC<PageProps> = () => (
   <Container disableGutters fixed>
-    <ShipSelectProvider>
-      <ShipSelect />
-    </ShipSelectProvider>
+    <ShipList />
   </Container>
 )
 
