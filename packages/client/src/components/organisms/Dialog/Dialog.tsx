@@ -30,6 +30,7 @@ const Dialog: React.FC<DialogProps> = ({ children, full, ...rest }) => (
 
 export default styled(Dialog)`
   .MuiDialog-paper {
+    padding: 8px;
     ${(props) => props.theme.acrylic}
     ${(props) =>
       props.full &&
