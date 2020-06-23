@@ -21,4 +21,3 @@ export * from "./useCachedFhFactory"
 export * from "./usePlan"
 
 export * from "./useGearSelectContext"
-export * from "./useShipSelectContext"

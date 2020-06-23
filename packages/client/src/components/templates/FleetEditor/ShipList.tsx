@@ -1,11 +1,7 @@
 import React from "react"
 import styled from "styled-components"
-import { Ship, ShipState, FleetState, ShipKey, Fleet } from "@fleethub/core"
+import { FleetState, Fleet } from "@fleethub/core"
 
-import { Button } from "@material-ui/core"
-
-import { ShipCard } from "../../../components"
-import { useShipSelectActions, useSwap } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import ConnectedShipCard from "./ConnectedShipCard"
