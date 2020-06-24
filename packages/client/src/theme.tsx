@@ -113,6 +113,12 @@ const muiTheme = createMuiTheme({
         fontWeight: 400,
       },
     },
+    MuiListItemIcon: {
+      root: {
+        minWidth: "auto",
+        marginRight: 16,
+      },
+    },
   },
 })
 
