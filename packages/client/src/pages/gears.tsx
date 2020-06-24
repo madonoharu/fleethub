@@ -3,14 +3,12 @@ import { PageProps } from "gatsby"
 
 import { Container } from "@material-ui/core"
 
-import { GearSelect } from "../components"
-import { useGearSelectState } from "../hooks"
+import { GearList } from "../components"
 
 const GearsPage: React.FC<PageProps> = () => {
-  const { state, actions } = useGearSelectState()
   return (
     <Container>
-      <GearSelect state={state} onUpdate={actions.update} />
+      <GearList />
     </Container>
   )
 }
