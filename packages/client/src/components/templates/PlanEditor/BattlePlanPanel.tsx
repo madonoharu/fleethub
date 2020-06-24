@@ -16,6 +16,7 @@ type Props = {
 
 const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
   const Modal = useModal()
+
   const addNodePlan = (node: NodePlan) => {
     updatePlan((draft) => {
       if (!draft.nodes) draft.nodes = []
@@ -31,7 +32,7 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
     })
   }
 
-  const handleRemoveAll = () => {
+  const removeAll = () => {
     updatePlan((draft) => {
       delete draft.nodes
     })
@@ -44,7 +45,7 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
       </Modal>
 
       <Button onClick={Modal.show}>戦闘マスを追加</Button>
-      <RemoveButton size="small" onClick={handleRemoveAll} />
+      <RemoveButton size="small" onClick={removeAll} />
 
       {plan.nodes.map((node, index) => (
         <NodePlanCard
