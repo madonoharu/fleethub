@@ -4,6 +4,7 @@ import AddIcon from "@material-ui/icons/Add"
 import RemoveIcon from "@material-ui/icons/Remove"
 import ClearIcon from "@material-ui/icons/Clear"
 import CloseIcon from "@material-ui/icons/Close"
+import FileCopyIcon from "@material-ui/icons/FileCopy"
 import Delete from "@material-ui/icons/Delete"
 import LinkIcon from "@material-ui/icons/Link"
 import MoreVert from "@material-ui/icons/MoreVert"
@@ -19,6 +20,7 @@ export { withIconButton }
 export const AddButton = withIconButton(AddIcon)
 export const IncreaseButton = AddButton
 export const DecreaseButton = withIconButton(RemoveIcon)
+export const CopyButton = withIconButton(FileCopyIcon)
 export const CloseButton = withIconButton(CloseIcon)
 export const ClearButton = withIconButton(ClearIcon)
 export const MoreVertButton = withIconButton(MoreVert)
