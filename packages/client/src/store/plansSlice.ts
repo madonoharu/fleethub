@@ -14,9 +14,18 @@ export const plansSlice = createSlice({
     set: (state, { payload }: PayloadAction<PlanStateWithId>) => {
       state.entities[payload.id] = payload
     },
-    create: (state, { payload }: PayloadAction<PlanState>) => {
-      plansAdapter.addOne(state, { ...payload, id: nanoid() })
+
+    create: {
+      reducer: (state, { payload }: PayloadAction<PlanStateWithId>) => {
+        if (!payload.name) {
+          payload.name = `編成${state.ids.length + 1}`
+        }
+
+        plansAdapter.addOne(state, payload)
+      },
+      prepare: (plan?: PlanState) => ({ payload: { ...plan, id: nanoid() } }),
     },
+
     update: plansAdapter.updateOne,
     remove: plansAdapter.removeOne,
   },
