@@ -12,16 +12,13 @@ import "./i18n"
 
 import { store, persistor } from "./store"
 import { ThemeProvider } from "./theme"
-import { GlobalDialogsProvider } from "./components"
 
 export const wrapRootElement: GatsbyBrowser["wrapRootElement"] = ({ element }) => {
   return (
     <ReduxProvider store={store}>
       <PersistGate persistor={persistor}>
         <DndProvider backend={HTML5Backend}>
-          <ThemeProvider>
-            <GlobalDialogsProvider>{element}</GlobalDialogsProvider>
-          </ThemeProvider>
+          <ThemeProvider>{element}</ThemeProvider>
         </DndProvider>
       </PersistGate>
     </ReduxProvider>
