@@ -62,7 +62,7 @@ const ConnectedShipCard = React.memo<Props>(({ className, ship, ...rest }) => {
     canDrag: Boolean(ship),
   })
 
-  const handleSelectShip = (ship: ShipState) => {
+  const handleShipSelect = (ship: ShipState) => {
     actions.set(ship)
     Modal.hide()
   }
@@ -78,7 +78,7 @@ const ConnectedShipCard = React.memo<Props>(({ className, ship, ...rest }) => {
     <div className={className} ref={ref}>
       {element}
       <Modal full>
-        <ShipList onSelect={handleSelectShip} />
+        <ShipList onSelect={handleShipSelect} />
       </Modal>
     </div>
   )
