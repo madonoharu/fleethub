@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Ship, ShipState, FleetState, ShipKey } from "@fleethub/core"
 
 import { Button, ButtonProps } from "@material-ui/core"
+import AddIcon from "@material-ui/icons/Add"
 
 import { ShipCard } from "../../../components"
 import { useSwap, useModal } from "../../../hooks"
@@ -44,7 +45,8 @@ const useFleetShipActions = ({ shipKey, updateFleet }: Pick<Props, "shipKey" | "
 
 const AddShipButton = styled<React.FC<ButtonProps>>((props) => (
   <Button variant="outlined" {...props}>
-    add
+    <AddIcon />
+    艦娘
   </Button>
 ))`
   width: 100%;
