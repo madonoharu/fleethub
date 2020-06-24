@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, EntityId } from "@reduxjs/toolkit"
 import { ShipCategory } from "@fleethub/core"
+import { plansSlice } from "./plansSlice"
 
 export type GearListState = {
   filterKey: string
@@ -47,6 +48,7 @@ const initialState: UiState = {
 export const uiSlice = createSlice({
   name: "ui",
   initialState,
+
   reducers: {
     openPlan: (state, { payload }: PayloadAction<EntityId>) => {
       state.planId = payload
@@ -66,5 +68,11 @@ export const uiSlice = createSlice({
     updateMap: (state, { payload }: PayloadAction<Partial<MapListState>>) => {
       Object.assign(state.mapList, payload)
     },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(plansSlice.actions.create, (state, { payload }) => {
+      state.planId = payload.id
+    })
   },
 })
