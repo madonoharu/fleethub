@@ -5,7 +5,7 @@ import { SelectButtons } from "../../../components"
 
 import FilterIcon from "./FilterIcon"
 
-const getFilterIcon = (key: string) => key
+const getFilterIcon = (key: string) => <FilterIcon icon={key} />
 
 type Props = {
   value: string

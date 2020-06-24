@@ -10,7 +10,28 @@ type Props = {
 }
 
 const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
-  return null
+  const { allFile } = useStaticQuery<FilterIconsQuery>(graphql`
+    query FilterIcons {
+      allFile(filter: { relativeDirectory: { eq: "filters" } }) {
+        edges {
+          node {
+            name
+            childImageSharp {
+              fixed(height: 18) {
+                ...GatsbyImageSharpFixed
+              }
+            }
+          }
+        }
+      }
+    }
+  `)
+
+  const childImageSharp = allFile.edges.find((n) => n.node.name === icon)?.node.childImageSharp
+
+  if (!childImageSharp) return null
+
+  return <Img className={className} fixed={childImageSharp.fixed} />
 }
 
 export default styled(FilterIcon)`
