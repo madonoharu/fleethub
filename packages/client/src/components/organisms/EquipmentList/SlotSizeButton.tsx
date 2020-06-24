@@ -1,10 +1,10 @@
 import React from "react"
 import styled from "styled-components"
 
-import { Box, Slider, Button, Tooltip, Dialog, DialogTitle, DialogContent } from "@material-ui/core"
+import { Box, Slider, Button, Tooltip, DialogTitle, DialogContent } from "@material-ui/core"
 import BuildIcon from "@material-ui/icons/Build"
 
-import { NumberInput } from "../.."
+import { NumberInput } from "../../../components"
 import { useModal } from "../../../hooks"
 
 type SlotSizeFormProps = {

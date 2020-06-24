@@ -1,10 +1,8 @@
 import React from "react"
 import { Gear, GearState, getSlotKey, EquipmentState, GearKey, GearBase, EquipmentBonuses } from "@fleethub/core"
 
-import { Container, Paper, TextField, Button } from "@material-ui/core"
-
-import { GearLabel, Flexbox } from "../../../components"
-import { useGearSelectActions, useSwap } from "../../../hooks"
+import { GearLabel, Flexbox, GearList } from "../../../components"
+import { useSwap, useModal } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import SlotSizeButton from "./SlotSizeButton"
@@ -62,7 +60,12 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
   const { className, gearKey, gear, currentSlotSize, maxSlotSize, canEquip, makeGetNextBonuses } = props
 
   const actions = useEquipmentGearActions(props)
-  const gearSelectActions = useGearSelectActions()
+  const Modal = useModal()
+
+  const handleGearSelect = (gear: GearState) => {
+    actions.set(gear)
+    Modal.hide()
+  }
 
   const [ref] = useSwap({
     type: "gear",
@@ -79,14 +82,6 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
     }
   }
 
-  const handleOpenGearSelect = () => {
-    gearSelectActions.open(
-      actions.set,
-      canEquip && ((gear) => canEquip(gear, gearKey)),
-      makeGetNextBonuses && makeGetNextBonuses(gearKey)
-    )
-  }
-
   return (
     <Flexbox ref={ref} className={className}>
       <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={handleSlotSizeChange} />
@@ -95,12 +90,20 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
           gear={gear}
           equippable={canEquip?.(gear, gearKey)}
           update={actions.update}
-          onReselect={handleOpenGearSelect}
+          onReselect={Modal.show}
           onRemove={actions.remove}
         />
       ) : (
-        <AddGearButton onClick={handleOpenGearSelect} />
+        <AddGearButton onClick={Modal.show} />
       )}
+
+      <Modal full>
+        <GearList
+          onSelect={handleGearSelect}
+          canEquip={canEquip && ((gear) => canEquip(gear, gearKey))}
+          getBonuses={makeGetNextBonuses && makeGetNextBonuses(gearKey)}
+        />
+      </Modal>
     </Flexbox>
   )
 }
