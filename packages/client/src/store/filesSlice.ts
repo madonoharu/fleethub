@@ -17,7 +17,6 @@ export type PlanStateWithId = PlanState & { id: string }
 type FileBase<T extends string, P = {}> = {
   id: string
   type: T
-  root?: boolean
 } & P
 
 export type NormalizedFolder = FileBase<"folder", { name: string; children: string[] }>
@@ -101,6 +100,8 @@ export const filesSlice = createSlice({
       }
       addFiles(state, [newFolder], payload)
     },
+
+    update: adapter.updateOne,
 
     remove: (state, { payload }: PayloadAction<string[]>) => {
       adapter.removeMany(state, payload)
