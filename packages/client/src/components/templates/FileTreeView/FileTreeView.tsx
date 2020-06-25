@@ -2,21 +2,19 @@ import React from "react"
 import styled from "styled-components"
 import { isNonNullable } from "@fleethub/utils"
 import { useDispatch, useSelector } from "react-redux"
-import { PlanState } from "@fleethub/core"
 
-import { Container, Paper, TextField, Button, Typography } from "@material-ui/core"
+import { Container, Button } from "@material-ui/core"
 import TreeView from "@material-ui/lab/TreeView"
-import TreeItem from "@material-ui/lab/TreeItem"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import AddIcon from "@material-ui/icons/Add"
 
-import { Flexbox } from "../../../components"
 import { isFolder, filesSelectors, filesSlice, NormalizedFile, cloneFile, removeFile } from "../../../store"
 
 import FolderLabel from "./FolderLabel"
 import PlanFileLabel from "./PlanFileLabel"
+import FileTreeItem from "./FileTreeItem"
 
 type Props = {
   onPlanSelect?: (id: string) => void
@@ -25,12 +23,9 @@ type Props = {
 
 const FileTreeView: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate }) => {
   const dispatch = useDispatch()
-
   const entities = useSelector(filesSelectors.selectEntities)
-  const allFiles = Object.values(entities).filter(isNonNullable)
 
-  const allChildren = allFiles.filter(isFolder).flatMap((folder) => folder.children)
-  const root = allFiles.filter((file) => !allChildren.includes(file.id))
+  const rootFolder = entities.root
 
   const [expanded, setExpanded] = React.useState<string[]>([])
   const [selected, setSelected] = React.useState<string>("")
@@ -61,6 +56,11 @@ const FileTreeView: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate 
 
   const handleCopy = (id: string) => dispatch(cloneFile(id))
 
+  const handleMove = (id: string, to?: string) => {
+    dispatch(filesSlice.actions.move({ id, to }))
+    expandFolder(to)
+  }
+
   const handleRemove = (id: string) => dispatch(removeFile(id))
 
   const renderFile = (file: NormalizedFile) => {
@@ -77,19 +77,26 @@ const FileTreeView: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate 
         <PlanFileLabel file={file} onSelect={onPlanSelect} />
       )
 
+    const children = isFolder(file)
+      ? file.children
+          .map((id) => entities[id])
+          .filter(isNonNullable)
+          .map(renderFile)
+      : null
+
     return (
-      <TreeItem key={file.id} nodeId={file.id} label={label}>
-        {isFolder(file) ? file.children.map((id) => entities[id]).map((file) => file && renderFile(file)) : null}
-      </TreeItem>
+      <FileTreeItem file={file} key={file.id} nodeId={file.id} label={label} onMove={handleMove}>
+        {children}
+      </FileTreeItem>
     )
   }
 
   return (
     <Container className={className}>
-      <Button onClick={() => handlePlanCreate(selected)} startIcon={<AddIcon />}>
+      <Button onClick={() => handlePlanCreate()} startIcon={<AddIcon />}>
         編成を作成
       </Button>
-      <Button onClick={() => handleFolderCreate(selected)} startIcon={<CreateNewFolderIcon />}>
+      <Button onClick={() => handleFolderCreate()} startIcon={<CreateNewFolderIcon />}>
         フォルダを作成
       </Button>
       <TreeView
@@ -100,7 +107,12 @@ const FileTreeView: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate 
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
       >
-        {root.map(renderFile)}
+        {isFolder(rootFolder)
+          ? rootFolder.children
+              .map((id) => entities[id])
+              .filter(isNonNullable)
+              .map(renderFile)
+          : null}
       </TreeView>
     </Container>
   )

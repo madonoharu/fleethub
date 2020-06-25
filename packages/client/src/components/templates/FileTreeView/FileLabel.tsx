@@ -9,7 +9,8 @@ const FileLabelAction = styled.div`
 `
 
 const FileLabelText = styled.div`
-  width: calc(100% - 120px);
+  width: calc(100% - 128px);
+  margin-left: 8px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
