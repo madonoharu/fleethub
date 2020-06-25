@@ -2,7 +2,7 @@ import React from "react"
 
 import { Container, TextField, Button } from "@material-ui/core"
 
-import { NumberInput, Flexbox, SelectButtons, ShareButton, PlanList } from "../../../components"
+import { NumberInput, Flexbox, SelectButtons, ShareButton } from "../../../components"
 import { usePlan, useModal } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"
