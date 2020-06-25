@@ -4,8 +4,8 @@ import {
   nanoid,
   current,
   PayloadAction,
-  EntityState,
   AppThunk,
+  Dictionary,
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
@@ -27,6 +27,17 @@ export type NormalizedFile = NormalizedFolder | NormalizedPlanFile
 
 export type FileType = NormalizedFile["type"]
 
+const adapter = createEntityAdapter<NormalizedFile>()
+export const filesSelectors = adapter.getSelectors((state: DefaultRootState) => selectEntites(state).files)
+
+const initialRootFolder: NormalizedFolder = { id: "root", type: "folder", name: "root", children: [] }
+
+const initialState = adapter.getInitialState({
+  entities: { root: initialRootFolder },
+})
+
+type FilesState = typeof initialState
+
 const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
   const cloned = array.concat()
 
@@ -39,44 +50,48 @@ const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
 
 export const isFolder = (file?: NormalizedFile): file is NormalizedFolder => file?.type === "folder"
 
-const getFolder = (state: EntityState<NormalizedFile>, id: string) => {
-  const file = state.entities[id]
-  return isFolder(file) ? file : undefined
+const getFolder = ({ entities }: FilesState, id?: string) => {
+  const file = id ? entities[id] : undefined
+  return isFolder(file) ? file : entities.root
 }
 
-const getRootFiles = (files: NormalizedFile[]) => {
+const getTopFiles = (files: NormalizedFile[]) => {
   const allChildren = files.filter(isFolder).flatMap((folder) => folder.children)
   return files.filter((file) => !allChildren.includes(file.id))
 }
 
-const addChildren = (state: EntityState<NormalizedFile>, parent: string, children: string[]) => {
+const addChildren = (state: FilesState, parent: string, children: string[]) => {
   const parentFolder = getFolder(state, parent)
-  if (parentFolder) parentFolder.children.push(...children)
+  parentFolder.children.push(...children)
 }
 
-const addFiles = (state: EntityState<NormalizedFile>, files: NormalizedFile[], parent?: string) => {
+const addFiles = (state: FilesState, files: NormalizedFile[], parent = "root") => {
   adapter.addMany(state, files)
 
-  if (!parent) return
-
-  const rootFileIds = getRootFiles(files).map((file) => file.id)
-  addChildren(state, parent, rootFileIds)
+  const topFileIds = getTopFiles(files).map((file) => file.id)
+  addChildren(state, parent, topFileIds)
 }
 
-const adapter = createEntityAdapter<NormalizedFile>()
-export const filesSelectors = adapter.getSelectors((state: DefaultRootState) => selectEntites(state).files)
+const removeFromChildren = (state: FilesState, ids: string[]) => {
+  Object.values(state.entities)
+    .filter(isFolder)
+    .forEach((folder) => {
+      folder.children = folder.children.filter((child) => !ids.includes(child))
+    })
+}
 
 export const filesSlice = createSlice({
   name: "files",
-  initialState: adapter.getInitialState(),
+
+  initialState,
 
   reducers: {
     createInitialPlan: {
-      reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent?: string }>) => {
+      reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent: string }>) => {
         const file: NormalizedPlanFile = { id: payload.plan.id, type: "plan" }
         addFiles(state, [file], payload.parent)
       },
-      prepare: ({ plan, parent }: { plan?: PlanState; parent?: string }) => ({
+      prepare: ({ plan, parent = "root" }: { plan?: PlanState; parent?: string }) => ({
         payload: { plan: { ...plan, id: nanoid() }, parent },
       }),
     },
@@ -84,6 +99,7 @@ export const filesSlice = createSlice({
     createPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent?: string }>) => {
         const file: NormalizedPlanFile = { id: payload.plan.id, type: "plan" }
+
         addFiles(state, [file], payload.parent)
       },
       prepare: ({ plan, parent }: { plan?: PlanState; parent?: string }) => ({
@@ -103,13 +119,27 @@ export const filesSlice = createSlice({
 
     update: adapter.updateOne,
 
-    remove: (state, { payload }: PayloadAction<string[]>) => {
-      adapter.removeMany(state, payload)
+    move: (state, { payload: { id, to } }: PayloadAction<{ id: string; to?: string }>) => {
+      removeFromChildren(state, [id])
+
+      const target = (to && state.entities[to]) || state.entities.root
+
+      if (isFolder(target)) {
+        target.children.splice(0, 0, id)
+        return
+      }
+
       Object.values(state.entities)
         .filter(isFolder)
         .forEach((folder) => {
-          folder.children = folder.children.filter((child) => !payload.includes(child))
+          const index = folder.children.indexOf(target.id)
+          if (index >= 0) folder.children.splice(index + 1, 0, id)
         })
+    },
+
+    remove: (state, { payload }: PayloadAction<string[]>) => {
+      adapter.removeMany(state, payload)
+      removeFromChildren(state, payload)
     },
 
     clone: (state, action: PayloadAction<{ changes: Array<[string, string]>; to?: string }>) => {
@@ -136,8 +166,8 @@ export const filesSlice = createSlice({
   },
 })
 
-const flatFile = (state: DefaultRootState, id: string): NormalizedFile[] => {
-  const file = filesSelectors.selectById(state, id)
+export const flatFile = (state: Dictionary<NormalizedFile>, id: string): NormalizedFile[] => {
+  const file = state[id]
   if (!file) return []
   if (!isFolder(file)) return [file]
 
@@ -147,7 +177,8 @@ const flatFile = (state: DefaultRootState, id: string): NormalizedFile[] => {
 
 export const cloneFile = (id: string, to?: string): AppThunk => (dispatch, getState) => {
   const state = getState()
-  const changes: Array<[string, string]> = flatFile(state, id).map((file) => [file.id, nanoid()])
+  const entities = filesSelectors.selectEntities(state)
+  const changes: Array<[string, string]> = flatFile(entities, id).map((file) => [file.id, nanoid()])
 
   if (!to) {
     to = filesSelectors.selectAll(state).find((file) => isFolder(file) && file.children.includes(id))?.id
@@ -158,6 +189,7 @@ export const cloneFile = (id: string, to?: string): AppThunk => (dispatch, getSt
 
 export const removeFile = (id: string): AppThunk => (dispatch, getState) => {
   const state = getState()
-  const ids = flatFile(state, id).map((file) => file.id)
+  const entities = filesSelectors.selectEntities(state)
+  const ids = flatFile(entities, id).map((file) => file.id)
   dispatch(filesSlice.actions.remove(ids))
 }
