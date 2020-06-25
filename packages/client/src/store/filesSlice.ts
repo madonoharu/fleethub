@@ -10,6 +10,7 @@ import {
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
 import { isNonNullable } from "@fleethub/utils"
+import { selectEntites } from "."
 
 export type PlanStateWithId = PlanState & { id: string }
 
@@ -64,13 +65,23 @@ const addFiles = (state: EntityState<NormalizedFile>, files: NormalizedFile[], p
 }
 
 const adapter = createEntityAdapter<NormalizedFile>()
-export const filesSelectors = adapter.getSelectors((state: DefaultRootState) => state.files)
+export const filesSelectors = adapter.getSelectors((state: DefaultRootState) => selectEntites(state).files)
 
 export const filesSlice = createSlice({
   name: "files",
   initialState: adapter.getInitialState(),
 
   reducers: {
+    createInitialPlan: {
+      reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent?: string }>) => {
+        const file: NormalizedPlanFile = { id: payload.plan.id, type: "plan" }
+        addFiles(state, [file], payload.parent)
+      },
+      prepare: ({ plan, parent }: { plan?: PlanState; parent?: string }) => ({
+        payload: { plan: { ...plan, id: nanoid() }, parent },
+      }),
+    },
+
     createPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent?: string }>) => {
         const file: NormalizedPlanFile = { id: payload.plan.id, type: "plan" }

@@ -12,7 +12,7 @@ const end = () => {
   inner = undefined
 }
 
-export const makeGroupBy = (actions?: AnyAction[]): GroupByFunction => {
+export const makeGroupBy = (actions?: string[]): GroupByFunction => {
   const defaultGroupBy = groupByActionTypes(actions)
   return (...args) => inner || defaultGroupBy(...args)
 }
