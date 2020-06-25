@@ -1,11 +1,15 @@
-import { createSlice, createEntityAdapter, PayloadAction, nanoid, EntityId } from "@reduxjs/toolkit"
+import { createSlice, createEntityAdapter, PayloadAction, current, EntitySelectors } from "@reduxjs/toolkit"
 import { PlanState } from "@fleethub/core"
 import { DefaultRootState } from "react-redux"
+import { filesSlice } from "./filesSlice"
+import { isNonNullable } from "@fleethub/utils"
 
-type PlanStateWithId = PlanState & { id: EntityId }
+type PlanStateWithId = PlanState & { id: string }
 
 const plansAdapter = createEntityAdapter<PlanStateWithId>()
-export const plansSelectors = plansAdapter.getSelectors((state: DefaultRootState) => state.plans)
+export const plansSelectors: EntitySelectors<PlanStateWithId, DefaultRootState> = plansAdapter.getSelectors(
+  (state) => state.plans
+)
 
 export const plansSlice = createSlice({
   name: "plans",
@@ -15,18 +19,31 @@ export const plansSlice = createSlice({
       state.entities[payload.id] = payload
     },
 
-    create: {
-      reducer: (state, { payload }: PayloadAction<PlanStateWithId>) => {
-        if (!payload.name) {
-          payload.name = `編成${state.ids.length + 1}`
+    update: plansAdapter.updateOne,
+  },
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(filesSlice.actions.createPlan, (state, { payload }) => {
+        const { plan } = payload
+
+        if (!plan.name) {
+          plan.name = `編成${state.ids.length + 1}`
         }
 
-        plansAdapter.addOne(state, payload)
-      },
-      prepare: (plan?: PlanState) => ({ payload: { ...plan, id: nanoid() } }),
-    },
+        plansAdapter.addOne(state, plan)
+      })
+      .addCase(filesSlice.actions.clone, (state, { payload }) => {
+        const clonedPlans = payload.changes
+          .map(([sourceId, clonedId]) => {
+            const source = state.entities[sourceId]
+            if (!source) return
+            return { ...current(source), id: clonedId }
+          })
+          .filter(isNonNullable)
 
-    update: plansAdapter.updateOne,
-    remove: plansAdapter.removeOne,
+        plansAdapter.addMany(state, clonedPlans)
+      })
+      .addCase(filesSlice.actions.remove, plansAdapter.removeMany)
   },
 })

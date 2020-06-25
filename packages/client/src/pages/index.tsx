@@ -1,15 +1,27 @@
 import React from "react"
-
-import { PlanList, PlanEditor } from "../components"
 import { useSelector, useDispatch } from "react-redux"
-import { uiSlice } from "../store"
+
+import { PlanEditor } from "../components"
+import { uiSlice, plansSelectors, filesSlice } from "../store"
 
 const IndexPage: React.FC = () => {
-  const planId = useSelector((state) => state.ui.planId)
+  const ids = useSelector(plansSelectors.selectIds) as string[]
+  const planId = useSelector((state) => state.ui.planId && plansSelectors.selectById(state, state.ui.planId)?.id)
+
   const dispatch = useDispatch()
 
-  if (planId === undefined) return <PlanList />
-  return <PlanEditor planId={planId} onClose={() => dispatch(uiSlice.actions.closePlan())} />
+  React.useEffect(() => {
+    if (planId) return
+    if (ids.length === 0) {
+      dispatch(filesSlice.actions.createPlan({}))
+    } else {
+      dispatch(uiSlice.actions.openPlan(ids[ids.length - 1]))
+    }
+  }, [dispatch, ids, planId])
+
+  if (planId) return <PlanEditor planId={planId} />
+
+  return null
 }
 
 export default IndexPage

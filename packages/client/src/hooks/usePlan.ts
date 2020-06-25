@@ -1,15 +1,15 @@
 import React from "react"
 import { PlanState } from "@fleethub/core"
 import produce from "immer"
-import { AppThunk, EntityId } from "@reduxjs/toolkit"
+import { AppThunk } from "@reduxjs/toolkit"
 import { useDispatch, useSelector } from "react-redux"
 
 import { Update, Recipe } from "../utils"
-import { plansSlice, plansSelectors } from "../store"
+import { plansSlice, plansSelectors, removeFile } from "../store"
 
 import { useCachedFhFactory } from "./useCachedFhFactory"
 
-const makeUpdatePlan = (id: EntityId, recipe: Recipe<PlanState>): AppThunk => (dispatch, getState) => {
+const makeUpdatePlan = (id: string, recipe: Recipe<PlanState>): AppThunk => (dispatch, getState) => {
   const state = plansSelectors.selectById(getState(), id)
   if (!state) return
 
@@ -17,7 +17,7 @@ const makeUpdatePlan = (id: EntityId, recipe: Recipe<PlanState>): AppThunk => (d
   dispatch(plansSlice.actions.set(next))
 }
 
-export const usePlan = (id: EntityId) => {
+export const usePlan = (id: string) => {
   const dispatch = useDispatch()
   const state = useSelector((state) => plansSelectors.selectById(state, id))
 
@@ -25,7 +25,8 @@ export const usePlan = (id: EntityId) => {
 
   const actions = React.useMemo(() => {
     const update: Update<PlanState> = (recipe) => dispatch(makeUpdatePlan(id, recipe))
-    const remove = () => dispatch(plansSlice.actions.remove(id))
+
+    const remove = () => dispatch(removeFile(id))
 
     return { update, remove }
   }, [dispatch, id])
