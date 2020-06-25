@@ -1,40 +1,19 @@
 import React from "react"
 import styled from "styled-components"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 
-import {
-  Paper,
-  TextField,
-  TextFieldProps,
-  Button,
-  Typography,
-  ClickAwayListener,
-  ClickAwayListenerProps,
-} from "@material-ui/core"
-import EditIcon from "@material-ui/icons/Edit"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import FolderIcon from "@material-ui/icons/Folder"
 import AddIcon from "@material-ui/icons/Add"
 import FileCopyIcon from "@material-ui/icons/FileCopy"
 import DeleteIcon from "@material-ui/icons/Delete"
 
-import {
-  MoreVertButton,
-  ShareButton,
-  AddButton,
-  RemoveButton,
-  CopyButton,
-  Flexbox,
-  MenuList,
-} from "../../../components"
-import { NormalizedFolder, FileType, cloneFile, removeFile, filesSlice } from "../../../store"
-import { withIconButton } from "../../molecules"
+import { MoreVertButton, AddButton, RemoveButton, EditButton, MenuList } from "../../../components"
+import { NormalizedFolder, filesSlice } from "../../../store"
 import { usePopover } from "../../../hooks"
 
 import FileLabel from "./FileLabel"
 import FileTextField from "./FileTextField"
-
-const EditButton = withIconButton(EditIcon)
 
 type Props = {
   file: NormalizedFolder

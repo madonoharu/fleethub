@@ -12,6 +12,7 @@ import CachedIcon from "@material-ui/icons/Cached"
 import InfoIcon from "@material-ui/icons/Info"
 import SaveIcon from "@material-ui/icons/Save"
 import ShareIcon from "@material-ui/icons/Share"
+import EditIcon from "@material-ui/icons/Edit"
 
 import withIconButton from "./withIconButton"
 
@@ -30,3 +31,4 @@ export const LinkButton = withIconButton(LinkIcon)
 export const ShareButton = withIconButton(ShareIcon)
 export const SaveButton = withIconButton(SaveIcon)
 export const InfoButton = withIconButton(InfoIcon)
+export const EditButton = withIconButton(EditIcon)
