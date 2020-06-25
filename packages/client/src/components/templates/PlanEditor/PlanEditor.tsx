@@ -1,10 +1,9 @@
 import React from "react"
-import { EntityId } from "@reduxjs/toolkit"
 
 import { Container, TextField, Button } from "@material-ui/core"
 
-import { NumberInput, Flexbox, SelectButtons } from "../../../components"
-import { usePlan } from "../../../hooks"
+import { NumberInput, Flexbox, SelectButtons, ShareButton, PlanList } from "../../../components"
+import { usePlan, useModal } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"
 import LandBaseTabPanel from "./LandBaseTabPanel"
@@ -14,11 +13,10 @@ import BattlePlanPanel from "./BattlePlanPanel"
 const tabOptions = ["f1", "f2", "f3", "f4", "lb", "Gkcoi"] as const
 
 type Props = {
-  planId: EntityId
-  onClose?: () => void
+  planId: string
 }
 
-const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
+const PlanEditor: React.FC<Props> = ({ planId }) => {
   const { plan, actions } = usePlan(planId)
   const [tabKey, setTabKey] = React.useState<typeof tabOptions[number]>("f1")
 
@@ -40,11 +38,10 @@ const PlanEditor: React.FC<Props> = ({ planId, onClose }) => {
 
   return (
     <Container>
-      <Button onClick={onClose}>back</Button>
-      <Button>undo</Button>
       <Flexbox>
         <TextField value={plan.name} onChange={handleNameChange} />
-        <NumberInput value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
+        <NumberInput style={{ width: 60 }} value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
+        <ShareButton />
       </Flexbox>
       <SelectButtons options={tabOptions} value={tabKey} onChange={setTabKey} />
       {fleetEntry && <FleetTabPanel fleet={fleetEntry[1]} fleetKey={fleetEntry[0]} updatePlan={actions.update} />}
