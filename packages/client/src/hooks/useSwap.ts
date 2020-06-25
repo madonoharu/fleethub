@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react"
-import { batch } from "react-redux"
-import { useDrag, useDrop, DragObjectWithType, DragSourceMonitor, DragSourceHookSpec } from "react-dnd"
+import { useDrag, useDrop, DragObjectWithType } from "react-dnd"
+import { batch } from "../utils"
 
 type SwappableItem<T> = DragObjectWithType & {
   state: T

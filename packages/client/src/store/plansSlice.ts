@@ -1,14 +1,16 @@
 import { createSlice, createEntityAdapter, PayloadAction, current, EntitySelectors } from "@reduxjs/toolkit"
 import { PlanState } from "@fleethub/core"
-import { DefaultRootState } from "react-redux"
-import { filesSlice } from "./filesSlice"
 import { isNonNullable } from "@fleethub/utils"
+import { DefaultRootState } from "react-redux"
+
+import { filesSlice } from "./filesSlice"
+import { selectEntites } from "."
 
 type PlanStateWithId = PlanState & { id: string }
 
 const plansAdapter = createEntityAdapter<PlanStateWithId>()
 export const plansSelectors: EntitySelectors<PlanStateWithId, DefaultRootState> = plansAdapter.getSelectors(
-  (state) => state.plans
+  (state) => selectEntites(state).plans
 )
 
 export const plansSlice = createSlice({
