@@ -111,8 +111,8 @@ export const filesSlice = createSlice({
         })
     },
 
-    clone: (state, action: PayloadAction<{ parent?: string; changes: Array<[string, string]> }>) => {
-      const { parent, changes } = action.payload
+    clone: (state, action: PayloadAction<{ changes: Array<[string, string]>; to?: string }>) => {
+      const { to, changes } = action.payload
 
       const clonedFiles = changes
         .map(([prevId, nextId]) => {
@@ -130,7 +130,7 @@ export const filesSlice = createSlice({
         })
       })
 
-      addFiles(state, clonedFiles, parent)
+      addFiles(state, clonedFiles, to)
     },
   },
 })
@@ -144,11 +144,15 @@ const flatFile = (state: DefaultRootState, id: string): NormalizedFile[] => {
   return [file, ...children]
 }
 
-export const cloneFile = (id: string, parent?: string): AppThunk => (dispatch, getState) => {
+export const cloneFile = (id: string, to?: string): AppThunk => (dispatch, getState) => {
   const state = getState()
   const changes: Array<[string, string]> = flatFile(state, id).map((file) => [file.id, nanoid()])
 
-  dispatch(filesSlice.actions.clone({ parent, changes }))
+  if (!to) {
+    to = filesSelectors.selectAll(state).find((file) => isFolder(file) && file.children.includes(id))?.id
+  }
+
+  dispatch(filesSlice.actions.clone({ changes, to }))
 }
 
 export const removeFile = (id: string): AppThunk => (dispatch, getState) => {
