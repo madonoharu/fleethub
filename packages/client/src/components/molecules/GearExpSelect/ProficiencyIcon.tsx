@@ -1,12 +1,10 @@
 import React from "react"
 import styled from "styled-components"
-import { graphql, useStaticQuery } from "gatsby"
-import Img from "gatsby-image"
 import { expToAce } from "@fleethub/core"
 
-import Typography from "@material-ui/core/Typography"
+import { Typography } from "@material-ui/core"
 
-import { ProficiencyIconsQuery } from "../../../graphqlTypes"
+import { Image } from "../../atoms"
 
 const Exp = styled(Typography)`
   position: absolute;
@@ -18,8 +16,6 @@ const Exp = styled(Typography)`
   border-radius: 2px;
 `
 
-const imgStyle = { objectFit: "contain" }
-
 type ProficiencyIconProps = Pick<React.ComponentProps<"div">, "className" | "onClick"> & {
   exp: number
 }
@@ -28,39 +24,15 @@ const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((
   const { exp, ...divProps } = props
   const ace = expToAce(exp)
 
-  const { allFile } = useStaticQuery<ProficiencyIconsQuery>(graphql`
-    query ProficiencyIcons {
-      allFile(filter: { relativeDirectory: { eq: "proficiency" } }) {
-        edges {
-          node {
-            name
-            childImageSharp {
-              fixed(height: 24) {
-                ...GatsbyImageSharpFixed
-              }
-            }
-          }
-        }
-      }
-    }
-  `)
-
-  const childImageSharp = allFile.edges.find((n) => n.node.name === ace.toString())?.node.childImageSharp
-
-  let img: React.ReactNode = null
-  if (childImageSharp) {
-    img = <Img className={divProps.className} fixed={childImageSharp.fixed} imgStyle={imgStyle} />
-  }
-
   return (
     <div ref={ref} {...divProps}>
-      {img}
+      <Image height={24} width={18} src={`proficiency/${ace}.png`} />
       <Exp>{exp}</Exp>
     </div>
   )
 })
 
 export default styled(ProficiencyIcon)`
-  display: block !important;
+  height: 24px;
   filter: brightness(110%) contrast(110%) saturate(100%);
 `

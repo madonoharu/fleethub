@@ -2,10 +2,8 @@ import React from "react"
 
 import { createMuiTheme, colors, ThemeProvider as MuiThemeProvider, CssBaseline } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
-import styled, { css, createGlobalStyle, ThemeProvider as StyledThemeProvider } from "styled-components"
+import { css, createGlobalStyle, ThemeProvider as StyledThemeProvider } from "styled-components"
 import { AirState } from "@fleethub/core"
-
-import { AppBar } from "./components"
 
 const { blue, cyan, pink, grey, lightBlue } = colors
 
@@ -208,18 +206,12 @@ const globalCss = css`
 
 const GlobalStyle = createGlobalStyle(() => globalCss)
 
-const ScrollContainer = styled.div`
-  overflow-y: scroll;
-  height: calc(100vh - 24px);
-`
-
 export const ThemeProvider: React.FC = ({ children }) => (
   <MuiThemeProvider theme={theme}>
     <StyledThemeProvider theme={theme}>
       <CssBaseline />
       <GlobalStyle />
-      <AppBar />
-      <ScrollContainer>{children}</ScrollContainer>
+      {children}
     </StyledThemeProvider>
   </MuiThemeProvider>
 )

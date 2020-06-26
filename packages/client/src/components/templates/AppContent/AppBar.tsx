@@ -4,23 +4,20 @@ import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { ActionCreators } from "redux-undo"
 
-import AppBar from "@material-ui/core/AppBar"
-import Box from "@material-ui/core/Box"
-import Button from "@material-ui/core/Button"
+import { AppBar as MuiAppBar, Link, Box, Button } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 
-import { Link, FileTreeView } from "../../../components"
-import { withIconButton } from "../../molecules"
+import { FileTreeView, withIconButton } from "../../../components"
 import { useModal } from "../../../hooks"
+import { uiSlice } from "../../../store"
 
 import LanguageSelect from "./LanguageSelect"
-import { uiSlice } from "../../../store"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
 
-const Component: React.FCX = ({ className }) => {
+const AppBar: React.FCX = ({ className }) => {
   const { t } = useTranslation()
 
   const dispatch = useDispatch()
@@ -44,7 +41,7 @@ const Component: React.FCX = ({ className }) => {
   ]
 
   return (
-    <AppBar className={className} position="sticky">
+    <MuiAppBar className={className} position="sticky">
       <Box display="flex" width="100%">
         <UndoButton size="small" disabled={!canUndo} onClick={undo} />
         <RedoButton size="small" disabled={!canRedo} onClick={redo} />
@@ -60,13 +57,14 @@ const Component: React.FCX = ({ className }) => {
           <FileTreeView onPlanSelect={handlePlanSelect} onPlanCreate={Modal.hide} />
         </Modal>
       </Box>
-    </AppBar>
+    </MuiAppBar>
   )
 }
 
-export default styled(Component)`
+export default styled(AppBar)`
   display: flex;
   flex-direction: row;
+  height: 24px;
 
   ${({ theme }) => theme.acrylic}
 
