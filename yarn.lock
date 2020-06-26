@@ -6261,6 +6261,11 @@ eol@^0.9.1:
   resolved "https://registry.yarnpkg.com/eol/-/eol-0.9.1.tgz#f701912f504074be35c6117a5c4ade49cd547acd"
   integrity sha512-Ds/TEoZjwggRoz/Q2O7SE3i4Jm66mqTDfmdHdq/7DKVk3bro9Q8h6WdXKdPqFLMoqxrDK5SVRzHVPOS6uuGtrg==
 
+equipment-bonus@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/equipment-bonus/-/equipment-bonus-1.0.1.tgz#0dc598fc7f5b099d87eedd3f6daf5e7390cf62bf"
+  integrity sha512-r9uSFTtgrlyJwIpVowXPBaBAHAVon4otw0rSdu4yEBxCpHXyTjWDj+IoVcvxhwYDU/PGDu68SDfreVC2NWA08w==
+
 errno@^0.1.3, errno@~0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/errno/-/errno-0.1.7.tgz#4684d71779ad39af177e3f007996f7c67c852618"
