@@ -12,6 +12,8 @@
     "build:esm": "tsc -p ./tsconfig.build.json -m esnext --outDir esm"
   },
   "dependencies": {
+    "@fleethub/data": "*",
+    "@fleethub/utils": "*",
     "equipment-bonus": "*"
   }
 }
