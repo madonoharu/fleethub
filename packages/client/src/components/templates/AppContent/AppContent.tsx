@@ -1,10 +1,13 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
+import styled from "styled-components"
 
-import { PlanEditor } from "../components"
-import { uiSlice, plansSelectors, filesSlice } from "../store"
+import { uiSlice, plansSelectors, filesSlice } from "../../../store"
+import { PlanEditor } from "../../../components"
 
-const IndexPage: React.FC = () => {
+import AppBar from "./AppBar"
+
+const FileLoader: React.FC = () => {
   const ids = useSelector(plansSelectors.selectIds) as string[]
   const planId = useSelector((state) => state.ui.planId && plansSelectors.selectById(state, state.ui.planId)?.id)
 
@@ -24,4 +27,18 @@ const IndexPage: React.FC = () => {
   return null
 }
 
-export default IndexPage
+const ScrollContainer = styled.div`
+  overflow-y: scroll;
+  height: calc(100vh - 24px);
+`
+
+const AppContent: React.FC = () => (
+  <>
+    <AppBar />
+    <ScrollContainer>
+      <FileLoader />
+    </ScrollContainer>
+  </>
+)
+
+export default AppContent
