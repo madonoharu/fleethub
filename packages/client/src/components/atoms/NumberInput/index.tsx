@@ -60,7 +60,7 @@ const isNumeric = (str: string) => {
   return Number.isFinite(num)
 }
 
-type NumberInputProps = {
+export type NumberInputProps = {
   value: number
   onChange?: (value: number) => void
   min?: number
