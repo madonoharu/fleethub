@@ -29,12 +29,6 @@ type Props = {
 }
 
 const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
-  const handleLevelChange = (level: number) => {
-    update((draft) => {
-      draft.level = level
-    })
-  }
-
   const gears = ship.equipment.items.map(({ gear }) => gear)
   gears.length = 6
 
@@ -43,7 +37,7 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
 
   return (
     <Paper className={className}>
-      <ShipHeader name={ship.name} level={ship.level} onLevelChange={handleLevelChange} onRemove={onRemove} />
+      <ShipHeader ship={ship} update={update} onRemove={onRemove} />
 
       <Content>
         <Box width={128}>
