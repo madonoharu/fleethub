@@ -1,7 +1,11 @@
+import React from "react"
 import { combineReducers, configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist"
 import storage from "localforage"
 import undoable, { UndoableOptions, excludeAction } from "redux-undo"
+
+import { Provider as ReduxProvider } from "react-redux"
+import { PersistGate } from "redux-persist/integration/react"
 
 import { makeGroupBy } from "../utils"
 
@@ -30,19 +34,33 @@ const rootReducer = combineReducers({
   ui: uiSlice.reducer,
 })
 
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: getDefaultMiddleware({
-    serializableCheck: {
-      ignoredActions,
-    },
-  }),
-})
+export const createStore = () => {
+  const store = configureStore({
+    reducer: rootReducer,
+    middleware: getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions,
+      },
+    }),
+  })
 
-export const persistor = persistStore(store)
+  return store
+}
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export const StoreProvider: React.FC = ({ children }) => {
+  const store = createStore()
+  const persistor = persistStore(store)
+
+  return (
+    <ReduxProvider store={store}>
+      <PersistGate persistor={persistor}>{children}</PersistGate>
+    </ReduxProvider>
+  )
+}
+
+type Store = ReturnType<typeof createStore>
+export type RootState = ReturnType<Store["getState"]>
+export type AppDispatch = Store["dispatch"]
 
 export * from "./plansSlice"
 export * from "./filesSlice"
