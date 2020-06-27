@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import { Action } from "@reduxjs/toolkit"
-import { ThunkAction } from "redux-thunk"
-
 import { RootState, AppDispatch } from "./store"
 import { Theme } from "./theme"
 
@@ -15,7 +12,7 @@ declare module "react-redux" {
 }
 
 declare module "@reduxjs/toolkit" {
-  export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>
+  export type AppThunk = import("./store").AppThunk
 }
 
 declare module "styled-components" {
