@@ -1,8 +1,9 @@
 import React from "react"
-import { combineReducers, configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
+import { combineReducers, configureStore, getDefaultMiddleware, AnyAction } from "@reduxjs/toolkit"
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist"
 import storage from "localforage"
 import undoable, { UndoableOptions, excludeAction } from "redux-undo"
+import { ThunkAction } from "redux-thunk"
 
 import { Provider as ReduxProvider } from "react-redux"
 import { PersistGate } from "redux-persist/integration/react"
@@ -66,7 +67,7 @@ export const StoreProvider: React.FC = ({ children }) => {
 type Store = ReturnType<typeof createStore>
 export type RootState = ReturnType<Store["getState"]>
 export type AppDispatch = Store["dispatch"]
-export type ExtraArgument = typeof extraArgument
+export type AppThunk = ThunkAction<void, RootState, typeof extraArgument, AnyAction>
 
 export * from "./plansSlice"
 export * from "./filesSlice"
