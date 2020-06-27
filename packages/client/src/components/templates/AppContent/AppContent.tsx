@@ -6,13 +6,8 @@ import { uiSlice, plansSelectors, filesSlice } from "../../../store"
 import { PlanEditor } from "../../../components"
 
 import AppBar from "./AppBar"
-import { useFirestoreConnect } from "react-redux-firebase"
 
 const FileLoader: React.FC = () => {
-  useFirestoreConnect("files/test")
-  const firestore = useSelector((state) => state.firestore)
-  console.log(firestore)
-
   const ids = useSelector(plansSelectors.selectIds) as string[]
   const planId = useSelector((state) => state.ui.planId && plansSelectors.selectById(state, state.ui.planId)?.id)
 

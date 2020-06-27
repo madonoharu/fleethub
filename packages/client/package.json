@@ -33,8 +33,6 @@
     "react-dom": "^16.13.1",
     "react-i18next": "^11.7.0",
     "react-redux": "^7.2.0",
-    "react-redux-firebase": "^3.6.0",
-    "redux-firestore": "^0.13.0",
     "redux-persist": "^6.0.0",
     "redux-state-sync": "^3.1.1",
     "redux-undo": "^1.0.1",

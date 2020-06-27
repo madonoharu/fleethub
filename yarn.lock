@@ -5206,11 +5206,6 @@ immediate@~3.0.5:
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
 
-immer@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-5.0.0.tgz#07f462b7d95f7e86c214a861ecacd766d42b8c0a"
-  integrity sha512-G7gRqKbi9NE025XVyqyTV98dxUOtdKvu/P1QRaVZfA55aEcXgjbxPdm+TlWdcSMNPKijlaHNz61DGPyelouRlA==
-
 immer@^7.0.3:
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/immer/-/immer-7.0.5.tgz#8af347db5b60b40af8ae7baf1784ea4d35b5208e"
@@ -7717,15 +7712,6 @@ react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1, react-i
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-redux-firebase@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/react-redux-firebase/-/react-redux-firebase-3.6.0.tgz#1f942688d85d658aceafc512bcb5dc8d89d42c5d"
-  integrity sha512-TLGG9rEsyqab0Zi/uA0cd85tu7aDL7vx4jyjHVcWfrTLFLmgSKE0KJzE8qEiDq/wxfSKnQJSC/Our25T6BwtWg==
-  dependencies:
-    hoist-non-react-statics "^3.3.2"
-    lodash "^4.17.15"
-    prop-types "^15.7.2"
-
 react-redux@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.0.tgz#f970f62192b3981642fec46fd0db18a074fe879d"
@@ -7822,20 +7808,6 @@ readdirp@~3.4.0:
   integrity sha512-0xe001vZBnJEK+uKcj8qOhyAKPzIT+gStxWr3LCB0DwcXR5NZJ3IaC+yGnHCYzB/S7ov3m3EEbZI2zeNvX+hGQ==
   dependencies:
     picomatch "^2.2.1"
-
-reduce-reducers@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/reduce-reducers/-/reduce-reducers-1.0.4.tgz#fb77e751a9eb0201760ac5a605ca8c9c2d0537f8"
-  integrity sha512-Mb2WZ2bJF597exiqX7owBzrqJ74DHLK3yOQjCyPAaNifRncE8OD0wFIuoMhXxTnHK07+8zZ2SJEKy/qtiyR7vw==
-
-redux-firestore@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/redux-firestore/-/redux-firestore-0.13.0.tgz#154e705726740c6173e2f8a1d82214aeccc6954f"
-  integrity sha512-0Vf/MXrH6gUqVwSmAQAz9Ic1J4uADCaF29DcpcNU2ecZoYG5aQSZO2iGXUqzjAOeatE1Ksz8SDEvKu8gBRvYXg==
-  dependencies:
-    immer "5.0.0"
-    lodash "^4.17.15"
-    reduce-reducers "^1.0.4"
 
 redux-persist@^6.0.0:
   version "6.0.0"

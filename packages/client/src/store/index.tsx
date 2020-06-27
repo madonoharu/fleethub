@@ -6,15 +6,12 @@ import undoable, { UndoableOptions, excludeAction } from "redux-undo"
 
 import { Provider as ReduxProvider } from "react-redux"
 import { PersistGate } from "redux-persist/integration/react"
-import { firebaseReducer, ReactReduxFirebaseProvider, ReactReduxFirebaseProviderProps } from "react-redux-firebase"
-import { firestoreReducer, createFirestoreInstance } from "redux-firestore"
 
 import { makeGroupBy } from "../utils"
 
 import { uiSlice } from "./uiSlice"
 import { filesSlice } from "./filesSlice"
 import { plansSlice } from "./plansSlice"
-import { firebase } from "./firebase"
 
 const ignoredActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
 
@@ -35,14 +32,17 @@ const entitiesReducer = combineReducers({
 const rootReducer = combineReducers({
   entities: undoable(persistReducer({ key: "entities", storage }, entitiesReducer), undoableOptions),
   ui: uiSlice.reducer,
-  firebase: firebaseReducer,
-  firestore: firestoreReducer,
 })
+
+const extraArgument = undefined
 
 export const createStore = () => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware({
+      thunk: {
+        extraArgument,
+      },
       serializableCheck: {
         ignoredActions,
       },
@@ -56,20 +56,9 @@ export const StoreProvider: React.FC = ({ children }) => {
   const store = createStore()
   const persistor = persistStore(store)
 
-  const rffProps: ReactReduxFirebaseProviderProps = {
-    firebase,
-    dispatch: store.dispatch,
-    config: {
-      userProfile: "user",
-    },
-    createFirestoreInstance,
-  }
-
   return (
     <ReduxProvider store={store}>
-      <PersistGate persistor={persistor}>
-        <ReactReduxFirebaseProvider {...rffProps}>{children}</ReactReduxFirebaseProvider>
-      </PersistGate>
+      <PersistGate persistor={persistor}>{children}</PersistGate>
     </ReduxProvider>
   )
 }
@@ -77,6 +66,7 @@ export const StoreProvider: React.FC = ({ children }) => {
 type Store = ReturnType<typeof createStore>
 export type RootState = ReturnType<Store["getState"]>
 export type AppDispatch = Store["dispatch"]
+export type ExtraArgument = typeof extraArgument
 
 export * from "./plansSlice"
 export * from "./filesSlice"
