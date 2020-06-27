@@ -6,12 +6,15 @@ import undoable, { UndoableOptions, excludeAction } from "redux-undo"
 
 import { Provider as ReduxProvider } from "react-redux"
 import { PersistGate } from "redux-persist/integration/react"
+import { firebaseReducer, ReactReduxFirebaseProvider, ReactReduxFirebaseProviderProps } from "react-redux-firebase"
+import { firestoreReducer, createFirestoreInstance } from "redux-firestore"
 
 import { makeGroupBy } from "../utils"
 
 import { uiSlice } from "./uiSlice"
 import { filesSlice } from "./filesSlice"
 import { plansSlice } from "./plansSlice"
+import { firebase } from "./firebase"
 
 const ignoredActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
 
@@ -32,6 +35,8 @@ const entitiesReducer = combineReducers({
 const rootReducer = combineReducers({
   entities: undoable(persistReducer({ key: "entities", storage }, entitiesReducer), undoableOptions),
   ui: uiSlice.reducer,
+  firebase: firebaseReducer,
+  firestore: firestoreReducer,
 })
 
 export const createStore = () => {
@@ -51,9 +56,20 @@ export const StoreProvider: React.FC = ({ children }) => {
   const store = createStore()
   const persistor = persistStore(store)
 
+  const rffProps: ReactReduxFirebaseProviderProps = {
+    firebase,
+    dispatch: store.dispatch,
+    config: {
+      userProfile: "user",
+    },
+    createFirestoreInstance,
+  }
+
   return (
     <ReduxProvider store={store}>
-      <PersistGate persistor={persistor}>{children}</PersistGate>
+      <PersistGate persistor={persistor}>
+        <ReactReduxFirebaseProvider {...rffProps}>{children}</ReactReduxFirebaseProvider>
+      </PersistGate>
     </ReduxProvider>
   )
 }
