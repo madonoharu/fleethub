@@ -5,30 +5,7 @@ import styled from "styled-components"
 import { CircularProgress } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 
-type GkcoiResult = { status: "loading" } | { status: "error" } | { status: "success"; canvas: HTMLCanvasElement }
-
-const useGkcoi = (deck: DeckBuilder) => {
-  const [result, setResult] = React.useState<GkcoiResult>({ status: "loading" })
-
-  React.useEffect(() => {
-    let unmounted = false
-
-    generate(deck)
-      .then((canvas) => !unmounted && setResult({ status: "success", canvas }))
-      .catch((reason) => {
-        if (unmounted) return
-        console.error(reason)
-        setResult({ status: "error" })
-      })
-
-    return () => {
-      unmounted = true
-      setResult({ status: "loading" })
-    }
-  }, [deck])
-
-  return result
-}
+import { useFetch } from "../../../hooks"
 
 const StyledCircularProgress = styled(CircularProgress)`
   display: block;
@@ -40,7 +17,7 @@ type Props = {
 }
 
 const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
-  const result = useGkcoi(deck)
+  const result = useFetch(() => generate(deck), [deck])
 
   if (result.status === "loading") return <StyledCircularProgress size={80} />
 
@@ -52,7 +29,7 @@ const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
     )
   }
 
-  const { canvas } = result
+  const canvas = result.data
 
   const handleClick = () => {
     window.open(canvas.toDataURL("png"), "_blank")
