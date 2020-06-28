@@ -73,8 +73,7 @@ export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
   if (storageId) {
     const downloadUrl = await storageFilesRef.child(storageId).getDownloadURL()
     const data = await fetch(downloadUrl).then((res) => res.json())
-    console.log(data)
-    return
+    return data
   }
 
   const param = url.searchParams.get("entities")
