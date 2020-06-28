@@ -15,6 +15,7 @@ import ShareIcon from "@material-ui/icons/Share"
 import EditIcon from "@material-ui/icons/Edit"
 
 import withIconButton from "./withIconButton"
+import TwitterIcon from "./TwitterIcon"
 
 export { withIconButton }
 
@@ -32,3 +33,4 @@ export const ShareButton = withIconButton(ShareIcon)
 export const SaveButton = withIconButton(SaveIcon)
 export const InfoButton = withIconButton(InfoIcon)
 export const EditButton = withIconButton(EditIcon)
+export const TweetButton = withIconButton(TwitterIcon)
