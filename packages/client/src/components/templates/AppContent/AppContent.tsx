@@ -2,25 +2,28 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import { uiSlice, plansSelectors, filesSlice } from "../../../store"
+import { uiSlice, plansSelectors, filesSlice, openFirstPlan } from "../../../store"
 import { PlanEditor } from "../../../components"
 
 import AppBar from "./AppBar"
+import { parseUrlEntities } from "../../../firebase"
+import { useFetch } from "../../../hooks"
 
 const FileLoader: React.FC = () => {
-  const ids = useSelector(plansSelectors.selectIds) as string[]
+  const dispatch = useDispatch()
   const planId = useSelector((state) => state.ui.planId && plansSelectors.selectById(state, state.ui.planId)?.id)
 
-  const dispatch = useDispatch()
-
-  React.useEffect(() => {
-    if (planId) return
-    if (ids.length === 0) {
-      dispatch(filesSlice.actions.createPlan({}))
-    } else {
-      dispatch(uiSlice.actions.openPlan(ids[ids.length - 1]))
+  useFetch(async () => {
+    const entities = await parseUrlEntities()
+    if (entities) {
+      dispatch(filesSlice.actions.set({ ...entities, to: "root" }))
+      return
     }
-  }, [dispatch, ids, planId])
+
+    if (planId) return
+
+    dispatch(openFirstPlan())
+  }, [dispatch, planId])
 
   if (planId) return <PlanEditor planId={planId} />
 
