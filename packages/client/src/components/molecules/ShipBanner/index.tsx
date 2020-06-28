@@ -8,7 +8,7 @@ type Props = {
 }
 
 const ShipBanner: React.FCX<Props> = ({ className, shipId }) => {
-  return <Image className={className} height={24} width={96} src={`ships/1.png`} />
+  return <Image className={className} height={24} width={96} src={`ships/1.webp`} />
 }
 
 export default styled(ShipBanner)``
