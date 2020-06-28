@@ -6,6 +6,7 @@ import "firebase/storage"
 import { PlanState } from "@fleethub/core"
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string-uri-fix"
 import { FhEntities } from "./store"
+import { nanoid } from "@reduxjs/toolkit"
 
 const firebaseConfig = {
   apiKey: "AIzaSyBTCNFmu7K2mlUzVcxbc2vAuzMJxvNk4-s",
@@ -19,10 +20,11 @@ const firebaseConfig = {
 }
 
 firebase.initializeApp(firebaseConfig)
-const db = firebase.firestore()
 
 const provider = new firebase.auth.TwitterAuthProvider()
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+
+const storageFilesRef = firebase.storage().ref("files")
 
 export const login = () => firebase.auth().signInWithPopup(provider)
 export const logout = () => firebase.auth().signOut()
@@ -51,28 +53,6 @@ export const shorten = async (url: string, domain: "kcj") => {
   return json as { previewLink: string; shortLink: string } | { error: { code: number } }
 }
 
-const databaseRef = firebase.database().ref()
-const storageRef = firebase.storage().ref()
-const usersRef = storageRef.child("users")
-
-export const setPlan = async (plan: PlanState) => {
-  const user = firebase.auth().currentUser
-  if (!user) return
-
-  const databaseUserRef = databaseRef.child("users").child(user.uid)
-  const userRef = usersRef.child(user.uid)
-
-  const file = new File([JSON.stringify(plan)], "name", { type: "application/json" })
-  const fileId = "file1"
-
-  databaseUserRef.set({
-    [fileId]: { id: fileId, type: "folder", children: ["file2", "file3"] },
-    file2: { id: "file2", type: "plan" },
-    file3: { id: "file3", type: "folder", children: ["file4"] },
-    file4: { id: "file4", type: "plan" },
-  })
-}
-
 type FhFolder = {
   id: string
   type: "folder"
@@ -87,14 +67,16 @@ type FhPlanFile = {
 
 type FhFile = FhPlanFile | FhFolder
 
-const openPlanUrl = (plan: PlanState) => {
-  const url = new URL("http://localhost:8000")
-  url.searchParams.set("plan", compressToEncodedURIComponent(JSON.stringify(plan)))
-  console.log(url.href)
-}
-
-export const parseUrlEntities = (): FhEntities | undefined => {
+export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
   const url = new URL(location.href)
+  const storageId = url.searchParams.get("storage-file")
+  if (storageId) {
+    const downloadUrl = await storageFilesRef.child(storageId).getDownloadURL()
+    const data = await fetch(downloadUrl).then((res) => res.json())
+    console.log(data)
+    return
+  }
+
   const param = url.searchParams.get("entities")
   if (!param) return
 
@@ -109,12 +91,30 @@ export const parseUrlEntities = (): FhEntities | undefined => {
   }
 }
 
-export const createShareUrl = (entities: FhEntities) => {
+export const createShareUrl = async (entities: FhEntities) => {
   const url = new URL("http://localhost:8000")
   url.searchParams.set("entities", compressToEncodedURIComponent(JSON.stringify(entities)))
+
+  if (url.href.length < 8000) return url.href
+
+  url.searchParams.delete("entities")
+
+  const id = nanoid()
+  const res = await storageFilesRef
+    .child(id)
+    .putString(JSON.stringify(entities), "raw", { contentType: "application/json" })
+  url.searchParams.set("storage-file", id)
   console.log(url.href)
-  const param = url.searchParams.get("entities")
-  console.log(param && JSON.parse(decompressFromEncodedURIComponent(param)))
+  return url.href
+}
+
+export const createShareUrlByPlan = async (plan: PlanState) => {
+  const id = nanoid()
+  const url = await createShareUrl({
+    files: [{ id, type: "plan" }],
+    plans: [{ ...plan, id }],
+  })
+  return url
 }
 
 export { firebase }
