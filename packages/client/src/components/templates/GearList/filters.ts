@@ -21,7 +21,7 @@ const basicFilterRecord: Record<string, GearFilterFn> = {
 
   torpedo: (gear) => gear.categoryIn("Torpedo", "SubmarineTorpedo", "MidgetSubmarine"),
 
-  antiSubmarine: (gear) => gear.categoryIn("Sonar", "LargeSonar", "DepthCharge"),
+  antiSub: (gear) => gear.categoryIn("Sonar", "LargeSonar", "DepthCharge"),
 
   radar: (gear) => gear.is("Radar"),
 
@@ -35,7 +35,7 @@ const basicFilterRecord: Record<string, GearFilterFn> = {
 const filterRecord: Record<string, GearFilterFn> = {
   all: () => true,
   ...basicFilterRecord,
-  other: (gear) => Object.values(basicFilterRecord).every((fn) => !fn(gear)),
+  misc: (gear) => Object.values(basicFilterRecord).every((fn) => !fn(gear)),
 }
 
 export const getFilter = (key: string): GearFilterFn => {
