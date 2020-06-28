@@ -26,7 +26,7 @@ const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((
 
   return (
     <div ref={ref} {...divProps}>
-      <Image height={24} width={18} src={`proficiency/${ace}.png`} />
+      <Image height={24} width={18} src={`proficiency/${ace}.webp`} />
       <Exp>{exp}</Exp>
     </div>
   )
