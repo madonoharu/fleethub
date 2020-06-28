@@ -1,5 +1,6 @@
-import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip, DeckBuilderAirbase, DeckBuilderItem } from "gkcoi"
-import { Ship, Fleet, Plan, Airbase, Equipment } from "@fleethub/core"
+import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "gkcoi"
+import { Ship, Fleet, Plan, Equipment, ShipKey, FleetKey } from "@fleethub/core"
+import { Dict } from "@fleethub/utils"
 
 const getDeckItems = (equipment: Equipment) => {
   const items: DeckBuilderShip["items"] = {}
@@ -60,6 +61,41 @@ export const planToDeck = (plan: Plan, theme: GkcoiTheme = "dark") => {
     if (airbase.equipment.gears.length === 0) return
     const items = getDeckItems(airbase.equipment)
     deck[key] = { items }
+  })
+
+  return deck
+}
+
+const getDeck4Ship = (ship: Ship) => {
+  const items = getDeckItems(ship.equipment)
+
+  return {
+    id: ship.shipId,
+    lv: ship.level,
+    items,
+    luck: ship.luck.displayed,
+  }
+}
+
+const getDeck4Fleet = (fleet: Fleet) => {
+  const deckFleet: Dict<ShipKey, ReturnType<typeof getDeck4Ship>> = {}
+
+  fleet.entries.forEach(([key, ship]) => {
+    if (!ship) return
+    deckFleet[key] = getDeck4Ship(ship)
+  })
+
+  return deckFleet
+}
+
+type Deck4 = { version: 4; hqlv: number } & Dict<FleetKey, ReturnType<typeof getDeck4Fleet>>
+
+export const getDeck4 = (plan: Plan) => {
+  const deck: Deck4 = { version: 4, hqlv: plan.hqLevel }
+
+  plan.fleetEntries.forEach(([key, fleet]) => {
+    if (fleet.ships.length === 0) return
+    deck[key] = fleetToDeck(fleet)
   })
 
   return deck
