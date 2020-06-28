@@ -8,7 +8,7 @@ type Props = {
 }
 
 const StatIcon: React.FCX<Props> = ({ className, icon }) => {
-  return <Image className={className} src={`stats/${icon}.png`} />
+  return <Image className={className} src={`stats/${icon}.webp`} />
 }
 
 export default styled(StatIcon)`

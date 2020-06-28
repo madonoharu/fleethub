@@ -7,7 +7,7 @@ type Props = {
 }
 
 const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
-  return <Image className={className} height={18} width={48} src={`filters/${icon}.png`} />
+  return <Image className={className} height={18} width={48} src={`filters/${icon}.webp`} />
 }
 
 export default styled(FilterIcon)`
