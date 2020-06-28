@@ -1,23 +1,21 @@
 import React from "react"
 import { useDrop, useDrag } from "react-dnd"
-import { useSelector } from "react-redux"
 
 import TreeItem, { TreeItemProps } from "@material-ui/lab/TreeItem"
 
-import { filesSelectors, NormalizedFile, flatFile } from "../../../store"
+import { NormalizedFile } from "../../../store"
 
 type Props = TreeItemProps & {
   file: NormalizedFile
+  isParentOf: (file: NormalizedFile) => boolean
   onMove?: (id: string, to?: string) => void
 }
 
-const FileTreeItem: React.FC<Props> = ({ file, label, onMove, ...rest }) => {
-  const entities = useSelector(filesSelectors.selectEntities)
-
+const FileTreeItem: React.FC<Props> = ({ file, isParentOf, onMove, label, ...rest }) => {
   const item = {
     type: "file",
     file,
-    isParentOf: (dragFile: NormalizedFile) => flatFile(entities, file.id).includes(dragFile),
+    isParentOf,
   }
 
   const [, dragRef] = useDrag({ item })

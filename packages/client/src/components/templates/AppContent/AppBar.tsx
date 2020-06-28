@@ -8,11 +8,12 @@ import { AppBar as MuiAppBar, Link, Box, Button } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 
-import { FileTreeView, withIconButton } from "../../../components"
+import { Explorer, withIconButton } from "../../../components"
 import { useModal } from "../../../hooks"
 import { uiSlice } from "../../../store"
 
 import LanguageSelect from "./LanguageSelect"
+import UserStatus from "./UserStatus"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -53,8 +54,10 @@ const AppBar: React.FCX = ({ className }) => {
           <Link key={path.to} {...path} />
         ))}
 
+        <UserStatus />
+
         <Modal>
-          <FileTreeView onPlanSelect={handlePlanSelect} onPlanCreate={Modal.hide} />
+          <Explorer onPlanSelect={handlePlanSelect} onPlanCreate={Modal.hide} />
         </Modal>
       </Box>
     </MuiAppBar>
