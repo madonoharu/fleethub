@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { useDispatch } from "react-redux"
+import { Update } from "@reduxjs/toolkit"
 
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import FolderIcon from "@material-ui/icons/Folder"
@@ -14,24 +14,31 @@ import { usePopover } from "../../../hooks"
 
 import FileLabel from "./FileLabel"
 import FileTextField from "./FileTextField"
+import { FileTreeViewProps } from "./FileTreeView"
 
 type Props = {
   file: NormalizedFolder
 
+  onFileUpdate: (update: Update<NormalizedFolder>) => void
   onPlanCreate: (id: string) => void
   onFolderCreate: (id: string) => void
   onCopy: (id: string) => void
   onRemove: (id: string) => void
 }
 
-const FolderLabel: React.FCX<Props> = ({ className, file, onPlanCreate, onFolderCreate, onCopy, onRemove }) => {
+const FolderLabel: React.FCX<Props> = ({
+  className,
+  file,
+  onFileUpdate,
+  onPlanCreate,
+  onFolderCreate,
+  onCopy,
+  onRemove,
+}) => {
   const Popover = usePopover()
-  const dispatch = useDispatch()
   const [editable, setEditable] = React.useState(false)
 
-  const handleNameChange = (name: string) => {
-    dispatch(filesSlice.actions.update({ id: file.id, changes: { name } }))
-  }
+  const handleNameChange = (name: string) => onFileUpdate({ id: file.id, changes: { name } })
 
   const handlePlanCreate = () => {
     onPlanCreate(file.id)
