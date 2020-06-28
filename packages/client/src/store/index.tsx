@@ -11,12 +11,9 @@ import { PersistGate } from "redux-persist/integration/react"
 import { makeGroupBy } from "../utils"
 
 import { uiSlice } from "./uiSlice"
-import { filesSlice } from "./filesSlice"
-import { plansSlice } from "./plansSlice"
+import { entitiesReducer } from "./entities"
 
 const ignoredActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-
-export const selectEntites = (state: RootState) => state.entities.present
 
 const undoableOptions: UndoableOptions = {
   filter: excludeAction(ignoredActions),
@@ -24,11 +21,6 @@ const undoableOptions: UndoableOptions = {
   ignoreInitialState: true,
   limit: 10,
 }
-
-const entitiesReducer = combineReducers({
-  files: filesSlice.reducer,
-  plans: plansSlice.reducer,
-})
 
 const rootReducer = combineReducers({
   entities: undoable(persistReducer({ key: "entities", storage }, entitiesReducer), undoableOptions),
@@ -72,3 +64,4 @@ export type AppThunk = ThunkAction<void, RootState, typeof extraArgument, AnyAct
 export * from "./plansSlice"
 export * from "./filesSlice"
 export * from "./uiSlice"
+export * from "./entities"
