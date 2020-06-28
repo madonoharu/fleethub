@@ -23,6 +23,10 @@
     "packages"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/dist",
+    "**/lib",
+    "**/esm",
+    "**/*.config.js"
   ]
 }
