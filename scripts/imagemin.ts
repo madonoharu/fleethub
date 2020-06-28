@@ -1,7 +1,11 @@
 import imagemin from "imagemin"
 import imageminWebp from "imagemin-webp"
 
-imagemin(["images/*.{jpg,png,icon}"], {
-  destination: "build/images",
-  plugins: [imageminWebp({ method: 6, resize: { width: 32, height: 32 } })],
+const paths = ["filters", "gears", "proficiency", "ships", "stats"]
+
+paths.forEach((path) => {
+  imagemin([`images/${path}/*.{jpg,png}`], {
+    destination: `packages/client/quality/images/${path}`,
+    plugins: [imageminWebp({ method: 6, quality: 100 })],
+  })
 })
