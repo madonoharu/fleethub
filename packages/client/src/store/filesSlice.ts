@@ -6,11 +6,13 @@ import {
   PayloadAction,
   AppThunk,
   Dictionary,
+  EntitySelectors,
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
 import { isNonNullable } from "@fleethub/utils"
-import { selectEntites } from "."
+
+import { selectEntites } from "./selectEntites"
 
 export type PlanStateWithId = PlanState & { id: string }
 
@@ -28,7 +30,9 @@ export type NormalizedFile = NormalizedFolder | NormalizedPlanFile
 export type FileType = NormalizedFile["type"]
 
 const adapter = createEntityAdapter<NormalizedFile>()
-export const filesSelectors = adapter.getSelectors((state: DefaultRootState) => selectEntites(state).files)
+export const filesSelectors: EntitySelectors<NormalizedFile, DefaultRootState> = adapter.getSelectors(
+  (state) => selectEntites(state).files
+)
 
 const initialRootFolder: NormalizedFolder = { id: "root", type: "folder", name: "root", children: [] }
 
@@ -80,12 +84,21 @@ const removeFromChildren = (state: FilesState, ids: string[]) => {
     })
 }
 
+type SetAction = PayloadAction<{
+  files: NormalizedFile[]
+  plans: PlanStateWithId[]
+  to?: string
+  open?: boolean
+}>
+
 export const filesSlice = createSlice({
   name: "files",
 
   initialState,
 
   reducers: {
+    set: (state, { payload: { files, to } }: SetAction) => addFiles(state, files, to),
+
     createInitialPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent: string }>) => {
         const file: NormalizedPlanFile = { id: payload.plan.id, type: "plan" }
@@ -166,25 +179,22 @@ export const filesSlice = createSlice({
   },
 })
 
-export const flatFile = (state: Dictionary<NormalizedFile>, id: string): NormalizedFile[] => {
-  const file = state[id]
+export const flatFile = (entities: Dictionary<NormalizedFile>, id: string): NormalizedFile[] => {
+  const file = entities[id]
   if (!file) return []
   if (!isFolder(file)) return [file]
-
-  const children = file.children.flatMap((childId) => flatFile(state, childId))
-  return [file, ...children]
+  return [file, ...file.children.flatMap((childId) => flatFile(entities, childId))]
 }
 
-export const cloneFile = (id: string, to?: string): AppThunk => (dispatch, getState) => {
-  const state = getState()
-  const entities = filesSelectors.selectEntities(state)
-  const changes: Array<[string, string]> = flatFile(entities, id).map((file) => [file.id, nanoid()])
+export const getFileTree = (entities: Dictionary<NormalizedFile>, id: string) => {
+  const files = flatFile(entities, id)
+  const tree: Dictionary<NormalizedFile> = {}
 
-  if (!to) {
-    to = filesSelectors.selectAll(state).find((file) => isFolder(file) && file.children.includes(id))?.id
-  }
+  files.forEach((file) => {
+    tree[file.id] = file
+  })
 
-  dispatch(filesSlice.actions.clone({ changes, to }))
+  return tree
 }
 
 export const removeFile = (id: string): AppThunk => (dispatch, getState) => {
