@@ -4,7 +4,6 @@ import {
   Select as MuiSelect,
   SelectProps as MuiSelectProps,
   MenuItem,
-  MenuItemProps,
   InputLabel,
   FormControl,
 } from "@material-ui/core"
