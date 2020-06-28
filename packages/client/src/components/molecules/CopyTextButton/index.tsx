@@ -1,16 +1,15 @@
 import React from "react"
 import copy from "copy-to-clipboard"
 
-import MuiTooltip from "@material-ui/core/Tooltip"
+import { Tooltip as MuiTooltip, withStyles } from "@material-ui/core"
 import Assignment from "@material-ui/icons/Assignment"
 import Alert from "@material-ui/lab/Alert"
-import { withStyles } from "@material-ui/core/styles"
 
 import { withIconButton } from "../IconButtons"
 
 const AssignmentButton = withIconButton(Assignment)
 
-const Tooltip = withStyles({
+const StyledTooltip = withStyles({
   tooltip: {
     padding: 0,
   },
@@ -21,7 +20,7 @@ type Props = {
   message?: string
 }
 
-const Component: React.FC<Props> = ({ value, message = "copied" }) => {
+const CopyTextButton: React.FC<Props> = ({ value, message = "copied" }) => {
   const [open, setOpen] = React.useState(false)
 
   const handleClick = () => {
@@ -30,7 +29,7 @@ const Component: React.FC<Props> = ({ value, message = "copied" }) => {
   }
 
   return (
-    <Tooltip
+    <StyledTooltip
       open={open}
       onClose={() => setOpen(false)}
       placement="top"
@@ -40,9 +39,11 @@ const Component: React.FC<Props> = ({ value, message = "copied" }) => {
         </Alert>
       }
     >
-      <AssignmentButton title="コピー" onClick={handleClick} />
-    </Tooltip>
+      <span>
+        <AssignmentButton title="コピー" onClick={handleClick} />
+      </span>
+    </StyledTooltip>
   )
 }
 
-export default Component
+export default CopyTextButton
