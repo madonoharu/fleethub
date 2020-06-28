@@ -17,11 +17,13 @@
     "client": "yarn workspace @fleethub/client",
     "core": "yarn workspace @fleethub/core",
     "data": "yarn workspace @fleethub/data",
+    "imagemin": "yarn tsnode scripts/imagemin",
     "lint": "eslint --cache packages && yarn tscheck",
     "start": "yarn client start",
     "test": "yarn test:core",
     "test:core": "jest packages/core/src",
-    "tscheck": "tsc --noEmit"
+    "tscheck": "tsc --noEmit",
+    "tsnode": "yarn ts-node -O \"{\"\"module\"\":\"\"commonjs\"\"}\""
   },
   "husky": {
     "hooks": {
@@ -41,6 +43,8 @@
     "@babel/preset-typescript": "^7.10.1",
     "@fleethub/utils": "*",
     "@types/fs-extra": "^9.0.1",
+    "@types/imagemin": "^7.0.0",
+    "@types/imagemin-webp": "^5.1.0",
     "@types/jest": "^26.0.3",
     "@types/lodash-es": "^4.17.3",
     "@types/node": "^14.0.14",
@@ -56,6 +60,8 @@
     "eslint-plugin-react-hooks": "^4.0.4",
     "husky": "^4.2.5",
     "identity-obj-proxy": "^3.0.0",
+    "imagemin": "^7.0.1",
+    "imagemin-webp": "^6.0.0",
     "jest": "^26.1.0",
     "lint-staged": "^10.2.11",
     "lodash-es": "^4.17.15",
