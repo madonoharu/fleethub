@@ -4,7 +4,7 @@ import { isNonNullable } from "@fleethub/utils"
 import { DefaultRootState } from "react-redux"
 
 import { filesSlice } from "./filesSlice"
-import { selectEntites } from "."
+import { selectEntites } from "./selectEntites"
 
 type PlanStateWithId = PlanState & { id: string }
 
@@ -46,6 +46,7 @@ export const plansSlice = createSlice({
 
         plansAdapter.addMany(state, clonedPlans)
       })
+      .addCase(filesSlice.actions.set, (state, { payload: { plans } }) => plansAdapter.addMany(state, plans))
       .addCase(filesSlice.actions.remove, plansAdapter.removeMany)
   },
 })
