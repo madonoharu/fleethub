@@ -2,51 +2,14 @@ import React from "react"
 import styled from "styled-components"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Container, Button } from "@material-ui/core"
+import { Container } from "@material-ui/core"
 
-import {
-  filesSelectors,
-  filesSlice,
-  removeFile,
-  NormalizedFile,
-  cloneEntities,
-  copyFile,
-  shareFile,
-} from "../../../store"
+import { filesSelectors, filesSlice, removeFile, copyFile } from "../../../store"
 import { FileTreeView, FileTreeViewProps } from "../../../components"
-
-import { useObjectVal } from "react-firebase-hooks/database"
-import { useAuthState } from "react-firebase-hooks/auth"
-import { login, firebase, createShareUrl } from "../../../firebase"
-import { Dictionary } from "@reduxjs/toolkit"
 
 type Props = {
   onPlanSelect?: (id: string) => void
   onPlanCreate?: () => void
-}
-
-const UserFileTreeView: React.FCX<{ user: firebase.User }> = ({ user }) => {
-  const databaseRef = firebase.database().ref(`users/${user.uid}`)
-  const [value] = useObjectVal(databaseRef)
-  const state = useSelector((state) => state)
-
-  const handleClick = () => {
-    const { files } = cloneEntities(state, "root")
-    const dict: Dictionary<NormalizedFile> = {}
-    files.forEach((file) => {
-      dict[file.id] = file
-    })
-    databaseRef.set(dict)
-  }
-
-  console.log(value)
-
-  return (
-    <>
-      <Button onClick={handleClick}>upload</Button>
-      {value && <FileTreeView entities={value as Dictionary<NormalizedFile>} />}
-    </>
-  )
 }
 
 const Explorer: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate }) => {
@@ -74,11 +37,8 @@ const Explorer: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate }) =
 
   const handleRemove = (id: string) => dispatch(removeFile(id))
 
-  const [user] = useAuthState(firebase.auth())
-
   return (
     <Container className={className}>
-      <Button onClick={() => dispatch(shareFile("root"))}>upload</Button>
       <FileTreeView
         entities={fileEntities}
         onFileUpdate={handleFileUpdate}
