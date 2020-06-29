@@ -26,7 +26,7 @@ const rules = [
     },
   },
   {
-    test: /\.(gif|png|jpe?g|svg|woff|woff2|eot|ttf)$/,
+    test: /\.(gif|png|jpe?g|svg|webp|ico|woff|woff2)$/,
     use: [
       {
         loader: "url-loader",
