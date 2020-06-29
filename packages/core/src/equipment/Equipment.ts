@@ -1,11 +1,12 @@
-import { Gear, GearState } from "../gear"
-import { PickByValue } from "../utils"
 import { range } from "lodash-es"
+
+import { GearKey } from "../common"
+import { PickByValue } from "../utils"
+import { Gear, GearState } from "../gear"
 
 export type SlotKey = "slot1" | "slot2" | "slot3" | "slot4" | "slot5" | "slotx"
 
-type GearKeyWithoutExslot = "g1" | "g2" | "g3" | "g4" | "g5"
-export type GearKey = GearKeyWithoutExslot | "gx"
+type GearKeyWithoutExslot = Exclude<GearKey, "gx">
 
 export const getSlotKey = (key: GearKey) => key.replace("g", "slot") as SlotKey
 

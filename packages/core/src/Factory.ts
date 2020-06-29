@@ -1,11 +1,11 @@
 import { GearData, ShipData } from "@fleethub/data"
 
-import { FleetKeys, AirbaseKeys } from "./common"
+import { FleetKeys, AirbaseKeys, ShipKey } from "./common"
 
 import { MasterGear, GearState, Gear, makeCreateGear } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
 import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
-import { FleetState, FleetImpl, ShipKey } from "./fleet"
+import { FleetState, FleetImpl } from "./fleet"
 import { AirbaseState, AirbaseImpl } from "./airbase"
 import { PlanState, PlanImpl, Organization } from "./plan"
 

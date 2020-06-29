@@ -1,7 +1,8 @@
 import { ShipData } from "@fleethub/data"
 
+import { GearKey } from "../common"
 import { GearBase } from "../gear"
-import { EquipmentState, GearKey, Equipment } from "../equipment"
+import { EquipmentState, Equipment } from "../equipment"
 
 import { ShipAttribute } from "./ShipAttribute"
 
