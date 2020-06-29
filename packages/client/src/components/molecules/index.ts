@@ -10,4 +10,7 @@ export { default as ShipBanner } from "./ShipBanner"
 export { default as GearIcon } from "./GearIcon"
 export { default as StatIcon } from "./StatIcon"
 
+export { default as KctoolsButton } from "./KctoolsButton"
+export * from "./KctoolsButton"
+
 export * from "./IconButtons"
