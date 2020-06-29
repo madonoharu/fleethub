@@ -9,5 +9,4 @@ branches:
     - master
 deploy:
   provider: firebase
-  skip_cleanup: true
   token: $FIREBASE_TOKEN
