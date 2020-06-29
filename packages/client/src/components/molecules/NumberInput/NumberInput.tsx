@@ -2,15 +2,15 @@ import React, { useState, useEffect, useCallback, useMemo } from "react"
 import { round } from "lodash-es"
 import styled from "styled-components"
 
-import TextField, { TextFieldProps } from "@material-ui/core/TextField"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import MuiButton from "@material-ui/core/Button"
+import { Button, InputAdornment } from "@material-ui/core"
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
 
+import { TextField, TextFieldProps } from "../../atoms"
+
 import usePress from "./usePress"
 
-const Button = styled(MuiButton)`
+const StyledButton = styled(Button)`
   display: block;
   padding: 0;
   width: 24px;
@@ -35,12 +35,12 @@ const Adornment: React.FCX<AdornmentProps> = ({ className, increase, decrease })
   return (
     <InputAdornment className={className} position="end">
       <div>
-        <Button size="small" variant="text" {...increaseProps}>
+        <StyledButton size="small" variant="text" {...increaseProps}>
           <ArrowDropUpIcon fontSize="inherit" />
-        </Button>
-        <Button size="small" variant="text" {...decreaseProps}>
+        </StyledButton>
+        <StyledButton size="small" variant="text" {...decreaseProps}>
           <ArrowDropDownIcon fontSize="inherit" />
-        </Button>
+        </StyledButton>
       </div>
     </InputAdornment>
   )
