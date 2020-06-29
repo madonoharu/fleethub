@@ -1,11 +1,12 @@
+import { Dict } from "@fleethub/utils"
+
 import { GearState } from "../gear"
-import ProficiencyExp from "../common/ProficiencyExp"
+import { ProficiencyExp, ShipKeys, FleetKeys, AirbaseKeys } from "../common"
 import { EquipmentState, GearKey, Equipment } from "../equipment"
 import { ShipState, ShipBase, Ship } from "../ship"
 import { FleetState, ShipKey, Fleet } from "../fleet"
 import { AirbaseState } from "../airbase"
 import { PlanState, FleetKey, AirbaseKey, Plan } from "../plan"
-import { Dict } from "@fleethub/utils"
 
 export type DeckGear = {
   id: number
@@ -26,8 +27,6 @@ export type DeckShip = {
   asw?: number
   items?: DeckItems
 }
-
-const DeckShipkeys = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"] as const
 
 export type DeckFleet = Dict<ShipKey, DeckShip>
 
@@ -89,7 +88,7 @@ const getShip = ({ id, lv, items, luck, hp, asw }: DeckShip, findShip: FindShip)
 
 const getFleet = (source: DeckFleet, findShip: FindShip): FleetState => {
   const state: FleetState = {}
-  DeckShipkeys.forEach((key) => {
+  ShipKeys.forEach((key) => {
     const deckShip = source[key]
     if (deckShip) state[key] = getShip(deckShip, findShip)
   })
@@ -98,9 +97,6 @@ const getFleet = (source: DeckFleet, findShip: FindShip): FleetState => {
 }
 
 const getAirbase = (source: DeckAirbase): AirbaseState => getEquipmentState(source.items || {})
-
-const AirbaseKeys = ["a1", "a2", "a3"] as const
-const FleetKeys = ["f1", "f2", "f3", "f4"] as const
 
 export const getPlanStateByDeck = (deck: Deck4, findShip: FindShip): PlanState => {
   const state: PlanState = {}
