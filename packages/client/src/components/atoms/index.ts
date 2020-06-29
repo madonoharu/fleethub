@@ -7,9 +7,6 @@ export { default as Divider } from "./Divider"
 
 export { default as Image } from "./Image"
 
-export { default as NumberInput } from "./NumberInput"
-export * from "./NumberInput"
-
 export { default as MenuList } from "./MenuList"
 export * from "./MenuList"
 
