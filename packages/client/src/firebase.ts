@@ -67,30 +67,37 @@ type FhPlanFile = {
 
 type FhFile = FhPlanFile | FhFolder
 
-export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
+type FhPayload = FhEntities & {
+  open?: boolean
+}
+
+export const parseUrlEntities = async (): Promise<FhPayload | undefined> => {
   const url = new URL(location.href)
+
   const storageId = url.searchParams.get("storage-file")
   if (storageId) {
+    url.searchParams.delete("storage-file")
     const downloadUrl = await storageFilesRef.child(storageId).getDownloadURL()
     const data = await fetch(downloadUrl).then((res) => res.json())
     return data
   }
 
-  const param = url.searchParams.get("entities")
-  if (!param) return
-
-  url.searchParams.delete("entities")
-  history.replaceState("", "", url.href)
-
-  try {
-    return JSON.parse(decompressFromEncodedURIComponent(param))
-  } catch (error) {
-    console.warn(error)
-    return
+  const entitiesParam = url.searchParams.get("entities")
+  if (entitiesParam) {
+    url.searchParams.delete("entities")
+    history.replaceState("", "", url.href)
+    try {
+      return JSON.parse(decompressFromEncodedURIComponent(entitiesParam))
+    } catch (error) {
+      console.warn(error)
+      return
+    }
   }
+
+  return
 }
 
-export const createShareUrl = async (entities: FhEntities) => {
+export const publishFiles = async (entities: FhPayload) => {
   const url = new URL("http://localhost:8000")
   url.searchParams.set("entities", compressToEncodedURIComponent(JSON.stringify(entities)))
 
@@ -107,11 +114,12 @@ export const createShareUrl = async (entities: FhEntities) => {
   return url.href
 }
 
-export const createShareUrlByPlan = async (plan: PlanState) => {
+export const publishPlan = async (plan: PlanState) => {
   const id = nanoid()
-  const url = await createShareUrl({
+  const url = await publishFiles({
     files: [{ id, type: "plan" }],
     plans: [{ ...plan, id }],
+    open: true,
   })
   return url
 }

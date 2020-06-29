@@ -4,7 +4,7 @@ import { DefaultRootState } from "react-redux"
 import { filesSelectors, flatFile, isFolder, filesSlice, NormalizedFile, PlanStateWithId } from "./filesSlice"
 import { plansSelectors, plansSlice } from "./plansSlice"
 import { isNonNullable } from "@fleethub/utils"
-import { createShareUrl } from "../firebase"
+import { publishFiles } from "../firebase"
 
 export const entitiesReducer = combineReducers({
   files: filesSlice.reducer,
@@ -69,5 +69,5 @@ export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getSta
 export const shareFile = (id: string): AppThunk => (dispatch, getState) => {
   const state = getState()
   const cloned = cloneEntities(state, id)
-  createShareUrl(cloned)
+  publishFiles(cloned)
 }
