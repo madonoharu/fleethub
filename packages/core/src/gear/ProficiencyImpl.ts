@@ -1,4 +1,4 @@
-import { expToAce } from "../utils"
+import { ProficiencyExp } from "../utils"
 
 import { Proficiency } from "./types"
 
@@ -53,7 +53,7 @@ export class ProficiencyImpl implements Proficiency {
   constructor(private exp: number, private type: ProficiencyType) {}
 
   get ace() {
-    return expToAce(this.exp)
+    return ProficiencyExp.expToAce(this.exp)
   }
 
   get fighterPowerModifier() {
