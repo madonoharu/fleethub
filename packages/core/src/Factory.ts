@@ -1,11 +1,13 @@
 import { GearData, ShipData } from "@fleethub/data"
 
+import { FleetKeys, AirbaseKeys } from "./common"
+
 import { MasterGear, GearState, Gear, makeCreateGear } from "./gear"
 import { MasterShip, ShipState, createShip } from "./ship"
-import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys, GearKey } from "./equipment"
-import { FleetState, FleetImpl, Fleet, ShipKey } from "./fleet"
-import { AirbaseState, AirbaseImpl, Airbase } from "./airbase"
-import { PlanState, PlanImpl, FleetKey, AirbaseKey } from "./plan"
+import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
+import { FleetState, FleetImpl, ShipKey } from "./fleet"
+import { AirbaseState, AirbaseImpl } from "./airbase"
+import { PlanState, PlanImpl, Organization } from "./plan"
 
 const createEquipment = (
   state: EquipmentState,
@@ -78,16 +80,16 @@ export default class Factory {
   }
 
   public createPlan = (state: PlanState, createFleet = this.createFleet, createAirbase = this.createAirbase) => {
-    const fleetKeys = ["f1", "f2", "f3", "f4"] as const
-    const airbaseKeys = ["a1", "a2", "a3"] as const
+    const org: Partial<Organization> = {}
 
-    const fleetEntries: Array<[FleetKey, Fleet]> = fleetKeys.map((key) => [key, createFleet(state[key] || {})])
+    FleetKeys.forEach((key) => {
+      org[key] = createFleet(state[key] || {})
+    })
 
-    const airbaseEntries: Array<[AirbaseKey, Airbase]> = airbaseKeys.map((key) => [
-      key,
-      createAirbase(state[key] || {}),
-    ])
+    AirbaseKeys.forEach((key) => {
+      org[key] = createAirbase(state[key] || {})
+    })
 
-    return new PlanImpl(state, fleetEntries, airbaseEntries)
+    return new PlanImpl(state, org as Organization)
   }
 }
