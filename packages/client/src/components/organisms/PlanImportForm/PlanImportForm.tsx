@@ -3,13 +3,20 @@ import { Plan } from "@fleethub/core"
 import styled from "styled-components"
 
 import { TextField, Button } from "@material-ui/core"
+import AddIcon from "@material-ui/icons/Add"
+import EditIcon from "@material-ui/icons/Edit"
 
 import { useSnackbar, useFhSystem } from "../../../hooks"
+
+const PlanImportFormAction = styled.div`
+  margin-top: 8px;
+`
 
 type Props = {
   onOverwrite?: (plan: Plan) => void
   onImport?: (plan: Plan) => void
 }
+
 const PlanImportForm: React.FCX<Props> = ({ className, onOverwrite, onImport }) => {
   const [str, setStr] = React.useState("")
   const Snackbar = useSnackbar()
@@ -38,9 +45,21 @@ const PlanImportForm: React.FCX<Props> = ({ className, onOverwrite, onImport }) 
 
   return (
     <div className={className}>
-      <TextField label="デッキビルダー形式" value={str} onChange={(event) => setStr(event.currentTarget.value)} />
-      <Button onClick={handleOverwrite}>現在の編成に上書き</Button>
-      <Button onClick={handleImport}>新しい編成を作成</Button>
+      <TextField
+        label="デッキビルダー形式"
+        variant="outlined"
+        fullWidth
+        value={str}
+        onChange={(event) => setStr(event.currentTarget.value)}
+      />
+      <PlanImportFormAction>
+        <Button onClick={handleOverwrite} startIcon={<EditIcon />}>
+          現在の編成に上書き
+        </Button>
+        <Button onClick={handleImport} startIcon={<AddIcon />}>
+          新しい編成を作成
+        </Button>
+      </PlanImportFormAction>
 
       <Snackbar />
     </div>
@@ -48,5 +67,5 @@ const PlanImportForm: React.FCX<Props> = ({ className, onOverwrite, onImport }) 
 }
 
 export default styled(PlanImportForm)`
-  padding: 8px;
+  padding: 24px;
 `
