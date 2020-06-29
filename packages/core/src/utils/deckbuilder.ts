@@ -1,16 +1,16 @@
 import { GearState } from "../gear"
 import ProficiencyExp from "./ProficiencyExp"
-import { EquipmentState, GearKey } from "../equipment"
-import { ShipState, ShipBase } from "../ship"
-import { FleetState, ShipKey } from "../fleet"
+import { EquipmentState, GearKey, Equipment } from "../equipment"
+import { ShipState, ShipBase, Ship } from "../ship"
+import { FleetState, ShipKey, Fleet } from "../fleet"
 import { AirbaseState } from "../airbase"
-import { PlanState, FleetKey, AirbaseKey } from "../plan"
+import { PlanState, FleetKey, AirbaseKey, Plan } from "../plan"
 import { Dict } from "@fleethub/utils"
 
 export type DeckGear = {
   id: number | null
-  rf: number | string
-  mas: number | string
+  rf?: number | string
+  mas?: number | string
 }
 
 const DeckItemKeys = ["i1", "i2", "i3", "i4", "i5", "ix"] as const
@@ -35,8 +35,8 @@ export type DeckAirbase = {
   items: DeckItems
 }
 
-export type Deck = {
-  version: number
+export type Deck4 = {
+  version: 4
   hqlv?: number
 } & Dict<FleetKey, DeckFleet> &
   Dict<AirbaseKey, DeckAirbase>
@@ -54,9 +54,10 @@ const getGearState = ({ id, rf, mas }: DeckGear): GearState => ({
 
 const getEquipmentState = (source: DeckItems): EquipmentState => {
   const state: EquipmentState = {}
+
   DeckItemKeys.forEach((key) => {
     const deckGear = source[key]
-    state[key.replace("i", "g") as GearKey] = deckGear && getGearState(deckGear)
+    if (deckGear) state[key.replace("i", "g") as GearKey] = getGearState(deckGear)
   })
 
   return state
@@ -101,7 +102,7 @@ const getAirbase = (source: DeckAirbase): AirbaseState => getEquipmentState(sour
 const AirbaseKeys = ["a1", "a2", "a3"] as const
 const FleetKeys = ["f1", "f2", "f3", "f4"] as const
 
-export const getPlanStateByDeck = (deck: Deck, findShip: FindShip): PlanState => {
+export const getPlanStateByDeck = (deck: Deck4, findShip: FindShip): PlanState => {
   const state: PlanState = {}
 
   FleetKeys.forEach((key) => {
@@ -115,4 +116,57 @@ export const getPlanStateByDeck = (deck: Deck, findShip: FindShip): PlanState =>
   })
 
   return state
+}
+
+export const getDeckItems = (equipment: Equipment): DeckItems => {
+  const items: DeckItems = {}
+
+  equipment.forEach((gear, key) => {
+    items[key.replace("g", "i") as keyof typeof items] = {
+      id: gear.gearId,
+      rf: gear.stars || undefined,
+      mas: gear.ace || undefined,
+    }
+  })
+
+  return items
+}
+
+const getDeck4Ship = (ship: Ship): DeckShip => {
+  const items = getDeckItems(ship.equipment)
+
+  return {
+    id: ship.shipId,
+    lv: ship.level,
+    items,
+    luck: ship.luck.displayed,
+  }
+}
+
+const getDeck4Fleet = (fleet: Fleet): DeckFleet => {
+  const deckFleet: Dict<ShipKey, ReturnType<typeof getDeck4Ship>> = {}
+
+  fleet.entries.forEach(([key, ship]) => {
+    if (!ship) return
+    deckFleet[key] = getDeck4Ship(ship)
+  })
+
+  return deckFleet
+}
+
+export const getDeck4 = (plan: Plan) => {
+  const deck: Deck4 = { version: 4, hqlv: plan.hqLevel }
+
+  plan.fleetEntries.forEach(([key, fleet]) => {
+    if (fleet.ships.length === 0) return
+    deck[key] = getDeck4Fleet(fleet)
+  })
+
+  plan.airbaseEntries.forEach(([key, airbase]) => {
+    if (airbase.equipment.gears.length === 0) return
+    const items = getDeckItems(airbase.equipment)
+    deck[key] = { items }
+  })
+
+  return deck
 }
