@@ -61,5 +61,8 @@ export default class FhSystem {
     return this.createEnemyFleet({ main, escort })
   }
 
-  public createPlanByDeck = (deck: Deck4) => getPlanStateByDeck(deck, this.factory.findMasterShip)
+  public createPlanByDeck = (deck: Deck4) => {
+    const state = getPlanStateByDeck(deck, this.factory.findMasterShip)
+    return this.createPlan(state)
+  }
 }
