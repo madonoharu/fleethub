@@ -17,7 +17,6 @@ const Button = styled(MuiButton)`
   height: 16px;
   line-height: 1;
 `
-const inputLabelProps = { style: { whiteSpace: "nowrap" } } as const
 
 const stepValue = (value: number, step: number) => {
   const precision = Math.ceil(-Math.log10(Math.abs(step)))
@@ -76,6 +75,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   max,
   step = 1,
   variant,
+  InputProps,
   ...textFieldProps
 }) => {
   const changeValue = useCallback(
@@ -113,14 +113,14 @@ const NumberInput: React.FC<NumberInputProps> = ({
     [changeValue, setInputStr]
   )
 
-  const InputProps = useMemo(() => {
+  const mergedInputProps = useMemo(() => {
     const increase = () => changeValue(stepValue(value, step))
     const decrease = () => changeValue(stepValue(value, -step))
 
-    return {
-      endAdornment: <StyledAdornment increase={increase} decrease={decrease} />,
-    }
-  }, [value, step, changeValue])
+    const endAdornment = <StyledAdornment increase={increase} decrease={decrease} />
+
+    return { endAdornment, ...InputProps }
+  }, [value, step, changeValue, InputProps])
 
   return (
     <div className={className}>
@@ -129,8 +129,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         onChange={handleChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        InputLabelProps={inputLabelProps}
-        InputProps={InputProps}
+        InputProps={mergedInputProps}
         variant={variant}
         {...textFieldProps}
       />
@@ -142,6 +141,11 @@ export default styled(NumberInput)`
   :hover ${StyledAdornment} {
     visibility: visible;
   }
+
+  .MuiInputLabel-root {
+    white-space: nowrap;
+  }
+
   input {
     width: 120px;
   }
