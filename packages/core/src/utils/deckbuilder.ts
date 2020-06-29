@@ -8,9 +8,9 @@ import { PlanState, FleetKey, AirbaseKey, Plan } from "../plan"
 import { Dict } from "@fleethub/utils"
 
 export type DeckGear = {
-  id: number | null
-  rf?: number | string
-  mas?: number | string
+  id: number
+  rf?: number
+  mas?: number
 }
 
 const DeckItemKeys = ["i1", "i2", "i3", "i4", "i5", "ix"] as const
@@ -19,7 +19,7 @@ type DeckItemKey = typeof DeckItemKeys[number]
 export type DeckItems = Dict<DeckItemKey, DeckGear>
 
 export type DeckShip = {
-  id: string | number | null
+  id: number
   lv: number
   luck?: number
   hp?: number
@@ -118,7 +118,7 @@ export const getPlanStateByDeck = (deck: Deck4, findShip: FindShip): PlanState =
   return state
 }
 
-export const getDeckItems = (equipment: Equipment): DeckItems => {
+export const getDeckItems = (equipment: Equipment) => {
   const items: DeckItems = {}
 
   equipment.forEach((gear, key) => {
