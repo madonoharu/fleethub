@@ -1,21 +1,7 @@
-import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip, DeckBuilderAirbase } from "gkcoi"
-import { Ship, Fleet, Plan, Equipment, ShipKey, FleetKey, AirbaseKey } from "@fleethub/core"
-import { Dict } from "@fleethub/utils"
+import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "gkcoi"
+import { Ship, Fleet, Plan, getDeckItems } from "@fleethub/core"
 
-export const getDeckItems = (equipment: Equipment) => {
-  const items: DeckBuilderShip["items"] = {}
-  equipment.forEach((gear, key) => {
-    items[key.replace("g", "i") as keyof typeof items] = {
-      id: gear.gearId,
-      rf: gear.stars,
-      mas: gear.ace,
-    }
-  })
-
-  return items
-}
-
-const shipToDeck = (ship: Ship): DeckBuilderShip => {
+const getGkcoiShip = (ship: Ship): DeckBuilderShip => {
   const items = getDeckItems(ship.equipment)
 
   return {
@@ -34,12 +20,12 @@ const shipToDeck = (ship: Ship): DeckBuilderShip => {
   }
 }
 
-const fleetToDeck = (fleet: Fleet): DeckBuilderFleet => {
+const getGkcoiFleet = (fleet: Fleet): DeckBuilderFleet => {
   const deckFleet: DeckBuilderFleet = {}
 
   fleet.entries.forEach(([key, ship]) => {
     if (!ship) return
-    deckFleet[key] = shipToDeck(ship)
+    deckFleet[key] = getGkcoiShip(ship)
   })
 
   return deckFleet
@@ -49,12 +35,12 @@ export type GkcoiTheme = DeckBuilder["theme"]
 
 export const gkcoiThemes: GkcoiTheme[] = ["dark", "dark-ex", "official", "74lc", "74mc", "74sb"]
 
-export const planToDeck = (plan: Plan, theme: GkcoiTheme = "dark") => {
+export const getGkcoiDeck = (plan: Plan, theme: GkcoiTheme = "dark") => {
   const deck: DeckBuilder = { lang: "en", theme, hqlv: plan.hqLevel }
 
   plan.fleetEntries.forEach(([key, fleet]) => {
     if (fleet.ships.length === 0) return
-    deck[key] = fleetToDeck(fleet)
+    deck[key] = getGkcoiFleet(fleet)
   })
 
   plan.airbaseEntries.forEach(([key, airbase]) => {
