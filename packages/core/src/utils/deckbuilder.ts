@@ -1,12 +1,12 @@
 import { Dict } from "@fleethub/utils"
 
+import { ProficiencyExp, GearKey, ShipKey, ShipKeys, FleetKey, FleetKeys, AirbaseKey, AirbaseKeys } from "../common"
 import { GearState } from "../gear"
-import { ProficiencyExp, ShipKeys, FleetKeys, AirbaseKeys } from "../common"
-import { EquipmentState, GearKey, Equipment } from "../equipment"
+import { EquipmentState, Equipment } from "../equipment"
 import { ShipState, ShipBase, Ship } from "../ship"
-import { FleetState, ShipKey, Fleet } from "../fleet"
+import { FleetState, Fleet } from "../fleet"
 import { AirbaseState } from "../airbase"
-import { PlanState, FleetKey, AirbaseKey, Plan } from "../plan"
+import { PlanState, Plan } from "../plan"
 
 export type DeckGear = {
   id: number

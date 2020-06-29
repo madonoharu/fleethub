@@ -2,10 +2,10 @@ import { GearCategory, MapEnemyFleet } from "@fleethub/data"
 
 import Factory from "./Factory"
 import { ShipState } from "./ship"
-import { GearKey } from "./equipment"
-import { ShipKey, FleetState } from "./fleet"
+import { FleetState } from "./fleet"
 import { EnemyFleetImpl, EnemyFleetState } from "./enemy"
 import { Deck4, getPlanStateByDeck } from "./utils"
+import { ShipKey, GearKey } from "./common"
 
 const allCategories = Object.values(GearCategory).filter((value): value is number => typeof value === "number")
 
