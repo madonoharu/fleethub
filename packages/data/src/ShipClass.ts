@@ -292,8 +292,21 @@ export enum ShipClass {
 
   /** De Ruyter級 */
   DeRuyterClass = 98,
+
   /**  Atlanta級 */
   AtlantaClass = 99,
+
+  /** 迅鯨型 */
+  JingeiClass = 100,
+
+  /** 松型 */
+  MatsuClass = 101,
+
+  /** 巡潜丙型 */
+  JunsenTypeC = 103,
+
+  /** 丁型海防艦 */
+  TypeDCoastalDefenseShip = 104,
 
   /** 駆逐イ級 */
   DestroyerIClass = 1001,
