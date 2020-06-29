@@ -9,6 +9,6 @@ export { default as EquipmentList } from "./EquipmentList"
 export { default as EnemyFleetContent } from "./EnemyFleetContent"
 export { default as PlanShareContent } from "./PlanShareContent"
 export { default as FleetAnalysisPanel } from "./FleetAnalysisPanel"
-
+export { default as PlanImportContent } from "./PlanImportContent"
 export { default as ReactGkcoi } from "./ReactGkcoi"
 export { default as NauticalChart } from "./NauticalChart"
