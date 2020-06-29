@@ -29,6 +29,7 @@ export * from "./useTimeout"
 export * from "./useFetch"
 export * from "./useModal"
 export * from "./usePopover"
+export * from "./useSnackbar"
 export * from "./useSwap"
 
 export * from "./useFhSystem"
