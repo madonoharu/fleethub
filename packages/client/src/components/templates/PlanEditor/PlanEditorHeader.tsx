@@ -1,10 +1,9 @@
 import React from "react"
+import styled from "styled-components"
+import copy from "copy-to-clipboard"
 import { Plan, PlanState } from "@fleethub/core"
 import { useAsyncCallback } from "react-async-hook"
 import { createSelector } from "@reduxjs/toolkit"
-import copy from "copy-to-clipboard"
-
-import { TextField, CircularProgress, Snackbar } from "@material-ui/core"
 
 import {
   Flexbox,
@@ -16,6 +15,7 @@ import {
   KctoolsButton,
   ImportButton,
   PlanImportForm,
+  TextField,
 } from "../../../components"
 import { useSnackbar, useModal } from "../../../hooks"
 import { Update, openKctools } from "../../../utils"
@@ -38,12 +38,19 @@ const tweet = ({ text, url }: TweetOption) => {
   window.open(tweetUrl.href, "_blank", "width=480,height=400,noopener")
 }
 
+const LevelInput = styled(NumberInput)`
+  input {
+    width: 26px;
+  }
+`
+
 type Props = {
   plan: Plan
   update: Update<PlanState>
+  onPlanImport?: (plan: Plan) => void
 }
 
-const PlanEditorHeader: React.FC<Props> = ({ plan, update }) => {
+const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPlanImport }) => {
   const ShareModal = useModal()
   const ImportModal = useModal()
   const Snackbar = useSnackbar()
@@ -77,13 +84,19 @@ const PlanEditorHeader: React.FC<Props> = ({ plan, update }) => {
 
   const asyncOnTweetClick = useAsyncCallback(async () => {
     const url = await urlSelector(plan.state)
-    tweet({ text: `編成 ${plan.name}`, url })
+    tweet({ text: `【${plan.name}】`, url })
   })
 
+  const handleOverwrite = (plan: Plan) => {
+    update((draft) => {
+      Object.assign(draft, plan.state)
+    })
+  }
+
   return (
-    <Flexbox>
-      <TextField value={plan.name} onChange={handleNameChange} />
-      <NumberInput style={{ width: 60 }} value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
+    <Flexbox className={className}>
+      <TextField startLabel="編成名" value={plan.name} onChange={handleNameChange} />
+      <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
 
       <LinkButton title="共有URLをコピー" onClick={asyncOnLinkClick.execute} disabled={asyncOnLinkClick.loading} />
       <TweetButton title="編成をツイート" onClick={asyncOnTweetClick.execute} disabled={asyncOnTweetClick.loading} />
@@ -95,7 +108,7 @@ const PlanEditorHeader: React.FC<Props> = ({ plan, update }) => {
         <PlanShareContent plan={plan} />
       </ShareModal>
       <ImportModal>
-        <PlanImportForm />
+        <PlanImportForm onOverwrite={handleOverwrite} onImport={onPlanImport} />
       </ImportModal>
 
       <Snackbar />
