@@ -11,6 +11,7 @@ import InfoIcon from "@material-ui/icons/Info"
 import SaveIcon from "@material-ui/icons/Save"
 import ShareIcon from "@material-ui/icons/Share"
 import EditIcon from "@material-ui/icons/Edit"
+import SaveAltIcon from "@material-ui/icons/SaveAlt"
 
 import withIconButton from "./withIconButton"
 import TwitterIcon from "./TwitterIcon"
@@ -31,4 +32,5 @@ export const ShareButton = withIconButton(ShareIcon)
 export const SaveButton = withIconButton(SaveIcon)
 export const InfoButton = withIconButton(InfoIcon)
 export const EditButton = withIconButton(EditIcon)
+export const ImportButton = withIconButton(SaveAltIcon)
 export const TweetButton = withIconButton(TwitterIcon)
