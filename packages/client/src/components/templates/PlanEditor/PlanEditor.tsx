@@ -1,16 +1,9 @@
 import React from "react"
+import styled from "styled-components"
 
-import { Container, TextField, Button } from "@material-ui/core"
+import { Container } from "@material-ui/core"
 
-import {
-  NumberInput,
-  Flexbox,
-  SelectButtons,
-  ShareButton,
-  PlanShareContent,
-  LinkButton,
-  KctoolsButton,
-} from "../../../components"
+import { SelectButtons, PlanShareContent } from "../../../components"
 import { usePlan, useModal } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"
@@ -34,18 +27,6 @@ const PlanEditor: React.FC<Props> = ({ planId }) => {
   if (!plan || !state) return null
 
   const fleetEntry = plan.fleetEntries.find(([key]) => key === tabKey)
-
-  const handleNameChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    actions.update((draft) => {
-      draft.name = event.currentTarget.value
-    })
-  }
-
-  const handleHqLevelChange = (next: number) => {
-    actions.update((draft) => {
-      draft.hqLevel = next
-    })
-  }
 
   return (
     <Container>
