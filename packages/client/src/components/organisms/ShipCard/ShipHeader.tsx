@@ -5,7 +5,7 @@ import { Ship, ShipState } from "@fleethub/core"
 import { Typography, Button, Tooltip } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 
-import { UpdateButton, ClearButton, InfoButton, EditButton } from "../../../components"
+import { UpdateButton, ClearButton, InfoButton, EditButton } from "../.."
 
 import { useModal } from "../../../hooks"
 import { Update } from "../../../utils"
@@ -34,9 +34,8 @@ const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => 
   return (
     <div className={className}>
       <Tooltip title="ステータスを編集">
-        <StyledButton onClick={Modal.show}>
+        <StyledButton onClick={Modal.show} endIcon={<EditIcon />}>
           Lv{ship.level} {ship.name}
-          <EditIcon />
         </StyledButton>
       </Tooltip>
 

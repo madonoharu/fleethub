@@ -7,7 +7,7 @@ import { Box, Paper } from "@material-ui/core"
 import { EquipmentList, ShipBanner } from "../../../components"
 import { Update, createShallowEqualSelector } from "../../../utils"
 
-import ShipHeader from "./Header"
+import ShipHeader from "./ShipHeader"
 import ShipStats from "./ShipStats"
 
 const Content = styled.div`
