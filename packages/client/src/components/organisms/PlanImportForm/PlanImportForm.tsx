@@ -10,7 +10,7 @@ type Props = {
   onOverwrite?: (plan: Plan) => void
   onImport?: (plan: Plan) => void
 }
-const PlanImportContent: React.FCX<Props> = ({ className, onOverwrite, onImport }) => {
+const PlanImportForm: React.FCX<Props> = ({ className, onOverwrite, onImport }) => {
   const [str, setStr] = React.useState("")
   const Snackbar = useSnackbar()
 
@@ -47,6 +47,6 @@ const PlanImportContent: React.FCX<Props> = ({ className, onOverwrite, onImport 
   )
 }
 
-export default styled(PlanImportContent)`
+export default styled(PlanImportForm)`
   padding: 8px;
 `

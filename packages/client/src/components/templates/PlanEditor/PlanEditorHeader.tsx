@@ -15,7 +15,7 @@ import {
   LinkButton,
   KctoolsButton,
   ImportButton,
-  PlanImportContent,
+  PlanImportForm,
 } from "../../../components"
 import { useSnackbar, useModal } from "../../../hooks"
 import { Update, openKctools } from "../../../utils"
@@ -95,7 +95,7 @@ const PlanEditorHeader: React.FC<Props> = ({ plan, update }) => {
         <PlanShareContent plan={plan} />
       </ShareModal>
       <ImportModal>
-        <PlanImportContent />
+        <PlanImportForm />
       </ImportModal>
 
       <Snackbar />
