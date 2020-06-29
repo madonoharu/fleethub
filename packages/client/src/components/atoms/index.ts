@@ -12,3 +12,6 @@ export * from "./NumberInput"
 
 export { default as MenuList } from "./MenuList"
 export * from "./MenuList"
+
+export { default as TextField } from "./TextField"
+export * from "./TextField"
