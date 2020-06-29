@@ -1,12 +1,8 @@
+import { expToAce } from "../utils"
+
 import { Proficiency } from "./types"
 
 export type ProficiencyType = "Fighter" | "SeaplaneBomber" | "Other"
-
-const expTable = [0, 10, 25, 40, 55, 70, 85, 100]
-
-export const expToAce = (exp: number) => {
-  return expTable.filter((boundary) => boundary <= exp).length - 1
-}
 
 type LevelBonus = { level: number; value: number }
 
