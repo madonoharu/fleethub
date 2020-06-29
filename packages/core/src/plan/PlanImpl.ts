@@ -1,4 +1,4 @@
-import { Plan, PlanStateBase, FleetKey } from "./types"
+import { Plan } from "./types"
 
 export class PlanImpl implements Plan {
   public name: Plan["name"]
@@ -6,13 +6,13 @@ export class PlanImpl implements Plan {
   public nodes: Plan["nodes"]
 
   constructor(
-    base: PlanStateBase,
+    public state: Plan["state"],
     public fleetEntries: Plan["fleetEntries"],
     public airbaseEntries: Plan["airbaseEntries"]
   ) {
-    this.name = base.name || ""
-    this.hqLevel = base.hqLevel || 120
-    this.nodes = base.nodes || []
+    this.name = state.name || ""
+    this.hqLevel = state.hqLevel || 120
+    this.nodes = state.nodes || []
   }
 
   get airbases() {

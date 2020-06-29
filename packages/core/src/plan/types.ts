@@ -28,6 +28,8 @@ export type PlanStateBase = {
 export type PlanState = PlanStateBase & FleetDict & AirbaseDict
 
 export type Plan = Required<PlanStateBase> & {
+  state: PlanState
+
   fleetEntries: Array<[FleetKey, Fleet]>
   airbaseEntries: Array<[AirbaseKey, Airbase]>
 
