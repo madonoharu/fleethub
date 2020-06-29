@@ -5,6 +5,7 @@ import { ShipState } from "./ship"
 import { GearKey } from "./equipment"
 import { ShipKey, FleetState } from "./fleet"
 import { EnemyFleetImpl, EnemyFleetState } from "./enemy"
+import { Deck4, getPlanStateByDeck } from "./utils"
 
 const allCategories = Object.values(GearCategory).filter((value): value is number => typeof value === "number")
 
@@ -59,4 +60,6 @@ export default class FhSystem {
 
     return this.createEnemyFleet({ main, escort })
   }
+
+  public createPlanByDeck = (deck: Deck4) => getPlanStateByDeck(deck, this.factory.findMasterShip)
 }
