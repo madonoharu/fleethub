@@ -1,4 +1,4 @@
-import { ProficiencyExp } from "../utils"
+import { ProficiencyExp } from "../common"
 
 import { Proficiency } from "./types"
 
