@@ -1,27 +1,30 @@
 import React from "react"
-import { Plan } from "@fleethub/core"
+import { Plan, getDeck4 } from "@fleethub/core"
 import styled from "styled-components"
 
 import { Link, TextField, List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core"
+import OpenInNew from "@material-ui/icons/OpenInNew"
 
-import { uiSlice, plansSelectors, filesSlice, openFirstPlan } from "../../../store"
-import { CopyTextButton } from "../../../components"
-import { getDeck4 } from "../../../utils"
+import { CopyTextButton, Flexbox } from "../../../components"
+import { openKctools, openDeckbuilder } from "../../../utils"
 
 type ListItemLinkProps = {
+  onClick?: () => void
   href?: string
   secondary?: React.ReactNode
 }
 
-const ListItemLink: React.FC<ListItemLinkProps> = ({ href, secondary, children }) => (
-  <ListItem component={Link} href={href}>
+const ListItemLink: React.FCX<ListItemLinkProps> = ({ className, href, secondary, onClick, children }) => (
+  <ListItem className={className} button onClick={onClick} component={Link} href={href}>
+    <ListItemIcon>
+      <OpenInNew />
+    </ListItemIcon>
     <ListItemText secondary={secondary}>{children}</ListItemText>
   </ListItem>
 )
 
-const DeckContainer = styled.div`
-  display: flex;
-  align-items: flex-end;
+const StyledListItemLink = styled(ListItemLink)`
+  cursor: pointer;
 `
 
 const PlanShareContent: React.FCX<{ plan: Plan }> = ({ className, plan }) => {
@@ -29,17 +32,18 @@ const PlanShareContent: React.FCX<{ plan: Plan }> = ({ className, plan }) => {
   return (
     <div className={className}>
       <List>
-        <ListItemLink href={`https://noro6.github.io/kcTools/?predeck=${predeck}`}>
-          制空権シミュレータで開く
-        </ListItemLink>
-        <ListItemLink href={`http://kancolle-calc.net/deckbuilder.html?predeck=${predeck}`}>
-          デッキビルダーで開く
-        </ListItemLink>
+        <StyledListItemLink onClick={() => openKctools(plan)}>制空権シミュレータで開く</StyledListItemLink>
+        <StyledListItemLink onClick={() => openDeckbuilder(plan)}>デッキビルダーで開く</StyledListItemLink>
       </List>
-      <DeckContainer>
-        <TextField label="デッキビルダー形式" multiline rows="8" value={predeck} margin="normal" variant="outlined" />
-        <CopyTextButton value={predeck} />
-      </DeckContainer>
+      <Flexbox>
+        <TextField
+          label="デッキビルダー形式"
+          value={predeck}
+          margin="normal"
+          variant="outlined"
+          InputProps={{ endAdornment: <CopyTextButton value={predeck} /> }}
+        />
+      </Flexbox>
     </div>
   )
 }
