@@ -4,11 +4,10 @@ node_js:
 cache: yarn
 script:
   - yarn build
-  - echo "Deploy"
 branches:
   only: 
     - master
 deploy:
   provider: firebase
-  token:
-    secure: $FIREBASE_TOKEN
+  skip_cleanup: true
+  token: $FIREBASE_TOKEN
