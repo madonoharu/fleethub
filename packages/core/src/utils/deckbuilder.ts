@@ -74,13 +74,13 @@ const getShip = ({ id, lv, items, luck, hp, asw }: DeckShip, findShip: FindShip)
 
   if (!base) return state
 
-  if (luck) {
+  if (luck && luck > 0) {
     state.luck = luck - base.luck[0]
   }
-  if (hp) {
+  if (hp && hp > 0) {
     state.maxHp = hp - base.maxHp[0]
   }
-  if (asw) {
+  if (asw && asw > 0) {
     state.asw = asw - base.asw[0]
   }
 
