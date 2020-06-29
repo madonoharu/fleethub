@@ -1,12 +1,10 @@
 import firebase from "firebase/app"
-import "firebase/auth"
-import "firebase/database"
-import "firebase/firestore"
 import "firebase/storage"
 import { PlanState } from "@fleethub/core"
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string-uri-fix"
-import { FhEntities } from "./store"
 import { nanoid } from "@reduxjs/toolkit"
+
+import { FhEntities } from "./store"
 
 const firebaseConfig = {
   apiKey: "AIzaSyBTCNFmu7K2mlUzVcxbc2vAuzMJxvNk4-s",
@@ -21,13 +19,12 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig)
 
-const provider = new firebase.auth.TwitterAuthProvider()
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+// const provider = new firebase.auth.TwitterAuthProvider()
+// firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+// export const login = () => firebase.auth().signInWithPopup(provider)
+// export const logout = () => firebase.auth().signOut()
 
 const storageFilesRef = firebase.storage().ref("files")
-
-export const login = () => firebase.auth().signInWithPopup(provider)
-export const logout = () => firebase.auth().signOut()
 
 export const shorten = async (url: string, domain: "kcj") => {
   const apiKey = firebaseConfig.apiKey

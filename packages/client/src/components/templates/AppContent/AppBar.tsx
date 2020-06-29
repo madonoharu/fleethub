@@ -13,7 +13,6 @@ import { useModal } from "../../../hooks"
 import { uiSlice } from "../../../store"
 
 import LanguageSelect from "./LanguageSelect"
-import UserStatus from "./UserStatus"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -53,8 +52,6 @@ const AppBar: React.FCX = ({ className }) => {
         {paths.map((path) => (
           <Link key={path.to} {...path} />
         ))}
-
-        <UserStatus />
 
         <Modal>
           <Explorer onPlanSelect={handlePlanSelect} onPlanCreate={Modal.hide} />
