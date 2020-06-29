@@ -9,10 +9,11 @@ import {
   GearId,
   GearCategory,
 } from "@fleethub/data"
-import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
-import { GearBase } from "../gear"
-import { GearKey } from "../equipment"
 
+import { GearKey } from "../common"
+import { GearBase } from "../gear"
+
+import { ShipAttribute, createShipAttrs } from "./ShipAttribute"
 import { StatBase, ShipStatsBase, ShipCommonBaseWithStatsBase } from "./types"
 
 type Equippable = {

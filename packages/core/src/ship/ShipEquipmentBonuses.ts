@@ -1,11 +1,12 @@
 import { GearId, GearCategory, ShipClass, ShipType, ShipId, ShipRuby } from "@fleethub/data"
 import { createEquipmentBonuses as createBasicBonuses } from "equipment-bonus"
 
-import { Equipment, GearKey } from "../equipment"
-
-import { ShipIdentityWithSpeed, EquipmentBonuses } from "./types"
+import { GearKey } from "../common"
+import { Equipment } from "../equipment"
 import { GearBase } from "../gear"
 import { mapValues } from "../utils"
+
+import { ShipIdentityWithSpeed, EquipmentBonuses } from "./types"
 
 export enum SpeedValue {
   Slow = 5,
