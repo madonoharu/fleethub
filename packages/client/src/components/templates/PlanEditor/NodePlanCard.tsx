@@ -1,8 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import { NodePlan, AirbaseKey } from "@fleethub/core"
+import { NodePlan, AirbaseKeys } from "@fleethub/core"
 
-import { Paper, Typography, Button, FormControlLabel, RadioGroup, Radio, DialogActions } from "@material-ui/core"
+import { Paper, Typography, Button, FormControlLabel, RadioGroup, Radio } from "@material-ui/core"
 
 import { InfoButton, RemoveButton, Flexbox, EnemyFleetContent } from "../../../components"
 import { useFhSystem, useModal } from "../../../hooks"
@@ -20,7 +20,7 @@ type NodeLbasFormProps = {
 const NodeLbasForm: React.FC<NodeLbasFormProps> = ({ lbas = {}, onChange }) => {
   return (
     <>
-      {airbaseKeys.map((key, index) => (
+      {AirbaseKeys.map((key, index) => (
         <Flexbox key={key}>
           <AirbaseLable>{index + 1}</AirbaseLable>
           <RadioGroup value={lbas[key] || 0} onChange={(a, value) => onChange({ ...lbas, [key]: Number(value) })} row>
@@ -37,8 +37,6 @@ const NodeLbasForm: React.FC<NodeLbasFormProps> = ({ lbas = {}, onChange }) => {
     </>
   )
 }
-
-const airbaseKeys: AirbaseKey[] = ["a1", "a2", "a3"]
 
 type NodePlanCardProps = {
   node: NodePlan
