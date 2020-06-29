@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { expToAce } from "@fleethub/core"
+import { ProficiencyExp } from "@fleethub/core"
 
 import { Typography } from "@material-ui/core"
 
@@ -22,7 +22,7 @@ type ProficiencyIconProps = Pick<React.ComponentProps<"div">, "className" | "onC
 
 const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props, ref) => {
   const { exp, ...divProps } = props
-  const ace = expToAce(exp)
+  const ace = ProficiencyExp.expToAce(exp)
 
   return (
     <div ref={ref} {...divProps}>
