@@ -49,7 +49,7 @@ const config = {
   entry: "./src/index.tsx",
   output: {
     filename: "bundle.js",
-    path: path.resolve(process.cwd() + "/dist"),
+    path: "../../public",
   },
   module: {
     rules,
