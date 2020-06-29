@@ -25,6 +25,7 @@ export const useRenderCount = () => {
   })
 }
 
+export * from "./useTimeout"
 export * from "./useFetch"
 export * from "./useModal"
 export * from "./usePopover"
