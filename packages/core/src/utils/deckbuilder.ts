@@ -1,5 +1,5 @@
 import { GearState } from "../gear"
-import ProficiencyExp from "./ProficiencyExp"
+import ProficiencyExp from "../common/ProficiencyExp"
 import { EquipmentState, GearKey, Equipment } from "../equipment"
 import { ShipState, ShipBase, Ship } from "../ship"
 import { FleetState, ShipKey, Fleet } from "../fleet"
@@ -20,7 +20,7 @@ export type DeckItems = Dict<DeckItemKey, DeckGear>
 
 export type DeckShip = {
   id: number
-  lv: number
+  lv?: number
   luck?: number
   hp?: number
   asw?: number
@@ -32,7 +32,7 @@ const DeckShipkeys = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"] as const
 export type DeckFleet = Dict<ShipKey, DeckShip>
 
 export type DeckAirbase = {
-  items: DeckItems
+  items?: DeckItems
 }
 
 export type Deck4 = {
@@ -97,7 +97,7 @@ const getFleet = (source: DeckFleet, findShip: FindShip): FleetState => {
   return state
 }
 
-const getAirbase = (source: DeckAirbase): AirbaseState => getEquipmentState(source.items)
+const getAirbase = (source: DeckAirbase): AirbaseState => getEquipmentState(source.items || {})
 
 const AirbaseKeys = ["a1", "a2", "a3"] as const
 const FleetKeys = ["f1", "f2", "f3", "f4"] as const
