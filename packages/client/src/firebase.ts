@@ -7,14 +7,14 @@ import { nanoid } from "@reduxjs/toolkit"
 import { FhEntities } from "./store"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBTCNFmu7K2mlUzVcxbc2vAuzMJxvNk4-s",
-  authDomain: "jervisor.firebaseapp.com",
-  databaseURL: "https://jervisor.firebaseio.com",
-  projectId: "jervisor",
-  storageBucket: "jervisor.appspot.com",
-  messagingSenderId: "622340276549",
-  appId: "1:622340276549:web:9f5a69030ed3673b487e2c",
-  measurementId: "G-5QNXK21VP0",
+  apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",
+  authDomain: "kcfleethub.firebaseapp.com",
+  databaseURL: "https://kcfleethub.firebaseio.com",
+  projectId: "kcfleethub",
+  storageBucket: "kcfleethub.appspot.com",
+  messagingSenderId: "154546542358",
+  appId: "1:154546542358:web:be495b1b23c20c66c82237",
+  measurementId: "G-9F914T0225",
 }
 
 firebase.initializeApp(firebaseConfig)
@@ -24,9 +24,9 @@ firebase.initializeApp(firebaseConfig)
 // export const login = () => firebase.auth().signInWithPopup(provider)
 // export const logout = () => firebase.auth().signOut()
 
-const storageFilesRef = firebase.storage().ref("files")
+const publicStorageRef = firebase.storage().ref("public")
 
-export const shorten = async (url: string, domain: "kcj") => {
+export const shorten = async (url: string, domain: "fleethub") => {
   const apiKey = firebaseConfig.apiKey
 
   const headers = {
@@ -71,10 +71,10 @@ type FhPayload = FhEntities & {
 export const parseUrlEntities = async (): Promise<FhPayload | undefined> => {
   const url = new URL(location.href)
 
-  const storageId = url.searchParams.get("storage-file")
-  if (storageId) {
+  const fileId = url.searchParams.get("storage-file")
+  if (fileId) {
     url.searchParams.delete("storage-file")
-    const downloadUrl = await storageFilesRef.child(storageId).getDownloadURL()
+    const downloadUrl = await publicStorageRef.child(fileId).getDownloadURL()
     const data = await fetch(downloadUrl).then((res) => res.json())
     return data
   }
@@ -103,7 +103,7 @@ export const publishFiles = async (entities: FhPayload) => {
   url.searchParams.delete("entities")
 
   const id = nanoid()
-  const res = await storageFilesRef
+  const res = await publicStorageRef
     .child(id)
     .putString(JSON.stringify(entities), "raw", { contentType: "application/json" })
   url.searchParams.set("storage-file", id)
