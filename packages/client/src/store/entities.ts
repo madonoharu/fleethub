@@ -1,7 +1,7 @@
-import { nanoid, current, AppThunk, Dictionary, combineReducers } from "@reduxjs/toolkit"
+import { nanoid, AppThunk, Dictionary, combineReducers } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 
-import { filesSelectors, flatFile, isFolder, filesSlice, FileEntity, PlanStateWithId } from "./filesSlice"
+import { filesSelectors, flatFile, isFolder, filesSlice, FhEntities } from "./filesSlice"
 import { plansSelectors, plansSlice } from "./plansSlice"
 import { isNonNullable } from "@fleethub/utils"
 import { publishFiles } from "../firebase"
@@ -30,12 +30,6 @@ const cloneDictionary = <T extends { id: string }>(entities: Dictionary<T>, chan
       return { ...source, id: nextId }
     })
     .filter(isNonNullable)
-
-export type FhEntities = {
-  entry: string
-  files: FileEntity[]
-  plans: PlanStateWithId[]
-}
 
 export const cloneEntities = (state: DefaultRootState, entry: string): FhEntities => {
   const fileEntities = filesSelectors.selectEntities(state)

@@ -75,9 +75,9 @@ export const uiSlice = createSlice({
       .addCase(filesSlice.actions.createPlan, (state, { payload }) => {
         state.planId = payload.plan.id
       })
-      .addCase(filesSlice.actions.set, (state, { payload: { plans, open } }) => {
-        if (!open || plans.length === 0) return
-        state.planId = plans[0].id
+      .addCase(filesSlice.actions.import, (state, { payload: { plans, entry } }) => {
+        if (plans?.length === 0) return
+        state.planId = entry
       })
   },
 })
