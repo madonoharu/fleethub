@@ -6,7 +6,6 @@ import {
   AppThunk,
   Dictionary,
   EntitySelectors,
-  ValidateSliceCaseReducers,
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
@@ -47,16 +46,6 @@ const initialState = adapter.getInitialState({
 })
 
 type FilesState = typeof initialState
-
-const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
-  const cloned = array.concat()
-
-  cloned.forEach((item, index) => {
-    if (item === searchValue) cloned[index] = replaceValue
-  })
-
-  return cloned
-}
 
 export const isFolder = (file?: FileEntity): file is FolderEntity => file?.type === "folder"
 
@@ -100,16 +89,6 @@ export const filesSlice = createSlice({
   reducers: {
     set,
     import: set,
-
-    createInitialPlan: {
-      reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent: string }>) => {
-        const file: PlanFileEntity = { id: payload.plan.id, type: "plan" }
-        addFiles(state, [file], payload.parent)
-      },
-      prepare: ({ plan, parent = "root" }: { plan?: PlanState; parent?: string }) => ({
-        payload: { plan: { ...plan, id: nanoid() }, parent },
-      }),
-    },
 
     createPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent?: string }>) => {
