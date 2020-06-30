@@ -3,11 +3,11 @@ import { useDrop, useDrag } from "react-dnd"
 
 import TreeItem, { TreeItemProps } from "@material-ui/lab/TreeItem"
 
-import { NormalizedFile } from "../../../store"
+import { FileEntity } from "../../../store"
 
 type Props = TreeItemProps & {
-  file: NormalizedFile
-  isParentOf: (file: NormalizedFile) => boolean
+  file: FileEntity
+  isParentOf: (file: FileEntity) => boolean
   onMove?: (id: string, to?: string) => void
 }
 
