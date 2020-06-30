@@ -1,10 +1,10 @@
-import { createSlice, createEntityAdapter, PayloadAction, current, EntitySelectors } from "@reduxjs/toolkit"
+import { createSlice, createEntityAdapter, PayloadAction, EntitySelectors } from "@reduxjs/toolkit"
 import { PlanState } from "@fleethub/core"
-import { isNonNullable } from "@fleethub/utils"
 import { DefaultRootState } from "react-redux"
 
 import { filesSlice } from "./filesSlice"
 import { selectEntites } from "./selectEntites"
+import { makeActionMatcher } from "./makeActionMatcher"
 
 type PlanStateWithId = PlanState & { id: string }
 
@@ -35,18 +35,14 @@ export const plansSlice = createSlice({
 
         plansAdapter.addOne(state, plan)
       })
-      .addCase(filesSlice.actions.clone, (state, { payload }) => {
-        const clonedPlans = payload.changes
-          .map(([sourceId, clonedId]) => {
-            const source = state.entities[sourceId]
-            if (!source) return
-            return { ...current(source), id: clonedId }
-          })
-          .filter(isNonNullable)
 
-        plansAdapter.addMany(state, clonedPlans)
-      })
-      .addCase(filesSlice.actions.set, (state, { payload: { plans } }) => plansAdapter.addMany(state, plans))
       .addCase(filesSlice.actions.remove, plansAdapter.removeMany)
+
+      .addMatcher(
+        makeActionMatcher(filesSlice.actions.set, filesSlice.actions.import),
+        (state, { payload: { plans } }) => {
+          if (plans) plansAdapter.addMany(state, plans)
+        }
+      )
   },
 })

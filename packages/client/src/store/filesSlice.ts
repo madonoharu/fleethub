@@ -2,15 +2,14 @@ import {
   createSlice,
   createEntityAdapter,
   nanoid,
-  current,
   PayloadAction,
   AppThunk,
   Dictionary,
   EntitySelectors,
+  ValidateSliceCaseReducers,
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
-import { isNonNullable } from "@fleethub/utils"
 
 import { selectEntites } from "./selectEntites"
 
@@ -28,6 +27,13 @@ export type PlanFileEntity = FileBase<"plan">
 export type FileEntity = FolderEntity | PlanFileEntity
 
 export type FileType = FileEntity["type"]
+
+export type FhEntities = {
+  entry: string
+  files: FileEntity[]
+  plans?: PlanStateWithId[]
+  to?: string
+}
 
 const adapter = createEntityAdapter<FileEntity>()
 export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = adapter.getSelectors(
@@ -84,12 +90,7 @@ const removeFromChildren = (state: FilesState, ids: string[]) => {
     })
 }
 
-type SetAction = PayloadAction<{
-  files: FileEntity[]
-  plans: PlanStateWithId[]
-  to?: string
-  open?: boolean
-}>
+const set = (state: FilesState, { payload: { files, to } }: PayloadAction<FhEntities>) => addFiles(state, files, to)
 
 export const filesSlice = createSlice({
   name: "files",
@@ -97,7 +98,8 @@ export const filesSlice = createSlice({
   initialState,
 
   reducers: {
-    set: (state, { payload: { files, to } }: SetAction) => addFiles(state, files, to),
+    set,
+    import: set,
 
     createInitialPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent: string }>) => {
@@ -153,28 +155,6 @@ export const filesSlice = createSlice({
     remove: (state, { payload }: PayloadAction<string[]>) => {
       adapter.removeMany(state, payload)
       removeFromChildren(state, payload)
-    },
-
-    clone: (state, action: PayloadAction<{ changes: Array<[string, string]>; to?: string }>) => {
-      const { to, changes } = action.payload
-
-      const clonedFiles = changes
-        .map(([prevId, nextId]) => {
-          const source = state.entities[prevId]
-          if (!source) return
-
-          return { ...current(source), id: nextId }
-        })
-        .filter(isNonNullable)
-
-      const folders = clonedFiles.filter(isFolder)
-      changes.forEach(([prevId, nextId]) => {
-        folders.forEach((folder) => {
-          folder.children = replaceAll(folder.children, prevId, nextId)
-        })
-      })
-
-      addFiles(state, clonedFiles, to)
     },
   },
 })
