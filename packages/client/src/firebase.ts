@@ -64,11 +64,7 @@ type FhPlanFile = {
 
 type FhFile = FhPlanFile | FhFolder
 
-type FhPayload = FhEntities & {
-  open?: boolean
-}
-
-export const parseUrlEntities = async (): Promise<FhPayload | undefined> => {
+export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
   const url = new URL(location.href)
 
   const fileId = url.searchParams.get("storage-file")
@@ -94,7 +90,7 @@ export const parseUrlEntities = async (): Promise<FhPayload | undefined> => {
   return
 }
 
-export const publishFiles = async (entities: FhPayload) => {
+export const publishFiles = async (entities: FhEntities) => {
   const url = new URL("http://localhost:8000")
   url.searchParams.set("entities", compressToEncodedURIComponent(JSON.stringify(entities)))
 
@@ -114,9 +110,9 @@ export const publishFiles = async (entities: FhPayload) => {
 export const publishPlan = async (plan: PlanState) => {
   const id = nanoid()
   const url = await publishFiles({
+    entry: id,
     files: [{ id, type: "plan" }],
     plans: [{ ...plan, id }],
-    open: true,
   })
   return url
 }

@@ -7,7 +7,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy"
 import DeleteIcon from "@material-ui/icons/Delete"
 
 import { MoreVertButton, ShareButton, RemoveButton, MenuList } from "../../../components"
-import { NormalizedPlanFile, plansSelectors } from "../../../store"
+import { PlanFileEntity, plansSelectors } from "../../../store"
 import { usePopover } from "../../../hooks"
 
 import FileLabel from "./FileLabel"
@@ -19,7 +19,7 @@ const usePlanFile = (id: string) => {
 }
 
 type Props = {
-  file: NormalizedPlanFile
+  file: PlanFileEntity
   onCopy: (id: string) => void
   onRemove: (id: string) => void
   onSelect?: (id: string) => void
