@@ -2,7 +2,7 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import { uiSlice, plansSelectors, filesSlice, openFirstPlan } from "../../../store"
+import { plansSelectors, filesSlice, openFirstPlan } from "../../../store"
 import { PlanEditor } from "../../../components"
 
 import AppBar from "./AppBar"
@@ -16,7 +16,7 @@ const FileLoader: React.FC = () => {
   useFetch(async () => {
     const entities = await parseUrlEntities()
     if (entities) {
-      dispatch(filesSlice.actions.set({ ...entities, to: "root", open: true }))
+      dispatch(filesSlice.actions.import({ ...entities, to: "root" }))
       return
     }
 
