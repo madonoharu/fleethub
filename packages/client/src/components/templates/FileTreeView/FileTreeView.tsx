@@ -10,7 +10,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import AddIcon from "@material-ui/icons/Add"
 
-import { isFolder, filesSlice, flatFile, NormalizedFile } from "../../../store"
+import { isFolder, filesSlice, flatFile, FileEntity } from "../../../store"
 
 import FolderLabel from "./FolderLabel"
 import PlanFileLabel from "./PlanFileLabel"
@@ -18,8 +18,8 @@ import FileTreeItem from "./FileTreeItem"
 import { Dictionary } from "@reduxjs/toolkit"
 
 export type FileTreeViewProps = {
-  entities: Dictionary<NormalizedFile>
-  onFileUpdate?: (update: Update<NormalizedFile>) => void
+  entities: Dictionary<FileEntity>
+  onFileUpdate?: (update: Update<FileEntity>) => void
   onPlanSelect?: (id: string) => void
   onPlanCreate?: (...args: Parameters<typeof filesSlice.actions.createPlan>) => void
   onFolderCreate?: (...args: Parameters<typeof filesSlice.actions.createFolder>) => void
@@ -75,7 +75,7 @@ const FileTreeView: React.FCX<FileTreeViewProps> = ({
 
   const handleRemove = (id: string) => onRemove?.(id)
 
-  const renderFile = (file: NormalizedFile) => {
+  const renderFile = (file: FileEntity) => {
     const label =
       file.type === "folder" ? (
         <FolderLabel
@@ -97,7 +97,7 @@ const FileTreeView: React.FCX<FileTreeViewProps> = ({
           .map(renderFile)
       : null
 
-    const isParentOf = (dragFile: NormalizedFile) => flatFile(entities, file.id).includes(dragFile)
+    const isParentOf = (dragFile: FileEntity) => flatFile(entities, file.id).includes(dragFile)
 
     return (
       <FileTreeItem

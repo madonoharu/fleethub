@@ -9,7 +9,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy"
 import DeleteIcon from "@material-ui/icons/Delete"
 
 import { MoreVertButton, AddButton, RemoveButton, EditButton, MenuList } from "../../../components"
-import { NormalizedFolder, filesSlice } from "../../../store"
+import { FolderEntity, filesSlice } from "../../../store"
 import { usePopover } from "../../../hooks"
 
 import FileLabel from "./FileLabel"
@@ -17,9 +17,9 @@ import FileTextField from "./FileTextField"
 import { FileTreeViewProps } from "./FileTreeView"
 
 type Props = {
-  file: NormalizedFolder
+  file: FolderEntity
 
-  onFileUpdate: (update: Update<NormalizedFolder>) => void
+  onFileUpdate: (update: Update<FolderEntity>) => void
   onPlanCreate: (id: string) => void
   onFolderCreate: (id: string) => void
   onCopy: (id: string) => void

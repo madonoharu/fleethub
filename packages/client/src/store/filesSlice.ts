@@ -21,20 +21,20 @@ type FileBase<T extends string, P = {}> = {
   type: T
 } & P
 
-export type NormalizedFolder = FileBase<"folder", { name: string; children: string[] }>
+export type FolderEntity = FileBase<"folder", { name: string; children: string[] }>
 
-export type NormalizedPlanFile = FileBase<"plan">
+export type PlanFileEntity = FileBase<"plan">
 
-export type NormalizedFile = NormalizedFolder | NormalizedPlanFile
+export type FileEntity = FolderEntity | PlanFileEntity
 
-export type FileType = NormalizedFile["type"]
+export type FileType = FileEntity["type"]
 
-const adapter = createEntityAdapter<NormalizedFile>()
-export const filesSelectors: EntitySelectors<NormalizedFile, DefaultRootState> = adapter.getSelectors(
+const adapter = createEntityAdapter<FileEntity>()
+export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = adapter.getSelectors(
   (state) => selectEntites(state).files
 )
 
-const initialRootFolder: NormalizedFolder = { id: "root", type: "folder", name: "root", children: [] }
+const initialRootFolder: FolderEntity = { id: "root", type: "folder", name: "root", children: [] }
 
 const initialState = adapter.getInitialState({
   entities: { root: initialRootFolder },
@@ -52,14 +52,14 @@ const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
   return cloned
 }
 
-export const isFolder = (file?: NormalizedFile): file is NormalizedFolder => file?.type === "folder"
+export const isFolder = (file?: FileEntity): file is FolderEntity => file?.type === "folder"
 
 const getFolder = ({ entities }: FilesState, id?: string) => {
   const file = id ? entities[id] : undefined
   return isFolder(file) ? file : entities.root
 }
 
-const getTopFiles = (files: NormalizedFile[]) => {
+const getTopFiles = (files: FileEntity[]) => {
   const allChildren = files.filter(isFolder).flatMap((folder) => folder.children)
   return files.filter((file) => !allChildren.includes(file.id))
 }
@@ -69,7 +69,7 @@ const addChildren = (state: FilesState, parent: string, children: string[]) => {
   parentFolder.children.push(...children)
 }
 
-const addFiles = (state: FilesState, files: NormalizedFile[], parent = "root") => {
+const addFiles = (state: FilesState, files: FileEntity[], parent = "root") => {
   adapter.addMany(state, files)
 
   const topFileIds = getTopFiles(files).map((file) => file.id)
@@ -85,7 +85,7 @@ const removeFromChildren = (state: FilesState, ids: string[]) => {
 }
 
 type SetAction = PayloadAction<{
-  files: NormalizedFile[]
+  files: FileEntity[]
   plans: PlanStateWithId[]
   to?: string
   open?: boolean
@@ -101,7 +101,7 @@ export const filesSlice = createSlice({
 
     createInitialPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent: string }>) => {
-        const file: NormalizedPlanFile = { id: payload.plan.id, type: "plan" }
+        const file: PlanFileEntity = { id: payload.plan.id, type: "plan" }
         addFiles(state, [file], payload.parent)
       },
       prepare: ({ plan, parent = "root" }: { plan?: PlanState; parent?: string }) => ({
@@ -111,7 +111,7 @@ export const filesSlice = createSlice({
 
     createPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; parent?: string }>) => {
-        const file: NormalizedPlanFile = { id: payload.plan.id, type: "plan" }
+        const file: PlanFileEntity = { id: payload.plan.id, type: "plan" }
 
         addFiles(state, [file], payload.parent)
       },
@@ -121,7 +121,7 @@ export const filesSlice = createSlice({
     },
 
     createFolder: (state, { payload }: PayloadAction<string | undefined>) => {
-      const newFolder: NormalizedFolder = {
+      const newFolder: FolderEntity = {
         id: nanoid(),
         type: "folder",
         name: `新しいフォルダー${state.ids.length}`,
@@ -179,16 +179,16 @@ export const filesSlice = createSlice({
   },
 })
 
-export const flatFile = (entities: Dictionary<NormalizedFile>, id: string): NormalizedFile[] => {
+export const flatFile = (entities: Dictionary<FileEntity>, id: string): FileEntity[] => {
   const file = entities[id]
   if (!file) return []
   if (!isFolder(file)) return [file]
   return [file, ...file.children.flatMap((childId) => flatFile(entities, childId))]
 }
 
-export const getFileTree = (entities: Dictionary<NormalizedFile>, id: string) => {
+export const getFileTree = (entities: Dictionary<FileEntity>, id: string) => {
   const files = flatFile(entities, id)
-  const tree: Dictionary<NormalizedFile> = {}
+  const tree: Dictionary<FileEntity> = {}
 
   files.forEach((file) => {
     tree[file.id] = file
