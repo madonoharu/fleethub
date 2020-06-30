@@ -16,7 +16,7 @@ const FileLoader: React.FC = () => {
   useFetch(async () => {
     const entities = await parseUrlEntities()
     if (entities) {
-      dispatch(filesSlice.actions.set({ ...entities, to: "root" }))
+      dispatch(filesSlice.actions.set({ ...entities, to: "root", open: true }))
       return
     }
 
