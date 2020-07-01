@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction, AppThunk } from "@reduxjs/toolkit"
 import { ShipCategory } from "@fleethub/core"
-import { filesSlice, filesSelectors } from "./filesSlice"
+
+import { filesSlice } from "./filesSlice"
+import { plansSelectors } from "./plansSlice"
 
 export type GearListState = {
   filterKey: string
@@ -84,7 +86,7 @@ export const uiSlice = createSlice({
 
 export const openFirstPlan = (): AppThunk => (dispatch, getState) => {
   const state = getState()
-  const planIds = filesSelectors.selectIds(state)
+  const planIds = plansSelectors.selectIds(state)
 
   if (planIds.length) {
     dispatch(uiSlice.actions.openPlan(planIds[planIds.length - 1] as string))
