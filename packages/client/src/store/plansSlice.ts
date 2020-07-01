@@ -14,7 +14,7 @@ export const plansSelectors: EntitySelectors<PlanStateWithId, DefaultRootState> 
 )
 
 export const plansSlice = createSlice({
-  name: "plans",
+  name: "entities/plans",
   initialState: plansAdapter.getInitialState(),
   reducers: {
     set: (state, { payload }: PayloadAction<PlanStateWithId>) => {
