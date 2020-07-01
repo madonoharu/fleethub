@@ -8,7 +8,7 @@ import { Button } from "@material-ui/core"
 
 import { NauticalChart, Select } from "../.."
 import { useModal } from "../../../hooks"
-import { appSlice, mapListSlice, MapListState } from "../../../store"
+import { appSlice, mapListSlice, MapListState, selectMapListState } from "../../../store"
 
 import MapSelect from "./MapSelect"
 import MapNodeContent from "./MapNodeContent"
@@ -20,7 +20,7 @@ const StyledMapSelect = styled(MapSelect)`
 const getMapKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`
 
 const useMapListState = () => {
-  const { mapId, point, difficulty } = useSelector((state) => state.mapList)
+  const { mapId, point, difficulty } = useSelector(selectMapListState)
   const dispatch = useDispatch()
 
   const update = (changes: Partial<MapListState>) => dispatch(mapListSlice.actions.update(changes))

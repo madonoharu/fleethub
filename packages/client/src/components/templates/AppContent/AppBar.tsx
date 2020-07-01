@@ -21,8 +21,8 @@ const AppBar: React.FCX = ({ className }) => {
   const { t } = useTranslation()
 
   const dispatch = useDispatch()
-  const canUndo = useSelector((state) => state.entities.past.length > 0)
-  const canRedo = useSelector((state) => state.entities.future.length > 0)
+  const canUndo = useSelector((state) => state.past.length > 0)
+  const canRedo = useSelector((state) => state.future.length > 0)
 
   const Modal = useModal()
 
