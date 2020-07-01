@@ -12,7 +12,7 @@
   "dependencies": {
     "@fleethub/core": "*",
     "@fleethub/utils": "*",
-    "@material-ui/core": "^4.10.2",
+    "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@reduxjs/toolkit": "^1.4.0",
@@ -23,7 +23,7 @@
     "copy-to-clipboard": "^3.3.1",
     "firebase": "^7.15.5",
     "gkcoi": "^1.1.4",
-    "i18next": "^19.5.1",
+    "i18next": "^19.5.2",
     "localforage": "^1.7.4",
     "lz-string-uri-fix": "^1.4.5",
     "normalizr": "^3.6.0",
@@ -43,10 +43,10 @@
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.3",
-    "@babel/preset-env": "^7.10.3",
-    "@babel/preset-react": "^7.10.1",
-    "@babel/preset-typescript": "^7.10.1",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
     "@simbathesailor/use-what-changed": "^0.1.22",
     "@types/react": "^16.9.41",
     "@types/react-dom": "^16.9.7",
