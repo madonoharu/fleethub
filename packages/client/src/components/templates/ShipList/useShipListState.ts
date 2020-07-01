@@ -17,7 +17,7 @@ const createFilterFn = (state: ShipListState): FilterFn => {
 
   fns.push((ship) => ship.category === state.category)
 
-  if (state.commonly) {
+  if (!state.all) {
     fns.push((ship) => ship.isCommonly)
   }
 
