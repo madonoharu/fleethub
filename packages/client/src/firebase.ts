@@ -64,21 +64,27 @@ type FhPlanFile = {
 
 type FhFile = FhPlanFile | FhFolder
 
+const getUrlParam = (key: string) => {
+  const url = new URL(location.href)
+  const value = url.searchParams.get(key)
+  url.searchParams.delete(key)
+  history.replaceState("", "", url.href)
+  return value
+}
+
 export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
   const url = new URL(location.href)
 
-  const fileId = url.searchParams.get("storage-file")
+  const fileId = getUrlParam("storage-file")
   if (fileId) {
-    url.searchParams.delete("storage-file")
-    const downloadUrl = await publicStorageRef.child(fileId).getDownloadURL()
-    const data = await fetch(downloadUrl).then((res) => res.json())
+    const data = await fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}`).then((res) =>
+      res.json()
+    )
     return data
   }
 
   const entitiesParam = url.searchParams.get("entities")
   if (entitiesParam) {
-    url.searchParams.delete("entities")
-    history.replaceState("", "", url.href)
     try {
       return JSON.parse(decompressFromEncodedURIComponent(entitiesParam))
     } catch (error) {
