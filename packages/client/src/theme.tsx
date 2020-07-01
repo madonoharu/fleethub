@@ -183,7 +183,7 @@ const acrylic = isFirefox
       background: rgba(60, 60, 70, 0.95);
     `
   : css`
-      background: rgba(60, 60, 70, 0.7);
+      background: rgba(60, 60, 70, 0.6);
       backdrop-filter: blur(8px);
     `
 
