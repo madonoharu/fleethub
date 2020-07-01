@@ -3,7 +3,8 @@ import { Plan, getDeck4 } from "@fleethub/core"
 import styled from "styled-components"
 
 import { Link, TextField, List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core"
-import OpenInNew from "@material-ui/icons/OpenInNew"
+import OpenInNewIcon from "@material-ui/icons/OpenInNew"
+import LinkIcon from "@material-ui/icons/Link"
 
 import { CopyTextButton, Flexbox } from "../../../components"
 import { openKctools, openDeckbuilder } from "../../../utils"
@@ -17,7 +18,7 @@ type ListItemLinkProps = {
 const ListItemLink: React.FCX<ListItemLinkProps> = ({ className, href, secondary, onClick, children }) => (
   <ListItem className={className} button onClick={onClick} component={Link} href={href}>
     <ListItemIcon>
-      <OpenInNew />
+      <OpenInNewIcon />
     </ListItemIcon>
     <ListItemText secondary={secondary}>{children}</ListItemText>
   </ListItem>
@@ -27,7 +28,11 @@ const StyledListItemLink = styled(ListItemLink)`
   cursor: pointer;
 `
 
-const PlanShareContent: React.FCX<{ plan: Plan }> = ({ className, plan }) => {
+type Props = {
+  plan: Plan
+}
+
+const PlanShareContent: React.FCX<Props> = ({ className, plan }) => {
   const predeck = JSON.stringify(getDeck4(plan))
   return (
     <div className={className}>
