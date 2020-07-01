@@ -10,7 +10,7 @@ import {
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
 
-import { selectEntites } from "./selectEntites"
+import { getEntites } from "./getEntites"
 import { uniq } from "@fleethub/utils"
 
 export type PlanStateWithId = PlanState & { id: string }
@@ -43,7 +43,7 @@ export type FhEntities = {
 
 const adapter = createEntityAdapter<FileEntity>()
 export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = adapter.getSelectors(
-  (state) => selectEntites(state).files
+  (state) => getEntites(state).files
 )
 
 const initialRootDirectory: RootDirectory = { id: "root", type: "root", children: [] }
