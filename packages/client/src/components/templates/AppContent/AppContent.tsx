@@ -11,7 +11,7 @@ import { useFetch } from "../../../hooks"
 
 const FileLoader: React.FC = () => {
   const dispatch = useDispatch()
-  const planId = useSelector((state) => state.ui.planId && plansSelectors.selectById(state, state.ui.planId)?.id)
+  const planId = useSelector((state) => state.app.planId && plansSelectors.selectById(state, state.app.planId)?.id)
 
   useFetch(async () => {
     const entities = await parseUrlEntities()

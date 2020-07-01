@@ -1,16 +1,16 @@
 import React from "react"
 import styled from "styled-components"
+import { useDispatch, useSelector } from "react-redux"
 import { GearState, GearBase, EquipmentBonuses } from "@fleethub/core"
 import { GearCategory } from "@fleethub/data"
 
 import { useFhSystem } from "../../../hooks"
+import { gearListSlice } from "../../../store"
 
-import FilterBar from "./FilterBar"
-import CategoryContainer from "./CategoryContainer"
 import { getFilter, getVisibleFilterKeys } from "./filters"
 import { idComparer } from "./comparers"
-import { GearListState, uiSlice } from "../../../store"
-import { useDispatch, useSelector } from "react-redux"
+import FilterBar from "./FilterBar"
+import CategoryContainer from "./CategoryContainer"
 
 const getVisibleCategories = (gears: GearBase[]) => {
   const categories = [...new Set(gears.map((gear) => gear.category))]
@@ -47,10 +47,10 @@ const useGearListState = () => {
   const gears = useFhSystem().masterGears
 
   const dispatch = useDispatch()
-  const state = useSelector((state) => state.ui.gearList)
+  const state = useSelector((state) => state.gearList)
 
-  const update = (...args: Parameters<typeof uiSlice.actions.updateGearList>) =>
-    dispatch(uiSlice.actions.updateGearList(...args))
+  const update = (...args: Parameters<typeof gearListSlice.actions.update>) =>
+    dispatch(gearListSlice.actions.update(...args))
 
   return { gears, ...state, update }
 }

@@ -10,7 +10,7 @@ import RedoIcon from "@material-ui/icons/Redo"
 
 import { Explorer, withIconButton } from "../../../components"
 import { useModal } from "../../../hooks"
-import { uiSlice } from "../../../store"
+import { appSlice } from "../../../store"
 
 import LanguageSelect from "./LanguageSelect"
 
@@ -27,7 +27,7 @@ const AppBar: React.FCX = ({ className }) => {
   const Modal = useModal()
 
   const handlePlanSelect = (id: string) => {
-    dispatch(uiSlice.actions.openPlan(id))
+    dispatch(appSlice.actions.openPlan(id))
     Modal.hide()
   }
 
