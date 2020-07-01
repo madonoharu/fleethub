@@ -10,8 +10,12 @@ import { PersistGate } from "redux-persist/integration/react"
 
 import { makeGroupBy } from "../utils"
 
-import { uiSlice } from "./uiSlice"
+import { appSlice } from "./appSlice"
 import { entitiesReducer } from "./entities"
+import { removeFile } from "./filesSlice"
+import { mapListSlice } from "./mapListSlice"
+import { shipListSlice } from "./shipListSlice"
+import { gearListSlice } from "./gearListSlice"
 
 const ignoredActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
 
@@ -24,7 +28,11 @@ const undoableOptions: UndoableOptions = {
 
 const rootReducer = combineReducers({
   entities: undoable(persistReducer({ key: "entities", storage }, entitiesReducer), undoableOptions),
-  ui: uiSlice.reducer,
+  app: appSlice.reducer,
+
+  mapList: mapListSlice.reducer,
+  gearList: gearListSlice.reducer,
+  shipList: shipListSlice.reducer,
 })
 
 const extraArgument = undefined
@@ -40,6 +48,10 @@ export const createStore = () => {
         ignoredActions,
       },
     }),
+  })
+
+  window.addEventListener("beforeunload", () => {
+    store.dispatch(removeFile("temp"))
   })
 
   return store
@@ -61,7 +73,10 @@ export type RootState = ReturnType<Store["getState"]>
 export type AppDispatch = Store["dispatch"]
 export type AppThunk = ThunkAction<void, RootState, typeof extraArgument, AnyAction>
 
+export * from "./appSlice"
 export * from "./plansSlice"
 export * from "./filesSlice"
-export * from "./uiSlice"
 export * from "./entities"
+export * from "./mapListSlice"
+export * from "./shipListSlice"
+export * from "./gearListSlice"

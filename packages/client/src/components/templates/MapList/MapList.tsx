@@ -8,7 +8,7 @@ import { Button } from "@material-ui/core"
 
 import { NauticalChart, Select } from "../.."
 import { useModal } from "../../../hooks"
-import { uiSlice } from "../../../store"
+import { appSlice, mapListSlice, MapListState } from "../../../store"
 
 import MapSelect from "./MapSelect"
 import MapNodeContent from "./MapNodeContent"
@@ -20,13 +20,15 @@ const StyledMapSelect = styled(MapSelect)`
 const getMapKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`
 
 const useMapListState = () => {
-  const { mapId, point, difficulty } = useSelector((state) => state.ui.mapList)
+  const { mapId, point, difficulty } = useSelector((state) => state.mapList)
   const dispatch = useDispatch()
+
+  const update = (changes: Partial<MapListState>) => dispatch(mapListSlice.actions.update(changes))
 
   const map = maps.find((map) => map.id === mapId)
   const node = map?.nodes.find((node) => node.point === point)
 
-  const setNode = ({ point }: MapNode) => dispatch(uiSlice.actions.updateMap({ point }))
+  const setNode = ({ point }: MapNode) => update({ point })
 
   const setMap = (nextMap: MapData) => {
     if (mapId === nextMap.id) return
@@ -34,10 +36,10 @@ const useMapListState = () => {
     const boss = nextMap.nodes.find((node) => node.type === MapNodeType.Boss)
     if (boss) setNode(boss)
 
-    dispatch(uiSlice.actions.updateMap({ mapId: nextMap.id, point: boss?.point }))
+    update({ mapId: nextMap.id, point: boss?.point })
   }
 
-  const setDifficulty = (difficulty: number) => uiSlice.actions.updateMap({ difficulty })
+  const setDifficulty = (difficulty: number) => update({ difficulty })
 
   return {
     map,

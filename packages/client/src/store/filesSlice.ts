@@ -100,7 +100,7 @@ const removeFromChildren = (state: FilesState, ids: string[]) => {
 const set = (state: FilesState, { payload: { files, to } }: PayloadAction<FhEntities>) => addFiles(state, files, to)
 
 export const filesSlice = createSlice({
-  name: "files",
+  name: "entities/files",
 
   initialState,
 
