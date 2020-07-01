@@ -1,6 +1,7 @@
 import React from "react"
 import { ShipBase, ShipState } from "@fleethub/core"
 import { ShipClassName } from "@fleethub/data"
+import { uniq } from "@fleethub/utils"
 
 import { Divider } from "../../../components"
 
@@ -9,7 +10,7 @@ import ShipButton from "./ShipButton"
 import { useShipListState } from "./useShipListState"
 
 const toShipClassEntries = (ships: ShipBase[]): Array<[number, ShipBase[]]> => {
-  const shipClasses = [...new Set(ships.map((ship) => ship.shipClass))]
+  const shipClasses = uniq(ships.map((ship) => ship.shipClass))
   return shipClasses.map((shipClass) => [shipClass, ships.filter((ship) => ship.shipClass === shipClass)])
 }
 
