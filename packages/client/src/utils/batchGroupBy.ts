@@ -1,5 +1,5 @@
 import { groupByActionTypes, GroupByFunction } from "redux-undo"
-import { nanoid, AnyAction } from "@reduxjs/toolkit"
+import { nanoid } from "@reduxjs/toolkit"
 import { batch as batchedUpdate } from "react-redux"
 
 let inner: string | undefined
@@ -17,13 +17,12 @@ export const makeGroupBy = (actions?: string[]): GroupByFunction => {
   return (...args) => inner || defaultGroupBy(...args)
 }
 
-export const batchUndoable = (cb: () => void | Promise<void>, group?: string) => {
+export const batchUndoable = (cb: () => void, group?: string) => {
   start(group)
   const res = cb()
-  if (res) res.then(end)
-  else end()
+  end()
 }
 
-export const batch = (cb: () => void | Promise<void>, group?: string) => {
+export const batch = (cb: () => void, group?: string) => {
   batchedUpdate(() => batchUndoable(cb, group))
 }
