@@ -72,6 +72,8 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPlanImp
       const url = await urlSelector(plan.state)
       const result = copy(url)
       if (!result) throw new Error("Failed to copy")
+
+      return url
     },
     {
       onSuccess: () => Snackbar.show({ message: "共有URLをコピーしました", severity: "success" }),
