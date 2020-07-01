@@ -17,7 +17,6 @@ const FileTextField: React.FC<FileTextFieldProps> = ({ onClickAway, value = "", 
       <TextField
         size="small"
         value={str}
-        onClick={(e) => e.preventDefault()}
         onChange={(e) => setStr(e.currentTarget.value)}
         onBlur={() => onChange(str)}
         {...rest}

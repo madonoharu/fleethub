@@ -9,88 +9,54 @@ import FileCopyIcon from "@material-ui/icons/FileCopy"
 import DeleteIcon from "@material-ui/icons/Delete"
 
 import { MoreVertButton, AddButton, RemoveButton, EditButton, MenuList } from "../../../components"
-import { FolderEntity, FileEntity } from "../../../store"
+import { FolderEntity, Directory } from "../../../store"
 import { usePopover } from "../../../hooks"
 
 import FileLabel, { FileLabelProps } from "./FileLabel"
-import FileTextField from "./FileTextField"
 
 type Props = {
-  file: FolderEntity
+  file: Directory
 
-  onFileUpdate: (update: Update<FolderEntity>) => void
   onPlanCreate: (id: string) => void
   onFolderCreate: (id: string) => void
-  onCopy: (id: string) => void
   onRemove: (id: string) => void
 } & Pick<FileLabelProps, "onMove" | "isParentOf">
 
 const FolderLabel: React.FCX<Props> = ({
   className,
   file,
-  onFileUpdate,
   onPlanCreate,
   onFolderCreate,
-  onCopy,
   onRemove,
   onMove,
   isParentOf,
 }) => {
-  const Popover = usePopover()
-  const [editable, setEditable] = React.useState(false)
-
-  const handleNameChange = (name: string) => onFileUpdate({ id: file.id, changes: { name } })
-
   const handlePlanCreate = () => {
     onPlanCreate(file.id)
-    Popover.hide()
   }
 
   const handleFolderCreate = () => {
     onFolderCreate(file.id)
-    Popover.hide()
-  }
-
-  const handleCopy = () => {
-    onCopy(file.id)
-    Popover.hide()
   }
 
   const handleRemove = () => {
     onRemove(file.id)
   }
 
-  const list = [
-    { icon: <AddIcon />, text: "編成を作成", onClick: handlePlanCreate },
-    { icon: <CreateNewFolderIcon />, text: "フォルダを作成", onClick: handleFolderCreate },
-    { icon: <FileCopyIcon />, text: "コピー", onClick: handleCopy },
-    { icon: <DeleteIcon />, text: "削除", onClick: handleRemove },
-  ]
-
-  const text = editable ? (
-    <FileTextField onClickAway={() => setEditable(false)} onChange={handleNameChange} fullWidth value={file.name} />
-  ) : (
-    file.name
-  )
+  const text = file.type === "root" ? "一覧" : "一時フォルダ"
 
   return (
     <FileLabel
       className={className}
       file={file}
-      isParentOf={isParentOf}
       onMove={onMove}
+      isParentOf={isParentOf}
       icon={<FolderIcon />}
-      text={text}
-      canDrag={!editable}
+      text={file.type}
       action={
         <>
-          <EditButton size="small" onClick={() => setEditable(true)} />
           <AddButton size="small" onClick={handlePlanCreate} />
           <RemoveButton size="small" onClick={handleRemove} />
-          <MoreVertButton size="small" onClick={Popover.show} />
-          <Popover>
-            <MenuList list={list} />
-          </Popover>
         </>
       }
     />

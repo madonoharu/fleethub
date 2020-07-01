@@ -11,6 +11,7 @@ import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
 
 import { selectEntites } from "./selectEntites"
+import { uniq } from "@fleethub/utils"
 
 export type PlanStateWithId = PlanState & { id: string }
 
@@ -19,11 +20,17 @@ type FileBase<T extends string, P = {}> = {
   type: T
 } & P
 
+export type RootDirectory = FileBase<"root", { children: string[] }>
+
+export type TempDirectory = FileBase<"temp", { children: string[] }>
+
 export type FolderEntity = FileBase<"folder", { name: string; children: string[] }>
+
+export type Directory = RootDirectory | TempDirectory | FolderEntity
 
 export type PlanFileEntity = FileBase<"plan">
 
-export type FileEntity = FolderEntity | PlanFileEntity
+export type FileEntity = Directory | PlanFileEntity
 
 export type FileType = FileEntity["type"]
 
@@ -39,41 +46,52 @@ export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = ada
   (state) => selectEntites(state).files
 )
 
-const initialRootFolder: FolderEntity = { id: "root", type: "folder", name: "root", children: [] }
+const initialRootDirectory: RootDirectory = { id: "root", type: "root", children: [] }
+const initialTempDirectory: TempDirectory = { id: "temp", type: "temp", children: [] }
 
 const initialState = adapter.getInitialState({
-  entities: { root: initialRootFolder },
+  entities: {
+    root: initialRootDirectory,
+    temp: initialTempDirectory,
+  },
 })
 
 type FilesState = typeof initialState
 
+export const isStatic = (arg: string | FileEntity) => {
+  const type = typeof arg === "object" ? arg.type : arg
+  return ([initialRootDirectory.type, initialTempDirectory.type] as string[]).includes(type)
+}
+
 export const isFolder = (file?: FileEntity): file is FolderEntity => file?.type === "folder"
 
-const getFolder = ({ entities }: FilesState, id?: string) => {
+export const isDirectory = (file?: FileEntity): file is Directory => Boolean(file && "children" in file)
+
+const getDirectory = ({ entities }: FilesState, id?: string): Directory => {
   const file = id ? entities[id] : undefined
-  return isFolder(file) ? file : entities.root
+  return isDirectory(file) ? file : entities.root
 }
 
 const getTopFiles = (files: FileEntity[]) => {
-  const allChildren = files.filter(isFolder).flatMap((folder) => folder.children)
+  const allChildren = files.filter(isDirectory).flatMap((folder) => folder.children)
   return files.filter((file) => !allChildren.includes(file.id))
 }
 
-const addChildren = (state: FilesState, parent: string, children: string[]) => {
-  const parentFolder = getFolder(state, parent)
-  parentFolder.children.push(...children)
+const addChildren = (state: FilesState, to: string, children: string[]) => {
+  const dir = getDirectory(state, to)
+  dir.children = uniq([...dir.children, ...children])
 }
 
-const addFiles = (state: FilesState, files: FileEntity[], parent = "root") => {
+const addFiles = (state: FilesState, files: FileEntity[], to = "root") => {
   adapter.addMany(state, files)
 
   const topFileIds = getTopFiles(files).map((file) => file.id)
-  addChildren(state, parent, topFileIds)
+  addChildren(state, to, topFileIds)
 }
 
 const removeFromChildren = (state: FilesState, ids: string[]) => {
   Object.values(state.entities)
-    .filter(isFolder)
+    .filter(isDirectory)
     .forEach((folder) => {
       folder.children = folder.children.filter((child) => !ids.includes(child))
     })
@@ -114,26 +132,28 @@ export const filesSlice = createSlice({
     update: adapter.updateOne,
 
     move: (state, { payload: { id, to } }: PayloadAction<{ id: string; to?: string }>) => {
+      if (isStatic(id)) return
       removeFromChildren(state, [id])
 
       const target = (to && state.entities[to]) || state.entities.root
 
-      if (isFolder(target)) {
+      if (isDirectory(target)) {
         target.children.splice(0, 0, id)
         return
       }
 
       Object.values(state.entities)
-        .filter(isFolder)
-        .forEach((folder) => {
-          const index = folder.children.indexOf(target.id)
-          if (index >= 0) folder.children.splice(index + 1, 0, id)
+        .filter(isDirectory)
+        .forEach((dir) => {
+          const index = dir.children.indexOf(target.id)
+          if (index >= 0) dir.children.splice(index + 1, 0, id)
         })
     },
 
     remove: (state, { payload }: PayloadAction<string[]>) => {
-      adapter.removeMany(state, payload)
-      removeFromChildren(state, payload)
+      const ids = payload.filter((id) => !isStatic(id))
+      adapter.removeMany(state, ids)
+      removeFromChildren(state, ids)
     },
   },
 })
@@ -141,7 +161,7 @@ export const filesSlice = createSlice({
 export const flatFile = (entities: Dictionary<FileEntity>, id: string): FileEntity[] => {
   const file = entities[id]
   if (!file) return []
-  if (!isFolder(file)) return [file]
+  if (!isDirectory(file)) return [file]
   return [file, ...file.children.flatMap((childId) => flatFile(entities, childId))]
 }
 
