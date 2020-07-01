@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { ShipBase } from "@fleethub/core"
 
 import { useFhSystem } from "../../../hooks"
-import { ShipListState, shipListSlice } from "../../../store"
+import { ShipListState, shipListSlice, selectShipListState } from "../../../store"
 
 type FilterFn = (ship: ShipBase) => boolean
 
@@ -28,7 +28,7 @@ const sortIdComparer = (a: ShipBase, b: ShipBase) => a.sortId - b.sortId
 
 export const useShipListState = () => {
   const { masterShips } = useFhSystem()
-  const state = useSelector((state) => state.shipList)
+  const state = useSelector(selectShipListState)
   const dispatch = useDispatch()
 
   const update = (changes: Partial<ShipListState>) => dispatch(shipListSlice.actions.update(changes))

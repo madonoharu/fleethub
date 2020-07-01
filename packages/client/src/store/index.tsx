@@ -2,7 +2,7 @@ import React from "react"
 import { combineReducers, configureStore, getDefaultMiddleware, AnyAction } from "@reduxjs/toolkit"
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist"
 import storage from "localforage"
-import undoable, { UndoableOptions, excludeAction } from "redux-undo"
+import undoable, { UndoableOptions } from "redux-undo"
 import { ThunkAction } from "redux-thunk"
 
 import { Provider as ReduxProvider } from "react-redux"
@@ -20,20 +20,25 @@ import { gearListSlice } from "./gearListSlice"
 const ignoredActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
 
 const undoableOptions: UndoableOptions = {
-  filter: excludeAction(ignoredActions),
+  filter: (action, currentState, previousHistory) => {
+    return ["entities", appSlice.name].some((key) => (action.type as string).startsWith(key))
+  },
   groupBy: makeGroupBy(),
   ignoreInitialState: true,
   limit: 10,
 }
 
-const rootReducer = combineReducers({
-  entities: undoable(persistReducer({ key: "entities", storage }, entitiesReducer), undoableOptions),
-  app: appSlice.reducer,
+const rootReducer = undoable(
+  combineReducers({
+    entities: persistReducer({ key: "entities", storage }, entitiesReducer),
+    app: appSlice.reducer,
 
-  mapList: mapListSlice.reducer,
-  gearList: gearListSlice.reducer,
-  shipList: shipListSlice.reducer,
-})
+    mapList: mapListSlice.reducer,
+    gearList: gearListSlice.reducer,
+    shipList: shipListSlice.reducer,
+  }),
+  undoableOptions
+)
 
 const extraArgument = undefined
 
@@ -80,3 +85,5 @@ export * from "./entities"
 export * from "./mapListSlice"
 export * from "./shipListSlice"
 export * from "./gearListSlice"
+
+export * from "./selectors"
