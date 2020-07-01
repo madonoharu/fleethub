@@ -5,7 +5,7 @@ import { GearState, GearBase, EquipmentBonuses } from "@fleethub/core"
 import { GearCategory } from "@fleethub/data"
 
 import { useFhSystem } from "../../../hooks"
-import { gearListSlice } from "../../../store"
+import { gearListSlice, selectGearListState } from "../../../store"
 
 import { getFilter, getVisibleFilterKeys } from "./filters"
 import { idComparer } from "./comparers"
@@ -47,7 +47,7 @@ const useGearListState = () => {
   const gears = useFhSystem().masterGears
 
   const dispatch = useDispatch()
-  const state = useSelector((state) => state.gearList)
+  const state = useSelector(selectGearListState)
 
   const update = (...args: Parameters<typeof gearListSlice.actions.update>) =>
     dispatch(gearListSlice.actions.update(...args))

@@ -2,7 +2,7 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import { plansSelectors, filesSlice, openFirstPlan } from "../../../store"
+import { plansSelectors, filesSlice, openFirstPlan, selectAppState } from "../../../store"
 import { PlanEditor } from "../../../components"
 
 import AppBar from "./AppBar"
@@ -11,7 +11,10 @@ import { useFetch } from "../../../hooks"
 
 const FileLoader: React.FC = () => {
   const dispatch = useDispatch()
-  const planId = useSelector((state) => state.app.planId && plansSelectors.selectById(state, state.app.planId)?.id)
+  const planId = useSelector((state) => {
+    const { planId } = selectAppState(state)
+    return planId && plansSelectors.selectById(state, planId)?.id
+  })
 
   useFetch(async () => {
     const entities = await parseUrlEntities()
