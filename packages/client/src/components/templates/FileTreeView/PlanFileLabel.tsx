@@ -10,7 +10,7 @@ import { MoreVertButton, ShareButton, RemoveButton, MenuList } from "../../../co
 import { PlanFileEntity, plansSelectors } from "../../../store"
 import { usePopover } from "../../../hooks"
 
-import FileLabel from "./FileLabel"
+import FileLabel, { FileLabelProps } from "./FileLabel"
 
 const usePlanFile = (id: string) => {
   const plan = useSelector((state) => plansSelectors.selectById(state, id))
@@ -23,9 +23,9 @@ type Props = {
   onCopy: (id: string) => void
   onRemove: (id: string) => void
   onSelect?: (id: string) => void
-}
+} & Pick<FileLabelProps, "onMove" | "isParentOf">
 
-const PlanFileLabel: React.FCX<Props> = ({ className, file, onCopy, onRemove, onSelect }) => {
+const PlanFileLabel: React.FCX<Props> = ({ className, file, onCopy, onRemove, onSelect, onMove, isParentOf }) => {
   const { plan } = usePlanFile(file.id)
   const Popover = usePopover()
 
@@ -45,6 +45,9 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file, onCopy, onRemove, on
   return (
     <FileLabel
       className={className}
+      file={file}
+      onMove={onMove}
+      isParentOf={isParentOf}
       icon={<DescriptionIcon />}
       text={plan.name}
       onClick={handleOpen}

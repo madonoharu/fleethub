@@ -1,21 +1,21 @@
 import React from "react"
 import styled from "styled-components"
 import { isNonNullable } from "@fleethub/utils"
-import { Update } from "@reduxjs/toolkit"
+import { Update, Dictionary } from "@reduxjs/toolkit"
 
 import { Container, Button } from "@material-ui/core"
 import TreeView from "@material-ui/lab/TreeView"
+import TreeItem from "@material-ui/lab/TreeItem"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import AddIcon from "@material-ui/icons/Add"
 
-import { isFolder, filesSlice, flatFile, FileEntity } from "../../../store"
+import { isDirectory, filesSlice, flatFile, FileEntity } from "../../../store"
 
 import FolderLabel from "./FolderLabel"
 import PlanFileLabel from "./PlanFileLabel"
-import FileTreeItem from "./FileTreeItem"
-import { Dictionary } from "@reduxjs/toolkit"
+import DirectoryLabel from "./DirectoryLabel"
 
 export type FileTreeViewProps = {
   entities: Dictionary<FileEntity>
@@ -38,10 +38,8 @@ const FileTreeView: React.FCX<FileTreeViewProps> = ({
   onRemove,
   onMove,
 }) => {
-  const [expanded, setExpanded] = React.useState<string[]>([])
+  const [expanded, setExpanded] = React.useState<string[]>(["root", "temp"])
   const [selected, setSelected] = React.useState<string>("")
-
-  const rootFolder = entities.root
 
   const handleToggle = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
     setExpanded(nodeIds)
@@ -76,40 +74,47 @@ const FileTreeView: React.FCX<FileTreeViewProps> = ({
   const handleRemove = (id: string) => onRemove?.(id)
 
   const renderFile = (file: FileEntity) => {
-    const label =
-      file.type === "folder" ? (
+    const isParentOf = (dragFile: FileEntity) => flatFile(entities, file.id).includes(dragFile)
+
+    let label: React.ReactNode
+
+    const propsBase = { isParentOf, onMove: handleMove, onRemove: handleRemove }
+
+    if (file.type === "plan") {
+      label = <PlanFileLabel file={file} onSelect={onPlanSelect} onCopy={handleCopy} {...propsBase} />
+    } else if (file.type === "folder") {
+      label = (
         <FolderLabel
           file={file}
           onFileUpdate={(arg) => onFileUpdate?.(arg)}
           onPlanCreate={handlePlanCreate}
           onFolderCreate={handleFolderCreate}
           onCopy={handleCopy}
-          onRemove={handleRemove}
+          {...propsBase}
         />
-      ) : (
-        <PlanFileLabel file={file} onSelect={onPlanSelect} onCopy={handleCopy} onRemove={handleRemove} />
       )
+    } else {
+      label = (
+        <DirectoryLabel
+          file={file}
+          onPlanCreate={handlePlanCreate}
+          onFolderCreate={handleFolderCreate}
+          {...propsBase}
+        />
+      )
+    }
 
-    const children = isFolder(file)
+    const children = isDirectory(file)
       ? file.children
           .map((id) => entities[id])
           .filter(isNonNullable)
           .map(renderFile)
       : null
 
-    const isParentOf = (dragFile: FileEntity) => flatFile(entities, file.id).includes(dragFile)
-
     return (
-      <FileTreeItem
-        file={file}
-        key={file.id}
-        nodeId={file.id}
-        label={label}
-        onMove={handleMove}
-        isParentOf={isParentOf}
-      >
+      <TreeItem key={file.id} nodeId={file.id} label={label}>
         {children}
-      </FileTreeItem>
+      </TreeItem>
     )
   }
 
@@ -129,18 +134,13 @@ const FileTreeView: React.FCX<FileTreeViewProps> = ({
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
       >
-        {isFolder(rootFolder)
-          ? rootFolder.children
-              .map((id) => entities[id])
-              .filter(isNonNullable)
-              .map(renderFile)
-          : null}
+        {isDirectory(entities.root) && renderFile(entities.root)}
+        {isDirectory(entities.temp) && renderFile(entities.temp)}
       </TreeView>
     </Container>
   )
 }
 
 export default styled(FileTreeView)`
-  width: 640px;
   height: 80vh;
 `
