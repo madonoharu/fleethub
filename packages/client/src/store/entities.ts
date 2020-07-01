@@ -1,7 +1,7 @@
 import { nanoid, AppThunk, Dictionary, combineReducers } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 
-import { filesSelectors, flatFile, isFolder, filesSlice, FhEntities } from "./filesSlice"
+import { filesSelectors, flatFile, isDirectory, filesSlice, FhEntities } from "./filesSlice"
 import { plansSelectors, plansSlice } from "./plansSlice"
 import { isNonNullable } from "@fleethub/utils"
 import { publishFiles } from "../firebase"
@@ -40,10 +40,10 @@ export const cloneEntities = (state: DefaultRootState, entry: string): FhEntitie
   const clonedFiles = cloneDictionary(fileEntities, changes)
   const clonedPlans = cloneDictionary(planEntities, changes)
 
-  const folders = clonedFiles.filter(isFolder)
+  const dirs = clonedFiles.filter(isDirectory)
   changes.forEach(([prevId, nextId]) => {
-    folders.forEach((folder) => {
-      folder.children = replaceAll(folder.children, prevId, nextId)
+    dirs.forEach((dir) => {
+      dir.children = replaceAll(dir.children, prevId, nextId)
     })
   })
 
@@ -55,7 +55,7 @@ export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getSta
   const cloned = cloneEntities(state, id)
 
   if (!to) {
-    to = filesSelectors.selectAll(state).find((file) => isFolder(file) && file.children.includes(id))?.id
+    to = filesSelectors.selectAll(state).find((file) => isDirectory(file) && file.children.includes(id))?.id
   }
 
   dispatch(filesSlice.actions.set({ ...cloned, to }))
