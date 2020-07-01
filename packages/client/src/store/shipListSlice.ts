@@ -2,13 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { ShipCategory } from "@fleethub/core"
 
 export type ShipListState = {
+  all: boolean
   abyssal: boolean
-  commonly: boolean
+
   category: ShipCategory
 }
 const initialState: ShipListState = {
+  all: false,
   abyssal: false,
-  commonly: true,
   category: "Battleship",
 }
 
