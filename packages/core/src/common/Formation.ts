@@ -36,6 +36,6 @@ enum FormationId {
 }
 
 export type Formation = keyof typeof FormationId
-const formations = Object.values(FormationId).filter(isString) as Formation[]
+const Formations = Object.values(FormationId).filter(isString) as Formation[]
 
 export type FormationDefinitions = Record<Formation, FormationDefinition>
