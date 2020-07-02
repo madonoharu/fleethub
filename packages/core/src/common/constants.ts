@@ -9,3 +9,9 @@ export type FleetKey = typeof FleetKeys[number]
 
 export const AirbaseKeys = ["a1", "a2", "a3"] as const
 export type AirbaseKey = typeof AirbaseKeys[number]
+
+export const FleetTypes = ["Single", "CarrierTaskForce", "SurfaceTaskForce", "TransportEscort", "Combined"] as const
+export type FleetType = typeof FleetTypes[number]
+
+export const AirStates = ["AirSupremacy", "AirSuperiority", "AirParity", "AirDenial", "AirIncapability"] as const
+export type AirState = typeof AirStates[number]
