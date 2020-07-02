@@ -6,6 +6,7 @@ export class PlanImpl implements Plan {
   public name: Plan["name"]
   public hqLevel: Plan["hqLevel"]
   public nodes: Plan["nodes"]
+  public fleetType: Plan["fleetType"]
 
   public f1: Plan["f1"]
   public f2: Plan["f2"]
@@ -20,6 +21,7 @@ export class PlanImpl implements Plan {
     this.name = state.name || ""
     this.hqLevel = state.hqLevel || 120
     this.nodes = state.nodes || []
+    this.fleetType = state.fleetType || "Single"
 
     this.f1 = f1
     this.f2 = f2

@@ -3,7 +3,7 @@ import { Dict } from "@fleethub/utils"
 
 import { FleetState, Fleet } from "../fleet"
 import { AirbaseState, Airbase } from "../airbase"
-import { Formation, FleetKey, AirbaseKey } from "../common"
+import { Formation, FleetKey, AirbaseKey, FleetType } from "../common"
 import { EnemyFleetState } from "../enemy"
 
 type FleetDict = Dict<FleetKey, FleetState>
@@ -20,6 +20,7 @@ export type PlanStateBase = {
   name?: string
   hqLevel?: number
   nodes?: NodePlan[]
+  fleetType?: FleetType
 }
 
 export type PlanState = PlanStateBase & FleetDict & AirbaseDict
