@@ -148,11 +148,11 @@ const kcPalette = {
   increase: muiPalette.secondary.light,
 
   airState: {
-    [AirState.AirSupremacy]: colors.green[300],
-    [AirState.AirSuperiority]: colors.blue[300],
-    [AirState.AirParity]: colors.orange[300],
-    [AirState.AirDenial]: colors.pink[300],
-    [AirState.AirIncapability]: colors.red[300],
+    AirSupremacy: colors.green[300],
+    AirSuperiority: colors.blue[300],
+    AirParity: colors.orange[300],
+    AirDenial: colors.pink[300],
+    AirIncapability: colors.red[300],
   },
 }
 
