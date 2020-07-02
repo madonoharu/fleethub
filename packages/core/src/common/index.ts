@@ -1,4 +1,5 @@
-export { default as AirState } from "./AirState"
+export type AirState = "AirSupremacy" | "AirSuperiority" | "AirParity" | "AirDenial" | "AirIncapability"
+
 export { Formation } from "./Formation"
 export { default as Engagement } from "./Engagement"
 export { default as FleetTypeName } from "./FleetTypeName"

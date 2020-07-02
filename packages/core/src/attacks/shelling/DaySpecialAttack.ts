@@ -12,7 +12,7 @@ type DaySpecialAttackDefinition = {
 
 export type DaySpecialAttackDefinitions = Record<DaySpecialAttackType, DaySpecialAttackDefinition>
 
-type DaySpecialAttack = {
+export type DaySpecialAttack = {
   type: DaySpecialAttackType
 } & DaySpecialAttackDefinition
 
@@ -32,10 +32,10 @@ export const calcObservationTerm = ({
   const luckFactor = Math.floor(Math.sqrt(luck) + 10)
   const flagshipModifier = isFlagship ? 15 : 0
 
-  if (airState === AirState.AirSupremacy) {
+  if (airState === "AirSupremacy") {
     return Math.floor(luckFactor + 0.7 * (fleetLosModifier + 1.6 * equipmentLos) + 10) + flagshipModifier
   }
-  if (airState === AirState.AirSuperiority) {
+  if (airState === "AirSuperiority") {
     return Math.floor(luckFactor + 0.6 * (fleetLosModifier + 1.2 * equipmentLos)) + flagshipModifier
   }
 
