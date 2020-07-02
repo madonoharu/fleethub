@@ -18,10 +18,10 @@ const StyledFighterPowerValue = styled(FighterPowerValue)`
 
 const getMinFighterPowers = (fp: number) => {
   return {
-    [AirState.AirSupremacy]: Math.ceil(3 * fp),
-    [AirState.AirSuperiority]: Math.ceil(1.5 * fp),
-    [AirState.AirParity]: Math.floor((2 / 3) * fp) + 1,
-    [AirState.AirDenial]: Math.floor((1 / 3) * fp) + 1,
+    AirSupremacy: Math.ceil(3 * fp),
+    AirSuperiority: Math.ceil(1.5 * fp),
+    AirParity: Math.floor((2 / 3) * fp) + 1,
+    AirDenial: Math.floor((1 / 3) * fp) + 1,
   }
 }
 
@@ -37,13 +37,13 @@ const FighterPowerStats: React.FCX<Props> = ({ className, value, label }) => {
     minFpsElement = (
       <>
         <span>(</span>
-        <StyledFighterPowerValue airState={AirState.AirSupremacy} value={minFps[AirState.AirSupremacy]} />
+        <StyledFighterPowerValue airState={"AirSupremacy"} value={minFps.AirSupremacy} />
         <span>/</span>
-        <StyledFighterPowerValue airState={AirState.AirSuperiority} value={minFps[AirState.AirSuperiority]} />
+        <StyledFighterPowerValue airState={"AirSuperiority"} value={minFps.AirSuperiority} />
         <span>/</span>
-        <StyledFighterPowerValue airState={AirState.AirParity} value={minFps[AirState.AirParity]} />
+        <StyledFighterPowerValue airState={"AirParity"} value={minFps.AirParity} />
         <span>/</span>
-        <StyledFighterPowerValue airState={AirState.AirDenial} value={minFps[AirState.AirDenial]} />
+        <StyledFighterPowerValue airState={"AirDenial"} value={minFps.AirDenial} />
         <span>)</span>
       </>
     )
