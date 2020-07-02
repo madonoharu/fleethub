@@ -4,8 +4,8 @@ import { Ship } from "../../ship"
 import { calcAttackPower } from "../AttackPower"
 import { getPossibleDaySpecialAttackTypes } from "./DaySpecialAttackType"
 import { createDaySpecialAttack, calcObservationTerm, DaySpecialAttack } from "./DaySpecialAttack"
-import RateMap from "../RateMap"
 import { AirState } from "../../common"
+import { RateMap } from "../../utils"
 import { getApShellModifiers } from "./ApShellModifiers"
 
 const ShellingCap = 180
@@ -90,8 +90,8 @@ export class ShipShellingCalculator {
 
     attacks.forEach((attack) => {
       const attackRate = Math.min(observationTerm / attack.baseRate, 1)
-      const effectiveRate = rateMap.complement * attackRate
-      rateMap.set(attack, effectiveRate)
+      const actualRate = rateMap.complement * attackRate
+      rateMap.set(attack, actualRate)
     })
 
     return rateMap

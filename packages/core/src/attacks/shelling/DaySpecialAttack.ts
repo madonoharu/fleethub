@@ -1,7 +1,7 @@
 import { DaySpecialAttackType } from "./DaySpecialAttackType"
 import { fhDefinitions } from "../../FhDefinitions"
 import { AirState } from "../../common"
-import RateMap from "../RateMap"
+import { RateMap } from "../../utils"
 
 type DaySpecialAttackDefinition = {
   priority: number

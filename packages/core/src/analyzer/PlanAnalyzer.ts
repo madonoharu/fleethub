@@ -1,7 +1,7 @@
 import { Plan } from "../plan"
 import { ShipShellingCalculator, DaySpecialAttack } from "../attacks"
-import RateMap from "../attacks/RateMap"
 import { ShipKey } from "../common"
+import { RateMap } from "../utils"
 import { Ship } from "../ship"
 
 export class PlanAnalyzer {

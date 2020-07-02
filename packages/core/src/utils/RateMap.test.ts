@@ -1,4 +1,4 @@
-import RateMap from "./RateMap"
+import { RateMap } from "./RateMap"
 
 describe("RateMap", () => {
   const rateMap = new RateMap<string>()
