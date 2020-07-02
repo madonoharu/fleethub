@@ -19,18 +19,18 @@ export type DaySpecialAttack = {
 export const calcObservationTerm = ({
   luck,
   equipmentLos,
-  isFlagship,
+  isMainFlagship,
   airState,
   fleetLosModifier,
 }: {
   luck: number
   equipmentLos: number
-  isFlagship: boolean
+  isMainFlagship: boolean
   airState: AirState
   fleetLosModifier: number
 }) => {
   const luckFactor = Math.floor(Math.sqrt(luck) + 10)
-  const flagshipModifier = isFlagship ? 15 : 0
+  const flagshipModifier = isMainFlagship ? 15 : 0
 
   if (airState === "AirSupremacy") {
     return Math.floor(luckFactor + 0.7 * (fleetLosModifier + 1.6 * equipmentLos) + 10) + flagshipModifier
