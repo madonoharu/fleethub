@@ -2,10 +2,10 @@ import React from "react"
 import styled from "styled-components"
 import { Ship, ShipState } from "@fleethub/core"
 
-import { Typography, Button, Tooltip } from "@material-ui/core"
+import { Button, Tooltip } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 
-import { UpdateButton, ClearButton, InfoButton, EditButton } from "../.."
+import { UpdateButton, ClearButton, InfoButton, StarButton } from "../../../components"
 
 import { useModal } from "../../../hooks"
 import { Update } from "../../../utils"
@@ -14,8 +14,10 @@ import ShipEditor from "./ShipEditor"
 
 const StyledButton = styled(Button)`
   height: 100%;
-  min-width: calc(100% - ${24 * 3}px);
+  min-width: calc(100% - ${24 * 5}px);
   justify-content: flex-start;
+
+  margin-right: 24px;
 
   svg {
     font-size: 18px;
@@ -39,9 +41,10 @@ const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => 
         </StyledButton>
       </Tooltip>
 
+      <StarButton title="艦娘プリセットに追加" size="small" />
       <InfoButton size="small" />
       <UpdateButton size="small" />
-      <ClearButton size="small" onClick={onRemove} />
+      <ClearButton title="削除" size="small" onClick={onRemove} />
 
       <Modal>
         <ShipEditor ship={ship} update={update} />
