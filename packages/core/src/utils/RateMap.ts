@@ -1,4 +1,4 @@
-export default class RateMap<Key> extends Map<Key, number> {
+export class RateMap<Key> extends Map<Key, number> {
   constructor() {
     super()
   }
