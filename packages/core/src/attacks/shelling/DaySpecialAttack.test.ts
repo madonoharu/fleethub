@@ -9,7 +9,7 @@ describe("観測項", () => {
     luck,
     equipmentLos,
     fleetLosModifier,
-    isFlagship: false,
+    isMainFlagship: false,
   }
 
   it("制空確保", () => {
@@ -17,14 +17,14 @@ describe("観測項", () => {
     const expected = Math.floor(Math.floor(Math.sqrt(luck) + 10) + 0.7 * (fleetLosModifier + 1.6 * equipmentLos) + 10)
 
     expect(calcObservationTerm(params)).toBe(expected)
-    expect(calcObservationTerm({ ...params, isFlagship: true })).toBe(expected + 15)
+    expect(calcObservationTerm({ ...params, isMainFlagship: true })).toBe(expected + 15)
   })
   it("制空優勢", () => {
     const params = { ...baseParams, airState: "AirSuperiority" } as const
     const expected = Math.floor(Math.floor(Math.sqrt(luck) + 10) + 0.6 * (fleetLosModifier + 1.2 * equipmentLos))
 
     expect(calcObservationTerm(params)).toBe(expected)
-    expect(calcObservationTerm({ ...params, isFlagship: true })).toBe(expected + 15)
+    expect(calcObservationTerm({ ...params, isMainFlagship: true })).toBe(expected + 15)
   })
 
   it("制空均衡以下では観測項は0", () => {

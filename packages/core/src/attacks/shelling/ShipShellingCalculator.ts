@@ -3,7 +3,7 @@ import { ShipClass, GearId, GearCategory } from "@fleethub/data"
 import { Ship } from "../../ship"
 import { calcAttackPower } from "../AttackPower"
 import { getPossibleDaySpecialAttackTypes } from "./DaySpecialAttackType"
-import { createDaySpecialAttack, calcObservationTerm } from "./DaySpecialAttack"
+import { createDaySpecialAttack, calcObservationTerm, DaySpecialAttack } from "./DaySpecialAttack"
 import RateMap from "../RateMap"
 import { AirState } from "../../common"
 import { getApShellModifiers } from "./ApShellModifiers"
@@ -71,20 +71,22 @@ export class ShipShellingCalculator {
     })
   }
 
-  public calcObservationTerm = (fleetLosModifier: number, isFlagship: boolean, airState: AirState) => {
+  public calcObservationTerm = (fleetLosModifier: number, isMainFlagship: boolean, airState: AirState) => {
     const { ship } = this
     return calcObservationTerm({
       luck: ship.luck.displayed,
       equipmentLos: ship.los.equipment,
-      isFlagship,
+      isMainFlagship,
       fleetLosModifier,
       airState,
     })
   }
 
-  public getPossibleAttacksRateMap = (observationTerm: number) => {
+  public getPossibleAttacksRateMap = (fleetLosModifier: number, isMainFlagship: boolean, airState: AirState) => {
+    const observationTerm = this.calcObservationTerm(fleetLosModifier, isMainFlagship, airState)
+
     const attacks = this.getPossibleDaySpecialAttackTypes().map(createDaySpecialAttack)
-    const rateMap = new RateMap()
+    const rateMap = new RateMap<DaySpecialAttack>()
 
     attacks.forEach((attack) => {
       const attackRate = Math.min(observationTerm / attack.baseRate, 1)
