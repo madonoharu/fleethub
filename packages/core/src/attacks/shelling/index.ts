@@ -1,2 +1,2 @@
-export { ShipShellingCalculator } from "./ShipShellingCalculator"
-export { DaySpecialAttack } from "./DaySpecialAttack"
+export * from "./ShipShellingCalculator"
+export * from "./DaySpecialAttack"

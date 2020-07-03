@@ -19,6 +19,12 @@ type PowerParams = {
   specialAttackModifier: number
 }
 
+export type ShipShellingAbility = {
+  observationTerm: number
+  rateMap: RateMap<DaySpecialAttack>
+  canSpecialAttack: boolean
+}
+
 export class ShipShellingCalculator {
   constructor(private ship: Ship) {}
 
@@ -73,6 +79,7 @@ export class ShipShellingCalculator {
 
   public calcObservationTerm = (fleetLosModifier: number, isMainFlagship: boolean, airState: AirState) => {
     const { ship } = this
+
     return calcObservationTerm({
       luck: ship.luck.displayed,
       equipmentLos: ship.los.equipment,
@@ -82,7 +89,11 @@ export class ShipShellingCalculator {
     })
   }
 
-  public getPossibleAttacksRateMap = (fleetLosModifier: number, isMainFlagship: boolean, airState: AirState) => {
+  public getShipShellingAbility = (
+    fleetLosModifier: number,
+    isMainFlagship: boolean,
+    airState: AirState
+  ): ShipShellingAbility => {
     const observationTerm = this.calcObservationTerm(fleetLosModifier, isMainFlagship, airState)
 
     const attacks = this.getPossibleDaySpecialAttackTypes().map(createDaySpecialAttack)
@@ -94,7 +105,7 @@ export class ShipShellingCalculator {
       rateMap.set(attack, actualRate)
     })
 
-    return rateMap
+    return { observationTerm, rateMap, canSpecialAttack: attacks.length > 0 }
   }
 
   public createPower = ({
