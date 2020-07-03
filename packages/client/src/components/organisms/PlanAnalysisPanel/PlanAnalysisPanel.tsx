@@ -1,12 +1,10 @@
 import React from "react"
 import styled from "styled-components"
-import { Plan, PlanAnalyzer, DaySpecialAttack, RateMap } from "@fleethub/core"
+import { Plan } from "@fleethub/core"
 
 import { Paper } from "@material-ui/core"
 
-import { SelectButtons, PlanShareContent, Table } from "../../../components"
-import { usePlan, useModal } from "../../../hooks"
-import { toPercent } from "../../../utils"
+import { Tabs, TabsProps } from "../../../components"
 
 import DayAttackRateTable from "./DayAttackRateTable"
 
@@ -14,12 +12,23 @@ type Props = {
   plan: Plan
 }
 
-const PlanAnalysisPanel: React.FC<Props> = ({ plan }) => {
+const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
+  const list: TabsProps["list"] = [
+    { label: "弾着戦爆発動率", panel: <DayAttackRateTable plan={plan} /> },
+    { label: "触接率", panel: <>触接率</> },
+    { label: "夜戦CI", panel: <>夜戦CI</> },
+    { label: "航空戦", panel: <>航空戦</> },
+    { label: "その他", panel: <>その他</> },
+  ]
+
   return (
-    <Paper>
-      <DayAttackRateTable plan={plan} />
+    <Paper className={className}>
+      <Tabs list={list} />
     </Paper>
   )
 }
 
-export default PlanAnalysisPanel
+export default styled(PlanAnalysisPanel)`
+  padding: 8px;
+  min-height: 480px;
+`
