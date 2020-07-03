@@ -2,12 +2,12 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import { plansSelectors, filesSlice, openFirstPlan, selectAppState } from "../../../store"
 import { PlanEditor } from "../../../components"
-
-import AppBar from "./AppBar"
+import { plansSelectors, filesSlice, openFirstPlan, selectAppState } from "../../../store"
 import { parseUrlEntities } from "../../../firebase"
 import { useFetch } from "../../../hooks"
+
+import AppBar from "./AppBar"
 
 const FileLoader: React.FC = () => {
   const dispatch = useDispatch()
@@ -38,11 +38,16 @@ const ScrollContainer = styled.div`
   height: calc(100vh - 24px);
 `
 
+const Bottom = styled.div`
+  height: 400px;
+`
+
 const AppContent: React.FC = () => (
   <>
     <AppBar />
     <ScrollContainer>
       <FileLoader />
+      <Bottom />
     </ScrollContainer>
   </>
 )
