@@ -14,7 +14,7 @@ export default styled(LabeledValue)`
 
   > :first-child {
     color: ${(props) => props.theme.palette.text.secondary};
-    font-size: 12px;
+    font-size: 0.75rem;
     margin-right: 8px;
   }
 `

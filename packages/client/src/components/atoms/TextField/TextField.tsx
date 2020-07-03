@@ -1,16 +1,11 @@
 import React from "react"
 import styled from "styled-components"
 
-import {
-  TextField as MuiTextField,
-  TextFieldProps as MuiTextFieldProps,
-  Typography,
-  InputAdornment,
-} from "@material-ui/core"
+import { TextField as MuiTextField, TextFieldProps as MuiTextFieldProps, InputAdornment } from "@material-ui/core"
 
 const StartInputAdornment = styled(InputAdornment)`
   p {
-    font-size: 12px;
+    font-size: 0.75rem;
     margin-bottom: -1px;
   }
 `
