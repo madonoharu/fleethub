@@ -147,6 +147,8 @@ const kcPalette = {
   bonus: lightBlue[300],
   increase: muiPalette.secondary.light,
 
+  shelling: colors.orange[500],
+
   airState: {
     AirSupremacy: colors.green[300],
     AirSuperiority: colors.blue[300],
