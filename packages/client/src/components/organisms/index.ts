@@ -1,6 +1,9 @@
 export { default as Dialog } from "./Dialog"
 export * from "./Dialog"
 
+export { default as Table } from "./Table"
+export * from "./Table"
+
 export { default as AirbaseCard } from "./AirbaseCard/AirbaseCard"
 export { default as GearTooltip } from "./GearTooltip"
 export { default as GearLabel } from "./GearLabel"
@@ -12,3 +15,4 @@ export { default as FleetAnalysisPanel } from "./FleetAnalysisPanel"
 export { default as PlanImportForm } from "./PlanImportForm"
 export { default as ReactGkcoi } from "./ReactGkcoi"
 export { default as NauticalChart } from "./NauticalChart"
+export { default as PlanAnalysisPanel } from "./PlanAnalysisPanel"
