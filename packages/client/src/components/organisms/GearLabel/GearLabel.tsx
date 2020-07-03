@@ -2,16 +2,11 @@ import React from "react"
 import styled from "styled-components"
 import { Gear, GearState } from "@fleethub/core"
 
-import {
-  Flexbox,
-  GearNameplate,
-  GearStarsSelect,
-  GearExpSelect,
-  UpdateButton,
-  ClearButton,
-  GearTooltip,
-} from "../../../components"
+import { Flexbox, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
 import { Update } from "../../../utils"
+
+import GearTooltip from "../GearTooltip"
+import GearNameplate from "../GearNameplate"
 
 type Props = {
   gear: Gear
