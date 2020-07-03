@@ -1,9 +1,10 @@
 import React from "react"
 import styled from "styled-components"
+import { FleetTypes } from "@fleethub/core"
 
 import { Container } from "@material-ui/core"
 
-import { SelectButtons, PlanShareContent } from "../../../components"
+import { SelectButtons, PlanShareContent, Select, PlanAnalysisPanel } from "../../../components"
 import { usePlan, useModal } from "../../../hooks"
 
 import FleetTabPanel from "./FleetTabPanel"
@@ -31,13 +32,22 @@ const PlanEditor: React.FC<Props> = ({ planId }) => {
   return (
     <Container>
       <PlanEditorHeader plan={plan} update={actions.update} />
+      <Select
+        options={FleetTypes}
+        value={plan.fleetType}
+        onChange={(value) =>
+          actions.update((draft) => {
+            draft.fleetType = value
+          })
+        }
+      />
 
       <SelectButtons options={tabOptions} value={tabKey} onChange={setTabKey} />
       {fleetEntry && <FleetTabPanel fleet={fleetEntry[1]} fleetKey={fleetEntry[0]} updatePlan={actions.update} />}
       {tabKey === "lb" && <LandBaseTabPanel plan={plan} update={actions.update} />}
       {tabKey === "Gkcoi" && <GkcoiTabPanel plan={plan} />}
 
-      <BattlePlanPanel plan={plan} updatePlan={actions.update} />
+      <PlanAnalysisPanel plan={plan} />
 
       <Modal>
         <PlanShareContent plan={plan} />
