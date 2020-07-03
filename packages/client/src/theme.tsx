@@ -56,6 +56,9 @@ const muiTheme = createMuiTheme({
       autoHideDuration: 5000,
       anchorOrigin: { vertical: "top", horizontal: "right" },
     },
+    MuiTabs: {
+      indicatorColor: "primary",
+    },
   },
   overrides: {
     MuiCssBaseline: {
