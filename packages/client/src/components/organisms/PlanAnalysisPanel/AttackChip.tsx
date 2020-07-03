@@ -26,7 +26,7 @@ export default styled(AttackChip)`
   width: 48px;
   border-radius: 4px;
   ${(props) => css`
-    border-color: ${orange[500]};
-    color: ${orange[500]};
+    border-color: ${props.theme.kc.palette.shelling};
+    color: ${props.theme.kc.palette.shelling};
   `}
 `
