@@ -1,6 +1,11 @@
 import React from "react"
 import styled from "styled-components"
 
+const StyledPicture = styled.picture`
+  line-height: 1;
+  font-size: 0;
+`
+
 const requireImage = (path: string) => {
   try {
     return require(`../../../images/${path}`)
@@ -9,25 +14,20 @@ const requireImage = (path: string) => {
   }
 }
 
-type Props = React.ComponentProps<"picture"> & {
+type Props = Omit<React.ComponentProps<"img">, "src"> & {
   path: string
-  height: number
-  width: number
 }
 
-const Image = React.forwardRef<HTMLPictureElement, Props>(({ path, height, width, ...rest }, ref) => {
-  const webp = requireImage(path + ".webp")
-  const png = requireImage(path + ".png")
+const Image = React.forwardRef<HTMLPictureElement, Props>(({ path, ...rest }, ref) => {
+  const webp = requireImage(`webp/${path}.webp`)
+  const png = requireImage(`png/${path}.png`)
 
   return (
-    <picture ref={ref} {...rest}>
+    <StyledPicture ref={ref}>
       <source type="image/webp" srcSet={webp} />
-      <img src={png} height={height} width={width} />
-    </picture>
+      <img {...rest} src={png} />
+    </StyledPicture>
   )
 })
 
-export default styled(Image)`
-  width: ${({ width }) => width}px;
-  height: ${({ height }) => height}px;
-`
+export default styled(Image)``
