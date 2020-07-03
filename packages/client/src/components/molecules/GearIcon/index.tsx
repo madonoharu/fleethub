@@ -9,7 +9,7 @@ type Props = {
 
 const GearIcon: React.FCX<Props> = ({ className, iconId }) => {
   if (!iconId) return null
-  return <Image className={className} width={24} height={24} src={`gears/${iconId}.webp`} />
+  return <Image className={className} width={24} height={24} path={`gears/${iconId}`} />
 }
 
 export default styled(GearIcon)``
