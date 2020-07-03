@@ -2,9 +2,10 @@ import React from "react"
 import styled from "styled-components"
 
 import withIconButton from "../IconButtons/withIconButton"
+import { Image } from "../../atoms"
 
-const IconBase = React.forwardRef<HTMLImageElement, React.ComponentProps<"img">>((props, ref) => (
-  <img ref={ref} width={24} height={24} {...props} src={require("../../../images/kctools.webp")} />
+const IconBase = React.forwardRef<HTMLPictureElement, React.ComponentProps<"picture">>((props, ref) => (
+  <Image width={24} height={24} {...props} ref={ref} path={"icons/kctools"} />
 ))
 
 export const KctoolsIcon = styled(IconBase)`

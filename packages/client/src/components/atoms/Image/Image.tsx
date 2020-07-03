@@ -1,14 +1,33 @@
 import React from "react"
+import styled from "styled-components"
 
-const Image = React.forwardRef<HTMLImageElement, React.ComponentProps<"img">>(({ src: path, ...rest }, ref) => {
-  let src: string | undefined
+const requireImage = (path: string) => {
   try {
-    src = path && require("../../../images/" + path)
+    return require(`../../../images/${path}`)
   } catch {
     console.warn(`${path} not found`)
   }
+}
 
-  return <img ref={ref} src={src} {...rest} />
+type Props = React.ComponentProps<"picture"> & {
+  path: string
+  height: number
+  width: number
+}
+
+const Image = React.forwardRef<HTMLPictureElement, Props>(({ path, height, width, ...rest }, ref) => {
+  const webp = requireImage(path + ".webp")
+  const png = requireImage(path + ".png")
+
+  return (
+    <picture ref={ref} {...rest}>
+      <source type="image/webp" srcSet={webp} />
+      <img src={png} height={height} width={width} />
+    </picture>
+  )
 })
 
-export default Image
+export default styled(Image)`
+  width: ${({ width }) => width}px;
+  height: ${({ height }) => height}px;
+`
