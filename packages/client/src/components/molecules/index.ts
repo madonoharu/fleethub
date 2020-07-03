@@ -12,6 +12,9 @@ export { default as StatIcon } from "./StatIcon"
 export { default as NumberInput } from "./NumberInput"
 export * from "./NumberInput"
 
+export { default as Tabs } from "./Tabs"
+export * from "./Tabs"
+
 export { default as KctoolsButton } from "./KctoolsButton"
 export * from "./KctoolsButton"
 
