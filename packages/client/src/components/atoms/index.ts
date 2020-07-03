@@ -1,7 +1,7 @@
 export { default as Flexbox } from "./Flexbox"
 export { default as Select } from "./Select"
 export { default as Slider } from "./Slider"
-
+export { default as LabeledValue } from "./LabeledValue"
 export { default as Text } from "./Text"
 export { default as Divider } from "./Divider"
 
