@@ -31,12 +31,14 @@ const smallText = css`
 
 export default styled(GearNameplate)`
   max-width: 100%;
-  p {
-    ${({ size }) => size === "small" && smallText}
-  }
 
   ${GearIcon} {
     flex-shrink: 0;
     margin-right: 4px;
+  }
+
+  p {
+    max-width: calc(100% - 28px);
+    ${({ size }) => size === "small" && smallText}
   }
 `
