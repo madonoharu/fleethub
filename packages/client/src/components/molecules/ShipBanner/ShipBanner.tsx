@@ -5,11 +5,17 @@ import { Image } from "../../atoms"
 
 type Props = {
   shipId: number
-  size?: "small" | "medium"
+  size?: "small" | "medium" | "large"
+}
+
+const values = {
+  small: 3,
+  medium: 4,
+  large: 5,
 }
 
 const ShipBanner: React.FCX<Props> = ({ className, shipId, size = "small" }) => {
-  const scale = size === "small" ? 3 : 4
+  const scale = values[size]
   return <Image className={className} height={scale * 8} width={scale * 32} path={`ships/${shipId}`} />
 }
 
