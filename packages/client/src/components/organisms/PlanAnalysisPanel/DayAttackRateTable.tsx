@@ -1,15 +1,13 @@
 import React from "react"
 import styled from "styled-components"
-import { Plan, PlanAnalyzer, DaySpecialAttack, RateMap, ShipShellingAbility } from "@fleethub/core"
+import { Plan, PlanAnalyzer, ShipShellingAbility } from "@fleethub/core"
 
 import { Paper } from "@material-ui/core"
 
 import { ShipBanner, Flexbox, Table, LabeledValue } from "../../../components"
-import { usePlan, useModal } from "../../../hooks"
 import { toPercent } from "../../../utils"
 
 import AttackChip from "./AttackChip"
-import ShipNameplate from "../../templates/ShipList/ShipNameplate"
 
 const LeftContainer = styled.div`
   > * {
@@ -26,7 +24,7 @@ const RightContainer = styled(LeftContainer)`
   line-height: 24px;
 `
 
-const AttackRateMapCell: React.FCX<{ ability: ShipShellingAbility }> = ({ className, ability }) => {
+const ShellingAbilityCell: React.FCX<{ ability: ShipShellingAbility }> = ({ className, ability }) => {
   return (
     <div className={className} style={{ display: "flex", alignItems: "flex-end" }}>
       <LeftContainer>
@@ -68,12 +66,12 @@ const DayAttackRateTableFleet: React.FC<FleetDayAttackRateTableProps> = ({ label
           {
             label: "確保",
             align: "left",
-            getValue: ([ship, record], index) => <AttackRateMapCell key={index} ability={record.AirSupremacy} />,
+            getValue: ([ship, record]) => <ShellingAbilityCell ability={record.AirSupremacy} />,
           },
           {
             label: "優勢",
             align: "left",
-            getValue: ([ship, record], index) => <AttackRateMapCell key={index} ability={record.AirSuperiority} />,
+            getValue: ([ship, record], index) => <ShellingAbilityCell ability={record.AirSuperiority} />,
           },
         ]}
       />
@@ -98,7 +96,6 @@ const DayAttackRateTable: React.FCX<Props> = ({ className, plan }) => {
 }
 
 export default styled(DayAttackRateTable)`
-  padding: 8px;
   > * {
     margin-bottom: 24px;
   }
