@@ -1,4 +1,4 @@
-import { isNonNullable } from "@fleethub/utils"
+import { isNonNullable, atLeastOne } from "@fleethub/utils"
 import { sumBy } from "lodash-es"
 
 import { Ship } from "../ship"
@@ -46,6 +46,20 @@ export class FleetImpl implements Fleet {
 
   get expeditionBonus() {
     return calcExpeditionBonus(this.ships)
+  }
+
+  get nightContactRate() {
+    const probs: number[] = []
+
+    this.ships.forEach((ship) =>
+      ship.equipment.forEach((gear, key, slotSize) => {
+        if (!slotSize || !gear.is("NightRecon")) return
+        const prob = Math.floor(Math.sqrt(gear.los) * Math.sqrt(ship.level)) / 25
+        probs.push(prob)
+      })
+    )
+
+    return atLeastOne(probs)
   }
 
   public calcFighterPower = (lb?: boolean) => {
