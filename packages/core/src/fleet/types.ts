@@ -7,6 +7,12 @@ type ShipDict = Dict<ShipKey, ShipState>
 
 export type FleetState = ShipDict
 
+export type NightContactChance = {
+  rank1: number
+  rank2: number
+  rank3: number
+}
+
 export type Fleet = {
   state: FleetState
 
@@ -18,7 +24,7 @@ export type Fleet = {
   transportPoint: number
   expeditionBonus: number
 
-  nightContactRate: number
+  nightContactChance: NightContactChance
 
   calcFighterPower: (lb?: boolean) => number
 }
