@@ -26,21 +26,13 @@ type TableClellProps<Datum> = {
 function TableClell<Datum>({ datum, datumIndex, column }: TableClellProps<Datum>) {
   const { label, getValue, ...rest } = column
 
-  return (
-    <MuiTableCell align="right" {...rest}>
-      {getValue(datum, datumIndex)}
-    </MuiTableCell>
-  )
+  return <MuiTableCell {...rest}>{getValue(datum, datumIndex)}</MuiTableCell>
 }
 
 function TableHeadCell<Datum>({ column }: Omit<TableClellProps<Datum>, "datum">) {
   const { label, getValue, ...rest } = column
 
-  return (
-    <MuiTableCell align="right" {...rest}>
-      {label}
-    </MuiTableCell>
-  )
+  return <MuiTableCell {...rest}>{label}</MuiTableCell>
 }
 
 type TableRowProps<Datum> = {
