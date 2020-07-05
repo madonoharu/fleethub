@@ -15,6 +15,8 @@ export const mapValues = <T, R>(obj: T, fn: (value: T[keyof T], key: keyof T) =>
 
 export const uniq = <T>(array: T[]) => [...new Set(array)]
 
+export const atLeastOne = (xs: number[]) => 1 - xs.reduce((acc, x) => acc * (1 - x), 1)
+
 export type Dict<K extends string | number | symbol, T> = Partial<Record<K, T>>
 
 export type NullableArray<T> = Array<T | undefined>
