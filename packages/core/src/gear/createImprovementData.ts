@@ -27,7 +27,7 @@ const createContactSelectionBonus: FormulaCreator = (gear) => {
     if (los === 6) return toLinear(0.2)
 
     // 零偵 Ro.43 (0.125, 0.1428...]
-    if (los >= 4) return toLinear(0.14)
+    if ([4, 5].includes(los)) return toLinear(0.14)
 
     // 夜偵 (0, 0.1]
     if (los === 3) return toLinear(0.1)

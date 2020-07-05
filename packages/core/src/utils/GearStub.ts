@@ -55,4 +55,6 @@ export class GearStub extends GearBaseStub implements Gear {
   public improvement = {} as Gear["improvement"]
   public calcFighterPower = jest.fn()
   public calcInterceptionPower = jest.fn()
+  public calcContactTriggerFactor = jest.fn()
+  public calcContactSelectionRate = jest.fn()
 }

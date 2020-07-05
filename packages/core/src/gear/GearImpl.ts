@@ -62,4 +62,21 @@ export class GearImpl implements Gear {
     const multiplier = antiAir + interception + 2 * antiBomber + improvement.fighterPowerBonus
     return Math.floor(multiplier * Math.sqrt(slotSize) + proficiency.fighterPowerModifier)
   }
+
+  public calcContactTriggerFactor = (slotSize: number) => {
+    if (!this.is("Recon")) return 0
+    return Math.floor(this.los * Math.sqrt(slotSize))
+  }
+
+  private get isContactSelectionPlane() {
+    return this.is("Recon") || this.categoryIn("CbTorpedoBomber")
+  }
+
+  public calcContactSelectionRate = (airStateModifier: number) => {
+    if (!this.isContactSelectionPlane) return 0
+
+    const { los, improvement } = this
+    const value = Math.ceil(los + improvement.contactSelectionBonus) / (20 - 2 * airStateModifier)
+    return Math.min(value, 1)
+  }
 }

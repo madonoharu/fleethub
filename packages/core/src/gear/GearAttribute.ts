@@ -100,6 +100,9 @@ const Aircraft = or(
   categoryIn("AntiSubmarinePatrolAircraft", "Autogyro")
 )
 
+/** 夜偵 */
+const NightRecon = gearIdIn(GearId["九八式水上偵察機(夜偵)"])
+
 /** 水上観測機 */
 const ObservationSeaplane = categoryIn("ReconSeaplane", "SeaplaneBomber")
 
@@ -165,6 +168,7 @@ const matchers = {
   TorpedoBomber,
   Recon,
 
+  NightRecon,
   ObservationSeaplane,
   CbFighterBomber,
   AntiInstallationBomber,
