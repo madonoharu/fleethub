@@ -48,18 +48,33 @@ export class FleetImpl implements Fleet {
     return calcExpeditionBonus(this.ships)
   }
 
-  get nightContactRate() {
-    const probs: number[] = []
+  get nightContactChance() {
+    const rank1Probs: number[] = []
+    const rank2Probs: number[] = []
+    const rank3Probs: number[] = []
 
     this.ships.forEach((ship) =>
       ship.equipment.forEach((gear, key, slotSize) => {
         if (!slotSize || !gear.is("NightRecon")) return
-        const prob = Math.floor(Math.sqrt(gear.los) * Math.sqrt(ship.level)) / 25
-        probs.push(prob)
+
+        const { los, accuracy } = gear
+        const prob = Math.floor(Math.sqrt(los) * Math.sqrt(ship.level)) / 25
+
+        if (accuracy >= 3) rank1Probs.push(prob)
+        else if (accuracy === 2) rank2Probs.push(prob)
+        else rank3Probs.push(prob)
       })
     )
 
-    return atLeastOne(probs)
+    const rank1SelectionProb = atLeastOne(rank1Probs)
+    const rank2SelectionProb = atLeastOne(rank2Probs)
+    const rank3SelectionProb = atLeastOne(rank3Probs)
+
+    const rank1 = rank1SelectionProb
+    const rank2 = (1 - rank1SelectionProb) * rank2SelectionProb
+    const rank3 = (1 - rank1SelectionProb) * (1 - rank2SelectionProb) * rank3SelectionProb
+
+    return { rank1, rank2, rank3 }
   }
 
   public calcFighterPower = (lb?: boolean) => {
