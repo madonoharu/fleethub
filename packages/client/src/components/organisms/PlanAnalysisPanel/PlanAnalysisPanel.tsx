@@ -7,6 +7,8 @@ import { Paper } from "@material-ui/core"
 import { Tabs, TabsProps } from "../../../components"
 
 import DayAttackRateTable from "./DayAttackRateTable"
+import ContactChancePanel from "./ContactChancePanel"
+import NightCutinPanel from "./NightCutinPanel"
 
 type Props = {
   plan: Plan
@@ -15,15 +17,15 @@ type Props = {
 const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
   const list: TabsProps["list"] = [
     { label: "弾着戦爆発動率", panel: <DayAttackRateTable plan={plan} /> },
-    { label: "触接率", panel: <>触接率</> },
-    { label: "夜戦CI", panel: <>夜戦CI</> },
+    { label: "触接率", panel: <ContactChancePanel plan={plan} /> },
+    { label: "夜戦CI", panel: <NightCutinPanel plan={plan} /> },
     { label: "航空戦", panel: <>航空戦</> },
     { label: "その他", panel: <>その他</> },
   ]
 
   return (
-    <Paper className={className}>
-      <Tabs list={list} />
+    <Paper>
+      <Tabs className={className} list={list} />
     </Paper>
   )
 }
@@ -31,4 +33,8 @@ const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
 export default styled(PlanAnalysisPanel)`
   padding: 8px;
   min-height: 480px;
+  > * {
+    margin-right: auto;
+    margin-left: auto;
+  }
 `
