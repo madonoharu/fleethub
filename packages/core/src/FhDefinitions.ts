@@ -120,41 +120,41 @@ export const defaultFhDefinitions: FhDefinitions = {
   },
 
   daySpecialAttacks: {
-    Zuiun: { priority: 1, baseRate: 130, power: 1.35, accuracy: 1 },
-    Suisei: { priority: 2, baseRate: 130, power: 1.3, accuracy: 1 },
+    Zuiun: { priority: 1, denominator: 130, power: 1.35, accuracy: 1 },
+    Suisei: { priority: 2, denominator: 130, power: 1.3, accuracy: 1 },
 
-    MainMain: { priority: 3, baseRate: 150, power: 1.5, accuracy: 1.2 },
-    MainApShell: { priority: 4, baseRate: 140, power: 1.3, accuracy: 1.3 },
-    MainRader: { priority: 5, baseRate: 130, power: 1.2, accuracy: 1.5 },
-    MainSecond: { priority: 6, baseRate: 120, power: 1.1, accuracy: 1.3 },
-    DoubleAttack: { priority: 7, baseRate: 130, power: 1.2, accuracy: 1.1 },
+    MainMain: { priority: 3, denominator: 150, power: 1.5, accuracy: 1.2 },
+    MainApShell: { priority: 4, denominator: 140, power: 1.3, accuracy: 1.3 },
+    MainRader: { priority: 5, denominator: 130, power: 1.2, accuracy: 1.5 },
+    MainSecond: { priority: 6, denominator: 120, power: 1.1, accuracy: 1.3 },
+    DoubleAttack: { priority: 7, denominator: 130, power: 1.2, accuracy: 1.1 },
 
     /** @see https://docs.google.com/spreadsheets/d/1i5jTixnOVjqrwZvF_4Uqf3L9ObHhS7dFqG8KiE5awkY */
-    FBA: { priority: 1, baseRate: 125, power: 1.25, accuracy: 1 },
-    BBA: { priority: 2, baseRate: 140, power: 1.2, accuracy: 1 },
-    BA: { priority: 3, baseRate: 155, power: 1.15, accuracy: 1 },
+    FBA: { priority: 1, denominator: 125, power: 1.25, accuracy: 1 },
+    BBA: { priority: 2, denominator: 140, power: 1.2, accuracy: 1 },
+    BA: { priority: 3, denominator: 155, power: 1.15, accuracy: 1 },
   },
 
   nightSpecialAttacks: {
-    MainTorpRadar: { priority: 1, baseRate: 130, power: 1.3, accuracy: 1 },
-    TorpLookoutRadar: { priority: 2, baseRate: 150, power: 1.2, accuracy: 1 },
+    MainTorpRadar: { priority: 1, denominator: 130, power: 1.3, accuracy: 1 },
+    TorpLookoutRadar: { priority: 2, denominator: 150, power: 1.2, accuracy: 1 },
 
-    DoubleAttack: { priority: 3, baseRate: 110, power: 1.2, accuracy: 1.1 },
-    MainTorp: { priority: 3, baseRate: 115, power: 1.3, accuracy: 1.5 },
-    TorpTorp: { priority: 3, baseRate: 122, power: 1.5, accuracy: 1.65 },
-    MainMainSecond: { priority: 3, baseRate: 130, power: 1.75, accuracy: 1.65 },
-    MainMainMain: { priority: 3, baseRate: 140, power: 2, accuracy: 1.5 },
+    DoubleAttack: { priority: 3, denominator: 110, power: 1.2, accuracy: 1.1 },
+    MainTorp: { priority: 3, denominator: 115, power: 1.3, accuracy: 1.5 },
+    TorpTorp: { priority: 3, denominator: 122, power: 1.5, accuracy: 1.65 },
+    MainMainSecond: { priority: 3, denominator: 130, power: 1.75, accuracy: 1.65 },
+    MainMainMain: { priority: 3, denominator: 140, power: 2, accuracy: 1.5 },
 
-    SubmarineTorpTorp: { priority: 3, baseRate: 110, power: 1.65, accuracy: 1 },
-    SubmarineRadarTorp: { priority: 3, baseRate: 102, power: 1.75, accuracy: 1 },
+    SubmarineTorpTorp: { priority: 3, denominator: 110, power: 1.65, accuracy: 1 },
+    SubmarineRadarTorp: { priority: 3, denominator: 102, power: 1.75, accuracy: 1 },
 
     /**
      * @see https://twitter.com/MorimotoKou/status/1162347762945425410
      */
-    AerialAttack1: { priority: 1, baseRate: 105, power: 1.25, accuracy: 1 },
-    AerialAttack2: { priority: 2, baseRate: 115, power: 1.2, accuracy: 1 },
-    SuiseiAttack: { priority: 3, baseRate: 115, power: 1.2, accuracy: 1 },
-    AerialAttack3: { priority: 4, baseRate: 125, power: 1.18, accuracy: 1 },
+    AerialAttack1: { priority: 1, denominator: 105, power: 1.25, accuracy: 1 },
+    AerialAttack2: { priority: 2, denominator: 115, power: 1.2, accuracy: 1 },
+    SuiseiAttack: { priority: 3, denominator: 115, power: 1.2, accuracy: 1 },
+    AerialAttack3: { priority: 4, denominator: 125, power: 1.18, accuracy: 1 },
   },
 }
 

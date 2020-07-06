@@ -100,7 +100,7 @@ export class ShipShellingCalculator {
     const rateMap = new RateMap<DaySpecialAttack>()
 
     attacks.forEach((attack) => {
-      const attackRate = Math.min(observationTerm / attack.baseRate, 1)
+      const attackRate = Math.min(observationTerm / attack.denominator, 1)
       const actualRate = rateMap.complement * attackRate
       rateMap.set(attack, actualRate)
     })
