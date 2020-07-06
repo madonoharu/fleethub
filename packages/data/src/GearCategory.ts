@@ -100,7 +100,7 @@ export enum GearCategory {
   SubmarineTorpedo = 32,
 
   /** 照明弾 */
-  StarShell = 33,
+  Starshell = 33,
 
   /** 司令部施設 */
   CommandFacility = 34,
