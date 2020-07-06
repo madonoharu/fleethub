@@ -26,6 +26,6 @@ export default styled(ShipList)`
   grid-gap: 8px;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   > * {
-    height: ${24 * 7}px;
+    height: ${24 * 7 + 8}px;
   }
 `
