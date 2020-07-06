@@ -45,7 +45,7 @@ type FleetDayAttackRateTableProps = {
   data: ReturnType<PlanAnalyzer["analyzeFleetShelling"]>
 }
 
-const DayAttackRateTableFleet: React.FC<FleetDayAttackRateTableProps> = ({ label, data }) => {
+const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({ label, data }) => {
   return (
     <div>
       {label} 艦隊索敵補正: {data.fleetLosModifier}
@@ -55,7 +55,6 @@ const DayAttackRateTableFleet: React.FC<FleetDayAttackRateTableProps> = ({ label
         columns={[
           {
             label: "艦娘",
-            align: "left",
             getValue: ([ship]) => (
               <>
                 <div>{ship.name}</div>
@@ -65,12 +64,10 @@ const DayAttackRateTableFleet: React.FC<FleetDayAttackRateTableProps> = ({ label
           },
           {
             label: "確保",
-            align: "left",
             getValue: ([ship, record]) => <ShellingAbilityCell ability={record.AirSupremacy} />,
           },
           {
             label: "優勢",
-            align: "left",
             getValue: ([ship, record], index) => <ShellingAbilityCell ability={record.AirSuperiority} />,
           },
         ]}
@@ -89,8 +86,8 @@ const DayAttackRateTable: React.FCX<Props> = ({ className, plan }) => {
 
   return (
     <div className={className}>
-      <DayAttackRateTableFleet label="主力" data={main} />
-      {escort && <DayAttackRateTableFleet label="護衛" data={escort} />}
+      <FleetDayAttackRateTable label="主力" data={main} />
+      {escort && <FleetDayAttackRateTable label="護衛" data={escort} />}
     </div>
   )
 }
