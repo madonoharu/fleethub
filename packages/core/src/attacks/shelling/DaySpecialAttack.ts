@@ -5,7 +5,7 @@ import { RateMap } from "../../utils"
 
 type DaySpecialAttackDefinition = {
   priority: number
-  baseRate: number
+  denominator: number
   power: number
   accuracy: number
 }
@@ -51,7 +51,7 @@ export const createRateMap = (attacks: DaySpecialAttack[], observationTerm: numb
   const rateMap = new RateMap()
 
   attacks.forEach((attack) => {
-    const attackRate = Math.min(observationTerm / attack.baseRate, 1)
+    const attackRate = Math.min(observationTerm / attack.denominator, 1)
     const effectiveRate = rateMap.complement * attackRate
     rateMap.set(attack, effectiveRate)
   })
