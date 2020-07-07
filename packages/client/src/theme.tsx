@@ -151,6 +151,7 @@ const kcPalette = {
   increase: muiPalette.secondary.light,
 
   shelling: colors.orange[500],
+  night: colors.indigo[200],
 
   airState: {
     AirSupremacy: colors.green[300],
