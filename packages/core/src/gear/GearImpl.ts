@@ -72,7 +72,7 @@ export class GearImpl implements Gear {
     return this.is("Recon") || this.categoryIn("CbTorpedoBomber")
   }
 
-  public calcContactSelectionRate = (airStateModifier: number) => {
+  public calcContactSelectionChance = (airStateModifier: number) => {
     if (!this.isContactSelectionPlane) return 0
 
     const { los, improvement } = this
