@@ -10,10 +10,12 @@ type Props = {
   ship: Ship
 }
 
-const ShipNameCell: React.FCX<Props> = ({ ship }) => {
+const ShipNameCell: React.FCX<Props> = ({ className, ship }) => {
   return (
-    <div>
-      <div>{ship.name}</div>
+    <div className={className}>
+      <Typography variant="caption" display="block">
+        {ship.name}
+      </Typography>
       <ShipBanner shipId={ship.shipId} />
     </div>
   )
