@@ -1,9 +1,15 @@
 import { Plan } from "../plan"
-import { ShipShellingCalculator, ShipShellingAbility } from "../attacks"
-import { ShipKey } from "../common"
-import { RateMap } from "../utils"
+import {
+  getNightAbility,
+  NightAbility,
+  NightAttackParams,
+  ShipShellingCalculator,
+  ShipShellingAbility,
+} from "../attacks"
+import { ShipKey, AirState } from "../common"
 import { Ship } from "../ship"
 import { Fleet } from "../fleet"
+import { calcContactChance } from "./Contact"
 
 export class PlanAnalyzer {
   constructor(public plan: Plan) {}
@@ -58,5 +64,37 @@ export class PlanAnalyzer {
       main: this.analyzeFleetShelling("Main", main),
       escort: escort && this.analyzeFleetShelling("Escort", escort),
     }
+  }
+
+  public analyzeContact = () => {
+    const { main, escort } = this
+
+    const airStates: AirState[] = ["AirSupremacy", "AirSuperiority", "AirDenial"]
+
+    const single = airStates.map((as) => calcContactChance(main.ships, as))
+    const combined = escort && airStates.map((as) => calcContactChance([...main.ships, ...escort.ships], as))
+
+    return { single, combined }
+  }
+
+  public analyzeNight = (params: Omit<NightAttackParams, "isFlagship" | "damageState">) => {
+    const fleet = this.escort || this.main
+
+    const analysis: Array<{
+      ship: Ship
+      normal: NightAbility
+      chuuha: NightAbility
+    }> = []
+
+    fleet.entries.forEach(([key, ship]) => {
+      if (!ship) return
+
+      const isFlagship = key === "s1"
+      const normal = getNightAbility(ship, { ...params, isFlagship, damageState: "Less" })
+      const chuuha = getNightAbility(ship, { ...params, isFlagship, damageState: "Chuuha" })
+      analysis.push({ ship, normal, chuuha })
+    })
+
+    return analysis
   }
 }
