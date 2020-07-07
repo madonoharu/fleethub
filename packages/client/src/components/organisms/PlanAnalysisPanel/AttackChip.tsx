@@ -19,7 +19,6 @@ const dayStyle = css`
 `
 
 const nightStyle = css`
-  min-width: 48px;
   border-color: ${(props) => props.theme.kc.palette.night};
   color: ${(props) => props.theme.kc.palette.night};
 `
