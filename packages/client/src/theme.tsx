@@ -59,6 +59,9 @@ const muiTheme = createMuiTheme({
     MuiTabs: {
       indicatorColor: "primary",
     },
+    MuiCheckbox: {
+      color: "primary",
+    },
   },
   overrides: {
     MuiCssBaseline: {
