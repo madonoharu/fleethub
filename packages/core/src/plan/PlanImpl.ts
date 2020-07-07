@@ -8,6 +8,10 @@ export class PlanImpl implements Plan {
   public nodes: Plan["nodes"]
   public fleetType: Plan["fleetType"]
 
+  public isCombined: Plan["isCombined"]
+  public main: Plan["main"]
+  public escort: Plan["escort"]
+
   public f1: Plan["f1"]
   public f2: Plan["f2"]
   public f3: Plan["f3"]
@@ -31,6 +35,10 @@ export class PlanImpl implements Plan {
     this.a1 = a1
     this.a2 = a2
     this.a3 = a3
+
+    this.isCombined = this.fleetType !== "Single"
+    this.main = this.f1
+    this.escort = this.isCombined ? this.f2 : undefined
   }
 
   get fleetEntries(): Plan["fleetEntries"] {
