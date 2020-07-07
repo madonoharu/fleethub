@@ -79,4 +79,42 @@ export class GearImpl implements Gear {
     const value = Math.ceil(los + improvement.contactSelectionBonus) / (20 - 2 * airStateModifier)
     return Math.min(value, 1)
   }
+
+  get adjustedAntiAir() {
+    const { antiAir, improvement, is, categoryIn } = this
+    if (antiAir === 0) {
+      return 0
+    }
+
+    let multiplier = 0
+    if (categoryIn("AntiAirGun")) {
+      multiplier = 6
+    } else if (categoryIn("AntiAirFireDirector") || is("HighAngleMount")) {
+      multiplier = 4
+    } else if (is("Radar")) {
+      multiplier = 3
+    }
+    return multiplier * antiAir + improvement.adjustedAntiAirBonus
+  }
+
+  get fleetAntiAir() {
+    const { name, antiAir, improvement, is, categoryIn } = this
+
+    if (antiAir === 0) return 0
+
+    let multiplier: number
+    if (categoryIn("AntiAirFireDirector") || is("HighAngleMount")) {
+      multiplier = 0.35
+    } else if (categoryIn("AntiAirShell")) {
+      multiplier = 0.6
+    } else if (is("Radar")) {
+      multiplier = 0.4
+    } else if (name === "46cm三連装砲") {
+      multiplier = 0.25
+    } else {
+      multiplier = 0.2
+    }
+
+    return multiplier * antiAir + improvement.fleetAntiAirBonus
+  }
 }
