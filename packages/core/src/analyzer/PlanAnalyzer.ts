@@ -76,25 +76,26 @@ export class PlanAnalyzer {
 
     return { single, combined }
   }
+}
 
-  public analyzeNight = (params: Omit<NightAttackParams, "isFlagship" | "damageState">) => {
-    const fleet = this.escort || this.main
+export const analyzeNightAttacks = (fleet: Fleet, params: Omit<NightAttackParams, "isFlagship" | "damageState">) => {
+  const analysis: Array<{
+    ship: Ship
+    normal: NightAbility
+    chuuha: NightAbility
+  }> = []
 
-    const analysis: Array<{
-      ship: Ship
-      normal: NightAbility
-      chuuha: NightAbility
-    }> = []
+  fleet.entries.forEach(([key, ship]) => {
+    if (!ship) return
 
-    fleet.entries.forEach(([key, ship]) => {
-      if (!ship) return
+    const isFlagship = key === "s1"
+    const normal = getNightAbility(ship, { ...params, isFlagship, damageState: "Less" })
 
-      const isFlagship = key === "s1"
-      const normal = getNightAbility(ship, { ...params, isFlagship, damageState: "Less" })
-      const chuuha = getNightAbility(ship, { ...params, isFlagship, damageState: "Chuuha" })
-      analysis.push({ ship, normal, chuuha })
-    })
+    if (!normal.attacks.length) return
 
-    return analysis
-  }
+    const chuuha = getNightAbility(ship, { ...params, isFlagship, damageState: "Chuuha" })
+    analysis.push({ ship, normal, chuuha })
+  })
+
+  return analysis
 }

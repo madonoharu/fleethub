@@ -18,7 +18,7 @@ const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
   const list: TabsProps["list"] = [
     { label: "弾着戦爆発動率", panel: <DayAttackRateTable plan={plan} /> },
     { label: "触接率", panel: <ContactChancePanel plan={plan} /> },
-    { label: "夜戦CI", panel: <NightCutinPanel plan={plan} /> },
+    { label: "夜戦CI率", panel: <NightCutinPanel plan={plan} /> },
     { label: "航空戦", panel: <>航空戦</> },
     { label: "その他", panel: <>その他</> },
   ]
@@ -31,7 +31,7 @@ const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
 }
 
 export default styled(PlanAnalysisPanel)`
-  padding: 8px;
+  padding: 16px;
   min-height: 480px;
   > * {
     margin-right: auto;
