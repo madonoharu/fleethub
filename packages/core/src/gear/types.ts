@@ -69,5 +69,8 @@ export type Gear = Readonly<
       calcInterceptionPower: (slotSize: number) => number
       calcContactTriggerFactor: (slotSize: number) => number
       calcContactSelectionChance: (airStateModifier: number) => number
+
+      adjustedAntiAir: number
+      fleetAntiAir: number
     }
 >
