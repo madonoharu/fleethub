@@ -30,6 +30,10 @@ export type Organization = Record<FleetKey, Fleet> & Record<AirbaseKey, Airbase>
 export type Plan = Required<PlanStateBase> & {
   state: PlanState
 
+  isCombined: boolean
+  main: Fleet
+  escort?: Fleet
+
   fleetEntries: Array<[FleetKey, Fleet]>
   airbaseEntries: Array<[AirbaseKey, Airbase]>
 
