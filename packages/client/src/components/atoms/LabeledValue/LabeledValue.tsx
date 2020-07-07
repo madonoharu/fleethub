@@ -10,6 +10,7 @@ const LabeledValue: React.FCX<{ label: React.ReactNode; value: React.ReactNode }
 
 export default styled(LabeledValue)`
   display: flex;
+  align-items: center;
   justify-content: space-between;
 
   > :first-child {
