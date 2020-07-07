@@ -21,6 +21,7 @@ export type PlanStateBase = {
   hqLevel?: number
   nodes?: NodePlan[]
   fleetType?: FleetType
+  isEnemy?: boolean
 }
 
 export type PlanState = PlanStateBase & FleetDict & AirbaseDict
