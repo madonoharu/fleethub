@@ -14,17 +14,18 @@ const AttackChip: React.FCX<Props> = ({ className, attack }) => {
 }
 
 const dayStyle = css`
+  min-width: 48px;
   border-color: ${(props) => props.theme.kc.palette.shelling};
   color: ${(props) => props.theme.kc.palette.shelling};
 `
 
 const nightStyle = css`
+  min-width: 72px;
   border-color: ${(props) => props.theme.kc.palette.night};
   color: ${(props) => props.theme.kc.palette.night};
 `
 
 export default styled(AttackChip)`
-  min-width: 48px;
   border-radius: 4px;
 
   ${(props) => (props.night ? nightStyle : dayStyle)}
