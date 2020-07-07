@@ -4,6 +4,7 @@ import { AirState } from "../../common"
 import { RateMap } from "../../utils"
 
 type DaySpecialAttackDefinition = {
+  name: string
   priority: number
   denominator: number
   power: number
