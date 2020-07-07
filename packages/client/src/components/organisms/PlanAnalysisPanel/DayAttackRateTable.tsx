@@ -4,10 +4,11 @@ import { Plan, PlanAnalyzer, ShipShellingAbility } from "@fleethub/core"
 
 import { Paper } from "@material-ui/core"
 
-import { ShipBanner, Flexbox, Table, LabeledValue } from "../../../components"
+import { Table, LabeledValue } from "../../../components"
 import { toPercent } from "../../../utils"
 
 import AttackChip from "./AttackChip"
+import ShipNameCell from "./ShipNameCell"
 
 const LeftContainer = styled.div`
   > * {
@@ -55,12 +56,7 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({ label
         columns={[
           {
             label: "艦娘",
-            getValue: ([ship]) => (
-              <>
-                <div>{ship.name}</div>
-                <ShipBanner shipId={ship.shipId} />
-              </>
-            ),
+            getValue: ([ship]) => <ShipNameCell ship={ship} />,
           },
           {
             label: "確保",
