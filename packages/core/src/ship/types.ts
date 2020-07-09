@@ -1,4 +1,4 @@
-import { ShipData } from "@fleethub/data"
+import { ShipData, ShipClassKey, HullCode } from "@fleethub/data"
 
 import { GearKey } from "../common"
 import { GearBase } from "../gear"
@@ -33,6 +33,8 @@ export type ShipCommonBase = ShipIdentity & {
   category: ShipCategory
   is: (attr: ShipAttribute) => boolean
   canEquip: (gear: GearBase, key?: GearKey) => boolean
+  shipClassIn: (...keys: ShipClassKey[]) => boolean
+  shipTypeIn: (...keys: HullCode[]) => boolean
 }
 
 export type ShipCommonBaseWithStatsBase = ShipCommonBase & ShipStatsBase
@@ -68,6 +70,7 @@ export type BasicStat = {
 export type MaxHp = {
   increase: number
   displayed: number
+  limit: number
 }
 
 export type Speed = {
@@ -207,4 +210,7 @@ export type Ship = ShipCommonBase &
     calcAirPower: (isAntiInstallation?: boolean) => number
 
     basicAccuracyTerm: number
+    basicEvasionTerm: number
+
+    fleetAntiAir: number
   }
