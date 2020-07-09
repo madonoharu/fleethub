@@ -7,8 +7,10 @@ import { AntiAirCutin } from "../common"
 import { RateMap } from "../utils"
 
 const getPossibleAntiAirCutinIds = (ship: Ship) => {
-  const { shipId, equipment } = ship
-  const { count, has } = equipment
+  const {
+    shipId,
+    equipment: { count, has },
+  } = ship
 
   const result: number[] = []
 
@@ -244,7 +246,7 @@ const getPossibleAntiAirCutinIds = (ship: Ship) => {
   return result
 }
 
-export const getPossibleAntiAirCutins = (ship: Ship) =>
+const getPossibleAntiAirCutins = (ship: Ship) =>
   getPossibleAntiAirCutinIds(ship).map(AntiAirCutin.fromId).filter(isNonNullable)
 
 export const getShipAntiAirCutinChance = (ship: Ship) => {
@@ -301,37 +303,6 @@ export const composeAntiAirCutinChances = (chances: Array<RateMap<AntiAirCutin>>
   const result = new RateMap<AntiAirCutin>()
 
   cis.forEach((ci) => {
-    const rate = calcFleetRate(ci)
-    result.set(ci, rate)
-  })
-
-  return result
-}
-
-export const getFleetAntiAirCutinChance = (ships: Ship[]) => {
-  const chances = ships.map(getShipAntiAirCutinChance)
-
-  const fleetCis = uniq(
-    chances
-      .flatMap((rateMap) => rateMap.toArray())
-      .filter(([ci, rate]) => rate > 0)
-      .map(([ci]) => ci)
-  ).sort((a, b) => b.id - a.id)
-
-  const calcFleetRate = (target: AntiAirCutin) => {
-    const highIdRates = chances.map((rateMap) => rateMap.sumBy((rate, ci) => (ci.id > target.id ? rate : 0)))
-    const highIdRate = atLeastOne(highIdRates)
-
-    const lowIdRate = chances
-      .map((rateMap) => rateMap.sumBy((rate, ci) => (ci.id >= target.id ? rate : 0)))
-      .reduce((acc, cur) => acc * (1 - cur), 1)
-
-    return 1 - (highIdRate + lowIdRate)
-  }
-
-  const result = new RateMap<AntiAirCutin>()
-
-  fleetCis.forEach((ci) => {
     const rate = calcFleetRate(ci)
     result.set(ci, rate)
   })
