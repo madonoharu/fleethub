@@ -46,4 +46,8 @@ export class ShipMock extends ShipStatsStub implements Ship {
   public calcAirPower = jest.fn()
 
   public basicAccuracyTerm = 0
+  basicEvasionTerm = NaN
+  fleetAntiAir = NaN
+  shipClassIn = jest.fn()
+  shipTypeIn = jest.fn()
 }
