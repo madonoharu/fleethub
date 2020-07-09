@@ -1,6 +1,7 @@
 import { FleetKeys, AirbaseKeys } from "../common"
 
 import { Plan, Organization } from "./types"
+import { getShipAntiAirCutinChance, composeAntiAirCutinChances } from "../analyzer/AntiAirCutinChance"
 
 export class PlanImpl implements Plan {
   public name: Plan["name"]
@@ -68,5 +69,24 @@ export class PlanImpl implements Plan {
     const modifier = [0.5, 0.8, 1.1, 1.2][count] || 1.2
 
     return Math.floor(interceptionPower * modifier)
+  }
+
+  public calcFleetAntiAir = (formationModifier: number) => {
+    const { main, escort, isEnemy } = this
+
+    const ships = main.ships.concat(escort?.ships || [])
+
+    const total = ships.map((ship) => ship.fleetAntiAir).reduce((a, b) => a + b, 0)
+    const postFloor = Math.floor(formationModifier * total) * 2
+
+    if (isEnemy) return postFloor
+    return postFloor / 1.3
+  }
+
+  get antiAirCutinChance() {
+    const { main, escort } = this
+    const ships = main.ships.concat(escort?.ships || [])
+    const chances = ships.map(getShipAntiAirCutinChance)
+    return composeAntiAirCutinChances(chances)
   }
 }

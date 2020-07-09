@@ -3,8 +3,9 @@ import { Dict } from "@fleethub/utils"
 
 import { FleetState, Fleet } from "../fleet"
 import { AirbaseState, Airbase } from "../airbase"
-import { Formation, FleetKey, AirbaseKey, FleetType } from "../common"
+import { Formation, FleetKey, AirbaseKey, FleetType, AntiAirCutin } from "../common"
 import { EnemyFleetState } from "../enemy"
+import { RateMap } from "../utils"
 
 type FleetDict = Dict<FleetKey, FleetState>
 type AirbaseDict = Dict<AirbaseKey, AirbaseState>
@@ -40,4 +41,7 @@ export type Plan = Required<PlanStateBase> & {
 
   interceptionPower: number
   highAltitudeInterceptionPower: number
+
+  calcFleetAntiAir: (formationModifier: number) => number
+  antiAirCutinChance: RateMap<AntiAirCutin>
 } & Organization
