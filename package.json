@@ -9,7 +9,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn utils build:esm && yarn data build:esm && yarn core build:esm && yarn client build",
+    "build": "yarn build:utils && yarn build:data && yarn build:core && yarn build:client",
     "build:client": "yarn workspace @fleethub/client build",
     "build:core": "yarn workspace @fleethub/core build",
     "build:data": "yarn workspace @fleethub/data build",
