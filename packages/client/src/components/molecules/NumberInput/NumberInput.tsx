@@ -145,8 +145,4 @@ export default styled(NumberInput)`
   .MuiInputLabel-root {
     white-space: nowrap;
   }
-
-  input {
-    width: 120px;
-  }
 `
