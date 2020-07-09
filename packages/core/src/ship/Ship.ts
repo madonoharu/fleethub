@@ -33,6 +33,8 @@ export class ShipImpl implements Ship {
   public readonly category = this.base.category
   public readonly is = this.base.is
   public readonly canEquip = this.base.canEquip
+  public readonly shipClassIn = this.base.shipClassIn
+  public readonly shipTypeIn = this.base.shipTypeIn
 
   constructor(
     public state: Ship["state"],
@@ -110,5 +112,9 @@ export class ShipImpl implements Ship {
   get basicEvasionTerm() {
     const { evasion, luck } = this
     return evasion.displayed + Math.sqrt(2 * luck.displayed)
+  }
+
+  get fleetAntiAir() {
+    return Math.floor(this.equipment.sumBy((gear) => gear.fleetAntiAir))
   }
 }
