@@ -6,10 +6,12 @@ import {
   ShipShellingCalculator,
   ShipShellingAbility,
 } from "../attacks"
-import { ShipKey, AirState } from "../common"
+import { ShipKey, AirState, Formation, BattleType, AntiAirCutin } from "../common"
 import { Ship } from "../ship"
 import { Fleet } from "../fleet"
 import { calcContactChance } from "./Contact"
+import { fhDefinitions } from "../FhDefinitions"
+import { ShipAntiAirAbility, ShipAntiAirAbilityContext } from "./ShipAntiAirAbility"
 
 export class PlanAnalyzer {
   constructor(public plan: Plan) {}
@@ -19,11 +21,11 @@ export class PlanAnalyzer {
   }
 
   get main() {
-    return this.plan.f1
+    return this.plan.main
   }
 
   get escort() {
-    return this.isCombined ? this.plan.f2 : undefined
+    return this.plan.escort
   }
 
   get fleetLosModifier() {
@@ -75,6 +77,30 @@ export class PlanAnalyzer {
     const combined = escort && airStates.map((as) => calcContactChance([...main.ships, ...escort.ships], as))
 
     return { single, combined }
+  }
+
+  public analyzeAntiAir = (formation: Formation, battleType: BattleType, antiAirCutin?: AntiAirCutin) => {
+    const { plan, isCombined } = this
+    const { isEnemy } = plan
+
+    const formationModifier = fhDefinitions.formations[formation].fleetAntiAir
+    const fleetAntiAir = plan.calcFleetAntiAir(formationModifier)
+
+    const ctxBase: Omit<ShipAntiAirAbilityContext, "role"> = {
+      isEnemy,
+      isCombined,
+      battleType,
+      fleetAntiAir,
+      antiAirCutin,
+    }
+    const mainCtx: ShipAntiAirAbilityContext = { ...ctxBase, role: "Main" }
+    const escortCtx: ShipAntiAirAbilityContext = { ...ctxBase, role: "Escort" }
+
+    const mainData = this.main.ships.map((ship) => new ShipAntiAirAbility(ship, mainCtx))
+    const escortData = this.escort?.ships.map((ship) => new ShipAntiAirAbility(ship, escortCtx))
+    const data = mainData.concat(escortData || [])
+
+    return data
   }
 }
 
