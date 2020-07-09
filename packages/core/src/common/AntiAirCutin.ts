@@ -44,9 +44,7 @@ const data: Array<[number, number, number, number]> = [
 export default class AntiAirCutin {
   public static readonly all = data.map((datum) => new AntiAirCutin(...datum))
 
-  public static fromId(id: number) {
-    return this.all.find((aaci) => aaci.id === id)
-  }
+  public static fromId = (id: number) => AntiAirCutin.all.find((aaci) => aaci.id === id)
 
   private constructor(
     public readonly id: number,
@@ -64,5 +62,9 @@ export default class AntiAirCutin {
 
   get isSpecial() {
     return [34, 35, 39, 40, 41].includes(this.id)
+  }
+
+  get name() {
+    return this.id + "種"
   }
 }
