@@ -17,6 +17,11 @@ export class ShipMaxHp implements MaxHp {
     this.right = right
   }
 
+  get limit() {
+    const { left, right } = this
+    return Math.min(right, getMarriageBonus(left) + 2)
+  }
+
   get displayed() {
     const { left, right, increase, isMarried } = this
     let displayed = left + increase
