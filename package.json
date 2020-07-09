@@ -9,7 +9,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn build:utils && yarn build:data && yarn build:core && yarn build:client",
+    "build": "yarn utils build:esm && yarn data build:esm && yarn core build:esm && yarn client build",
     "build:client": "yarn workspace @fleethub/client build",
     "build:core": "yarn workspace @fleethub/core build",
     "build:data": "yarn workspace @fleethub/data build",
@@ -23,7 +23,8 @@
     "test": "yarn test:core",
     "test:core": "jest packages/core/src",
     "tscheck": "tsc --noEmit",
-    "tsnode": "yarn ts-node -O \"{\"\"module\"\":\"\"commonjs\"\"}\""
+    "tsnode": "yarn ts-node -O \"{\"\"module\"\":\"\"commonjs\"\"}\"",
+    "utils": "yarn workspace @fleethub/utils"
   },
   "husky": {
     "hooks": {
