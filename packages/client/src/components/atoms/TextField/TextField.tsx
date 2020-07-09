@@ -20,8 +20,4 @@ const TextField: React.FC<TextFieldProps> = ({ startLabel, InputProps, ...rest }
   return <MuiTextField InputProps={{ startAdornment, ...InputProps }} {...rest} />
 }
 
-export default styled(TextField)`
-  .MuiInputBase-root > * {
-    flex-shrink: 0;
-  }
-`
+export default styled(TextField)``
