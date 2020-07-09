@@ -55,8 +55,14 @@ export default class AntiAirCutin {
     /** 変動ボーナス */
     public readonly fixedAirDefenseModifier: number,
     /** 発動定数 */
-    public readonly probability: number
+    public readonly baseRate: number
   ) {}
 
-  public isSpecial = () => [34, 35, 39, 40, 41].includes(this.id)
+  get intrinsicRate() {
+    return this.baseRate / 101
+  }
+
+  get isSpecial() {
+    return [34, 35, 39, 40, 41].includes(this.id)
+  }
 }
