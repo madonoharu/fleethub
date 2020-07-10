@@ -17,4 +17,7 @@ export * from "./Tabs"
 export { default as KctoolsButton } from "./KctoolsButton"
 export * from "./KctoolsButton"
 
+export { default as Select } from "./Select"
+export * from "./Select"
+
 export * from "./IconButtons"
