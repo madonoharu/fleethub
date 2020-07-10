@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 import { Button, ButtonProps } from "@material-ui/core"
 
-import { SelectComponent, getDefaultOptionLabel } from "../../atoms/Select"
+import { SelectComponent, getDefaultOptionLabel } from "../Select"
 
 const SelectButtons: SelectComponent<{ buttonProps?: ButtonProps }> = (props) => {
   const { className, options, value, onChange, getOptionLabel = getDefaultOptionLabel, buttonProps } = props
