@@ -56,7 +56,7 @@ type AntiAirPanelProps = {
 const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
   const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1)
   const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1)
-  const [formation, setFormation] = React.useState<Formation>(plan.isCombined ? "CruisingFormation1" : "LineAhead")
+  const [formation, setFormation] = React.useState<Formation>(plan.isCombined ? "Cruising1" : "LineAhead")
 
   const fleetCiChance = plan.antiAirCutinChance
 

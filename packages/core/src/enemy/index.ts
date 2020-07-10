@@ -24,7 +24,7 @@ export class EnemyFleetImpl implements EnemyFleet {
   }
 
   private get defaultFormation(): Formation {
-    return this.isCombinedFleet ? "CruisingFormation1" : "LineAhead"
+    return this.isCombinedFleet ? "Cruising1" : "LineAhead"
   }
 
   get formation() {
