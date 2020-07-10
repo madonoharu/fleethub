@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import copy from "copy-to-clipboard"
-import { Plan, PlanState } from "@fleethub/core"
+import { Plan, PlanState, FleetType } from "@fleethub/core"
 import { useAsyncCallback } from "react-async-hook"
 import { createSelector } from "@reduxjs/toolkit"
 
@@ -16,6 +16,7 @@ import {
   ImportButton,
   PlanImportForm,
   TextField,
+  FleetTypeSelect,
 } from "../../../components"
 import { useSnackbar, useModal } from "../../../hooks"
 import { Update, openKctools } from "../../../utils"
@@ -95,10 +96,17 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPlanImp
     })
   }
 
+  const handleFleetTypeChange = (value: FleetType) => {
+    update((draft) => {
+      draft.fleetType = value
+    })
+  }
+
   return (
     <Flexbox className={className}>
       <TextField startLabel="編成名" value={plan.name} onChange={handleNameChange} />
       <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
+      <FleetTypeSelect fleetType={plan.fleetType} onChange={handleFleetTypeChange} />
 
       <LinkButton title="共有URLをコピー" onClick={asyncOnLinkClick.execute} disabled={asyncOnLinkClick.loading} />
       <TweetButton title="編成をツイート" onClick={asyncOnTweetClick.execute} disabled={asyncOnTweetClick.loading} />
