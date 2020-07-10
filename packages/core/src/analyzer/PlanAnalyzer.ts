@@ -100,7 +100,7 @@ export class PlanAnalyzer {
     const escortData = this.escort?.ships.map((ship) => new ShipAntiAirAbility(ship, escortCtx))
     const data = mainData.concat(escortData || [])
 
-    return data
+    return { data, fleetAntiAir }
   }
 }
 
