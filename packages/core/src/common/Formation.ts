@@ -36,6 +36,23 @@ enum FormationId {
 }
 
 export type Formation = keyof typeof FormationId
+
+export const SingleFleetFormations = [
+  "LineAhead",
+  "DoubleLine",
+  "Diamond",
+  "Echelon",
+  "LineAbreast",
+  "Vanguard",
+] as const
+
+export const CombinedFleetFormations = [
+  "CruisingFormation1",
+  "CruisingFormation2",
+  "CruisingFormation3",
+  "CruisingFormation4",
+] as const
+
 const Formations = Object.values(FormationId).filter(isString) as Formation[]
 
 export type FormationDefinitions = Record<Formation, FormationDefinition>
