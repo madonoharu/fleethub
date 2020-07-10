@@ -1,57 +1,44 @@
 import React from "react"
 import styled from "styled-components"
-import { Plan, PlanAnalyzer, RateMap, AntiAirCutin } from "@fleethub/core"
+import {
+  Plan,
+  PlanAnalyzer,
+  RateMap,
+  AntiAirCutin,
+  Formation,
+  SingleFleetFormations,
+  CombinedFleetFormations,
+} from "@fleethub/core"
 import { Label, Bar, PieChart, Pie, Cell } from "recharts"
 
 import { Button, Typography, Box, Chip, colors } from "@material-ui/core"
 
 import { Table } from "../.."
 import { toPercent } from "../../../utils"
-import { useModal, useSelect } from "../../../hooks"
+import { useSelect } from "../../../hooks"
 
-import { Flexbox, LabeledValue, Select } from "../../atoms"
-import { NumberInput } from "../../molecules"
+import { Flexbox, LabeledValue } from "../../atoms"
+import { NumberInput, Select } from "../../molecules"
 
 import AntiAirCutinChip from "./AntiAirCutinChip"
+import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart"
 
-const cutinColors = [colors.blue, colors.green, colors.yellow, colors.orange, colors.pink, colors.purple].map(
-  (color) => color[300]
-)
-const getColor = (index: number): string => cutinColors[index % cutinColors.length]
+const formDict: Record<Formation, string> = {
+  LineAhead: "単縦陣",
+  DoubleLine: "複縦陣",
+  Diamond: "輪形陣",
+  Echelon: "梯形陣",
+  LineAbreast: "単横陣",
+  Vanguard: "警戒陣",
+  CruisingFormation1: "第一航行",
+  CruisingFormation2: "第二航行",
+  CruisingFormation3: "第三航行",
+  CruisingFormation4: "第四航行",
+}
 
-const AntiAirCutinChanceChart: React.FC<{ rateMap: RateMap<AntiAirCutin> }> = ({ rateMap }) => {
-  const width = 320
-  const height = 240
-  const cx = width / 2
-  const cy = height / 2
-
-  const data = rateMap.toArray().map(([ci, rate], index) => ({ name: ci.name, rate, color: getColor(index) }))
-  data.push({ name: "不発", rate: rateMap.complement, color: colors.grey[300] })
-
-  const renderLabel = (datum: typeof data[number]): any => `${datum.name}: ${toPercent(datum.rate)}`
-
-  return (
-    <PieChart width={width} height={height}>
-      <Pie
-        data={data}
-        cx={cx}
-        cy={cy}
-        label={renderLabel}
-        innerRadius={60}
-        outerRadius={70}
-        dataKey="rate"
-        animationBegin={0}
-        animationDuration={600}
-        animationEasing="ease-out"
-        paddingAngle={4}
-      >
-        {data.map((datum, index) => (
-          <Cell key={index} fill={datum.color} />
-        ))}
-        <Label value={`合計 ${toPercent(rateMap.total)}`} fill="white" position="center" />
-      </Pie>
-    </PieChart>
-  )
+const useFormationSelectState = (isCombined?: boolean) => {
+  const state = useSelect<Formation>(isCombined ? CombinedFleetFormations : SingleFleetFormations)
+  return Object.assign(state, { getOptionLabel: (form: Formation) => formDict[form] })
 }
 
 const CutinChanceCell: React.FCX<{ rateMap: RateMap<AntiAirCutin> }> = ({ className, rateMap }) => {
@@ -64,13 +51,30 @@ const CutinChanceCell: React.FCX<{ rateMap: RateMap<AntiAirCutin> }> = ({ classN
   )
 }
 
+const Container = styled(Flexbox)`
+  align-items: flex-end;
+  margin-bottom: 8px;
+
+  > :first-child {
+    margin-right: auto;
+  }
+`
+
+const StyledChanceChart = styled(AntiAirCutinChanceChart)`
+  margin: 0 auto;
+`
+
 const StyledCutinChanceCell = styled(CutinChanceCell)`
   width: 80px;
   margin-left: auto;
 `
 
+const StyledSelect: typeof Select = styled(Select)`
+  width: 120px;
+`
+
 const StyledNumberInput = styled(NumberInput)`
-  width: 80px;
+  width: 120px;
 `
 
 type AntiAirPanelProps = {
@@ -88,15 +92,31 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
     .filter(([ci, rate]) => rate > 0)
     .map(([ci]) => ci)
   const ciOptions: Array<AntiAirCutin | undefined> = [undefined, ...cis]
+  const formationSelectState = useFormationSelectState(plan.isCombined)
   const ciSelectState = useSelect(ciOptions)
 
-  const data = new PlanAnalyzer(plan).analyzeAntiAir("CruisingFormation1", "Normal", ciSelectState.value)
+  const { data, fleetAntiAir } = new PlanAnalyzer(plan).analyzeAntiAir(
+    formationSelectState.value,
+    "Normal",
+    ciSelectState.value
+  )
 
   return (
     <div>
-      <Flexbox>
-        <Select label="対空CI" {...ciSelectState} getOptionLabel={(ci) => ci?.name || "無し"} />
+      <Container>
+        <LabeledValue label="艦隊対空" value={fleetAntiAir.toFixed(2)} />
+
+        <StyledSelect variant="outlined" size="small" label="陣形" {...formationSelectState} />
+        <StyledSelect
+          variant="outlined"
+          size="small"
+          label="対空CI"
+          {...ciSelectState}
+          getOptionLabel={(ci) => ci?.name || "無し"}
+        />
         <StyledNumberInput
+          variant="outlined"
+          size="small"
           label="加重対空補正"
           step={0.1}
           min={0}
@@ -105,6 +125,8 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
           onChange={setAdjustedAntiAirResist}
         />
         <StyledNumberInput
+          variant="outlined"
+          size="small"
           label="艦隊対空補正"
           step={0.1}
           min={0}
@@ -112,7 +134,8 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
           value={fleetAntiAirResist}
           onChange={setFleetAntiAirResist}
         />
-      </Flexbox>
+      </Container>
+
       <Table
         padding="none"
         data={data}
@@ -142,8 +165,7 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
           },
         ]}
       />
-      <Typography>対空CI艦隊発動率</Typography>
-      <AntiAirCutinChanceChart rateMap={fleetCiChance} />
+      <StyledChanceChart label="対空CI艦隊発動率" rateMap={fleetCiChance} />
     </div>
   )
 }
