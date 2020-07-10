@@ -9,13 +9,10 @@ import {
   SingleFleetFormations,
   CombinedFleetFormations,
 } from "@fleethub/core"
-import { Label, Bar, PieChart, Pie, Cell } from "recharts"
-
-import { Button, Typography, Box, Chip, colors } from "@material-ui/core"
 
 import { Table } from "../.."
 import { toPercent } from "../../../utils"
-import { useSelect } from "../../../hooks"
+import { useSelectState } from "../../../hooks"
 
 import { Flexbox, LabeledValue } from "../../atoms"
 import { NumberInput, Select } from "../../molecules"
@@ -37,7 +34,7 @@ const formDict: Record<Formation, string> = {
 }
 
 const useFormationSelectState = (isCombined?: boolean) => {
-  const state = useSelect<Formation>(isCombined ? CombinedFleetFormations : SingleFleetFormations)
+  const state = useSelectState<Formation>(isCombined ? CombinedFleetFormations : SingleFleetFormations)
   return Object.assign(state, { getOptionLabel: (form: Formation) => formDict[form] })
 }
 
@@ -93,7 +90,7 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
     .map(([ci]) => ci)
   const ciOptions: Array<AntiAirCutin | undefined> = [undefined, ...cis]
   const formationSelectState = useFormationSelectState(plan.isCombined)
-  const ciSelectState = useSelect(ciOptions)
+  const ciSelectState = useSelectState(ciOptions)
 
   const { data, fleetAntiAir } = new PlanAnalyzer(plan).analyzeAntiAir(
     formationSelectState.value,
