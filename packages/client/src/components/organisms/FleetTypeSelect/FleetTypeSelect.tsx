@@ -1,11 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import copy from "copy-to-clipboard"
-import { Plan, PlanState, FleetTypes, FleetType } from "@fleethub/core"
-import { useAsyncCallback } from "react-async-hook"
-import { createSelector } from "@reduxjs/toolkit"
+import { FleetTypes, FleetType } from "@fleethub/core"
 
-import { Select, SelectComponentProps } from "../../molecules"
+import { Select, SelectTextFieldProps } from "../../molecules"
 
 const getLabel = (fleetType: FleetType) =>
   ({
@@ -16,21 +13,13 @@ const getLabel = (fleetType: FleetType) =>
     Combined: "敵連合",
   }[fleetType])
 
-type Props = {
+type Props = SelectTextFieldProps & {
   fleetType: FleetType
   onChange: (type: FleetType) => void
 }
 
-const FleetTypeSelect: React.FCX<Props> = ({ className, fleetType, onChange }) => {
-  return (
-    <Select
-      className={className}
-      value={fleetType}
-      options={FleetTypes}
-      onChange={onChange}
-      getOptionLabel={getLabel}
-    />
-  )
+const FleetTypeSelect: React.FC<Props> = ({ fleetType, onChange, ...rest }) => {
+  return <Select value={fleetType} options={FleetTypes} onChange={onChange} getOptionLabel={getLabel} {...rest} />
 }
 
 export default styled(FleetTypeSelect)`
