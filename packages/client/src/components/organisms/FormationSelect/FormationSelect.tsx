@@ -11,10 +11,10 @@ const dict: Record<Formation, string> = {
   Echelon: "梯形陣",
   LineAbreast: "単横陣",
   Vanguard: "警戒陣",
-  CruisingFormation1: "第一航行",
-  CruisingFormation2: "第二航行",
-  CruisingFormation3: "第三航行",
-  CruisingFormation4: "第四航行",
+  Cruising1: "第一航行",
+  Cruising2: "第二航行",
+  Cruising3: "第三航行",
+  Cruising4: "第四航行",
 }
 
 const getFormationName = (formation: Formation) => dict[formation]
@@ -30,7 +30,7 @@ const FormationSelect: React.FC<Props> = ({ formation, onChange, combined, ...re
 
   useEffect(() => {
     if (options.includes(formation)) return
-    onChange(combined ? "CruisingFormation4" : "LineAhead")
+    onChange(combined ? "Cruising4" : "LineAhead")
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options])
 

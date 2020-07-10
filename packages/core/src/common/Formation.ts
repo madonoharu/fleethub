@@ -29,10 +29,10 @@ enum FormationId {
   Echelon = 4,
   LineAbreast = 5,
   Vanguard = 6,
-  CruisingFormation1 = 11,
-  CruisingFormation2 = 12,
-  CruisingFormation3 = 13,
-  CruisingFormation4 = 14,
+  Cruising1 = 11,
+  Cruising2 = 12,
+  Cruising3 = 13,
+  Cruising4 = 14,
 }
 
 export type Formation = keyof typeof FormationId
@@ -46,12 +46,7 @@ export const SingleFleetFormations = [
   "Vanguard",
 ] as const
 
-export const CombinedFleetFormations = [
-  "CruisingFormation1",
-  "CruisingFormation2",
-  "CruisingFormation3",
-  "CruisingFormation4",
-] as const
+export const CombinedFleetFormations = ["Cruising1", "Cruising2", "Cruising3", "Cruising4"] as const
 
 const Formations = Object.values(FormationId).filter(isString) as Formation[]
 

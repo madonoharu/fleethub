@@ -119,7 +119,7 @@ export const defaultFhDefinitions: FhDefinitions = {
       },
     },
 
-    CruisingFormation1: {
+    Cruising1: {
       protectionRate: 0.6,
       fleetAntiAir: 1.1,
       shelling: { power: 0.8, accuracy: 1, evasion: 1 },
@@ -128,7 +128,7 @@ export const defaultFhDefinitions: FhDefinitions = {
       night: { power: 1, accuracy: 1, evasion: 1 },
     },
 
-    CruisingFormation2: {
+    Cruising2: {
       protectionRate: 0.6,
       fleetAntiAir: 1,
       shelling: { power: 1, accuracy: 1, evasion: 1 },
@@ -137,7 +137,7 @@ export const defaultFhDefinitions: FhDefinitions = {
       night: { power: 1, accuracy: 1, evasion: 1 },
     },
 
-    CruisingFormation3: {
+    Cruising3: {
       protectionRate: 0.6,
       fleetAntiAir: 1.5,
       shelling: { power: 0.7, accuracy: 1, evasion: 1 },
@@ -146,7 +146,7 @@ export const defaultFhDefinitions: FhDefinitions = {
       night: { power: 1, accuracy: 1, evasion: 1 },
     },
 
-    CruisingFormation4: {
+    Cruising4: {
       protectionRate: 0.6,
       fleetAntiAir: 1,
       /** @see https://kancolle.fandom.com/ja/wiki/%E3%82%B9%E3%83%AC%E3%83%83%E3%83%89:987#13 */
