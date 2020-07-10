@@ -22,15 +22,15 @@ const getFormationName = (formation: Formation) => dict[formation]
 type Props = SelectTextFieldProps & {
   formation: Formation
   onChange: (formation: Formation) => void
-  isCombined?: boolean
+  combined?: boolean
 }
 
-const FormationSelect: React.FC<Props> = ({ formation, onChange, isCombined, ...rest }) => {
-  const options: readonly Formation[] = isCombined ? CombinedFleetFormations : SingleFleetFormations
+const FormationSelect: React.FC<Props> = ({ formation, onChange, combined, ...rest }) => {
+  const options: readonly Formation[] = combined ? CombinedFleetFormations : SingleFleetFormations
 
   useEffect(() => {
     if (options.includes(formation)) return
-    onChange(isCombined ? "CruisingFormation4" : "LineAhead")
+    onChange(combined ? "CruisingFormation4" : "LineAhead")
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options])
 

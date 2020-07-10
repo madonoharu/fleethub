@@ -74,7 +74,14 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
       <Container>
         <LabeledValue label="艦隊対空" value={fleetAntiAir.toFixed(2)} />
 
-        <FormationSelect variant="outlined" size="small" label="陣形" formation={formation} onChange={setFormation} />
+        <FormationSelect
+          variant="outlined"
+          size="small"
+          label="陣形"
+          combined={plan.isCombined}
+          formation={formation}
+          onChange={setFormation}
+        />
 
         <StyledSelect
           variant="outlined"
