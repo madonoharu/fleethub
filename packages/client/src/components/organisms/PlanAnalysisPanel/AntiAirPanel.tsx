@@ -1,14 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import {
-  Plan,
-  PlanAnalyzer,
-  RateMap,
-  AntiAirCutin,
-  Formation,
-  SingleFleetFormations,
-  CombinedFleetFormations,
-} from "@fleethub/core"
+import { Plan, PlanAnalyzer, RateMap, AntiAirCutin, Formation } from "@fleethub/core"
 
 import { Table } from "../.."
 import { toPercent } from "../../../utils"
@@ -19,24 +11,7 @@ import { NumberInput, Select } from "../../molecules"
 
 import AntiAirCutinChip from "./AntiAirCutinChip"
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart"
-
-const formDict: Record<Formation, string> = {
-  LineAhead: "単縦陣",
-  DoubleLine: "複縦陣",
-  Diamond: "輪形陣",
-  Echelon: "梯形陣",
-  LineAbreast: "単横陣",
-  Vanguard: "警戒陣",
-  CruisingFormation1: "第一航行",
-  CruisingFormation2: "第二航行",
-  CruisingFormation3: "第三航行",
-  CruisingFormation4: "第四航行",
-}
-
-const useFormationSelectState = (isCombined?: boolean) => {
-  const state = useSelectState<Formation>(isCombined ? CombinedFleetFormations : SingleFleetFormations)
-  return Object.assign(state, { getOptionLabel: (form: Formation) => formDict[form] })
-}
+import FormationSelect from "../FormationSelect"
 
 const CutinChanceCell: React.FCX<{ rateMap: RateMap<AntiAirCutin> }> = ({ className, rateMap }) => {
   return (
@@ -81,6 +56,7 @@ type AntiAirPanelProps = {
 const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
   const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1)
   const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1)
+  const [formation, setFormation] = React.useState<Formation>(plan.isCombined ? "CruisingFormation1" : "LineAhead")
 
   const fleetCiChance = plan.antiAirCutinChance
 
@@ -89,21 +65,17 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
     .filter(([ci, rate]) => rate > 0)
     .map(([ci]) => ci)
   const ciOptions: Array<AntiAirCutin | undefined> = [undefined, ...cis]
-  const formationSelectState = useFormationSelectState(plan.isCombined)
   const ciSelectState = useSelectState(ciOptions)
 
-  const { data, fleetAntiAir } = new PlanAnalyzer(plan).analyzeAntiAir(
-    formationSelectState.value,
-    "Normal",
-    ciSelectState.value
-  )
+  const { data, fleetAntiAir } = new PlanAnalyzer(plan).analyzeAntiAir(formation, "Normal", ciSelectState.value)
 
   return (
     <div>
       <Container>
         <LabeledValue label="艦隊対空" value={fleetAntiAir.toFixed(2)} />
 
-        <StyledSelect variant="outlined" size="small" label="陣形" {...formationSelectState} />
+        <FormationSelect variant="outlined" size="small" label="陣形" formation={formation} onChange={setFormation} />
+
         <StyledSelect
           variant="outlined"
           size="small"
