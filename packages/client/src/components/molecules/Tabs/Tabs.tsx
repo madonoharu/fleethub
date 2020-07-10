@@ -3,6 +3,10 @@ import styled from "styled-components"
 
 import { Tabs as MuiTabs, Tab as MuiTab, TabsProps as MuiTabsProps, TabProps as MuiTabProps } from "@material-ui/core"
 
+const StyledMuiTab = styled(MuiTab)`
+  min-width: auto;
+`
+
 const StyledMuiTabs = styled(MuiTabs)`
   margin-bottom: 16px;
 `
@@ -33,7 +37,7 @@ const Tabs: React.FC<TabsProps> = ({ className, value, onChange, list }) => {
     <div className={className}>
       <StyledMuiTabs value={current} onChange={handleChange}>
         {list.map(({ panel, ...tabProps }, index) => (
-          <MuiTab key={index} {...tabProps} />
+          <StyledMuiTab key={index} {...tabProps} />
         ))}
       </StyledMuiTabs>
 
