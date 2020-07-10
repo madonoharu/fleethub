@@ -20,7 +20,7 @@ const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
     { label: "弾着戦爆発動率", panel: <DayAttackRateTable plan={plan} /> },
     { label: "触接率", panel: <ContactChancePanel plan={plan} /> },
     { label: "夜戦CI率", panel: <NightCutinPanel plan={plan} /> },
-    { label: "航空戦", panel: <AntiAirPanel plan={plan} /> },
+    { label: "対空", panel: <AntiAirPanel plan={plan} /> },
     { label: "その他", panel: <>その他</> },
   ]
 
