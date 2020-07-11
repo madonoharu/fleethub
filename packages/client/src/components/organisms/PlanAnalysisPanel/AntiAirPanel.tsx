@@ -76,7 +76,6 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
 
         <FormationSelect
           variant="outlined"
-          size="small"
           label="陣形"
           combined={plan.isCombined}
           formation={formation}
@@ -85,14 +84,12 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
 
         <StyledSelect
           variant="outlined"
-          size="small"
           label="対空CI"
           {...ciSelectState}
           getOptionLabel={(ci) => ci?.name || "無し"}
         />
         <StyledNumberInput
           variant="outlined"
-          size="small"
           label="加重対空補正"
           step={0.1}
           min={0}
@@ -102,7 +99,6 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
         />
         <StyledNumberInput
           variant="outlined"
-          size="small"
           label="艦隊対空補正"
           step={0.1}
           min={0}
