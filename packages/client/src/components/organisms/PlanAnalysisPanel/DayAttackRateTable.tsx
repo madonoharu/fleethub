@@ -2,8 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import { Plan, PlanAnalyzer, ShipShellingAbility } from "@fleethub/core"
 
-import { Paper } from "@material-ui/core"
-
 import { Table, LabeledValue } from "../../../components"
 import { toPercent } from "../../../utils"
 

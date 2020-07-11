@@ -2,22 +2,10 @@ import React from "react"
 import styled from "styled-components"
 import { Plan, Fleet, NightAbility, analyzeNightAttacks } from "@fleethub/core"
 
-import {
-  Button,
-  Typography,
-  FormControlLabel,
-  Checkbox,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  colors,
-} from "@material-ui/core"
-import BarChartIcon from "@material-ui/icons/BarChart"
+import { FormControlLabel, Checkbox } from "@material-ui/core"
 
 import { Table, LabeledValue } from "../../../components"
 import { toPercent } from "../../../utils"
-import { Flexbox } from "../../atoms"
-import { useModal } from "../../../hooks"
 
 import AttackChip from "./AttackChip"
 import ShipNameCell from "./ShipNameCell"

@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { Ship } from "@fleethub/core"
 
-import { Button, Typography, FormControlLabel, Checkbox, colors } from "@material-ui/core"
+import { Typography } from "@material-ui/core"
 
 import { ShipBanner } from "../../../components"
 
