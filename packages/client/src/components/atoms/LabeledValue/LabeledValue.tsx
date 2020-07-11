@@ -4,7 +4,7 @@ import styled from "styled-components"
 const Label = styled.div`
   color: ${(props) => props.theme.palette.text.secondary};
   font-size: 0.75rem;
-  margin-right: 8px;
+  margin-right: 4px;
 `
 
 const Value = styled.div`
