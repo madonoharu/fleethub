@@ -26,12 +26,13 @@ const StyledEquipmentList = styled(EquipmentList)`
 `
 
 type Props = {
+  className?: string
   label?: string
   airbase: Airbase
   update: Update<AirbaseState>
 }
 
-const AirbaseCard: React.FCX<Props> = ({ className, label, airbase, update }) => {
+const AirbaseCard = React.forwardRef<HTMLDivElement, Props>(({ className, label, airbase, update }, ref) => {
   const handleModeChange = (mode: AirbaseState["mode"]) => {
     update((draft) => {
       draft.mode = mode
@@ -39,7 +40,7 @@ const AirbaseCard: React.FCX<Props> = ({ className, label, airbase, update }) =>
   }
 
   return (
-    <Paper className={className}>
+    <Paper ref={ref} className={className}>
       <Flexbox>
         <Typography variant="subtitle2">{label}</Typography>
         <ModeSelect
@@ -59,7 +60,7 @@ const AirbaseCard: React.FCX<Props> = ({ className, label, airbase, update }) =>
       <StyledEquipmentList equipment={airbase.equipment} update={update} canEquip={airbase.canEquip} />
     </Paper>
   )
-}
+})
 
 export default styled(AirbaseCard)`
   padding: 8px;
