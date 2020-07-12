@@ -1,11 +1,23 @@
 import React from "react"
 import { Plan, PlanState, Airbase, AirbaseState, AirbaseKey } from "@fleethub/core"
 
-import { Container, Paper, TextField, Button } from "@material-ui/core"
-
 import { AirbaseCard, Flexbox } from "../../../components"
 import { Update } from "../../../utils"
 import styled from "styled-components"
+import { useSwap } from "../../../hooks"
+import { LabeledValue } from "../../atoms"
+
+const Container = styled(Flexbox)`
+  > :first-child {
+    margin-right: 8px;
+  }
+`
+
+const StyledAirbaseCard = styled(AirbaseCard)`
+  :not(:last-child) {
+    margin-right: 8px;
+  }
+`
 
 type ConnectedAirbaseCardProps = {
   airbase: Airbase
@@ -14,6 +26,16 @@ type ConnectedAirbaseCardProps = {
 }
 
 const ConnectedAirbaseCard: React.FC<ConnectedAirbaseCardProps> = ({ airbase, updatePlan, airbaseKey }) => {
+  const setState = React.useCallback(
+    (next: AirbaseState) => {
+      updatePlan((draft) => {
+        draft[airbaseKey] = next
+      })
+    },
+    [airbaseKey, updatePlan]
+  )
+
+  const [ref] = useSwap({ type: "airbase", state: airbase.state, setState })
   const updateAirbase: Update<AirbaseState> = React.useCallback(
     (recipe) => {
       updatePlan((draft) => {
@@ -24,7 +46,9 @@ const ConnectedAirbaseCard: React.FC<ConnectedAirbaseCardProps> = ({ airbase, up
     [airbaseKey, updatePlan]
   )
 
-  return <AirbaseCard label={airbaseKey} airbase={airbase} update={updateAirbase} />
+  return (
+    <StyledAirbaseCard ref={ref} label={airbaseKey.replace("a", "基地")} airbase={airbase} update={updateAirbase} />
+  )
 }
 
 type Props = {
@@ -35,8 +59,11 @@ type Props = {
 const LandBaseTabPanel: React.FCX<Props> = ({ className, plan, update }) => {
   return (
     <>
-      防空: {plan.interceptionPower}
-      高高度防空: {plan.highAltitudeInterceptionPower}
+      <Container>
+        <LabeledValue label="防空" value={plan.interceptionPower} />
+        <LabeledValue label="高高度防空" value={plan.highAltitudeInterceptionPower} />
+      </Container>
+
       <Flexbox className={className}>
         {plan.airbaseEntries.map(([key, airbase]) => (
           <ConnectedAirbaseCard key={key} airbase={airbase} airbaseKey={key} updatePlan={update} />
