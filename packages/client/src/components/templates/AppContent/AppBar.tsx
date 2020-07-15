@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { ActionCreators } from "redux-undo"
 
-import { AppBar as MuiAppBar, Link, Box, Button } from "@material-ui/core"
+import { AppBar as MuiAppBar, Button } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 
@@ -13,6 +13,9 @@ import { useModal } from "../../../hooks"
 import { appSlice } from "../../../store"
 
 import LanguageSelect from "./LanguageSelect"
+import ShipList from "../ShipList"
+import GearList from "../GearList"
+import MapList from "../MapList"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -24,53 +27,68 @@ const AppBar: React.FCX = ({ className }) => {
   const canUndo = useSelector((state) => state.past.length > 0)
   const canRedo = useSelector((state) => state.future.length > 0)
 
-  const Modal = useModal()
+  const ExplorerModal = useModal()
+  const ShipListModal = useModal()
+  const GearListModal = useModal()
+  const MapListModal = useModal()
 
   const handlePlanSelect = (id: string) => {
-    dispatch(appSlice.actions.openPlan(id))
-    Modal.hide()
+    dispatch(appSlice.actions.openFile(id))
+    ExplorerModal.hide()
   }
 
   const undo = () => canUndo && dispatch(ActionCreators.undo())
   const redo = () => canRedo && dispatch(ActionCreators.redo())
 
-  const paths = [
-    { to: "/", children: t("home") },
-    { to: "/gears", children: t("gears") },
-    { to: "/ships", children: t("ships") },
-  ]
-
   return (
     <MuiAppBar className={className} position="sticky">
-      <Box display="flex" width="100%">
-        <UndoButton size="small" disabled={!canUndo} onClick={undo} />
-        <RedoButton size="small" disabled={!canRedo} onClick={redo} />
-        <Button size="small" onClick={Modal.show}>
-          編成一覧
-        </Button>
+      <UndoButton size="small" disabled={!canUndo} onClick={undo} />
+      <RedoButton size="small" disabled={!canRedo} onClick={redo} />
 
-        {paths.map((path) => (
-          <Link key={path.to} {...path} />
-        ))}
+      <Button onClick={ExplorerModal.show}>編成一覧</Button>
 
-        <Modal>
-          <Explorer onPlanSelect={handlePlanSelect} onPlanCreate={Modal.hide} />
-        </Modal>
-      </Box>
+      <Button onClick={ShipListModal.show}>艦娘</Button>
+      <Button onClick={GearListModal.show}>装備</Button>
+      <Button onClick={MapListModal.show}>海域</Button>
+
+      <ShipListModal full>
+        <ShipList />
+      </ShipListModal>
+
+      <GearListModal full>
+        <GearList />
+      </GearListModal>
+
+      <MapListModal full>
+        <MapList />
+      </MapListModal>
+
+      <ExplorerModal>
+        <Explorer onPlanSelect={handlePlanSelect} onPlanCreate={ExplorerModal.hide} />
+      </ExplorerModal>
     </MuiAppBar>
   )
 }
 
 export default styled(AppBar)`
   display: flex;
+  align-items: center;
   flex-direction: row;
-  height: 24px;
 
   ${({ theme }) => theme.acrylic}
 
   > * {
-    color: white;
+    height: 32px;
   }
+
+  > :nth-child(3) {
+    margin-left: auto;
+  }
+
+  .MuiIconButton-root {
+    height: 24px;
+  }
+
   ${LanguageSelect} {
     flex-grow: 10;
   }
