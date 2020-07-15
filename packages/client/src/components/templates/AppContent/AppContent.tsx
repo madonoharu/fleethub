@@ -2,18 +2,27 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import { PlanEditor } from "../../../components"
-import { plansSelectors, filesSlice, openFirstPlan, selectAppState } from "../../../store"
+import { PlanEditor, DirectoryBreadcrumbs } from "../../../components"
+import { filesSlice, openFirstPlan, selectAppState, filesSelectors, FileEntity } from "../../../store"
 import { parseUrlEntities } from "../../../firebase"
-import { useFetch } from "../../../hooks"
+import { useFetch, DragLayerProvider } from "../../../hooks"
+
+import DirectoryPage from "../DirectoryPage"
 
 import AppBar from "./AppBar"
 
+const renderFile = (file: FileEntity) => {
+  if (file.type === "plan") return <PlanEditor planId={file.id} />
+
+  return <DirectoryPage directory={file} />
+}
+
 const FileLoader: React.FC = () => {
   const dispatch = useDispatch()
-  const planId = useSelector((state) => {
-    const { planId } = selectAppState(state)
-    return planId && plansSelectors.selectById(state, planId)?.id
+
+  const file = useSelector((state) => {
+    const { fileId } = selectAppState(state)
+    return fileId && filesSelectors.selectById(state, fileId)
   })
 
   useFetch(async () => {
@@ -23,19 +32,24 @@ const FileLoader: React.FC = () => {
       return
     }
 
-    if (planId) return
+    if (file) return
 
     dispatch(openFirstPlan())
-  }, [dispatch, planId])
+  }, [dispatch, file])
 
-  if (planId) return <PlanEditor planId={planId} />
+  if (!file) return null
 
-  return null
+  return (
+    <>
+      <DirectoryBreadcrumbs file={file} />
+      {renderFile(file)}
+    </>
+  )
 }
 
 const ScrollContainer = styled.div`
   overflow-y: scroll;
-  height: calc(100vh - 24px);
+  height: calc(100vh - 32px);
 `
 
 const Bottom = styled.div`
@@ -44,11 +58,13 @@ const Bottom = styled.div`
 
 const AppContent: React.FC = () => (
   <>
-    <AppBar />
-    <ScrollContainer>
-      <FileLoader />
-      <Bottom />
-    </ScrollContainer>
+    <DragLayerProvider>
+      <AppBar />
+      <ScrollContainer>
+        <FileLoader />
+        <Bottom />
+      </ScrollContainer>
+    </DragLayerProvider>
   </>
 )
 
