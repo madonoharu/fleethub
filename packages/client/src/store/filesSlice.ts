@@ -6,6 +6,7 @@ import {
   AppThunk,
   Dictionary,
   EntitySelectors,
+  EntityId,
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
@@ -50,6 +51,7 @@ const initialRootDirectory: RootDirectory = { id: "root", type: "root", children
 const initialTempDirectory: TempDirectory = { id: "temp", type: "temp", children: [] }
 
 const initialState = adapter.getInitialState({
+  ids: ["root", "temp"] as EntityId[],
   entities: {
     root: initialRootDirectory,
     temp: initialTempDirectory,
@@ -120,10 +122,11 @@ export const filesSlice = createSlice({
     },
 
     createFolder: (state, { payload }: PayloadAction<string | undefined>) => {
+      const count = Object.values(state.entities).filter(isFolder).length + 1
       const newFolder: FolderEntity = {
         id: nanoid(),
         type: "folder",
-        name: `新しいフォルダー${state.ids.length}`,
+        name: `フォルダー${count}`,
         children: [],
       }
       addFiles(state, [newFolder], payload)
