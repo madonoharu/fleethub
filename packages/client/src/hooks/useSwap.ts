@@ -1,7 +1,10 @@
-import { useRef, useEffect } from "react"
-import { useDrag, useDrop, DragObjectWithType } from "react-dnd"
+import { DragObjectWithType } from "react-dnd"
+import { useForkRef } from "@material-ui/core"
 
 import { batch } from "../utils"
+
+import { useDrag } from "./useDrag"
+import { useDrop } from "./useDrop"
 
 type SwappableItem<T> = DragObjectWithType & {
   state: T
@@ -10,13 +13,12 @@ type SwappableItem<T> = DragObjectWithType & {
 }
 
 export const useSwap = <T>(item: SwappableItem<T>) => {
-  const [isDragging, dragRef, preview] = useDrag({
+  const dragRef = useDrag({
     item,
     canDrag: item.canDrag,
-    collect: (monitor) => monitor.isDragging(),
   })
 
-  const [isOver, dropRef] = useDrop({
+  const dropRef = useDrop({
     accept: item.type,
     drop: (dragItem: SwappableItem<T>) => {
       batch(() => {
@@ -25,31 +27,9 @@ export const useSwap = <T>(item: SwappableItem<T>) => {
       })
     },
     canDrop: (dragItem) => dragItem.state !== item.state,
-    collect: (monitor) => monitor.isOver() && monitor.canDrop(),
   })
 
-  const ref = useRef<HTMLDivElement>(null)
+  const handleRef = useForkRef(dragRef, dropRef)
 
-  useEffect(() => {
-    dropRef(dragRef(ref.current))
-    console.log(2)
-  }, [dragRef, dropRef])
-
-  useEffect(() => {
-    const node = ref.current
-    if (!node) return
-
-    const inital = { ...node.style }
-    if (isDragging) {
-      node.style.opacity = "0.3"
-    }
-    if (isOver) {
-      node.style.outline = "solid 1px skyblue"
-    }
-    return () => {
-      Object.assign(node.style, inital)
-    }
-  }, [isDragging, isOver])
-
-  return [ref, preview] as const
+  return [handleRef]
 }
