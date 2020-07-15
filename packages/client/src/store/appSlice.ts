@@ -4,7 +4,7 @@ import { filesSlice } from "./filesSlice"
 import { plansSelectors } from "./plansSlice"
 
 type AppState = {
-  planId?: string
+  fileId?: string
 }
 
 const initialState: AppState = {}
@@ -14,22 +14,22 @@ export const appSlice = createSlice({
   initialState,
 
   reducers: {
-    openPlan: (state, { payload }: PayloadAction<string>) => {
-      state.planId = payload
+    openFile: (state, { payload }: PayloadAction<string>) => {
+      state.fileId = payload
     },
-    closePlan: (state) => {
-      delete state.planId
+    closeFile: (state) => {
+      delete state.fileId
     },
   },
 
   extraReducers: (bapplder) => {
     bapplder
       .addCase(filesSlice.actions.createPlan, (state, { payload }) => {
-        state.planId = payload.plan.id
+        state.fileId = payload.plan.id
       })
       .addCase(filesSlice.actions.import, (state, { payload: { plans, entry } }) => {
         if (plans?.length === 0) return
-        state.planId = entry
+        state.fileId = entry
       })
   },
 })
@@ -39,7 +39,7 @@ export const openFirstPlan = (): AppThunk => (dispatch, getState) => {
   const planIds = plansSelectors.selectIds(state)
 
   if (planIds.length) {
-    dispatch(appSlice.actions.openPlan(planIds[planIds.length - 1] as string))
+    dispatch(appSlice.actions.openFile(planIds[planIds.length - 1] as string))
   } else {
     dispatch(filesSlice.actions.createPlan({}))
   }
