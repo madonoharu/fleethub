@@ -26,7 +26,7 @@ const undoableOptions: UndoableOptions = {
 const rootReducer = undoable(
   combineReducers({
     entities: persistReducer({ key: "entities", storage }, entitiesReducer),
-    app: appSlice.reducer,
+    app: persistReducer({ key: "app", storage }, appSlice.reducer),
 
     mapList: mapListSlice.reducer,
     gearList: gearListSlice.reducer,
