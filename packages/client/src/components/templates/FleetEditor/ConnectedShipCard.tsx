@@ -10,6 +10,7 @@ import { useSwap, useModal } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import ShipList from "../ShipList"
+import Swappable from "../../organisms/Swappable"
 
 type Props = {
   className?: string
@@ -57,13 +58,6 @@ const ConnectedShipCard = React.memo<Props>(({ className, ship, ...rest }) => {
   const actions = useFleetShipActions(rest)
   const Modal = useModal()
 
-  const [ref] = useSwap({
-    type: "ship",
-    state: ship?.state,
-    setState: actions.set,
-    canDrag: Boolean(ship),
-  })
-
   const handleShipSelect = (ship: ShipState) => {
     actions.set(ship)
     Modal.hide()
@@ -77,12 +71,14 @@ const ConnectedShipCard = React.memo<Props>(({ className, ship, ...rest }) => {
   }
 
   return (
-    <div className={className} ref={ref}>
-      {element}
+    <>
+      <Swappable className={className} type="ship" state={ship?.state} setState={actions.set} canDrag={Boolean(ship)}>
+        {element}
+      </Swappable>
       <Modal full>
         <ShipList onSelect={handleShipSelect} />
       </Modal>
-    </div>
+    </>
   )
 })
 
