@@ -20,8 +20,6 @@ const getCategoryLabel = (category: number) => {
   return <GearNameplate size="small" iconId={iconId ?? 0} name={name} />
 }
 
-const menuProps = { style: { maxHeight: 400 } }
-
 type Props = {
   value: number
   options: number[]
@@ -29,7 +27,7 @@ type Props = {
 }
 
 const CategorySelect: React.FCX<Props> = (props) => {
-  return <Select MenuProps={menuProps} getOptionLabel={getCategoryLabel} {...props} />
+  return <Select getOptionLabel={getCategoryLabel} {...props} />
 }
 
 export default styled(CategorySelect)`
