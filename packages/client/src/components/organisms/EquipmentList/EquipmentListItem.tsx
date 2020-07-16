@@ -1,12 +1,14 @@
 import React from "react"
 import { Gear, GearState, getSlotKey, EquipmentState, GearKey, GearBase, EquipmentBonuses } from "@fleethub/core"
 
-import { GearLabel, Flexbox, GearList } from "../../../components"
-import { useSwap, useModal } from "../../../hooks"
+import { GearLabel, GearList } from "../../../components"
+import { useModal } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import SlotSizeButton from "./SlotSizeButton"
 import AddGearButton from "./AddGearButton"
+import Swappable from "../Swappable"
+import styled from "styled-components"
 
 export type Props = {
   gear?: Gear
@@ -67,13 +69,6 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
     Modal.hide()
   }
 
-  const [ref] = useSwap({
-    type: "gear",
-    state: gear?.state,
-    setState: actions.set,
-    canDrag: Boolean(gear),
-  })
-
   const handleSlotSizeChange = (value: number) => {
     if (value === maxSlotSize) {
       actions.setSlotSize(undefined)
@@ -83,7 +78,7 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
   }
 
   return (
-    <Flexbox ref={ref} className={className}>
+    <Swappable className={className} type="gear" state={gear?.state} setState={actions.set} canDrag={Boolean(gear)}>
       <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={handleSlotSizeChange} />
       {gear ? (
         <GearLabel
@@ -104,8 +99,12 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
           getBonuses={makeGetNextBonuses && makeGetNextBonuses(gearKey)}
         />
       </Modal>
-    </Flexbox>
+    </Swappable>
   )
 }
 
-export default React.memo(EquipmentListItem)
+const Styled = styled(EquipmentListItem)`
+  display: flex;
+`
+
+export default React.memo(Styled)

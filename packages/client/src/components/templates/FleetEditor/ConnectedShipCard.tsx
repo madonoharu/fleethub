@@ -5,12 +5,11 @@ import { Ship, ShipState, FleetState, ShipKey } from "@fleethub/core"
 import { Button, ButtonProps } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"
 
-import { ShipCard } from "../../../components"
-import { useSwap, useModal } from "../../../hooks"
+import { ShipCard, Swappable } from "../../../components"
+import { useModal } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import ShipList from "../ShipList"
-import Swappable from "../../organisms/Swappable"
 
 type Props = {
   className?: string
