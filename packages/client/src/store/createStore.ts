@@ -1,7 +1,7 @@
-import { combineReducers, configureStore, getDefaultMiddleware, AnyAction } from "@reduxjs/toolkit"
+import { combineReducers, configureStore, getDefaultMiddleware, AnyAction, Action, Reducer } from "@reduxjs/toolkit"
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist"
 import storage from "localforage"
-import undoable, { UndoableOptions } from "redux-undo"
+import undoable, { UndoableOptions, ActionTypes as UndoableActionTypes } from "redux-undo"
 import { ThunkAction } from "redux-thunk"
 
 import { makeGroupBy } from "../utils"
@@ -15,25 +15,30 @@ import { gearListSlice } from "./gearListSlice"
 const ignoredActions = [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
 
 const undoableOptions: UndoableOptions = {
-  filter: (action) => {
-    return ["entities", appSlice.name].some((key) => (action.type as string).startsWith(key))
-  },
+  filter: (action) => ["entities", appSlice.name].some((key) => (action.type as string).startsWith(key)),
   groupBy: makeGroupBy(),
-  ignoreInitialState: true,
   limit: 10,
+  neverSkipReducer: true,
 }
 
-const rootReducer = undoable(
-  combineReducers({
-    entities: persistReducer({ key: "entities", storage }, entitiesReducer),
-    app: persistReducer({ key: "app", storage }, appSlice.reducer),
+const combinedReducer = combineReducers({
+  entities: entitiesReducer,
+  app: appSlice.reducer,
 
-    mapList: mapListSlice.reducer,
-    gearList: gearListSlice.reducer,
-    shipList: shipListSlice.reducer,
-  }),
-  undoableOptions
-)
+  mapList: mapListSlice.reducer,
+  gearList: gearListSlice.reducer,
+  shipList: shipListSlice.reducer,
+})
+
+const persistedReducerBase: typeof combinedReducer = (...args) => {
+  const next = combinedReducer(...args)
+  if ([UndoableActionTypes.UNDO, UndoableActionTypes.REDO].includes(args[1].type)) return { ...next }
+  return next
+}
+
+const persistedReducer = persistReducer({ key: "root", storage }, persistedReducerBase)
+
+const rootReducer = undoable(persistedReducer, undoableOptions)
 
 const extraArgument = undefined
 
