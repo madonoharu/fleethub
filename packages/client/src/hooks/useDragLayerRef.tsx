@@ -19,6 +19,15 @@ const DragLayerContainer = styled.div`
   height: 100%;
 `
 
+const wait = 50
+
+const DragLayerBox = styled.div`
+  transition: ${wait * 2}ms ease;
+  backdrop-filter: blur(4px);
+  box-shadow: 0px 0px 2px 2px ${(props) => props.theme.palette.primary.light}, ${(props) => props.theme.shadows[12]};
+  border-radius: 4px;
+`
+
 const getStyle = throttle((monitor: DragLayerMonitor): React.CSSProperties | undefined => {
   const offset = monitor.getSourceClientOffset()
 
@@ -26,19 +35,22 @@ const getStyle = throttle((monitor: DragLayerMonitor): React.CSSProperties | und
 
   return {
     transform: `translate(${offset.x}px, ${offset.y}px)`,
-    transition: "50ms",
   }
-}, 50)
+}, wait)
 
 const DragLayer: React.FC = () => {
-  const style = useDragLayer(getStyle)
+  const style = useDragLayer((monitor) => {
+    if (!monitor.isDragging()) return
+    return getStyle(monitor)
+  })
+
   const { current, width, height } = useDragLayerRef()
 
-  if (!style) return null
+  if (!style || !current) return null
 
   return (
     <DragLayerContainer>
-      <div style={{ ...style, width, height }}>{current}</div>
+      <DragLayerBox style={{ ...style, width, height }}>{current}</DragLayerBox>
     </DragLayerContainer>
   )
 }
