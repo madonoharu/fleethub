@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Typography, ListItem, ListItemIcon, ListItemText, useForkRef } from "@material-ui/core"
 import FolderIcon from "@material-ui/icons/Folder"
 import DescriptionIcon from "@material-ui/icons/Description"
+import UnarchiveIcon from "@material-ui/icons/Unarchive"
 
 import {
   filesSelectors,
@@ -19,8 +20,10 @@ import {
 } from "../../../store"
 
 import { useFhSystem, useDrag, useDrop } from "../../../hooks"
-import { ShipBanner, ShareButton, CopyButton, RemoveButton } from "../../molecules"
+import { ShipBanner, ShareButton, CopyButton, RemoveButton, withIconButton } from "../../molecules"
 import { Flexbox } from "../../atoms"
+
+const UnarchiveButton = withIconButton(UnarchiveIcon)
 
 const ShipsContainer = styled.div`
   overflow: hidden;
@@ -104,6 +107,7 @@ const FileListItem = React.forwardRef<HTMLElement, FileListItemProps>(
         {renderFile(file)}
         <FileAction onClick={(e) => e.stopPropagation()}>
           <CopyButton onClick={onCopy} />
+          <UnarchiveButton />
           <ShareButton />
           <RemoveButton onClick={onRemove} />
         </FileAction>
@@ -122,20 +126,13 @@ const StyledFileListItem = styled(FileListItem)`
   }
 
   &.dragging {
-    opacity: 0.1;
+    opacity: 0.3;
   }
 
   &.droppable {
     border-bottom: solid 1px;
   }
 `
-const FileDragLayer: React.FC<{ file: FileEntity }> = ({ file }) => {
-  return (
-    <ListItemIcon>
-      <DescriptionIcon />
-    </ListItemIcon>
-  )
-}
 
 const DraggableFileListItem: React.FC<FileListItemProps> = (props) => {
   const { file, onMove } = props
