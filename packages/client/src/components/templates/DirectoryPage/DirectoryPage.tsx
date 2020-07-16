@@ -25,6 +25,10 @@ const DirectoryPage: React.FC<Props> = ({ directory }) => {
     dispatch(filesSlice.actions.createFolder(directory.id))
   }
 
+  const moveFileToParent = (id: string) => {
+    dispatch(filesSlice.actions.move({ id, to: directory.id }))
+  }
+
   return (
     <Container>
       <Button onClick={handlePlanCreate} startIcon={<AddIcon />}>
