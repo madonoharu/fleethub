@@ -2,12 +2,17 @@ import React from "react"
 
 import { batch } from "../../../utils"
 import { useDrag, useDrop } from "../../../hooks"
-import { useForkRef } from "@material-ui/core"
+import { useForkRef, colors } from "@material-ui/core"
 import styled from "styled-components"
 
 const Container = styled.div`
   &.dragging {
-    opacity: 0.2;
+    opacity: 0.3;
+  }
+
+  &.droppable {
+    box-shadow: 0px 0px 2px 2px ${colors.yellow[300]};
+    border-radius: 4px;
   }
 `
 
@@ -29,10 +34,16 @@ type Component = {
 const Swappable: Component = ({ className, style, type, state, setState, canDrag, children }) => {
   const item = { type, state, setState, canDrag }
 
+  const elem = (
+    <Container className={className} style={style}>
+      {children}
+    </Container>
+  )
+
   const dragRef = useDrag({
     item,
     canDrag: item.canDrag,
-    dragLayer: children,
+    dragLayer: elem,
   })
 
   const dropRef = useDrop({
@@ -46,13 +57,8 @@ const Swappable: Component = ({ className, style, type, state, setState, canDrag
     canDrop: (dragItem) => dragItem.state !== item.state,
   })
 
-  const handleRef = useForkRef(dragRef, dropRef)
-
-  return (
-    <Container ref={handleRef} className={className} style={style}>
-      {children}
-    </Container>
-  )
+  const ref = useForkRef(dragRef, dropRef)
+  return React.cloneElement(elem, { ref })
 }
 
 export default Swappable
