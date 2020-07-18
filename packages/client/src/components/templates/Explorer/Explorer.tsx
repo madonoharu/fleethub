@@ -2,19 +2,18 @@ import React from "react"
 import styled from "styled-components"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Container } from "@material-ui/core"
-
-import { filesSelectors, filesSlice, removeFile, copyFile } from "../../../store"
+import { filesSlice, removeFile, copyFile, appSlice, selectFilesState } from "../../../store"
 import { FileTreeView, FileTreeViewProps } from "../../../components"
 
-type Props = {
-  onPlanSelect?: (id: string) => void
-  onPlanCreate?: () => void
-}
+type Props = {}
 
-const Explorer: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate }) => {
+const Explorer: React.FCX<Props> = ({ className }) => {
   const dispatch = useDispatch()
-  const fileEntities = useSelector(filesSelectors.selectEntities)
+  const filesState = useSelector(selectFilesState)
+
+  const handleFileOpen = (id: string) => {
+    dispatch(appSlice.actions.openFile(id))
+  }
 
   const handleFileUpdate: FileTreeViewProps["onFileUpdate"] = (payload) => {
     dispatch(filesSlice.actions.update(payload))
@@ -22,7 +21,6 @@ const Explorer: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate }) =
 
   const handlePlanCreate: FileTreeViewProps["onPlanCreate"] = (payload) => {
     dispatch(filesSlice.actions.createPlan(payload))
-    onPlanCreate?.()
   }
 
   const handleFolderCreate: FileTreeViewProps["onFolderCreate"] = (parent) => {
@@ -38,22 +36,17 @@ const Explorer: React.FCX<Props> = ({ className, onPlanSelect, onPlanCreate }) =
   const handleRemove = (id: string) => dispatch(removeFile(id))
 
   return (
-    <Container className={className}>
-      <FileTreeView
-        entities={fileEntities}
-        onFileUpdate={handleFileUpdate}
-        onPlanSelect={onPlanSelect}
-        onPlanCreate={handlePlanCreate}
-        onFolderCreate={handleFolderCreate}
-        onCopy={handleCopy}
-        onMove={handleMove}
-        onRemove={handleRemove}
-      />
-    </Container>
+    <FileTreeView
+      state={filesState}
+      onFileOpen={handleFileOpen}
+      onFileUpdate={handleFileUpdate}
+      onPlanCreate={handlePlanCreate}
+      onFolderCreate={handleFolderCreate}
+      onCopy={handleCopy}
+      onMove={handleMove}
+      onRemove={handleRemove}
+    />
   )
 }
 
-export default styled(Explorer)`
-  width: 640px;
-  height: 80vh;
-`
+export default Explorer
