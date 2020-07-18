@@ -5,9 +5,12 @@ import { plansSelectors } from "./plansSlice"
 
 type AppState = {
   fileId?: string
+  explorerOpen: boolean
 }
 
-const initialState: AppState = {}
+const initialState: AppState = {
+  explorerOpen: true,
+}
 
 export const appSlice = createSlice({
   name: "app",
@@ -19,6 +22,9 @@ export const appSlice = createSlice({
     },
     closeFile: (state) => {
       delete state.fileId
+    },
+    toggleExplorerOpen: (state) => {
+      state.explorerOpen = !state.explorerOpen
     },
   },
 
