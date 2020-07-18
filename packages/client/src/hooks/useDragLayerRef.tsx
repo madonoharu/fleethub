@@ -12,7 +12,7 @@ export const useDragLayerRef = () => useContext(DragLayerRefContext)
 const DragLayerContainer = styled.div`
   position: fixed;
   pointer-events: none;
-  z-index: 100;
+  z-index: 2000;
   left: 0;
   top: 0;
   width: 100%;
@@ -22,8 +22,8 @@ const DragLayerContainer = styled.div`
 const wait = 50
 
 const DragLayerBox = styled.div`
-  transition: ${wait * 2}ms ease;
   backdrop-filter: blur(4px);
+  transition: transform 100ms ease-out;
   box-shadow: 0px 0px 2px 2px ${(props) => props.theme.palette.primary.light}, ${(props) => props.theme.shadows[12]};
   border-radius: 4px;
 `

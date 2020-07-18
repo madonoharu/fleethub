@@ -1,18 +1,18 @@
 import React from "react"
+import styled from "styled-components"
+import { useForkRef, colors } from "@material-ui/core"
 
 import { batch } from "../../../utils"
 import { useDrag, useDrop } from "../../../hooks"
-import { useForkRef, colors } from "@material-ui/core"
-import styled from "styled-components"
 
 const Container = styled.div`
-  &.dragging {
-    opacity: 0.3;
-  }
-
+  transition: box-shadow 400ms ease;
+  border-radius: 4px;
   &.droppable {
     box-shadow: 0px 0px 2px 2px ${colors.yellow[300]};
-    border-radius: 4px;
+  }
+  &.dragging {
+    opacity: 0.3;
   }
 `
 
