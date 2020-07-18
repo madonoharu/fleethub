@@ -113,12 +113,12 @@ const muiTheme = createMuiTheme({
     },
     MuiAppBar: {
       colorPrimary: {
-        backgroundColor: "rgba(20, 20, 20, 0.9)",
+        backgroundColor: "rgba(30, 30, 35)",
       },
     },
     MuiDrawer: {
       paper: {
-        backgroundColor: "rgba(20, 20, 20, 0.9)",
+        backgroundColor: "rgba(30, 30, 35)",
       },
     },
   },
@@ -192,10 +192,10 @@ const acrylic = isFirefox
 
 const darkAcrylic = isFirefox
   ? css`
-      background: rgba(20, 20, 20, 0.98);
+      background: rgba(30, 30, 35, 0.98);
     `
   : css`
-      background: rgba(20, 20, 20, 0.85);
+      background: rgba(30, 30, 35, 0.85);
       backdrop-filter: blur(8px);
     `
 
