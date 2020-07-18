@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { ActionCreators } from "redux-undo"
 
-import { AppBar as MuiAppBar, Button } from "@material-ui/core"
+import { AppBar as MuiAppBar, Button, Drawer } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
+import FolderIcon from "@material-ui/icons/Folder"
+import FolderOpenIcon from "@material-ui/icons/FolderOpen"
 
 import { Explorer, withIconButton } from "../../../components"
 import { useModal } from "../../../hooks"
@@ -20,32 +22,40 @@ import MapList from "../MapList"
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
 
-const AppBar: React.FCX = ({ className }) => {
+type Props = {
+  explorerOpen?: boolean
+  onExplorerOpen: () => void
+}
+
+const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) => {
   const { t } = useTranslation()
 
   const dispatch = useDispatch()
   const canUndo = useSelector((state) => state.past.length > 0)
   const canRedo = useSelector((state) => state.future.length > 0)
 
-  const ExplorerModal = useModal()
   const ShipListModal = useModal()
   const GearListModal = useModal()
   const MapListModal = useModal()
 
-  const handlePlanSelect = (id: string) => {
-    dispatch(appSlice.actions.openFile(id))
-    ExplorerModal.hide()
-  }
-
   const undo = () => canUndo && dispatch(ActionCreators.undo())
   const redo = () => canRedo && dispatch(ActionCreators.redo())
 
+  const handleExplorerOpen = () => {
+    onExplorerOpen()
+  }
+
   return (
     <MuiAppBar className={className} position="sticky">
-      <UndoButton size="small" disabled={!canUndo} onClick={undo} />
-      <RedoButton size="small" disabled={!canRedo} onClick={redo} />
-
-      <Button onClick={ExplorerModal.show}>編成一覧</Button>
+      <Button
+        onClick={handleExplorerOpen}
+        color="primary"
+        startIcon={explorerOpen ? <FolderOpenIcon /> : <FolderIcon />}
+      >
+        編成一覧
+      </Button>
+      <UndoButton size="small" title="操作を戻す" disabled={!canUndo} onClick={undo} />
+      <RedoButton size="small" title="操作を進める" disabled={!canRedo} onClick={redo} />
 
       <Button onClick={ShipListModal.show}>艦娘</Button>
       <Button onClick={GearListModal.show}>装備</Button>
@@ -62,10 +72,6 @@ const AppBar: React.FCX = ({ className }) => {
       <MapListModal full>
         <MapList />
       </MapListModal>
-
-      <ExplorerModal>
-        <Explorer onPlanSelect={handlePlanSelect} onPlanCreate={ExplorerModal.hide} />
-      </ExplorerModal>
     </MuiAppBar>
   )
 }
@@ -75,13 +81,11 @@ export default styled(AppBar)`
   align-items: center;
   flex-direction: row;
 
-  ${({ theme }) => theme.acrylic}
-
   > * {
     height: 32px;
   }
 
-  > :nth-child(3) {
+  > :nth-child(4) {
     margin-left: auto;
   }
 
