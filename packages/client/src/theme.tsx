@@ -3,7 +3,6 @@ import React from "react"
 import { createMuiTheme, colors, ThemeProvider as MuiThemeProvider, CssBaseline } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
 import { css, createGlobalStyle, ThemeProvider as StyledThemeProvider } from "styled-components"
-import { AirState } from "@fleethub/core"
 
 const { blue, cyan, pink, grey, lightBlue } = colors
 
@@ -70,21 +69,6 @@ const muiTheme = createMuiTheme({
           overflowY: "hidden",
         },
 
-        "*": {
-          scrollbarColor: `${grey[700]} transparent`,
-          scrollbarWidth: "thin",
-        },
-
-        "::-webkit-scrollbar": {
-          width: 8,
-        },
-        "::-webkit-scrollbar-track": {
-          background: "transparent",
-        },
-        "::-webkit-scrollbar-thumb": {
-          background: grey[700],
-        },
-
         "@font-face": [
           {
             fontFamily: "Original Yu Gothic",
@@ -125,6 +109,16 @@ const muiTheme = createMuiTheme({
       root: {
         minWidth: "auto",
         marginRight: 16,
+      },
+    },
+    MuiAppBar: {
+      colorPrimary: {
+        backgroundColor: "rgba(20, 20, 20, 0.9)",
+      },
+    },
+    MuiDrawer: {
+      paper: {
+        backgroundColor: "rgba(20, 20, 20, 0.9)",
       },
     },
   },
@@ -196,28 +190,57 @@ const acrylic = isFirefox
       backdrop-filter: blur(8px);
     `
 
+const darkAcrylic = isFirefox
+  ? css`
+      background: rgba(20, 20, 20, 0.98);
+    `
+  : css`
+      background: rgba(20, 20, 20, 0.85);
+      backdrop-filter: blur(8px);
+    `
+
 const theme = { ...muiTheme, kc, acrylic }
 
 export type Theme = typeof theme
 
-const globalCss = css`
-  body {
-    background: linear-gradient(-45deg, #141e30, #243b55);
-  }
+const scrollbarColor = grey[700]
 
-  .MuiPopover-paper {
-    ${(props) => props.theme.acrylic}
-  }
+const GlobalStyle = createGlobalStyle(
+  ({ theme }) => css`
+    body {
+      background: linear-gradient(-45deg, #141e30, #243b55);
+    }
 
-  .MuiTooltip-popper {
-    will-change: auto !important;
-  }
-  .MuiTooltip-tooltip {
-    ${(props) => props.theme.acrylic}
-  }
-`
+    * {
+      scrollbar-color: ${scrollbarColor} transparent;
+      scrollbar-width: thin;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: ${scrollbarColor};
+    }
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-corner {
+      background: transparent;
+    }
 
-const GlobalStyle = createGlobalStyle(() => globalCss)
+    .MuiPopover-paper,
+    .MuiDialog-paper {
+      ${theme.acrylic}
+    }
+
+    .MuiTooltip-popper {
+      will-change: auto !important;
+    }
+    .MuiTooltip-tooltip {
+      font-size: ${theme.typography.body2.fontSize};
+      ${darkAcrylic}
+    }
+  `
+)
 
 export const ThemeProvider: React.FC = ({ children }) => (
   <MuiThemeProvider theme={theme}>
