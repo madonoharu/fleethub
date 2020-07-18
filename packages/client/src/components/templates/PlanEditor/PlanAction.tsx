@@ -4,6 +4,7 @@ import copy from "copy-to-clipboard"
 import { Plan, PlanState } from "@fleethub/core"
 import { useAsyncCallback } from "react-async-hook"
 import { createSelector } from "@reduxjs/toolkit"
+import { useDispatch } from "react-redux"
 
 import {
   Flexbox,
@@ -18,6 +19,7 @@ import {
 import { useSnackbar, useModal } from "../../../hooks"
 import { Update, openKctools } from "../../../utils"
 import { publishPlan } from "../../../firebase"
+import { filesSlice } from "../../../store"
 
 const urlSelector = createSelector(
   (plan: PlanState) => plan,
@@ -39,13 +41,14 @@ const tweet = ({ text, url }: TweetOption) => {
 type Props = {
   plan: Plan
   update: Update<PlanState>
-  onPlanImport?: (plan: Plan) => void
 }
 
-const PlanAction: React.FCX<Props> = ({ className, plan, update, onPlanImport }) => {
+const PlanAction: React.FCX<Props> = ({ className, plan, update }) => {
   const ShareModal = useModal()
   const ImportModal = useModal()
   const Snackbar = useSnackbar()
+
+  const dispatch = useDispatch()
 
   const asyncOnLinkClick = useAsyncCallback(
     async () => {
@@ -75,6 +78,10 @@ const PlanAction: React.FCX<Props> = ({ className, plan, update, onPlanImport })
     })
   }
 
+  const handleImport = (plan: Plan) => {
+    dispatch(filesSlice.actions.createPlan({ plan: plan.state }))
+  }
+
   return (
     <Flexbox className={className}>
       <LinkButton title="共有URLをコピー" onClick={asyncOnLinkClick.execute} disabled={asyncOnLinkClick.loading} />
@@ -87,7 +94,7 @@ const PlanAction: React.FCX<Props> = ({ className, plan, update, onPlanImport })
         <PlanShareContent plan={plan} />
       </ShareModal>
       <ImportModal>
-        <PlanImportForm onOverwrite={handleOverwrite} onImport={onPlanImport} />
+        <PlanImportForm onOverwrite={handleOverwrite} onImport={handleImport} />
       </ImportModal>
 
       <Snackbar />

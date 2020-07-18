@@ -8,11 +8,6 @@ import BattlePlanPanel from "./BattlePlanPanel"
 import PlanEditorHeader from "./PlanEditorHeader"
 import PlanTabs from "./PlanTabs"
 
-const Cont = styled.div`
-  margin: 0 auto;
-  width: ${(props) => props.theme.breakpoints.width("md")}px;
-`
-
 const StyledPlanAnalysisPanel = styled(PlanAnalysisPanel)`
   margin-top: 8px;
 `
@@ -21,7 +16,7 @@ type Props = {
   planId: string
 }
 
-const PlanEditor: React.FC<Props> = ({ planId }) => {
+const PlanEditor: React.FCX<Props> = ({ className, planId }) => {
   const { plan, actions, state } = usePlan(planId)
 
   const Modal = useModal()
@@ -29,7 +24,7 @@ const PlanEditor: React.FC<Props> = ({ planId }) => {
   if (!plan || !state) return null
 
   return (
-    <Cont>
+    <div className={className}>
       <PlanEditorHeader plan={plan} update={actions.update} />
       <PlanTabs plan={plan} update={actions.update} />
 
@@ -38,8 +33,10 @@ const PlanEditor: React.FC<Props> = ({ planId }) => {
       <Modal>
         <PlanShareContent plan={plan} />
       </Modal>
-    </Cont>
+    </div>
   )
 }
 
-export default PlanEditor
+export default styled(PlanEditor)`
+  width: ${(props) => props.theme.breakpoints.width("md")}px;
+`
