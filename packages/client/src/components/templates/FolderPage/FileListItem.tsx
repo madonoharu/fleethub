@@ -5,12 +5,10 @@ import { useDispatch, useSelector } from "react-redux"
 import { Typography, ListItem, ListItemIcon, ListItemText, useForkRef } from "@material-ui/core"
 import FolderIcon from "@material-ui/icons/Folder"
 import DescriptionIcon from "@material-ui/icons/Description"
-import UnarchiveIcon from "@material-ui/icons/Unarchive"
 
 import {
   filesSelectors,
   plansSelectors,
-  Directory,
   appSlice,
   filesSlice,
   FileEntity,
@@ -22,8 +20,6 @@ import {
 import { useFhSystem, useDrag, useDrop } from "../../../hooks"
 import { ShipBanner, ShareButton, CopyButton, RemoveButton, withIconButton } from "../../molecules"
 import { Flexbox } from "../../atoms"
-
-const UnarchiveButton = withIconButton(UnarchiveIcon)
 
 const ShipsContainer = styled.div`
   overflow: hidden;
@@ -86,8 +82,7 @@ const StyledListItem = styled(ListItem)`
 
 const renderFile = (file: FileEntity) => {
   if (file.type === "plan") return <PlanItem id={file.id} />
-  if (file.type === "folder") return <FolderItem file={file} />
-  return <>{file.type}</>
+  return <FolderItem file={file} />
 }
 
 type FileListItemProps = {
@@ -107,7 +102,6 @@ const FileListItem = React.forwardRef<HTMLElement, FileListItemProps>(
         {renderFile(file)}
         <FileAction onClick={(e) => e.stopPropagation()}>
           <CopyButton onClick={onCopy} />
-          <UnarchiveButton />
           <ShareButton />
           <RemoveButton onClick={onRemove} />
         </FileAction>
