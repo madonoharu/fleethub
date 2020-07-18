@@ -2,14 +2,17 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
+import { Container } from "@material-ui/core"
+
 import { PlanEditor, DirectoryBreadcrumbs } from "../../../components"
-import { filesSlice, openFirstPlan, selectAppState, filesSelectors, FileEntity } from "../../../store"
+import { filesSlice, openFirstPlan, selectAppState, filesSelectors, FileEntity, appSlice } from "../../../store"
 import { parseUrlEntities } from "../../../firebase"
 import { useFetch, DragLayerProvider } from "../../../hooks"
 
 import DirectoryPage from "../DirectoryPage"
 
 import AppBar from "./AppBar"
+import ExplorerDrawer from "./ExplorerDrawer"
 
 const renderFile = (file: FileEntity) => {
   if (file.type === "plan") return <PlanEditor planId={file.id} />
@@ -47,25 +50,25 @@ const FileLoader: React.FC = () => {
   )
 }
 
-const ScrollContainer = styled.div`
-  overflow-y: scroll;
-  height: calc(100vh - 32px);
-`
-
 const Bottom = styled.div`
   height: 400px;
 `
 
-const AppContent: React.FC = () => (
-  <>
+const AppContent: React.FC = () => {
+  const dispatch = useDispatch()
+  const explorerOpen = useSelector((state) => selectAppState(state).explorerOpen)
+  const toggleExplorerOpen = () => dispatch(appSlice.actions.toggleExplorerOpen())
+  return (
     <DragLayerProvider>
-      <AppBar />
-      <ScrollContainer>
-        <FileLoader />
+      <AppBar explorerOpen={explorerOpen} onExplorerOpen={toggleExplorerOpen} />
+      <ExplorerDrawer open={explorerOpen}>
+        <Container>
+          <FileLoader />
+        </Container>
         <Bottom />
-      </ScrollContainer>
+      </ExplorerDrawer>
     </DragLayerProvider>
-  </>
-)
+  )
+}
 
 export default AppContent
