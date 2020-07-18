@@ -16,10 +16,9 @@ const LevelInput = styled(NumberInput)`
 type Props = {
   plan: Plan
   update: Update<PlanState>
-  onPlanImport?: (plan: Plan) => void
 }
 
-const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPlanImport }) => {
+const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update }) => {
   const handleNameChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     update((draft) => {
       draft.name = event.currentTarget.value
@@ -44,7 +43,7 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPlanImp
       <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
       <FleetTypeSelect fleetType={plan.fleetType} onChange={handleFleetTypeChange} />
 
-      <PlanAction plan={plan} update={update} onPlanImport={onPlanImport} />
+      <PlanAction plan={plan} update={update} />
     </Flexbox>
   )
 }
