@@ -9,15 +9,15 @@ import FileCopyIcon from "@material-ui/icons/FileCopy"
 import DeleteIcon from "@material-ui/icons/Delete"
 
 import { MoreVertButton, AddButton, RemoveButton, EditButton, MenuList } from "../../../components"
-import { FolderEntity, FileEntity } from "../../../store"
+import { FolderEntity } from "../../../store"
 import { usePopover } from "../../../hooks"
 
 import FileLabel, { FileLabelProps } from "./FileLabel"
-import FileTextField from "./FileTextField"
 
 type Props = {
   file: FolderEntity
 
+  onOpen: (id: string) => void
   onFileUpdate: (update: Update<FolderEntity>) => void
   onPlanCreate: (id: string) => void
   onFolderCreate: (id: string) => void
@@ -28,7 +28,7 @@ type Props = {
 const FolderLabel: React.FCX<Props> = ({
   className,
   file,
-  onFileUpdate,
+  onOpen,
   onPlanCreate,
   onFolderCreate,
   onCopy,
@@ -37,9 +37,10 @@ const FolderLabel: React.FCX<Props> = ({
   isParentOf,
 }) => {
   const Popover = usePopover()
-  const [editable, setEditable] = React.useState(false)
 
-  const handleNameChange = (name: string) => onFileUpdate({ id: file.id, changes: { name } })
+  const handleOpen = () => {
+    onOpen(file.id)
+  }
 
   const handlePlanCreate = () => {
     onPlanCreate(file.id)
@@ -67,12 +68,6 @@ const FolderLabel: React.FCX<Props> = ({
     { icon: <DeleteIcon />, text: "削除", onClick: handleRemove },
   ]
 
-  const text = editable ? (
-    <FileTextField onClickAway={() => setEditable(false)} onChange={handleNameChange} fullWidth value={file.name} />
-  ) : (
-    file.name
-  )
-
   return (
     <FileLabel
       className={className}
@@ -80,11 +75,10 @@ const FolderLabel: React.FCX<Props> = ({
       isParentOf={isParentOf}
       onMove={onMove}
       icon={<FolderIcon />}
-      text={text}
-      canDrag={!editable}
+      text={file.name}
       action={
         <>
-          <EditButton size="small" onClick={() => setEditable(true)} />
+          <EditButton size="small" onClick={handleOpen} />
           <AddButton size="small" onClick={handlePlanCreate} />
           <RemoveButton size="small" onClick={handleRemove} />
           <MoreVertButton size="small" onClick={Popover.show} />

@@ -20,19 +20,19 @@ const usePlanFile = (id: string) => {
 
 type Props = {
   file: PlanFileEntity
+  onOpen: (id: string) => void
   onCopy: (id: string) => void
   onRemove: (id: string) => void
-  onSelect?: (id: string) => void
 } & Pick<FileLabelProps, "onMove" | "isParentOf">
 
-const PlanFileLabel: React.FCX<Props> = ({ className, file, onCopy, onRemove, onSelect, onMove, isParentOf }) => {
+const PlanFileLabel: React.FCX<Props> = ({ className, file, onOpen, onCopy, onRemove, onMove, isParentOf }) => {
   const { plan } = usePlanFile(file.id)
   const Popover = usePopover()
 
   if (!plan) return null
 
   const handleOpen = () => {
-    onSelect?.(file.id)
+    onOpen(file.id)
   }
 
   const handleCopy = () => {
