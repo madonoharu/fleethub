@@ -2,9 +2,9 @@ import React from "react"
 import styled from "styled-components"
 
 import { Flexbox } from "../../../components"
-import { FileEntity, isStatic } from "../../../store"
-
-import { useDrop, useDrag } from "react-dnd"
+import { FileEntity } from "../../../store"
+import { useDrag, useDrop } from "../../../hooks"
+import { useForkRef } from "@material-ui/core"
 
 const FileLabelAction = styled.div`
   display: none;
@@ -50,23 +50,28 @@ const FileLabel: React.FCX<FileLabelProps> = ({
     isParentOf,
   }
 
-  const [, dragRef] = useDrag({ item, canDrag: canDrag && !isStatic(file) })
-  const [isOver, dropRef] = useDrop({
-    accept: item.type,
-
-    canDrop: (dragItem: typeof item) => dragItem.file !== file && !dragItem.isParentOf(file),
-
-    drop: (dragItem) => onMove?.(dragItem.file.id, file.id),
-
-    collect: (monitor) => monitor.isOver(),
+  const dragRef = useDrag({
+    item,
+    canDrag,
+    dragLayer: (
+      <Flexbox className={className}>
+        {icon}
+        <FileLabelText onClick={onClick}>{text}</FileLabelText>
+        <FileLabelAction onClick={handleActionClick}>{action}</FileLabelAction>
+      </Flexbox>
+    ),
   })
 
+  const dropRef = useDrop({
+    accept: item.type,
+    canDrop: (dragItem: typeof item) => dragItem.file !== file && !dragItem.isParentOf(file),
+    drop: (dragItem) => onMove?.(dragItem.file.id, file.id),
+  })
+
+  const ref = useForkRef(dragRef, dropRef)
+
   return (
-    <Flexbox
-      ref={(node) => dragRef(dropRef(node as Element))}
-      style={isOver ? { borderBottom: "solid 1px", marginBottom: -1 } : undefined}
-      className={className}
-    >
+    <Flexbox ref={ref} className={className}>
       {icon}
       <FileLabelText onClick={onClick}>{text}</FileLabelText>
       <FileLabelAction onClick={handleActionClick}>{action}</FileLabelAction>
@@ -80,5 +85,10 @@ export default styled(FileLabel)`
 
   :hover ${FileLabelAction} {
     display: block;
+  }
+
+  &.droppable {
+    border-bottom: solid 1px;
+    margin-bottom: -1px;
   }
 `
