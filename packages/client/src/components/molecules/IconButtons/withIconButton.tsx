@@ -20,7 +20,7 @@ const withIconButton = (WrappedIcon: React.FC) => {
       </IconButton>
     )
 
-    if (title) {
+    if (title && !iconButonProps.disabled) {
       return (
         <Tooltip title={title} {...tooltipProps}>
           {WrappedButton}
