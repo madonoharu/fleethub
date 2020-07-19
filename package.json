@@ -46,7 +46,7 @@
     "@types/fs-extra": "^9.0.1",
     "@types/imagemin": "^7.0.0",
     "@types/imagemin-webp": "^5.1.0",
-    "@types/jest": "^26.0.4",
+    "@types/jest": "^26.0.5",
     "@types/lodash-es": "^4.17.3",
     "@types/node": "^14.0.23",
     "@types/signale": "^1.4.1",
@@ -54,7 +54,7 @@
     "@typescript-eslint/parser": "^3.6.1",
     "axios": "^0.19.2",
     "babel-jest": "^26.1.0",
-    "eslint": "^7.3.1",
+    "eslint": "^7.5.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.3",
@@ -68,9 +68,9 @@
     "lodash-es": "^4.17.15",
     "prettier": "^2.0.5",
     "signale": "^1.4.0",
-    "ts-jest": "^26.1.2",
+    "ts-jest": "^26.1.3",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.7"
   },
   "engines": {
     "npm": "Please use yarn"
