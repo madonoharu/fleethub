@@ -3,7 +3,7 @@ import styled, { css } from "styled-components"
 
 import { Drawer } from "@material-ui/core"
 
-import { Explorer } from "../../../components"
+import FileTreeView from "../FileTreeView"
 
 const appBarHeight = 32
 const drawerWidth = 8 * 50
@@ -36,7 +36,7 @@ const ExplorerDrawer: React.FC<Props> = ({ open, children }) => {
   return (
     <>
       <StyledDrawer variant="persistent" open={open}>
-        <Explorer />
+        <FileTreeView />
       </StyledDrawer>
       <Container $open={open}>{children}</Container>
     </>

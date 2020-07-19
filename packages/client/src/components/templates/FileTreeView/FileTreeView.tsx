@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { Update } from "@reduxjs/toolkit"
+import { useDispatch, useSelector } from "react-redux"
 
 import { Container, Button } from "@material-ui/core"
 import TreeView from "@material-ui/lab/TreeView"
@@ -10,33 +11,15 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import AddIcon from "@material-ui/icons/Add"
 
-import { isDirectory, filesSlice, flatFile, FileEntity, FilesState } from "../../../store"
+import { isDirectory, filesSlice, flatFile, FileEntity, FilesState, selectFilesState } from "../../../store"
 
 import FolderLabel from "./FolderLabel"
 import PlanFileLabel from "./PlanFileLabel"
 
-export type FileTreeViewProps = {
-  state: FilesState
-  onFileOpen?: (id: string) => void
-  onFileUpdate?: (update: Update<FileEntity>) => void
-  onPlanCreate?: (...args: Parameters<typeof filesSlice.actions.createPlan>) => void
-  onFolderCreate?: (...args: Parameters<typeof filesSlice.actions.createFolder>) => void
-  onCopy?: (id: string) => void
-  onRemove?: (id: string) => void
-  onMove?: (...args: Parameters<typeof filesSlice.actions.move>) => void
-}
-const FileTreeView: React.FCX<FileTreeViewProps> = ({
-  className,
-  state,
-  onFileOpen,
-  onFileUpdate,
-  onPlanCreate,
-  onFolderCreate,
-  onCopy,
-  onRemove,
-  onMove,
-}) => {
-  const { entities, rootIds } = state
+const FileTreeView: React.FCX = ({ className }) => {
+  const dispatch = useDispatch()
+  const { entities, rootIds } = useSelector(selectFilesState)
+
   const [expanded, setExpanded] = React.useState<string[]>([])
   const [selected, setSelected] = React.useState<string>("")
 
@@ -53,53 +36,24 @@ const FileTreeView: React.FCX<FileTreeViewProps> = ({
     setExpanded((expanded) => (expanded.includes(id) ? expanded : [...expanded, id]))
   }
 
-  const handlePlanCreate = (to?: string) => {
-    onPlanCreate?.({ to })
-    expandFolder(to)
+  const handlePlanCreate = () => {
+    dispatch(filesSlice.actions.createPlan({}))
   }
 
-  const handleFolderCreate = (to?: string) => {
-    onFolderCreate?.(to)
-    expandFolder(to)
+  const handleFolderCreate = () => {
+    dispatch(filesSlice.actions.createFolder())
   }
-
-  const handleCopy = (id: string) => onCopy?.(id)
-
-  const handleMove = (id: string, to?: string) => {
-    onMove?.({ id, to })
-    expandFolder(to)
-  }
-
-  const handleRemove = (id: string) => onRemove?.(id)
 
   const renderFile = (id: string) => {
     const file = entities[id]
     if (!file) return null
 
-    const isParentOf = (dragFile: FileEntity) => flatFile(entities, file.id).includes(dragFile)
-
     let label: React.ReactNode
 
-    const baseProps = {
-      isParentOf,
-      onOpen: (id: string) => onFileOpen?.(id),
-      onCopy: handleCopy,
-      onMove: handleMove,
-      onRemove: handleRemove,
-    }
-
     if (file.type === "plan") {
-      label = <PlanFileLabel file={file} {...baseProps} />
+      label = <PlanFileLabel file={file} />
     } else if (file.type === "folder") {
-      label = (
-        <FolderLabel
-          file={file}
-          onFileUpdate={(arg) => onFileUpdate?.(arg)}
-          onPlanCreate={handlePlanCreate}
-          onFolderCreate={handleFolderCreate}
-          {...baseProps}
-        />
-      )
+      label = <FolderLabel file={file} />
     }
 
     const children = isDirectory(file) ? file.children.map(renderFile) : null

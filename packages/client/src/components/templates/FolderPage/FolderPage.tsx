@@ -6,7 +6,7 @@ import { Container, Button } from "@material-ui/core"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import AddIcon from "@material-ui/icons/Add"
 
-import { Directory, filesSlice, appSlice, FolderEntity } from "../../../store"
+import { filesSlice, FolderEntity } from "../../../store"
 
 import FileListItem from "./FileListItem"
 import { TextField } from "../../atoms"
