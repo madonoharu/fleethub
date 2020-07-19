@@ -8,7 +8,7 @@ import AddIcon from "@material-ui/icons/Add"
 
 import { filesSlice, FolderEntity } from "../../../store"
 
-import FileListItem from "./FileListItem"
+import FolderPageItem from "./FolderPageItem"
 import { TextField } from "../../atoms"
 
 type Props = {
@@ -40,7 +40,7 @@ const FolderPage: React.FC<Props> = ({ folder }) => {
         フォルダを作成
       </Button>
       {folder.children.map((id) => (
-        <FileListItem key={id} id={id} parent={folder.id} />
+        <FolderPageItem key={id} id={id} parent={folder.id} />
       ))}
     </Container>
   )
