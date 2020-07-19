@@ -21,3 +21,6 @@ export { default as FleetTypeSelect } from "./FleetTypeSelect"
 export { default as FormationSelect } from "./FormationSelect"
 export { default as DirectoryBreadcrumbs } from "./DirectoryBreadcrumbs"
 export { default as Swappable } from "./Swappable"
+
+export { default as DraggableFile } from "./DraggableFile"
+export * from "./DraggableFile"
