@@ -4,38 +4,33 @@ import { getEmptyImage } from "react-dnd-html5-backend"
 
 import { useDragLayerRef } from "./useDragLayerRef"
 
-type DragSpec<DragObject extends DragObjectWithType, DropResult, CollectedProps> = Omit<
-  DragSourceHookSpec<DragObject, DropResult, CollectedProps>,
+export type DragSpec<DragObject extends DragObjectWithType = DragObjectWithType> = Omit<
+  DragSourceHookSpec<DragObject, unknown, boolean>,
   "collect"
 > & {
   dragLayer?: React.ReactNode
 }
 
-export const useDrag = <DragObject extends DragObjectWithType, DropResult, CollectedProps>({
-  dragLayer,
-  ...dndSpec
-}: DragSpec<DragObject, DropResult, CollectedProps>) => {
+export const useDrag = <DragObject extends DragObjectWithType>({ dragLayer, ...dndSpec }: DragSpec<DragObject>) => {
   const ref = useRef<HTMLDivElement>()
 
   const [isDragging, dragRef, preview] = useDndDrag({
-    collect: (monitor) => monitor.isDragging(),
     ...dndSpec,
+    collect: (monitor) => monitor.isDragging(),
   })
 
   const dragLayerRef = useDragLayerRef()
 
   useEffect(() => {
-    if (dragLayer) {
-      preview(getEmptyImage())
-    }
-  }, [dragLayer, preview])
+    preview(getEmptyImage())
+  }, [preview])
 
   useEffect(() => {
     const node = ref.current
     if (!node || !isDragging) return
 
     if (dragLayer) {
-      dragLayerRef.current = dragLayer
+      dragLayerRef.children = dragLayer
       dragLayerRef.width = node.clientWidth
       dragLayerRef.height = node.clientHeight
     }
@@ -44,7 +39,7 @@ export const useDrag = <DragObject extends DragObjectWithType, DropResult, Colle
 
     return () => {
       node.classList.remove("dragging")
-      dragLayerRef.current = null
+      dragLayerRef.children = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragging])
