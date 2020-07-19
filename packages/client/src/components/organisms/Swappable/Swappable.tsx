@@ -22,11 +22,11 @@ type SwappableProps<T> = SwapSpec<T> & {
   children?: React.ReactNode
 }
 
-type Component = {
+type SwappableComponentType = {
   <T>(props: SwappableProps<T>): React.ReactElement
 }
 
-const Swappable: Component = ({ className, style, type, state, setState, canDrag, children }) => {
+const Swappable: SwappableComponentType = ({ className, style, type, state, setState, canDrag, children }) => {
   const elem = (
     <Container className={className} style={style}>
       {children}
@@ -40,6 +40,7 @@ const Swappable: Component = ({ className, style, type, state, setState, canDrag
     canDrag,
     dragLayer: elem,
   })
+
   return React.cloneElement(elem, { ref })
 }
 
