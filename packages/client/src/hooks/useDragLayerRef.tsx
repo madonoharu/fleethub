@@ -23,7 +23,8 @@ const wait = 50
 
 const DragLayerBox = styled.div`
   backdrop-filter: blur(4px);
-  transition: transform 100ms ease-out;
+  transition: transform 50ms linear;
+  width: transition;
   box-shadow: 0px 0px 2px 2px ${(props) => props.theme.palette.primary.light}, ${(props) => props.theme.shadows[12]};
   border-radius: 4px;
 `
