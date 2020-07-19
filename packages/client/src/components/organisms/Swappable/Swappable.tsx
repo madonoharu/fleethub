@@ -1,19 +1,7 @@
 import React from "react"
 import styled from "styled-components"
-import { colors } from "@material-ui/core"
 
 import { useSwap, SwapSpec } from "../../../hooks"
-
-const Container = styled.div`
-  &.droppable {
-    border-radius: 4px;
-    box-shadow: 0px 0px 2px 2px ${colors.yellow[300]};
-  }
-
-  &.dragging {
-    opacity: 0.3;
-  }
-`
 
 type SwappableProps<T> = SwapSpec<T> & {
   className?: string
@@ -28,9 +16,9 @@ type SwappableComponentType = {
 
 const Swappable: SwappableComponentType = ({ className, style, type, state, setState, canDrag, children }) => {
   const elem = (
-    <Container className={className} style={style}>
+    <div className={className} style={style}>
       {children}
-    </Container>
+    </div>
   )
 
   const ref = useSwap({
@@ -44,4 +32,6 @@ const Swappable: SwappableComponentType = ({ className, style, type, state, setS
   return React.cloneElement(elem, { ref })
 }
 
-export default Swappable
+const Styled: SwappableComponentType = styled(Swappable)(({ theme }) => theme.swappable)
+
+export default Styled

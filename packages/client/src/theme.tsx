@@ -199,7 +199,19 @@ const darkAcrylic = isFirefox
       backdrop-filter: blur(8px);
     `
 
-const theme = { ...muiTheme, kc, acrylic }
+const swappable = css`
+  border-radius: 4px;
+
+  &.droppable {
+    box-shadow: 0px 0px 2px 2px ${colors.yellow[300]};
+  }
+
+  &.dragging {
+    opacity: 0.3;
+  }
+`
+
+const theme = { ...muiTheme, kc, acrylic, swappable }
 
 export type Theme = typeof theme
 
