@@ -6,20 +6,12 @@ import { Typography, ListItem, ListItemIcon, ListItemText, useForkRef } from "@m
 import FolderIcon from "@material-ui/icons/Folder"
 import DescriptionIcon from "@material-ui/icons/Description"
 
-import {
-  filesSelectors,
-  plansSelectors,
-  appSlice,
-  filesSlice,
-  FileEntity,
-  FolderEntity,
-  copyFile,
-  removeFile,
-} from "../../../store"
+import { filesSelectors, plansSelectors, appSlice, filesSlice, FileEntity, FolderEntity } from "../../../store"
 
-import { useFhSystem, useDrag, useDrop } from "../../../hooks"
-import { ShipBanner, ShareButton, CopyButton, RemoveButton, withIconButton } from "../../molecules"
+import { useFhSystem, useFile } from "../../../hooks"
+import { ShipBanner, ShareButton, CopyButton, RemoveButton } from "../../molecules"
 import { Flexbox } from "../../atoms"
+import { DraggableFile } from "../../organisms"
 
 const ShipsContainer = styled.div`
   overflow: hidden;
@@ -85,17 +77,16 @@ const renderFile = (file: FileEntity) => {
   return <FolderItem file={file} />
 }
 
-type FileListItemProps = {
+type FolderPageItemProps = {
   className?: string
   file: FileEntity
 
   onOpen?: () => void
-  onMove?: (dragId: string, dropId: string) => void
   onCopy?: () => void
   onRemove?: () => void
 }
 
-const FileListItem = React.forwardRef<HTMLElement, FileListItemProps>(
+const FolderPageItem = React.forwardRef<HTMLElement, FolderPageItemProps>(
   ({ className, file, onOpen, onCopy, onRemove }, ref) => {
     return (
       <StyledListItem className={className} innerRef={ref} onClick={onOpen} button divider>
@@ -110,7 +101,7 @@ const FileListItem = React.forwardRef<HTMLElement, FileListItemProps>(
   }
 )
 
-const StyledFileListItem = styled(FileListItem)`
+const StyledFolderPageItem = styled(FolderPageItem)`
   height: 48px;
   .MuiIconButton-root {
     display: none;
@@ -128,61 +119,21 @@ const StyledFileListItem = styled(FileListItem)`
   }
 `
 
-const DraggableFileListItem: React.FC<FileListItemProps> = (props) => {
-  const { file, onMove } = props
-  const item = { type: "file", file }
-
-  const dragRef = useDrag({ item, dragLayer: <StyledFileListItem {...props} /> })
-
-  const dropRef = useDrop({
-    accept: item.type,
-    canDrop: (dragItem: typeof item) => dragItem.file !== file,
-    drop: (dragItem) => onMove?.(dragItem.file.id, file.id),
-  })
-
-  const handleRef = useForkRef(dragRef, dropRef)
-
-  return <StyledFileListItem ref={handleRef} {...props} />
-}
-
 type ConnectedProps = {
   id: string
   parent: string
 }
 
-const FileListItemConnected: React.FC<ConnectedProps> = ({ id, parent }) => {
-  const dispatch = useDispatch()
-  const file = useSelector((state) => filesSelectors.selectById(state, id))
-
-  const handleMove = (id: string, to: string) => {
-    dispatch(filesSlice.actions.move({ id, to }))
-  }
+const FolderPageItemConnected: React.FC<ConnectedProps> = ({ id, parent }) => {
+  const { file, actions, canDrop } = useFile(id)
 
   if (!file) return null
 
-  const handleOpen = () => {
-    dispatch(appSlice.actions.openFile(id))
-  }
-
-  const handleCopy = () => {
-    dispatch(copyFile(id, parent))
-  }
-
-  const handleRemove = () => {
-    dispatch(removeFile(id))
-  }
-
   return (
-    <>
-      <DraggableFileListItem
-        file={file}
-        onOpen={handleOpen}
-        onMove={handleMove}
-        onCopy={handleCopy}
-        onRemove={handleRemove}
-      />
-    </>
+    <DraggableFile file={file} canDrop={canDrop} onDrop={actions.drop}>
+      <StyledFolderPageItem file={file} onOpen={actions.open} onCopy={actions.copy} onRemove={actions.remove} />
+    </DraggableFile>
   )
 }
 
-export default FileListItemConnected
+export default FolderPageItemConnected
