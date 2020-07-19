@@ -46,12 +46,9 @@ export const createStore = () => {
   const store = configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware({
-      thunk: {
-        extraArgument,
-      },
-      serializableCheck: {
-        ignoredActions,
-      },
+      thunk: { extraArgument },
+      immutableCheck: false,
+      serializableCheck: false,
     }),
   })
 
