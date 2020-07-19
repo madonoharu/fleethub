@@ -1,11 +1,11 @@
-import React, { createContext, MutableRefObject, useContext } from "react"
+import React, { createContext, useContext } from "react"
 import { useDragLayer, DragLayerMonitor } from "react-dnd"
 import { throttle } from "lodash-es"
 import styled from "styled-components"
 
-type DragLayerRef = MutableRefObject<React.ReactNode> & { width?: number; height?: number }
+type DragLayerRef = { children?: React.ReactNode; width?: number; height?: number; html?: HTMLElement }
 
-export const DragLayerRefContext = createContext<DragLayerRef>({ current: null })
+export const DragLayerRefContext = createContext<DragLayerRef>({})
 
 export const useDragLayerRef = () => useContext(DragLayerRefContext)
 
@@ -44,18 +44,18 @@ const DragLayer: React.FC = () => {
     return getStyle(monitor)
   })
 
-  const { current, width, height } = useDragLayerRef()
+  const { children, width, height } = useDragLayerRef()
 
-  if (!style || !current) return null
+  if (!style || !children) return null
 
   return (
     <DragLayerContainer>
-      <DragLayerBox style={{ ...style, width, height }}>{current}</DragLayerBox>
+      <DragLayerBox style={{ ...style, width, height }}>{children}</DragLayerBox>
     </DragLayerContainer>
   )
 }
 
-const initalState = { current: null }
+const initalState = {}
 
 export const DragLayerProvider: React.FC = ({ children }) => {
   return (
