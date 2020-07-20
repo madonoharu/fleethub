@@ -75,6 +75,20 @@ const getDirectoryChildren = (state: FilesState, id: ParentKey): string[] => {
   return parent?.children || state.rootIds
 }
 
+const findDirectory = (state: FilesState, id: string) => {
+  const dir = Object.values(state.entities).find(
+    (file): file is Directory => isDirectory(file) && file.children.includes(id)
+  )
+
+  return dir
+}
+
+const insert = (state: FilesState, id: string, to: string) => {
+  const children = getDirectoryChildren(state, to)
+  const index = children.indexOf(to)
+  children.splice(index + 1, 0, id)
+}
+
 const getTopFiles = (files: FileEntity[]) => {
   const allChildren = files.filter(isDirectory).flatMap((folder) => folder.children)
   return files.filter((file) => !allChildren.includes(file.id))
@@ -146,10 +160,20 @@ export const filesSlice = createSlice({
     move: (state, { payload: { id, to = "root" } }: PayloadAction<{ id: string; to?: string }>) => {
       removeFromChildren(state, [id])
 
-      const targetChildren = getDirectoryChildren(state, to)
+      if (to === "root") {
+        state.rootIds.push(id)
+        return
+      }
 
-      const index = targetChildren.indexOf(to)
-      targetChildren.splice(index + 1, 0, id)
+      const file = state.entities[to]
+      if (!file) return
+
+      if (isDirectory(file)) {
+        file.children.push(id)
+        return
+      }
+
+      insert(state, id, to)
     },
 
     remove: (state, { payload }: PayloadAction<string[]>) => {
