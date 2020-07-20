@@ -1,9 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import { Update } from "@reduxjs/toolkit"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Container, Button } from "@material-ui/core"
+import { Button } from "@material-ui/core"
 import TreeView from "@material-ui/lab/TreeView"
 import TreeItem from "@material-ui/lab/TreeItem"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
@@ -11,7 +10,9 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import AddIcon from "@material-ui/icons/Add"
 
-import { isDirectory, filesSlice, flatFile, FileEntity, FilesState, selectFilesState } from "../../../store"
+import { isDirectory, filesSlice, FileEntity, selectFilesState } from "../../../store"
+
+import { FileDropZone } from "../../organisms"
 
 import FolderLabel from "./FolderLabel"
 import PlanFileLabel from "./PlanFileLabel"
@@ -44,6 +45,10 @@ const FileTreeView: React.FCX = ({ className }) => {
     dispatch(filesSlice.actions.createFolder())
   }
 
+  const handleRootDrop = (file: FileEntity) => {
+    dispatch(filesSlice.actions.move({ id: file.id, to: "root" }))
+  }
+
   const renderFile = (id: string) => {
     const file = entities[id]
     if (!file) return null
@@ -66,7 +71,7 @@ const FileTreeView: React.FCX = ({ className }) => {
   }
 
   return (
-    <Container className={className}>
+    <FileDropZone className={className} onDrop={handleRootDrop} canDrop={() => true}>
       <Button onClick={() => handlePlanCreate()} startIcon={<AddIcon />}>
         編成を作成
       </Button>
@@ -83,8 +88,10 @@ const FileTreeView: React.FCX = ({ className }) => {
       >
         {rootIds.map(renderFile)}
       </TreeView>
-    </Container>
+    </FileDropZone>
   )
 }
 
-export default FileTreeView
+export default styled(FileTreeView)`
+  height: 100%;
+`
