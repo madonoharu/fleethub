@@ -19,7 +19,7 @@ import PlanFileLabel from "./PlanFileLabel"
 
 const FileTreeView: React.FCX = ({ className }) => {
   const dispatch = useDispatch()
-  const { entities, rootIds } = useSelector(selectFilesState)
+  const { entities, root } = useSelector(selectFilesState)
 
   const [expanded, setExpanded] = React.useState<string[]>([])
   const [selected, setSelected] = React.useState<string>("")
@@ -83,7 +83,7 @@ const FileTreeView: React.FCX = ({ className }) => {
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
       >
-        {rootIds.map(renderFile)}
+        {root.children.map(renderFile)}
       </TreeView>
       <FileDropZone className={className} onDrop={handleRootDrop} canDrop={() => true} />
     </div>

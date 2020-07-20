@@ -11,7 +11,7 @@ import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
 
 import { getEntites } from "./getEntites"
-import { uniq } from "@fleethub/utils"
+import { uniq, isNonNullable } from "@fleethub/utils"
 
 export type PlanStateWithId = PlanState & { id: string }
 
@@ -47,44 +47,38 @@ export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = ada
   (state) => getEntites(state).files
 )
 
-const initialRootIds: string[] = []
-const initialTempIds: string[] = []
+const initalRoot: FolderEntity = {
+  id: "root",
+  type: "folder",
+  name: "ルート",
+  children: [],
+}
 
 const initialState = adapter.getInitialState({
-  rootIds: initialRootIds,
-  tempIds: initialTempIds,
+  root: initalRoot,
 })
 
 export type FilesState = typeof initialState
 
 export const isDirectory = (file?: FileEntity): file is Directory => Boolean(file && "children" in file)
 
-const getDirectoryChildren = (state: FilesState, id: ParentKey): string[] => {
-  if (id === "root") return state.rootIds
-  if (id === "temp") return state.tempIds
+const getParentFolder = (state: FilesState, id: ParentKey): FolderEntity => {
+  if (id === "root") return state.root
 
   const file = state.entities[id]
-  if (!file) return state.rootIds
+  if (!file) return state.root
 
-  if (isDirectory(file)) return file.children
+  if (isDirectory(file)) return file
 
   const parent = Object.values(state.entities)
     .filter(isDirectory)
     .find((dir) => dir.children.includes(file.id))
 
-  return parent?.children || state.rootIds
-}
-
-const findDirectory = (state: FilesState, id: string) => {
-  const dir = Object.values(state.entities).find(
-    (file): file is Directory => isDirectory(file) && file.children.includes(id)
-  )
-
-  return dir
+  return parent || state.root
 }
 
 const insert = (state: FilesState, id: string, to: string) => {
-  const children = getDirectoryChildren(state, to)
+  const { children } = getParentFolder(state, to)
   const index = children.indexOf(to)
   children.splice(index + 1, 0, id)
 }
@@ -95,22 +89,22 @@ const getTopFiles = (files: FileEntity[]) => {
 }
 
 const addChildren = (state: FilesState, to: ParentKey, children: string[]) => {
-  const dirChildren = getDirectoryChildren(state, to)
-  const next = uniq([...dirChildren, ...children])
-  dirChildren.splice(0, dirChildren.length, ...next)
+  const parent = getParentFolder(state, to)
+  parent.children = uniq([...parent.children, ...children])
 }
+
+const getFile = (state: FilesState, id: string) => (id === "root" ? state.root : state.entities[id])
+
+const getAllFiles = (state: FilesState) => [state.root, ...Object.values(state.entities)].filter(isNonNullable)
 
 const removeFromChildren = (state: FilesState, ids: string[]) => {
   const filterFn = (child: string) => !ids.includes(child)
 
-  Object.values(state.entities)
+  getAllFiles(state)
     .filter(isDirectory)
-    .forEach((folder) => {
-      folder.children = folder.children.filter(filterFn)
+    .forEach((dir) => {
+      dir.children = dir.children.filter(filterFn)
     })
-
-  state.rootIds = state.rootIds.filter(filterFn)
-  state.tempIds = state.tempIds.filter(filterFn)
 }
 
 const addFiles = (state: FilesState, files: FileEntity[], to: ParentKey = "root") => {
@@ -160,12 +154,7 @@ export const filesSlice = createSlice({
     move: (state, { payload: { id, to = "root" } }: PayloadAction<{ id: string; to?: string }>) => {
       removeFromChildren(state, [id])
 
-      if (to === "root") {
-        state.rootIds.push(id)
-        return
-      }
-
-      const file = state.entities[to]
+      const file = getFile(state, to)
       if (!file) return
 
       if (isDirectory(file)) {
