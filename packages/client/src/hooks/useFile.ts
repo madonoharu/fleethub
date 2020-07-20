@@ -40,7 +40,13 @@ export const useFile = (id: string) => {
     return { open, drop, copy, remove, createPlan, createFolder }
   }, [dispatch, id])
 
-  const canDrop = (dragFile: FileEntity) => !parents.includes(dragFile) && dragFile !== file
+  const canDrop = (dragFile: FileEntity) => {
+    if (dragFile === file) return false
+
+    if (isDirectory(file) && file.children.includes(dragFile.id)) return false
+
+    return !parents.includes(dragFile)
+  }
 
   return { file, actions, parents, canDrop }
 }
