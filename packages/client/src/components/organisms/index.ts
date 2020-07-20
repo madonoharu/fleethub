@@ -24,3 +24,5 @@ export { default as Swappable } from "./Swappable"
 
 export { default as DraggableFile } from "./DraggableFile"
 export * from "./DraggableFile"
+
+export { default as FileDropZone } from "./FileDropZone"
