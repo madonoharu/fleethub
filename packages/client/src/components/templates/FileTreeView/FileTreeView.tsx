@@ -32,11 +32,6 @@ const FileTreeView: React.FCX = ({ className }) => {
     setSelected(id)
   }
 
-  const expandFolder = (id?: string) => {
-    if (!id) return
-    setExpanded((expanded) => (expanded.includes(id) ? expanded : [...expanded, id]))
-  }
-
   const handlePlanCreate = () => {
     dispatch(filesSlice.actions.createPlan({}))
   }
@@ -45,8 +40,8 @@ const FileTreeView: React.FCX = ({ className }) => {
     dispatch(filesSlice.actions.createFolder())
   }
 
-  const handleRootDrop = (file: FileEntity) => {
-    dispatch(filesSlice.actions.move({ id: file.id, to: "root" }))
+  const handleRootDrop = ({ id }: FileEntity) => {
+    dispatch(filesSlice.actions.move({ id, to: "root" }))
   }
 
   const renderFile = (id: string) => {
@@ -71,13 +66,15 @@ const FileTreeView: React.FCX = ({ className }) => {
   }
 
   return (
-    <FileDropZone className={className} onDrop={handleRootDrop} canDrop={() => true}>
-      <Button onClick={() => handlePlanCreate()} startIcon={<AddIcon />}>
-        編成を作成
-      </Button>
-      <Button onClick={() => handleFolderCreate()} startIcon={<CreateNewFolderIcon />}>
-        フォルダを作成
-      </Button>
+    <div className={className}>
+      <div>
+        <Button onClick={() => handlePlanCreate()} startIcon={<AddIcon />}>
+          編成を作成
+        </Button>
+        <Button onClick={() => handleFolderCreate()} startIcon={<CreateNewFolderIcon />}>
+          フォルダを作成
+        </Button>
+      </div>
       <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
@@ -88,10 +85,13 @@ const FileTreeView: React.FCX = ({ className }) => {
       >
         {rootIds.map(renderFile)}
       </TreeView>
-    </FileDropZone>
+      <FileDropZone className={className} onDrop={handleRootDrop} canDrop={() => true} />
+    </div>
   )
 }
 
 export default styled(FileTreeView)`
+  display: flex;
+  flex-direction: column;
   height: 100%;
 `
