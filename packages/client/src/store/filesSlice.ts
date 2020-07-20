@@ -107,14 +107,15 @@ const removeFromChildren = (state: FilesState, ids: string[]) => {
     })
 }
 
-const addFiles = (state: FilesState, files: FileEntity[], to: ParentKey = "root") => {
+const addFiles = (state: FilesState, files: FileEntity[], to: ParentKey) => {
   adapter.addMany(state, files)
 
   const topFileIds = getTopFiles(files).map((file) => file.id)
   addChildren(state, to, topFileIds)
 }
 
-const set = (state: FilesState, { payload: { files, to } }: PayloadAction<FhEntities>) => addFiles(state, files, to)
+const set = (state: FilesState, { payload: { files, to = "root" } }: PayloadAction<FhEntities>) =>
+  addFiles(state, files, to)
 
 export const filesSlice = createSlice({
   name: "entities/files",
@@ -126,17 +127,16 @@ export const filesSlice = createSlice({
     import: set,
 
     createPlan: {
-      reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; to?: ParentKey }>) => {
+      reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; to: ParentKey }>) => {
         const file: PlanFileEntity = { id: payload.plan.id, type: "plan" }
-
         addFiles(state, [file], payload.to)
       },
-      prepare: ({ plan, to }: { plan?: PlanState; to?: ParentKey }) => ({
+      prepare: ({ plan, to }: { plan?: PlanState; to: ParentKey }) => ({
         payload: { plan: { ...plan, id: nanoid() }, to },
       }),
     },
 
-    createFolder: (state, { payload }: PayloadAction<string | undefined>) => {
+    createFolder: (state, { payload }: PayloadAction<string>) => {
       const count = Object.values(state.entities).filter((file) => file?.type === "folder").length + 1
 
       const newFolder: FolderEntity = {
@@ -151,7 +151,7 @@ export const filesSlice = createSlice({
 
     update: adapter.updateOne,
 
-    move: (state, { payload: { id, to = "root" } }: PayloadAction<{ id: string; to?: string }>) => {
+    move: (state, { payload: { id, to } }: PayloadAction<{ id: string; to: string }>) => {
       removeFromChildren(state, [id])
 
       const file = getFile(state, to)

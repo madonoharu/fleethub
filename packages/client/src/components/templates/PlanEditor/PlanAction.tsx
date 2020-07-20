@@ -79,7 +79,7 @@ const PlanAction: React.FCX<Props> = ({ className, plan, update }) => {
   }
 
   const handleImport = (plan: Plan) => {
-    dispatch(filesSlice.actions.createPlan({ plan: plan.state }))
+    dispatch(filesSlice.actions.createPlan({ plan: plan.state, to: "root" }))
   }
 
   return (

@@ -33,11 +33,11 @@ const FileTreeView: React.FCX = ({ className }) => {
   }
 
   const handlePlanCreate = () => {
-    dispatch(filesSlice.actions.createPlan({}))
+    dispatch(filesSlice.actions.createPlan({ to: "root" }))
   }
 
   const handleFolderCreate = () => {
-    dispatch(filesSlice.actions.createFolder())
+    dispatch(filesSlice.actions.createFolder("root"))
   }
 
   const handleRootDrop = ({ id }: FileEntity) => {
