@@ -4,15 +4,14 @@ import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { ActionCreators } from "redux-undo"
 
-import { AppBar as MuiAppBar, Button, Drawer } from "@material-ui/core"
+import { AppBar as MuiAppBar, Button } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 import FolderIcon from "@material-ui/icons/Folder"
 import FolderOpenIcon from "@material-ui/icons/FolderOpen"
 
-import { Explorer, withIconButton } from "../../../components"
+import { withIconButton } from "../../../components"
 import { useModal } from "../../../hooks"
-import { appSlice } from "../../../store"
 
 import LanguageSelect from "./LanguageSelect"
 import ShipList from "../ShipList"
