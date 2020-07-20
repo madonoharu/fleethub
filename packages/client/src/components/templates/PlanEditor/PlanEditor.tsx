@@ -39,4 +39,5 @@ const PlanEditor: React.FCX<Props> = ({ className, planId }) => {
 
 export default styled(PlanEditor)`
   width: ${(props) => props.theme.breakpoints.width("md")}px;
+  margin: 0 auto;
 `
