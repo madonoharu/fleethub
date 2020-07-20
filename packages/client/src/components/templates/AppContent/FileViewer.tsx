@@ -1,8 +1,5 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
-import styled from "styled-components"
-
-import { Container } from "@material-ui/core"
 
 import { PlanEditor, DirectoryBreadcrumbs } from "../../../components"
 import { openFirstPlan, selectAppState, filesSelectors } from "../../../store"
@@ -27,7 +24,7 @@ const FileViewer: React.FC = () => {
   return (
     <>
       <DirectoryBreadcrumbs file={file} />
-      <Container>{file.type === "plan" ? <PlanEditor planId={file.id} /> : <FolderPage folder={file} />}</Container>
+      {file.type === "plan" ? <PlanEditor planId={file.id} /> : <FolderPage folder={file} />}
     </>
   )
 }
