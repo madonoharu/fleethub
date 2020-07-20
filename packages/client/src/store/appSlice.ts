@@ -47,6 +47,6 @@ export const openFirstPlan = (): AppThunk => (dispatch, getState) => {
   if (planIds.length) {
     dispatch(appSlice.actions.openFile(planIds[planIds.length - 1] as string))
   } else {
-    dispatch(filesSlice.actions.createPlan({}))
+    dispatch(filesSlice.actions.createPlan({ to: "root" }))
   }
 }
