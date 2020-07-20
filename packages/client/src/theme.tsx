@@ -1,10 +1,10 @@
 import React from "react"
 
-import { createMuiTheme, colors, ThemeProvider as MuiThemeProvider, CssBaseline } from "@material-ui/core"
+import { createMuiTheme, colors as muiColors, ThemeProvider as MuiThemeProvider, CssBaseline } from "@material-ui/core"
 import createPalette from "@material-ui/core/styles/createPalette"
 import { css, createGlobalStyle, ThemeProvider as StyledThemeProvider } from "styled-components"
 
-const { blue, cyan, pink, grey, lightBlue } = colors
+const { blue, cyan, pink, grey, lightBlue } = muiColors
 
 const fontFamily = `
 -apple-system, 
@@ -125,37 +125,37 @@ const muiTheme = createMuiTheme({
 })
 
 const kcPalette = {
-  firepower: colors.pink[300],
-  torpedo: colors.blue[300],
-  antiAir: colors.green[300],
-  asw: colors.cyan[300],
-  bombing: colors.pink[300],
-  accuracy: colors.deepOrange[200],
-  evasion: colors.lightBlue[300],
-  antiBomber: colors.deepOrange[200],
-  interception: colors.lightBlue[300],
-  los: colors.lime[300],
-  armor: colors.amber[300],
-  range: colors.purple[200],
-  radius: colors.lightGreen[300],
+  firepower: muiColors.pink[300],
+  torpedo: muiColors.blue[300],
+  antiAir: muiColors.green[300],
+  asw: muiColors.cyan[300],
+  bombing: muiColors.pink[300],
+  accuracy: muiColors.deepOrange[200],
+  evasion: muiColors.lightBlue[300],
+  antiBomber: muiColors.deepOrange[200],
+  interception: muiColors.lightBlue[300],
+  los: muiColors.lime[300],
+  armor: muiColors.amber[300],
+  range: muiColors.purple[200],
+  radius: muiColors.lightGreen[300],
 
   maxHp: muiPalette.text.primary,
   speed: muiPalette.text.primary,
-  luck: colors.yellow[300],
+  luck: muiColors.yellow[300],
 
   stars: cyan[400],
   bonus: lightBlue[300],
   increase: muiPalette.secondary.light,
 
-  shelling: colors.orange[500],
-  night: colors.indigo[200],
+  shelling: muiColors.orange[500],
+  night: muiColors.indigo[200],
 
   airState: {
-    AirSupremacy: colors.green[300],
-    AirSuperiority: colors.blue[300],
-    AirParity: colors.orange[300],
-    AirDenial: colors.pink[300],
-    AirIncapability: colors.red[300],
+    AirSupremacy: muiColors.green[300],
+    AirSuperiority: muiColors.blue[300],
+    AirParity: muiColors.orange[300],
+    AirDenial: muiColors.pink[300],
+    AirIncapability: muiColors.red[300],
   },
 }
 
@@ -199,11 +199,15 @@ const darkAcrylic = isFirefox
       backdrop-filter: blur(8px);
     `
 
+const colors = {
+  droppable: muiColors.yellow[300],
+}
+
 const swappable = css`
   border-radius: 4px;
 
   &.droppable {
-    box-shadow: 0px 0px 2px 2px ${colors.yellow[300]};
+    box-shadow: 0px 0px 2px 2px ${colors.droppable};
   }
 
   &.dragging {
@@ -211,7 +215,7 @@ const swappable = css`
   }
 `
 
-const theme = { ...muiTheme, kc, acrylic, swappable }
+const theme = { ...muiTheme, kc, acrylic, swappable, colors }
 
 export type Theme = typeof theme
 
