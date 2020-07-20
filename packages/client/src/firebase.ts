@@ -73,8 +73,6 @@ const getUrlParam = (key: string) => {
 }
 
 export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
-  const url = new URL(location.href)
-
   const fileId = getUrlParam("storage-file")
   if (fileId) {
     const data = await fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}`).then((res) =>
@@ -83,7 +81,7 @@ export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
     return data
   }
 
-  const entitiesParam = url.searchParams.get("entities")
+  const entitiesParam = getUrlParam("entities")
   if (entitiesParam) {
     try {
       return JSON.parse(decompressFromEncodedURIComponent(entitiesParam))
