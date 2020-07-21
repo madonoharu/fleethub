@@ -6,7 +6,7 @@ import { Drawer } from "@material-ui/core"
 import FileTreeView from "../FileTreeView"
 
 const appBarHeight = 32
-const drawerWidth = 8 * 50
+const drawerWidth = 8 * 40
 
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paper {
