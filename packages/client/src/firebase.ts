@@ -4,7 +4,7 @@ import { PlanState } from "@fleethub/core"
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string-uri-fix"
 import { nanoid } from "@reduxjs/toolkit"
 
-import { FhEntities } from "./store"
+import { FilesData } from "./store"
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",
@@ -24,7 +24,7 @@ firebase.initializeApp(firebaseConfig)
 // export const login = () => firebase.auth().signInWithPopup(provider)
 // export const logout = () => firebase.auth().signOut()
 
-const publicStorageRef = firebase.storage().ref("public")
+export const publicStorageRef = firebase.storage().ref("public")
 
 export const shorten = async (url: string, domain: "fleethub") => {
   const apiKey = firebaseConfig.apiKey
@@ -72,7 +72,7 @@ const getUrlParam = (key: string) => {
   return value
 }
 
-export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
+export const parseUrlEntities = async (): Promise<FilesData | undefined> => {
   const fileId = getUrlParam("storage-file")
   if (fileId) {
     const data = await fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}`).then((res) =>
@@ -94,7 +94,7 @@ export const parseUrlEntities = async (): Promise<FhEntities | undefined> => {
   return
 }
 
-export const publishFiles = async (entities: FhEntities) => {
+export const publishFiles = async (entities: FilesData) => {
   const url = new URL("http://localhost:8000")
   url.searchParams.set("entities", compressToEncodedURIComponent(JSON.stringify(entities)))
 
@@ -114,7 +114,7 @@ export const publishFiles = async (entities: FhEntities) => {
 export const publishPlan = async (plan: PlanState) => {
   const id = nanoid()
   const url = await publishFiles({
-    entry: id,
+    id,
     files: [{ id, type: "plan" }],
     plans: [{ ...plan, id }],
   })
