@@ -1,29 +1,14 @@
 import React from "react"
 import styled from "styled-components"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 
-import { Breadcrumbs, Link } from "@material-ui/core"
+import { Breadcrumbs } from "@material-ui/core"
 import NavigateNextIcon from "@material-ui/icons/NavigateNext"
 
-import { FileEntity, plansSelectors, appSlice } from "../../../store"
+import { FileEntity, appSlice } from "../../../store"
 import { useFile } from "../../../hooks"
 
-const FileLink: React.FC<{ file: FileEntity }> = ({ file }) => {
-  const dispatch = useDispatch()
-  const name = useSelector((state) => {
-    if (file.type === "plan") {
-      return plansSelectors.selectById(state, file.id)?.name
-    }
-
-    return file.name
-  })
-
-  return (
-    <Link color="inherit" onClick={() => dispatch(appSlice.actions.openFile(file.id))}>
-      {name}
-    </Link>
-  )
-}
+import FileLink from "./FileLink"
 
 type Props = {
   file: FileEntity
@@ -32,10 +17,15 @@ type Props = {
 const DirectoryBreadcrumbs: React.FCX<Props> = ({ className, file }) => {
   const { parents } = useFile(file.id)
 
+  const dispatch = useDispatch()
+  const handleClick = (id: string) => {
+    dispatch(appSlice.actions.openFile(id))
+  }
+
   return (
     <Breadcrumbs className={className} separator={<NavigateNextIcon fontSize="small" />}>
       {parents.concat(file).map((file) => (
-        <FileLink key={file.id} file={file} />
+        <FileLink key={file.id} file={file} onClick={handleClick} />
       ))}
     </Breadcrumbs>
   )
