@@ -29,6 +29,7 @@ export const useFile = (id: string) => {
 
   const actions = useMemo(() => {
     const open = () => dispatch(appSlice.actions.openFile(id))
+    const update = (changes: Partial<FileEntity>) => dispatch(filesSlice.actions.update({ id, changes }))
     const copy = () => dispatch(copyFile(id))
     const remove = () => dispatch(removeFile(id))
 
@@ -37,7 +38,7 @@ export const useFile = (id: string) => {
 
     const drop = (dragFile: FileEntity) => dispatch(filesSlice.actions.move({ id: dragFile.id, to: id }))
 
-    return { open, drop, copy, remove, createPlan, createFolder }
+    return { open, update, drop, copy, remove, createPlan, createFolder }
   }, [dispatch, id])
 
   const canDrop = (dragFile: FileEntity) => {
