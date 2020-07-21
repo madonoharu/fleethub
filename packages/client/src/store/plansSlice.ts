@@ -3,14 +3,14 @@ import { PlanState } from "@fleethub/core"
 import { DefaultRootState } from "react-redux"
 
 import { filesSlice } from "./filesSlice"
-import { getEntites } from "./getEntites"
+import { selectPlansState } from "./selectors"
 import { makeActionMatcher } from "./makeActionMatcher"
 
 type PlanStateWithId = PlanState & { id: string }
 
 const plansAdapter = createEntityAdapter<PlanStateWithId>()
 export const plansSelectors: EntitySelectors<PlanStateWithId, DefaultRootState> = plansAdapter.getSelectors(
-  (state) => getEntites(state).plans
+  selectPlansState
 )
 
 export const plansSlice = createSlice({
