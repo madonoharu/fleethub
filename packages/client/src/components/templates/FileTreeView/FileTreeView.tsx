@@ -17,6 +17,8 @@ import { FileDropZone } from "../../organisms"
 import FolderLabel from "./FolderLabel"
 import PlanFileLabel from "./PlanFileLabel"
 
+const TransitionProps = { timeout: 150 }
+
 const FileTreeView: React.FCX = ({ className }) => {
   const dispatch = useDispatch()
   const { entities, root } = useSelector(selectFilesState)
@@ -59,7 +61,7 @@ const FileTreeView: React.FCX = ({ className }) => {
     const children = isDirectory(file) ? file.children.map(renderFile) : null
 
     return (
-      <TreeItem key={file.id} nodeId={file.id} label={label}>
+      <TreeItem key={file.id} nodeId={file.id} label={label} TransitionProps={TransitionProps}>
         {children}
       </TreeItem>
     )
@@ -94,4 +96,13 @@ export default styled(FileTreeView)`
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  .MuiTreeItem-label {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .MuiTreeItem-group {
+    margin-left: 12px;
+  }
 `
