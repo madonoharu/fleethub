@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { RootState, AppDispatch } from "./store"
-import { Theme } from "./theme"
+import { Theme } from "./styles"
 
 declare module "react" {
   type FCX<P = {}> = FC<P & { className?: string }>
