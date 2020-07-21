@@ -35,8 +35,8 @@ type FileId = string & { [fileIdNominality]?: never }
 
 export type ParentKey = FileId | "root" | "temp"
 
-export type FhEntities = {
-  entry: string
+export type FilesData = {
+  id: string
   files: FileEntity[]
   plans?: PlanStateWithId[]
   to?: string
@@ -112,7 +112,7 @@ const addFiles = (state: FilesState, files: FileEntity[], to: ParentKey) => {
   addChildren(state, to, topFileIds)
 }
 
-const set = (state: FilesState, { payload: { files, to = "root" } }: PayloadAction<FhEntities>) =>
+const set = (state: FilesState, { payload: { files, to = "root" } }: PayloadAction<FilesData>) =>
   addFiles(state, files, to)
 
 export const filesSlice = createSlice({
