@@ -27,6 +27,6 @@ const AntiAirCutinChip: React.FCX<Props> = ({ className, antiAirCutin }) => (
 export default styled(AntiAirCutinChip)`
   width: 48px;
   border-radius: 4px;
-  color: ${(props) => props.theme.kc.palette.antiAir};
-  border-color: ${(props) => props.theme.kc.palette.antiAir};
+  color: ${(props) => props.theme.colors.antiAir};
+  border-color: ${(props) => props.theme.colors.antiAir};
 `

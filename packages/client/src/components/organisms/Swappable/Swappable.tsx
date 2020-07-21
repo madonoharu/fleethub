@@ -32,6 +32,6 @@ const Swappable: SwappableComponentType = ({ className, style, type, state, setS
   return React.cloneElement(elem, { ref })
 }
 
-const Styled: SwappableComponentType = styled(Swappable)(({ theme }) => theme.swappable)
+const Styled: SwappableComponentType = styled(Swappable)(({ theme }) => theme.styles.swappable)
 
 export default Styled
