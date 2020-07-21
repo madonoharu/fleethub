@@ -9,9 +9,9 @@ import {
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
-
-import { getEntites } from "./getEntites"
 import { uniq, isNonNullable } from "@fleethub/utils"
+
+import { selectFilesState } from "./selectors"
 
 export type PlanStateWithId = PlanState & { id: string }
 
@@ -43,9 +43,7 @@ export type FhEntities = {
 }
 
 const adapter = createEntityAdapter<FileEntity>()
-export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = adapter.getSelectors(
-  (state) => getEntites(state).files
-)
+export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = adapter.getSelectors(selectFilesState)
 
 const initalRoot: FolderEntity = {
   id: "root",
