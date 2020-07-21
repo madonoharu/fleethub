@@ -3,13 +3,13 @@ import styled from "styled-components"
 import { BasicStatKey, ShipStats } from "@fleethub/core"
 
 import { StatIcon, Text } from "../../../components"
-import { withSign, getRangeName, getSpeedName } from "../../../utils"
+import { withSign } from "../../../utils"
 import { Flexbox } from "../../atoms"
 
 import ShipStatTooltip, { getDisplayedStr } from "./ShipStatTooltip"
 
 const BonusText = styled(Text)`
-  color: ${({ theme }) => theme.kc.palette.bonus};
+  color: ${({ theme }) => theme.colors.bonus};
   position: absolute;
   font-size: 10px;
   bottom: -3px;
@@ -17,7 +17,7 @@ const BonusText = styled(Text)`
 `
 
 const IncreaseText = styled(Text)`
-  color: ${({ theme }) => theme.kc.palette.increase};
+  color: ${({ theme }) => theme.colors.increase};
   position: absolute;
   font-size: 10px;
   top: -3px;

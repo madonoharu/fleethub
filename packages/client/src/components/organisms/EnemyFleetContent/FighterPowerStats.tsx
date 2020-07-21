@@ -13,7 +13,7 @@ const FighterPowerValue: React.FCX<{ airState: AirState; value: number }> = ({ c
 }
 
 const StyledFighterPowerValue = styled(FighterPowerValue)`
-  color: ${({ theme, airState }) => theme.kc.palette.airState[airState]};
+  color: ${({ theme, airState }) => theme.colors[airState]};
 `
 
 const getMinFighterPowers = (fp: number) => {

@@ -35,11 +35,11 @@ const Table = styled(MuiTable)`
 const TableCell = styled(({ statKey, ...props }: { statKey?: Key } & TableCellProps) => <MuiTableCell {...props} />)`
   padding: 0 4px;
   border: none;
-  color: ${({ theme, statKey }) => statKey && theme.kc.palette[statKey]};
+  color: ${({ theme, statKey }) => statKey && theme.colors[statKey]};
 `
 
 const BonusCell = styled(TableCell)`
-  color: ${({ theme }) => theme.kc.palette.bonus};
+  color: ${({ theme }) => theme.colors.bonus};
 `
 
 const StyledStatIcon = styled(StatIcon)`

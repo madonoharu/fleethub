@@ -40,7 +40,7 @@ const StyledComponent = styled(Component)`
 
   > * {
     width: 80px;
-    color: ${(props) => props.theme.kc.palette.stars};
+    color: ${(props) => props.theme.colors.stars};
   }
 `
 

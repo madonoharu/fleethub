@@ -52,7 +52,7 @@ const StyledStatTitle = styled(StatTitle)`
 
   span {
     margin: 0 4px;
-    color: ${({ theme, statKey }) => theme.kc.palette[statKey]};
+    color: ${({ theme, statKey }) => theme.colors[statKey]};
   }
 `
 
