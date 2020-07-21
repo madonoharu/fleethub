@@ -23,7 +23,7 @@ const AppContent: React.FC = () => {
   const asyncEntitiesImport = useAsync(async () => {
     const entities = await parseUrlEntities()
     if (!entities) return
-    dispatch(filesSlice.actions.import({ ...entities, to: "temp" }))
+    dispatch(filesSlice.actions.import({ ...entities, to: "root" }))
   }, [])
 
   if (asyncEntitiesImport.loading) return null
