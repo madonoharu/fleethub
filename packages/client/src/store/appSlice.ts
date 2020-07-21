@@ -18,7 +18,7 @@ export const appSlice = createSlice({
 
   reducers: {
     openFile: (state, { payload }: PayloadAction<string>) => {
-      state.fileId = payload
+      if (state.fileId !== payload) state.fileId = payload
     },
     closeFile: (state) => {
       delete state.fileId
