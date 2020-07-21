@@ -55,7 +55,7 @@ export const createStore = () => {
   return store
 }
 
-type Store = ReturnType<typeof createStore>
-export type RootState = ReturnType<Store["getState"]>
-export type AppDispatch = Store["dispatch"]
+export type AppStore = ReturnType<typeof createStore>
+export type RootState = ReturnType<AppStore["getState"]>
+export type AppDispatch = AppStore["dispatch"]
 export type AppThunk = ThunkAction<void, RootState, typeof extraArgument, AnyAction>

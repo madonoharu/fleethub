@@ -13,6 +13,7 @@ declare module "react-redux" {
 
 declare module "@reduxjs/toolkit" {
   export type AppThunk = import("./store").AppThunk
+  export type AppStore = import("./store").AppStore
 }
 
 declare module "styled-components" {
