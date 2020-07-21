@@ -1,22 +1,12 @@
 import React from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import styled from "styled-components"
 
-import DescriptionIcon from "@material-ui/icons/Description"
-import FileCopyIcon from "@material-ui/icons/FileCopy"
-import DeleteIcon from "@material-ui/icons/Delete"
-
-import { MoreVertButton, ShareButton, RemoveButton, MenuList } from "../../../components"
+import { MoreVertButton, CopyButton, RemoveButton } from "../../../components"
 import { PlanFileEntity, plansSelectors } from "../../../store"
-import { usePopover, useFile } from "../../../hooks"
+import { useModal, useFile } from "../../../hooks"
 
 import FileLabel from "./FileLabel"
-
-const usePlanFile = (id: string) => {
-  const plan = useSelector((state) => plansSelectors.selectById(state, id))
-
-  return { plan }
-}
 
 type Props = {
   file: PlanFileEntity
@@ -24,8 +14,8 @@ type Props = {
 
 const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
   const { actions, canDrop } = useFile(file.id)
-  const { plan } = usePlanFile(file.id)
-  const Popover = usePopover()
+  const plan = useSelector((state) => plansSelectors.selectById(state, file.id))
+  const Modal = useModal()
 
   if (!plan) return null
 
@@ -33,24 +23,17 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
     <FileLabel
       className={className}
       file={file}
-      icon={<DescriptionIcon />}
       text={plan.name}
       onClick={actions.open}
       canDrop={canDrop}
       onDrop={actions.drop}
       action={
         <>
-          <ShareButton size="small" />
-          <RemoveButton size="small" onClick={actions.remove} />
-          <MoreVertButton size="small" onClick={Popover.show} />
-          <Popover>
-            <MenuList
-              list={[
-                { icon: <FileCopyIcon />, text: "コピー", onClick: actions.copy },
-                { icon: <DeleteIcon />, text: "削除", onClick: actions.remove },
-              ]}
-            />
-          </Popover>
+          <CopyButton size="small" title="コピー" onClick={actions.copy} />
+          <RemoveButton size="small" title="削除" onClick={actions.remove} />
+          <MoreVertButton size="small" title="メニュー" onClick={Modal.show} />
+
+          <Modal></Modal>
         </>
       }
     />
