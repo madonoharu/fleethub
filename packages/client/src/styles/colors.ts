@@ -46,4 +46,7 @@ export const colors = {
 
   scrollbar: grey[700],
   droppable: muiColors.yellow[300],
+
+  planFile: muiColors.blue[400],
+  folder: muiColors.green[300],
 }
