@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { FleetTypes, FleetType } from "@fleethub/core"
 
-import { Select, SelectTextFieldProps } from "../../molecules"
+import { Select, SelectInputProps } from "../../molecules"
 
 const getLabel = (fleetType: FleetType) =>
   ({
@@ -13,7 +13,7 @@ const getLabel = (fleetType: FleetType) =>
     Combined: "敵連合",
   }[fleetType])
 
-type Props = SelectTextFieldProps & {
+type Props = SelectInputProps & {
   fleetType: FleetType
   onChange: (type: FleetType) => void
 }

@@ -1,9 +1,7 @@
 import React from "react"
 import { Plan } from "@fleethub/core"
 
-import { Container, Paper, TextField, Button } from "@material-ui/core"
-
-import { Select, SelectButtons, ReactGkcoi } from "../../../components"
+import { Select, ReactGkcoi } from "../../../components"
 import { getGkcoiDeck, gkcoiThemes, GkcoiTheme } from "../../../utils"
 
 type Props = {

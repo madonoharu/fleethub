@@ -10,11 +10,11 @@ const StartInputAdornment = styled(InputAdornment)`
   }
 `
 
-export type TextFieldProps = MuiTextFieldProps & {
+export type InputProps = MuiTextFieldProps & {
   startLabel?: React.ReactNode
 }
 
-const TextField: React.FC<TextFieldProps> = ({ startLabel, InputProps, ...rest }) => {
+const Input: React.FC<InputProps> = ({ startLabel, InputProps, ...rest }) => {
   const startAdornment = startLabel && <StartInputAdornment position="start">{startLabel}</StartInputAdornment>
 
   const defaultSize = rest.variant === "outlined" ? "small" : undefined
@@ -22,4 +22,4 @@ const TextField: React.FC<TextFieldProps> = ({ startLabel, InputProps, ...rest }
   return <MuiTextField size={defaultSize} InputProps={{ startAdornment, ...InputProps }} {...rest} />
 }
 
-export default styled(TextField)``
+export default styled(Input)``

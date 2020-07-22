@@ -1,8 +1,6 @@
 import React from "react"
 import { FleetState, Fleet } from "@fleethub/core"
 
-import { Container, Paper, TextField, Typography } from "@material-ui/core"
-
 import { Flexbox, Text } from "../../../components"
 import { Update } from "../../../utils"
 
