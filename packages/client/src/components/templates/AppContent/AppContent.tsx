@@ -4,8 +4,8 @@ import styled from "styled-components"
 import { useAsync } from "react-async-hook"
 
 import { filesSlice, selectAppState, appSlice } from "../../../store"
-import { parseUrlEntities } from "../../../firebase"
 import { DragLayerProvider } from "../../../hooks"
+import { parseUrlData } from "../../../utils"
 
 import AppBar from "./AppBar"
 import ExplorerDrawer from "./ExplorerDrawer"
@@ -21,9 +21,10 @@ const AppContent: React.FC = () => {
   const toggleExplorerOpen = () => dispatch(appSlice.actions.toggleExplorerOpen())
 
   const asyncEntitiesImport = useAsync(async () => {
-    const entities = await parseUrlEntities()
-    if (!entities) return
-    dispatch(filesSlice.actions.import({ ...entities, to: "root" }))
+    const data = await parseUrlData()
+    if (!data) return
+    console.log(data)
+    dispatch(filesSlice.actions.import({ ...data, to: "root" }))
   }, [])
 
   if (asyncEntitiesImport.loading) return null
