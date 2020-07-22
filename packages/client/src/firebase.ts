@@ -1,10 +1,6 @@
 import firebase from "firebase/app"
 import "firebase/storage"
 import { PlanState } from "@fleethub/core"
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string-uri-fix"
-import { nanoid } from "@reduxjs/toolkit"
-
-import { FilesData } from "./store"
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",
@@ -63,62 +59,5 @@ type FhPlanFile = {
 }
 
 type FhFile = FhPlanFile | FhFolder
-
-const getUrlParam = (key: string) => {
-  const url = new URL(location.href)
-  const value = url.searchParams.get(key)
-  url.searchParams.delete(key)
-  history.replaceState("", "", url.href)
-  return value
-}
-
-export const parseUrlEntities = async (): Promise<FilesData | undefined> => {
-  const fileId = getUrlParam("storage-file")
-  if (fileId) {
-    const data = await fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}`).then((res) =>
-      res.json()
-    )
-    return data
-  }
-
-  const entitiesParam = getUrlParam("entities")
-  if (entitiesParam) {
-    try {
-      return JSON.parse(decompressFromEncodedURIComponent(entitiesParam))
-    } catch (error) {
-      console.warn(error)
-      return
-    }
-  }
-
-  return
-}
-
-export const publishFiles = async (entities: FilesData) => {
-  const url = new URL("http://localhost:8000")
-  url.searchParams.set("entities", compressToEncodedURIComponent(JSON.stringify(entities)))
-
-  if (url.href.length < 8000) return url.href
-
-  url.searchParams.delete("entities")
-
-  const id = nanoid()
-  const res = await publicStorageRef
-    .child(id)
-    .putString(JSON.stringify(entities), "raw", { contentType: "application/json" })
-  url.searchParams.set("storage-file", id)
-  console.log(url.href)
-  return url.href
-}
-
-export const publishPlan = async (plan: PlanState) => {
-  const id = nanoid()
-  const url = await publishFiles({
-    id,
-    files: [{ id, type: "plan" }],
-    plans: [{ ...plan, id }],
-  })
-  return url
-}
 
 export { firebase }
