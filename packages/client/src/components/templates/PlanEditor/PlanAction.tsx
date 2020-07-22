@@ -41,9 +41,10 @@ const tweet = ({ text, url }: TweetOption) => {
 type Props = {
   plan: Plan
   update: Update<PlanState>
+  onPublish: () => Promise<string>
 }
 
-const PlanAction: React.FCX<Props> = ({ className, plan, update }) => {
+const PlanAction: React.FCX<Props> = ({ className, plan, update, onPublish }) => {
   const ShareModal = useModal()
   const ImportModal = useModal()
   const Snackbar = useSnackbar()
@@ -52,7 +53,7 @@ const PlanAction: React.FCX<Props> = ({ className, plan, update }) => {
 
   const asyncOnLinkClick = useAsyncCallback(
     async () => {
-      const url = await urlSelector(plan.state)
+      const url = await onPublish()
       const result = copy(url)
       if (!result) throw new Error("Failed to copy")
 

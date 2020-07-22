@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 import { PlanShareContent, PlanAnalysisPanel } from "../../../components"
-import { usePlan, useModal } from "../../../hooks"
+import { usePlan, useModal, usePublishFile } from "../../../hooks"
 
 import BattlePlanPanel from "./BattlePlanPanel"
 import PlanEditorHeader from "./PlanEditorHeader"
@@ -18,6 +18,7 @@ type Props = {
 
 const PlanEditor: React.FCX<Props> = ({ className, planId }) => {
   const { plan, actions, state } = usePlan(planId)
+  const handlePublish = usePublishFile(planId)
 
   const Modal = useModal()
 
@@ -25,7 +26,7 @@ const PlanEditor: React.FCX<Props> = ({ className, planId }) => {
 
   return (
     <div className={className}>
-      <PlanEditorHeader plan={plan} update={actions.update} />
+      <PlanEditorHeader plan={plan} update={actions.update} onPublish={handlePublish} />
       <PlanTabs plan={plan} update={actions.update} />
 
       <StyledPlanAnalysisPanel plan={plan} />
