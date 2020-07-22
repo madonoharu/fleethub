@@ -18,13 +18,7 @@ import {
 } from "../../../components"
 import { useSnackbar, useModal } from "../../../hooks"
 import { Update, openKctools } from "../../../utils"
-import { publishPlan } from "../../../firebase"
 import { filesSlice } from "../../../store"
-
-const urlSelector = createSelector(
-  (plan: PlanState) => plan,
-  (plan) => publishPlan(plan)
-)
 
 type TweetOption = {
   text: string
@@ -69,7 +63,7 @@ const PlanAction: React.FCX<Props> = ({ className, plan, update, onPublish }) =>
   )
 
   const asyncOnTweetClick = useAsyncCallback(async () => {
-    const url = await urlSelector(plan.state)
+    const url = await onPublish()
     tweet({ text: `【${plan.name}】`, url })
   })
 
