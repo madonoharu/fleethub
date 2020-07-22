@@ -26,3 +26,4 @@ export { default as DraggableFile } from "./DraggableFile"
 export * from "./DraggableFile"
 
 export { default as FileDropZone } from "./FileDropZone"
+export { default as FolderMenu } from "./FolderMenu"
