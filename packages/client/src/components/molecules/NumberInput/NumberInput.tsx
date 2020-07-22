@@ -6,7 +6,7 @@ import { Button, InputAdornment } from "@material-ui/core"
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown"
 
-import { TextField, TextFieldProps } from "../../atoms"
+import { Input, InputProps } from "../../atoms"
 
 import usePress from "./usePress"
 
@@ -65,7 +65,7 @@ export type NumberInputProps = {
   min?: number
   max?: number
   step?: number
-} & Omit<TextFieldProps, "type" | "inputProps" | "onChange" | "onInput">
+} & Omit<InputProps, "type" | "inputProps" | "onChange" | "onInput">
 
 const NumberInput: React.FC<NumberInputProps> = ({
   className,
@@ -124,7 +124,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
   return (
     <div className={className}>
-      <TextField
+      <Input
         value={inputStr}
         onChange={handleChange}
         onFocus={handleFocus}

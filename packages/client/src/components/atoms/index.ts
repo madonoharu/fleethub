@@ -9,5 +9,5 @@ export { default as Image } from "./Image"
 export { default as MenuList } from "./MenuList"
 export * from "./MenuList"
 
-export { default as TextField } from "./TextField"
-export * from "./TextField"
+export { default as Input } from "./Input"
+export * from "./Input"

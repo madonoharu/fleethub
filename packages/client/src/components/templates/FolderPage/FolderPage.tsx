@@ -5,10 +5,9 @@ import { Container, Button } from "@material-ui/core"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"
 import AddIcon from "@material-ui/icons/Add"
 
-import { FolderEntity } from "../../../store"
 import { useFile } from "../../../hooks"
 
-import { TextField } from "../../atoms"
+import { Input } from "../../atoms"
 import { FileDropZone } from "../../organisms"
 
 import FolderPageItem from "./FolderPageItem"
@@ -39,7 +38,7 @@ const FolderPage: React.FCX<Props> = ({ className, id }) => {
   return (
     <FileDropZone className={className} onDrop={actions.drop} canDrop={canDrop}>
       <Container>
-        <TextField value={name} onChange={handleNameChange} />
+        <Input value={name} onChange={handleNameChange} />
         <Button onClick={handlePlanCreate} startIcon={<AddIcon />}>
           編成を作成
         </Button>

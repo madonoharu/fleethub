@@ -2,7 +2,7 @@ import React, { useCallback } from "react"
 
 import { MenuItem } from "@material-ui/core"
 
-import { TextField, TextFieldProps } from "../../atoms"
+import { Input, InputProps } from "../../atoms"
 
 export const getDefaultOptionLabel = (option: unknown): string => {
   switch (typeof option) {
@@ -34,9 +34,9 @@ export type SelectComponent<P = {}> = {
   <T>(props: SelectComponentProps<T> & P): React.ReactElement
 }
 
-export type SelectTextFieldProps = Omit<TextFieldProps, keyof SelectComponentProps<unknown>>
+export type SelectInputProps = Omit<InputProps, keyof SelectComponentProps<unknown>>
 
-const Select: SelectComponent<SelectTextFieldProps> = (props) => {
+const Select: SelectComponent<SelectInputProps> = (props) => {
   const { options, value, onChange, getOptionLabel = getDefaultOptionLabel, ...muiProps } = props
 
   const handleChange = useCallback(
@@ -45,13 +45,13 @@ const Select: SelectComponent<SelectTextFieldProps> = (props) => {
   )
 
   return (
-    <TextField value={options.indexOf(value)} onChange={handleChange} select {...muiProps}>
+    <Input value={options.indexOf(value)} onChange={handleChange} select {...muiProps}>
       {options.map((option, index) => (
         <MenuItem key={index} value={index}>
           {getOptionLabel(option)}
         </MenuItem>
       ))}
-    </TextField>
+    </Input>
   )
 }
 
