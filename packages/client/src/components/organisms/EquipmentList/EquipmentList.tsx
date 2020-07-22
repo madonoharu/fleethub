@@ -1,8 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { EquipmentState, Equipment, GearKey, GearBase, EquipmentBonuses } from "@fleethub/core"
-
-import { Container, Paper, TextField, Button } from "@material-ui/core"
+import { EquipmentState, Equipment } from "@fleethub/core"
 
 import { Update } from "../../../utils"
 

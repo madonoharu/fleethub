@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import styled from "styled-components"
 import { Formation, SingleFleetFormations, CombinedFleetFormations } from "@fleethub/core"
 
-import { Select, SelectTextFieldProps } from "../../molecules"
+import { Select, SelectInputProps } from "../../molecules"
 
 const dict: Record<Formation, string> = {
   LineAhead: "単縦陣",
@@ -19,7 +19,7 @@ const dict: Record<Formation, string> = {
 
 const getFormationName = (formation: Formation) => dict[formation]
 
-type Props = SelectTextFieldProps & {
+type Props = SelectInputProps & {
   formation: Formation
   onChange: (formation: Formation) => void
   combined?: boolean
