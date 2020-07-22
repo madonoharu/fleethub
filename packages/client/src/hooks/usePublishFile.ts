@@ -23,10 +23,11 @@ const publishFilesData = async (data: FilesData) => {
   return url.href
 }
 
-const makePublishFile = (store: AppStore, id: string) =>
+const makePublishFile = () =>
   createSelector(
-    () => selectEntitiesState(store.getState()),
-    (entitiesState) => {
+    (store: AppStore, id: string) => selectEntitiesState(store.getState()),
+    (store, id) => id,
+    (entitiesState, id) => {
       const cloned = cloneEntities(entitiesState, id)
       return publishFilesData(cloned)
     }
@@ -34,5 +35,8 @@ const makePublishFile = (store: AppStore, id: string) =>
 
 export const usePublishFile = (id: string) => {
   const store = useStore()
-  return useMemo(() => makePublishFile(store, id), [id, store])
+  return useMemo(() => {
+    const selector = makePublishFile()
+    return () => selector(store, id)
+  }, [store, id])
 }
