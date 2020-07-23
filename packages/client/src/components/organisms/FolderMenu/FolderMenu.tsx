@@ -1,46 +1,41 @@
 import React from "react"
-import { useAsyncCallback } from "react-async-hook"
-import copy from "copy-to-clipboard"
+import styled from "styled-components"
 
-import { Container } from "@material-ui/core"
+import { Button, Link } from "@material-ui/core"
 import LinkIcon from "@material-ui/icons/Link"
 import FileCopyIcon from "@material-ui/icons/FileCopy"
 import DeleteIcon from "@material-ui/icons/Delete"
 
-import { MenuList, MenuItemProps, CopyTextButton } from "../../../components"
-import { useFile, usePublishFile, useSnackbar } from "../../../hooks"
+import { MenuList, MenuItemProps } from "../../../components"
+import { useFile, useAsyncOnPublish } from "../../../hooks"
 
-import { Input, FolderIcon } from "../../atoms"
+import { FolderIcon } from "../../atoms"
 
 import TextField from "../TextField"
+
+const StyledButton = styled(Button)`
+  width: 100%;
+  justify-content: flex-start;
+`
+
+const ColumnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  > * {
+    width: 100%;
+  }
+`
 
 type Props = {
   id: string
   onClose?: () => void
 }
 
-const FolderMenu: React.FC<Props> = ({ id, onClose }) => {
+const FolderMenu: React.FCX<Props> = ({ className, id, onClose }) => {
   const { file, actions } = useFile(id)
 
-  const publish = usePublishFile(id)
-  const Snackbar = useSnackbar()
-
-  const asyncOnLinkClick = useAsyncCallback(
-    async () => {
-      const url = await publish()
-      const result = copy(url)
-      if (!result) throw new Error("Failed to copy")
-
-      return url
-    },
-    {
-      onSuccess: () => Snackbar.show({ message: "共有URLをコピーしました", severity: "success" }),
-      onError: (error) => {
-        console.error(error)
-        Snackbar.show({ message: "失敗しました", severity: "error" })
-      },
-    }
-  )
+  const { asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
 
   if (file?.type !== "folder") return null
 
@@ -58,27 +53,33 @@ const FolderMenu: React.FC<Props> = ({ id, onClose }) => {
     onClose?.()
   }
 
-  const url = asyncOnLinkClick.result
-
-  const list: MenuItemProps[] = [
-    {
-      icon: <LinkIcon />,
-      text: "共有URLをコピーする",
-      onClick: asyncOnLinkClick.execute,
-      disabled: asyncOnLinkClick.loading,
-    },
-    { icon: <FileCopyIcon />, text: "コピーする", onClick: handleCopy },
-    { icon: <DeleteIcon />, text: "削除する", onClick: handleRemove },
-  ]
+  const url = asyncOnPublish.result
 
   return (
-    <Container>
-      <TextField startLabel={<FolderIcon />} value={file.name} onChange={handleNameChange} />
-      <MenuList list={list} />
-      {url && <Input variant="outlined" value={url} InputProps={{ endAdornment: <CopyTextButton value={url} /> }} />}
+    <div className={className}>
+      <TextField placeholder="name" startLabel={<FolderIcon />} value={file.name} onChange={handleNameChange} />
+      <ColumnContainer>
+        <StyledButton startIcon={<LinkIcon />} onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading}>
+          共有URLをクリップボードにコピーする
+        </StyledButton>
+        {url && (
+          <Link href={url} noWrap>
+            {url}
+          </Link>
+        )}
+        <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
+          フォルダーをコピーする
+        </StyledButton>
+        <StyledButton startIcon={<DeleteIcon />} onClick={handleRemove}>
+          フォルダーを削除する
+        </StyledButton>
+      </ColumnContainer>
+
       <Snackbar />
-    </Container>
+    </div>
   )
 }
 
-export default FolderMenu
+export default styled(FolderMenu)`
+  width: 400px;
+`

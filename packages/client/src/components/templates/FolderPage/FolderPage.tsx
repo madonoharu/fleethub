@@ -38,7 +38,7 @@ const FolderPage: React.FCX<Props> = ({ className, id }) => {
   return (
     <FileDropZone className={className} onDrop={actions.drop} canDrop={canDrop}>
       <Container>
-        <TextField startLabel={<FolderIcon />} value={name} onChange={handleNameChange} />
+        <TextField placeholder="name" startLabel={<FolderIcon />} value={name} onChange={handleNameChange} />
         <Button onClick={handlePlanCreate} startIcon={<AddIcon />}>
           編成を作成
         </Button>
