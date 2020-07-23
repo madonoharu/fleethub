@@ -18,7 +18,7 @@ import TextField from "../TextField"
 
 const StyledLink = styled(Link)``
 
-const Column = styled.div`
+const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -58,20 +58,20 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
 
   return (
     <div className={className}>
-      <TextField fullWidth startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
+      <TextField placeholder="name" fullWidth startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
 
       <Divider label="Share" />
-      <Column>
+      <ColumnContainer>
         <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
           コピー
         </StyledButton>
         <StyledButton startIcon={<DeleteIcon />} onClick={handleRemove}>
           削除
         </StyledButton>
-      </Column>
+      </ColumnContainer>
 
       <Divider label="Share" />
-      <Column>
+      <ColumnContainer>
         <StyledButton startIcon={<LinkIcon />} onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading}>
           共有URLをクリップボードにコピー
         </StyledButton>
@@ -97,7 +97,7 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
           variant="outlined"
           InputProps={{ endAdornment: <CopyTextButton value={predeck} /> }}
         />
-      </Column>
+      </ColumnContainer>
 
       <Snackbar />
     </div>
