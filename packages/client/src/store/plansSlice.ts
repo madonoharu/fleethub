@@ -27,13 +27,7 @@ export const plansSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(filesSlice.actions.createPlan, (state, { payload }) => {
-        const { plan } = payload
-
-        if (!plan.name) {
-          plan.name = `編成${state.ids.length + 1}`
-        }
-
-        plansAdapter.addOne(state, plan)
+        plansAdapter.addOne(state, payload.plan)
       })
 
       .addCase(filesSlice.actions.remove, plansAdapter.removeMany)
