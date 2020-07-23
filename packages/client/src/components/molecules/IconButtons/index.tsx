@@ -15,7 +15,7 @@ import OpenInNewIcon from "@material-ui/icons/OpenInNew"
 import SaveAltIcon from "@material-ui/icons/SaveAlt"
 import StarIcon from "@material-ui/icons/Star"
 
-import { TwitterIcon } from "../../atoms"
+import { TwitterIcon, KctoolsIcon } from "../../atoms"
 
 import withIconButton from "./withIconButton"
 
@@ -39,3 +39,8 @@ export const OpenInNewButton = withIconButton(OpenInNewIcon)
 export const ImportButton = withIconButton(SaveAltIcon)
 export const StarButton = withIconButton(StarIcon)
 export const TweetButton = withIconButton(TwitterIcon)
+
+export const KctoolsButton = withIconButton(KctoolsIcon)
+KctoolsButton.defaultProps = {
+  title: "制空権シミュレータで開く",
+}
