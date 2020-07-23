@@ -1,24 +1,24 @@
-import { useMemo } from "react"
-import { createSelector, AppStore } from "@reduxjs/toolkit"
+import { useCallback } from "react"
+import { AppStore } from "@reduxjs/toolkit"
 import { useStore } from "react-redux"
+import { createCachedSelector } from "re-reselect"
 
 import { cloneEntities, selectEntitiesState } from "../store"
-import { publishFilesData } from "../utils"
+import { publishFilesData, createShallowEqualSelector } from "../utils"
 
-const makePublishFile = () =>
-  createSelector(
-    (store: AppStore, id: string) => selectEntitiesState(store.getState()),
-    (store, id) => id,
-    (entitiesState, id) => {
-      const cloned = cloneEntities(entitiesState, id)
-      return publishFilesData(cloned)
-    }
-  )
+const cachedSelector = createCachedSelector(
+  (store: AppStore, id: string) => selectEntitiesState(store.getState()),
+  (store, id) => id,
+  (state, id) => {
+    const cloned = cloneEntities(state, id)
+    return publishFilesData(cloned)
+  }
+)({
+  keySelector: (state, id) => id,
+  selectorCreator: createShallowEqualSelector,
+})
 
 export const usePublishFile = (id: string) => {
   const store = useStore()
-  return useMemo(() => {
-    const selector = makePublishFile()
-    return () => selector(store, id)
-  }, [store, id])
+  return useCallback((): Promise<string> => cachedSelector(store, id), [store, id])
 }
