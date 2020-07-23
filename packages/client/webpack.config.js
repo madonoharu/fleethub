@@ -33,6 +33,7 @@ const rules = [
         options: {
           limit: 244,
           name: "static/media/[path][name].[ext]",
+          esModule: false,
         },
       },
     ],
