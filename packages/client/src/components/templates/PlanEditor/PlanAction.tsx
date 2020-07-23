@@ -1,11 +1,11 @@
 import React from "react"
 import styled from "styled-components"
-import { Plan, PlanState } from "@fleethub/core"
+import { Plan } from "@fleethub/core"
 import { useAsyncCallback } from "react-async-hook"
 
 import { Flexbox, TweetButton, LinkButton, KctoolsButton, PlanMenu, MoreVertButton } from "../../../components"
 import { useModal, useAsyncOnPublish } from "../../../hooks"
-import { Update, openKctools } from "../../../utils"
+import { openKctools } from "../../../utils"
 
 type TweetOption = {
   text: string
@@ -22,7 +22,6 @@ const tweet = ({ text, url }: TweetOption) => {
 type Props = {
   id: string
   plan: Plan
-  update: Update<PlanState>
 }
 
 const PlanAction: React.FCX<Props> = ({ className, id, plan }) => {

@@ -1,62 +1,84 @@
-import React, { useMemo } from "react"
-import { Plan, getDeck4 } from "@fleethub/core"
+import React from "react"
+import { getDeck4 } from "@fleethub/core"
 import styled from "styled-components"
 
-import { Link, List, ListItem, ListItemText, Button } from "@material-ui/core"
+import { Link, Button } from "@material-ui/core"
+import OpenInNewIcon from "@material-ui/icons/OpenInNew"
 import LinkIcon from "@material-ui/icons/Link"
+import FileCopyIcon from "@material-ui/icons/FileCopy"
+import DeleteIcon from "@material-ui/icons/Delete"
 
 import { openKctools, openDeckbuilder } from "../../../utils"
 
 import { CopyTextButton } from "../../molecules"
-import { Flexbox, PlanIcon } from "../../atoms"
-import { useFhSystem, usePublishFile, useAsyncOnPublish } from "../../../hooks"
+import { PlanIcon, KctoolsIcon, Divider } from "../../atoms"
+import { useAsyncOnPublish, usePlanFile } from "../../../hooks"
 
 import TextField from "../TextField"
-import { useSelector } from "react-redux"
-import { plansSelectors } from "../../../store"
 
-const StyledLink = styled(Link)`
-  max-width: 320px;
+const StyledLink = styled(Link)``
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `
 
-const usePlan = (id: string) => {
-  const { createPlan } = useFhSystem()
-  const state = useSelector((state) => plansSelectors.selectById(state, id))
-  const plan = useMemo(() => state && createPlan(state), [createPlan, state])
-
-  return { plan }
-}
+const StyledButton = styled(Button)`
+  width: 100%;
+  justify-content: flex-start;
+`
 
 type Props = {
   id: string
 }
 
 const PlanMenu: React.FCX<Props> = ({ className, id }) => {
-  const { plan } = usePlan(id)
+  const { plan, file, actions } = usePlanFile(id)
 
   const { asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
   const url = asyncOnPublish.result
 
-  if (!plan) return null
+  if (!plan || !file) return null
+
+  const handleNameChange = (name: string) => actions.update({ name })
 
   const predeck = JSON.stringify(getDeck4(plan))
 
   return (
     <div className={className}>
-      <TextField startLabel={<PlanIcon />} value={plan.name} />
+      <TextField fullWidth startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
 
-      <Flexbox>
-        <Button startIcon={<LinkIcon />} onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading}>
-          共有URLをコピー
-        </Button>
+      <Divider label="Share" />
+      <Column>
+        <StyledButton startIcon={<FileCopyIcon />} onClick={actions.copy}>
+          コピー
+        </StyledButton>
+        <StyledButton startIcon={<DeleteIcon />} onClick={actions.remove}>
+          削除
+        </StyledButton>
+      </Column>
+
+      <Divider label="Share" />
+      <Column>
+        <StyledButton startIcon={<LinkIcon />} onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading}>
+          共有URLをクリップボードにコピー
+        </StyledButton>
+
         {url && (
           <StyledLink href={url} noWrap>
             {url}
           </StyledLink>
         )}
-      </Flexbox>
 
-      <Flexbox>
+        <StyledButton startIcon={<KctoolsIcon />} onClick={() => openKctools(plan)}>
+          制空権シミュレーターで開く
+        </StyledButton>
+
+        <StyledButton startIcon={<OpenInNewIcon />} onClick={() => openDeckbuilder(plan)}>
+          デッキビルダーで開く
+        </StyledButton>
+
         <TextField
           label="デッキビルダー形式"
           value={predeck}
@@ -64,7 +86,7 @@ const PlanMenu: React.FCX<Props> = ({ className, id }) => {
           variant="outlined"
           InputProps={{ endAdornment: <CopyTextButton value={predeck} /> }}
         />
-      </Flexbox>
+      </Column>
 
       <Snackbar />
     </div>
@@ -72,5 +94,6 @@ const PlanMenu: React.FCX<Props> = ({ className, id }) => {
 }
 
 export default styled(PlanMenu)`
+  width: 400px;
   padding: 8px;
 `
