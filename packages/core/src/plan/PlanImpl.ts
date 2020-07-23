@@ -4,7 +4,6 @@ import { Plan, Organization } from "./types"
 import { getShipAntiAirCutinChance, composeAntiAirCutinChances } from "../analyzer/AntiAirCutinChance"
 
 export class PlanImpl implements Plan {
-  public name: Plan["name"]
   public hqLevel: Plan["hqLevel"]
   public nodes: Plan["nodes"]
   public fleetType: Plan["fleetType"]
@@ -24,7 +23,6 @@ export class PlanImpl implements Plan {
   public a3: Plan["a3"]
 
   constructor(public state: Plan["state"], { f1, f2, f3, f4, a1, a2, a3 }: Organization) {
-    this.name = state.name || ""
     this.hqLevel = state.hqLevel || 120
     this.nodes = state.nodes || []
     this.fleetType = state.fleetType || "Single"
