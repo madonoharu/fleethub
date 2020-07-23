@@ -21,9 +21,6 @@ export const appSlice = createSlice({
     openFile: (state, { payload }: PayloadAction<string>) => {
       if (state.fileId !== payload) state.fileId = payload
     },
-    closeFile: (state) => {
-      delete state.fileId
-    },
     toggleExplorerOpen: (state) => {
       state.explorerOpen = !state.explorerOpen
     },
