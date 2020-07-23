@@ -19,22 +19,14 @@ class ShipCommonBaseStub implements ShipCommonBase {
   ruby = ""
   attrs: ShipAttribute[] = []
   category: ShipCategory = "SupportShip"
-  is = (attr: ShipAttribute) => this.attrs.includes(attr)
+  is = jest.fn((attr: ShipAttribute) => this.attrs.includes(attr))
   canEquip = () => false
+  shipClassIn = jest.fn()
+  shipTypeIn = jest.fn()
 }
 
 const getMocks = () => {
-  const base = {
-    shipId: 0,
-    shipClass: 0,
-    shipType: 0,
-    sortId: 0,
-    name: "",
-    ruby: "",
-    category: "" as ShipCategory,
-    is: jest.fn(),
-    canEquip: jest.fn(),
-  }
+  const base = new ShipCommonBaseStub()
 
   const stats = new ShipStatsStub()
   const equipment = new EquipmentMock()

@@ -18,7 +18,6 @@ export type NodePlan = Pick<MapNode, "type" | "d" | "point"> & {
 }
 
 export type PlanStateBase = {
-  name?: string
   hqLevel?: number
   nodes?: NodePlan[]
   fleetType?: FleetType
