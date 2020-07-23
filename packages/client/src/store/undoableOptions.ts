@@ -22,7 +22,7 @@ export const batchUndoable = (cb: () => void, group = nanoid()) => {
 export const batchGroupBy: GroupByFunction = () => undoableState.group
 
 const actionTypeFilter: FilterFunction = (action) =>
-  ["entities", appSlice.name].some((key) => (action.type as string).startsWith(key))
+  ["entities", appSlice.actions.openFile.type].some((key) => (action.type as string).startsWith(key))
 
 const filter: FilterFunction = (...args) => !undoableState.ignore && actionTypeFilter(...args)
 
