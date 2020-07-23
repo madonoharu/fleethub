@@ -14,12 +14,12 @@ const LevelInput = styled(NumberInput)`
 `
 
 type Props = {
+  id: string
   plan: Plan
   update: Update<PlanState>
-  onPublish: () => Promise<string>
 }
 
-const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPublish }) => {
+const PlanEditorHeader: React.FCX<Props> = ({ className, id, plan, update }) => {
   const handleNameChange = (value: string) => {
     update((draft) => {
       draft.name = value
@@ -44,7 +44,7 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPublish
       <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
       <FleetTypeSelect fleetType={plan.fleetType} onChange={handleFleetTypeChange} />
 
-      <PlanAction plan={plan} update={update} onPublish={onPublish} />
+      <PlanAction id={id} plan={plan} update={update} />
     </Flexbox>
   )
 }

@@ -3,7 +3,6 @@ import styled from "styled-components"
 import copy from "copy-to-clipboard"
 import { Plan, PlanState } from "@fleethub/core"
 import { useAsyncCallback } from "react-async-hook"
-import { createSelector } from "@reduxjs/toolkit"
 import { useDispatch } from "react-redux"
 
 import {
@@ -15,8 +14,10 @@ import {
   KctoolsButton,
   ImportButton,
   PlanImportForm,
+  PlanMenu,
+  MoreVertButton,
 } from "../../../components"
-import { useSnackbar, useModal } from "../../../hooks"
+import { useModal, useAsyncOnPublish } from "../../../hooks"
 import { Update, openKctools } from "../../../utils"
 import { filesSlice } from "../../../store"
 
@@ -33,37 +34,22 @@ const tweet = ({ text, url }: TweetOption) => {
 }
 
 type Props = {
+  id: string
   plan: Plan
   update: Update<PlanState>
-  onPublish: () => Promise<string>
 }
 
-const PlanAction: React.FCX<Props> = ({ className, plan, update, onPublish }) => {
+const PlanAction: React.FCX<Props> = ({ className, id, plan, update }) => {
   const ShareModal = useModal()
   const ImportModal = useModal()
-  const Snackbar = useSnackbar()
+  const MenuModal = useModal()
 
   const dispatch = useDispatch()
 
-  const asyncOnLinkClick = useAsyncCallback(
-    async () => {
-      const url = await onPublish()
-      const result = copy(url)
-      if (!result) throw new Error("Failed to copy")
-
-      return url
-    },
-    {
-      onSuccess: () => Snackbar.show({ message: "共有URLをコピーしました", severity: "success" }),
-      onError: (error) => {
-        console.error(error)
-        Snackbar.show({ message: "失敗しました", severity: "error" })
-      },
-    }
-  )
+  const { publish, asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
 
   const asyncOnTweetClick = useAsyncCallback(async () => {
-    const url = await onPublish()
+    const url = await publish()
     tweet({ text: `【${plan.name}】`, url })
   })
 
@@ -79,11 +65,12 @@ const PlanAction: React.FCX<Props> = ({ className, plan, update, onPublish }) =>
 
   return (
     <Flexbox className={className}>
-      <LinkButton title="共有URLをコピー" onClick={asyncOnLinkClick.execute} disabled={asyncOnLinkClick.loading} />
+      <LinkButton title="共有URLをコピー" onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading} />
       <TweetButton title="編成をツイート" onClick={asyncOnTweetClick.execute} disabled={asyncOnTweetClick.loading} />
       <KctoolsButton title="制空権シミュレータで開く" onClick={() => openKctools(plan)} />
       <ImportButton title="デッキビルダー形式を読み込む" onClick={ImportModal.show} />
       <ShareButton title="デッキビルダー形式を出力したりします" onClick={ShareModal.show} />
+      <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
 
       <ShareModal>
         <PlanShareContent plan={plan} />
@@ -91,6 +78,9 @@ const PlanAction: React.FCX<Props> = ({ className, plan, update, onPublish }) =>
       <ImportModal>
         <PlanImportForm onOverwrite={handleOverwrite} onImport={handleImport} />
       </ImportModal>
+      <MenuModal>
+        <PlanMenu id={id} />
+      </MenuModal>
 
       <Snackbar />
     </Flexbox>
