@@ -56,6 +56,11 @@ export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getSta
   const state = getState()
   const cloned = cloneEntities(selectEntitiesState(state), id)
 
+  const parentFile = cloned.files.find((file) => file.id === cloned.id)
+  if (parentFile) {
+    parentFile.name = parentFile.name + "-コピー"
+  }
+
   if (!to) {
     to = filesSelectors.selectAll(state).find((file) => isDirectory(file) && file.children.includes(id))?.id
   }
