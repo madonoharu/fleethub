@@ -4,9 +4,9 @@ import { Plan, PlanState, FleetType } from "@fleethub/core"
 
 import { Flexbox, PlanIcon, NumberInput, TextField, FleetTypeSelect } from "../../../components"
 import { Update } from "../../../utils"
+import { useFile } from "../../../hooks"
 
 import PlanAction from "./PlanAction"
-import { useFile } from "../../../hooks"
 
 const LevelInput = styled(NumberInput)`
   input {
@@ -45,7 +45,7 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, id, plan, update }) => 
       <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
       <FleetTypeSelect fleetType={plan.fleetType} onChange={handleFleetTypeChange} />
 
-      <PlanAction id={id} plan={plan} />
+      <PlanAction id={id} name={file.name || ""} plan={plan} />
     </Flexbox>
   )
 }

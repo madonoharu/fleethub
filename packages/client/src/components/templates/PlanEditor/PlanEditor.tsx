@@ -19,7 +19,7 @@ type Props = {
 const PlanEditor: React.FCX<Props> = ({ className, id }) => {
   const { plan, actions, state } = usePlan(id)
 
-  if (!plan || !state) return null
+  if (!plan) return null
 
   return (
     <div className={className}>

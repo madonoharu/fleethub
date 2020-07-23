@@ -21,17 +21,18 @@ const tweet = ({ text, url }: TweetOption) => {
 
 type Props = {
   id: string
+  name: string
   plan: Plan
 }
 
-const PlanAction: React.FCX<Props> = ({ className, id, plan }) => {
+const PlanAction: React.FCX<Props> = ({ className, id, name, plan }) => {
   const MenuModal = useModal()
 
   const { publish, asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
 
   const asyncOnTweetClick = useAsyncCallback(async () => {
     const url = await publish()
-    tweet({ text: `【${plan.name}】`, url })
+    tweet({ text: `【${name}】`, url })
   })
 
   return (
