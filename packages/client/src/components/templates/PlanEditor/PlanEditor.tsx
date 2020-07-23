@@ -1,8 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 
-import { PlanShareContent, PlanAnalysisPanel } from "../../../components"
-import { usePlan, useModal, usePublishFile } from "../../../hooks"
+import { PlanAnalysisPanel } from "../../../components"
+import { usePlan } from "../../../hooks"
 
 import BattlePlanPanel from "./BattlePlanPanel"
 import PlanEditorHeader from "./PlanEditorHeader"
@@ -19,8 +19,6 @@ type Props = {
 const PlanEditor: React.FCX<Props> = ({ className, id }) => {
   const { plan, actions, state } = usePlan(id)
 
-  const Modal = useModal()
-
   if (!plan || !state) return null
 
   return (
@@ -30,9 +28,6 @@ const PlanEditor: React.FCX<Props> = ({ className, id }) => {
 
       <StyledPlanAnalysisPanel plan={plan} />
       <BattlePlanPanel plan={plan} updatePlan={actions.update} />
-      <Modal>
-        <PlanShareContent plan={plan} />
-      </Modal>
     </div>
   )
 }
