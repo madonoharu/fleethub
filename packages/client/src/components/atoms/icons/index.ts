@@ -3,7 +3,7 @@ import styled from "styled-components"
 import MuiFolderIcon from "@material-ui/icons/Folder"
 import DescriptionIcon from "@material-ui/icons/Description"
 
-export const PlanFileIcon = styled(DescriptionIcon)`
+export const PlanIcon = styled(DescriptionIcon)`
   color: ${({ theme }) => theme.colors.planFile};
 `
 
