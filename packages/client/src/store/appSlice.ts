@@ -41,7 +41,7 @@ export const appSlice = createSlice({
   },
 })
 
-export const openFirstPlan = (): AppThunk => (dispatch, getState) => {
+export const openDefaultFile = (): AppThunk => (dispatch, getState) => {
   const state = getState()
   const planIds = plansSelectors.selectIds(state)
 

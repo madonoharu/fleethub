@@ -2,7 +2,7 @@ import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { PlanEditor, DirectoryBreadcrumbs } from "../../../components"
-import { openFirstPlan, selectAppState, filesSelectors } from "../../../store"
+import { openDefaultFile, selectAppState, filesSelectors } from "../../../store"
 
 import FolderPage from "../FolderPage"
 
@@ -16,7 +16,7 @@ const FileViewer: React.FC = () => {
 
   React.useEffect(() => {
     if (file) return
-    dispatch(openFirstPlan())
+    dispatch(openDefaultFile())
   }, [dispatch, file])
 
   if (!file) return null
