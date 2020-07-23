@@ -15,8 +15,9 @@ import OpenInNewIcon from "@material-ui/icons/OpenInNew"
 import SaveAltIcon from "@material-ui/icons/SaveAlt"
 import StarIcon from "@material-ui/icons/Star"
 
+import { TwitterIcon } from "../../atoms"
+
 import withIconButton from "./withIconButton"
-import TwitterIcon from "./TwitterIcon"
 
 export { withIconButton }
 
