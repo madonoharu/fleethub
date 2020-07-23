@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, AppThunk } from "@reduxjs/toolkit"
 
 import { filesSlice } from "./filesSlice"
 import { plansSelectors } from "./plansSlice"
+import { ignoreUndoable } from "./undoableOptions"
 
 type AppState = {
   fileId?: string
@@ -44,9 +45,11 @@ export const openFirstPlan = (): AppThunk => (dispatch, getState) => {
   const state = getState()
   const planIds = plansSelectors.selectIds(state)
 
-  if (planIds.length) {
-    dispatch(appSlice.actions.openFile(planIds[planIds.length - 1] as string))
-  } else {
-    dispatch(filesSlice.actions.createPlan({ to: "root" }))
-  }
+  ignoreUndoable(() => {
+    if (planIds.length) {
+      dispatch(appSlice.actions.openFile(planIds[planIds.length - 1] as string))
+    } else {
+      dispatch(filesSlice.actions.createPlan({ to: "root" }))
+    }
+  })
 }
