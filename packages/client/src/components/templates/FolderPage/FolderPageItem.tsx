@@ -1,11 +1,10 @@
 import React from "react"
 import styled from "styled-components"
-import { useSelector } from "react-redux"
 
 import { Typography, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
 
-import { plansSelectors, FileEntity, FolderEntity } from "../../../store"
-import { useFhSystem, useFile } from "../../../hooks"
+import { FileEntity, FolderEntity } from "../../../store"
+import { useFile, usePlanFile } from "../../../hooks"
 
 import { ShipBanner, ShareButton, CopyButton, RemoveButton } from "../../molecules"
 import { Flexbox, PlanIcon, FolderIcon } from "../../atoms"
@@ -27,18 +26,15 @@ const FileAction = styled(Flexbox)`
 `
 
 const PlanItem: React.FC<{ id: string; onClick?: () => void }> = ({ id, onClick }) => {
-  const state = useSelector((state) => plansSelectors.selectById(state, id))
-  const { createPlan } = useFhSystem()
-  if (!state) return null
-
-  const plan = createPlan(state)
+  const { plan, file, actions } = usePlanFile(id)
+  if (!plan || !file) return null
 
   return (
     <>
       <ListItemIcon>
         <PlanIcon />
       </ListItemIcon>
-      <PlanName noWrap>{plan.name}</PlanName>
+      <PlanName noWrap>{file.name}</PlanName>
       <ShipsContainer>
         <div>
           {plan.main.ships.map((ship, index) => (

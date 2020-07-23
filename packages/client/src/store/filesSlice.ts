@@ -18,9 +18,10 @@ export type PlanStateWithId = PlanState & { id: string }
 type FileBase<T extends string, P = {}> = {
   id: string
   type: T
+  name?: string
 } & P
 
-export type FolderEntity = FileBase<"folder", { name: string; children: string[] }>
+export type FolderEntity = FileBase<"folder", { children: string[] }>
 
 export type Directory = FolderEntity
 
@@ -126,7 +127,11 @@ export const filesSlice = createSlice({
 
     createPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; to: ParentKey }>) => {
-        const file: PlanFileEntity = { id: payload.plan.id, type: "plan" }
+        const count = Object.values(state.entities).filter((file) => file?.type === "plan").length
+        const name = count ? `編成${count + 1}` : "最初の編成"
+
+        const file: PlanFileEntity = { id: payload.plan.id, type: "plan", name }
+
         addFiles(state, [file], payload.to)
       },
       prepare: ({ plan, to }: { plan?: PlanState; to: ParentKey }) => ({

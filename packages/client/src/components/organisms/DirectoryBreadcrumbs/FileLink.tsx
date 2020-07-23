@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 
 import { Link } from "@material-ui/core"
 
-import { FileEntity, plansSelectors } from "../../../store"
+import { FileEntity } from "../../../store"
 
 type FileLinkProps = {
   file: FileEntity
@@ -14,17 +14,9 @@ type FileLinkProps = {
 const FileLink: React.FCX<FileLinkProps> = ({ className, file, onClick }) => {
   const handleClick = () => onClick(file.id)
 
-  const name = useSelector((state) => {
-    if (file.type === "plan") {
-      return plansSelectors.selectById(state, file.id)?.name
-    }
-
-    return file.name
-  })
-
   return (
     <Link className={className} color="inherit" noWrap onClick={handleClick}>
-      {name}
+      {file.name || ""}
     </Link>
   )
 }

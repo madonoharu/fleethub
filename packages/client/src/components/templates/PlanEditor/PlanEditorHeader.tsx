@@ -6,6 +6,7 @@ import { Flexbox, PlanIcon, NumberInput, TextField, FleetTypeSelect } from "../.
 import { Update } from "../../../utils"
 
 import PlanAction from "./PlanAction"
+import { useFile } from "../../../hooks"
 
 const LevelInput = styled(NumberInput)`
   input {
@@ -20,11 +21,9 @@ type Props = {
 }
 
 const PlanEditorHeader: React.FCX<Props> = ({ className, id, plan, update }) => {
-  const handleNameChange = (value: string) => {
-    update((draft) => {
-      draft.name = value
-    })
-  }
+  const { file, actions: fileActions } = useFile(id)
+
+  const handleNameChange = (name: string) => fileActions.update({ name })
 
   const handleHqLevelChange = (next: number) => {
     update((draft) => {
@@ -38,13 +37,15 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, id, plan, update }) => 
     })
   }
 
+  if (!file) return null
+
   return (
     <Flexbox className={className}>
-      <TextField startLabel={<PlanIcon />} value={plan.name} onChange={handleNameChange} />
+      <TextField startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
       <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
       <FleetTypeSelect fleetType={plan.fleetType} onChange={handleFleetTypeChange} />
 
-      <PlanAction id={id} plan={plan} update={update} />
+      <PlanAction id={id} plan={plan} />
     </Flexbox>
   )
 }
