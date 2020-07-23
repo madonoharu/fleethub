@@ -1,16 +1,14 @@
 import React from "react"
 import styled from "styled-components"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 
-import { Typography, ListItem, ListItemIcon, ListItemText, useForkRef } from "@material-ui/core"
-import FolderIcon from "@material-ui/icons/Folder"
-import DescriptionIcon from "@material-ui/icons/Description"
+import { Typography, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
 
-import { filesSelectors, plansSelectors, appSlice, filesSlice, FileEntity, FolderEntity } from "../../../store"
-
+import { plansSelectors, FileEntity, FolderEntity } from "../../../store"
 import { useFhSystem, useFile } from "../../../hooks"
+
 import { ShipBanner, ShareButton, CopyButton, RemoveButton } from "../../molecules"
-import { Flexbox } from "../../atoms"
+import { Flexbox, PlanFileIcon, FolderIcon } from "../../atoms"
 import { DraggableFile } from "../../organisms"
 
 const ShipsContainer = styled.div`
@@ -38,7 +36,7 @@ const PlanItem: React.FC<{ id: string; onClick?: () => void }> = ({ id, onClick 
   return (
     <>
       <ListItemIcon>
-        <DescriptionIcon />
+        <PlanFileIcon />
       </ListItemIcon>
       <PlanName noWrap>{plan.name}</PlanName>
       <ShipsContainer>

@@ -1,23 +1,11 @@
 import React from "react"
 import styled from "styled-components"
 
-import FolderIcon from "@material-ui/icons/Folder"
-import DescriptionIcon from "@material-ui/icons/Description"
-
-import { Flexbox, DraggableFile, DraggableFileProps } from "../../../components"
+import { Flexbox, DraggableFile, DraggableFileProps, PlanFileIcon, FolderIcon } from "../../../components"
 import { FileType } from "../../../store"
 
-const PlanFileIcon = styled(DescriptionIcon)`
-  color: ${({ theme }) => theme.colors.planFile};
-`
-
-const StyledFolderIcon = styled(FolderIcon)`
-  color: ${({ theme }) => theme.colors.folder};
-`
-
 const getFileIcon = (type: FileType) => {
-  if (type === "plan") return PlanFileIcon
-  return StyledFolderIcon
+  return type === "plan" ? PlanFileIcon : FolderIcon
 }
 
 const FileLabelAction = styled.div`
