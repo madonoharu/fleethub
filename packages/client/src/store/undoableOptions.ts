@@ -31,7 +31,6 @@ const undoableOptions: UndoableOptions = {
   groupBy: batchGroupBy,
   limit: 10,
   neverSkipReducer: true,
-  debug: true,
 }
 
 export default undoableOptions
