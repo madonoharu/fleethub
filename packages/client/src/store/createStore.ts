@@ -36,7 +36,7 @@ const persistedReducerBase: typeof combinedReducer = (...args) => {
   return next
 }
 
-const persistedReducer = persistReducer({ key: "root", storage, throttle: 50 }, persistedReducerBase)
+const persistedReducer = persistReducer({ key: "root", storage, throttle: 50, timeout: 0 }, persistedReducerBase)
 
 const rootReducer = undoable(persistedReducer, undoableOptions)
 
