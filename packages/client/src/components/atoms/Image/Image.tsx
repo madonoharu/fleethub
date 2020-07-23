@@ -2,8 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 const StyledPicture = styled.picture`
-  line-height: 1;
-  font-size: 0;
+  line-height: 0;
 `
 
 const requireImage = (path: string) => {
