@@ -41,7 +41,7 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, id, plan, update }) => 
 
   return (
     <Flexbox className={className}>
-      <TextField startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
+      <TextField placeholder="name" startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
       <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
       <FleetTypeSelect fleetType={plan.fleetType} onChange={handleFleetTypeChange} />
 
