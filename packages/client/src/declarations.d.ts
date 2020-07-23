@@ -19,3 +19,12 @@ declare module "@reduxjs/toolkit" {
 declare module "styled-components" {
   interface DefaultTheme extends Theme {}
 }
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      readonly NODE_ENV: "development" | "production" | "test"
+      readonly VERSION: string
+    }
+  }
+}
