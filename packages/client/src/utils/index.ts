@@ -17,5 +17,5 @@ export const createShallowEqualSelector = createSelectorCreator(defaultMemoize, 
 export * from "./FhDictionary"
 export * from "./gkcoi"
 export * from "./link"
-export * from "./batchGroupBy"
 export * from "./publish"
+export { default as batch } from "./batch"
