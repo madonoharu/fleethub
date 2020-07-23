@@ -6,12 +6,15 @@ import LinkIcon from "@material-ui/icons/Link"
 import FileCopyIcon from "@material-ui/icons/FileCopy"
 import DeleteIcon from "@material-ui/icons/Delete"
 
-import { MenuList, MenuItemProps } from "../../../components"
 import { useFile, useAsyncOnPublish } from "../../../hooks"
 
-import { FolderIcon } from "../../atoms"
+import { FolderIcon, Divider } from "../../atoms"
 
 import TextField from "../TextField"
+
+const StyledDivider = styled(Divider)`
+  margin-top: 8px;
+`
 
 const StyledButton = styled(Button)`
   width: 100%;
@@ -57,7 +60,15 @@ const FolderMenu: React.FCX<Props> = ({ className, id, onClose }) => {
 
   return (
     <div className={className}>
-      <TextField placeholder="name" startLabel={<FolderIcon />} value={file.name} onChange={handleNameChange} />
+      <TextField
+        placeholder="name"
+        fullWidth
+        startLabel={<FolderIcon />}
+        value={file.name}
+        onChange={handleNameChange}
+      />
+
+      <StyledDivider label="Share" />
       <ColumnContainer>
         <StyledButton startIcon={<LinkIcon />} onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading}>
           共有URLをクリップボードにコピーする
@@ -67,6 +78,10 @@ const FolderMenu: React.FCX<Props> = ({ className, id, onClose }) => {
             {url}
           </Link>
         )}
+      </ColumnContainer>
+
+      <StyledDivider label="General" />
+      <ColumnContainer>
         <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
           フォルダーをコピーする
         </StyledButton>
@@ -82,4 +97,5 @@ const FolderMenu: React.FCX<Props> = ({ className, id, onClose }) => {
 
 export default styled(FolderMenu)`
   width: 400px;
+  padding: 8px;
 `
