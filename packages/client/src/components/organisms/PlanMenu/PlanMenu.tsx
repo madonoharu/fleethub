@@ -31,9 +31,10 @@ const StyledButton = styled(Button)`
 
 type Props = {
   id: string
+  onClose?: () => void
 }
 
-const PlanMenu: React.FCX<Props> = ({ className, id }) => {
+const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
   const { plan, file, actions } = usePlanFile(id)
 
   const { asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
@@ -43,6 +44,16 @@ const PlanMenu: React.FCX<Props> = ({ className, id }) => {
 
   const handleNameChange = (name: string) => actions.update({ name })
 
+  const handleCopy = () => {
+    actions.copy()
+    onClose?.()
+  }
+
+  const handleRemove = () => {
+    actions.remove()
+    onClose?.()
+  }
+
   const predeck = JSON.stringify(getDeck4(plan))
 
   return (
@@ -51,10 +62,10 @@ const PlanMenu: React.FCX<Props> = ({ className, id }) => {
 
       <Divider label="Share" />
       <Column>
-        <StyledButton startIcon={<FileCopyIcon />} onClick={actions.copy}>
+        <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
           コピー
         </StyledButton>
-        <StyledButton startIcon={<DeleteIcon />} onClick={actions.remove}>
+        <StyledButton startIcon={<DeleteIcon />} onClick={handleRemove}>
           削除
         </StyledButton>
       </Column>

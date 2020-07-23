@@ -43,7 +43,7 @@ const PlanAction: React.FCX<Props> = ({ className, id, name, plan }) => {
       <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
 
       <MenuModal>
-        <PlanMenu id={id} />
+        <PlanMenu id={id} onClose={MenuModal.hide} />
       </MenuModal>
 
       <Snackbar />

@@ -13,7 +13,7 @@ type Props = {
 
 const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
   const { actions, canDrop } = useFile(file.id)
-  const Modal = useModal()
+  const MenuModal = useModal()
 
   return (
     <FileLabel
@@ -27,11 +27,11 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
         <>
           <CopyButton size="small" title="コピー" onClick={actions.copy} />
           <RemoveButton size="small" title="削除" onClick={actions.remove} />
-          <MoreVertButton size="small" title="メニュー" onClick={Modal.show} />
+          <MoreVertButton size="small" title="メニュー" onClick={MenuModal.show} />
 
-          <Modal>
-            <PlanMenu id={file.id} />
-          </Modal>
+          <MenuModal>
+            <PlanMenu id={file.id} onClose={MenuModal.hide} />
+          </MenuModal>
         </>
       }
     />
