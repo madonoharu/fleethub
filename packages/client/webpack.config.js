@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path")
+const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const WebpackBar = require("webpackbar")
+
+const package = require("./package.json")
 
 /** @type import('webpack').RuleSetRule */
 const rules = [
@@ -64,6 +67,9 @@ const config = {
       title: "作戦室 Jervis OR",
       template: "./src/index.html",
       favicon: "./src/favicon.ico",
+    }),
+    new webpack.DefinePlugin({
+      "process.env.VERSION": JSON.stringify(package.version),
     }),
   ],
 
