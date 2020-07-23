@@ -16,6 +16,10 @@ import { useAsyncOnPublish, usePlanFile } from "../../../hooks"
 
 import TextField from "../TextField"
 
+const StyledDivider = styled(Divider)`
+  margin-top: 8px;
+`
+
 const StyledLink = styled(Link)``
 
 const ColumnContainer = styled.div`
@@ -60,17 +64,7 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
     <div className={className}>
       <TextField placeholder="name" fullWidth startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
 
-      <Divider label="Share" />
-      <ColumnContainer>
-        <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
-          コピー
-        </StyledButton>
-        <StyledButton startIcon={<DeleteIcon />} onClick={handleRemove}>
-          削除
-        </StyledButton>
-      </ColumnContainer>
-
-      <Divider label="Share" />
+      <StyledDivider label="Share" />
       <ColumnContainer>
         <StyledButton startIcon={<LinkIcon />} onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading}>
           共有URLをクリップボードにコピー
@@ -97,6 +91,16 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
           variant="outlined"
           InputProps={{ endAdornment: <CopyTextButton value={predeck} /> }}
         />
+      </ColumnContainer>
+
+      <StyledDivider label="General" />
+      <ColumnContainer>
+        <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
+          編成をコピー
+        </StyledButton>
+        <StyledButton startIcon={<DeleteIcon />} onClick={handleRemove}>
+          編成を削除
+        </StyledButton>
       </ColumnContainer>
 
       <Snackbar />
