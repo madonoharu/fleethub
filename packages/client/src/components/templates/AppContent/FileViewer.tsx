@@ -24,7 +24,7 @@ const FileViewer: React.FC = () => {
   return (
     <>
       <DirectoryBreadcrumbs file={file} />
-      {file.type === "plan" ? <PlanEditor planId={file.id} /> : <FolderPage id={file.id} />}
+      {file.type === "plan" ? <PlanEditor id={file.id} /> : <FolderPage id={file.id} />}
     </>
   )
 }

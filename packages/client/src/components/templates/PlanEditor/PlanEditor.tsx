@@ -13,12 +13,11 @@ const StyledPlanAnalysisPanel = styled(PlanAnalysisPanel)`
 `
 
 type Props = {
-  planId: string
+  id: string
 }
 
-const PlanEditor: React.FCX<Props> = ({ className, planId }) => {
-  const { plan, actions, state } = usePlan(planId)
-  const handlePublish = usePublishFile(planId)
+const PlanEditor: React.FCX<Props> = ({ className, id }) => {
+  const { plan, actions, state } = usePlan(id)
 
   const Modal = useModal()
 
@@ -26,7 +25,7 @@ const PlanEditor: React.FCX<Props> = ({ className, planId }) => {
 
   return (
     <div className={className}>
-      <PlanEditorHeader plan={plan} update={actions.update} onPublish={handlePublish} />
+      <PlanEditorHeader id={id} plan={plan} update={actions.update} />
       <PlanTabs plan={plan} update={actions.update} />
 
       <StyledPlanAnalysisPanel plan={plan} />
