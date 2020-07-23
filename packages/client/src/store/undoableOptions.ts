@@ -1,40 +1,37 @@
-import { UndoableOptions, FilterFunction } from "redux-undo"
-
-import { batchGroupBy } from "../utils"
+import { UndoableOptions, FilterFunction, GroupByFunction } from "redux-undo"
+import { nanoid } from "@reduxjs/toolkit"
 
 import { appSlice } from "./appSlice"
 
-const IGNORE_TIME = 200
-
-let ignoreRapid = false
-const throttlingFilter: FilterFunction = (action) => {
-  console.log(action.type, ignoreRapid)
-  if (ignoreRapid) return false
-
-  ignoreRapid = true
-  setTimeout(() => {
-    ignoreRapid = false
-  }, IGNORE_TIME)
-
-  return true
+const undoableState: { ignore: boolean; group?: string } = {
+  ignore: false,
 }
 
 export const ignoreUndoable = (cb: () => void) => {
-  ignoreRapid = true
+  undoableState.ignore = true
   cb()
-  ignoreRapid = false
+  undoableState.ignore = false
 }
+
+export const batchUndoable = (cb: () => void, group = nanoid()) => {
+  undoableState.group = group
+  cb()
+  undoableState.group = undefined
+}
+
+export const batchGroupBy: GroupByFunction = () => undoableState.group
 
 const actionTypeFilter: FilterFunction = (action) =>
   ["entities", appSlice.name].some((key) => (action.type as string).startsWith(key))
 
-const filter: FilterFunction = (...args) => throttlingFilter(...args) && actionTypeFilter(...args)
+const filter: FilterFunction = (...args) => !undoableState.ignore && actionTypeFilter(...args)
 
 const undoableOptions: UndoableOptions = {
   filter,
   groupBy: batchGroupBy,
   limit: 10,
   neverSkipReducer: true,
+  debug: true,
 }
 
 export default undoableOptions

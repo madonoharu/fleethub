@@ -10,4 +10,6 @@ export * from "./gearListSlice"
 
 export * from "./selectors"
 
+export * from "./undoableOptions"
+
 export { default as StoreProvider } from "./StoreProvider"
