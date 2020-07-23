@@ -11,3 +11,5 @@ export * from "./MenuList"
 
 export { default as Input } from "./Input"
 export * from "./Input"
+
+export * from "./icons"
