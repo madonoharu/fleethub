@@ -16,9 +16,10 @@ import TextField from "../TextField"
 
 type Props = {
   id: string
+  onClose?: () => void
 }
 
-const FolderMenu: React.FC<Props> = ({ id }) => {
+const FolderMenu: React.FC<Props> = ({ id, onClose }) => {
   const { file, actions } = useFile(id)
 
   const publish = usePublishFile(id)
@@ -47,6 +48,16 @@ const FolderMenu: React.FC<Props> = ({ id }) => {
     actions.update({ name })
   }
 
+  const handleCopy = () => {
+    actions.copy()
+    onClose?.()
+  }
+
+  const handleRemove = () => {
+    actions.remove()
+    onClose?.()
+  }
+
   const url = asyncOnLinkClick.result
 
   const list: MenuItemProps[] = [
@@ -56,8 +67,8 @@ const FolderMenu: React.FC<Props> = ({ id }) => {
       onClick: asyncOnLinkClick.execute,
       disabled: asyncOnLinkClick.loading,
     },
-    { icon: <FileCopyIcon />, text: "コピーする", onClick: actions.copy },
-    { icon: <DeleteIcon />, text: "削除する", onClick: actions.remove },
+    { icon: <FileCopyIcon />, text: "コピーする", onClick: handleCopy },
+    { icon: <DeleteIcon />, text: "削除する", onClick: handleRemove },
   ]
 
   return (
