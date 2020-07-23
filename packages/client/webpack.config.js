@@ -33,7 +33,6 @@ const rules = [
         options: {
           limit: 244,
           name: "static/media/[path][name].[ext]",
-          esModule: false,
         },
       },
     ],
@@ -61,7 +60,9 @@ const config = {
   plugins: [
     new WebpackBar(),
     new HtmlWebpackPlugin({
+      title: "作戦室 Jervis OR",
       template: "./src/index.html",
+      favicon: "./src/favicon.ico",
     }),
   ],
 
