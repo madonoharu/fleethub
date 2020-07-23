@@ -4,13 +4,14 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
 import { FilesData } from "../store"
 import { publicStorageRef } from "../firebase"
 
+const { origin } = window.location
 const dataParamKey = "data"
 const storageParamKey = "storage-file"
 
 export const publishFilesData = async (data: FilesData) => {
   const dataStr = JSON.stringify(data)
 
-  const url = new URL("http://localhost:8000")
+  const url = new URL(origin)
   url.searchParams.set("data", compressToEncodedURIComponent(dataStr))
 
   if (url.href.length < 8000) return url.href
