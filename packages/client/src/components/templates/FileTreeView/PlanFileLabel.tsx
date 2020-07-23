@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import { MoreVertButton, CopyButton, RemoveButton } from "../../../components"
+import { MoreVertButton, CopyButton, RemoveButton, PlanMenu } from "../../../components"
 import { PlanFileEntity } from "../../../store"
 import { useModal, useFile } from "../../../hooks"
 
@@ -29,7 +29,9 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
           <RemoveButton size="small" title="削除" onClick={actions.remove} />
           <MoreVertButton size="small" title="メニュー" onClick={Modal.show} />
 
-          <Modal></Modal>
+          <Modal>
+            <PlanMenu id={file.id} />
+          </Modal>
         </>
       }
     />
