@@ -8,7 +8,7 @@ import { plansSelectors, FileEntity, FolderEntity } from "../../../store"
 import { useFhSystem, useFile } from "../../../hooks"
 
 import { ShipBanner, ShareButton, CopyButton, RemoveButton } from "../../molecules"
-import { Flexbox, PlanFileIcon, FolderIcon } from "../../atoms"
+import { Flexbox, PlanIcon, FolderIcon } from "../../atoms"
 import { DraggableFile } from "../../organisms"
 
 const ShipsContainer = styled.div`
@@ -36,7 +36,7 @@ const PlanItem: React.FC<{ id: string; onClick?: () => void }> = ({ id, onClick 
   return (
     <>
       <ListItemIcon>
-        <PlanFileIcon />
+        <PlanIcon />
       </ListItemIcon>
       <PlanName noWrap>{plan.name}</PlanName>
       <ShipsContainer>

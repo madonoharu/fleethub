@@ -1,11 +1,11 @@
 import React from "react"
 import styled from "styled-components"
 
-import { Flexbox, DraggableFile, DraggableFileProps, PlanFileIcon, FolderIcon } from "../../../components"
+import { Flexbox, DraggableFile, DraggableFileProps, PlanIcon, FolderIcon } from "../../../components"
 import { FileType } from "../../../store"
 
 const getFileIcon = (type: FileType) => {
-  return type === "plan" ? PlanFileIcon : FolderIcon
+  return type === "plan" ? PlanIcon : FolderIcon
 }
 
 const FileLabelAction = styled.div`
