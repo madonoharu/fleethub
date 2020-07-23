@@ -10,7 +10,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import { MenuList, MenuItemProps, CopyTextButton } from "../../../components"
 import { useFile, usePublishFile, useSnackbar } from "../../../hooks"
 
-import { Input } from "../../atoms"
+import { Input, FolderIcon } from "../../atoms"
 
 import TextField from "../TextField"
 
@@ -62,7 +62,7 @@ const FolderMenu: React.FC<Props> = ({ id }) => {
 
   return (
     <Container>
-      <TextField startLabel="name" value={file.name} onChange={handleNameChange} />
+      <TextField startLabel={<FolderIcon />} value={file.name} onChange={handleNameChange} />
       <MenuList list={list} />
       {url && <Input variant="outlined" value={url} InputProps={{ endAdornment: <CopyTextButton value={url} /> }} />}
       <Snackbar />
