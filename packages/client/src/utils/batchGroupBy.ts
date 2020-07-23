@@ -1,4 +1,4 @@
-import { groupByActionTypes, GroupByFunction } from "redux-undo"
+import { GroupByFunction } from "redux-undo"
 import { nanoid } from "@reduxjs/toolkit"
 import { batch as batchedUpdate } from "react-redux"
 
@@ -12,10 +12,7 @@ const end = () => {
   inner = undefined
 }
 
-export const makeGroupBy = (actions?: string[]): GroupByFunction => {
-  const defaultGroupBy = groupByActionTypes(actions)
-  return (...args) => inner || defaultGroupBy(...args)
-}
+export const batchGroupBy: GroupByFunction = () => inner
 
 export const batchUndoable = (cb: () => void, group?: string) => {
   start(group)
