@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import { useAsyncCallback } from "react-async-hook"
 import copy from "copy-to-clipboard"
 
 import { Container } from "@material-ui/core"
@@ -11,7 +11,8 @@ import { MenuList, MenuItemProps, CopyTextButton } from "../../../components"
 import { useFile, usePublishFile, useSnackbar } from "../../../hooks"
 
 import { Input } from "../../atoms"
-import { useAsyncCallback } from "react-async-hook"
+
+import TextField from "../TextField"
 
 type Props = {
   id: string
@@ -42,8 +43,8 @@ const FolderMenu: React.FC<Props> = ({ id }) => {
 
   if (file?.type !== "folder") return null
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    actions.update({ name: event.currentTarget.value })
+  const handleNameChange = (name: string) => {
+    actions.update({ name })
   }
 
   const url = asyncOnLinkClick.result
@@ -61,7 +62,7 @@ const FolderMenu: React.FC<Props> = ({ id }) => {
 
   return (
     <Container>
-      <Input startLabel="name" value={file.name} onChange={handleNameChange} />
+      <TextField startLabel="name" value={file.name} onChange={handleNameChange} />
       <MenuList list={list} />
       {url && <Input variant="outlined" value={url} InputProps={{ endAdornment: <CopyTextButton value={url} /> }} />}
       <Snackbar />

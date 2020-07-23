@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { Plan, PlanState, FleetType } from "@fleethub/core"
 
-import { Flexbox, NumberInput, Input, FleetTypeSelect } from "../../../components"
+import { Flexbox, NumberInput, TextField, FleetTypeSelect } from "../../../components"
 import { Update } from "../../../utils"
 
 import PlanAction from "./PlanAction"
@@ -20,9 +20,9 @@ type Props = {
 }
 
 const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPublish }) => {
-  const handleNameChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleNameChange = (value: string) => {
     update((draft) => {
-      draft.name = event.currentTarget.value
+      draft.name = value
     })
   }
 
@@ -40,7 +40,7 @@ const PlanEditorHeader: React.FCX<Props> = ({ className, plan, update, onPublish
 
   return (
     <Flexbox className={className}>
-      <Input startLabel="編成名" value={plan.name} onChange={handleNameChange} />
+      <TextField startLabel="編成名" value={plan.name} onChange={handleNameChange} />
       <LevelInput startLabel="司令部Lv" value={plan.hqLevel} min={1} max={120} onChange={handleHqLevelChange} />
       <FleetTypeSelect fleetType={plan.fleetType} onChange={handleFleetTypeChange} />
 
