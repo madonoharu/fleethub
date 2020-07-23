@@ -29,7 +29,7 @@ const FolderLabel: React.FCX<Props> = ({ className, file }) => {
           <MoreVertButton size="small" title="メニュー" onClick={Modal.show} />
 
           <Modal>
-            <FolderMenu id={file.id} />
+            <FolderMenu id={file.id} onClose={Modal.hide} />
           </Modal>
         </>
       }
