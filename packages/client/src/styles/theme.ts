@@ -93,6 +93,11 @@ const muiTheme = createMuiTheme({
         fontWeight: 400,
       },
     },
+    MuiTab: {
+      root: {
+        textTransform: "none",
+      },
+    },
     MuiListItemIcon: {
       root: {
         minWidth: "auto",

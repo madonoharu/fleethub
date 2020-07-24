@@ -64,7 +64,7 @@ const PlanTabs: React.FCX<Props> = ({ className, plan, update }) => {
         getTabItem("f3"),
         getTabItem("f4"),
         { label: "基地", panel: <LandBaseTabPanel plan={plan} update={update} /> },
-        { label: "画像出力", panel: <GkcoiTabPanel plan={plan} /> },
+        { label: "画像出力(gkcoi)", panel: <GkcoiTabPanel plan={plan} /> },
       ]}
     />
   )
