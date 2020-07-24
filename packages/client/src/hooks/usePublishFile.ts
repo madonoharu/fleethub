@@ -3,14 +3,14 @@ import { AppStore } from "@reduxjs/toolkit"
 import { useStore } from "react-redux"
 import { createCachedSelector } from "re-reselect"
 
-import { cloneEntities, selectEntitiesState } from "../store"
+import { cloneFilesDataById, selectEntitiesState } from "../store"
 import { publishFilesData, createShallowEqualSelector } from "../utils"
 
 const cachedSelector = createCachedSelector(
   (store: AppStore, id: string) => selectEntitiesState(store.getState()),
   (store, id) => id,
   (state, id) => {
-    const cloned = cloneEntities(state, id)
+    const cloned = cloneFilesDataById(state, id)
     return publishFilesData(cloned)
   }
 )({

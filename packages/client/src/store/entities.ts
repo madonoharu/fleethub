@@ -1,11 +1,13 @@
-import { nanoid, AppThunk, Dictionary, combineReducers } from "@reduxjs/toolkit"
+import { AppThunk, combineReducers } from "@reduxjs/toolkit"
 import { isNonNullable } from "@fleethub/utils"
 
-import { filesSelectors, flatFile, isDirectory, filesSlice, FilesData, selectTempIds } from "./filesSlice"
+import { fetchUrlData } from "../utils"
+
+import { filesSelectors, flatFile, isDirectory, filesSlice, selectTempIds } from "./filesSlice"
 import { plansSlice } from "./plansSlice"
 import { selectEntitiesState } from "./selectors"
-import { fetchUrlData } from "../utils"
 import { ignoreUndoable } from "./undoableOptions"
+import { FilesData, cloneFilesData } from "./filesData"
 
 export const entitiesReducer = combineReducers({
   files: filesSlice.reducer,
@@ -14,40 +16,7 @@ export const entitiesReducer = combineReducers({
 
 export type EntitiesState = ReturnType<typeof entitiesReducer>
 
-const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
-  const cloned = array.concat()
-
-  cloned.forEach((item, index) => {
-    if (item === searchValue) cloned[index] = replaceValue
-  })
-
-  return cloned
-}
-
-export const cloneFilesData = ({ id, files, plans }: FilesData): FilesData => {
-  const changes: Array<[string, string]> = files.map((file) => [file.id, nanoid()])
-  const nextId = changes.find((change) => change[0] === id)?.[1] || ""
-
-  const cloneEntity = <T extends { id: string }>(entity: T) => {
-    const change = changes.find(([prevId]) => entity.id === prevId)
-    const nextId = change ? change[1] : ""
-    return { ...entity, id: nextId }
-  }
-
-  const clonedFiles = files.map(cloneEntity)
-  const clonedPlans = plans?.map(cloneEntity)
-
-  const dirs = clonedFiles.filter(isDirectory)
-  changes.forEach((change) => {
-    dirs.forEach((dir) => {
-      dir.children = replaceAll(dir.children, ...change)
-    })
-  })
-
-  return { id: nextId, files: clonedFiles, plans: clonedPlans }
-}
-
-const toFilesData = (state: EntitiesState, id: string): FilesData => {
+const createFilesData = (state: EntitiesState, id: string): FilesData => {
   const fileEntities = state.files.entities
   const planEntities = state.plans.entities
 
@@ -57,14 +26,14 @@ const toFilesData = (state: EntitiesState, id: string): FilesData => {
   return { id, files, plans }
 }
 
-export const cloneEntities = (state: EntitiesState, id: string): FilesData => {
-  const sourceData = toFilesData(state, id)
+export const cloneFilesDataById = (state: EntitiesState, id: string): FilesData => {
+  const sourceData = createFilesData(state, id)
   return cloneFilesData(sourceData)
 }
 
 export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getState) => {
   const state = getState()
-  const cloned = cloneEntities(selectEntitiesState(state), id)
+  const cloned = cloneFilesDataById(selectEntitiesState(state), id)
 
   const parentFile = cloned.files.find((file) => file.id === cloned.id)
   if (parentFile) {
@@ -90,6 +59,6 @@ export const fetchLocationData = (): AppThunk => async (dispatch) => {
   if (!data) return
 
   ignoreUndoable(() => {
-    dispatch(filesSlice.actions.import({ data, to: "temp" }))
+    dispatch(filesSlice.actions.add({ data, to: "temp" }))
   })
 }

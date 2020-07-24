@@ -36,7 +36,7 @@ export const appSlice = createSlice({
       .addCase(filesSlice.actions.createPlan, (state, { payload }) => {
         state.fileId = payload.plan.id
       })
-      .addCase(filesSlice.actions.import, (state, { payload }) => {
+      .addCase(filesSlice.actions.add, (state, { payload }) => {
         state.fileId = payload.data.id
       })
   },
