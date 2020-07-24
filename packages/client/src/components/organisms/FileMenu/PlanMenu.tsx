@@ -1,32 +1,25 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { getDeck4 } from "@fleethub/core"
 import styled from "styled-components"
+import { useSelector } from "react-redux"
 
 import { Link, Button } from "@material-ui/core"
 import OpenInNewIcon from "@material-ui/icons/OpenInNew"
 import LinkIcon from "@material-ui/icons/Link"
-import FileCopyIcon from "@material-ui/icons/FileCopy"
-import DeleteIcon from "@material-ui/icons/Delete"
 
 import { openKctools, openDeckbuilder } from "../../../utils"
+import { useAsyncOnPublish, useFhSystem } from "../../../hooks"
+import { plansSelectors } from "../../../store"
 
 import { CopyTextButton } from "../../molecules"
-import { PlanIcon, KctoolsIcon, Divider } from "../../atoms"
-import { useAsyncOnPublish, usePlanFile } from "../../../hooks"
+import { KctoolsIcon, Divider } from "../../atoms"
 
 import TextField from "../TextField"
-import FileForm from "../FileForm"
+
+import ColumnContainer from "./ColumnContainer"
 
 const StyledDivider = styled(Divider)`
   margin-top: 8px;
-`
-
-const StyledLink = styled(Link)``
-
-const ColumnContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 `
 
 const StyledButton = styled(Button)`
@@ -40,35 +33,19 @@ type Props = {
 }
 
 const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
-  const { plan, file, actions } = usePlanFile(id)
+  const { createPlan } = useFhSystem()
+  const state = useSelector((state) => plansSelectors.selectById(state, id))
+  const plan = useMemo(() => state && createPlan(state), [createPlan, state])
 
   const { asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
   const url = asyncOnPublish.result
 
-  if (!plan || !file) return null
-
-  const handleCopy = () => {
-    actions.copy()
-    onClose?.()
-  }
-
-  const handleRemove = () => {
-    actions.remove()
-    onClose?.()
-  }
+  if (!plan) return null
 
   const predeck = JSON.stringify(getDeck4(plan))
 
   return (
     <div className={className}>
-      <FileForm
-        file={file}
-        onCopy={handleCopy}
-        onRemove={handleRemove}
-        onNameChange={actions.setName}
-        onDescriptionChange={actions.setDescription}
-      />
-
       <StyledDivider label="Share" />
       <ColumnContainer>
         <StyledButton startIcon={<LinkIcon />} onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading}>
@@ -76,9 +53,9 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
         </StyledButton>
 
         {url && (
-          <StyledLink href={url} noWrap>
+          <Link href={url} noWrap>
             {url}
-          </StyledLink>
+          </Link>
         )}
 
         <StyledButton startIcon={<KctoolsIcon />} onClick={() => openKctools(plan)}>
@@ -103,8 +80,4 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
   )
 }
 
-export default styled(PlanMenu)`
-  min-height: 400px;
-  width: 400px;
-  padding: 8px;
-`
+export default PlanMenu
