@@ -1,14 +1,15 @@
 import React from "react"
 import styled from "styled-components"
 
-import { IconButton, Tooltip } from "@material-ui/core"
+import { IconButton, Tooltip, Fab } from "@material-ui/core"
 import SaveIcon from "@material-ui/icons/Save"
 
 import { useModal } from "../../../hooks"
 import CanvasModalContainer from "./CanvasModalContainer"
 
-const CanvasAction = styled.div`
-  text-align: right;
+const StyledFab: typeof Fab = styled(Fab)`
+  position: absolute;
+  right: -64px;
 `
 
 const CanvasContainer = styled.div`
@@ -38,14 +39,12 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
   const dataUrl = canvas.toDataURL()
 
   return (
-    <div>
-      <CanvasAction>
-        <Tooltip title="download">
-          <IconButton component="a" href={dataUrl} download="canvas.png">
-            <SaveIcon />
-          </IconButton>
-        </Tooltip>
-      </CanvasAction>
+    <div className={className}>
+      <Tooltip title="download">
+        <StyledFab color="secondary" component="a" href={dataUrl} download="canvas.png">
+          <SaveIcon />
+        </StyledFab>
+      </Tooltip>
 
       <CanvasContainer onClick={Modal.show}>{element}</CanvasContainer>
       <Modal maxWidth="xl">
@@ -55,4 +54,6 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
   )
 }
 
-export default CanvasViewer
+export default styled(CanvasViewer)`
+  position: relative;
+`
