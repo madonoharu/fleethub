@@ -11,3 +11,4 @@ export const selectPlansState = (root: DefaultRootState) => selectEntitiesState(
 export const selectGearListState = (root: DefaultRootState) => getPresentState(root).gearList
 export const selectShipListState = (root: DefaultRootState) => getPresentState(root).shipList
 export const selectMapListState = (root: DefaultRootState) => getPresentState(root).mapList
+export const selectGkcoiState = (root: DefaultRootState) => getPresentState(root).gkcoi

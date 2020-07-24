@@ -7,6 +7,7 @@ export * from "./entities"
 export * from "./mapListSlice"
 export * from "./shipListSlice"
 export * from "./gearListSlice"
+export * from "./gkcoiSlice"
 
 export * from "./selectors"
 export * from "./filesData"

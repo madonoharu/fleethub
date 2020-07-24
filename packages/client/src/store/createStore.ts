@@ -9,16 +9,17 @@ import { entitiesReducer } from "./entities"
 import { mapListSlice } from "./mapListSlice"
 import { shipListSlice } from "./shipListSlice"
 import { gearListSlice } from "./gearListSlice"
+import { gkcoiSlice } from "./gkcoiSlice"
 
 import undoableOptions from "./undoableOptions"
 
 const combinedReducer = combineReducers({
   entities: entitiesReducer,
   app: appSlice.reducer,
-
   mapList: mapListSlice.reducer,
   gearList: gearListSlice.reducer,
   shipList: shipListSlice.reducer,
+  gkcoi: gkcoiSlice.reducer,
 })
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {
