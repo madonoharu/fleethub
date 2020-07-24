@@ -1,5 +1,4 @@
 import React from "react"
-import styled from "styled-components"
 import { Plan } from "@fleethub/core"
 import { useAsyncCallback } from "react-async-hook"
 
@@ -8,9 +7,9 @@ import {
   TweetButton,
   LinkButton,
   KctoolsButton,
-  PlanMenu,
   MoreVertButton,
   SaveButton,
+  FileMenu,
 } from "../../../components"
 import { useModal, useAsyncOnPublish, useFile } from "../../../hooks"
 import { openKctools } from "../../../utils"
@@ -45,19 +44,20 @@ const PlanAction: React.FCX<Props> = ({ className, id, name, plan }) => {
   })
 
   return (
-    <Flexbox className={className}>
-      <LinkButton title="共有URLをコピー" onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading} />
-      <TweetButton title="編成をツイート" onClick={asyncOnTweetClick.execute} disabled={asyncOnTweetClick.loading} />
-      <KctoolsButton title="制空権シミュレータで開く" onClick={() => openKctools(plan)} />
-      <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
-      {isTemp && <SaveButton title="保存する" onClick={actions.save} />}
+    <>
+      <Flexbox className={className}>
+        <LinkButton title="共有URLをコピー" onClick={asyncOnPublish.execute} disabled={asyncOnPublish.loading} />
+        <TweetButton title="編成をツイート" onClick={asyncOnTweetClick.execute} disabled={asyncOnTweetClick.loading} />
+        <KctoolsButton title="制空権シミュレータで開く" onClick={() => openKctools(plan)} />
+        <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
+        {isTemp && <SaveButton title="保存する" onClick={actions.save} />}
+      </Flexbox>
 
       <MenuModal>
-        <PlanMenu id={id} onClose={MenuModal.hide} />
+        <FileMenu id={id} onClose={MenuModal.hide} />
       </MenuModal>
-
       <Snackbar />
-    </Flexbox>
+    </>
   )
 }
 

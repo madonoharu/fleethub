@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import { MoreVertButton, RemoveButton, OpenInNewButton, FolderMenu } from "../../../components"
+import { MoreVertButton, RemoveButton, OpenInNewButton, FileMenu } from "../../../components"
 import { FolderEntity } from "../../../store"
 import { useModal, useFile } from "../../../hooks"
 
@@ -29,7 +29,7 @@ const FolderLabel: React.FCX<Props> = ({ className, file }) => {
           <MoreVertButton size="small" title="メニュー" onClick={Modal.show} />
 
           <Modal>
-            <FolderMenu id={file.id} onClose={Modal.hide} />
+            <FileMenu id={file.id} onClose={Modal.hide} />
           </Modal>
         </>
       }
