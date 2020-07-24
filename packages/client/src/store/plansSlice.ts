@@ -32,7 +32,7 @@ export const plansSlice = createSlice({
 
       .addCase(filesSlice.actions.remove, plansAdapter.removeMany)
 
-      .addMatcher(makeActionMatcher(filesSlice.actions.set, filesSlice.actions.import), (state, { payload }) => {
+      .addMatcher(makeActionMatcher(filesSlice.actions.set, filesSlice.actions.add), (state, { payload }) => {
         const { plans } = payload.data
         if (plans) plansAdapter.addMany(state, plans)
       })

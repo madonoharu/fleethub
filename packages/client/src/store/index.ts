@@ -9,7 +9,7 @@ export * from "./shipListSlice"
 export * from "./gearListSlice"
 
 export * from "./selectors"
-
+export * from "./filesData"
 export * from "./undoableOptions"
 
 export { default as StoreProvider } from "./StoreProvider"
