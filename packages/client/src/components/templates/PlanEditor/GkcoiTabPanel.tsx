@@ -23,7 +23,7 @@ const OptionContainer = styled(Flexbox)`
 `
 
 const StyledPaper = styled(Paper)`
-  padding: 8px;
+  padding: 0 8px;
   min-height: 480px;
 `
 
