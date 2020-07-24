@@ -41,7 +41,6 @@ export type FilesData = {
   id: string
   files: FileEntity[]
   plans?: PlanStateWithId[]
-  to?: string
 }
 
 const adapter = createEntityAdapter<FileEntity>()
@@ -126,8 +125,9 @@ const addFiles = (state: FilesState, files: FileEntity[], to: ParentKey) => {
   addChildren(state, to, topFileIds)
 }
 
-const set = (state: FilesState, { payload: { files, to = "root" } }: PayloadAction<FilesData>) =>
-  addFiles(state, files, to)
+type SetPayloadAction = PayloadAction<{ data: FilesData; to?: ParentKey }>
+
+const set = (state: FilesState, { payload: { data, to = "root" } }: SetPayloadAction) => addFiles(state, data.files, to)
 
 export const filesSlice = createSlice({
   name: "entities/files",
