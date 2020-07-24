@@ -1,3 +1,4 @@
+export { default as Checkbox } from "./Checkbox"
 export { default as Flexbox } from "./Flexbox"
 export { default as Slider } from "./Slider"
 export { default as LabeledValue } from "./LabeledValue"
