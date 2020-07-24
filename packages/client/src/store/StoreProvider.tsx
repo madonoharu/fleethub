@@ -5,12 +5,14 @@ import { PersistGate } from "redux-persist/integration/react"
 import { ActionCreators } from "redux-undo"
 
 import { createStore } from "./createStore"
+import { cleanEntities } from "./entities"
 
 const StoreProvider: React.FC = ({ children }) => {
   const store = createStore()
   const persistor = persistStore(store)
 
   const handleBeforeLift = () => {
+    store.dispatch(cleanEntities())
     store.dispatch(ActionCreators.clearHistory())
   }
 

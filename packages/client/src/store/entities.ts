@@ -1,7 +1,7 @@
 import { nanoid, AppThunk, Dictionary, combineReducers } from "@reduxjs/toolkit"
 import { isNonNullable } from "@fleethub/utils"
 
-import { filesSelectors, flatFile, isDirectory, filesSlice, FilesData } from "./filesSlice"
+import { filesSelectors, flatFile, isDirectory, filesSlice, FilesData, selectTempIds } from "./filesSlice"
 import { plansSlice } from "./plansSlice"
 import { selectEntitiesState } from "./selectors"
 
@@ -66,4 +66,9 @@ export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getSta
   }
 
   dispatch(filesSlice.actions.set({ ...cloned, to }))
+}
+
+export const cleanEntities = (): AppThunk => (dispatch, getState) => {
+  const tempIds = selectTempIds(getState())
+  dispatch(filesSlice.actions.remove(tempIds))
 }

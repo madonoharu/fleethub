@@ -6,6 +6,7 @@ import {
   AppThunk,
   Dictionary,
   EntitySelectors,
+  createSelector,
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
 import { PlanState } from "@fleethub/core"
@@ -53,18 +54,31 @@ const initalRoot: FolderEntity = {
   children: [],
 }
 
+const initalTemp: FolderEntity = {
+  id: "temp",
+  type: "folder",
+  name: "一時フォルダー",
+  children: [],
+}
+
 const initialState = adapter.getInitialState({
   root: initalRoot,
+  temp: initalTemp,
 })
 
 export type FilesState = typeof initialState
 
 export const isDirectory = (file?: FileEntity): file is Directory => Boolean(file && "children" in file)
 
-const getParentFolder = (state: FilesState, id: ParentKey): FolderEntity => {
+const getFile = (state: FilesState, id: ParentKey) => {
   if (id === "root") return state.root
+  if (id === "temp") return state.temp
 
-  const file = state.entities[id]
+  return state.entities[id]
+}
+
+const getParentFolder = (state: FilesState, id: ParentKey): FolderEntity => {
+  const file = getFile(state, id)
   if (!file) return state.root
 
   if (isDirectory(file)) return file
@@ -92,9 +106,8 @@ const addChildren = (state: FilesState, to: ParentKey, children: string[]) => {
   parent.children = uniq([...parent.children, ...children])
 }
 
-const getFile = (state: FilesState, id: string) => (id === "root" ? state.root : state.entities[id])
-
-const getAllFiles = (state: FilesState) => [state.root, ...Object.values(state.entities)].filter(isNonNullable)
+const getAllFiles = (state: FilesState) =>
+  [state.root, state.temp, ...Object.values(state.entities)].filter(isNonNullable)
 
 const removeFromChildren = (state: FilesState, ids: string[]) => {
   const filterFn = (child: string) => !ids.includes(child)
@@ -182,20 +195,16 @@ export const flatFile = (entities: Dictionary<FileEntity>, id: string): FileEnti
   return [file, ...file.children.flatMap((childId) => flatFile(entities, childId))]
 }
 
-export const getFileTree = (entities: Dictionary<FileEntity>, id: string) => {
-  const files = flatFile(entities, id)
-  const tree: Dictionary<FileEntity> = {}
-
-  files.forEach((file) => {
-    tree[file.id] = file
-  })
-
-  return tree
-}
-
 export const removeFile = (id: string): AppThunk => (dispatch, getState) => {
   const state = getState()
   const entities = filesSelectors.selectEntities(state)
   const ids = flatFile(entities, id).map((file) => file.id)
   dispatch(filesSlice.actions.remove(ids))
 }
+
+export const getTempIds = (state: FilesState) => {
+  const { temp, entities } = state
+  return temp.children.flatMap((id) => flatFile(entities, id)).map((file) => file.id)
+}
+
+export const selectTempIds = createSelector(selectFilesState, getTempIds)
