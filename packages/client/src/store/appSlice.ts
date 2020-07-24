@@ -7,10 +7,12 @@ import { ignoreUndoable } from "./undoableOptions"
 type AppState = {
   fileId?: string
   explorerOpen: boolean
+  importToTemp: boolean
 }
 
 const initialState: AppState = {
   explorerOpen: true,
+  importToTemp: true,
 }
 
 export const appSlice = createSlice({
@@ -24,6 +26,9 @@ export const appSlice = createSlice({
     toggleExplorerOpen: (state) => {
       state.explorerOpen = !state.explorerOpen
     },
+    setImportToTemp: (state, { payload }: PayloadAction<boolean>) => {
+      state.importToTemp = payload
+    },
   },
 
   extraReducers: (bapplder) => {
@@ -31,9 +36,8 @@ export const appSlice = createSlice({
       .addCase(filesSlice.actions.createPlan, (state, { payload }) => {
         state.fileId = payload.plan.id
       })
-      .addCase(filesSlice.actions.import, (state, { payload: { id, plans } }) => {
-        if (plans?.length === 0) return
-        state.fileId = id
+      .addCase(filesSlice.actions.import, (state, { payload }) => {
+        state.fileId = payload.data.id
       })
   },
 })
