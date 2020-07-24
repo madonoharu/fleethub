@@ -44,11 +44,12 @@ const StyledFleetTabLabel = styled(FleetTabLabel)`
 `
 
 type Props = {
+  id: string
   plan: Plan
   update: Update<PlanState>
 }
 
-const PlanTabs: React.FCX<Props> = ({ className, plan, update }) => {
+const PlanTabs: React.FCX<Props> = ({ className, id, plan, update }) => {
   const getTabItem = (fleetKey: FleetKey) => ({
     className: "fleet-tab-label",
     label: <StyledFleetTabLabel fleetKey={fleetKey} fleet={plan[fleetKey]} updatePlan={update} />,
@@ -64,7 +65,7 @@ const PlanTabs: React.FCX<Props> = ({ className, plan, update }) => {
         getTabItem("f3"),
         getTabItem("f4"),
         { label: "基地", panel: <LandBaseTabPanel plan={plan} update={update} /> },
-        { label: "画像出力(gkcoi)", panel: <GkcoiTabPanel plan={plan} /> },
+        { label: "画像出力(gkcoi)", panel: <GkcoiTabPanel id={id} plan={plan} /> },
       ]}
     />
   )

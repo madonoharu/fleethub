@@ -8,7 +8,7 @@ import { Paper, Button, Link } from "@material-ui/core"
 
 import { Select, ReactGkcoi } from "../../../components"
 import { getGkcoiDeck, GkcoiThemes, GkcoiTheme, GkcoiLangs, GkcoiLang } from "../../../utils"
-import { selectGkcoiState, gkcoiSlice } from "../../../store"
+import { selectGkcoiState, gkcoiSlice, filesSelectors } from "../../../store"
 
 import { GithubIcon, Flexbox } from "../../atoms"
 
@@ -54,15 +54,17 @@ const useGkcoiState = () => {
 }
 
 type Props = {
+  id: string
   plan: Plan
 }
 
-const GkcoiTabPanel: React.FCX<Props> = ({ className, plan }) => {
+const GkcoiTabPanel: React.FCX<Props> = ({ className, id, plan }) => {
   const { state, actions } = useGkcoiState()
+  const cmt = useSelector((state) => filesSelectors.selectById(state, id)?.description)
 
   const deck = useMemo(() => {
-    return getGkcoiDeck(plan, state.theme, state.lang)
-  }, [plan, state])
+    return getGkcoiDeck(plan, { ...state, cmt })
+  }, [plan, state, cmt])
 
   return (
     <StyledPaper className={className}>

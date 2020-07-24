@@ -17,14 +17,14 @@ type Props = {
 }
 
 const PlanEditor: React.FCX<Props> = ({ className, id }) => {
-  const { plan, actions, state } = usePlan(id)
+  const { plan, actions } = usePlan(id)
 
   if (!plan) return null
 
   return (
     <div className={className}>
       <PlanEditorHeader id={id} plan={plan} update={actions.update} />
-      <PlanTabs plan={plan} update={actions.update} />
+      <PlanTabs id={id} plan={plan} update={actions.update} />
 
       <StyledPlanAnalysisPanel plan={plan} />
       <BattlePlanPanel plan={plan} updatePlan={actions.update} />
