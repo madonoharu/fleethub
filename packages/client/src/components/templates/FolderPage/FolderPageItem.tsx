@@ -3,10 +3,10 @@ import styled from "styled-components"
 
 import { Typography, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
 
-import { FileEntity, FolderEntity } from "../../../store"
-import { useFile, usePlanFile, useModal } from "../../../hooks"
+import { FileEntity, FolderEntity, PlanFileEntity } from "../../../store"
+import { useFile, useFhPlan, useModal } from "../../../hooks"
 
-import { ShipBanner, ShareButton, CopyButton, RemoveButton, MoreVertButton } from "../../molecules"
+import { ShipBanner, CopyButton, RemoveButton, MoreVertButton } from "../../molecules"
 import { Flexbox, PlanIcon, FolderIcon } from "../../atoms"
 import { DraggableFile, FileMenu } from "../../organisms"
 
@@ -25,9 +25,9 @@ const FileAction = styled(Flexbox)`
   margin-left: auto;
 `
 
-const PlanItem: React.FC<{ id: string; onClick?: () => void }> = ({ id, onClick }) => {
-  const { plan, file, actions } = usePlanFile(id)
-  if (!plan || !file) return null
+const PlanItem: React.FC<{ file: PlanFileEntity }> = ({ file }) => {
+  const plan = useFhPlan(file.id)
+  if (!plan) return null
 
   return (
     <>
@@ -67,7 +67,7 @@ const StyledListItem = styled(ListItem)`
 `
 
 const renderFile = (file: FileEntity) => {
-  if (file.type === "plan") return <PlanItem id={file.id} />
+  if (file.type === "plan") return <PlanItem file={file} />
   return <FolderItem file={file} />
 }
 
