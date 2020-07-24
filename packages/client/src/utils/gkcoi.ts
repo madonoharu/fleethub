@@ -32,10 +32,12 @@ const getGkcoiFleet = (fleet: Fleet): DeckBuilderFleet => {
 }
 
 export type GkcoiTheme = DeckBuilder["theme"]
+export const GkcoiThemes = ["dark", "dark-ex", "official", "74lc", "74mc", "74sb"] as const
 
-export const gkcoiThemes: GkcoiTheme[] = ["dark", "dark-ex", "official", "74lc", "74mc", "74sb"]
+export type GkcoiLang = DeckBuilder["lang"]
+export const GkcoiLangs = ["jp", "en", "kr", "scn"] as const
 
-export const getGkcoiDeck = (plan: Plan, theme: GkcoiTheme = "dark", lang: DeckBuilder["lang"] = "jp") => {
+export const getGkcoiDeck = (plan: Plan, theme: GkcoiTheme = "dark", lang: GkcoiLang = "jp") => {
   const deck: DeckBuilder = { lang, theme, hqlv: plan.hqLevel }
 
   plan.fleetEntries.forEach(([key, fleet]) => {
