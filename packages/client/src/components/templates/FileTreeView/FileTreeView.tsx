@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Button } from "@material-ui/core"
+import { Button, Typography } from "@material-ui/core"
 import TreeView from "@material-ui/lab/TreeView"
 import TreeItem from "@material-ui/lab/TreeItem"
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
@@ -21,7 +21,7 @@ const TransitionProps = { timeout: 150 }
 
 const FileTreeView: React.FCX = ({ className }) => {
   const dispatch = useDispatch()
-  const { entities, root } = useSelector(selectFilesState)
+  const { entities, root, temp } = useSelector(selectFilesState)
 
   const [expanded, setExpanded] = React.useState<string[]>([])
   const [selected, setSelected] = React.useState<string>("")
@@ -86,6 +86,17 @@ const FileTreeView: React.FCX = ({ className }) => {
         onNodeSelect={handleSelect}
       >
         {root.children.map(renderFile)}
+
+        {Boolean(temp.children.length) && (
+          <TreeItem
+            key="temp"
+            nodeId="temp"
+            label={<Typography variant="body2">一時ファイル</Typography>}
+            TransitionProps={TransitionProps}
+          >
+            {temp.children.map(renderFile)}
+          </TreeItem>
+        )}
       </TreeView>
       <FileDropZone className={className} onDrop={handleRootDrop} canDrop={() => true} />
     </div>
