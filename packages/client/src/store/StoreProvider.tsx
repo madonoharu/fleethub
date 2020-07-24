@@ -5,7 +5,7 @@ import { PersistGate } from "redux-persist/integration/react"
 import { ActionCreators } from "redux-undo"
 
 import { createStore } from "./createStore"
-import { cleanEntities, importUrlData } from "./entities"
+import { cleanEntities, fetchLocationData } from "./entities"
 
 const StoreProvider: React.FC = ({ children }) => {
   const store = createStore()
@@ -13,7 +13,7 @@ const StoreProvider: React.FC = ({ children }) => {
 
   const handleBeforeLift = () => {
     store.dispatch(cleanEntities())
-    store.dispatch(importUrlData())
+    store.dispatch(fetchLocationData())
     store.dispatch(ActionCreators.clearHistory())
   }
 
