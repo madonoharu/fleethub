@@ -1,11 +1,9 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { useAsync } from "react-async-hook"
 
-import { filesSlice, selectAppState, appSlice } from "../../../store"
+import { selectAppState, appSlice } from "../../../store"
 import { DragLayerProvider } from "../../../hooks"
-import { parseUrlData } from "../../../utils"
 
 import AppBar from "./AppBar"
 import ExplorerDrawer from "./ExplorerDrawer"
@@ -19,14 +17,6 @@ const AppContent: React.FC = () => {
   const dispatch = useDispatch()
   const explorerOpen = useSelector((state) => selectAppState(state).explorerOpen)
   const toggleExplorerOpen = () => dispatch(appSlice.actions.toggleExplorerOpen())
-
-  const asyncEntitiesImport = useAsync(async () => {
-    const data = await parseUrlData()
-    if (!data) return
-    dispatch(filesSlice.actions.import({ ...data, to: "temp" }))
-  }, [])
-
-  if (asyncEntitiesImport.loading) return null
 
   return (
     <DragLayerProvider>
