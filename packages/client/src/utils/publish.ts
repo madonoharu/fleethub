@@ -25,16 +25,16 @@ export const publishFilesData = async (data: FilesData) => {
   return url.href
 }
 
-const getUrlParam = (key: string) => {
-  const url = new URL(location.href)
-  const value = url.searchParams.get(key)
-  url.searchParams.delete(key)
-  history.replaceState("", "", url.href)
-  return value
-}
+export const fetchUrlData = async (arg: URL | string): Promise<FilesData | undefined> => {
+  const url = typeof arg === "string" ? new URL(arg) : arg
 
-export const parseUrlData = async (): Promise<FilesData | undefined> => {
-  const fileId = getUrlParam(storageParamKey)
+  const getParam = (key: string) => {
+    const value = url.searchParams.get(key)
+    url.searchParams.delete(key)
+    return value
+  }
+
+  const fileId = getParam(storageParamKey)
   if (fileId) {
     const data = await fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}`).then((res) =>
       res.json()
@@ -42,7 +42,7 @@ export const parseUrlData = async (): Promise<FilesData | undefined> => {
     return data
   }
 
-  const dataParam = getUrlParam(dataParamKey)
+  const dataParam = getParam(dataParamKey)
   if (dataParam) {
     try {
       return JSON.parse(decompressFromEncodedURIComponent(dataParam))
