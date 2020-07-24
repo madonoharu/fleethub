@@ -17,12 +17,7 @@ import ShipList from "../ShipList"
 import GearList from "../GearList"
 import MapList from "../MapList"
 
-const StyledLink = styled(Link)`
-  line-height: 0;
-  margin: 0 8px;
-`
-
-const StyledButton = styled(Button)`
+const StyledButton: typeof Button = styled(Button)`
   height: 100%;
 `
 
@@ -63,11 +58,15 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
       <UndoButton size="small" title="操作を戻す" disabled={!canUndo} onClick={undo} />
       <RedoButton size="small" title="操作を進める" disabled={!canRedo} onClick={redo} />
 
-      <Typography variant="body2">作戦室 v{process.env.VERSION}</Typography>
       <Tooltip title="GitHub repository">
-        <StyledLink href="https://github.com/MadonoHaru/fleethub" color="inherit">
-          <GithubIcon fontSize="small" />
-        </StyledLink>
+        <StyledButton
+          startIcon={<GithubIcon />}
+          component={Link}
+          href="https://github.com/MadonoHaru/fleethub"
+          color="inherit"
+        >
+          作戦室 v{process.env.VERSION}
+        </StyledButton>
       </Tooltip>
 
       <StyledButton onClick={ShipListModal.show}>艦娘</StyledButton>
