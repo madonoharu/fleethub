@@ -9,7 +9,7 @@ import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 import MenuIcon from "@material-ui/icons/Menu"
 
-import { withIconButton, GithubIcon } from "../../../components"
+import { withIconButton, GithubIcon, ImportButton, ImportMenu } from "../../../components"
 import { useModal } from "../../../hooks"
 
 import LanguageSelect from "./LanguageSelect"
@@ -41,6 +41,7 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
   const canUndo = useSelector((state) => state.past.length > 0)
   const canRedo = useSelector((state) => state.future.length > 0)
 
+  const ImprotMenuModal = useModal()
   const ShipListModal = useModal()
   const GearListModal = useModal()
   const MapListModal = useModal()
@@ -57,6 +58,7 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
       <StyledButton onClick={handleExplorerOpen} startIcon={<MenuIcon color={explorerOpen ? "primary" : "action"} />}>
         編成一覧
       </StyledButton>
+      <ImportButton size="small" title="デッキビルダー形式などから編成を読み込む" onClick={ImprotMenuModal.show} />
 
       <UndoButton size="small" title="操作を戻す" disabled={!canUndo} onClick={undo} />
       <RedoButton size="small" title="操作を進める" disabled={!canRedo} onClick={redo} />
@@ -71,6 +73,10 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
       <StyledButton onClick={ShipListModal.show}>艦娘</StyledButton>
       <StyledButton onClick={GearListModal.show}>装備</StyledButton>
       <StyledButton onClick={MapListModal.show}>海域</StyledButton>
+
+      <ImprotMenuModal>
+        <ImportMenu onClose={ImprotMenuModal.hide} />
+      </ImprotMenuModal>
 
       <ShipListModal full>
         <ShipList />
@@ -91,7 +97,7 @@ export default styled(AppBar)`
   align-items: center;
   flex-direction: row;
 
-  > :nth-child(4) {
+  > :nth-child(5) {
     margin-left: auto;
   }
 

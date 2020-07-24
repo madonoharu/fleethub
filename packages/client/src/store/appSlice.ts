@@ -12,7 +12,7 @@ type AppState = {
 
 const initialState: AppState = {
   explorerOpen: true,
-  importToTemp: true,
+  importToTemp: false,
 }
 
 export const appSlice = createSlice({
