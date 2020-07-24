@@ -24,25 +24,18 @@ const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
   return cloned
 }
 
-const cloneDictionary = <T extends { id: string }>(entities: Dictionary<T>, changes: Array<[string, string]>) =>
-  changes
-    .map(([prevId, nextId]) => {
-      const source = entities[prevId]
-      if (!source) return
-
-      return { ...source, id: nextId }
-    })
-    .filter(isNonNullable)
-
-export const cloneEntities = (state: EntitiesState, id: string): FilesData => {
-  const fileEntities = state.files.entities
-  const planEntities = state.plans.entities
-
-  const changes: Array<[string, string]> = flatFile(fileEntities, id).map((file) => [file.id, nanoid()])
+export const cloneFilesData = ({ id, files, plans }: FilesData): FilesData => {
+  const changes: Array<[string, string]> = files.map((file) => [file.id, nanoid()])
   const nextId = changes.find((change) => change[0] === id)?.[1] || ""
 
-  const clonedFiles = cloneDictionary(fileEntities, changes)
-  const clonedPlans = cloneDictionary(planEntities, changes)
+  const cloneEntity = <T extends { id: string }>(entity: T) => {
+    const change = changes.find(([prevId]) => entity.id === prevId)
+    const nextId = change ? change[1] : ""
+    return { ...entity, id: nextId }
+  }
+
+  const clonedFiles = files.map(cloneEntity)
+  const clonedPlans = plans?.map(cloneEntity)
 
   const dirs = clonedFiles.filter(isDirectory)
   changes.forEach((change) => {
@@ -52,6 +45,21 @@ export const cloneEntities = (state: EntitiesState, id: string): FilesData => {
   })
 
   return { id: nextId, files: clonedFiles, plans: clonedPlans }
+}
+
+const toFilesData = (state: EntitiesState, id: string): FilesData => {
+  const fileEntities = state.files.entities
+  const planEntities = state.plans.entities
+
+  const files = flatFile(fileEntities, id)
+  const plans = files.map((file) => planEntities[file.id]).filter(isNonNullable)
+
+  return { id, files, plans }
+}
+
+export const cloneEntities = (state: EntitiesState, id: string): FilesData => {
+  const sourceData = toFilesData(state, id)
+  return cloneFilesData(sourceData)
 }
 
 export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getState) => {
@@ -67,7 +75,7 @@ export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getSta
     to = filesSelectors.selectAll(state).find((file) => isDirectory(file) && file.children.includes(id))?.id
   }
 
-  dispatch(filesSlice.actions.set({ ...cloned, to }))
+  dispatch(filesSlice.actions.set({ data: cloned, to }))
 }
 
 export const cleanEntities = (): AppThunk => (dispatch, getState) => {
@@ -82,6 +90,6 @@ export const fetchLocationData = (): AppThunk => async (dispatch) => {
   if (!data) return
 
   ignoreUndoable(() => {
-    dispatch(filesSlice.actions.import({ ...data, to: "temp" }))
+    dispatch(filesSlice.actions.import({ data, to: "temp" }))
   })
 }
