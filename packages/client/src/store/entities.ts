@@ -4,6 +4,8 @@ import { isNonNullable } from "@fleethub/utils"
 import { filesSelectors, flatFile, isDirectory, filesSlice, FilesData, selectTempIds } from "./filesSlice"
 import { plansSlice } from "./plansSlice"
 import { selectEntitiesState } from "./selectors"
+import { parseUrlData } from "../utils"
+import { ignoreUndoable } from "./undoableOptions"
 
 export const entitiesReducer = combineReducers({
   files: filesSlice.reducer,
@@ -71,4 +73,13 @@ export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getSta
 export const cleanEntities = (): AppThunk => (dispatch, getState) => {
   const tempIds = selectTempIds(getState())
   dispatch(filesSlice.actions.remove(tempIds))
+}
+
+export const importUrlData = (): AppThunk => async (dispatch) => {
+  const data = await parseUrlData()
+  if (!data) return
+
+  ignoreUndoable(() => {
+    dispatch(filesSlice.actions.import({ ...data, to: "temp" }))
+  })
 }
