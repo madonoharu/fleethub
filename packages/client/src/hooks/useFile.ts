@@ -49,7 +49,10 @@ export const useFile = (id: string) => {
 
     const drop = (dragFile: FileEntity) => dispatch(filesSlice.actions.move({ id: dragFile.id, to: id }))
 
-    return { open, update, drop, copy, remove, save, createPlan, createFolder }
+    const setName = (name: string) => update({ name })
+    const setDescription = (description: string) => update({ description })
+
+    return { open, update, drop, copy, remove, save, createPlan, createFolder, setName, setDescription }
   }, [dispatch, id])
 
   const canDrop = (dragFile: FileEntity) => {
