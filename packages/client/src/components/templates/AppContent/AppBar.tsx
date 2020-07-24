@@ -4,19 +4,27 @@ import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { ActionCreators } from "redux-undo"
 
-import { AppBar as MuiAppBar, Button } from "@material-ui/core"
+import { AppBar as MuiAppBar, Button, Typography, Link, Tooltip } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
-import FolderIcon from "@material-ui/icons/Folder"
-import FolderOpenIcon from "@material-ui/icons/FolderOpen"
+import MenuIcon from "@material-ui/icons/Menu"
 
-import { withIconButton } from "../../../components"
+import { withIconButton, GithubIcon } from "../../../components"
 import { useModal } from "../../../hooks"
 
 import LanguageSelect from "./LanguageSelect"
 import ShipList from "../ShipList"
 import GearList from "../GearList"
 import MapList from "../MapList"
+
+const StyledLink = styled(Link)`
+  line-height: 0;
+  margin: 0 8px;
+`
+
+const StyledButton = styled(Button)`
+  height: 100%;
+`
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -46,28 +54,30 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
 
   return (
     <MuiAppBar className={className} position="sticky">
-      <Button
-        onClick={handleExplorerOpen}
-        color="primary"
-        startIcon={explorerOpen ? <FolderOpenIcon /> : <FolderIcon />}
-      >
+      <StyledButton onClick={handleExplorerOpen} startIcon={<MenuIcon color={explorerOpen ? "primary" : "action"} />}>
         編成一覧
-      </Button>
+      </StyledButton>
+
       <UndoButton size="small" title="操作を戻す" disabled={!canUndo} onClick={undo} />
       <RedoButton size="small" title="操作を進める" disabled={!canRedo} onClick={redo} />
 
-      <Button onClick={ShipListModal.show}>艦娘</Button>
-      <Button onClick={GearListModal.show}>装備</Button>
-      <Button onClick={MapListModal.show}>海域</Button>
+      <Typography variant="body2">作戦室 v{process.env.VERSION}</Typography>
+      <Tooltip title="GitHub repository">
+        <StyledLink href="https://github.com/MadonoHaru/fleethub" color="inherit">
+          <GithubIcon fontSize="small" />
+        </StyledLink>
+      </Tooltip>
+
+      <StyledButton onClick={ShipListModal.show}>艦娘</StyledButton>
+      <StyledButton onClick={GearListModal.show}>装備</StyledButton>
+      <StyledButton onClick={MapListModal.show}>海域</StyledButton>
 
       <ShipListModal full>
         <ShipList />
       </ShipListModal>
-
       <GearListModal full>
         <GearList />
       </GearListModal>
-
       <MapListModal full>
         <MapList />
       </MapListModal>
@@ -76,13 +86,10 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
 }
 
 export default styled(AppBar)`
+  height: 32px;
   display: flex;
   align-items: center;
   flex-direction: row;
-
-  > * {
-    height: 32px;
-  }
 
   > :nth-child(4) {
     margin-left: auto;
