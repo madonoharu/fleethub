@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import styled from "styled-components"
 import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
@@ -24,6 +24,23 @@ const StyledButton: typeof Button = styled(Button)`
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
 
+const useUndo = () => {
+  const dispatch = useDispatch()
+
+  const canUndo = useSelector((state) => state.past.length > 0)
+  const canRedo = useSelector((state) => state.future.length > 0)
+
+  const actions = useMemo(
+    () => ({
+      undo: () => dispatch(ActionCreators.undo()),
+      redo: () => dispatch(ActionCreators.redo()),
+    }),
+    [dispatch]
+  )
+
+  return { canUndo, canRedo, ...actions }
+}
+
 type Props = {
   explorerOpen?: boolean
   onExplorerOpen: () => void
@@ -32,17 +49,12 @@ type Props = {
 const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) => {
   const { t } = useTranslation()
 
-  const dispatch = useDispatch()
-  const canUndo = useSelector((state) => state.past.length > 0)
-  const canRedo = useSelector((state) => state.future.length > 0)
+  const { canUndo, canRedo, undo, redo } = useUndo()
 
   const ImprotMenuModal = useModal()
   const ShipListModal = useModal()
   const GearListModal = useModal()
   const MapListModal = useModal()
-
-  const undo = () => canUndo && dispatch(ActionCreators.undo())
-  const redo = () => canRedo && dispatch(ActionCreators.redo())
 
   const handleExplorerOpen = () => {
     onExplorerOpen()
