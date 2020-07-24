@@ -2,7 +2,16 @@ import { useMemo } from "react"
 import { createSelector } from "@reduxjs/toolkit"
 import { useDispatch, useSelector, DefaultRootState, shallowEqual } from "react-redux"
 
-import { filesSelectors, isDirectory, FileEntity, filesSlice, appSlice, removeFile, copyFile } from "../store"
+import {
+  filesSelectors,
+  isDirectory,
+  FileEntity,
+  filesSlice,
+  appSlice,
+  removeFile,
+  copyFile,
+  selectTempIds,
+} from "../store"
 
 const getParents = (files: FileEntity[], id: string): FileEntity[] => {
   const parent = files.find((file) => isDirectory(file) && file.children.includes(id))
@@ -21,6 +30,7 @@ const makeSelectParents = () =>
 
 export const useFile = (id: string) => {
   const file = useSelector((state) => filesSelectors.selectById(state, id))
+  const isTemp = useSelector((state) => selectTempIds(state).includes(id))
 
   const selectParents = useMemo(makeSelectParents, [])
   const parents = useSelector((state) => selectParents(state, id), shallowEqual)
@@ -49,5 +59,5 @@ export const useFile = (id: string) => {
     return !parents.includes(dragFile)
   }
 
-  return { file, actions, parents, canDrop }
+  return { file, isTemp, actions, parents, canDrop }
 }
