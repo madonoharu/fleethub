@@ -5,6 +5,7 @@ import { IconButton, Tooltip } from "@material-ui/core"
 import SaveIcon from "@material-ui/icons/Save"
 
 import { useModal } from "../../../hooks"
+import CanvasModalContainer from "./CanvasModalContainer"
 
 const CanvasAction = styled.div`
   text-align: right;
@@ -47,7 +48,9 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
       </CanvasAction>
 
       <CanvasContainer onClick={Modal.show}>{element}</CanvasContainer>
-      <Modal maxWidth="xl">{element}</Modal>
+      <Modal maxWidth="xl">
+        <CanvasModalContainer>{element}</CanvasModalContainer>
+      </Modal>
     </div>
   )
 }
