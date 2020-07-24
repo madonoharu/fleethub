@@ -13,6 +13,7 @@ import { PlanState } from "@fleethub/core"
 import { uniq, isNonNullable } from "@fleethub/utils"
 
 import { selectFilesState } from "./selectors"
+import { FilesData, cloneFilesData } from "./filesData"
 
 export type PlanStateWithId = PlanState & { id: string }
 
@@ -36,12 +37,6 @@ declare const fileIdNominality: unique symbol
 type FileId = string & { [fileIdNominality]?: never }
 
 export type ParentKey = FileId | "root" | "temp"
-
-export type FilesData = {
-  id: string
-  files: FileEntity[]
-  plans?: PlanStateWithId[]
-}
 
 const adapter = createEntityAdapter<FileEntity>()
 export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> = adapter.getSelectors(selectFilesState)
@@ -136,7 +131,13 @@ export const filesSlice = createSlice({
 
   reducers: {
     set,
-    import: set,
+    add: {
+      reducer: set,
+      prepare: ({ data, to }: SetPayloadAction["payload"]) => {
+        const cloned = cloneFilesData(data)
+        return { payload: { data: cloned, to } }
+      },
+    },
 
     createPlan: {
       reducer: (state, { payload }: PayloadAction<{ plan: PlanStateWithId; to: ParentKey }>) => {
