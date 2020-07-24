@@ -7,14 +7,14 @@ import AddIcon from "@material-ui/icons/Add"
 
 import { useFile } from "../../../hooks"
 
-import { FolderIcon, Flexbox } from "../../atoms"
-import { FileDropZone, TextField } from "../../organisms"
+import { Flexbox, Divider } from "../../atoms"
+import { SaveButton } from "../../molecules"
+import { FileDropZone, FileForm } from "../../organisms"
 
 import FolderPageItem from "./FolderPageItem"
-import { SaveButton } from "../../molecules"
 
-const FolderPageHeader = styled(Flexbox)`
-  align-items: "flex-end";
+const ListContainer = styled.div`
+  margin-top: 16px;
 `
 
 type Props = {
@@ -43,20 +43,29 @@ const FolderPage: React.FCX<Props> = ({ className, id }) => {
   return (
     <FileDropZone className={className} onDrop={actions.drop} canDrop={canDrop}>
       <Container>
-        <FolderPageHeader>
-          <TextField placeholder="name" startLabel={<FolderIcon />} value={name} onChange={handleNameChange} />
-          <Button onClick={handlePlanCreate} startIcon={<AddIcon />}>
-            編成を作成
-          </Button>
-          <Button onClick={handleFolderCreate} startIcon={<CreateNewFolderIcon />}>
-            フォルダを作成
-          </Button>
-          {isTemp && <SaveButton title="保存する" onClick={actions.save} />}
-        </FolderPageHeader>
+        <FileForm
+          file={file}
+          onNameChange={actions.setName}
+          onDescriptionChange={actions.setDescription}
+          onCopy={actions.copy}
+          onRemove={actions.remove}
+        />
 
-        {children.map((id) => (
-          <FolderPageItem key={id} id={id} parent={id} />
-        ))}
+        <ListContainer>
+          <Flexbox>
+            <Button onClick={handlePlanCreate} startIcon={<AddIcon />}>
+              編成を作成
+            </Button>
+            <Button onClick={handleFolderCreate} startIcon={<CreateNewFolderIcon />}>
+              フォルダを作成
+            </Button>
+            {isTemp && <SaveButton title="保存する" onClick={actions.save} />}
+          </Flexbox>
+
+          {children.map((id) => (
+            <FolderPageItem key={id} id={id} parent={id} />
+          ))}
+        </ListContainer>
       </Container>
     </FileDropZone>
   )

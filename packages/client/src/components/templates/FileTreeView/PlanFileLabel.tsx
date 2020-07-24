@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import { MoreVertButton, CopyButton, RemoveButton, PlanMenu } from "../../../components"
+import { MoreVertButton, CopyButton, RemoveButton, FileMenu } from "../../../components"
 import { PlanFileEntity } from "../../../store"
 import { useModal, useFile } from "../../../hooks"
 
@@ -16,25 +16,27 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
   const MenuModal = useModal()
 
   return (
-    <FileLabel
-      className={className}
-      file={file}
-      text={file.name}
-      onClick={actions.open}
-      canDrop={canDrop}
-      onDrop={actions.drop}
-      action={
-        <>
-          <CopyButton size="small" title="コピー" onClick={actions.copy} />
-          <RemoveButton size="small" title="削除" onClick={actions.remove} />
-          <MoreVertButton size="small" title="メニュー" onClick={MenuModal.show} />
+    <>
+      <FileLabel
+        className={className}
+        file={file}
+        text={file.name}
+        onClick={actions.open}
+        canDrop={canDrop}
+        onDrop={actions.drop}
+        action={
+          <>
+            <CopyButton size="small" title="コピー" onClick={actions.copy} />
+            <RemoveButton size="small" title="削除" onClick={actions.remove} />
+            <MoreVertButton size="small" title="メニュー" onClick={MenuModal.show} />
+          </>
+        }
+      />
 
-          <MenuModal>
-            <PlanMenu id={file.id} onClose={MenuModal.hide} />
-          </MenuModal>
-        </>
-      }
-    />
+      <MenuModal>
+        <FileMenu id={file.id} onClose={MenuModal.hide} />
+      </MenuModal>
+    </>
   )
 }
 

@@ -4,11 +4,11 @@ import styled from "styled-components"
 import { Typography, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
 
 import { FileEntity, FolderEntity } from "../../../store"
-import { useFile, usePlanFile } from "../../../hooks"
+import { useFile, usePlanFile, useModal } from "../../../hooks"
 
-import { ShipBanner, ShareButton, CopyButton, RemoveButton } from "../../molecules"
+import { ShipBanner, ShareButton, CopyButton, RemoveButton, MoreVertButton } from "../../molecules"
 import { Flexbox, PlanIcon, FolderIcon } from "../../atoms"
-import { DraggableFile } from "../../organisms"
+import { DraggableFile, FileMenu } from "../../organisms"
 
 const ShipsContainer = styled.div`
   overflow: hidden;
@@ -82,15 +82,23 @@ type FolderPageItemProps = {
 
 const FolderPageItem = React.forwardRef<HTMLElement, FolderPageItemProps>(
   ({ className, file, onOpen, onCopy, onRemove }, ref) => {
+    const MenuModal = useModal()
+
     return (
-      <StyledListItem className={className} innerRef={ref} onClick={onOpen} button divider>
-        {renderFile(file)}
-        <FileAction onClick={(e) => e.stopPropagation()}>
-          <CopyButton onClick={onCopy} />
-          <ShareButton />
-          <RemoveButton onClick={onRemove} />
-        </FileAction>
-      </StyledListItem>
+      <>
+        <StyledListItem className={className} innerRef={ref} onClick={onOpen} button divider>
+          {renderFile(file)}
+          <FileAction onClick={(e) => e.stopPropagation()}>
+            <CopyButton title="コピーする" onClick={onCopy} />
+            <RemoveButton title="削除する" onClick={onRemove} />
+            <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
+          </FileAction>
+        </StyledListItem>
+
+        <MenuModal>
+          <FileMenu id={file.id} onClose={MenuModal.hide} />
+        </MenuModal>
+      </>
     )
   }
 )
