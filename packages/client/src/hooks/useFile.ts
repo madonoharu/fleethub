@@ -42,13 +42,14 @@ export const useFile = (id: string) => {
     const update = (changes: Partial<FileEntity>) => dispatch(filesSlice.actions.update({ id, changes }))
     const copy = () => dispatch(copyFile(id))
     const remove = () => dispatch(removeFile(id))
+    const save = () => dispatch(filesSlice.actions.move({ id, to: "root" }))
 
     const createPlan = () => dispatch(filesSlice.actions.createPlan({ to: id }))
     const createFolder = () => dispatch(filesSlice.actions.createFolder(id))
 
     const drop = (dragFile: FileEntity) => dispatch(filesSlice.actions.move({ id: dragFile.id, to: id }))
 
-    return { open, update, drop, copy, remove, createPlan, createFolder }
+    return { open, update, drop, copy, remove, save, createPlan, createFolder }
   }, [dispatch, id])
 
   const canDrop = (dragFile: FileEntity) => {

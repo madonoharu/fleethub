@@ -3,8 +3,16 @@ import styled from "styled-components"
 import { Plan } from "@fleethub/core"
 import { useAsyncCallback } from "react-async-hook"
 
-import { Flexbox, TweetButton, LinkButton, KctoolsButton, PlanMenu, MoreVertButton } from "../../../components"
-import { useModal, useAsyncOnPublish } from "../../../hooks"
+import {
+  Flexbox,
+  TweetButton,
+  LinkButton,
+  KctoolsButton,
+  PlanMenu,
+  MoreVertButton,
+  SaveButton,
+} from "../../../components"
+import { useModal, useAsyncOnPublish, useFile } from "../../../hooks"
 import { openKctools } from "../../../utils"
 
 type TweetOption = {
@@ -28,6 +36,7 @@ type Props = {
 const PlanAction: React.FCX<Props> = ({ className, id, name, plan }) => {
   const MenuModal = useModal()
 
+  const { isTemp, actions } = useFile(id)
   const { publish, asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
 
   const asyncOnTweetClick = useAsyncCallback(async () => {
@@ -41,6 +50,7 @@ const PlanAction: React.FCX<Props> = ({ className, id, name, plan }) => {
       <TweetButton title="編成をツイート" onClick={asyncOnTweetClick.execute} disabled={asyncOnTweetClick.loading} />
       <KctoolsButton title="制空権シミュレータで開く" onClick={() => openKctools(plan)} />
       <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
+      {isTemp && <SaveButton title="保存する" onClick={actions.save} />}
 
       <MenuModal>
         <PlanMenu id={id} onClose={MenuModal.hide} />
