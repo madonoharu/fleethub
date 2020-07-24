@@ -11,6 +11,7 @@ import { useFile, useAsyncOnPublish } from "../../../hooks"
 import { FolderIcon, Divider } from "../../atoms"
 
 import TextField from "../TextField"
+import FileForm from "../FileForm"
 
 const StyledDivider = styled(Divider)`
   margin-top: 8px;
@@ -42,10 +43,6 @@ const FolderMenu: React.FCX<Props> = ({ className, id, onClose }) => {
 
   if (file?.type !== "folder") return null
 
-  const handleNameChange = (name: string) => {
-    actions.update({ name })
-  }
-
   const handleCopy = () => {
     actions.copy()
     onClose?.()
@@ -60,12 +57,12 @@ const FolderMenu: React.FCX<Props> = ({ className, id, onClose }) => {
 
   return (
     <div className={className}>
-      <TextField
-        placeholder="name"
-        fullWidth
-        startLabel={<FolderIcon />}
-        value={file.name}
-        onChange={handleNameChange}
+      <FileForm
+        file={file}
+        onCopy={handleCopy}
+        onRemove={handleRemove}
+        onNameChange={actions.setName}
+        onDescriptionChange={actions.setDescription}
       />
 
       <StyledDivider label="Share" />
@@ -80,22 +77,13 @@ const FolderMenu: React.FCX<Props> = ({ className, id, onClose }) => {
         )}
       </ColumnContainer>
 
-      <StyledDivider label="General" />
-      <ColumnContainer>
-        <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
-          フォルダーをコピーする
-        </StyledButton>
-        <StyledButton startIcon={<DeleteIcon />} onClick={handleRemove}>
-          フォルダーを削除する
-        </StyledButton>
-      </ColumnContainer>
-
       <Snackbar />
     </div>
   )
 }
 
 export default styled(FolderMenu)`
+  min-height: 400px;
   width: 400px;
   padding: 8px;
 `

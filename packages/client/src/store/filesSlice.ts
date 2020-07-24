@@ -21,6 +21,7 @@ type FileBase<T extends string, P = {}> = {
   id: string
   type: T
   name?: string
+  description?: string
 } & P
 
 export type FolderEntity = FileBase<"folder", { children: string[] }>

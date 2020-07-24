@@ -15,6 +15,7 @@ import { PlanIcon, KctoolsIcon, Divider } from "../../atoms"
 import { useAsyncOnPublish, usePlanFile } from "../../../hooks"
 
 import TextField from "../TextField"
+import FileForm from "../FileForm"
 
 const StyledDivider = styled(Divider)`
   margin-top: 8px;
@@ -46,8 +47,6 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
 
   if (!plan || !file) return null
 
-  const handleNameChange = (name: string) => actions.update({ name })
-
   const handleCopy = () => {
     actions.copy()
     onClose?.()
@@ -62,7 +61,13 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
 
   return (
     <div className={className}>
-      <TextField placeholder="name" fullWidth startLabel={<PlanIcon />} value={file.name} onChange={handleNameChange} />
+      <FileForm
+        file={file}
+        onCopy={handleCopy}
+        onRemove={handleRemove}
+        onNameChange={actions.setName}
+        onDescriptionChange={actions.setDescription}
+      />
 
       <StyledDivider label="Share" />
       <ColumnContainer>
@@ -93,22 +98,13 @@ const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
         />
       </ColumnContainer>
 
-      <StyledDivider label="General" />
-      <ColumnContainer>
-        <StyledButton startIcon={<FileCopyIcon />} onClick={handleCopy}>
-          編成をコピー
-        </StyledButton>
-        <StyledButton startIcon={<DeleteIcon />} onClick={handleRemove}>
-          編成を削除
-        </StyledButton>
-      </ColumnContainer>
-
       <Snackbar />
     </div>
   )
 }
 
 export default styled(PlanMenu)`
+  min-height: 400px;
   width: 400px;
   padding: 8px;
 `
