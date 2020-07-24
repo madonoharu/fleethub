@@ -37,8 +37,12 @@ export const GkcoiThemes = ["dark", "dark-ex", "official", "74lc", "74mc", "74sb
 export type GkcoiLang = DeckBuilder["lang"]
 export const GkcoiLangs = ["jp", "en", "kr", "scn"] as const
 
-export const getGkcoiDeck = (plan: Plan, theme: GkcoiTheme = "dark", lang: GkcoiLang = "jp") => {
-  const deck: DeckBuilder = { lang, theme, hqlv: plan.hqLevel }
+export type GkcoiOptions = Partial<Pick<DeckBuilder, "theme" | "lang" | "cmt">>
+
+const defaultOptions = { lang: "jp", theme: "dark" } as const
+
+export const getGkcoiDeck = (plan: Plan, options?: GkcoiOptions) => {
+  const deck: DeckBuilder = { hqlv: plan.hqLevel, ...defaultOptions, ...options }
 
   plan.fleetEntries.forEach(([key, fleet]) => {
     if (fleet.ships.length === 0) return
