@@ -7,10 +7,6 @@ const StyledMuiTab = styled(MuiTab)`
   min-width: auto;
 `
 
-const StyledMuiTabs = styled(MuiTabs)`
-  margin-bottom: 16px;
-`
-
 type TabItem = {
   panel: React.ReactNode
 } & MuiTabProps
@@ -35,11 +31,11 @@ const Tabs: React.FC<TabsProps> = ({ className, value, onChange, list }) => {
 
   return (
     <div className={className}>
-      <StyledMuiTabs value={current} onChange={handleChange}>
+      <MuiTabs value={current} onChange={handleChange}>
         {list.map(({ panel, ...tabProps }, index) => (
           <StyledMuiTab key={index} {...tabProps} />
         ))}
-      </StyledMuiTabs>
+      </MuiTabs>
 
       {list[current]?.panel}
     </div>
