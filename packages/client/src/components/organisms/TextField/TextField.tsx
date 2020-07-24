@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react"
+import styled from "styled-components"
+
+import { useForkRef } from "@material-ui/core"
 
 import { Input, InputProps } from "../../atoms"
 import { ClearButton } from "../../molecules"
-import styled from "styled-components"
 
 type TextFieldPropsBase = {
   onChange?: (value: string) => void
@@ -10,7 +12,9 @@ type TextFieldPropsBase = {
 
 type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> & TextFieldPropsBase
 
-const TextField: React.FCX<TextFieldProps> = ({ className, value, onChange, onBlur, ...rest }) => {
+const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
+  const { className, value, onChange, onBlur, ...rest } = props
+
   const [str, setStr] = useState(value)
 
   const inputRef = useRef<HTMLInputElement>()
@@ -34,18 +38,20 @@ const TextField: React.FCX<TextFieldProps> = ({ className, value, onChange, onBl
     inputRef.current?.focus()
   }
 
+  const handleRef = useForkRef(inputRef, ref)
+
   return (
     <Input
-      inputRef={inputRef}
+      inputRef={handleRef}
       className={className}
       value={str}
       onChange={handleChange}
       onBlur={handleBlur}
       InputProps={{ endAdornment: <ClearButton size="small" onClick={handleClear} /> }}
       {...rest}
-    ></Input>
+    />
   )
-}
+})
 
 export default styled(TextField)`
   ${ClearButton} {
