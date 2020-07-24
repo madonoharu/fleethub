@@ -1,15 +1,13 @@
-import React, { useMemo } from "react"
+import React from "react"
 import { getDeck4 } from "@fleethub/core"
 import styled from "styled-components"
-import { useSelector } from "react-redux"
 
 import { Link, Button } from "@material-ui/core"
 import OpenInNewIcon from "@material-ui/icons/OpenInNew"
 import LinkIcon from "@material-ui/icons/Link"
 
 import { openKctools, openDeckbuilder } from "../../../utils"
-import { useAsyncOnPublish, useFhSystem } from "../../../hooks"
-import { plansSelectors } from "../../../store"
+import { useAsyncOnPublish, useFhPlan } from "../../../hooks"
 
 import { CopyTextButton } from "../../molecules"
 import { KctoolsIcon, Divider } from "../../atoms"
@@ -29,13 +27,10 @@ const StyledButton = styled(Button)`
 
 type Props = {
   id: string
-  onClose?: () => void
 }
 
-const PlanMenu: React.FCX<Props> = ({ className, id, onClose }) => {
-  const { createPlan } = useFhSystem()
-  const state = useSelector((state) => plansSelectors.selectById(state, id))
-  const plan = useMemo(() => state && createPlan(state), [createPlan, state])
+const PlanMenu: React.FCX<Props> = ({ className, id }) => {
+  const plan = useFhPlan(id)
 
   const { asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
   const url = asyncOnPublish.result
