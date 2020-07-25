@@ -4,7 +4,8 @@ import styled from "styled-components"
 import { useForkRef } from "@material-ui/core"
 
 import { Input, InputProps } from "../../atoms"
-import { ClearButton } from "../../molecules"
+
+import { ClearButton } from "../IconButtons"
 
 type TextFieldPropsBase = {
   onChange?: (value: string) => void

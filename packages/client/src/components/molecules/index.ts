@@ -11,6 +11,8 @@ export { default as StatIcon } from "./StatIcon"
 export { default as NumberInput } from "./NumberInput"
 export * from "./NumberInput"
 
+export { default as TextField } from "./TextField"
+
 export { default as Tabs } from "./Tabs"
 export * from "./Tabs"
 
