@@ -111,6 +111,7 @@ const FolderPageItem = React.forwardRef<HTMLElement, FolderPageItemProps>(
 
 const StyledFolderPageItem = styled(FolderPageItem)`
   min-height: 56px;
+  padding: 0 8px;
 
   .MuiIconButton-root {
     display: none;
