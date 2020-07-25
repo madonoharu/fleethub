@@ -4,9 +4,7 @@ import styled from "styled-components"
 import { FileEntity } from "../../../store"
 
 import { FolderIcon, PlanIcon, Flexbox } from "../../atoms"
-import { CopyButton, RemoveButton } from "../../molecules"
-
-import TextField from "../TextField"
+import { CopyButton, RemoveButton, TextField } from "../../molecules"
 
 type Props = {
   file: FileEntity

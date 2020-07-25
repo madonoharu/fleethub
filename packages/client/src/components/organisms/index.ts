@@ -25,6 +25,5 @@ export * from "./DraggableFile"
 
 export { default as FileDropZone } from "./FileDropZone"
 export { default as ImportMenu } from "./ImportMenu"
-export { default as TextField } from "./TextField"
 export { default as FileForm } from "./FileForm"
 export { default as FileMenu } from "./FileMenu"

@@ -9,10 +9,8 @@ import LinkIcon from "@material-ui/icons/Link"
 import { openKctools, openDeckbuilder } from "../../../utils"
 import { useAsyncOnPublish, useFhPlan } from "../../../hooks"
 
-import { CopyTextButton } from "../../molecules"
+import { CopyTextButton, TextField } from "../../molecules"
 import { KctoolsIcon, Divider } from "../../atoms"
-
-import TextField from "../TextField"
 
 import ColumnContainer from "./ColumnContainer"
 

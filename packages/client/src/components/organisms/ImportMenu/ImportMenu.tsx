@@ -11,9 +11,7 @@ import { fetchUrlData } from "../../../utils"
 import { filesSlice, appSlice, selectAppState } from "../../../store"
 
 import { Flexbox, Divider, Checkbox } from "../../atoms"
-import { ImportButton } from "../../molecules"
-
-import TextField from "../TextField"
+import { ImportButton, TextField } from "../../molecules"
 
 const StyledDivider = styled(Divider)`
   margin-top: 8px;
