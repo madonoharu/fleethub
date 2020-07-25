@@ -1,9 +1,8 @@
 import React from "react"
+import styled from "styled-components"
 import { shipCategoies, ShipCategory } from "@fleethub/core"
 
-import { Checkbox, FormControlLabel } from "@material-ui/core"
-
-import { SelectButtons, Flexbox } from "../../../components"
+import { SelectButtons, Flexbox, Checkbox } from "../../../components"
 import { ShipListState } from "../../../store"
 
 const dict: Record<ShipCategory, string> = {
@@ -22,31 +21,26 @@ type Props = {
   onChange: (state: Partial<ShipListState>) => void
 }
 
-const FilterBar: React.FCX<Props> = ({ state, onChange }) => {
+const FilterBar: React.FCX<Props> = ({ className, state, onChange }) => {
   const toggleAll = () => onChange({ all: !state.all })
   const toggleAbyssal = () => onChange({ abyssal: !state.abyssal })
 
   return (
-    <div>
-      <Flexbox>
-        <SelectButtons
-          options={shipCategoies}
-          value={state.category}
-          onChange={(category) => onChange({ category })}
-          getOptionLabel={(category) => dict[category]}
-        />
-        <FormControlLabel
-          style={{ marginLeft: "auto" }}
-          label="全表示"
-          control={<Checkbox size="small" checked={state.all} onClick={toggleAll} />}
-        />
-        <FormControlLabel
-          label="深海"
-          control={<Checkbox size="small" checked={state.abyssal} onClick={toggleAbyssal} />}
-        />
-      </Flexbox>
-    </div>
+    <Flexbox className={className}>
+      <SelectButtons
+        options={shipCategoies}
+        value={state.category}
+        onChange={(category) => onChange({ category })}
+        getOptionLabel={(category) => dict[category]}
+      />
+      <Checkbox label="全表示" size="small" checked={state.all} onChange={toggleAll} />
+      <Checkbox label="深海" size="small" checked={state.abyssal} onChange={toggleAbyssal} />
+    </Flexbox>
   )
 }
 
-export default FilterBar
+export default styled(FilterBar)`
+  > :first-child {
+    margin-right: auto;
+  }
+`
