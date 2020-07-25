@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useCallback, useEffect, useRef, useMemo } from "react"
 import styled from "styled-components"
 
 import { useForkRef } from "@material-ui/core"
@@ -24,32 +24,35 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStr(event.currentTarget.value)
-  }
+  const memoizedProps = useMemo(() => {
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setStr(event.currentTarget.value)
+    }
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.keyCode === 13) inputRef.current?.blur()
+    }
+
+    const handleClear = () => {
+      setStr("")
+      inputRef.current?.focus()
+    }
+
+    const InputProps = { endAdornment: <ClearButton size="small" onClick={handleClear} /> }
+
+    return { onChange, onKeyDown, InputProps }
+  }, [])
 
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     onBlur?.(event)
-    onChange?.(event.currentTarget.value)
-  }
-
-  const handleClear = () => {
-    setStr("")
-    inputRef.current?.focus()
+    const current = event.currentTarget.value
+    if (current !== value) onChange?.(current)
   }
 
   const handleRef = useForkRef(inputRef, ref)
 
   return (
-    <Input
-      inputRef={handleRef}
-      className={className}
-      value={str}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      InputProps={{ endAdornment: <ClearButton size="small" onClick={handleClear} /> }}
-      {...rest}
-    />
+    <Input inputRef={handleRef} className={className} value={str} onBlur={handleBlur} {...memoizedProps} {...rest} />
   )
 })
 
