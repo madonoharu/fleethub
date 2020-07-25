@@ -47,6 +47,7 @@ export interface GearBase extends Omit<Required<GearData>, "id"> {
   is: (attr: GearAttribute) => boolean
   in: (...attrs: GearAttribute[]) => boolean
   categoryIn: (...categories: GearCategoryKey[]) => boolean
+  hasProficiency: boolean
 }
 
 export type GearState = {
@@ -60,7 +61,6 @@ export type Gear = Readonly<
     GearBase & {
       state: GearState
 
-      hasProficiency: boolean
       ace: number
 
       improvement: ImprovementBonuses
