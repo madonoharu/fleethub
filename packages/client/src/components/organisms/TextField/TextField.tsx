@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, useMemo } from "react"
+import React, { useState, useEffect, useRef, useMemo } from "react"
 import styled from "styled-components"
 
 import { useForkRef } from "@material-ui/core"
@@ -13,7 +13,7 @@ type TextFieldPropsBase = {
 type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> & TextFieldPropsBase
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
-  const { className, value, onChange, onBlur, ...rest } = props
+  const { className, value = "", onChange, onBlur, ...rest } = props
 
   const [str, setStr] = useState(value)
 
