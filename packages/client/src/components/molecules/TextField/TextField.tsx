@@ -11,7 +11,7 @@ type TextFieldPropsBase = {
   onChange?: (value: string) => void
 }
 
-type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> & TextFieldPropsBase
+export type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> & TextFieldPropsBase
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
   const { className, value = "", onChange, onBlur, ...rest } = props
