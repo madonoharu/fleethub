@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { useDispatch, useSelector } from "react-redux"
-import { GearState, GearBase, EquipmentBonuses } from "@fleethub/core"
+import { GearState, GearBase, EquipmentBonuses, Gear } from "@fleethub/core"
 import { GearCategory } from "@fleethub/data"
 
 import { useFhSystem } from "../../../hooks"
@@ -40,11 +40,11 @@ const getDefaultFilterKey = (keys: string[]) => {
 type GearListProps = {
   canEquip?: (gear: GearBase) => boolean
   getBonuses?: (gear: GearBase) => EquipmentBonuses
-  onSelect?: (gear: GearState) => void
+  onSelect?: (gear: Gear) => void
 }
 
 const useGearListState = () => {
-  const gears = useFhSystem().masterGears
+  const { masterGears: gears, createGear } = useFhSystem()
 
   const dispatch = useDispatch()
   const state = useSelector(selectGearListState)
@@ -52,13 +52,22 @@ const useGearListState = () => {
   const update = (...args: Parameters<typeof gearListSlice.actions.update>) =>
     dispatch(gearListSlice.actions.update(...args))
 
-  return { gears, ...state, update }
+  return { gears, ...state, update, createGear }
 }
 
 const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) => {
-  const { gears, abyssal, filterKey, category, update } = useGearListState()
+  const { gears, abyssal, filterKey, category, update, createGear } = useGearListState()
 
-  const handleSelect = (gearId: number) => onSelect && onSelect({ gearId })
+  const handleSelect = (base: GearBase) => {
+    if (!onSelect) return
+    const state: GearState = { gearId: base.gearId }
+    if (base.hasProficiency && !base.categoryIn("LbRecon")) {
+      state.exp = 100
+    }
+
+    const gear = createGear(state)
+    gear && onSelect(gear)
+  }
 
   const { equippableGears, visibleFilterKeys } = React.useMemo(() => {
     const equippableGears = gears.filter((gear) => {
