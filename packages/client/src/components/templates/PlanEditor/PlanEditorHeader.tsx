@@ -2,14 +2,12 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { Plan, PlanState, FleetType } from "@fleethub/core"
 
-import { Typography, ClickAwayListener, Button } from "@material-ui/core"
+import { ClickAwayListener, Button } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
 
 import { Flexbox, PlanIcon, NumberInput, TextField, FleetTypeSelect } from "../../../components"
 import { Update } from "../../../utils"
 import { useFile } from "../../../hooks"
-
-import { EditButton } from "../../molecules"
 
 import PlanAction from "./PlanAction"
 
