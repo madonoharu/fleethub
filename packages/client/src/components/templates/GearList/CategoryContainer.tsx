@@ -14,7 +14,7 @@ const Grid = styled.div`
 
 type Props = {
   entries: Array<[GearCategory, GearBase[]]>
-  onSelect?: (gearId: number) => void
+  onSelect?: (gear: GearBase) => void
   getBonuses?: (gear: GearBase) => EquipmentBonuses
 }
 
@@ -29,7 +29,7 @@ const CategoryContainer: React.FC<Props> = ({ entries, onSelect, getBonuses }) =
               <GearButton
                 key={`gear-${gear.gearId}`}
                 gear={gear}
-                onClick={() => onSelect && onSelect(gear.gearId)}
+                onClick={() => onSelect && onSelect(gear)}
                 bonuses={getBonuses && getBonuses(gear)}
               />
             ))}

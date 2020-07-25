@@ -57,7 +57,7 @@ const AirbaseCard = React.forwardRef<HTMLDivElement, Props>(({ className, label,
         <StyledLabeledValue label="半径" value={airbase.radius} />
       </Flexbox>
 
-      <StyledEquipmentList equipment={airbase.equipment} update={update} canEquip={airbase.canEquip} />
+      <StyledEquipmentList type="airbase" equipment={airbase.equipment} update={update} canEquip={airbase.canEquip} />
     </Paper>
   )
 })

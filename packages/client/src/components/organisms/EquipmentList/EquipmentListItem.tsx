@@ -1,4 +1,5 @@
 import React from "react"
+import styled from "styled-components"
 import { Gear, GearState, getSlotKey, EquipmentState, GearKey, GearBase, EquipmentBonuses } from "@fleethub/core"
 
 import { GearLabel, GearList } from "../../../components"
@@ -8,12 +9,14 @@ import { Update } from "../../../utils"
 import SlotSizeButton from "./SlotSizeButton"
 import AddGearButton from "./AddGearButton"
 import Swappable from "../Swappable"
-import styled from "styled-components"
+
+const isLargeFlyingBoat = (id: number) => [138, 178].includes(id)
 
 export type Props = {
   gear?: Gear
   currentSlotSize?: number
   maxSlotSize?: number
+  type?: "airbase" | "nisshin"
 
   gearKey: GearKey
   updateEquipment: Update<EquipmentState>
@@ -22,23 +25,34 @@ export type Props = {
   makeGetNextBonuses?: (key: GearKey) => (gear: GearBase) => EquipmentBonuses
 }
 
-const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
+const useEquipmentGearActions = ({ type, gearKey, updateEquipment }: Props) => {
   return React.useMemo(() => {
     const slotKey = getSlotKey(gearKey)
 
-    const set = (gearState?: GearState) => {
+    const setGear = (gear?: Gear) => {
       updateEquipment((draft) => {
-        draft[gearKey] = gearState
+        const prev = draft[gearKey]
+        draft[gearKey] = gear?.state
+
+        if (type === "airbase") {
+          draft[slotKey] = gear?.is("Recon") ? 4 : undefined
+          return
+        }
+
+        if (gear?.categoryIn("LargeFlyingBoat") && draft[slotKey] !== 1) {
+          draft[slotKey] = 1
+          return
+        }
+
+        if (prev && isLargeFlyingBoat(prev.gearId)) {
+          draft[slotKey] = undefined
+        }
       })
     }
 
     const setSlotSize = (next: number | undefined) => {
       updateEquipment((draft) => {
-        if (next === undefined) {
-          delete draft[slotKey]
-        } else {
-          draft[slotKey] = next
-        }
+        draft[slotKey] = next
       })
     }
 
@@ -48,14 +62,10 @@ const useEquipmentGearActions = ({ gearKey, updateEquipment }: Props) => {
         state && recipe(state)
       })
 
-    const remove = () => {
-      updateEquipment((draft) => {
-        delete draft[gearKey]
-      })
-    }
+    const remove = () => setGear(undefined)
 
-    return { set, update, remove, setSlotSize }
-  }, [gearKey, updateEquipment])
+    return { setGear, setSlotSize, update, remove }
+  }, [type, gearKey, updateEquipment])
 }
 
 const EquipmentListItem: React.FCX<Props> = (props) => {
@@ -64,8 +74,8 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
   const actions = useEquipmentGearActions(props)
   const Modal = useModal()
 
-  const handleGearSelect = (gear: GearState) => {
-    actions.set(gear)
+  const handleGearSelect = (gear: Gear) => {
+    actions.setGear(gear)
     Modal.hide()
   }
 
@@ -77,8 +87,16 @@ const EquipmentListItem: React.FCX<Props> = (props) => {
     }
   }
 
+  const handleSwap = (other: Props) => {
+    actions.setGear(other.gear)
+
+    if (props.type === "airbase" && other.type === "airbase") {
+      actions.setSlotSize(other.currentSlotSize)
+    }
+  }
+
   return (
-    <Swappable className={className} type="gear" state={gear?.state} setState={actions.set} canDrag={Boolean(gear)}>
+    <Swappable className={className} type="gear" state={props} setState={handleSwap} canDrag={Boolean(gear)}>
       <SlotSizeButton current={currentSlotSize} max={maxSlotSize} onChange={handleSlotSizeChange} />
       {gear ? (
         <GearLabel
