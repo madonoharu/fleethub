@@ -5,19 +5,14 @@ import { fhSystem } from "@fleethub/core"
 
 import { Select, GearNameplate } from "../../../components"
 
-const getCategoryName = (category: number) => {
-  if (!category) return "カテゴリ"
+const getCategoryLabel = (category: number) => {
+  if (!category) return "カテゴリー"
   const name = GearCategoryName[category]
   if (!name) return "不明"
 
-  return name
-}
-
-const getCategoryLabel = (category: number) => {
-  const name = getCategoryName(category)
   const iconId = fhSystem.categoryIconIdMap.get(category)
 
-  return <GearNameplate size="small" iconId={iconId ?? 0} name={name} />
+  return <GearNameplate size="small" iconId={iconId ?? 1} name={name} />
 }
 
 type Props = {
