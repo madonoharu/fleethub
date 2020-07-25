@@ -32,6 +32,7 @@ export class GearBaseStub implements GearBase {
   public luck = 0
   public attrs: GearAttribute[] = []
   public specialCategory = 0
+  public hasProficiency = false
 
   public is = (attr: GearAttribute) => this.attrs.includes(attr)
 

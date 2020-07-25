@@ -76,4 +76,8 @@ export class MasterGear implements GearBase {
       return multiplier * Math.sqrt(stars)
     })
   }
+
+  get hasProficiency() {
+    return this.in("Seaplane", "CbAircraft", "LbAircraft", "JetAircraft")
+  }
 }
