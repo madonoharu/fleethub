@@ -1,15 +1,19 @@
-import React, { useMemo } from "react"
-import styled from "styled-components"
+import React, { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { GearState, GearBase, EquipmentBonuses, Gear } from "@fleethub/core"
 
 import { useFhSystem } from "../../../hooks"
 import { gearListSlice, selectGearListState } from "../../../store"
 
+import { SearchInput } from "../../organisms"
+
 import { getFilter, getVisibleGroups } from "./filters"
 import { idComparer } from "./comparers"
 import FilterBar from "./FilterBar"
 import CategoryContainer from "./CategoryContainer"
+import GearSearchResult from "./GearSearchResult"
+import searchGears from "./searchGears"
+import { Flexbox } from "../../atoms"
 
 const createCategoryGearEntries = (gears: GearBase[]) => {
   const map = new Map<number, GearBase[]>()
@@ -40,7 +44,7 @@ type GearListProps = {
 }
 
 const useGearListState = () => {
-  const { masterGears: gears, createGear } = useFhSystem()
+  const { masterGears, createGear } = useFhSystem()
 
   const dispatch = useDispatch()
   const state = useSelector(selectGearListState)
@@ -55,11 +59,13 @@ const useGearListState = () => {
     return { update, setAbyssal, setGroup }
   }, [dispatch])
 
-  return { gears, ...state, createGear, actions }
+  return { masterGears, ...state, createGear, actions }
 }
 
 const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) => {
-  const { gears, abyssal, group, actions, createGear } = useGearListState()
+  const { masterGears, abyssal, group, actions, createGear } = useGearListState()
+
+  const [searchValue, setSearchValue] = useState("")
 
   const handleSelect = (base: GearBase) => {
     if (!onSelect) return
@@ -73,7 +79,7 @@ const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) =
   }
 
   const { equippableGears, visibleGroups } = React.useMemo(() => {
-    const equippableGears = gears.filter((gear) => {
+    const equippableGears = masterGears.filter((gear) => {
       if (abyssal !== gear.is("Abyssal")) return false
       return !canEquip || canEquip(gear)
     })
@@ -81,7 +87,7 @@ const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) =
     const visibleGroups = getVisibleGroups(equippableGears)
 
     return { equippableGears, visibleGroups }
-  }, [gears, abyssal, canEquip])
+  }, [masterGears, abyssal, canEquip])
 
   const currentGroup = visibleGroups.includes(group) ? group : getDefaultFilterKey(visibleGroups)
   const groupFilter = getFilter(currentGroup)
@@ -90,8 +96,22 @@ const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) =
 
   const entries = createCategoryGearEntries(visibleGears)
 
+  const searchResult = searchValue && searchGears(equippableGears, searchValue)
+
   return (
     <div>
+      <Flexbox>
+        <SearchInput
+          value={searchValue}
+          onChange={setSearchValue}
+          hint={
+            <>
+              <p>id検索もできます</p>
+              <p>&quot;id308&quot; → 5inch単装砲 Mk.30改+GFCS Mk.37</p>
+            </>
+          }
+        />
+      </Flexbox>
       <FilterBar
         visibleGroups={visibleGroups}
         abyssal={abyssal}
@@ -99,7 +119,16 @@ const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) =
         onAbyssalChange={actions.setAbyssal}
         onGroupChange={actions.setGroup}
       />
-      <CategoryContainer entries={entries} onSelect={handleSelect} getBonuses={getBonuses} />
+      {searchResult ? (
+        <GearSearchResult
+          searchValue={searchValue}
+          gears={searchResult}
+          onSelect={handleSelect}
+          getBonuses={getBonuses}
+        />
+      ) : (
+        <CategoryContainer entries={entries} onSelect={handleSelect} getBonuses={getBonuses} />
+      )}
     </div>
   )
 }
