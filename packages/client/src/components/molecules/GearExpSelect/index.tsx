@@ -3,10 +3,20 @@ import styled from "styled-components"
 
 import { Button, Tooltip } from "@material-ui/core"
 
-import { Flexbox, NumberInput } from "../../../components"
 import { usePopover } from "../../../hooks"
 
 import ProficiencyIcon from "./ProficiencyIcon"
+import NumberInput from "../NumberInput"
+
+const ColumnReverse = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+`
+
+const StyledNumberInput = styled(NumberInput)`
+  width: 96px;
+  margin: 0 4px;
+`
 
 const exps = [0, 10, 25, 40, 55, 70, 85, 100, 120]
 
@@ -38,14 +48,15 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
       </Tooltip>
 
       <Popover anchorOrigin={anchorOrigin}>
-        <Flexbox>
+        <ColumnReverse>
           {exps.map((boundary) => (
             <Button key={boundary} id={boundary.toString()} onClick={handleChange}>
               <ProficiencyIcon exp={boundary} />
             </Button>
           ))}
-          <NumberInput value={exp} onChange={onChange} min={0} max={120} />
-        </Flexbox>
+        </ColumnReverse>
+
+        <StyledNumberInput label="内部熟練度" variant="outlined" value={exp} onChange={onChange} min={0} max={120} />
       </Popover>
     </div>
   )
@@ -53,7 +64,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
 
 export default styled(GearExpSelect)`
   button {
-    padding: 0;
+    padding: 0 3px;
   }
   input {
     width: 64px;
