@@ -38,12 +38,12 @@ const filterRecord: Record<string, GearFilterFn> = {
   misc: (gear) => Object.values(basicFilterRecord).every((fn) => !fn(gear)),
 }
 
-export const getFilter = (key: string): GearFilterFn => {
-  const fn = filterRecord[key]
+export const getFilter = (group: string): GearFilterFn => {
+  const fn = filterRecord[group]
   return fn || filterRecord.all
 }
 
-export const getVisibleFilterKeys = (gears: GearBase[]) =>
+export const getVisibleGroups = (gears: GearBase[]) =>
   Object.entries(filterRecord)
     .filter(([key, filterFn]) => gears.some(filterFn))
     .map(([key]) => key)

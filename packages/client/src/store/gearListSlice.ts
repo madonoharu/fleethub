@@ -1,14 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export type GearListState = {
-  filterKey: string
-  category: number
+  group: string
   abyssal: boolean
 }
 
 const initialState: GearListState = {
-  filterKey: "",
-  category: 0,
+  group: "",
   abyssal: false,
 }
 
