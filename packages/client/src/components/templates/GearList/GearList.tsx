@@ -1,35 +1,31 @@
-import React from "react"
+import React, { useMemo } from "react"
 import styled from "styled-components"
 import { useDispatch, useSelector } from "react-redux"
 import { GearState, GearBase, EquipmentBonuses, Gear } from "@fleethub/core"
-import { GearCategory } from "@fleethub/data"
 
 import { useFhSystem } from "../../../hooks"
 import { gearListSlice, selectGearListState } from "../../../store"
 
-import { getFilter, getVisibleFilterKeys } from "./filters"
+import { getFilter, getVisibleGroups } from "./filters"
 import { idComparer } from "./comparers"
 import FilterBar from "./FilterBar"
 import CategoryContainer from "./CategoryContainer"
 
-const getVisibleCategories = (gears: GearBase[]) => {
-  const categories = [...new Set(gears.map((gear) => gear.category))]
-  return categories.concat(0).sort((a, b) => a - b)
-}
-
-const allCategories = Object.values(GearCategory).filter(
-  (category): category is GearCategory => typeof category === "number"
-)
-
 const createCategoryGearEntries = (gears: GearBase[]) => {
-  const entries: Array<[GearCategory, GearBase[]]> = []
+  const map = new Map<number, GearBase[]>()
 
-  allCategories.forEach((category) => {
-    const filtered = gears.filter((gear) => gear.category === category)
-    if (filtered.length > 0) entries.push([category, filtered])
-  })
+  const setGear = (gear: GearBase) => {
+    const list = map.get(gear.category)
+    if (list) {
+      list.push(gear)
+    } else {
+      map.set(gear.category, [gear])
+    }
+  }
 
-  return entries
+  gears.forEach(setGear)
+
+  return Array.from(map.entries())
 }
 
 const getDefaultFilterKey = (keys: string[]) => {
@@ -49,14 +45,21 @@ const useGearListState = () => {
   const dispatch = useDispatch()
   const state = useSelector(selectGearListState)
 
-  const update = (...args: Parameters<typeof gearListSlice.actions.update>) =>
-    dispatch(gearListSlice.actions.update(...args))
+  const actions = useMemo(() => {
+    const update = (...args: Parameters<typeof gearListSlice.actions.update>) =>
+      dispatch(gearListSlice.actions.update(...args))
 
-  return { gears, ...state, update, createGear }
+    const setAbyssal = (abyssal: boolean) => update({ abyssal })
+    const setGroup = (group: string) => update({ group })
+
+    return { update, setAbyssal, setGroup }
+  }, [dispatch])
+
+  return { gears, ...state, createGear, actions }
 }
 
 const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) => {
-  const { gears, abyssal, filterKey, category, update, createGear } = useGearListState()
+  const { gears, abyssal, group, actions, createGear } = useGearListState()
 
   const handleSelect = (base: GearBase) => {
     if (!onSelect) return
@@ -69,37 +72,32 @@ const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) =
     gear && onSelect(gear)
   }
 
-  const { equippableGears, visibleFilterKeys } = React.useMemo(() => {
+  const { equippableGears, visibleGroups } = React.useMemo(() => {
     const equippableGears = gears.filter((gear) => {
       if (abyssal !== gear.is("Abyssal")) return false
-
-      if (!canEquip) return true
-
-      return canEquip(gear)
+      return !canEquip || canEquip(gear)
     })
 
-    const visibleFilterKeys = getVisibleFilterKeys(equippableGears)
-    return { equippableGears, visibleFilterKeys }
+    const visibleGroups = getVisibleGroups(equippableGears)
+
+    return { equippableGears, visibleGroups }
   }, [gears, abyssal, canEquip])
 
-  const currentFilterKey = visibleFilterKeys.includes(filterKey) ? filterKey : getDefaultFilterKey(visibleFilterKeys)
-  const visibleGears = equippableGears.filter(getFilter(currentFilterKey)).sort(idComparer)
-  const visibleCategories = getVisibleCategories(visibleGears)
+  const currentGroup = visibleGroups.includes(group) ? group : getDefaultFilterKey(visibleGroups)
+  const groupFilter = getFilter(currentGroup)
 
-  const categoryFilter = (gear: GearBase) => !category || category === gear.category
-  const entries = createCategoryGearEntries(visibleGears.filter(categoryFilter))
+  const visibleGears = equippableGears.filter(groupFilter).sort(idComparer)
+
+  const entries = createCategoryGearEntries(visibleGears)
 
   return (
     <div>
       <FilterBar
-        visibleCategories={visibleCategories}
-        visibleFilterKeys={visibleFilterKeys}
+        visibleGroups={visibleGroups}
         abyssal={abyssal}
-        filterKey={currentFilterKey}
-        category={category}
-        onAbyssalChange={(abyssal) => update({ abyssal })}
-        onFilterChange={(filterKey) => update({ filterKey })}
-        onCategoryChange={(category) => update({ category })}
+        group={currentGroup}
+        onAbyssalChange={actions.setAbyssal}
+        onGroupChange={actions.setGroup}
       />
       <CategoryContainer entries={entries} onSelect={handleSelect} getBonuses={getBonuses} />
     </div>
