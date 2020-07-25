@@ -38,5 +38,5 @@ export const useShipListState = () => {
     return masterShips.filter(filterFn).sort(sortIdComparer)
   }, [state, masterShips])
 
-  return { state, update, visibleShips }
+  return { state, update, masterShips, visibleShips }
 }
