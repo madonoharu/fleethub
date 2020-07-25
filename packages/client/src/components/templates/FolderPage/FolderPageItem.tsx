@@ -10,15 +10,16 @@ import { ShipBanner, CopyButton, RemoveButton, MoreVertButton } from "../../mole
 import { Flexbox, PlanIcon, FolderIcon } from "../../atoms"
 import { DraggableFile, FileMenu } from "../../organisms"
 
+import FileItemPrimary from "./FileItemPrimary"
+
 const ShipsContainer = styled.div`
   overflow: hidden;
   white-space: nowrap;
-  line-height: 0;
-`
 
-const PlanName = styled(Typography)`
-  width: 160px;
-  flex-shrink: 0;
+  line-height: 0;
+  > * {
+    margin-bottom: 4px;
+  }
 `
 
 const FileAction = styled(Flexbox)`
@@ -34,19 +35,24 @@ const PlanItem: React.FC<{ file: PlanFileEntity }> = ({ file }) => {
       <ListItemIcon>
         <PlanIcon />
       </ListItemIcon>
-      <PlanName noWrap>{file.name}</PlanName>
-      <ShipsContainer>
-        <div>
-          {plan.main.ships.map((ship, index) => (
-            <ShipBanner key={index} shipId={ship.shipId} />
-          ))}
-        </div>
-        <div>
-          {plan.escort?.ships.map((ship, index) => (
-            <ShipBanner key={index} shipId={ship.shipId} />
-          ))}
-        </div>
-      </ShipsContainer>
+      <ListItemText
+        disableTypography
+        primary={<FileItemPrimary file={file} />}
+        secondary={
+          <ShipsContainer>
+            <div>
+              {plan.main.ships.map((ship, index) => (
+                <ShipBanner key={index} shipId={ship.shipId} />
+              ))}
+            </div>
+            <div>
+              {plan.escort?.ships.map((ship, index) => (
+                <ShipBanner key={index} shipId={ship.shipId} />
+              ))}
+            </div>
+          </ShipsContainer>
+        }
+      />
     </>
   )
 }
@@ -57,7 +63,7 @@ const FolderItem: React.FC<{ file: FolderEntity }> = ({ file }) => {
       <ListItemIcon>
         <FolderIcon />
       </ListItemIcon>
-      <ListItemText primary={file.name} />
+      <ListItemText disableTypography primary={<FileItemPrimary file={file} />} />
     </>
   )
 }
@@ -104,7 +110,8 @@ const FolderPageItem = React.forwardRef<HTMLElement, FolderPageItemProps>(
 )
 
 const StyledFolderPageItem = styled(FolderPageItem)`
-  height: 48px;
+  min-height: 56px;
+
   .MuiIconButton-root {
     display: none;
   }
