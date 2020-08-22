@@ -17,13 +17,12 @@
     "client": "yarn workspace @fleethub/client",
     "core": "yarn workspace @fleethub/core",
     "data": "yarn workspace @fleethub/data",
-    "imagemin": "yarn tsnode scripts/imagemin",
+    "imagemin": "yarn ts-node scripts/imagemin",
     "lint": "eslint --cache packages && yarn tscheck",
     "start": "yarn client start",
     "test": "yarn test:core",
     "test:core": "jest packages/core/src",
     "tscheck": "tsc --noEmit",
-    "tsnode": "yarn ts-node -O \"{\"\"module\"\":\"\"commonjs\"\"}\"",
     "utils": "yarn workspace @fleethub/utils"
   },
   "husky": {
@@ -69,7 +68,7 @@
     "prettier": "^2.0.5",
     "signale": "^1.4.0",
     "ts-jest": "^26.2.0",
-    "ts-node": "^8.10.2",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   },
   "engines": {
