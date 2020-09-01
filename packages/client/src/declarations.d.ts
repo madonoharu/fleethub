@@ -20,6 +20,11 @@ declare module "styled-components" {
   interface DefaultTheme extends Theme {}
 }
 
+declare module "*.png" {
+  const path: string
+  export default path
+}
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {

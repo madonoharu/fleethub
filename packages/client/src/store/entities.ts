@@ -36,7 +36,7 @@ export const copyFile = (id: string, to?: string): AppThunk => (dispatch, getSta
   const cloned = cloneFilesDataById(selectEntitiesState(state), id)
 
   const parentFile = cloned.files.find((file) => file.id === cloned.id)
-  if (parentFile) {
+  if (parentFile?.name) {
     parentFile.name = parentFile.name + "-コピー"
   }
 

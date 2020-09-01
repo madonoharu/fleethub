@@ -38,8 +38,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
   const parseDeck = (str: string): Plan | undefined => {
     try {
-      const deck = JSON.parse(str)
-      return fh.createPlanByDeck(deck)
+      return fh.createPlanByDeck(JSON.parse(str))
     } catch {
       return
     }

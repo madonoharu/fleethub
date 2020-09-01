@@ -59,7 +59,7 @@ const gearDefToState = (def: GearDef) => {
 export const makeGear = (def: GearDef) => {
   const state = gearDefToState(def)
   const gear = fhSystem.createGear(state)
-  if (!gear) throw `${def} not found`
+  if (!gear) throw `${typeof def === "string" ? def : def.name} not found`
   return gear
 }
 

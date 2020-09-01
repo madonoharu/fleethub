@@ -2,20 +2,23 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-    "prettier/@typescript-eslint",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
 
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+
+    "prettier",
+    "prettier/@typescript-eslint"
   ],
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks"],
   "parser": "@typescript-eslint/parser",
-  "env": { "browser": true, "node": true, "es6": true },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
   },
   "rules": {
     "no-console": "off",
@@ -23,13 +26,18 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
     "@typescript-eslint/ban-types": "off",
 
     "react/prop-types": "off",
     "react/display-name": "off",
 
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/no-floating-promises": "off"
   }
 }

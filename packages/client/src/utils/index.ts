@@ -7,7 +7,7 @@ export type Update<T> = (recipe: Recipe<T>) => void
 
 export const withSign = (num?: number) => {
   if (!num) return ""
-  return num > 0 ? "+" + num : num.toString()
+  return num > 0 ? `+${num}` : num.toString()
 }
 
 export const toPercent = (value: number, fractionDigits = 1) => (value * 100).toFixed(fractionDigits) + "%"

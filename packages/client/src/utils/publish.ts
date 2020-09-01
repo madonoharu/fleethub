@@ -36,9 +36,8 @@ export const fetchUrlData = async (arg: URL | string): Promise<FilesData | undef
 
   const fileId = getParam(storageParamKey)
   if (fileId) {
-    const data = await fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}`).then((res) =>
-      res.json()
-    )
+    const res = await fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}`)
+    const data = await res.json()
     return data
   }
 
