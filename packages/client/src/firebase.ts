@@ -42,8 +42,8 @@ export const shorten = async (url: string, domain: "fleethub") => {
     headers,
     body: JSON.stringify(body),
   })
-  const json = await res.json()
-  return json as { previewLink: string; shortLink: string } | { error: { code: number } }
+  const json = (await res.json()) as { previewLink: string; shortLink: string } | { error: { code: number } }
+  return json
 }
 
 type FhFolder = {

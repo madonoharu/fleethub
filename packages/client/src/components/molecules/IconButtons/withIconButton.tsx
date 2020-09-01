@@ -30,7 +30,7 @@ const withIconButton = (WrappedIcon: React.FC) => {
     return WrappedButton
   }
 
-  WithIconButton.displayName = `WithIconButton(${WrappedIcon.name || WrappedIcon.displayName})`
+  WithIconButton.displayName = `WithIconButton(${WrappedIcon.displayName || WrappedIcon.name})`
   return styled(WithIconButton)`
     svg {
       font-size: inherit;

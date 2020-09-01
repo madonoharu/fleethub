@@ -65,6 +65,6 @@ export default class AntiAirCutin {
   }
 
   get name() {
-    return this.id + "種"
+    return `${this.id}種`
   }
 }

@@ -85,7 +85,7 @@ describe("EquipmentBonuses", () => {
     const argsStr = args
       .map((arg) => {
         if (typeof arg === "string") return arg
-        return `${arg.name}★ ${arg.stars}`
+        return `${arg.name}★ ${arg.stars || 0}`
       })
       .join(", ")
 

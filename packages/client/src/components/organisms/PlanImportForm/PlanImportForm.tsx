@@ -25,8 +25,7 @@ const PlanImportForm: React.FCX<Props> = ({ className, onOverwrite, onImport }) 
 
   const parseDeck = (str: string): Plan | undefined => {
     try {
-      const deck = JSON.parse(str)
-      return fh.createPlanByDeck(deck)
+      return fh.createPlanByDeck(JSON.parse(str))
     } catch {
       Snackbar.show({ message: "読み込みに失敗しました", severity: "error" })
       return
