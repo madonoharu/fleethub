@@ -13,7 +13,7 @@ const getSlots = (mstShip: MstShip, shipData?: ShipData) => {
     return Array.from({ length: api_slot_num }, (_, i) => api_maxeq[i])
   }
   if (!shipData) {
-    return new Array(api_slot_num).fill(-1)
+    return new Array<number>(api_slot_num).fill(-1)
   }
   return shipData.slots
 }

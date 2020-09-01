@@ -5,8 +5,9 @@ const StyledPicture = styled.picture`
   line-height: 0;
 `
 
-const requireImage = (path: string) => {
+const requireImage = (path: string): string | undefined => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return require(`../../../images/${path}`)
   } catch {
     console.warn(`${path} not found`)

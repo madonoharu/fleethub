@@ -16,19 +16,22 @@ const resources = {
   },
 }
 
-i18n.use(initReactI18next).init({
-  lng: "en",
-  fallbackLng: "en",
-  debug: false,
+i18n
+  .use(initReactI18next)
+  .init({
+    lng: "en",
+    fallbackLng: "en",
+    debug: false,
 
-  interpolation: {
-    escapeValue: false,
-  },
+    interpolation: {
+      escapeValue: false,
+    },
 
-  react: {
-    wait: true,
-  },
-  resources: resources,
-})
+    react: {
+      wait: true,
+    },
+    resources: resources,
+  })
+  .catch(() => console.error("failed to init i18n"))
 
 export default i18n

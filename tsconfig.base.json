@@ -3,30 +3,19 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
     "allowJs": true,
+    "outDir": "",
     "jsx": "react",
     "noImplicitReturns": true,
-    
+
     "esModuleInterop": true,
     "strict": true,
     "experimentalDecorators": true,
 
     "newLine": "lf",
-    "outDir": "",
     "types": ["react"]
   },
-  "include": [
-    "packages"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/dist",
-    "**/lib",
-    "**/esm",
-    "**/*.config.js"
-  ]
+  "include": ["packages"],
+  "exclude": ["node_modules", "**/dist", "**/lib", "**/esm"]
 }
