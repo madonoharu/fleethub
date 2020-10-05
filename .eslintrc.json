@@ -2,7 +2,6 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
 
     "plugin:react/recommended",
 
@@ -17,8 +16,7 @@
     "es6": true
   },
   "parserOptions": {
-    "sourceType": "module",
-    "project": ["./tsconfig.json"]
+    "sourceType": "module"
   },
   "rules": {
     "no-console": "off",
