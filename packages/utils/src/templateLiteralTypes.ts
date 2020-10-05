@@ -27,6 +27,3 @@ export type ParseOr<T> = T extends `${infer T1} | ${infer T2}` ? T1 | T2 : never
 
 export type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false
 export type ValueOf<T> = { [K in keyof T]: T[K] }[keyof T]
-
-
-
