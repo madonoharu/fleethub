@@ -1,7 +1,8 @@
 {
   "ts-node": {
     "compilerOptions": {
-      "module": "CommonJS"
+      "module": "CommonJS",
+      "target": "ES2020"
     }
   },
   "compilerOptions": {
