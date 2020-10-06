@@ -3,8 +3,6 @@ import axios from "axios"
 
 import { MasterData } from "./types"
 
-const bucket = admin.storage().bucket()
-
 type UploadOptions = {
   destination: string
   metadata: Record<string, string>
@@ -13,6 +11,7 @@ type UploadOptions = {
 const upload = async (source: unknown, { destination, metadata }: UploadOptions) => {
   const str = JSON.stringify(source)
 
+  const bucket = admin.storage().bucket()
   await bucket.file(destination).save(str, { metadata })
 }
 
