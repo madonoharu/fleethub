@@ -19,4 +19,4 @@ admin.initializeApp({
   storageBucket: "kcfleethub.appspot.com",
 })
 
-updateByStart2
+updateByStart2(serviceAccount)
