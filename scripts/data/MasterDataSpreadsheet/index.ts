@@ -1,10 +1,5 @@
-import { uniq } from "@fleethub/utils"
-import {
-  GoogleSpreadsheet,
-  GoogleSpreadsheetRow,
-  WorksheetBasicProperties,
-  ServiceAccountCredentials,
-} from "google-spreadsheet"
+import { uniq } from "@fleethub/utils/src"
+import { GoogleSpreadsheet, GoogleSpreadsheetRow, ServiceAccountCredentials } from "google-spreadsheet"
 
 import { MasterData, SheetRow } from "../types"
 import MasterDataGearRecord from "./MasterDataGearRecord"

@@ -1,4 +1,4 @@
-import { isNonNullable, concat, includes } from "@fleethub/utils"
+import { isNonNullable, concat, includes } from "@fleethub/utils/src"
 
 import { MasterDataShip, SheetRow, StatInterval, StockGear } from "../types"
 
