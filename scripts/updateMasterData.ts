@@ -1,20 +1,22 @@
-import program from "commander"
 import admin from "firebase-admin"
 import { ServiceAccountCredentials } from "google-spreadsheet"
 
-program.option("--client_email <string>").option("--private_key <string>").parse(process.argv)
+import { updateByStart2 } from "./data"
 
-const { client_email, private_key } = program
+const { SERVICE_ACCOUNT_CLIENT_EMAIL: client_email, SERVICE_ACCOUNT_PRIVATE_KEY: private_key } = process.env
 
-if (typeof client_email === "string" && typeof private_key === "string") {
-  const serviceAccount = {
-    project_id: "kcfleethub",
-    client_email: "kcfleethub@appspot.gserviceaccount.com",
-    private_key: private_key.replace(/\\n/g, "\n"),
-  } as ServiceAccountCredentials & admin.ServiceAccount
+if (!client_email) throw Error("client_emailが存在しません")
+if (!private_key) throw Error("private_keyが存在しません")
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    storageBucket: "kcfleethub.appspot.com",
-  })
-}
+const serviceAccount = {
+  project_id: "kcfleethub",
+  client_email,
+  private_key: private_key.replace(/\\n/g, "\n"),
+} as ServiceAccountCredentials & admin.ServiceAccount
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: "kcfleethub.appspot.com",
+})
+
+updateByStart2(serviceAccount)

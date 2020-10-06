@@ -10,3 +10,6 @@ jobs:
         uses: actions/setup-node@v1
       - run: yarn --frozen-lockfile
       - run: yarn update-master-data
+        env:
+          SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
