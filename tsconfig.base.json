@@ -14,7 +14,7 @@
     "experimentalDecorators": true,
 
     "newLine": "lf",
-    "types": ["react"]
+    "types": ["react", "@types/node"]
   },
   "include": ["packages"],
   "exclude": ["node_modules", "**/dist", "**/lib", "**/esm"]
