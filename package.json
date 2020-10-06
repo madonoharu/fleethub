@@ -31,8 +31,8 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --fix",
-    "*.{js,jsx,ts,tsx,json}": "prettier --write"
+    "*.{js,jsx,ts,tsx,json}": "prettier --write",
+    "*.{js,jsx,ts,tsx}": "eslint --fix"
   },
   "jest": {
     "moduleNameMapper": {
