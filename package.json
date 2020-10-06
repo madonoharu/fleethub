@@ -23,6 +23,7 @@
     "test": "yarn test:core",
     "test:core": "jest packages/core/src",
     "tscheck": "tsc --noEmit",
+    "update-master-data": "yarn ts-node scripts/updateMasterData",
     "utils": "yarn workspace @fleethub/utils"
   },
   "husky": {
