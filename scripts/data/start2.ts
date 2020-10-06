@@ -1,5 +1,4 @@
-import { GearCategory, gears as fhgs } from "@fleethub/data"
-import { uniq, isPlayerShip, MstShip, MstSlotitem, Start2 } from "@fleethub/utils"
+import { uniq, isPlayerShip, MstShip, MstSlotitem, Start2, GearCategory } from "@fleethub/utils/src"
 import axios from "axios"
 import signale from "signale"
 
@@ -116,7 +115,6 @@ const mstItemToMasterDataGear = (item: MstSlotitem): MasterDataGear => {
     evasion = item.api_houk
   }
 
-  const improvable = fhgs.find((g) => g.id === id)?.improvable
   const gear: MasterDataGear = {
     id,
     category,
@@ -142,8 +140,6 @@ const mstItemToMasterDataGear = (item: MstSlotitem): MasterDataGear => {
     range: item.api_leng,
     radius: item.api_distance,
     cost: item.api_cost,
-
-    improvable,
   }
 
   const keys = Object.keys(gear) as Array<keyof typeof gear>
@@ -201,7 +197,14 @@ export const mergeStart2 = (md: MasterData, start2: Start2) => {
     key: md.gearCategories.find((gc) => gc.id === api_id)?.key || "",
   }))
 
-  md.gears = start2.api_mst_slotitem.map(mstItemToMasterDataGear)
+  md.gears = start2.api_mst_slotitem.map(mstItemToMasterDataGear).map((gear) => {
+    const improvable = md.gears.find((mdg) => mdg.id === gear.id)?.improvable
+    if (improvable) {
+      gear.improvable = improvable
+    }
+
+    return gear
+  })
 
   return md
 }
