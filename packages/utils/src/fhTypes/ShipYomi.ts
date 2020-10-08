@@ -1,4 +1,4 @@
-export type ShipRuby =
+export type ShipYomi =
   | "elite"
   | "flagship"
   | "こんごう"

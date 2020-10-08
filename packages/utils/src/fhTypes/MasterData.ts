@@ -106,5 +106,3 @@ export type MasterData = {
 
   improvementBonusRules: ImprovementBonusRules
 }
-
-export type SheetRow = Record<string, string | number | boolean | undefined>
