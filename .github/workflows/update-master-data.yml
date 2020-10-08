@@ -15,11 +15,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - name: Restore node_modules
         id: yarn-cache
         uses: actions/cache@v2
         with:
-          path: .cache/yarn
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install node_modules
