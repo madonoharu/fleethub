@@ -19,4 +19,6 @@ admin.initializeApp({
   storageBucket: "kcfleethub.appspot.com",
 })
 
+console.log(process.env.CLIENT_PAYLOAD)
+
 updateByStart2(serviceAccount)
