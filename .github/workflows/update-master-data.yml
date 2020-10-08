@@ -25,11 +25,11 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Install node_modules
+      - name: Install
         run: yarn install --frozen-lockfile
 
       - run: yarn update-master-data
         env:
-          CLIENT_PAYLOAD: ${{ github.event.client_payload }}
+          CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
           SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_CLIENT_EMAIL }}
           SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
