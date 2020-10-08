@@ -1,101 +1,55 @@
-import { uniq } from "@fleethub/utils/src"
-import { GoogleSpreadsheet, GoogleSpreadsheetRow, ServiceAccountCredentials } from "google-spreadsheet"
+import { GoogleSpreadsheet, ServiceAccountCredentials } from "google-spreadsheet"
 
-import { MasterData, SheetRow } from "../types"
-import MasterDataGearRecord from "./MasterDataGearRecord"
-import MasterDataShipRecord from "./MasterDataShipRecord"
+import { MasterData } from "../types"
+import EnumSheet from "./EnumSheet"
+import MasterDataGearsSheet from "./MasterDataGearsSheet"
+import MasterDataShipsSheet from "./MasterDataShipsSheet"
 
-const keyTitleMap = {
-  ships: "艦娘データ",
-  shipTypes: "艦種データ",
-  shipClasses: "艦級データ",
+const sheetKeys = ["shipTypes", "shipClasses", "gearCategories", "ships", "gears"] as const
 
-  gears: "装備データ",
-  gearCategories: "装備カテゴリデータ",
+export const initSpreadsheet = async (serviceAccount: ServiceAccountCredentials) => {
+  const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
+  await doc.useServiceAccountAuth(serviceAccount)
+  await doc.loadInfo()
+
+  return doc
 }
-
-export type SheetKey = keyof typeof keyTitleMap
 
 export default class MasterDataSpreadsheet {
   static init = async (serviceAccount: ServiceAccountCredentials) => {
-    const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
-    await doc.useServiceAccountAuth(serviceAccount)
-    await doc.loadInfo()
+    const doc = await initSpreadsheet(serviceAccount)
 
     return new MasterDataSpreadsheet(doc)
   }
 
+  sheets = {
+    shipTypes: new EnumSheet(this.doc.sheetsByTitle["艦種データ"]),
+    shipClasses: new EnumSheet(this.doc.sheetsByTitle["艦級データ"]),
+    gearCategories: new EnumSheet(this.doc.sheetsByTitle["装備カテゴリデータ"]),
+
+    ships: MasterDataShipsSheet.from(this.doc),
+    gears: MasterDataGearsSheet.from(this.doc),
+  }
+
   private constructor(public doc: GoogleSpreadsheet) {}
 
-  getSheet = (key: SheetKey) => {
-    const title = keyTitleMap[key]
-    return this.doc.sheetsByTitle[title]
-  }
+  read = async (): Promise<MasterData> => {
+    const md = {} as MasterData
 
-  postSheet = async (key: SheetKey, rows: SheetRow[], headerValues?: string[]) => {
-    const sheet = this.getSheet(key)
-    const { frozenRowCount, frozenColumnCount } = sheet.gridProperties
-
-    headerValues ??= uniq(rows.flatMap((row) => Object.keys(row)))
-
-    await sheet.clear()
-    await sheet.resize({
-      rowCount: rows.length + 1,
-      columnCount: headerValues.length,
-      frozenRowCount,
-      frozenColumnCount,
-      hideGridlines: false,
-      rowGroupControlAfter: false,
-      columnGroupControlAfter: false,
-    })
-    await sheet.setHeaderRow(headerValues)
-    await sheet.addRows(rows as GoogleSpreadsheetRow[])
-  }
-
-  fetchMasterData = async (): Promise<MasterData> => {
-    const getIdNameKeySheet = async (sheetKey: "shipTypes" | "shipClasses" | "gearCategories") => {
-      const rows = await this.getSheet(sheetKey).getRows()
-      return rows.map(({ id, name, key }) => ({ id: Number(id), name, key }))
+    const readByKey = async (key: keyof MasterData) => {
+      md[key] = (await this.sheets[key].read()) as any
     }
 
-    const shipsSheet = this.getSheet("ships")
+    await Promise.all(sheetKeys.map(readByKey))
 
-    const [shipTypes, shipClasses, gearCategories] = await Promise.all([
-      getIdNameKeySheet("shipTypes"),
-      getIdNameKeySheet("shipClasses"),
-      getIdNameKeySheet("gearCategories"),
-    ])
-
-    const shipsSheetRows = await shipsSheet.getRows()
-    const ships = shipsSheetRows.map(MasterDataShipRecord.rowToShip)
-
-    const gearsSheetRows = await this.getSheet("gears").getRows()
-    const gears = gearsSheetRows.map(MasterDataGearRecord.rowToGear)
-
-    return {
-      ships,
-      shipTypes,
-      shipClasses,
-      gears,
-      gearCategories,
-    }
+    return md
   }
 
-  postMasterData = async ({ ships, shipTypes, shipClasses, gears, gearCategories }: MasterData) => {
-    const { postSheet } = this
+  write = async (md: MasterData) => {
+    const writeByKey = (key: keyof MasterData) => this.sheets[key].write(md[key] as any)
 
-    const shipsSheetRows = ships.map(MasterDataShipRecord.shipToRow)
-    const gearsSheetRows = gears.map(MasterDataGearRecord.gearToRow)
-
-    await Promise.all([
-      postSheet("ships", shipsSheetRows, MasterDataShipRecord.headerValues),
-      postSheet("shipTypes", shipTypes),
-      postSheet("shipClasses", shipClasses),
-
-      postSheet("gears", gearsSheetRows, MasterDataGearRecord.headerValues),
-      postSheet("gearCategories", gearCategories),
-    ])
+    await Promise.all(sheetKeys.map(writeByKey))
   }
 }
 
-export { getDefaultMasterDataShip } from "./MasterDataShipRecord"
+export { getDefaultMasterDataShip } from "./MasterDataShipsSheet"

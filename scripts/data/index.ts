@@ -5,15 +5,15 @@ import * as storage from "./storage"
 
 export const updateBySpreadsheet = async (serviceAccount: ServiceAccountCredentials) => {
   const ss = await MasterDataSpreadsheet.init(serviceAccount)
-  const md = await ss.fetchMasterData()
+  const md = await ss.read()
   await storage.postMasterData(md)
 }
 
 export const updateByStart2 = async (serviceAccount: ServiceAccountCredentials) => {
   const ss = await MasterDataSpreadsheet.init(serviceAccount)
-  const [md, start2] = await Promise.all([ss.fetchMasterData(), fetchStart2()])
+  const [md, start2] = await Promise.all([ss.read(), fetchStart2()])
 
   const merged = mergeStart2(md, start2)
 
-  await Promise.all([ss.postMasterData(merged), storage.postMasterData(merged)])
+  await Promise.all([ss.write(merged), storage.postMasterData(merged)])
 }

@@ -28,10 +28,10 @@ const mstShipToMasterDataShip = (mstShip: MstShip): MasterDataShip => {
     id: mstShip.api_id,
     sortId: mstShip.api_sort_id,
     name: mstShip.api_name,
-    ruby: mstShip.api_yomi,
+    yomi: mstShip.api_yomi,
     shipType: mstShip.api_stype,
-    capacity: mstShip.api_slot_num,
     speed: mstShip.api_soku,
+    slotnum: mstShip.api_slot_num,
     slots: getSlots(mstShip),
     stock: [],
   }
