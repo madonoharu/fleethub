@@ -1,15 +1,20 @@
 name: update-master-data
-on: repository_dispatch
+on:
+  repository_dispatch:
+    types: [update-master-data]
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - run: yarn --frozen-lockfile
       - run: yarn update-master-data
         env:
