@@ -20,7 +20,7 @@ export const fetchStorageData = <K extends keyof MasterData>(fileName: K) =>
     .get<MasterData[K]>(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${fileName}.json`)
     .then((res) => res.data)
 
-export const fetchMasterData = async (): Promise<MasterData> => {
+export const read = async (): Promise<MasterData> => {
   const [
     ships,
     shipTypes,
@@ -55,7 +55,7 @@ export const fetchMasterData = async (): Promise<MasterData> => {
   }
 }
 
-export const postMasterData = async (md: MasterData) => {
+export const write = async (md: MasterData) => {
   const dataPath = "data"
   const metadata = { cacheControl: "public, max-age=60" }
 
@@ -78,4 +78,4 @@ export const postMasterData = async (md: MasterData) => {
   await Promise.all(promises)
 }
 
-export const storage = { fetchMasterData, postMasterData }
+export const storage = { read, write }
