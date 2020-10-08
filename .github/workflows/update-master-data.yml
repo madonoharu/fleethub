@@ -15,7 +15,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - run: yarn --frozen-lockfile
+      - name: Restore node_modules
+        id: yarn-cache
+        uses: actions/cache@v2
+        with:
+          path: .cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install node_modules
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
       - run: yarn update-master-data
         env:
           SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_CLIENT_EMAIL }}
