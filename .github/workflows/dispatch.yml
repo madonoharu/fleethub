@@ -1,7 +1,7 @@
-name: update-master-data
+name: dispatch
 on:
   repository_dispatch:
-    types: [update-master-data]
+    types: [dispatch]
 
 jobs:
   update:
@@ -28,7 +28,7 @@ jobs:
       - name: Install
         run: yarn install --frozen-lockfile
 
-      - run: yarn update-master-data
+      - run: yarn ts-node scripts/dispatch
         env:
           CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
           SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_CLIENT_EMAIL }}
