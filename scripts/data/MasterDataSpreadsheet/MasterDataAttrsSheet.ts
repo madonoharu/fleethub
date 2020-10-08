@@ -1,4 +1,6 @@
+import { isNonNullable } from "@fleethub/utils/src"
 import { GoogleSpreadsheetWorksheet } from "google-spreadsheet"
+
 import { MasterDataAttrRule } from "../types"
 
 export default class MasterDataGearAttrsSheet {
@@ -6,6 +8,11 @@ export default class MasterDataGearAttrsSheet {
 
   read = async (): Promise<MasterDataAttrRule[]> => {
     const rows = await this.sheet.getRows()
-    return rows.map(({ name, key, expr }) => ({ name, key, expr }))
+    return rows
+      .map(({ name, key, expr }) => {
+        if (!key || !expr) return undefined
+        return { name, key, expr }
+      })
+      .filter(isNonNullable)
   }
 }

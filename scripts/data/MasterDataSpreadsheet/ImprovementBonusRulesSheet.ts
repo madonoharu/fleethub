@@ -1,5 +1,6 @@
-import { mapValues } from "@fleethub/utils"
+import { isNonNullable, mapValues } from "@fleethub/utils/src"
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
+
 import { ImprovementBonusRule, ImprovementBonusRules } from "../types"
 
 type Awaited<T> = T extends Promise<infer U> ? U : never
@@ -19,7 +20,12 @@ const promiseAllValues = async <T extends Record<string, Promise<unknown>>>(obj:
 const fetchImprovementBonusRule = async (sheet: GoogleSpreadsheetWorksheet): Promise<ImprovementBonusRule[]> => {
   const rows = await sheet.getRows()
 
-  return rows.map(({ expr, formula }) => ({ expr, formula }))
+  return rows
+    .map(({ expr, formula }) => {
+      if (!expr || !formula) return undefined
+      return { expr, formula }
+    })
+    .filter(isNonNullable)
 }
 
 export default class ImprovementBonusRulesSheet {
