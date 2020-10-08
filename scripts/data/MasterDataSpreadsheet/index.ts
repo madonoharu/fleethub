@@ -1,10 +1,12 @@
 import { GoogleSpreadsheet, ServiceAccountCredentials } from "google-spreadsheet"
 
 import { MasterData } from "../types"
+
 import EnumSheet from "./EnumSheet"
 import MasterDataGearsSheet from "./MasterDataGearsSheet"
 import MasterDataShipsSheet from "./MasterDataShipsSheet"
 import MasterDataAttrsSheet from "./MasterDataAttrsSheet"
+import ImprovementBonusRulesSheet from "./improvementBonusRulesSheet"
 
 export const initSpreadsheet = async (serviceAccount: ServiceAccountCredentials) => {
   const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
@@ -31,6 +33,8 @@ export default class MasterDataSpreadsheet {
 
     gearAttrs: new MasterDataAttrsSheet(this.doc.sheetsByTitle["装備属性"]),
     shipAttrs: new MasterDataAttrsSheet(this.doc.sheetsByTitle["艦娘属性"]),
+
+    improvementBonusRules: new ImprovementBonusRulesSheet(this.doc),
   }
 
   private constructor(public doc: GoogleSpreadsheet) {}
