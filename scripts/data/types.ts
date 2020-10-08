@@ -7,7 +7,7 @@ export type StockGear = { id: number; stars?: number }
 export type MasterDataShip = {
   id: number
   name: string
-  ruby: string
+  yomi: string
   shipType: number
   shipClass: number
   sortId?: number
@@ -27,7 +27,7 @@ export type MasterDataShip = {
   fuel?: number
   ammo?: number
 
-  capacity: number
+  slotnum: number
   slots: MaybeNumber[]
   stock: StockGear[]
 
