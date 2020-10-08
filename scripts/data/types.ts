@@ -72,12 +72,26 @@ export type MasterDataGear = {
 
 export type MasterDataAttrRule = { name: string; key: string; expr: string }
 
-type ImprovementBonus = { expr: string; formula: string }
+export type ImprovementBonusRule = { expr: string; formula: string }
 
-type ImprovementBonusRules = {
-  shellingPower: ImprovementBonus[]
-  shellingAccuracy: ImprovementBonus[]
-}
+export type ImprovementBonusType =
+  | "shellingPower"
+  | "shellingAccuracy"
+  | "torpedoPower"
+  | "torpedoAccuracy"
+  | "torpedoEvasion"
+  | "aswPower"
+  | "aswAccuracy"
+  | "nightPower"
+  | "nightAccuracy"
+  | "defensePower"
+  | "contactSelection"
+  | "fighterPower"
+  | "adjustedAntiAir"
+  | "fleetAntiAir"
+  | "effectiveLos"
+
+export type ImprovementBonusRules = Record<ImprovementBonusType, ImprovementBonusRule[]>
 
 export type MasterData = {
   ships: MasterDataShip[]
@@ -89,6 +103,8 @@ export type MasterData = {
 
   gearAttrs: MasterDataAttrRule[]
   shipAttrs: MasterDataAttrRule[]
+
+  improvementBonusRules: ImprovementBonusRules
 }
 
 export type SheetRow = Record<string, string | number | boolean | undefined>

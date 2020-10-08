@@ -21,7 +21,16 @@ export const fetchStorageData = <K extends keyof MasterData>(fileName: K) =>
     .then((res) => res.data)
 
 export const fetchMasterData = async (): Promise<MasterData> => {
-  const [ships, shipTypes, shipClasses, shipAttrs, gears, gearCategories, gearAttrs] = await Promise.all([
+  const [
+    ships,
+    shipTypes,
+    shipClasses,
+    shipAttrs,
+    gears,
+    gearCategories,
+    gearAttrs,
+    improvementBonusRules,
+  ] = await Promise.all([
     fetchStorageData("ships"),
     fetchStorageData("shipTypes"),
     fetchStorageData("shipClasses"),
@@ -30,6 +39,8 @@ export const fetchMasterData = async (): Promise<MasterData> => {
     fetchStorageData("gears"),
     fetchStorageData("gearCategories"),
     fetchStorageData("gearAttrs"),
+
+    fetchStorageData("improvementBonusRules"),
   ])
 
   return {
@@ -40,6 +51,7 @@ export const fetchMasterData = async (): Promise<MasterData> => {
     gearCategories,
     gears,
     gearAttrs,
+    improvementBonusRules,
   }
 }
 
@@ -55,6 +67,7 @@ export const postMasterData = async (md: MasterData) => {
     "gears",
     "gearCategories",
     "gearAttrs",
+    "improvementBonusRules",
   ]
 
   const promises = keys.map((key) => {
