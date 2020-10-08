@@ -6,7 +6,7 @@ import EnumSheet from "./EnumSheet"
 import MasterDataGearsSheet from "./MasterDataGearsSheet"
 import MasterDataShipsSheet from "./MasterDataShipsSheet"
 import MasterDataAttrsSheet from "./MasterDataAttrsSheet"
-import ImprovementBonusRulesSheet from "./improvementBonusRulesSheet"
+import ImprovementBonusRulesSheet from "./ImprovementBonusRulesSheet"
 
 export const initSpreadsheet = async (serviceAccount: ServiceAccountCredentials) => {
   const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
