@@ -2,13 +2,29 @@ import admin from "firebase-admin"
 import axios from "axios"
 
 import { MasterData } from "./types"
+import getServiceAccount from "./getServiceAccount"
 
 type UploadOptions = {
   destination: string
   metadata: Record<string, string>
 }
 
+let initialized = false
+const init = () => {
+  if (initialized) return
+
+  const serviceAccount = getServiceAccount()
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: "kcfleethub.appspot.com",
+  })
+
+  initialized = true
+}
+
 const upload = async (source: unknown, { destination, metadata }: UploadOptions) => {
+  init()
   const str = JSON.stringify(source)
 
   const bucket = admin.storage().bucket()

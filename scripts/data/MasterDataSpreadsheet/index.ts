@@ -1,6 +1,7 @@
-import { GoogleSpreadsheet, ServiceAccountCredentials } from "google-spreadsheet"
+import { GoogleSpreadsheet } from "google-spreadsheet"
 
 import { MasterData } from "../types"
+import getServiceAccount from "../getServiceAccount"
 
 import EnumSheet from "./EnumSheet"
 import MasterDataGearsSheet from "./MasterDataGearsSheet"
@@ -8,17 +9,12 @@ import MasterDataShipsSheet from "./MasterDataShipsSheet"
 import MasterDataAttrsSheet from "./MasterDataAttrsSheet"
 import ImprovementBonusRulesSheet from "./ImprovementBonusRulesSheet"
 
-export const initSpreadsheet = async (serviceAccount: ServiceAccountCredentials) => {
-  const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
-  await doc.useServiceAccountAuth(serviceAccount)
-  await doc.loadInfo()
-
-  return doc
-}
-
 export default class MasterDataSpreadsheet {
-  static init = async (serviceAccount: ServiceAccountCredentials) => {
-    const doc = await initSpreadsheet(serviceAccount)
+  static init = async () => {
+    const serviceAccount = getServiceAccount()
+    const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
+    await doc.useServiceAccountAuth(serviceAccount)
+    await doc.loadInfo()
 
     return new MasterDataSpreadsheet(doc)
   }
