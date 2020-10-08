@@ -1,3 +1,4 @@
+import signale from "signale"
 import * as data from "./data"
 
 type ClientPayload = {
@@ -15,12 +16,25 @@ const getClientPayload = (): ClientPayload | undefined => {
   }
 }
 
-const type = getClientPayload()?.type
+const main = async () => {
+  const type = getClientPayload()?.type
 
-if (type === "upload") {
-  data.upload()
-} else if (type === "update") {
-  data.update()
-} else if (type === "import") {
-  data.importStart2()
+  if (!type) {
+    signale.error("type is not found")
+    return
+  }
+
+  const scope = signale.scope(type)
+
+  scope.start()
+  if (type === "upload") {
+    data.upload()
+  } else if (type === "update") {
+    data.update()
+  } else if (type === "import") {
+    data.importStart2()
+  }
+  scope.success()
 }
+
+main()
