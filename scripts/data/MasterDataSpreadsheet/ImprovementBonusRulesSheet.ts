@@ -42,7 +42,7 @@ export default class ImprovementBonusRulesSheet {
       contactSelection: sheetsByTitle["改修触接選択率"],
       fighterPower: sheetsByTitle["改修制空"],
       adjustedAntiAir: sheetsByTitle["改修加重対空"],
-      fleetAntiAir: sheetsByTitle["改修艦隊防空"],
+      fleetAntiAir: sheetsByTitle["改修艦隊対空"],
       effectiveLos: sheetsByTitle["改修マップ索敵"],
     }
 
