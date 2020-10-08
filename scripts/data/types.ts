@@ -70,6 +70,15 @@ export type MasterDataGear = {
   improvable?: boolean
 }
 
+export type MasterDataAttrRule = { name: string; key: string; expr: string }
+
+type ImprovementBonus = { expr: string; formula: string }
+
+type ImprovementBonusRules = {
+  shellingPower: ImprovementBonus[]
+  shellingAccuracy: ImprovementBonus[]
+}
+
 export type MasterData = {
   ships: MasterDataShip[]
   shipTypes: MasterDataShipType[]
@@ -77,6 +86,9 @@ export type MasterData = {
 
   gearCategories: MasterDataGearCategory[]
   gears: MasterDataGear[]
+
+  gearAttrs: MasterDataAttrRule[]
+  shipAttrs: MasterDataAttrRule[]
 }
 
 export type SheetRow = Record<string, string | number | boolean | undefined>
