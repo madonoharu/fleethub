@@ -21,20 +21,25 @@ export const fetchStorageData = <K extends keyof MasterData>(fileName: K) =>
     .then((res) => res.data)
 
 export const fetchMasterData = async (): Promise<MasterData> => {
-  const [ships, shipTypes, shipClasses, gearCategories, gears] = await Promise.all([
+  const [ships, shipTypes, shipClasses, shipAttrs, gears, gearCategories, gearAttrs] = await Promise.all([
     fetchStorageData("ships"),
     fetchStorageData("shipTypes"),
     fetchStorageData("shipClasses"),
-    fetchStorageData("gearCategories"),
+    fetchStorageData("shipAttrs"),
+
     fetchStorageData("gears"),
+    fetchStorageData("gearCategories"),
+    fetchStorageData("gearAttrs"),
   ])
 
   return {
     ships,
     shipTypes,
     shipClasses,
+    shipAttrs,
     gearCategories,
     gears,
+    gearAttrs,
   }
 }
 
@@ -42,7 +47,15 @@ export const postMasterData = async (md: MasterData) => {
   const dataPath = "data"
   const metadata = { cacheControl: "public, max-age=60" }
 
-  const keys: (keyof MasterData)[] = ["ships", "shipTypes", "shipClasses", "gearCategories", "gears"]
+  const keys: (keyof MasterData)[] = [
+    "ships",
+    "shipTypes",
+    "shipClasses",
+    "shipAttrs",
+    "gears",
+    "gearCategories",
+    "gearAttrs",
+  ]
 
   const promises = keys.map((key) => {
     const destination = `${dataPath}/${key}.json`

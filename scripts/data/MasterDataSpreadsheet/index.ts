@@ -4,8 +4,7 @@ import { MasterData } from "../types"
 import EnumSheet from "./EnumSheet"
 import MasterDataGearsSheet from "./MasterDataGearsSheet"
 import MasterDataShipsSheet from "./MasterDataShipsSheet"
-
-const sheetKeys = ["shipTypes", "shipClasses", "gearCategories", "ships", "gears"] as const
+import MasterDataAttrsSheet from "./MasterDataAttrsSheet"
 
 export const initSpreadsheet = async (serviceAccount: ServiceAccountCredentials) => {
   const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
@@ -29,26 +28,35 @@ export default class MasterDataSpreadsheet {
 
     ships: MasterDataShipsSheet.from(this.doc),
     gears: MasterDataGearsSheet.from(this.doc),
+
+    gearAttrs: new MasterDataAttrsSheet(this.doc.sheetsByTitle["装備属性"]),
+    shipAttrs: new MasterDataAttrsSheet(this.doc.sheetsByTitle["艦娘属性"]),
   }
 
   private constructor(public doc: GoogleSpreadsheet) {}
 
   read = async (): Promise<MasterData> => {
+    const { sheets } = this
     const md = {} as MasterData
 
-    const readByKey = async (key: keyof MasterData) => {
-      md[key] = (await this.sheets[key].read()) as any
-    }
+    const promises = Object.entries(sheets).map(async ([key, sheet]) => {
+      md[key as keyof typeof sheets] = (await sheet.read()) as any
+    })
 
-    await Promise.all(sheetKeys.map(readByKey))
+    await Promise.all(promises)
 
     return md
   }
 
   write = async (md: MasterData) => {
-    const writeByKey = (key: keyof MasterData) => this.sheets[key].write(md[key] as any)
+    const { sheets } = this
 
-    await Promise.all(sheetKeys.map(writeByKey))
+    await Promise.all([
+      sheets.shipClasses.write(md.shipClasses),
+      sheets.gearCategories.write(md.gearCategories),
+      sheets.ships.write(md.ships),
+      sheets.gears.write(md.gears),
+    ])
   }
 }
 
