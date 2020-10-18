@@ -24,15 +24,17 @@ const main = async () => {
     return
   }
 
-  data.sendMessage(`start ${type}`)
+  await data.sendMessage(`start ${type}`)
+
   if (type === "upload") {
-    data.upload()
+    await data.upload()
   } else if (type === "update") {
-    data.update()
+    await data.update()
   } else if (type === "import") {
-    data.importStart2()
+    await data.importStart2()
   }
-  data.sendMessage(`success ${type}`)
+
+  await data.sendMessage(`success ${type}`)
 }
 
 try {
