@@ -1,6 +1,5 @@
 import { GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
-
-import { SheetRow } from "../types"
+import { SheetRow } from "@fleethub/utils/src"
 
 const writeRows = async (sheet: GoogleSpreadsheetWorksheet, rows: SheetRow[]) => {
   await sheet.loadHeaderRow()

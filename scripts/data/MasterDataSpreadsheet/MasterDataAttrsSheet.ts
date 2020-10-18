@@ -1,12 +1,12 @@
 import { isNonNullable } from "@fleethub/utils/src"
 import { GoogleSpreadsheetWorksheet } from "google-spreadsheet"
 
-import { MasterDataAttrRule } from "../types"
+export type MasterDataAttrsSheetRow = { name: string; key: string; expr: string }
 
 export default class MasterDataGearAttrsSheet {
   constructor(public sheet: GoogleSpreadsheetWorksheet) {}
 
-  read = async (): Promise<MasterDataAttrRule[]> => {
+  public read = async (): Promise<MasterDataAttrsSheetRow[]> => {
     const rows = await this.sheet.getRows()
     return rows
       .map(({ name, key, expr }) => {

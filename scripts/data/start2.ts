@@ -1,9 +1,19 @@
-import { uniq, isPlayerShip, MstShip, MstSlotitem, Start2, GearCategory } from "@fleethub/utils/src"
+import {
+  uniq,
+  isPlayerShip,
+  MstShip,
+  MstSlotitem,
+  Start2,
+  GearCategory,
+  MasterData,
+  MasterDataGear,
+  MasterDataShip,
+  MasterDataShipClass,
+} from "@fleethub/utils/src"
 import axios from "axios"
 import signale from "signale"
 
 import { getDefaultMasterDataShip } from "./MasterDataSpreadsheet"
-import { MasterData, MasterDataGear, MasterDataShip, MasterDataShipClass } from "./types"
 
 const getSlots = (mstShip: MstShip, shipData?: MasterDataShip) => {
   const { api_slot_num } = mstShip

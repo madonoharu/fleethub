@@ -24,9 +24,7 @@ const main = async () => {
     return
   }
 
-  const scope = signale.scope(type)
-
-  scope.start()
+  data.sendMessage(`start ${type}`)
   if (type === "upload") {
     data.upload()
   } else if (type === "update") {
@@ -34,7 +32,11 @@ const main = async () => {
   } else if (type === "import") {
     data.importStart2()
   }
-  scope.success()
+  data.sendMessage(`success ${type}`)
 }
 
-main()
+try {
+  main()
+} catch (error) {
+  data.sendError(error)
+}

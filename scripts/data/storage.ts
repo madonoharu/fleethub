@@ -1,7 +1,7 @@
 import admin from "firebase-admin"
 import axios from "axios"
+import { MasterData } from "@fleethub/utils/src"
 
-import { MasterData } from "./types"
 import getServiceAccount from "./getServiceAccount"
 
 type UploadOptions = {
@@ -45,7 +45,7 @@ export const read = async (): Promise<MasterData> => {
     gears,
     gearCategories,
     gearAttrs,
-    improvementBonusRules,
+    improvementBonuses,
   ] = await Promise.all([
     fetchStorageData("ships"),
     fetchStorageData("shipTypes"),
@@ -56,7 +56,7 @@ export const read = async (): Promise<MasterData> => {
     fetchStorageData("gearCategories"),
     fetchStorageData("gearAttrs"),
 
-    fetchStorageData("improvementBonusRules"),
+    fetchStorageData("improvementBonuses"),
   ])
 
   return {
@@ -67,7 +67,7 @@ export const read = async (): Promise<MasterData> => {
     gearCategories,
     gears,
     gearAttrs,
-    improvementBonusRules,
+    improvementBonuses,
   }
 }
 
@@ -83,7 +83,7 @@ export const write = async (md: MasterData) => {
     "gears",
     "gearCategories",
     "gearAttrs",
-    "improvementBonusRules",
+    "improvementBonuses",
   ]
 
   const promises = keys.map((key) => {
