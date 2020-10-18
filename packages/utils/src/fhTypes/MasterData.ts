@@ -70,9 +70,9 @@ export type MasterDataGear = {
   improvable?: boolean
 }
 
-export type MasterDataAttrRule = { name: string; key: string; expr: string }
+export type MasterDataAttrRule = { name: string; key: string; ids: number[] }
 
-export type ImprovementBonusRule = { expr: string; formula: string }
+export type MasterDataImprovementBonusRule = { formula: string; ids: number[] }
 
 export type ImprovementBonusType =
   | "shellingPower"
@@ -91,7 +91,7 @@ export type ImprovementBonusType =
   | "fleetAntiAir"
   | "effectiveLos"
 
-export type ImprovementBonusRules = Record<ImprovementBonusType, ImprovementBonusRule[]>
+export type MasterDataImprovementBonuses = Record<ImprovementBonusType, MasterDataImprovementBonusRule[]>
 
 export type MasterData = {
   ships: MasterDataShip[]
@@ -104,5 +104,5 @@ export type MasterData = {
   gearAttrs: MasterDataAttrRule[]
   shipAttrs: MasterDataAttrRule[]
 
-  improvementBonusRules: ImprovementBonusRules
+  improvementBonuses: MasterDataImprovementBonuses
 }
