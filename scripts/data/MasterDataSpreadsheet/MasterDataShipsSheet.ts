@@ -1,7 +1,7 @@
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
+import { MasterDataShip, SheetRow, StatInterval } from "@fleethub/utils/src"
 import { get, set } from "lodash"
 
-import { MasterDataShip, SheetRow, StatInterval } from "../types"
 import toHeaderKeyValues from "./toHeaderKeyValues"
 import writeRows from "./writeRows"
 
@@ -32,8 +32,6 @@ export const getDefaultMasterDataShip = (): MasterDataShip => ({
 })
 
 export default class MasterDataShipsSheet {
-  static from = (doc: GoogleSpreadsheet) => new MasterDataShipsSheet(doc.sheetsByTitle["艦娘データ"])
-
   constructor(public sheet: GoogleSpreadsheetWorksheet) {}
 
   fetchHeaderKeyValues = async () => {

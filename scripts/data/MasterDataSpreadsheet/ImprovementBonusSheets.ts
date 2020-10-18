@@ -1,7 +1,8 @@
-import { isNonNullable, mapValues } from "@fleethub/utils/src"
+import { isNonNullable, mapValues, ImprovementBonusType } from "@fleethub/utils/src"
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
 
-import { ImprovementBonusRule, ImprovementBonusRules } from "../types"
+export type ImprovementBonusSheetRow = { expr: string; formula: string }
+export type ImprovementBonusSheets = Record<ImprovementBonusType, ImprovementBonusSheetRow[]>
 
 type Awaited<T> = T extends Promise<infer U> ? U : never
 
@@ -17,7 +18,7 @@ const promiseAllValues = async <T extends Record<string, Promise<unknown>>>(obj:
   return result as { [K in keyof T]: Awaited<T[K]> }
 }
 
-const fetchImprovementBonusRule = async (sheet: GoogleSpreadsheetWorksheet): Promise<ImprovementBonusRule[]> => {
+const fetchRows = async (sheet: GoogleSpreadsheetWorksheet): Promise<ImprovementBonusSheetRow[]> => {
   const rows = await sheet.getRows()
 
   return rows
@@ -31,10 +32,10 @@ const fetchImprovementBonusRule = async (sheet: GoogleSpreadsheetWorksheet): Pro
 export default class ImprovementBonusRulesSheet {
   constructor(public doc: GoogleSpreadsheet) {}
 
-  read = async () => {
+  read = async (): Promise<ImprovementBonusSheets> => {
     const { sheetsByTitle } = this.doc
 
-    const sheets: Record<keyof ImprovementBonusRules, GoogleSpreadsheetWorksheet> = {
+    const sheets: Record<ImprovementBonusType, GoogleSpreadsheetWorksheet> = {
       shellingPower: sheetsByTitle["改修砲撃攻撃力"],
       shellingAccuracy: sheetsByTitle["改修砲撃命中"],
       torpedoPower: sheetsByTitle["改修雷撃攻撃力"],
@@ -52,7 +53,7 @@ export default class ImprovementBonusRulesSheet {
       effectiveLos: sheetsByTitle["改修マップ索敵"],
     }
 
-    const promises = mapValues(sheets, fetchImprovementBonusRule)
+    const promises = mapValues(sheets, fetchRows)
     return await promiseAllValues(promises)
   }
 }

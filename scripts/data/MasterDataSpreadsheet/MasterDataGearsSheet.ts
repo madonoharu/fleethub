@@ -1,6 +1,6 @@
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
+import { MasterDataGear, SheetRow } from "@fleethub/utils/src"
 
-import { MasterDataGear, SheetRow } from "../types"
 import toHeaderKeyValues from "./toHeaderKeyValues"
 import writeRows from "./writeRows"
 

@@ -2,6 +2,8 @@ import MasterDataSpreadsheet from "./MasterDataSpreadsheet"
 import { fetchStart2, mergeStart2 } from "./start2"
 import * as storage from "./storage"
 
+export * from "./message"
+
 export const importStart2 = async () => {
   const ss = await MasterDataSpreadsheet.init()
   const [md, start2] = await Promise.all([ss.read(), fetchStart2()])
