@@ -1,11 +1,17 @@
-import { MasterDataShip } from "@fleethub/utils/src"
+import { cloneJson, MasterDataShip, MasterDataAttrRule } from "@fleethub/utils/src"
 
 import { MasterDataAttrsSheetRow } from "./MasterDataAttrsSheet"
 import parseExpr, { Variables } from "./parseExpr"
 
 type MutableShip = Variables & MasterDataShip
 
-const parseShipAttrs = (ships: MasterDataShip[], rows: MasterDataAttrsSheetRow[]) => {
+export const omitEvaluate = <T extends { evaluate: unknown }>(arg: T): Omit<T, "evaluate"> => {
+  const result = { ...arg }
+  delete result.evaluate
+  return result
+}
+
+const parseShipAttrs = (ships: MasterDataShip[], rows: MasterDataAttrsSheetRow[]): MasterDataAttrRule[] => {
   const attrs = rows.map((row) => ({
     key: row.key,
     name: row.name,
@@ -13,7 +19,7 @@ const parseShipAttrs = (ships: MasterDataShip[], rows: MasterDataAttrsSheetRow[]
     ids: Array<number>(),
   }))
 
-  const mutableShips = ships.concat() as MutableShip[]
+  const mutableShips = cloneJson(ships) as MutableShip[]
 
   mutableShips.forEach((ship) => {
     attrs.forEach((attr) => {
@@ -23,7 +29,7 @@ const parseShipAttrs = (ships: MasterDataShip[], rows: MasterDataAttrsSheetRow[]
     })
   })
 
-  return attrs
+  return attrs.map(omitEvaluate)
 }
 
 export default parseShipAttrs

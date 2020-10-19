@@ -1,15 +1,9 @@
-import {
-  mapValues,
-  MasterDataAttrRule,
-  MasterDataGear,
-  MasterDataGearCategory,
-  MasterDataImprovementBonuses,
-  MasterDataImprovementBonusRule,
-} from "@fleethub/utils/src"
+import { mapValues, MasterDataGear, MasterDataGearCategory } from "@fleethub/utils/src"
 
 import { MasterDataAttrsSheetRow } from "./MasterDataAttrsSheet"
 import { ImprovementBonusSheets, ImprovementBonusSheetRow } from "./ImprovementBonusSheets"
 import parseExpr, { Variables } from "./parseExpr"
+import { omitEvaluate } from "./parseShipAttrs"
 
 export default (
   gears: MasterDataGear[],
@@ -75,10 +69,10 @@ export default (
       }
     })
 
-    return rules
+    return rules.map(omitEvaluate)
   }
 
   const improvementBonuses = mapValues(improvementBonusSheets, parseImprovementBonusSheet)
 
-  return { gearAttrs: attrs, improvementBonuses }
+  return { gearAttrs: attrs.map(omitEvaluate), improvementBonuses }
 }

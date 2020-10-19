@@ -1,4 +1,5 @@
 import {
+  cloneJson,
   uniq,
   isPlayerShip,
   MstShip,
@@ -161,6 +162,8 @@ const mstItemToMasterDataGear = (item: MstSlotitem): MasterDataGear => {
 }
 
 export const mergeStart2 = (md: MasterData, start2: Start2) => {
+  const merged = cloneJson(md)
+
   const playerShipClasses = md.shipClasses.filter((sc) => sc.id < 1000)
 
   const abyssalShipClasses = createAbyssalShipClasses(start2).map((sc1) => {
@@ -175,9 +178,9 @@ export const mergeStart2 = (md: MasterData, start2: Start2) => {
   const getAbyssalShipClass = (ship: MasterDataShip) =>
     abyssalShipClasses.find((sc) => sc.name === abyssalShipNameToShipClassName(ship.name))?.id || 0
 
-  md.shipClasses = playerShipClasses.concat(abyssalShipClasses)
+  merged.shipClasses = playerShipClasses.concat(abyssalShipClasses)
 
-  md.ships = start2.api_mst_ship.map((mstShip) => {
+  merged.ships = start2.api_mst_ship.map((mstShip) => {
     const current = md.ships.find(({ id }) => id === mstShip.api_id)
     const next = mstShipToMasterDataShip(mstShip)
 
@@ -201,13 +204,13 @@ export const mergeStart2 = (md: MasterData, start2: Start2) => {
     return next
   })
 
-  md.gearCategories = start2.api_mst_slotitem_equiptype.map(({ api_id, api_name }) => ({
+  merged.gearCategories = start2.api_mst_slotitem_equiptype.map(({ api_id, api_name }) => ({
     id: api_id,
     name: api_name,
     key: md.gearCategories.find((gc) => gc.id === api_id)?.key || "",
   }))
 
-  md.gears = start2.api_mst_slotitem.map(mstItemToMasterDataGear).map((gear) => {
+  merged.gears = start2.api_mst_slotitem.map(mstItemToMasterDataGear).map((gear) => {
     const improvable = md.gears.find((mdg) => mdg.id === gear.id)?.improvable
     if (improvable) {
       gear.improvable = improvable
@@ -216,5 +219,5 @@ export const mergeStart2 = (md: MasterData, start2: Start2) => {
     return gear
   })
 
-  return md
+  return merged
 }

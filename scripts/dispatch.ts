@@ -1,5 +1,5 @@
 import signale from "signale"
-import * as data from "./data"
+import { MasterDataClient } from "./data"
 
 type ClientPayload = {
   type?: string
@@ -16,6 +16,8 @@ const getClientPayload = (): ClientPayload | undefined => {
   }
 }
 
+const clinet = new MasterDataClient()
+
 const main = async () => {
   const type = getClientPayload()?.type
 
@@ -24,21 +26,13 @@ const main = async () => {
     return
   }
 
-  await data.sendMessage(`start ${type}`)
-
-  if (type === "upload") {
-    await data.upload()
-  } else if (type === "update") {
-    await data.update()
-  } else if (type === "import") {
-    await data.importStart2()
+  if (type === "update") {
+    await clinet.update()
   }
-
-  await data.sendMessage(`success ${type}`)
 }
 
 try {
   main()
 } catch (error) {
-  data.sendError(error)
+  clinet.error(error)
 }
