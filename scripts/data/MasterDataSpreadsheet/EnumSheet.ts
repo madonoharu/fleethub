@@ -9,7 +9,11 @@ export default class EnumSheet {
 
   read = async (): Promise<EnumData> => {
     const rows = await this.sheet.getRows()
-    return rows.map(({ id, name, key }) => ({ id: Number(id), name, key }))
+    return rows.map((row) => ({
+      id: Number(row.id),
+      name: row.name || "",
+      key: row.key || "",
+    }))
   }
 
   write = async (data: EnumData) => {
