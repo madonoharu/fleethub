@@ -31,16 +31,7 @@ const rules = [
   },
   {
     test: /\.(gif|png|jpe?g|svg|webp|ico|woff|woff2)$/,
-    use: [
-      {
-        loader: "url-loader",
-        options: {
-          limit: 244,
-          name: "static/media/[path][name].[ext]",
-          esModule: false,
-        },
-      },
-    ],
+    type: "asset/resource",
   },
   {
     test: /\.html$/,
@@ -54,12 +45,19 @@ const config = {
   output: {
     filename: "bundle.js",
     path: path.resolve(process.cwd() + "../../../public"),
+    assetModuleFilename: "images/[hash][ext]",
   },
   module: {
     rules,
   },
   resolve: {
     extensions: [".js", ".ts", ".tsx", ".json"],
+  },
+  cache: {
+    type: "filesystem",
+    buildDependencies: {
+      config: [__filename],
+    },
   },
 
   plugins: [
