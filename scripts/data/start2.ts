@@ -193,7 +193,7 @@ export const mergeStart2 = (md: MasterData, start2: Start2) => {
       next[key] = current[key]
     }
 
-    ;(["evasion", "asw", "los", "slots", "stock"] as const).forEach(set)
+    ;(["evasion", "asw", "los", "slots", "stock", "banner"] as const).forEach(set)
 
     if (!isPlayerShip(mstShip)) {
       ;(["shipClass", "maxHp", "firepower", "torpedo", "antiAir", "armor", "luck", "range"] as const).forEach(set)

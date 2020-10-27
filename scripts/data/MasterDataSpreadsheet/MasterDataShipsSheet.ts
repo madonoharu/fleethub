@@ -29,6 +29,8 @@ export const getDefaultMasterDataShip = (): MasterDataShip => ({
   slotnum: 0,
   slots: [],
   stock: [],
+
+  banner: "",
 })
 
 export default class MasterDataShipsSheet {
