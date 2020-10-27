@@ -34,6 +34,8 @@ export type MasterDataShip = {
   nextId?: number
   nextLevel?: number
   convertible?: boolean
+
+  banner: string
 }
 
 export type MasterDataShipType = { id: number; name: string; key: string }
