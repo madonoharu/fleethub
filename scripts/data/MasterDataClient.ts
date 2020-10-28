@@ -1,11 +1,12 @@
-import { cloneJson, MasterData, Start2 } from "@fleethub/utils/src"
+import { cloneJson, MasterData } from "@fleethub/utils/src"
+import { Start2 } from "kc-tools"
 import { isEqual } from "lodash"
 import immer from "immer"
 
 import MasterDataSpreadsheet from "./MasterDataSpreadsheet"
 import { fetchStart2, mergeStart2 } from "./start2"
 import storage from "./storage"
-import { updateImage } from "./cloudinary"
+import { uploadShipBanners } from "./cloudinary"
 
 const equalJson = (arg1: unknown, arg2: unknown) => isEqual(cloneJson(arg1), cloneJson(arg2))
 
@@ -46,7 +47,7 @@ export default class MasterDataClient {
     return (this.#cache.storageMd ??= await storage.read())
   }
 
-  public updateSheet = async () => {
+  public updateSheetByStart2 = async () => {
     const [start2, sheetMd] = await Promise.all([this.getStart2(), this.getSheetMd()])
     const ss = await this.getSpreadsheet()
     const mergedMd = mergeStart2(sheetMd, start2)
@@ -61,8 +62,19 @@ export default class MasterDataClient {
     return mergedMd
   }
 
+  public updateStorage = async (next: MasterData) => {
+    const current = await this.getStorageMd()
+
+    if (equalJson(next, current)) {
+      console.log("storage: Not Modified")
+    } else {
+      console.log("storage: Update")
+      await storage.write(next)
+    }
+  }
+
   public updateData = async () => {
-    const updatedSheetMd = await this.updateSheet()
+    const updatedSheetMd = await this.updateSheetByStart2()
     const storageMd = await this.getStorageMd()
 
     const latestMd = immer(updatedSheetMd, (draft) => {
@@ -72,16 +84,22 @@ export default class MasterDataClient {
       })
     })
 
-    if (equalJson(latestMd, storageMd)) {
-      console.log("storage: Not Modified")
-      await storage.write(latestMd)
-    } else {
-      console.log("storage: Update")
-      await storage.write(latestMd)
-    }
+    await this.updateStorage(latestMd)
   }
 
-  public updateImage = () => updateImage()
+  public updateImages = async () => {
+    const start2 = await this.getStart2()
+    const bannerIds = await uploadShipBanners(start2)
+    const storageMd = await this.getStorageMd()
+
+    const next = immer(storageMd, (draft) => {
+      draft.ships.forEach((ship) => {
+        ship.banner = bannerIds[ship.id] || ""
+      })
+    })
+
+    await this.updateStorage(next)
+  }
 
   public log = async (message: string) => {
     console.log(message)

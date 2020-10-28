@@ -1,9 +1,5 @@
-import { getResourceUrl, servers } from "kc-tools"
+import { getResourceUrl, servers, Start2 } from "kc-tools"
 import cloudinary from "cloudinary"
-import immer from "immer"
-
-import { fetchStart2 } from "./start2"
-import storage from "./storage"
 
 cloudinary.v2.config({
   cloud_name: "djg1epjdj",
@@ -72,9 +68,8 @@ const getBannerIds = async () => {
   return bannerIds
 }
 
-export const updateImage = async () => {
+export const uploadShipBanners = async (start2: Start2) => {
   const bannerIds = await getBannerIds()
-  const start2 = await fetchStart2()
 
   const exists = (id: number) => Boolean(bannerIds[id])
 
@@ -86,14 +81,5 @@ export const updateImage = async () => {
     if (res) bannerIds[id] = res.public_id
   }
 
-  const { ships } = await storage.read()
-  const next = immer(ships, (draft) => {
-    draft.forEach((ship) => {
-      ship.banner = bannerIds[ship.id] || ""
-    })
-  })
-
-  if (ships !== next) {
-    storage.write({ ships: next })
-  }
+  return bannerIds
 }
