@@ -105,7 +105,7 @@ export default class MasterDataClient {
     console.log(message)
     const ss = await this.getSpreadsheet()
     const sheet = ss.doc.sheetsByTitle["管理"]
-    await sheet.addRow([new Date().toLocaleString("ja-JP"), message])
+    await sheet.addRow([new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }), message])
   }
 
   public error = (error: unknown) => {
