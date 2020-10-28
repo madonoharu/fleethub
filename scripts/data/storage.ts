@@ -1,40 +1,26 @@
 import admin from "firebase-admin"
-import axios from "axios"
+import ky from "ky-universal"
 import { MasterData } from "@fleethub/utils/src"
 
 import getServiceAccount from "./getServiceAccount"
 
-type UploadOptions = {
-  destination: string
-  metadata: Record<string, string>
-}
+admin.initializeApp({
+  credential: admin.credential.cert(getServiceAccount()),
+  storageBucket: "kcfleethub.appspot.com",
+})
 
-let initialized = false
-const init = () => {
-  if (initialized) return
+const fetchStorageData = <K extends keyof MasterData>(key: K): Promise<MasterData[K]> =>
+  ky.get(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`).json()
 
-  const serviceAccount = getServiceAccount()
+const postStorageData = <K extends keyof MasterData>(key: K, data: MasterData[K]) => {
+  const str = JSON.stringify(data)
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    storageBucket: "kcfleethub.appspot.com",
-  })
-
-  initialized = true
-}
-
-const upload = async (source: unknown, { destination, metadata }: UploadOptions) => {
-  init()
-  const str = JSON.stringify(source)
+  const destination = `data/${key}.json`
+  const metadata = { cacheControl: "public, max-age=60" }
 
   const bucket = admin.storage().bucket()
-  await bucket.file(destination).save(str, { metadata })
+  return bucket.file(destination).save(str, { metadata })
 }
-
-export const fetchStorageData = <K extends keyof MasterData>(fileName: K) =>
-  axios
-    .get<MasterData[K]>(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${fileName}.json`)
-    .then((res) => res.data)
 
 export const read = async (): Promise<MasterData> => {
   const [
@@ -71,27 +57,21 @@ export const read = async (): Promise<MasterData> => {
   }
 }
 
-export const write = async (md: MasterData) => {
-  const dataPath = "data"
-  const metadata = { cacheControl: "public, max-age=60" }
-
-  const keys: (keyof MasterData)[] = [
-    "ships",
-    "shipTypes",
-    "shipClasses",
-    "shipAttrs",
-    "gears",
-    "gearCategories",
-    "gearAttrs",
-    "improvementBonuses",
-  ]
+export const write = async (md: Partial<MasterData>) => {
+  const keys = Object.keys(md) as (keyof MasterData)[]
 
   const promises = keys.map((key) => {
-    const destination = `${dataPath}/${key}.json`
-    upload(md[key], { destination, metadata })
+    const data = md[key]
+    return data && postStorageData(key, data)
   })
 
   await Promise.all(promises)
 }
 
-export const storage = { read, write }
+export const update = async (updateFn: (md: MasterData) => Promise<MasterData> | MasterData) => {
+  const md = await read()
+  const updated = await updateFn(md)
+  await write(updated)
+}
+
+export default { read, write, update }

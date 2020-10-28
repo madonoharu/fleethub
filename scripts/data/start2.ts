@@ -11,7 +11,7 @@ import {
   MasterDataShip,
   MasterDataShipClass,
 } from "@fleethub/utils/src"
-import axios from "axios"
+import ky from "ky-universal"
 import signale from "signale"
 
 import { getDefaultMasterDataShip } from "./MasterDataSpreadsheet"
@@ -28,9 +28,8 @@ const getSlots = (mstShip: MstShip, shipData?: MasterDataShip) => {
   return shipData.slots
 }
 
-export const fetchStart2 = async () => {
-  const res = await axios.get<Start2>("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")
-  return res.data
+export const fetchStart2 = async (): Promise<Start2> => {
+  return ky.get("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json").json()
 }
 
 const mstShipToMasterDataShip = (mstShip: MstShip): MasterDataShip => {

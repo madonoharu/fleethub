@@ -1,19 +1,19 @@
-import signale from "signale"
 import { MasterDataClient } from "./data"
 
 type ClientPayload = {
-  type?: string
+  type: string
 }
 
 const getClientPayload = (): ClientPayload | undefined => {
   const { CLIENT_PAYLOAD } = process.env
-  if (!CLIENT_PAYLOAD) return
 
-  try {
-    return JSON.parse(CLIENT_PAYLOAD)
-  } catch {
-    return
+  const payload = CLIENT_PAYLOAD && JSON.parse(CLIENT_PAYLOAD)
+
+  if (!payload || !payload.type) {
+    throw Error("CLIENT_PAYLOAD.type is not found")
   }
+
+  return payload
 }
 
 const clinet = new MasterDataClient()
@@ -21,14 +21,17 @@ const clinet = new MasterDataClient()
 const main = async () => {
   const type = getClientPayload()?.type
 
-  if (!type) {
-    signale.error("type is not found")
-    return
+  await clinet.log(`${type}: Start`)
+
+  if (type === "update_data") {
+    await clinet.updateData()
   }
 
-  if (type === "update") {
-    await clinet.update()
+  if (type === "update_image") {
+    await clinet.updateImage()
   }
+
+  await clinet.log(`${type}: Success`)
 }
 
 try {
