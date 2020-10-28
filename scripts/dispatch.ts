@@ -27,8 +27,8 @@ const main = async () => {
     await clinet.updateData()
   }
 
-  if (type === "update_image") {
-    await clinet.updateImage()
+  if (type === "update_images") {
+    await clinet.updateImages()
   }
 
   await clinet.log(`${type}: Success`)

@@ -1,20 +1,19 @@
 import {
   cloneJson,
   uniq,
-  isPlayerShip,
-  MstShip,
-  MstSlotitem,
-  Start2,
   GearCategory,
   MasterData,
   MasterDataGear,
   MasterDataShip,
   MasterDataShipClass,
 } from "@fleethub/utils/src"
+import { Start2, MstShip, MstPlayerShip, MstSlotitem } from "kc-tools"
 import ky from "ky-universal"
 import signale from "signale"
 
 import { getDefaultMasterDataShip } from "./MasterDataSpreadsheet"
+
+const isPlayerShip = (ship: MstShip): ship is MstPlayerShip => "api_houg" in ship
 
 const getSlots = (mstShip: MstShip, shipData?: MasterDataShip) => {
   const { api_slot_num } = mstShip
