@@ -1,5 +1,9 @@
 import { getResourceUrl, servers, Start2 } from "kc-tools"
 import cloudinary from "cloudinary"
+import ky from "ky-universal"
+
+let count = 0
+const getServerIp = () => servers[count++ % servers.length].ip
 
 cloudinary.v2.config({
   cloud_name: "djg1epjdj",
@@ -19,12 +23,12 @@ const uploadShipBanner = async (id: number) => {
   const resourceType = "ship"
   const imageType = "banner"
 
-  const { ip } = servers[id % servers.length]
-
+  const ip = getServerIp()
   const url = getResourceUrl({ ip, id, resourceType, imageType })
 
   const res = await cloudinary.v2.uploader
     .upload(url, {
+      folder: "ships",
       tags: [resourceType, imageType],
       eval: `upload_options.public_id = resource_info.phash; upload_options.overwrite = false;`,
     })
@@ -61,14 +65,14 @@ const getBannerIds = async () => {
     if (!resource.tags.includes("banner")) return
     resource.tags.forEach((tag) => {
       const id = Number(tag)
-      if (Number.isFinite(id)) bannerIds[id] = resource.public_id
+      if (Number.isFinite(id)) bannerIds[id] = resource.filename
     })
   })
 
   return bannerIds
 }
 
-export const uploadShipBanners = async (start2: Start2) => {
+export const updateShipBanners = async (start2: Start2) => {
   const bannerIds = await getBannerIds()
 
   const exists = (id: number) => Boolean(bannerIds[id])
@@ -77,9 +81,52 @@ export const uploadShipBanners = async (start2: Start2) => {
     if (exists(id)) continue
 
     const res = await uploadShipBanner(id)
-    console.log(`upload ${name}`)
+    console.log(`add ${name}`)
     if (res) bannerIds[id] = res.public_id
   }
 
   return bannerIds
+}
+
+type FrameKey = "x" | "y" | "w" | "h"
+
+type CommonIconWeapon = {
+  frames: Record<
+    string,
+    {
+      frame: Record<FrameKey, number>
+      rotated: false
+      trimmed: false
+      spriteSourceSize: Record<FrameKey, number>
+      sourceSize: Record<"w" | "h", number>
+    }
+  >
+}
+
+export const updateGearIcons = async () => {
+  const ip = getServerIp()
+  const clinet = ky.extend({ prefixUrl: `http://${ip}/kcs2/img/common` })
+
+  const { frames }: CommonIconWeapon = await clinet.get("common_icon_weapon.json").json()
+  const searchRes: SearchApiResponse = await cloudinary.v2.search.expression("gear_icons").max_results(500).execute()
+
+  const exsits = (public_id: string) => searchRes.resources.some((resource) => resource.public_id === public_id)
+
+  for (const [key, value] of Object.entries(frames)) {
+    const id = key.replace("common_icon_weapon_id_", "")
+    const public_id = `gear_icons/${id}.png`
+
+    if (exsits(public_id)) continue
+
+    const { w, h, x, y } = value.frame
+    const width = 40
+    const height = 40
+    const cx = x + Math.floor(w / 2)
+    const cy = y + Math.floor(h / 2)
+
+    await cloudinary.v2.uploader.upload(`http://${getServerIp()}/kcs2/img/common/common_icon_weapon.png`, {
+      public_id,
+      transformation: { width, height, x: cx - width / 2, y: cy - height / 2, crop: "crop" },
+    })
+  }
 }
