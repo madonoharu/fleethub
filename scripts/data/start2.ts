@@ -38,7 +38,7 @@ const mstShipToMasterDataShip = (mstShip: MstShip): MasterDataShip => {
     sortId: mstShip.api_sort_id,
     name: mstShip.api_name,
     yomi: mstShip.api_yomi,
-    shipType: mstShip.api_stype,
+    stype: mstShip.api_stype,
     speed: mstShip.api_soku,
     slotnum: mstShip.api_slot_num,
     slots: getSlots(mstShip),
@@ -52,7 +52,7 @@ const mstShipToMasterDataShip = (mstShip: MstShip): MasterDataShip => {
 
   return {
     ...base,
-    shipClass: mstShip.api_ctype,
+    ctype: mstShip.api_ctype,
 
     maxHp: mstShip.api_taik,
     firepower: mstShip.api_houg,
@@ -194,9 +194,9 @@ export const mergeStart2 = (md: MasterData, start2: Start2) => {
     ;(["evasion", "asw", "los", "slots", "stock", "banner"] as const).forEach(set)
 
     if (!isPlayerShip(mstShip)) {
-      ;(["shipClass", "maxHp", "firepower", "torpedo", "antiAir", "armor", "luck", "range"] as const).forEach(set)
+      ;(["ctype", "maxHp", "firepower", "torpedo", "antiAir", "armor", "luck", "range"] as const).forEach(set)
 
-      next.shipClass = getAbyssalShipClass(next)
+      next.ctype = getAbyssalShipClass(next)
     }
 
     return next

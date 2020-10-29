@@ -8,8 +8,8 @@ export type MasterDataShip = {
   id: number
   name: string
   yomi: string
-  shipType: number
-  shipClass: number
+  stype: number
+  ctype: number
   sortId?: number
 
   maxHp: StatInterval
