@@ -4,10 +4,13 @@ import { MasterData } from "@fleethub/utils/src"
 
 import getServiceAccount from "./getServiceAccount"
 
-admin.initializeApp({
-  credential: admin.credential.cert(getServiceAccount()),
-  storageBucket: "kcfleethub.appspot.com",
-})
+let app: admin.app.App | undefined
+const getApp = () => {
+  return (app ??= admin.initializeApp({
+    credential: admin.credential.cert(getServiceAccount()),
+    storageBucket: "kcfleethub.appspot.com",
+  }))
+}
 
 const fetchStorageData = <K extends keyof MasterData>(key: K): Promise<MasterData[K]> =>
   ky.get(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`).json()
@@ -18,7 +21,7 @@ const postStorageData = <K extends keyof MasterData>(key: K, data: MasterData[K]
   const destination = `data/${key}.json`
   const metadata = { cacheControl: "public, max-age=60" }
 
-  const bucket = admin.storage().bucket()
+  const bucket = getApp().storage().bucket()
   return bucket.file(destination).save(str, { metadata })
 }
 
