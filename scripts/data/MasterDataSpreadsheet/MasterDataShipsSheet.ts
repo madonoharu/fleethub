@@ -11,8 +11,8 @@ export const getDefaultMasterDataShip = (): MasterDataShip => ({
   id: 0,
   name: "",
   yomi: "",
-  shipType: 0,
-  shipClass: 0,
+  stype: 0,
+  ctype: 0,
 
   maxHp: getDefaultInterval(),
   firepower: getDefaultInterval(),
