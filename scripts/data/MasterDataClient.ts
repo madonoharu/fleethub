@@ -6,7 +6,7 @@ import immer from "immer"
 import MasterDataSpreadsheet from "./MasterDataSpreadsheet"
 import { fetchStart2, mergeStart2 } from "./start2"
 import storage from "./storage"
-import { uploadShipBanners } from "./cloudinary"
+import { updateShipBanners, updateGearIcons } from "./cloudinary"
 
 const equalJson = (arg1: unknown, arg2: unknown) => isEqual(cloneJson(arg1), cloneJson(arg2))
 
@@ -89,7 +89,7 @@ export default class MasterDataClient {
 
   public updateImages = async () => {
     const start2 = await this.getStart2()
-    const bannerIds = await uploadShipBanners(start2)
+    const bannerIds = await updateShipBanners(start2)
     const storageMd = await this.getStorageMd()
 
     const next = immer(storageMd, (draft) => {
@@ -99,6 +99,7 @@ export default class MasterDataClient {
     })
 
     await this.updateStorage(next)
+    await updateGearIcons()
   }
 
   public log = async (message: string) => {
