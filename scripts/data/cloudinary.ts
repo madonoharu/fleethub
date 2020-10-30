@@ -1,9 +1,6 @@
-import { getResourceUrl, servers, Start2 } from "kc-tools"
+import { getResourceUrl, getCommonIconWeaponUrl, CommonIconWeapon, Start2 } from "kc-tools"
 import cloudinary from "cloudinary"
 import ky from "ky-universal"
-
-let count = 0
-const getServerIp = () => servers[count++ % servers.length].ip
 
 cloudinary.v2.config({
   cloud_name: "djg1epjdj",
@@ -23,8 +20,7 @@ const uploadShipBanner = async (id: number) => {
   const resourceType = "ship"
   const imageType = "banner"
 
-  const ip = getServerIp()
-  const url = getResourceUrl({ ip, id, resourceType, imageType })
+  const url = getResourceUrl({ id, resourceType, imageType })
 
   const res = await cloudinary.v2.uploader
     .upload(url, {
@@ -88,26 +84,10 @@ export const updateShipBanners = async (start2: Start2) => {
   return bannerIds
 }
 
-type FrameKey = "x" | "y" | "w" | "h"
-
-type CommonIconWeapon = {
-  frames: Record<
-    string,
-    {
-      frame: Record<FrameKey, number>
-      rotated: false
-      trimmed: false
-      spriteSourceSize: Record<FrameKey, number>
-      sourceSize: Record<"w" | "h", number>
-    }
-  >
-}
-
 export const updateGearIcons = async () => {
-  const ip = getServerIp()
-  const clinet = ky.extend({ prefixUrl: `http://${ip}/kcs2/img/common` })
+  const commonIconWeaponUrl = getCommonIconWeaponUrl()
 
-  const { frames }: CommonIconWeapon = await clinet.get("common_icon_weapon.json").json()
+  const { frames }: CommonIconWeapon = await ky.get(commonIconWeaponUrl.json).json()
   const searchRes: SearchApiResponse = await cloudinary.v2.search.expression("gear_icons").max_results(500).execute()
 
   const exsits = (public_id: string) => searchRes.resources.some((resource) => resource.public_id === public_id)
@@ -124,7 +104,7 @@ export const updateGearIcons = async () => {
     const cx = x + Math.floor(w / 2)
     const cy = y + Math.floor(h / 2)
 
-    await cloudinary.v2.uploader.upload(`http://${getServerIp()}/kcs2/img/common/common_icon_weapon.png`, {
+    await cloudinary.v2.uploader.upload(commonIconWeaponUrl.png, {
       public_id,
       transformation: { width, height, x: cx - width / 2, y: cy - height / 2, crop: "crop" },
     })
