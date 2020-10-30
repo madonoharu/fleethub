@@ -1,13 +1,13 @@
 import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
 import { MasterDataGear, SheetRow } from "@fleethub/utils/src"
+import { get, set } from "lodash"
 
 import toHeaderKeyValues from "./toHeaderKeyValues"
 import writeRows from "./writeRows"
 
 const getDefaultMasterDataGear = (): MasterDataGear => ({
   id: 0,
-  category: 0,
-  iconId: 0,
+  types: [0, 0, 0, 0, 0],
   name: "",
 })
 
@@ -19,7 +19,7 @@ export default class MasterDataGearsSheet {
   fetchHeaderKeyValues = async () => {
     const { sheet } = this
     await sheet.loadHeaderRow()
-    return toHeaderKeyValues<keyof MasterDataGear>(sheet.headerValues)
+    return toHeaderKeyValues(sheet.headerValues)
   }
 
   read = async () => {
@@ -35,11 +35,11 @@ export default class MasterDataGearsSheet {
         if (!value) return
 
         if (key === "name") {
-          gear[key] = String(value)
+          set(gear, key, String(value))
         } else if (key === "improvable") {
-          gear[key] = value === "TRUE" ? true : undefined
+          set(gear, key, value === "TRUE" ? true : undefined)
         } else {
-          gear[key] = Number(value)
+          set(gear, key, Number(value))
         }
       })
 
@@ -57,9 +57,9 @@ export default class MasterDataGearsSheet {
 
       headerKeyValues.map(({ headerValue, key }) => {
         if (key === "improvable") {
-          row[headerValue] = Boolean(gear[key])
+          row[headerValue] = Boolean(get(gear, key))
         } else {
-          row[headerValue] = gear[key]
+          row[headerValue] = get(gear, key)
         }
       })
 

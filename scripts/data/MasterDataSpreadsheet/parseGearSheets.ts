@@ -43,7 +43,7 @@ export default (
     radius: 0,
     cost: 0,
     improvable: false,
-    categoryName: getCategoryName(gear.category),
+    categoryName: getCategoryName(gear.types[2]),
     ...gear,
   }))
 
