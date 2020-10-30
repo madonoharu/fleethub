@@ -6534,10 +6534,10 @@ jws@^4.0.0:
     jwa "^2.0.0"
     safe-buffer "^5.0.1"
 
-kc-tools@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/kc-tools/-/kc-tools-1.0.1.tgz#3196ea1bcd70aa5c4425743387bc0e7dd1f4bbe7"
-  integrity sha512-/u5qDQyt2GjcaG6em16lCG+89Nfk2P6NCO6d7tjfLoaVfYIFMjO8RhnDk/28hQ+1NOGsfhXfFBvdpMIqBkmkVQ==
+kc-tools@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/kc-tools/-/kc-tools-1.1.0.tgz#3ca9a5de8f3a4a540d8511dd2a771e81950a756a"
+  integrity sha512-yD+f3MS3Drn+tSCnmKYwORvxBJt8K+FYncBOVFQhHSJQno9888QQWwcqyD3XSqianvGCP+yvv5bWIKqVk4umSw==
 
 killable@^1.0.1:
   version "1.0.1"
