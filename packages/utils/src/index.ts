@@ -21,11 +21,7 @@ export const atLeastOne = (xs: number[]) => 1 - xs.reduce((acc, x) => acc * (1 -
 
 export const cloneJson = <T>(json: T): T => JSON.parse(JSON.stringify(json))
 
-export type Dict<K extends string | number | symbol, T> = Partial<Record<K, T>>
-
-export type NullableArray<T> = Array<T | undefined>
-export type PickByValue<T, ValueType> = Pick<T, { [Key in keyof T]-?: T[Key] extends ValueType ? Key : never }[keyof T]>
-
 export * from "./start2"
+export * from "./utilityTypes"
 export * from "./fhTypes"
 export * from "./templateLiteralTypes"
