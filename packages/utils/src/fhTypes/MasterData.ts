@@ -43,10 +43,12 @@ export type MasterDataShipClass = MasterDataShipType
 
 export type MasterDataGearCategory = { id: number; name: string; key: string }
 
+/** type2 categoryId */
+export type GearTypes = [number, number, number, number, number]
+
 export type MasterDataGear = {
   id: number
-  category: number
-  iconId: number
+  types: GearTypes
   name: string
 
   maxHp?: number
