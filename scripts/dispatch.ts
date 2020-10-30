@@ -34,8 +34,6 @@ const main = async () => {
   await clinet.log(`${type}: Success`)
 }
 
-try {
-  main()
-} catch (error) {
-  clinet.error(error)
-}
+main().catch((err) => {
+  clinet.error(err)
+})
