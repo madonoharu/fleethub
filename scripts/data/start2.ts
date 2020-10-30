@@ -126,8 +126,7 @@ const mstItemToMasterDataGear = (item: MstSlotitem): MasterDataGear => {
 
   const gear: MasterDataGear = {
     id,
-    category,
-    iconId: item.api_type[3],
+    types: item.api_type,
     name: item.api_name,
 
     maxHp: item.api_taik,
