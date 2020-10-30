@@ -1,5 +1,6 @@
 import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "gkcoi"
 import { Ship, Fleet, Plan, getDeckItems } from "@fleethub/core"
+import { Mutable } from "@fleethub/utils"
 
 const getGkcoiShip = (ship: Ship): DeckBuilderShip => {
   const items = getDeckItems(ship.equipment)
@@ -21,7 +22,7 @@ const getGkcoiShip = (ship: Ship): DeckBuilderShip => {
 }
 
 const getGkcoiFleet = (fleet: Fleet): DeckBuilderFleet => {
-  const deckFleet: DeckBuilderFleet = {}
+  const deckFleet: Mutable<DeckBuilderFleet> = {}
 
   fleet.entries.forEach(([key, ship]) => {
     if (!ship) return
@@ -42,7 +43,7 @@ export type GkcoiOptions = Partial<Pick<DeckBuilder, "theme" | "lang" | "cmt">>
 const defaultOptions = { lang: "jp", theme: "dark" } as const
 
 export const getGkcoiDeck = (plan: Plan, options?: GkcoiOptions) => {
-  const deck: DeckBuilder = { hqlv: plan.hqLevel, ...defaultOptions, ...options }
+  const deck: Mutable<DeckBuilder> = { hqlv: plan.hqLevel, ...defaultOptions, ...options }
 
   plan.fleetEntries.forEach(([key, fleet]) => {
     if (fleet.ships.length === 0) return

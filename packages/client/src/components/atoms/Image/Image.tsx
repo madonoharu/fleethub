@@ -11,6 +11,7 @@ const requireImage = (path: string): string | undefined => {
     return require(`../../../images/${path}`)
   } catch {
     console.warn(`${path} not found`)
+    return
   }
 }
 
