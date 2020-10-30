@@ -5,3 +5,5 @@ export type NullableArray<T> = Array<T | undefined>
 export type PickByValue<T, ValueType> = Pick<T, { [Key in keyof T]-?: T[Key] extends ValueType ? Key : never }[keyof T]>
 
 export type Mutable<T> = { -readonly [P in keyof T]: T[P] }
+
+export type SheetRow = Record<string, string | number | boolean | undefined>
