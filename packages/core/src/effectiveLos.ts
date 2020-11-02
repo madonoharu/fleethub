@@ -1,24 +1,23 @@
 import { sumBy } from "lodash-es"
-import { GearCategory } from "@fleethub/data"
 
 import { Gear } from "./gear"
 import { Ship } from "./ship"
 
 const calcGearEffectiveLos = (gear: Gear) => {
-  const { category, los, improvement } = gear
+  const { categoryIs, los, improvementBonuses } = gear
 
   let multiplier = 0.6
-  if (category === GearCategory.CbTorpedoBomber) {
+  if (categoryIs("CbTorpedoBomber")) {
     multiplier = 0.8
-  } else if (category === GearCategory.CbRecon) {
+  } else if (categoryIs("CbRecon")) {
     multiplier = 1
-  } else if (category === GearCategory.ReconSeaplane) {
+  } else if (categoryIs("ReconSeaplane")) {
     multiplier = 1.2
-  } else if (category === GearCategory.SeaplaneBomber) {
+  } else if (categoryIs("SeaplaneBomber")) {
     multiplier = 1.1
   }
 
-  return multiplier * (los + improvement.effectiveLosBonus)
+  return multiplier * (los + improvementBonuses.effectiveLos)
 }
 
 const calcShipEffectiveLos = (ship: Ship, nodeDivaricatedFactor: number) => {

@@ -1,15 +1,18 @@
-import { GearData, GearCategory2, GearId, GearCategory, GearCategoryKey } from "@fleethub/data"
+import { mapValues, MasterDataGear, GearId, GearCategory, GearAttribute } from "@fleethub/utils"
+import { GearCategory2 } from "@fleethub/data"
+import { Parser } from "expr-eval"
 
-import { mapValues } from "../utils"
+import { GearBase, ImprovementBonuses, ImprovementBonusFormulas } from "./types"
 
-import { GearAttribute, createGearAttrs } from "./GearAttribute"
-import { createImprovementData } from "./createImprovementData"
-import { GearBase, ImprovementBonuses } from "./types"
+type MasterGearAdditionalData = {
+  category: GearCategory
+  attrs: GearAttribute[]
+  improvementBonusFormulas: ImprovementBonusFormulas
+}
 
 export class MasterGear implements GearBase {
   public readonly id = this.data.id || 0
-  public readonly category = this.data.category || 0
-  public readonly iconId = this.data.iconId || 0
+  public readonly types = this.data.types || [0, 0, 0, 0, 0]
   public readonly name = this.data.name || ""
 
   public readonly firepower = this.data.firepower || 0
@@ -32,17 +35,27 @@ export class MasterGear implements GearBase {
   public readonly speed = this.data.speed || 0
   public readonly luck = this.data.luck || 0
 
-  public readonly attrs: GearAttribute[]
+  public readonly category = this.additionalData.category
+  public readonly attrs = this.additionalData.attrs
+  public readonly improvementBonusFormulas = this.additionalData.improvementBonusFormulas
 
-  constructor(private data: Partial<GearData>) {
-    this.attrs = createGearAttrs(this)
-  }
+  public readonly isAbyssal = this.id > 500
+
+  constructor(private data: Partial<MasterDataGear>, private additionalData: MasterGearAdditionalData) {}
 
   get gearId() {
     return this.id
   }
 
-  get specialCategory() {
+  get categoryId() {
+    return this.types[2]
+  }
+
+  get iconId() {
+    return this.types[3]
+  }
+
+  get specialType2() {
     switch (this.id) {
       case GearId["試製51cm連装砲"]:
       case GearId["51cm連装砲"]:
@@ -53,29 +66,22 @@ export class MasterGear implements GearBase {
         return GearCategory2.CbRecon2
     }
 
-    return this.category
+    return this.types[2]
   }
 
-  public is = (attr: GearAttribute) => this.attrs.includes(attr)
+  public is: GearBase["is"] = (attr) => this.attrs.includes(attr)
 
-  public in = (...attrs: GearAttribute[]) => attrs.some(this.is)
+  public in: GearBase["in"] = (...attrs) => attrs.some(this.is)
 
-  public categoryIs = (key: GearCategoryKey) => this.category === GearCategory[key]
+  public categoryIs = (category: GearCategory) => this.category === category
 
-  public categoryIn = (...keys: GearCategoryKey[]) => keys.some(this.categoryIs)
+  public categoryIn = (...categories: GearCategory[]) => categories.some(this.categoryIs)
 
-  get improvementData() {
-    return createImprovementData(this)
-  }
-
-  public toImprovementBonuses = (stars: number): ImprovementBonuses => {
-    return mapValues(this.improvementData, (formula) => {
+  public getImprovementBonuses = (stars: number) =>
+    mapValues(this.improvementBonusFormulas, (formula) => {
       if (!formula) return 0
-      const { multiplier, type } = formula
-      if (type === "Linear") return multiplier * stars
-      return multiplier * Math.sqrt(stars)
+      return Parser.evaluate(formula as string, { x: stars })
     })
-  }
 
   get hasProficiency() {
     return this.in("Seaplane", "CbAircraft", "LbAircraft", "JetAircraft")

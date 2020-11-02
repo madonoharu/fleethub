@@ -19,11 +19,11 @@ const createCategoryGearEntries = (gears: GearBase[]) => {
   const map = new Map<number, GearBase[]>()
 
   const setGear = (gear: GearBase) => {
-    const list = map.get(gear.category)
+    const list = map.get(gear.categoryId)
     if (list) {
       list.push(gear)
     } else {
-      map.set(gear.category, [gear])
+      map.set(gear.categoryId, [gear])
     }
   }
 
@@ -80,7 +80,7 @@ const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) =
 
   const { equippableGears, visibleGroups } = React.useMemo(() => {
     const equippableGears = masterGears.filter((gear) => {
-      if (abyssal !== gear.is("Abyssal")) return false
+      if (abyssal !== gear.isAbyssal) return false
       return !canEquip || canEquip(gear)
     })
 

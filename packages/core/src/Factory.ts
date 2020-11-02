@@ -9,6 +9,11 @@ import { FleetState, FleetImpl } from "./fleet"
 import { AirbaseState, AirbaseImpl } from "./airbase"
 import { PlanState, PlanImpl, Organization } from "./plan"
 
+import masterData from "@fleethub/utils/MasterData"
+import MasterDataAdapter from "./MasterDataAdapter"
+
+const masterDataAdapter = new MasterDataAdapter(masterData)
+
 const createEquipment = (
   state: EquipmentState,
   maxSlots: number[],
@@ -40,7 +45,7 @@ export default class Factory {
   public masterShips: MasterShip[]
 
   constructor(data: FactoryRawData) {
-    this.masterGears = data.gears.map((raw) => new MasterGear(raw))
+    this.masterGears = masterDataAdapter.gears
     this.masterShips = data.ships.map((raw) => new MasterShip(raw))
   }
 

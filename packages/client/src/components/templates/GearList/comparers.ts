@@ -27,9 +27,9 @@ export const defaultComparer: Comparer = (left, right) => {
   if (left.categoryIn("Torpedo", "SubmarineTorpedo", "MidgetSubmarine")) return torpedoComparer(left, right)
   if (left.is("Seaplane")) return seaplaneComparer(left, right)
   if (left.is("Fighter")) return fighterComparer(left, right)
-  if (left.is("TorpedoBomber")) return attackerComparer(left, right)
-  if (left.is("DiveBomber")) return bomberComparer(left, right)
+  if (left.categoryIn("CbTorpedoBomber", "JetTorpedoBomber")) return attackerComparer(left, right)
+  if (left.categoryIn("CbDiveBomber", "SeaplaneBomber", "JetFighterBomber")) return bomberComparer(left, right)
   return gunComparer(left, right)
 }
 
-export const idComparer = reverse(createComparer("category", "iconId", "gearId"))
+export const idComparer = reverse(createComparer("categoryId", "iconId", "gearId"))

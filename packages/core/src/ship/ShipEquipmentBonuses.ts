@@ -1,4 +1,5 @@
-import { GearId, GearCategory, ShipClass, ShipType, ShipId, ShipRuby } from "@fleethub/data"
+import { ShipClass, ShipType } from "@fleethub/data"
+import { GearId, ShipId, ShipYomi } from "@fleethub/utils"
 import { createEquipmentBonuses as createBasicBonuses } from "equipment-bonus"
 
 import { GearKey } from "../common"
@@ -66,7 +67,7 @@ export const getSpeedGroup = (ship: ShipIdentityWithSpeed): SpeedGroup => {
     return SpeedGroup.FastB1SlowA
   }
 
-  const ruby = ship.ruby as ShipRuby
+  const ruby = ship.ruby as ShipYomi
   const isAmatsukaze = ruby === "あまつかぜ"
   const isUnryuu = ruby === "うんりゅう"
   const isAmagi = ruby === "あまぎ"
@@ -134,9 +135,9 @@ export const createEquipmentBonuses = (ship: ShipIdentityWithSpeed, gears: GearB
   })
 
   let effectiveLos: number
-  const hasSmallRadar = gears.some((gear) => gear.category === GearCategory.SmallRadar)
+  const hasSmallRadar = gears.some((gear) => gear.categoryIs("SmallRadar"))
   if (hasSmallRadar) {
-    const filtered = gears.filter((gear) => gear.category !== GearCategory.SmallRadar)
+    const filtered = gears.filter((gear) => !gear.categoryIs("SmallRadar"))
     effectiveLos = createBasicBonuses(ship, filtered).los
   } else {
     effectiveLos = bonuses.los

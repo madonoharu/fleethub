@@ -86,7 +86,7 @@ export class EquipmentImpl implements Equipment {
         const entry: GearIterateeArgsWithoutExslot = [item.gear, item.key, item.currentSlotSize]
         this.entries.push(entry)
 
-        if (item.gear.in("Aircraft")) this.aircraftEntries.push(entry)
+        if (item.gear.types[4] > 0) this.aircraftEntries.push(entry)
       }
     })
   }

@@ -5,12 +5,15 @@ export class GearImpl implements Gear {
   public readonly stars = this.state.stars || 0
   public readonly exp = this.state.exp || 0
 
+  public readonly types = this.base.types
   public readonly name = this.base.name
-  public readonly category = this.base.category
+  public readonly categoryId = this.base.categoryId
   public readonly iconId = this.base.iconId
+  public readonly specialType2 = this.base.specialType2
   public readonly attrs = this.base.attrs
-  public readonly specialCategory = this.base.specialCategory
+  public readonly isAbyssal = this.base.isAbyssal
 
+  public readonly categoryIs = this.base.categoryIs
   public readonly categoryIn = this.base.categoryIn
   public readonly is = this.base.is
   public readonly in = this.base.in
@@ -39,7 +42,7 @@ export class GearImpl implements Gear {
   constructor(
     public state: GearState,
     private base: GearBase,
-    public readonly improvement: ImprovementBonuses,
+    public readonly improvementBonuses: ImprovementBonuses,
     private proficiency: Proficiency
   ) {}
 
@@ -52,14 +55,14 @@ export class GearImpl implements Gear {
   }
 
   public calcFighterPower = (slotSize: number) => {
-    const { antiAir, interception, improvement, proficiency } = this
-    const multiplier = antiAir + 1.5 * interception + improvement.fighterPowerBonus
+    const { antiAir, interception, improvementBonuses, proficiency } = this
+    const multiplier = antiAir + 1.5 * interception + improvementBonuses.fighterPower
     return Math.floor(multiplier * Math.sqrt(slotSize) + proficiency.fighterPowerModifier)
   }
 
   public calcInterceptionPower = (slotSize: number) => {
-    const { antiAir, interception, antiBomber, improvement, proficiency } = this
-    const multiplier = antiAir + interception + 2 * antiBomber + improvement.fighterPowerBonus
+    const { antiAir, interception, antiBomber, improvementBonuses, proficiency } = this
+    const multiplier = antiAir + interception + 2 * antiBomber + improvementBonuses.fighterPower
     return Math.floor(multiplier * Math.sqrt(slotSize) + proficiency.fighterPowerModifier)
   }
 
@@ -75,13 +78,13 @@ export class GearImpl implements Gear {
   public calcContactSelectionChance = (airStateModifier: number) => {
     if (!this.isContactSelectionPlane) return 0
 
-    const { los, improvement } = this
-    const value = Math.ceil(los + improvement.contactSelectionBonus) / (20 - 2 * airStateModifier)
+    const { los, improvementBonuses } = this
+    const value = Math.ceil(los + improvementBonuses.contactSelection) / (20 - 2 * airStateModifier)
     return Math.min(value, 1)
   }
 
   get adjustedAntiAir() {
-    const { antiAir, improvement, is, categoryIn } = this
+    const { antiAir, improvementBonuses, is, categoryIn } = this
     if (antiAir === 0) {
       return 0
     }
@@ -94,11 +97,11 @@ export class GearImpl implements Gear {
     } else if (is("Radar")) {
       multiplier = 3
     }
-    return multiplier * antiAir + improvement.adjustedAntiAirBonus
+    return multiplier * antiAir + improvementBonuses.adjustedAntiAir
   }
 
   get fleetAntiAir() {
-    const { name, antiAir, improvement, is, categoryIn } = this
+    const { name, antiAir, improvementBonuses, is, categoryIn } = this
 
     if (antiAir === 0) return 0
 
@@ -115,6 +118,6 @@ export class GearImpl implements Gear {
       multiplier = 0.2
     }
 
-    return multiplier * antiAir + improvement.fleetAntiAirBonus
+    return multiplier * antiAir + improvementBonuses.fleetAntiAir
   }
 }
