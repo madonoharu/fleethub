@@ -1,4 +1,5 @@
-import { ShipType, GearCategory, GearId, ShipId } from "@fleethub/data"
+import { ShipType, GearId, ShipId } from "@fleethub/data"
+
 import { Gear } from "../gear"
 import { Ship } from "../ship"
 
@@ -28,9 +29,9 @@ export const shipTypeToTp = (shipType: ShipType) => {
   return 0
 }
 
-const gearToTp = ({ category, gearId }: Gear) => {
-  if (category === GearCategory.LandingCraft) return 8
-  if (category === GearCategory.CombatRation) return 1
+const gearToTp = ({ categoryIs, gearId }: Gear) => {
+  if (categoryIs("LandingCraft")) return 8
+  if (categoryIs("CombatRation")) return 1
 
   if (gearId === GearId["ドラム缶(輸送用)"]) return 5
   if (gearId === GearId["特二式内火艇"]) return 2

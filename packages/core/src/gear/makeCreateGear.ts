@@ -8,7 +8,7 @@ export const makeCreateGear = (getBase: (gearId: number) => MasterGear | undefin
   const base = getBase(gearId)
   if (!base) return
 
-  const improvement = base.toImprovementBonuses(stars)
+  const improvementBonuses = base.getImprovementBonuses(stars)
 
   let proficiencyType: ProficiencyType = "Other"
   if (base.is("Fighter")) {
@@ -18,5 +18,5 @@ export const makeCreateGear = (getBase: (gearId: number) => MasterGear | undefin
   }
 
   const proficiency = new ProficiencyImpl(exp, proficiencyType)
-  return new GearImpl(state, base, improvement, proficiency)
+  return new GearImpl(state, base, improvementBonuses, proficiency)
 }

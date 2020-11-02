@@ -95,7 +95,7 @@ export class ShipImpl implements Ship {
 
     if (isAntiInstallation) {
       equipmentTorpedo = 0
-      bombing = this.equipment.sumBy((gear) => (gear.is("AntiInstallationBomber") ? gear.bombing : 0))
+      bombing = this.equipment.sumBy((gear) => (gear.is("AntiInstallationCbBomber") ? gear.bombing : 0))
     } else {
       equipmentTorpedo = this.torpedo.equipment
       bombing = this.equipment.sumBy("bombing")

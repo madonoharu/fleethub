@@ -1,12 +1,4 @@
-import {
-  cloneJson,
-  uniq,
-  GearCategory,
-  MasterData,
-  MasterDataGear,
-  MasterDataShip,
-  MasterDataShipClass,
-} from "@fleethub/utils/src"
+import { cloneJson, uniq, MasterData, MasterDataGear, MasterDataShip, MasterDataShipClass } from "@fleethub/utils/src"
 import { Start2, MstShip, MstPlayerShip, MstSlotitem } from "kc-tools"
 import ky from "ky-universal"
 import signale from "signale"
@@ -109,14 +101,14 @@ export const createAbyssalShipClasses = (start2: Start2) => {
 const mstItemToMasterDataGear = (item: MstSlotitem): MasterDataGear => {
   const id = item.api_id
 
-  const category = item.api_type[2]
+  const type2 = item.api_type[2]
 
   let accuracy: number | undefined
   let evasion: number | undefined
   let antiBomber: number | undefined
   let interception: number | undefined
 
-  if (category === GearCategory.LbFighter) {
+  if (type2 === /** 局地戦闘機 */ 48) {
     antiBomber = item.api_houm
     interception = item.api_houk
   } else {

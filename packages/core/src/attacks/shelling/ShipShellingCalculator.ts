@@ -32,9 +32,9 @@ export class ShipShellingCalculator {
     const { equipment } = this.ship
     return getApShellModifiers({
       hasMainGun: equipment.has((gear) => gear.is("MainGun")),
-      hasApShell: equipment.has((gear) => gear.category === GearCategory.ApShell),
+      hasApShell: equipment.has((gear) => gear.categoryIs("ApShell")),
       hasRader: equipment.has((gear) => gear.is("Radar")),
-      hasSecondaryGun: equipment.has((gear) => gear.category === GearCategory.SecondaryGun),
+      hasSecondaryGun: equipment.has((gear) => gear.categoryIs("SecondaryGun")),
     })
   }
 
@@ -47,8 +47,8 @@ export class ShipShellingCalculator {
       hasObservationSeaplane: equipment.hasAircraft((gear) => gear.is("ObservationSeaplane")),
 
       mainGunCount: equipment.count((gear) => gear.is("MainGun")),
-      secondaryGunCount: equipment.count((gear) => gear.category === GearCategory.SecondaryGun),
-      hasApShell: equipment.has((gear) => gear.category === GearCategory.ApShell),
+      secondaryGunCount: equipment.count((gear) => gear.categoryIs("SecondaryGun")),
+      hasApShell: equipment.has((gear) => gear.categoryIs("ApShell")),
       hasRader: equipment.has((gear) => gear.is("Radar")),
 
       zuiunAircraftCount: equipment.countAircraft(({ gearId }) =>
@@ -71,9 +71,9 @@ export class ShipShellingCalculator {
         ].includes(gearId)
       ),
 
-      hasCbFighterAircraft: equipment.hasAircraft((gear) => gear.category === GearCategory.CbFighter),
-      cbBomberAircraftCount: equipment.countAircraft((gear) => gear.category === GearCategory.CbDiveBomber),
-      hasCbTorpedoBomberAircraft: equipment.hasAircraft((gear) => gear.category === GearCategory.CbTorpedoBomber),
+      hasCbFighterAircraft: equipment.hasAircraft((gear) => gear.categoryIs("CbFighter")),
+      cbBomberAircraftCount: equipment.countAircraft((gear) => gear.categoryIs("CbDiveBomber")),
+      hasCbTorpedoBomberAircraft: equipment.hasAircraft((gear) => gear.categoryIs("CbTorpedoBomber")),
     })
   }
 
@@ -118,7 +118,7 @@ export class ShipShellingCalculator {
     const { ship } = this
     const { cruiserFitBonus } = ship
     const firepower = ship.firepower.displayed
-    const improvementBonus = ship.equipment.sumBy((gear) => gear.improvement.shellingPowerBonus)
+    const improvementBonus = ship.equipment.sumBy((gear) => gear.improvementBonuses.shellingPower)
 
     const basic = 5 + firepower + improvementBonus + fleetFactor
     const airPower = ship.isCarrierLike ? ship.calcAirPower(targetIs("Installation")) : undefined
@@ -156,7 +156,7 @@ export class ShipShellingCalculator {
     const apShellModifier = NaN
 
     const moraleModifier = morale.commonAccuracyModifier
-    const improvementModifier = equipment.sumBy((gear) => gear.improvement.shellingAccuracyBonus)
+    const improvementModifier = equipment.sumBy((gear) => gear.improvementBonuses.shellingAccuracy)
 
     const base = Math.floor(fleetFactor + basicAccuracyTerm + accuracy.equipment + improvementModifier)
     return Math.floor(
