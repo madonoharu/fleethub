@@ -2,7 +2,7 @@ export const isNonNullable = <T>(item: T): item is NonNullable<T> => item !== un
 
 export const isString = (value: unknown): value is string => typeof value === "string"
 
-export const mapValues = <T, R>(obj: T, fn: <K extends keyof T>(value: T[K], key: K) => R) => {
+export const mapValues = <T, R>(obj: T, fn: (value: T[keyof T], key: keyof T) => R) => {
   const nextObj = {} as Record<keyof T, R>
 
   for (const key in obj) {

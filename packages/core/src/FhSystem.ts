@@ -1,4 +1,5 @@
-import { GearCategory, MapEnemyFleet } from "@fleethub/data"
+import { MapEnemyFleet } from "@fleethub/data"
+import masterData from "@fleethub/utils/MasterData"
 
 import Factory from "./Factory"
 import { ShipState } from "./ship"
@@ -7,15 +8,13 @@ import { EnemyFleetImpl, EnemyFleetState } from "./enemy"
 import { Deck4, getPlanStateByDeck } from "./utils"
 import { ShipKey, GearKey } from "./common"
 
-const allCategories = Object.values(GearCategory).filter((value): value is number => typeof value === "number")
-
 export default class FhSystem {
-  public categoryIconIdMap = new Map<GearCategory, number>()
+  public categoryIconIdMap = new Map<number, number>()
 
   constructor(public factory: Factory) {
-    allCategories.forEach((category) => {
-      const iconId = factory.masterGears.find((gear) => gear.category === category)?.iconId
-      iconId && this.categoryIconIdMap.set(category, iconId)
+    masterData.gearCategories.forEach((categoryData) => {
+      const iconId = factory.masterGears.find((gear) => gear.types[2] === categoryData.id)?.types[3]
+      iconId && this.categoryIconIdMap.set(categoryData.id, iconId)
     })
   }
 

@@ -144,13 +144,13 @@ export default class MasterShip implements ShipBase {
 
   public canEquip = (gear: GearBase, key?: GearKey) => {
     const { shipClass, equippable } = this
-    const { gearId, specialCategory } = gear
+    const { gearId, specialType2, categoryIs } = gear
 
     if (this.is("Abyssal")) {
       return true
     }
 
-    if (!equippable.categories.includes(specialCategory)) {
+    if (!equippable.categories.includes(specialType2)) {
       return false
     }
 
@@ -158,13 +158,13 @@ export default class MasterShip implements ShipBase {
 
     if (key === "gx") {
       return (
-        equippable.exslotCategories.includes(specialCategory) ||
+        equippable.exslotCategories.includes(specialType2) ||
         equippable.exslotIds.includes(gearId) ||
         gearId === GearId["改良型艦本式タービン"]
       )
     }
 
-    if (shipClass === ShipClass.RichelieuClass && specialCategory === GearCategory.SeaplaneBomber) {
+    if (shipClass === ShipClass.RichelieuClass && categoryIs("SeaplaneBomber")) {
       return gearId === GearId["Laté 298B"]
     }
 

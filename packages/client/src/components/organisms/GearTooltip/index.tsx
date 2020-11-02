@@ -17,7 +17,7 @@ type ContentProps = {
 const Content: React.FC<ContentProps> = ({ gear, bonuses }) => (
   <div>
     <Text>
-      ID {gear.gearId} {GearCategoryName[gear.category]}
+      ID {gear.gearId} {GearCategoryName[gear.categoryId]}
     </Text>
     <GearNameplate wrap iconId={gear.iconId} name={gear.name} />
     <GearStatList gear={gear} bonuses={bonuses} />
