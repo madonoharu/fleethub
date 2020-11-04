@@ -74,6 +74,7 @@ export default class MasterDataSpreadsheet {
       gearCategories,
       gearAttrs,
       improvementBonuses,
+      equippable: { equip_stype: [], equip_exslot: [], equip_ship: [], equip_exslot_ship: [] },
     }
   }
 

@@ -35,6 +35,7 @@ export const read = async (): Promise<MasterData> => {
     gearCategories,
     gearAttrs,
     improvementBonuses,
+    equippable,
   ] = await Promise.all([
     fetchStorageData("ships"),
     fetchStorageData("shipTypes"),
@@ -46,6 +47,7 @@ export const read = async (): Promise<MasterData> => {
     fetchStorageData("gearAttrs"),
 
     fetchStorageData("improvementBonuses"),
+    fetchStorageData("equippable"),
   ])
 
   return {
@@ -57,6 +59,7 @@ export const read = async (): Promise<MasterData> => {
     gears,
     gearAttrs,
     improvementBonuses,
+    equippable,
   }
 }
 

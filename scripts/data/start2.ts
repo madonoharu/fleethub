@@ -1,4 +1,12 @@
-import { cloneJson, uniq, MasterData, MasterDataGear, MasterDataShip, MasterDataShipClass } from "@fleethub/utils/src"
+import {
+  cloneJson,
+  uniq,
+  MasterData,
+  MasterDataGear,
+  MasterDataShip,
+  MasterDataShipClass,
+  MasterDataEquippable,
+} from "@fleethub/utils/src"
 import { Start2, MstShip, MstPlayerShip, MstSlotitem } from "kc-tools"
 import ky from "ky-universal"
 import signale from "signale"
@@ -150,6 +158,23 @@ const mstItemToMasterDataGear = (item: MstSlotitem): MasterDataGear => {
   return gear
 }
 
+const getEquippable = (start2: Start2): MasterDataEquippable => {
+  const equip_exslot = start2.api_mst_equip_exslot
+  const equip_ship = start2.api_mst_equip_ship
+  const equip_exslot_ship = start2.api_mst_equip_exslot_ship
+
+  const equip_stype = start2.api_mst_stype.map((stype) => {
+    const id = stype.api_id
+    const equip_type = Object.entries(stype.api_equip_type)
+      .filter(([category, equippable]) => equippable === 1)
+      .map(([category, equippable]) => Number(category))
+
+    return { id, equip_type }
+  })
+
+  return { equip_stype, equip_exslot, equip_ship, equip_exslot_ship }
+}
+
 export const mergeStart2 = (md: MasterData, start2: Start2) => {
   const merged = cloneJson(md)
 
@@ -207,6 +232,8 @@ export const mergeStart2 = (md: MasterData, start2: Start2) => {
 
     return gear
   })
+
+  merged.equippable = getEquippable(start2)
 
   return merged
 }
