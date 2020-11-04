@@ -1,3 +1,5 @@
+import type { Start2 } from "kc-tools"
+
 export type MaybeNumber = number | null
 
 export type StatInterval = [left: MaybeNumber, right: MaybeNumber]
@@ -38,10 +40,23 @@ export type MasterDataShip = {
   banner: string
 }
 
-export type MasterDataShipType = { id: number; name: string; key: string }
-export type MasterDataShipClass = MasterDataShipType
+export type MasterDataShipType = {
+  id: number
+  name: string
+  key: string
+}
 
-export type MasterDataGearCategory = { id: number; name: string; key: string }
+export type MasterDataShipClass = {
+  id: number
+  name: string
+  key: string
+}
+
+export type MasterDataGearCategory = {
+  id: number
+  name: string
+  key: string
+}
 
 /** type2 categoryId */
 export type GearTypes = [number, number, number, number, number]
@@ -97,6 +112,13 @@ export type ImprovementBonusType =
 
 export type MasterDataImprovementBonuses = Record<ImprovementBonusType, MasterDataImprovementBonusRule[]>
 
+export type MasterDataEquippable = {
+  equip_stype: { id: number; equip_type: number[] }[]
+  equip_exslot: Start2["api_mst_equip_exslot"]
+  equip_ship: Start2["api_mst_equip_ship"]
+  equip_exslot_ship: Start2["api_mst_equip_exslot_ship"]
+}
+
 export type MasterData = {
   ships: MasterDataShip[]
   shipTypes: MasterDataShipType[]
@@ -109,4 +131,6 @@ export type MasterData = {
   shipAttrs: MasterDataAttrRule[]
 
   improvementBonuses: MasterDataImprovementBonuses
+
+  equippable: MasterDataEquippable
 }
