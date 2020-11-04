@@ -2136,7 +2136,7 @@ export type ShipYomi =
   | "flagship"
   | ""
 
-export type HullCode =
+export type ShipType =
   | "DE"
   | "DD"
   | "CL"
