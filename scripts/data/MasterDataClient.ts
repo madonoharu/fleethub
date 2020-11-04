@@ -52,7 +52,11 @@ export default class MasterDataClient {
     const ss = await this.getSpreadsheet()
     const mergedMd = mergeStart2(sheetMd, start2)
 
-    if (equalJson(sheetMd, mergedMd)) {
+    const equals = (["ships", "shipTypes", "shipClasses", "gears", "gearCategories"] as const).every((key) =>
+      equalJson(sheetMd[key], mergedMd[key])
+    )
+
+    if (equals) {
       console.log("sheet: Not Modified")
     } else {
       console.log("sheet: Update")
