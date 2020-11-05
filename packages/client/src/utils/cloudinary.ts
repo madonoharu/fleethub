@@ -1,5 +1,5 @@
 export type CloudinaryOptions = {
-  publicId: string
+  publicId: string | number
   folder: string
   width: number
   height: number
