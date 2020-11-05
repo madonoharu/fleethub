@@ -10,9 +10,9 @@ type FilterFn = (ship: ShipBase) => boolean
 const createFilterFn = (state: ShipListState): FilterFn => {
   const fns: FilterFn[] = []
   if (state.abyssal) {
-    fns.push((ship) => ship.is("Abyssal"))
+    fns.push((ship) => ship.isAbyssal)
   } else {
-    fns.push((ship) => !ship.is("Abyssal"))
+    fns.push((ship) => !ship.isAbyssal)
   }
 
   fns.push((ship) => ship.category === state.category)
