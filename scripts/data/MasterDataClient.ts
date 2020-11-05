@@ -52,7 +52,7 @@ export default class MasterDataClient {
     const ss = await this.getSpreadsheet()
     const mergedMd = mergeStart2(sheetMd, start2)
 
-    const equals = (["ships", "shipTypes", "shipClasses", "gears", "gearCategories"] as const).every((key) =>
+    const equals = (["ships", "shipClasses", "gears", "gearCategories"] as const).every((key) =>
       equalJson(sheetMd[key], mergedMd[key])
     )
 
