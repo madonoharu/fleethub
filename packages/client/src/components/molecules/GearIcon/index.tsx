@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import { Image } from "../../atoms"
+import { getCloudinaryUrl } from "../../../utils"
 
 type Props = {
   iconId: number
@@ -9,7 +9,11 @@ type Props = {
 
 const GearIcon: React.FCX<Props> = ({ className, iconId }) => {
   if (!iconId) return null
-  return <Image className={className} width={24} height={24} path={`gears/${iconId}`} />
+  const width = 24
+  const height = 24
+  const url = getCloudinaryUrl({ publicId: iconId, folder: "gear_icons", width, height })
+
+  return <img className={className} width={width} height={height} src={url} />
 }
 
 export default styled(GearIcon)``
