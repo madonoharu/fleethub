@@ -1,6 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 
+import { getCloudinaryUrl } from "../../../utils"
+
 type Props = {
   publicId: string
   size?: "small" | "medium" | "large"
@@ -11,16 +13,6 @@ const values = {
   medium: 4,
   large: 5,
 }
-
-type CloudinaryOptions = {
-  publicId: string
-  folder: string
-  width: number
-  height: number
-}
-
-const getCloudinaryUrl = ({ publicId, folder, width, height }: CloudinaryOptions) =>
-  `https://res.cloudinary.com/djg1epjdj/image/upload/c_scale,f_auto,q_auto,w_${width},h_${height}/${folder}/${publicId}.png`
 
 const ShipBanner: React.FCX<Props> = ({ className, publicId, size = "small" }) => {
   const scale = values[size]
