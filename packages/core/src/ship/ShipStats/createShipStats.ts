@@ -1,5 +1,5 @@
 import { Equipment } from "../../equipment"
-import { ShipStatsBase, ShipStatsState, BasicStatKey, EquipmentBonuses } from "../types"
+import { ShipBaseStats, ShipStatsState, BasicStatKey, EquipmentBonuses } from "../types"
 
 import { ShipBasicStat, ShipBasicStatWithLevel } from "./ShipBasicStat"
 import { ShipMaxHp } from "./ShipMaxHp"
@@ -13,7 +13,7 @@ import { ShipFuel } from "./ShipFuel"
 import { ShipAccuracy } from "./ShipAccuracy"
 
 export const createShipStats = (
-  base: ShipStatsBase,
+  base: ShipBaseStats,
   state: ShipStatsState,
   equipment: Equipment,
   bonuses: EquipmentBonuses

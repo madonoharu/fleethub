@@ -11,7 +11,8 @@ import { getApShellModifiers } from "./ApShellModifiers"
 const ShellingCap = 180
 
 type PowerParams = {
-  targetIs: Ship["is"]
+  targetIsArmored: boolean
+  targetIsInstallation: boolean
   fleetFactor: number
 
   formationModifier: number
@@ -43,7 +44,7 @@ export class ShipShellingCalculator {
     const { equipment } = ship
     return getPossibleDaySpecialAttackTypes({
       isCarrierShelling: ship.isCarrierLike,
-      isIseClassK2: ship.shipClass === ShipClass.IseClass && ship.is("Kai2"),
+      isIseClassK2: ship.shipClass === "IseClass" && ship.is("Kai2"),
       hasObservationSeaplane: equipment.hasAircraft((gear) => gear.is("ObservationSeaplane")),
 
       mainGunCount: equipment.count((gear) => gear.is("MainGun")),
@@ -109,7 +110,8 @@ export class ShipShellingCalculator {
   }
 
   public createPower = ({
-    targetIs,
+    targetIsArmored,
+    targetIsInstallation,
     fleetFactor,
     formationModifier,
     engagementModifier,
@@ -121,11 +123,11 @@ export class ShipShellingCalculator {
     const improvementBonus = ship.equipment.sumBy((gear) => gear.improvementBonuses.shellingPower)
 
     const basic = 5 + firepower + improvementBonus + fleetFactor
-    const airPower = ship.isCarrierLike ? ship.calcAirPower(targetIs("Installation")) : undefined
+    const airPower = ship.isCarrierLike ? ship.calcAirPower(targetIsInstallation) : undefined
 
     const healthModifier = ship.health.commonPowerModifier
 
-    const apShellModifier = targetIs("Armored") ? this.apShellModifiers.power : undefined
+    const apShellModifier = targetIsArmored ? this.apShellModifiers.power : undefined
 
     const a14 = formationModifier * engagementModifier * healthModifier
     const b14 = cruiserFitBonus

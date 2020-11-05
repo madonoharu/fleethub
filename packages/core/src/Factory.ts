@@ -3,20 +3,20 @@ import { GearData, ShipData } from "@fleethub/data"
 import { FleetKeys, AirbaseKeys, ShipKey } from "./common"
 
 import { MasterGear, GearState, Gear, makeCreateGear } from "./gear"
-import { MasterShip, ShipState, createShip } from "./ship"
+import { ShipState, createShip } from "./ship"
 import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
 import { FleetState, FleetImpl } from "./fleet"
 import { AirbaseState, AirbaseImpl } from "./airbase"
 import { PlanState, PlanImpl, Organization } from "./plan"
 
 import masterData from "@fleethub/utils/MasterData"
-import MasterDataAdapter from "./MasterDataAdapter"
+import MasterDataAdapter, { MasterShip } from "./MasterDataAdapter"
 
 const masterDataAdapter = new MasterDataAdapter(masterData)
 
 const createEquipment = (
   state: EquipmentState,
-  maxSlots: number[],
+  maxSlots: MasterShip["slots"],
   createGear: (state: GearState) => Gear | undefined,
   exslot = true
 ) => {
@@ -26,7 +26,7 @@ const createEquipment = (
 
     if (key === "gx") return { key, gear }
 
-    const maxSlotSize = maxSlots[index]
+    const maxSlotSize = maxSlots[index] ?? NaN
     const currentSlotSize = state[slotKey] ?? maxSlotSize
 
     return { key, gear, currentSlotSize, maxSlotSize }
@@ -46,7 +46,7 @@ export default class Factory {
 
   constructor(data: FactoryRawData) {
     this.masterGears = masterDataAdapter.gears
-    this.masterShips = data.ships.map((raw) => new MasterShip(raw))
+    this.masterShips = masterDataAdapter.ships
   }
 
   public findMasterGear = (id: number) => this.masterGears.find((gear) => gear.id === id)

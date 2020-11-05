@@ -1,20 +1,10 @@
-import { ShipData, ShipClassKey, HullCode } from "@fleethub/data"
-
 import { GearKey } from "../common"
 import { GearBase } from "../gear"
 import { EquipmentState, Equipment } from "../equipment"
 
-import { ShipAttribute } from "./ShipAttribute"
+import { MasterShip } from "../MasterDataAdapter"
 
-export type StatBase = readonly [number, number]
-
-export type ShipIdentity = Required<
-  Pick<ShipData, "sortId" | "shipClass" | "shipType" | "name" | "ruby"> & {
-    shipId: ShipData["id"]
-  }
->
-
-export type ShipIdentityWithSpeed = ShipIdentity & { speed: number }
+export { StatInterval, MaybeNumber } from "@fleethub/utils"
 
 export const shipCategoies = [
   "Battleship",
@@ -29,33 +19,24 @@ export const shipCategoies = [
 
 export type ShipCategory = typeof shipCategoies[number]
 
-export type ShipCommonBase = ShipIdentity & {
-  category: ShipCategory
-  is: (attr: ShipAttribute) => boolean
-  canEquip: (gear: GearBase, key?: GearKey) => boolean
-  shipClassIn: (...keys: ShipClassKey[]) => boolean
-  shipTypeIn: (...keys: HullCode[]) => boolean
-}
+type ShipStatKey =
+  | "firepower"
+  | "torpedo"
+  | "antiAir"
+  | "armor"
+  | "asw"
+  | "los"
+  | "evasion"
+  | "maxHp"
+  | "luck"
+  | "speed"
+  | "range"
+  | "ammo"
+  | "fuel"
 
-export type ShipCommonBaseWithStatsBase = ShipCommonBase & ShipStatsBase
+export type ShipBaseStats = Pick<MasterShip, ShipStatKey>
 
-export type ShipStatsBase = {
-  firepower: StatBase
-  torpedo: StatBase
-  antiAir: StatBase
-  armor: StatBase
-  evasion: StatBase
-  asw: StatBase
-  los: StatBase
-
-  maxHp: StatBase
-  luck: StatBase
-  speed: number
-  range: number
-
-  ammo: number
-  fuel: number
-}
+export type ShipBase = Omit<MasterShip, ShipStatKey | "id" | "slots" | "stock" | "slotnum" | "nextId" | "nextLevel">
 
 export type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor" | "asw" | "los" | "evasion"
 
@@ -80,7 +61,7 @@ export type Speed = {
 }
 
 export type Range = {
-  naked: number
+  naked: MasterShip["range"]
   equipment: number
   bonus: number
   displayed: number
@@ -197,7 +178,7 @@ export type EquipmentBonuses = {
   effectiveLos: number
 }
 
-export type Ship = ShipCommonBase &
+export type Ship = ShipBase &
   ShipStats & {
     state: ShipState
 

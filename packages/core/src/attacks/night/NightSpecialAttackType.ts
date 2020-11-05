@@ -1,4 +1,4 @@
-import { ShipType } from "@fleethub/data"
+import { ShipType } from "@fleethub/utils"
 
 export type NightSpecialAttackType =
   | "DoubleAttack"
@@ -16,7 +16,7 @@ export type NightSpecialAttackType =
   | "SuiseiAttack"
 
 export type NightSpecialAttackTypeParams = {
-  shipType: number
+  shipType: ShipType
   isNightCarrier: boolean
 
   mainGunCount: number
@@ -112,7 +112,7 @@ export const getPossibleNightSpecialAttackTypes = (params: NightSpecialAttackTyp
 
   const types: NightSpecialAttackType[] = []
 
-  if (params.shipType === ShipType.DD) {
+  if (params.shipType === "DD") {
     types.push(...getDestroyerCutins(params))
   }
 
