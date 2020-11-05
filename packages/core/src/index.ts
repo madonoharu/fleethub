@@ -1,9 +1,7 @@
-import { gears, ships } from "@fleethub/data"
-
 import Factory from "./Factory"
 import FhSystem from "./FhSystem"
 
-const factory = new Factory({ gears, ships })
+const factory = new Factory()
 export const fhSystem = new FhSystem(factory)
 
 export * from "./ship"

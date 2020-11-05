@@ -1,4 +1,4 @@
-import { GearId } from "@fleethub/data"
+import { GearId } from "@fleethub/utils"
 
 import { Ship } from "../ship"
 import { BattleType, ShipRole, AntiAirCutin } from "../common"

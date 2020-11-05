@@ -1,8 +1,8 @@
-import { GearId, ShipId } from "@fleethub/data"
-
-import { ShipStats, Ship } from "./types"
+import { GearId, ShipId } from "@fleethub/utils"
 
 import { MasterShip } from "../MasterDataAdapter"
+
+import { ShipStats, Ship } from "./types"
 
 export class ShipImpl implements Ship {
   public readonly shipId = this.master.shipId
