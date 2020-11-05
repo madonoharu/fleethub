@@ -1,5 +1,3 @@
-import { GearData, ShipData } from "@fleethub/data"
-
 import { FleetKeys, AirbaseKeys, ShipKey } from "./common"
 
 import { MasterGear, GearState, Gear, makeCreateGear } from "./gear"
@@ -35,16 +33,11 @@ const createEquipment = (
   return new EquipmentImpl(items)
 }
 
-export type FactoryRawData = {
-  gears: GearData[]
-  ships: ShipData[]
-}
-
 export default class Factory {
   public masterGears: MasterGear[]
   public masterShips: MasterShip[]
 
-  constructor(data: FactoryRawData) {
+  constructor() {
     this.masterGears = masterDataAdapter.gears
     this.masterShips = masterDataAdapter.ships
   }

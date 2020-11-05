@@ -1,5 +1,4 @@
-import { GearId, ShipId } from "@fleethub/data"
-import { isNonNullable, uniq, atLeastOne } from "@fleethub/utils"
+import { isNonNullable, uniq, atLeastOne, GearId, ShipId } from "@fleethub/utils"
 
 import { Ship } from "../ship"
 import { Gear } from "../gear"

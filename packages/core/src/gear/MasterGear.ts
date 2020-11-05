@@ -2,7 +2,7 @@ import { mapValues, MasterDataGear, GearId, GearCategory, GearAttribute } from "
 import { GearCategory2 } from "@fleethub/data"
 import { Parser } from "expr-eval"
 
-import { GearBase, ImprovementBonuses, ImprovementBonusFormulas } from "./types"
+import { GearBase, ImprovementBonusFormulas, ImprovementBonuses } from "./types"
 
 type MasterGearAdditionalData = {
   category: GearCategory
@@ -77,7 +77,7 @@ export class MasterGear implements GearBase {
 
   public categoryIn = (...categories: GearCategory[]) => categories.some(this.categoryIs)
 
-  public getImprovementBonuses = (stars: number) =>
+  public getImprovementBonuses = (stars: number): ImprovementBonuses =>
     mapValues(this.improvementBonusFormulas, (formula) => {
       if (!formula) return 0
       return Parser.evaluate(formula as string, { x: stars })

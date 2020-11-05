@@ -1,4 +1,4 @@
-import { ShipId, GearId } from "@fleethub/data"
+import { ShipId, GearId } from "@fleethub/utils"
 
 import { fhDefinitions } from "../../FhDefinitions"
 import { Ship, DamageState } from "../../ship"
