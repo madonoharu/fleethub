@@ -3,10 +3,11 @@ import { Dict } from "@fleethub/utils"
 import { ProficiencyExp, GearKey, ShipKey, ShipKeys, FleetKey, FleetKeys, AirbaseKey, AirbaseKeys } from "../common"
 import { GearState } from "../gear"
 import { EquipmentState, Equipment } from "../equipment"
-import { ShipState, ShipBase, Ship } from "../ship"
+import { ShipState, Ship } from "../ship"
 import { FleetState, Fleet } from "../fleet"
 import { AirbaseState } from "../airbase"
 import { PlanState, Plan } from "../plan"
+import { MasterShip } from "../MasterDataAdapter"
 
 export type DeckGear = {
   id: number
@@ -62,7 +63,7 @@ const getEquipmentState = (source: DeckItems): EquipmentState => {
   return state
 }
 
-type FindShip = (id: number) => ShipBase | undefined
+type FindShip = (id: number) => MasterShip | undefined
 
 const getShip = ({ id, lv, items, luck, hp, asw }: DeckShip, findShip: FindShip): ShipState => {
   const shipId = toNumber(id) || 0
@@ -74,13 +75,13 @@ const getShip = ({ id, lv, items, luck, hp, asw }: DeckShip, findShip: FindShip)
   if (!base) return state
 
   if (luck && luck > 0) {
-    state.luck = luck - base.luck[0]
+    state.luck = luck - (base.luck[0] || 0)
   }
   if (hp && hp > 0) {
-    state.maxHp = hp - base.maxHp[0]
+    state.maxHp = hp - (base.maxHp[0] || 0)
   }
   if (asw && asw > 0) {
-    state.asw = asw - base.asw[0]
+    state.asw = asw - (base.asw[0] || 0)
   }
 
   return state

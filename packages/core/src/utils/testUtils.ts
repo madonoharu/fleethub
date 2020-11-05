@@ -1,6 +1,6 @@
 import { GearData, GearName, gears, ShipName, ShipData, ships } from "@fleethub/data"
-import { RequiredShipData, toStatBase } from "../ship/MasterShip"
 import { fhSystem } from ".."
+import { MasterShip } from "../MasterDataAdapter"
 
 export const getGearData = (name: GearName): GearData => {
   const found = gears.find((data) => data.name === name)
@@ -22,7 +22,7 @@ export const getShipData = (name: ShipName): ShipData => {
   return found
 }
 
-export type ShipDef = Partial<RequiredShipData> | ShipName
+export type ShipDef = Partial<MasterShip> | ShipName
 
 export const shipNameToId = (shipName: ShipName) => {
   const found = fhSystem.factory.masterShips.find((master) => master.name === shipName)

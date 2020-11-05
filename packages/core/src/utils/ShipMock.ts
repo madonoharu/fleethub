@@ -1,3 +1,4 @@
+import { ShipClass, ShipType } from "@fleethub/utils"
 import { Ship } from "../ship"
 import { ShipStats } from "../ship/types"
 
@@ -25,12 +26,21 @@ export class ShipStatsStub implements ShipStats {
 
 export class ShipMock extends ShipStatsStub implements Ship {
   public name = ""
-  public ruby = ""
+  public yomi = ""
   public shipId = 0
   public sortId = 0
-  public shipType = 0
-  public shipClass = 0
+  public stype = 0
+  public ctype = 0
+  public shipType = "" as ShipType
+  public shipClass = "" as ShipClass
   public category = "" as Ship["category"]
+  public convertible = false
+  public banner = ""
+  public attrs = []
+  public rank = 0
+  public speedGroup = "OtherC" as const
+  public isAbyssal = false
+  public isCommonly = false
 
   public state = {} as any
 
