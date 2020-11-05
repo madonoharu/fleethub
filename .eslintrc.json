@@ -2,7 +2,7 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:react/recommended",
 
     "prettier",
@@ -16,7 +16,8 @@
     "es6": true
   },
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
   },
   "rules": {
     "no-console": "off",
@@ -37,5 +38,6 @@
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/unbound-method": "off",
     "@typescript-eslint/no-floating-promises": "off"
-  }
+  },
+  "ignorePatterns": ["**/dist/*", "**/lib/*", "**/esm/*"]
 }

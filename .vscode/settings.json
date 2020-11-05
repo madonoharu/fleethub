@@ -4,8 +4,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "eslint.options": {
-    "ignorePath": ".eslintignore"
-  },
   "typescript.tsdk": "c:\\Users\\mad\\Desktop\\GitHub\\fleethub\\node_modules\\typescript\\lib"
 }
