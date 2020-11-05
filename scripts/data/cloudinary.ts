@@ -90,13 +90,12 @@ export const updateGearIcons = async () => {
   const { frames }: CommonIconWeapon = await ky.get(commonIconWeaponUrl.json).json()
   const searchRes: SearchApiResponse = await cloudinary.v2.search.expression("gear_icons").max_results(500).execute()
 
-  const exsits = (public_id: string) => searchRes.resources.some((resource) => resource.public_id === public_id)
+  const exsits = (id: string) => searchRes.resources.some((resource) => resource.filename === id)
 
   for (const [key, value] of Object.entries(frames)) {
     const id = key.replace("common_icon_weapon_id_", "")
-    const public_id = `gear_icons/${id}.png`
 
-    if (exsits(public_id)) continue
+    if (exsits(id)) continue
 
     const { w, h, x, y } = value.frame
     const width = 40
@@ -105,7 +104,8 @@ export const updateGearIcons = async () => {
     const cy = y + Math.floor(h / 2)
 
     await cloudinary.v2.uploader.upload(commonIconWeaponUrl.png, {
-      public_id,
+      folder: "gear_icons",
+      public_id: id,
       transformation: { width, height, x: cx - width / 2, y: cy - height / 2, crop: "crop" },
     })
   }
