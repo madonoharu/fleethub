@@ -2360,7 +2360,7 @@ export type ShipClass =
   | "GotouIslandsSeabedPrincess"
   | "CoppiceDestroyerPrincess"
 
-export type ShipAttribute = "NightCarrier"
+export type ShipAttribute = "NightCarrier" | "Installation" | "RoyalNavy" | "Kai2"
 
 export const enum GearId {
   "12cm単装砲" = 1,

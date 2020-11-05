@@ -1,23 +1,29 @@
 import React from "react"
 import styled from "styled-components"
-import { BasicStatKey, ShipStats } from "@fleethub/core"
+import { BasicStatKey, MaybeNumber, ShipStats } from "@fleethub/core"
 
 import { Tooltip, TooltipProps, Typography } from "@material-ui/core"
 
 import { StatIcon, Text, Flexbox } from "../../../components"
 import { withSign, getRangeName, getSpeedName, StatKeyDictionary, getBonusText } from "../../../utils"
 
-export const getDisplayedStr = (key: string, value: number) => {
+export const getDisplayedStr = (key: string, value?: MaybeNumber) => {
+  if (value === null || value === undefined) return "不明"
+
   if (key === "speed") return getSpeedName(value)
   if (key === "range") return getRangeName(value)
   return value.toString()
 }
 
-type Stat = Partial<ShipStats["firepower"]> & { displayed: number }
-
 export type StatProps<K extends keyof ShipStats> = {
   statKey: K
-  stat: Stat
+  stat: {
+    increase?: number
+    equipment?: number
+    bonus?: number
+    naked?: MaybeNumber
+    displayed: MaybeNumber
+  }
 }
 
 type Props =
