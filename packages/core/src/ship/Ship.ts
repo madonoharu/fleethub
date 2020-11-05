@@ -1,13 +1,27 @@
-import { ShipStats, ShipCommonBase, Ship } from "./types"
-import { GearId, ShipClass, ShipId } from "@fleethub/data"
+import { GearId, ShipId } from "@fleethub/data"
+
+import { ShipStats, Ship } from "./types"
+
+import { MasterShip } from "../MasterDataAdapter"
 
 export class ShipImpl implements Ship {
-  public readonly shipId = this.base.shipId
-  public readonly sortId = this.base.sortId
-  public readonly shipClass = this.base.shipClass
-  public readonly shipType = this.base.shipType
-  public readonly name = this.base.name
-  public readonly ruby = this.base.ruby
+  public readonly shipId = this.master.shipId
+  public readonly sortId = this.master.sortId
+  public readonly stype = this.master.stype
+  public readonly ctype = this.master.ctype
+  public readonly shipClass = this.master.shipClass
+  public readonly shipType = this.master.shipType
+  public readonly name = this.master.name
+  public readonly yomi = this.master.yomi
+
+  public readonly attrs = this.master.attrs
+  public readonly rank = this.master.rank
+  public readonly category = this.master.category
+  public readonly banner = this.master.banner
+  public readonly convertible = this.master.convertible
+  public readonly speedGroup = this.master.speedGroup
+  public readonly isAbyssal = this.master.isAbyssal
+  public readonly isCommonly = this.master.isCommonly
 
   public readonly level = this.stats.level
 
@@ -30,15 +44,14 @@ export class ShipImpl implements Ship {
   public readonly ammo = this.stats.ammo
   public readonly fuel = this.stats.fuel
 
-  public readonly category = this.base.category
-  public readonly is = this.base.is
-  public readonly canEquip = this.base.canEquip
-  public readonly shipClassIn = this.base.shipClassIn
-  public readonly shipTypeIn = this.base.shipTypeIn
+  public readonly is = this.master.is
+  public readonly canEquip = this.master.canEquip
+  public readonly shipClassIn = this.master.shipClassIn
+  public readonly shipTypeIn = this.master.shipTypeIn
 
   constructor(
     public state: Ship["state"],
-    private base: ShipCommonBase,
+    private master: MasterShip,
     private stats: ShipStats,
     public equipment: Ship["equipment"],
     public makeGetNextBonuses: Ship["makeGetNextBonuses"]
@@ -56,8 +69,8 @@ export class ShipImpl implements Ship {
   }
 
   get cruiserFitBonus() {
-    const { is, shipClass, equipment } = this
-    if (is("LightCruiserClass")) {
+    const { shipClass, category, equipment } = this
+    if (category === "LightCruiser") {
       const singleGunCount = equipment.count(({ gearId }) =>
         [GearId["14cm単装砲"], GearId["15.2cm単装砲"]].includes(gearId)
       )
@@ -67,7 +80,7 @@ export class ShipImpl implements Ship {
       return Math.sqrt(singleGunCount) + 2 * Math.sqrt(twinGunCount)
     }
 
-    if (shipClass === ShipClass.ZaraClass) {
+    if (shipClass === "ZaraClass") {
       return Math.sqrt(equipment.count((gear) => gear.gearId === GearId["203mm/53 連装砲"]))
     }
 
@@ -75,8 +88,8 @@ export class ShipImpl implements Ship {
   }
 
   get isCarrierLike() {
-    const { is, shipId, equipment } = this
-    if (is("AircraftCarrierClass")) {
+    const { is, shipId, category, equipment } = this
+    if (category === "AircraftCarrier") {
       return true
     }
 

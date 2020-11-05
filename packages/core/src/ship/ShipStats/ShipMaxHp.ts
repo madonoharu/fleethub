@@ -1,4 +1,5 @@
-import { MaxHp, StatBase } from "../types"
+import { MaybeNumber } from "@fleethub/utils"
+import { MaxHp, StatInterval } from "../types"
 
 const getMarriageBonus = (left: number) => {
   if (left >= 90) return 9
@@ -10,20 +11,31 @@ const getMarriageBonus = (left: number) => {
 }
 
 export class ShipMaxHp implements MaxHp {
-  private left: number
-  private right: number
-  constructor([left, right]: StatBase, public increase = 0, private isMarried: boolean) {
-    this.left = left
-    this.right = right
+  private left: MaybeNumber
+  private right: MaybeNumber
+
+  constructor([left, right]: StatInterval, public increase = 0, private isMarried: boolean) {
+    this.left = left ?? NaN
+    this.right = right ?? NaN
   }
 
   get limit() {
     const { left, right } = this
+
+    if (left === null || right === null) {
+      return 0
+    }
+
     return Math.min(right, getMarriageBonus(left) + 2)
   }
 
   get displayed() {
     const { left, right, increase, isMarried } = this
+
+    if (left === null || right === null) {
+      return increase
+    }
+
     let displayed = left + increase
 
     if (isMarried) {

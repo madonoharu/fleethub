@@ -1,6 +1,6 @@
 import { createShipStats } from "./createShipStats"
 
-import { ShipStatsBase, ShipStatsState, BasicStatKey, EquipmentBonuses } from "../types"
+import { ShipBaseStats, ShipStatsState, BasicStatKey, EquipmentBonuses } from "../types"
 import { EquipmentMock } from "../../utils"
 
 import { ShipBasicStat, ShipBasicStatWithLevel } from "./ShipBasicStat"
@@ -14,7 +14,7 @@ import { ShipAmmo } from "./ShipAmmo"
 import { ShipAccuracy } from "./ShipAccuracy"
 
 describe("createShipStats", () => {
-  const base: ShipStatsBase = {
+  const base: ShipBaseStats = {
     firepower: [110, 120],
     torpedo: [210, 220],
     antiAir: [310, 320],
