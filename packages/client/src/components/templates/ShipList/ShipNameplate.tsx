@@ -6,14 +6,15 @@ import { ShipBanner, Text, Flexbox } from "../../../components"
 type Props = {
   className?: string
   shipId: number
+  banner: string
   name: string
 }
 
 const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { className, shipId, name } = props
+  const { className, shipId, banner, name } = props
   return (
     <Flexbox ref={ref} className={className}>
-      <ShipBanner shipId={shipId} />
+      <ShipBanner publicId={banner} />
       <div>
         {shipId > 1500 && <Text>ID:{shipId}</Text>}
         <Text noWrap>{name}</Text>
