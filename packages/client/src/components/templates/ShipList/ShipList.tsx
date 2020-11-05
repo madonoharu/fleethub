@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { ShipBase, ShipState } from "@fleethub/core"
-import { ShipClassName } from "@fleethub/data"
-import { uniq } from "@fleethub/utils"
+import { ShipClass, uniq } from "@fleethub/utils"
 
 import { Divider, SearchInput } from "../../../components"
 
@@ -11,7 +10,7 @@ import { useShipListState } from "./useShipListState"
 import searchShip from "./searchShip"
 import ShipSearchResult from "./ShipSearchResult"
 
-const toShipClassEntries = (ships: ShipBase[]): Array<[number, ShipBase[]]> => {
+const toShipClassEntries = (ships: ShipBase[]): Array<[ShipClass, ShipBase[]]> => {
   const shipClasses = uniq(ships.map((ship) => ship.shipClass))
   return shipClasses.map((shipClass) => [shipClass, ships.filter((ship) => ship.shipClass === shipClass)])
 }
@@ -30,7 +29,7 @@ const ShipList: React.FC<Props> = ({ onSelect }) => {
   const searchResult = searchValue && searchShip(masterShips, searchValue)
 
   const renderShip = (ship: ShipBase) => (
-    <ShipButton key={`ship-${ship.id}`} ship={ship} onClick={() => onSelect && onSelect({ shipId: ship.id })} />
+    <ShipButton key={`ship-${ship.shipId}`} ship={ship} onClick={() => onSelect?.({ shipId: ship.shipId })} />
   )
 
   return (
@@ -42,7 +41,7 @@ const ShipList: React.FC<Props> = ({ onSelect }) => {
       ) : (
         shipClassEntries.map(([shipClass, ships]) => (
           <React.Fragment key={`shipClass-${shipClass}`}>
-            <Divider label={ShipClassName[shipClass]} />
+            <Divider label={shipClass} />
             {ships.map(renderShip)}
           </React.Fragment>
         ))

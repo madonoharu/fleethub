@@ -15,7 +15,7 @@ const searchShip = (ships: ShipBase[], searchValue: string) => {
   }
 
   return ships.filter(
-    (ship) => ship.name.toUpperCase().includes(searchValue.toUpperCase()) || ship.ruby.includes(searchValue)
+    (ship) => ship.name.toUpperCase().includes(searchValue.toUpperCase()) || ship.yomi.includes(searchValue)
   )
 }
 

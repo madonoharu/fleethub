@@ -19,26 +19,13 @@ export const shipCategoies = [
 
 export type ShipCategory = typeof shipCategoies[number]
 
-type ShipStatKey =
-  | "firepower"
-  | "torpedo"
-  | "antiAir"
-  | "armor"
-  | "asw"
-  | "los"
-  | "evasion"
-  | "maxHp"
-  | "luck"
-  | "speed"
-  | "range"
-  | "ammo"
-  | "fuel"
+export type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor" | "asw" | "los" | "evasion"
+
+type ShipStatKey = BasicStatKey | "maxHp" | "luck" | "speed" | "range" | "ammo" | "fuel"
 
 export type ShipBaseStats = Pick<MasterShip, ShipStatKey>
 
 export type ShipBase = Omit<MasterShip, ShipStatKey | "id" | "slots" | "stock" | "slotnum" | "nextId" | "nextLevel">
-
-export type BasicStatKey = "firepower" | "torpedo" | "antiAir" | "armor" | "asw" | "los" | "evasion"
 
 export type BasicStat = {
   increase: number
