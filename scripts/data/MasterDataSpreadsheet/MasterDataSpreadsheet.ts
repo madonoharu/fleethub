@@ -56,13 +56,15 @@ export default class MasterDataSpreadsheet {
       sheets.improvementBonuses.read(),
     ])
 
-    const shipAttrs = parseShipAttrs(ships, shipAttrsSheetRows)
+    const shipAttrs = parseShipAttrs(ships, shipClasses, shipAttrsSheetRows)
     const { gearAttrs, improvementBonuses } = parseGearSheets(
       gears,
       gearCategories,
       gearAttrsSheetRows,
       improvementBonusSheets
     )
+
+    const equippable = { equip_stype: [], equip_exslot: [], equip_ship: [], equip_exslot_ship: [] }
 
     return {
       ships,
@@ -74,7 +76,7 @@ export default class MasterDataSpreadsheet {
       gearCategories,
       gearAttrs,
       improvementBonuses,
-      equippable: { equip_stype: [], equip_exslot: [], equip_ship: [], equip_exslot_ship: [] },
+      equippable,
     }
   }
 

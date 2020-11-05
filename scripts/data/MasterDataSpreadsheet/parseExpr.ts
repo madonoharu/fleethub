@@ -1,6 +1,6 @@
 import { Parser, Value } from "expr-eval"
 
-export type Variables = Record<string, Value | Value[] | boolean>
+export type Variables = Record<string, Value | Value[] | boolean | null>
 
 const parseExpr = (expr: string) => {
   try {
