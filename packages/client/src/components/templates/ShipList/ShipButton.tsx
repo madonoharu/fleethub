@@ -14,7 +14,7 @@ type Props = {
 const ShipButton: React.FCX<Props> = ({ className, ship, onClick }) => {
   return (
     <Button className={className} onClick={onClick}>
-      <ShipNameplate shipId={ship.shipId} name={ship.name} />
+      <ShipNameplate shipId={ship.shipId} banner={ship.banner} name={ship.name} />
     </Button>
   )
 }

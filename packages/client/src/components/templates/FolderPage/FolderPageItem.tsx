@@ -42,12 +42,12 @@ const PlanItem: React.FC<{ file: PlanFileEntity }> = ({ file }) => {
           <ShipsContainer>
             <div>
               {plan.main.ships.map((ship, index) => (
-                <ShipBanner key={index} shipId={ship.shipId} />
+                <ShipBanner key={index} publicId={ship.banner} />
               ))}
             </div>
             <div>
               {plan.escort?.ships.map((ship, index) => (
-                <ShipBanner key={index} shipId={ship.shipId} />
+                <ShipBanner key={index} publicId={ship.banner} />
               ))}
             </div>
           </ShipsContainer>

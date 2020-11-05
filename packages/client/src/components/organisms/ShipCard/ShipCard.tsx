@@ -41,7 +41,7 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
 
       <Content>
         <div>
-          <ShipBanner shipId={ship.shipId} size="medium" />
+          <ShipBanner publicId={ship.banner} size="medium" />
           <ShipStats ship={ship} />
         </div>
 
