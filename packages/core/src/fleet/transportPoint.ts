@@ -1,29 +1,29 @@
-import { ShipType, GearId, ShipId } from "@fleethub/data"
+import { ShipType, ShipId, GearId } from "@fleethub/utils"
 
 import { Gear } from "../gear"
 import { Ship } from "../ship"
 
 export const shipTypeToTp = (shipType: ShipType) => {
   switch (shipType) {
-    case ShipType.SSV:
+    case "SSV":
       return 1
-    case ShipType.DD:
+    case "DD":
       return 5
-    case ShipType.CL:
+    case "CL":
       return 2
-    case ShipType.CAV:
+    case "CAV":
       return 4
-    case ShipType.BBV:
+    case "BBV":
       return 7
-    case ShipType.AO:
+    case "AO":
       return 12
-    case ShipType.LHA:
+    case "LHA":
       return 12
-    case ShipType.AV:
+    case "AV":
       return 9
-    case ShipType.AS:
+    case "AS":
       return 7
-    case ShipType.CT:
+    case "CT":
       return 6
   }
   return 0

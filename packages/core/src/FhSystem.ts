@@ -31,10 +31,10 @@ export default class FhSystem {
     const state: ShipState = { shipId }
 
     const base = this.factory.findMasterShip(shipId)
-    if (!base || !base.is("Abyssal")) return
+    if (!base || !base.isAbyssal) return
 
-    base.gears.forEach((gear, index) => {
-      state[`g${index + 1}` as GearKey] = gear
+    base.stock.forEach(({ id, stars }, index) => {
+      state[`g${index + 1}` as GearKey] = { gearId: id, stars }
     })
 
     return state

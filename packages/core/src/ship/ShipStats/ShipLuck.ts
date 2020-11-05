@@ -1,15 +1,19 @@
-import { Luck, StatBase } from "../types"
+import { exec } from "child_process"
+import { Luck, StatInterval, MaybeNumber } from "../types"
 
 export class ShipLuck implements Luck {
-  private left: number
-  private right: number
-  constructor([left, right]: StatBase, public increase = 0) {
+  private left: MaybeNumber
+  private right: MaybeNumber
+  public displayed: number
+
+  constructor([left, right]: StatInterval, public increase = 0) {
     this.left = left
     this.right = right
-  }
 
-  public get displayed() {
-    const { left, right, increase } = this
-    return left + increase
+    if (left === null) {
+      this.displayed = increase || NaN
+    } else {
+      this.displayed = left + increase
+    }
   }
 }

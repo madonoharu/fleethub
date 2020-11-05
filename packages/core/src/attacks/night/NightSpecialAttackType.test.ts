@@ -3,10 +3,9 @@ import {
   NightSpecialAttackType,
   NightSpecialAttackTypeParams,
 } from "./NightSpecialAttackType"
-import { ShipType } from "@fleethub/data"
 
 const defaultParams: NightSpecialAttackTypeParams = {
-  shipType: 0,
+  shipType: "BB",
   lateModelBowTorpedoCount: 0,
   hasSubmarineRadar: false,
   mainGunCount: 0,
@@ -99,7 +98,7 @@ describe("getPossibleNightSpecialAttackTypes", () => {
 
   describe("駆逐専用夜戦CI", () => {
     it("DD & 主1魚1水上電探 -> MainTorpRadar", () => {
-      expect(getTypes({ shipType: ShipType.DD, mainGunCount: 1, torpedoCount: 1, hasSurfaceRadar: true })).toContain<
+      expect(getTypes({ shipType: "DD", mainGunCount: 1, torpedoCount: 1, hasSurfaceRadar: true })).toContain<
         NightSpecialAttackType
       >("MainTorpRadar")
 
@@ -109,7 +108,7 @@ describe("getPossibleNightSpecialAttackTypes", () => {
     })
 
     it("DD & 魚1見張水上電探 -> TorpLookoutRadar", () => {
-      expect(getTypes({ shipType: ShipType.DD, torpedoCount: 1, hasSurfaceRadar: true, hasLookout: true })).toContain<
+      expect(getTypes({ shipType: "DD", torpedoCount: 1, hasSurfaceRadar: true, hasLookout: true })).toContain<
         NightSpecialAttackType
       >("TorpLookoutRadar")
 
@@ -120,7 +119,7 @@ describe("getPossibleNightSpecialAttackTypes", () => {
 
     it("主魚電と魚見電と主魚は重複する", () => {
       expect(
-        getTypes({ shipType: ShipType.DD, mainGunCount: 1, torpedoCount: 1, hasSurfaceRadar: true, hasLookout: true })
+        getTypes({ shipType: "DD", mainGunCount: 1, torpedoCount: 1, hasSurfaceRadar: true, hasLookout: true })
       ).toEqual<NightSpecialAttackType[]>(["MainTorpRadar", "TorpLookoutRadar", "MainTorp"])
     })
   })

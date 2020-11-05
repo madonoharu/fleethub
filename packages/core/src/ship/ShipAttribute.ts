@@ -1,10 +1,8 @@
 import { ShipClass, ShipId, ShipType, HullCode } from "@fleethub/data"
 
-import { ShipIdentityWithSpeed } from "./types"
-
 const or = <T>(...fs: Array<(arg: T) => boolean>) => (arg: T) => fs.some((f) => f(arg))
 
-export type ShipMatcher = (ship: ShipIdentityWithSpeed) => boolean
+export type ShipMatcher = (ship: any) => boolean
 
 type ShipClassKey = keyof typeof ShipClass
 
@@ -114,5 +112,4 @@ const matchers = {
 export type ShipAttribute = keyof typeof matchers
 const allAttrs = Object.keys(matchers) as ShipAttribute[]
 
-export const createShipAttrs = (ship: ShipIdentityWithSpeed): ShipAttribute[] =>
-  allAttrs.filter((attr) => matchers[attr](ship))
+export const createShipAttrs = (ship: any): ShipAttribute[] => allAttrs.filter((attr) => matchers[attr](ship))

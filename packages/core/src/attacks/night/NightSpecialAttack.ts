@@ -56,7 +56,7 @@ export const calcNightCutinTerm = (ship: Ship, params: NightAttackParams) => {
 }
 
 const isNightCarrier = (ship: Ship) => {
-  if (!ship.is("AircraftCarrierClass")) return false
+  if (ship.category !== "AircraftCarrier") return false
 
   // Saratoga Mk.II | 赤城改二戊 | 夜間作戦航空要員
   const hasNoap =
