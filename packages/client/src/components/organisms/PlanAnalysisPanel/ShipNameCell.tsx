@@ -16,7 +16,7 @@ const ShipNameCell: React.FCX<Props> = ({ className, ship }) => {
       <Typography variant="caption" display="block">
         {ship.name}
       </Typography>
-      <ShipBanner shipId={ship.shipId} />
+      <ShipBanner publicId={ship.banner} />
     </div>
   )
 }

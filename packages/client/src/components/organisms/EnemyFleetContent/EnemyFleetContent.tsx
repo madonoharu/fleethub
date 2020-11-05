@@ -24,12 +24,12 @@ const EnemyFleetContent: React.FCX<Props> = ({ className, enemy, visibleAlbFp })
 
       <div>
         {enemy.main.ships.map((ship, index) => (
-          <ShipBanner key={index} shipId={ship.shipId} />
+          <ShipBanner key={index} publicId={ship.banner} />
         ))}
       </div>
       <div>
         {enemy.escort?.ships.map((ship, index) => (
-          <ShipBanner key={index} shipId={ship.shipId} />
+          <ShipBanner key={index} publicId={ship.banner} />
         ))}
       </div>
     </div>
