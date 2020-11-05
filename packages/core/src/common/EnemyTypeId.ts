@@ -1,4 +1,4 @@
-import { ShipId } from "@fleethub/data"
+import { ShipId } from "@fleethub/utils"
 
 enum EnemyTypeId {
   None = ShipId["駆逐イ級 id1501"],
