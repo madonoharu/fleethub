@@ -1,4 +1,4 @@
-import { range } from "lodash-es"
+import { range } from "@fleethub/utils"
 
 import { GearKey } from "../common"
 import { PickByValue } from "../utils"
