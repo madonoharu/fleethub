@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 import Image from "../Image"
 
-const KctoolsIconBase = React.forwardRef<HTMLPictureElement, React.ComponentProps<"picture">>((props, ref) => (
+const KctoolsIconBase = React.forwardRef<HTMLImageElement, React.ComponentProps<"picture">>((props, ref) => (
   <Image {...props} ref={ref} path={"icons/kctools"} />
 ))
 
