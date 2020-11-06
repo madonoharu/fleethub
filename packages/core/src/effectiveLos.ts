@@ -1,4 +1,4 @@
-import { sumBy } from "lodash-es"
+import { sumBy } from "@fleethub/utils"
 
 import { Gear } from "./gear"
 import { Ship } from "./ship"
