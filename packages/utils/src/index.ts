@@ -15,7 +15,24 @@ export const mapValues = <T, R>(obj: T, fn: (value: T[keyof T], key: keyof T) =>
 
 export const includes = <T>(array: readonly T[], value: unknown): value is T => (array as unknown[]).includes(value)
 
+export const range = (n: number) => [...Array(n).keys()]
+
 export const uniq = <T>(array: T[]) => [...new Set(array)]
+
+export const sumBy = <T>(array: T[], iteratee: (item: T) => number) =>
+  array.reduce((total, item) => total + iteratee(item), 0)
+
+export const round = (number: number, precision?: number) => {
+  precision = precision == null ? 0 : precision >= 0 ? Math.min(precision, 292) : Math.max(precision, -292)
+  if (precision) {
+    let pair = `${number}e`.split("e")
+    const value = Math.round(+`${pair[0]}e${+pair[1] + precision}`)
+
+    pair = `${value}e`.split("e")
+    return +`${pair[0]}e${+pair[1] - precision}`
+  }
+  return Math.round(number)
+}
 
 export const atLeastOne = (xs: number[]) => 1 - xs.reduce((acc, x) => acc * (1 - x), 1)
 
