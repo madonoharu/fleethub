@@ -1,7 +1,5 @@
 import React from "react"
 
-const { setTimeout } = window
-
 const resetTimer = (timer: React.MutableRefObject<number | null>) => {
   if (!timer.current) return
 

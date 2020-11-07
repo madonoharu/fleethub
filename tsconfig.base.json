@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "target": "ES2019",
+
     "lib": ["esnext", "dom"],
-    "allowJs": true,
     "outDir": "",
-    "jsx": "react",
-    "noImplicitReturns": true,
-
-    "esModuleInterop": true,
-    "strict": true,
-    "experimentalDecorators": true,
-
     "newLine": "lf",
     "types": ["react", "@types/node"],
-    "skipLibCheck": true
+    "noImplicitReturns": true,
+
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "jsx": "preserve"
   },
   "include": ["packages"],
   "exclude": ["node_modules", "**/dist", "**/lib", "**/esm"]

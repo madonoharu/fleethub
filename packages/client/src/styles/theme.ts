@@ -117,7 +117,7 @@ const muiTheme = createMuiTheme({
   },
 })
 
-const isFirefox = window.navigator.userAgent.includes("Firefox")
+const isFirefox = process.browser && window.navigator.userAgent.includes("Firefox")
 
 const acrylic: FlattenSimpleInterpolation = isFirefox
   ? css`
