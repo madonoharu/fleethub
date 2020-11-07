@@ -11,11 +11,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@emotion/cache": "^10.0.29",
+    "@emotion/core": "^10.1.1",
+    "@emotion/styled": "^10.0.27",
     "@fleethub/core": "*",
     "@fleethub/utils": "*",
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@material-ui/core": "^5.0.0-alpha.15",
+    "@material-ui/icons": "^5.0.0-alpha.15",
+    "@material-ui/lab": "^5.0.0-alpha.15",
     "@reduxjs/toolkit": "^1.4.0",
     "@vx/network": "^0.0.199",
     "@vx/responsive": "^0.0.199",
