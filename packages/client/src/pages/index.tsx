@@ -9,7 +9,6 @@ import { HTML5Backend } from "react-dnd-html5-backend"
 
 import "../i18n"
 import { StoreProvider } from "../store"
-import { ThemeProvider } from "../styles"
 
 const Home: NextComponentType = () => {
   return (
@@ -26,11 +25,9 @@ const Home: NextComponentType = () => {
       </Head>
 
       <DndProvider backend={HTML5Backend}>
-        <ThemeProvider>
-          <StoreProvider>
-            <AppContent />
-          </StoreProvider>
-        </ThemeProvider>
+        <StoreProvider>
+          <AppContent />
+        </StoreProvider>
       </DndProvider>
     </div>
   )
