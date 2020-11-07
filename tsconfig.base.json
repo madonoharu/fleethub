@@ -2,10 +2,8 @@
   "compilerOptions": {
     "target": "ES2019",
 
-    "lib": ["esnext", "dom"],
-    "outDir": "",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "newLine": "lf",
-    "types": ["react", "@types/node"],
     "noImplicitReturns": true,
 
     "allowJs": true,
