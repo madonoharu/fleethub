@@ -13,11 +13,10 @@ import { gkcoiSlice } from "./gkcoiSlice"
 
 import undoableOptions from "./undoableOptions"
 
-const noop = () => Promise.resolve(null)
 const noopStorage: WebStorage = {
-  getItem: noop,
-  setItem: noop,
-  removeItem: noop,
+  getItem: () => Promise.resolve(null),
+  setItem: () => Promise.resolve(),
+  removeItem: () => Promise.resolve(),
 }
 
 const storage = process.browser ? localforage : noopStorage
