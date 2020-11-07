@@ -11,7 +11,6 @@ const StoreProvider: React.FC = ({ children }) => {
   const store = createStore()
   const persistor = persistStore(store)
 
-  console.log("persistStore")
   const handleBeforeLift = () => {
     if (!process.browser) return
 
@@ -19,8 +18,6 @@ const StoreProvider: React.FC = ({ children }) => {
     store.dispatch(fetchLocationData())
     store.dispatch(ActionCreators.clearHistory())
   }
-
-  console.log("render")
 
   return (
     <ReduxProvider store={store}>
