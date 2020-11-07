@@ -5,6 +5,7 @@
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
   "scripts": {
+    "analyze": "cross-env ANALYZE=true next build",
     "build": "next build",
     "dev": "next dev",
     "start": "next start"
