@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { range } from "lodash-es"
+import { range } from "@fleethub/utils"
 
 import Button from "@material-ui/core/Button"
 

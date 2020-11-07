@@ -37,7 +37,7 @@ export type SelectComponent<P = {}> = {
 export type SelectInputProps = Omit<InputProps, keyof SelectComponentProps<unknown>>
 
 const Select: SelectComponent<SelectInputProps> = (props) => {
-  const { options, value, onChange, getOptionLabel = getDefaultOptionLabel, ...muiProps } = props
+  const { options, value, onChange, getOptionLabel = getDefaultOptionLabel, variant, ...muiProps } = props
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => onChange(options[Number(event.target.value)]),
@@ -45,7 +45,7 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
   )
 
   return (
-    <Input value={options.indexOf(value)} onChange={handleChange} select {...muiProps}>
+    <Input value={options.indexOf(value)} variant={variant} onChange={handleChange} select {...muiProps}>
       {options.map((option, index) => (
         <MenuItem key={index} value={index}>
           {getOptionLabel(option)}
