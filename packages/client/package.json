@@ -9,9 +9,6 @@
     "dev": "next dev",
     "start": "next start"
   },
-  "resolutions": {
-    "webpack": "^5.4.0"
-  },
   "dependencies": {
     "@fleethub/core": "*",
     "@fleethub/utils": "*",
@@ -22,7 +19,6 @@
     "@vx/network": "^0.0.199",
     "@vx/responsive": "^0.0.199",
     "clsx": "^1.1.0",
-    "constate": "^3.1.0",
     "copy-to-clipboard": "^3.3.1",
     "firebase": "^8.0.1",
     "gkcoi": "^1.1.6",
