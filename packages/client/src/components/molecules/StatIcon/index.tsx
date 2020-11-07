@@ -1,14 +1,13 @@
 import React from "react"
 import styled from "styled-components"
-
-import { Image } from "../../atoms"
+import Image from "next/image"
 
 type Props = {
   icon: string
 }
 
 const StatIcon: React.FCX<Props> = ({ className, icon }) => {
-  return <Image className={className} width={15} height={15} path={`stats/${icon}`} />
+  return <Image className={className} width={15} height={15} src={`/stats/${icon}.png`} />
 }
 
 export default styled(StatIcon)`

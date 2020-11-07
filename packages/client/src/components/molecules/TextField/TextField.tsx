@@ -14,7 +14,7 @@ type TextFieldPropsBase = {
 export type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> & TextFieldPropsBase
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
-  const { className, value = "", onChange, onBlur, ...rest } = props
+  const { className, value = "", onChange, onBlur, variant, ...rest } = props
 
   const [str, setStr] = useState(value)
 
@@ -51,6 +51,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref
       inputRef={handleRef}
       className={className}
       value={str}
+      variant={variant}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}

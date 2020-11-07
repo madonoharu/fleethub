@@ -4,11 +4,11 @@
   "private": true,
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
-  "main": "index.ts",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
+    "prebuild": "yarn build:utils & yarn build:core",
     "build": "yarn build:utils && yarn build:data && yarn build:core && yarn build:client",
     "build:client": "yarn workspace @fleethub/client build",
     "build:core": "yarn workspace @fleethub/core build",
@@ -17,8 +17,8 @@
     "client": "yarn workspace @fleethub/client",
     "core": "yarn workspace @fleethub/core",
     "data": "yarn workspace @fleethub/data",
+    "dev": "yarn workspace @fleethub/client dev",
     "lint": "eslint --cache packages && yarn tscheck",
-    "start": "yarn client start",
     "test": "yarn test:core",
     "test:core": "jest packages/core/src",
     "tscheck": "tsc --noEmit",
@@ -54,7 +54,7 @@
     "babel-jest": "^26.6.3",
     "cloudinary": "^1.23.0",
     "dotenv": "^8.2.0",
-    "eslint": "^7.12.1",
+    "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",

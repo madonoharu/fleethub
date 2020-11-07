@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react"
 import { useDragLayer, DragLayerMonitor } from "react-dnd"
-import { throttle } from "lodash-es"
+import throttle from "lodash/throttle"
 import styled from "styled-components"
 
 type DragLayerRef = { children?: React.ReactNode; width?: number; height?: number; html?: HTMLElement }

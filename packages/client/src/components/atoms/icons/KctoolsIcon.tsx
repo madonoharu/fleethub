@@ -1,14 +1,12 @@
 import React from "react"
 import styled from "styled-components"
 
-import Image from "../Image"
+import Image from "next/image"
 
 const KctoolsIconBase = React.forwardRef<HTMLImageElement, React.ComponentProps<"picture">>((props, ref) => (
-  <Image {...props} ref={ref} path={"icons/kctools"} />
+  <Image width={24} height={24} ref={ref} {...props} src={"/icons/kctools.png"} />
 ))
 
 export default styled(KctoolsIconBase)`
-  width: 1em;
-  height: 1em;
   border-radius: 50%;
 `

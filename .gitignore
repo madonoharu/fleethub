@@ -3,7 +3,7 @@ cjs/
 esm/
 dist/
 private/
-reduxcache*/
+.cache/
 
 # Logs
 logs
@@ -60,10 +60,6 @@ typings/
 
 # dotenv environment variable files
 .env*
-
-# gatsby files
-.cache/
-public
 
 # Mac files
 .DS_Store
