@@ -28,7 +28,6 @@ declare module "*.png" {
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      readonly NODE_ENV: "development" | "production" | "test"
       readonly VERSION: string
     }
   }

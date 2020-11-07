@@ -1,6 +1,6 @@
 import React from "react"
-
 import Head from "next/head"
+import type { NextComponentType } from "next"
 
 import { AppContent } from "../components"
 
@@ -11,7 +11,7 @@ import "../i18n"
 import { StoreProvider } from "../store"
 import { ThemeProvider } from "../styles"
 
-export default function Home() {
+const Home: NextComponentType = () => {
   return (
     <div>
       <Head>
@@ -35,3 +35,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home
