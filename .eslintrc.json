@@ -37,7 +37,8 @@
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/unbound-method": "off",
-    "@typescript-eslint/no-floating-promises": "off"
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off"
   },
-  "ignorePatterns": ["**/dist/*", "**/lib/*", "**/esm/*"]
+  "ignorePatterns": ["**/dist/*", "**/lib/*", "**/esm/*", "**/cjs/*"]
 }
