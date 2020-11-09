@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Plan, PlanState, Airbase, AirbaseState, AirbaseKey } from "@fleethub/core"
 
 import { AirbaseCard, Flexbox, Swappable } from "../../../components"

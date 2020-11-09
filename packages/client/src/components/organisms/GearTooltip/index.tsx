@@ -1,6 +1,6 @@
 import React from "react"
 import { GearBase, EquipmentBonuses } from "@fleethub/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { Tooltip, TooltipProps } from "@material-ui/core"
 

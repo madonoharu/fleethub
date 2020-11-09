@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { Tooltip } from "@material-ui/core"
 import SearchIcon from "@material-ui/icons/Search"

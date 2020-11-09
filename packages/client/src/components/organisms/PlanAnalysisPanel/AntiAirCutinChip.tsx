@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import { AntiAirCutin } from "@fleethub/core"
 
 import { Chip, Tooltip, Typography } from "@material-ui/core"
@@ -24,9 +25,11 @@ const AntiAirCutinChip: React.FCX<Props> = ({ className, antiAirCutin }) => (
   </Tooltip>
 )
 
-export default styled(AntiAirCutinChip)`
-  width: 48px;
-  border-radius: 4px;
-  color: ${(props) => props.theme.colors.antiAir};
-  border-color: ${(props) => props.theme.colors.antiAir};
-`
+export default styled(AntiAirCutinChip)(
+  ({ theme }) => css`
+    width: 48px;
+    border-radius: 4px;
+    color: ${theme.colors.antiAir};
+    border-color: ${theme.colors.antiAir};
+  `
+)

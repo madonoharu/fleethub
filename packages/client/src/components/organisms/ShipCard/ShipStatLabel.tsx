@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import { BasicStatKey, ShipStats } from "@fleethub/core"
 
 import { StatIcon, Text } from "../../../components"
@@ -8,21 +9,24 @@ import { Flexbox } from "../../atoms"
 
 import ShipStatTooltip, { getDisplayedStr } from "./ShipStatTooltip"
 
-const BonusText = styled(Text)`
-  color: ${({ theme }) => theme.colors.bonus};
-  position: absolute;
-  font-size: 10px;
-  bottom: -3px;
-  left: 10px;
-`
-
-const IncreaseText = styled(Text)`
-  color: ${({ theme }) => theme.colors.increase};
-  position: absolute;
-  font-size: 10px;
-  top: -3px;
-  left: 10px;
-`
+const BonusText = styled(Text)(
+  ({ theme }) => css`
+    color: ${theme.colors.bonus};
+    position: absolute;
+    font-size: 10px;
+    bottom: -3px;
+    left: 10px;
+  `
+)
+const IncreaseText = styled(Text)(
+  ({ theme }) => css`
+    color: ${theme.colors.increase};
+    position: absolute;
+    font-size: 10px;
+    top: -3px;
+    left: 10px;
+  `
+)
 
 const DisplayedText = styled(Text)`
   margin-left: 4px;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Formation, SingleFleetFormations, CombinedFleetFormations } from "@fleethub/core"
 
 import { Select, SelectInputProps } from "../../molecules"

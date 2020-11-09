@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import { BasicStatKey, MaybeNumber, ShipStats } from "@fleethub/core"
 
 import { Tooltip, TooltipProps, Typography } from "@material-ui/core"
@@ -51,16 +52,18 @@ const SpaceBetween = styled(Flexbox)`
   justify-content: space-between;
 `
 
-const StyledStatTitle = styled(StatTitle)`
-  ${StatIcon} {
-    vertical-align: sub;
-  }
+const StyledStatTitle = styled(StatTitle)(
+  ({ theme, statKey }) => css`
+    ${StatIcon} {
+      vertical-align: sub;
+    }
 
-  span {
-    margin: 0 4px;
-    color: ${({ theme, statKey }) => theme.colors[statKey]};
-  }
-`
+    span {
+      margin: 0 4px;
+      color: ${theme.colors[statKey]};
+    }
+  `
+)
 
 const ShipStatTooltip: React.FC<Props & Pick<TooltipProps, "children">> = ({ statKey, stat, children }) => {
   const { displayed, bonus, increase, equipment } = stat

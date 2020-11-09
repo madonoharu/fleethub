@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Airbase, AirbaseState } from "@fleethub/core"
 
 import { Paper, Typography } from "@material-ui/core"

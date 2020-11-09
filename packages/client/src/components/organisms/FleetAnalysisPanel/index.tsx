@@ -1,6 +1,6 @@
 import React from "react"
 import { Fleet } from "@fleethub/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { Paper } from "@material-ui/core"
 

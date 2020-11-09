@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Plan, PlanState, FleetType } from "@fleethub/core"
 
 import { ClickAwayListener, Button } from "@material-ui/core"

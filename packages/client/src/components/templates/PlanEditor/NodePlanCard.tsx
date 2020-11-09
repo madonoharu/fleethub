@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { NodePlan, AirbaseKeys } from "@fleethub/core"
 
 import { Paper, Typography, Button, FormControlLabel, RadioGroup, Radio } from "@material-ui/core"

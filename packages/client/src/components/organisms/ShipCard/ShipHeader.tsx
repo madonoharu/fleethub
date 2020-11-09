@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Ship, ShipState } from "@fleethub/core"
 
 import { Button, Tooltip } from "@material-ui/core"

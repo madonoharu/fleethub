@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Plan, PlanAnalyzer, ShipShellingAbility } from "@fleethub/core"
 
 import { Table, LabeledValue } from "../../../components"

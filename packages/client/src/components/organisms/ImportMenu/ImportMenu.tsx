@@ -1,6 +1,6 @@
 import React from "react"
 import { Plan } from "@fleethub/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useDispatch, useSelector } from "react-redux"
 import { useAsyncCallback } from "react-async-hook"
 
