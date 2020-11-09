@@ -41,10 +41,6 @@ const StyledCutinChanceCell = styled(CutinChanceCell)`
   margin-left: auto;
 `
 
-const StyledSelect: typeof Select = styled(Select)`
-  width: 120px;
-`
-
 const StyledNumberInput = styled(NumberInput)`
   width: 120px;
 `
@@ -82,7 +78,8 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
           onChange={setFormation}
         />
 
-        <StyledSelect
+        <Select
+          css={{ width: 120 }}
           variant="outlined"
           label="対空CI"
           {...ciSelectState}

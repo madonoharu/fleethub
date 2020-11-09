@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { ActionCreators } from "redux-undo"
 
-import { AppBar as MuiAppBar, Button, Typography, Link, Tooltip } from "@material-ui/core"
+import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 import MenuIcon from "@material-ui/icons/Menu"
@@ -17,9 +17,9 @@ import ShipList from "../ShipList"
 import GearList from "../GearList"
 import MapList from "../MapList"
 
-const StyledButton: typeof Button = styled(Button)`
+const StyledButton = styled(Button)`
   height: 100%;
-`
+` as typeof Button
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
