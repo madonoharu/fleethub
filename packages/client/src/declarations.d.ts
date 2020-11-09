@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { RootState, AppDispatch } from "./store"
+import "@emotion/react/types/css-prop"
 
 declare module "react" {
   type FCX<P = {}> = FC<P & { className?: string }>

@@ -7,7 +7,7 @@ import { StatIcon, Text } from "../../../components"
 import { withSign } from "../../../utils"
 import { Flexbox } from "../../atoms"
 
-import ShipStatTooltip, { getDisplayedStr } from "./ShipStatTooltip"
+import ShipStatTooltip, { getDisplayedStr, StatProps } from "./ShipStatTooltip"
 
 const BonusText = styled(Text)(
   ({ theme }) => css`
@@ -35,18 +35,7 @@ const DisplayedText = styled(Text)`
   white-space: nowrap;
 `
 
-type StatProps<K extends keyof ShipStats> = {
-  statKey: K
-  stat: ShipStats[K]
-}
-
-type Props =
-  | StatProps<BasicStatKey>
-  | StatProps<"maxHp">
-  | StatProps<"speed">
-  | StatProps<"range">
-  | StatProps<"luck">
-  | StatProps<"accuracy">
+type Props = StatProps<BasicStatKey | "maxHp" | "speed" | "range" | "luck" | "accuracy">
 
 const ShipStatLabel: React.FCX<Props> = (props) => {
   const { className, statKey, stat } = props
@@ -76,4 +65,4 @@ export default styled(ShipStatLabel)`
   position: relative;
   font-size: 0.75rem;
   line-height: 1.5;
-`
+` as typeof ShipStatLabel
