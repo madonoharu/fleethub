@@ -3,12 +3,14 @@
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
 const WebpackBar = require("webpackbar")
 
-module.exports = {
+const config = {
   env: {
     VERSION: require("./package.json").version,
   },
   webpack: (config, options) => {
-    config.plugins.push(new WebpackBar())
+    if (process.env.NODE_ENV === "development") {
+      config.plugins.push(new WebpackBar())
+    }
 
     if (process.env.ANALYZE) {
       config.plugins.push(
@@ -21,3 +23,5 @@ module.exports = {
     return config
   },
 }
+
+module.exports = config
