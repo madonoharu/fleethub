@@ -15,12 +15,12 @@ const usePress = (onPress: () => void) => {
     if (!isPressed) return
 
     resetTimer(timer)
-    timer.current = setTimeout(onPress, 50)
+    timer.current = window.setTimeout(onPress, 50)
   }, [isPressed, timer, onPress])
 
   const onMouseDown = React.useCallback(() => {
     onPress()
-    timer.current = setTimeout(() => setIsPressed(true), 500)
+    timer.current = window.setTimeout(() => setIsPressed(true), 500)
   }, [onPress, timer, setIsPressed])
 
   const onMouseUp = React.useCallback(() => {

@@ -13,10 +13,6 @@ import EquipmentList from "../EquipmentList"
 const AirbaseModes = ["Sortie", "AirDefense", "Standby"] as const
 const getAirbaseModeLabel = (mode: Airbase["mode"]) => ({ Sortie: "出撃", Standby: "待機", AirDefense: "防空" }[mode])
 
-const ModeSelect: typeof Select = styled(Select)`
-  margin-left: auto;
-`
-
 const StyledLabeledValue = styled(LabeledValue)`
   margin-right: 8px;
 `
@@ -43,7 +39,8 @@ const AirbaseCard = React.forwardRef<HTMLDivElement, Props>(({ className, label,
     <Paper ref={ref} className={className}>
       <Flexbox>
         <Typography variant="subtitle2">{label}</Typography>
-        <ModeSelect
+        <Select
+          css={{ marginLeft: "auto" }}
           options={AirbaseModes}
           value={airbase.mode}
           onChange={handleModeChange}
