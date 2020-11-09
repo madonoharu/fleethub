@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import SvgIcon from "@material-ui/core/SvgIcon"
 import IconButton, { IconButtonProps } from "@material-ui/core/IconButton"

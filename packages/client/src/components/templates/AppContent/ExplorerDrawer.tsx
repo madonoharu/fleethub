@@ -1,5 +1,6 @@
 import React from "react"
-import styled, { css } from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Drawer } from "@material-ui/core"
 
@@ -15,18 +16,19 @@ const StyledDrawer = styled(Drawer)`
   }
 `
 
-const Container = styled.div<{ $open?: boolean }>`
-  transition: ${({ theme }) => theme.transitions.create("margin")};
+const Container = styled.div<{ $open?: boolean }>(
+  ({ theme, $open }) => css`
+    transition: ${theme.transitions.create("margin")};
 
-  height: calc(100vh - ${appBarHeight}px);
-  overflow: scroll;
+    height: calc(100vh - ${appBarHeight}px);
+    overflow: scroll;
 
-  ${(props) =>
-    props.$open &&
+    ${$open &&
     css`
       margin-left: ${drawerWidth}px;
     `};
-`
+  `
+)
 
 type Props = {
   open?: boolean

@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { Typography, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
 

@@ -6,7 +6,7 @@ import createCache from "@emotion/cache"
 
 import { ThemeProvider } from "../styles"
 
-export const cache = createCache()
+export const cache = createCache({ key: "fleethub" })
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppProps> = ({ Component, pageProps }) => {
   // React.useEffect(() => {

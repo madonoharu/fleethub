@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Plan, Fleet, NightAbility, analyzeNightAttacks } from "@fleethub/core"
 
 import { FormControlLabel, Checkbox } from "@material-ui/core"

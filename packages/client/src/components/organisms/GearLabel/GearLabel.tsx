@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import { Gear, GearState } from "@fleethub/core"
 
 import { Flexbox, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
@@ -60,32 +61,34 @@ const GearLabel: React.FCX<Props> = ({
   )
 }
 
-const Styled = styled(GearLabel)`
-  width: 100%;
-  transition: 250ms;
-  padding: 0 4px;
+const Styled = styled(GearLabel)(
+  ({ theme }) => css`
+    width: 100%;
+    transition: 250ms;
+    padding: 0 4px;
 
-  > :not(:first-child) {
-    flex-shrink: 0;
-  }
-
-  > :nth-child(4) {
-    margin-left: auto;
-  }
-
-  ${UpdateButton}, ${ClearButton} {
-    display: none;
-  }
-
-  :hover {
-    background: ${(props) => props.theme.palette.action.hover};
-    ${UpdateButton}, ${ClearButton} {
-      display: block;
+    > :not(:first-child) {
+      flex-shrink: 0;
     }
-    ${GearNameplate} p {
+
+    > :nth-child(4) {
+      margin-left: auto;
+    }
+
+    ${UpdateButton}, ${ClearButton} {
       display: none;
     }
-  }
-`
+
+    :hover {
+      background: ${theme.palette.action.hover};
+      ${UpdateButton}, ${ClearButton} {
+        display: block;
+      }
+      ${GearNameplate} p {
+        display: none;
+      }
+    }
+  `
+)
 
 export default Styled

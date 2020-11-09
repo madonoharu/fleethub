@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react"
 import { round } from "@fleethub/utils"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Button, InputAdornment } from "@material-ui/core"
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp"
@@ -137,7 +138,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   )
 }
 
-export default styled(NumberInput)`
+export default styled(NumberInput)(css`
   :hover ${StyledAdornment} {
     visibility: visible;
   }
@@ -145,4 +146,4 @@ export default styled(NumberInput)`
   .MuiInputLabel-root {
     white-space: nowrap;
   }
-`
+`)

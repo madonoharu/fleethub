@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useTranslation } from "react-i18next"
 
 import { Select } from "../../../components"

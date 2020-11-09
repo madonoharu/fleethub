@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core"
-import { css, FlattenSimpleInterpolation } from "styled-components"
+import { css, SerializedStyles } from "@emotion/core"
 
 import { palette, colors } from "./colors"
 
@@ -146,7 +146,7 @@ const muiTheme = createMuiTheme({
 
 const isFirefox = process.browser && window.navigator.userAgent.includes("Firefox")
 
-const acrylic: FlattenSimpleInterpolation = isFirefox
+const acrylic = isFirefox
   ? css`
       background: rgba(60, 60, 70, 0.95);
     `
@@ -155,7 +155,7 @@ const acrylic: FlattenSimpleInterpolation = isFirefox
       backdrop-filter: blur(8px);
     `
 
-const darkAcrylic: FlattenSimpleInterpolation = isFirefox
+const darkAcrylic = isFirefox
   ? css`
       background: rgba(30, 30, 35, 0.98);
     `
@@ -164,7 +164,7 @@ const darkAcrylic: FlattenSimpleInterpolation = isFirefox
       backdrop-filter: blur(8px);
     `
 
-const swappable: FlattenSimpleInterpolation = css`
+const swappable = css`
   border-radius: 4px;
 
   &.droppable {

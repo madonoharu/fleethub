@@ -11,9 +11,11 @@
     "start": "next start"
   },
   "dependencies": {
-    "@emotion/cache": "^10.0.29",
-    "@emotion/core": "^10.1.1",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/cache": "^11.0.0-rc.0",
+    "@emotion/core": "link:../../node_modules/@emotion/react",
+    "@emotion/react": "^11.0.0-rc.0",
+    "@emotion/server": "^11.0.0-rc.0",
+    "@emotion/styled": "^11.0.0-rc.0",
     "@fleethub/core": "*",
     "@fleethub/utils": "*",
     "@material-ui/core": "^5.0.0-alpha.15",
@@ -24,7 +26,6 @@
     "@vx/responsive": "^0.0.199",
     "clsx": "^1.1.0",
     "copy-to-clipboard": "^3.3.1",
-    "create-emotion-server": "^10.0.27",
     "firebase": "^8.0.1",
     "gkcoi": "^1.1.6",
     "i18next": "^19.8.3",
@@ -45,15 +46,13 @@
     "recharts": "^2.0.0-beta.7",
     "redux-persist": "^6.0.0",
     "redux-state-sync": "^3.1.2",
-    "redux-undo": "^1.0.1",
-    "styled-components": "^5.2.1"
+    "redux-undo": "^1.0.1"
   },
   "devDependencies": {
     "@simbathesailor/use-what-changed": "^0.1.25",
     "@types/react": "^16.9.56",
     "@types/react-dom": "^16.9.9",
     "@types/react-redux": "^7.1.11",
-    "@types/styled-components": "^5.1.4",
     "webpack-bundle-analyzer": "^4.1.0",
     "webpackbar": "^5.0.0-3"
   }

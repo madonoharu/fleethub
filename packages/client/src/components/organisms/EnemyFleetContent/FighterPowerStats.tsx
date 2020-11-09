@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import { AirState } from "@fleethub/core"
 
 import { Tooltip, Typography } from "@material-ui/core"
@@ -12,9 +13,11 @@ const FighterPowerValue: React.FCX<{ airState: AirState; value: number }> = ({ c
   )
 }
 
-const StyledFighterPowerValue = styled(FighterPowerValue)`
-  color: ${({ theme, airState }) => theme.colors[airState]};
-`
+const StyledFighterPowerValue = styled(FighterPowerValue)(
+  ({ theme, airState }) => css`
+    color: ${theme.colors[airState]};
+  `
+)
 
 const getMinFighterPowers = (fp: number) => {
   return {

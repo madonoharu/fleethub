@@ -1,5 +1,4 @@
 import React from "react"
-import styled from "styled-components"
 
 import { FormControlLabel, Checkbox as MuiCheckbox, CheckboxProps as MuiCheckboxProps } from "@material-ui/core"
 
