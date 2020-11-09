@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { FleetTypes, FleetType } from "@fleethub/core"
 
 import { Select, SelectInputProps } from "../../molecules"

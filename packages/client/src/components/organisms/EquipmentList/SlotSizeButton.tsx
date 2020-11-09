@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Box, Slider, Button, Tooltip, DialogTitle, DialogContent } from "@material-ui/core"
 import BuildIcon from "@material-ui/icons/Build"
@@ -66,14 +67,19 @@ const SlotSizeButton: React.FCX<Props> = ({ className, current, max, onChange })
   )
 }
 
-export default styled(SlotSizeButton)`
-  justify-content: flex-end;
-  padding: 0 4px;
-  width: 24px;
-  color: ${({ current = 0, max = 0, disabled, theme }) => {
-    const { palette } = theme
-    if (current === 0 || disabled) return palette.action.disabled
-    if (current > max) return palette.secondary.light
-    return palette.text.primary
-  }};
-`
+export default styled(SlotSizeButton)(({ theme, current = 0, max = 0, disabled }) => {
+  const { palette } = theme
+  let color = palette.text.primary
+  if (current === 0 || disabled) {
+    color = palette.action.disabled
+  } else if (current > max) {
+    color = palette.secondary.light
+  }
+
+  return css`
+    justify-content: flex-end;
+    padding: 0 4px;
+    width: 24px;
+    color: ${color};
+  `
+})

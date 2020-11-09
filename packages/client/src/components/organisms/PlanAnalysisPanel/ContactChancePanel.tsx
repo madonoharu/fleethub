@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Plan, PlanAnalyzer, ContactChance, AirState } from "@fleethub/core"
 
 import { Typography } from "@material-ui/core"

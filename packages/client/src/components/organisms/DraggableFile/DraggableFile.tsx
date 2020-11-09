@@ -1,19 +1,20 @@
 import React from "react"
-import styled, { css } from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import { useForkRef } from "@material-ui/core"
 
-import { useDrag, useDrop } from "../../../hooks"
+import { useDrag } from "../../../hooks"
 import { FileEntity, FileType } from "../../../store"
 import { useFileDrop } from "../FileDropZone"
 
-const Container = styled.div<{ $type: FileType }>`
-  &.dragging {
-    opacity: 0.3;
-  }
+const Container = styled.div<{ $type: FileType }>(
+  ({ theme, $type }) => css`
+    &.dragging {
+      opacity: 0.3;
+    }
 
-  &.droppable {
-    ${({ theme, $type }) =>
-      $type === "plan"
+    &.droppable {
+      ${$type === "plan"
         ? css`
             border-bottom: solid 2px ${theme.colors.droppable};
             margin-bottom: -2px;
@@ -21,8 +22,9 @@ const Container = styled.div<{ $type: FileType }>`
         : css`
             outline: dashed 2px ${theme.colors.droppable};
           `}
-  }
-`
+    }
+  `
+)
 
 export type DraggableFileProps = {
   file: FileEntity

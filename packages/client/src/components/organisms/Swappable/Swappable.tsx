@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { useSwap, SwapSpec } from "../../../hooks"
 
@@ -32,6 +33,6 @@ const Swappable: SwappableComponentType = ({ className, style, type, state, setS
   return React.cloneElement(elem, { ref })
 }
 
-const Styled: SwappableComponentType = styled(Swappable)(({ theme }) => theme.styles.swappable)
+const Styled = styled(Swappable)(({ theme }) => theme.styles.swappable) as SwappableComponentType
 
 export default Styled
