@@ -9,6 +9,11 @@ import { Update } from "../../../utils"
 import GearTooltip from "../GearTooltip"
 import GearNameplate from "../GearNameplate"
 
+const GearLabelAction = styled.div`
+  display: flex;
+  margin-left: auto;
+`
+
 type Props = {
   gear: Gear
   equippable?: boolean
@@ -16,6 +21,15 @@ type Props = {
   update?: Update<GearState>
   onRemove?: () => void
   onReselect?: () => void
+}
+
+const styles = {
+  action: css`
+    display: none;
+  `,
+  right: css`
+    margin-left: auto;
+  `,
 }
 
 const GearLabel: React.FCX<Props> = ({
@@ -52,11 +66,13 @@ const GearLabel: React.FCX<Props> = ({
         </div>
       </GearTooltip>
 
-      <UpdateButton title="変更" size="small" onClick={onReselect} />
-      <ClearButton title="削除" size="small" onClick={onRemove} />
+      <UpdateButton css={styles.action} title="変更" size="small" onClick={onReselect} />
+      <ClearButton css={styles.action} title="削除" size="small" onClick={onRemove} />
 
-      {gear.hasProficiency && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}
-      <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
+      <GearLabelAction>
+        {gear.hasProficiency && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}
+        <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
+      </GearLabelAction>
     </Flexbox>
   )
 }
@@ -67,21 +83,13 @@ const Styled = styled(GearLabel)(
     transition: 250ms;
     padding: 0 4px;
 
-    > :not(:first-child) {
+    > :not(div:first-of-type) {
       flex-shrink: 0;
-    }
-
-    > :nth-child(4) {
-      margin-left: auto;
-    }
-
-    ${UpdateButton}, ${ClearButton} {
-      display: none;
     }
 
     :hover {
       background: ${theme.palette.action.hover};
-      ${UpdateButton}, ${ClearButton} {
+      ${UpdateButton} {
         display: block;
       }
       ${GearNameplate} p {
