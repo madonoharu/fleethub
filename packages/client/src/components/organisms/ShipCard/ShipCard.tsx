@@ -10,15 +10,13 @@ import { Update } from "../../../utils"
 import ShipHeader from "./ShipHeader"
 import ShipStats from "./ShipStats"
 
-const Content = styled.div`
+const ShipCardInfo = styled.div`
+  flex-shrink: 0;
+`
+
+const ShipCardContent = styled.div`
   display: flex;
   margin-left: 8px;
-  > :first-child {
-    flex-shrink: 0;
-  }
-  > :last-child {
-    min-width: 0;
-  }
 `
 
 type Props = {
@@ -39,11 +37,11 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
     <Paper className={className}>
       <ShipHeader ship={ship} update={update} onRemove={onRemove} />
 
-      <Content>
-        <div>
+      <ShipCardContent>
+        <ShipCardInfo>
           <ShipBanner publicId={ship.banner} size="medium" />
           <ShipStats ship={ship} />
-        </div>
+        </ShipCardInfo>
 
         <EquipmentList
           equipment={ship.equipment}
@@ -51,7 +49,7 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
           canEquip={ship.canEquip}
           makeGetNextBonuses={makeGetNextBonuses}
         />
-      </Content>
+      </ShipCardContent>
     </Paper>
   )
 }
@@ -59,6 +57,10 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
 const Styled = styled(ShipCard)`
   ${ShipHeader} svg {
     opacity: 0;
+  }
+
+  ${EquipmentList} {
+    min-width: 0;
   }
 
   :hover ${ShipHeader} svg {
