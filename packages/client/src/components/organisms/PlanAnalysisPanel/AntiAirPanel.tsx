@@ -27,7 +27,7 @@ const Container = styled(Flexbox)`
   align-items: flex-end;
   margin-bottom: 8px;
 
-  > :first-child {
+  > div:first-of-type {
     margin-right: auto;
   }
 `

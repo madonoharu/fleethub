@@ -6,16 +6,16 @@ import createCache from "@emotion/cache"
 
 import { ThemeProvider } from "../styles"
 
-export const cache = createCache({ key: "fleethub" })
+export const cache = createCache({ key: "css" })
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppProps> = ({ Component, pageProps }) => {
-  // React.useEffect(() => {
-  //   // Remove the server-side injected CSS.
-  //   const jssStyles = document.querySelector("#jss-server-side")
-  //   if (jssStyles) {
-  //     jssStyles.parentElement?.removeChild(jssStyles)
-  //   }
-  // }, [])
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector("#jss-server-side")
+    if (jssStyles) {
+      jssStyles.parentElement?.removeChild(jssStyles)
+    }
+  }, [])
 
   return (
     <CacheProvider value={cache}>

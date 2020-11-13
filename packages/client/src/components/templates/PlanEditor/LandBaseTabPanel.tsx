@@ -45,12 +45,6 @@ const StyledPlanAirbaseCard = styled(PlanAirbaseCard)`
   }
 `
 
-const Container = styled(Flexbox)`
-  > :first-child {
-    margin-right: 8px;
-  }
-`
-
 type Props = {
   plan: Plan
   update: Update<PlanState>
@@ -59,10 +53,10 @@ type Props = {
 const LandBaseTabPanel: React.FCX<Props> = ({ className, plan, update }) => {
   return (
     <>
-      <Container>
+      <div css={{ marginRight: 8 }}>
         <LabeledValue label="防空" value={plan.interceptionPower} />
         <LabeledValue label="高高度防空" value={plan.highAltitudeInterceptionPower} />
-      </Container>
+      </div>
 
       <Flexbox className={className}>
         {plan.airbaseEntries.map(([key, airbase]) => (
