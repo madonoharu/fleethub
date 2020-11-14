@@ -1,10 +1,9 @@
-import { GearId, ShipId, ShipYomi } from "@fleethub/utils"
+import { GearId, ShipId } from "@fleethub/utils"
 import { createEquipmentBonuses as createBasicBonuses } from "equipment-bonus"
 
 import { GearKey } from "../common"
 import { Equipment } from "../equipment"
-import { GearBase } from "../gear"
-import { SpeedGroup } from "../MasterDataAdapter"
+import { SpeedGroup, MasterGear } from "../MasterDataAdapter"
 import { mapValues } from "../utils"
 
 import { EquipmentBonuses, ShipBase } from "./types"
@@ -52,7 +51,7 @@ export const calcSpeedBonus = ({
   return 0
 }
 
-export const createEquipmentBonuses = (ship: ShipBase, gears: GearBase[]): EquipmentBonuses => {
+export const createEquipmentBonuses = (ship: ShipBase, gears: MasterGear[]): EquipmentBonuses => {
   const bonuses = createBasicBonuses(ship, gears)
 
   const speed = calcSpeedBonus({
@@ -85,7 +84,7 @@ export const createShipEquipmentBonuses = (ship: ShipBase, equipment: Equipment)
     const filtered = equipment.filter((gear, key) => key !== excludedKey)
     const current = createEquipmentBonuses(ship, filtered)
 
-    return (gear: GearBase) => {
+    return (gear: MasterGear) => {
       const next = createEquipmentBonuses(ship, [...filtered, gear])
       return subtract(next, current)
     }
