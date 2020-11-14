@@ -1,6 +1,6 @@
 import { FleetKeys, AirbaseKeys, ShipKey } from "./common"
 
-import { MasterGear, GearState, Gear, makeCreateGear } from "./gear"
+import { GearState, Gear, makeCreateGear } from "./gear"
 import { ShipState, createShip } from "./ship"
 import { EquipmentImpl, EquipmentState, EquipmentItem, getGearKeys } from "./equipment"
 import { FleetState, FleetImpl } from "./fleet"
@@ -8,7 +8,7 @@ import { AirbaseState, AirbaseImpl } from "./airbase"
 import { PlanState, PlanImpl, Organization } from "./plan"
 
 import masterData from "@fleethub/utils/MasterData"
-import MasterDataAdapter, { MasterShip } from "./MasterDataAdapter"
+import MasterDataAdapter, { MasterShip, MasterGear } from "./MasterDataAdapter"
 
 const masterDataAdapter = new MasterDataAdapter(masterData)
 
@@ -42,7 +42,7 @@ export default class Factory {
     this.masterShips = masterDataAdapter.ships
   }
 
-  public findMasterGear = (id: number) => this.masterGears.find((gear) => gear.id === id)
+  public findMasterGear = (id: number) => this.masterGears.find((gear) => gear.gearId === id)
 
   public findMasterShip = (id: number) => this.masterShips.find((ship) => ship.id === id)
 

@@ -1,8 +1,6 @@
 import { GearKey } from "../common"
-import { GearBase } from "../gear"
 import { EquipmentState, Equipment } from "../equipment"
-
-import { MasterShip } from "../MasterDataAdapter"
+import { MasterShip, MasterGear } from "../MasterDataAdapter"
 
 export { StatInterval, MaybeNumber } from "@fleethub/utils"
 
@@ -170,7 +168,7 @@ export type Ship = ShipBase &
     state: ShipState
 
     equipment: Equipment
-    makeGetNextBonuses: (excludedKey: GearKey) => (gear: GearBase) => EquipmentBonuses
+    makeGetNextBonuses: (excludedKey: GearKey) => (gear: MasterGear) => EquipmentBonuses
 
     fleetLosFactor: number
     cruiserFitBonus: number

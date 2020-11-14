@@ -1,28 +1,8 @@
-import { MasterDataGear, GearCategory, GearAttribute, ImprovementBonusType, Dict } from "@fleethub/utils"
-
-export type ImprovementBonusFormulas = Dict<ImprovementBonusType, string>
-export type ImprovementBonuses = Record<ImprovementBonusType, number>
+import { MasterGear, ImprovementBonuses } from "../MasterDataAdapter"
 
 export type Proficiency = {
   ace: number
   fighterPowerModifier: number
-}
-
-export interface GearBase extends Omit<Required<MasterDataGear>, "id"> {
-  gearId: number
-
-  categoryId: number
-  iconId: number
-  specialType2: number
-  attrs: GearAttribute[]
-
-  is: (attr: GearAttribute) => boolean
-  in: (...attrs: GearAttribute[]) => boolean
-  categoryIs: (category: GearCategory) => boolean
-  categoryIn: (...categories: GearCategory[]) => boolean
-
-  isAbyssal: boolean
-  hasProficiency: boolean
 }
 
 export type GearState = {
@@ -33,7 +13,7 @@ export type GearState = {
 
 export type Gear = Readonly<
   Required<GearState> &
-    GearBase & {
+    MasterGear & {
       state: GearState
 
       ace: number
