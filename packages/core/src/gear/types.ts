@@ -11,9 +11,11 @@ export type GearState = {
   exp?: number
 }
 
+export type GearBase = MasterGear
+
 export type Gear = Readonly<
   Required<GearState> &
-    MasterGear & {
+    GearBase & {
       state: GearState
 
       ace: number
