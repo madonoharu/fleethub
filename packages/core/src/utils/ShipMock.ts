@@ -32,7 +32,9 @@ export class ShipMock extends ShipStatsStub implements Ship {
   public stype = 0
   public ctype = 0
   public shipType = "" as ShipType
+  public shipTypeName = ""
   public shipClass = "" as ShipClass
+  public shipClassName = ""
   public category = "" as Ship["category"]
   public convertible = false
   public banner = ""

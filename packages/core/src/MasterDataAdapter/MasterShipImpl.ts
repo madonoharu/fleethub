@@ -1,7 +1,8 @@
 import { MasterDataShip, ShipType, ShipClass, ShipAttribute, GearId, ShipId, ShipYomi } from "@fleethub/utils"
 
 import { GearKey } from "../common"
-import { GearBase } from "../gear"
+
+import { MasterGear } from "./MasterGearImpl"
 
 export enum SpeedValue {
   Slow = 5,
@@ -37,35 +38,42 @@ export const shipCategoies = [
 
 export type ShipCategory = typeof shipCategoies[number]
 
-export type MasterShip = Required<MasterDataShip> & {
-  shipId: number
+type MasterShipAdditionalData = {
   shipType: ShipType
   shipClass: ShipClass
+  shipTypeName: string
+  shipClassName: string
   attrs: ShipAttribute[]
-  rank: number
-  category: ShipCategory
-  speedGroup: SpeedGroup
-  isAbyssal: boolean
-  isCommonly: boolean
-  is: (attr: ShipAttribute) => boolean
-  canEquip: (gear: GearBase, key?: GearKey) => boolean
-  shipClassIn: (...classes: ShipClass[]) => boolean
-  shipTypeIn: (...types: ShipType[]) => boolean
+  equippable: MasterShipEquippable
 }
+
+export type MasterShip = Required<MasterDataShip> &
+  Omit<MasterShipAdditionalData, "equippable"> & {
+    shipId: number
+    rank: number
+    category: ShipCategory
+    speedGroup: SpeedGroup
+    isAbyssal: boolean
+    isCommonly: boolean
+    is: (attr: ShipAttribute) => boolean
+    canEquip: (gear: MasterGear, key?: GearKey) => boolean
+    shipClassIn: (...classes: ShipClass[]) => boolean
+    shipTypeIn: (...types: ShipType[]) => boolean
+  }
 
 export default class MasterShipImpl implements MasterShip {
   public readonly id = this.data.id
-
   public readonly stype = this.data.stype
   public readonly ctype = this.data.ctype
-
   public readonly name = this.data.name
   public readonly yomi = this.data.yomi
   public readonly sortId = this.data.sortId || 0
   public readonly slotnum = this.data.slotnum
   public readonly banner = this.data.banner
   public readonly shipType = this.additionalData.shipType
+  public readonly shipTypeName = this.additionalData.shipTypeName
   public readonly shipClass = this.additionalData.shipClass
+  public readonly shipClassName = this.additionalData.shipClassName
   public readonly attrs = this.additionalData.attrs
 
   public readonly maxHp = this.data.maxHp
@@ -93,15 +101,7 @@ export default class MasterShipImpl implements MasterShip {
 
   private readonly equippable = this.additionalData.equippable
 
-  constructor(
-    private data: MasterDataShip,
-    private additionalData: {
-      shipType: ShipType
-      shipClass: ShipClass
-      attrs: ShipAttribute[]
-      equippable: MasterShipEquippable
-    }
-  ) {}
+  constructor(private data: MasterDataShip, private additionalData: MasterShipAdditionalData) {}
 
   get shipId() {
     return this.id
@@ -140,7 +140,7 @@ export default class MasterShipImpl implements MasterShip {
 
   public shipTypeIn = (...shipTypes: ShipType[]) => shipTypes.some((type) => type === this.shipType)
 
-  public canEquip = (gear: GearBase, key?: GearKey) => {
+  public canEquip = (gear: MasterGear, key?: GearKey) => {
     const { shipClass, equippable, is } = this
     const { gearId, specialType2, categoryIs } = gear
 

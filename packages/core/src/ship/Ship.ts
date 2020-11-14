@@ -9,8 +9,10 @@ export class ShipImpl implements Ship {
   public readonly sortId = this.master.sortId
   public readonly stype = this.master.stype
   public readonly ctype = this.master.ctype
-  public readonly shipClass = this.master.shipClass
   public readonly shipType = this.master.shipType
+  public readonly shipTypeName = this.master.shipTypeName
+  public readonly shipClass = this.master.shipClass
+  public readonly shipClassName = this.master.shipClassName
   public readonly name = this.master.name
   public readonly yomi = this.master.yomi
 

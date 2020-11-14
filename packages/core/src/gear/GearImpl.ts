@@ -1,47 +1,54 @@
-import { GearState, GearBase, Gear, ImprovementBonuses, Proficiency } from "./types"
+import { MasterGear, ImprovementBonuses } from "../MasterDataAdapter"
+
+import { GearState, Gear, Proficiency } from "./types"
 
 export class GearImpl implements Gear {
   public readonly gearId = this.state.gearId
   public readonly stars = this.state.stars || 0
   public readonly exp = this.state.exp || 0
 
-  public readonly types = this.base.types
-  public readonly name = this.base.name
-  public readonly categoryId = this.base.categoryId
-  public readonly iconId = this.base.iconId
-  public readonly specialType2 = this.base.specialType2
-  public readonly attrs = this.base.attrs
-  public readonly isAbyssal = this.base.isAbyssal
+  public readonly types = this.master.types
+  public readonly name = this.master.name
+  public readonly category = this.master.category
+  public readonly categoryName = this.master.categoryName
+  public readonly categoryId = this.master.categoryId
+  public readonly iconId = this.master.iconId
+  public readonly specialType2 = this.master.specialType2
+  public readonly attrs = this.master.attrs
+  public readonly isAbyssal = this.master.isAbyssal
 
-  public readonly categoryIs = this.base.categoryIs
-  public readonly categoryIn = this.base.categoryIn
-  public readonly is = this.base.is
-  public readonly in = this.base.in
+  public readonly categoryIs = this.master.categoryIs
+  public readonly categoryIn = this.master.categoryIn
+  public readonly is = this.master.is
+  public readonly in = this.master.in
 
-  public readonly firepower = this.base.firepower
-  public readonly torpedo = this.base.torpedo
-  public readonly antiAir = this.base.antiAir
-  public readonly bombing = this.base.bombing
-  public readonly asw = this.base.asw
-  public readonly accuracy = this.base.accuracy
-  public readonly evasion = this.base.evasion
-  public readonly antiBomber = this.base.antiBomber
-  public readonly interception = this.base.interception
-  public readonly los = this.base.los
-  public readonly armor = this.base.armor
+  public readonly firepower = this.master.firepower
+  public readonly torpedo = this.master.torpedo
+  public readonly antiAir = this.master.antiAir
+  public readonly bombing = this.master.bombing
+  public readonly asw = this.master.asw
+  public readonly accuracy = this.master.accuracy
+  public readonly evasion = this.master.evasion
+  public readonly antiBomber = this.master.antiBomber
+  public readonly interception = this.master.interception
+  public readonly los = this.master.los
+  public readonly armor = this.master.armor
 
-  public readonly range = this.base.range
-  public readonly radius = this.base.radius
-  public readonly cost = this.base.cost
-  public readonly improvable = this.base.improvable
+  public readonly range = this.master.range
+  public readonly radius = this.master.radius
+  public readonly cost = this.master.cost
+  public readonly improvable = this.master.improvable
 
-  public readonly luck = this.base.luck
-  public readonly maxHp = this.base.maxHp
-  public readonly speed = this.base.speed
+  public readonly luck = this.master.luck
+  public readonly maxHp = this.master.maxHp
+  public readonly speed = this.master.speed
+
+  public readonly getImprovementBonuses = this.master.getImprovementBonuses
+  public readonly improvementBonusFormulas = this.master.improvementBonusFormulas
 
   constructor(
     public state: GearState,
-    private base: GearBase,
+    private master: MasterGear,
     public readonly improvementBonuses: ImprovementBonuses,
     private proficiency: Proficiency
   ) {}
