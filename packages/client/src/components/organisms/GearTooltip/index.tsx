@@ -1,13 +1,11 @@
 import React from "react"
 import { GearBase, EquipmentBonuses } from "@fleethub/core"
-import styled from "@emotion/styled"
 
 import { Tooltip, TooltipProps } from "@material-ui/core"
 
 import { GearNameplate, Text } from "../../../components"
 
 import GearStatList from "./GearStatList"
-import { GearCategoryName } from "@fleethub/data"
 
 type ContentProps = {
   gear: GearBase
@@ -17,7 +15,7 @@ type ContentProps = {
 const Content: React.FC<ContentProps> = ({ gear, bonuses }) => (
   <div>
     <Text>
-      ID {gear.gearId} {GearCategoryName[gear.categoryId]}
+      ID {gear.gearId} {gear.categoryName}
     </Text>
     <GearNameplate wrap iconId={gear.iconId} name={gear.name} />
     <GearStatList gear={gear} bonuses={bonuses} />
