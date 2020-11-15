@@ -35,7 +35,7 @@ export const colors = {
 
   stars: cyan[400],
   bonus: lightBlue[300],
-  increase: palette.secondary.light,
+  diff: palette.secondary.light,
 
   shelling: muiColors.orange[500],
   night: muiColors.indigo[200],
