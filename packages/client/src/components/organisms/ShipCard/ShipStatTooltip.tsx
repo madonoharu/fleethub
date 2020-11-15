@@ -8,7 +8,7 @@ import { Tooltip, TooltipProps, Typography } from "@material-ui/core"
 import { StatIcon, Text, Flexbox } from "../../../components"
 import { withSign, getRangeName, getSpeedName, StatKeyDictionary, getBonusText } from "../../../utils"
 
-export const getDisplayedStr = (key: string, value?: MaybeNumber) => {
+export const getValueStr = (key: string, value?: MaybeNumber) => {
   if (value === null || value === undefined) return "不明"
 
   if (key === "speed") return getSpeedName(value)
@@ -23,7 +23,7 @@ export type StatProps<K extends keyof ShipStats> = {
     equipment?: number
     bonus?: number
     naked?: MaybeNumber
-    displayed: MaybeNumber
+    value: MaybeNumber
   }
 }
 
@@ -35,14 +35,14 @@ type Props =
   | StatProps<"luck">
   | StatProps<"accuracy">
 
-const StatTitle: React.FCX<{ statKey: Props["statKey"]; displayed: string }> = ({ className, statKey, displayed }) => {
+const StatTitle: React.FCX<{ statKey: Props["statKey"]; value: string }> = ({ className, statKey, value }) => {
   const statNeme = StatKeyDictionary[statKey]
   return (
     <Flexbox className={className}>
       <StatIcon icon={statKey} />
       <Typography variant="subtitle2">
         <span>{statNeme}</span>
-        {displayed}
+        {value}
       </Typography>
     </Flexbox>
   )
@@ -66,11 +66,11 @@ const StyledStatTitle = styled(StatTitle)(
 )
 
 const ShipStatTooltip: React.FC<Props & Pick<TooltipProps, "children">> = ({ statKey, stat, children }) => {
-  const { displayed, bonus, diff, equipment } = stat
+  const { value, bonus, diff, equipment } = stat
 
   const title = (
     <>
-      <StyledStatTitle statKey={statKey} displayed={getDisplayedStr(statKey, displayed)} />
+      <StyledStatTitle statKey={statKey} value={getValueStr(statKey, value)} />
 
       {bonus ? (
         <SpaceBetween>

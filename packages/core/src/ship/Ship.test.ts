@@ -179,7 +179,7 @@
 //   it("基礎命中項 = 2 * sqrt(lv) + 1.5 * sqrt(運)", () => {
 //     const [base, stats, equipment] = getMocks()
 //     stats.level = 175
-//     stats.luck.displayed = 110
+//     stats.luck.value = 110
 //     const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
 //     expect(ship.basicAccuracyTerm).toBe(2 * Math.sqrt(175) + 1.5 * Math.sqrt(110))
@@ -187,8 +187,8 @@
 
 //   it("基礎回避項 = 回避 + sqrt(2 * 運)", () => {
 //     const [base, stats, equipment] = getMocks()
-//     stats.evasion.displayed = 120
-//     stats.luck.displayed = 110
+//     stats.evasion.value = 120
+//     stats.luck.value = 110
 //     const ship = new ShipImpl(state, base, stats, equipment, makeGetNextBonusesMockFn)
 
 //     expect(ship.basicEvasionTerm).toBe(120 + Math.sqrt(2 * 110))

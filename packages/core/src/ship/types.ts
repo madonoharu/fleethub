@@ -30,37 +30,37 @@ export type BasicStat = {
   naked: number
   equipment: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 export type MaxHp = {
   diff: number
-  displayed: number
+  value: number
   limit: number
 }
 
 export type Speed = {
   naked: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 export type Range = {
   naked: MasterShip["range"]
   equipment: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 export type Luck = {
   diff: number
-  displayed: number
+  value: number
 }
 
 export type Accuracy = {
   equipment: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 /**

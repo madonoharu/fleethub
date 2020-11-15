@@ -19,8 +19,8 @@ describe("ShipBasicStat", () => {
     expect(stat.naked).toBe(expectedNaked)
   })
 
-  it("displayed = naked + equipment + bonus", () => {
-    expect(stat.displayed).toBe(expectedNaked + equipment + bonus)
+  it("value = naked + equipment + bonus", () => {
+    expect(stat.value).toBe(expectedNaked + equipment + bonus)
   })
 })
 
@@ -45,7 +45,7 @@ describe("ShipBasicStatWithLevel", () => {
     expect(stat.naked).toBe(expectedNaked)
   })
 
-  it("displayed = naked + equipment + bonus", () => {
-    expect(stat.displayed).toBe(expectedNaked + equipment + bonus)
+  it("value = naked + equipment + bonus", () => {
+    expect(stat.value).toBe(expectedNaked + equipment + bonus)
   })
 })

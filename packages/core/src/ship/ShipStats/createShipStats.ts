@@ -49,7 +49,7 @@ export const createShipStats = (
     luck: new ShipLuck(base.luck, state.luck),
     accuracy: new ShipAccuracy(equipment.sumBy("accuracy"), bonuses.accuracy),
 
-    health: new ShipHealth(maxHp.displayed, state.currentHp),
+    health: new ShipHealth(maxHp.value, state.currentHp),
     morale: new ShipMorale(state.morale),
     ammo: new ShipAmmo(base.ammo, state.ammo),
     fuel: new ShipFuel(base.fuel, state.fuel),
