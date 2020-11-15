@@ -7,7 +7,7 @@ import { StatIcon, Text } from "../../../components"
 import { withSign } from "../../../utils"
 import { Flexbox } from "../../atoms"
 
-import ShipStatTooltip, { getDisplayedStr, StatProps } from "./ShipStatTooltip"
+import ShipStatTooltip, { getValueStr, StatProps } from "./ShipStatTooltip"
 
 const BonusText = styled(Text)(
   ({ theme }) => css`
@@ -28,7 +28,7 @@ const DiffText = styled(Text)(
   `
 )
 
-const DisplayedText = styled(Text)`
+const ValueText = styled(Text)`
   margin-left: 4px;
   min-width: 24px;
   text-align: right;
@@ -39,7 +39,7 @@ type Props = StatProps<BasicStatKey | "maxHp" | "speed" | "range" | "luck" | "ac
 
 const ShipStatLabel: React.FCX<Props> = (props) => {
   const { className, statKey, stat } = props
-  const displayedStr = getDisplayedStr(statKey, stat.displayed)
+  const valueStr = getValueStr(statKey, stat.value)
   let bonusStr: string | undefined
   let diffStr: string | undefined
   if ("bonus" in stat && stat.bonus !== 0 && !["speed"].includes(statKey)) {
@@ -55,7 +55,7 @@ const ShipStatLabel: React.FCX<Props> = (props) => {
         <StatIcon icon={statKey} />
         <DiffText>{diffStr}</DiffText>
         <BonusText>{bonusStr}</BonusText>
-        <DisplayedText>{displayedStr}</DisplayedText>
+        <ValueText>{valueStr}</ValueText>
       </Flexbox>
     </ShipStatTooltip>
   )

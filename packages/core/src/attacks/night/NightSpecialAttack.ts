@@ -36,10 +36,10 @@ export const calcNightCutinTerm = (ship: Ship, params: NightAttackParams) => {
   const { level, luck } = ship
   const { isFlagship, attackerState, defenderState, damageState = ship.health.damage } = params
 
-  if (luck.displayed < 50) {
-    value = Math.floor(luck.displayed + 15 + 0.75 * Math.sqrt(level))
+  if (luck.value < 50) {
+    value = Math.floor(luck.value + 15 + 0.75 * Math.sqrt(level))
   } else {
-    value = Math.floor(Math.sqrt(luck.displayed - 50) + 65 + 0.8 * Math.sqrt(level))
+    value = Math.floor(Math.sqrt(luck.value - 50) + 65 + 0.8 * Math.sqrt(level))
   }
 
   if (isFlagship) value += 15

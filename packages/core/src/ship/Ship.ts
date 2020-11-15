@@ -121,12 +121,12 @@ export class ShipImpl implements Ship {
 
   get basicAccuracyTerm() {
     const { level, luck } = this
-    return 2 * Math.sqrt(level) + 1.5 * Math.sqrt(luck.displayed)
+    return 2 * Math.sqrt(level) + 1.5 * Math.sqrt(luck.value)
   }
 
   get basicEvasionTerm() {
     const { evasion, luck } = this
-    return evasion.displayed + Math.sqrt(2 * luck.displayed)
+    return evasion.value + Math.sqrt(2 * luck.value)
   }
 
   get fleetAntiAir() {

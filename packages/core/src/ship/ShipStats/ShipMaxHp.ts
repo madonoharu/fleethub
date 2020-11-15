@@ -29,19 +29,19 @@ export class ShipMaxHp implements MaxHp {
     return Math.min(right, getMarriageBonus(left) + 2)
   }
 
-  get displayed() {
+  get value() {
     const { left, right, diff, isMarried } = this
 
     if (left === null || right === null) {
       return diff
     }
 
-    let displayed = left + diff
+    let value = left + diff
 
     if (isMarried) {
-      displayed += getMarriageBonus(left)
+      value += getMarriageBonus(left)
     }
 
-    return Math.min(displayed, right)
+    return Math.min(value, right)
   }
 }

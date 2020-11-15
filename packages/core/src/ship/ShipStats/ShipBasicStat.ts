@@ -14,7 +14,7 @@ export class ShipBasicStat implements BasicStat {
     return (right || 0) + diff
   }
 
-  get displayed() {
+  get value() {
     const { naked, equipment, bonus } = this
     return naked + equipment + bonus
   }

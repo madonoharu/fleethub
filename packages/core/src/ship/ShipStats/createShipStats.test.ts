@@ -107,7 +107,7 @@ describe("createShipStats", () => {
   })
 
   it("stats.health -> ShipHealth", () => {
-    expect(stats.health).toEqual(new ShipHealth(stats.maxHp.displayed, state.currentHp))
+    expect(stats.health).toEqual(new ShipHealth(stats.maxHp.value, state.currentHp))
   })
 
   it("stats.morale -> ShipMorale", () => {
