@@ -1,11 +1,8 @@
 import React from "react"
 import styled from "@emotion/styled"
 import { GearBase, EquipmentBonuses } from "@fleethub/core"
-import { GearCategory, GearCategoryName } from "@fleethub/data"
 
 import { Typography } from "@material-ui/core"
-
-import { Divider } from "../../../components"
 
 import GearButton from "./GearButton"
 
