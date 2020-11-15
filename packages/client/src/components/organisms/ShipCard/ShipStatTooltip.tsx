@@ -19,7 +19,7 @@ export const getDisplayedStr = (key: string, value?: MaybeNumber) => {
 export type StatProps<K extends keyof ShipStats> = {
   statKey: K
   stat: {
-    increase?: number
+    diff?: number
     equipment?: number
     bonus?: number
     naked?: MaybeNumber
@@ -66,7 +66,7 @@ const StyledStatTitle = styled(StatTitle)(
 )
 
 const ShipStatTooltip: React.FC<Props & Pick<TooltipProps, "children">> = ({ statKey, stat, children }) => {
-  const { displayed, bonus, increase, equipment } = stat
+  const { displayed, bonus, diff, equipment } = stat
 
   const title = (
     <>
@@ -78,10 +78,10 @@ const ShipStatTooltip: React.FC<Props & Pick<TooltipProps, "children">> = ({ sta
           <Text color="bonus">{getBonusText(statKey, bonus)}</Text>
         </SpaceBetween>
       ) : null}
-      {increase ? (
+      {diff ? (
         <SpaceBetween>
           <Text>増加値</Text>
-          <Text color="increase">{withSign(increase)}</Text>
+          <Text color="diff">{withSign(diff)}</Text>
         </SpaceBetween>
       ) : null}
       {equipment ? (

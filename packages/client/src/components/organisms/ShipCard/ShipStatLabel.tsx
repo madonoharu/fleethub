@@ -18,9 +18,9 @@ const BonusText = styled(Text)(
     left: 10px;
   `
 )
-const IncreaseText = styled(Text)(
+const DiffText = styled(Text)(
   ({ theme }) => css`
-    color: ${theme.colors.increase};
+    color: ${theme.colors.diff};
     position: absolute;
     font-size: 10px;
     top: -3px;
@@ -41,19 +41,19 @@ const ShipStatLabel: React.FCX<Props> = (props) => {
   const { className, statKey, stat } = props
   const displayedStr = getDisplayedStr(statKey, stat.displayed)
   let bonusStr: string | undefined
-  let increaseStr: string | undefined
+  let diffStr: string | undefined
   if ("bonus" in stat && stat.bonus !== 0 && !["speed"].includes(statKey)) {
     bonusStr = withSign(stat.bonus)
   }
-  if ("increase" in stat && stat.increase !== 0) {
-    increaseStr = withSign(stat.increase)
+  if ("diff" in stat && stat.diff !== 0) {
+    diffStr = withSign(stat.diff)
   }
 
   return (
     <ShipStatTooltip {...props}>
       <Flexbox className={className}>
         <StatIcon icon={statKey} />
-        <IncreaseText>{increaseStr}</IncreaseText>
+        <DiffText>{diffStr}</DiffText>
         <BonusText>{bonusStr}</BonusText>
         <DisplayedText>{displayedStr}</DisplayedText>
       </Flexbox>

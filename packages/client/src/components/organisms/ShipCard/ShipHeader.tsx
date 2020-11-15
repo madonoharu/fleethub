@@ -12,6 +12,8 @@ import { Update } from "../../../utils"
 
 import ShipEditor from "./ShipEditor"
 
+import ShipDetailScreen from "../ShipDetailScreen"
+
 const StyledButton = styled(Button)`
   height: 100%;
   min-width: calc(100% - ${24 * 5}px);
@@ -32,6 +34,7 @@ type Props = {
 
 const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
   const Modal = useModal()
+  const ShipDetailScreenModal = useModal()
 
   return (
     <div className={className}>
@@ -42,13 +45,23 @@ const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => 
       </Tooltip>
 
       <StarButton title="艦娘プリセットに追加" size="small" />
-      <InfoButton size="small" />
+      <InfoButton size="small" onClick={ShipDetailScreenModal.show} />
       <UpdateButton size="small" />
       <ClearButton title="削除" size="small" onClick={onRemove} />
 
       <Modal>
         <ShipEditor ship={ship} update={update} />
       </Modal>
+      <ShipDetailScreenModal>
+        <ShipDetailScreen
+          ship={ship}
+          onChange={(state) =>
+            update((draft) => {
+              Object.assign(draft, state)
+            })
+          }
+        />
+      </ShipDetailScreenModal>
     </div>
   )
 }
