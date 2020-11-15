@@ -2,9 +2,9 @@ import { ShipMaxHp } from "./ShipMaxHp"
 
 describe("ShipMaxHp", () => {
   it("constructor", () => {
-    expect(new ShipMaxHp([10, 15], undefined, false)).toMatchObject({ increase: 0, displayed: 10 })
+    expect(new ShipMaxHp([10, 15], undefined, false)).toMatchObject({ diff: 0, displayed: 10 })
 
-    expect(new ShipMaxHp([10, 15], 2, false)).toMatchObject({ increase: 2, displayed: 12 })
+    expect(new ShipMaxHp([10, 15], 2, false)).toMatchObject({ diff: 2, displayed: 12 })
   })
 
   it("表示耐久はrightが上限になる", () => {

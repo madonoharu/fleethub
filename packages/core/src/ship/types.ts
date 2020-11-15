@@ -26,7 +26,7 @@ export type ShipBaseStats = Pick<MasterShip, ShipStatKey>
 export type ShipBase = Omit<MasterShip, ShipStatKey | "id" | "slots" | "stock" | "slotnum" | "nextId" | "nextLevel">
 
 export type BasicStat = {
-  increase: number
+  diff: number
   naked: number
   equipment: number
   bonus: number
@@ -34,7 +34,7 @@ export type BasicStat = {
 }
 
 export type MaxHp = {
-  increase: number
+  diff: number
   displayed: number
   limit: number
 }
@@ -53,7 +53,7 @@ export type Range = {
 }
 
 export type Luck = {
-  increase: number
+  diff: number
   displayed: number
 }
 

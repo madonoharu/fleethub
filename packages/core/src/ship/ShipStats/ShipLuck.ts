@@ -6,14 +6,14 @@ export class ShipLuck implements Luck {
   private right: MaybeNumber
   public displayed: number
 
-  constructor([left, right]: StatInterval, public increase = 0) {
+  constructor([left, right]: StatInterval, public diff = 0) {
     this.left = left
     this.right = right
 
     if (left === null) {
-      this.displayed = increase || NaN
+      this.displayed = diff || NaN
     } else {
-      this.displayed = left + increase
+      this.displayed = left + diff
     }
   }
 }
