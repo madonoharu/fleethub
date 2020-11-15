@@ -82,7 +82,7 @@ export class ShipShellingCalculator {
     const { ship } = this
 
     return calcObservationTerm({
-      luck: ship.luck.displayed,
+      luck: ship.luck.value,
       equipmentLos: ship.los.equipment,
       isMainFlagship,
       fleetLosModifier,
@@ -119,7 +119,7 @@ export class ShipShellingCalculator {
   }: PowerParams) => {
     const { ship } = this
     const { cruiserFitBonus } = ship
-    const firepower = ship.firepower.displayed
+    const firepower = ship.firepower.value
     const improvementBonus = ship.equipment.sumBy((gear) => gear.improvementBonuses.shellingPower)
 
     const basic = 5 + firepower + improvementBonus + fleetFactor
