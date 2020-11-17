@@ -1,7 +1,7 @@
 import React from "react"
 
 import { MuiThemeProvider, CssBaseline } from "@material-ui/core"
-import { Global, css } from "@emotion/core"
+import { Global, css } from "@emotion/react"
 
 import theme, { Theme } from "./theme"
 

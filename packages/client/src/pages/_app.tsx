@@ -1,10 +1,11 @@
 import React from "react"
 import { NextComponentType } from "next"
-import { AppContext, AppInitialProps, AppProps } from "next/app"
-import { CacheProvider } from "@emotion/core"
+import App, { AppContext, AppInitialProps, AppProps } from "next/app"
+import { CacheProvider } from "@emotion/react"
 import createCache from "@emotion/cache"
 
 import { ThemeProvider } from "../styles"
+import { appWithTranslation } from "../i18n"
 
 export const cache = createCache({ key: "css" })
 
@@ -26,4 +27,6 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppProps> = ({ Compo
   )
 }
 
-export default MyApp
+MyApp.getInitialProps = async (appContext) => ({ ...(await App.getInitialProps(appContext)) })
+
+export default appWithTranslation(MyApp)
