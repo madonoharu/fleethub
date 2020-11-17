@@ -24,9 +24,9 @@ const FolderLabel: React.FCX<Props> = ({ className, file }) => {
       onDrop={actions.drop}
       action={
         <>
-          <OpenInNewButton size="small" title="フォルダーページを開く" onClick={actions.open} />
-          <RemoveButton size="small" title="削除" onClick={actions.remove} />
-          <MoreVertButton size="small" title="メニュー" onClick={Modal.show} />
+          <OpenInNewButton size="tiny" title="フォルダーページを開く" onClick={actions.open} />
+          <RemoveButton size="tiny" title="削除" onClick={actions.remove} />
+          <MoreVertButton size="tiny" title="メニュー" onClick={Modal.show} />
 
           <Modal>
             <FileMenu id={file.id} onClose={Modal.hide} />

@@ -66,8 +66,8 @@ const GearLabel: React.FCX<Props> = ({
         </div>
       </GearTooltip>
 
-      <UpdateButton css={styles.action} title="変更" size="small" onClick={onReselect} />
-      <ClearButton css={styles.action} title="削除" size="small" onClick={onRemove} />
+      <UpdateButton css={styles.action} title="変更" size="tiny" onClick={onReselect} />
+      <ClearButton css={styles.action} title="削除" size="tiny" onClick={onRemove} />
 
       <GearLabelAction>
         {gear.hasProficiency && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}

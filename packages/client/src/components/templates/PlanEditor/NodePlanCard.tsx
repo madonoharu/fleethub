@@ -78,8 +78,8 @@ const NodePlanCard: React.FC<NodePlanCardProps> = ({ node, update, onRemove }) =
         <Typography>
           {node.name} {node.d !== undefined && `距離: ${node.d}`}
         </Typography>
-        <InfoButton size="small" />
-        <RemoveButton size="small" onClick={onRemove} />
+        <InfoButton size="tiny" />
+        <RemoveButton size="tiny" onClick={onRemove} />
       </Flexbox>
 
       <Button size="small" variant="outlined" onClick={Modal.show}>

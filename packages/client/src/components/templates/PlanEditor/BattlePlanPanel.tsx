@@ -45,7 +45,7 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
       </Modal>
 
       <Button onClick={Modal.show}>戦闘マスを追加</Button>
-      <RemoveButton size="small" onClick={removeAll} />
+      <RemoveButton size="tiny" onClick={removeAll} />
 
       {plan.nodes.map((node, index) => (
         <NodePlanCard

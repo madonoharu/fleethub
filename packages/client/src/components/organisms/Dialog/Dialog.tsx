@@ -22,7 +22,7 @@ export type DialogProps = Partial<MuiDialogProps> & {
 
 const Dialog: React.FC<DialogProps> = ({ children, full, ...rest }) => (
   <MuiDialog open={false} transitionDuration={100} fullWidth={full} {...rest}>
-    <StyledCloseButton size="small" onClick={(event) => rest.onClose?.(event, "backdropClick")} />
+    <StyledCloseButton size="tiny" onClick={(event) => rest.onClose?.(event, "backdropClick")} />
     <ScrollContainer>{children}</ScrollContainer>
   </MuiDialog>
 )
