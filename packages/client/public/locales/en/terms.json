@@ -1,0 +1,22 @@
+{
+  "maxHp": "HP",
+  "firepower": "FP",
+  "torpedo": "Torp",
+  "antiAir": "AA",
+  "armor": "Armor",
+  "evasion": "Eva",
+  "asw": "ASW",
+  "los": "LoS",
+  "luck": "Luck",
+  "speed": "Speed",
+  "range": "Range",
+  "morale": "Morale",
+  "accuracy": "Hit",
+  "radius": "Radius",
+  "bombing": "Bombing",
+  "fuel": "Fuel",
+  "ammo": "Ammo",
+  "antiBomber": "Anti-bombers",
+  "interception": "Interception",
+  "cost": "Deploy-cost"
+}

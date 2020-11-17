@@ -2,15 +2,21 @@ import React from "react"
 import Head from "next/head"
 import type { NextComponentType } from "next"
 
-import { AppContent } from "../components"
-
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
-import "../i18n"
+import { AppContent } from "../components"
 import { StoreProvider } from "../store"
 
-const Home: NextComponentType = () => {
+const Inner = React.memo(() => (
+  <DndProvider backend={HTML5Backend}>
+    <StoreProvider>
+      <AppContent />
+    </StoreProvider>
+  </DndProvider>
+))
+
+const Index: NextComponentType = () => {
   return (
     <div>
       <Head>
@@ -24,13 +30,13 @@ const Home: NextComponentType = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <DndProvider backend={HTML5Backend}>
-        <StoreProvider>
-          <AppContent />
-        </StoreProvider>
-      </DndProvider>
+      <Inner />
     </div>
   )
 }
 
-export default Home
+Index.getInitialProps = () => ({
+  namespacesRequired: ["common"],
+})
+
+export default Index
