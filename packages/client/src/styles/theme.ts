@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core"
-import { css, SerializedStyles } from "@emotion/core"
+import { css } from "@emotion/react"
 
 import { palette, colors } from "./colors"
 
