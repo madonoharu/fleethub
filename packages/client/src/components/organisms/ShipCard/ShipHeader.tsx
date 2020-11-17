@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "@emotion/styled"
 import { Ship, ShipState } from "@fleethub/core"
+import { useTranslation } from "react-i18next"
 
 import { Button, Tooltip } from "@material-ui/core"
 import EditIcon from "@material-ui/icons/Edit"
@@ -20,6 +21,8 @@ const StyledButton = styled(Button)`
   justify-content: flex-start;
 
   margin-right: 24px;
+  overflow: hidden;
+  white-space: nowrap;
 
   svg {
     font-size: 18px;
@@ -33,6 +36,7 @@ type Props = {
 }
 
 const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
+  const { t } = useTranslation("ships")
   const Modal = useModal()
   const ShipDetailScreenModal = useModal()
 
@@ -40,7 +44,7 @@ const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => 
     <div className={className}>
       <Tooltip title="ステータスを編集">
         <StyledButton onClick={Modal.show} endIcon={<EditIcon />}>
-          Lv{ship.level} {ship.name}
+          Lv{ship.level} {t(ship.name)}
         </StyledButton>
       </Tooltip>
 

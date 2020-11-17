@@ -16,6 +16,7 @@ import LanguageSelect from "./LanguageSelect"
 import ShipList from "../ShipList"
 import GearList from "../GearList"
 import MapList from "../MapList"
+import { Select } from "../../molecules"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -43,7 +44,7 @@ type Props = {
 }
 
 const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const { canUndo, canRedo, undo, redo } = useUndo()
 
@@ -67,6 +68,8 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
       <RedoButton size="small" title="操作を進める" disabled={!canRedo} onClick={redo} />
 
       <div css={{ marginLeft: "auto" }}>
+        {t("test a")}
+        <LanguageSelect />
         <Tooltip title="GitHub repository">
           <Button
             startIcon={<GithubIcon />}
