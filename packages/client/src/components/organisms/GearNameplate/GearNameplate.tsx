@@ -5,6 +5,7 @@ import { Typography } from "@material-ui/core"
 
 import { GearIcon, Flexbox } from "../../../components"
 import styled from "@emotion/styled"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   className?: string
@@ -17,11 +18,12 @@ type Props = {
 
 export const GearNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { className, name, iconId, wrap, equippable = true } = props
+  const { t } = useTranslation("gears")
   return (
     <Flexbox ref={ref} className={className}>
       <GearIcon iconId={iconId} />
       <Typography variant="body2" align="left" noWrap={!wrap} color={equippable ? "initial" : "secondary"}>
-        {name}
+        {t(name)}
       </Typography>
     </Flexbox>
   )

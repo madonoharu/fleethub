@@ -1,0 +1,22 @@
+{
+  "maxHp": "耐久",
+  "firepower": "火力",
+  "torpedo": "雷装",
+  "antiAir": "対空",
+  "armor": "装甲",
+  "evasion": "回避",
+  "asw": "対潜",
+  "los": "索敵",
+  "luck": "運　",
+  "speed": "速力",
+  "range": "射程",
+  "morale": "士気",
+  "accuracy": "命中",
+  "radius": "行動半径",
+  "bombing": "爆装",
+  "fuel": "燃料",
+  "ammo": "弾薬",
+  "antiBomber": "対爆",
+  "interception": "迎撃",
+  "cost": "配置コスト"
+}

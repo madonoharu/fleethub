@@ -1,0 +1,22 @@
+{
+  "maxHp": "체력",
+  "firepower": "화력",
+  "torpedo": "뇌장",
+  "antiAir": "대공",
+  "armor": "장갑",
+  "evasion": "회피",
+  "asw": "대잠",
+  "los": "색적",
+  "luck": "운",
+  "speed": "속도",
+  "range": "사거리",
+  "morale": "피로도",
+  "accuracy": "명중",
+  "radius": "행동반경",
+  "bombing": "폭장",
+  "fuel": "연료",
+  "ammo": "탄약",
+  "antiBomber": "대폭",
+  "interception": "영격",
+  "cost": "배치 코스트"
+}
