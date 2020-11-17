@@ -108,6 +108,23 @@ class LocaleUpdater {
       antiBomber: kc3Terms["ShipAccAntiBomber"],
       interception: kc3Terms["ShipEvaInterception"],
       cost: kc3Terms["ShipDeployCost"],
+
+      Single: kc3Terms["CombinedNone"],
+      CarrierTaskForce: kc3Terms["CombinedCarrier"],
+      SurfaceTaskForce: kc3Terms["CombinedSurface"],
+      TransportEscort: kc3Terms["CombinedTransport"],
+      Combined: kc3Terms["CombinedFleet"],
+
+      LineAhead: kc3Terms["SettingsForLineAhead"],
+      DoubleLine: kc3Terms["SettingsForDoubleLine"],
+      Diamond: kc3Terms["SettingsForDiamond"],
+      Echelon: kc3Terms["SettingsForEchelon"],
+      LineAbreast: kc3Terms["SettingsForLineAbreast"],
+      Vanguard: kc3Terms["SettingsForVanguard"],
+      Cruising1: kc3Terms["SettingsForCombAntiSub"],
+      Cruising2: kc3Terms["SettingsForCombForward"],
+      Cruising3: kc3Terms["SettingsForCombDiamond"],
+      Cruising4: kc3Terms["SettingsForCombBattle"],
     }
 
     await this.output("terms.json", dictionary)

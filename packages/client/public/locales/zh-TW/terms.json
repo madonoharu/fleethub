@@ -16,5 +16,20 @@
   "bombing": "爆裝",
   "antiBomber": "對爆",
   "interception": "迎擊",
-  "cost": "配置消耗"
+  "cost": "配置消耗",
+  "Single": "非聯合艦隊",
+  "CarrierTaskForce": "空母機動部隊",
+  "SurfaceTaskForce": "水上打擊部隊",
+  "TransportEscort": "護衛輸送部隊",
+  "Combined": "聯合艦隊",
+  "LineAhead": "單縱陣",
+  "DoubleLine": "複縱陣",
+  "Diamond": "輪型陣",
+  "Echelon": "梯形陣",
+  "LineAbreast": "單橫陣",
+  "Vanguard": "警戒陣",
+  "Cruising1": "聯合艦隊(對潛警戒)",
+  "Cruising2": "聯合艦隊(警戒陣列)",
+  "Cruising3": "聯合艦隊(輪型陣)",
+  "Cruising4": "聯合艦隊(戰鬥陣列)"
 }
