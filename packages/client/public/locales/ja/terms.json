@@ -18,5 +18,20 @@
   "ammo": "弾薬",
   "antiBomber": "対爆",
   "interception": "迎撃",
-  "cost": "配置コスト"
+  "cost": "配置コスト",
+  "Single": "通常艦隊",
+  "CarrierTaskForce": "空母機動",
+  "SurfaceTaskForce": "水上打撃",
+  "TransportEscort": "輸送護衛",
+  "Combined": "連合艦隊",
+  "LineAhead": "単縦陣",
+  "DoubleLine": "複縦陣",
+  "Diamond": "輪形陣",
+  "Echelon": "梯形陣",
+  "LineAbreast": "単横陣",
+  "Vanguard": "警戒陣",
+  "Cruising1": "連合艦隊(対潜警戒)",
+  "Cruising2": "連合艦隊(前方警戒)",
+  "Cruising3": "連合艦隊(輪形陣)",
+  "Cruising4": "連合艦隊(戦闘隊形)"
 }

@@ -1,17 +1,9 @@
 import React from "react"
 import styled from "@emotion/styled"
 import { FleetTypes, FleetType } from "@fleethub/core"
+import { useTranslation } from "react-i18next"
 
 import { Select, SelectInputProps } from "../../molecules"
-
-const getLabel = (fleetType: FleetType) =>
-  ({
-    Single: "通常艦隊",
-    CarrierTaskForce: "空母機動",
-    SurfaceTaskForce: "水上打撃",
-    TransportEscort: "輸送護衛",
-    Combined: "敵連合",
-  }[fleetType])
 
 type Props = SelectInputProps & {
   fleetType: FleetType
@@ -19,9 +11,10 @@ type Props = SelectInputProps & {
 }
 
 const FleetTypeSelect: React.FC<Props> = ({ fleetType, onChange, ...rest }) => {
-  return <Select value={fleetType} options={FleetTypes} onChange={onChange} getOptionLabel={getLabel} {...rest} />
+  const { t } = useTranslation("terms")
+  return <Select value={fleetType} options={FleetTypes} onChange={onChange} getOptionLabel={t} {...rest} />
 }
 
 export default styled(FleetTypeSelect)`
-  width: 96px;
+  width: 120px;
 `
