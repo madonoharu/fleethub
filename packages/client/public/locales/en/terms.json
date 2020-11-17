@@ -18,5 +18,20 @@
   "ammo": "Ammo",
   "antiBomber": "Anti-bombers",
   "interception": "Interception",
-  "cost": "Deploy-cost"
+  "cost": "Deploy-cost",
+  "Single": "Not Combined",
+  "CarrierTaskForce": "Carrier TF",
+  "SurfaceTaskForce": "Surface TF",
+  "TransportEscort": "Transport",
+  "Combined": "Combined Fleet",
+  "LineAhead": "Line Ahead",
+  "DoubleLine": "Double Line",
+  "Diamond": "Diamond",
+  "Echelon": "Echelon",
+  "LineAbreast": "Line Abreast",
+  "Vanguard": "Vanguard",
+  "Cruising1": "Combined (Anti-Sub)",
+  "Cruising2": "Combined (Forward)",
+  "Cruising3": "Combined (Diamond)",
+  "Cruising4": "Combined (Battle)"
 }

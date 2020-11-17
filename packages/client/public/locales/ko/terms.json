@@ -18,5 +18,20 @@
   "ammo": "탄약",
   "antiBomber": "대폭",
   "interception": "영격",
-  "cost": "배치 코스트"
+  "cost": "배치 코스트",
+  "Single": "연합되지 않음",
+  "CarrierTaskForce": "기동부대",
+  "SurfaceTaskForce": "수상함대",
+  "TransportEscort": "수송호위함대",
+  "Combined": "연합함대",
+  "LineAhead": "단종진",
+  "DoubleLine": "복종진",
+  "Diamond": "윤형진",
+  "Echelon": "제형진",
+  "LineAbreast": "단횡진",
+  "Vanguard": "경계진",
+  "Cruising1": "연합(대잠경계)",
+  "Cruising2": "연합(전방경계)",
+  "Cruising3": "연합(윤형진)",
+  "Cruising4": "연합(전투진형)"
 }
