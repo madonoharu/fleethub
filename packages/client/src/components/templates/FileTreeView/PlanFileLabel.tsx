@@ -26,9 +26,9 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
         onDrop={actions.drop}
         action={
           <>
-            <CopyButton size="small" title="コピー" onClick={actions.copy} />
-            <RemoveButton size="small" title="削除" onClick={actions.remove} />
-            <MoreVertButton size="small" title="メニュー" onClick={MenuModal.show} />
+            <CopyButton size="tiny" title="コピー" onClick={actions.copy} />
+            <RemoveButton size="tiny" title="削除" onClick={actions.remove} />
+            <MoreVertButton size="tiny" title="メニュー" onClick={MenuModal.show} />
           </>
         }
       />

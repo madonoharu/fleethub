@@ -12,11 +12,11 @@ import MenuIcon from "@material-ui/icons/Menu"
 import { withIconButton, GithubIcon, ImportButton, ImportMenu } from "../../../components"
 import { useModal } from "../../../hooks"
 
-import LanguageSelect from "./LanguageSelect"
 import ShipList from "../ShipList"
 import GearList from "../GearList"
 import MapList from "../MapList"
-import { Select } from "../../molecules"
+
+import LanguageSelect from "./LanguageSelect"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -44,7 +44,7 @@ type Props = {
 }
 
 const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const { canUndo, canRedo, undo, redo } = useUndo()
 
@@ -62,14 +62,12 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
       <Button onClick={handleExplorerOpen} startIcon={<MenuIcon color={explorerOpen ? "primary" : "action"} />}>
         編成一覧
       </Button>
-      <ImportButton size="small" title="デッキビルダー形式などから編成を読み込む" onClick={ImprotMenuModal.show} />
 
+      <ImportButton size="small" title="デッキビルダー形式などから編成を読み込む" onClick={ImprotMenuModal.show} />
       <UndoButton size="small" title="操作を戻す" disabled={!canUndo} onClick={undo} />
       <RedoButton size="small" title="操作を進める" disabled={!canRedo} onClick={redo} />
 
       <div css={{ marginLeft: "auto" }}>
-        {t("test a")}
-        <LanguageSelect />
         <Tooltip title="GitHub repository">
           <Button
             startIcon={<GithubIcon />}
@@ -81,9 +79,10 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
           </Button>
         </Tooltip>
 
-        <Button onClick={ShipListModal.show}>艦娘</Button>
-        <Button onClick={GearListModal.show}>装備</Button>
-        <Button onClick={MapListModal.show}>海域</Button>
+        <Button onClick={ShipListModal.show}>{t("艦娘")}</Button>
+        <Button onClick={GearListModal.show}>{t("装備")}</Button>
+        <Button onClick={MapListModal.show}>{t("海域")}</Button>
+        <LanguageSelect />
 
         <ImprotMenuModal>
           <ImportMenu onClose={ImprotMenuModal.hide} />
@@ -104,13 +103,13 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
 }
 
 export default styled(AppBar)`
-  height: 32px;
+  height: 40px;
   display: flex;
   align-items: center;
   flex-direction: row;
 
   .MuiButton-root {
-    height: 32px;
+    height: 40px;
   }
 
   ${LanguageSelect} {

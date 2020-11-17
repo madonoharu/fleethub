@@ -10,6 +10,7 @@ const LanguageSelect: React.FCX = ({ className }) => {
   const handleChange = React.useCallback((lng: string) => i18n.changeLanguage(lng), [i18n])
   return (
     <Select
+      size="small"
       className={className}
       options={allLanguages}
       value={i18n.language}
@@ -19,6 +20,4 @@ const LanguageSelect: React.FCX = ({ className }) => {
   )
 }
 
-export default styled(LanguageSelect)`
-  height: 24px;
-`
+export default styled(LanguageSelect)``
