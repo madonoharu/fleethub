@@ -48,10 +48,10 @@ const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => 
         </StyledButton>
       </Tooltip>
 
-      <StarButton title="艦娘プリセットに追加" size="small" />
-      <InfoButton size="small" onClick={ShipDetailScreenModal.show} />
-      <UpdateButton size="small" />
-      <ClearButton title="削除" size="small" onClick={onRemove} />
+      <StarButton title="艦娘プリセットに追加" size="tiny" />
+      <InfoButton size="tiny" onClick={ShipDetailScreenModal.show} />
+      <UpdateButton size="tiny" />
+      <ClearButton title="削除" size="tiny" onClick={onRemove} />
 
       <Modal>
         <ShipEditor ship={ship} update={update} />

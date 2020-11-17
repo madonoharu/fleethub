@@ -55,7 +55,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
-      InputProps={{ endAdornment: <ClearButton size="small" onClick={handleClear} /> }}
+      InputProps={{ endAdornment: <ClearButton size="tiny" onClick={handleClear} /> }}
       {...rest}
     />
   )
