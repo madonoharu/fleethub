@@ -45,6 +45,7 @@ const muiTheme = createMuiTheme({
     MuiTooltip: {
       defaultProps: {
         placement: "top",
+        disableInteractive: true,
       },
     },
     MuiSnackbar: {
