@@ -12,11 +12,10 @@ import { Input, InputProps } from "../../atoms"
 import usePress from "./usePress"
 
 const StyledButton = styled(Button)`
-  display: block;
+  display: flex;
   padding: 0;
-  width: 24px;
-  height: 16px;
-  line-height: 1;
+  height: 20px;
+  min-height: 0;
 `
 
 const stepValue = (value: number, step: number) => {
@@ -36,20 +35,16 @@ const Adornment: React.FCX<AdornmentProps> = ({ className, increase, decrease })
   return (
     <InputAdornment className={className} position="end">
       <div>
-        <StyledButton size="small" variant="text" {...increaseProps}>
-          <ArrowDropUpIcon fontSize="inherit" />
+        <StyledButton {...increaseProps}>
+          <ArrowDropUpIcon />
         </StyledButton>
-        <StyledButton size="small" variant="text" {...decreaseProps}>
-          <ArrowDropDownIcon fontSize="inherit" />
+        <StyledButton {...decreaseProps}>
+          <ArrowDropDownIcon />
         </StyledButton>
       </div>
     </InputAdornment>
   )
 }
-
-const StyledAdornment = styled(Adornment)`
-  visibility: hidden;
-`
 
 const toHalf = (str: string) => str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
@@ -118,7 +113,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     const increase = () => changeValue(stepValue(value, step))
     const decrease = () => changeValue(stepValue(value, -step))
 
-    const endAdornment = <StyledAdornment increase={increase} decrease={decrease} />
+    const endAdornment = <Adornment increase={increase} decrease={decrease} />
 
     return { endAdornment, ...InputProps }
   }, [value, step, changeValue, InputProps])
@@ -138,12 +133,19 @@ const NumberInput: React.FC<NumberInputProps> = ({
   )
 }
 
-export default styled(NumberInput)(css`
-  :hover ${StyledAdornment} {
+export default styled(NumberInput)`
+  .MuiInputAdornment-positionEnd {
+    visibility: hidden;
+  }
+
+  :hover .MuiInputAdornment-positionEnd {
     visibility: visible;
   }
 
   .MuiInputLabel-root {
     white-space: nowrap;
   }
-`)
+  .MuiOutlinedInput-adornedEnd {
+    padding-right: 8px;
+  }
+`
