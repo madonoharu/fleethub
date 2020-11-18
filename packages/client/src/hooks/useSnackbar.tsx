@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react"
 
-import { Snackbar as MuiSnackbar, SnackbarProps as MuiSnackbarProps } from "@material-ui/core"
-import Alert, { AlertProps } from "@material-ui/lab/Alert"
+import { Alert, AlertProps, Snackbar as MuiSnackbar, SnackbarProps as MuiSnackbarProps } from "@material-ui/core"
 
 type SnackbarProps = MuiSnackbarProps &
   Pick<AlertProps, "severity"> & {
