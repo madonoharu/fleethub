@@ -1,21 +1,39 @@
 import { Health } from "../types"
 
 export class ShipHealth implements Health {
-  constructor(public readonly maxHp: number, public currentHp = maxHp) {}
+  public bounds: Health["bounds"]
 
-  get damage() {
-    const rate = this.currentHp / this.maxHp
+  constructor(public readonly maxHp: number, public currentHp = maxHp) {
+    this.bounds = {
+      Taiha: Math.floor(maxHp * 0.25),
+      Chuuha: Math.floor(maxHp * 0.5),
+      Shouha: Math.floor(maxHp * 0.75),
+    }
+  }
 
-    if (rate <= 0) return "Sunk"
-    if (rate <= 0.25) return "Taiha"
-    if (rate <= 0.5) return "Chuuha"
-    if (rate <= 0.75) return "Shouha"
-    return "Less"
+  public getStateByHp = (hp: number) => {
+    const { bounds } = this
+
+    if (hp <= 0) return "Sunk"
+    if (hp <= bounds.Taiha) return "Taiha"
+    if (hp <= bounds.Chuuha) return "Chuuha"
+    if (hp <= bounds.Shouha) return "Shouha"
+    return "Normal"
+  }
+
+  get state() {
+    const { bounds, currentHp } = this
+
+    if (currentHp <= 0) return "Sunk"
+    if (currentHp <= bounds.Taiha) return "Taiha"
+    if (currentHp <= bounds.Chuuha) return "Chuuha"
+    if (currentHp <= bounds.Shouha) return "Shouha"
+    return "Normal"
   }
 
   get commonPowerModifier() {
-    switch (this.damage) {
-      case "Less":
+    switch (this.state) {
+      case "Normal":
       case "Shouha":
         return 1
       case "Chuuha":
@@ -27,8 +45,8 @@ export class ShipHealth implements Health {
   }
 
   get torpedoPowerModifier() {
-    switch (this.damage) {
-      case "Less":
+    switch (this.state) {
+      case "Normal":
       case "Shouha":
         return 1
       case "Chuuha":
