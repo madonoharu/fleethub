@@ -72,12 +72,20 @@ export type Accuracy = {
  * | Taiha  | 大破 |
  * | Sunk   | 轟沈 |
  */
-export type DamageState = "Less" | "Shouha" | "Chuuha" | "Taiha" | "Sunk"
+export type HealthState = "Normal" | "Shouha" | "Chuuha" | "Taiha" | "Sunk"
+
+export type HealthBounds = {
+  Shouha: number
+  Chuuha: number
+  Taiha: number
+}
 
 export type Health = {
   maxHp: number
   currentHp: number
-  damage: DamageState
+  bounds: HealthBounds
+  getStateByHp: (hp: number) => HealthState
+  state: HealthState
   commonPowerModifier: number
   torpedoPowerModifier: number
 }
