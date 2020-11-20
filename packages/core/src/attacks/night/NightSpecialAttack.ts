@@ -1,7 +1,7 @@
 import { ShipId, GearId } from "@fleethub/utils"
 
 import { fhDefinitions } from "../../FhDefinitions"
-import { Ship, DamageState } from "../../ship"
+import { Ship, HealthState } from "../../ship"
 
 import { getPossibleNightSpecialAttackTypes, NightSpecialAttackType } from "./NightSpecialAttackType"
 
@@ -25,7 +25,7 @@ type NightFleetState = {
 
 export type NightAttackParams = {
   isFlagship: boolean
-  damageState?: DamageState
+  healthState?: HealthState
   attackerState: NightFleetState
   defenderState: NightFleetState
 }
@@ -34,7 +34,7 @@ export const calcNightCutinTerm = (ship: Ship, params: NightAttackParams) => {
   let value = 0
 
   const { level, luck } = ship
-  const { isFlagship, attackerState, defenderState, damageState = ship.health.damage } = params
+  const { isFlagship, attackerState, defenderState, healthState = ship.health.state } = params
 
   if (luck.value < 50) {
     value = Math.floor(luck.value + 15 + 0.75 * Math.sqrt(level))
@@ -43,7 +43,7 @@ export const calcNightCutinTerm = (ship: Ship, params: NightAttackParams) => {
   }
 
   if (isFlagship) value += 15
-  if (damageState === "Chuuha") value += 18
+  if (healthState === "Chuuha") value += 18
   if (ship.equipment.has(GearId["熟練見張員"])) value += 5
 
   if (attackerState.searchlight) value += 7
