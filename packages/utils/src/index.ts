@@ -19,6 +19,8 @@ export const range = (n: number) => [...Array(n).keys()]
 
 export const uniq = <T>(array: T[]) => [...new Set(array)]
 
+export const random = (upper: number) => Math.floor(Math.random() * (upper + 1))
+
 export const sumBy = <T>(array: T[], iteratee: (item: T) => number) =>
   array.reduce((total, item) => total + iteratee(item), 0)
 
@@ -37,6 +39,10 @@ export const round = (number: number, precision?: number) => {
 export const atLeastOne = (xs: number[]) => 1 - xs.reduce((acc, x) => acc * (1 - x), 1)
 
 export const cloneJson = <T>(json: T): T => JSON.parse(JSON.stringify(json))
+
+export const capitalize = <T extends string>(str: T) => (str.charAt(0).toUpperCase() + str.slice(1)) as Capitalize<T>
+export const uncapitalize = <T extends string>(str: T) =>
+  (str.charAt(0).toLowerCase() + str.slice(1)) as Uncapitalize<T>
 
 export * from "./utilityTypes"
 export * from "./templateLiteralTypes"
