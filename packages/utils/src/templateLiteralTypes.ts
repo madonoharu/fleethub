@@ -19,7 +19,9 @@ type RangeArray<N extends number> = N extends 0
   ? [...RangeArray<SubtractOne<N>>, SubtractOne<N>]
   : number[]
 
-export type Concat<Current extends string, Args extends Literal[]> = Args extends { length: 0 } ? Current : Concat<`${Current}${Args[0]}`, Shift<Args>>
+export type Concat<Current extends string, Args extends Literal[]> = Args extends { length: 0 }
+  ? Current
+  : Concat<`${Current}${Args[0]}`, Shift<Args>>
 
 export const concat = <Args extends Literal[]>(...args: Args) => args.join("") as Concat<"", Args>
 
