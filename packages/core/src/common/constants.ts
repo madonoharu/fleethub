@@ -15,3 +15,6 @@ export type FleetType = typeof FleetTypes[number]
 
 export const AirStates = ["AirSupremacy", "AirSuperiority", "AirParity", "AirDenial", "AirIncapability"] as const
 export type AirState = typeof AirStates[number]
+
+export const Engagements = ["Parallel", "HeadOn", "GreenT", "RedT"] as const
+export type Engagement = typeof Engagements[number]
