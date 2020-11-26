@@ -1,5 +1,4 @@
 import { randint, range, NumberRecord } from "@fleethub/utils"
-import { getHealthState } from "../utils"
 
 import ScratchDamage from "./ScratchDamage"
 import ProtectionDamage from "./ProtectionDamage"
@@ -77,21 +76,14 @@ export default class Damage {
     return unmodified
   }
 
-  private getDamagedHealthState = (damageValue: number) => {
-    const { maxHp, currentHp } = this.defenseParams
-    const damagedHp = currentHp - damageValue
-
-    return getHealthState(maxHp, damagedHp)
-  }
-
-  private isNormalDamage = (value: number) => {
+  private isNormalDamage(value: number) {
     if (value <= 0) return false
 
     const { currentHp, protection, sinkable } = this.defenseParams
     return sinkable || !protection || value < currentHp
   }
 
-  public toDistribution = (): NumberRecord<number> => {
+  public toDistribution(): NumberRecord<number> {
     const { scratchDamage, protectionDamage, defensePower, defenseParams } = this
     const { currentHp, protection, sinkable } = defenseParams
 
@@ -104,7 +96,7 @@ export default class Damage {
     const overkillDamages = unmodifiedDamages.filter((value) => value >= currentHp)
     const overkillProbability = overkillDamages.length / parameter
 
-    const normalDamages = unmodifiedDamages.filter(this.isNormalDamage)
+    const normalDamages = unmodifiedDamages.filter((value) => this.isNormalDamage(value))
     const normalDamagePd = NumberRecord.count(normalDamages).scale(1 / parameter)
 
     const normalWithScratch = normalDamagePd.add(scratchDamagePd)
