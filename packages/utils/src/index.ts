@@ -19,7 +19,7 @@ export const range = (n: number) => [...Array(n).keys()]
 
 export const uniq = <T>(array: T[]) => [...new Set(array)]
 
-export const random = (upper: number) => Math.floor(Math.random() * (upper + 1))
+export const randint = (upper: number) => Math.floor(Math.random() * (upper + 1))
 
 export const sumBy = <T>(array: T[], iteratee: (item: T) => number) =>
   array.reduce((total, item) => total + iteratee(item), 0)
