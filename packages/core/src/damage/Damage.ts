@@ -8,10 +8,13 @@ type DefensePowerParams = {
   improvementBonus: number
 }
 
-export type DamageParams = {
-  attackTerm: number
+export type DamageModifiers = {
   remainingAmmoModifier?: number
   armorPenetration?: number
+}
+
+export type DamageParams = DamageModifiers & {
+  attackTerm: number
 }
 
 export type DefenseParams = DefensePowerParams & {
