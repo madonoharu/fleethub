@@ -40,6 +40,8 @@ export default class NumberRecord<K extends string | number> {
     } else {
       this.#data[key] = value
     }
+
+    return this
   }
 
   public set(key: K, value: number) {
@@ -82,5 +84,21 @@ export default class NumberRecord<K extends string | number> {
 
   public scale(multiplier: number) {
     return this.map((value) => value * multiplier)
+  }
+
+  public toArray() {
+    const array = new Array<[K, number]>()
+
+    Object.entries(this.#data).forEach((entry) => {
+      if (typeof entry[1] === "number") {
+        array.push(entry as [K, number])
+      }
+    })
+
+    return array
+  }
+
+  public toJSON() {
+    return { ...this.#data }
   }
 }
