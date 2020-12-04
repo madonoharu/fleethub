@@ -25,6 +25,7 @@ export class ShipStatsStub implements ShipStats {
 }
 
 export class ShipMock extends ShipStatsStub implements Ship {
+  public id = ""
   public name = ""
   public yomi = ""
   public shipId = 0
