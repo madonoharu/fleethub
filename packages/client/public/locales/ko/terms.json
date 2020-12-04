@@ -33,5 +33,9 @@
   "Cruising1": "연합(대잠경계)",
   "Cruising2": "연합(전방경계)",
   "Cruising3": "연합(윤형진)",
-  "Cruising4": "연합(전투진형)"
+  "Cruising4": "연합(전투진형)",
+  "Parallel": "동항",
+  "HeadOn": "반항",
+  "GreenT": "T유리",
+  "RedT": "T불리"
 }
