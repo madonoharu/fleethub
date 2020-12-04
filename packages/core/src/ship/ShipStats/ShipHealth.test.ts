@@ -5,7 +5,7 @@ describe("ShipHealth", () => {
     expect(new ShipHealth(100)).toMatchObject<Partial<ShipHealth>>({
       maxHp: 100,
       currentHp: 100,
-      bounds: { Shouha: 75, Chuuha: 50, Taiha: 25 },
+      bounds: { shouha: 75, chuuha: 50, taiha: 25 },
       state: "Normal",
       commonPowerModifier: 1,
       torpedoPowerModifier: 1,
@@ -14,7 +14,7 @@ describe("ShipHealth", () => {
     expect(new ShipHealth(40, 39)).toMatchObject<Partial<ShipHealth>>({
       maxHp: 40,
       currentHp: 39,
-      bounds: { Shouha: 30, Chuuha: 20, Taiha: 10 },
+      bounds: { shouha: 30, chuuha: 20, taiha: 10 },
       getStateByHp: jest.fn(),
       state: "Normal",
       commonPowerModifier: 1,
@@ -38,7 +38,7 @@ describe("ShipHealth", () => {
       expect(new ShipHealth(maxHp, currentHp)).toMatchObject<Partial<ShipHealth>>({
         maxHp,
         currentHp,
-        bounds: { Shouha: 75, Chuuha: 50, Taiha: 25 },
+        bounds: { shouha: 75, chuuha: 50, taiha: 25 },
         state,
         commonPowerModifier,
         torpedoPowerModifier,
