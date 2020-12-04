@@ -4,9 +4,10 @@ import masterData from "@fleethub/utils/MasterData"
 import Factory from "./Factory"
 import { ShipState } from "./ship"
 import { FleetState } from "./fleet"
-import { EnemyFleetImpl, EnemyFleetState } from "./enemy"
 import { Deck4, getPlanStateByDeck } from "./utils"
 import { ShipKey, GearKey } from "./common"
+import { EnemyFleet } from "./battle"
+import { EnemyFleetState } from "./plan"
 
 export default class FhSystem {
   public categoryIconIdMap = new Map<number, number>()
@@ -41,8 +42,8 @@ export default class FhSystem {
   }
 
   public createEnemyFleet = (state: EnemyFleetState) => {
-    const { main, escort = {} } = state
-    return new EnemyFleetImpl(state, this.createFleet(main), this.createFleet(escort))
+    const { main, escort } = state
+    return new EnemyFleet(state, this.createFleet(main), escort && this.createFleet(escort))
   }
 
   public createEnemyFleetByMapEnemy = (mapEnemyFleet: MapEnemyFleet) => {

@@ -1,6 +1,7 @@
 import { GearKey } from "../common"
 import { EquipmentState, Equipment } from "../equipment"
 import { MasterShip, MasterGear } from "../MasterDataAdapter"
+import { EvasionTermCalculationResult } from "../types"
 
 export { StatInterval, MaybeNumber } from "@fleethub/utils"
 
@@ -75,9 +76,9 @@ export type Accuracy = {
 export type HealthState = "Normal" | "Shouha" | "Chuuha" | "Taiha" | "Sunk"
 
 export type HealthBounds = {
-  Shouha: number
-  Chuuha: number
-  Taiha: number
+  shouha: number
+  chuuha: number
+  taiha: number
 }
 
 export type Health = {
@@ -151,6 +152,7 @@ export type ShipStatsState = ShipBasicStatsState & {
 }
 
 export type ShipState = {
+  id?: string
   shipId: number
 } & ShipStatsState &
   EquipmentState
@@ -171,8 +173,11 @@ export type EquipmentBonuses = {
   effectiveLos: number
 }
 
+export type ApShellModifiers = { power: number; accuracy: number }
+
 export type Ship = ShipBase &
   ShipStats & {
+    id: string
     state: ShipState
 
     equipment: Equipment
@@ -187,4 +192,7 @@ export type Ship = ShipBase &
     basicEvasionTerm: number
 
     fleetAntiAir: number
+    apShellModifiers: ApShellModifiers
+
+    calcEvasionTerm: (formationModifier: number, postcapModifier?: number) => EvasionTermCalculationResult
   }
