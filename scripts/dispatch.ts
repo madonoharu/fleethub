@@ -4,7 +4,7 @@ type ClientPayload = {
   type: string
 }
 
-const getClientPayload = (): ClientPayload | undefined => {
+const getClientPayload = (): ClientPayload => {
   const { CLIENT_PAYLOAD } = process.env
 
   const payload = CLIENT_PAYLOAD && JSON.parse(CLIENT_PAYLOAD)
