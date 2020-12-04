@@ -86,6 +86,7 @@ class LocaleUpdater {
 
   public updateTerms = async () => {
     const kc3Terms = await this.getKC3Json<Dictionary>("terms.json")
+    const kc3Battle = await this.getKC3Json<{ engagement: string[][] }>("battle.json")
 
     const dictionary: Dictionary = {
       maxHp: kc3Terms["ShipHp"],
@@ -125,6 +126,11 @@ class LocaleUpdater {
       Cruising2: kc3Terms["SettingsForCombForward"],
       Cruising3: kc3Terms["SettingsForCombDiamond"],
       Cruising4: kc3Terms["SettingsForCombBattle"],
+
+      Parallel: kc3Battle.engagement[1][0],
+      HeadOn: kc3Battle.engagement[2][0],
+      GreenT: kc3Battle.engagement[3][0],
+      RedT: kc3Battle.engagement[4][0],
     }
 
     await this.output("terms.json", dictionary)

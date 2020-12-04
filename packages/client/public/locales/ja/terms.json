@@ -33,5 +33,9 @@
   "Cruising1": "連合艦隊(対潜警戒)",
   "Cruising2": "連合艦隊(前方警戒)",
   "Cruising3": "連合艦隊(輪形陣)",
-  "Cruising4": "連合艦隊(戦闘隊形)"
+  "Cruising4": "連合艦隊(戦闘隊形)",
+  "Parallel": "同航",
+  "HeadOn": "反航",
+  "GreenT": "T有",
+  "RedT": "T不"
 }

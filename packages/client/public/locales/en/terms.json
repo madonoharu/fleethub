@@ -33,5 +33,9 @@
   "Cruising1": "Combined (Anti-Sub)",
   "Cruising2": "Combined (Forward)",
   "Cruising3": "Combined (Diamond)",
-  "Cruising4": "Combined (Battle)"
+  "Cruising4": "Combined (Battle)",
+  "Parallel": "Prll",
+  "HeadOn": "HdOn",
+  "GreenT": "Gr-T",
+  "RedT": "Rd-T"
 }
