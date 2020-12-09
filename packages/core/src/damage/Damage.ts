@@ -114,6 +114,6 @@ export default class Damage {
       return normalWithScratch.add(protectionPd)
     }
 
-    return normalWithScratch.add({ [currentHp - 1]: overkillProbability })
+    return normalWithScratch.update(currentHp - 1, (value) => value + overkillProbability)
   }
 }
