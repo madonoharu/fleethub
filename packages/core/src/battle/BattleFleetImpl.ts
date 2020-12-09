@@ -27,11 +27,15 @@ export type BattleFleet = {
   main: Fleet
   escort?: Fleet
   isCombined: boolean
+
   getShipContext: (ship: Ship) => ShipContext | undefined
+
+  calcFleetLosModifier: () => number
+  calcFighterPower: (antiLb?: boolean) => number
 }
 
 export default class BattleFleetImpl implements BattleFleet {
-  public static fromPlan = (plan: Plan, formation: Formation, side: Side = "Player") => {
+  public static fromPlan = (plan: Plan, formation: Formation, side: Side) => {
     const { main, escort, fleetType } = plan
     return new BattleFleetImpl({ main, escort, fleetType, side, formation })
   }
@@ -80,5 +84,17 @@ export default class BattleFleetImpl implements BattleFleet {
       formation,
       fleetType,
     }
+  }
+
+  public calcFleetLosModifier = (): number => {
+    const { main, escort } = this
+
+    return main.fleetLosModifier + (escort?.fleetLosModifier || 0)
+  }
+
+  public calcFighterPower = (antiLb?: boolean) => {
+    const mainFp = this.main.calcFighterPower(antiLb)
+    const escortFp = this.escort?.calcFighterPower(antiLb) || 0
+    return mainFp + escortFp
   }
 }
