@@ -3,6 +3,8 @@ import { RootState, AppDispatch } from "./store"
 import "@emotion/react/types/css-prop"
 
 declare module "react" {
+  import { Interpolation, Theme } from "@emotion/react"
+
   type FCX<P = {}> = FC<P & { className?: string }>
 }
 
