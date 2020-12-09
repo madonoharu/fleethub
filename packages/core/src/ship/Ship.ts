@@ -1,10 +1,9 @@
-import { GearId, NumberRecord, ShipId } from "@fleethub/utils"
-import { createDaySpecialAttack, DaySpecialAttack } from "../attacks"
-import { getPossibleDaySpecialAttackTypes } from "../attacks/shelling/DaySpecialAttackType"
+import { GearId, ShipId } from "@fleethub/utils"
 
 import { MasterShip } from "../MasterDataAdapter"
 
 import { ShipStats, Ship } from "./types"
+import { calcShellingAbility } from "./shelling"
 
 let count = 0
 
@@ -162,79 +161,8 @@ export class ShipImpl implements Ship {
     return evasion.value + Math.sqrt(2 * luck.value)
   }
 
-  public calcObservationTerm: Ship["calcObservationTerm"] = (fleetLosModifier, airState, isMainFlagship) => {
-    const luck = this.luck.value
-    const equipmentLos = this.los.equipment
-
-    const luckFactor = Math.floor(Math.sqrt(luck) + 10)
-    const flagshipModifier = isMainFlagship ? 15 : 0
-
-    if (airState === "AirSupremacy") {
-      return Math.floor(luckFactor + 0.7 * (fleetLosModifier + 1.6 * equipmentLos) + 10) + flagshipModifier
-    }
-    if (airState === "AirSuperiority") {
-      return Math.floor(luckFactor + 0.6 * (fleetLosModifier + 1.2 * equipmentLos)) + flagshipModifier
-    }
-
-    return 0
-  }
-
-  public getPossibleDaySpecialAttackTypes: Ship["getPossibleDaySpecialAttackTypes"] = () => {
-    const { equipment } = this
-
-    const zuiunAircraftCount = equipment.countAircraft(({ gearId }) =>
-      [
-        GearId["瑞雲"],
-        GearId["瑞雲(六三一空)"],
-        GearId["瑞雲(六三四空)"],
-        GearId["瑞雲(六三四空/熟練)"],
-        GearId["瑞雲12型"],
-        GearId["瑞雲12型(六三四空)"],
-        GearId["瑞雲改二(六三四空)"],
-        GearId["瑞雲改二(六三四空/熟練)"],
-      ].includes(gearId)
-    )
-
-    const suisei634AircraftCount = equipment.countAircraft(({ gearId }) =>
-      [
-        GearId["彗星一二型(六三四空/三号爆弾搭載機)"],
-        GearId["彗星二二型(六三四空)"],
-        GearId["彗星二二型(六三四空/熟練)"],
-      ].includes(gearId)
-    )
-
-    return getPossibleDaySpecialAttackTypes({
-      isCarrierShelling: this.isCarrierLike,
-      isIseClassK2: this.shipClass === "IseClass" && this.is("Kai2"),
-      hasObservationSeaplane: equipment.hasAircraft((gear) => gear.is("ObservationSeaplane")),
-
-      mainGunCount: equipment.count((gear) => gear.is("MainGun")),
-      secondaryGunCount: equipment.count((gear) => gear.categoryIs("SecondaryGun")),
-      hasApShell: equipment.has((gear) => gear.categoryIs("ApShell")),
-      hasRader: equipment.has((gear) => gear.is("Radar")),
-
-      zuiunAircraftCount,
-      suisei634AircraftCount,
-
-      hasCbFighterAircraft: equipment.hasAircraft((gear) => gear.categoryIs("CbFighter")),
-      cbBomberAircraftCount: equipment.countAircraft((gear) => gear.categoryIs("CbDiveBomber")),
-      hasCbTorpedoBomberAircraft: equipment.hasAircraft((gear) => gear.categoryIs("CbTorpedoBomber")),
-    })
-  }
-
   public calcShellingAbility: Ship["calcShellingAbility"] = (fleetLosModifier, airState, isMainFlagship) => {
-    const attacks = this.getPossibleDaySpecialAttackTypes().map(createDaySpecialAttack)
-    const rates = new NumberRecord<DaySpecialAttack>()
-
-    const observationTerm = this.calcObservationTerm(fleetLosModifier, airState, isMainFlagship)
-
-    attacks.forEach((attack) => {
-      const attackRate = Math.min(observationTerm / attack.denominator, 1)
-      const actualRate = (1 - rates.sum()) * attackRate
-      rates.insert(attack, actualRate)
-    })
-
-    return { observationTerm, rates }
+    return calcShellingAbility(this, fleetLosModifier, airState, isMainFlagship)
   }
 
   public calcEvasionAbility: Ship["calcEvasionAbility"] = (formationModifier, postcapModifier = 0) => {
