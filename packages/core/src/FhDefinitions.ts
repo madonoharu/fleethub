@@ -105,17 +105,17 @@ export const defaultFhDefinitions: FhDefinitions = {
       protectionRate: 0.75,
       fleetAntiAir: 1.1,
       shelling: {
-        topHalf: { power: 0.5, accuracy: 0.8, evasion: 1 },
-        bottomHalf: { power: 1, accuracy: 1.2, evasion: 1 },
+        TopHalf: { power: 0.5, accuracy: 0.8, evasion: 1 },
+        BottomHalf: { power: 1, accuracy: 1.2, evasion: 1 },
       },
       torpedo: { power: 1, accuracy: 1, evasion: 1 },
       asw: {
-        topHalf: { power: 1, accuracy: 1, evasion: 1 },
-        bottomHalf: { power: 0.6, accuracy: 1, evasion: 1 },
+        TopHalf: { power: 1, accuracy: 1, evasion: 1 },
+        BottomHalf: { power: 0.6, accuracy: 1, evasion: 1 },
       },
       night: {
-        topHalf: { power: 0.5, accuracy: 1, evasion: 1 },
-        bottomHalf: { power: 1, accuracy: 1, evasion: 1 },
+        TopHalf: { power: 0.5, accuracy: 1, evasion: 1 },
+        BottomHalf: { power: 1, accuracy: 1, evasion: 1 },
       },
     },
 

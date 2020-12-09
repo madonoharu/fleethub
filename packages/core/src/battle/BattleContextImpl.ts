@@ -1,20 +1,41 @@
-import { mapValues, uncapitalize } from "@fleethub/utils"
+import { mapValues } from "@fleethub/utils"
 
-import { Engagement } from "../common"
+import { AirState, Engagement } from "../common"
 import { fhDefinitions } from "../FhDefinitions"
 import { Ship } from "../ship"
-import { getFleetFactors } from "./FleetFactor"
-
-import { ShellingAccuracyParams, ShellingParams, ShellingPowerParams } from "../attacks/shelling/Shelling"
-import { DamageModifiers, DefenseParams } from "../damage"
+import { DaySpecialAttack } from "../attacks"
+import { ShellingParams } from "../attacks/shelling/Shelling"
 
 import { BattleFleet, ShipContext } from "./BattleFleetImpl"
+import { getShellingParams } from "./shelling"
 
 type BattleContextBase = {
+  nodeType: "NightBattle"
   engagement: Engagement
+  airState: AirState
   player: BattleFleet
   enemy: BattleFleet
-  nodeType: "NightBattle"
+}
+
+type BattleModifiers = {
+  power: number
+  accuracy: number
+  evasion: number
+}
+
+type FormationModifiers = {
+  protectionRate: number
+  fleetAntiAir: number
+  shelling: BattleModifiers
+  torpedo: BattleModifiers
+  asw: BattleModifiers
+  night: BattleModifiers
+}
+
+export type BattleContext = BattleContextBase & {
+  engagementModifier: number
+  getShipContext: (ship: Ship) => ShipContext
+  getFormationModifiers: (arg: Pick<ShipContext, "side" | "position">) => FormationModifiers
 }
 
 const engagementModifierDefs: Record<Engagement, number> = {
@@ -24,13 +45,25 @@ const engagementModifierDefs: Record<Engagement, number> = {
   RedT: 0.6,
 }
 
-export default class BattleContextImpl implements BattleContextBase {
+export default class BattleContextImpl implements BattleContext {
   public engagement: Engagement
   public player: BattleFleet
   public enemy: BattleFleet
   public nodeType: "NightBattle"
+  public airState: AirState = "AirDenial"
 
-  private getShipContext = (ship: Ship): ShipContext => {
+  constructor(base: BattleContextBase) {
+    this.engagement = base.engagement
+    this.player = base.player
+    this.enemy = base.enemy
+    this.nodeType = base.nodeType
+  }
+
+  get engagementModifier() {
+    return engagementModifierDefs[this.engagement]
+  }
+
+  public getShipContext: BattleContext["getShipContext"] = (ship) => {
     const { player, enemy } = this
     const shipCtx = player.getShipContext(ship) || enemy.getShipContext(ship)
 
@@ -41,20 +74,13 @@ export default class BattleContextImpl implements BattleContextBase {
     return shipCtx
   }
 
-  constructor(base: BattleContextBase) {
-    this.engagement = base.engagement
-    this.player = base.player
-    this.enemy = base.enemy
-    this.nodeType = base.nodeType
-  }
-
-  public getFormationModifiers = ({ side, position }: Pick<ShipContext, "side" | "position">) => {
+  public getFormationModifiers: BattleContext["getFormationModifiers"] = ({ side, position }) => {
     const formation = side === "Player" ? this.player.formation : this.enemy.formation
     const { protectionRate, fleetAntiAir, ...rest } = fhDefinitions.formations[formation]
 
     const modifiers = mapValues(rest, (value) => {
-      if ("topHalf" in value) {
-        return value[uncapitalize(position)]
+      if ("TopHalf" in value) {
+        return value[position]
       }
       return value
     })
@@ -66,74 +92,17 @@ export default class BattleContextImpl implements BattleContextBase {
     }
   }
 
-  public getShellingParams = (attacker: Ship, defender: Ship): ShellingParams => {
-    const { engagement } = this
-    const attackerCtx = this.getShipContext(attacker)
-    const defenderCtx = this.getShipContext(defender)
+  public calcShellingAbility = (ship: Ship) => {
+    const { role, isFlagship, side } = this.getShipContext(ship)
 
-    const formationModifiers = this.getFormationModifiers(attackerCtx).shelling
-    const engagementModifier = engagementModifierDefs[engagement]
+    const fleetLosModifier = side === "Player" ? this.player.calcFleetLosModifier() : this.enemy.calcFleetLosModifier()
+    const airState = this.airState
+    const isMainFlagship = role === "Main" && isFlagship
 
-    const fleetFactors = getFleetFactors(attackerCtx, defenderCtx)
+    return ship.calcShellingAbility(fleetLosModifier, airState, isMainFlagship)
+  }
 
-    const defenderIsInstallation = defender.speed.value === 0
-    const defenderIsArmored = defender.shipTypeIn("CA", "CAV", "FBB", "BB", "BBV", "CV", "CVB")
-
-    const apShellModifiers = defenderIsArmored ? attacker.apShellModifiers : undefined
-
-    const specialAttackModifiers = { power: 1, accuracy: 1 }
-
-    const power: ShellingPowerParams = {
-      formationModifier: formationModifiers.power,
-      engagementModifier,
-      fleetFactor: fleetFactors.shellingPower,
-
-      firepower: attacker.firepower.value,
-      improvementBonus: attacker.equipment.sumBy((gear) => gear.improvementBonuses.shellingPower),
-      airPower: attacker.isCarrierLike ? attacker.calcAirPower(defenderIsInstallation) : undefined,
-      healthModifier: attacker.health.commonPowerModifier,
-      cruiserFitBonus: attacker.cruiserFitBonus,
-      apShellModifier: apShellModifiers?.power,
-      specialAttackModifier: specialAttackModifiers.power,
-    }
-
-    const accuracy: ShellingAccuracyParams = {
-      fleetFactor: fleetFactors.shellingAccuracy,
-      basicAccuracyTerm: attacker.basicAccuracyTerm,
-      equipmentAccuracy: attacker.accuracy.equipment,
-      improvementBonus: attacker.equipment.sumBy((gear) => gear.improvementBonuses.shellingAccuracy),
-      moraleModifier: attacker.morale.commonAccuracyModifier,
-      fitGunBonus: NaN,
-      formationModifier: formationModifiers.accuracy,
-      apShellModifier: apShellModifiers?.accuracy,
-      specialAttackModifier: specialAttackModifiers.accuracy,
-    }
-
-    const evasion = defender.calcEvasionTerm(this.getFormationModifiers(defenderCtx).shelling.evasion)
-
-    const hitRate = {
-      moraleModifier: defender.morale.evasionModifier,
-      criticalRateBonus: 0,
-      criticalRateMultiplier: 0,
-      hitRateBonus: 0,
-    }
-
-    const sinkable = defenderCtx.side === "Enemy"
-    const protection = defenderCtx.side === "Player" && defender.morale.state !== "Red"
-
-    const defense: DefenseParams = {
-      armor: defender.armor.value,
-      currentHp: defender.health.currentHp,
-      maxHp: defender.health.maxHp,
-      improvementBonus: defender.equipment.sumBy((gear) => gear.improvementBonuses.defensePower),
-      protection,
-      sinkable,
-    }
-
-    const damage: DamageModifiers = {
-      remainingAmmoModifier: attacker.ammo.penalty,
-    }
-
-    return { power, accuracy, evasion, hitRate, defense, damage }
+  public getShellingParams = (attacker: Ship, defender: Ship, specialAttack?: DaySpecialAttack): ShellingParams => {
+    return getShellingParams(this, attacker, defender, specialAttack)
   }
 }
