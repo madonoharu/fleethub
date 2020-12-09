@@ -231,7 +231,7 @@ export class ShipImpl implements Ship {
     attacks.forEach((attack) => {
       const attackRate = Math.min(observationTerm / attack.denominator, 1)
       const actualRate = (1 - rates.sum()) * attackRate
-      rates.set(attack, actualRate)
+      rates.insert(attack, actualRate)
     })
 
     return { observationTerm, rates }
