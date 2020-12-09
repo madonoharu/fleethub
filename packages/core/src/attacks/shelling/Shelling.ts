@@ -1,6 +1,5 @@
 import { Damage, DamageModifiers, DefenseParams } from "../../damage"
-import { EvasionTermCalculationResult } from "../../types"
-
+import { EvasionAbility } from "../../ship"
 import { calcAttackPower } from "../AttackPower"
 import { calcHitRate } from "../hit"
 
@@ -44,7 +43,7 @@ export type HitRateModifiers = {
 export type ShellingParams = {
   power: ShellingPowerParams
   accuracy: ShellingAccuracyParams
-  evasion: EvasionTermCalculationResult
+  evasion: EvasionAbility
   hitRate: HitRateModifiers
   defense: DefenseParams
   damage: DamageModifiers

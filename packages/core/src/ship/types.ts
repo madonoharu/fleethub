@@ -1,7 +1,9 @@
-import { GearKey } from "../common"
+import { NumberRecord } from "@fleethub/utils"
+import { DaySpecialAttack } from "../attacks"
+import { DaySpecialAttackType } from "../attacks/shelling/DaySpecialAttackType"
+import { AirState, GearKey } from "../common"
 import { EquipmentState, Equipment } from "../equipment"
 import { MasterShip, MasterGear } from "../MasterDataAdapter"
-import { EvasionTermCalculationResult } from "../types"
 
 export { StatInterval, MaybeNumber } from "@fleethub/utils"
 
@@ -175,6 +177,19 @@ export type EquipmentBonuses = {
 
 export type ApShellModifiers = { power: number; accuracy: number }
 
+export type EvasionAbility = {
+  improvementBonus: number
+  formationModifier: number
+  postcapModifier: number
+  precap: number
+  evasionTerm: number
+}
+
+export type ShellingAbility = {
+  observationTerm: number
+  rates: NumberRecord<DaySpecialAttack>
+}
+
 export type Ship = ShipBase &
   ShipStats & {
     id: string
@@ -194,5 +209,8 @@ export type Ship = ShipBase &
     fleetAntiAir: number
     apShellModifiers: ApShellModifiers
 
-    calcEvasionTerm: (formationModifier: number, postcapModifier?: number) => EvasionTermCalculationResult
+    calcObservationTerm: (fleetLosModifier: number, airState: AirState, isMainFlagship: boolean) => number
+    getPossibleDaySpecialAttackTypes: () => DaySpecialAttackType[]
+    calcShellingAbility: (fleetLosModifier: number, airState: AirState, isMainFlagship: boolean) => ShellingAbility
+    calcEvasionAbility: (formationModifier: number, postcapModifier?: number) => EvasionAbility
   }
