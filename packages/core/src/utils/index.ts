@@ -31,4 +31,3 @@ export * from "./RateMap"
 
 export * from "./GearStub"
 export * from "./EquipmentMock"
-export * from "./ShipMock"
