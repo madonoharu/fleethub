@@ -2,8 +2,7 @@ import { NumberRecord } from "@fleethub/utils"
 
 import { Ship } from "../ship"
 import { DamageModifiers, DefenseParams } from "../damage"
-import { createDaySpecialAttack, DaySpecialAttack } from "../attacks"
-import { ShellingAccuracyParams, ShellingParams, ShellingPowerParams } from "../attacks/shelling/Shelling"
+import { createDaySpecialAttack, DaySpecialAttack, ShellingParams } from "../attacks"
 
 import { getFleetFactors } from "./FleetFactor"
 import { BattleContext } from "./BattleContextImpl"
@@ -47,7 +46,7 @@ export const getShellingParams = (
 
   const apShellModifiers = defenderIsArmored ? attacker.apShellModifiers : undefined
 
-  const power: ShellingPowerParams = {
+  const power: ShellingParams["power"] = {
     formationModifier: formationModifiers.power,
     engagementModifier,
     fleetFactor: fleetFactors.shellingPower,
@@ -61,7 +60,7 @@ export const getShellingParams = (
     specialAttackModifier: specialAttack?.power,
   }
 
-  const accuracy: ShellingAccuracyParams = {
+  const accuracy: ShellingParams["accuracy"] = {
     fleetFactor: fleetFactors.shellingAccuracy,
     basicAccuracyTerm: attacker.basicAccuracyTerm,
     equipmentAccuracy: attacker.accuracy.equipment,
