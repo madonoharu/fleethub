@@ -46,13 +46,14 @@ const engagementModifierDefs: Record<Engagement, number> = {
 }
 
 export default class BattleContextImpl implements BattleContext {
+  public airState: AirState
   public engagement: Engagement
   public player: BattleFleet
   public enemy: BattleFleet
   public nodeType: "NightBattle"
-  public airState: AirState = "AirDenial"
 
   constructor(base: BattleContextBase) {
+    this.airState = base.airState
     this.engagement = base.engagement
     this.player = base.player
     this.enemy = base.enemy
