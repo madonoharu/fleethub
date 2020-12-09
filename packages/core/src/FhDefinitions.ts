@@ -1,6 +1,5 @@
 import deepmerge from "deepmerge"
-import { DaySpecialAttackDefinitions } from "./attacks/shelling/DaySpecialAttack"
-import { FormationDefinitions } from "./common/Formation"
+import { FormationDefinitions, ShellingTypeDefinitions } from "./common"
 import { NightSpecialAttackDefinitions } from "./attacks/night/NightSpecialAttack"
 
 type DeepReadonly<T> = T extends {} ? { readonly [K in keyof T]: DeepReadonly<T[K]> } : T
@@ -8,26 +7,28 @@ type DeepPartial<T> = T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> } : T
 
 export type FhDefinitions = DeepReadonly<{
   formations: FormationDefinitions
-  daySpecialAttacks: DaySpecialAttackDefinitions
+  shellingTypes: ShellingTypeDefinitions
   nightSpecialAttacks: NightSpecialAttackDefinitions
 }>
 
 export type FhOptions = DeepPartial<FhDefinitions>
 
-const defaultDaySpecialAttacks: DaySpecialAttackDefinitions = {
-  Zuiun: { name: "瑞雲", priority: 1, denominator: 130, power: 1.35, accuracy: 1 },
-  Suisei: { name: "海空", priority: 2, denominator: 130, power: 1.3, accuracy: 1 },
+const shellingTypes: ShellingTypeDefinitions = {
+  Normal: { type: "Normal", name: "単発", priority: Infinity, denominator: 0, power: 1, accuracy: 1 },
 
-  MainMain: { name: "主主", priority: 3, denominator: 150, power: 1.5, accuracy: 1.2 },
-  MainApShell: { name: "主徹", priority: 4, denominator: 140, power: 1.3, accuracy: 1.3 },
-  MainRader: { name: "主電", priority: 5, denominator: 130, power: 1.2, accuracy: 1.5 },
-  MainSecond: { name: "主副", priority: 6, denominator: 120, power: 1.1, accuracy: 1.3 },
-  DoubleAttack: { name: "連撃", priority: 7, denominator: 130, power: 1.2, accuracy: 1.1 },
+  Zuiun: { type: "Zuiun", name: "瑞雲", priority: 1, denominator: 130, power: 1.35, accuracy: 1 },
+  Suisei: { type: "Suisei", name: "海空", priority: 2, denominator: 130, power: 1.3, accuracy: 1 },
+
+  MainMain: { type: "MainMain", name: "主主", priority: 3, denominator: 150, power: 1.5, accuracy: 1.2 },
+  MainApShell: { type: "MainApShell", name: "主徹", priority: 4, denominator: 140, power: 1.3, accuracy: 1.3 },
+  MainRader: { type: "MainRader", name: "主電", priority: 5, denominator: 130, power: 1.2, accuracy: 1.5 },
+  MainSecond: { type: "MainSecond", name: "主副", priority: 6, denominator: 120, power: 1.1, accuracy: 1.3 },
+  DoubleAttack: { type: "DoubleAttack", name: "連撃", priority: 7, denominator: 130, power: 1.2, accuracy: 1.1 },
 
   /** @see https://docs.google.com/spreadsheets/d/1i5jTixnOVjqrwZvF_4Uqf3L9ObHhS7dFqG8KiE5awkY */
-  FBA: { name: "FBA", priority: 1, denominator: 125, power: 1.25, accuracy: 1 },
-  BBA: { name: "BBA", priority: 2, denominator: 140, power: 1.2, accuracy: 1 },
-  BA: { name: "BA", priority: 3, denominator: 155, power: 1.15, accuracy: 1 },
+  FBA: { type: "FBA", name: "FBA", priority: 1, denominator: 125, power: 1.25, accuracy: 1 },
+  BBA: { type: "BBA", name: "BBA", priority: 2, denominator: 140, power: 1.2, accuracy: 1 },
+  BA: { type: "BA", name: "BA", priority: 3, denominator: 155, power: 1.15, accuracy: 1 },
 }
 
 const defaultNightSpecialAttacks: NightSpecialAttackDefinitions = {
@@ -157,7 +158,7 @@ export const defaultFhDefinitions: FhDefinitions = {
     },
   },
 
-  daySpecialAttacks: defaultDaySpecialAttacks,
+  shellingTypes,
   nightSpecialAttacks: defaultNightSpecialAttacks,
 }
 

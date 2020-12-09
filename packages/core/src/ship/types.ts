@@ -1,7 +1,6 @@
 import { NumberRecord } from "@fleethub/utils"
-import { DaySpecialAttack } from "../attacks"
-import { DaySpecialAttackType } from "../attacks/shelling/DaySpecialAttackType"
-import { AirState, GearKey } from "../common"
+
+import { AirState, GearKey, ShellingTypeDefinition } from "../common"
 import { EquipmentState, Equipment } from "../equipment"
 import { MasterShip, MasterGear } from "../MasterDataAdapter"
 
@@ -187,7 +186,8 @@ export type EvasionAbility = {
 
 export type ShellingAbility = {
   observationTerm: number
-  rates: NumberRecord<DaySpecialAttack>
+  rates: NumberRecord<ShellingTypeDefinition>
+  specialAttackRate: number
 }
 
 export type Ship = ShipBase &
@@ -209,8 +209,6 @@ export type Ship = ShipBase &
     fleetAntiAir: number
     apShellModifiers: ApShellModifiers
 
-    calcObservationTerm: (fleetLosModifier: number, airState: AirState, isMainFlagship: boolean) => number
-    getPossibleDaySpecialAttackTypes: () => DaySpecialAttackType[]
     calcShellingAbility: (fleetLosModifier: number, airState: AirState, isMainFlagship: boolean) => ShellingAbility
     calcEvasionAbility: (formationModifier: number, postcapModifier?: number) => EvasionAbility
   }
