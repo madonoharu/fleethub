@@ -1,37 +1,16 @@
-import { NumberRecord } from "@fleethub/utils"
-
 import { Ship } from "../ship"
 import { DamageModifiers, DefenseParams } from "../damage"
-import { createDaySpecialAttack, DaySpecialAttack, ShellingParams } from "../attacks"
+import { ShellingParams } from "../attacks"
 
 import { getFleetFactors } from "./FleetFactor"
 import { BattleContext } from "./BattleContextImpl"
-
-export const getShipShellingAbility = (ship: Ship, ctx: BattleContext) => {
-  const { role, isFlagship, side } = ctx.getShipContext(ship)
-  const isMainFlagship = role === "Main" && isFlagship
-  const fleetLosModifier = side === "Player" ? ctx.player.calcFleetLosModifier() : ctx.enemy.calcFleetLosModifier()
-  const airState = ctx.airState
-
-  const observationTerm = ship.calcObservationTerm(fleetLosModifier, airState, isMainFlagship)
-
-  const attacks = ship.getPossibleDaySpecialAttackTypes().map(createDaySpecialAttack)
-  const rates = new NumberRecord<DaySpecialAttack>()
-
-  attacks.forEach((attack) => {
-    const attackRate = Math.min(observationTerm / attack.denominator, 1)
-    const actualRate = (1 - rates.sum()) * attackRate
-    rates.set(attack, actualRate)
-  })
-
-  return { observationTerm, rates }
-}
+import { SpecialAttackModifiers } from "../common"
 
 export const getShellingParams = (
   battleContext: BattleContext,
   attacker: Ship,
   defender: Ship,
-  specialAttack?: DaySpecialAttack
+  specialAttackModifiers?: SpecialAttackModifiers
 ): ShellingParams => {
   const { engagementModifier, getShipContext } = battleContext
   const attackerCtx = getShipContext(attacker)
@@ -57,7 +36,7 @@ export const getShellingParams = (
     healthModifier: attacker.health.commonPowerModifier,
     cruiserFitBonus: attacker.cruiserFitBonus,
     apShellModifier: apShellModifiers?.power,
-    specialAttackModifier: specialAttack?.power,
+    specialAttackModifier: specialAttackModifiers?.power,
   }
 
   const accuracy: ShellingParams["accuracy"] = {
@@ -69,7 +48,7 @@ export const getShellingParams = (
     fitGunBonus: NaN,
     formationModifier: formationModifiers.accuracy,
     apShellModifier: apShellModifiers?.accuracy,
-    specialAttackModifier: specialAttack?.accuracy,
+    specialAttackModifier: specialAttackModifiers?.accuracy,
   }
 
   const evasion = defender.calcEvasionAbility(battleContext.getFormationModifiers(defenderCtx).shelling.evasion)

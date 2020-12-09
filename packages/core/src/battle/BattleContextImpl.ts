@@ -1,9 +1,9 @@
 import { mapValues } from "@fleethub/utils"
 
-import { AirState, Engagement } from "../common"
+import { AirState, Engagement, SpecialAttackModifiers } from "../common"
 import { fhDefinitions } from "../FhDefinitions"
 import { Ship } from "../ship"
-import { DaySpecialAttack, ShellingParams } from "../attacks"
+import { ShellingParams } from "../attacks"
 
 import { BattleFleet, ShipContext } from "./BattleFleetImpl"
 import { getShellingParams } from "./shelling"
@@ -102,7 +102,11 @@ export default class BattleContextImpl implements BattleContext {
     return ship.calcShellingAbility(fleetLosModifier, airState, isMainFlagship)
   }
 
-  public getShellingParams = (attacker: Ship, defender: Ship, specialAttack?: DaySpecialAttack): ShellingParams => {
-    return getShellingParams(this, attacker, defender, specialAttack)
+  public getShellingParams = (
+    attacker: Ship,
+    defender: Ship,
+    specialAttackModifiers?: SpecialAttackModifiers
+  ): ShellingParams => {
+    return getShellingParams(this, attacker, defender, specialAttackModifiers)
   }
 }
