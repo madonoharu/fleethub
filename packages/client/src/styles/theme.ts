@@ -64,6 +64,11 @@ const muiTheme = createMuiTheme({
         color: "primary",
       },
     },
+    MuiTextField: {
+      defaultProps: {
+        size: "small",
+      },
+    },
 
     MuiCssBaseline: {
       styleOverrides: {
