@@ -1,5 +1,4 @@
 import React from "react"
-import styled from "@emotion/styled"
 import { EnemyFleetState } from "@fleethub/core"
 import { MapEnemyFleet } from "@fleethub/data"
 
@@ -37,14 +36,15 @@ type Props = {
 }
 
 const MapEnemyFleetCard: React.FCX<Props> = ({ className, mapEnemyFleet, visibleAlbFp, onSelect }) => {
-  const { createEnemyFleetByMapEnemy } = useFhSystem()
-  const enemyFleet = createEnemyFleetByMapEnemy(mapEnemyFleet)
+  const { mapEnemyFleetToState, createEnemyFleet } = useFhSystem()
+  const state = mapEnemyFleetToState(mapEnemyFleet)
+  const fleet = createEnemyFleet(state)
 
   return (
     <Paper className={className}>
-      <EnemyFleetContent enemy={enemyFleet} visibleAlbFp={visibleAlbFp} />
+      <EnemyFleetContent enemy={fleet} visibleAlbFp={visibleAlbFp} />
       {mapEnemyFleet.formations.map((formation) => (
-        <FormationButton key={formation} formation={formation} onClick={() => onSelect?.(enemyFleet.state)} />
+        <FormationButton key={formation} formation={formation} onClick={() => onSelect?.(state)} />
       ))}
     </Paper>
   )
