@@ -117,32 +117,30 @@ export default class ShellingImpl {
   public analyze() {
     const { params } = this
 
-    const powerProcess = this.calcPower()
-    const accuracyProcess = this.calcAccuracy()
-    const evasionProcess = params.evasion
+    const powerDetail = this.calcPower()
+    const accuracyDetail = this.calcAccuracy()
+    const evasionDetail = params.evasion
 
-    const hitRateProcess = calcHitRate({
+    const hitRateDetail = calcHitRate({
       criticalRateMultiplier,
-      accuracyTerm: accuracyProcess.accuracyTerm,
-      evasionTerm: evasionProcess.evasionTerm,
+      accuracyTerm: accuracyDetail.accuracyTerm,
+      evasionTerm: evasionDetail.evasionTerm,
       ...params.hitRate,
     })
 
-    const normalDamage = new Damage({ ...params.damage, attackTerm: powerProcess.normal }, params.defense)
-    const criticalDamage = new Damage({ ...params.damage, attackTerm: powerProcess.critical }, params.defense)
+    const normalDamage = new Damage({ ...params.damage, attackTerm: powerDetail.normal }, params.defense)
+    const criticalDamage = new Damage({ ...params.damage, attackTerm: powerDetail.critical }, params.defense)
 
-    const normalPd = normalDamage.toDistribution().scale(hitRateProcess.normalRate)
-    const criticalPd = criticalDamage.toDistribution().scale(hitRateProcess.criticalRate)
+    const normalPd = normalDamage.toDistribution().scale(hitRateDetail.normalRate)
+    const criticalPd = criticalDamage.toDistribution().scale(hitRateDetail.criticalRate)
 
     const total = normalPd.add(criticalPd)
 
     return {
-      process: {
-        power: powerProcess,
-        accuracy: accuracyProcess,
-        evasion: evasionProcess,
-        hitRate: hitRateProcess,
-      },
+      powerDetail,
+      accuracyDetail,
+      evasionDetail,
+      hitRateDetail,
       normalDamage,
       criticalDamage,
       total,
