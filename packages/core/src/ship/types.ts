@@ -1,6 +1,6 @@
 import { NumberRecord } from "@fleethub/utils"
 
-import { AirState, GearKey, ShellingTypeDefinition } from "../common"
+import { AirState, GearKey, DayCutin } from "../common"
 import { EquipmentState, Equipment } from "../equipment"
 import { MasterShip, MasterGear } from "../MasterDataAdapter"
 
@@ -186,8 +186,8 @@ export type EvasionAbility = {
 
 export type ShellingAbility = {
   observationTerm: number
-  rates: NumberRecord<ShellingTypeDefinition>
-  specialAttackRate: number
+  rates: NumberRecord<DayCutin>
+  cutinRate: number
 }
 
 export type Ship = ShipBase &

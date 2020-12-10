@@ -10,25 +10,3 @@ export type SpecialAttackModifiers = {
   power: number
   accuracy: number
 }
-
-export type ShellingType =
-  | "Normal"
-  | "MainMain"
-  | "MainApShell"
-  | "MainRader"
-  | "MainSecond"
-  | "DoubleAttack"
-  | "Zuiun"
-  | "Suisei"
-  | "FBA"
-  | "BBA"
-  | "BA"
-
-export type ShellingTypeDefinition = SpecialAttackModifiers & {
-  type: ShellingType
-  name: string
-  priority: number
-  denominator: number
-}
-
-export type ShellingTypeDefinitions = Record<ShellingType, ShellingTypeDefinition>

@@ -1,13 +1,13 @@
 import { GearId, NumberRecord } from "@fleethub/utils"
 
-import { AirState, ShellingType, ShellingTypeDefinition } from "../common"
-import { fhDefinitions } from "../FhDefinitions"
+import { AirState, DayCutin, DayCutinType } from "../common"
+import { getDayCutin } from "../FhDefinitions"
 
 import { ShellingAbility, Ship } from "./types"
 
-const getPossibleShellingTypes = (ship: Ship): ShellingType[] => {
+const getPossibleDayCutinTypes = (ship: Ship): DayCutinType[] => {
   const { equipment } = ship
-  const types: ShellingType[] = ["Normal"]
+  const types: DayCutinType[] = ["Normal"]
 
   if (ship.isCarrierLike) {
     const cbBomberAircraftCount = equipment.countAircraft((gear) => gear.category === "CbDiveBomber")
@@ -89,8 +89,6 @@ const calcObservationTerm = (ship: Ship, fleetLosModifier: number, airState: Air
   return 0
 }
 
-const getShellingDef = (type: ShellingType) => fhDefinitions.shellingTypes[type]
-
 export const calcShellingAbility = (
   ship: Ship,
   fleetLosModifier: number,
@@ -98,10 +96,10 @@ export const calcShellingAbility = (
   isMainFlagship: boolean
 ): ShellingAbility => {
   const observationTerm = calcObservationTerm(ship, fleetLosModifier, airState, isMainFlagship)
-  const types = getPossibleShellingTypes(ship)
-  const rates = new NumberRecord<ShellingTypeDefinition>()
+  const types = getPossibleDayCutinTypes(ship)
+  const rates = new NumberRecord<DayCutin>()
 
-  const defs = types.map(getShellingDef).sort((a, b) => a.priority - b.priority)
+  const defs = types.map(getDayCutin).sort((a, b) => a.priority - b.priority)
 
   defs.forEach((def) => {
     const attackRate = Math.min(observationTerm / def.denominator, 1)
@@ -109,7 +107,7 @@ export const calcShellingAbility = (
     rates.insert(def, actualRate)
   })
 
-  const specialAttackRate = rates.map((rate, def) => (def.type === "Normal" ? 0 : rate)).sum()
+  const cutinRate = rates.map((rate, def) => (def.type === "Normal" ? 0 : rate)).sum()
 
-  return { observationTerm, rates, specialAttackRate }
+  return { observationTerm, rates, cutinRate }
 }
