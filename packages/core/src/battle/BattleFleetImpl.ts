@@ -65,16 +65,25 @@ export default class BattleFleetImpl implements BattleFleet {
   public getShipContext = (ship: Ship): ShipContext | undefined => {
     const { main, escort, side, fleetType, formation } = this
 
-    const role: ShipRole = escort?.ships.includes(ship) ? "Escort" : "Main"
-    const fleet = role === "Main" ? main : escort
-    const isFlagship = fleet?.ships[0] === ship
+    let fleet: Fleet
+    let role: ShipRole
 
-    if (!fleet) return
+    if (main.ships.includes(ship)) {
+      role = "Main"
+      fleet = main
+    } else if (escort?.ships.includes(ship)) {
+      role = "Escort"
+      fleet = escort
+    } else {
+      return
+    }
 
     const index = fleet.entries.findIndex((entry) => entry[1] === ship)
+    const isFlagship = index === 0
+
     /** temp */
     const length = 6
-    const position = index >= Math.floor(length / 2) ? "TopHalf" : "BottomHalf"
+    const position = index >= Math.floor(length / 2) ? "BottomHalf" : "TopHalf"
 
     return {
       side,
