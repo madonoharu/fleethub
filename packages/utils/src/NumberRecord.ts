@@ -54,15 +54,15 @@ export default class NumberRecord<K> {
     return new NumberRecord<K>(this.#data).insert(key, value)
   }
 
-  public sum(): number {
-    return this.keys().reduce((value, key) => value + this.get(key), 0)
+  public forEach(fn: (value: number, key: K) => void): void {
+    this.#data.forEach(fn)
   }
 
   public map(fn: (value: number, key: K) => number): NumberRecord<K> {
     const next = new NumberRecord<K>()
 
-    this.keys().forEach((key) => {
-      next.insert(key, fn(this.get(key), key))
+    this.forEach((value, key) => {
+      next.insert(key, fn(value, key))
     })
 
     return next
@@ -88,6 +88,42 @@ export default class NumberRecord<K> {
 
   public scale(multiplier: number): NumberRecord<K> {
     return this.map((value) => value * multiplier)
+  }
+
+  public sum(): number {
+    return this.keys().reduce((value, key) => value + this.get(key), 0)
+  }
+
+  public minBy(fn: (value: number, key: K) => number): [K, number] | undefined {
+    let result: [K, number] | undefined
+    let min: number | undefined
+
+    this.forEach((value, key) => {
+      const current = fn(value, key)
+
+      if (min === undefined || current < min) {
+        min = current
+        result = [key, value]
+      }
+    })
+
+    return result
+  }
+
+  public maxBy(fn: (value: number, key: K) => number): [K, number] | undefined {
+    let result: [K, number] | undefined
+    let max: number | undefined
+
+    this.forEach((value, key) => {
+      const current = fn(value, key)
+
+      if (max === undefined || current > max) {
+        max = current
+        result = [key, value]
+      }
+    })
+
+    return result
   }
 
   public toArray(): [K, number][] {
