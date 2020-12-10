@@ -133,6 +133,16 @@ export default class ShellingImpl {
 
     const total = normalPd.add(criticalPd)
 
-    return { normalDamage, criticalDamage, total }
+    return {
+      process: {
+        power: powerProcess,
+        accuracy: accuracyProcess,
+        evasion: evasionProcess,
+        hitRate: hitRateProcess,
+      },
+      normalDamage,
+      criticalDamage,
+      total,
+    }
   }
 }
