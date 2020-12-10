@@ -5,6 +5,7 @@ import { ShellingParams } from "../attacks"
 import { getFleetFactors } from "./FleetFactor"
 import { BattleContext } from "./BattleContextImpl"
 import { SpecialAttackModifiers } from "../common"
+import { getShellingFitGunBonus } from "./fitGunBonus"
 
 export const getShellingParams = (
   battleContext: BattleContext,
@@ -45,7 +46,7 @@ export const getShellingParams = (
     equipmentAccuracy: attacker.accuracy.equipment,
     improvementBonus: attacker.equipment.sumBy((gear) => gear.improvementBonuses.shellingAccuracy),
     moraleModifier: attacker.morale.commonAccuracyModifier,
-    fitGunBonus: NaN,
+    fitGunBonus: getShellingFitGunBonus(attacker),
     formationModifier: formationModifiers.accuracy,
     apShellModifier: apShellModifiers?.accuracy,
     specialAttackModifier: specialAttackModifiers?.accuracy,
