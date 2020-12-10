@@ -3,6 +3,9 @@ import { EvasionAbility } from "../../ship"
 import { calcAttackPower } from "../AttackPower"
 import { calcHitRate } from "../hit"
 
+const cap = 180
+const criticalRateMultiplier = 1.3
+
 export type ShellingPowerParams = {
   firepower: number
   improvementBonus: number
@@ -35,7 +38,6 @@ export type ShellingAccuracyParams = {
 
 export type HitRateModifiers = {
   moraleModifier: number
-  criticalRateMultiplier: number
   hitRateBonus?: number
   criticalRateBonus?: number
 }
@@ -76,7 +78,7 @@ export default class ShellingImpl {
     const attackPower = calcAttackPower({
       basic,
       airPower,
-      cap: 180,
+      cap,
       a14,
       b14,
       a11,
@@ -120,6 +122,7 @@ export default class ShellingImpl {
     const evasionProcess = params.evasion
 
     const hitRateProcess = calcHitRate({
+      criticalRateMultiplier,
       accuracyTerm: accuracyProcess.accuracyTerm,
       evasionTerm: evasionProcess.evasionTerm,
       ...params.hitRate,
