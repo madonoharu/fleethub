@@ -8,7 +8,7 @@ export type HitRateParams = {
   criticalRateBonus?: number
 }
 
-export type HitRateProcess = HitRateParams & {
+export type HitRateDetail = HitRateParams & {
   hitRate: number
   criticalRate: number
   normalRate: number
@@ -31,7 +31,7 @@ const calcHitRateBasis = ({ accuracyTerm, evasionTerm, moraleModifier }: HitRate
   return value
 }
 
-export const calcHitRate = (params: HitRateParams): HitRateProcess => {
+export const calcHitRate = (params: HitRateParams): HitRateDetail => {
   const { criticalRateMultiplier, hitRateBonus = 0, criticalRateBonus = 0 } = params
   const hitRateBasis = calcHitRateBasis(params)
 
@@ -47,7 +47,7 @@ export const calcHitRate = (params: HitRateParams): HitRateProcess => {
 
 type HitStatus = "Miss" | "Normal" | "Critical"
 
-export const getHitStatus = (rate: Pick<HitRateProcess, "criticalRate" | "hitRate">): HitStatus => {
+export const getHitStatus = (rate: Pick<HitRateDetail, "criticalRate" | "hitRate">): HitStatus => {
   const randomNum = Math.random()
 
   if (randomNum < rate.criticalRate) return "Critical"
