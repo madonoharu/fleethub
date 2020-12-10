@@ -56,8 +56,9 @@ export const getShellingParams = (
 
   const hitRate = {
     moraleModifier: defender.morale.evasionModifier,
+    /** temp */
     criticalRateBonus: 0,
-    criticalRateMultiplier: 0,
+    /** temp */
     hitRateBonus: 0,
   }
 
