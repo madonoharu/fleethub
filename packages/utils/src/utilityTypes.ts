@@ -13,7 +13,3 @@ export type Equal<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T exte
 export type ValueOf<T> = { [K in keyof T]: T[K] }[keyof T]
 
 export type Literal = string | number | bigint | boolean
-
-type Last<T extends unknown[]> = [unknown, ...T][T["length"]]
-type Shift<T extends unknown[]> = T extends [infer _, ...infer I] ? I : []
-type Pop<T extends unknown[]> = T extends [...infer I, infer _] ? I : []
