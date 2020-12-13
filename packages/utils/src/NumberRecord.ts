@@ -3,20 +3,19 @@ import { uniq } from "./array"
 type NumberDict<K> = K extends string ? Partial<Record<K, number>> : never
 
 export default class NumberRecord<K> {
+  #mut = false
   #data: Map<K, number>
 
   static count = <K>(array: K[]): NumberRecord<K> => {
-    const counts = new NumberRecord<K>()
-
-    array.forEach((item) => {
-      counts.insert(item, counts.get(item) + 1)
+    return new NumberRecord<K>().withMut((self) => {
+      array.forEach((item) => {
+        self.add(item, 1)
+      })
     })
-
-    return counts
   }
 
   /** Relative Frequency Distribution */
-  static rfd = <K>(array: K[]): NumberRecord<K> => NumberRecord.count(array).scale(1 / array.length)
+  static rfd = <K>(array: K[]): NumberRecord<K> => NumberRecord.count(array).multiply(1 / array.length)
 
   constructor(data?: NumberDict<K> | Map<K, number> | [K, number][]) {
     if (Array.isArray(data) || data instanceof Map) {
@@ -28,13 +27,27 @@ export default class NumberRecord<K> {
     this.#data = data
   }
 
-  public insert(key: K, value: number): NumberRecord<K> {
-    if (value === 0) {
-      this.#data.delete(key)
-    } else {
-      this.#data.set(key, value)
-    }
+  public clone(): NumberRecord<K> {
+    return new NumberRecord(this.#data)
+  }
 
+  private self(): NumberRecord<K> {
+    return this.#mut ? this : this.clone()
+  }
+
+  public withMut(mutator: (self: NumberRecord<K>) => void): NumberRecord<K> {
+    const self = this.self()
+    const mut = self.#mut
+
+    self.#mut = true
+    mutator(self)
+    self.#mut = mut
+
+    return self
+  }
+
+  private put(key: K, value: number): this {
+    this.#data.set(key, value)
     return this
   }
 
@@ -46,48 +59,68 @@ export default class NumberRecord<K> {
     return [...this.#data.values()]
   }
 
+  public toArray(): [K, number][] {
+    return [...this.#data.entries()]
+  }
+
   public get(key: K): number {
     return this.#data.get(key) || 0
   }
 
   public set(key: K, value: number): NumberRecord<K> {
-    return new NumberRecord<K>(this.#data).insert(key, value)
+    return this.self().put(key, value)
+  }
+
+  public delete(key: K): NumberRecord<K> {
+    const self = this.self()
+    self.#data.delete(key)
+
+    return self
   }
 
   public forEach(fn: (value: number, key: K) => void): void {
     this.#data.forEach(fn)
   }
 
+  public add(key: K, addend: number): NumberRecord<K>
+  public add(addend: NumberRecord<K>): NumberRecord<K>
+  public add(...args: [K, number] | [NumberRecord<K>]): NumberRecord<K> {
+    const self = this.self()
+
+    if (args.length === 2) {
+      const [key, addend] = args
+      return self.set(key, self.get(key) + addend)
+    }
+
+    const addend = args[0]
+
+    const keys = uniq([...self.keys(), ...addend.keys()])
+
+    return self.withMut((self) => {
+      keys.forEach((key) => {
+        self.add(key, addend.get(key))
+      })
+    })
+  }
+
+  public multiply(multiplier: number): NumberRecord<K> {
+    const self = this.self()
+
+    self.forEach((value, key) => {
+      self.put(key, value * multiplier)
+    })
+
+    return self
+  }
+
   public map(fn: (value: number, key: K) => number): NumberRecord<K> {
-    const next = new NumberRecord<K>()
+    const cloned = this.clone()
 
-    this.forEach((value, key) => {
-      next.insert(key, fn(value, key))
+    cloned.forEach((value, key) => {
+      cloned.put(key, fn(value, key))
     })
 
-    return next
-  }
-
-  public update(key: K, fn: (value: number, key: K) => number): NumberRecord<K> {
-    const value = this.get(key)
-    return this.set(key, fn(value, key))
-  }
-
-  public add(record: NumberRecord<K>): NumberRecord<K> {
-    const result = new NumberRecord<K>()
-
-    const keys = uniq([...this.keys(), ...record.keys()])
-
-    keys.forEach((key) => {
-      const value = this.get(key) + record.get(key)
-      result.insert(key, value)
-    })
-
-    return result
-  }
-
-  public scale(multiplier: number): NumberRecord<K> {
-    return this.map((value) => value * multiplier)
+    return cloned
   }
 
   public sum(): number {
@@ -124,9 +157,5 @@ export default class NumberRecord<K> {
     })
 
     return result
-  }
-
-  public toArray(): [K, number][] {
-    return [...this.#data.entries()]
   }
 }
