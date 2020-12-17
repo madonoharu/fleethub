@@ -123,6 +123,16 @@ export default class NumberRecord<K> {
     return cloned
   }
 
+  public filter(fn: (value: number, key: K) => boolean): NumberRecord<K> {
+    const cloned = this.clone()
+
+    return cloned.withMut((self) => {
+      self.forEach((value, key) => {
+        if (!fn(value, key)) self.delete(key)
+      })
+    })
+  }
+
   public sum(): number {
     return this.keys().reduce((value, key) => value + this.get(key), 0)
   }
@@ -155,6 +165,26 @@ export default class NumberRecord<K> {
         result = [key, value]
       }
     })
+
+    return result
+  }
+
+  public toObject(): K extends string ? Partial<Record<K, number>> : never
+  public toObject<P extends string>(fn: (key: K, value: number) => P): Partial<Record<P, number>>
+  public toObject(fn?: (key: K, value: number) => string): Partial<Record<string, number>> {
+    const result: Partial<Record<string, number>> = {}
+
+    if (!fn) {
+      this.forEach((value, key) => {
+        if (typeof key === "string") {
+          result[key] = value
+        }
+      })
+    } else {
+      this.forEach((value, key) => {
+        result[fn(key, value)] = value
+      })
+    }
 
     return result
   }
