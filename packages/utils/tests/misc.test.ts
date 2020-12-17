@@ -2,7 +2,7 @@ import { isNonNullable, range } from "../src"
 
 describe("utils/misc", () => {
   it("range", () => {
-    expect(range(5)).toEqual([0, 1, 2, 3, 4, 5])
+    expect(range(5)).toEqual([0, 1, 2, 3, 4])
   })
 
   it("cloneJson", () => {
