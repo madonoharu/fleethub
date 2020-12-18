@@ -2,6 +2,8 @@ import { randint, range, NumberRecord } from "@fleethub/utils"
 
 import ScratchDamage from "./ScratchDamage"
 import ProtectionDamage from "./ProtectionDamage"
+import { getHealthState } from "../utils"
+import { HealthState } from "../ship"
 
 type DefensePowerParams = {
   armor: number
@@ -94,13 +96,13 @@ export default class Damage {
     const parameter = unmodifiedDamages.length
 
     const scratchProbability = unmodifiedDamages.filter((value) => value === 0).length / parameter
-    const scratchDamagePd = scratchDamage.toDistribution().scale(scratchProbability)
+    const scratchDamagePd = scratchDamage.toDistribution().multiply(scratchProbability)
 
     const overkillDamages = unmodifiedDamages.filter((value) => value >= currentHp)
     const overkillProbability = overkillDamages.length / parameter
 
     const normalDamages = unmodifiedDamages.filter((value) => this.isNormalDamage(value))
-    const normalDamagePd = NumberRecord.count(normalDamages).scale(1 / parameter)
+    const normalDamagePd = NumberRecord.count(normalDamages).multiply(1 / parameter)
 
     const normalWithScratch = normalDamagePd.add(scratchDamagePd)
 
@@ -109,11 +111,29 @@ export default class Damage {
     }
 
     if (protection) {
-      const protectionPd = protectionDamage.toDistribution().scale(overkillProbability)
+      const protectionPd = protectionDamage.toDistribution().multiply(overkillProbability)
 
       return normalWithScratch.add(protectionPd)
     }
 
-    return normalWithScratch.update(currentHp - 1, (value) => value + overkillProbability)
+    return normalWithScratch.add(currentHp - 1, overkillProbability)
+  }
+
+  public analyze() {
+    const { defenseParams } = this
+
+    const distribution = this.toDistribution()
+    const damages = distribution.keys()
+    const min = Math.min(...damages)
+    const max = Math.max(...damages)
+
+    const damagedStates = new NumberRecord<HealthState>().withMut((self) => {
+      distribution.forEach((rate, damage) => {
+        const damagedState = getHealthState(defenseParams.maxHp, defenseParams.currentHp - damage)
+        self.add(damagedState, rate)
+      })
+    })
+
+    return { min, max, damagedStates }
   }
 }

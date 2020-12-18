@@ -1,10 +1,14 @@
+import { NumberRecord } from "@fleethub/utils"
+import { getHealthState } from "../../utils"
 import { Damage, DamageModifiers, DefenseParams } from "../../damage"
-import { EvasionAbility } from "../../ship"
+import { EvasionAbility, HealthState } from "../../ship"
 import { calcAttackPower } from "../AttackPower"
 import { calcHitRate } from "../hit"
 
 const cap = 180
 const criticalRateMultiplier = 1.3
+
+type AttackResultState = HealthState | "Miss"
 
 export type ShellingPowerParams = {
   firepower: number
@@ -128,13 +132,58 @@ export default class ShellingImpl {
       ...params.hitRate,
     })
 
-    const normalDamage = new Damage({ ...params.damage, attackTerm: powerDetail.normal }, params.defense)
-    const criticalDamage = new Damage({ ...params.damage, attackTerm: powerDetail.critical }, params.defense)
+    const missRate = 1 - hitRateDetail.hitRate
 
-    const normalPd = normalDamage.toDistribution().scale(hitRateDetail.normalRate)
-    const criticalPd = criticalDamage.toDistribution().scale(hitRateDetail.criticalRate)
+    const getDamages = (currentHp: number) => {
+      const defenseParams = { ...params.defense, currentHp }
+      const normalDamage = new Damage({ ...params.damage, attackTerm: powerDetail.normal }, defenseParams)
+      const criticalDamage = new Damage({ ...params.damage, attackTerm: powerDetail.critical }, defenseParams)
 
-    const total = normalPd.add(criticalPd)
+      return { normalDamage, criticalDamage }
+    }
+
+    const getDamageRatesBy = (currentHp: number, count = 1): NumberRecord<number> => {
+      const { normalDamage, criticalDamage } = getDamages(currentHp)
+
+      const normalDamageRates = normalDamage.toDistribution().multiply(hitRateDetail.normalRate)
+      const criticalDamageRates = criticalDamage.toDistribution().multiply(hitRateDetail.criticalRate)
+
+      const rates1 = new NumberRecord<number>().withMut((mut) => {
+        mut
+          .add(normalDamageRates)
+          .add(criticalDamageRates)
+          .add(0, missRate)
+          .filter((rate) => rate > 0)
+      })
+
+      if (count === 1) return rates1
+
+      const rates2 = new NumberRecord<number>().withMut((mut) => {
+        rates1.forEach((rate1, damage1) => {
+          const hp = Math.max(currentHp - damage1, 0)
+          getDamageRatesBy(hp, count - 1).forEach((rate2, damage2) => {
+            mut.set(damage1 + damage2, rate1 * rate2)
+          })
+        })
+      })
+
+      return rates2
+    }
+
+    const { normalDamage, criticalDamage } = getDamages(params.defense.currentHp)
+    const damageRates = getDamageRatesBy(params.defense.currentHp, 2)
+
+    const getAttackResultState = (damage: number): AttackResultState => {
+      if (!damage) return "Miss"
+      return getHealthState(params.defense.maxHp, params.defense.currentHp - damage)
+    }
+
+    const attackResultStates = new NumberRecord<AttackResultState>().withMut((mut) => {
+      damageRates.forEach((rate, damage) => {
+        const state = getAttackResultState(damage)
+        mut.add(state, rate)
+      })
+    })
 
     return {
       powerDetail,
@@ -143,7 +192,7 @@ export default class ShellingImpl {
       hitRateDetail,
       normalDamage,
       criticalDamage,
-      total,
+      attackResultStates,
     }
   }
 }
