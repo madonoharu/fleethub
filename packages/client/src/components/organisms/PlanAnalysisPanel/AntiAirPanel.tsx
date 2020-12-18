@@ -74,7 +74,7 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
           variant="outlined"
           label="陣形"
           combined={plan.isCombined}
-          formation={formation}
+          value={formation}
           onChange={setFormation}
         />
 
