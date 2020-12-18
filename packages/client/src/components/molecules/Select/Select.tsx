@@ -44,8 +44,14 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
     [options, onChange]
   )
 
+  const index = options.indexOf(value)
+
+  if (index < 0) {
+    console.warn(props.label, options, value)
+  }
+
   return (
-    <Input value={options.indexOf(value)} variant={variant} onChange={handleChange} select {...muiProps}>
+    <Input value={index} variant={variant} onChange={handleChange} select {...muiProps}>
       {options.map((option, index) => (
         <MenuItem key={index} value={index}>
           {getOptionLabel(option)}
