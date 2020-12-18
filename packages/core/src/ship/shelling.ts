@@ -97,14 +97,14 @@ export const calcShellingAbility = (
 ): ShellingAbility => {
   const observationTerm = calcObservationTerm(ship, fleetLosModifier, airState, isMainFlagship)
   const types = getPossibleDayCutinTypes(ship)
-  const rates = new NumberRecord<DayCutin>()
+  const cutins = types.map(getDayCutin).sort((a, b) => a.priority - b.priority)
 
-  const defs = types.map(getDayCutin).sort((a, b) => a.priority - b.priority)
-
-  defs.forEach((def) => {
-    const attackRate = Math.min(observationTerm / def.denominator, 1)
-    const actualRate = (1 - rates.sum()) * attackRate
-    rates.insert(def, actualRate)
+  const rates = new NumberRecord<DayCutin>().withMut((rates) => {
+    cutins.forEach((ci) => {
+      const attackRate = Math.min(observationTerm / ci.denominator, 1)
+      const actualRate = (1 - rates.sum()) * attackRate
+      rates.set(ci, actualRate)
+    })
   })
 
   const cutinRate = rates.map((rate, def) => (def.type === "Normal" ? 0 : rate)).sum()
