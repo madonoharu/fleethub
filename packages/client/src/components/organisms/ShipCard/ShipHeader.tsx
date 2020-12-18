@@ -3,69 +3,51 @@ import styled from "@emotion/styled"
 import { Ship, ShipState } from "@fleethub/core"
 import { useTranslation } from "react-i18next"
 
-import { Button, Tooltip } from "@material-ui/core"
-import EditIcon from "@material-ui/icons/Edit"
+import { Button, Tooltip, Typography } from "@material-ui/core"
 
-import { UpdateButton, ClearButton, InfoButton, StarButton } from "../../../components"
+import { UpdateButton, ClearButton, InfoButton, StarButton, EditButton } from "../../../components"
 
 import { useModal } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import ShipEditor from "./ShipEditor"
 
-import ShipDetailScreen from "../ShipDetailScreen"
-
 const StyledButton = styled(Button)`
   height: 100%;
-  min-width: calc(100% - ${24 * 5}px);
   justify-content: flex-start;
-
-  margin-right: 24px;
-  overflow: hidden;
-  white-space: nowrap;
-
-  svg {
-    font-size: 18px;
-  }
+  width: 56px;
 `
 
 type Props = {
   ship: Ship
   update: Update<ShipState>
+  onDetailClick?: () => void
   onRemove?: () => void
 }
 
-const ShipHeader: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
+const ShipHeader: React.FCX<Props> = ({ className, ship, update, onDetailClick, onRemove }) => {
   const { t } = useTranslation("ships")
   const Modal = useModal()
-  const ShipDetailScreenModal = useModal()
 
   return (
     <div className={className}>
       <Tooltip title="ステータスを編集">
-        <StyledButton onClick={Modal.show} endIcon={<EditIcon />}>
-          Lv{ship.level} {t(ship.name)}
-        </StyledButton>
+        <StyledButton onClick={Modal.show}>Lv{ship.level}</StyledButton>
       </Tooltip>
 
+      <Typography css={{ marginRight: "auto" }} noWrap variant="body2">
+        {t(ship.name)}
+      </Typography>
+
+      <EditButton title="ステータスを編集" size="tiny" />
+      <InfoButton size="tiny" onClick={onDetailClick} />
       <StarButton title="艦娘プリセットに追加" size="tiny" />
-      <InfoButton size="tiny" onClick={ShipDetailScreenModal.show} />
-      <UpdateButton size="tiny" />
+      <UpdateButton title="艦娘を変更" size="tiny" />
       <ClearButton title="削除" size="tiny" onClick={onRemove} />
 
       <Modal>
         <ShipEditor ship={ship} update={update} />
       </Modal>
-      <ShipDetailScreenModal>
-        <ShipDetailScreen
-          ship={ship}
-          onChange={(state) =>
-            update((draft) => {
-              Object.assign(draft, state)
-            })
-          }
-        />
-      </ShipDetailScreenModal>
     </div>
   )
 }
@@ -74,8 +56,4 @@ export default styled(ShipHeader)`
   display: flex;
   align-items: center;
   height: 24px;
-
-  ${InfoButton} {
-    margin-left: auto;
-  }
 `

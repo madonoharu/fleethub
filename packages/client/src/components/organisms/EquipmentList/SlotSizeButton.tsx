@@ -2,7 +2,7 @@ import React from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 
-import { Box, Slider, Button, Tooltip, DialogTitle, DialogContent } from "@material-ui/core"
+import { Slider, Button, Tooltip, DialogTitle, DialogContent } from "@material-ui/core"
 import BuildIcon from "@material-ui/icons/Build"
 
 import { NumberInput } from "../../../components"
@@ -27,10 +27,14 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({ current, max, onChange }) =
     <>
       <DialogTitle>搭載数を変更</DialogTitle>
       <DialogContent>
-        <Box display="flex">
+        <div
+          css={css`
+            display: flex;
+          `}
+        >
           <NumberInput variant="outlined" value={current} min={0} onChange={onChange} />
           <Button onClick={handleInit}>初期値({max})</Button>
-        </Box>
+        </div>
 
         <Slider value={current} max={max} onChange={handleSliderChange} />
       </DialogContent>

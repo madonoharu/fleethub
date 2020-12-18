@@ -22,11 +22,11 @@ const ShipCardContent = styled.div`
 type Props = {
   ship: Ship
   update: Update<ShipState>
-
+  onDetailClick?: () => void
   onRemove?: () => void
 }
 
-const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
+const ShipCard: React.FCX<Props> = ({ className, ship, update, onDetailClick, onRemove }) => {
   const gears = ship.equipment.items.map(({ gear }) => gear)
   gears.length = 6
 
@@ -35,7 +35,7 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
 
   return (
     <Paper className={className}>
-      <ShipHeader ship={ship} update={update} onRemove={onRemove} />
+      <ShipHeader ship={ship} update={update} onDetailClick={onDetailClick} onRemove={onRemove} />
 
       <ShipCardContent>
         <ShipCardInfo>
@@ -56,15 +56,14 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
 
 const Styled = styled(ShipCard)`
   ${ShipHeader} svg {
-    opacity: 0;
+    visibility: hidden;
+  }
+  :hover ${ShipHeader} svg {
+    visibility: visible;
   }
 
   ${EquipmentList} {
     min-width: 0;
-  }
-
-  :hover ${ShipHeader} svg {
-    opacity: 1;
   }
 `
 
