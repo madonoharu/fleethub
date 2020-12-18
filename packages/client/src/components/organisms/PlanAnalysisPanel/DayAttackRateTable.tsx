@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "@emotion/styled"
-import { Plan, PlanAnalyzer, ShipShellingAbility } from "@fleethub/core"
+import { Plan, PlanAnalyzer, ShellingAbility } from "@fleethub/core"
 
 import { Table, LabeledValue } from "../../../components"
 import { toPercent } from "../../../utils"
@@ -23,17 +23,17 @@ const RightContainer = styled(LeftContainer)`
   line-height: 24px;
 `
 
-const ShellingAbilityCell: React.FCX<{ ability: ShipShellingAbility }> = ({ className, ability }) => {
+const ShellingAbilityCell: React.FCX<{ ability: ShellingAbility }> = ({ className, ability }) => {
   return (
     <div className={className} style={{ display: "flex", alignItems: "flex-end" }}>
       <LeftContainer>
-        {Array.from(ability.rateMap).map(([attack, rate]) => (
-          <LabeledValue key={attack.type} label={<AttackChip attack={attack} />} value={toPercent(rate)} />
+        {ability.rates.toArray().map(([attack, rate], index) => (
+          <LabeledValue key={index} label={<AttackChip attack={attack} />} value={toPercent(rate)} />
         ))}
       </LeftContainer>
       <RightContainer>
         <LabeledValue label="観測項" value={ability.observationTerm} />
-        <LabeledValue label="合計" value={toPercent(ability.rateMap.total)} />
+        <LabeledValue label="特殊攻撃率" value={toPercent(ability.cutinRate)} />
       </RightContainer>
     </div>
   )
@@ -50,7 +50,7 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({ label
       {label} 艦隊索敵補正: {data.fleetLosModifier}
       <Table
         padding="none"
-        data={Array.from(data).filter(([ship, rec]) => rec.AirSupremacy.canSpecialAttack)}
+        data={Array.from(data).filter(([ship, rec]) => rec.AirSupremacy.rates.sum() > 0)}
         columns={[
           {
             label: "艦娘",

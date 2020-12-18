@@ -1,13 +1,13 @@
 import React from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
-import { DaySpecialAttack, NightSpecialAttack } from "@fleethub/core"
+import { DayCutin, NightSpecialAttack } from "@fleethub/core"
 
 import { Chip } from "@material-ui/core"
 
 type Props = {
   night?: boolean
-  attack: DaySpecialAttack | NightSpecialAttack
+  attack: DayCutin | NightSpecialAttack
 }
 
 const AttackChip: React.FCX<Props> = ({ className, attack }) => {
