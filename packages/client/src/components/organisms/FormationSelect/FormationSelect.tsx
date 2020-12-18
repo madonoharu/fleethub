@@ -6,24 +6,26 @@ import { useTranslation } from "react-i18next"
 import { Select, SelectInputProps } from "../../molecules"
 
 type Props = SelectInputProps & {
-  formation: Formation
+  value: Formation
   onChange: (formation: Formation) => void
   combined?: boolean
 }
 
-const FormationSelect: React.FC<Props> = ({ formation, onChange, combined, ...rest }) => {
+const FormationSelect: React.FC<Props> = ({ value, onChange, combined, ...rest }) => {
   const options: readonly Formation[] = combined ? CombinedFleetFormations : SingleFleetFormations
   const { t } = useTranslation("terms")
 
   useEffect(() => {
-    if (options.includes(formation)) return
+    if (options.includes(value)) return
     onChange(combined ? "Cruising4" : "LineAhead")
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options])
+  }, [combined])
 
-  return <Select options={options} value={formation} onChange={onChange} getOptionLabel={t} {...rest} />
+  if (!options.includes(value)) {
+    value = combined ? "Cruising4" : "LineAhead"
+  }
+
+  return <Select options={options} value={value} onChange={onChange} getOptionLabel={t} {...rest} />
 }
 
-export default styled(FormationSelect)`
-  min-width: 120px;
-`
+export default FormationSelect
