@@ -50,6 +50,7 @@ const BattlePlanPanel: React.FC<Props> = ({ plan, updatePlan }) => {
       {plan.nodes.map((node, index) => (
         <NodePlanCard
           key={index}
+          plan={plan}
           node={node}
           update={(recipe) => {
             updatePlan(({ nodes }) => nodes && recipe(nodes[index]))
