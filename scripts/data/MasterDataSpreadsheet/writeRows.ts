@@ -1,15 +1,35 @@
-import { GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
+import { GoogleSpreadsheetWorksheet, GoogleSpreadsheetCell } from "google-spreadsheet"
 import { SheetRow } from "@fleethub/utils/src"
 
+const isEqualCellValue = (cell: GoogleSpreadsheetCell, next: string | number | boolean) => {
+  const current = cell.value
+
+  if (cell.valueType === "boolValue") {
+    return current === Boolean(next)
+  }
+
+  return (current ?? "") === next
+}
+
 const writeRows = async (sheet: GoogleSpreadsheetWorksheet, rows: SheetRow[]) => {
-  await sheet.loadHeaderRow()
+  const rowCount = rows.length + 1
+  if (sheet.gridProperties.rowCount !== rowCount) {
+    await sheet.resize({ ...sheet.gridProperties, rowCount })
+  }
+  await sheet.loadCells("")
 
-  const { headerValues, gridProperties } = sheet
+  rows.forEach((row, i) => {
+    const rowIndex = i + 1
+    sheet.headerValues.forEach((key, columnIndex) => {
+      const cell = sheet.getCell(rowIndex, columnIndex)
+      const next = row[key] ?? ""
 
-  await sheet.clear()
-  await sheet.resize({ ...gridProperties, rowCount: rows.length + 1 })
-  await sheet.setHeaderRow(headerValues)
-  await sheet.addRows(rows as GoogleSpreadsheetRow[])
+      if (isEqualCellValue(cell, next)) return
+      cell.value = next
+    })
+  })
+
+  await sheet.saveUpdatedCells()
 }
 
 export default writeRows
