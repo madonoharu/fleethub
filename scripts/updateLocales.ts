@@ -1,9 +1,10 @@
 import { outputJSON } from "fs-extra"
 import ky from "ky-universal"
-import storage from "./data/storage"
 import child_process from "child_process"
 import { promisify } from "util"
 import { MasterData } from "@fleethub/utils/src"
+
+import storage from "./data/storage"
 
 const exec = promisify(child_process.exec)
 
@@ -74,7 +75,7 @@ class LocaleUpdater {
     const equiptype = await this.getKC3Json<string[][]>("equiptype.json")
     const dictionary: Dictionary = {}
 
-    this.md.gearCategories.forEach((category) => {
+    this.md.gear_categories.forEach((category) => {
       const str = equiptype[2][category.id]
       if (str) {
         dictionary[category.name] = str
@@ -140,7 +141,7 @@ class LocaleUpdater {
     const shipTypes: Dictionary = {}
     const kc3stype = await this.getKC3Json<string[]>("stype.json")
 
-    this.md.shipTypes.forEach((type) => {
+    this.md.ship_types.forEach((type) => {
       shipTypes[type.name] = kc3stype[type.id]
     })
 
@@ -151,10 +152,10 @@ class LocaleUpdater {
     const shipClasses: Dictionary = {}
     const kc3ctype = await this.getKC3Json<string[]>("ctype.json")
 
-    this.md.shipClasses.forEach((shipClass) => {
-      const name = kc3ctype[shipClass.id]
+    this.md.ship_classes.forEach((sc) => {
+      const name = kc3ctype[sc.id]
       if (name) {
-        shipClasses[shipClass.name] = kc3ctype[shipClass.id]
+        shipClasses[sc.name] = kc3ctype[sc.id]
       }
     })
 
@@ -174,7 +175,7 @@ class LocaleUpdater {
 }
 
 const updateLocales = async () => {
-  const md = await storage.read()
+  const md = await storage.readMasterData()
   const promises = languages.map((lang) => new LocaleUpdater(md, lang).update())
 
   await Promise.all(promises)
