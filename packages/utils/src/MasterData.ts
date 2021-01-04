@@ -2,42 +2,11 @@ import type { Start2 } from "kc-tools"
 
 export type MaybeNumber = number | null
 
-export type StatInterval = [left: MaybeNumber, right: MaybeNumber]
+export type StatInterval = [MaybeNumber, MaybeNumber]
 
-export type StockGear = { id: number; stars?: number }
-
-export type MasterDataShip = {
-  id: number
-  name: string
-  yomi: string
-  stype: number
-  ctype: number
-  sortId?: number
-
-  maxHp: StatInterval
-  firepower: StatInterval
-  armor: StatInterval
-  torpedo: StatInterval
-  evasion: StatInterval
-  antiAir: StatInterval
-  asw: StatInterval
-  los: StatInterval
-  luck: StatInterval
-
-  speed: number
-  range: MaybeNumber
-  fuel?: number
-  ammo?: number
-
-  slotnum: number
-  slots: MaybeNumber[]
-  stock: StockGear[]
-
-  nextId?: number
-  nextLevel?: number
-  convertible?: boolean
-
-  banner: string
+export type StockGear = {
+  gear_id: number
+  stars?: number
 }
 
 export type MasterDataShipType = {
@@ -52,65 +21,102 @@ export type MasterDataShipClass = {
   key: string
 }
 
+export type MasterDataShip = {
+  ship_id: number
+  name: string
+  yomi: string
+  stype: number
+  ctype?: number
+  sort_id?: number
+
+  max_hp: StatInterval
+  firepower: StatInterval
+  armor: StatInterval
+  torpedo: StatInterval
+  evasion: StatInterval
+  anti_air: StatInterval
+  asw: StatInterval
+  los: StatInterval
+  luck: StatInterval
+
+  speed: number
+  range?: number
+  fuel?: number
+  ammo?: number
+  next_id?: number
+  next_level?: number
+
+  slotnum: number
+  slots: MaybeNumber[]
+  stock: StockGear[]
+
+  useful?: boolean
+  banner?: string
+}
+
 export type MasterDataGearCategory = {
   id: number
   name: string
   key: string
 }
 
-/** type2 categoryId */
-export type GearTypes = [number, number, number, number, number]
-
 export type MasterDataGear = {
-  id: number
-  types: GearTypes
+  gear_id: number
   name: string
-
-  maxHp?: number
+  types: [number, number, number, number, number]
+  max_hp?: number
   firepower?: number
   armor?: number
   torpedo?: number
-  antiAir?: number
+  anti_air?: number
   speed?: number
   bombing?: number
   asw?: number
   los?: number
   luck?: number
-
   accuracy?: number
   evasion?: number
-  antiBomber?: number
+  anti_bomber?: number
   interception?: number
-
   range?: number
   radius?: number
   cost?: number
 
   improvable?: boolean
+  special_type?: number
+  adjusted_anti_air_resistance?: number
+  fleet_anti_air_resistance?: number
 }
 
-export type MasterDataAttrRule = { name: string; key: string; ids: number[] }
+export type MasterDataAttrRule = {
+  key: string
+  name: string
+  expr: string
+}
 
-export type MasterDataImprovementBonusRule = { formula: string; ids: number[] }
+export type MasterDataIBonusRule = {
+  expr: string
+  formula: string
+}
 
-export type ImprovementBonusType =
-  | "shellingPower"
-  | "shellingAccuracy"
-  | "torpedoPower"
-  | "torpedoAccuracy"
-  | "torpedoEvasion"
-  | "aswPower"
-  | "aswAccuracy"
-  | "nightPower"
-  | "nightAccuracy"
-  | "defensePower"
-  | "contactSelection"
-  | "fighterPower"
-  | "adjustedAntiAir"
-  | "fleetAntiAir"
-  | "effectiveLos"
+export type IBonusType =
+  | "shelling_power"
+  | "shelling_accuracy"
+  | "torpedo_power"
+  | "torpedo_accuracy"
+  | "torpedo_evasion"
+  | "asw_power"
+  | "asw_accuracy"
+  | "night_power"
+  | "night_accuracy"
+  | "defense_power"
+  | "contact_selection"
+  | "fighter_power"
+  | "adjusted_anti_air"
+  | "fleet_anti_air"
+  | "effective_los"
 
-export type MasterDataImprovementBonuses = Record<ImprovementBonusType, MasterDataImprovementBonusRule[]>
+export type MasterDataIBonuses = Record<IBonusType, MasterDataIBonusRule[]>
 
 export type MasterDataEquippable = {
   equip_stype: { id: number; equip_type: number[] }[]
@@ -121,16 +127,16 @@ export type MasterDataEquippable = {
 
 export type MasterData = {
   ships: MasterDataShip[]
-  shipTypes: MasterDataShipType[]
-  shipClasses: MasterDataShipClass[]
+  ship_types: MasterDataShipType[]
+  ship_classes: MasterDataShipClass[]
 
-  gearCategories: MasterDataGearCategory[]
+  gear_categories: MasterDataGearCategory[]
   gears: MasterDataGear[]
 
-  gearAttrs: MasterDataAttrRule[]
-  shipAttrs: MasterDataAttrRule[]
+  gear_attrs: MasterDataAttrRule[]
+  ship_attrs: MasterDataAttrRule[]
 
-  improvementBonuses: MasterDataImprovementBonuses
+  ibonuses: MasterDataIBonuses
 
   equippable: MasterDataEquippable
 }

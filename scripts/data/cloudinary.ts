@@ -26,6 +26,7 @@ const uploadShipBanner = async (id: number) => {
     .upload(url, {
       folder: "ships",
       tags: [resourceType, imageType],
+      phash: true,
       eval: `upload_options.public_id = resource_info.phash; upload_options.overwrite = false;`,
     })
     .catch((err: cloudinary.UploadApiErrorResponse) => {
@@ -44,7 +45,7 @@ type SearchApiResponse = {
   next_cursor?: string
 }
 
-const getBannerIds = async () => {
+export const getBannerIds = async () => {
   const search = cloudinary.v2.search.expression("ship").with_field("tags").max_results(500)
 
   let res: SearchApiResponse = await search.execute()
@@ -77,8 +78,11 @@ export const updateShipBanners = async (start2: Start2) => {
     if (exists(id)) continue
 
     const res = await uploadShipBanner(id)
-    console.log(`add ${name}`)
-    if (res) bannerIds[id] = res.public_id
+    console.log(`add banner ${name}`)
+
+    if (res?.phash) {
+      bannerIds[id] = res.phash
+    }
   }
 
   return bannerIds
@@ -109,4 +113,9 @@ export const updateGearIcons = async () => {
       transformation: { width, height, x: cx - width / 2, y: cy - height / 2, crop: "crop" },
     })
   }
+}
+
+export const updateCloudinary = async (start2: Start2) => {
+  const [bannerIds] = await Promise.all([updateShipBanners(start2), updateGearIcons()])
+  return bannerIds
 }

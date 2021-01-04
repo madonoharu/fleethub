@@ -1,4 +1,4 @@
-import { MasterDataClient } from "./data"
+import { log, updateData, updateImages } from "./data"
 
 type ClientPayload = {
   type: string
@@ -16,24 +16,30 @@ const getClientPayload = (): ClientPayload => {
   return payload
 }
 
-const clinet = new MasterDataClient()
+const getErrorMessage = (error: unknown) => {
+  if (error instanceof Error) return error.message
+  if (typeof error === "string") return error
+  return "Unknown error"
+}
 
 const main = async () => {
   const type = getClientPayload()?.type
 
-  await clinet.log(`${type}: Start`)
+  try {
+    await log(`${type}: Start`)
 
-  if (type === "update_data") {
-    await clinet.updateData()
+    if (type === "update_data") {
+      await updateData()
+    }
+
+    if (type === "update_images") {
+      await updateImages()
+    }
+
+    await log(`${type}: Success`)
+  } catch (error) {
+    log(getErrorMessage(error))
   }
-
-  if (type === "update_images") {
-    await clinet.updateImages()
-  }
-
-  await clinet.log(`${type}: Success`)
 }
 
-main().catch((err) => {
-  clinet.error(err)
-})
+main()
