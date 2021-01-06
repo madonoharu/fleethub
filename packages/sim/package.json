@@ -1,0 +1,16 @@
+{
+  "name": "@fleethub/sim",
+  "license": "UNLICENSED",
+  "collaborators": [
+    "まどの <madonoharu@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "main": "cjs",
+  "module": "pkg",
+  "sideEffects": false,
+  "scripts": {
+    "build": "yarn build:esm && yarn build:cjs",
+    "build:esm": "wasm-pack build --out-name index",
+    "build:cjs": "wasm-pack build --target nodejs --out-dir cjs --out-name index"
+  }
+}
