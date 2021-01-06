@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Button, ButtonProps } from "@material-ui/core"
 
@@ -18,13 +19,15 @@ const SelectButtons: SelectComponent<{ buttonProps?: ButtonProps }> = (props) =>
   )
 }
 
-export default styled(SelectButtons)`
-  button {
-    border-radius: 0;
-    box-sizing: border-box;
-    border-block-end: solid 2px rgba(0, 0, 0, 0);
-  }
-  [aria-selected="true"] {
-    border-block-end: solid 2px ${({ theme }) => theme.palette.primary.main};
-  }
-` as SelectComponent<{ buttonProps?: ButtonProps }>
+export default styled(SelectButtons)(
+  ({ theme }) => css`
+    button {
+      border-radius: 0;
+      box-sizing: border-box;
+      border-block-end: solid 2px rgba(0, 0, 0, 0);
+    }
+    [aria-selected="true"] {
+      border-block-end: solid 2px ${theme.palette.primary.main};
+    }
+  `
+) as SelectComponent<{ buttonProps?: ButtonProps }>

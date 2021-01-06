@@ -1,6 +1,6 @@
 import { combineReducers, configureStore, getDefaultMiddleware, AnyAction } from "@reduxjs/toolkit"
-import { persistReducer } from "redux-persist"
-import storage from "localforage"
+import { persistReducer, WebStorage } from "redux-persist"
+import localforage from "localforage"
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo"
 import { ThunkAction } from "redux-thunk"
 
@@ -12,6 +12,14 @@ import { gearListSlice } from "./gearListSlice"
 import { gkcoiSlice } from "./gkcoiSlice"
 
 import undoableOptions from "./undoableOptions"
+
+const noopStorage: WebStorage = {
+  getItem: () => Promise.resolve(null),
+  setItem: () => Promise.resolve(),
+  removeItem: () => Promise.resolve(),
+}
+
+const storage = process.browser ? localforage : noopStorage
 
 const combinedReducer = combineReducers({
   entities: entitiesReducer,

@@ -1,10 +1,15 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { Box, DialogContent, Button, Tooltip } from "@material-ui/core"
 
 import { NumberInput, Slider } from "../../../components"
 import { useModal } from "../../../hooks"
+
+const SpaceBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
 
 type Props = {
   value: number
@@ -22,11 +27,11 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
     <DialogContent>
       <NumberInput fullWidth {...inputProps} />
       <Slider {...inputProps} />
-      <Box display="flex" justifyContent="space-between">
+      <SpaceBetween>
         <Button onClick={set1}>Lv 1</Button>
         <Button onClick={set99}>Lv 99</Button>
         <Button onClick={set175}>Lv 175</Button>
-      </Box>
+      </SpaceBetween>
     </DialogContent>
   )
 }

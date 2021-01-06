@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { Container, Button } from "@material-ui/core"
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder"

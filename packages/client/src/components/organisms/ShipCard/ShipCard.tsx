@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Ship, ShipState } from "@fleethub/core"
 
 import { Paper } from "@material-ui/core"
@@ -10,25 +10,23 @@ import { Update } from "../../../utils"
 import ShipHeader from "./ShipHeader"
 import ShipStats from "./ShipStats"
 
-const Content = styled.div`
+const ShipCardInfo = styled.div`
+  flex-shrink: 0;
+`
+
+const ShipCardContent = styled.div`
   display: flex;
   margin-left: 8px;
-  > :first-child {
-    flex-shrink: 0;
-  }
-  > :last-child {
-    min-width: 0;
-  }
 `
 
 type Props = {
   ship: Ship
   update: Update<ShipState>
-
+  onDetailClick?: () => void
   onRemove?: () => void
 }
 
-const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
+const ShipCard: React.FCX<Props> = ({ className, ship, update, onDetailClick, onRemove }) => {
   const gears = ship.equipment.items.map(({ gear }) => gear)
   gears.length = 6
 
@@ -37,13 +35,13 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
 
   return (
     <Paper className={className}>
-      <ShipHeader ship={ship} update={update} onRemove={onRemove} />
+      <ShipHeader ship={ship} update={update} onDetailClick={onDetailClick} onRemove={onRemove} />
 
-      <Content>
-        <div>
+      <ShipCardContent>
+        <ShipCardInfo>
           <ShipBanner publicId={ship.banner} size="medium" />
           <ShipStats ship={ship} />
-        </div>
+        </ShipCardInfo>
 
         <EquipmentList
           equipment={ship.equipment}
@@ -51,18 +49,21 @@ const ShipCard: React.FCX<Props> = ({ className, ship, update, onRemove }) => {
           canEquip={ship.canEquip}
           makeGetNextBonuses={makeGetNextBonuses}
         />
-      </Content>
+      </ShipCardContent>
     </Paper>
   )
 }
 
 const Styled = styled(ShipCard)`
   ${ShipHeader} svg {
-    opacity: 0;
+    visibility: hidden;
+  }
+  :hover ${ShipHeader} svg {
+    visibility: visible;
   }
 
-  :hover ${ShipHeader} svg {
-    opacity: 1;
+  ${EquipmentList} {
+    min-width: 0;
   }
 `
 

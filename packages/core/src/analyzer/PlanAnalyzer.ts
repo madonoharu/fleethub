@@ -1,13 +1,7 @@
 import { Plan } from "../plan"
-import {
-  getNightAbility,
-  NightAbility,
-  NightAttackParams,
-  ShipShellingCalculator,
-  ShipShellingAbility,
-} from "../attacks"
+import { getNightAbility, NightAbility, NightAttackParams } from "../attacks"
 import { ShipKey, AirState, Formation, BattleType, AntiAirCutin } from "../common"
-import { Ship } from "../ship"
+import { ShellingAbility, Ship } from "../ship"
 import { Fleet } from "../fleet"
 import { calcContactChance } from "./Contact"
 import { fhDefinitions } from "../FhDefinitions"
@@ -39,18 +33,17 @@ export class PlanAnalyzer {
   public analyzeFleetShelling = (role: "Main" | "Escort", fleet: Fleet) => {
     const { fleetLosModifier } = fleet
 
-    type Rec = Record<"AirSupremacy" | "AirSuperiority", ShipShellingAbility>
+    type Rec = Record<"AirSupremacy" | "AirSuperiority", ShellingAbility>
     const result = new Map<Ship, Rec>()
 
     const analyzeShip = ([key, ship]: [ShipKey, Ship?]) => {
       if (!ship) return
 
       const isMainFlagship = role === "Main" && key === "s1"
-      const { getShipShellingAbility } = new ShipShellingCalculator(ship)
 
       result.set(ship, {
-        AirSupremacy: getShipShellingAbility(fleetLosModifier, isMainFlagship, "AirSupremacy"),
-        AirSuperiority: getShipShellingAbility(fleetLosModifier, isMainFlagship, "AirSuperiority"),
+        AirSupremacy: ship.calcShellingAbility(fleetLosModifier, "AirSupremacy", isMainFlagship),
+        AirSuperiority: ship.calcShellingAbility(fleetLosModifier, "AirSuperiority", isMainFlagship),
       })
     }
 
@@ -104,7 +97,7 @@ export class PlanAnalyzer {
   }
 }
 
-export const analyzeNightAttacks = (fleet: Fleet, params: Omit<NightAttackParams, "isFlagship" | "damageState">) => {
+export const analyzeNightAttacks = (fleet: Fleet, params: Omit<NightAttackParams, "isFlagship" | "healthState">) => {
   const analysis: Array<{
     ship: Ship
     normal: NightAbility
@@ -115,11 +108,11 @@ export const analyzeNightAttacks = (fleet: Fleet, params: Omit<NightAttackParams
     if (!ship) return
 
     const isFlagship = key === "s1"
-    const normal = getNightAbility(ship, { ...params, isFlagship, damageState: "Less" })
+    const normal = getNightAbility(ship, { ...params, isFlagship, healthState: "Normal" })
 
     if (!normal.attacks.length) return
 
-    const chuuha = getNightAbility(ship, { ...params, isFlagship, damageState: "Chuuha" })
+    const chuuha = getNightAbility(ship, { ...params, isFlagship, healthState: "Chuuha" })
     analysis.push({ ship, normal, chuuha })
   })
 

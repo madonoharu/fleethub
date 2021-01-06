@@ -4,11 +4,16 @@ import { Dict } from "@fleethub/utils"
 import { FleetState, Fleet } from "../fleet"
 import { AirbaseState, Airbase } from "../airbase"
 import { Formation, FleetKey, AirbaseKey, FleetType, AntiAirCutin } from "../common"
-import { EnemyFleetState } from "../enemy"
 import { RateMap } from "../utils"
 
 type FleetDict = Dict<FleetKey, FleetState>
 type AirbaseDict = Dict<AirbaseKey, AirbaseState>
+
+export type EnemyFleetState = {
+  main: FleetState
+  escort?: FleetState
+  formation?: Formation
+}
 
 export type NodePlan = Pick<MapNode, "type" | "d" | "point"> & {
   name: string

@@ -1,24 +1,17 @@
 import { GearCategory, GearAttribute } from "@fleethub/utils"
 import masterData from "@fleethub/utils/MasterData"
 
-import { Gear, GearBase } from "../gear"
+import { Gear } from "../gear"
 
-export class GearBaseStub implements GearBase {
-  public static from = (src: Partial<GearBase>) => Object.assign(new GearBaseStub(), src)
+export class GearStub implements Gear {
+  public static from = (src: Partial<Gear>) => Object.assign(new GearStub(), src)
+  public static fromCategory = (category: GearCategory): GearStub => GearStub.fromCategory(category)
+  public static fromAttrs = (...attrs: GearAttribute[]) => GearStub.from({ attrs })
 
-  public static fromAttrs = (...attrs: GearAttribute[]) => GearBaseStub.from({ attrs })
-
-  public static fromType2 = (type2: number) => GearBaseStub.from({ types: [0, 0, type2, 0, 0] })
-
-  public static fromCategory = (category: GearCategory) => {
-    const type2 = masterData.gearCategories.find((datum) => datum.key === category)?.id || 0
-    GearBaseStub.fromType2(type2)
-  }
-
-  public static fromCategoryName = (name: string) => {
-    const type2 = masterData.gearCategories.find((datum) => datum.name === name)?.id || 0
-    GearBaseStub.fromType2(type2)
-  }
+  public category = "" as Gear["category"]
+  public categoryName = ""
+  public getImprovementBonuses = jest.fn()
+  public improvementBonusFormulas = {}
 
   public gearId = 0
   public types = [0, 0, 0, 0, 0] as Gear["types"]
@@ -47,13 +40,17 @@ export class GearBaseStub implements GearBase {
   public specialCategory = 0
   public hasProficiency = false
 
-  public is = (attr: GearAttribute) => this.attrs.includes(attr)
-
-  public in = (...attrs: GearAttribute[]) => attrs.some(this.is)
-
-  public categoryIs = (category: GearCategory) => masterData.gearCategories.some((datum) => datum.key === category)
-
-  public categoryIn = (...categories: GearCategory[]) => categories.some(this.categoryIs)
+  public state = {} as any
+  public stars = NaN
+  public exp = NaN
+  public ace = NaN
+  public improvementBonuses = {} as Gear["improvementBonuses"]
+  public calcFighterPower = jest.fn()
+  public calcInterceptionPower = jest.fn()
+  public calcContactTriggerFactor = jest.fn()
+  public calcContactSelectionChance = jest.fn()
+  adjustedAntiAir = NaN
+  fleetAntiAir = NaN
 
   get categoryId() {
     return this.types[2]
@@ -62,23 +59,12 @@ export class GearBaseStub implements GearBase {
   get iconId() {
     return this.types[3]
   }
-}
 
-export class GearStub extends GearBaseStub implements Gear {
-  public static from = (src: Partial<Gear>) => Object.assign(new GearStub(), src)
-  public static fromCategory = (category: GearCategory): GearStub => GearStub.fromCategory(category)
-  public static fromAttrs = (...attrs: GearAttribute[]) => GearBaseStub.from({ attrs })
+  public is = (attr: GearAttribute) => this.attrs.includes(attr)
 
-  public state = {} as any
-  public stars = NaN
-  public exp = NaN
-  public ace = NaN
-  public hasProficiency = false
-  public improvementBonuses = {} as Gear["improvementBonuses"]
-  public calcFighterPower = jest.fn()
-  public calcInterceptionPower = jest.fn()
-  public calcContactTriggerFactor = jest.fn()
-  public calcContactSelectionChance = jest.fn()
-  adjustedAntiAir = NaN
-  fleetAntiAir = NaN
+  public in = (...attrs: GearAttribute[]) => attrs.some(this.is)
+
+  public categoryIs = (category: GearCategory) => masterData.gearCategories.some((datum) => datum.key === category)
+
+  public categoryIn = (...categories: GearCategory[]) => categories.some(this.categoryIs)
 }

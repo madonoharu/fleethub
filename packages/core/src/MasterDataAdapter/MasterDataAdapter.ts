@@ -10,12 +10,11 @@ import {
   MasterDataGear,
 } from "@fleethub/utils"
 
-import { MasterGear } from "../gear"
-
 import MasterShipImpl, { MasterShipEquippable } from "./MasterShipImpl"
+import MasterGearImpl, { MasterGear } from "./MasterGearImpl"
 
 export default class MasterDataAdapter {
-  public gears: MasterGear[]
+  public gears: MasterGearImpl[]
   public ships: MasterShipImpl[]
 
   constructor(public masterData: MasterData) {
@@ -23,9 +22,9 @@ export default class MasterDataAdapter {
     this.ships = masterData.ships.map(this.createMasterShip)
   }
 
-  private getGearCategory = (type2: number) => {
-    const found = this.masterData.gearCategories.find((cat) => cat.id === type2)?.key
-    return found || ""
+  private getGearCategoryData = (type2: number) => {
+    const found = this.masterData.gearCategories.find((cat) => cat.id === type2)
+    return found || { id: type2, key: "Unknown", name: "不明" }
   }
 
   private getGearAttrs = (gearId: number) => {
@@ -38,21 +37,30 @@ export default class MasterDataAdapter {
     })
 
   private createMasterGear = (masterDataGear: MasterDataGear) => {
-    const category = this.getGearCategory(masterDataGear.types[2]) as GearCategory
+    const categoryData = this.getGearCategoryData(masterDataGear.types[2])
     const attrs = this.getGearAttrs(masterDataGear.id) as GearAttribute[]
     const improvementBonusFormulas = this.getImprovementBonusFormulas(masterDataGear.id)
 
-    return new MasterGear(masterDataGear, { category, attrs, improvementBonusFormulas })
+    const additionalData = {
+      category: categoryData.key as GearCategory,
+      categoryName: categoryData.name,
+      attrs,
+      improvementBonusFormulas,
+    }
+
+    return new MasterGearImpl(masterDataGear, additionalData)
   }
 
-  private getShipType = (stype: number) => {
-    const found = this.masterData.shipTypes.find((shipType) => shipType.id === stype)?.key
-    return (found || "") as ShipType
+  private getShipTypeData = (stype: number) => {
+    const found = this.masterData.shipTypes.find((shipType) => shipType.id === stype)
+
+    return found || { id: stype, key: "Unknown", name: "不明" }
   }
 
-  private getShipClass = (ctype: number) => {
-    const found = this.masterData.shipClasses.find((shipClass) => shipClass.id === ctype)?.key
-    return (found || "") as ShipClass
+  private getShipClassData = (ctype: number) => {
+    const found = this.masterData.shipClasses.find((shipClass) => shipClass.id === ctype)
+
+    return found || { id: ctype, key: "Unknown", name: "不明" }
   }
 
   private getShipAttrs = (shipId: number) =>
@@ -80,11 +88,20 @@ export default class MasterDataAdapter {
   private createMasterShip = (masterDataShip: MasterDataShip) => {
     const { id, stype, ctype } = masterDataShip
 
-    const shipType = this.getShipType(stype)
-    const shipClass = this.getShipClass(ctype)
+    const shipTypeData = this.getShipTypeData(stype)
+    const shipClassData = this.getShipClassData(ctype)
     const attrs = this.getShipAttrs(id)
     const equippable = this.getMasterShipEquippable(id, stype)
 
-    return new MasterShipImpl(masterDataShip, { shipType, shipClass, attrs, equippable })
+    const additionalData = {
+      shipType: shipTypeData.key as ShipType,
+      shipTypeName: shipTypeData.name,
+      shipClass: shipClassData.key as ShipClass,
+      shipClassName: shipClassData.name,
+      attrs,
+      equippable,
+    }
+
+    return new MasterShipImpl(masterDataShip, additionalData)
   }
 }

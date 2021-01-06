@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Plan } from "@fleethub/core"
 import { bindActionCreators } from "@reduxjs/toolkit"
 import { useSelector, useDispatch } from "react-redux"
@@ -13,9 +13,6 @@ import { selectGkcoiState, gkcoiSlice, filesSelectors } from "../../../store"
 import { GithubIcon, Flexbox } from "../../atoms"
 
 const OptionContainer = styled(Flexbox)`
-  > :first-child {
-    margin-right: auto;
-  }
   > * {
     min-width: 120px;
   }
@@ -73,22 +70,24 @@ const GkcoiTabPanel: React.FCX<Props> = ({ className, id, plan }) => {
           Nishisonic/gkcoi
         </Button>
 
-        <Select
-          label="Theme"
-          variant="outlined"
-          options={GkcoiThemes}
-          value={state.theme}
-          onChange={actions.setTheme}
-          getOptionLabel={getThemeLabel}
-        />
-        <Select
-          label="Language"
-          variant="outlined"
-          options={GkcoiLangs}
-          value={state.lang}
-          onChange={actions.setLang}
-          getOptionLabel={getLangLabel}
-        />
+        <div css={{ marginLeft: "auto" }}>
+          <Select
+            label="Theme"
+            variant="outlined"
+            options={GkcoiThemes}
+            value={state.theme}
+            onChange={actions.setTheme}
+            getOptionLabel={getThemeLabel}
+          />
+          <Select
+            label="Language"
+            variant="outlined"
+            options={GkcoiLangs}
+            value={state.lang}
+            onChange={actions.setLang}
+            getOptionLabel={getLangLabel}
+          />
+        </div>
       </OptionContainer>
 
       <ReactGkcoi deck={deck} />

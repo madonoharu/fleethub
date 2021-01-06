@@ -13,7 +13,9 @@ const firebaseConfig = {
   measurementId: "G-9F914T0225",
 }
 
-firebase.initializeApp(firebaseConfig)
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig)
+}
 
 // const provider = new firebase.auth.TwitterAuthProvider()
 // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)

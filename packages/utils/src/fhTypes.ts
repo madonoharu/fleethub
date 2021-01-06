@@ -2148,7 +2148,7 @@ export type ShipType =
   | "BB"
   | "BBV"
   | "CV"
-  | "SuperDreadnought"
+  | "XBB"
   | "SS"
   | "SSV"
   | "AP"

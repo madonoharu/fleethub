@@ -1,10 +1,9 @@
 import React from "react"
 import { generate, DeckBuilder } from "gkcoi"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useAsync } from "react-async-hook"
 
-import { CircularProgress } from "@material-ui/core"
-import { Alert } from "@material-ui/lab"
+import { Alert, CircularProgress } from "@material-ui/core"
 
 import CanvasViewer from "./CanvasViewer"
 

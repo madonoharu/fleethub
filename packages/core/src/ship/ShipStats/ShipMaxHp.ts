@@ -14,7 +14,7 @@ export class ShipMaxHp implements MaxHp {
   private left: MaybeNumber
   private right: MaybeNumber
 
-  constructor([left, right]: StatInterval, public increase = 0, private isMarried: boolean) {
+  constructor([left, right]: StatInterval, public diff = 0, private isMarried: boolean) {
     this.left = left ?? NaN
     this.right = right ?? NaN
   }
@@ -29,19 +29,19 @@ export class ShipMaxHp implements MaxHp {
     return Math.min(right, getMarriageBonus(left) + 2)
   }
 
-  get displayed() {
-    const { left, right, increase, isMarried } = this
+  get value() {
+    const { left, right, diff, isMarried } = this
 
     if (left === null || right === null) {
-      return increase
+      return diff
     }
 
-    let displayed = left + increase
+    let value = left + diff
 
     if (isMarried) {
-      displayed += getMarriageBonus(left)
+      value += getMarriageBonus(left)
     }
 
-    return Math.min(displayed, right)
+    return Math.min(value, right)
   }
 }

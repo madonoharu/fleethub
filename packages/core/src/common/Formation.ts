@@ -1,3 +1,4 @@
+import { ShipPosition } from "."
 import { isString } from "../utils"
 
 type BattleModifiers = {
@@ -6,12 +7,7 @@ type BattleModifiers = {
   evasion: number
 }
 
-type FormationBattleModifiersDefinition =
-  | BattleModifiers
-  | {
-      topHalf: BattleModifiers
-      bottomHalf: BattleModifiers
-    }
+type FormationBattleModifiersDefinition = BattleModifiers | Record<ShipPosition, BattleModifiers>
 
 type FormationDefinition = {
   protectionRate: number
@@ -47,7 +43,5 @@ export const SingleFleetFormations = [
 ] as const
 
 export const CombinedFleetFormations = ["Cruising1", "Cruising2", "Cruising3", "Cruising4"] as const
-
-const Formations = Object.values(FormationId).filter(isString) as Formation[]
 
 export type FormationDefinitions = Record<Formation, FormationDefinition>

@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useDispatch } from "react-redux"
 
 import { Breadcrumbs } from "@material-ui/core"
