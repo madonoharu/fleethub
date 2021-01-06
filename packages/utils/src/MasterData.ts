@@ -76,8 +76,6 @@ export type MasterDataGear = {
   luck?: number
   accuracy?: number
   evasion?: number
-  anti_bomber?: number
-  interception?: number
   range?: number
   radius?: number
   cost?: number
