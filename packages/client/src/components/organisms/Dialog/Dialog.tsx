@@ -1,5 +1,6 @@
 import React from "react"
-import styled, { css } from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps } from "@material-ui/core"
 
@@ -21,7 +22,7 @@ export type DialogProps = Partial<MuiDialogProps> & {
 
 const Dialog: React.FC<DialogProps> = ({ children, full, ...rest }) => (
   <MuiDialog open={false} transitionDuration={100} fullWidth={full} {...rest}>
-    <StyledCloseButton size="small" onClick={(event) => rest.onClose?.(event, "backdropClick")} />
+    <StyledCloseButton size="tiny" onClick={(event) => rest.onClose?.(event, "backdropClick")} />
     <ScrollContainer>{children}</ScrollContainer>
   </MuiDialog>
 )

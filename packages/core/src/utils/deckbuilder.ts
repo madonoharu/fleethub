@@ -136,7 +136,7 @@ const getDeck4Ship = (ship: Ship): DeckShip => {
     id: ship.shipId,
     lv: ship.level,
     items,
-    luck: ship.luck.displayed,
+    luck: ship.luck.value,
   }
 }
 

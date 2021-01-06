@@ -1,12 +1,16 @@
 import React from "react"
-import styled from "styled-components"
-import { NodePlan, AirbaseKeys } from "@fleethub/core"
+import styled from "@emotion/styled"
+import { NodePlan, AirbaseKeys, Plan } from "@fleethub/core"
 
 import { Paper, Typography, Button, FormControlLabel, RadioGroup, Radio } from "@material-ui/core"
 
 import { InfoButton, RemoveButton, Flexbox, EnemyFleetContent } from "../../../components"
 import { useFhSystem, useModal } from "../../../hooks"
 import { Update } from "../../../utils"
+import { FormationSelect } from "../../organisms"
+
+import NodeBattleAnalysisScreen from "../NodeBattleAnalysisScreen"
+import { useMemo } from "react"
 
 const AirbaseLable = styled(Typography)`
   margin: 8px;
@@ -39,6 +43,7 @@ const NodeLbasForm: React.FC<NodeLbasFormProps> = ({ lbas = {}, onChange }) => {
 }
 
 type NodePlanCardProps = {
+  plan: Plan
   node: NodePlan
   update: Update<NodePlan>
   onRemove?: () => void
@@ -57,7 +62,7 @@ const getLbasLabel = ({ lbas }: NodePlan) => {
     .join(" ")
 }
 
-const NodePlanCard: React.FC<NodePlanCardProps> = ({ node, update, onRemove }) => {
+const NodePlanCard: React.FC<NodePlanCardProps> = ({ plan, node, update, onRemove }) => {
   const { createEnemyFleet } = useFhSystem()
   const Modal = useModal()
   const handleLbasChange = (next: NodePlan["lbas"]) => {
@@ -72,24 +77,28 @@ const NodePlanCard: React.FC<NodePlanCardProps> = ({ node, update, onRemove }) =
 
   const lbas = node.d !== undefined
 
+  const enemyFleet = useMemo(() => node.enemy && createEnemyFleet(node.enemy), [node.enemy, createEnemyFleet])
+
   return (
     <Paper>
       <Flexbox>
         <Typography>
           {node.name} {node.d !== undefined && `距離: ${node.d}`}
         </Typography>
-        <InfoButton size="small" />
-        <RemoveButton size="small" onClick={onRemove} />
+        <InfoButton size="tiny" />
+        <RemoveButton size="tiny" onClick={onRemove} />
       </Flexbox>
 
       <Button size="small" variant="outlined" onClick={Modal.show}>
         基地設定 {getLbasLabel(node)}
       </Button>
-      {node.enemy && <EnemyFleetContent enemy={createEnemyFleet(node.enemy)} visibleAlbFp={lbas} />}
+      {enemyFleet && <EnemyFleetContent enemy={enemyFleet} visibleAlbFp={lbas} />}
 
       <Modal>
         <NodeLbasForm lbas={node.lbas} onChange={handleLbasChange} />
       </Modal>
+
+      {enemyFleet && <NodeBattleAnalysisScreen plan={plan} enemy={enemyFleet} />}
     </Paper>
   )
 }

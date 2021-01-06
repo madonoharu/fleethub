@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
 import { GearBase } from "@fleethub/core"
 

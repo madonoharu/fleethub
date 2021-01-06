@@ -1,6 +1,6 @@
 import React from "react"
 import { Plan } from "@fleethub/core"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { TextField, Button } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"

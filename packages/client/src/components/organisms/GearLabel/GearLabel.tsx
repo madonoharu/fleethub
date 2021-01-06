@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 import { Gear, GearState } from "@fleethub/core"
 
 import { Flexbox, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
@@ -8,6 +9,11 @@ import { Update } from "../../../utils"
 import GearTooltip from "../GearTooltip"
 import GearNameplate from "../GearNameplate"
 
+const GearLabelAction = styled.div`
+  display: flex;
+  margin-left: auto;
+`
+
 type Props = {
   gear: Gear
   equippable?: boolean
@@ -15,6 +21,15 @@ type Props = {
   update?: Update<GearState>
   onRemove?: () => void
   onReselect?: () => void
+}
+
+const styles = {
+  action: css`
+    display: none;
+  `,
+  right: css`
+    margin-left: auto;
+  `,
 }
 
 const GearLabel: React.FCX<Props> = ({
@@ -51,41 +66,37 @@ const GearLabel: React.FCX<Props> = ({
         </div>
       </GearTooltip>
 
-      <UpdateButton title="変更" size="small" onClick={onReselect} />
-      <ClearButton title="削除" size="small" onClick={onRemove} />
+      <UpdateButton css={styles.action} title="変更" size="tiny" onClick={onReselect} />
+      <ClearButton css={styles.action} title="削除" size="tiny" onClick={onRemove} />
 
-      {gear.hasProficiency && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}
-      <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
+      <GearLabelAction>
+        {gear.hasProficiency && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}
+        <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
+      </GearLabelAction>
     </Flexbox>
   )
 }
 
-const Styled = styled(GearLabel)`
-  width: 100%;
-  transition: 250ms;
-  padding: 0 4px;
+const Styled = styled(GearLabel)(
+  ({ theme }) => css`
+    width: 100%;
+    transition: 250ms;
+    padding: 0 4px;
 
-  > :not(:first-child) {
-    flex-shrink: 0;
-  }
-
-  > :nth-child(4) {
-    margin-left: auto;
-  }
-
-  ${UpdateButton}, ${ClearButton} {
-    display: none;
-  }
-
-  :hover {
-    background: ${(props) => props.theme.palette.action.hover};
-    ${UpdateButton}, ${ClearButton} {
-      display: block;
+    > :not(div:first-of-type) {
+      flex-shrink: 0;
     }
-    ${GearNameplate} p {
-      display: none;
+
+    :hover {
+      background: ${theme.palette.action.hover};
+      ${UpdateButton} {
+        display: block;
+      }
+      ${GearNameplate} p {
+        display: none;
+      }
     }
-  }
-`
+  `
+)
 
 export default Styled

@@ -12,6 +12,8 @@ const StoreProvider: React.FC = ({ children }) => {
   const persistor = persistStore(store)
 
   const handleBeforeLift = () => {
+    if (!process.browser) return
+
     store.dispatch(cleanEntities())
     store.dispatch(fetchLocationData())
     store.dispatch(ActionCreators.clearHistory())

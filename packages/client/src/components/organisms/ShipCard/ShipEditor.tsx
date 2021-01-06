@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Ship, ShipState } from "@fleethub/core"
 
 import { Button, Typography } from "@material-ui/core"
@@ -38,19 +38,13 @@ const ShipEditor: React.FCX<Props> = ({ className, ship, update }) => {
       </LineContainer>
 
       <LineContainer>
-        <StyledInput
-          label="耐久改修"
-          value={ship.maxHp.increase}
-          onChange={(maxHp) => change({ maxHp })}
-          min={0}
-          max={2}
-        />
+        <StyledInput label="耐久改修" value={ship.maxHp.diff} onChange={(maxHp) => change({ maxHp })} min={0} max={2} />
       </LineContainer>
       <LineContainer>
-        <StyledInput label="運改修" value={ship.luck.increase} onChange={(luck) => change({ luck })} min={0} />
+        <StyledInput label="運改修" value={ship.luck.diff} onChange={(luck) => change({ luck })} min={0} />
       </LineContainer>
       <LineContainer>
-        <StyledInput label="対潜改修" value={ship.asw.increase} onChange={(asw) => change({ asw })} min={0} max={9} />
+        <StyledInput label="対潜改修" value={ship.asw.diff} onChange={(asw) => change({ asw })} min={0} max={9} />
         <Button onClick={() => change({ asw: 0 })}>0</Button>
         <Button onClick={() => change({ asw: 9 })}>9</Button>
       </LineContainer>

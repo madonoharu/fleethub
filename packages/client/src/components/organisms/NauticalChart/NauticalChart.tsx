@@ -1,10 +1,10 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { MapData, MapNode } from "@fleethub/data"
 
-import { Graph } from "@vx/network"
-import { ScaleSVG } from "@vx/responsive"
-import { Group } from "@vx/group"
+import { Graph } from "@visx/network"
+import { ScaleSVG } from "@visx/responsive"
+import { Group } from "@visx/group"
 import { Tooltip, Typography } from "@material-ui/core"
 
 import { NodeCircle, getNodeTypeStyle } from "./NodeIcon"

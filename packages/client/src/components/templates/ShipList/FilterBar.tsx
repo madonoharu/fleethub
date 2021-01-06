@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { shipCategoies, ShipCategory } from "@fleethub/core"
 
 import { SelectButtons, Flexbox, Checkbox } from "../../../components"
@@ -28,6 +28,7 @@ const FilterBar: React.FCX<Props> = ({ className, state, onChange }) => {
   return (
     <Flexbox className={className}>
       <SelectButtons
+        css={{ marginLeft: "auto" }}
         options={shipCategoies}
         value={state.category}
         onChange={(category) => onChange({ category })}
@@ -39,8 +40,4 @@ const FilterBar: React.FCX<Props> = ({ className, state, onChange }) => {
   )
 }
 
-export default styled(FilterBar)`
-  > :first-child {
-    margin-right: auto;
-  }
-`
+export default FilterBar

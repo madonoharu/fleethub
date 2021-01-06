@@ -13,6 +13,16 @@ export const mapValues = <T, R>(obj: T, fn: (value: T[keyof T], key: keyof T) =>
   return nextObj as Record<keyof T, R>
 }
 
+export const getHealthState = (maxHp: number, currentHp: number) => {
+  const rate = currentHp / maxHp
+
+  if (rate <= 0) return "Sunk"
+  if (rate <= 0.25) return "Taiha"
+  if (rate <= 0.5) return "Chuuha"
+  if (rate <= 0.75) return "Shouha"
+  return "Normal"
+}
+
 export type NullableArray<T> = Array<T | undefined>
 export type PickByValue<T, ValueType> = Pick<T, { [Key in keyof T]-?: T[Key] extends ValueType ? Key : never }[keyof T]>
 
@@ -21,4 +31,3 @@ export * from "./RateMap"
 
 export * from "./GearStub"
 export * from "./EquipmentMock"
-export * from "./ShipMock"

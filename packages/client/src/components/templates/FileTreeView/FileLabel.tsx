@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { Flexbox, DraggableFile, DraggableFileProps, PlanIcon, FolderIcon } from "../../../components"
 import { FileType } from "../../../store"
