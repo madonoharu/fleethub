@@ -1,9 +1,7 @@
 use crate::{const_gear_id, constants::*};
 use js_sys::JsString;
-use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
-use web_sys::console;
 
 #[wasm_bindgen(typescript_custom_section)]
 const GEAR_PARAMS: &'static str = r#"
@@ -44,6 +42,7 @@ extern "C" {
     pub type GearParams;
 }
 
+#[derive(Debug)]
 enum ProficiencyType {
     Fighter,
     SeaplaneBomber,
@@ -109,6 +108,7 @@ pub struct Gear {
     pub ibonuses: IBonuses,
 
     pub category: GearCategory,
+    pub special_type: GearCategory,
 
     pub max_hp: i32,
     pub firepower: i32,
@@ -145,27 +145,8 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn category(&self) -> GearCategory {
-        FromPrimitive::from_i32(self.types[2]).unwrap_or_default()
-    }
-
-    #[wasm_bindgen(getter)]
     pub fn icon_id(&self) -> i32 {
         self.types[3]
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn special_type(&self) -> GearCategory {
-        use crate::const_gear_id;
-
-        match self.gear_id {
-            const_gear_id!("試製51cm連装砲") | const_gear_id!("51cm連装砲") => {
-                GearCategory::LargeCaliberMainGun2
-            }
-            const_gear_id!("15m二重測距儀+21号電探改二") => GearCategory::LargeRadar2,
-            const_gear_id!("試製景雲(艦偵型)") => GearCategory::CbRecon2,
-            _ => self.category(),
-        }
     }
 
     pub fn get_ace(&self) -> i32 {
@@ -184,7 +165,7 @@ impl Gear {
     fn get_proficiency_type(&self) -> ProficiencyType {
         if self.attrs.contains(&GearAttr::Fighter) {
             ProficiencyType::Fighter
-        } else if self.types[2] == GearCategory::SeaplaneBomber as i32 {
+        } else if self.category == GearCategory::SeaplaneBomber {
             ProficiencyType::SeaplaneBomber
         } else {
             ProficiencyType::Other
@@ -224,7 +205,7 @@ impl Gear {
             return 0.;
         }
 
-        let category = self.category();
+        let category = self.category;
 
         let multiplier: f64 = if category == GearCategory::AntiAirFireDirector
             || self.attrs.contains(&GearAttr::HighAngleMount)
@@ -269,11 +250,11 @@ mod test {
             interception: 3,
             ..Default::default()
         };
-        let gear2_pfpm = gear1.proficiency_fighter_power_modifier();
+        let gear2_pfpm = gear2.proficiency_fighter_power_modifier();
         assert_eq!(gear2_pfpm, 110f64.sqrt());
         assert_eq!(
             gear2.calc_fighter_power(5),
-            ((2f64 + 3. * 1.5).floor() * 5f64.sqrt() + gear2_pfpm) as i32
+            ((2f64 + 3. * 1.5) * 5f64.sqrt() + gear2_pfpm) as i32
         )
     }
 
