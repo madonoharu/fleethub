@@ -5,20 +5,18 @@ use crate::{
     gear::Gear,
     master::{MasterShip, StatInterval},
 };
-use js_sys::JsString;
-use num_traits::FromPrimitive;
+
 use paste::paste;
-use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
-use web_sys::console;
 
 #[derive(Debug, Default, Clone)]
 struct ShipState {
     max_hp: Option<i32>,
 }
 
+#[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
-struct EBonuses {
+pub struct EBonuses {
     firepower: i32,
     torpedo: i32,
     anti_air: i32,
@@ -39,6 +37,9 @@ pub struct Ship {
     pub ship_id: i32,
     pub level: i32,
     pub current_hp: i32,
+
+    pub ship_type: ShipType,
+    pub ship_class: ShipClass,
 
     slots: Vec<i32>,
 
