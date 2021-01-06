@@ -1,37 +1,23 @@
-import i18n from "i18next"
-import { initReactI18next } from "react-i18next"
+import NextI18Next from "next-i18next"
+import path from "path"
 
-const resources = {
-  en: {
-    translation: {
-      gears: "gears",
-      ships: "ships",
-    },
-  },
-  ja: {
-    translation: {
-      gears: "装備",
-      ships: "艦娘",
-    },
-  },
+const languageNameMap = {
+  ja: "日本語",
+  en: "English",
+  ko: "한국어",
+  "zh-CN": "中文(简体)",
+  "zh-TW": "中文(繁體)",
 }
 
-i18n
-  .use(initReactI18next)
-  .init({
-    lng: "en",
-    fallbackLng: "en",
-    debug: false,
+export const allLanguages = Object.keys(languageNameMap)
 
-    interpolation: {
-      escapeValue: false,
-    },
+export const getLanguageName = (lang: string) => languageNameMap[lang as keyof typeof languageNameMap] || ""
 
-    react: {
-      wait: true,
-    },
-    resources: resources,
-  })
-  .catch(() => console.error("failed to init i18n"))
+const { appWithTranslation, withTranslation, useTranslation } = new NextI18Next({
+  defaultLanguage: "ja",
+  otherLanguages: allLanguages,
+  localePath: path.resolve("./public/locales"),
+  shallowRender: true,
+})
 
-export default i18n
+export { appWithTranslation, withTranslation, useTranslation }

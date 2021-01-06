@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Button, Tooltip } from "@material-ui/core"
 
@@ -45,11 +46,13 @@ const Component: React.FC<Props> = ({ className, stars, onChange }) => {
   )
 }
 
-const StyledComponent = styled(Component)`
-  width: 24px;
-  height: 100%;
-  padding: 0;
-  color: ${({ theme, stars }) => (stars === 0 ? theme.palette.action.disabled : theme.colors.stars)};
-`
+const StyledComponent = styled(Component)(
+  ({ theme, stars }) => css`
+    width: 24px;
+    height: 100%;
+    padding: 0;
+    color: ${stars === 0 ? theme.palette.action.disabled : theme.colors.stars};
+  `
+)
 
 export default StyledComponent

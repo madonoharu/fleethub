@@ -1,13 +1,13 @@
 import React from "react"
-import styled from "styled-components"
-import { Image } from "../../atoms"
+import styled from "@emotion/styled"
+import Image from "next/image"
 
 type Props = {
   icon: string
 }
 
 const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
-  return <Image className={className} height={18} width={48} path={`filters/${icon}`} />
+  return <Image className={className} height={18} width={48} src={`/filters/${icon}.png`} />
 }
 
 export default styled(FilterIcon)`

@@ -3,6 +3,7 @@ import ky from "ky-universal"
 import { MasterData } from "@fleethub/utils/src"
 
 import getServiceAccount from "./getServiceAccount"
+import { equalJson } from "./utils"
 
 let app: admin.app.App | undefined
 const getApp = () => {
@@ -12,10 +13,10 @@ const getApp = () => {
   }))
 }
 
-const fetchStorageData = <K extends keyof MasterData>(key: K): Promise<MasterData[K]> =>
+const read = <K extends keyof MasterData>(key: K): Promise<MasterData[K]> =>
   ky.get(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`).json()
 
-const postStorageData = <K extends keyof MasterData>(key: K, data: MasterData[K]) => {
+export const write = <K extends keyof MasterData>(key: K, data: MasterData[K]) => {
   const str = JSON.stringify(data)
 
   const destination = `data/${key}.json`
@@ -25,59 +26,77 @@ const postStorageData = <K extends keyof MasterData>(key: K, data: MasterData[K]
   return bucket.file(destination).save(str, { metadata })
 }
 
-export const read = async (): Promise<MasterData> => {
+export const update = async <K extends keyof MasterData>(
+  key: K,
+  cb: (current: MasterData[K]) => MasterData[K]
+): Promise<MasterData[K]> => {
+  const current = await read(key)
+  const next = cb(current)
+
+  if (!equalJson(current, next)) {
+    await write(key, next)
+  }
+
+  return next
+}
+
+export const readMasterData = async (): Promise<MasterData> => {
   const [
     ships,
-    shipTypes,
-    shipClasses,
-    shipAttrs,
+    ship_types,
+    ship_classes,
+    ship_attrs,
     gears,
-    gearCategories,
-    gearAttrs,
-    improvementBonuses,
+    gear_categories,
+    gear_attrs,
+    ibonuses,
     equippable,
   ] = await Promise.all([
-    fetchStorageData("ships"),
-    fetchStorageData("shipTypes"),
-    fetchStorageData("shipClasses"),
-    fetchStorageData("shipAttrs"),
+    read("ships"),
+    read("ship_types"),
+    read("ship_classes"),
+    read("ship_attrs"),
 
-    fetchStorageData("gears"),
-    fetchStorageData("gearCategories"),
-    fetchStorageData("gearAttrs"),
+    read("gears"),
+    read("gear_categories"),
+    read("gear_attrs"),
+    read("ibonuses"),
 
-    fetchStorageData("improvementBonuses"),
-    fetchStorageData("equippable"),
+    read("equippable"),
   ])
 
   return {
     ships,
-    shipTypes,
-    shipClasses,
-    shipAttrs,
-    gearCategories,
+    ship_types,
+    ship_classes,
+    ship_attrs,
+    gear_categories,
     gears,
-    gearAttrs,
-    improvementBonuses,
+    gear_attrs,
+    ibonuses,
     equippable,
   }
 }
 
-export const write = async (md: Partial<MasterData>) => {
+export const writeMasterData = async (md: MasterData) => {
   const keys = Object.keys(md) as (keyof MasterData)[]
 
-  const promises = keys.map((key) => {
+  const promises = keys.map(async (key) => {
+    const current = await read(key).catch()
     const data = md[key]
-    return data && postStorageData(key, data)
+
+    if (equalJson(current, data)) return
+
+    await write(key, data)
   })
 
   await Promise.all(promises)
 }
 
-export const update = async (updateFn: (md: MasterData) => Promise<MasterData> | MasterData) => {
-  const md = await read()
-  const updated = await updateFn(md)
-  await write(updated)
+export default {
+  read,
+  write,
+  update,
+  writeMasterData,
+  readMasterData,
 }
-
-export default { read, write, update }

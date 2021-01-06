@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { RootState, AppDispatch } from "./store"
-import { Theme } from "./styles"
+import "@emotion/react/types/css-prop"
 
 declare module "react" {
+  import { Interpolation, Theme } from "@emotion/react"
+
   type FCX<P = {}> = FC<P & { className?: string }>
 }
 
@@ -16,8 +18,9 @@ declare module "@reduxjs/toolkit" {
   export type AppStore = import("./store").AppStore
 }
 
-declare module "styled-components" {
-  interface DefaultTheme extends Theme {}
+declare module "@emotion/react" {
+  type MyTheme = import("./styles").Theme
+  export interface Theme extends MyTheme {}
 }
 
 declare module "*.png" {
@@ -28,7 +31,6 @@ declare module "*.png" {
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      readonly NODE_ENV: "development" | "production" | "test"
       readonly VERSION: string
     }
   }

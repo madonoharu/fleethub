@@ -4,7 +4,7 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
 import { FilesData } from "../store"
 import { publicStorageRef } from "../firebase"
 
-const { origin } = window.location
+const origin = process.browser ? window.location.origin : ""
 const dataParamKey = "data"
 const storageParamKey = "storage-file"
 

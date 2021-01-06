@@ -4,16 +4,16 @@ import { Luck, StatInterval, MaybeNumber } from "../types"
 export class ShipLuck implements Luck {
   private left: MaybeNumber
   private right: MaybeNumber
-  public displayed: number
+  public value: number
 
-  constructor([left, right]: StatInterval, public increase = 0) {
+  constructor([left, right]: StatInterval, public diff = 0) {
     this.left = left
     this.right = right
 
     if (left === null) {
-      this.displayed = increase || NaN
+      this.value = diff || NaN
     } else {
-      this.displayed = left + increase
+      this.value = left + diff
     }
   }
 }

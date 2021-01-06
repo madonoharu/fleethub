@@ -1,10 +1,10 @@
 import React, { useMemo } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { useTranslation } from "react-i18next"
 import { useDispatch, useSelector } from "react-redux"
 import { ActionCreators } from "redux-undo"
 
-import { AppBar as MuiAppBar, Button, Typography, Link, Tooltip } from "@material-ui/core"
+import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@material-ui/core"
 import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 import MenuIcon from "@material-ui/icons/Menu"
@@ -12,14 +12,11 @@ import MenuIcon from "@material-ui/icons/Menu"
 import { withIconButton, GithubIcon, ImportButton, ImportMenu } from "../../../components"
 import { useModal } from "../../../hooks"
 
-import LanguageSelect from "./LanguageSelect"
 import ShipList from "../ShipList"
 import GearList from "../GearList"
 import MapList from "../MapList"
 
-const StyledButton: typeof Button = styled(Button)`
-  height: 100%;
-`
+import LanguageSelect from "./LanguageSelect"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -62,58 +59,57 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
 
   return (
     <MuiAppBar className={className} position="sticky">
-      <StyledButton onClick={handleExplorerOpen} startIcon={<MenuIcon color={explorerOpen ? "primary" : "action"} />}>
+      <Button onClick={handleExplorerOpen} startIcon={<MenuIcon color={explorerOpen ? "primary" : "action"} />}>
         編成一覧
-      </StyledButton>
-      <ImportButton size="small" title="デッキビルダー形式などから編成を読み込む" onClick={ImprotMenuModal.show} />
+      </Button>
 
+      <ImportButton size="small" title="デッキビルダー形式などから編成を読み込む" onClick={ImprotMenuModal.show} />
       <UndoButton size="small" title="操作を戻す" disabled={!canUndo} onClick={undo} />
       <RedoButton size="small" title="操作を進める" disabled={!canRedo} onClick={redo} />
 
-      <Tooltip title="GitHub repository">
-        <StyledButton
-          startIcon={<GithubIcon />}
-          component={Link}
-          href="https://github.com/MadonoHaru/fleethub"
-          color="inherit"
-        >
-          作戦室 v{process.env.VERSION}
-        </StyledButton>
-      </Tooltip>
+      <div css={{ marginLeft: "auto" }}>
+        <Tooltip title="GitHub repository">
+          <Button
+            startIcon={<GithubIcon />}
+            component={Link}
+            href="https://github.com/MadonoHaru/fleethub"
+            color="inherit"
+          >
+            作戦室 v{process.env.VERSION}
+          </Button>
+        </Tooltip>
 
-      <StyledButton onClick={ShipListModal.show}>艦娘</StyledButton>
-      <StyledButton onClick={GearListModal.show}>装備</StyledButton>
-      <StyledButton onClick={MapListModal.show}>海域</StyledButton>
+        <Button onClick={ShipListModal.show}>{t("艦娘")}</Button>
+        <Button onClick={GearListModal.show}>{t("装備")}</Button>
+        <Button onClick={MapListModal.show}>{t("海域")}</Button>
+        <LanguageSelect />
 
-      <ImprotMenuModal>
-        <ImportMenu onClose={ImprotMenuModal.hide} />
-      </ImprotMenuModal>
+        <ImprotMenuModal>
+          <ImportMenu onClose={ImprotMenuModal.hide} />
+        </ImprotMenuModal>
 
-      <ShipListModal full>
-        <ShipList />
-      </ShipListModal>
-      <GearListModal full>
-        <GearList />
-      </GearListModal>
-      <MapListModal full>
-        <MapList />
-      </MapListModal>
+        <ShipListModal full>
+          <ShipList />
+        </ShipListModal>
+        <GearListModal full>
+          <GearList />
+        </GearListModal>
+        <MapListModal full>
+          <MapList />
+        </MapListModal>
+      </div>
     </MuiAppBar>
   )
 }
 
 export default styled(AppBar)`
-  height: 32px;
+  height: 40px;
   display: flex;
   align-items: center;
   flex-direction: row;
 
-  > :nth-child(5) {
-    margin-left: auto;
-  }
-
-  .MuiIconButton-root {
-    height: 24px;
+  .MuiButton-root {
+    height: 40px;
   }
 
   ${LanguageSelect} {

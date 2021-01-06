@@ -1,5 +1,4 @@
-import { isNonNullable, atLeastOne } from "@fleethub/utils"
-import { sumBy } from "lodash-es"
+import { sumBy, isNonNullable, atLeastOne } from "@fleethub/utils"
 
 import { Ship } from "../ship"
 

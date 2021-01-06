@@ -1,6 +1,7 @@
 import React from "react"
-import styled from "styled-components"
-import { range } from "lodash-es"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
+import { range } from "@fleethub/utils"
 
 import Button from "@material-ui/core/Button"
 
@@ -34,14 +35,16 @@ const Component: React.FCX<Props> = ({ className, onChange }) => {
   )
 }
 
-const StyledComponent = styled(Component)`
-  display: flex;
-  flex-direction: column-reverse;
+const StyledComponent = styled(Component)(
+  ({ theme }) => css`
+    display: flex;
+    flex-direction: column-reverse;
 
-  > * {
-    width: 80px;
-    color: ${(props) => props.theme.colors.stars};
-  }
-`
+    > * {
+      width: 80px;
+      color: ${theme.colors.stars};
+    }
+  `
+)
 
 export default StyledComponent

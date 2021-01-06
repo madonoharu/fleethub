@@ -3,14 +3,20 @@ import { GearId, ShipId } from "@fleethub/utils"
 import { MasterShip } from "../MasterDataAdapter"
 
 import { ShipStats, Ship } from "./types"
+import { calcShellingAbility } from "./shelling"
+
+let count = 0
 
 export class ShipImpl implements Ship {
+  public readonly id = this.state.id || `${count++}`
   public readonly shipId = this.master.shipId
   public readonly sortId = this.master.sortId
   public readonly stype = this.master.stype
   public readonly ctype = this.master.ctype
-  public readonly shipClass = this.master.shipClass
   public readonly shipType = this.master.shipType
+  public readonly shipTypeName = this.master.shipTypeName
+  public readonly shipClass = this.master.shipClass
+  public readonly shipClassName = this.master.shipClassName
   public readonly name = this.master.name
   public readonly yomi = this.master.yomi
 
@@ -117,17 +123,67 @@ export class ShipImpl implements Ship {
     return Math.floor(Math.floor(1.3 * bombing) + equipmentTorpedo) + 15
   }
 
+  get fleetAntiAir() {
+    return Math.floor(this.equipment.sumBy((gear) => gear.fleetAntiAir))
+  }
+
+  get apShellModifiers() {
+    const { equipment } = this
+
+    const hasMainGun = equipment.has((gear) => gear.is("MainGun"))
+    const hasApShell = equipment.has((gear) => gear.categoryIs("ApShell"))
+    const hasRader = equipment.has((gear) => gear.is("Radar"))
+    const hasSecondaryGun = equipment.has((gear) => gear.categoryIs("SecondaryGun"))
+
+    if (!hasApShell || !hasMainGun) {
+      return { power: 1, accuracy: 1 }
+    }
+
+    if (hasSecondaryGun && hasRader) {
+      return { power: 1.15, accuracy: 1.3 }
+    }
+    if (hasSecondaryGun) {
+      return { power: 1.15, accuracy: 1.2 }
+    }
+    if (hasRader) {
+      return { power: 1.1, accuracy: 1.25 }
+    }
+    return { power: 1.08, accuracy: 1.1 }
+  }
+
   get basicAccuracyTerm() {
     const { level, luck } = this
-    return 2 * Math.sqrt(level) + 1.5 * Math.sqrt(luck.displayed)
+    return 2 * Math.sqrt(level) + 1.5 * Math.sqrt(luck.value)
   }
 
   get basicEvasionTerm() {
     const { evasion, luck } = this
-    return evasion.displayed + Math.sqrt(2 * luck.displayed)
+    return evasion.value + Math.sqrt(2 * luck.value)
   }
 
-  get fleetAntiAir() {
-    return Math.floor(this.equipment.sumBy((gear) => gear.fleetAntiAir))
+  public calcShellingAbility: Ship["calcShellingAbility"] = (fleetLosModifier, airState, isMainFlagship) => {
+    return calcShellingAbility(this, fleetLosModifier, airState, isMainFlagship)
+  }
+
+  public calcEvasionAbility: Ship["calcEvasionAbility"] = (formationModifier, postcapModifier = 0) => {
+    const precap = Math.floor(this.basicEvasionTerm * formationModifier)
+
+    const totalStars = this.equipment.sumBy((gear) => {
+      if (gear.category === "EngineImprovement") return gear.stars
+      return 0
+    })
+
+    const improvementBonus = Math.floor(1.5 * Math.sqrt(totalStars))
+
+    let capped = precap
+    if (precap >= 65) {
+      capped = Math.floor(55 + 2 * Math.sqrt(precap - 65))
+    } else if (precap >= 40) {
+      capped = Math.floor(40 + 3 * Math.sqrt(precap - 40))
+    }
+
+    const evasionTerm = Math.floor(capped + postcapModifier) + improvementBonus
+
+    return { precap, improvementBonus, formationModifier, postcapModifier, evasionTerm }
   }
 }

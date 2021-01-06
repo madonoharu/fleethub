@@ -1,14 +1,16 @@
 import { colors as muiColors } from "@material-ui/core"
-import createPalette from "@material-ui/core/styles/createPalette"
+import { createMuiTheme } from "@material-ui/core"
 
 const { blue, cyan, pink, grey, lightBlue } = muiColors
 
-export const palette = createPalette({
-  type: "dark",
-  primary: blue,
-  secondary: pink,
-  background: {
-    paper: "rgba(100, 100, 100, 0.1)",
+export const { palette } = createMuiTheme({
+  palette: {
+    mode: "dark",
+    primary: blue,
+    secondary: pink,
+    background: {
+      paper: "rgba(100, 100, 100, 0.1)",
+    },
   },
 })
 
@@ -33,7 +35,7 @@ export const colors = {
 
   stars: cyan[400],
   bonus: lightBlue[300],
-  increase: palette.secondary.light,
+  diff: palette.secondary.light,
 
   shelling: muiColors.orange[500],
   night: muiColors.indigo[200],

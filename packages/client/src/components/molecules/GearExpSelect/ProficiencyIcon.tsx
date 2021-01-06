@@ -1,10 +1,9 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { ProficiencyExp } from "@fleethub/core"
 
+import Image from "next/image"
 import { Typography } from "@material-ui/core"
-
-import { Image } from "../../atoms"
 
 const Exp = styled(Typography)`
   position: absolute;
@@ -26,7 +25,7 @@ const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((
 
   return (
     <div ref={ref} {...divProps}>
-      <Image height={24} width={18} path={`proficiency/${ace}`} />
+      <Image height={24} width={18} src={`/proficiency/${ace}.png`} />
       <Exp>{exp}</Exp>
     </div>
   )

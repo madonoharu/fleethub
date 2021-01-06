@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { Plan, PlanAnalyzer, RateMap, AntiAirCutin, Formation } from "@fleethub/core"
 
 import { Table } from "../.."
@@ -27,7 +27,7 @@ const Container = styled(Flexbox)`
   align-items: flex-end;
   margin-bottom: 8px;
 
-  > :first-child {
+  > div:first-of-type {
     margin-right: auto;
   }
 `
@@ -39,10 +39,6 @@ const StyledChanceChart = styled(AntiAirCutinChanceChart)`
 const StyledCutinChanceCell = styled(CutinChanceCell)`
   width: 80px;
   margin-left: auto;
-`
-
-const StyledSelect: typeof Select = styled(Select)`
-  width: 120px;
 `
 
 const StyledNumberInput = styled(NumberInput)`
@@ -78,11 +74,12 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
           variant="outlined"
           label="陣形"
           combined={plan.isCombined}
-          formation={formation}
+          value={formation}
           onChange={setFormation}
         />
 
-        <StyledSelect
+        <Select
+          css={{ width: 120 }}
           variant="outlined"
           label="対空CI"
           {...ciSelectState}

@@ -1,15 +1,20 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
-const Label = styled.div`
-  color: ${(props) => props.theme.palette.text.secondary};
-  font-size: 0.75rem;
-  margin-right: 4px;
-`
+const Label = styled.div(
+  ({ theme }) => css`
+    color: ${theme.palette.text.secondary};
+    font-size: 0.75rem;
+    margin-right: 4px;
+  `
+)
 
-const Value = styled.div`
-  font-size: ${(props) => props.theme.typography.body2.fontSize};
-`
+const Value = styled.div(
+  ({ theme }) => css`
+    font-size: ${theme.typography.body2.fontSize};
+  `
+)
 
 const LabeledValue: React.FCX<{ label: React.ReactNode; value: React.ReactNode }> = ({ className, label, value }) => (
   <div className={className}>

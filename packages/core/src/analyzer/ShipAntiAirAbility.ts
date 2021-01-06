@@ -45,7 +45,7 @@ export class ShipAntiAirAbility {
     const total = equipment.sumBy((gear) => gear.adjustedAntiAir)
 
     if (this.isEnemy) {
-      return Math.floor(Math.floor(Math.sqrt(antiAir.displayed)) * 2 + total)
+      return Math.floor(Math.floor(Math.sqrt(antiAir.value)) * 2 + total)
     }
 
     const preFloor = antiAir.naked + total
@@ -119,7 +119,7 @@ export class ShipAntiAirAbility {
     if (!count) return 0
 
     const shipClassBonus = ship.shipClassIn("IseClass") ? 0.25 : 0
-    const rate = (adjustedAntiAir + 0.9 * ship.luck.displayed) / 281 + (count - 1) * 0.15 + shipClassBonus
+    const rate = (adjustedAntiAir + 0.9 * ship.luck.value) / 281 + (count - 1) * 0.15 + shipClassBonus
     return Math.min(rate, 1)
   }
 }

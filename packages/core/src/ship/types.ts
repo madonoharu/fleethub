@@ -1,8 +1,8 @@
-import { GearKey } from "../common"
-import { GearBase } from "../gear"
-import { EquipmentState, Equipment } from "../equipment"
+import { NumberRecord } from "@fleethub/utils"
 
-import { MasterShip } from "../MasterDataAdapter"
+import { AirState, GearKey, DayCutin } from "../common"
+import { EquipmentState, Equipment } from "../equipment"
+import { MasterShip, MasterGear } from "../MasterDataAdapter"
 
 export { StatInterval, MaybeNumber } from "@fleethub/utils"
 
@@ -28,41 +28,41 @@ export type ShipBaseStats = Pick<MasterShip, ShipStatKey>
 export type ShipBase = Omit<MasterShip, ShipStatKey | "id" | "slots" | "stock" | "slotnum" | "nextId" | "nextLevel">
 
 export type BasicStat = {
-  increase: number
+  diff: number
   naked: number
   equipment: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 export type MaxHp = {
-  increase: number
-  displayed: number
+  diff: number
+  value: number
   limit: number
 }
 
 export type Speed = {
   naked: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 export type Range = {
   naked: MasterShip["range"]
   equipment: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 export type Luck = {
-  increase: number
-  displayed: number
+  diff: number
+  value: number
 }
 
 export type Accuracy = {
   equipment: number
   bonus: number
-  displayed: number
+  value: number
 }
 
 /**
@@ -74,12 +74,20 @@ export type Accuracy = {
  * | Taiha  | 大破 |
  * | Sunk   | 轟沈 |
  */
-export type DamageState = "Less" | "Shouha" | "Chuuha" | "Taiha" | "Sunk"
+export type HealthState = "Normal" | "Shouha" | "Chuuha" | "Taiha" | "Sunk"
+
+export type HealthBounds = {
+  shouha: number
+  chuuha: number
+  taiha: number
+}
 
 export type Health = {
   maxHp: number
   currentHp: number
-  damage: DamageState
+  bounds: HealthBounds
+  getStateByHp: (hp: number) => HealthState
+  state: HealthState
   commonPowerModifier: number
   torpedoPowerModifier: number
 }
@@ -145,6 +153,7 @@ export type ShipStatsState = ShipBasicStatsState & {
 }
 
 export type ShipState = {
+  id?: string
   shipId: number
 } & ShipStatsState &
   EquipmentState
@@ -165,12 +174,29 @@ export type EquipmentBonuses = {
   effectiveLos: number
 }
 
+export type ApShellModifiers = { power: number; accuracy: number }
+
+export type EvasionAbility = {
+  improvementBonus: number
+  formationModifier: number
+  postcapModifier: number
+  precap: number
+  evasionTerm: number
+}
+
+export type ShellingAbility = {
+  observationTerm: number
+  rates: NumberRecord<DayCutin>
+  cutinRate: number
+}
+
 export type Ship = ShipBase &
   ShipStats & {
+    id: string
     state: ShipState
 
     equipment: Equipment
-    makeGetNextBonuses: (excludedKey: GearKey) => (gear: GearBase) => EquipmentBonuses
+    makeGetNextBonuses: (excludedKey: GearKey) => (gear: MasterGear) => EquipmentBonuses
 
     fleetLosFactor: number
     cruiserFitBonus: number
@@ -181,4 +207,8 @@ export type Ship = ShipBase &
     basicEvasionTerm: number
 
     fleetAntiAir: number
+    apShellModifiers: ApShellModifiers
+
+    calcShellingAbility: (fleetLosModifier: number, airState: AirState, isMainFlagship: boolean) => ShellingAbility
+    calcEvasionAbility: (formationModifier: number, postcapModifier?: number) => EvasionAbility
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { useForkRef } from "@material-ui/core"
 
@@ -14,7 +14,7 @@ type TextFieldPropsBase = {
 export type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> & TextFieldPropsBase
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
-  const { className, value = "", onChange, onBlur, ...rest } = props
+  const { className, value = "", onChange, onBlur, variant, ...rest } = props
 
   const [str, setStr] = useState(value)
 
@@ -51,10 +51,11 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref
       inputRef={handleRef}
       className={className}
       value={str}
+      variant={variant}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
-      InputProps={{ endAdornment: <ClearButton size="small" onClick={handleClear} /> }}
+      InputProps={{ endAdornment: <ClearButton size="tiny" onClick={handleClear} /> }}
       {...rest}
     />
   )

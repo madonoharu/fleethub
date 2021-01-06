@@ -1,5 +1,5 @@
 import { createMuiTheme } from "@material-ui/core"
-import { css, FlattenSimpleInterpolation } from "styled-components"
+import { css } from "@emotion/react"
 
 import { palette, colors } from "./colors"
 
@@ -24,102 +24,135 @@ const muiTheme = createMuiTheme({
     fontFamily,
   },
   palette,
-  props: {
+  components: {
     MuiContainer: {
-      maxWidth: "md",
+      defaultProps: {
+        maxWidth: "md",
+      },
     },
     MuiDialog: {
-      maxWidth: "md",
+      defaultProps: {
+        maxWidth: "md",
+      },
     },
 
     MuiLink: {
-      target: "_blank",
-      rel: "noopener",
+      defaultProps: {
+        target: "_blank",
+        rel: "noopener",
+      },
     },
     MuiTooltip: {
-      placement: "top",
+      defaultProps: {
+        placement: "top",
+        disableInteractive: true,
+      },
     },
     MuiSnackbar: {
-      autoHideDuration: 5000,
-      anchorOrigin: { vertical: "top", horizontal: "right" },
+      defaultProps: {
+        autoHideDuration: 5000,
+        anchorOrigin: { vertical: "top", horizontal: "right" },
+      },
     },
     MuiTabs: {
-      indicatorColor: "primary",
+      defaultProps: {
+        indicatorColor: "primary",
+      },
     },
     MuiCheckbox: {
-      color: "primary",
+      defaultProps: {
+        color: "primary",
+      },
     },
-  },
-  overrides: {
-    MuiCssBaseline: {
-      "@global": {
-        body: {
-          overflowY: "hidden",
-        },
+    MuiTextField: {
+      defaultProps: {
+        size: "small",
+      },
+    },
 
-        "@font-face": [
-          {
-            fontFamily: "Original Yu Gothic",
-            src: "local('Yu Gothic Medium')",
-            fontWeight: 100,
+    MuiCssBaseline: {
+      styleOverrides: {
+        "@global": {
+          body: {
+            overflowY: "hidden",
           },
-          {
-            fontFamily: "Original Yu Gothic",
-            src: "local('Yu Gothic Medium')",
-            fontWeight: 200,
-          },
-          {
-            fontFamily: "Original Yu Gothic",
-            src: "local('Yu Gothic Medium')",
-            fontWeight: 300,
-          },
-          {
-            fontFamily: "Original Yu Gothic",
-            src: "local('Yu Gothic Medium')",
-            fontWeight: 400,
-          },
-          {
-            fontFamily: "Original Yu Gothic",
-            src: "local('Yu Gothic Bold')",
-            fontWeight: "bold",
-          },
-        ],
+          "@font-face": [
+            {
+              fontFamily: "Original Yu Gothic",
+              src: "local('Yu Gothic Medium')",
+              fontWeight: 100,
+            },
+            {
+              fontFamily: "Original Yu Gothic",
+              src: "local('Yu Gothic Medium')",
+              fontWeight: 200,
+            },
+            {
+              fontFamily: "Original Yu Gothic",
+              src: "local('Yu Gothic Medium')",
+              fontWeight: 300,
+            },
+            {
+              fontFamily: "Original Yu Gothic",
+              src: "local('Yu Gothic Medium')",
+              fontWeight: 400,
+            },
+            {
+              fontFamily: "Original Yu Gothic",
+              src: "local('Yu Gothic Bold')",
+              fontWeight: "bold",
+            },
+          ],
+        },
       },
     },
     MuiButton: {
-      root: {
-        textTransform: "none",
-        minWidth: 0,
-        fontWeight: 400,
+      defaultProps: {
+        color: "inherit",
+      },
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          minWidth: 0,
+          fontWeight: 400,
+        },
       },
     },
     MuiTab: {
-      root: {
-        textTransform: "none",
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
       },
     },
     MuiListItemIcon: {
-      root: {
-        minWidth: "auto",
-        marginRight: 16,
+      styleOverrides: {
+        root: {
+          minWidth: "auto",
+          marginRight: 16,
+        },
       },
     },
     MuiAppBar: {
-      colorPrimary: {
-        backgroundColor: "rgba(30, 30, 35)",
+      styleOverrides: {
+        colorPrimary: {
+          backgroundColor: "rgba(30, 30, 35)",
+        },
       },
     },
     MuiDrawer: {
-      paper: {
-        backgroundColor: "rgba(30, 30, 35)",
+      styleOverrides: {
+        paper: {
+          backgroundColor: "rgba(30, 30, 35)",
+        },
       },
     },
   },
 })
 
-const isFirefox = window.navigator.userAgent.includes("Firefox")
+const isFirefox = process.browser && window.navigator.userAgent.includes("Firefox")
 
-const acrylic: FlattenSimpleInterpolation = isFirefox
+const acrylic = isFirefox
   ? css`
       background: rgba(60, 60, 70, 0.95);
     `
@@ -128,7 +161,7 @@ const acrylic: FlattenSimpleInterpolation = isFirefox
       backdrop-filter: blur(8px);
     `
 
-const darkAcrylic: FlattenSimpleInterpolation = isFirefox
+const darkAcrylic = isFirefox
   ? css`
       background: rgba(30, 30, 35, 0.98);
     `
@@ -137,7 +170,7 @@ const darkAcrylic: FlattenSimpleInterpolation = isFirefox
       backdrop-filter: blur(8px);
     `
 
-const swappable: FlattenSimpleInterpolation = css`
+const swappable = css`
   border-radius: 4px;
 
   &.droppable {

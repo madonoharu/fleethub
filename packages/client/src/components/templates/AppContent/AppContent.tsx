@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { selectAppState, appSlice } from "../../../store"
 import { DragLayerProvider } from "../../../hooks"

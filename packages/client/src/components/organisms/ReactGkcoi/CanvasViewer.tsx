@@ -1,16 +1,11 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 
 import { IconButton, Tooltip, Fab } from "@material-ui/core"
 import SaveIcon from "@material-ui/icons/Save"
 
 import { useModal } from "../../../hooks"
 import CanvasModalContainer from "./CanvasModalContainer"
-
-const StyledFab: typeof Fab = styled(Fab)`
-  position: absolute;
-  right: -64px;
-`
 
 const CanvasContainer = styled.div`
   canvas {
@@ -41,9 +36,15 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
   return (
     <div className={className}>
       <Tooltip title="download">
-        <StyledFab color="secondary" component="a" href={dataUrl} download="canvas.png">
+        <Fab
+          css={{ position: "absolute", right: -64 }}
+          color="secondary"
+          component="a"
+          href={dataUrl}
+          download="canvas.png"
+        >
           <SaveIcon />
-        </StyledFab>
+        </Fab>
       </Tooltip>
 
       <CanvasContainer onClick={Modal.show}>{element}</CanvasContainer>

@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from "react"
 import { useDragLayer, DragLayerMonitor } from "react-dnd"
-import { throttle } from "lodash-es"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
+import throttle from "lodash/throttle"
 
 type DragLayerRef = { children?: React.ReactNode; width?: number; height?: number; html?: HTMLElement }
 
@@ -21,14 +22,15 @@ const DragLayerContainer = styled.div`
 
 const wait = 50
 
-const DragLayerBox = styled.div`
-  backdrop-filter: blur(4px);
-  transition: transform 50ms linear;
-  width: transition;
-  box-shadow: 0px 0px 2px 2px ${(props) => props.theme.palette.primary.light}, ${(props) => props.theme.shadows[12]};
-  border-radius: 4px;
-`
-
+const DragLayerBox = styled.div(
+  ({ theme }) => css`
+    backdrop-filter: blur(4px);
+    transition: transform 50ms linear;
+    width: transition;
+    box-shadow: 0px 0px 2px 2px ${theme.palette.primary.light}, ${theme.shadows[12]};
+    border-radius: 4px;
+  `
+)
 const getStyle = throttle((monitor: DragLayerMonitor): React.CSSProperties | undefined => {
   const offset = monitor.getSourceClientOffset()
 

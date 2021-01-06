@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Button } from "@material-ui/core"
 import AddIcon from "@material-ui/icons/Add"
@@ -16,14 +17,16 @@ const AddGearButton: React.FCX<Props> = ({ className, onClick }) => {
   )
 }
 
-export default styled(AddGearButton)`
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  color: ${(props) => props.theme.palette.action.disabled};
-  transition: 250ms;
+export default styled(AddGearButton)(
+  ({ theme }) => css`
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    color: ${theme.palette.action.disabled};
+    transition: 250ms;
 
-  :hover {
-    color: ${(props) => props.theme.palette.action.active};
-  }
-`
+    :hover {
+      color: ${theme.palette.action.active};
+    }
+  `
+)

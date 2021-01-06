@@ -1,6 +1,7 @@
 import React from "react"
 import { GearBase, isNonNullable, EquipmentBonuses } from "@fleethub/core"
-import styled from "styled-components"
+import { css } from "@emotion/react"
+import styled from "@emotion/styled"
 
 import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell, TableCellProps } from "@material-ui/core"
 
@@ -32,15 +33,19 @@ const Table = styled(MuiTable)`
   width: auto;
 `
 
-const TableCell = styled(({ statKey, ...props }: { statKey?: Key } & TableCellProps) => <MuiTableCell {...props} />)`
-  padding: 0 4px;
-  border: none;
-  color: ${({ theme, statKey }) => statKey && theme.colors[statKey]};
-`
+const TableCell = styled(({ statKey, ...props }: { statKey?: Key } & TableCellProps) => <MuiTableCell {...props} />)(
+  ({ theme, statKey }) => css`
+    padding: 0 4px;
+    border: none;
+    color: ${statKey && theme.colors[statKey]};
+  `
+)
 
-const BonusCell = styled(TableCell)`
-  color: ${({ theme }) => theme.colors.bonus};
-`
+const BonusCell = styled(TableCell)(
+  ({ theme }) => css`
+    color: ${theme.colors.bonus};
+  `
+)
 
 const StyledStatIcon = styled(StatIcon)`
   display: block !important;

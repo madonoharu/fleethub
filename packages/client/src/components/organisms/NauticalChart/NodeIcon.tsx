@@ -1,8 +1,8 @@
 import React from "react"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { MapNode } from "@fleethub/data"
 
-import { Group } from "@vx/group"
+import { Group } from "@visx/group"
 import { Tooltip, Typography } from "@material-ui/core"
 
 const nodeTypes = [
