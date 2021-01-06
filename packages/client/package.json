@@ -28,7 +28,7 @@
     "clsx": "^1.1.0",
     "copy-to-clipboard": "^3.3.1",
     "firebase": "^8.2.1",
-    "gkcoi": "^1.1.6",
+    "gkcoi": "^1.1.8",
     "localforage": "^1.9.0",
     "lz-string-uri-fix": "^1.4.5",
     "next": "^10.0.4",
