@@ -14,19 +14,6 @@ const createGears = (rows: GoogleSpreadsheetRow[], start2: Start2): MasterDataGe
   const gears = start2.api_mst_slotitem.map((mst) => {
     const row = rows.find((row) => Number(row.gear_id) === mst.api_id)
 
-    let accuracy = 0
-    let evasion = 0
-    let anti_bomber = 0
-    let interception = 0
-
-    if (mst.api_type[2] === /** 局地戦闘機 */ 48) {
-      anti_bomber = mst.api_houm
-      interception = mst.api_houk
-    } else {
-      accuracy = mst.api_houm
-      evasion = mst.api_houk
-    }
-
     const next: MasterDataGear = {
       gear_id: mst.api_id,
       types: mst.api_type,
@@ -41,10 +28,8 @@ const createGears = (rows: GoogleSpreadsheetRow[], start2: Start2): MasterDataGe
       asw: mst.api_tais,
       los: mst.api_saku,
       luck: mst.api_luck,
-      accuracy,
-      evasion,
-      anti_bomber,
-      interception,
+      accuracy: mst.api_houm,
+      evasion: mst.api_houk,
       range: mst.api_leng,
       radius: mst.api_distance,
       cost: mst.api_cost,

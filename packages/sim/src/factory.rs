@@ -37,12 +37,32 @@ impl Factory {
                 let attrs = self.master_data.find_gear_attrs(mg);
                 let ibonuses = self.master_data.get_ibonuses(mg, stars);
 
+                let category: GearCategory =
+                    FromPrimitive::from_i32(mg.types[2]).unwrap_or_default();
+
+                let (accuracy, evasion, anti_bomber, interception) =
+                    if category == GearCategory::LbFighter {
+                        (
+                            0,
+                            0,
+                            mg.accuracy.unwrap_or_default(),
+                            mg.evasion.unwrap_or_default(),
+                        )
+                    } else {
+                        (
+                            mg.accuracy.unwrap_or_default(),
+                            mg.evasion.unwrap_or_default(),
+                            0,
+                            0,
+                        )
+                    };
+
                 Gear {
                     gear_id,
                     stars,
                     exp,
 
-                    category: FromPrimitive::from_i32(mg.types[2]).unwrap_or_default(),
+                    category,
 
                     name: mg.name.to_string(),
                     types: mg.types,
@@ -56,10 +76,10 @@ impl Factory {
                     asw: mg.asw.unwrap_or_default(),
                     los: mg.los.unwrap_or_default(),
                     luck: mg.luck.unwrap_or_default(),
-                    accuracy: mg.accuracy.unwrap_or_default(),
-                    evasion: mg.evasion.unwrap_or_default(),
-                    anti_bomber: mg.anti_bomber.unwrap_or_default(),
-                    interception: mg.interception.unwrap_or_default(),
+                    accuracy,
+                    evasion,
+                    anti_bomber,
+                    interception,
                     range: mg.range.unwrap_or_default(),
                     radius: mg.radius.unwrap_or_default(),
                     cost: mg.cost.unwrap_or_default(),
