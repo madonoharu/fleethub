@@ -3,6 +3,16 @@ use serde::{Deserialize, Serialize};
 use strum_macros::{EnumString, ToString};
 use wasm_bindgen::prelude::*;
 
+macro_rules! impl_default {
+    ($enum: ident) => {
+        impl Default for $enum {
+            fn default() -> Self {
+                Self::Unknown
+            }
+        }
+    };
+}
+
 #[allow(dead_code)]
 #[wasm_bindgen]
 #[derive(Debug, FromPrimitive, ToString, PartialEq, Clone, Copy)]
@@ -68,11 +78,7 @@ pub enum GearCategory {
     CbRecon2 = 94,
 }
 
-impl Default for GearCategory {
-    fn default() -> Self {
-        GearCategory::Unknown
-    }
-}
+impl_default!(GearCategory);
 
 #[allow(dead_code)]
 #[wasm_bindgen]
@@ -108,7 +114,7 @@ pub enum GearAttr {
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum ShipType {
     Unknown = 0,
     DE = 1,
@@ -135,9 +141,11 @@ pub enum ShipType {
     AO = 22,
 }
 
+impl_default!(ShipType);
+
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum ShipClass {
     Unknown = 0,
     AyanamiClass = 1,
@@ -248,9 +256,11 @@ pub enum ShipClass {
     StLouisClass = 106,
 }
 
+impl_default!(ShipClass);
+
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum ShipAttr {
     NightCarrier,
     Installation,
