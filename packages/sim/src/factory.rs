@@ -1,7 +1,7 @@
 use crate::master::MasterData;
 use crate::{constants::GearCategory, gear::Gear};
 use num_traits::FromPrimitive;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
 #[derive(Debug, Default, Clone, Deserialize)]
@@ -12,7 +12,7 @@ pub struct GearState {
 }
 
 #[wasm_bindgen]
-struct Factory {
+pub struct Factory {
     master_data: MasterData,
 }
 
@@ -40,6 +40,11 @@ impl Factory {
                 let category: GearCategory =
                     FromPrimitive::from_i32(mg.types[2]).unwrap_or_default();
 
+                let special_type: GearCategory = mg
+                    .special_type
+                    .and_then(FromPrimitive::from_i32)
+                    .unwrap_or(category);
+
                 let (accuracy, evasion, anti_bomber, interception) =
                     if category == GearCategory::LbFighter {
                         (
@@ -63,8 +68,9 @@ impl Factory {
                     exp,
 
                     category,
+                    special_type,
 
-                    name: mg.name.to_string(),
+                    name: mg.name.clone(),
                     types: mg.types,
                     max_hp: mg.max_hp.unwrap_or_default(),
                     firepower: mg.firepower.unwrap_or_default(),
@@ -137,9 +143,22 @@ mod test {
         let master_data = crate::master::get_master_data();
         let factory = Factory { master_data };
 
+        let create_gears = || {
+            let _ = factory
+                .master_data
+                .gears
+                .iter()
+                .map(|g| GearState {
+                    gear_id: g.gear_id,
+                    stars: None,
+                    exp: None,
+                })
+                .map(|g| factory.create_gear(g));
+        };
+
         measure! {
-            for n in 0..=1_000_000 {
-                let _ = factory.master_data.gears.iter().map(|g| GearState { gear_id: g.gear_id, stars: None, exp:None }).map(|g| factory.create_gear(g));
+            for _ in 0..=1_000_000 {
+                create_gears()
              }
         }
     }
