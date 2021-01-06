@@ -73,13 +73,13 @@ export const createShips = (headerValues: string[], rows: GoogleSpreadsheetRow[]
       headerValues.forEach((key) => {
         const value = row[key]
 
-        if (!value) return
+        if (value === "") return
 
         if (key === "name" || key === "yomi" || key === "banner") {
           set(base, key, String(value))
-        } else if (value === "TRUE" || value === "FALSE") {
-          set(base, key, value === "TRUE")
-        } else {
+        } else if (value === "TRUE") {
+          set(base, key, true)
+        } else if (value !== "FALSE") {
           set(base, key, Number(value))
         }
       })
@@ -114,10 +114,6 @@ export const createShips = (headerValues: string[], rows: GoogleSpreadsheetRow[]
 
   getConvertibleShips(ships).forEach((ship) => {
     ship.useful = true
-  })
-
-  ships.forEach((ship) => {
-    deleteFalsyValues(ship)
   })
 
   return ships
