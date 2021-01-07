@@ -3,45 +3,6 @@ use js_sys::JsString;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(typescript_custom_section)]
-const GEAR_PARAMS: &'static str = r#"
-type GearParams = {
-    gear_id: number
-    stars: number
-    exp: number
-  
-    name: string
-    types: [number, number, number, number, number]
-    attrs: string[]
-  
-    max_hp: number
-    firepower: number
-    armor: number
-    torpedo: number
-    anti_air: number
-    speed: number
-    bombing: number
-    asw: number
-    los: number
-    luck: number
-    accuracy: number
-    evasion: number
-    anti_bomber: number
-    interception: number
-    range: number
-    radius: number
-    cost: number
-  
-    improvable: boolean
-  }
-"#;
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(typescript_type = "GearParams")]
-    pub type GearParams;
-}
-
 #[derive(Debug)]
 enum ProficiencyType {
     Fighter,
