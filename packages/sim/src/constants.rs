@@ -1,6 +1,5 @@
 use num_derive::FromPrimitive;
-use serde::{Deserialize, Serialize};
-use strum_macros::{EnumString, ToString};
+use strum_macros::EnumString;
 use wasm_bindgen::prelude::*;
 
 macro_rules! impl_default {
@@ -15,7 +14,7 @@ macro_rules! impl_default {
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, FromPrimitive, ToString, PartialEq, Clone, Copy)]
+#[derive(Debug, Clone, Copy, FromPrimitive, PartialEq)]
 pub enum GearCategory {
     Unknown = 0,
     SmallCaliberMainGun = 1,
@@ -82,7 +81,7 @@ impl_default!(GearCategory);
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone, ToString, EnumString)]
+#[derive(Debug, Clone, Copy, FromPrimitive, EnumString, PartialEq)]
 pub enum GearAttr {
     HighAngleMount,
     NightFighter,
@@ -114,7 +113,7 @@ pub enum GearAttr {
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, FromPrimitive)]
 pub enum ShipType {
     Unknown = 0,
     DE = 1,
@@ -145,7 +144,7 @@ impl_default!(ShipType);
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, FromPrimitive)]
 pub enum ShipClass {
     Unknown = 0,
     AyanamiClass = 1,
@@ -283,11 +282,6 @@ mod test {
     }
 
     #[test]
-    fn test_gear_category() {
-        assert_eq!(GearCategory::Sonar.to_string(), String::from("Sonar"));
-    }
-
-    #[test]
     fn test_gear_attr() {
         use std::str::FromStr;
 
@@ -295,6 +289,5 @@ mod test {
             GearAttr::from_str(&"HighAngleMount".to_string()).unwrap(),
             GearAttr::HighAngleMount
         );
-        assert_eq!(GearAttr::Fighter.to_string(), String::from("Fighter"));
     }
 }
