@@ -153,13 +153,16 @@ impl MasterDataIBonuses {
 }
 
 #[wasm_bindgen]
-#[derive(Debug, Default, Clone, Deserialize)]
+#[derive(Debug, Default, Clone, Copy, Deserialize)]
 pub struct StatInterval(pub Option<i32>, pub Option<i32>);
 
+#[wasm_bindgen]
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct MasterShip {
     pub ship_id: i32,
+    #[wasm_bindgen(skip)]
     pub name: String,
+    #[wasm_bindgen(skip)]
     pub yomi: String,
     pub stype: i32,
     pub ctype: Option<i32>,
@@ -180,10 +183,23 @@ pub struct MasterShip {
     pub next_id: Option<i32>,
     pub next_level: Option<i32>,
     pub slotnum: i32,
+    #[wasm_bindgen(skip)]
     pub slots: Vec<i32>,
+    #[wasm_bindgen(skip)]
     pub stock: Vec<GearState>,
     pub useful: Option<bool>,
+    #[wasm_bindgen(skip)]
     pub banner: Option<String>,
+}
+
+impl MasterShip {
+    pub fn default_level(&self) -> i32 {
+        if self.ship_id < 1500 {
+            99
+        } else {
+            1
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -219,8 +235,9 @@ impl MasterData {
     }
 }
 
+#[warn(dead_code)]
 pub fn get_master_data() -> MasterData {
-    let json = std::fs::read_to_string("master_data.json")
+    let json = std::fs::read_to_string("../utils/master_data.json")
         .map_err(|err| {
             println!("{}", err);
         })
@@ -231,20 +248,6 @@ pub fn get_master_data() -> MasterData {
 #[cfg(test)]
 mod test {
     use super::*;
-
-    macro_rules! measure {
-        ( $x:expr) => {{
-            let start = std::time::Instant::now();
-            let result = $x;
-            let end = start.elapsed();
-            println!(
-                "計測開始から{}.{:03}秒経過しました。",
-                end.as_secs(),
-                end.subsec_nanos() / 1_000_000
-            );
-            result
-        }};
-    }
 
     #[test]
     fn test_master_ship() {
