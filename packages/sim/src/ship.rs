@@ -1,17 +1,37 @@
-use std::collections::HashMap;
-
 use crate::{
     constants::*,
     gear::Gear,
     master::{MasterShip, StatInterval},
 };
-
+use num_traits::FromPrimitive;
 use paste::paste;
+use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 
+type Gears = HashMap<String, Gear>;
+
 #[derive(Debug, Default, Clone)]
-struct ShipState {
-    max_hp: Option<i32>,
+pub struct ShipState {
+    pub ship_id: i32,
+    pub slots: Vec<i32>,
+    pub level: Option<i32>,
+    pub current_hp: Option<i32>,
+    pub max_hp_mod: Option<i32>,
+    pub firepower_mod: Option<i32>,
+    pub torpedo_mod: Option<i32>,
+    pub armor_mod: Option<i32>,
+    pub anti_air_mod: Option<i32>,
+    pub evasion_mod: Option<i32>,
+    pub asw_mod: Option<i32>,
+    pub los_mod: Option<i32>,
+    pub luck_mod: Option<i32>,
+
+    pub g1: Option<Gear>,
+    pub g2: Option<Gear>,
+    pub g3: Option<Gear>,
+    pub g4: Option<Gear>,
+    pub g5: Option<Gear>,
+    pub gx: Option<Gear>,
 }
 
 #[wasm_bindgen]
@@ -41,8 +61,6 @@ pub struct Ship {
     pub ship_type: ShipType,
     pub ship_class: ShipClass,
 
-    slots: Vec<i32>,
-
     max_hp_mod: i32,
     firepower_mod: i32,
     torpedo_mod: i32,
@@ -54,13 +72,11 @@ pub struct Ship {
     luck_mod: i32,
 
     #[wasm_bindgen(skip)]
-    pub name: String,
+    pub slots: Vec<i32>,
     #[wasm_bindgen(skip)]
-    pub types: [i32; 5],
+    pub attrs: Vec<ShipAttr>,
     #[wasm_bindgen(skip)]
-    pub attrs: Vec<GearAttr>,
-    #[wasm_bindgen(skip)]
-    pub gears: HashMap<String, Gear>,
+    pub gears: Gears,
 
     master: MasterShip,
     ebonuses: EBonuses,
@@ -135,6 +151,15 @@ impl_stats!(firepower, torpedo, armor, anti_air, evasion, asw, los);
 
 #[wasm_bindgen]
 impl Ship {
+    #[wasm_bindgen(getter)]
+    pub fn name(&self) -> JsValue {
+        JsValue::from(&self.master.name)
+    }
+
+    pub fn master(&self) -> MasterShip {
+        self.master.clone()
+    }
+
     pub fn max_hp(&self) -> Option<i32> {
         self.master.max_hp.0.map(|left| {
             if self.level >= 100 {
@@ -181,6 +206,24 @@ impl Ship {
         .cloned()
     }
 
+    fn slot_sized_gears(&self) -> impl Iterator<Item = (&String, &Gear, Option<i32>)> {
+        let iter = self
+            .gears
+            .iter()
+            .map(move |(key, g)| (key, g, self.get_slot_size(key)));
+
+        iter
+    }
+
+    pub fn calc_fighter_power(&self) -> Option<i32> {
+        self.slot_sized_gears()
+            .map(|(_, g, slot_size)| -> Option<i32> {
+                let ss = slot_size?;
+                Some(g.calc_fighter_power(ss))
+            })
+            .sum()
+    }
+
     pub fn fleet_los_factor(&self) -> Option<i32> {
         let total = self
             .gears
@@ -222,6 +265,46 @@ impl Ship {
 }
 
 impl Ship {
+    pub fn new(state: ShipState, master: &MasterShip, attrs: Vec<ShipAttr>) -> Self {
+        let ebonuses = EBonuses::default();
+        let slots = master.slots.clone();
+        let gears: HashMap<String, Gear> = HashMap::new();
+
+        let mut ship = Ship {
+            ship_id: state.ship_id,
+            level: state.level.unwrap_or(master.default_level()),
+            current_hp: state.current_hp.unwrap_or_default(),
+            ship_type: FromPrimitive::from_i32(master.stype).unwrap_or_default(),
+            ship_class: master
+                .ctype
+                .and_then(FromPrimitive::from_i32)
+                .unwrap_or_default(),
+
+            attrs,
+            slots,
+            gears,
+
+            ebonuses,
+            master: master.clone(),
+
+            max_hp_mod: state.max_hp_mod.unwrap_or_default(),
+            firepower_mod: state.firepower_mod.unwrap_or_default(),
+            torpedo_mod: state.torpedo_mod.unwrap_or_default(),
+            armor_mod: state.armor_mod.unwrap_or_default(),
+            anti_air_mod: state.anti_air_mod.unwrap_or_default(),
+            evasion_mod: state.evasion_mod.unwrap_or_default(),
+            asw_mod: state.asw_mod.unwrap_or_default(),
+            los_mod: state.los_mod.unwrap_or_default(),
+            luck_mod: state.luck_mod.unwrap_or_default(),
+        };
+
+        if ship.current_hp == 0 {
+            ship.current_hp = ship.max_hp().unwrap_or_default();
+        }
+
+        ship
+    }
+
     pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
         let mut iter = self.gears.values();
         let has_main = iter.any(|g| g.attrs.contains(&GearAttr::MainGun));
@@ -249,15 +332,18 @@ mod test {
 
     #[test]
     fn test_max_hp() {
-        let mut ship = Ship {
-            level: 99,
-            ..Default::default()
+        fn get_ship(level: i32, max_hp: i32) -> Ship {
+            Ship {
+                level,
+                master: MasterShip {
+                    max_hp: StatInterval(Some(max_hp), None),
+                    ..Default::default()
+                },
+                ..Default::default()
+            }
         };
 
-        ship.master.max_hp.0.replace(90);
-        assert_eq!(ship.max_hp(), Some(90));
-
-        ship.level = 100;
+        assert_eq!(get_ship(99, 90).max_hp(), Some(90));
 
         let table = [
             (29, 29 + 4),
@@ -271,9 +357,9 @@ mod test {
             (89, 89 + 8),
             (90, 90 + 9),
         ];
+
         for (value, expected) in table.iter().cloned() {
-            ship.master.max_hp.0.replace(value);
-            assert_eq!(ship.max_hp(), Some(expected));
+            assert_eq!(get_ship(100, value).max_hp(), Some(expected));
         }
     }
 
