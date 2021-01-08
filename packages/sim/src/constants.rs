@@ -1,3 +1,4 @@
+use enumset::EnumSetType;
 use num_derive::FromPrimitive;
 use strum_macros::EnumString;
 use wasm_bindgen::prelude::*;
@@ -81,7 +82,7 @@ impl_default!(GearCategory);
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, FromPrimitive, EnumString, PartialEq)]
+#[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
 pub enum GearAttr {
     HighAngleMount,
     NightFighter,
@@ -259,7 +260,7 @@ impl_default!(ShipClass);
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, EnumSetType)]
 pub enum ShipAttr {
     NightCarrier,
     Installation,
@@ -283,10 +284,17 @@ mod test {
 
     #[test]
     fn test_gear_attr() {
+        use enumset::EnumSet;
         use std::str::FromStr;
 
+        let mut set: EnumSet<GearAttr> = GearAttr::HighAngleMount | GearAttr::JetAircraft;
+        set.insert(GearAttr::MainGun);
+
+        assert_eq!(set.len(), 3);
+        assert!(set.contains(GearAttr::MainGun));
+
         assert_eq!(
-            GearAttr::from_str(&"HighAngleMount".to_string()).unwrap(),
+            GearAttr::from_str("HighAngleMount").unwrap(),
             GearAttr::HighAngleMount
         );
     }
