@@ -1,19 +1,19 @@
 use crate::{
     constants::*,
     gear::Gear,
+    gear_array::GearArray,
     master::{MasterShip, StatInterval},
 };
+use arrayvec::ArrayVec;
+use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
-use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
-
-type Gears = HashMap<String, Gear>;
 
 #[derive(Debug, Default, Clone)]
 pub struct ShipState {
     pub ship_id: i32,
-    pub slots: Vec<i32>,
+    pub slots: ArrayVec<[i32; 5]>,
     pub level: Option<i32>,
     pub current_hp: Option<i32>,
     pub max_hp_mod: Option<i32>,
@@ -25,13 +25,6 @@ pub struct ShipState {
     pub asw_mod: Option<i32>,
     pub los_mod: Option<i32>,
     pub luck_mod: Option<i32>,
-
-    pub g1: Option<Gear>,
-    pub g2: Option<Gear>,
-    pub g3: Option<Gear>,
-    pub g4: Option<Gear>,
-    pub g5: Option<Gear>,
-    pub gx: Option<Gear>,
 }
 
 #[wasm_bindgen]
@@ -72,11 +65,11 @@ pub struct Ship {
     luck_mod: i32,
 
     #[wasm_bindgen(skip)]
-    pub slots: Vec<i32>,
+    pub slots: ArrayVec<[Option<i32>; 5]>,
     #[wasm_bindgen(skip)]
-    pub attrs: Vec<ShipAttr>,
+    pub attrs: EnumSet<ShipAttr>,
     #[wasm_bindgen(skip)]
-    pub gears: Gears,
+    pub gears: GearArray,
 
     master: MasterShip,
     ebonuses: EBonuses,
@@ -194,32 +187,16 @@ impl Ship {
         .map(|range| range + self.ebonuses.range)
     }
 
-    pub fn get_slot_size(&self, key: &str) -> Option<i32> {
-        match key {
-            "g1" => self.slots.get(0),
-            "g2" => self.slots.get(1),
-            "g3" => self.slots.get(2),
-            "g4" => self.slots.get(3),
-            "g5" => self.slots.get(4),
-            _ => None,
-        }
-        .cloned()
-    }
-
-    fn slot_sized_gears(&self) -> impl Iterator<Item = (&String, &Gear, Option<i32>)> {
-        let iter = self
-            .gears
-            .iter()
-            .map(move |(key, g)| (key, g, self.get_slot_size(key)));
-
-        iter
+    pub fn get_slot_size(&self, index: usize) -> Option<i32> {
+        self.slots.get(index).and_then(|&s| s)
     }
 
     pub fn calc_fighter_power(&self) -> Option<i32> {
-        self.slot_sized_gears()
-            .map(|(_, g, slot_size)| -> Option<i32> {
-                let ss = slot_size?;
-                Some(g.calc_fighter_power(ss))
+        self.gears
+            .iter_without_ex()
+            .map(|(i, g)| {
+                let slot_size = self.get_slot_size(i)?;
+                Some(g.calc_fighter_power(slot_size))
             })
             .sum()
     }
@@ -227,10 +204,11 @@ impl Ship {
     pub fn fleet_los_factor(&self) -> Option<i32> {
         let total = self
             .gears
-            .iter()
-            .map(|(key, g)| {
-                let slot_size = self.get_slot_size(&key)?;
-                if g.attrs.contains(&GearAttr::ObservationSeaplane) {
+            .iter_without_ex()
+            .map(|(index, g)| {
+                let slot_size = self.get_slot_size(index)?;
+
+                if g.attrs.contains(GearAttr::ObservationSeaplane) {
                     Some(g.los * (slot_size as f64).sqrt().floor() as i32)
                 } else {
                     Some(0)
@@ -242,11 +220,7 @@ impl Ship {
     }
 
     pub fn fleet_anti_air(&self) -> i32 {
-        self.gears
-            .values()
-            .map(|g| g.fleet_anti_air())
-            .sum::<f64>()
-            .floor() as i32
+        self.gears.sum_by(|g| g.fleet_anti_air()).floor() as i32
     }
 
     pub fn basic_accuracy_term(&self) -> Option<f64> {
@@ -265,10 +239,9 @@ impl Ship {
 }
 
 impl Ship {
-    pub fn new(state: ShipState, master: &MasterShip, attrs: Vec<ShipAttr>) -> Self {
+    pub fn new(state: ShipState, master: &MasterShip, attrs: EnumSet<ShipAttr>) -> Self {
         let ebonuses = EBonuses::default();
-        let slots = master.slots.clone();
-        let gears: HashMap<String, Gear> = HashMap::new();
+        let slots: ArrayVec<[Option<i32>; 5]> = master.slots.clone();
 
         let mut ship = Ship {
             ship_id: state.ship_id,
@@ -282,7 +255,7 @@ impl Ship {
 
             attrs,
             slots,
-            gears,
+            gears: Default::default(),
 
             ebonuses,
             master: master.clone(),
@@ -307,9 +280,9 @@ impl Ship {
 
     pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
         let mut iter = self.gears.values();
-        let has_main = iter.any(|g| g.attrs.contains(&GearAttr::MainGun));
+        let has_main = iter.any(|g| g.attrs.contains(GearAttr::MainGun));
         let has_ap_shell = iter.any(|g| g.category == GearCategory::ApShell);
-        let has_rader = iter.any(|g| g.attrs.contains(&GearAttr::Radar));
+        let has_rader = iter.any(|g| g.attrs.contains(GearAttr::Radar));
         let has_secondary = iter.any(|g| g.category == GearCategory::SecondaryGun);
 
         if !has_ap_shell || !has_main {
@@ -378,13 +351,10 @@ mod test {
                             ..Default::default()
                         };
 
-                        ship.gears.insert(
-                            "g1".to_string(),
-                            Gear {
-                                $key: 5,
-                                ..Default::default()
-                            },
-                        );
+                        ship.gears.put(0, Gear {
+                            $key: 5,
+                            ..Default::default()
+                        });
 
                         assert_eq!(ship.[<naked_ $key>](), Some(13));
                         assert_eq!(ship.$key(), Some(18));
@@ -407,13 +377,10 @@ mod test {
                             ..Default::default()
                         };
 
-                        ship.gears.insert(
-                            "g1".to_string(),
-                            Gear {
-                                $key: 5,
-                                ..Default::default()
-                            },
-                        );
+                        ship.gears.put(0, Gear {
+                            $key: 5,
+                            ..Default::default()
+                        });
 
                         assert_eq!(ship.[<naked_ $key>](), Some(16));
                         assert_eq!(ship.$key(), Some(21));
