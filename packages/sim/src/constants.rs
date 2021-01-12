@@ -260,7 +260,7 @@ impl_default!(ShipClass);
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, EnumSetType)]
+#[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
 pub enum ShipAttr {
     NightCarrier,
     Installation,
