@@ -1,5 +1,7 @@
-use crate::gear::IBonuses;
 use crate::{constants::GearAttr, factory::GearState};
+use crate::{constants::ShipAttr, gear::IBonuses};
+use arrayvec::ArrayVec;
+use enumset::EnumSet;
 use fasteval::bool_to_f64;
 use serde::Deserialize;
 use std::str::FromStr;
@@ -184,9 +186,9 @@ pub struct MasterShip {
     pub next_level: Option<i32>,
     pub slotnum: i32,
     #[wasm_bindgen(skip)]
-    pub slots: Vec<i32>,
+    pub slots: ArrayVec<[Option<i32>; 5]>,
     #[wasm_bindgen(skip)]
-    pub stock: Vec<GearState>,
+    pub stock: ArrayVec<[GearState; 5]>,
     pub useful: Option<bool>,
     #[wasm_bindgen(skip)]
     pub banner: Option<String>,
@@ -200,6 +202,24 @@ impl MasterShip {
             1
         }
     }
+
+    pub fn eval(&self, expr_str: &str) -> Option<f64> {
+        let mut ns = |key: &str, args: Vec<f64>| match key {
+            "ship_id" => Some(self.ship_id.into()),
+            "ship_type" => Some(self.stype.into()),
+            "ship_class" => Some(self.ctype.unwrap_or_default().into()),
+
+            "ship_id_in" => Some(bool_to_f64!(args.contains(&self.ship_id.into()))),
+            "ship_type_in" => Some(bool_to_f64!(args.contains(&self.stype.into()))),
+            "ship_class_in" => Some(bool_to_f64!(
+                args.contains(&(self.ctype.unwrap_or_default().into()))
+            )),
+
+            _ => None,
+        };
+
+        fasteval::ez_eval(expr_str, &mut ns).ok()
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -208,15 +228,35 @@ pub struct MasterData {
     pub gear_attrs: Vec<MasterDataAttrRule>,
     pub ibonuses: MasterDataIBonuses,
     pub ships: Vec<MasterShip>,
+    pub ship_attrs: Vec<MasterDataAttrRule>,
 }
 
 impl MasterData {
-    pub fn find_gear_attrs(&self, gear: &MasterGear) -> Vec<GearAttr> {
+    pub fn find_gear_attrs(&self, gear: &MasterGear) -> EnumSet<GearAttr> {
         self.gear_attrs
             .iter()
             .filter_map(|rule| {
                 if gear.eval(&rule.expr).unwrap_or_default() == 1. {
                     match GearAttr::from_str(&rule.key) {
+                        Ok(attr) => Some(attr),
+                        Err(error) => {
+                            eprintln!("{:?}", error);
+                            None
+                        }
+                    }
+                } else {
+                    None
+                }
+            })
+            .collect()
+    }
+
+    pub fn find_ship_attrs(&self, ship: &MasterShip) -> EnumSet<ShipAttr> {
+        self.ship_attrs
+            .iter()
+            .filter_map(|rule| {
+                if ship.eval(&rule.expr).unwrap_or_default() == 1. {
+                    match ShipAttr::from_str(&rule.key) {
                         Ok(attr) => Some(attr),
                         Err(error) => {
                             eprintln!("{:?}", error);
