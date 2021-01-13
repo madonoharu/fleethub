@@ -1,9 +1,16 @@
-use crate::master::MasterData;
-use crate::{constants::GearCategory, gear::Gear};
+use crate::{constants::GearCategory, gear::Gear, gear_array::GearArray, ship::Ship};
+use crate::{master::MasterData, ship::ShipState};
 use num_traits::FromPrimitive;
 use serde::Deserialize;
 use wasm_bindgen::prelude::*;
+use web_sys::console::log_1;
 
+macro_rules! console_log {
+    // Note that this is using the `log` function imported above during
+    // `bare_bones`
+    ($($t:tt)*) => (log_1(&JsValue::from(format_args!($($t)*).to_string())))
+}
+#[wasm_bindgen]
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct GearState {
     pub gear_id: i32,
@@ -16,6 +23,84 @@ pub struct Factory {
     master_data: MasterData,
 }
 
+impl Factory {
+    fn create_gear(&self, state: GearState) -> Option<Gear> {
+        let gear_id = state.gear_id;
+        let stars = state.stars.unwrap_or_default();
+        let exp = state.exp.unwrap_or_default();
+
+        let mg = self
+            .master_data
+            .gears
+            .iter()
+            .find(|mg| mg.gear_id == gear_id)?;
+
+        let attrs = self.master_data.find_gear_attrs(mg);
+        let ibonuses = self.master_data.get_ibonuses(mg, stars);
+
+        let category: GearCategory = FromPrimitive::from_i32(mg.types[2]).unwrap_or_default();
+
+        let special_type: GearCategory = mg
+            .special_type
+            .and_then(FromPrimitive::from_i32)
+            .unwrap_or(category);
+
+        let (accuracy, evasion, anti_bomber, interception) = if category == GearCategory::LbFighter
+        {
+            (
+                0,
+                0,
+                mg.accuracy.unwrap_or_default(),
+                mg.evasion.unwrap_or_default(),
+            )
+        } else {
+            (
+                mg.accuracy.unwrap_or_default(),
+                mg.evasion.unwrap_or_default(),
+                0,
+                0,
+            )
+        };
+
+        let gear = Gear {
+            gear_id,
+            stars,
+            exp,
+
+            category,
+            special_type,
+
+            name: mg.name.clone(),
+            types: mg.types,
+            max_hp: mg.max_hp.unwrap_or_default(),
+            firepower: mg.firepower.unwrap_or_default(),
+            armor: mg.armor.unwrap_or_default(),
+            torpedo: mg.torpedo.unwrap_or_default(),
+            anti_air: mg.anti_air.unwrap_or_default(),
+            speed: mg.speed.unwrap_or_default(),
+            bombing: mg.bombing.unwrap_or_default(),
+            asw: mg.asw.unwrap_or_default(),
+            los: mg.los.unwrap_or_default(),
+            luck: mg.luck.unwrap_or_default(),
+            accuracy,
+            evasion,
+            anti_bomber,
+            interception,
+            range: mg.range.unwrap_or_default(),
+            radius: mg.radius.unwrap_or_default(),
+            cost: mg.cost.unwrap_or_default(),
+            improvable: mg.improvable.unwrap_or_default(),
+            adjusted_anti_air_resistance: mg.adjusted_anti_air_resistance.unwrap_or_default(),
+            fleet_anti_air_resistance: mg.fleet_anti_air_resistance.unwrap_or_default(),
+
+            attrs,
+            ibonuses,
+        };
+
+        Some(gear)
+    }
+}
+
 #[wasm_bindgen]
 impl Factory {
     #[wasm_bindgen(constructor)]
@@ -24,96 +109,51 @@ impl Factory {
         Self { master_data }
     }
 
-    fn create_gear(&self, state: GearState) -> Option<Gear> {
-        let gear_id = state.gear_id;
-        let stars = state.stars.unwrap_or_default();
-        let exp = state.exp.unwrap_or_default();
-
-        self.master_data
-            .gears
-            .iter()
-            .find(|mg| mg.gear_id == gear_id)
-            .map(|mg| {
-                let attrs = self.master_data.find_gear_attrs(mg);
-                let ibonuses = self.master_data.get_ibonuses(mg, stars);
-
-                let category: GearCategory =
-                    FromPrimitive::from_i32(mg.types[2]).unwrap_or_default();
-
-                let special_type: GearCategory = mg
-                    .special_type
-                    .and_then(FromPrimitive::from_i32)
-                    .unwrap_or(category);
-
-                let (accuracy, evasion, anti_bomber, interception) =
-                    if category == GearCategory::LbFighter {
-                        (
-                            0,
-                            0,
-                            mg.accuracy.unwrap_or_default(),
-                            mg.evasion.unwrap_or_default(),
-                        )
-                    } else {
-                        (
-                            mg.accuracy.unwrap_or_default(),
-                            mg.evasion.unwrap_or_default(),
-                            0,
-                            0,
-                        )
-                    };
-
-                Gear {
-                    gear_id,
-                    stars,
-                    exp,
-
-                    category,
-                    special_type,
-
-                    name: mg.name.clone(),
-                    types: mg.types,
-                    max_hp: mg.max_hp.unwrap_or_default(),
-                    firepower: mg.firepower.unwrap_or_default(),
-                    armor: mg.armor.unwrap_or_default(),
-                    torpedo: mg.torpedo.unwrap_or_default(),
-                    anti_air: mg.anti_air.unwrap_or_default(),
-                    speed: mg.speed.unwrap_or_default(),
-                    bombing: mg.bombing.unwrap_or_default(),
-                    asw: mg.asw.unwrap_or_default(),
-                    los: mg.los.unwrap_or_default(),
-                    luck: mg.luck.unwrap_or_default(),
-                    accuracy,
-                    evasion,
-                    anti_bomber,
-                    interception,
-                    range: mg.range.unwrap_or_default(),
-                    radius: mg.radius.unwrap_or_default(),
-                    cost: mg.cost.unwrap_or_default(),
-                    improvable: mg.improvable.unwrap_or_default(),
-                    adjusted_anti_air_resistance: mg
-                        .adjusted_anti_air_resistance
-                        .unwrap_or_default(),
-                    fleet_anti_air_resistance: mg.fleet_anti_air_resistance.unwrap_or_default(),
-
-                    attrs,
-                    ibonuses,
-                }
-            })
-    }
-
     pub fn create_gear_by_js(&self, js: JsValue) -> Option<Gear> {
         let state: GearState = match js.into_serde() {
             Ok(s) => s,
-            Err(_) => return None,
+            Err(e) => {
+                console_log!("{:?}", e.to_string());
+                return None;
+            }
         };
 
         self.create_gear(state)
+    }
+
+    pub fn create_ship(
+        &self,
+        state: JsValue,
+        g1: Option<Gear>,
+        g2: Option<Gear>,
+        g3: Option<Gear>,
+        g4: Option<Gear>,
+        g5: Option<Gear>,
+        gx: Option<Gear>,
+    ) -> Option<Ship> {
+        let gears = GearArray([g1, g2, g3, g4, g5, gx]);
+        let state: ShipState = state.into_serde().ok()?;
+
+        let master = self
+            .master_data
+            .ships
+            .iter()
+            .find(|ship| ship.ship_id == state.ship_id)?;
+
+        let attrs = self.master_data.find_ship_attrs(&master);
+
+        Some(Ship::new(state, master, attrs, gears))
+    }
+
+    pub fn get_all_gear_ids(&self) -> Vec<i32> {
+        self.master_data.gears.iter().map(|g| g.gear_id).collect()
     }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+
     #[test]
     fn test_create_gear() {
         let master_data = crate::master::get_master_data();
@@ -125,7 +165,7 @@ mod test {
     }
 
     macro_rules! measure {
-        ( $x:expr) => {{
+        ($x: expr) => {{
             let start = std::time::Instant::now();
             let result = $x;
             let end = start.elapsed();
