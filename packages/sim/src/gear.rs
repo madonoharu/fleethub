@@ -1,4 +1,5 @@
 use crate::{const_gear_id, constants::*};
+use enumset::EnumSet;
 use js_sys::JsString;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
@@ -64,7 +65,7 @@ pub struct Gear {
     #[wasm_bindgen(skip)]
     pub types: [i32; 5],
     #[wasm_bindgen(skip)]
-    pub attrs: Vec<GearAttr>,
+    pub attrs: EnumSet<GearAttr>,
     #[wasm_bindgen(skip)]
     pub ibonuses: IBonuses,
 
@@ -124,7 +125,7 @@ impl Gear {
     }
 
     fn get_proficiency_type(&self) -> ProficiencyType {
-        if self.attrs.contains(&GearAttr::Fighter) {
+        if self.attrs.contains(GearAttr::Fighter) {
             ProficiencyType::Fighter
         } else if self.category == GearCategory::SeaplaneBomber {
             ProficiencyType::SeaplaneBomber
@@ -169,12 +170,12 @@ impl Gear {
         let category = self.category;
 
         let multiplier: f64 = if category == GearCategory::AntiAirFireDirector
-            || self.attrs.contains(&GearAttr::HighAngleMount)
+            || self.attrs.contains(GearAttr::HighAngleMount)
         {
             0.35
         } else if category == GearCategory::AntiAirShell {
             0.6
-        } else if self.attrs.contains(&GearAttr::Radar) {
+        } else if self.attrs.contains(GearAttr::Radar) {
             0.4
         } else if self.gear_id == const_gear_id!("46cm三連装砲") {
             0.25
