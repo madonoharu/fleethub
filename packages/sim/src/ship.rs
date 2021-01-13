@@ -1,6 +1,5 @@
 use crate::{
     constants::*,
-    gear::Gear,
     gear_array::GearArray,
     master::{MasterShip, StatInterval},
 };
@@ -8,9 +7,10 @@ use arrayvec::ArrayVec;
 use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
+use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Deserialize)]
 pub struct ShipState {
     pub ship_id: i32,
     pub slots: ArrayVec<[i32; 5]>,
@@ -239,7 +239,12 @@ impl Ship {
 }
 
 impl Ship {
-    pub fn new(state: ShipState, master: &MasterShip, attrs: EnumSet<ShipAttr>) -> Self {
+    pub fn new(
+        state: ShipState,
+        master: &MasterShip,
+        attrs: EnumSet<ShipAttr>,
+        gears: GearArray,
+    ) -> Self {
         let ebonuses = EBonuses::default();
         let slots: ArrayVec<[Option<i32>; 5]> = master.slots.clone();
 
@@ -255,7 +260,7 @@ impl Ship {
 
             attrs,
             slots,
-            gears: Default::default(),
+            gears,
 
             ebonuses,
             master: master.clone(),
@@ -302,6 +307,7 @@ impl Ship {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::gear::Gear;
 
     #[test]
     fn test_max_hp() {
