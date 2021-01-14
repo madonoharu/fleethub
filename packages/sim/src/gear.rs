@@ -1,8 +1,16 @@
-use crate::{const_gear_id, constants::*};
+use crate::{const_gear_id, constants::*, master::MasterGear};
 use enumset::EnumSet;
 use js_sys::JsString;
+use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
+
+#[derive(Debug, Default, Clone, Deserialize)]
+pub struct GearState {
+    pub gear_id: i32,
+    pub exp: Option<i32>,
+    pub stars: Option<i32>,
+}
 
 #[derive(Debug)]
 enum ProficiencyType {
@@ -92,6 +100,74 @@ pub struct Gear {
     pub improvable: bool,
     pub adjusted_anti_air_resistance: f64,
     pub fleet_anti_air_resistance: f64,
+}
+
+impl Gear {
+    pub fn new(
+        state: GearState,
+        master: &MasterGear,
+        attrs: EnumSet<GearAttr>,
+        ibonuses: IBonuses,
+    ) -> Self {
+        let category: GearCategory = FromPrimitive::from_i32(master.types[2]).unwrap_or_default();
+
+        let special_type: GearCategory = master
+            .special_type
+            .and_then(FromPrimitive::from_i32)
+            .unwrap_or(category);
+
+        let (accuracy, evasion, anti_bomber, interception) = if category == GearCategory::LbFighter
+        {
+            (
+                0,
+                0,
+                master.accuracy.unwrap_or_default(),
+                master.evasion.unwrap_or_default(),
+            )
+        } else {
+            (
+                master.accuracy.unwrap_or_default(),
+                master.evasion.unwrap_or_default(),
+                0,
+                0,
+            )
+        };
+
+        Gear {
+            gear_id: state.gear_id,
+            stars: state.stars.unwrap_or_default(),
+            exp: state.exp.unwrap_or_default(),
+
+            category,
+            special_type,
+
+            name: master.name.clone(),
+            types: master.types,
+            max_hp: master.max_hp.unwrap_or_default(),
+            firepower: master.firepower.unwrap_or_default(),
+            armor: master.armor.unwrap_or_default(),
+            torpedo: master.torpedo.unwrap_or_default(),
+            anti_air: master.anti_air.unwrap_or_default(),
+            speed: master.speed.unwrap_or_default(),
+            bombing: master.bombing.unwrap_or_default(),
+            asw: master.asw.unwrap_or_default(),
+            los: master.los.unwrap_or_default(),
+            luck: master.luck.unwrap_or_default(),
+            accuracy,
+            evasion,
+            anti_bomber,
+            interception,
+            range: master.range.unwrap_or_default(),
+            radius: master.radius.unwrap_or_default(),
+            cost: master.cost.unwrap_or_default(),
+            improvable: master.improvable.unwrap_or_default(),
+            adjusted_anti_air_resistance: master.adjusted_anti_air_resistance.unwrap_or_default(),
+            fleet_anti_air_resistance: master.fleet_anti_air_resistance.unwrap_or_default(),
+
+            attrs,
+            ibonuses,
+        }
+    }
 }
 
 #[wasm_bindgen]
