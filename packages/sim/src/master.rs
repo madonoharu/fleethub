@@ -1,5 +1,7 @@
-use crate::{constants::GearAttr, factory::GearState};
-use crate::{constants::ShipAttr, gear::IBonuses};
+use crate::{
+    constants::{GearAttr, ShipAttr},
+    gear::{GearState, IBonuses},
+};
 use arrayvec::ArrayVec;
 use enumset::EnumSet;
 use fasteval::bool_to_f64;
