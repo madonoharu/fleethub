@@ -13,7 +13,7 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct ShipState {
     pub ship_id: i32,
-    pub slots: ArrayVec<[i32; 5]>,
+    pub slots: Option<ArrayVec<[Option<i32>; 5]>>,
     pub level: Option<i32>,
     pub current_hp: Option<i32>,
     pub max_hp_mod: Option<i32>,
