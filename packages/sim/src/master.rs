@@ -277,19 +277,18 @@ impl MasterData {
     }
 }
 
-#[warn(dead_code)]
-pub fn get_master_data() -> MasterData {
-    let json = std::fs::read_to_string("../utils/master_data.json")
-        .map_err(|err| {
-            println!("{}", err);
-        })
-        .unwrap();
-    serde_json::from_str(&json).unwrap()
-}
-
 #[cfg(test)]
-mod test {
+pub mod test {
     use super::*;
+
+    pub fn get_master_data() -> MasterData {
+        let json = std::fs::read_to_string("../utils/master_data.json")
+            .map_err(|err| {
+                println!("{}", err);
+            })
+            .unwrap();
+        serde_json::from_str(&json).unwrap()
+    }
 
     #[test]
     fn test_master_ship() {

@@ -84,7 +84,7 @@ mod test {
 
     #[test]
     fn test_create_gear() {
-        let master_data = crate::master::get_master_data();
+        let master_data = crate::master::test::get_master_data();
         let _ = Factory { master_data };
     }
 }
