@@ -93,6 +93,7 @@ macro_rules! impl_naked_stats {
             #[wasm_bindgen]
             impl Ship {
                 $(
+                    #[wasm_bindgen(getter)]
                     pub fn [<naked_ $key>](&self) -> Option<i32> {
                         self.master.$key.1.map(|v| v + self.[<$key _mod>])
                     }
@@ -108,6 +109,7 @@ macro_rules! impl_naked_stats_with_level {
             #[wasm_bindgen]
             impl Ship {
                 $(
+                    #[wasm_bindgen(getter)]
                     pub fn [<naked_ $key>](&self) -> Option<i32> {
                         match &self.master.$key {
                             StatInterval(Some(at1), Some(at99)) => Some(((at99 - at1) * self.level) / 99 + at1),
@@ -125,6 +127,7 @@ macro_rules! impl_stats {
         #[wasm_bindgen]
         impl Ship {
             $(
+                #[wasm_bindgen(getter)]
                 pub fn $key(&self) -> Option<i32> {
                     paste! {
                         self.[<naked_ $key>]().map(|naked| {
@@ -191,6 +194,11 @@ impl Ship {
             _ => None,
         }
         .map(|range| range + self.ebonuses.range)
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn speed(&self) -> Option<i32> {
+        Some(self.master.speed + self.ebonuses.speed)
     }
 
     #[wasm_bindgen(getter)]
