@@ -5,6 +5,7 @@ use crate::{
 };
 use arrayvec::ArrayVec;
 use enumset::EnumSet;
+use js_sys::JsString;
 use num_traits::FromPrimitive;
 use paste::paste;
 use serde::Deserialize;
@@ -153,6 +154,7 @@ impl Ship {
         self.master.clone()
     }
 
+    #[wasm_bindgen(getter)]
     pub fn max_hp(&self) -> Option<i32> {
         self.master.max_hp.0.map(|left| {
             if self.level >= 100 {
@@ -163,18 +165,22 @@ impl Ship {
         })
     }
 
+    #[wasm_bindgen(getter)]
     pub fn naked_range(&self) -> Option<i32> {
         self.master.range
     }
 
+    #[wasm_bindgen(getter)]
     pub fn naked_speed(&self) -> i32 {
         self.master.speed
     }
 
+    #[wasm_bindgen(getter)]
     pub fn luck(&self) -> Option<i32> {
         Some(self.master.luck.0? + self.luck_mod)
     }
 
+    #[wasm_bindgen(getter)]
     pub fn range(&self) -> Option<i32> {
         let max = self.gears.values().map(|g| g.range).max();
 
@@ -185,6 +191,12 @@ impl Ship {
             _ => None,
         }
         .map(|range| range + self.ebonuses.range)
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn banner(&self) -> Option<JsString> {
+        let string = self.master.banner.as_ref()?;
+        Some(JsString::from(string.clone()))
     }
 
     pub fn get_slot_size(&self, index: usize) -> Option<i32> {
