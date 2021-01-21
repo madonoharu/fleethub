@@ -1,5 +1,6 @@
 use crate::{
     constants::*,
+    gear::GearState,
     gear_array::GearArray,
     master::{MasterShip, StatInterval},
 };
@@ -26,6 +27,13 @@ pub struct ShipState {
     pub asw_mod: Option<i32>,
     pub los_mod: Option<i32>,
     pub luck_mod: Option<i32>,
+
+    pub g1: Option<GearState>,
+    pub g2: Option<GearState>,
+    pub g3: Option<GearState>,
+    pub g4: Option<GearState>,
+    pub g5: Option<GearState>,
+    pub gx: Option<GearState>,
 }
 
 #[wasm_bindgen]
