@@ -31,7 +31,7 @@ impl GearArray {
     }
 
     pub fn put(&mut self, index: usize, g: Gear) {
-        self[index] = Some(g)
+        self.0[index] = Some(g)
     }
 }
 

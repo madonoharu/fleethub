@@ -18,6 +18,57 @@ pub struct Factory {
     master_data: MasterData,
 }
 
+impl Factory {
+    pub fn create_gear_rs(&self, state: GearState) -> Option<Gear> {
+        let master = self
+            .master_data
+            .gears
+            .iter()
+            .find(|mg| mg.gear_id == state.gear_id)?;
+
+        let attrs = self.master_data.find_gear_attrs(master);
+        let ibonuses = self
+            .master_data
+            .get_ibonuses(master, state.stars.unwrap_or_default());
+
+        Some(Gear::new(state, master, attrs, ibonuses))
+    }
+
+    pub fn create_ship_rs(&self, state: ShipState) -> Option<Ship> {
+        let mut gears = GearArray::default();
+
+        let ShipState {
+            g1,
+            g2,
+            g3,
+            g4,
+            g5,
+            gx,
+            ..
+        } = &state;
+
+        [g1, g2, g3, g4, g5, gx]
+            .iter()
+            .map(|g| g.as_ref().and_then(|g| self.create_gear_rs(g.clone())))
+            .enumerate()
+            .for_each(|(i, g)| {
+                if let Some(gear) = g {
+                    gears.put(i, gear)
+                }
+            });
+
+        let master = self
+            .master_data
+            .ships
+            .iter()
+            .find(|ship| ship.ship_id == state.ship_id)?;
+
+        let attrs = self.master_data.find_ship_attrs(&master);
+
+        Some(Ship::new(state, master, attrs, gears))
+    }
+}
+
 #[wasm_bindgen]
 impl Factory {
     #[wasm_bindgen(constructor)]
@@ -35,42 +86,12 @@ impl Factory {
             }
         };
 
-        let master = self
-            .master_data
-            .gears
-            .iter()
-            .find(|mg| mg.gear_id == state.gear_id)?;
-
-        let attrs = self.master_data.find_gear_attrs(master);
-        let ibonuses = self
-            .master_data
-            .get_ibonuses(master, state.stars.unwrap_or_default());
-
-        Some(Gear::new(state, master, attrs, ibonuses))
+        self.create_gear_rs(state)
     }
 
-    pub fn create_ship(
-        &self,
-        state: JsValue,
-        g1: Option<Gear>,
-        g2: Option<Gear>,
-        g3: Option<Gear>,
-        g4: Option<Gear>,
-        g5: Option<Gear>,
-        gx: Option<Gear>,
-    ) -> Option<Ship> {
-        let gears = GearArray([g1, g2, g3, g4, g5, gx]);
-        let state: ShipState = state.into_serde().ok()?;
-
-        let master = self
-            .master_data
-            .ships
-            .iter()
-            .find(|ship| ship.ship_id == state.ship_id)?;
-
-        let attrs = self.master_data.find_ship_attrs(&master);
-
-        Some(Ship::new(state, master, attrs, gears))
+    pub fn create_ship(&self, js: JsValue) -> Option<Ship> {
+        let state: ShipState = js.into_serde().ok()?;
+        self.create_ship_rs(state)
     }
 
     pub fn get_all_gear_ids(&self) -> Vec<i32> {
