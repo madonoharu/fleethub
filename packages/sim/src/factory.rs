@@ -1,6 +1,6 @@
 use crate::{
+    array::GearArray,
     gear::{Gear, GearState},
-    gear_array::GearArray,
     ship::Ship,
 };
 use crate::{master::MasterData, ship::ShipState};
