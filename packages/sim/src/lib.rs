@@ -1,10 +1,11 @@
 #![feature(min_const_generics)]
 
+mod array;
 mod const_id;
 mod constants;
 mod factory;
+mod fleet;
 mod gear;
-mod gear_array;
 mod master;
 mod ship;
 

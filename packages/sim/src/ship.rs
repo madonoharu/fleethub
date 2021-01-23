@@ -1,10 +1,9 @@
 use crate::{
+    array::{GearArray, SlotSizeArray},
     constants::*,
     gear::GearState,
-    gear_array::GearArray,
     master::{MasterShip, StatInterval},
 };
-use arrayvec::ArrayVec;
 use enumset::EnumSet;
 use js_sys::JsString;
 use num_traits::FromPrimitive;
@@ -15,7 +14,7 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct ShipState {
     pub ship_id: i32,
-    pub slots: Option<ArrayVec<[Option<i32>; 5]>>,
+    pub slots: Option<SlotSizeArray>,
     pub level: Option<i32>,
     pub current_hp: Option<i32>,
     pub max_hp_mod: Option<i32>,
@@ -74,7 +73,7 @@ pub struct Ship {
     luck_mod: i32,
 
     #[wasm_bindgen(skip)]
-    pub slots: ArrayVec<[Option<i32>; 5]>,
+    pub slots: SlotSizeArray,
     #[wasm_bindgen(skip)]
     pub attrs: EnumSet<ShipAttr>,
     #[wasm_bindgen(skip)]
@@ -274,7 +273,7 @@ impl Ship {
         gears: GearArray,
     ) -> Self {
         let ebonuses = EBonuses::default();
-        let slots: ArrayVec<[Option<i32>; 5]> = master.slots.clone();
+        let slots: SlotSizeArray = master.slots.clone();
 
         let mut ship = Ship {
             ship_id: state.ship_id,
