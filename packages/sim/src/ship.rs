@@ -4,12 +4,12 @@ use crate::{
     gear::GearState,
     master::{MasterShip, StatInterval},
 };
-use enumset::EnumSet;
 use js_sys::JsString;
 use num_traits::FromPrimitive;
 use paste::paste;
 use serde::Deserialize;
 use wasm_bindgen::prelude::*;
+use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct ShipState {

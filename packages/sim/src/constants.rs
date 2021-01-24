@@ -1,7 +1,7 @@
-use enumset::EnumSetType;
 use num_derive::FromPrimitive;
 use strum_macros::EnumString;
 use wasm_bindgen::prelude::*;
+use wasmer_enumset::EnumSetType;
 
 macro_rules! impl_default {
     ($enum: ident) => {
@@ -284,8 +284,8 @@ mod test {
 
     #[test]
     fn test_gear_attr() {
-        use enumset::EnumSet;
         use std::str::FromStr;
+        use wasmer_enumset::EnumSet;
 
         let mut set: EnumSet<GearAttr> = GearAttr::HighAngleMount | GearAttr::JetAircraft;
         set.insert(GearAttr::MainGun);
