@@ -1,5 +1,6 @@
 use crate::{
-    array::GearArray,
+    array::{GearArray, ShipArray},
+    fleet::{Fleet, FleetState, ShipArrayState},
     gear::{Gear, GearState},
     ship::Ship,
 };
@@ -35,8 +36,6 @@ impl Factory {
     }
 
     pub fn create_ship_rs(&self, state: ShipState) -> Option<Ship> {
-        let mut gears = GearArray::default();
-
         let ShipState {
             g1,
             g2,
@@ -47,15 +46,17 @@ impl Factory {
             ..
         } = &state;
 
-        [g1, g2, g3, g4, g5, gx]
-            .iter()
-            .map(|g| g.as_ref().and_then(|g| self.create_gear_rs(g.clone())))
-            .enumerate()
-            .for_each(|(i, g)| {
-                if let Some(gear) = g {
-                    gears.put(i, gear)
-                }
-            });
+        let to_gear =
+            |g: &Option<GearState>| g.as_ref().and_then(|g| self.create_gear_rs(g.clone()));
+
+        let gears = GearArray::new([
+            to_gear(g1),
+            to_gear(g2),
+            to_gear(g3),
+            to_gear(g4),
+            to_gear(g5),
+            to_gear(gx),
+        ]);
 
         let master = self
             .master_data
@@ -66,6 +67,30 @@ impl Factory {
         let attrs = self.master_data.find_ship_attrs(&master);
 
         Some(Ship::new(state, master, attrs, gears))
+    }
+
+    fn create_ship_array(&self, state: ShipArrayState) -> ShipArray {
+        let ShipArrayState {
+            s1,
+            s2,
+            s3,
+            s4,
+            s5,
+            s6,
+            s7,
+        } = state;
+
+        let to_ship = |state: Option<ShipState>| state.and_then(|s| self.create_ship_rs(s));
+
+        ShipArray::new([
+            to_ship(s1),
+            to_ship(s2),
+            to_ship(s3),
+            to_ship(s4),
+            to_ship(s5),
+            to_ship(s6),
+            to_ship(s7),
+        ])
     }
 }
 
@@ -92,6 +117,14 @@ impl Factory {
     pub fn create_ship(&self, js: JsValue) -> Option<Ship> {
         let state: ShipState = js.into_serde().ok()?;
         self.create_ship_rs(state)
+    }
+
+    pub fn create_fleet(&self, js: JsValue) -> Option<Fleet> {
+        let state: FleetState = js.into_serde().ok()?;
+
+        let main = self.create_ship_array(state.main);
+
+        Some(Fleet { main })
     }
 
     pub fn get_all_gear_ids(&self) -> Vec<i32> {

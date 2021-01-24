@@ -3,11 +3,11 @@ use crate::{
     gear::{GearState, IBonuses},
 };
 use arrayvec::ArrayVec;
-use enumset::EnumSet;
 use fasteval::bool_to_f64;
 use serde::Deserialize;
 use std::str::FromStr;
 use wasm_bindgen::prelude::*;
+use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Deserialize, Default)]
 pub struct MasterGear {

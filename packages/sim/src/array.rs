@@ -23,6 +23,10 @@ macro_rules! impl_default {
 impl_default!(6, 7);
 
 impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
+    pub fn new(inner: [Option<T>; N]) -> Self {
+        Self(inner)
+    }
+
     pub fn iter(&self) -> impl Iterator<Item = (usize, &T)> {
         self.0
             .iter()
@@ -57,10 +61,8 @@ impl GearArray {
 const SLOT_SIZE_ARRAY_LEN: usize = 5;
 pub type SlotSizeArray = ArrayVec<[Option<i32>; SLOT_SIZE_ARRAY_LEN]>;
 
-#[warn(dead_code)]
 const SHIP_ARRAY_LEN: usize = 7;
-#[warn(dead_code)]
-type ShipArray = OptionalArray<Ship, SHIP_ARRAY_LEN>;
+pub type ShipArray = OptionalArray<Ship, SHIP_ARRAY_LEN>;
 
 #[cfg(test)]
 mod test {

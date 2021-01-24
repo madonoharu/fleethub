@@ -1,5 +1,5 @@
 use crate::{const_gear_id, constants::*, master::MasterGear};
-use enumset::EnumSet;
+use wasmer_enumset::EnumSet;
 use js_sys::JsString;
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
