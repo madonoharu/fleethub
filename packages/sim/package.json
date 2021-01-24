@@ -5,14 +5,10 @@
     "まどの <madonoharu@gmail.com>"
   ],
   "version": "0.1.0",
-  "main": "no",
-  "module": "pkg",
+  "main": "pkg",
   "sideEffects": false,
   "scripts": {
-    "build": "yarn build:esm && yarn build:cjs",
-    "build:esm": "wasm-pack build --out-name index",
-    "build:cjs": "wasm-pack build --target nodejs --out-dir cjs --out-name index",
-    "build:no": "wasm-pack build --target no-modules --out-dir no --out-name index",
+    "build": "wasm-pack build --out-name index",
     "test": "cargo test"
   }
 }
