@@ -5,7 +5,7 @@ import { Button, Tooltip } from "@material-ui/core"
 
 import { usePopover } from "../../../hooks"
 
-import ProficiencyIcon from "./ProficiencyIcon"
+import ProficiencyIcon, { GEAR_EXP_TABLE } from "./ProficiencyIcon"
 import NumberInput from "../NumberInput"
 
 const ColumnReverse = styled.div`
@@ -17,8 +17,6 @@ const StyledNumberInput = styled(NumberInput)`
   width: 96px;
   margin: 0 4px;
 `
-
-const exps = [0, 10, 25, 40, 55, 70, 85, 100, 120]
 
 const anchorOrigin = {
   vertical: "bottom",
@@ -49,9 +47,9 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
 
       <Popover anchorOrigin={anchorOrigin}>
         <ColumnReverse>
-          {exps.map((boundary) => (
-            <Button key={boundary} id={boundary.toString()} onClick={handleChange}>
-              <ProficiencyIcon exp={boundary} />
+          {GEAR_EXP_TABLE.map((bound) => (
+            <Button key={bound} id={bound.toString()} onClick={handleChange}>
+              <ProficiencyIcon exp={bound} />
             </Button>
           ))}
         </ColumnReverse>
@@ -64,6 +62,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
 
 export default styled(GearExpSelect)`
   button {
+    display: flex;
     padding: 0 3px;
   }
   input {
