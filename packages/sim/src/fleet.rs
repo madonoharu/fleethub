@@ -15,7 +15,10 @@ pub struct ShipArrayState {
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct FleetState {
-    pub main: ShipArrayState,
+    pub main: Option<ShipArrayState>,
+    pub escort: Option<ShipArrayState>,
+    pub route_sup: Option<ShipArrayState>,
+    pub boss_sup: Option<ShipArrayState>,
 }
 
 #[wasm_bindgen]
@@ -23,4 +26,10 @@ pub struct FleetState {
 pub struct Fleet {
     #[wasm_bindgen(skip)]
     pub main: ShipArray,
+    #[wasm_bindgen(skip)]
+    pub escort: ShipArray,
+    #[wasm_bindgen(skip)]
+    pub route_sup: ShipArray,
+    #[wasm_bindgen(skip)]
+    pub boss_sup: ShipArray,
 }

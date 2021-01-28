@@ -69,7 +69,7 @@ impl Factory {
         Some(Ship::new(state, master, attrs, gears))
     }
 
-    fn create_ship_array(&self, state: ShipArrayState) -> ShipArray {
+    fn create_ship_array(&self, state: Option<ShipArrayState>) -> ShipArray {
         let ShipArrayState {
             s1,
             s2,
@@ -78,7 +78,7 @@ impl Factory {
             s5,
             s6,
             s7,
-        } = state;
+        } = state.unwrap_or_default();
 
         let to_ship = |state: Option<ShipState>| state.and_then(|s| self.create_ship_rs(s));
 
@@ -122,9 +122,19 @@ impl Factory {
     pub fn create_fleet(&self, js: JsValue) -> Option<Fleet> {
         let state: FleetState = js.into_serde().ok()?;
 
-        let main = self.create_ship_array(state.main);
+        let FleetState {
+            main,
+            escort,
+            route_sup,
+            boss_sup,
+        } = state;
 
-        Some(Fleet { main })
+        Some(Fleet {
+            main: self.create_ship_array(main),
+            escort: self.create_ship_array(escort),
+            route_sup: self.create_ship_array(route_sup),
+            boss_sup: self.create_ship_array(boss_sup),
+        })
     }
 
     pub fn get_all_gear_ids(&self) -> Vec<i32> {
