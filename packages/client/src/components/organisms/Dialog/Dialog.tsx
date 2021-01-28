@@ -4,7 +4,7 @@ import styled from "@emotion/styled"
 
 import { Dialog as MuiDialog, DialogProps as MuiDialogProps } from "@material-ui/core"
 
-import { CloseButton } from "../../../components"
+import { CloseButton } from "../../molecules"
 
 const StyledCloseButton = styled(CloseButton)`
   position: absolute;
