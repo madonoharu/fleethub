@@ -4,7 +4,7 @@ import styled from "@emotion/styled"
 import { getCloudinaryUrl } from "../../../utils"
 
 type Props = {
-  publicId: string
+  publicId?: string
   size?: "small" | "medium" | "large"
 }
 
@@ -14,7 +14,7 @@ const values = {
   large: 5,
 }
 
-const ShipBanner: React.FCX<Props> = ({ className, publicId, size = "small" }) => {
+const ShipBanner: React.FCX<Props> = ({ className, publicId = "", size = "small" }) => {
   const scale = values[size]
 
   const width = scale * 32
