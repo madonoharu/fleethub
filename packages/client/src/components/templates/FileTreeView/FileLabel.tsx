@@ -1,8 +1,10 @@
 import React from "react"
 import styled from "@emotion/styled"
 
-import { Flexbox, DraggableFile, DraggableFileProps, PlanIcon, FolderIcon } from "../../../components"
 import { FileType } from "../../../store"
+
+import { Flexbox, PlanIcon, FolderIcon } from "../../atoms"
+import { DraggableFile, DraggableFileProps } from "../../organisms"
 
 const getFileIcon = (type: FileType) => {
   return type === "plan" ? PlanIcon : FolderIcon

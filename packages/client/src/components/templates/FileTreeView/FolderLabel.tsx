@@ -1,9 +1,12 @@
 import React from "react"
 import styled from "@emotion/styled"
 
-import { MoreVertButton, RemoveButton, OpenInNewButton, FileMenu } from "../../../components"
 import { FolderEntity } from "../../../store"
 import { useModal, useFile } from "../../../hooks"
+
+import { MoreVertButton, RemoveButton, OpenInNewButton } from "../../molecules"
+
+import FileMenu from "../../organisms/FileMenu"
 
 import FileLabel from "./FileLabel"
 
