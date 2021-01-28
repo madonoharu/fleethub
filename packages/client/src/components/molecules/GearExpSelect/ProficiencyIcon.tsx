@@ -1,9 +1,12 @@
 import React from "react"
 import styled from "@emotion/styled"
-import { ProficiencyExp } from "@fleethub/core"
 
 import Image from "next/image"
 import { Typography } from "@material-ui/core"
+
+export const GEAR_EXP_TABLE = [0, 10, 25, 40, 55, 70, 85, 100, 120]
+
+const expToAce = (exp: number) => GEAR_EXP_TABLE.findIndex((bound) => bound >= exp)
 
 const Exp = styled(Typography)`
   position: absolute;
@@ -21,7 +24,7 @@ type ProficiencyIconProps = Pick<React.ComponentProps<"div">, "className" | "onC
 
 const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props, ref) => {
   const { exp, ...divProps } = props
-  const ace = ProficiencyExp.expToAce(exp)
+  const ace = expToAce(exp)
 
   return (
     <div ref={ref} {...divProps}>
