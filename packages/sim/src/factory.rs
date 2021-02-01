@@ -1,4 +1,5 @@
 use crate::{
+    airbase::{Airbase, AirbaseState},
     array::{GearArray, ShipArray},
     fleet::{Fleet, FleetState, ShipArrayState},
     gear::{Gear, GearState},
@@ -92,6 +93,23 @@ impl Factory {
             to_ship(s7),
         ])
     }
+
+    fn create_airbase_rs(&self, state: AirbaseState) -> Airbase {
+        let AirbaseState { g1, g2, g3, g4 } = state;
+
+        let to_gear = |g: Option<GearState>| g.and_then(|g| self.create_gear_rs(g));
+
+        let gears = GearArray::new([
+            to_gear(g1),
+            to_gear(g2),
+            to_gear(g3),
+            to_gear(g4),
+            None,
+            None,
+        ]);
+
+        Airbase { gears }
+    }
 }
 
 #[wasm_bindgen]
@@ -119,6 +137,12 @@ impl Factory {
         self.create_ship_rs(state)
     }
 
+    pub fn create_airbase(&self, js: JsValue) -> Option<Airbase> {
+        let state: AirbaseState = js.into_serde().ok()?;
+
+        Some(self.create_airbase_rs(state))
+    }
+
     pub fn create_fleet(&self, js: JsValue) -> Option<Fleet> {
         let state: FleetState = js.into_serde().ok()?;
 
@@ -127,6 +151,7 @@ impl Factory {
             escort,
             route_sup,
             boss_sup,
+            ..
         } = state;
 
         Some(Fleet {

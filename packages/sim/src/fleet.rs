@@ -19,6 +19,8 @@ pub struct FleetState {
     pub escort: Option<ShipArrayState>,
     pub route_sup: Option<ShipArrayState>,
     pub boss_sup: Option<ShipArrayState>,
+
+    pub hq_level: Option<i32>,
 }
 
 #[wasm_bindgen]
