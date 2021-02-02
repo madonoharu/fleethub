@@ -42,6 +42,10 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
         self.0[index] = Some(value)
     }
 
+    pub fn get(&self, index: usize) -> &Option<T> {
+        self.0.get(index).unwrap_or(&None)
+    }
+
     pub fn sum_by<U: Sum, F: FnMut(&T) -> U>(&self, cb: F) -> U {
         self.values().map(cb).sum()
     }
