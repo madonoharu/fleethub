@@ -1,9 +1,9 @@
 use crate::{const_gear_id, constants::*, master::MasterGear};
-use wasmer_enumset::EnumSet;
 use js_sys::JsString;
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
+use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct GearState {
@@ -185,6 +185,41 @@ impl Gear {
     #[wasm_bindgen(getter)]
     pub fn icon_id(&self) -> i32 {
         self.types[3]
+    }
+
+    pub fn has_attr(&self, attr: GearAttr) -> bool {
+        self.attrs.contains(attr)
+    }
+
+    pub fn discern(&self) -> JsString {
+        use GearCategory::*;
+
+        let str = match self.category {
+            CbFighter => "Fighter",
+            CbDiveBomber | CbTorpedoBomber | JetFighterBomber | JetTorpedoBomber => "Bomber",
+            CbRecon
+            | ReconSeaplane
+            | SeaplaneBomber
+            | SeaplaneFighter
+            | Autogyro
+            | AntiSubPatrolAircraft => "Recon",
+            SmallCaliberMainGun | MediumCaliberMainGun | LargeCaliberMainGun => "MainGun",
+            SecondaryGun | AntiAirGun => "Secondary",
+            Torpedo | SubmarineTorpedo | MidgetSubmarine => "Torpedo",
+            Sonar | LargeSonar | DepthCharge => "AntiSub",
+            SmallRadar | LargeRadar => "Radar",
+            LandingCraft | SpecialAmphibiousTank | SupplyTransportContainer => "Landing",
+
+            _ => {
+                if self.attrs.contains(GearAttr::LbAircraft) {
+                    "LandBased"
+                } else {
+                    "Misc"
+                }
+            }
+        };
+
+        JsString::from(str)
     }
 
     pub fn get_ace(&self) -> i32 {
