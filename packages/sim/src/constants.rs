@@ -84,6 +84,7 @@ impl_default!(GearCategory);
 #[wasm_bindgen]
 #[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
 pub enum GearAttr {
+    Abyssal,
     HighAngleMount,
     NightFighter,
     NightAttacker,
@@ -262,6 +263,7 @@ impl_default!(ShipClass);
 #[wasm_bindgen]
 #[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
 pub enum ShipAttr {
+    Abyssal,
     NightCarrier,
     Installation,
     RoyalNavy,
