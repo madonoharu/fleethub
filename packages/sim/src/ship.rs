@@ -1,5 +1,6 @@
 use crate::{
     array::{GearArray, SlotSizeArray},
+    const_gear_id,
     constants::*,
     gear::{Gear, GearState},
     master::{MasterShip, StatInterval},
@@ -51,6 +52,13 @@ pub struct EBonuses {
     effective_los: i32,
 }
 
+#[derive(Debug, Default, Clone)]
+pub struct ShipEquippable {
+    pub categories: Vec<i32>,
+    pub exslot_categories: Vec<i32>,
+    pub exslot_gear_ids: Vec<i32>,
+}
+
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Ship {
@@ -80,6 +88,7 @@ pub struct Ship {
 
     master: MasterShip,
     ebonuses: EBonuses,
+    equippable: ShipEquippable,
 }
 
 fn get_marriage_bonus(left: i32) -> i32 {
@@ -195,6 +204,74 @@ impl Ship {
         self.ebonuses = js.into_serde().unwrap();
     }
 
+    pub fn can_equip(&self, gear: &Gear, string: Option<String>) -> bool {
+        if self.ship_id >= 1500 {
+            return true;
+        };
+
+        if !self
+            .equippable
+            .categories
+            .contains(&(gear.special_type as i32))
+        {
+            return false;
+        }
+
+        let key = match string {
+            Some(v) => v,
+            _ => return true,
+        };
+
+        let key = key.as_str();
+
+        if key == "gx" {
+            return self
+                .equippable
+                .exslot_categories
+                .contains(&(gear.special_type as i32))
+                || self.equippable.exslot_gear_ids.contains(&gear.gear_id)
+                || gear.gear_id == const_gear_id!("改良型艦本式タービン");
+        }
+
+        if self.ship_class == ShipClass::RichelieuClass
+            && gear.category == GearCategory::SeaplaneBomber
+        {
+            return gear.gear_id == const_gear_id!("Laté 298B");
+        }
+
+        if self.attrs.contains(ShipAttr::RoyalNavy) {
+            return [
+                const_gear_id!("Swordfish(水上機型)"),
+                const_gear_id!("Swordfish Mk.III改(水上機型)"),
+            ]
+            .contains(&gear.gear_id);
+        }
+
+        let is_kai2 = self.attrs.contains(ShipAttr::Kai2);
+
+        if self.ship_class == ShipClass::IseClass && is_kai2 {
+            return key == "g1" || key == "g2" || !gear.attrs.contains(GearAttr::MainGun);
+        }
+
+        if self.ship_class == ShipClass::YuubariClass && is_kai2 {
+            if key == "g4" {
+                return !(gear.attrs.contains(GearAttr::MainGun)
+                    || gear.category == GearCategory::Torpedo
+                    || gear.category == GearCategory::MidgetSubmarine);
+            }
+            if key == "g5" {
+                return [
+                    GearCategory::AntiAirGun,
+                    GearCategory::SmallRadar,
+                    GearCategory::CombatRation,
+                ]
+                .contains(&gear.category);
+            }
+        }
+
+        true
+    }
+
     #[wasm_bindgen(getter)]
     pub fn max_hp(&self) -> Option<i32> {
         self.master.max_hp.0.map(|left| {
@@ -301,6 +378,7 @@ impl Ship {
         state: ShipState,
         master: &MasterShip,
         attrs: EnumSet<ShipAttr>,
+        equippable: ShipEquippable,
         gears: GearArray,
     ) -> Self {
         let ebonuses = EBonuses::default();
@@ -321,6 +399,7 @@ impl Ship {
             gears,
 
             ebonuses,
+            equippable,
             master: master.clone(),
 
             max_hp_mod: state.max_hp_mod.unwrap_or_default(),

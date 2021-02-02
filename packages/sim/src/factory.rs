@@ -67,7 +67,9 @@ impl Factory {
 
         let attrs = self.master_data.find_ship_attrs(&master);
 
-        Some(Ship::new(state, master, attrs, gears))
+        let equippable = self.master_data.create_ship_equippable(&master);
+
+        Some(Ship::new(state, master, attrs, equippable, gears))
     }
 
     fn create_ship_array(&self, state: Option<ShipArrayState>) -> ShipArray {
@@ -162,7 +164,7 @@ impl Factory {
         })
     }
 
-    pub fn get_all_gear_ids(&self) -> Vec<i32> {
+    pub fn get_gear_ids(&self, _ship: &Ship) -> Vec<i32> {
         self.master_data.gears.iter().map(|g| g.gear_id).collect()
     }
 }
