@@ -191,7 +191,7 @@ impl Gear {
         self.attrs.contains(attr)
     }
 
-    pub fn discern(&self) -> JsString {
+    pub fn discern(&self) -> String {
         use GearCategory::*;
 
         let str = match self.category {
@@ -219,7 +219,7 @@ impl Gear {
             }
         };
 
-        JsString::from(str)
+        str.to_string()
     }
 
     pub fn get_ace(&self) -> i32 {
