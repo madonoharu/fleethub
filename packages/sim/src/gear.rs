@@ -222,7 +222,8 @@ impl Gear {
         str.to_string()
     }
 
-    pub fn get_ace(&self) -> i32 {
+    #[wasm_bindgen(getter)]
+    pub fn ace(&self) -> i32 {
         match self.exp {
             x if x < 10 => 0,
             x if x < 25 => 1,
@@ -248,7 +249,7 @@ impl Gear {
     fn proficiency_fighter_power_modifier(&self) -> f64 {
         let ace_modifier = self
             .get_proficiency_type()
-            .fighter_power_ace_modifier(self.get_ace());
+            .fighter_power_ace_modifier(self.ace());
 
         ace_modifier as f64 + (self.exp as f64).sqrt()
     }
@@ -361,7 +362,7 @@ mod test {
     #[test]
     fn test_ace() {
         let gear = Gear::default();
-        assert_eq!(gear.get_ace(), 0)
+        assert_eq!(gear.ace(), 0)
     }
 
     mod proficiency_type {
