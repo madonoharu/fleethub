@@ -1,5 +1,5 @@
 import { outputJSON } from "fs-extra"
-import ky from "ky-universal"
+import got from "got"
 import child_process from "child_process"
 import { promisify } from "util"
 import { MasterData } from "@fleethub/utils/src"
@@ -20,12 +20,12 @@ const languages: Language[] = [
 ]
 
 class LocaleUpdater {
-  public kc3: typeof ky
+  public kc3: typeof got
 
   constructor(private md: MasterData, private language: Language) {
     const { path, code } = language
 
-    this.kc3 = ky.extend({
+    this.kc3 = got.extend({
       prefixUrl: `https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/${path || code}`,
     })
   }

@@ -1,5 +1,5 @@
 import admin from "firebase-admin"
-import ky from "ky-universal"
+import got from "got"
 import { MasterData } from "@fleethub/utils/src"
 
 import getServiceAccount from "./getServiceAccount"
@@ -14,7 +14,7 @@ const getApp = () => {
 }
 
 const read = <K extends keyof MasterData>(key: K): Promise<MasterData[K]> =>
-  ky.get(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`).json()
+  got.get(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`).json()
 
 export const write = <K extends keyof MasterData>(key: K, data: MasterData[K]) => {
   const str = JSON.stringify(data)
