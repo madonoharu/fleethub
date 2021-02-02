@@ -35,8 +35,7 @@ pub struct ShipState {
     pub gx: Option<GearState>,
 }
 
-#[wasm_bindgen]
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Deserialize)]
 pub struct EBonuses {
     firepower: i32,
     torpedo: i32,
@@ -190,6 +189,10 @@ impl Ship {
             _ => &None,
         }
         .clone()
+    }
+
+    pub fn set_ebonuses(&mut self, js: JsValue) {
+        self.ebonuses = js.into_serde().unwrap();
     }
 
     #[wasm_bindgen(getter)]
