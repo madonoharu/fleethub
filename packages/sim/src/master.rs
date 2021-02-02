@@ -1,6 +1,7 @@
 use crate::{
     constants::{GearAttr, ShipAttr},
     gear::{GearState, IBonuses},
+    ship::ShipEquippable,
 };
 use arrayvec::ArrayVec;
 use fasteval::bool_to_f64;
@@ -225,12 +226,39 @@ impl MasterShip {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct EquipStype {
+    pub id: i32,
+    pub equip_type: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct MstEquipShip {
+    pub api_ship_id: i32,
+    pub api_equip_type: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct MstEquipExslotShip {
+    pub api_slotitem_id: i32,
+    pub api_ship_ids: Vec<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct MasterDataEquippable {
+    pub equip_stype: Vec<EquipStype>,
+    pub equip_exslot: Vec<i32>,
+    pub equip_ship: Vec<MstEquipShip>,
+    pub equip_exslot_ship: Vec<MstEquipExslotShip>,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
     pub gear_attrs: Vec<MasterDataAttrRule>,
-    pub ibonuses: MasterDataIBonuses,
     pub ships: Vec<MasterShip>,
     pub ship_attrs: Vec<MasterDataAttrRule>,
+    pub ibonuses: MasterDataIBonuses,
+    pub equippable: MasterDataEquippable,
 }
 
 impl MasterData {
@@ -274,6 +302,39 @@ impl MasterData {
 
     pub fn get_ibonuses(&self, gear: &MasterGear, stars: i32) -> IBonuses {
         self.ibonuses.to_ibonuses(gear, stars)
+    }
+
+    pub fn create_ship_equippable(&self, ship: &MasterShip) -> ShipEquippable {
+        let equip_ship = self
+            .equippable
+            .equip_ship
+            .iter()
+            .find(|es| es.api_ship_id == ship.ship_id)
+            .map(|es| &es.api_equip_type);
+
+        let categories: Vec<i32> = equip_ship
+            .or(self
+                .equippable
+                .equip_stype
+                .iter()
+                .find(|es| es.id == ship.stype)
+                .map(|es| &es.equip_type))
+            .map(|v| v.clone())
+            .unwrap_or_default();
+
+        let exslot_gear_ids = self
+            .equippable
+            .equip_exslot_ship
+            .iter()
+            .filter(|ees| ees.api_ship_ids.contains(&ship.ship_id))
+            .map(|ees| ees.api_slotitem_id)
+            .collect::<Vec<i32>>();
+
+        ShipEquippable {
+            categories,
+            exslot_gear_ids,
+            exslot_categories: self.equippable.equip_exslot.clone(),
+        }
     }
 }
 
