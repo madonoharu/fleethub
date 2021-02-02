@@ -156,8 +156,23 @@ impl_stats!(firepower, torpedo, armor, anti_air, evasion, asw, los);
 #[wasm_bindgen]
 impl Ship {
     #[wasm_bindgen(getter)]
-    pub fn name(&self) -> JsValue {
-        JsValue::from(&self.master.name)
+    pub fn name(&self) -> String {
+        self.master.name.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn yomi(&self) -> String {
+        self.master.yomi.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn ctype(&self) -> i32 {
+        self.master.ctype.unwrap_or_default()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn stype(&self) -> i32 {
+        self.master.stype
     }
 
     pub fn master(&self) -> MasterShip {
