@@ -145,7 +145,7 @@ impl_default!(ShipType);
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, FromPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
 pub enum ShipClass {
     Unknown = 0,
     AyanamiClass = 1,
