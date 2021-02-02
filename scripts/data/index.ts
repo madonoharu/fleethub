@@ -1,7 +1,7 @@
 import { Start2 } from "kc-tools"
 import { MasterData, MasterDataEquippable } from "@fleethub/utils/src"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import ky from "ky-universal"
+import got from "got"
 
 import getGoogleSpreadsheet from "./getGoogleSpreadsheet"
 import { createShips, updateShipData } from "./ship"
@@ -11,7 +11,7 @@ import { updateRows } from "./utils"
 import { updateCloudinary } from "./cloudinary"
 
 const fetchStart2 = async (): Promise<Start2> => {
-  return ky.get("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json").json()
+  return got.get("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json").json()
 }
 
 export const log = async (message: string) => {

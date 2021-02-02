@@ -1,6 +1,6 @@
 import { getResourceUrl, getCommonIconWeaponUrl, CommonIconWeapon, Start2 } from "kc-tools"
 import cloudinary from "cloudinary"
-import ky from "ky-universal"
+import got from "got"
 
 cloudinary.v2.config({
   cloud_name: "djg1epjdj",
@@ -91,7 +91,7 @@ export const updateShipBanners = async (start2: Start2) => {
 export const updateGearIcons = async () => {
   const commonIconWeaponUrl = getCommonIconWeaponUrl()
 
-  const { frames }: CommonIconWeapon = await ky.get(commonIconWeaponUrl.json).json()
+  const { frames }: CommonIconWeapon = await got(commonIconWeaponUrl.json).json()
   const searchRes: SearchApiResponse = await cloudinary.v2.search.expression("gear_icons").max_results(500).execute()
 
   const exsits = (id: string) => searchRes.resources.some((resource) => resource.filename === id)
