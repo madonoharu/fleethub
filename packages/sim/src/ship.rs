@@ -1,7 +1,7 @@
 use crate::{
     array::{GearArray, SlotSizeArray},
     constants::*,
-    gear::GearState,
+    gear::{Gear, GearState},
     master::{MasterShip, StatInterval},
 };
 use js_sys::JsString;
@@ -162,6 +162,19 @@ impl Ship {
 
     pub fn master(&self) -> MasterShip {
         self.master.clone()
+    }
+
+    pub fn get_gear(&self, key: String) -> Option<Gear> {
+        match key.as_str() {
+            "g1" => self.gears.get(0),
+            "g2" => self.gears.get(1),
+            "g3" => self.gears.get(2),
+            "g4" => self.gears.get(3),
+            "g5" => self.gears.get(4),
+            "gx" => self.gears.get(5),
+            _ => &None,
+        }
+        .clone()
     }
 
     #[wasm_bindgen(getter)]
