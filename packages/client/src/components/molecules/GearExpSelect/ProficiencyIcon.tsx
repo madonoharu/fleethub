@@ -6,7 +6,11 @@ import { Typography } from "@material-ui/core"
 
 export const GEAR_EXP_TABLE = [0, 10, 25, 40, 55, 70, 85, 100, 120]
 
-const expToAce = (exp: number) => GEAR_EXP_TABLE.findIndex((bound) => bound >= exp)
+const expToAce = (exp: number) =>
+  Math.min(
+    GEAR_EXP_TABLE.findIndex((bound) => bound >= exp),
+    7
+  )
 
 const Exp = styled(Typography)`
   position: absolute;
