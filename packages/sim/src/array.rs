@@ -1,4 +1,4 @@
-use std::{fmt::Debug, iter::Sum};
+use std::{fmt::Debug, iter::Sum, usize};
 
 use arrayvec::ArrayVec;
 
@@ -49,6 +49,14 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
     pub fn sum_by<U: Sum, F: FnMut(&T) -> U>(&self, cb: F) -> U {
         self.values().map(cb).sum()
     }
+
+    pub fn has_by<F: FnMut(&T) -> bool>(&self, cb: F) -> bool {
+        self.values().any(cb)
+    }
+
+    pub fn count_by<F: FnMut(&&T) -> bool>(&self, cb: F) -> usize {
+        self.values().filter(cb).count()
+    }
 }
 
 const GEAR_ARRAY_LEN: usize = 6;
@@ -59,6 +67,14 @@ pub type GearArray = OptionalArray<Gear, GEAR_ARRAY_LEN>;
 impl GearArray {
     pub fn iter_without_ex(&self) -> impl Iterator<Item = (usize, &Gear)> {
         self.iter().filter(|(i, _)| *i < EXSLOT_INDEX)
+    }
+
+    pub fn has(&self, id: i32) -> bool {
+        self.has_by(|g| g.gear_id == id)
+    }
+
+    pub fn count(&self, id: i32) -> usize {
+        self.count_by(|g| g.gear_id == id)
     }
 }
 
