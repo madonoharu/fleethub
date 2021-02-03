@@ -161,6 +161,76 @@ impl_naked_stats_with_level!(evasion, asw, los);
 
 impl_stats!(firepower, torpedo, armor, anti_air, evasion, asw, los);
 
+impl Ship {
+    pub fn new(
+        state: ShipState,
+        master: &MasterShip,
+        attrs: EnumSet<ShipAttr>,
+        equippable: ShipEquippable,
+        banner: Option<String>,
+        gears: GearArray,
+    ) -> Self {
+        let ebonuses = EBonuses::default();
+        let slots: SlotSizeArray = master.slots.clone();
+
+        let mut ship = Ship {
+            ship_id: state.ship_id,
+            level: state.level.unwrap_or(master.default_level()),
+            current_hp: state.current_hp.unwrap_or_default(),
+            ship_type: FromPrimitive::from_i32(master.stype).unwrap_or_default(),
+            ship_class: master
+                .ctype
+                .and_then(FromPrimitive::from_i32)
+                .unwrap_or_default(),
+
+            attrs,
+            slots,
+            gears,
+
+            ebonuses,
+            equippable,
+            banner,
+            master: master.clone(),
+
+            max_hp_mod: state.max_hp_mod.unwrap_or_default(),
+            firepower_mod: state.firepower_mod.unwrap_or_default(),
+            torpedo_mod: state.torpedo_mod.unwrap_or_default(),
+            armor_mod: state.armor_mod.unwrap_or_default(),
+            anti_air_mod: state.anti_air_mod.unwrap_or_default(),
+            evasion_mod: state.evasion_mod.unwrap_or_default(),
+            asw_mod: state.asw_mod.unwrap_or_default(),
+            los_mod: state.los_mod.unwrap_or_default(),
+            luck_mod: state.luck_mod.unwrap_or_default(),
+        };
+
+        if ship.current_hp == 0 {
+            ship.current_hp = ship.max_hp().unwrap_or_default();
+        }
+
+        ship
+    }
+
+    pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
+        let mut iter = self.gears.values();
+        let has_main = iter.any(|g| g.attrs.contains(GearAttr::MainGun));
+        let has_ap_shell = iter.any(|g| g.category == GearCategory::ApShell);
+        let has_rader = iter.any(|g| g.attrs.contains(GearAttr::Radar));
+        let has_secondary = iter.any(|g| g.category == GearCategory::SecondaryGun);
+
+        if !has_ap_shell || !has_main {
+            (1., 1.)
+        } else if has_secondary && has_rader {
+            (1.15, 1.3)
+        } else if has_secondary {
+            (1.15, 1.2)
+        } else if has_rader {
+            (1.1, 1.25)
+        } else {
+            (1.08, 1.1)
+        }
+    }
+}
+
 #[wasm_bindgen]
 impl Ship {
     #[wasm_bindgen(getter)]
@@ -316,8 +386,64 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn speed(&self) -> Option<i32> {
-        Some(self.master.speed + self.ebonuses.speed)
+    pub fn speed_bonus(&self) -> i32 {
+        let speed_group = self.master.speed_group.unwrap_or_default();
+
+        if self.has_attr(ShipAttr::Abyssal)
+            || !self.gears.has(const_gear_id!("改良型艦本式タービン"))
+        {
+            return 0;
+        }
+
+        let enhanced_boiler_count = self.gears.count(const_gear_id!("強化型艦本式缶"));
+        let new_model_boiler_count = self.gears.count(const_gear_id!("新型高温高圧缶"));
+        let total_boiler_count = enhanced_boiler_count + new_model_boiler_count;
+
+        let synergy = match speed_group {
+            SpeedGroup::A => {
+                if new_model_boiler_count >= 1 || total_boiler_count >= 2 {
+                    10
+                } else {
+                    0
+                }
+            }
+            SpeedGroup::B1 => {
+                if new_model_boiler_count == 0 {
+                    0
+                } else if total_boiler_count >= 3 {
+                    15
+                } else if total_boiler_count >= 2 {
+                    10
+                } else {
+                    0
+                }
+            }
+            SpeedGroup::B2 => {
+                if new_model_boiler_count >= 2 || total_boiler_count >= 3 {
+                    10
+                } else {
+                    0
+                }
+            }
+            SpeedGroup::C => {
+                if total_boiler_count >= 1 {
+                    5
+                } else {
+                    0
+                }
+            }
+        };
+
+        if synergy == 0 && self.has_attr(ShipAttr::TurbineSpeedBonus) {
+            5
+        } else {
+            synergy
+        }
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn speed(&self) -> i32 {
+        self.naked_speed() + self.speed_bonus()
     }
 
     #[wasm_bindgen(getter)]
@@ -373,76 +499,6 @@ impl Ship {
         let luck = self.luck()? as f64;
 
         Some(evasion + (2. * luck).sqrt())
-    }
-}
-
-impl Ship {
-    pub fn new(
-        state: ShipState,
-        master: &MasterShip,
-        attrs: EnumSet<ShipAttr>,
-        equippable: ShipEquippable,
-        banner: Option<String>,
-        gears: GearArray,
-    ) -> Self {
-        let ebonuses = EBonuses::default();
-        let slots: SlotSizeArray = master.slots.clone();
-
-        let mut ship = Ship {
-            ship_id: state.ship_id,
-            level: state.level.unwrap_or(master.default_level()),
-            current_hp: state.current_hp.unwrap_or_default(),
-            ship_type: FromPrimitive::from_i32(master.stype).unwrap_or_default(),
-            ship_class: master
-                .ctype
-                .and_then(FromPrimitive::from_i32)
-                .unwrap_or_default(),
-
-            attrs,
-            slots,
-            gears,
-
-            ebonuses,
-            equippable,
-            banner,
-            master: master.clone(),
-
-            max_hp_mod: state.max_hp_mod.unwrap_or_default(),
-            firepower_mod: state.firepower_mod.unwrap_or_default(),
-            torpedo_mod: state.torpedo_mod.unwrap_or_default(),
-            armor_mod: state.armor_mod.unwrap_or_default(),
-            anti_air_mod: state.anti_air_mod.unwrap_or_default(),
-            evasion_mod: state.evasion_mod.unwrap_or_default(),
-            asw_mod: state.asw_mod.unwrap_or_default(),
-            los_mod: state.los_mod.unwrap_or_default(),
-            luck_mod: state.luck_mod.unwrap_or_default(),
-        };
-
-        if ship.current_hp == 0 {
-            ship.current_hp = ship.max_hp().unwrap_or_default();
-        }
-
-        ship
-    }
-
-    pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
-        let mut iter = self.gears.values();
-        let has_main = iter.any(|g| g.attrs.contains(GearAttr::MainGun));
-        let has_ap_shell = iter.any(|g| g.category == GearCategory::ApShell);
-        let has_rader = iter.any(|g| g.attrs.contains(GearAttr::Radar));
-        let has_secondary = iter.any(|g| g.category == GearCategory::SecondaryGun);
-
-        if !has_ap_shell || !has_main {
-            (1., 1.)
-        } else if has_secondary && has_rader {
-            (1.15, 1.3)
-        } else if has_secondary {
-            (1.15, 1.2)
-        } else if has_rader {
-            (1.1, 1.25)
-        } else {
-            (1.08, 1.1)
-        }
     }
 }
 

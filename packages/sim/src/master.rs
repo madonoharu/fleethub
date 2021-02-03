@@ -1,5 +1,5 @@
 use crate::{
-    constants::{GearAttr, ShipAttr},
+    constants::{GearAttr, ShipAttr, SpeedGroup},
     gear::{GearState, IBonuses},
     ship::ShipEquippable,
 };
@@ -193,6 +193,8 @@ pub struct MasterShip {
     pub slots: ArrayVec<[Option<i32>; 5]>,
     #[wasm_bindgen(skip)]
     pub stock: ArrayVec<[GearState; 5]>,
+    #[wasm_bindgen(skip)]
+    pub speed_group: Option<SpeedGroup>,
     pub useful: Option<bool>,
 }
 
