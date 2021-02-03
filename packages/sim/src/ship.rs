@@ -183,6 +183,10 @@ impl Ship {
         self.master.stype
     }
 
+    pub fn has_attr(&self, attr: ShipAttr) -> bool {
+        self.attrs.contains(attr)
+    }
+
     pub fn master(&self) -> MasterShip {
         self.master.clone()
     }
@@ -205,7 +209,7 @@ impl Ship {
     }
 
     pub fn can_equip(&self, gear: &Gear, string: Option<String>) -> bool {
-        if self.ship_id >= 1500 {
+        if self.has_attr(ShipAttr::Abyssal) {
             return true;
         };
 
@@ -239,7 +243,7 @@ impl Ship {
             return gear.gear_id == const_gear_id!("Laté 298B");
         }
 
-        if self.attrs.contains(ShipAttr::RoyalNavy) {
+        if self.has_attr(ShipAttr::RoyalNavy) {
             return [
                 const_gear_id!("Swordfish(水上機型)"),
                 const_gear_id!("Swordfish Mk.III改(水上機型)"),
@@ -247,15 +251,15 @@ impl Ship {
             .contains(&gear.gear_id);
         }
 
-        let is_kai2 = self.attrs.contains(ShipAttr::Kai2);
+        let is_kai2 = self.has_attr(ShipAttr::Kai2);
 
         if self.ship_class == ShipClass::IseClass && is_kai2 {
-            return key == "g1" || key == "g2" || !gear.attrs.contains(GearAttr::MainGun);
+            return key == "g1" || key == "g2" || !gear.has_attr(GearAttr::MainGun);
         }
 
         if self.ship_class == ShipClass::YuubariClass && is_kai2 {
             if key == "g4" {
-                return !(gear.attrs.contains(GearAttr::MainGun)
+                return !(gear.has_attr(GearAttr::MainGun)
                     || gear.category == GearCategory::Torpedo
                     || gear.category == GearCategory::MidgetSubmarine);
             }
