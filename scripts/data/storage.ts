@@ -46,6 +46,7 @@ export const readMasterData = async (): Promise<MasterData> => {
     ship_types,
     ship_classes,
     ship_attrs,
+    ship_banners,
     gears,
     gear_categories,
     gear_attrs,
@@ -56,12 +57,11 @@ export const readMasterData = async (): Promise<MasterData> => {
     read("ship_types"),
     read("ship_classes"),
     read("ship_attrs"),
-
+    read("ship_banners"),
     read("gears"),
     read("gear_categories"),
     read("gear_attrs"),
     read("ibonuses"),
-
     read("equippable"),
   ])
 
@@ -75,6 +75,7 @@ export const readMasterData = async (): Promise<MasterData> => {
     gear_attrs,
     ibonuses,
     equippable,
+    ship_banners,
   }
 }
 

@@ -70,9 +70,9 @@ export const getBannerIds = async () => {
 }
 
 export const updateShipBanners = async (start2: Start2) => {
-  const bannerIds = await getBannerIds()
+  const banners = await getBannerIds()
 
-  const exists = (id: number) => Boolean(bannerIds[id])
+  const exists = (id: number) => Boolean(banners[id])
 
   for (const { api_id: id, api_name: name } of start2.api_mst_ship.map((ship) => ship)) {
     if (exists(id)) continue
@@ -81,11 +81,11 @@ export const updateShipBanners = async (start2: Start2) => {
     console.log(`add banner ${name}`)
 
     if (res?.phash) {
-      bannerIds[id] = res.phash
+      banners[id] = res.phash
     }
   }
 
-  return bannerIds
+  return banners
 }
 
 export const updateGearIcons = async () => {

@@ -73,13 +73,16 @@ export const createShips = (headerValues: string[], rows: GoogleSpreadsheetRow[]
       headerValues.forEach((key) => {
         const value = row[key]
 
-        if (value === "") return
+        if (value === "" || value === undefined) return
 
-        if (key === "name" || key === "yomi" || key === "banner") {
+        if (key === "name" || key === "yomi") {
           set(base, key, String(value))
         } else if (value === "TRUE") {
           set(base, key, true)
         } else if (value !== "FALSE") {
+          if (Number.isNaN(Number(value))) {
+            console.log(key, value)
+          }
           set(base, key, Number(value))
         }
       })

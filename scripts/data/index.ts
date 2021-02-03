@@ -37,50 +37,41 @@ const createEquippable = (start2: Start2): MasterDataEquippable => {
   return { equip_stype, equip_exslot, equip_ship, equip_exslot_ship }
 }
 
-const createMasterData = async (doc: GoogleSpreadsheet, start2: Start2) => {
+const createMasterData = async (doc: GoogleSpreadsheet, start2: Start2): Promise<Partial<MasterData>> => {
   const [shipData, gearData] = await Promise.all([updateShipData(doc, start2), updateGearData(doc, start2)])
   const equippable = createEquippable(start2)
 
-  const next: MasterData = {
+  return {
     ...shipData,
     ...gearData,
     equippable,
   }
-
-  return next
 }
 
 export const updateData = async () => {
   const [doc, start2] = await Promise.all([getGoogleSpreadsheet(), fetchStart2()])
   await log("Start: update_data")
 
-  const next = await createMasterData(doc, start2)
+  const nextMd = await createMasterData(doc, start2)
 
-  const keys = Object.keys(next) as (keyof MasterData)[]
+  const keys = Object.keys(nextMd) as (keyof MasterData)[]
 
-  const promises = keys.map((key) => storage.update(key, () => next[key]))
+  const promises = keys.map((key) => {
+    const next = nextMd[key]
+    return next && storage.update(key, () => next)
+  })
+
   await Promise.all(promises)
 
   await log("Success: update_data")
 }
 
 export const updateImages = async () => {
-  const [doc, start2] = await Promise.all([getGoogleSpreadsheet(), fetchStart2()])
+  const start2 = await fetchStart2()
   await log("Start: update_images")
 
-  const bannerIds = await updateCloudinary(start2)
-  const sheet = doc.sheetsByTitle["艦娘"]
-
-  const ships = await updateRows(sheet, (rows) => {
-    const ships = createShips(sheet.headerValues, rows, start2)
-    ships.forEach((ship) => {
-      ship.banner = bannerIds[ship.ship_id]
-    })
-
-    return ships
-  })
-
-  await storage.update("ships", () => ships)
+  const banners = await updateCloudinary(start2)
+  await storage.update("ship_banners", () => banners)
 
   await log("Success: update_images")
 }
