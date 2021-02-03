@@ -90,10 +90,10 @@ class LocaleUpdater {
     const kc3Battle = await this.getKC3Json<{ engagement: string[][] }>("battle.json")
 
     const dictionary: Dictionary = {
-      maxHp: kc3Terms["ShipHp"],
+      max_hp: kc3Terms["ShipHp"],
       firepower: kc3Terms["ShipFire"],
       torpedo: kc3Terms["ShipTorpedo"],
-      antiAir: kc3Terms["ShipAntiAir"],
+      anti_air: kc3Terms["ShipAntiAir"],
       armor: kc3Terms["ShipArmor"],
       evasion: kc3Terms["ShipEvasion"],
       asw: kc3Terms["ShipAsw"],
@@ -107,7 +107,7 @@ class LocaleUpdater {
       bombing: kc3Terms["ShipBombing"],
       fuel: kc3Terms["ShipFuel"],
       ammo: kc3Terms["ShipAmmo"],
-      antiBomber: kc3Terms["ShipAccAntiBomber"],
+      anti_bomber: kc3Terms["ShipAccAntiBomber"],
       interception: kc3Terms["ShipEvaInterception"],
       cost: kc3Terms["ShipDeployCost"],
 
