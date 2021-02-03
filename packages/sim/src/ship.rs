@@ -5,7 +5,6 @@ use crate::{
     gear::{Gear, GearState},
     master::{MasterShip, StatInterval},
 };
-use js_sys::JsString;
 use num_traits::FromPrimitive;
 use paste::paste;
 use serde::Deserialize;
@@ -89,6 +88,7 @@ pub struct Ship {
     master: MasterShip,
     ebonuses: EBonuses,
     equippable: ShipEquippable,
+    banner: Option<String>,
 }
 
 fn get_marriage_bonus(left: i32) -> i32 {
@@ -321,9 +321,8 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn banner(&self) -> Option<JsString> {
-        let string = self.master.banner.as_ref()?;
-        Some(JsString::from(string.clone()))
+    pub fn banner(&self) -> Option<String> {
+        self.banner.clone()
     }
 
     pub fn get_slot_size(&self, index: usize) -> Option<i32> {
@@ -383,6 +382,7 @@ impl Ship {
         master: &MasterShip,
         attrs: EnumSet<ShipAttr>,
         equippable: ShipEquippable,
+        banner: Option<String>,
         gears: GearArray,
     ) -> Self {
         let ebonuses = EBonuses::default();
@@ -404,6 +404,7 @@ impl Ship {
 
             ebonuses,
             equippable,
+            banner,
             master: master.clone(),
 
             max_hp_mod: state.max_hp_mod.unwrap_or_default(),

@@ -69,7 +69,13 @@ impl Factory {
 
         let equippable = self.master_data.create_ship_equippable(&master);
 
-        Some(Ship::new(state, master, attrs, equippable, gears))
+        let banner = self
+            .master_data
+            .ship_banners
+            .get(&state.ship_id.to_string())
+            .cloned();
+
+        Some(Ship::new(state, master, attrs, equippable, banner, gears))
     }
 
     fn create_ship_array(&self, state: Option<ShipArrayState>) -> ShipArray {
