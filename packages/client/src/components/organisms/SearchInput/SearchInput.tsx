@@ -8,6 +8,10 @@ import HelpIcon from "@material-ui/icons/HelpOutline"
 import { TextField, TextFieldProps } from "../../molecules"
 import { Flexbox } from "../../atoms"
 
+const StyledHelpIcon = styled(HelpIcon)`
+  margin-left: 8px;
+`
+
 type SearchInputProps = TextFieldProps & {
   hint?: React.ReactNode
 }
@@ -18,7 +22,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(({ hint
       <TextField startLabel={<SearchIcon />} {...rest} ref={ref} />
       {hint && (
         <Tooltip title={hint}>
-          <HelpIcon />
+          <StyledHelpIcon />
         </Tooltip>
       )}
     </Flexbox>
