@@ -6,6 +6,7 @@ use crate::{
 use arrayvec::ArrayVec;
 use fasteval::bool_to_f64;
 use serde::Deserialize;
+use std::collections::HashMap;
 use std::str::FromStr;
 use wasm_bindgen::prelude::*;
 use wasmer_enumset::EnumSet;
@@ -193,8 +194,6 @@ pub struct MasterShip {
     #[wasm_bindgen(skip)]
     pub stock: ArrayVec<[GearState; 5]>,
     pub useful: Option<bool>,
-    #[wasm_bindgen(skip)]
-    pub banner: Option<String>,
 }
 
 impl MasterShip {
@@ -257,6 +256,7 @@ pub struct MasterData {
     pub gear_attrs: Vec<MasterDataAttrRule>,
     pub ships: Vec<MasterShip>,
     pub ship_attrs: Vec<MasterDataAttrRule>,
+    pub ship_banners: HashMap<String, String>,
     pub ibonuses: MasterDataIBonuses,
     pub equippable: MasterDataEquippable,
 }
