@@ -51,7 +51,6 @@ export type MasterDataShip = {
   stock: StockGear[]
 
   useful?: boolean
-  banner?: string
 }
 
 export type MasterDataGearCategory = {
@@ -127,14 +126,11 @@ export type MasterData = {
   ships: MasterDataShip[]
   ship_types: MasterDataShipType[]
   ship_classes: MasterDataShipClass[]
-
-  gear_categories: MasterDataGearCategory[]
-  gears: MasterDataGear[]
-
-  gear_attrs: MasterDataAttrRule[]
   ship_attrs: MasterDataAttrRule[]
-
+  ship_banners: Record<string, string>
+  gears: MasterDataGear[]
+  gear_categories: MasterDataGearCategory[]
+  gear_attrs: MasterDataAttrRule[]
   ibonuses: MasterDataIBonuses
-
   equippable: MasterDataEquippable
 }
