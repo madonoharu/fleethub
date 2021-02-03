@@ -1,4 +1,5 @@
 use num_derive::FromPrimitive;
+use serde::Deserialize;
 use strum_macros::EnumString;
 use wasm_bindgen::prelude::*;
 use wasmer_enumset::EnumSetType;
@@ -115,7 +116,7 @@ pub enum GearAttr {
 
 #[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, FromPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
 pub enum ShipType {
     Unknown = 0,
     DE = 1,
@@ -259,7 +260,6 @@ pub enum ShipClass {
 
 impl_default!(ShipClass);
 
-#[allow(dead_code)]
 #[wasm_bindgen]
 #[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
 pub enum ShipAttr {
@@ -268,10 +268,27 @@ pub enum ShipAttr {
     Installation,
     RoyalNavy,
     Kai2,
+    TurbineSpeedBonus,
+}
+
+#[wasm_bindgen]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
+pub enum SpeedGroup {
+    A,
+    B1,
+    B2,
+    C,
+}
+
+impl Default for SpeedGroup {
+    fn default() -> Self {
+        SpeedGroup::B2
+    }
 }
 
 #[cfg(test)]
 mod test {
+
     use super::*;
 
     #[test]

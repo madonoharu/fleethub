@@ -21,6 +21,8 @@ export type MasterDataShipClass = {
   key: string
 }
 
+export type SpeedGroup = "A" | "B1" | "B2" | "C"
+
 export type MasterDataShip = {
   ship_id: number
   name: string
@@ -50,6 +52,7 @@ export type MasterDataShip = {
   slots: MaybeNumber[]
   stock: StockGear[]
 
+  speed_group?: SpeedGroup
   useful?: boolean
 }
 
