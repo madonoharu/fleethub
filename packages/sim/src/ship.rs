@@ -434,7 +434,7 @@ impl Ship {
             }
         };
 
-        if synergy == 0 && self.has_attr(ShipAttr::TurbineSpeedBonus) {
+        if synergy == 0 && total_boiler_count >= 1 || self.has_attr(ShipAttr::TurbineSpeedBonus) {
             5
         } else {
             synergy
