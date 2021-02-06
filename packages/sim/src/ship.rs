@@ -253,6 +253,26 @@ impl Ship {
         self.master.stype
     }
 
+    #[wasm_bindgen(getter)]
+    pub fn sort_id(&self) -> i32 {
+        self.master.sort_id.unwrap_or_default()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn slotnum(&self) -> i32 {
+        self.master.slotnum
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn next_id(&self) -> i32 {
+        self.master.next_id.unwrap_or_default()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn useful(&self) -> bool {
+        self.master.useful.unwrap_or_default()
+    }
+
     pub fn has_attr(&self, attr: ShipAttr) -> bool {
         self.attrs.contains(attr)
     }
