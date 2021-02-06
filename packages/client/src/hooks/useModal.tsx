@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react"
 
-import { Dialog, DialogProps } from "../components"
+import { Dialog, DialogProps } from "../components/organisms"
 
 export const useModal = (initialOpen = false) => {
   const [isOpen, setIsOpen] = useState(initialOpen)
