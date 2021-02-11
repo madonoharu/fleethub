@@ -14,6 +14,6 @@
   "dependencies": {
     "@fleethub/data": "*",
     "@fleethub/utils": "*",
-    "equipment-bonus": "6.0.0"
+    "equipment-bonus": "6.0.1"
   }
 }
