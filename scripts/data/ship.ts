@@ -1,11 +1,68 @@
-import { MasterDataShip, MasterDataShipClass, MasterDataShipType, MasterDataAttrRule } from "@fleethub/utils/src"
+import { ShipClass, ShipId, ShipType } from "@fleethub/data/src"
+import {
+  MasterDataShip,
+  MasterDataShipClass,
+  MasterDataShipType,
+  MasterDataAttrRule,
+  SpeedGroup,
+} from "@fleethub/utils/src"
 import { GoogleSpreadsheet, GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
 import { Start2, MstShip, MstPlayerShip } from "kc-tools"
 import { set } from "lodash"
 
-import { updateRows, deleteFalsyValues } from "./utils"
+import { updateRows } from "./utils"
 
 const isPlayerShip = (ship: MstShip): ship is MstPlayerShip => "api_houg" in ship
+
+const getDefaultSpeedGroup = ({ ship_id, yomi, stype, ctype = 0, speed }: MasterDataShip): SpeedGroup => {
+  const isFastAV = stype == ShipType.AV && speed == 10
+
+  if (
+    isFastAV ||
+    [ShipType.SS, ShipType.SSV].includes(stype) ||
+    [ShipId["夕張"], ShipId["夕張改"]].includes(ship_id) ||
+    [ShipClass.KagaClass, ShipClass.R1, ShipClass.RepairShip, ShipClass.RevisedKazahayaClass].includes(ctype)
+  ) {
+    return "C"
+  }
+
+  if (
+    [
+      ShipClass.ShimakazeClass,
+      ShipClass.TashkentClass,
+      ShipClass.TaihouClass,
+      ShipClass.ShoukakuClass,
+      ShipClass.ToneClass,
+      ShipClass.MogamiClass,
+    ].includes(ctype)
+  ) {
+    return "A"
+  }
+
+  if (
+    [
+      ShipClass.AganoClass,
+      ShipClass.SouryuuClass,
+      ShipClass.HiryuuClass,
+      ShipClass.KongouClass,
+      ShipClass.YamatoClass,
+      ShipClass.IowaClass,
+    ].includes(ctype)
+  ) {
+    return "B1"
+  }
+
+  const isAmatsukaze = yomi === "あまつかぜ"
+  const isUnryuu = yomi === "うんりゅう"
+  const isAmagi = yomi === "あまぎ"
+  const isNagatoKai2 = ship_id === ShipId["長門改二"]
+
+  if (isAmatsukaze || isUnryuu || isAmagi || isNagatoKai2) {
+    return "B1"
+  }
+
+  return "B2"
+}
 
 const getConvertibleShips = (ships: MasterDataShip[]) => {
   const findNextShip = ({ next_id }: MasterDataShip) => (next_id ? ships.find((s) => s.ship_id === next_id) : undefined)
@@ -75,7 +132,7 @@ export const createShips = (headerValues: string[], rows: GoogleSpreadsheetRow[]
 
         if (value === "" || value === undefined) return
 
-        if (key === "name" || key === "yomi") {
+        if (key === "name" || key === "yomi" || key === "speed_group") {
           set(base, key, String(value))
         } else if (value === "TRUE") {
           set(base, key, true)
@@ -93,6 +150,7 @@ export const createShips = (headerValues: string[], rows: GoogleSpreadsheetRow[]
     const { api_aftershipid, api_afterlv, api_tais } = mst
 
     return {
+      speed_group: getDefaultSpeedGroup(base),
       ...base,
       ctype: mst.api_ctype,
 
