@@ -538,7 +538,7 @@ mod test {
                 },
                 ..Default::default()
             }
-        };
+        }
 
         assert_eq!(get_ship(99, 90).max_hp(), Some(90));
 
