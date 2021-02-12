@@ -14,9 +14,8 @@ macro_rules! impl_default {
     };
 }
 
-#[allow(dead_code)]
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, FromPrimitive, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
 pub enum GearCategory {
     Unknown = 0,
     SmallCaliberMainGun = 1,
@@ -81,7 +80,6 @@ pub enum GearCategory {
 
 impl_default!(GearCategory);
 
-#[allow(dead_code)]
 #[wasm_bindgen]
 #[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
 pub enum GearAttr {
@@ -114,7 +112,6 @@ pub enum GearAttr {
     HighAltitudeInterceptor,
 }
 
-#[allow(dead_code)]
 #[wasm_bindgen]
 #[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
 pub enum ShipType {
@@ -145,7 +142,6 @@ pub enum ShipType {
 
 impl_default!(ShipType);
 
-#[allow(dead_code)]
 #[wasm_bindgen]
 #[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
 pub enum ShipClass {

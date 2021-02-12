@@ -1,5 +1,3 @@
-#![feature(min_const_generics)]
-
 mod airbase;
 mod array;
 mod const_id;
