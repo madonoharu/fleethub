@@ -1,12 +1,13 @@
 import React from "react"
 import styled from "@emotion/styled"
 
-import { ShipBanner, Text, Flexbox } from "../../../components"
+import { Text, Flexbox } from "../../atoms"
+import { ShipBanner } from "../../molecules"
 
 type Props = {
   className?: string
   shipId: number
-  banner: string
+  banner?: string
   name: string
 }
 

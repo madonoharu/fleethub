@@ -1,15 +1,15 @@
 import React from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
-import { BasicStatKey, MaybeNumber, ShipStats } from "@fleethub/core"
 
 import { Tooltip, TooltipProps, Typography } from "@material-ui/core"
 
-import { StatIcon, Text, Flexbox } from "../../../components"
+import { Text, Flexbox } from "../../atoms"
+import { StatIcon } from "../../molecules"
 import { withSign, getRangeName, getSpeedName, StatKeyDictionary, getBonusText } from "../../../utils"
 
-export const getValueStr = (key: string, value?: MaybeNumber) => {
-  if (value === null || value === undefined) return "不明"
+export const getValueStr = (key: string, value?: number) => {
+  if (value === undefined) return "不明"
 
   if (key === "speed") return getSpeedName(value)
   if (key === "range") return getRangeName(value)
@@ -22,8 +22,8 @@ export type StatProps<K extends keyof ShipStats> = {
     diff?: number
     equipment?: number
     bonus?: number
-    naked?: MaybeNumber
-    value: MaybeNumber
+    naked?: number
+    value: number
   }
 }
 

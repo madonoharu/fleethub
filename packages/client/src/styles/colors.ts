@@ -17,19 +17,19 @@ export const { palette } = createMuiTheme({
 export const colors = {
   firepower: muiColors.pink[300],
   torpedo: muiColors.blue[300],
-  antiAir: muiColors.green[300],
+  anti_air: muiColors.green[300],
   asw: muiColors.cyan[300],
   bombing: muiColors.pink[300],
   accuracy: muiColors.deepOrange[200],
   evasion: muiColors.lightBlue[300],
-  antiBomber: muiColors.deepOrange[200],
+  anti_bomber: muiColors.deepOrange[200],
   interception: muiColors.lightBlue[300],
   los: muiColors.lime[300],
   armor: muiColors.amber[300],
   range: muiColors.purple[200],
   radius: muiColors.lightGreen[300],
 
-  maxHp: palette.text.primary,
+  max_hp: palette.text.primary,
   speed: palette.text.primary,
   luck: muiColors.yellow[300],
 

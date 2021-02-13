@@ -7,7 +7,7 @@ import theme, { Theme } from "./theme"
 
 const globalStyles = (theme: Theme) => css`
   body {
-    background: linear-gradient(-45deg, #141e30, #243b55);
+    background: #141e30;
   }
 
   * {

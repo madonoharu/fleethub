@@ -2,8 +2,9 @@ import React from "react"
 import styled from "@emotion/styled"
 import { useTranslation } from "react-i18next"
 
-import { Select } from "../../../components"
 import { allLanguages, getLanguageName } from "../../../i18n"
+
+import { Select } from "../../molecules"
 
 const LanguageSelect: React.FCX = ({ className }) => {
   const { i18n } = useTranslation()

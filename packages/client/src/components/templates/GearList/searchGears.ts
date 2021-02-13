@@ -1,14 +1,14 @@
-import { GearBase } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
 
-const searchById = (gears: GearBase[], searchValue: string) => {
+const searchById = (gears: Gear[], searchValue: string) => {
   const str = /^id(\d+)/.exec(searchValue)?.[1]
   if (!str) return
 
   const id = Number(str)
-  return gears.find((gear) => gear.gearId === id)
+  return gears.find((gear) => gear.gear_id === id)
 }
 
-const searchGears = (gears: GearBase[], searchValue: string) => {
+const searchGears = (gears: Gear[], searchValue: string) => {
   const idFound = searchById(gears, searchValue)
   if (idFound) {
     return [idFound]

@@ -1,9 +1,10 @@
 import React from "react"
 import styled from "@emotion/styled"
-import { GearBase, EquipmentBonuses } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
+import { EquipmentBonuses } from "equipment-bonus"
 
-import { Divider } from "../../../components"
+import { Divider } from "../../atoms"
 
 import GearButton from "./GearButton"
 
@@ -13,12 +14,12 @@ const Grid = styled.div`
 `
 
 type Props = {
-  entries: Array<[GearCategory, GearBase[]]>
-  onSelect?: (gear: GearBase) => void
-  getBonuses?: (gear: GearBase) => EquipmentBonuses
+  entries: Array<[GearCategory, Gear[]]>
+  onSelect?: (gear: Gear) => void
+  getNextEbonuses?: (gear: Gear) => EquipmentBonuses
 }
 
-const CategoryContainer: React.FC<Props> = ({ entries, onSelect, getBonuses }) => {
+const CategoryContainer: React.FC<Props> = ({ entries, onSelect, getNextEbonuses }) => {
   return (
     <>
       {entries.map(([category, gears]) => (
@@ -27,10 +28,10 @@ const CategoryContainer: React.FC<Props> = ({ entries, onSelect, getBonuses }) =
           <Grid>
             {gears.map((gear) => (
               <GearButton
-                key={`gear-${gear.gearId}`}
+                key={`gear-${gear.gear_id}`}
                 gear={gear}
                 onClick={() => onSelect && onSelect(gear)}
-                bonuses={getBonuses && getBonuses(gear)}
+                ebonuses={getNextEbonuses?.(gear)}
               />
             ))}
           </Grid>

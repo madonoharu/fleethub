@@ -1,10 +1,11 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import { PlanEditor, DirectoryBreadcrumbs } from "../../../components"
+import { DirectoryBreadcrumbs } from "../../organisms"
 import { openDefaultFile, selectAppState, filesSelectors } from "../../../store"
 
 import FolderPage from "../FolderPage"
+import PlanScreen from "../PlanScreen"
 
 const FileViewer: React.FC = () => {
   const dispatch = useDispatch()
@@ -24,7 +25,7 @@ const FileViewer: React.FC = () => {
   return (
     <>
       <DirectoryBreadcrumbs file={file} />
-      {file.type === "plan" ? <PlanEditor id={file.id} /> : <FolderPage id={file.id} />}
+      {file.type === "plan" ? <PlanScreen id={file.id} /> : <FolderPage id={file.id} />}
     </>
   )
 }
