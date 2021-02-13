@@ -1,23 +1,28 @@
 import React from "react"
-import { GearBase, isNonNullable, EquipmentBonuses } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
+import { isNonNullable } from "@fleethub/utils"
+import { EquipmentBonuses } from "equipment-bonus"
+import { camelCase } from "literal-case"
 
-import { Table as MuiTable, TableBody, TableRow, TableCell as MuiTableCell, TableCellProps } from "@material-ui/core"
+import { Typography } from "@material-ui/core"
 
-import { StatIcon } from "../../../components"
-import { StatKeyDictionary, getRangeName, getBonusText } from "../../../utils"
+import { getRangeName, getBonusText } from "../../../utils"
 
-const keys = [
+import { StatIcon } from "../../molecules"
+import { useTranslation } from "../../../i18n"
+
+const STAT_KEYS = [
   "firepower",
   "torpedo",
-  "antiAir",
+  "anti_air",
   "asw",
   "bombing",
   "accuracy",
   "evasion",
   "interception",
-  "antiBomber",
+  "anti_bomber",
   "los",
   "armor",
   "speed",
@@ -25,73 +30,79 @@ const keys = [
   "radius",
 ] as const
 
-type Key = typeof keys[number]
-type Value = number | string
-type StatEntry = [Key, Value, Value?]
+type StatKey = typeof STAT_KEYS[number]
 
-const Table = styled(MuiTable)`
-  width: auto;
+type StatEntry = {
+  key: StatKey
+  value: number | string
+  bonus?: number | string
+}
+
+const StatLabel: React.FCX<{ statKey: StatKey }> = ({ className, statKey }) => {
+  const { t } = useTranslation("terms")
+  return (
+    <div
+      className={className}
+      css={css`
+        display: flex;
+        align-items: center;
+      `}
+    >
+      <StatIcon icon={statKey} />
+      <span css={{ marginLeft: 8 }}>{t(statKey)}</span>
+    </div>
+  )
+}
+
+const Value = styled.span`
+  text-align: right;
+  margin-left: 8px;
 `
 
-const TableCell = styled(({ statKey, ...props }: { statKey?: Key } & TableCellProps) => <MuiTableCell {...props} />)(
-  ({ theme, statKey }) => css`
-    padding: 0 4px;
-    border: none;
-    color: ${statKey && theme.colors[statKey]};
-  `
-)
-
-const BonusCell = styled(TableCell)(
+const Bonus = styled(Value)(
   ({ theme }) => css`
     color: ${theme.colors.bonus};
   `
 )
 
-const StyledStatIcon = styled(StatIcon)`
-  display: block !important;
-`
+export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) =>
+  STAT_KEYS.map((key): StatEntry | undefined => {
+    const value = gear[key]
 
-export const toStatEntries = (gear: GearBase, bonuses?: EquipmentBonuses) =>
-  keys
-    .map((key): StatEntry | undefined => {
-      const value = gear[key]
+    let bonus = ""
+    if (ebonuses && key !== "interception" && key !== "anti_bomber" && key !== "radius" && key !== "speed") {
+      bonus = getBonusText(key, ebonuses[camelCase(key)])
+    }
 
-      let bonus = ""
-      if (bonuses && key !== "interception" && key !== "antiBomber" && key !== "radius") {
-        bonus = getBonusText(key, bonuses[key])
-      }
+    if (!value && !bonus) return
 
-      if (!value && !bonus) return
-
-      if (key === "range") return [key, getRangeName(value), bonus]
-      if (key === "speed") return [key, "", bonus]
-      return [key, value, bonus]
-    })
-    .filter(isNonNullable)
+    if (key === "range") return { key, value: getRangeName(value), bonus }
+    if (key === "speed") return { key, value: "", bonus }
+    return { key, value, bonus }
+  }).filter(isNonNullable)
 
 export type Props = {
-  gear: GearBase
-  bonuses?: EquipmentBonuses
+  gear: Gear
+  ebonuses?: EquipmentBonuses
 }
 
-const GearStatList: React.FC<Props> = ({ gear, bonuses }) => {
-  const entries = toStatEntries(gear, bonuses)
+const GearStatList: React.FCX<Props> = ({ className, gear, ebonuses }) => {
+  const data = toStatEntries(gear, ebonuses)
   return (
-    <Table size="small">
-      <TableBody>
-        {entries.map(([key, value, bonus]) => (
-          <TableRow key={key}>
-            <TableCell>
-              <StyledStatIcon icon={key} />
-            </TableCell>
-            <TableCell statKey={key}>{StatKeyDictionary[key]}</TableCell>
-            <TableCell align="right">{value}</TableCell>
-            <BonusCell>{bonus}</BonusCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <Typography className={className} variant="body2">
+      {data.map((datum) => (
+        <React.Fragment key={datum.key}>
+          <StatLabel statKey={datum.key} />
+          <Value>{datum.value}</Value>
+          <Bonus>{datum.bonus}</Bonus>
+        </React.Fragment>
+      ))}
+    </Typography>
   )
 }
 
-export default GearStatList
+export default styled(GearStatList)`
+  display: grid;
+  grid-gap: 4px;
+  grid-template-columns: max-content min-content min-content;
+`

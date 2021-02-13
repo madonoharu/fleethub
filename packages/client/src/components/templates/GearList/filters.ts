@@ -1,48 +1,33 @@
-import { GearState, GearBase } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
+import { uniq } from "@fleethub/utils"
+import { pascalCase } from "literal-case"
 
-export type GearFilterFn = (gear: GearBase) => boolean
+export type GearFilterFn = (gear: Gear) => boolean
 
-const filterSet = new Set<GearFilterFn>([
-  (gear) => gear.categoryIn("CbFighter", "JetFighter"),
-  (gear) => gear.categoryIn("CbDiveBomber", "CbTorpedoBomber", "JetFighterBomber", "JetTorpedoBomber"),
-])
+const BASIC_FILTER_NAMES = [
+  "all",
+  "fighter",
+  "bomber",
+  "recon",
+  "mainGun",
+  "secondary",
+  "torpedo",
+  "antiSub",
+  "radar",
+  "landing",
+  "ration",
+  "landBased",
+  "misc",
+] as const
 
-const basicFilterRecord: Record<string, GearFilterFn> = {
-  fighter: (gear) => gear.categoryIn("CbFighter", "JetFighter"),
+export const getFilter = (name: string): GearFilterFn => {
+  if (name === "all") return () => true
 
-  bomber: (gear) => gear.categoryIn("CbDiveBomber", "CbTorpedoBomber", "JetFighterBomber", "JetTorpedoBomber"),
-
-  recon: (gear) => gear.is("Recon") || gear.is("Seaplane") || gear.categoryIn("Autogyro", "AntiSubPatrolAircraft"),
-
-  mainGun: (gear) => gear.is("MainGun"),
-
-  secondary: (gear) => gear.categoryIn("SecondaryGun", "AntiAirGun"),
-
-  torpedo: (gear) => gear.categoryIn("Torpedo", "SubmarineTorpedo", "MidgetSubmarine"),
-
-  antiSub: (gear) => gear.categoryIn("Sonar", "LargeSonar", "DepthCharge"),
-
-  radar: (gear) => gear.is("Radar"),
-
-  landing: (gear) => gear.categoryIn("LandingCraft", "SpecialAmphibiousTank", "SupplyTransportContainer"),
-
-  ration: (gear) => gear.categoryIn("CombatRation", "Supplies"),
-
-  landBased: (gear) => gear.is("LbAircraft"),
+  return (g) => g.discern().toLowerCase() === name.toLowerCase()
 }
 
-const filterRecord: Record<string, GearFilterFn> = {
-  all: () => true,
-  ...basicFilterRecord,
-  misc: (gear) => Object.values(basicFilterRecord).every((fn) => !fn(gear)),
-}
+export const getVisibleGroups = (gears: Gear[]): string[] => {
+  const groups = uniq(gears.map((g) => g.discern()))
 
-export const getFilter = (group: string): GearFilterFn => {
-  const fn = filterRecord[group]
-  return fn || filterRecord.all
+  return BASIC_FILTER_NAMES.filter((name) => name === "all" || groups.includes(pascalCase(name)))
 }
-
-export const getVisibleGroups = (gears: GearBase[]) =>
-  Object.entries(filterRecord)
-    .filter(([key, filterFn]) => gears.some(filterFn))
-    .map(([key]) => key)

@@ -3,8 +3,9 @@ import styled from "@emotion/styled"
 
 import { Checkbox, FormControlLabel } from "@material-ui/core"
 
-import { Flexbox } from "../../../components"
 import { GearListState } from "../../../store"
+
+import { Flexbox } from "../../atoms"
 
 import FilterButtons from "./FilterButtons"
 

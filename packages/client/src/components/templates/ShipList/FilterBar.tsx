@@ -1,11 +1,12 @@
 import React from "react"
 import styled from "@emotion/styled"
-import { shipCategoies, ShipCategory } from "@fleethub/core"
 
-import { SelectButtons, Flexbox, Checkbox } from "../../../components"
 import { ShipListState } from "../../../store"
 
-const dict: Record<ShipCategory, string> = {
+import { Flexbox, Checkbox } from "../../atoms"
+import { SelectButtons } from "../../molecules"
+
+const basicFilterMap = {
   Battleship: "戦艦級",
   AircraftCarrier: "航空母艦",
   HeavyCruiser: "重巡級",
@@ -14,7 +15,7 @@ const dict: Record<ShipCategory, string> = {
   CoastalDefenseShip: "海防艦",
   Submarine: "潜水艦",
   SupportShip: "補助艦艇",
-}
+} as const
 
 type Props = {
   state: ShipListState
@@ -28,11 +29,11 @@ const FilterBar: React.FCX<Props> = ({ className, state, onChange }) => {
   return (
     <Flexbox className={className}>
       <SelectButtons
-        css={{ marginLeft: "auto" }}
-        options={shipCategoies}
-        value={state.category}
-        onChange={(category) => onChange({ category })}
-        getOptionLabel={(category) => dict[category]}
+        css={{ marginRight: "auto" }}
+        options={Object.keys(basicFilterMap)}
+        value={state.basicFilter}
+        onChange={(basicFilter) => onChange({ basicFilter })}
+        getOptionLabel={(key) => basicFilterMap[key as keyof typeof basicFilterMap]}
       />
       <Checkbox label="全表示" size="small" checked={state.all} onChange={toggleAll} />
       <Checkbox label="深海" size="small" checked={state.abyssal} onChange={toggleAbyssal} />

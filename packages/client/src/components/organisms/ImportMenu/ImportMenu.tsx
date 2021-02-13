@@ -1,12 +1,11 @@
 import React from "react"
-import { Plan } from "@fleethub/core"
 import styled from "@emotion/styled"
 import { useDispatch, useSelector } from "react-redux"
 import { useAsyncCallback } from "react-async-hook"
 
 import { Typography } from "@material-ui/core"
 
-import { useSnackbar, useFhSystem } from "../../../hooks"
+import { useSnackbar } from "../../../hooks"
 import { fetchUrlData } from "../../../utils"
 import { filesSlice, appSlice, selectAppState } from "../../../store"
 
@@ -30,31 +29,20 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   const importToTemp = useSelector((state) => selectAppState(state).importToTemp)
   const dispatch = useDispatch()
 
-  const fh = useFhSystem()
-
   const handleImportToTempChange = (value: boolean) => {
     dispatch(appSlice.actions.setImportToTemp(value))
-  }
-
-  const parseDeck = (str: string): Plan | undefined => {
-    try {
-      return fh.createPlanByDeck(JSON.parse(str))
-    } catch {
-      return
-    }
   }
 
   const to = importToTemp ? "temp" : "root"
 
   const handleDeckImport = () => {
-    const plan = parseDeck(deckStr)
+    const plan = undefined
 
     if (!plan) {
       Snackbar.show({ message: "失敗しました", severity: "error" })
       return
     }
 
-    dispatch(filesSlice.actions.createPlan({ plan: plan.state, to }))
     onClose?.()
   }
 

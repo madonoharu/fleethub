@@ -3,9 +3,11 @@ import { css } from "@emotion/react"
 
 import { Typography } from "@material-ui/core"
 
-import { GearIcon, Flexbox } from "../../../components"
 import styled from "@emotion/styled"
 import { useTranslation } from "react-i18next"
+
+import { Flexbox } from "../../atoms"
+import { GearIcon } from "../../molecules"
 
 type Props = {
   className?: string

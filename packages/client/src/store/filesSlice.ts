@@ -7,13 +7,15 @@ import {
   Dictionary,
   EntitySelectors,
   createSelector,
+  EntityId,
 } from "@reduxjs/toolkit"
 import { DefaultRootState } from "react-redux"
-import { PlanState } from "@fleethub/core"
 import { uniq, isNonNullable } from "@fleethub/utils"
 
 import { selectFilesState } from "./selectors"
 import { FilesData, cloneFilesData } from "./filesData"
+
+export type PlanState = { id: EntityId }
 
 export type PlanStateWithId = PlanState & { id: string }
 

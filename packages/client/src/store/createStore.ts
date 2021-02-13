@@ -13,6 +13,10 @@ import { gkcoiSlice } from "./gkcoiSlice"
 
 import undoableOptions from "./undoableOptions"
 
+import { gearsSlice } from "./gearsSlice"
+import { shipsSlice } from "./shipsSlice"
+import { fleetsSlice } from "./fleetsSlice"
+
 const noopStorage: WebStorage = {
   getItem: () => Promise.resolve(null),
   setItem: () => Promise.resolve(),
@@ -28,6 +32,10 @@ const combinedReducer = combineReducers({
   gearList: gearListSlice.reducer,
   shipList: shipListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
+
+  gears: gearsSlice.reducer,
+  ships: shipsSlice.reducer,
+  fleets: fleetsSlice.reducer,
 })
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {

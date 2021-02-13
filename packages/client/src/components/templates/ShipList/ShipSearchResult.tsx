@@ -1,15 +1,15 @@
 import React from "react"
 import styled from "@emotion/styled"
-import { ShipBase, ShipState } from "@fleethub/core"
+import { Ship } from "@fleethub/sim"
 
 import { Typography } from "@material-ui/core"
 
-import { Divider } from "../../../components"
+import { Divider } from "../../atoms"
 
 type Props = {
   searchValue: string
-  ships: ShipBase[]
-  renderShip: (ship: ShipBase) => React.ReactNode
+  ships: Ship[]
+  renderShip: (ship: Ship) => React.ReactNode
 }
 
 const ShipSearchResult: React.FC<Props> = ({ searchValue, ships, renderShip }) => {

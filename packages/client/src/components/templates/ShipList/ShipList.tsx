@@ -1,35 +1,38 @@
 import React, { useState } from "react"
-import { ShipBase, ShipState } from "@fleethub/core"
+import { Ship } from "@fleethub/sim"
 import { ShipClass, uniq } from "@fleethub/utils"
 
-import { Divider, SearchInput } from "../../../components"
+import { Divider } from "../../atoms"
+import { SearchInput } from "../../organisms"
 
 import FilterBar from "./FilterBar"
 import ShipButton from "./ShipButton"
 import { useShipListState } from "./useShipListState"
 import searchShip from "./searchShip"
 import ShipSearchResult from "./ShipSearchResult"
+import { useFhSim } from "../../../hooks"
 
-const toShipClassEntries = (ships: ShipBase[]): Array<[ShipClass, ShipBase[]]> => {
-  const shipClasses = uniq(ships.map((ship) => ship.shipClass))
-  return shipClasses.map((shipClass) => [shipClass, ships.filter((ship) => ship.shipClass === shipClass)])
+const toShipClassEntries = (ships: Ship[]): Array<[number, Ship[]]> => {
+  const shipClasses = uniq(ships.map((ship) => ship.ship_class))
+  return shipClasses.map((shipClass) => [shipClass, ships.filter((ship) => ship.ship_class === shipClass)])
 }
 
 type Props = {
   abyssal?: boolean
-  onSelect?: (ship: ShipState) => void
+  onSelect?: (ship: Ship) => void
 }
 
 const ShipList: React.FC<Props> = ({ onSelect }) => {
   const { state, update, masterShips, visibleShips } = useShipListState()
   const [searchValue, setSearchValue] = useState("")
+  const { findShipClassName } = useFhSim()
 
   const shipClassEntries = toShipClassEntries(visibleShips)
 
   const searchResult = searchValue && searchShip(masterShips, searchValue)
 
-  const renderShip = (ship: ShipBase) => (
-    <ShipButton key={`ship-${ship.shipId}`} ship={ship} onClick={() => onSelect?.({ shipId: ship.shipId })} />
+  const renderShip = (ship: Ship) => (
+    <ShipButton key={`ship-${ship.ship_id}`} ship={ship} onClick={() => onSelect?.(ship)} />
   )
 
   return (
@@ -41,7 +44,7 @@ const ShipList: React.FC<Props> = ({ onSelect }) => {
       ) : (
         shipClassEntries.map(([shipClass, ships]) => (
           <React.Fragment key={`shipClass-${shipClass}`}>
-            <Divider label={shipClass} />
+            <Divider label={findShipClassName(shipClass)} />
             {ships.map(renderShip)}
           </React.Fragment>
         ))

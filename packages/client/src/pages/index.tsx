@@ -1,17 +1,37 @@
 import React from "react"
 import Head from "next/head"
+import dynamic from "next/dynamic"
 import type { NextComponentType } from "next"
-
+import { useDispatch, useSelector } from "react-redux"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 
-import { AppContent } from "../components"
 import { StoreProvider } from "../store"
+import { FhCoreContext } from "../hooks"
+
+import AppContent from "../components/templates/AppContent"
+
+import master_data from "@fleethub/utils/master_data"
+
+const loader = import("@fleethub/sim/pkg").then((mod) => {
+  const factory = new mod.Factory(master_data)
+  const value = { master_data, factory }
+
+  const App: React.FC = () => (
+    <FhCoreContext.Provider value={value}>
+      <AppContent />
+    </FhCoreContext.Provider>
+  )
+
+  return App
+})
+
+const App = dynamic(loader, { ssr: false })
 
 const Inner = React.memo(() => (
   <DndProvider backend={HTML5Backend}>
     <StoreProvider>
-      <AppContent />
+      <App />
     </StoreProvider>
   </DndProvider>
 ))
@@ -29,7 +49,6 @@ const Index: NextComponentType = () => {
         <meta name="twitter:creator" content="@MadonoHaru" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <Inner />
     </div>
   )

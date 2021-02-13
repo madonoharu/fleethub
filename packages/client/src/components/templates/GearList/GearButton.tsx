@@ -1,23 +1,24 @@
 import React from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
-import { GearBase, EquipmentBonuses } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
+import { EquipmentBonuses } from "equipment-bonus"
 
 import { Button } from "@material-ui/core"
 
-import { GearNameplate, GearTooltip } from "../../../components"
+import { GearNameplate, GearTooltip } from "../../organisms"
 
 type Props = {
-  gear: GearBase
+  gear: Gear
   onClick?: () => void
-  bonuses?: EquipmentBonuses
+  ebonuses?: EquipmentBonuses
 }
 
-const GearButton: React.FCX<Props> = ({ className, gear, onClick, bonuses }) => {
+const GearButton: React.FCX<Props> = ({ className, gear, onClick, ebonuses }) => {
   return (
-    <GearTooltip gear={gear} bonuses={bonuses} enterDelay={300} enterNextDelay={300}>
+    <GearTooltip gear={gear} ebonuses={ebonuses} enterDelay={300} enterNextDelay={300}>
       <Button className={className} onClick={onClick}>
-        <GearNameplate name={gear.name} iconId={gear.iconId} />
+        <GearNameplate name={gear.name} iconId={gear.icon_id} />
       </Button>
     </GearTooltip>
   )
@@ -26,10 +27,10 @@ const GearButton: React.FCX<Props> = ({ className, gear, onClick, bonuses }) => 
 const hasBonus = (bonuses?: EquipmentBonuses) => bonuses && Object.values(bonuses).some((value) => value !== 0)
 
 export default styled(GearButton)(
-  ({ theme, bonuses }) => css`
+  ({ theme, ebonuses }) => css`
     justify-content: flex-start;
     height: 36px;
-    ${hasBonus(bonuses) &&
+    ${hasBonus(ebonuses) &&
     css`
       box-sizing: border-box;
       border: 1px solid ${theme.colors.bonus};

@@ -1,13 +1,16 @@
 import React from "react"
 import styled from "@emotion/styled"
 import { GearCategory, GearCategoryName } from "@fleethub/data"
-import { GearBase } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
 
 import { Button, Tooltip } from "@material-ui/core"
 
-import { GearNameplate, GearTooltip, Divider, StatIcon, Text, Flexbox } from "../../../components"
-import { toStatEntries } from "../../organisms/GearTooltip/GearStatList"
 import { StatKeyDictionary } from "../../../utils"
+
+import { Divider, Text, Flexbox } from "../../atoms"
+import { StatIcon } from "../../molecules"
+import { GearNameplate, GearTooltip } from "../../organisms"
+import { toStatEntries } from "../../organisms/GearTooltip/GearStatList"
 
 const Margin = styled(Flexbox)`
   margin-left: 8px;
@@ -17,7 +20,7 @@ const Margin = styled(Flexbox)`
   }
 `
 
-const StatList: React.FC<{ gear: GearBase }> = ({ gear }) => {
+const StatList: React.FC<{ gear: Gear }> = ({ gear }) => {
   const entries = toStatEntries(gear)
   return (
     <Margin>
@@ -42,13 +45,13 @@ const Container = styled.div`
   }
 `
 
-let GearButton: React.FCX<{ gear: GearBase; onClick?: () => void }> = ({ className, gear, onClick }) => {
+let GearButton: React.FCX<{ gear: Gear; onClick?: () => void }> = ({ className, gear, onClick }) => {
   return (
     <Button className={className} onClick={onClick}>
       <Container>
         <GearTooltip gear={gear}>
           <div>
-            <GearNameplate name={gear.name} iconId={gear.iconId} />
+            <GearNameplate name={gear.name} iconId={gear.icon_id} />
           </div>
         </GearTooltip>
         <StatList gear={gear} />
@@ -64,7 +67,7 @@ GearButton = styled(GearButton)`
 
 type Props = {
   category: GearCategory
-  gears: GearBase[]
+  gears: Gear[]
   onSelect?: (gearId: number) => void
 }
 
@@ -73,7 +76,7 @@ const CategoryContainer: React.FCX<Props> = ({ className, category, gears, onSel
     <div className={className}>
       <Divider label={GearCategoryName[category]} />
       {gears.map((gear) => (
-        <GearButton key={`gear-${gear.gearId}`} gear={gear} onClick={() => onSelect && onSelect(gear.gearId)} />
+        <GearButton key={`gear-${gear.gear_id}`} gear={gear} onClick={() => onSelect && onSelect(gear.gear_id)} />
       ))}
     </div>
   )

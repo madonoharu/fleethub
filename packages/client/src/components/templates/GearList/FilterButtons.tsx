@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "@emotion/styled"
 
-import { SelectButtons } from "../../../components"
+import { SelectButtons } from "../../molecules"
 
 import FilterIcon from "./FilterIcon"
 
