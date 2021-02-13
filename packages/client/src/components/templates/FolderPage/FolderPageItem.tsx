@@ -4,7 +4,7 @@ import styled from "@emotion/styled"
 import { Typography, ListItem, ListItemIcon, ListItemText } from "@material-ui/core"
 
 import { FileEntity, FolderEntity, PlanFileEntity } from "../../../store"
-import { useFile, useFhPlan, useModal } from "../../../hooks"
+import { useFile, useModal } from "../../../hooks"
 
 import { ShipBanner, CopyButton, RemoveButton, MoreVertButton } from "../../molecules"
 import { Flexbox, PlanIcon, FolderIcon } from "../../atoms"
@@ -27,34 +27,33 @@ const FileAction = styled(Flexbox)`
 `
 
 const PlanItem: React.FC<{ file: PlanFileEntity }> = ({ file }) => {
-  const plan = useFhPlan(file.id)
-  if (!plan) return null
+  return null
 
-  return (
-    <>
-      <ListItemIcon>
-        <PlanIcon />
-      </ListItemIcon>
-      <ListItemText
-        disableTypography
-        primary={<FileItemPrimary file={file} />}
-        secondary={
-          <ShipsContainer>
-            <div>
-              {plan.main.ships.map((ship, index) => (
-                <ShipBanner key={index} publicId={ship.banner} />
-              ))}
-            </div>
-            <div>
-              {plan.escort?.ships.map((ship, index) => (
-                <ShipBanner key={index} publicId={ship.banner} />
-              ))}
-            </div>
-          </ShipsContainer>
-        }
-      />
-    </>
-  )
+  // return (
+  //   <>
+  //     <ListItemIcon>
+  //       <PlanIcon />
+  //     </ListItemIcon>
+  //     <ListItemText
+  //       disableTypography
+  //       primary={<FileItemPrimary file={file} />}
+  //       secondary={
+  //         <ShipsContainer>
+  //           <div>
+  //             {plan.main.ships.map((ship, index) => (
+  //               <ShipBanner key={index} publicId={ship.banner} />
+  //             ))}
+  //           </div>
+  //           <div>
+  //             {plan.escort?.ships.map((ship, index) => (
+  //               <ShipBanner key={index} publicId={ship.banner} />
+  //             ))}
+  //           </div>
+  //         </ShipsContainer>
+  //       }
+  //     />
+  //   </>
+  // )
 }
 
 const FolderItem: React.FC<{ file: FolderEntity }> = ({ file }) => {

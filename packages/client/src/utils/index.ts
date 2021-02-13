@@ -15,8 +15,7 @@ export const toPercent = (value: number, fractionDigits = 1) => (value * 100).to
 export const createShallowEqualSelector = createSelectorCreator(defaultMemoize, shallowEqual)
 
 export * from "./FhDictionary"
-export * from "./gkcoi"
-export * from "./link"
 export * from "./publish"
 export * from "./cloudinary"
 export { default as batch } from "./batch"
+export * from "./ebonuses"

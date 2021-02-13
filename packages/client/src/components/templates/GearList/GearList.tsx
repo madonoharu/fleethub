@@ -1,8 +1,11 @@
 import React, { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { GearState, GearBase, EquipmentBonuses, Gear } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
+import master_data from "@fleethub/utils/master_data"
+import { isNonNullable } from "@fleethub/utils"
+import { EquipmentBonuses } from "equipment-bonus"
 
-import { useFhSystem } from "../../../hooks"
+import { useFhSim } from "../../../hooks"
 import { gearListSlice, selectGearListState } from "../../../store"
 
 import { SearchInput } from "../../organisms"
@@ -15,15 +18,15 @@ import GearSearchResult from "./GearSearchResult"
 import searchGears from "./searchGears"
 import { Flexbox } from "../../atoms"
 
-const createCategoryGearEntries = (gears: GearBase[]) => {
-  const map = new Map<number, GearBase[]>()
+const createCategoryGearEntries = (gears: Gear[]) => {
+  const map = new Map<number, Gear[]>()
 
-  const setGear = (gear: GearBase) => {
-    const list = map.get(gear.categoryId)
+  const setGear = (gear: Gear) => {
+    const list = map.get(gear.category)
     if (list) {
       list.push(gear)
     } else {
-      map.set(gear.categoryId, [gear])
+      map.set(gear.category, [gear])
     }
   }
 
@@ -38,16 +41,22 @@ const getDefaultFilterKey = (keys: string[]) => {
 }
 
 type GearListProps = {
-  canEquip?: (gear: GearBase) => boolean
-  getBonuses?: (gear: GearBase) => EquipmentBonuses
+  canEquip?: (gear: Gear) => boolean
   onSelect?: (gear: Gear) => void
+  getNextEbonuses?: (gear: Gear) => EquipmentBonuses
 }
 
 const useGearListState = () => {
-  const { masterGears, createGear } = useFhSystem()
+  const { createGear } = useFhSim()
 
   const dispatch = useDispatch()
   const state = useSelector(selectGearListState)
+
+  const gears = useMemo(
+    () => master_data.gears.map((mg) => createGear({ gear_id: mg.gear_id })).filter(isNonNullable),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
 
   const actions = useMemo(() => {
     const update = (...args: Parameters<typeof gearListSlice.actions.update>) =>
@@ -59,35 +68,26 @@ const useGearListState = () => {
     return { update, setAbyssal, setGroup }
   }, [dispatch])
 
-  return { masterGears, ...state, createGear, actions }
+  return { gears, ...state, createGear, actions }
 }
 
-const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) => {
-  const { masterGears, abyssal, group, actions, createGear } = useGearListState()
+const GearList: React.FC<GearListProps> = ({ canEquip, onSelect, getNextEbonuses }) => {
+  const { gears, abyssal, group, actions, createGear } = useGearListState()
 
   const [searchValue, setSearchValue] = useState("")
 
-  const handleSelect = (base: GearBase) => {
-    if (!onSelect) return
-    const state: GearState = { gearId: base.gearId }
-    if (base.hasProficiency && !base.categoryIn("LbRecon")) {
-      state.exp = 100
-    }
-
-    const gear = createGear(state)
-    gear && onSelect(gear)
-  }
+  const handleSelect = (gear: Gear) => onSelect?.(gear)
 
   const { equippableGears, visibleGroups } = React.useMemo(() => {
-    const equippableGears = masterGears.filter((gear) => {
-      if (abyssal !== gear.isAbyssal) return false
+    const equippableGears = gears.filter((gear) => {
+      if (abyssal !== gear.gear_id >= 500) return false
       return !canEquip || canEquip(gear)
     })
 
     const visibleGroups = getVisibleGroups(equippableGears)
 
     return { equippableGears, visibleGroups }
-  }, [masterGears, abyssal, canEquip])
+  }, [gears, abyssal, canEquip])
 
   const currentGroup = visibleGroups.includes(group) ? group : getDefaultFilterKey(visibleGroups)
   const groupFilter = getFilter(currentGroup)
@@ -120,14 +120,9 @@ const GearList: React.FC<GearListProps> = ({ canEquip, getBonuses, onSelect }) =
         onGroupChange={actions.setGroup}
       />
       {searchResult ? (
-        <GearSearchResult
-          searchValue={searchValue}
-          gears={searchResult}
-          onSelect={handleSelect}
-          getBonuses={getBonuses}
-        />
+        <GearSearchResult searchValue={searchValue} gears={searchResult} onSelect={handleSelect} />
       ) : (
-        <CategoryContainer entries={entries} onSelect={handleSelect} getBonuses={getBonuses} />
+        <CategoryContainer entries={entries} onSelect={handleSelect} getNextEbonuses={getNextEbonuses} />
       )}
     </div>
   )

@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "@emotion/styled"
-import { GearBase, EquipmentBonuses } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
 
 import { Typography } from "@material-ui/core"
 
@@ -13,12 +13,11 @@ const Grid = styled.div`
 
 type Props = {
   searchValue: string
-  gears: GearBase[]
-  onSelect?: (gear: GearBase) => void
-  getBonuses?: (gear: GearBase) => EquipmentBonuses
+  gears: Gear[]
+  onSelect?: (gear: Gear) => void
 }
 
-const GearSearchResult: React.FC<Props> = ({ searchValue, gears, onSelect, getBonuses }) => {
+const GearSearchResult: React.FC<Props> = ({ searchValue, gears, onSelect }) => {
   const text = (
     <Typography>
       &quot;{searchValue}&quot;の検索結果 {gears.length === 0 && "見つかりませんでした"}
@@ -29,12 +28,7 @@ const GearSearchResult: React.FC<Props> = ({ searchValue, gears, onSelect, getBo
       {text}
       <Grid>
         {gears.map((gear) => (
-          <GearButton
-            key={`gear-${gear.gearId}`}
-            gear={gear}
-            onClick={() => onSelect && onSelect(gear)}
-            bonuses={getBonuses && getBonuses(gear)}
-          />
+          <GearButton key={`gear-${gear.gear_id}`} gear={gear} onClick={() => onSelect && onSelect(gear)} />
         ))}
       </Grid>
     </div>

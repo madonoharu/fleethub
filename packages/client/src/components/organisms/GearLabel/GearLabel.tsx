@@ -1,16 +1,18 @@
 import React from "react"
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
-import { Gear, GearState } from "@fleethub/core"
+import { Gear } from "@fleethub/sim"
 
-import { Flexbox, GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../../components"
-import { Update } from "../../../utils"
+import { Flexbox } from "../../atoms"
+import { GearStarsSelect, GearExpSelect, UpdateButton, ClearButton } from "../../molecules"
 
-import GearTooltip from "../GearTooltip"
 import GearNameplate from "../GearNameplate"
+import GearTooltip from "../GearTooltip"
+import { GearState } from "../../../store"
 
 const GearLabelAction = styled.div`
   display: flex;
+  align-items: center;
   margin-left: auto;
 `
 
@@ -18,7 +20,7 @@ type Props = {
   gear: Gear
   equippable?: boolean
 
-  update?: Update<GearState>
+  onUpdate?: (changes: Partial<GearState>) => void
   onRemove?: () => void
   onReselect?: () => void
 }
@@ -38,31 +40,23 @@ const GearLabel: React.FCX<Props> = ({
   gear,
   equippable = true,
 
-  update,
+  onUpdate,
   onRemove,
   onReselect,
 }) => {
-  const { handleStarsChange, handleExpChange } = React.useMemo(() => {
-    if (!update) return {}
+  const hanldeExpChange = (exp: number) => {
+    onUpdate?.({ exp })
+  }
 
-    const handleStarsChange = (stars: number) =>
-      update((draft) => {
-        draft.stars = stars
-      })
-
-    const handleExpChange = (exp: number) =>
-      update((draft) => {
-        draft.exp = exp
-      })
-
-    return { handleStarsChange, handleExpChange }
-  }, [update])
+  const handleStarsChange = (stars: number) => {
+    onUpdate?.({ stars })
+  }
 
   return (
     <Flexbox className={className}>
       <GearTooltip gear={gear}>
         <div>
-          <GearNameplate size="small" equippable={equippable} iconId={gear.iconId} name={gear.name} />
+          <GearNameplate size="small" equippable={equippable} iconId={gear.icon_id} name={gear.name} />
         </div>
       </GearTooltip>
 
@@ -70,7 +64,7 @@ const GearLabel: React.FCX<Props> = ({
       <ClearButton css={styles.action} title="削除" size="tiny" onClick={onRemove} />
 
       <GearLabelAction>
-        {gear.hasProficiency && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}
+        <GearExpSelect exp={gear.exp} onChange={hanldeExpChange} />
         <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
       </GearLabelAction>
     </Flexbox>

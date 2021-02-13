@@ -1,15 +1,15 @@
 import { Factory, Fleet, Gear, Ship } from "@fleethub/sim"
 import { EntityId } from "@reduxjs/toolkit"
-import { createContext, useContext, useCallback, useMemo } from "react"
-import { DefaultRootState, shallowEqual, useSelector } from "react-redux"
+import { createContext, useContext, useMemo } from "react"
+import { DefaultRootState, useSelector } from "react-redux"
 import { createSelector } from "reselect"
 import { createCachedSelector, createStructuredCachedSelector } from "re-reselect"
-import { Dict, mapValues, MasterData } from "@fleethub/utils"
+import { mapValues, GEAR_KEYS, MasterData, GearState, Role, ShipState, FleetState } from "@fleethub/utils"
 
-import { GearKey, gearsSelectors, GearState, GEAR_KEYS, Role, ShipEntity, shipsSelectors } from "../store"
+import { gearsSelectors, shipsSelectors } from "../store"
 import { createShallowEqualSelector } from "../utils"
 
-import { selectFleet, ShipKey } from "../store/fleetsSlice"
+import { selectFleet } from "../store/fleetsSlice"
 
 export type FhCoreState = {
   master_data: MasterData
@@ -28,23 +28,6 @@ const selectGearState = createCachedSelector(
   gearsSelectors.selectById,
   (entity) => entity
 )({ keySelector: (_, id) => id })
-
-createStructuredCachedSelector({
-  g1: gearsSelectors.selectById,
-  g2: gearsSelectors.selectById,
-})({
-  keySelector: (_, id) => id,
-})
-
-type ShipState = Omit<ShipEntity, GearKey> & Partial<Record<GearKey, GearState>>
-type ShipArrayState = Dict<ShipKey, ShipState>
-
-type FleetState = {
-  main: ShipArrayState
-  escort: ShipArrayState
-  route_sup: ShipArrayState
-  boss_sup: ShipArrayState
-}
 
 export const selectShipState = createCachedSelector(
   (root: DefaultRootState, id: EntityId): ShipState | undefined => {

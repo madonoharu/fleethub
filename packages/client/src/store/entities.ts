@@ -1,13 +1,14 @@
 import { AppThunk, combineReducers } from "@reduxjs/toolkit"
 import { isNonNullable } from "@fleethub/utils"
 
-import { fetchUrlData } from "../utils"
-
 import { filesSelectors, flatFile, isDirectory, filesSlice, selectTempIds } from "./filesSlice"
 import { plansSlice } from "./plansSlice"
 import { selectEntitiesState } from "./selectors"
 import { ignoreUndoable } from "./undoableOptions"
 import { FilesData, cloneFilesData } from "./filesData"
+
+// eslint-disable-next-line @typescript-eslint/require-await
+const fetchUrlData = async (url: URL) => undefined
 
 export const entitiesReducer = combineReducers({
   files: filesSlice.reducer,
@@ -58,7 +59,7 @@ export const fetchLocationData = (): AppThunk => async (dispatch) => {
   history.replaceState("", "", url.href)
   if (!data) return
 
-  ignoreUndoable(() => {
-    dispatch(filesSlice.actions.add({ data, to: "temp" }))
-  })
+  // ignoreUndoable(() => {
+  //   dispatch(filesSlice.actions.add({ data, to: "temp" }))
+  // })
 }

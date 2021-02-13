@@ -6,7 +6,7 @@ import { Drawer } from "@material-ui/core"
 
 import FileTreeView from "../FileTreeView"
 
-const appBarHeight = 32
+const appBarHeight = 40
 const drawerWidth = 8 * 40
 
 const StyledDrawer = styled(Drawer)`
@@ -20,7 +20,7 @@ const Container = styled.div<{ $open?: boolean }>(
   ({ theme, $open }) => css`
     transition: ${theme.transitions.create("margin")};
 
-    height: calc(100vh - ${appBarHeight}px);
+    height: calc(100vh - ${appBarHeight}px) !important;
     overflow: scroll;
 
     ${$open &&

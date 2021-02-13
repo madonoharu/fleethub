@@ -1,17 +1,13 @@
 import React from "react"
-import { fhSystem } from "@fleethub/core"
 
-import { GearIcon } from "../../../components"
-import { GearCategory } from "@fleethub/data"
+import { GearIcon } from "../../molecules"
 
 type Props = {
-  category: GearCategory
+  category: number
 }
 
 const CategoryIcon: React.FCX<Props> = ({ className, category }) => {
-  const iconId = fhSystem.categoryIconIdMap.get(category)
-  if (!iconId) return null
-  return <GearIcon className={className} iconId={iconId} />
+  return <GearIcon className={className} iconId={1} />
 }
 
 export default CategoryIcon

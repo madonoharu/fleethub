@@ -9,14 +9,14 @@ import UndoIcon from "@material-ui/icons/Undo"
 import RedoIcon from "@material-ui/icons/Redo"
 import MenuIcon from "@material-ui/icons/Menu"
 
-import { withIconButton, GithubIcon, ImportButton, ImportMenu } from "../../../components"
 import { useModal } from "../../../hooks"
 
-import ShipList from "../ShipList"
-import GearList from "../GearList"
-import MapList from "../MapList"
+import { GithubIcon } from "../../atoms"
+import { withIconButton, ImportButton } from "../../molecules"
+import { ImportMenu } from "../../organisms"
 
 import LanguageSelect from "./LanguageSelect"
+import GearList from "../GearList"
 
 const UndoButton = withIconButton(UndoIcon)
 const RedoButton = withIconButton(RedoIcon)
@@ -88,15 +88,9 @@ const AppBar: React.FCX<Props> = ({ explorerOpen, onExplorerOpen, className }) =
           <ImportMenu onClose={ImprotMenuModal.hide} />
         </ImprotMenuModal>
 
-        <ShipListModal full>
-          <ShipList />
-        </ShipListModal>
         <GearListModal full>
           <GearList />
         </GearListModal>
-        <MapListModal full>
-          <MapList />
-        </MapListModal>
       </div>
     </MuiAppBar>
   )

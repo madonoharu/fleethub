@@ -1,13 +1,11 @@
 import React from "react"
-import { getDeck4 } from "@fleethub/core"
 import styled from "@emotion/styled"
 
 import { Link, Button } from "@material-ui/core"
 import OpenInNewIcon from "@material-ui/icons/OpenInNew"
 import LinkIcon from "@material-ui/icons/Link"
 
-import { openKctools, openDeckbuilder } from "../../../utils"
-import { useAsyncOnPublish, useFhPlan } from "../../../hooks"
+import { useAsyncOnPublish } from "../../../hooks"
 
 import { CopyTextButton, TextField } from "../../molecules"
 import { KctoolsIcon, Divider } from "../../atoms"
@@ -28,14 +26,13 @@ type Props = {
 }
 
 const PlanMenu: React.FCX<Props> = ({ className, id }) => {
-  const plan = useFhPlan(id)
-
   const { asyncOnPublish, Snackbar } = useAsyncOnPublish(id)
   const url = asyncOnPublish.result
 
-  if (!plan) return null
-
-  const predeck = JSON.stringify(getDeck4(plan))
+  // 未実装
+  const predeck = ""
+  const openKctools = () => null
+  const openDeckbuilder = () => null
 
   return (
     <div className={className}>
@@ -51,11 +48,11 @@ const PlanMenu: React.FCX<Props> = ({ className, id }) => {
           </Link>
         )}
 
-        <StyledButton startIcon={<KctoolsIcon />} onClick={() => openKctools(plan)}>
+        <StyledButton startIcon={<KctoolsIcon />} onClick={() => openKctools()}>
           制空権シミュレーターで開く
         </StyledButton>
 
-        <StyledButton startIcon={<OpenInNewIcon />} onClick={() => openDeckbuilder(plan)}>
+        <StyledButton startIcon={<OpenInNewIcon />} onClick={() => openDeckbuilder()}>
           デッキビルダーで開く
         </StyledButton>
 

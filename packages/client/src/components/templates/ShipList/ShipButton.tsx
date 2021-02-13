@@ -1,20 +1,20 @@
 import React from "react"
 import styled from "@emotion/styled"
-import { ShipBase } from "@fleethub/core"
+import { Ship } from "@fleethub/sim"
 
 import { Button } from "@material-ui/core"
 
 import ShipNameplate from "./ShipNameplate"
 
 type Props = {
-  ship: ShipBase
+  ship: Ship
   onClick?: () => void
 }
 
 const ShipButton: React.FCX<Props> = ({ className, ship, onClick }) => {
   return (
     <Button className={className} onClick={onClick}>
-      <ShipNameplate shipId={ship.shipId} banner={ship.banner} name={ship.name} />
+      <ShipNameplate shipId={ship.ship_id} banner={ship.banner} name={ship.name} />
     </Button>
   )
 }

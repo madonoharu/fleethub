@@ -7,7 +7,7 @@ import { useModal } from "../../../hooks"
 import { Update } from "../../../utils"
 
 import SlotSizeButton from "./SlotSizeButton"
-import AddGearButton from "./AddGearButton"
+import AddGearButton from "../GearBox/AddGearButton"
 import Swappable from "../Swappable"
 
 const isLargeFlyingBoat = (id: number) => [138, 178].includes(id)

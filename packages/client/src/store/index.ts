@@ -13,4 +13,8 @@ export * from "./selectors"
 export * from "./filesData"
 export * from "./undoableOptions"
 
+export * from "./gearsSlice"
+export * from "./shipsSlice"
+export * from "./fleetsSlice"
+
 export { default as StoreProvider } from "./StoreProvider"

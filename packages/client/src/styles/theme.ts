@@ -154,20 +154,20 @@ const isFirefox = process.browser && window.navigator.userAgent.includes("Firefo
 
 const acrylic = isFirefox
   ? css`
-      background: rgba(60, 60, 70, 0.95);
+      background: rgba(60, 60, 70, 0.95) !important;
     `
   : css`
-      background: rgba(60, 60, 70, 0.6);
-      backdrop-filter: blur(8px);
+      background: rgba(60, 60, 70, 0.6) !important;
+      backdrop-filter: blur(8px) !important;
     `
 
 const darkAcrylic = isFirefox
   ? css`
-      background: rgba(30, 30, 35, 0.98);
+      background: rgba(30, 30, 35, 0.98) !important;
     `
   : css`
-      background: rgba(30, 30, 35, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(30, 30, 35, 0.85) !important;
+      backdrop-filter: blur(8px) !important;
     `
 
 const swappable = css`
