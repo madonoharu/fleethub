@@ -1,11 +1,12 @@
-use counter::Counter;
-use num_traits::Zero;
 use std::{
     collections::{hash_map, HashMap},
     hash::Hash,
     iter::FromIterator,
     ops::{Add, AddAssign, Mul},
 };
+
+use counter::Counter;
+use num_traits::Zero;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct NumMap<K, V>
@@ -19,7 +20,7 @@ where
 impl<K, V> NumMap<K, V>
 where
     K: Hash + Eq,
-    V: Clone + Zero,
+    V: Zero,
 {
     pub fn new() -> Self {
         HashMap::new().into()
@@ -76,7 +77,7 @@ where
 impl<K, V, const N: usize> From<[(K, V); N]> for NumMap<K, V>
 where
     K: Hash + Eq + Clone,
-    V: Clone + Zero,
+    V: Zero + Clone,
 {
     fn from(array: [(K, V); N]) -> Self {
         array.iter().cloned().collect()
@@ -85,30 +86,40 @@ where
 
 impl<K> From<Counter<K>> for NumMap<K, usize>
 where
-    K: Hash + Eq + Clone,
+    K: Hash + Eq,
 {
     fn from(counter: Counter<K>) -> Self {
         counter.into_map().into()
     }
 }
 
+impl<K, V> AddAssign<(K, V)> for NumMap<K, V>
+where
+    K: Hash + Eq,
+    V: AddAssign + Zero,
+{
+    fn add_assign(&mut self, (key, value): (K, V)) {
+        let entry = self.entry(key).or_insert_with(V::zero);
+        *entry += value;
+    }
+}
+
 impl<K, V> AddAssign for NumMap<K, V>
 where
-    K: Hash + Eq + Clone,
-    V: AddAssign + Clone + Zero,
+    K: Hash + Eq,
+    V: AddAssign + Zero,
 {
     fn add_assign(&mut self, rhs: Self) {
-        for (key, value) in rhs.map.iter() {
-            let entry = self.entry(key.clone()).or_insert_with(V::zero);
-            *entry += value.clone();
+        for item in rhs.map.into_iter() {
+            self.add_assign(item)
         }
     }
 }
 
 impl<K, V> Add for NumMap<K, V>
 where
-    K: Hash + Eq + Clone,
-    V: AddAssign + Clone + Zero,
+    K: Hash + Eq,
+    V: AddAssign + Zero,
 {
     type Output = Self;
 
