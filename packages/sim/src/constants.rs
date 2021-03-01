@@ -15,7 +15,7 @@ macro_rules! impl_default {
 }
 
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
+#[derive(Debug, EnumSetType, FromPrimitive)]
 pub enum GearCategory {
     Unknown = 0,
     SmallCaliberMainGun = 1,
@@ -113,7 +113,7 @@ pub enum GearAttr {
 }
 
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
+#[derive(Debug, EnumSetType, FromPrimitive)]
 pub enum ShipType {
     Unknown = 0,
     DE = 1,
@@ -143,7 +143,7 @@ pub enum ShipType {
 impl_default!(ShipType);
 
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, PartialEq, FromPrimitive)]
+#[derive(Debug, EnumSetType, FromPrimitive)]
 pub enum ShipClass {
     Unknown = 0,
     AyanamiClass = 1,
@@ -282,6 +282,65 @@ impl Default for SpeedGroup {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum DamageState {
+    Sunk,
+    Taiha,
+    Chuuha,
+    Shouha,
+    Normal,
+}
+
+impl DamageState {
+    pub fn from_hp(max_hp: i32, current_hp: i32) -> Self {
+        let value = current_hp * 4;
+
+        if value == 0 {
+            Self::Sunk
+        } else if value <= max_hp {
+            Self::Taiha
+        } else if value <= max_hp * 2 {
+            Self::Chuuha
+        } else if value <= max_hp * 3 {
+            Self::Shouha
+        } else {
+            Self::Normal
+        }
+    }
+}
+
+#[derive(Debug, EnumSetType)]
+pub enum ShellingAttackType {
+    Normal,
+
+    MainMain,
+    MainApShell,
+    MainRader,
+    MainSecond,
+    DoubleAttack,
+
+    FBA,
+    BBA,
+    BA,
+
+    Zuiun,
+    Suisei,
+}
+
+#[derive(Debug, EnumSetType)]
+pub enum AirState {
+    /** 制空確保 */
+    AirSupremacy,
+    /** 制空優勢 */
+    AirSuperiority,
+    /** 制空均衡 */
+    AirParity,
+    /** 制空劣勢 */
+    AirDenial,
+    /** 制空喪失 */
+    AirIncapability,
+}
+
 #[cfg(test)]
 mod test {
 
@@ -312,5 +371,42 @@ mod test {
             GearAttr::from_str("HighAngleMount").unwrap(),
             GearAttr::HighAngleMount
         );
+    }
+
+    #[test]
+    fn test_ship_type() {
+        println!("{:?}", ShipType::DD | ShipType::DE & ShipType::DD)
+    }
+
+    #[test]
+    fn test_damage_state() {
+        use DamageState::*;
+
+        let mut vec: Vec<DamageState> = vec![Normal, Chuuha, Shouha, Sunk, Taiha];
+        vec.sort();
+        assert_eq!(vec, vec![Sunk, Taiha, Chuuha, Shouha, Normal]);
+
+        let table = [
+            (99, 0, Sunk),
+            (99, 24, Taiha),
+            (99, 25, Chuuha),
+            (99, 49, Chuuha),
+            (99, 50, Shouha),
+            (99, 74, Shouha),
+            (99, 75, Normal),
+            (99, 99, Normal),
+            (12, 0, Sunk),
+            (12, 3, Taiha),
+            (12, 4, Chuuha),
+            (12, 6, Chuuha),
+            (12, 7, Shouha),
+            (12, 9, Shouha),
+            (12, 10, Normal),
+            (12, 12, Normal),
+        ];
+
+        for &(max_hp, current_hp, expected) in table.iter() {
+            assert_eq!(DamageState::from_hp(max_hp, current_hp), expected);
+        }
     }
 }
