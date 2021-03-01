@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use counter::Counter;
 
-use crate::utils::{NumMap, RandomRange};
+use crate::utils::NumMap;
 
 pub trait ToDistribution<T: Hash + Eq> {
     fn to_distribution(self) -> NumMap<T, f64>;
