@@ -17,6 +17,7 @@ where
     zero: V,
 }
 
+#[allow(dead_code)]
 impl<K, V> NumMap<K, V>
 where
     K: Hash + Eq,
