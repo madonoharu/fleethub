@@ -44,4 +44,6 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
   );
 };
 
-export default styled(PlanFileLabel)``;
+export default styled(PlanFileLabel)`
+  position: relative;
+`;

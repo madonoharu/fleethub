@@ -40,7 +40,7 @@ const DraggableFile: React.FCX<DraggableFileProps> = ({
   children,
 }) => {
   const element = (
-    <Container className={className} $type={file.type}>
+    <Container className={className} tabIndex={0} $type={file.type}>
       {children}
     </Container>
   );

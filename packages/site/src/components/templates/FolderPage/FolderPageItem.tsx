@@ -1,21 +1,11 @@
 import styled from "@emotion/styled";
-import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@material-ui/core";
+import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import React from "react";
 
 import { useFile, useModal } from "../../../hooks";
 import { FileEntity, FolderEntity, PlanFileEntity } from "../../../store";
-import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
-import {
-  CopyButton,
-  MoreVertButton,
-  RemoveButton,
-  ShipBanner,
-} from "../../molecules";
+import { Flexbox, FolderIcon } from "../../atoms";
+import { CopyButton, MoreVertButton, RemoveButton } from "../../molecules";
 import { DraggableFile, FileMenu } from "../../organisms";
 import FileItemPrimary from "./FileItemPrimary";
 
@@ -101,9 +91,9 @@ const FolderPageItem = React.forwardRef<HTMLElement, FolderPageItemProps>(
 
     return (
       <>
-        <StyledListItem
+        <ListItem
           className={className}
-          innerRef={ref}
+          buttonRef={ref}
           onClick={onOpen}
           button
           divider
@@ -114,7 +104,7 @@ const FolderPageItem = React.forwardRef<HTMLElement, FolderPageItemProps>(
             <RemoveButton title="削除する" onClick={onRemove} />
             <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
           </FileAction>
-        </StyledListItem>
+        </ListItem>
 
         <MenuModal>
           <FileMenu id={file.id} onClose={MenuModal.hide} />
