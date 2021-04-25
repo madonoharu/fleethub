@@ -1,18 +1,26 @@
 import {
-  MasterDataGear,
-  MasterDataGearCategory,
-  MasterDataAttrRule,
   IBonusType,
   isNonNullable,
+  MasterDataAttrRule,
+  MasterDataGear,
+  MasterDataGearCategory,
   MasterDataIBonuses,
-} from "@fleethub/utils/src"
-import { GoogleSpreadsheetWorksheet, GoogleSpreadsheet, GoogleSpreadsheetRow } from "google-spreadsheet"
-import { Start2 } from "kc-tools"
-import { deleteFalsyValues, updateRows } from "./utils"
+} from "@fleethub/utils/src";
+import {
+  GoogleSpreadsheet,
+  GoogleSpreadsheetRow,
+  GoogleSpreadsheetWorksheet,
+} from "google-spreadsheet";
+import { Start2 } from "kc-tools";
 
-const createGears = (rows: GoogleSpreadsheetRow[], start2: Start2): MasterDataGear[] => {
+import { deleteFalsyValues, updateRows } from "./utils";
+
+const createGears = (
+  rows: GoogleSpreadsheetRow[],
+  start2: Start2
+): MasterDataGear[] => {
   const gears = start2.api_mst_slotitem.map((mst) => {
-    const row = rows.find((row) => Number(row.gear_id) === mst.api_id)
+    const row = rows.find((row) => Number(row.gear_id) === mst.api_id);
 
     const next: MasterDataGear = {
       gear_id: mst.api_id,
@@ -38,22 +46,22 @@ const createGears = (rows: GoogleSpreadsheetRow[], start2: Start2): MasterDataGe
       special_type: Number(row?.special_type),
       adjusted_anti_air_resistance: Number(row?.adjusted_anti_air_resistance),
       fleet_anti_air_resistance: Number(row?.fleet_anti_air_resistance),
-    }
+    };
 
-    deleteFalsyValues(next)
+    deleteFalsyValues(next);
 
-    return next
-  })
+    return next;
+  });
 
-  return gears
-}
+  return gears;
+};
 
 const createGearCategories = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
   start2.api_mst_slotitem_equiptype.map((mst) => ({
     id: mst.api_id,
     name: mst.api_name,
     key: rows.find((row) => Number(row.id) === mst.api_id)?.key || "",
-  }))
+  }));
 
 const makeReplaceGearExpr = (
   gears: MasterDataGear[],
@@ -62,16 +70,25 @@ const makeReplaceGearExpr = (
 ) => {
   const replaceCategory = (str: string) => {
     return gear_categories.reduce(
-      (current, category) => current.replace(`"${category.name}"`, category.id.toString()),
+      (current, category) =>
+        current.replace(`"${category.name}"`, category.id.toString()),
       str
-    )
-  }
+    );
+  };
 
   const replaceName = (str: string) =>
-    gears.reduce((current, gear) => current.replace(`"${gear.name}"`, gear.gear_id.toString()), str)
+    gears.reduce(
+      (current, gear) =>
+        current.replace(`"${gear.name}"`, gear.gear_id.toString()),
+      str
+    );
 
   const replaceAttr = (str: string) =>
-    gear_attrs.reduce((current, attr) => current.replace(RegExp(`\\b${attr.key}\\b`, "g"), attr.expr), str)
+    gear_attrs.reduce(
+      (current, attr) =>
+        current.replace(RegExp(`\\b${attr.key}\\b`, "g"), attr.expr),
+      str
+    );
 
   return (str: string) =>
     replaceAttr(str)
@@ -81,26 +98,26 @@ const makeReplaceGearExpr = (
       .replace(/name_in\(\s*("[^"]+",?\s*)+\)/gs, replaceName)
       .replace(/\bname/g, "gear_id")
       .replace(/\n/g, " ")
-      .replace(/\s{2,}/g, " ")
-}
+      .replace(/\s{2,}/g, " ");
+};
 
 const readGearAttrs = async (
   sheet: GoogleSpreadsheetWorksheet,
   gears: MasterDataGear[],
   gear_categories: MasterDataGearCategory[]
 ) => {
-  const rows = await sheet.getRows()
+  const rows = await sheet.getRows();
 
-  const gear_attrs: MasterDataAttrRule[] = []
-  const replaceExpr = makeReplaceGearExpr(gears, gear_categories, gear_attrs)
+  const gear_attrs: MasterDataAttrRule[] = [];
+  const replaceExpr = makeReplaceGearExpr(gears, gear_categories, gear_attrs);
 
   rows.forEach((row) => {
-    const expr = replaceExpr(row.expr)
-    gear_attrs.push({ key: row.key, name: row.name, expr })
-  })
+    const expr = replaceExpr(row.expr);
+    gear_attrs.push({ key: row.key, name: row.name, expr });
+  });
 
-  return gear_attrs
-}
+  return gear_attrs;
+};
 
 const readIBonuses = async (
   doc: GoogleSpreadsheet,
@@ -124,47 +141,56 @@ const readIBonuses = async (
     adjusted_anti_air: doc.sheetsByTitle["改修加重対空"],
     fleet_anti_air: doc.sheetsByTitle["改修艦隊対空"],
     effective_los: doc.sheetsByTitle["改修マップ索敵"],
-  }
+  };
 
-  const replaceExpr = makeReplaceGearExpr(gears, gear_categories, gear_attrs)
+  const replaceExpr = makeReplaceGearExpr(gears, gear_categories, gear_attrs);
 
   const promises = Object.entries(sheets).map(async ([key, sheet]) => {
-    const rows = await sheet.getRows()
+    const rows = await sheet.getRows();
     const rules = rows
       .map(({ expr, formula }) => {
-        if (!expr || !formula) return undefined
-        return { expr: replaceExpr(expr), formula }
+        if (!expr || !formula) return undefined;
+        return { expr: replaceExpr(expr), formula };
       })
-      .filter(isNonNullable)
+      .filter(isNonNullable);
 
-    return [key, rules]
-  })
+    return [key, rules];
+  });
 
-  const entries = await Promise.all(promises)
-  return Object.fromEntries(entries) as MasterDataIBonuses
-}
+  const entries = await Promise.all(promises);
+  return Object.fromEntries(entries) as MasterDataIBonuses;
+};
 
-export const updateGearData = async (doc: GoogleSpreadsheet, start2: Start2) => {
+export const updateGearData = async (
+  doc: GoogleSpreadsheet,
+  start2: Start2
+) => {
   const sheets = {
     gears: doc.sheetsByTitle["装備"],
     gear_categories: doc.sheetsByTitle["装備カテゴリ"],
     gear_attrs: doc.sheetsByTitle["装備属性"],
-  }
+  };
 
   const [gears, gear_categories] = await Promise.all([
     updateRows(sheets.gears, (rows) => createGears(rows, start2)),
-    updateRows(sheets.gear_categories, (rows) => createGearCategories(rows, start2)),
-  ])
+    updateRows(sheets.gear_categories, (rows) =>
+      createGearCategories(rows, start2)
+    ),
+  ]);
 
-  const gear_attrs = await readGearAttrs(sheets.gear_attrs, gears, gear_categories)
-  const ibonuses = await readIBonuses(doc, gears, gear_categories, gear_attrs)
+  const gear_attrs = await readGearAttrs(
+    sheets.gear_attrs,
+    gears,
+    gear_categories
+  );
+  const ibonuses = await readIBonuses(doc, gears, gear_categories, gear_attrs);
 
   const data = {
     gears,
     gear_categories,
     gear_attrs,
     ibonuses,
-  }
+  };
 
-  return data
-}
+  return data;
+};

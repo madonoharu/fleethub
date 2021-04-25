@@ -1,11 +1,11 @@
-import { capitalize, uncapitalize } from "../src"
+import { capitalize, uncapitalize } from "../src";
 
 describe("utils/string", () => {
   it("capitalize", () => {
-    expect(capitalize("red")).toBe("Red")
-  })
+    expect(capitalize("red")).toBe("Red");
+  });
 
   it("uncapitalize", () => {
-    expect(uncapitalize("SkyBlue")).toBe("skyBlue")
-  })
-})
+    expect(uncapitalize("SkyBlue")).toBe("skyBlue");
+  });
+});
