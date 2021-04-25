@@ -1,10 +1,9 @@
 import styled from "@emotion/styled";
-import { GearCategory, GearCategoryName } from "@fleethub/data";
 import { Gear } from "@fleethub/core";
+import { GearCategory } from "@fleethub/utils";
 import { Button, Tooltip } from "@material-ui/core";
 import React from "react";
 
-import { StatKeyDictionary } from "../../../utils";
 import { Divider, Flexbox, Text } from "../../atoms";
 import { StatIcon } from "../../molecules";
 import { GearNameplate, GearTooltip } from "../../organisms";
@@ -22,8 +21,8 @@ const StatList: React.FC<{ gear: Gear }> = ({ gear }) => {
   const entries = toStatEntries(gear);
   return (
     <Margin>
-      {entries.map(([key, value]) => (
-        <Tooltip key={key} title={StatKeyDictionary[key]}>
+      {entries.map(({ key, value }) => (
+        <Tooltip key={key} title={key}>
           <Margin>
             <StatIcon icon={key} />
             <Text>{value}</Text>
@@ -81,7 +80,7 @@ const CategoryContainer: React.FCX<Props> = ({
 }) => {
   return (
     <div className={className}>
-      <Divider label={GearCategoryName[category]} />
+      <Divider label={category} />
       {gears.map((gear) => (
         <GearButton
           key={`gear-${gear.gear_id}`}

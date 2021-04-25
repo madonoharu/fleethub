@@ -173,6 +173,14 @@ impl Factory {
     pub fn get_gear_ids(&self, _ship: &Ship) -> Vec<i32> {
         self.master_data.gears.iter().map(|g| g.gear_id).collect()
     }
+
+    pub fn find_gear_category_name(&self, id: i32) -> String {
+        self.master_data
+            .gear_categories
+            .iter()
+            .find_map(|c| (c.id == id).then(|| c.name.clone()))
+            .unwrap_or_else(|| format!("category {}", id))
+    }
 }
 
 #[cfg(test)]

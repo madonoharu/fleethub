@@ -2,7 +2,7 @@ import { Ship } from "@fleethub/core";
 import { ShipClass, uniq } from "@fleethub/utils";
 import React, { useState } from "react";
 
-import { useFhSim } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import { Divider } from "../../atoms";
 import { SearchInput } from "../../organisms";
 import FilterBar from "./FilterBar";
@@ -27,7 +27,7 @@ type Props = {
 const ShipList: React.FC<Props> = ({ onSelect }) => {
   const { state, update, masterShips, visibleShips } = useShipListState();
   const [searchValue, setSearchValue] = useState("");
-  const { findShipClassName } = useFhSim();
+  const { findShipClassName } = useFhCore();
 
   const shipClassEntries = toShipClassEntries(visibleShips);
 

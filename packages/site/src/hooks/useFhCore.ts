@@ -65,7 +65,7 @@ export const selectShipState = createCachedSelector(
   selectorCreator: createShallowEqualSelector,
 });
 
-export const useFhSim = () => {
+export const useFhCore = () => {
   const contextValue = useContext(FhCoreContext);
 
   if (!contextValue) {
@@ -89,6 +89,9 @@ export const useFhSim = () => {
   const findShipClassName = (ctype: number) =>
     master_data.ship_classes.find((sc) => sc.id === ctype)?.name || "";
 
+  const findGearCategoryName = (id: number) =>
+    factory.find_gear_category_name(id);
+
   return {
     master_data,
     factory,
@@ -96,11 +99,12 @@ export const useFhSim = () => {
     createShip,
     createFleet,
     findShipClassName,
+    findGearCategoryName,
   };
 };
 
 export const useGear = (id?: EntityId) => {
-  const { createGear } = useFhSim();
+  const { createGear } = useFhCore();
 
   const entity = useSelector((root) => {
     return id ? gearsSelectors.selectById(root, id) : undefined;
@@ -116,7 +120,7 @@ export const useGear = (id?: EntityId) => {
 };
 
 export const useFleet = (id: EntityId) => {
-  const { createFleet } = useFhSim();
+  const { createFleet } = useFhCore();
   const entity = useSelector((root) => selectFleet(root, id));
   const dispatch = useDispatch();
 

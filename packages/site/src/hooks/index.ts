@@ -17,7 +17,7 @@ export * from "./useDrag";
 export * from "./useDragLayerRef";
 export * from "./useDrop";
 export * from "./useFetch";
-export * from "./useFhSim";
+export * from "./useFhCore";
 export * from "./useFile";
 export * from "./useModal";
 export * from "./usePopover";
