@@ -8,6 +8,6 @@
     "source.fixAll.eslint": true
   },
   "rust-analyzer.diagnostics.disabled": ["missing-unsafe"],
-  "rust-analyzer.linkedProjects": ["packages/sim/Cargo.toml"],
+  "rust-analyzer.linkedProjects": ["packages/core/Cargo.toml"],
   "rust-analyzer.lruCapacity": 64
 }
