@@ -28,11 +28,11 @@ const FileTreeView: React.FCX = ({ className }) => {
   const [expanded, setExpanded] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState<string>("");
 
-  const handleToggle = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
+  const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]) => {
     setExpanded(nodeIds);
   };
 
-  const handleSelect = (event: React.ChangeEvent<{}>, id: string) => {
+  const handleSelect = (e: React.SyntheticEvent, id: string) => {
     setSelected(id);
   };
 
