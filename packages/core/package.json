@@ -1,19 +1,15 @@
 {
   "name": "@fleethub/core",
-  "version": "0.0.1",
   "license": "UNLICENSED",
-  "author": "madono (https://github.com/MadonoHaru)",
+  "collaborators": [
+    "まどの <madonoharu@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "main": "pkg",
   "sideEffects": false,
-  "main": "cjs/index.js",
-  "module": "esm/index.js",
   "scripts": {
-    "build": "yarn build:cjs && yarn build:esm",
-    "build:cjs": "tsc -p ./tsconfig.build.json -m commonjs --outDir cjs",
-    "build:esm": "tsc -p ./tsconfig.build.json -m esnext --outDir esm"
-  },
-  "dependencies": {
-    "@fleethub/data": "*",
-    "@fleethub/utils": "*",
-    "equipment-bonus": "6.0.1"
+    "build": "wasm-pack build --out-name index",
+    "test": "cargo test",
+    "coverage": "coverage.sh"
   }
 }

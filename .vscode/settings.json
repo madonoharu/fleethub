@@ -1,13 +1,11 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript,javascriptreact,typescript,typescriptreact,json,yaml]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    }
-  },
   "[rust]": {
     "editor.defaultFormatter": "matklad.rust-analyzer"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
   },
   "rust-analyzer.diagnostics.disabled": ["missing-unsafe"],
   "rust-analyzer.linkedProjects": ["packages/sim/Cargo.toml"],
