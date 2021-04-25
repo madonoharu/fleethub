@@ -5,7 +5,7 @@ import { EquipmentBonuses } from "equipment-bonus";
 import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhSim } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import { gearListSlice, selectGearListState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { SearchInput } from "../../organisms";
@@ -47,7 +47,7 @@ type GearListProps = {
 };
 
 const useGearListState = () => {
-  const { createGear } = useFhSim();
+  const { createGear } = useFhCore();
 
   const dispatch = useDispatch();
   const state = useSelector(selectGearListState);

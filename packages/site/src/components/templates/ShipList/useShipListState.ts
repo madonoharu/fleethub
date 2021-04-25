@@ -3,7 +3,7 @@ import { isNonNullable, ShipAttr, ShipType } from "@fleethub/utils";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhSim } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import {
   selectShipListState,
   shipListSlice,
@@ -49,7 +49,7 @@ const createFilterFn = (state: ShipListState): FilterFn => {
 const sortIdComparer = (a: Ship, b: Ship) => a.sort_id - b.sort_id;
 
 export const useShipListState = () => {
-  const { master_data, createShip } = useFhSim();
+  const { master_data, createShip } = useFhCore();
   const state = useSelector(selectShipListState);
   const dispatch = useDispatch();
 

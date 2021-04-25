@@ -12,6 +12,13 @@ use wasm_bindgen::prelude::*;
 use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Deserialize, Default)]
+pub struct MasterDataGearCategory {
+    pub id: i32,
+    pub name: String,
+    pub key: String,
+}
+
+#[derive(Debug, Deserialize, Default)]
 pub struct MasterGear {
     pub gear_id: i32,
     pub name: String,
@@ -255,6 +262,7 @@ pub struct MasterDataEquippable {
 #[derive(Debug, Deserialize)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
+    pub gear_categories: Vec<MasterDataGearCategory>,
     pub gear_attrs: Vec<MasterDataAttrRule>,
     pub ships: Vec<MasterShip>,
     pub ship_attrs: Vec<MasterDataAttrRule>,
