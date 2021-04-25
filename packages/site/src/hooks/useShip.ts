@@ -5,10 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { GearPosition, gearsSlice, shipsSelectors, shipsSlice } from "../store";
 import { getEbonuses } from "../utils";
-import { selectShipState, useFhSim } from "./useFhSim";
+import { selectShipState, useFhCore } from "./useFhCore";
 
 export const useShip = (id: EntityId) => {
-  const { createShip } = useFhSim();
+  const { createShip } = useFhCore();
   const dispatch = useDispatch();
   const entity = useSelector((root) => shipsSelectors.selectById(root, id));
   const state = useSelector((root) => selectShipState(root, id));

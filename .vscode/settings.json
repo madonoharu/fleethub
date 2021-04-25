@@ -9,5 +9,6 @@
   },
   "rust-analyzer.diagnostics.disabled": ["missing-unsafe"],
   "rust-analyzer.linkedProjects": ["packages/core/Cargo.toml"],
-  "rust-analyzer.lruCapacity": 64
+  "rust-analyzer.lruCapacity": 64,
+  "rust-analyzer.procMacro.enable": true
 }

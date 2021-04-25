@@ -4,7 +4,7 @@ import { EntityId } from "@reduxjs/toolkit";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhSim } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import { gearsSelectors, gearsSlice } from "../../../store";
 import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const GearBox: React.FCX<Props> = ({ className, id, onGearChange }) => {
-  const { createGear } = useFhSim();
+  const { createGear } = useFhCore();
 
   const entity = useSelector((root) => {
     if (id !== undefined) return gearsSelectors.selectById(root, id);
