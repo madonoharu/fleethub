@@ -36,12 +36,7 @@ const ShipBox: React.FCX<ShipBoxProps> = React.memo(
       !ship || !entity ? (
         <AddShipButton onClick={handleShipChange} />
       ) : (
-        <ShipCard
-          ship={ship}
-          entity={entity}
-          onRemove={actions.remove}
-          onGearChange={actions.setGear}
-        />
+        <ShipCard ship={ship} entity={entity} onRemove={actions.remove} />
       );
 
     return (
@@ -49,8 +44,8 @@ const ShipBox: React.FCX<ShipBoxProps> = React.memo(
         <Swappable
           className={className}
           type="ship"
-          state={id}
-          setState={(s) => console.log(s)}
+          item={{ id }}
+          onSwap={(dragItem, dropItem) => console.log(dragItem, dropItem)}
           dragLayer={"a"}
         >
           {element}

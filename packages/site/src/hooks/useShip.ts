@@ -1,9 +1,8 @@
-import { GearState } from "@fleethub/utils";
 import { EntityId } from "@reduxjs/toolkit";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { GearPosition, gearsSlice, shipsSelectors, shipsSlice } from "../store";
+import { shipsSelectors, shipsSlice } from "../store";
 import { getEbonuses } from "../utils";
 import { selectShipState, useFhCore } from "./useFhCore";
 
@@ -34,11 +33,7 @@ export const useShip = (id: EntityId) => {
       id && dispatch(shipsSlice.actions.remove(id));
     };
 
-    const setGear = (to: GearPosition, state: GearState) => {
-      dispatch(gearsSlice.actions.add(state, { ship: to }));
-    };
-
-    return { remove, setGear };
+    return { remove };
   }, [dispatch, id]);
 
   return {

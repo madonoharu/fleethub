@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
-import { GEAR_KEYS, GearState } from "@fleethub/utils";
+import { GEAR_KEYS } from "@fleethub/utils";
 import { Paper } from "@material-ui/core";
 import React from "react";
 
-import { GearPosition, ShipEntity } from "../../../store";
+import { ShipEntity } from "../../../store";
 import { makeGetNextEbonuses } from "../../../utils";
 import { ShipBanner } from "../../molecules";
 import GearSlot from "./GearSlot";
@@ -32,7 +32,6 @@ type Props = {
   entity: ShipEntity;
   onDetailClick?: () => void;
   onRemove?: () => void;
-  onGearChange?: (to: GearPosition, state: GearState) => void;
 };
 
 const ShipCard: React.FCX<Props> = ({
@@ -41,7 +40,6 @@ const ShipCard: React.FCX<Props> = ({
   entity,
   onDetailClick,
   onRemove,
-  onGearChange,
 }) => {
   return (
     <Paper className={className}>
@@ -61,9 +59,7 @@ const ShipCard: React.FCX<Props> = ({
             <GearSlot
               key={key}
               id={entity[key]}
-              onGearChange={(state) => {
-                onGearChange?.({ id: entity.id, key }, state);
-              }}
+              position={{ ship: entity.id, key }}
               canEquip={(g) => ship.can_equip(g, key)}
               getNextEbonuses={makeGetNextEbonuses(ship, key)}
             />
