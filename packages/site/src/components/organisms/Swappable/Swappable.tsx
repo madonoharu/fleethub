@@ -1,10 +1,9 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import React from "react";
 
 import { SwapSpec, useSwap } from "../../../hooks";
 
-type SwappableProps<T> = SwapSpec<T> & {
+type SwappableProps<T extends Record<string, unknown>> = SwapSpec<T> & {
   className?: string;
   style?: React.CSSProperties;
   dragLayer?: React.ReactNode;
@@ -12,15 +11,17 @@ type SwappableProps<T> = SwapSpec<T> & {
 };
 
 type SwappableComponentType = {
-  <T>(props: SwappableProps<T>): React.ReactElement;
+  <T extends Record<string, unknown>>(
+    props: SwappableProps<T>
+  ): React.ReactElement;
 };
 
 const Swappable: SwappableComponentType = ({
   className,
   style,
   type,
-  state,
-  setState,
+  item,
+  onSwap,
   canDrag,
   dragLayer,
   children,
@@ -33,8 +34,8 @@ const Swappable: SwappableComponentType = ({
 
   const ref = useSwap({
     type,
-    state,
-    setState,
+    item,
+    onSwap,
     canDrag,
     dragLayer: dragLayer || elem,
   });

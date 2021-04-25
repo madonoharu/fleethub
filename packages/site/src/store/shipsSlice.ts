@@ -38,9 +38,10 @@ export const shipsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(gearsSlice.actions.add, (state, { payload, meta }) => {
-      const position = meta.ship;
-      const entity = position && state.entities[position.id];
-      if (!position || !entity) return;
+      const { position } = meta;
+      if (!position.ship) return;
+      const entity = position.ship && state.entities[position.ship];
+      if (!entity) return;
 
       entity[position.key] = payload.id;
     });
