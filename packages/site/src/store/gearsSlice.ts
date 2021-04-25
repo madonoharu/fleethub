@@ -10,15 +10,11 @@ import { DefaultRootState } from "react-redux";
 
 import { selectGearsState } from "./selectors";
 
-export type GearPosition = { id: EntityId; key: GearKey };
+export type GearPosition = { ship: EntityId; key: GearKey };
 
 type GearEntity = {
   id: EntityId;
 } & GearState;
-
-type AddGearPayload = GearEntity & {
-  ship: EntityId;
-};
 
 const adapter = createEntityAdapter<GearEntity>();
 export const gearsSelectors: EntitySelectors<
@@ -32,9 +28,9 @@ export const gearsSlice = createSlice({
   reducers: {
     add: {
       reducer: adapter.addOne,
-      prepare: (state: GearState, to: { ship?: GearPosition }) => ({
+      prepare: (position: GearPosition, state: GearState) => ({
         payload: { ...state, id: nanoid() },
-        meta: to,
+        meta: { position },
       }),
     },
     update: adapter.updateOne,

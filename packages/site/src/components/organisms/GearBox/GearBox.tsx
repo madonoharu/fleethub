@@ -1,22 +1,34 @@
 import styled from "@emotion/styled";
+import { Gear } from "@fleethub/core";
 import { GearState } from "@fleethub/utils";
 import { EntityId } from "@reduxjs/toolkit";
+import { EquipmentBonuses } from "equipment-bonus";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCore } from "../../../hooks";
-import { gearsSelectors, gearsSlice } from "../../../store";
+import { useFhCore, useModal } from "../../../hooks";
+import { GearPosition, gearsSelectors, gearsSlice } from "../../../store";
+import GearList from "../../templates/GearList";
 import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
 import AddGearButton from "./AddGearButton";
 
 type Props = {
   id?: EntityId;
-  onGearChange?: (state: GearState) => void;
+  position?: GearPosition;
+  canEquip?: (gear: Gear) => boolean;
+  getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
-const GearBox: React.FCX<Props> = ({ className, id, onGearChange }) => {
+const GearBox: React.FCX<Props> = ({
+  className,
+  id,
+  position,
+  canEquip,
+  getNextEbonuses,
+}) => {
   const { createGear } = useFhCore();
+  const GearListModal = useModal();
 
   const entity = useSelector((root) => {
     if (id !== undefined) return gearsSelectors.selectById(root, id);
@@ -27,8 +39,10 @@ const GearBox: React.FCX<Props> = ({ className, id, onGearChange }) => {
 
   const gear = entity && createGear(entity);
 
-  const handleGearChange = () => {
-    onGearChange?.({ gear_id: 1 });
+  const handleGearChange = (gear: Gear) => {
+    if (position) {
+      dispatch(gearsSlice.actions.add(position, { gear_id: gear.gear_id }));
+    }
   };
 
   const handleUpdate = (changes: Partial<GearState>) => {
@@ -42,7 +56,9 @@ const GearBox: React.FCX<Props> = ({ className, id, onGearChange }) => {
   let inner: React.ReactElement;
 
   if (!gear) {
-    inner = <AddGearButton className={className} onClick={handleGearChange} />;
+    inner = (
+      <AddGearButton className={className} onClick={GearListModal.show} />
+    );
   } else {
     inner = (
       <GearLabel
@@ -55,9 +71,26 @@ const GearBox: React.FCX<Props> = ({ className, id, onGearChange }) => {
   }
 
   return (
-    <Swappable type="gear" state={id} setState={(s) => console.log(s)}>
-      {inner}
-    </Swappable>
+    <>
+      <Swappable
+        type="gear"
+        item={{ id }}
+        onSwap={(dragItem, dropItem) => console.log(dragItem, dropItem)}
+      >
+        {inner}
+      </Swappable>
+
+      <GearListModal full>
+        <GearList
+          onSelect={(g) => {
+            handleGearChange(g);
+            GearListModal.hide();
+          }}
+          canEquip={canEquip}
+          getNextEbonuses={getNextEbonuses}
+        />
+      </GearListModal>
+    </>
   );
 };
 
