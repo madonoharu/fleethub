@@ -1,18 +1,21 @@
-import { GoogleSpreadsheet } from "google-spreadsheet"
-import getServiceAccount from "./getServiceAccount"
+import { GoogleSpreadsheet } from "google-spreadsheet";
 
-const doc = new GoogleSpreadsheet("1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA")
+import getServiceAccount from "./getServiceAccount";
 
-let initialized = false
+const doc = new GoogleSpreadsheet(
+  "1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA"
+);
+
+let initialized = false;
 
 export default async () => {
-  if (initialized) return doc
+  if (initialized) return doc;
 
-  const serviceAccount = getServiceAccount()
-  await doc.useServiceAccountAuth(serviceAccount)
-  await doc.loadInfo()
+  const serviceAccount = getServiceAccount();
+  await doc.useServiceAccountAuth(serviceAccount);
+  await doc.loadInfo();
 
-  initialized = true
+  initialized = true;
 
-  return doc
-}
+  return doc;
+};

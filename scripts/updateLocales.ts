@@ -1,93 +1,100 @@
-import { outputJSON } from "fs-extra"
-import got from "got"
-import child_process from "child_process"
-import { promisify } from "util"
-import { MasterData } from "@fleethub/utils/src"
+import { MasterData } from "@fleethub/utils/src";
+import child_process from "child_process";
+import { outputJSON } from "fs-extra";
+import got from "got";
+import { promisify } from "util";
 
-import storage from "./data/storage"
+import storage from "./data/storage";
 
-const exec = promisify(child_process.exec)
+const exec = promisify(child_process.exec);
 
-type Dictionary = Partial<Record<string, string>>
+type Dictionary = Partial<Record<string, string>>;
 
-type Language = { code: string; path?: string }
+type Language = { code: string; path?: string };
 const languages: Language[] = [
   { code: "ja", path: "jp" },
   { code: "en" },
   { code: "ko", path: "kr" },
   { code: "zh-CN", path: "scn" },
   { code: "zh-TW", path: "tcn" },
-]
+];
 
 class LocaleUpdater {
-  public kc3: typeof got
+  public kc3: typeof got;
 
   constructor(private md: MasterData, private language: Language) {
-    const { path, code } = language
+    const { path, code } = language;
 
     this.kc3 = got.extend({
-      prefixUrl: `https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/${path || code}`,
-    })
+      prefixUrl: `https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/${
+        path || code
+      }`,
+    });
   }
 
   public getKC3Json = async <T = unknown>(filename: string) => {
-    const text = await this.kc3.get(filename).text()
-    return JSON.parse(text.replace(/^\ufeff/, "")) as T
-  }
+    const text = await this.kc3.get(filename).text();
+    return JSON.parse(text.replace(/^\ufeff/, "")) as T;
+  };
 
   public output = async (filename: string, data: unknown) => {
-    await outputJSON(`packages/client/public/locales/${this.language.code}/${filename}`, data)
-  }
+    await outputJSON(
+      `packages/client/public/locales/${this.language.code}/${filename}`,
+      data
+    );
+  };
 
   public updateShips = async () => {
-    type KC3Ships = Record<string, string>
-    type KC3ShipAffixes = { suffixes: Record<string, string> }
+    type KC3Ships = Record<string, string>;
+    type KC3ShipAffixes = { suffixes: Record<string, string> };
 
     const [kc3Ships, kc3ShipAffixes] = await Promise.all([
       this.getKC3Json<KC3Ships>("ships.json"),
       this.getKC3Json<KC3ShipAffixes>("ship_affix.json"),
-    ])
+    ]);
 
-    const dictionary: Dictionary = {}
+    const dictionary: Dictionary = {};
 
     this.md.ships.forEach(({ name }) => {
-      let translated = name
+      let translated = name;
       Object.entries(kc3Ships).forEach(([key, value]) => {
-        translated = translated.replace(RegExp(`^${key}`), value)
-      })
+        translated = translated.replace(RegExp(`^${key}`), value);
+      });
 
       Object.entries(kc3ShipAffixes.suffixes).forEach(([key, value]) => {
-        translated = translated.replace(key, value)
-      })
+        translated = translated.replace(key, value);
+      });
 
-      dictionary[name] = translated.replace("{ -}?", "")
-    })
+      dictionary[name] = translated.replace("{ -}?", "");
+    });
 
-    await this.output("ships.json", dictionary)
-  }
+    await this.output("ships.json", dictionary);
+  };
 
   public updateGears = async () => {
-    const dictionary = await this.getKC3Json<Dictionary>("items.json")
-    await this.output("gears.json", dictionary)
-  }
+    const dictionary = await this.getKC3Json<Dictionary>("items.json");
+    await this.output("gears.json", dictionary);
+  };
 
   public updateGearCategories = async () => {
-    const equiptype = await this.getKC3Json<string[][]>("equiptype.json")
-    const dictionary: Dictionary = {}
+    const equiptype = await this.getKC3Json<string[][]>("equiptype.json");
+    const dictionary: Dictionary = {};
 
     this.md.gear_categories.forEach((category) => {
-      const str = equiptype[2][category.id]
+      const str = equiptype[2][category.id];
       if (str) {
-        dictionary[category.name] = str
+        dictionary[category.name] = str;
       }
-    })
+    });
 
-    await this.output("gearCategories.json", dictionary)
-  }
+    await this.output("gearCategories.json", dictionary);
+  };
 
   public updateTerms = async () => {
-    const kc3Terms = await this.getKC3Json<Dictionary>("terms.json")
-    const kc3Battle = await this.getKC3Json<{ engagement: string[][] }>("battle.json")
+    const kc3Terms = await this.getKC3Json<Dictionary>("terms.json");
+    const kc3Battle = await this.getKC3Json<{ engagement: string[][] }>(
+      "battle.json"
+    );
 
     const dictionary: Dictionary = {
       max_hp: kc3Terms["ShipHp"],
@@ -132,35 +139,35 @@ class LocaleUpdater {
       HeadOn: kc3Battle.engagement[2][0],
       GreenT: kc3Battle.engagement[3][0],
       RedT: kc3Battle.engagement[4][0],
-    }
+    };
 
-    await this.output("terms.json", dictionary)
-  }
+    await this.output("terms.json", dictionary);
+  };
 
   public updateShipTypes = async () => {
-    const shipTypes: Dictionary = {}
-    const kc3stype = await this.getKC3Json<string[]>("stype.json")
+    const shipTypes: Dictionary = {};
+    const kc3stype = await this.getKC3Json<string[]>("stype.json");
 
     this.md.ship_types.forEach((type) => {
-      shipTypes[type.name] = kc3stype[type.id]
-    })
+      shipTypes[type.name] = kc3stype[type.id];
+    });
 
-    await this.output("shipTypes.json", shipTypes)
-  }
+    await this.output("shipTypes.json", shipTypes);
+  };
 
   public updateShipClasses = async () => {
-    const shipClasses: Dictionary = {}
-    const kc3ctype = await this.getKC3Json<string[]>("ctype.json")
+    const shipClasses: Dictionary = {};
+    const kc3ctype = await this.getKC3Json<string[]>("ctype.json");
 
     this.md.ship_classes.forEach((sc) => {
-      const name = kc3ctype[sc.id]
+      const name = kc3ctype[sc.id];
       if (name) {
-        shipClasses[sc.name] = kc3ctype[sc.id]
+        shipClasses[sc.name] = kc3ctype[sc.id];
       }
-    })
+    });
 
-    await this.output("shipClasses.json", shipClasses)
-  }
+    await this.output("shipClasses.json", shipClasses);
+  };
 
   public update = async () => {
     await Promise.all([
@@ -170,16 +177,18 @@ class LocaleUpdater {
       this.updateShipTypes(),
       this.updateShipClasses(),
       this.updateTerms(),
-    ])
-  }
+    ]);
+  };
 }
 
 const updateLocales = async () => {
-  const md = await storage.readMasterData()
-  const promises = languages.map((lang) => new LocaleUpdater(md, lang).update())
+  const md = await storage.readMasterData();
+  const promises = languages.map((lang) =>
+    new LocaleUpdater(md, lang).update()
+  );
 
-  await Promise.all(promises)
-  await exec("yarn prettier --write packages/client/public/locales")
-}
+  await Promise.all(promises);
+  await exec("yarn prettier --write packages/client/public/locales");
+};
 
-updateLocales()
+updateLocales().catch((err) => console.error(err));

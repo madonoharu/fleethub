@@ -1,45 +1,48 @@
-import { log, updateData, updateImages } from "./data"
+import { log, updateData, updateImages } from "./data";
 
 type ClientPayload = {
-  type: string
-}
+  type: string;
+};
+
+const isClientPayload = (payload: unknown): payload is ClientPayload =>
+  typeof payload === "object" && payload !== null && "type" in payload;
 
 const getClientPayload = (): ClientPayload => {
-  const { CLIENT_PAYLOAD } = process.env
+  const { CLIENT_PAYLOAD } = process.env;
 
-  const payload = CLIENT_PAYLOAD && JSON.parse(CLIENT_PAYLOAD)
+  const payload: unknown = CLIENT_PAYLOAD && JSON.parse(CLIENT_PAYLOAD);
 
-  if (!payload || !payload.type) {
-    throw Error("CLIENT_PAYLOAD.type is not found")
+  if (!isClientPayload(payload)) {
+    throw Error("CLIENT_PAYLOAD is not found");
   }
 
-  return payload
-}
+  return payload;
+};
 
 const getErrorMessage = (error: unknown) => {
-  if (error instanceof Error) return error.message
-  if (typeof error === "string") return error
-  return "Unknown error"
-}
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "Unknown error";
+};
 
 const main = async () => {
-  const type = getClientPayload()?.type
+  const type = getClientPayload()?.type;
 
   try {
-    await log(`${type}: Start`)
+    await log(`${type}: Start`);
 
     if (type === "update_data") {
-      await updateData()
+      await updateData();
     }
 
     if (type === "update_images") {
-      await updateImages()
+      await updateImages();
     }
 
-    await log(`${type}: Success`)
+    await log(`${type}: Success`);
   } catch (error) {
-    log(getErrorMessage(error))
+    await log(getErrorMessage(error));
   }
-}
+};
 
-main()
+main().catch((err) => console.error(err));

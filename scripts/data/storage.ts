@@ -1,44 +1,51 @@
-import admin from "firebase-admin"
-import got from "got"
-import { MasterData } from "@fleethub/utils/src"
+import { MasterData } from "@fleethub/utils/src";
+import admin from "firebase-admin";
+import got from "got";
 
-import getServiceAccount from "./getServiceAccount"
-import { equalJson } from "./utils"
+import getServiceAccount from "./getServiceAccount";
+import { equalJson } from "./utils";
 
-let app: admin.app.App | undefined
+let app: admin.app.App | undefined;
 const getApp = () => {
   return (app ??= admin.initializeApp({
     credential: admin.credential.cert(getServiceAccount()),
     storageBucket: "kcfleethub.appspot.com",
-  }))
-}
+  }));
+};
 
 const read = <K extends keyof MasterData>(key: K): Promise<MasterData[K]> =>
-  got.get(`https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`).json()
+  got
+    .get(
+      `https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`
+    )
+    .json();
 
-export const write = <K extends keyof MasterData>(key: K, data: MasterData[K]) => {
-  const str = JSON.stringify(data)
+export const write = <K extends keyof MasterData>(
+  key: K,
+  data: MasterData[K]
+) => {
+  const str = JSON.stringify(data);
 
-  const destination = `data/${key}.json`
-  const metadata = { cacheControl: "public, max-age=60" }
+  const destination = `data/${key}.json`;
+  const metadata = { cacheControl: "public, max-age=60" };
 
-  const bucket = getApp().storage().bucket()
-  return bucket.file(destination).save(str, { metadata })
-}
+  const bucket = getApp().storage().bucket();
+  return bucket.file(destination).save(str, { metadata });
+};
 
 export const update = async <K extends keyof MasterData>(
   key: K,
   cb: (current: MasterData[K]) => MasterData[K]
 ): Promise<MasterData[K]> => {
-  const current = await read(key)
-  const next = cb(current)
+  const current = await read(key);
+  const next = cb(current);
 
   if (!equalJson(current, next)) {
-    await write(key, next)
+    await write(key, next);
   }
 
-  return next
-}
+  return next;
+};
 
 export const readMasterData = async (): Promise<MasterData> => {
   const [
@@ -63,7 +70,7 @@ export const readMasterData = async (): Promise<MasterData> => {
     read("gear_attrs"),
     read("ibonuses"),
     read("equippable"),
-  ])
+  ]);
 
   return {
     ships,
@@ -76,23 +83,23 @@ export const readMasterData = async (): Promise<MasterData> => {
     ibonuses,
     equippable,
     ship_banners,
-  }
-}
+  };
+};
 
 export const writeMasterData = async (md: MasterData) => {
-  const keys = Object.keys(md) as (keyof MasterData)[]
+  const keys = Object.keys(md) as (keyof MasterData)[];
 
   const promises = keys.map(async (key) => {
-    const current = await read(key).catch()
-    const data = md[key]
+    const current = await read(key).catch();
+    const data = md[key];
 
-    if (equalJson(current, data)) return
+    if (equalJson(current, data)) return;
 
-    await write(key, data)
-  })
+    await write(key, data);
+  });
 
-  await Promise.all(promises)
-}
+  await Promise.all(promises);
+};
 
 export default {
   read,
@@ -100,4 +107,4 @@ export default {
   update,
   writeMasterData,
   readMasterData,
-}
+};

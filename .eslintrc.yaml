@@ -1,0 +1,42 @@
+env:
+  browser: true
+  node: true
+  es6: true
+extends:
+  - "eslint:recommended"
+  - "plugin:@typescript-eslint/recommended"
+  - "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  - "plugin:react/recommended"
+  - "prettier"
+
+plugins:
+  - "@typescript-eslint"
+  - react
+  - react-hooks
+  - simple-import-sort
+parser: "@typescript-eslint/parser"
+parserOptions:
+  sourceType: module
+  project:
+    - "./tsconfig.json"
+settings:
+  react:
+    version: detect
+
+rules:
+  "no-console": off
+  "@typescript-eslint/explicit-module-boundary-types": off
+  "@typescript-eslint/no-unsafe-assignment": off
+  "react-hooks/rules-of-hooks": error
+  "react-hooks/exhaustive-deps": warn
+  "react/display-name": off
+  "react/prop-types": off
+  "simple-import-sort/imports": "error"
+  "simple-import-sort/exports": "error"
+
+ignorePatterns:
+  - "**/dist/*"
+  - "**/lib/*"
+  - "**/esm/*"
+  - "**/cjs/*"
+  - "**/pkg/*"
