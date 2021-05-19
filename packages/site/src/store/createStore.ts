@@ -9,6 +9,7 @@ import { persistReducer, WebStorage } from "redux-persist";
 import { ThunkAction } from "redux-thunk";
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo";
 
+import { airbasesSlice } from "./airbaseSlice";
 import { appSlice } from "./appSlice";
 import { entitiesReducer } from "./entities";
 import { fleetsSlice } from "./fleetsSlice";
@@ -38,6 +39,7 @@ const combinedReducer = combineReducers({
 
   gears: gearsSlice.reducer,
   ships: shipsSlice.reducer,
+  airbases: airbasesSlice.reducer,
   fleets: fleetsSlice.reducer,
 });
 

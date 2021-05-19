@@ -10,17 +10,17 @@ import { DefaultRootState } from "react-redux";
 
 import { selectGearsState } from "./selectors";
 
-export type GearPosition = { ship: EntityId; key: GearKey };
+export type GearPosition =
+  | { ship: EntityId; key: GearKey }
+  | { airbase: EntityId; key: GearKey };
 
 type GearEntity = {
   id: EntityId;
 } & GearState;
 
 const adapter = createEntityAdapter<GearEntity>();
-export const gearsSelectors: EntitySelectors<
-  GearEntity,
-  DefaultRootState
-> = adapter.getSelectors(selectGearsState);
+export const gearsSelectors: EntitySelectors<GearEntity, DefaultRootState> =
+  adapter.getSelectors(selectGearsState);
 
 export const gearsSlice = createSlice({
   name: "gears",

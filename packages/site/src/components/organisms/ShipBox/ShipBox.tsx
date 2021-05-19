@@ -36,7 +36,12 @@ const ShipBox: React.FCX<ShipBoxProps> = React.memo(
       !ship || !entity ? (
         <AddShipButton onClick={handleShipChange} />
       ) : (
-        <ShipCard ship={ship} entity={entity} onRemove={actions.remove} />
+        <ShipCard
+          ship={ship}
+          entity={entity}
+          onUpdate={actions.update}
+          onRemove={actions.remove}
+        />
       );
 
     return (

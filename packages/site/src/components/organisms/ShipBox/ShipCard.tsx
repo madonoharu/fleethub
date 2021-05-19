@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
-import { GEAR_KEYS } from "@fleethub/utils";
+import { GEAR_KEYS, SlotSizeKey } from "@fleethub/utils";
 import { Paper } from "@material-ui/core";
 import React from "react";
 
@@ -30,6 +30,7 @@ const GearList = styled.div`
 type Props = {
   ship: Ship;
   entity: ShipEntity;
+  onUpdate?: (state: Partial<ShipEntity>) => void;
   onDetailClick?: () => void;
   onRemove?: () => void;
 };
@@ -38,9 +39,12 @@ const ShipCard: React.FCX<Props> = ({
   className,
   ship,
   entity,
+  onUpdate,
   onDetailClick,
   onRemove,
 }) => {
+  const { slotnum } = ship;
+
   return (
     <Paper className={className}>
       <ShipHeader
@@ -55,15 +59,22 @@ const ShipCard: React.FCX<Props> = ({
           <ShipStats ship={ship} />
         </ShipCardInfo>
         <GearList>
-          {GEAR_KEYS.map((key) => (
-            <GearSlot
-              key={key}
-              id={entity[key]}
-              position={{ ship: entity.id, key }}
-              canEquip={(g) => ship.can_equip(g, key)}
-              getNextEbonuses={makeGetNextEbonuses(ship, key)}
-            />
-          ))}
+          {GEAR_KEYS.filter((key, i) => i < slotnum || key === "gx").map(
+            (key, i) => (
+              <GearSlot
+                key={key}
+                id={entity[key]}
+                position={{ ship: entity.id, key }}
+                slotSize={ship.get_slot_size(i)}
+                maxSlotSize={ship.get_max_slot_size(i)}
+                onSlotSizeChange={(value) => {
+                  onUpdate?.({ [`ss${i + 1}` as SlotSizeKey]: value });
+                }}
+                canEquip={(g) => ship.can_equip(g, key)}
+                getNextEbonuses={makeGetNextEbonuses(ship, key)}
+              />
+            )
+          )}
         </GearList>
       </ShipCardContent>
     </Paper>
