@@ -1,4 +1,4 @@
-import { Dict, ShipKey } from "@fleethub/utils";
+import { AirbaseKey, Dict, Role, ShipKey } from "@fleethub/utils";
 import {
   createEntityAdapter,
   createSlice,
@@ -14,11 +14,8 @@ import { shipsSlice } from "./shipsSlice";
 
 export type FleetEntity = {
   id: EntityId;
-  main: Dict<ShipKey, EntityId>;
-  escort: Dict<ShipKey, EntityId>;
-  route_sup: Dict<ShipKey, EntityId>;
-  boss_sup: Dict<ShipKey, EntityId>;
-};
+} & Record<Role, Dict<ShipKey, EntityId>> &
+  Record<AirbaseKey, EntityId>;
 
 const adapter = createEntityAdapter<FleetEntity>();
 
@@ -43,6 +40,9 @@ export const fleetsSlice = createSlice({
             escort: {},
             route_sup: {},
             boss_sup: {},
+            a1: {},
+            a2: {},
+            a3: {},
           },
         };
       },
@@ -66,6 +66,9 @@ export const fleetsSlice = createSlice({
           escort: {},
           route_sup: {},
           boss_sup: {},
+          a1: {},
+          a2: {},
+          a3: {},
         });
       });
   },

@@ -1,4 +1,7 @@
-use crate::{array::GearArray, gear::GearState};
+use crate::{
+    array::{GearArray, SlotSizeArray},
+    gear::GearState,
+};
 use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
@@ -8,6 +11,11 @@ pub struct AirbaseState {
     pub g2: Option<GearState>,
     pub g3: Option<GearState>,
     pub g4: Option<GearState>,
+
+    pub ss1: Option<i32>,
+    pub ss2: Option<i32>,
+    pub ss3: Option<i32>,
+    pub ss4: Option<i32>,
 }
 
 #[wasm_bindgen]
@@ -15,4 +23,6 @@ pub struct AirbaseState {
 pub struct Airbase {
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
+    #[wasm_bindgen(skip)]
+    pub slots: SlotSizeArray,
 }

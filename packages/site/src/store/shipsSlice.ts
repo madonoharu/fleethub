@@ -1,4 +1,4 @@
-import { GearKey, Role, ShipKey } from "@fleethub/utils";
+import { Dict, GearKey, Role, ShipKey, SlotSizeKey } from "@fleethub/utils";
 import {
   createEntityAdapter,
   createSlice,
@@ -13,15 +13,14 @@ import { selectShipsState } from "./selectors";
 export type ShipEntity = {
   id: EntityId;
   ship_id: number;
-} & Partial<Record<GearKey, string>>;
+} & Dict<GearKey, string> &
+  Dict<SlotSizeKey, number>;
 
 export type ShipPosition = { id: EntityId; role: Role; key: ShipKey };
 
 const adapter = createEntityAdapter<ShipEntity>();
-export const shipsSelectors: EntitySelectors<
-  ShipEntity,
-  DefaultRootState
-> = adapter.getSelectors(selectShipsState);
+export const shipsSelectors: EntitySelectors<ShipEntity, DefaultRootState> =
+  adapter.getSelectors(selectShipsState);
 
 export const shipsSlice = createSlice({
   name: "ships",
@@ -34,13 +33,14 @@ export const shipsSlice = createSlice({
         meta: { fleet: to },
       }),
     },
+    update: adapter.updateOne,
     remove: adapter.removeOne,
   },
   extraReducers: (builder) => {
     builder.addCase(gearsSlice.actions.add, (state, { payload, meta }) => {
       const { position } = meta;
-      if (!position.ship) return;
-      const entity = position.ship && state.entities[position.ship];
+      const entity =
+        "ship" in position && position.ship && state.entities[position.ship];
       if (!entity) return;
 
       entity[position.key] = payload.id;

@@ -1,31 +1,41 @@
+import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
-import { GearState } from "@fleethub/utils";
 import { EntityId } from "@reduxjs/toolkit";
 import { EquipmentBonuses } from "equipment-bonus";
 import React from "react";
 
-import { useGear, useModal } from "../../../hooks";
 import { GearPosition } from "../../../store";
-import GearList from "../../templates/GearList";
 import GearBox from "../GearBox";
+import SlotSizeButton from "./SlotSizeButton";
 
 type Props = {
   id?: EntityId;
   position?: GearPosition;
-  onSlotSizeChange?: (value: number) => void;
+  slotSize?: number;
+  maxSlotSize?: number;
+  onSlotSizeChange?: (value?: number) => void;
   canEquip?: (gear: Gear) => boolean;
   getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
 const GearSlot: React.FCX<Props> = ({
+  className,
   id,
   position,
+  slotSize,
+  maxSlotSize,
   onSlotSizeChange,
   canEquip,
   getNextEbonuses,
 }) => {
   return (
-    <div>
+    <div className={className}>
+      <SlotSizeButton
+        exslot={position?.key === "gx"}
+        current={slotSize}
+        max={maxSlotSize}
+        onChange={onSlotSizeChange}
+      />
       <GearBox
         id={id}
         position={position}
@@ -36,4 +46,6 @@ const GearSlot: React.FCX<Props> = ({
   );
 };
 
-export default GearSlot;
+export default styled(GearSlot)`
+  display: flex;
+`;
