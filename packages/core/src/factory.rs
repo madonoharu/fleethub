@@ -103,7 +103,16 @@ impl Factory {
     }
 
     fn create_airbase_rs(&self, state: AirbaseState) -> Airbase {
-        let AirbaseState { g1, g2, g3, g4 } = state;
+        let AirbaseState {
+            g1,
+            g2,
+            g3,
+            g4,
+            ss1,
+            ss2,
+            ss3,
+            ss4,
+        } = state;
 
         let to_gear = |g: Option<GearState>| g.and_then(|g| self.create_gear_rs(g));
 
@@ -116,7 +125,13 @@ impl Factory {
             None,
         ]);
 
-        Airbase { gears }
+        let slots = [ss1, ss2, ss3, ss4]
+            .iter()
+            .cloned()
+            .map(|ss| ss.or(Some(18)))
+            .collect();
+
+        Airbase { gears, slots }
     }
 }
 

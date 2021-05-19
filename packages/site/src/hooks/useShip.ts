@@ -2,7 +2,7 @@ import { EntityId } from "@reduxjs/toolkit";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { shipsSelectors, shipsSlice } from "../store";
+import { ShipEntity, shipsSelectors, shipsSlice } from "../store";
 import { getEbonuses } from "../utils";
 import { selectShipState, useFhCore } from "./useFhCore";
 
@@ -29,11 +29,15 @@ export const useShip = (id: EntityId) => {
   }, [state]);
 
   const actions = useMemo(() => {
+    const update = (changes: Partial<ShipEntity>) => {
+      id && dispatch(shipsSlice.actions.update({ id, changes }));
+    };
+
     const remove = () => {
       id && dispatch(shipsSlice.actions.remove(id));
     };
 
-    return { remove };
+    return { update, remove };
   }, [dispatch, id]);
 
   return {

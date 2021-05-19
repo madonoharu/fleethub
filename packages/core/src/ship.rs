@@ -33,6 +33,12 @@ pub struct ShipState {
     pub g4: Option<GearState>,
     pub g5: Option<GearState>,
     pub gx: Option<GearState>,
+
+    pub ss1: Option<i32>,
+    pub ss2: Option<i32>,
+    pub ss3: Option<i32>,
+    pub ss4: Option<i32>,
+    pub ss5: Option<i32>,
 }
 
 #[derive(Debug, Default, Clone, Deserialize)]
@@ -171,7 +177,13 @@ impl Ship {
         gears: GearArray,
     ) -> Self {
         let ebonuses = EBonuses::default();
-        let slots: SlotSizeArray = master.slots.clone();
+        let state_slots = [state.ss1, state.ss2, state.ss3, state.ss4, state.ss5];
+        let slots = master
+            .slots
+            .iter()
+            .enumerate()
+            .map(|(i, default_size)| state_slots.get(i).cloned().flatten().or(*default_size))
+            .collect();
 
         let mut ship = Ship {
             ship_id: state.ship_id,
@@ -637,6 +649,10 @@ impl Ship {
 
     pub fn get_slot_size(&self, index: usize) -> Option<i32> {
         self.slots.get(index).and_then(|&s| s)
+    }
+
+    pub fn get_max_slot_size(&self, index: usize) -> Option<i32> {
+        self.master.slots.get(index).and_then(|&s| s)
     }
 
     pub fn calc_fighter_power(&self) -> Option<i32> {

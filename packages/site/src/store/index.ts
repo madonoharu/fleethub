@@ -1,3 +1,4 @@
+export * from "./airbaseSlice";
 export * from "./appSlice";
 export * from "./createStore";
 export * from "./entities";

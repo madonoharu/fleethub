@@ -56,25 +56,20 @@ const GearBox: React.FCX<Props> = ({
   let inner: React.ReactElement;
 
   if (!gear) {
-    inner = (
-      <AddGearButton className={className} onClick={GearListModal.show} />
-    );
+    inner = <AddGearButton onClick={GearListModal.show} />;
   } else {
     inner = (
-      <GearLabel
-        className={className}
-        gear={gear}
-        onUpdate={handleUpdate}
-        onRemove={handleRemove}
-      />
+      <GearLabel gear={gear} onUpdate={handleUpdate} onRemove={handleRemove} />
     );
   }
 
   return (
     <>
       <Swappable
+        className={className}
         type="gear"
-        item={{ id }}
+        item={{ position }}
+        canDrag={Boolean(position && id)}
         onSwap={(dragItem, dropItem) => console.log(dragItem, dropItem)}
       >
         {inner}
@@ -96,4 +91,5 @@ const GearBox: React.FCX<Props> = ({
 
 export default styled(GearBox)`
   height: 100%;
+  width: 100%;
 `;
