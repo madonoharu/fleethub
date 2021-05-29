@@ -1,5 +1,8 @@
 import { css, Global } from "@emotion/react";
-import { CssBaseline, MuiThemeProvider } from "@material-ui/core";
+import {
+  CssBaseline,
+  ThemeProvider as MuiThemeProvider,
+} from "@material-ui/core";
 import React from "react";
 
 import theme, { Theme } from "./theme";
