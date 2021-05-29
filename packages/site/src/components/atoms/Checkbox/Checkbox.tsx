@@ -5,20 +5,21 @@ import {
 } from "@material-ui/core";
 import React from "react";
 
-type Props = {
+type CheckboxProps = {
   checked?: boolean;
   onChange?: (value: boolean) => void;
   label?: React.ReactNode;
 } & Pick<MuiCheckboxProps, "size">;
 
-const Checkbox: React.FCX<Props> = ({
+const Checkbox: React.FCX<CheckboxProps> = ({
   className,
   checked,
   onChange,
   label,
   size,
 }) => {
-  const handleChange = (event: unknown, value: boolean) => onChange?.(value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    onChange?.(event.target.checked);
 
   const elem = (
     <MuiCheckbox size={size} checked={checked} onChange={handleChange} />
