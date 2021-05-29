@@ -41,7 +41,7 @@
   "devDependencies": {
     "@fleethub/utils": "*",
     "@types/fs-extra": "^9.0.11",
-    "@types/google-spreadsheet": "^3.1.1",
+    "@types/google-spreadsheet": "^3.1.2",
     "@types/jest": "^26.0.23",
     "@types/lodash-es": "^4.17.4",
     "@types/node": "^15.6.1",
@@ -59,7 +59,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "expr-eval": "^2.0.2",
-    "firebase-admin": "^9.8.0",
+    "firebase-admin": "^9.9.0",
     "fs-extra": "^10.0.0",
     "google-spreadsheet": "^3.1.15",
     "got": "^11.8.2",
@@ -67,14 +67,14 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.0.1",
     "kc-tools": "^1.1.0",
-    "ky": "^0.28.1",
+    "ky": "^0.28.3",
     "lint-staged": "^11.0.0",
     "lodash-es": "^4.17.21",
     "prettier": "^2.3.0",
     "signale": "^1.4.0",
-    "ts-jest": "^26.5.6",
+    "ts-jest": "^27.0.1",
     "ts-node": "^10.0.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.3.2"
   },
   "engines": {
     "npm": "Please use yarn"
