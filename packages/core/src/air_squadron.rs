@@ -6,7 +6,7 @@ use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
 #[derive(Debug, Default, Clone, Deserialize)]
-pub struct AirbaseState {
+pub struct AirSquadronState {
     pub g1: Option<GearState>,
     pub g2: Option<GearState>,
     pub g3: Option<GearState>,
@@ -20,7 +20,7 @@ pub struct AirbaseState {
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
-pub struct Airbase {
+pub struct AirSquadron {
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
     #[wasm_bindgen(skip)]

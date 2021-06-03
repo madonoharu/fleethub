@@ -23,13 +23,13 @@ export const SHIP_KEYS = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"] as const;
 export type ShipKey = typeof SHIP_KEYS[number];
 type ShipArrayState = Dict<ShipKey, ShipState>;
 
-export type AirbaseState = EquipmentState;
+export type AirSquadronState = EquipmentState;
 
-export const AIRBASE_KEYS = ["a1", "a2", "a3"];
-export type AirbaseKey = typeof AIRBASE_KEYS[number];
-type AirbaseArrayState = Dict<AirbaseKey, AirbaseState>;
+export const AIR_SQUADRON_KEYS = ["a1", "a2", "a3"] as const;
+export type AirSquadronKey = typeof AIR_SQUADRON_KEYS[number];
+type AirSquadronArrayState = Dict<AirSquadronKey, AirSquadronState>;
 
 export const ROLES = ["main", "escort", "route_sup", "boss_sup"] as const;
 export type Role = typeof ROLES[number];
 
-export type FleetState = Record<Role, ShipArrayState> & AirbaseArrayState;
+export type FleetState = Record<Role, ShipArrayState> & AirSquadronArrayState;
