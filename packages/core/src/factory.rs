@@ -1,5 +1,5 @@
 use crate::{
-    airbase::{Airbase, AirbaseState},
+    air_squadron::{AirSquadron, AirSquadronState},
     array::{GearArray, ShipArray},
     fleet::{Fleet, FleetState, ShipArrayState},
     gear::{Gear, GearState},
@@ -102,8 +102,8 @@ impl Factory {
         ])
     }
 
-    fn create_airbase_rs(&self, state: AirbaseState) -> Airbase {
-        let AirbaseState {
+    fn create_air_squadron_rs(&self, state: AirSquadronState) -> AirSquadron {
+        let AirSquadronState {
             g1,
             g2,
             g3,
@@ -131,7 +131,7 @@ impl Factory {
             .map(|ss| ss.or(Some(18)))
             .collect();
 
-        Airbase { gears, slots }
+        AirSquadron { gears, slots }
     }
 }
 
@@ -160,10 +160,10 @@ impl Factory {
         self.create_ship_rs(state)
     }
 
-    pub fn create_airbase(&self, js: JsValue) -> Option<Airbase> {
-        let state: AirbaseState = js.into_serde().ok()?;
+    pub fn create_air_squadron(&self, js: JsValue) -> Option<AirSquadron> {
+        let state: AirSquadronState = js.into_serde().ok()?;
 
-        Some(self.create_airbase_rs(state))
+        Some(self.create_air_squadron_rs(state))
     }
 
     pub fn create_fleet(&self, js: JsValue) -> Option<Fleet> {
