@@ -13,6 +13,7 @@ use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct ShipState {
+    pub id: Option<String>,
     pub ship_id: i32,
     pub slots: Option<SlotSizeArray>,
     pub level: Option<i32>,

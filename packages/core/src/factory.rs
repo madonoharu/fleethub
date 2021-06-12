@@ -1,8 +1,9 @@
 use crate::{
     air_squadron::{AirSquadron, AirSquadronState},
     array::{GearArray, ShipArray},
-    fleet::{Fleet, FleetState, ShipArrayState},
+    fleet::{Fleet, FleetState},
     gear::{Gear, GearState},
+    plan::{Plan, PlanState},
     ship::Ship,
 };
 use crate::{master::MasterData, ship::ShipState};
@@ -29,9 +30,7 @@ impl Factory {
             .find(|mg| mg.gear_id == state.gear_id)?;
 
         let attrs = self.master_data.find_gear_attrs(master);
-        let ibonuses = self
-            .master_data
-            .get_ibonuses(master, state.stars.unwrap_or_default());
+        let ibonuses = self.master_data.get_ibonuses(master, state.stars);
 
         Some(Gear::new(state, master, attrs, ibonuses))
     }
@@ -78,8 +77,8 @@ impl Factory {
         Some(Ship::new(state, master, attrs, equippable, banner, gears))
     }
 
-    fn create_ship_array(&self, state: Option<ShipArrayState>) -> ShipArray {
-        let ShipArrayState {
+    fn create_fleet_rs(&self, state: Option<FleetState>) -> Fleet {
+        let FleetState {
             s1,
             s2,
             s3,
@@ -91,7 +90,7 @@ impl Factory {
 
         let to_ship = |state: Option<ShipState>| state.and_then(|s| self.create_ship_rs(s));
 
-        ShipArray::new([
+        let ships = ShipArray::new([
             to_ship(s1),
             to_ship(s2),
             to_ship(s3),
@@ -99,7 +98,9 @@ impl Factory {
             to_ship(s5),
             to_ship(s6),
             to_ship(s7),
-        ])
+        ]);
+
+        Fleet { ships }
     }
 
     fn create_air_squadron_rs(&self, state: AirSquadronState) -> AirSquadron {
@@ -169,19 +170,27 @@ impl Factory {
     pub fn create_fleet(&self, js: JsValue) -> Option<Fleet> {
         let state: FleetState = js.into_serde().ok()?;
 
-        let FleetState {
+        Some(self.create_fleet_rs(Some(state)))
+    }
+
+    pub fn create_plan(&self, js: JsValue) -> Option<Plan> {
+        let state: PlanState = js.into_serde().ok()?;
+
+        let PlanState {
             main,
             escort,
             route_sup,
             boss_sup,
-            ..
+            hq_level,
         } = state;
 
-        Some(Fleet {
-            main: self.create_ship_array(main),
-            escort: self.create_ship_array(escort),
-            route_sup: self.create_ship_array(route_sup),
-            boss_sup: self.create_ship_array(boss_sup),
+        Some(Plan {
+            main: self.create_fleet_rs(main),
+            escort: self.create_fleet_rs(escort),
+            route_sup: self.create_fleet_rs(route_sup),
+            boss_sup: self.create_fleet_rs(boss_sup),
+
+            hq_level: hq_level.unwrap_or(120),
         })
     }
 
