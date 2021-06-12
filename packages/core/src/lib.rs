@@ -6,6 +6,7 @@ mod factory;
 mod fleet;
 mod gear;
 mod master;
+mod plan;
 mod ship;
 
 mod attack;

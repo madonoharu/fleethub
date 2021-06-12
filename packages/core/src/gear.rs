@@ -7,9 +7,14 @@ use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct GearState {
+    #[serde(default)]
+    pub id: String,
+
     pub gear_id: i32,
-    pub exp: Option<i32>,
-    pub stars: Option<i32>,
+    #[serde(default)]
+    pub exp: i32,
+    #[serde(default)]
+    pub stars: i32,
 }
 
 #[derive(Debug)]
@@ -64,6 +69,9 @@ pub struct IBonuses {
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Gear {
+    #[wasm_bindgen(skip)]
+    pub id: String,
+
     pub gear_id: i32,
     pub exp: i32,
     pub stars: i32,
@@ -118,51 +126,42 @@ impl Gear {
 
         let (accuracy, evasion, anti_bomber, interception) = if category == GearCategory::LbFighter
         {
-            (
-                0,
-                0,
-                master.accuracy.unwrap_or_default(),
-                master.evasion.unwrap_or_default(),
-            )
+            (0, 0, master.accuracy, master.evasion)
         } else {
-            (
-                master.accuracy.unwrap_or_default(),
-                master.evasion.unwrap_or_default(),
-                0,
-                0,
-            )
+            (master.accuracy, master.evasion, 0, 0)
         };
 
         Gear {
+            id: state.id,
             gear_id: state.gear_id,
-            stars: state.stars.unwrap_or_default(),
-            exp: state.exp.unwrap_or_default(),
+            stars: state.stars,
+            exp: state.exp,
 
             category,
             special_type,
 
             name: master.name.clone(),
             types: master.types,
-            max_hp: master.max_hp.unwrap_or_default(),
-            firepower: master.firepower.unwrap_or_default(),
-            armor: master.armor.unwrap_or_default(),
-            torpedo: master.torpedo.unwrap_or_default(),
-            anti_air: master.anti_air.unwrap_or_default(),
-            speed: master.speed.unwrap_or_default(),
-            bombing: master.bombing.unwrap_or_default(),
-            asw: master.asw.unwrap_or_default(),
-            los: master.los.unwrap_or_default(),
-            luck: master.luck.unwrap_or_default(),
+            max_hp: master.max_hp,
+            firepower: master.firepower,
+            armor: master.armor,
+            torpedo: master.torpedo,
+            anti_air: master.anti_air,
+            speed: master.speed,
+            bombing: master.bombing,
+            asw: master.asw,
+            los: master.los,
+            luck: master.luck,
             accuracy,
             evasion,
             anti_bomber,
             interception,
-            range: master.range.unwrap_or_default(),
-            radius: master.radius.unwrap_or_default(),
-            cost: master.cost.unwrap_or_default(),
-            improvable: master.improvable.unwrap_or_default(),
-            adjusted_anti_air_resistance: master.adjusted_anti_air_resistance.unwrap_or_default(),
-            fleet_anti_air_resistance: master.fleet_anti_air_resistance.unwrap_or_default(),
+            range: master.range,
+            radius: master.radius,
+            cost: master.cost,
+            improvable: master.improvable,
+            adjusted_anti_air_resistance: master.adjusted_anti_air_resistance,
+            fleet_anti_air_resistance: master.fleet_anti_air_resistance,
 
             attrs,
             ibonuses,
@@ -173,8 +172,13 @@ impl Gear {
 #[wasm_bindgen]
 impl Gear {
     #[wasm_bindgen(getter)]
-    pub fn name(&self) -> JsString {
-        JsString::from(self.name.clone())
+    pub fn id(&self) -> String {
+        self.id.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn name(&self) -> String {
+        self.name.clone()
     }
 
     #[wasm_bindgen(getter)]
@@ -309,6 +313,13 @@ impl Gear {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_gear_state() {
+        let state: GearState = serde_json::from_str(r#"{ "gear_id": 1 }"#).unwrap();
+
+        println!("{:#?}", state)
+    }
 
     #[test]
     fn test_calc_fighter_power() {

@@ -18,57 +18,76 @@ pub struct MasterDataGearCategory {
     pub key: String,
 }
 
+fn default_as_1() -> f64 {
+    1.0
+}
+
 #[derive(Debug, Deserialize, Default)]
 pub struct MasterGear {
     pub gear_id: i32,
     pub name: String,
     pub types: [i32; 5],
     pub special_type: Option<i32>,
-    pub max_hp: Option<i32>,
-    pub firepower: Option<i32>,
-    pub armor: Option<i32>,
-    pub torpedo: Option<i32>,
-    pub anti_air: Option<i32>,
-    pub speed: Option<i32>,
-    pub bombing: Option<i32>,
-    pub asw: Option<i32>,
-    pub los: Option<i32>,
-    pub luck: Option<i32>,
-    pub accuracy: Option<i32>,
-    pub evasion: Option<i32>,
-    pub range: Option<i32>,
-    pub radius: Option<i32>,
-    pub cost: Option<i32>,
-    pub improvable: Option<bool>,
-    pub adjusted_anti_air_resistance: Option<f64>,
-    pub fleet_anti_air_resistance: Option<f64>,
-}
+    #[serde(default)]
+    pub max_hp: i32,
+    #[serde(default)]
+    pub firepower: i32,
+    #[serde(default)]
+    pub armor: i32,
+    #[serde(default)]
+    pub torpedo: i32,
+    #[serde(default)]
+    pub anti_air: i32,
+    #[serde(default)]
+    pub speed: i32,
+    #[serde(default)]
+    pub bombing: i32,
+    #[serde(default)]
+    pub asw: i32,
+    #[serde(default)]
+    pub los: i32,
+    #[serde(default)]
+    pub luck: i32,
+    #[serde(default)]
+    pub accuracy: i32,
+    #[serde(default)]
+    pub evasion: i32,
+    #[serde(default)]
+    pub range: i32,
+    #[serde(default)]
+    pub radius: i32,
+    #[serde(default)]
+    pub cost: i32,
+    #[serde(default)]
+    pub improvable: bool,
 
-fn option_i32_as_f64(value: Option<i32>) -> Option<f64> {
-    Some(value.unwrap_or_default() as f64)
+    #[serde(default = "default_as_1")]
+    pub adjusted_anti_air_resistance: f64,
+    #[serde(default = "default_as_1")]
+    pub fleet_anti_air_resistance: f64,
 }
 
 impl MasterGear {
     fn eval(&self, expr_str: &str) -> Option<f64> {
         let mut ns = |key: &str, args: Vec<f64>| match key {
             "gear_id" => Some(self.gear_id as f64),
-            "special_type" => option_i32_as_f64(self.special_type),
-            "max_hp" => option_i32_as_f64(self.max_hp),
-            "firepower" => option_i32_as_f64(self.firepower),
-            "armor" => option_i32_as_f64(self.armor),
-            "torpedo" => option_i32_as_f64(self.torpedo),
-            "anti_air" => option_i32_as_f64(self.anti_air),
-            "speed" => option_i32_as_f64(self.speed),
-            "bombing" => option_i32_as_f64(self.bombing),
-            "asw" => option_i32_as_f64(self.asw),
-            "los" => option_i32_as_f64(self.los),
-            "luck" => option_i32_as_f64(self.luck),
-            "accuracy" => option_i32_as_f64(self.accuracy),
-            "evasion" => option_i32_as_f64(self.evasion),
-            "range" => option_i32_as_f64(self.range),
-            "radius" => option_i32_as_f64(self.radius),
-            "cost" => option_i32_as_f64(self.cost),
-            "improvable" => Some(bool_to_f64!(self.improvable.unwrap_or_default())),
+            "special_type" => Some(self.special_type.unwrap_or_default() as f64),
+            "max_hp" => Some(self.max_hp as f64),
+            "firepower" => Some(self.firepower as f64),
+            "armor" => Some(self.armor as f64),
+            "torpedo" => Some(self.torpedo as f64),
+            "anti_air" => Some(self.anti_air as f64),
+            "speed" => Some(self.speed as f64),
+            "bombing" => Some(self.bombing as f64),
+            "asw" => Some(self.asw as f64),
+            "los" => Some(self.los as f64),
+            "luck" => Some(self.luck as f64),
+            "accuracy" => Some(self.accuracy as f64),
+            "evasion" => Some(self.evasion as f64),
+            "range" => Some(self.range as f64),
+            "radius" => Some(self.radius as f64),
+            "cost" => Some(self.cost as f64),
+            "improvable" => Some(bool_to_f64!(self.improvable)),
 
             "types" => args
                 .get(0)
@@ -389,23 +408,24 @@ pub mod test {
             gear_id: 10,
             name: "name".to_string(),
             types: [0, 1, 2, 3, 4],
-            max_hp: Some(11),
-            firepower: Some(12),
-            armor: Some(13),
-            torpedo: Some(14),
-            anti_air: Some(15),
-            speed: Some(16),
-            bombing: Some(17),
-            asw: Some(18),
-            los: Some(19),
-            luck: Some(20),
-            accuracy: Some(21),
-            evasion: Some(22),
-            range: Some(23),
-            radius: Some(24),
-            cost: Some(25),
             special_type: Some(26),
-            improvable: Some(true),
+
+            max_hp: 11,
+            firepower: 12,
+            armor: 13,
+            torpedo: 14,
+            anti_air: 15,
+            speed: 16,
+            bombing: 17,
+            asw: 18,
+            los: 19,
+            luck: 20,
+            accuracy: 21,
+            evasion: 22,
+            range: 23,
+            radius: 24,
+            cost: 25,
+            improvable: true,
             ..Default::default()
         };
 
@@ -414,43 +434,27 @@ pub mod test {
 
         assert_eq!(gear.eval("gear_id"), Some(10.));
         assert_eq!(gear.eval("types[3]"), Some(3.));
+        assert_eq!(gear.eval("special_type"), Some(26.));
 
         assert_eq!(gear.eval("gear_id_in(10)"), Some(1.));
         assert_eq!(gear.eval("category_in(1,2,3,4,5)"), Some(1.));
         assert_eq!(gear.eval("category_in(1,3,4,5)"), Some(0.));
-        assert_eq!(
-            gear.eval("improvable"),
-            Some(bool_to_f64!(gear.improvable.unwrap_or_default()))
-        );
+        assert_eq!(gear.eval("improvable"), Some(bool_to_f64!(gear.improvable)));
 
         macro_rules! test_fields {
             ($($field: ident),*) => (
                 {
                     $(assert_eq!(
                         gear.eval(stringify!($field)),
-                        Some(gear.$field.unwrap_or_default() as f64)
+                        Some(gear.$field as f64)
                     ));*
                 }
             )
         }
 
         test_fields!(
-            max_hp,
-            firepower,
-            armor,
-            torpedo,
-            anti_air,
-            speed,
-            bombing,
-            asw,
-            los,
-            luck,
-            accuracy,
-            evasion,
-            range,
-            radius,
-            cost,
-            special_type
+            max_hp, firepower, armor, torpedo, anti_air, speed, bombing, asw, los, luck, accuracy,
+            evasion, range, radius, cost
         );
     }
 }
