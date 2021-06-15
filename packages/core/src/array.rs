@@ -76,6 +76,18 @@ impl GearArray {
     pub fn count(&self, id: i32) -> usize {
         self.count_by(|g| g.gear_id == id)
     }
+
+    pub fn get_by_gear_key(&self, key: &str) -> &Option<Gear> {
+        match key {
+            "g1" => self.get(0),
+            "g2" => self.get(1),
+            "g3" => self.get(2),
+            "g4" => self.get(3),
+            "g5" => self.get(4),
+            "gx" => self.get(5),
+            _ => &None,
+        }
+    }
 }
 
 const SLOT_SIZE_ARRAY_LEN: usize = 5;
@@ -83,6 +95,21 @@ pub type SlotSizeArray = ArrayVec<Option<i32>, SLOT_SIZE_ARRAY_LEN>;
 
 const SHIP_ARRAY_LEN: usize = 7;
 pub type ShipArray = OptionalArray<Ship, SHIP_ARRAY_LEN>;
+
+impl ShipArray {
+    pub fn get_by_ship_key(&self, key: &str) -> &Option<Ship> {
+        match key {
+            "s1" => self.get(0),
+            "s2" => self.get(1),
+            "s3" => self.get(2),
+            "s4" => self.get(3),
+            "s5" => self.get(4),
+            "s6" => self.get(5),
+            "s7" => self.get(6),
+            _ => &None,
+        }
+    }
+}
 
 #[cfg(test)]
 mod test {
