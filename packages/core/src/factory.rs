@@ -113,8 +113,12 @@ impl Factory {
         }
     }
 
-    fn create_air_squadron_rs(&self, state: Option<AirSquadronState>) -> AirSquadron {
+    fn create_air_squadron_rs(&self, input: Option<AirSquadronState>) -> AirSquadron {
+        let state = input.unwrap_or_default();
+        let xxh3 = xxh3(&state);
+
         let AirSquadronState {
+            id,
             g1,
             g2,
             g3,
@@ -123,7 +127,7 @@ impl Factory {
             ss2,
             ss3,
             ss4,
-        } = state.unwrap_or_default();
+        } = state;
 
         let create_gear = |g: Option<GearState>| self.create_gear_rs(g);
 
@@ -142,7 +146,12 @@ impl Factory {
             .map(|ss| ss.or(Some(18)))
             .collect();
 
-        AirSquadron { gears, slots }
+        AirSquadron {
+            id,
+            xxh3,
+            gears,
+            slots,
+        }
     }
 }
 
