@@ -5,7 +5,7 @@ use crate::{
 use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Default, Clone, Deserialize)]
+#[derive(Debug, Default, Clone, Hash, Deserialize)]
 pub struct AirSquadronState {
     pub g1: Option<GearState>,
     pub g2: Option<GearState>,
