@@ -4,6 +4,7 @@ use crate::{
     constants::*,
     gear::{Gear, GearState},
     master::{MasterShip, StatInterval},
+    utils::xxh3,
 };
 use num_traits::FromPrimitive;
 use paste::paste;
@@ -11,22 +12,33 @@ use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 use wasmer_enumset::EnumSet;
 
-#[derive(Debug, Default, Clone, Deserialize)]
+#[derive(Debug, Default, Clone, Hash, Deserialize)]
 pub struct ShipState {
-    pub id: Option<String>,
+    #[serde(default)]
+    pub id: String,
     pub ship_id: i32,
     pub slots: Option<SlotSizeArray>,
     pub level: Option<i32>,
     pub current_hp: Option<i32>,
-    pub max_hp_mod: Option<i32>,
-    pub firepower_mod: Option<i32>,
-    pub torpedo_mod: Option<i32>,
-    pub armor_mod: Option<i32>,
-    pub anti_air_mod: Option<i32>,
-    pub evasion_mod: Option<i32>,
-    pub asw_mod: Option<i32>,
-    pub los_mod: Option<i32>,
-    pub luck_mod: Option<i32>,
+
+    #[serde(default)]
+    pub max_hp_mod: i32,
+    #[serde(default)]
+    pub firepower_mod: i32,
+    #[serde(default)]
+    pub torpedo_mod: i32,
+    #[serde(default)]
+    pub armor_mod: i32,
+    #[serde(default)]
+    pub anti_air_mod: i32,
+    #[serde(default)]
+    pub evasion_mod: i32,
+    #[serde(default)]
+    pub asw_mod: i32,
+    #[serde(default)]
+    pub los_mod: i32,
+    #[serde(default)]
+    pub luck_mod: i32,
 
     pub g1: Option<GearState>,
     pub g2: Option<GearState>,
@@ -68,6 +80,11 @@ pub struct ShipEquippable {
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Ship {
+    pub(crate) xxh3: u64,
+
+    #[wasm_bindgen(skip)]
+    pub id: String,
+
     pub ship_id: i32,
     pub level: i32,
     pub current_hp: i32,
@@ -177,6 +194,8 @@ impl Ship {
         banner: Option<String>,
         gears: GearArray,
     ) -> Self {
+        let xxh3 = xxh3(&state);
+
         let ebonuses = EBonuses::default();
         let state_slots = [state.ss1, state.ss2, state.ss3, state.ss4, state.ss5];
         let slots = master
@@ -187,6 +206,9 @@ impl Ship {
             .collect();
 
         let mut ship = Ship {
+            xxh3,
+
+            id: state.id,
             ship_id: state.ship_id,
             level: state.level.unwrap_or(master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
@@ -205,15 +227,15 @@ impl Ship {
             banner,
             master: master.clone(),
 
-            max_hp_mod: state.max_hp_mod.unwrap_or_default(),
-            firepower_mod: state.firepower_mod.unwrap_or_default(),
-            torpedo_mod: state.torpedo_mod.unwrap_or_default(),
-            armor_mod: state.armor_mod.unwrap_or_default(),
-            anti_air_mod: state.anti_air_mod.unwrap_or_default(),
-            evasion_mod: state.evasion_mod.unwrap_or_default(),
-            asw_mod: state.asw_mod.unwrap_or_default(),
-            los_mod: state.los_mod.unwrap_or_default(),
-            luck_mod: state.luck_mod.unwrap_or_default(),
+            max_hp_mod: state.max_hp_mod,
+            firepower_mod: state.firepower_mod,
+            torpedo_mod: state.torpedo_mod,
+            armor_mod: state.armor_mod,
+            anti_air_mod: state.anti_air_mod,
+            evasion_mod: state.evasion_mod,
+            asw_mod: state.asw_mod,
+            los_mod: state.los_mod,
+            luck_mod: state.luck_mod,
         };
 
         if ship.current_hp == 0 {
@@ -411,6 +433,16 @@ impl Ship {
 #[wasm_bindgen]
 impl Ship {
     #[wasm_bindgen(getter)]
+    pub fn id(&self) -> String {
+        self.id.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn xxh3(&self) -> String {
+        format!("{:X}", self.xxh3)
+    }
+
+    #[wasm_bindgen(getter)]
     pub fn name(&self) -> String {
         self.master.name.clone()
     }
@@ -458,24 +490,15 @@ impl Ship {
         self.master.clone()
     }
 
-    pub fn get_gear(&self, key: String) -> Option<Gear> {
-        match key.as_str() {
-            "g1" => self.gears.get(0),
-            "g2" => self.gears.get(1),
-            "g3" => self.gears.get(2),
-            "g4" => self.gears.get(3),
-            "g5" => self.gears.get(4),
-            "gx" => self.gears.get(5),
-            _ => &None,
-        }
-        .clone()
+    pub fn get_gear(&self, key: &str) -> Option<Gear> {
+        self.gears.get_by_gear_key(key).clone()
     }
 
     pub fn set_ebonuses(&mut self, js: JsValue) {
         self.ebonuses = js.into_serde().unwrap();
     }
 
-    pub fn can_equip(&self, gear: &Gear, string: Option<String>) -> bool {
+    pub fn can_equip(&self, gear: &Gear, key: &str) -> bool {
         if self.has_attr(ShipAttr::Abyssal) {
             return true;
         };
@@ -487,13 +510,6 @@ impl Ship {
         {
             return false;
         }
-
-        let key = match string {
-            Some(v) => v,
-            _ => return true,
-        };
-
-        let key = key.as_str();
 
         if key == "gx" {
             return self

@@ -1,11 +1,10 @@
-use crate::{const_gear_id, constants::*, master::MasterGear};
-use js_sys::JsString;
+use crate::{const_gear_id, constants::*, master::MasterGear, utils::xxh3};
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasmer_enumset::EnumSet;
 
-#[derive(Debug, Default, Clone, Deserialize)]
+#[derive(Debug, Default, Clone, Hash, Deserialize)]
 pub struct GearState {
     #[serde(default)]
     pub id: String,
@@ -69,6 +68,8 @@ pub struct IBonuses {
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Gear {
+    pub(crate) xxh3: u64,
+
     #[wasm_bindgen(skip)]
     pub id: String,
 
@@ -117,6 +118,8 @@ impl Gear {
         attrs: EnumSet<GearAttr>,
         ibonuses: IBonuses,
     ) -> Self {
+        let xxh3 = xxh3(&state);
+
         let category: GearCategory = FromPrimitive::from_i32(master.types[2]).unwrap_or_default();
 
         let special_type: GearCategory = master
@@ -132,6 +135,8 @@ impl Gear {
         };
 
         Gear {
+            xxh3,
+
             id: state.id,
             gear_id: state.gear_id,
             stars: state.stars,
@@ -174,6 +179,11 @@ impl Gear {
     #[wasm_bindgen(getter)]
     pub fn id(&self) -> String {
         self.id.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn xxh3(&self) -> String {
+        format!("{:X}", self.xxh3)
     }
 
     #[wasm_bindgen(getter)]
