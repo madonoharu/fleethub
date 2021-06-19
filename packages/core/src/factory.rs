@@ -5,6 +5,7 @@ use crate::{
     gear::{Gear, GearState},
     plan::{Plan, PlanState},
     ship::Ship,
+    utils::xxh3,
 };
 use crate::{master::MasterData, ship::ShipState};
 use wasm_bindgen::prelude::*;
@@ -22,7 +23,9 @@ pub struct Factory {
 }
 
 impl Factory {
-    pub fn create_gear_rs(&self, state: GearState) -> Option<Gear> {
+    pub fn create_gear_rs(&self, input: Option<GearState>) -> Option<Gear> {
+        let state = input?;
+
         let master = self
             .master_data
             .gears
@@ -35,7 +38,9 @@ impl Factory {
         Some(Gear::new(state, master, attrs, ibonuses))
     }
 
-    pub fn create_ship_rs(&self, state: ShipState) -> Option<Ship> {
+    pub fn create_ship_rs(&self, input: Option<ShipState>) -> Option<Ship> {
+        let state = input?;
+
         let ShipState {
             g1,
             g2,
@@ -46,16 +51,15 @@ impl Factory {
             ..
         } = &state;
 
-        let to_gear =
-            |g: &Option<GearState>| g.as_ref().and_then(|g| self.create_gear_rs(g.clone()));
+        let create_gear = |g: &Option<GearState>| self.create_gear_rs(g.clone());
 
         let gears = GearArray::new([
-            to_gear(g1),
-            to_gear(g2),
-            to_gear(g3),
-            to_gear(g4),
-            to_gear(g5),
-            to_gear(gx),
+            create_gear(g1),
+            create_gear(g2),
+            create_gear(g3),
+            create_gear(g4),
+            create_gear(g5),
+            create_gear(gx),
         ]);
 
         let master = self
@@ -77,8 +81,12 @@ impl Factory {
         Some(Ship::new(state, master, attrs, equippable, banner, gears))
     }
 
-    fn create_fleet_rs(&self, state: Option<FleetState>) -> Fleet {
+    fn create_fleet_rs(&self, input: Option<FleetState>) -> Fleet {
+        let state = input.unwrap_or_default();
+        let xxh3 = xxh3(&state);
+
         let FleetState {
+            id,
             s1,
             s2,
             s3,
@@ -86,24 +94,26 @@ impl Factory {
             s5,
             s6,
             s7,
-        } = state.unwrap_or_default();
-
-        let to_ship = |state: Option<ShipState>| state.and_then(|s| self.create_ship_rs(s));
+        } = state;
 
         let ships = ShipArray::new([
-            to_ship(s1),
-            to_ship(s2),
-            to_ship(s3),
-            to_ship(s4),
-            to_ship(s5),
-            to_ship(s6),
-            to_ship(s7),
+            self.create_ship_rs(s1),
+            self.create_ship_rs(s2),
+            self.create_ship_rs(s3),
+            self.create_ship_rs(s4),
+            self.create_ship_rs(s5),
+            self.create_ship_rs(s6),
+            self.create_ship_rs(s7),
         ]);
 
-        Fleet { ships }
+        Fleet {
+            id: id.unwrap_or_default(),
+            xxh3,
+            ships,
+        }
     }
 
-    fn create_air_squadron_rs(&self, state: AirSquadronState) -> AirSquadron {
+    fn create_air_squadron_rs(&self, state: Option<AirSquadronState>) -> AirSquadron {
         let AirSquadronState {
             g1,
             g2,
@@ -113,15 +123,15 @@ impl Factory {
             ss2,
             ss3,
             ss4,
-        } = state;
+        } = state.unwrap_or_default();
 
-        let to_gear = |g: Option<GearState>| g.and_then(|g| self.create_gear_rs(g));
+        let create_gear = |g: Option<GearState>| self.create_gear_rs(g);
 
         let gears = GearArray::new([
-            to_gear(g1),
-            to_gear(g2),
-            to_gear(g3),
-            to_gear(g4),
+            create_gear(g1),
+            create_gear(g2),
+            create_gear(g3),
+            create_gear(g4),
             None,
             None,
         ]);
@@ -145,24 +155,17 @@ impl Factory {
     }
 
     pub fn create_gear(&self, js: JsValue) -> Option<Gear> {
-        let state: GearState = match js.into_serde() {
-            Ok(s) => s,
-            Err(e) => {
-                console_log!("{:?}", e.to_string());
-                return None;
-            }
-        };
-
+        let state = js.into_serde().ok();
         self.create_gear_rs(state)
     }
 
     pub fn create_ship(&self, js: JsValue) -> Option<Ship> {
-        let state: ShipState = js.into_serde().ok()?;
+        let state = js.into_serde().ok();
         self.create_ship_rs(state)
     }
 
     pub fn create_air_squadron(&self, js: JsValue) -> Option<AirSquadron> {
-        let state: AirSquadronState = js.into_serde().ok()?;
+        let state = js.into_serde().ok();
 
         Some(self.create_air_squadron_rs(state))
     }
@@ -176,25 +179,38 @@ impl Factory {
     pub fn create_plan(&self, js: JsValue) -> Option<Plan> {
         let state: PlanState = js.into_serde().ok()?;
 
+        let xxh3 = xxh3(&state);
+
         let PlanState {
+            id,
             main,
             escort,
             route_sup,
             boss_sup,
+            a1,
+            a2,
+            a3,
             hq_level,
         } = state;
 
         Some(Plan {
+            xxh3,
+            id,
+
             main: self.create_fleet_rs(main),
             escort: self.create_fleet_rs(escort),
             route_sup: self.create_fleet_rs(route_sup),
             boss_sup: self.create_fleet_rs(boss_sup),
 
+            a1: self.create_air_squadron_rs(a1),
+            a2: self.create_air_squadron_rs(a2),
+            a3: self.create_air_squadron_rs(a3),
+
             hq_level: hq_level.unwrap_or(120),
         })
     }
 
-    pub fn get_gear_ids(&self, _ship: &Ship) -> Vec<i32> {
+    pub fn get_gear_ids(&self) -> Vec<i32> {
         self.master_data.gears.iter().map(|g| g.gear_id).collect()
     }
 
