@@ -77,4 +77,19 @@ impl Plan {
 
         Ok(fleet.clone())
     }
+
+    pub fn get_air_squadron(&self, key: &str) -> Result<AirSquadron, JsValue> {
+        let air_squadron = match key {
+            "a1" => &self.a1,
+            "a2" => &self.a2,
+            "a3" => &self.a3,
+            _ => {
+                return Err(JsValue::from_str(
+                    r#"get_air_squadron() argument must be "a1", "a2" or "a3""#,
+                ))
+            }
+        };
+
+        Ok(air_squadron.clone())
+    }
 }
