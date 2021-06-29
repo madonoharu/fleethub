@@ -4,6 +4,7 @@ import { Button, Tooltip, Typography } from "@material-ui/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { ShipEntity } from "../../../store";
 import {
   ClearButton,
   EditButton,
@@ -20,6 +21,7 @@ const StyledButton = styled(Button)`
 
 type Props = {
   ship: Ship;
+  onUpdate?: (changes: Partial<ShipEntity>) => void;
   onDetailClick?: () => void;
   onRemove?: () => void;
 };
@@ -27,6 +29,7 @@ type Props = {
 const ShipHeader: React.FCX<Props> = ({
   className,
   ship,
+  onUpdate,
   onDetailClick,
   onRemove,
 }) => {

@@ -22,12 +22,8 @@
     "tscheck": "tsc --noEmit",
     "update:constants": "yarn ts-node scripts/updateConstants",
     "update:locales": "yarn ts-node scripts/updateLocales",
-    "utils": "yarn workspace @fleethub/utils"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "utils": "yarn workspace @fleethub/utils",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json}": "prettier --write"
@@ -41,40 +37,40 @@
   "devDependencies": {
     "@fleethub/utils": "*",
     "@types/fs-extra": "^9.0.11",
-    "@types/google-spreadsheet": "^3.1.2",
+    "@types/google-spreadsheet": "^3.1.3",
     "@types/jest": "^26.0.23",
     "@types/lodash-es": "^4.17.4",
-    "@types/node": "^15.12.1",
+    "@types/node": "^15.12.5",
     "@types/signale": "^1.4.1",
-    "@typescript-eslint/eslint-plugin": "^4.26.0",
-    "@typescript-eslint/parser": "^4.26.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
     "axios": "^0.21.1",
-    "babel-jest": "^27.0.2",
-    "cloudinary": "^1.26.0",
+    "babel-jest": "^27.0.6",
+    "cloudinary": "^1.26.1",
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "expr-eval": "^2.0.2",
-    "firebase-admin": "^9.9.0",
+    "firebase-admin": "^9.10.0",
     "fs-extra": "^10.0.0",
     "google-spreadsheet": "^3.1.15",
     "got": "^11.8.2",
-    "husky": "^4.3.8",
+    "husky": "^6.0.0",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^27.0.4",
+    "jest": "^27.0.6",
     "kc-tools": "^1.1.0",
     "ky": "^0.28.5",
     "lint-staged": "^11.0.0",
     "lodash-es": "^4.17.21",
-    "prettier": "^2.3.1",
+    "prettier": "^2.3.2",
     "signale": "^1.4.0",
-    "ts-jest": "^27.0.2",
+    "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.4"
   },
   "engines": {
     "npm": "Please use yarn"

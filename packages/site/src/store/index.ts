@@ -1,4 +1,4 @@
-export * from "./airbaseSlice";
+export * from "./airSquadronsSlice";
 export * from "./appSlice";
 export * from "./createStore";
 export * from "./entities";

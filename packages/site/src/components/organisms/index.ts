@@ -11,6 +11,7 @@ export { default as GearBox } from "./GearBox";
 export { default as GearNameplate } from "./GearNameplate";
 export { default as GearTooltip } from "./GearTooltip";
 export { default as ImportMenu } from "./ImportMenu";
+export { default as LandBaseScreen } from "./LandBaseScreen";
 export { default as SearchInput } from "./SearchInput";
 export { default as ShipBox } from "./ShipBox";
 export { default as Table } from "./Table";

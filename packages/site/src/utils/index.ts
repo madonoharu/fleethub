@@ -22,4 +22,5 @@ export { default as batch } from "./batch";
 export * from "./cloudinary";
 export * from "./ebonuses";
 export * from "./FhDictionary";
+export * from "./link";
 export * from "./publish";

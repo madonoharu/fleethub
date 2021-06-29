@@ -1,11 +1,20 @@
-import { Factory, Fleet, Gear, Ship } from "@fleethub/core";
+import { Factory, Fleet, Gear, Plan, Ship } from "@fleethub/core";
 import {
+  AIR_SQUADRON_KEYS,
+  AirSquadronKey,
+  AirSquadronState,
+  Dict,
   FleetState,
   GEAR_KEYS,
+  GearKey,
   GearState,
+  GearStateDict,
   mapValues,
   MasterData,
+  PlanState,
   Role,
+  ROLES,
+  SHIP_KEYS,
   ShipState,
 } from "@fleethub/utils";
 import { EntityId, nanoid } from "@reduxjs/toolkit";
@@ -15,12 +24,17 @@ import { DefaultRootState, useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 
 import {
+  airSquadronsSelectors,
+  fleetsSelectors,
   gearsSelectors,
+  PlanEntity,
+  plansSelectors,
+  plansSlice,
+  ShipEntity,
   ShipPosition,
   shipsSelectors,
   shipsSlice,
 } from "../store";
-import { selectFleet } from "../store/fleetsSlice";
 import { createShallowEqualSelector } from "../utils";
 
 export type FhCoreState = {
@@ -30,30 +44,67 @@ export type FhCoreState = {
 
 export const FhCoreContext = createContext<FhCoreState | null>(null);
 
-const createGearStateSelector = (id: EntityId) =>
-  createSelector(
-    (root: DefaultRootState) => gearsSelectors.selectById(root, id),
-    (entity) => entity
-  );
+type GearEntityIds = Dict<GearKey, EntityId>;
 
-const selectGearState = createCachedSelector(
-  gearsSelectors.selectById,
-  (entity) => entity
-)({ keySelector: (_, id) => id });
+const selectGearStateDict = (root: DefaultRootState, ids: GearEntityIds) => {
+  const state: GearStateDict = {};
+
+  GEAR_KEYS.forEach((key) => {
+    const id = ids[key] || "";
+    state[key] = gearsSelectors.selectById(root, id);
+  });
+
+  return state as Record<GearKey, GearState | undefined>;
+};
 
 export const selectShipState = createCachedSelector(
   (root: DefaultRootState, id: EntityId): ShipState | undefined => {
-    const shipEntity = shipsSelectors.selectById(root, id);
-    if (!shipEntity) return undefined;
+    const entity = shipsSelectors.selectById(root, id);
+    if (!entity) return undefined;
 
-    const state = { ...shipEntity } as ShipState;
+    const gearStateDict = selectGearStateDict(root, entity);
 
-    GEAR_KEYS.forEach((key) => {
-      const id = shipEntity[key];
-      if (id) {
-        state[key] = gearsSelectors.selectById(root, id);
-      } else {
-        delete state[key];
+    const state: ShipState = {
+      ...entity,
+      ...gearStateDict,
+      id: id.toString(),
+    };
+
+    return state;
+  },
+  (state) => state
+)({
+  keySelector: (_, id) => id,
+  selectorCreator: createShallowEqualSelector,
+});
+
+const selectAirSquadronState = (root: DefaultRootState, id: EntityId) => {
+  const entity = airSquadronsSelectors.selectById(root, id);
+
+  if (!entity) return undefined;
+
+  const gearStateDict = selectGearStateDict(root, entity);
+
+  const state: AirSquadronState = {
+    ...entity,
+    ...gearStateDict,
+    id: id.toString(),
+  };
+
+  return state;
+};
+
+export const selectFleetState = createCachedSelector(
+  (root: DefaultRootState, id: EntityId): FleetState | undefined => {
+    const entity = fleetsSelectors.selectById(root, id);
+    if (!entity) return undefined;
+
+    const state: FleetState = { id: id.toString() };
+
+    SHIP_KEYS.forEach((key) => {
+      const shipEntityId = entity[key];
+      if (shipEntityId) {
+        state[key] = selectShipState(root, shipEntityId);
       }
     });
 
@@ -61,7 +112,35 @@ export const selectShipState = createCachedSelector(
   },
   (state) => state
 )({
-  keySelector: (state, id) => id,
+  keySelector: (_, id) => id,
+  selectorCreator: createShallowEqualSelector,
+});
+
+export const selectPlanState = createCachedSelector(
+  (root: DefaultRootState, id: EntityId): PlanState | undefined => {
+    const entity = plansSelectors.selectById(root, id);
+    if (!entity) return undefined;
+
+    const state = { ...entity, id: id.toString() } as PlanState;
+
+    ROLES.forEach((key) => {
+      const fleetEntityId = entity[key];
+      state[key] =
+        (fleetEntityId && selectFleetState(root, fleetEntityId)) || {};
+    });
+
+    AIR_SQUADRON_KEYS.forEach((key) => {
+      const airSquadronId = entity[key];
+      state[key] = airSquadronId
+        ? selectAirSquadronState(root, airSquadronId)
+        : undefined;
+    });
+
+    return state;
+  },
+  (state) => state
+)({
+  keySelector: (_, id) => id,
   selectorCreator: createShallowEqualSelector,
 });
 
@@ -74,18 +153,6 @@ export const useFhCore = () => {
 
   const { factory, master_data } = contextValue;
 
-  const createGear = (state: GearState): Gear | undefined => {
-    return factory.create_gear(state);
-  };
-
-  const createShip = (state: ShipState): Ship | undefined => {
-    return factory.create_ship(state);
-  };
-
-  const createFleet = (state: FleetState): Fleet | undefined => {
-    return factory.create_fleet(state);
-  };
-
   const findShipClassName = (ctype: number) =>
     master_data.ship_classes.find((sc) => sc.id === ctype)?.name || "";
 
@@ -95,9 +162,10 @@ export const useFhCore = () => {
   return {
     master_data,
     factory,
-    createGear,
-    createShip,
-    createFleet,
+    createGear: (state: GearState) => factory.create_gear(state),
+    createShip: (state: ShipState) => factory.create_ship(state),
+    createFleet: (state: FleetState) => factory.create_fleet(state),
+    createPlan: (state: PlanState) => factory.create_plan(state),
     findShipClassName,
     findGearCategoryName,
   };
@@ -121,24 +189,9 @@ export const useGear = (id?: EntityId) => {
 
 export const useFleet = (id: EntityId) => {
   const { createFleet } = useFhCore();
-  const entity = useSelector((root) => selectFleet(root, id));
+
+  const state = useSelector((root) => selectFleetState(root, id));
   const dispatch = useDispatch();
-
-  const state = useSelector((root) => {
-    if (!entity) return;
-
-    const selectShipArrayState = (role: Role) =>
-      mapValues(entity[role], (id): ShipState | undefined =>
-        id ? selectShipState(root, id) : undefined
-      );
-
-    return {
-      main: selectShipArrayState("main"),
-      escort: selectShipArrayState("escort"),
-      route_sup: selectShipArrayState("route_sup"),
-      boss_sup: selectShipArrayState("boss_sup"),
-    };
-  });
 
   const fleet = state && createFleet(state);
   fleet?.free();
@@ -155,5 +208,22 @@ export const useFleet = (id: EntityId) => {
     [dispatch, id]
   );
 
-  return { entity, setShip };
+  return { setShip };
+};
+
+export const usePlan = (id: EntityId) => {
+  const { createPlan } = useFhCore();
+  const dispatch = useDispatch();
+  const state = useSelector((root) => selectPlanState(root, id));
+  const plan = state && createPlan(state);
+
+  const actions = useMemo(() => {
+    const setHqLevel = (hq_level: number) => {
+      dispatch(plansSlice.actions.update({ id, changes: { hq_level } }));
+    };
+
+    return { setHqLevel };
+  }, [dispatch, id]);
+
+  return { plan, actions };
 };

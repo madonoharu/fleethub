@@ -6,9 +6,25 @@ import { ShipEntity, shipsSelectors, shipsSlice } from "../store";
 import { getEbonuses } from "../utils";
 import { selectShipState, useFhCore } from "./useFhCore";
 
+export const useShipActions = (id: EntityId) => {
+  const dispatch = useDispatch();
+
+  return useMemo(() => {
+    const update = (changes: Partial<ShipEntity>) => {
+      id && dispatch(shipsSlice.actions.update({ id, changes }));
+    };
+
+    const remove = () => {
+      id && dispatch(shipsSlice.actions.remove(id));
+    };
+
+    return { update, remove };
+  }, [dispatch, id]);
+};
+
 export const useShip = (id: EntityId) => {
   const { createShip } = useFhCore();
-  const dispatch = useDispatch();
+  const actions = useShipActions(id);
   const entity = useSelector((root) => shipsSelectors.selectById(root, id));
   const state = useSelector((root) => selectShipState(root, id));
 
@@ -27,18 +43,6 @@ export const useShip = (id: EntityId) => {
     return ship;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
-
-  const actions = useMemo(() => {
-    const update = (changes: Partial<ShipEntity>) => {
-      id && dispatch(shipsSlice.actions.update({ id, changes }));
-    };
-
-    const remove = () => {
-      id && dispatch(shipsSlice.actions.remove(id));
-    };
-
-    return { update, remove };
-  }, [dispatch, id]);
 
   return {
     ship,

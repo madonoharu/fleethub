@@ -19,11 +19,11 @@ export type PlanState = { id: EntityId };
 
 export type PlanStateWithId = PlanState & { id: string };
 
-type FileBase<T extends string, P = {}> = {
+type FileBase<T extends string, P = Record<string, unknown>> = {
   id: string;
   type: T;
-  name?: string;
-  description?: string;
+  name: string;
+  description: string;
 } & P;
 
 export type FolderEntity = FileBase<"folder", { children: string[] }>;
@@ -42,15 +42,14 @@ type FileId = string & { [fileIdNominality]?: never };
 export type ParentKey = FileId | "root" | "temp";
 
 const adapter = createEntityAdapter<FileEntity>();
-export const filesSelectors: EntitySelectors<
-  FileEntity,
-  DefaultRootState
-> = adapter.getSelectors(selectFilesState);
+export const filesSelectors: EntitySelectors<FileEntity, DefaultRootState> =
+  adapter.getSelectors(selectFilesState);
 
 const initalRoot: FolderEntity = {
   id: "root",
   type: "folder",
   name: "ルート",
+  description: "",
   children: [],
 };
 
@@ -58,6 +57,7 @@ const initalTemp: FolderEntity = {
   id: "temp",
   type: "folder",
   name: "一時フォルダー",
+  description: "",
   children: [],
 };
 
@@ -167,12 +167,22 @@ export const filesSlice = createSlice({
           id: payload.plan.id,
           type: "plan",
           name,
+          description: "",
         };
 
         addFiles(state, [file], payload.to);
       },
       prepare: ({ plan, to }: { plan?: PlanState; to: ParentKey }) => ({
         payload: { plan: { ...plan, id: nanoid() }, to },
+        meta: {
+          main: nanoid(),
+          escort: nanoid(),
+          route_sup: nanoid(),
+          boss_sup: nanoid(),
+          a1: nanoid(),
+          a2: nanoid(),
+          a3: nanoid(),
+        },
       }),
     },
 
@@ -185,6 +195,7 @@ export const filesSlice = createSlice({
         id: nanoid(),
         type: "folder",
         name: `フォルダー${count}`,
+        description: "",
         children: [],
       };
 
@@ -230,12 +241,14 @@ export const flatFile = (
   ];
 };
 
-export const removeFile = (id: string): AppThunk => (dispatch, getState) => {
-  const state = getState();
-  const entities = filesSelectors.selectEntities(state);
-  const ids = flatFile(entities, id).map((file) => file.id);
-  dispatch(filesSlice.actions.remove(ids));
-};
+export const removeFile =
+  (id: string): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    const entities = filesSelectors.selectEntities(state);
+    const ids = flatFile(entities, id).map((file) => file.id);
+    dispatch(filesSlice.actions.remove(ids));
+  };
 
 export const getTempIds = (state: FilesState) => {
   const { temp, entities } = state;
