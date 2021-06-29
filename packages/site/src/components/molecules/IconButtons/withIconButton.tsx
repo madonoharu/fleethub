@@ -1,13 +1,12 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
-import SvgIcon from "@material-ui/core/SvgIcon";
 import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip";
 import React from "react";
 
-const smallStyle = css`
-  font-size: 1.25rem;
-  padding: 6px;
+const tinyStyle = css`
+  padding: 3px;
+  line-height: 0;
 `;
 
 export interface WithIconButtonProps extends Omit<IconButtonProps, "size"> {
@@ -28,7 +27,7 @@ const withIconButton = (WrappedIcon: React.FC) => {
     const WrappedButton = (
       <IconButton
         size={size === "tiny" || size === "small" ? "small" : undefined}
-        css={size === "small" && smallStyle}
+        css={size === "tiny" && tinyStyle}
         {...iconButonProps}
       >
         <WrappedIcon css={{ fontSize: "inherit" }} />
