@@ -4,13 +4,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-
+const withTM = require("next-transpile-modules")(["@material-ui/icons"]);
 const { i18n } = require("./next-i18next.config");
 
 const config = {
-  future: {
-    webpack5: true,
-  },
   env: {
     VERSION: require("./package.json").version,
   },
@@ -40,4 +37,4 @@ const config = {
   },
 };
 
-module.exports = config;
+module.exports = withTM(config);

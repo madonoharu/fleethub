@@ -1,10 +1,13 @@
 import styled from "@emotion/styled";
+import { Plan } from "@fleethub/core";
 import { Button, ClickAwayListener } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import React, { useState } from "react";
 
+import { PlanFileEntity } from "../../../store";
 import { Flexbox, PlanIcon } from "../../atoms";
 import { NumberInput, TextField } from "../../molecules";
+import PlanAction from "./PlanAction";
 
 const StyledTextField = styled(TextField)`
   input {
@@ -70,30 +73,40 @@ const LevelInput = styled(NumberInput)`
   }
 `;
 
-type Props = {
-  id: string;
+type PlanScreenHeaderProps = {
+  plan: Plan;
+  file?: PlanFileEntity;
+  onNameChange?: (value: string) => void;
+  onHqLevelChange?: (value: number) => void;
 };
 
-const PlanEditorHeader: React.FCX<Props> = ({ className, id }) => {
+const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
+  className,
+  plan,
+  file,
+  onNameChange,
+  onHqLevelChange,
+}) => {
   return (
     <div className={className}>
       <Flexbox>
         <TextField
           placeholder="name"
           startLabel={<PlanIcon />}
-          value={file.name}
-          onChange={fileActions.setName}
+          value={file?.name || ""}
+          onChange={onNameChange}
         />
         <LevelInput
           startLabel="司令部Lv"
-          value={plan.hqLevel}
+          value={plan.hq_level}
           min={1}
           max={120}
-          onChange={handleHqLevelChange}
+          onChange={onHqLevelChange}
         />
+        <PlanAction plan={plan} />
       </Flexbox>
     </div>
   );
 };
 
-export default PlanEditorHeader;
+export default PlanScreenHeader;

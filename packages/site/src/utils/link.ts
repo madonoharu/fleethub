@@ -1,18 +1,18 @@
-import { getDeck4, Plan } from "@fleethub/core";
+import { Plan } from "@fleethub/core";
 
 const getPredeckUrl = (base: string, plan: Plan) => {
-  const url = new URL("https://noro6.github.io/kcTools/");
-  const deck = getDeck4(plan);
+  const url = new URL(base);
+  // const deck = getDeck4(plan);
 
-  url.searchParams.set("predeck", JSON.stringify(deck));
-  if (url.href.length < 7900) return url.href;
+  // url.searchParams.set("predeck", JSON.stringify(deck));
+  // if (url.href.length < 7900) return url.href;
 
-  delete deck.f4;
-  url.searchParams.set("predeck", JSON.stringify(deck));
-  if (url.href.length < 7900) return url.href;
+  // delete deck.f4;
+  // url.searchParams.set("predeck", JSON.stringify(deck));
+  // if (url.href.length < 7900) return url.href;
 
-  delete deck.f3;
-  url.searchParams.set("predeck", JSON.stringify(deck));
+  // delete deck.f3;
+  // url.searchParams.set("predeck", JSON.stringify(deck));
   return url.href;
 };
 

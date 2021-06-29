@@ -43,6 +43,7 @@ rand = "0.8.3"
 rand_xoshiro = "0.6.0"
 getrandom = { version = "0.2.3", features = ["js"] }
 xxhash-rust = { version = "0.8.2", features = ["xxh3"] }
+seq-macro = "0.2.2"
 
 [dependencies.web-sys]
 version = "0.3.51"

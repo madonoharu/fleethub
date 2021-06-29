@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
 import { GearState } from "@fleethub/utils";
 import React from "react";
+import { shallowEqual } from "react-redux";
 
 import { Flexbox } from "../../atoms";
 import {
@@ -92,7 +93,13 @@ const GearLabel: React.FCX<Props> = ({
   );
 };
 
-const Styled = styled(GearLabel)(
+const Memoized = React.memo(
+  GearLabel,
+  ({ gear: prevGear, ...prevRest }, { gear: nextGear, ...nextRest }) =>
+    shallowEqual(prevRest, nextRest) && prevGear.xxh3 === nextGear.xxh3
+);
+
+const Styled = styled(Memoized)(
   ({ theme }) => css`
     width: 100%;
     transition: 250ms;

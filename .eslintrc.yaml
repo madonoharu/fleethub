@@ -41,3 +41,4 @@ ignorePatterns:
   - "**/esm/*"
   - "**/cjs/*"
   - "**/pkg/*"
+  - "**/*.rs"

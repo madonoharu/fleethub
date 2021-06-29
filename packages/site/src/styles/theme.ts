@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from "@material-ui/core";
 
 import { colors, palette } from "./colors";
 
@@ -17,7 +17,7 @@ sans-serif,
 "Noto Sans Emoji"
 `;
 
-const muiTheme = createMuiTheme({
+const muiTheme = createTheme({
   typography: {
     fontFamily,
   },

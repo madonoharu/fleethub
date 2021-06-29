@@ -1,31 +1,57 @@
 import styled from "@emotion/styled";
+import { Fleet } from "@fleethub/core";
 import { Role } from "@fleethub/utils";
-import { EntityId } from "@reduxjs/toolkit";
+import { EntityId, nanoid } from "@reduxjs/toolkit";
 import React from "react";
+import { useMemo } from "react";
+import { shallowEqual, useDispatch } from "react-redux";
 
-import { useFleet } from "../../../hooks";
+import { Ship } from "../../../../public/pkg";
+import { ShipPosition, shipsSlice } from "../../../store";
 import FleetShipList from "./FleetShipList";
 
 type FleetScreenProps = {
-  id: EntityId;
+  fleet: Fleet;
   role: Role;
 };
 
-const FleetScreen: React.FCX<FleetScreenProps> = React.memo(
-  ({ className, id, role }) => {
-    const { entity, setShip } = useFleet(id);
+export const useFleetActions = (id: EntityId) => {
+  const dispatch = useDispatch();
 
-    if (!entity) {
-      return null;
-    }
+  return useMemo(
+    () => ({
+      setShip: (position: Omit<ShipPosition, "id">, ship: Ship) => {
+        dispatch(
+          shipsSlice.actions.add(
+            { id: nanoid(), ship_id: ship.ship_id },
+            { ...position, id }
+          )
+        );
+      },
+    }),
+    [dispatch, id]
+  );
+};
 
-    return (
-      <div className={className}>
-        <h3>{role}</h3>
-        <FleetShipList role={role} ships={entity[role]} setShip={setShip} />
-      </div>
-    );
-  }
+const FleetScreen: React.FCX<FleetScreenProps> = ({
+  className,
+  fleet,
+  role,
+}) => {
+  const actions = useFleetActions(fleet.id);
+
+  return (
+    <div className={className}>
+      <h3>{role}</h3>
+      <FleetShipList role={role} fleet={fleet} setShip={actions.setShip} />
+    </div>
+  );
+};
+
+const Memoized = React.memo(
+  FleetScreen,
+  ({ fleet: prevFleet, ...prevRest }, { fleet: nextFleet, ...nextRest }) =>
+    prevFleet.xxh3 === nextFleet.xxh3 && shallowEqual(prevRest, nextRest)
 );
 
-export default styled(FleetScreen)``;
+export default styled(Memoized)``;
