@@ -3,9 +3,11 @@ import { Ship } from "@fleethub/core";
 import { Button, ButtonProps } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import { EntityId } from "@reduxjs/toolkit";
+import next from "next";
 import React from "react";
+import { shallowEqual } from "react-redux";
 
-import { useModal, useShip } from "../../../hooks";
+import { useModal, useShipActions } from "../../../hooks";
 import ShipList from "../../templates/ShipList";
 import Swappable from "../Swappable";
 import ShipCard from "./ShipCard";
@@ -18,57 +20,61 @@ const AddShipButton: React.FC<ButtonProps> = (props) => (
 );
 
 export type ShipBoxProps = {
-  id?: EntityId;
+  ship?: Ship;
   onShipChange?: (ship: Ship) => void;
 };
 
-const ShipBox: React.FCX<ShipBoxProps> = React.memo(
-  ({ className, id, onShipChange }) => {
-    const { ship, entity, actions } = useShip(id || "");
+const ShipBox: React.FCX<ShipBoxProps> = ({
+  className,
+  ship,
+  onShipChange,
+}) => {
+  const id = ship?.id || "";
 
-    const Modal = useModal();
+  const actions = useShipActions(id);
 
-    const handleShipChange = () => {
-      Modal.show();
-    };
+  const Modal = useModal();
 
-    const element =
-      !ship || !entity ? (
-        <AddShipButton onClick={handleShipChange} />
-      ) : (
-        <ShipCard
-          ship={ship}
-          entity={entity}
-          onUpdate={actions.update}
-          onRemove={actions.remove}
+  const handleShipChange = () => {
+    Modal.show();
+  };
+
+  const element = !ship ? (
+    <AddShipButton onClick={handleShipChange} />
+  ) : (
+    <ShipCard ship={ship} onUpdate={actions.update} onRemove={actions.remove} />
+  );
+
+  return (
+    <>
+      <Swappable
+        className={className}
+        type="ship"
+        item={{ id }}
+        onSwap={(dragItem, dropItem) => console.log(dragItem, dropItem)}
+        dragLayer={"a"}
+      >
+        {element}
+      </Swappable>
+      <Modal full>
+        <ShipList
+          onSelect={(ship) => {
+            onShipChange?.(ship);
+            Modal.hide();
+          }}
         />
-      );
+      </Modal>
+    </>
+  );
+};
 
-    return (
-      <>
-        <Swappable
-          className={className}
-          type="ship"
-          item={{ id }}
-          onSwap={(dragItem, dropItem) => console.log(dragItem, dropItem)}
-          dragLayer={"a"}
-        >
-          {element}
-        </Swappable>
-        <Modal full>
-          <ShipList
-            onSelect={(ship) => {
-              onShipChange?.(ship);
-              Modal.hide();
-            }}
-          />
-        </Modal>
-      </>
-    );
-  }
+const Memoized = React.memo(
+  ShipBox,
+  ({ ship: prevShip, ...prevRest }, { ship: nextShip, ...nextRest }) =>
+    prevShip?.xxh3 === nextShip?.xxh3 && shallowEqual(prevRest, nextRest)
 );
 
-const Styled = styled(ShipBox)`
+const Styled = styled(Memoized)`
   height: ${24 * 7 + 16}px;
 
   > * {

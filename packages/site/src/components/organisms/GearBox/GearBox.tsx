@@ -3,41 +3,48 @@ import { Gear } from "@fleethub/core";
 import { GearState } from "@fleethub/utils";
 import { EntityId } from "@reduxjs/toolkit";
 import { EquipmentBonuses } from "equipment-bonus";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useMemo } from "react";
+import { useDispatch } from "react-redux";
 
-import { useFhCore, useModal } from "../../../hooks";
-import { GearPosition, gearsSelectors, gearsSlice } from "../../../store";
+import { useModal } from "../../../hooks";
+import { GearPosition, gearsSlice } from "../../../store";
 import GearList from "../../templates/GearList";
 import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
 import AddGearButton from "./AddGearButton";
 
 type Props = {
-  id?: EntityId;
+  gear?: Gear;
   position?: GearPosition;
   canEquip?: (gear: Gear) => boolean;
   getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
+const useGearActions = (id?: EntityId) => {
+  const dispatch = useDispatch();
+
+  return useMemo(() => {
+    const update = (changes: Partial<GearState>) => {
+      id && dispatch(gearsSlice.actions.update({ id, changes }));
+    };
+
+    const remove = () => {
+      id && dispatch(gearsSlice.actions.remove(id));
+    };
+
+    return { update, remove };
+  }, [id, dispatch]);
+};
+
 const GearBox: React.FCX<Props> = ({
   className,
-  id,
+  gear,
   position,
   canEquip,
   getNextEbonuses,
 }) => {
-  const { createGear } = useFhCore();
   const GearListModal = useModal();
-
-  const entity = useSelector((root) => {
-    if (id !== undefined) return gearsSelectors.selectById(root, id);
-    return undefined;
-  });
-
   const dispatch = useDispatch();
-
-  const gear = entity && createGear(entity);
 
   const handleGearChange = (gear: Gear) => {
     if (position) {
@@ -45,13 +52,9 @@ const GearBox: React.FCX<Props> = ({
     }
   };
 
-  const handleUpdate = (changes: Partial<GearState>) => {
-    id && dispatch(gearsSlice.actions.update({ id, changes }));
-  };
+  const id = gear?.id;
 
-  const handleRemove = () => {
-    entity && dispatch(gearsSlice.actions.remove(entity.id));
-  };
+  const actions = useGearActions(id);
 
   let inner: React.ReactElement;
 
@@ -59,7 +62,11 @@ const GearBox: React.FCX<Props> = ({
     inner = <AddGearButton onClick={GearListModal.show} />;
   } else {
     inner = (
-      <GearLabel gear={gear} onUpdate={handleUpdate} onRemove={handleRemove} />
+      <GearLabel
+        gear={gear}
+        onUpdate={actions.update}
+        onRemove={actions.remove}
+      />
     );
   }
 

@@ -9,14 +9,15 @@ import { persistReducer, WebStorage } from "redux-persist";
 import { ThunkAction } from "redux-thunk";
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo";
 
-import { airbasesSlice } from "./airbaseSlice";
+import { airSquadronsSlice } from "./airSquadronsSlice";
 import { appSlice } from "./appSlice";
-import { entitiesReducer } from "./entities";
+import { filesSlice } from "./filesSlice";
 import { fleetsSlice } from "./fleetsSlice";
 import { gearListSlice } from "./gearListSlice";
 import { gearsSlice } from "./gearsSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
 import { mapListSlice } from "./mapListSlice";
+import { plansSlice } from "./plansSlice";
 import { shipListSlice } from "./shipListSlice";
 import { shipsSlice } from "./shipsSlice";
 import undoableOptions from "./undoableOptions";
@@ -30,17 +31,19 @@ const noopStorage: WebStorage = {
 const storage = process.browser ? localforage : noopStorage;
 
 const combinedReducer = combineReducers({
-  entities: entitiesReducer,
   app: appSlice.reducer,
   mapList: mapListSlice.reducer,
   gearList: gearListSlice.reducer,
   shipList: shipListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
 
+  files: filesSlice.reducer,
+
   gears: gearsSlice.reducer,
   ships: shipsSlice.reducer,
-  airbases: airbasesSlice.reducer,
+  airSquadrons: airSquadronsSlice.reducer,
   fleets: fleetsSlice.reducer,
+  plans: plansSlice.reducer,
 });
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {

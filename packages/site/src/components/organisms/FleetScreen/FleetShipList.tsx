@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
-import { Ship } from "@fleethub/core";
-import { Dict, Role, SHIP_KEYS, ShipKey } from "@fleethub/utils";
-import { EntityId } from "@reduxjs/toolkit";
+import { Fleet, Ship } from "@fleethub/core";
+import { Role, SHIP_KEYS, ShipKey } from "@fleethub/utils";
 import React, { useCallback } from "react";
 
 import { ShipPosition } from "../../../store";
@@ -9,17 +8,22 @@ import ShipBox from "../ShipBox";
 
 type FleetShipListProps = {
   role: Role;
-  ships: Dict<ShipKey, EntityId>;
+  fleet: Fleet;
   size?: number;
   setShip?: (position: Omit<ShipPosition, "id">, ship: Ship) => void;
 };
 
 type ListItemProps = Pick<FleetShipListProps, "role" | "setShip"> & {
-  id?: EntityId;
+  ship?: Ship;
   shipKey: ShipKey;
 };
 
-const ListItem: React.FC<ListItemProps> = ({ role, shipKey, id, setShip }) => {
+const ListItem: React.FC<ListItemProps> = ({
+  role,
+  shipKey,
+  ship,
+  setShip,
+}) => {
   const handleShipChange = useCallback(
     (ship: Ship) => {
       setShip?.({ role, key: shipKey }, ship);
@@ -27,19 +31,19 @@ const ListItem: React.FC<ListItemProps> = ({ role, shipKey, id, setShip }) => {
     [role, shipKey, setShip]
   );
 
-  return <ShipBox id={id} onShipChange={handleShipChange} />;
+  return <ShipBox ship={ship} onShipChange={handleShipChange} />;
 };
 
 const FleetShipList: React.FCX<FleetShipListProps> = React.memo(
-  ({ className, role, ships, size = 6, setShip }) => {
+  ({ className, role, fleet, size = 6, setShip }) => {
     return (
       <div className={className}>
-        {SHIP_KEYS.filter((_, index) => index + 1 <= size).map((key) => (
+        {SHIP_KEYS.filter((_, index) => index < size).map((key) => (
           <ListItem
             key={key}
             role={role}
             shipKey={key}
-            id={ships[key]}
+            ship={fleet.get_ship(key)}
             setShip={setShip}
           />
         ))}

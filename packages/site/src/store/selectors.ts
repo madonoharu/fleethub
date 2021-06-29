@@ -5,12 +5,8 @@ export const getPresentState = (root: DefaultRootState) => root.present;
 export const selectAppState = (root: DefaultRootState) =>
   getPresentState(root).app;
 
-export const selectEntitiesState = (root: DefaultRootState) =>
-  getPresentState(root).entities;
 export const selectFilesState = (root: DefaultRootState) =>
-  selectEntitiesState(root).files;
-export const selectPlansState = (root: DefaultRootState) =>
-  selectEntitiesState(root).plans;
+  getPresentState(root).files;
 
 export const selectGearListState = (root: DefaultRootState) =>
   getPresentState(root).gearList;

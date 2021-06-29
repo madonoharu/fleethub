@@ -29,7 +29,6 @@ const GearList = styled.div`
 
 type Props = {
   ship: Ship;
-  entity: ShipEntity;
   onUpdate?: (state: Partial<ShipEntity>) => void;
   onDetailClick?: () => void;
   onRemove?: () => void;
@@ -38,12 +37,11 @@ type Props = {
 const ShipCard: React.FCX<Props> = ({
   className,
   ship,
-  entity,
   onUpdate,
   onDetailClick,
   onRemove,
 }) => {
-  const { slotnum } = ship;
+  const { slotnum, id } = ship;
 
   return (
     <Paper className={className}>
@@ -63,8 +61,8 @@ const ShipCard: React.FCX<Props> = ({
             (key, i) => (
               <GearSlot
                 key={key}
-                id={entity[key]}
-                position={{ ship: entity.id, key }}
+                gear={ship.get_gear(key)}
+                position={{ ship: id, key }}
                 slotSize={ship.get_slot_size(i)}
                 maxSlotSize={ship.get_max_slot_size(i)}
                 onSlotSizeChange={(value) => {

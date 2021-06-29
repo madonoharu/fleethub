@@ -12,7 +12,7 @@ import { selectGearsState } from "./selectors";
 
 export type GearPosition =
   | { ship: EntityId; key: GearKey }
-  | { airbase: EntityId; key: GearKey };
+  | { airSquadron: EntityId; key: GearKey };
 
 type GearEntity = {
   id: EntityId;
