@@ -1,16 +1,18 @@
+use enumset::EnumSet;
+use num_traits::FromPrimitive;
+use paste::paste;
+use serde::Deserialize;
+use wasm_bindgen::prelude::*;
+
 use crate::{
     array::{GearArray, SlotSizeArray},
+    attack::ShellingAttackType,
     const_gear_id, const_ship_id,
     constants::*,
     gear::{Gear, GearState},
     master::{MasterShip, StatInterval},
     utils::xxh3,
 };
-use num_traits::FromPrimitive;
-use paste::paste;
-use serde::Deserialize;
-use wasm_bindgen::prelude::*;
-use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Default, Clone, Hash, Deserialize)]
 pub struct ShipState {
@@ -377,6 +379,14 @@ impl Ship {
             }
         }
 
+        let has_observation_seaplane = self.gears_with_slot_size().any(|(g, slot_size)| {
+            slot_size.unwrap_or_default() > 0 && g.has_attr(GearAttr::ObservationSeaplane)
+        });
+
+        if !has_observation_seaplane {
+            return set;
+        }
+
         let secondary_gun_count = self
             .gears
             .count_by(|g| g.category == GearCategory::SecondaryGun);
@@ -491,7 +501,7 @@ impl Ship {
     }
 
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
-        self.gears.get_by_gear_key(key).clone()
+        self.gears.get_by_gear_key(key).cloned()
     }
 
     pub fn set_ebonuses(&mut self, js: JsValue) {
@@ -674,7 +684,7 @@ impl Ship {
 
     pub fn calc_fighter_power(&self) -> Option<i32> {
         self.gears
-            .iter_without_ex()
+            .without_ex()
             .map(|(i, g)| {
                 let slot_size = self.get_slot_size(i)?;
                 Some(g.calc_fighter_power(slot_size))
@@ -685,7 +695,7 @@ impl Ship {
     pub fn fleet_los_factor(&self) -> Option<i32> {
         let total = self
             .gears
-            .iter_without_ex()
+            .without_ex()
             .map(|(index, g)| {
                 let slot_size = self.get_slot_size(index)?;
 
@@ -716,6 +726,11 @@ impl Ship {
         let luck = self.luck()? as f64;
 
         Some(evasion + (2. * luck).sqrt())
+    }
+
+    pub fn get_possible_shelling_attack_type_array(&self) -> Vec<u8> {
+        let set = self.get_possible_shelling_attack_type_set();
+        set.into_iter().map(|t| t as u8).collect()
     }
 }
 

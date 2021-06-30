@@ -1,3 +1,6 @@
+use enumset::EnumSetType;
+use num_derive::ToPrimitive;
+
 use crate::attack::hit_rate::{HitRate, HitRateParams};
 use crate::damage::{DamageAttackerParams, DamageParams, DamageTargetParams};
 use crate::{
@@ -7,6 +10,125 @@ use crate::{
 
 const SHELLING_POWER_CAP: i32 = 180;
 const SHELLING_CRITICAL_RATE_MULTIPLIER: f64 = 1.3;
+
+#[derive(Debug, EnumSetType, ToPrimitive)]
+pub enum ShellingAttackType {
+    /// 通常砲撃
+    Normal,
+    /// 主主
+    MainMain,
+    /// 主徹
+    MainApShell,
+    /// 主電
+    MainRader,
+    /// 主副
+    MainSecond,
+    /// 連撃
+    DoubleAttack,
+    /// 戦爆連合 戦爆攻
+    FBA,
+    /// 戦爆連合 爆爆攻
+    BBA,
+    /// 戦爆連合 爆攻
+    BA,
+    /// 瑞雲立体攻撃
+    Zuiun,
+    /// 海空立体攻撃
+    Suisei,
+}
+
+pub struct ShellingAttackDef {
+    pub attack_type: ShellingAttackType,
+    pub times: usize,
+    pub denominator: Option<u8>,
+    pub sp_power_mod: f64,
+    pub sp_accuracy_mod: f64,
+}
+
+impl ShellingAttackType {
+    pub fn get_attack_def(self) -> ShellingAttackDef {
+        let attack_type = self;
+        match attack_type {
+            Self::Normal => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: None,
+                sp_power_mod: 1.0,
+                sp_accuracy_mod: 1.0,
+            },
+            Self::Zuiun => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(130),
+                sp_power_mod: 1.35,
+                sp_accuracy_mod: 1.0,
+            },
+            Self::Suisei => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(130),
+                sp_power_mod: 1.3,
+                sp_accuracy_mod: 1.0,
+            },
+            Self::MainMain => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(150),
+                sp_power_mod: 1.5,
+                sp_accuracy_mod: 1.2,
+            },
+            Self::MainApShell => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(140),
+                sp_power_mod: 1.3,
+                sp_accuracy_mod: 1.3,
+            },
+            Self::MainRader => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(130),
+                sp_power_mod: 1.2,
+                sp_accuracy_mod: 1.5,
+            },
+            Self::MainSecond => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(120),
+                sp_power_mod: 1.1,
+                sp_accuracy_mod: 1.3,
+            },
+            Self::DoubleAttack => ShellingAttackDef {
+                attack_type,
+                times: 2,
+                denominator: Some(130),
+                sp_power_mod: 1.2,
+                sp_accuracy_mod: 1.1,
+            },
+            Self::FBA => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(125),
+                sp_power_mod: 1.25,
+                sp_accuracy_mod: 1.0,
+            },
+            Self::BBA => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(140),
+                sp_power_mod: 1.2,
+                sp_accuracy_mod: 1.0,
+            },
+            Self::BA => ShellingAttackDef {
+                attack_type,
+                times: 1,
+                denominator: Some(155),
+                sp_power_mod: 1.15,
+                sp_accuracy_mod: 1.0,
+            },
+        }
+    }
+}
 
 struct ShellingPowerParams {
     firepower: f64,

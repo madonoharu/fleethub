@@ -1,4 +1,4 @@
-use std::{fmt::Debug, iter::Sum, usize};
+use std::{fmt::Debug, iter::Sum, ops::Index, slice::SliceIndex, usize};
 
 use arrayvec::ArrayVec;
 
@@ -22,6 +22,18 @@ macro_rules! impl_default {
 
 impl_default!(6, 7);
 
+impl<T, Idx, const N: usize> Index<Idx> for OptionalArray<T, N>
+where
+    T: Debug + Default + Clone,
+    Idx: SliceIndex<[Option<T>]>,
+{
+    type Output = Idx::Output;
+
+    fn index(&self, index: Idx) -> &Self::Output {
+        &self.0[index]
+    }
+}
+
 impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
     pub fn new(inner: [Option<T>; N]) -> Self {
         Self(inner)
@@ -42,8 +54,8 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
         self.0[index] = Some(value)
     }
 
-    pub fn get(&self, index: usize) -> &Option<T> {
-        self.0.get(index).unwrap_or(&None)
+    pub fn get(&self, index: usize) -> Option<&T> {
+        self.0.get(index)?.as_ref()
     }
 
     pub fn sum_by<U: Sum, F: FnMut(&T) -> U>(&self, cb: F) -> U {
@@ -65,7 +77,7 @@ const EXSLOT_INDEX: usize = GEAR_ARRAY_LEN - 1;
 pub type GearArray = OptionalArray<Gear, GEAR_ARRAY_LEN>;
 
 impl GearArray {
-    pub fn iter_without_ex(&self) -> impl Iterator<Item = (usize, &Gear)> {
+    pub fn without_ex(&self) -> impl Iterator<Item = (usize, &Gear)> {
         self.iter().filter(|(i, _)| *i < EXSLOT_INDEX)
     }
 
@@ -77,7 +89,7 @@ impl GearArray {
         self.count_by(|g| g.gear_id == id)
     }
 
-    pub fn get_by_gear_key(&self, key: &str) -> &Option<Gear> {
+    pub fn get_by_gear_key(&self, key: &str) -> Option<&Gear> {
         match key {
             "g1" => self.get(0),
             "g2" => self.get(1),
@@ -85,7 +97,7 @@ impl GearArray {
             "g4" => self.get(3),
             "g5" => self.get(4),
             "gx" => self.get(5),
-            _ => &None,
+            _ => None,
         }
     }
 }
@@ -97,7 +109,7 @@ const SHIP_ARRAY_LEN: usize = 7;
 pub type ShipArray = OptionalArray<Ship, SHIP_ARRAY_LEN>;
 
 impl ShipArray {
-    pub fn get_by_ship_key(&self, key: &str) -> &Option<Ship> {
+    pub fn get_by_ship_key(&self, key: &str) -> Option<&Ship> {
         match key {
             "s1" => self.get(0),
             "s2" => self.get(1),
@@ -106,7 +118,7 @@ impl ShipArray {
             "s5" => self.get(4),
             "s6" => self.get(5),
             "s7" => self.get(6),
-            _ => &None,
+            _ => None,
         }
     }
 }
