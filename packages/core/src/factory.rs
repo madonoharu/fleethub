@@ -200,6 +200,7 @@ impl Factory {
             a2,
             a3,
             hq_level,
+            org_type,
         } = state;
 
         Some(Plan {
@@ -216,6 +217,7 @@ impl Factory {
             a3: self.create_air_squadron_rs(a3),
 
             hq_level: hq_level.unwrap_or(120),
+            org_type,
         })
     }
 

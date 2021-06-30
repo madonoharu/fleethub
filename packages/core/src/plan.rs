@@ -5,6 +5,21 @@ use crate::{
 use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash, Deserialize)]
+pub enum OrgType {
+    Single,
+    CarrierTaskForce,
+    SurfaceTaskForce,
+    TransportEscort,
+    EnemyCombined,
+}
+
+impl Default for OrgType {
+    fn default() -> Self {
+        OrgType::Single
+    }
+}
+
 #[derive(Debug, Default, Clone, Hash, Deserialize)]
 pub struct PlanState {
     #[serde(default)]
@@ -20,6 +35,9 @@ pub struct PlanState {
     pub a3: Option<AirSquadronState>,
 
     pub hq_level: Option<i32>,
+
+    #[serde(default)]
+    pub org_type: OrgType,
 }
 
 #[wasm_bindgen]
@@ -48,6 +66,9 @@ pub struct Plan {
     pub a3: AirSquadron,
 
     pub hq_level: i32,
+
+    #[wasm_bindgen(skip)]
+    pub org_type: OrgType,
 }
 
 #[wasm_bindgen]
@@ -91,5 +112,22 @@ impl Plan {
         };
 
         Ok(air_squadron.clone())
+    }
+
+    pub fn is_combined_fleet(&self) -> bool {
+        self.org_type != OrgType::Single
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn fleet_los(&self) -> Option<i32> {
+        let mut base = self.main.ships.sum_by(|s| s.fleet_los_factor())?;
+
+        if self.is_combined_fleet() {
+            base += self.escort.ships.sum_by(|s| s.fleet_los_factor())?;
+        };
+
+        let base = base as f64;
+
+        Some((base.sqrt() + 0.1 * base).floor() as i32)
     }
 }

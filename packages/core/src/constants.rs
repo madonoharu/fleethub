@@ -1,8 +1,8 @@
+use enumset::EnumSetType;
 use num_derive::FromPrimitive;
 use serde::Deserialize;
 use strum_macros::EnumString;
 use wasm_bindgen::prelude::*;
-use wasmer_enumset::EnumSetType;
 
 macro_rules! impl_default {
     ($enum: ident) => {
@@ -310,34 +310,16 @@ impl DamageState {
 }
 
 #[derive(Debug, EnumSetType)]
-pub enum ShellingAttackType {
-    Normal,
-
-    MainMain,
-    MainApShell,
-    MainRader,
-    MainSecond,
-    DoubleAttack,
-
-    FBA,
-    BBA,
-    BA,
-
-    Zuiun,
-    Suisei,
-}
-
-#[derive(Debug, EnumSetType)]
 pub enum AirState {
-    /** 制空確保 */
+    /// 制空確保
     AirSupremacy,
-    /** 制空優勢 */
+    /// 制空優勢
     AirSuperiority,
-    /** 制空均衡 */
+    /// 制空均衡
     AirParity,
-    /** 制空劣勢 */
+    /// 制空劣勢
     AirDenial,
-    /** 制空喪失 */
+    /// 制空喪失
     AirIncapability,
 }
 
@@ -358,8 +340,8 @@ mod test {
 
     #[test]
     fn test_gear_attr() {
+        use enumset::EnumSet;
         use std::str::FromStr;
-        use wasmer_enumset::EnumSet;
 
         let mut set: EnumSet<GearAttr> = GearAttr::HighAngleMount | GearAttr::JetAircraft;
         set.insert(GearAttr::MainGun);
