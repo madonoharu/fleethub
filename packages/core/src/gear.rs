@@ -1,8 +1,8 @@
 use crate::{const_gear_id, constants::*, master::MasterGear, utils::xxh3};
+use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
-use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Default, Clone, Hash, Deserialize)]
 pub struct GearState {

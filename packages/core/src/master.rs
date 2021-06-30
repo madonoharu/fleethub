@@ -4,12 +4,12 @@ use crate::{
     ship::ShipEquippable,
 };
 use arrayvec::ArrayVec;
+use enumset::EnumSet;
 use fasteval::bool_to_f64;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::str::FromStr;
 use wasm_bindgen::prelude::*;
-use wasmer_enumset::EnumSet;
 
 #[derive(Debug, Deserialize, Default)]
 pub struct MasterDataGearCategory {

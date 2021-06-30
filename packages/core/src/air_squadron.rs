@@ -48,7 +48,7 @@ impl AirSquadron {
     }
 
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
-        self.gears.get_by_gear_key(key).clone()
+        self.gears.get_by_gear_key(key).cloned()
     }
 
     pub fn get_slot_size(&self, index: usize) -> Result<i32, JsValue> {

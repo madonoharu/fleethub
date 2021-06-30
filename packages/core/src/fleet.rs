@@ -2,7 +2,6 @@ use crate::{
     array::ShipArray,
     ship::{Ship, ShipState},
 };
-use seq_macro::seq;
 use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
@@ -44,6 +43,6 @@ impl Fleet {
     }
 
     pub fn get_ship(&self, key: &str) -> Option<Ship> {
-        self.ships.get_by_ship_key(key).clone()
+        self.ships.get_by_ship_key(key).cloned()
     }
 }
