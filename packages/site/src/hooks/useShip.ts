@@ -1,4 +1,3 @@
-import { EntityId } from "@reduxjs/toolkit";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -6,7 +5,7 @@ import { ShipEntity, shipsSelectors, shipsSlice } from "../store";
 import { getEbonuses } from "../utils";
 import { selectShipState, useFhCore } from "./useFhCore";
 
-export const useShipActions = (id: EntityId) => {
+export const useShipActions = (id: string) => {
   const dispatch = useDispatch();
 
   return useMemo(() => {
@@ -22,14 +21,14 @@ export const useShipActions = (id: EntityId) => {
   }, [dispatch, id]);
 };
 
-export const useShip = (id: EntityId) => {
-  const { createShip } = useFhCore();
+export const useShip = (id: string) => {
+  const { factory } = useFhCore();
   const actions = useShipActions(id);
   const entity = useSelector((root) => shipsSelectors.selectById(root, id));
   const state = useSelector((root) => selectShipState(root, id));
 
   const ship = useMemo(() => {
-    const ship = state && createShip(state);
+    const ship = state && factory.create_ship(state);
     if (ship) {
       const ebonuses = getEbonuses(ship);
       ship.set_ebonuses({

@@ -1,3 +1,4 @@
+import { OrgParams } from "@fleethub/core";
 import { isNonNullable, uniq } from "@fleethub/utils";
 import {
   AppThunk,
@@ -5,7 +6,6 @@ import {
   createSelector,
   createSlice,
   Dictionary,
-  EntityId,
   EntitySelectors,
   nanoid,
   PayloadAction,
@@ -14,10 +14,6 @@ import { DefaultRootState } from "react-redux";
 
 import { cloneFilesData, FilesData } from "./filesData";
 import { selectFilesState } from "./selectors";
-
-export type PlanState = { id: EntityId };
-
-export type PlanStateWithId = PlanState & { id: string };
 
 type FileBase<T extends string, P = Record<string, unknown>> = {
   id: string;
@@ -156,7 +152,7 @@ export const filesSlice = createSlice({
     createPlan: {
       reducer: (
         state,
-        { payload }: PayloadAction<{ plan: PlanStateWithId; to: ParentKey }>
+        { payload }: PayloadAction<{ org: OrgParams; to: ParentKey }>
       ) => {
         const count = Object.values(state.entities).filter(
           (file) => file?.type === "plan"
@@ -164,7 +160,7 @@ export const filesSlice = createSlice({
         const name = count ? `編成${count + 1}` : "最初の編成";
 
         const file: PlanFileEntity = {
-          id: payload.plan.id,
+          id: payload.org.id || "",
           type: "plan",
           name,
           description: "",
@@ -172,13 +168,13 @@ export const filesSlice = createSlice({
 
         addFiles(state, [file], payload.to);
       },
-      prepare: ({ plan, to }: { plan?: PlanState; to: ParentKey }) => ({
-        payload: { plan: { ...plan, id: nanoid() }, to },
+      prepare: ({ org, to }: { org?: OrgParams; to: ParentKey }) => ({
+        payload: { org: { ...org, id: nanoid() }, to },
         meta: {
-          main: nanoid(),
-          escort: nanoid(),
-          route_sup: nanoid(),
-          boss_sup: nanoid(),
+          f1: nanoid(),
+          f2: nanoid(),
+          f3: nanoid(),
+          f4: nanoid(),
           a1: nanoid(),
           a2: nanoid(),
           a3: nanoid(),

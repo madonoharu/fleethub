@@ -2,18 +2,16 @@ use crate::{const_gear_id, constants::*, master::MasterGear, utils::xxh3};
 use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Default, Clone, Hash, Deserialize)]
+#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct GearState {
-    #[serde(default)]
-    pub id: String,
+    pub id: Option<String>,
 
     pub gear_id: i32,
-    #[serde(default)]
-    pub exp: i32,
-    #[serde(default)]
-    pub stars: i32,
+    pub exp: Option<i32>,
+    pub stars: Option<i32>,
 }
 
 #[derive(Debug)]
@@ -137,10 +135,10 @@ impl Gear {
         Gear {
             xxh3,
 
-            id: state.id,
+            id: state.id.unwrap_or_default(),
             gear_id: state.gear_id,
-            stars: state.stars,
-            exp: state.exp,
+            stars: state.stars.unwrap_or_default(),
+            exp: state.exp.unwrap_or_default(),
 
             category,
             special_type,

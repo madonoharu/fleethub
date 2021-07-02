@@ -1,11 +1,14 @@
+import { OrgParams } from "@fleethub/core";
 import { nanoid } from "@reduxjs/toolkit";
 
-import { FileEntity, isDirectory, PlanStateWithId } from "./filesSlice";
+import { FileEntity, isDirectory } from "./filesSlice";
+
+export type OrgParamsWithId = OrgParams & { id: string };
 
 export type FilesData = {
   id: string;
   files: FileEntity[];
-  plans?: PlanStateWithId[];
+  orgs?: OrgParamsWithId[];
 };
 
 const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
@@ -18,7 +21,7 @@ const replaceAll = <T>(array: T[], searchValue: T, replaceValue: T) => {
   return cloned;
 };
 
-export const cloneFilesData = ({ id, files, plans }: FilesData): FilesData => {
+export const cloneFilesData = ({ id, files, orgs }: FilesData): FilesData => {
   const changes: Array<[string, string]> = files.map((file) => [
     file.id,
     nanoid(),
@@ -32,7 +35,7 @@ export const cloneFilesData = ({ id, files, plans }: FilesData): FilesData => {
   };
 
   const clonedFiles = files.map(cloneEntity);
-  const clonedPlans = plans?.map(cloneEntity);
+  const clonedOrgs = orgs?.map(cloneEntity);
 
   const dirs = clonedFiles.filter(isDirectory);
   changes.forEach((change) => {
@@ -41,5 +44,5 @@ export const cloneFilesData = ({ id, files, plans }: FilesData): FilesData => {
     });
   });
 
-  return { id: nextId, files: clonedFiles, plans: clonedPlans };
+  return { id: nextId, files: clonedFiles, orgs: clonedOrgs };
 };

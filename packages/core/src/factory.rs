@@ -1,20 +1,56 @@
+use wasm_bindgen::prelude::*;
+use web_sys::console::log_1;
+
 use crate::{
     air_squadron::{AirSquadron, AirSquadronState},
     array::{GearArray, ShipArray},
     fleet::{Fleet, FleetState},
     gear::{Gear, GearState},
-    plan::{Plan, PlanState},
+    master::MasterData,
+    org::{Org, OrgState},
     ship::Ship,
+    ship::ShipState,
     utils::xxh3,
 };
-use crate::{master::MasterData, ship::ShipState};
-use wasm_bindgen::prelude::*;
-use web_sys::console::log_1;
 
 macro_rules! console_log {
     // Note that this is using the `log` function imported above during
     // `bare_bones`
     ($($t:tt)*) => (log_1(&JsValue::from(format_args!($($t)*).to_string())))
+}
+
+#[wasm_bindgen(typescript_custom_section)]
+const TS_APPEND_CONTENT: &'static str = r#"
+import { NullToOptional } from "../null_to_optional";
+import {
+  AirSquadronState,
+  FleetState,
+  GearState,
+  OrgState,
+  ShipState,
+} from "./types";
+
+export type GearParams = NullToOptional<GearState>;
+export type ShipParams = NullToOptional<ShipState>;
+export type FleetParams = NullToOptional<FleetState>;
+export type AirSquadronParams = NullToOptional<AirSquadronState>;
+export type OrgParams = NullToOptional<OrgState>;
+
+export * from "./types";
+"#;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "GearParams")]
+    pub type GearParams;
+    #[wasm_bindgen(typescript_type = "ShipParams")]
+    pub type ShipParams;
+    #[wasm_bindgen(typescript_type = "FleetParams")]
+    pub type FleetParams;
+    #[wasm_bindgen(typescript_type = "AirSquadronParams")]
+    pub type AirSquadronParams;
+    #[wasm_bindgen(typescript_type = "OrgParams")]
+    pub type OrgParams;
 }
 
 #[wasm_bindgen]
@@ -33,7 +69,9 @@ impl Factory {
             .find(|mg| mg.gear_id == state.gear_id)?;
 
         let attrs = self.master_data.find_gear_attrs(master);
-        let ibonuses = self.master_data.get_ibonuses(master, state.stars);
+        let ibonuses = self
+            .master_data
+            .get_ibonuses(master, state.stars.unwrap_or_default());
 
         Some(Gear::new(state, master, attrs, ibonuses))
     }
@@ -147,7 +185,7 @@ impl Factory {
             .collect();
 
         AirSquadron {
-            id,
+            id: id.unwrap_or_default(),
             xxh3,
             gears,
             slots,
@@ -163,39 +201,39 @@ impl Factory {
         Self { master_data }
     }
 
-    pub fn create_gear(&self, js: JsValue) -> Option<Gear> {
+    pub fn create_gear(&self, js: GearParams) -> Option<Gear> {
         let state = js.into_serde().ok();
         self.create_gear_rs(state)
     }
 
-    pub fn create_ship(&self, js: JsValue) -> Option<Ship> {
+    pub fn create_ship(&self, js: ShipParams) -> Option<Ship> {
         let state = js.into_serde().ok();
         self.create_ship_rs(state)
     }
 
-    pub fn create_air_squadron(&self, js: JsValue) -> Option<AirSquadron> {
+    pub fn create_air_squadron(&self, js: AirSquadronParams) -> Option<AirSquadron> {
         let state = js.into_serde().ok();
 
         Some(self.create_air_squadron_rs(state))
     }
 
-    pub fn create_fleet(&self, js: JsValue) -> Option<Fleet> {
+    pub fn create_fleet(&self, js: FleetParams) -> Option<Fleet> {
         let state: FleetState = js.into_serde().ok()?;
 
         Some(self.create_fleet_rs(Some(state)))
     }
 
-    pub fn create_plan(&self, js: JsValue) -> Option<Plan> {
-        let state: PlanState = js.into_serde().ok()?;
+    pub fn create_org(&self, js: OrgParams) -> Option<Org> {
+        let state: OrgState = js.into_serde().ok()?;
 
         let xxh3 = xxh3(&state);
 
-        let PlanState {
+        let OrgState {
             id,
-            main,
-            escort,
-            route_sup,
-            boss_sup,
+            f1,
+            f2,
+            f3,
+            f4,
             a1,
             a2,
             a3,
@@ -203,21 +241,21 @@ impl Factory {
             org_type,
         } = state;
 
-        Some(Plan {
+        Some(Org {
             xxh3,
-            id,
+            id: id.unwrap_or_default(),
 
-            main: self.create_fleet_rs(main),
-            escort: self.create_fleet_rs(escort),
-            route_sup: self.create_fleet_rs(route_sup),
-            boss_sup: self.create_fleet_rs(boss_sup),
+            f1: self.create_fleet_rs(f1),
+            f2: self.create_fleet_rs(f2),
+            f3: self.create_fleet_rs(f3),
+            f4: self.create_fleet_rs(f4),
 
             a1: self.create_air_squadron_rs(a1),
             a2: self.create_air_squadron_rs(a2),
             a3: self.create_air_squadron_rs(a3),
 
             hq_level: hq_level.unwrap_or(120),
-            org_type,
+            org_type: org_type.unwrap_or_default(),
         })
     }
 

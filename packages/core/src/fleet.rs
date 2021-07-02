@@ -3,9 +3,10 @@ use crate::{
     ship::{Ship, ShipState},
 };
 use serde::Deserialize;
+use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Default, Clone, Hash, Deserialize)]
+#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct FleetState {
     pub id: Option<String>,
 

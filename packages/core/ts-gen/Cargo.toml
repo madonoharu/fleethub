@@ -1,0 +1,11 @@
+[package]
+name = "ts-gen"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+core = { path = "../../core" }
+
+[dependencies.ts-rs]
+git = "https://github.com/arendjr/ts-rs"
+branch = "Optional-options-II"

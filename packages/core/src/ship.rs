@@ -2,6 +2,7 @@ use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
 use serde::Deserialize;
+use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -14,33 +15,22 @@ use crate::{
     utils::xxh3,
 };
 
-#[derive(Debug, Default, Clone, Hash, Deserialize)]
+#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct ShipState {
-    #[serde(default)]
-    pub id: String,
+    pub id: Option<String>,
     pub ship_id: i32,
-    pub slots: Option<SlotSizeArray>,
     pub level: Option<i32>,
     pub current_hp: Option<i32>,
 
-    #[serde(default)]
-    pub max_hp_mod: i32,
-    #[serde(default)]
-    pub firepower_mod: i32,
-    #[serde(default)]
-    pub torpedo_mod: i32,
-    #[serde(default)]
-    pub armor_mod: i32,
-    #[serde(default)]
-    pub anti_air_mod: i32,
-    #[serde(default)]
-    pub evasion_mod: i32,
-    #[serde(default)]
-    pub asw_mod: i32,
-    #[serde(default)]
-    pub los_mod: i32,
-    #[serde(default)]
-    pub luck_mod: i32,
+    pub max_hp_mod: Option<i32>,
+    pub firepower_mod: Option<i32>,
+    pub torpedo_mod: Option<i32>,
+    pub armor_mod: Option<i32>,
+    pub anti_air_mod: Option<i32>,
+    pub evasion_mod: Option<i32>,
+    pub asw_mod: Option<i32>,
+    pub los_mod: Option<i32>,
+    pub luck_mod: Option<i32>,
 
     pub g1: Option<GearState>,
     pub g2: Option<GearState>,
@@ -210,7 +200,7 @@ impl Ship {
         let mut ship = Ship {
             xxh3,
 
-            id: state.id,
+            id: state.id.unwrap_or_default(),
             ship_id: state.ship_id,
             level: state.level.unwrap_or(master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
@@ -229,15 +219,15 @@ impl Ship {
             banner,
             master: master.clone(),
 
-            max_hp_mod: state.max_hp_mod,
-            firepower_mod: state.firepower_mod,
-            torpedo_mod: state.torpedo_mod,
-            armor_mod: state.armor_mod,
-            anti_air_mod: state.anti_air_mod,
-            evasion_mod: state.evasion_mod,
-            asw_mod: state.asw_mod,
-            los_mod: state.los_mod,
-            luck_mod: state.luck_mod,
+            max_hp_mod: state.max_hp_mod.unwrap_or_default(),
+            firepower_mod: state.firepower_mod.unwrap_or_default(),
+            torpedo_mod: state.torpedo_mod.unwrap_or_default(),
+            armor_mod: state.armor_mod.unwrap_or_default(),
+            anti_air_mod: state.anti_air_mod.unwrap_or_default(),
+            evasion_mod: state.evasion_mod.unwrap_or_default(),
+            asw_mod: state.asw_mod.unwrap_or_default(),
+            los_mod: state.los_mod.unwrap_or_default(),
+            luck_mod: state.luck_mod.unwrap_or_default(),
         };
 
         if ship.current_hp == 0 {
@@ -421,7 +411,7 @@ impl Ship {
         air_state: AirState,
         is_main_flagship: bool,
     ) -> Option<i32> {
-        let (a, b, c) = match air_state {
+        let (as_mod1, as_mod2, as_mod3) = match air_state {
             AirState::AirSupremacy => (0.7, 1.6, 10.),
             AirState::AirSuperiority => (0.6, 1.2, 0.),
             _ => return Some(0),
@@ -433,7 +423,8 @@ impl Ship {
         let luck_factor = (luck.sqrt() + 10.).floor();
         let flagship_mod = if is_main_flagship { 15 } else { 0 };
 
-        let result = (luck_factor + a * (fleet_los_mod + b * equipment_los) + c).floor() as i32
+        let result = (luck_factor + as_mod1 * (fleet_los_mod + as_mod2 * equipment_los) + as_mod3)
+            .floor() as i32
             + flagship_mod;
 
         Some(result)

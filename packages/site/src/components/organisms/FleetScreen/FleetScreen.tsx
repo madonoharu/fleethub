@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Fleet } from "@fleethub/core";
 import { Role } from "@fleethub/utils";
-import { EntityId, nanoid } from "@reduxjs/toolkit";
+import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useMemo } from "react";
 import { shallowEqual, useDispatch } from "react-redux";
@@ -15,7 +15,7 @@ type FleetScreenProps = {
   role: Role;
 };
 
-export const useFleetActions = (id: EntityId) => {
+export const useFleetActions = (id: string) => {
   const dispatch = useDispatch();
 
   return useMemo(

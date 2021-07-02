@@ -1,4 +1,4 @@
-import { Plan } from "@fleethub/core";
+import { Org } from "@fleethub/core";
 import React from "react";
 import { useAsyncCallback } from "react-async-hook";
 
@@ -27,13 +27,13 @@ const tweet = ({ text, url }: TweetOption) => {
 };
 
 type PlanActionProps = {
-  plan: Plan;
+  org: Org;
 };
 
-const PlanAction: React.FCX<PlanActionProps> = ({ className, plan }) => {
+const PlanAction: React.FCX<PlanActionProps> = ({ className, org }) => {
   const MenuModal = useModal();
 
-  const { id } = plan;
+  const { id } = org;
 
   const { isTemp, actions, file } = useFile(id);
   const { publish, asyncOnPublish, Snackbar } = useAsyncOnPublish(id);
@@ -60,7 +60,7 @@ const PlanAction: React.FCX<PlanActionProps> = ({ className, plan }) => {
         />
         <KctoolsButton
           title="制空権シミュレータで開く"
-          onClick={() => openKctools(plan)}
+          onClick={() => openKctools(org)}
         />
         <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
         {isTemp && <SaveButton title="保存する" onClick={actions.save} />}

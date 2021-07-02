@@ -1,5 +1,8 @@
 use enumset::EnumSetType;
 use num_derive::ToPrimitive;
+use serde::{Deserialize, Serialize};
+use ts_rs::TS;
+use wasm_bindgen::prelude::*;
 
 use crate::attack::hit_rate::{HitRate, HitRateParams};
 use crate::damage::{DamageAttackerParams, DamageParams, DamageTargetParams};
@@ -11,7 +14,7 @@ use crate::{
 const SHELLING_POWER_CAP: i32 = 180;
 const SHELLING_CRITICAL_RATE_MULTIPLIER: f64 = 1.3;
 
-#[derive(Debug, EnumSetType, ToPrimitive)]
+#[derive(Debug, Hash, EnumSetType, ToPrimitive, Serialize, Deserialize, TS)]
 pub enum ShellingAttackType {
     /// 通常砲撃
     Normal,

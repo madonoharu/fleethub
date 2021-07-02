@@ -1,13 +1,11 @@
 import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
-import { GearState } from "@fleethub/utils";
-import { EntityId } from "@reduxjs/toolkit";
 import { EquipmentBonuses } from "equipment-bonus";
 import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 
 import { useModal } from "../../../hooks";
-import { GearPosition, gearsSlice } from "../../../store";
+import { GearEntity, GearPosition, gearsSlice } from "../../../store";
 import GearList from "../../templates/GearList";
 import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
@@ -20,11 +18,11 @@ type Props = {
   getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
-const useGearActions = (id?: EntityId) => {
+const useGearActions = (id?: string) => {
   const dispatch = useDispatch();
 
   return useMemo(() => {
-    const update = (changes: Partial<GearState>) => {
+    const update = (changes: Partial<GearEntity>) => {
       id && dispatch(gearsSlice.actions.update({ id, changes }));
     };
 

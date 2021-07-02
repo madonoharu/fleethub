@@ -9,7 +9,7 @@ export * from "./gearListSlice";
 export * from "./gearsSlice";
 export * from "./gkcoiSlice";
 export * from "./mapListSlice";
-export * from "./plansSlice";
+export * from "./orgsSlice";
 export * from "./selectors";
 export * from "./shipListSlice";
 export * from "./shipsSlice";

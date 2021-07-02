@@ -17,7 +17,7 @@ import { gearListSlice } from "./gearListSlice";
 import { gearsSlice } from "./gearsSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
 import { mapListSlice } from "./mapListSlice";
-import { plansSlice } from "./plansSlice";
+import { orgsSlice } from "./orgsSlice";
 import { shipListSlice } from "./shipListSlice";
 import { shipsSlice } from "./shipsSlice";
 import undoableOptions from "./undoableOptions";
@@ -43,7 +43,7 @@ const combinedReducer = combineReducers({
   ships: shipsSlice.reducer,
   airSquadrons: airSquadronsSlice.reducer,
   fleets: fleetsSlice.reducer,
-  plans: plansSlice.reducer,
+  orgs: orgsSlice.reducer,
 });
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {

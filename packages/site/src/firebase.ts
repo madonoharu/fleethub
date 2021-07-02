@@ -1,6 +1,6 @@
 import "firebase/storage";
 
-import { PlanState } from "@fleethub/core";
+import { OrgParams } from "@fleethub/core";
 import firebase from "firebase/app";
 
 const firebaseConfig = {
@@ -63,7 +63,7 @@ type FhFolder = {
 type FhPlanFile = {
   id: string;
   type: "plan";
-  data: PlanState;
+  data: OrgParams;
 };
 
 type FhFile = FhPlanFile | FhFolder;

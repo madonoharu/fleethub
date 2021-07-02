@@ -1,26 +1,26 @@
 import styled from "@emotion/styled";
-import { Plan } from "@fleethub/core";
+import { Org } from "@fleethub/core";
 import { Paper } from "@material-ui/core";
 import React from "react";
 
-import { Tabs, TabsProps } from "../../../components";
-import AntiAirPanel from "./AntiAirPanel";
-import ContactChancePanel from "./ContactChancePanel";
+import { Tabs, TabsProps } from "../../molecules";
+// import AntiAirPanel from "./AntiAirPanel";
+// import ContactChancePanel from "./ContactChancePanel";
 import DayAttackRateTable from "./DayAttackRateTable";
-import MiscPanel from "./MiscPanel";
-import NightCutinPanel from "./NightCutinPanel";
+// import MiscPanel from "./MiscPanel";
+// import NightCutinPanel from "./NightCutinPanel";
 
 type Props = {
-  plan: Plan;
+  org: Org;
 };
 
-const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
+const OrgAnalysisPanel: React.FCX<Props> = ({ className, org }) => {
   const list: TabsProps["list"] = [
-    { label: "弾着戦爆発動率", panel: <DayAttackRateTable plan={plan} /> },
-    { label: "触接率", panel: <ContactChancePanel plan={plan} /> },
-    { label: "夜戦CI率", panel: <NightCutinPanel plan={plan} /> },
-    { label: "対空", panel: <AntiAirPanel plan={plan} /> },
-    { label: "その他", panel: <MiscPanel plan={plan} /> },
+    { label: "弾着戦爆発動率", panel: <DayAttackRateTable org={org} /> },
+    { label: "触接率", panel: null },
+    { label: "夜戦CI率", panel: null },
+    { label: "対空", panel: null },
+    { label: "その他", panel: null },
   ];
 
   return (
@@ -30,7 +30,7 @@ const PlanAnalysisPanel: React.FCX<Props> = ({ className, plan }) => {
   );
 };
 
-export default styled(PlanAnalysisPanel)`
+export default styled(OrgAnalysisPanel)`
   padding: 16px;
   min-height: 480px;
   > * {
