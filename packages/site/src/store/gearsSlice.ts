@@ -1,8 +1,8 @@
-import { GearKey, GearState } from "@fleethub/utils";
+import { GearParams } from "@fleethub/core";
+import { GearKey } from "@fleethub/utils";
 import {
   createEntityAdapter,
   createSlice,
-  EntityId,
   EntitySelectors,
   nanoid,
 } from "@reduxjs/toolkit";
@@ -11,12 +11,12 @@ import { DefaultRootState } from "react-redux";
 import { selectGearsState } from "./selectors";
 
 export type GearPosition =
-  | { ship: EntityId; key: GearKey }
-  | { airSquadron: EntityId; key: GearKey };
+  | { ship: string; key: GearKey }
+  | { airSquadron: string; key: GearKey };
 
-type GearEntity = {
-  id: EntityId;
-} & GearState;
+export type GearEntity = {
+  id: string;
+} & GearParams;
 
 const adapter = createEntityAdapter<GearEntity>();
 export const gearsSelectors: EntitySelectors<GearEntity, DefaultRootState> =
@@ -28,7 +28,7 @@ export const gearsSlice = createSlice({
   reducers: {
     add: {
       reducer: adapter.addOne,
-      prepare: (position: GearPosition, state: GearState) => ({
+      prepare: (position: GearPosition, state: GearParams) => ({
         payload: { ...state, id: nanoid() },
         meta: { position },
       }),

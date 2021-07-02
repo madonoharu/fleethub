@@ -1,7 +1,7 @@
 import { AppThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { filesSlice } from "./filesSlice";
-import { plansSelectors } from "./plansSlice";
+import { orgsSelectors } from "./orgsSlice";
 import { ignoreUndoable } from "./undoableOptions";
 
 type AppState = {
@@ -34,7 +34,7 @@ export const appSlice = createSlice({
   extraReducers: (bapplder) => {
     bapplder
       .addCase(filesSlice.actions.createPlan, (state, { payload }) => {
-        state.fileId = payload.plan.id;
+        state.fileId = payload.org.id;
       })
       .addCase(filesSlice.actions.add, (state, { payload }) => {
         state.fileId = payload.data.id;
@@ -44,13 +44,11 @@ export const appSlice = createSlice({
 
 export const openDefaultFile = (): AppThunk => (dispatch, getState) => {
   const state = getState();
-  const planIds = plansSelectors.selectIds(state);
+  const orgIds = orgsSelectors.selectIds(state);
 
   ignoreUndoable(() => {
-    if (planIds.length) {
-      dispatch(
-        appSlice.actions.openFile(planIds[planIds.length - 1] as string)
-      );
+    if (orgIds.length) {
+      dispatch(appSlice.actions.openFile(orgIds[orgIds.length - 1] as string));
     } else {
       dispatch(filesSlice.actions.createPlan({ to: "root" }));
     }

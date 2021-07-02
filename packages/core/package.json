@@ -10,6 +10,7 @@
   "scripts": {
     "build": "wasm-pack build --out-name index",
     "test": "cargo test",
-    "coverage": "coverage.sh"
+    "coverage": "coverage.sh",
+    "ts-gen": "cargo run --manifest-path ./ts-gen/Cargo.toml"
   }
 }

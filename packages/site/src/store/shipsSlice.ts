@@ -1,15 +1,8 @@
-import {
-  Dict,
-  FhEntity,
-  GearKey,
-  Role,
-  ShipKey,
-  ShipState,
-} from "@fleethub/utils";
+import { ShipParams } from "@fleethub/core";
+import { FhEntity, GearKey, Role, ShipKey } from "@fleethub/utils";
 import {
   createEntityAdapter,
   createSlice,
-  EntityId,
   EntitySelectors,
 } from "@reduxjs/toolkit";
 import { DefaultRootState } from "react-redux";
@@ -17,9 +10,9 @@ import { DefaultRootState } from "react-redux";
 import { gearsSlice } from "./gearsSlice";
 import { selectShipsState } from "./selectors";
 
-export type ShipEntity = FhEntity<ShipState, GearKey>;
+export type ShipEntity = FhEntity<ShipParams, GearKey>;
 
-export type ShipPosition = { id: EntityId; role: Role; key: ShipKey };
+export type ShipPosition = { id: string; role: Role; key: ShipKey };
 
 const adapter = createEntityAdapter<ShipEntity>();
 export const shipsSelectors: EntitySelectors<ShipEntity, DefaultRootState> =

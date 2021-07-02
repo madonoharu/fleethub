@@ -1,20 +1,13 @@
-import { Dict, GearKey, Role, ShipKey, SlotSizeKey } from "@fleethub/utils";
-import {
-  createEntityAdapter,
-  createSlice,
-  EntityId,
-  nanoid,
-} from "@reduxjs/toolkit";
-import { snakeCase } from "literal-case";
+import { FleetParams } from "@fleethub/core";
+import { FhEntity, ShipKey } from "@fleethub/utils";
+import { createEntityAdapter, createSlice, nanoid } from "@reduxjs/toolkit";
 import { DefaultRootState } from "react-redux";
 
 import { filesSlice } from "./filesSlice";
 import { getPresentState } from "./selectors";
 import { shipsSlice } from "./shipsSlice";
 
-export type FleetEntity = {
-  id: EntityId;
-} & Dict<ShipKey, EntityId>;
+export type FleetEntity = FhEntity<FleetParams, ShipKey>;
 
 const adapter = createEntityAdapter<FleetEntity>();
 
@@ -44,12 +37,12 @@ export const fleetsSlice = createSlice({
 
         entity[position.key] = payload.id;
       })
-      .addCase(filesSlice.actions.createPlan, (state, { payload, meta }) => {
+      .addCase(filesSlice.actions.createPlan, (state, { meta }) => {
         adapter.addMany(state, [
-          { id: meta.main },
-          { id: meta.escort },
-          { id: meta.route_sup },
-          { id: meta.boss_sup },
+          { id: meta.f1 },
+          { id: meta.f2 },
+          { id: meta.f3 },
+          { id: meta.f4 },
         ]);
       });
   },

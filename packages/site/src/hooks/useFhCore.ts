@@ -1,36 +1,32 @@
-import { Factory, Fleet, Gear, Plan, Ship } from "@fleethub/core";
+import {
+  AirSquadronParams,
+  Factory,
+  FleetParams,
+  OrgParams,
+  Ship,
+  ShipParams,
+} from "@fleethub/core";
 import {
   AIR_SQUADRON_KEYS,
-  AirSquadronKey,
-  AirSquadronState,
   Dict,
-  FleetState,
+  FLEET_KEYS,
   GEAR_KEYS,
   GearKey,
-  GearState,
-  GearStateDict,
-  mapValues,
   MasterData,
-  PlanState,
-  Role,
-  ROLES,
   SHIP_KEYS,
-  ShipState,
 } from "@fleethub/utils";
-import { EntityId, nanoid } from "@reduxjs/toolkit";
+import { nanoid } from "@reduxjs/toolkit";
 import { createCachedSelector } from "re-reselect";
 import { createContext, useCallback, useContext, useMemo } from "react";
 import { DefaultRootState, useDispatch, useSelector } from "react-redux";
-import { createSelector } from "reselect";
 
 import {
   airSquadronsSelectors,
   fleetsSelectors,
+  GearEntity,
   gearsSelectors,
-  PlanEntity,
-  plansSelectors,
-  plansSlice,
-  ShipEntity,
+  orgsSelectors,
+  orgsSlice,
   ShipPosition,
   shipsSelectors,
   shipsSlice,
@@ -44,27 +40,27 @@ export type FhCoreState = {
 
 export const FhCoreContext = createContext<FhCoreState | null>(null);
 
-type GearEntityIds = Dict<GearKey, EntityId>;
+type GearEntityIds = Dict<GearKey, string>;
 
 const selectGearStateDict = (root: DefaultRootState, ids: GearEntityIds) => {
-  const state: GearStateDict = {};
+  const state = {} as Record<GearKey, GearEntity | undefined>;
 
   GEAR_KEYS.forEach((key) => {
     const id = ids[key] || "";
     state[key] = gearsSelectors.selectById(root, id);
   });
 
-  return state as Record<GearKey, GearState | undefined>;
+  return state;
 };
 
 export const selectShipState = createCachedSelector(
-  (root: DefaultRootState, id: EntityId): ShipState | undefined => {
+  (root: DefaultRootState, id: string): ShipParams | undefined => {
     const entity = shipsSelectors.selectById(root, id);
     if (!entity) return undefined;
 
     const gearStateDict = selectGearStateDict(root, entity);
 
-    const state: ShipState = {
+    const state: ShipParams = {
       ...entity,
       ...gearStateDict,
       id: id.toString(),
@@ -78,28 +74,27 @@ export const selectShipState = createCachedSelector(
   selectorCreator: createShallowEqualSelector,
 });
 
-const selectAirSquadronState = (root: DefaultRootState, id: EntityId) => {
+const selectAirSquadronState = (root: DefaultRootState, id: string) => {
   const entity = airSquadronsSelectors.selectById(root, id);
 
   if (!entity) return undefined;
 
   const gearStateDict = selectGearStateDict(root, entity);
 
-  const state: AirSquadronState = {
+  const state = {
     ...entity,
     ...gearStateDict,
-    id: id.toString(),
-  };
+  } as AirSquadronParams;
 
   return state;
 };
 
 export const selectFleetState = createCachedSelector(
-  (root: DefaultRootState, id: EntityId): FleetState | undefined => {
+  (root: DefaultRootState, id: string): FleetParams | undefined => {
     const entity = fleetsSelectors.selectById(root, id);
     if (!entity) return undefined;
 
-    const state: FleetState = { id: id.toString() };
+    const state: FleetParams = { id: id.toString() };
 
     SHIP_KEYS.forEach((key) => {
       const shipEntityId = entity[key];
@@ -116,14 +111,14 @@ export const selectFleetState = createCachedSelector(
   selectorCreator: createShallowEqualSelector,
 });
 
-export const selectPlanState = createCachedSelector(
-  (root: DefaultRootState, id: EntityId): PlanState | undefined => {
-    const entity = plansSelectors.selectById(root, id);
+export const selectOrgState = createCachedSelector(
+  (root: DefaultRootState, id: string): OrgParams | undefined => {
+    const entity = orgsSelectors.selectById(root, id);
     if (!entity) return undefined;
 
-    const state = { ...entity, id: id.toString() } as PlanState;
+    const state = { ...entity, id: id.toString() } as OrgParams;
 
-    ROLES.forEach((key) => {
+    FLEET_KEYS.forEach((key) => {
       const fleetEntityId = entity[key];
       state[key] =
         (fleetEntityId && selectFleetState(root, fleetEntityId)) || {};
@@ -162,24 +157,22 @@ export const useFhCore = () => {
   return {
     master_data,
     factory,
-    createGear: (state: GearState) => factory.create_gear(state),
-    createShip: (state: ShipState) => factory.create_ship(state),
-    createFleet: (state: FleetState) => factory.create_fleet(state),
-    createPlan: (state: PlanState) => factory.create_plan(state),
     findShipClassName,
     findGearCategoryName,
   };
 };
 
-export const useGear = (id?: EntityId) => {
-  const { createGear } = useFhCore();
+export const useGear = (id?: string) => {
+  const { factory } = useFhCore();
 
   const entity = useSelector((root) => {
     return id ? gearsSelectors.selectById(root, id) : undefined;
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const gear = useMemo(() => entity && createGear(entity), [entity]);
+  const gear = useMemo(
+    () => entity && factory.create_gear(entity),
+    [factory, entity]
+  );
 
   return {
     gear,
@@ -187,13 +180,13 @@ export const useGear = (id?: EntityId) => {
   };
 };
 
-export const useFleet = (id: EntityId) => {
-  const { createFleet } = useFhCore();
+export const useFleet = (id: string) => {
+  const { factory } = useFhCore();
 
   const state = useSelector((root) => selectFleetState(root, id));
   const dispatch = useDispatch();
 
-  const fleet = state && createFleet(state);
+  const fleet = state && factory.create_fleet(state);
   fleet?.free();
 
   const setShip = useCallback(
@@ -211,19 +204,19 @@ export const useFleet = (id: EntityId) => {
   return { setShip };
 };
 
-export const usePlan = (id: EntityId) => {
-  const { createPlan } = useFhCore();
+export const useOrg = (id: string) => {
+  const { factory } = useFhCore();
   const dispatch = useDispatch();
-  const state = useSelector((root) => selectPlanState(root, id));
-  const plan = state && createPlan(state);
+  const state = useSelector((root) => selectOrgState(root, id));
+  const org = state && factory.create_org(state);
 
   const actions = useMemo(() => {
     const setHqLevel = (hq_level: number) => {
-      dispatch(plansSlice.actions.update({ id, changes: { hq_level } }));
+      dispatch(orgsSlice.actions.update({ id, changes: { hq_level } }));
     };
 
     return { setHqLevel };
   }, [dispatch, id]);
 
-  return { plan, actions };
+  return { org, actions };
 };

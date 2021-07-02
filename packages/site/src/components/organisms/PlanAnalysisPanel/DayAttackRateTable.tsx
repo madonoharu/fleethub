@@ -1,9 +1,15 @@
 import styled from "@emotion/styled";
-import { Plan, PlanAnalyzer, ShellingAbility } from "@fleethub/core";
+import {
+  Org,
+  ShellingAttackOrgAnalysis,
+  ShellingAttackShipAnalysis,
+  ShellingAttackType,
+} from "@fleethub/core";
 import React from "react";
 
-import { LabeledValue, Table } from "../../../components";
 import { toPercent } from "../../../utils";
+import { LabeledValue } from "../../atoms";
+import Table from "../Table";
 import AttackChip from "./AttackChip";
 import ShipNameCell from "./ShipNameCell";
 
@@ -22,9 +28,9 @@ const RightContainer = styled(LeftContainer)`
   line-height: 24px;
 `;
 
-const ShellingAbilityCell: React.FCX<{ ability: ShellingAbility }> = ({
+const ShellingAbilityCell: React.FCX<{ data: ShellingAttackShipAnalysis }> = ({
   className,
-  ability,
+  data,
 }) => {
   return (
     <div
@@ -32,7 +38,7 @@ const ShellingAbilityCell: React.FCX<{ ability: ShellingAbility }> = ({
       style={{ display: "flex", alignItems: "flex-end" }}
     >
       <LeftContainer>
-        {ability.rates.toArray().map(([attack, rate], index) => (
+        {data.rates.map(([attack, rate], index) => (
           <LabeledValue
             key={index}
             label={<AttackChip attack={attack} />}
@@ -41,8 +47,8 @@ const ShellingAbilityCell: React.FCX<{ ability: ShellingAbility }> = ({
         ))}
       </LeftContainer>
       <RightContainer>
-        <LabeledValue label="観測項" value={ability.observationTerm} />
-        <LabeledValue label="特殊攻撃率" value={toPercent(ability.cutinRate)} />
+        <LabeledValue label="観測項" value={data.observation_term} />
+        <LabeledValue label="特殊攻撃率" value={toPercent(data.cutin_rate)} />
       </RightContainer>
     </div>
   );
@@ -50,36 +56,37 @@ const ShellingAbilityCell: React.FCX<{ ability: ShellingAbility }> = ({
 
 type FleetDayAttackRateTableProps = {
   label: string;
-  data: ReturnType<PlanAnalyzer["analyzeFleetShelling"]>;
+  data: ShellingAttackOrgAnalysis;
 };
 
 const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({
   label,
   data,
 }) => {
+  console.log(data);
   return (
     <div>
-      {label} 艦隊索敵補正: {data.fleetLosModifier}
+      {label} 艦隊索敵補正: {data.fleet_los_mod ?? "不明"}
       <Table
         padding="none"
-        data={Array.from(data).filter(
-          ([ship, rec]) => rec.AirSupremacy.rates.sum() > 0
-        )}
+        data={data.ships}
         columns={[
           {
             label: "艦娘",
-            getValue: ([ship]) => <ShipNameCell ship={ship} />,
+            getValue: ({ name, banner }) => (
+              <ShipNameCell name={name} banner={banner || ""} />
+            ),
           },
           {
             label: "確保",
-            getValue: ([ship, record]) => (
-              <ShellingAbilityCell ability={record.AirSupremacy} />
+            getValue: (shipAnalysis) => (
+              <ShellingAbilityCell data={shipAnalysis} />
             ),
           },
           {
             label: "優勢",
-            getValue: ([ship, record], index) => (
-              <ShellingAbilityCell ability={record.AirSuperiority} />
+            getValue: (shipAnalysis) => (
+              <ShellingAbilityCell data={shipAnalysis} />
             ),
           },
         ]}
@@ -89,17 +96,16 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({
 };
 
 type Props = {
-  plan: Plan;
+  org: Org;
 };
 
-const DayAttackRateTable: React.FCX<Props> = ({ className, plan }) => {
-  const analyzer = new PlanAnalyzer(plan);
-  const { main, escort } = analyzer.analyzeShelling();
+const DayAttackRateTable: React.FCX<Props> = ({ className, org }) => {
+  const data = org.analyze();
 
   return (
     <div className={className}>
-      <FleetDayAttackRateTable label="主力" data={main} />
-      {escort && <FleetDayAttackRateTable label="護衛" data={escort} />}
+      <FleetDayAttackRateTable label="主力" data={data} />
+      {/* {escort && <FleetDayAttackRateTable label="護衛" data={escort} />} */}
     </div>
   );
 };

@@ -1,8 +1,8 @@
-import { Dict, GearKey, SlotSizeKey } from "@fleethub/utils";
+import { AirSquadronParams } from "@fleethub/core";
+import { FhEntity, GearKey, SlotSizeKey } from "@fleethub/utils";
 import {
   createEntityAdapter,
   createSlice,
-  EntityId,
   EntitySelectors,
 } from "@reduxjs/toolkit";
 import { DefaultRootState } from "react-redux";
@@ -10,10 +10,10 @@ import { DefaultRootState } from "react-redux";
 import { filesSlice } from "./filesSlice";
 import { gearsSlice } from "./gearsSlice";
 
-export type AirSquadronEntity = {
-  id: EntityId;
-} & Dict<GearKey, string> &
-  Dict<SlotSizeKey, number>;
+export type AirSquadronEntity = FhEntity<
+  AirSquadronParams,
+  (GearKey | SlotSizeKey) & keyof AirSquadronParams
+>;
 
 const adapter = createEntityAdapter<AirSquadronEntity>();
 
@@ -38,7 +38,7 @@ export const airSquadronsSlice = createSlice({
           state.entities[position.airSquadron];
         if (!entity) return;
 
-        entity[position.key] = payload.id;
+        entity[position.key as "g1"] = payload.id;
       })
       .addCase(filesSlice.actions.createPlan, (state, { meta }) => {
         adapter.addMany(state, [

@@ -1,30 +1,32 @@
 import { Container } from "@material-ui/core";
-import { EntityId } from "@reduxjs/toolkit";
 import React from "react";
 
-import { useFile, usePlan } from "../../../hooks";
+import { useFile, useOrg } from "../../../hooks";
+import { PlanAnalysisPanel } from "../../organisms";
 import PlanScreenHeader from "./PlanScreenHeader";
 import PlanTabs from "./PlanTabs";
 
 type PlanScreenProps = {
-  id: EntityId;
+  id: string;
 };
 
 const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
-  const { plan, actions: planActions } = usePlan(id);
-  const { file, actions: fileActions } = useFile(id as string);
+  const { org, actions: orgActions } = useOrg(id);
+  const { file, actions: fileActions } = useFile(id);
 
-  if (!plan || file?.type !== "plan") return null;
+  if (!org || file?.type !== "plan") return null;
 
   return (
     <Container>
       <PlanScreenHeader
-        plan={plan}
+        org={org}
         file={file}
         onNameChange={fileActions.setName}
-        onHqLevelChange={planActions.setHqLevel}
+        onHqLevelChange={orgActions.setHqLevel}
       />
-      <PlanTabs plan={plan} />
+      <PlanTabs org={org} />
+
+      <PlanAnalysisPanel org={org} />
     </Container>
   );
 };

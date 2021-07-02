@@ -2,8 +2,6 @@ import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
 import { Button, ButtonProps } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import { EntityId } from "@reduxjs/toolkit";
-import next from "next";
 import React from "react";
 import { shallowEqual } from "react-redux";
 
