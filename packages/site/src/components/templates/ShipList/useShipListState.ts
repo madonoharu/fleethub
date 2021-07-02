@@ -49,13 +49,13 @@ const createFilterFn = (state: ShipListState): FilterFn => {
 const sortIdComparer = (a: Ship, b: Ship) => a.sort_id - b.sort_id;
 
 export const useShipListState = () => {
-  const { master_data, createShip } = useFhCore();
+  const { master_data, factory } = useFhCore();
   const state = useSelector(selectShipListState);
   const dispatch = useDispatch();
 
   const masterShips = React.useMemo(() => {
     return master_data.ships
-      .map((ship) => createShip({ ship_id: ship.ship_id }))
+      .map((ship) => factory.create_ship({ ship_id: ship.ship_id }))
       .filter(isNonNullable);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [master_data]);

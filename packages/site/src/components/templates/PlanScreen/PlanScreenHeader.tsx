@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Plan } from "@fleethub/core";
+import { Org } from "@fleethub/core";
 import { Button, ClickAwayListener } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import React, { useState } from "react";
@@ -74,7 +74,7 @@ const LevelInput = styled(NumberInput)`
 `;
 
 type PlanScreenHeaderProps = {
-  plan: Plan;
+  org: Org;
   file?: PlanFileEntity;
   onNameChange?: (value: string) => void;
   onHqLevelChange?: (value: number) => void;
@@ -82,7 +82,7 @@ type PlanScreenHeaderProps = {
 
 const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
   className,
-  plan,
+  org,
   file,
   onNameChange,
   onHqLevelChange,
@@ -98,12 +98,12 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
         />
         <LevelInput
           startLabel="司令部Lv"
-          value={plan.hq_level}
+          value={org.hq_level}
           min={1}
           max={120}
           onChange={onHqLevelChange}
         />
-        <PlanAction plan={plan} />
+        <PlanAction org={org} />
       </Flexbox>
     </div>
   );

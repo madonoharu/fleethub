@@ -47,7 +47,7 @@ type GearListProps = {
 };
 
 const useGearListState = () => {
-  const { createGear } = useFhCore();
+  const { factory } = useFhCore();
 
   const dispatch = useDispatch();
   const state = useSelector(selectGearListState);
@@ -55,7 +55,7 @@ const useGearListState = () => {
   const gears = useMemo(
     () =>
       master_data.gears
-        .map((mg) => createGear({ gear_id: mg.gear_id }))
+        .map((mg) => factory.create_gear({ gear_id: mg.gear_id }))
         .filter(isNonNullable),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -71,7 +71,7 @@ const useGearListState = () => {
     return { update, setAbyssal, setGroup };
   }, [dispatch]);
 
-  return { gears, ...state, createGear, actions };
+  return { gears, ...state, actions };
 };
 
 const GearList: React.FC<GearListProps> = ({
@@ -79,7 +79,7 @@ const GearList: React.FC<GearListProps> = ({
   onSelect,
   getNextEbonuses,
 }) => {
-  const { gears, abyssal, group, actions, createGear } = useGearListState();
+  const { gears, abyssal, group, actions } = useGearListState();
 
   const [searchValue, setSearchValue] = useState("");
 

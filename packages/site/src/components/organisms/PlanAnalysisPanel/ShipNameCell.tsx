@@ -1,21 +1,20 @@
-import styled from "@emotion/styled";
-import { Ship } from "@fleethub/core";
 import { Typography } from "@material-ui/core";
 import React from "react";
 
-import { ShipBanner } from "../../../components";
+import { ShipBanner } from "../../molecules";
 
 type Props = {
-  ship: Ship;
+  name: string;
+  banner?: string;
 };
 
-const ShipNameCell: React.FCX<Props> = ({ className, ship }) => {
+const ShipNameCell: React.FCX<Props> = ({ className, name, banner }) => {
   return (
     <div className={className}>
       <Typography variant="caption" display="block">
-        {ship.name}
+        {name}
       </Typography>
-      <ShipBanner publicId={ship.banner} />
+      <ShipBanner publicId={banner} />
     </div>
   );
 };

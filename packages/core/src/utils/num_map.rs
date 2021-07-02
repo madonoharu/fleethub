@@ -7,6 +7,7 @@ use std::{
 
 use counter::Counter;
 use num_traits::Zero;
+use serde::{Deserialize, Deserializer};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct NumMap<K, V>
@@ -35,8 +36,20 @@ where
         self.map.insert(k, v)
     }
 
-    pub fn entry(&mut self, k: K) -> hash_map::Entry<'_, K, V> {
+    pub fn entry(&mut self, k: K) -> hash_map::Entry<K, V> {
         self.map.entry(k)
+    }
+
+    pub fn iter(&self) -> hash_map::Iter<K, V> {
+        self.map.iter()
+    }
+
+    pub fn values(&self) -> hash_map::Values<K, V> {
+        self.map.values()
+    }
+
+    pub fn into_vec(self) -> Vec<(K, V)> {
+        self.into_iter().collect()
     }
 }
 

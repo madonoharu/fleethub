@@ -1,4 +1,4 @@
-import { Fleet, getDeckItems, Plan, Ship } from "@fleethub/core";
+import { Fleet, getDeckItems, Org, Ship } from "@fleethub/core";
 import { Mutable } from "@fleethub/utils";
 import { DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "gkcoi";
 
@@ -49,19 +49,19 @@ export type GkcoiOptions = Partial<Pick<DeckBuilder, "theme" | "lang" | "cmt">>;
 
 const defaultOptions = { lang: "jp", theme: "dark" } as const;
 
-export const getGkcoiDeck = (plan: Plan, options?: GkcoiOptions) => {
+export const getGkcoiDeck = (org: Org, options?: GkcoiOptions) => {
   const deck: Mutable<DeckBuilder> = {
-    hqlv: plan.hqLevel,
+    hqlv: org.hqLevel,
     ...defaultOptions,
     ...options,
   };
 
-  plan.fleetEntries.forEach(([key, fleet]) => {
+  org.fleetEntries.forEach(([key, fleet]) => {
     if (fleet.ships.length === 0) return;
     deck[key] = getGkcoiFleet(fleet);
   });
 
-  plan.airbaseEntries.forEach(([key, airbase]) => {
+  org.airbaseEntries.forEach(([key, airbase]) => {
     if (airbase.equipment.gears.length === 0) return;
     const items = getDeckItems(airbase.equipment);
     deck[key] = { items };

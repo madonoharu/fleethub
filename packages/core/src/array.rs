@@ -1,8 +1,16 @@
 use std::{fmt::Debug, iter::Sum, ops::Index, slice::SliceIndex, usize};
 
 use arrayvec::ArrayVec;
+use ts_rs::TS;
 
 use crate::{gear::Gear, ship::Ship};
+
+const GEAR_ARRAY_LEN: usize = 6;
+const EXSLOT_INDEX: usize = GEAR_ARRAY_LEN - 1;
+
+const SLOT_SIZE_ARRAY_LEN: usize = 5;
+
+const SHIP_ARRAY_LEN: usize = 7;
 
 #[derive(Debug, Clone)]
 pub struct OptionalArray<T: Debug + Default + Clone, const N: usize>(pub [Option<T>; N]);
@@ -20,7 +28,7 @@ macro_rules! impl_default {
     }
 }
 
-impl_default!(6, 7);
+impl_default!(GEAR_ARRAY_LEN, SHIP_ARRAY_LEN);
 
 impl<T, Idx, const N: usize> Index<Idx> for OptionalArray<T, N>
 where
@@ -47,7 +55,7 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
     }
 
     pub fn values(&self) -> impl Iterator<Item = &T> {
-        self.iter().map(|(_, item)| item)
+        self.0.iter().filter_map(|item| item.as_ref())
     }
 
     pub fn put(&mut self, index: usize, value: T) {
@@ -70,9 +78,6 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
         self.values().filter(cb).count()
     }
 }
-
-const GEAR_ARRAY_LEN: usize = 6;
-const EXSLOT_INDEX: usize = GEAR_ARRAY_LEN - 1;
 
 pub type GearArray = OptionalArray<Gear, GEAR_ARRAY_LEN>;
 
@@ -102,10 +107,6 @@ impl GearArray {
     }
 }
 
-const SLOT_SIZE_ARRAY_LEN: usize = 5;
-pub type SlotSizeArray = ArrayVec<Option<i32>, SLOT_SIZE_ARRAY_LEN>;
-
-const SHIP_ARRAY_LEN: usize = 7;
 pub type ShipArray = OptionalArray<Ship, SHIP_ARRAY_LEN>;
 
 impl ShipArray {
@@ -122,6 +123,8 @@ impl ShipArray {
         }
     }
 }
+
+pub type SlotSizeArray = ArrayVec<Option<i32>, SLOT_SIZE_ARRAY_LEN>;
 
 #[cfg(test)]
 mod test {

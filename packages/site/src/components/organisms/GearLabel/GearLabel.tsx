@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
-import { GearState } from "@fleethub/utils";
 import React from "react";
 import { shallowEqual } from "react-redux";
 
+import { GearEntity } from "../../../store";
 import { Flexbox } from "../../atoms";
 import {
   ClearButton,
@@ -25,7 +25,7 @@ type Props = {
   gear: Gear;
   equippable?: boolean;
 
-  onUpdate?: (changes: Partial<GearState>) => void;
+  onUpdate?: (changes: Partial<GearEntity>) => void;
   onRemove?: () => void;
   onReselect?: () => void;
 };

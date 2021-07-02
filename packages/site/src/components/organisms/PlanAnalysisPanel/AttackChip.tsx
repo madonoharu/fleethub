@@ -1,12 +1,11 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { DayCutin, NightSpecialAttack } from "@fleethub/core";
 import { Chip } from "@material-ui/core";
 import React from "react";
 
 type Props = {
   night?: boolean;
-  attack: DayCutin | NightSpecialAttack;
+  attack: string;
 };
 
 const AttackChip: React.FCX<Props> = ({ className, attack }) => {
@@ -15,7 +14,7 @@ const AttackChip: React.FCX<Props> = ({ className, attack }) => {
       className={className}
       variant="outlined"
       size="small"
-      label={attack.name}
+      label={attack}
     />
   );
 };

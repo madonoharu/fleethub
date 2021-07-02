@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { AirSquadron } from "@fleethub/core";
 import { GEAR_KEYS, SlotSizeKey } from "@fleethub/utils";
 import { Paper, Typography } from "@material-ui/core";
-import { EntityId } from "@reduxjs/toolkit";
 import React from "react";
 import { useMemo } from "react";
 import { shallowEqual, useDispatch } from "react-redux";
@@ -11,7 +10,7 @@ import { AirSquadronEntity, airSquadronsSlice } from "../../../store";
 import { Flexbox, LabeledValue } from "../../atoms";
 import GearSlot from "../ShipBox/GearSlot";
 
-const useAirSquadronActions = (id: EntityId) => {
+const useAirSquadronActions = (id: string) => {
   const dispatch = useDispatch();
 
   return useMemo(() => {

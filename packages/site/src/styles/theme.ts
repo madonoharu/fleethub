@@ -25,12 +25,12 @@ const muiTheme = createTheme({
   components: {
     MuiContainer: {
       defaultProps: {
-        maxWidth: "md",
+        maxWidth: "lg",
       },
     },
     MuiDialog: {
       defaultProps: {
-        maxWidth: "md",
+        maxWidth: "lg",
       },
     },
 

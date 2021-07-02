@@ -1,17 +1,19 @@
-mod air_squadron;
-mod array;
-mod const_id;
-mod constants;
-mod factory;
-mod fleet;
-mod gear;
-mod master;
-mod plan;
-mod ship;
+pub mod air_squadron;
+pub mod array;
+pub mod const_id;
+pub mod constants;
+pub mod factory;
+pub mod fleet;
+pub mod gear;
+pub mod master;
+pub mod org;
+pub mod ship;
 
-mod attack;
-mod damage;
-mod utils;
+pub mod attack;
+pub mod damage;
+pub mod utils;
+
+use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.

@@ -9,7 +9,7 @@ import {
   isDirectory,
   selectTempIds,
 } from "./filesSlice";
-import { plansSlice } from "./plansSlice";
+import { orgsSlice } from "./orgsSlice";
 import { selectEntitiesState } from "./selectors";
 import { ignoreUndoable } from "./undoableOptions";
 
@@ -18,21 +18,19 @@ const fetchUrlData = async (url: URL) => undefined;
 
 export const entitiesReducer = combineReducers({
   files: filesSlice.reducer,
-  plans: plansSlice.reducer,
+  orgs: orgsSlice.reducer,
 });
 
 export type EntitiesState = ReturnType<typeof entitiesReducer>;
 
 const createFilesData = (state: EntitiesState, id: string): FilesData => {
   const fileEntities = state.files.entities;
-  const planEntities = state.plans.entities;
+  const orgEntities = state.orgs.entities;
 
   const files = flatFile(fileEntities, id);
-  const plans = files
-    .map((file) => planEntities[file.id])
-    .filter(isNonNullable);
+  const orgs = files.map((file) => orgEntities[file.id]).filter(isNonNullable);
 
-  return { id, files, plans };
+  return { id, files, orgs };
 };
 
 export const cloneFilesDataById = (
@@ -43,26 +41,25 @@ export const cloneFilesDataById = (
   return cloneFilesData(sourceData);
 };
 
-export const copyFile = (id: string, to?: string): AppThunk => (
-  dispatch,
-  getState
-) => {
-  const state = getState();
-  const cloned = cloneFilesDataById(selectEntitiesState(state), id);
+export const copyFile =
+  (id: string, to?: string): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+    const cloned = cloneFilesDataById(selectEntitiesState(state), id);
 
-  const parentFile = cloned.files.find((file) => file.id === cloned.id);
-  if (parentFile?.name) {
-    parentFile.name = parentFile.name + "-コピー";
-  }
+    const parentFile = cloned.files.find((file) => file.id === cloned.id);
+    if (parentFile?.name) {
+      parentFile.name = parentFile.name + "-コピー";
+    }
 
-  if (!to) {
-    to = filesSelectors
-      .selectAll(state)
-      .find((file) => isDirectory(file) && file.children.includes(id))?.id;
-  }
+    if (!to) {
+      to = filesSelectors
+        .selectAll(state)
+        .find((file) => isDirectory(file) && file.children.includes(id))?.id;
+    }
 
-  dispatch(filesSlice.actions.set({ data: cloned, to }));
-};
+    dispatch(filesSlice.actions.set({ data: cloned, to }));
+  };
 
 export const cleanEntities = (): AppThunk => (dispatch, getState) => {
   const tempIds = selectTempIds(getState());
