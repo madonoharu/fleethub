@@ -3,7 +3,7 @@ use ts_rs::TS;
 const PATH: &'static str = "pkg/types.d.ts";
 
 macro_rules! gen_types {
-    ($($p: path),*) => {{
+    ($($p: path),* $(,)?) => {{
         let mut buffer = String::new();
 
         $(
@@ -20,16 +20,33 @@ fn main() {
     let path = std::path::Path::new(PATH);
     let fmt_config = ts_rs::export::FmtCfg::new().deno().build();
 
+    use core::*;
+
     let buffer = gen_types!(
-        core::gear::GearState,
-        core::ship::ShipState,
-        core::fleet::FleetState,
-        core::air_squadron::AirSquadronState,
-        core::org::OrgType,
-        core::org::OrgState,
-        core::attack::ShellingAttackType,
-        core::org::ShellingAttackShipAnalysis,
-        core::org::ShellingAttackOrgAnalysis
+        types::DayCutin,
+        types::SingleFormation,
+        types::CombinedFormation,
+        types::Formation,
+        types::GearCategory,
+        gear::GearState,
+        ship::ShipState,
+        fleet::FleetState,
+        air_squadron::AirSquadronState,
+        org::OrgType,
+        org::OrgState,
+        org::DayCutinRateAnalysis,
+        org::ShipDayCutinRateAnalysis,
+        org::FleetDayCutinRateAnalysis,
+        org::OrgDayCutinRateAnalysis,
+        anti_air::ShipAntiAirAnalysis,
+        anti_air::OrgAntiAirAnalysis,
+        master::FormationAttackModifiers,
+        master::FormationAttackDef,
+        master::FormationDef,
+        master::MasterData,
+        master::MasterGear,
+        master::MasterShip,
+        master::StatInterval,
     );
 
     let buffer =

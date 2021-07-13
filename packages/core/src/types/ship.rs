@@ -2,118 +2,9 @@ use enumset::EnumSetType;
 use num_derive::FromPrimitive;
 use serde::Deserialize;
 use strum_macros::EnumString;
-use wasm_bindgen::prelude::*;
+use ts_rs::TS;
 
-macro_rules! impl_default {
-    ($enum: ident) => {
-        impl Default for $enum {
-            fn default() -> Self {
-                Self::Unknown
-            }
-        }
-    };
-}
-
-#[wasm_bindgen]
-#[derive(Debug, EnumSetType, FromPrimitive)]
-pub enum GearCategory {
-    Unknown = 0,
-    SmallCaliberMainGun = 1,
-    MediumCaliberMainGun = 2,
-    LargeCaliberMainGun = 3,
-    SecondaryGun = 4,
-    Torpedo = 5,
-    CbFighter = 6,
-    CbDiveBomber = 7,
-    CbTorpedoBomber = 8,
-    CbRecon = 9,
-    ReconSeaplane = 10,
-    SeaplaneBomber = 11,
-    SmallRadar = 12,
-    LargeRadar = 13,
-    Sonar = 14,
-    DepthCharge = 15,
-    ExtraArmor = 16,
-    EngineImprovement = 17,
-    AntiAirShell = 18,
-    ApShell = 19,
-    VtFuze = 20,
-    AntiAirGun = 21,
-    MidgetSubmarine = 22,
-    EmergencyRepairPersonnel = 23,
-    LandingCraft = 24,
-    Autogyro = 25,
-    AntiSubPatrolAircraft = 26,
-    MediumExtraArmor = 27,
-    LargeExtraArmor = 28,
-    Searchlight = 29,
-    SupplyTransportContainer = 30,
-    ShipRepairFacility = 31,
-    SubmarineTorpedo = 32,
-    Starshell = 33,
-    CommandFacility = 34,
-    AviationPersonnel = 35,
-    AntiAirFireDirector = 36,
-    AntiGroundEquipment = 37,
-    LargeCaliberMainGun2 = 38,
-    SurfaceShipPersonnel = 39,
-    LargeSonar = 40,
-    LargeFlyingBoat = 41,
-    LargeSearchlight = 42,
-    CombatRation = 43,
-    Supplies = 44,
-    SeaplaneFighter = 45,
-    SpecialAmphibiousTank = 46,
-    LbAttacker = 47,
-    LbFighter = 48,
-    LbRecon = 49,
-    TransportationMaterial = 50,
-    SubmarineEquipment = 51,
-    LargeLbAircraft = 53,
-    JetFighter = 56,
-    JetFighterBomber = 57,
-    JetTorpedoBomber = 58,
-    JetRecon = 59,
-    LargeRadar2 = 93,
-    CbRecon2 = 94,
-}
-
-impl_default!(GearCategory);
-
-#[wasm_bindgen]
-#[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
-pub enum GearAttr {
-    Abyssal,
-    HighAngleMount,
-    NightFighter,
-    NightAttacker,
-    HeavyBomber,
-    MainGun,
-    Radar,
-    SurfaceRadar,
-    AirRadar,
-    DepthChargeProjector,
-    AdditionalDepthCharge,
-    AntiSubMortar,
-    AntiSubWeapon,
-    AntiSubAircraft,
-    Seaplane,
-    CbAircraft,
-    LbAircraft,
-    JetAircraft,
-    Fighter,
-    Recon,
-    ObservationSeaplane,
-    CbFighterBomber,
-    AntiInstallationCbBomber,
-    NightRecon,
-    CbSwordfish,
-    SemiNightPlane,
-    HighAltitudeInterceptor,
-}
-
-#[wasm_bindgen]
-#[derive(Debug, EnumSetType, FromPrimitive)]
+#[derive(Debug, EnumSetType, FromPrimitive, TS)]
 pub enum ShipType {
     Unknown = 0,
     DE = 1,
@@ -140,10 +31,13 @@ pub enum ShipType {
     AO = 22,
 }
 
-impl_default!(ShipType);
+impl Default for ShipType {
+    fn default() -> Self {
+        Self::Unknown
+    }
+}
 
-#[wasm_bindgen]
-#[derive(Debug, EnumSetType, FromPrimitive)]
+#[derive(Debug, EnumSetType, FromPrimitive, TS)]
 pub enum ShipClass {
     Unknown = 0,
     AyanamiClass = 1,
@@ -254,9 +148,12 @@ pub enum ShipClass {
     StLouisClass = 106,
 }
 
-impl_default!(ShipClass);
+impl Default for ShipClass {
+    fn default() -> Self {
+        Self::Unknown
+    }
+}
 
-#[wasm_bindgen]
 #[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
 pub enum ShipAttr {
     Abyssal,
@@ -267,8 +164,7 @@ pub enum ShipAttr {
     TurbineSpeedBonus,
 }
 
-#[wasm_bindgen]
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, TS)]
 pub enum SpeedGroup {
     A,
     B1,
@@ -284,10 +180,15 @@ impl Default for SpeedGroup {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DamageState {
+    /// 轟沈
     Sunk,
+    /// 大破
     Taiha,
+    /// 中破
     Chuuha,
+    /// 小破
     Shouha,
+    /// 小破未満
     Normal,
 }
 
@@ -309,56 +210,10 @@ impl DamageState {
     }
 }
 
-#[derive(Debug, EnumSetType)]
-pub enum AirState {
-    /// 制空確保
-    AirSupremacy,
-    /// 制空優勢
-    AirSuperiority,
-    /// 制空均衡
-    AirParity,
-    /// 制空劣勢
-    AirDenial,
-    /// 制空喪失
-    AirIncapability,
-}
-
 #[cfg(test)]
 mod test {
 
     use super::*;
-
-    #[test]
-    fn test_const_ship_id() {
-        assert_eq!(crate::const_ship_id!("睦月"), 1);
-    }
-
-    #[test]
-    fn test_const_gear_id() {
-        assert_eq!(crate::const_gear_id!("12cm単装砲"), 1);
-    }
-
-    #[test]
-    fn test_gear_attr() {
-        use enumset::EnumSet;
-        use std::str::FromStr;
-
-        let mut set: EnumSet<GearAttr> = GearAttr::HighAngleMount | GearAttr::JetAircraft;
-        set.insert(GearAttr::MainGun);
-
-        assert_eq!(set.len(), 3);
-        assert!(set.contains(GearAttr::MainGun));
-
-        assert_eq!(
-            GearAttr::from_str("HighAngleMount").unwrap(),
-            GearAttr::HighAngleMount
-        );
-    }
-
-    #[test]
-    fn test_ship_type() {
-        println!("{:?}", ShipType::DD | ShipType::DE & ShipType::DD)
-    }
 
     #[test]
     fn test_damage_state() {

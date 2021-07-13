@@ -1,13 +1,21 @@
 import styled from "@emotion/styled";
-import { Org } from "@fleethub/core";
+import { Org, OrgType } from "@fleethub/core";
 import { Button, ClickAwayListener } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import React, { useState } from "react";
 
 import { PlanFileEntity } from "../../../store";
 import { Flexbox, PlanIcon } from "../../atoms";
-import { NumberInput, TextField } from "../../molecules";
+import { NumberInput, Select, TextField } from "../../molecules";
 import PlanAction from "./PlanAction";
+
+const ORG_TYPES: OrgType[] = [
+  "Single",
+  "CarrierTaskForce",
+  "SurfaceTaskForce",
+  "TransportEscort",
+  "EnemyCombined",
+];
 
 const StyledTextField = styled(TextField)`
   input {
@@ -78,6 +86,7 @@ type PlanScreenHeaderProps = {
   file?: PlanFileEntity;
   onNameChange?: (value: string) => void;
   onHqLevelChange?: (value: number) => void;
+  onOrgTypeChange?: (org_type: OrgType) => void;
 };
 
 const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
@@ -86,7 +95,9 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
   file,
   onNameChange,
   onHqLevelChange,
+  onOrgTypeChange,
 }) => {
+  const org_type = org.org_type;
   return (
     <div className={className}>
       <Flexbox>
@@ -103,6 +114,13 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
           max={120}
           onChange={onHqLevelChange}
         />
+
+        <Select<OrgType>
+          options={ORG_TYPES}
+          onChange={onOrgTypeChange}
+          value={org_type as OrgType}
+        />
+
         <PlanAction org={org} />
       </Flexbox>
     </div>

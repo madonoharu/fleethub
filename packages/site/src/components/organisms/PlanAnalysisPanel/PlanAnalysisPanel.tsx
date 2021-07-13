@@ -4,7 +4,7 @@ import { Paper } from "@material-ui/core";
 import React from "react";
 
 import { Tabs, TabsProps } from "../../molecules";
-// import AntiAirPanel from "./AntiAirPanel";
+import AntiAirScreen from "./AntiAirScreen";
 // import ContactChancePanel from "./ContactChancePanel";
 import DayAttackRateTable from "./DayAttackRateTable";
 // import MiscPanel from "./MiscPanel";
@@ -19,7 +19,7 @@ const OrgAnalysisPanel: React.FCX<Props> = ({ className, org }) => {
     { label: "弾着戦爆発動率", panel: <DayAttackRateTable org={org} /> },
     { label: "触接率", panel: null },
     { label: "夜戦CI率", panel: null },
-    { label: "対空", panel: null },
+    { label: "対空", panel: <AntiAirScreen org={org} /> },
     { label: "その他", panel: null },
   ];
 
