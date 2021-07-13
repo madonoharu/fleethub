@@ -1,9 +1,15 @@
-use crate::{const_gear_id, constants::*, master::MasterGear, utils::xxh3};
 use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use wasm_bindgen::prelude::*;
+
+use crate::{
+    const_gear_id,
+    master::{GearTypes, MasterGear},
+    types::{GearAttr, GearCategory},
+    utils::xxh3,
+};
 
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct GearState {
@@ -78,13 +84,14 @@ pub struct Gear {
     #[wasm_bindgen(skip)]
     pub name: String,
     #[wasm_bindgen(skip)]
-    pub types: [i32; 5],
+    pub types: GearTypes,
     #[wasm_bindgen(skip)]
     pub attrs: EnumSet<GearAttr>,
     #[wasm_bindgen(skip)]
     pub ibonuses: IBonuses,
-
+    #[wasm_bindgen(skip)]
     pub category: GearCategory,
+    #[wasm_bindgen(skip)]
     pub special_type: GearCategory,
 
     pub max_hp: i32,
@@ -118,7 +125,7 @@ impl Gear {
     ) -> Self {
         let xxh3 = xxh3(&state);
 
-        let category: GearCategory = FromPrimitive::from_i32(master.types[2]).unwrap_or_default();
+        let category = master.types.category();
 
         let special_type: GearCategory = master
             .special_type
@@ -144,7 +151,7 @@ impl Gear {
             special_type,
 
             name: master.name.clone(),
-            types: master.types,
+            types: master.types.clone(),
             max_hp: master.max_hp,
             firepower: master.firepower,
             armor: master.armor,
@@ -169,6 +176,10 @@ impl Gear {
             attrs,
             ibonuses,
         }
+    }
+
+    pub fn has_attr(&self, attr: GearAttr) -> bool {
+        self.attrs.contains(attr)
     }
 }
 
@@ -196,11 +207,7 @@ impl Gear {
 
     #[wasm_bindgen(getter)]
     pub fn icon_id(&self) -> i32 {
-        self.types[3]
-    }
-
-    pub fn has_attr(&self, attr: GearAttr) -> bool {
-        self.attrs.contains(attr)
+        self.types.icon_id()
     }
 
     pub fn discern(&self) -> String {
@@ -259,10 +266,10 @@ impl Gear {
     }
 
     pub fn has_proficiency(&self) -> bool {
-        self.attrs.contains(GearAttr::CbAircraft)
-            || self.attrs.contains(GearAttr::Seaplane)
-            || self.attrs.contains(GearAttr::JetAircraft)
-            || self.attrs.contains(GearAttr::LbAircraft)
+        self.has_attr(GearAttr::CbAircraft)
+            || self.has_attr(GearAttr::Seaplane)
+            || self.has_attr(GearAttr::JetAircraft)
+            || self.has_attr(GearAttr::LbAircraft)
     }
 
     fn proficiency_fighter_power_modifier(&self) -> f64 {
@@ -315,6 +322,26 @@ impl Gear {
         };
 
         multiplier * (self.anti_air as f64) + self.ibonuses.fleet_anti_air
+    }
+
+    pub fn adjusted_anti_air(&self) -> f64 {
+        if self.anti_air == 0 {
+            return 0.;
+        }
+
+        let multiplier = if self.category == GearCategory::AntiAirGun {
+            6.
+        } else if self.category == GearCategory::AntiAirFireDirector
+            || self.has_attr(GearAttr::HighAngleMount)
+        {
+            4.
+        } else if self.has_attr(GearAttr::Radar) {
+            3.
+        } else {
+            0.
+        };
+
+        multiplier * (self.anti_air as f64) + self.ibonuses.adjusted_anti_air
     }
 }
 

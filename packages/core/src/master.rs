@@ -1,17 +1,20 @@
-use crate::{
-    constants::{GearAttr, ShipAttr, SpeedGroup},
-    gear::{GearState, IBonuses},
-    ship::ShipEquippable,
-};
-use arrayvec::ArrayVec;
+use std::{collections::HashMap, str::FromStr};
+
 use enumset::EnumSet;
 use fasteval::bool_to_f64;
-use serde::Deserialize;
-use std::collections::HashMap;
-use std::str::FromStr;
+use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Deserialize, Default)]
+use crate::{
+    array::{MyArrayVec, SlotSizeArray},
+    gear::{GearState, IBonuses},
+    ship::ShipEquippable,
+    types::{DayCutin, Formation, GearAttr, GearCategory, NightCutin, ShipAttr, SpeedGroup},
+    utils::OrderedF64,
+};
+
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterDataGearCategory {
     pub id: i32,
     pub name: String,
@@ -22,11 +25,39 @@ fn default_as_1() -> f64 {
     1.0
 }
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+pub struct GearTypes(i32, i32, i32, i32, i32);
+
+impl GearTypes {
+    pub fn get(&self, index: usize) -> Option<i32> {
+        match index {
+            0 => Some(self.0),
+            1 => Some(self.1),
+            2 => Some(self.2),
+            3 => Some(self.3),
+            4 => Some(self.4),
+            _ => None,
+        }
+    }
+
+    fn category_id(&self) -> i32 {
+        self.2
+    }
+
+    pub fn category(&self) -> GearCategory {
+        num_traits::FromPrimitive::from_i32(self.category_id()).unwrap_or_default()
+    }
+
+    pub fn icon_id(&self) -> i32 {
+        self.3
+    }
+}
+
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterGear {
     pub gear_id: i32,
     pub name: String,
-    pub types: [i32; 5],
+    pub types: GearTypes,
     pub special_type: Option<i32>,
     #[serde(default)]
     pub max_hp: i32,
@@ -92,13 +123,11 @@ impl MasterGear {
             "types" => args
                 .get(0)
                 .and_then(|i| self.types.get(i.floor() as usize))
-                .map(|value| *value as f64),
+                .map(|value| value as f64),
 
             "gear_id_in" => Some(bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64))),
 
-            "category_in" => Some(bool_to_f64!(args
-                .iter()
-                .any(|v| *v == self.types[2] as f64))),
+            "category_in" => Some(bool_to_f64!(args.iter().any(|v| *v == self.types.2 as f64))),
 
             _ => None,
         };
@@ -107,14 +136,14 @@ impl MasterGear {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterDataAttrRule {
     pub key: String,
     pub name: String,
     pub expr: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterDataIBonusRule {
     pub expr: String,
     pub formula: String,
@@ -136,7 +165,7 @@ impl MasterDataIBonusRule {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterDataIBonuses {
     shelling_power: Vec<MasterDataIBonusRule>,
     shelling_accuracy: Vec<MasterDataIBonusRule>,
@@ -185,16 +214,13 @@ impl MasterDataIBonuses {
 }
 
 #[wasm_bindgen]
-#[derive(Debug, Default, Clone, Copy, Deserialize)]
+#[derive(Debug, Default, Clone, Copy, Deserialize, TS)]
 pub struct StatInterval(pub Option<i32>, pub Option<i32>);
 
-#[wasm_bindgen]
-#[derive(Debug, Default, Clone, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterShip {
     pub ship_id: i32,
-    #[wasm_bindgen(skip)]
     pub name: String,
-    #[wasm_bindgen(skip)]
     pub yomi: String,
     pub stype: i32,
     pub ctype: Option<i32>,
@@ -215,11 +241,8 @@ pub struct MasterShip {
     pub next_id: Option<i32>,
     pub next_level: Option<i32>,
     pub slotnum: i32,
-    #[wasm_bindgen(skip)]
-    pub slots: ArrayVec<Option<i32>, 5>,
-    #[wasm_bindgen(skip)]
-    pub stock: ArrayVec<GearState, 5>,
-    #[wasm_bindgen(skip)]
+    pub slots: SlotSizeArray,
+    pub stock: MyArrayVec<GearState, 5>,
     pub speed_group: Option<SpeedGroup>,
     pub useful: Option<bool>,
 }
@@ -252,25 +275,25 @@ impl MasterShip {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct EquipStype {
     pub id: i32,
     pub equip_type: Vec<i32>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MstEquipShip {
     pub api_ship_id: i32,
     pub api_equip_type: Vec<i32>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MstEquipExslotShip {
     pub api_slotitem_id: i32,
     pub api_ship_ids: Vec<i32>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterDataEquippable {
     pub equip_stype: Vec<EquipStype>,
     pub equip_exslot: Vec<i32>,
@@ -278,7 +301,7 @@ pub struct MasterDataEquippable {
     pub equip_exslot_ship: Vec<MstEquipExslotShip>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
     pub gear_categories: Vec<MasterDataGearCategory>,
@@ -367,6 +390,63 @@ impl MasterData {
     }
 }
 
+pub struct DayCutinDef {
+    pub kind: DayCutin,
+    pub times: usize,
+    pub denom: Option<u8>,
+    pub power_mod: Option<f64>,
+    pub accuracy_mod: Option<f64>,
+}
+
+pub struct NightCutinDef {
+    pub kind: NightCutin,
+    pub times: usize,
+    pub denom: Option<u8>,
+    pub power_mod: Option<f64>,
+    pub accuracy_mod: Option<f64>,
+}
+
+pub struct AntiAirCutinDef {
+    pub id: u8,
+    pub numer: Option<u8>,
+    pub minimum_bonus: Option<u8>,
+    pub fixed_air_defense_mod: Option<OrderedF64>,
+}
+
+#[derive(Debug, Serialize, Deserialize, TS)]
+pub struct FormationAttackModifiers {
+    power: OrderedF64,
+    accuracy: OrderedF64,
+    evasion: OrderedF64,
+}
+
+#[derive(Debug, Serialize, Deserialize, TS)]
+pub enum FormationAttackDef {
+    Single(FormationAttackModifiers),
+    Vanguard {
+        top_half: FormationAttackModifiers,
+        bottom_half: FormationAttackModifiers,
+    },
+}
+
+#[derive(Debug, Serialize, Deserialize, TS)]
+pub struct FormationDef {
+    kind: Formation,
+    protection_rate: OrderedF64,
+    fleet_anti_air: OrderedF64,
+    shelling: FormationAttackDef,
+    torpedo: FormationAttackDef,
+    asw: FormationAttackDef,
+    night: FormationAttackDef,
+}
+
+struct Config {
+    day_cutins: Vec<DayCutinDef>,
+    night_cutins: Vec<NightCutinDef>,
+    anti_air_cutins: Vec<AntiAirCutinDef>,
+    formations: Vec<FormationDef>,
+}
+
 #[cfg(test)]
 pub mod test {
     use super::*;
@@ -407,7 +487,7 @@ pub mod test {
         let gear = MasterGear {
             gear_id: 10,
             name: "name".to_string(),
-            types: [0, 1, 2, 3, 4],
+            types: GearTypes(0, 1, 2, 3, 4),
             special_type: Some(26),
 
             max_hp: 11,

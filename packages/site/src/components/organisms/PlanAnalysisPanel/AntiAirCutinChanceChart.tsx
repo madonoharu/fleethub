@@ -1,4 +1,3 @@
-import { AntiAirCutin, RateMap } from "@fleethub/core";
 import { colors } from "@material-ui/core";
 import React from "react";
 import { Cell, Label, Pie, PieChart } from "recharts";
@@ -18,27 +17,36 @@ const getColor = (index: number): string =>
 
 type Props = {
   label?: string;
-  rateMap: RateMap<AntiAirCutin>;
+  chance: [number, number][];
 };
 
 const AntiAirCutinChanceChart: React.FCX<Props> = ({
   className,
   label,
-  rateMap,
+  chance,
 }) => {
   const width = 360;
   const height = 240;
   const cx = width / 2;
   const cy = height / 2;
 
-  const data = rateMap.toArray().map(([ci, rate], index) => ({
-    name: ci.name,
-    rate,
-    color: getColor(index),
-  }));
+  const data = chance
+    .filter(([_, rate]) => rate > 0)
+    .map(([ci, rate], index) => ({
+      name: ci.toString(),
+      rate,
+      color: getColor(index),
+    }));
+
+  const total = chance
+    .map(([_, rate]) => rate)
+    .reduce((acc, rate) => acc + rate, 0);
+
+  const complement = 1 - total;
+
   data.push({
     name: "不発",
-    rate: rateMap.complement,
+    rate: complement,
     color: colors.grey[300],
   });
 
@@ -73,7 +81,7 @@ const AntiAirCutinChanceChart: React.FCX<Props> = ({
           />
         )}
         <Label
-          value={`合計 ${toPercent(rateMap.total)}`}
+          value={`合計 ${toPercent(total)}`}
           dy={10}
           fill="white"
           position="center"

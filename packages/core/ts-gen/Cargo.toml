@@ -8,4 +8,4 @@ core = { path = "../../core" }
 
 [dependencies.ts-rs]
 git = "https://github.com/arendjr/ts-rs"
-branch = "Optional-options-II"
+rev = "af2c35ae74ed4f26e3163d229840038dd8f5f10d"

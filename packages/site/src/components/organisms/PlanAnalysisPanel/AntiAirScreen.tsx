@@ -1,34 +1,27 @@
 import styled from "@emotion/styled";
-import {
-  AntiAirCutin,
-  Formation,
-  Plan,
-  PlanAnalyzer,
-  RateMap,
-} from "@fleethub/core";
+import { Org, OrgAntiAirAnalysis } from "@fleethub/core";
 import React from "react";
 
 import { useSelectState } from "../../../hooks";
 import { toPercent } from "../../../utils";
-import { Table } from "../..";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
-import FormationSelect from "../FormationSelect";
+import ShipNameplate from "../ShipNameplate";
+import Table from "../Table";
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart";
-import AntiAirCutinChip from "./AntiAirCutinChip";
 
-const CutinChanceCell: React.FCX<{ rateMap: RateMap<AntiAirCutin> }> = ({
+type CutinChanceCellProps = {
+  rates: [number, number][];
+};
+
+const CutinChanceCell: React.FCX<CutinChanceCellProps> = ({
   className,
-  rateMap,
+  rates,
 }) => {
   return (
     <div className={className}>
-      {rateMap.toArray(([ci, rate]) => (
-        <LabeledValue
-          key={ci.id}
-          label={<AntiAirCutinChip antiAirCutin={ci} />}
-          value={toPercent(rate)}
-        />
+      {rates.map(([id, rate]) => (
+        <LabeledValue key={id} label={id} value={toPercent(rate)} />
       ))}
     </div>
   );
@@ -57,51 +50,44 @@ const StyledNumberInput = styled(NumberInput)`
 `;
 
 type AntiAirPanelProps = {
-  plan: Plan;
+  org: Org;
 };
 
-const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
+const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
   const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1);
   const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1);
-  const [formation, setFormation] = React.useState<Formation>(
-    plan.isCombined ? "Cruising1" : "LineAhead"
-  );
+  // const [formation, setFormation] = React.useState<Formation>(
+  //   plan.isCombined ? "Cruising1" : "LineAhead"
+  // );
 
-  const fleetCiChance = plan.antiAirCutinChance;
-
-  const cis = fleetCiChance
-    .toArray()
-    .filter(([ci, rate]) => rate > 0)
-    .map(([ci]) => ci);
-  const ciOptions: Array<AntiAirCutin | undefined> = [undefined, ...cis];
-  const ciSelectState = useSelectState(ciOptions);
-
-  const { data, fleetAntiAir } = new PlanAnalyzer(plan).analyzeAntiAir(
-    formation,
-    "Normal",
-    ciSelectState.value
+  const analysis: OrgAntiAirAnalysis = org.analyze_anti_air(
+    adjustedAntiAirResist,
+    fleetAntiAirResist
   );
 
   return (
     <div>
       <Container>
-        <LabeledValue label="艦隊対空" value={fleetAntiAir.toFixed(2)} />
+        <LabeledValue
+          label="艦隊対空"
+          value={analysis.fleet_anti_air.toFixed(4)}
+        />
 
-        <FormationSelect
+        {/* <FormationSelect
           variant="outlined"
           label="陣形"
           combined={plan.isCombined}
           value={formation}
           onChange={setFormation}
-        />
+        /> */}
 
-        <Select
+        {/* <Select
           css={{ width: 120 }}
           variant="outlined"
           label="対空CI"
           {...ciSelectState}
           getOptionLabel={(ci) => ci?.name || "無し"}
-        />
+        /> */}
         <StyledNumberInput
           variant="outlined"
           label="加重対空補正"
@@ -124,52 +110,55 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ plan }) => {
 
       <Table
         padding="none"
-        data={data}
+        data={analysis.ships}
         columns={[
-          { label: "艦娘", getValue: (datum) => datum.ship.name },
+          {
+            label: "艦娘",
+            getValue: (datum) => <ShipNameplate shipId={datum.ship_id} />,
+          },
           {
             label: "加重対空",
             align: "right",
-            getValue: (datum) => datum.adjustedAntiAir,
+            getValue: (datum) => datum.adjusted_anti_air,
           },
           {
             label: "割合撃墜",
             align: "right",
             getValue: (datum) =>
-              datum
-                .calcProportionalShotdownRate(adjustedAntiAirResist)
-                .toFixed(4),
+              datum.proportional_shotdown_rate?.toFixed(4) ?? "?",
           },
           {
             label: "固定撃墜",
             align: "right",
-            getValue: (datum) =>
-              datum.calcFixedShotdownNumber(
-                adjustedAntiAirResist,
-                fleetAntiAirResist
-              ),
+            getValue: (datum) => datum.fixed_shotdown_number ?? "?",
           },
           {
             label: "最低保証",
             align: "right",
-            getValue: (datum) => datum.minimumBonus,
+            getValue: (datum) => datum.minimum_bonus,
           },
           {
             label: "対空CI個艦発動率",
             align: "right",
             getValue: (datum) => (
-              <StyledCutinChanceCell rateMap={datum.antiAirCutinChance} />
+              <StyledCutinChanceCell rates={datum.anti_air_cutin_chance} />
             ),
           },
           {
             label: "噴進弾幕発動率",
             align: "right",
-            getValue: ({ antiAirPropellantBarrageChance: rate }) =>
-              rate ? toPercent(rate) : "-",
+            getValue: ({ anti_air_propellant_barrage_chance: rate }) => {
+              if (rate === null) return "?";
+              if (rate === 0) return "-";
+              return toPercent(rate);
+            },
           },
         ]}
       />
-      <StyledChanceChart label="対空CI艦隊発動率" rateMap={fleetCiChance} />
+      <StyledChanceChart
+        label="対空CI艦隊発動率"
+        chance={analysis.anti_air_cutin_chance}
+      />
     </div>
   );
 };

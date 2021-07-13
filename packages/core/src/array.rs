@@ -1,16 +1,27 @@
-use std::{fmt::Debug, iter::Sum, ops::Index, slice::SliceIndex, usize};
+use std::{
+    fmt::Debug,
+    iter::{FromIterator, Sum},
+    ops::{Deref, DerefMut, Index},
+    slice::SliceIndex,
+    usize,
+};
 
 use arrayvec::ArrayVec;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::{gear::Gear, ship::Ship};
+use crate::{
+    gear::Gear,
+    ship::Ship,
+    types::{GearAttr, GearCategory},
+};
 
-const GEAR_ARRAY_LEN: usize = 6;
-const EXSLOT_INDEX: usize = GEAR_ARRAY_LEN - 1;
+const GEAR_ARRAY_CAPACITY: usize = 6;
+const EXSLOT_INDEX: usize = GEAR_ARRAY_CAPACITY - 1;
 
-const SLOT_SIZE_ARRAY_LEN: usize = 5;
+const SLOT_SIZE_ARRAY_CAPACITY: usize = 5;
 
-const SHIP_ARRAY_LEN: usize = 7;
+const SHIP_ARRAY_CAPACITY: usize = 7;
 
 #[derive(Debug, Clone)]
 pub struct OptionalArray<T: Debug + Default + Clone, const N: usize>(pub [Option<T>; N]);
@@ -28,7 +39,7 @@ macro_rules! impl_default {
     }
 }
 
-impl_default!(GEAR_ARRAY_LEN, SHIP_ARRAY_LEN);
+impl_default!(GEAR_ARRAY_CAPACITY, SHIP_ARRAY_CAPACITY);
 
 impl<T, Idx, const N: usize> Index<Idx> for OptionalArray<T, N>
 where
@@ -43,6 +54,8 @@ where
 }
 
 impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
+    pub const CAPACITY: usize = N;
+
     pub fn new(inner: [Option<T>; N]) -> Self {
         Self(inner)
     }
@@ -74,12 +87,12 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
         self.values().any(cb)
     }
 
-    pub fn count_by<F: FnMut(&&T) -> bool>(&self, cb: F) -> usize {
-        self.values().filter(cb).count()
+    pub fn count_by<F: FnMut(&T) -> bool>(&self, mut cb: F) -> usize {
+        self.values().filter(|item| cb(item)).count()
     }
 }
 
-pub type GearArray = OptionalArray<Gear, GEAR_ARRAY_LEN>;
+pub type GearArray = OptionalArray<Gear, GEAR_ARRAY_CAPACITY>;
 
 impl GearArray {
     pub fn without_ex(&self) -> impl Iterator<Item = (usize, &Gear)> {
@@ -92,6 +105,22 @@ impl GearArray {
 
     pub fn count(&self, id: i32) -> usize {
         self.count_by(|g| g.gear_id == id)
+    }
+
+    pub fn has_attr(&self, attr: GearAttr) -> bool {
+        self.has_by(|g| g.has_attr(attr))
+    }
+
+    pub fn count_attr(&self, attr: GearAttr) -> usize {
+        self.count_by(|g| g.has_attr(attr))
+    }
+
+    pub fn has_category(&self, category: GearCategory) -> bool {
+        self.has_by(|g| g.category == category)
+    }
+
+    pub fn count_category(&self, category: GearCategory) -> usize {
+        self.count_by(|g| g.category == category)
     }
 
     pub fn get_by_gear_key(&self, key: &str) -> Option<&Gear> {
@@ -107,7 +136,7 @@ impl GearArray {
     }
 }
 
-pub type ShipArray = OptionalArray<Ship, SHIP_ARRAY_LEN>;
+pub type ShipArray = OptionalArray<Ship, SHIP_ARRAY_CAPACITY>;
 
 impl ShipArray {
     pub fn get_by_ship_key(&self, key: &str) -> Option<&Ship> {
@@ -124,7 +153,56 @@ impl ShipArray {
     }
 }
 
-pub type SlotSizeArray = ArrayVec<Option<i32>, SLOT_SIZE_ARRAY_LEN>;
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct MyArrayVec<T, const CAP: usize> {
+    vec: ArrayVec<T, CAP>,
+}
+
+impl<T, const CAP: usize> Deref for MyArrayVec<T, CAP> {
+    type Target = ArrayVec<T, CAP>;
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        &self.vec
+    }
+}
+
+impl<T, const CAP: usize> DerefMut for MyArrayVec<T, CAP> {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.vec
+    }
+}
+
+impl<T, const CAP: usize> FromIterator<T> for MyArrayVec<T, CAP> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        MyArrayVec {
+            vec: ArrayVec::from_iter(iter),
+        }
+    }
+}
+
+impl<T, const CAP: usize> TS for MyArrayVec<T, CAP>
+where
+    T: TS,
+{
+    fn name() -> String {
+        Vec::<T>::name()
+    }
+
+    fn inline(indent: usize) -> String {
+        Vec::<T>::inline(indent)
+    }
+
+    fn dependencies() -> Vec<(std::any::TypeId, String)> {
+        Vec::<T>::dependencies()
+    }
+
+    fn transparent() -> bool {
+        Vec::<T>::transparent()
+    }
+}
+
+pub type SlotSizeArray = MyArrayVec<Option<i32>, SLOT_SIZE_ARRAY_CAPACITY>;
 
 #[cfg(test)]
 mod test {

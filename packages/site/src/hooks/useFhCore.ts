@@ -1,6 +1,6 @@
 import {
   AirSquadronParams,
-  Factory,
+  FhCore,
   FleetParams,
   OrgParams,
   Ship,
@@ -25,6 +25,7 @@ import {
   fleetsSelectors,
   GearEntity,
   gearsSelectors,
+  OrgEntity,
   orgsSelectors,
   orgsSlice,
   ShipPosition,
@@ -35,7 +36,7 @@ import { createShallowEqualSelector } from "../utils";
 
 export type FhCoreState = {
   master_data: MasterData;
-  factory: Factory;
+  core: FhCore;
 };
 
 export const FhCoreContext = createContext<FhCoreState | null>(null);
@@ -139,39 +140,51 @@ export const selectOrgState = createCachedSelector(
   selectorCreator: createShallowEqualSelector,
 });
 
-export const useFhCore = () => {
+const useFhCoreContext = () => {
   const contextValue = useContext(FhCoreContext);
 
   if (!contextValue) {
     throw new Error("could not find context value");
   }
 
-  const { factory, master_data } = contextValue;
+  return contextValue;
+};
+
+export const useFhCore = () => {
+  const { core, master_data } = useFhCoreContext();
 
   const findShipClassName = (ctype: number) =>
     master_data.ship_classes.find((sc) => sc.id === ctype)?.name || "";
 
-  const findGearCategoryName = (id: number) =>
-    factory.find_gear_category_name(id);
+  const findGearCategoryName = (id: number) => core.find_gear_category_name(id);
 
   return {
     master_data,
-    factory,
+    core,
     findShipClassName,
     findGearCategoryName,
   };
 };
 
+export const useMasterShip = (shipId: number) => {
+  const { master_data } = useFhCoreContext();
+
+  const ship = master_data.ships.find((ship) => ship.ship_id === shipId);
+  const banner = master_data.ship_banners[shipId];
+
+  return { ship, banner };
+};
+
 export const useGear = (id?: string) => {
-  const { factory } = useFhCore();
+  const { core } = useFhCore();
 
   const entity = useSelector((root) => {
     return id ? gearsSelectors.selectById(root, id) : undefined;
   });
 
   const gear = useMemo(
-    () => entity && factory.create_gear(entity),
-    [factory, entity]
+    () => entity && core.create_gear(entity),
+    [core, entity]
   );
 
   return {
@@ -181,12 +194,12 @@ export const useGear = (id?: string) => {
 };
 
 export const useFleet = (id: string) => {
-  const { factory } = useFhCore();
+  const { core } = useFhCore();
 
   const state = useSelector((root) => selectFleetState(root, id));
   const dispatch = useDispatch();
 
-  const fleet = state && factory.create_fleet(state);
+  const fleet = state && core.create_fleet(state);
   fleet?.free();
 
   const setShip = useCallback(
@@ -205,17 +218,21 @@ export const useFleet = (id: string) => {
 };
 
 export const useOrg = (id: string) => {
-  const { factory } = useFhCore();
+  const { core } = useFhCore();
   const dispatch = useDispatch();
   const state = useSelector((root) => selectOrgState(root, id));
-  const org = state && factory.create_org(state);
+  const org = state && core.create_org(state);
 
   const actions = useMemo(() => {
+    const update = (changes: Partial<OrgEntity>) => {
+      dispatch(orgsSlice.actions.update({ id, changes }));
+    };
+
     const setHqLevel = (hq_level: number) => {
       dispatch(orgsSlice.actions.update({ id, changes: { hq_level } }));
     };
 
-    return { setHqLevel };
+    return { setHqLevel, update };
   }, [dispatch, id]);
 
   return { org, actions };
