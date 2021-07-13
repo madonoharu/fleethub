@@ -1,10 +1,12 @@
+use serde::{Deserialize, Serialize};
+use ts_rs::TS;
+use wasm_bindgen::prelude::*;
+
 use crate::{
     array::ShipArray,
     ship::{Ship, ShipState},
+    types::DayCutin,
 };
-use serde::Deserialize;
-use ts_rs::TS;
-use wasm_bindgen::prelude::*;
 
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct FleetState {
@@ -45,5 +47,14 @@ impl Fleet {
 
     pub fn get_ship(&self, key: &str) -> Option<Ship> {
         self.ships.get_by_ship_key(key).cloned()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn fleet_los_mod(&self) -> Option<f64> {
+        self.ships
+            .values()
+            .map(|ship| ship.fleet_los_factor())
+            .sum::<Option<f64>>()
+            .map(|base| (base.sqrt() + 0.1 * base).floor())
     }
 }

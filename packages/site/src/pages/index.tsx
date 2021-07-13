@@ -12,8 +12,8 @@ import { FhCoreContext } from "../hooks";
 import { StoreProvider } from "../store";
 
 const loader = import("@fleethub/core/pkg").then((mod) => {
-  const factory = new mod.Factory(master_data);
-  const value = { master_data, factory };
+  const core = new mod.FhCore(master_data);
+  const value = { master_data, core };
 
   const App: React.FC = () => (
     <FhCoreContext.Provider value={value}>

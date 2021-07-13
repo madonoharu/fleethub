@@ -7,11 +7,13 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     array::{GearArray, SlotSizeArray},
-    attack::ShellingAttackType,
     const_gear_id, const_ship_id,
-    constants::*,
     gear::{Gear, GearState},
     master::{MasterShip, StatInterval},
+    types::{
+        AirState, DamageState, DayCutin, GearAttr, GearCategory, ShipAttr, ShipClass, ShipType,
+        SpeedGroup,
+    },
     utils::xxh3,
 };
 
@@ -81,7 +83,9 @@ pub struct Ship {
     pub level: i32,
     pub current_hp: i32,
 
+    #[wasm_bindgen(skip)]
     pub ship_type: ShipType,
+    #[wasm_bindgen(skip)]
     pub ship_class: ShipClass,
 
     max_hp_mod: i32,
@@ -237,6 +241,10 @@ impl Ship {
         ship
     }
 
+    pub fn has_attr(&self, attr: ShipAttr) -> bool {
+        self.attrs.contains(attr)
+    }
+
     pub fn damage_state(&self) -> DamageState {
         DamageState::from_hp(self.max_hp().unwrap_or_default(), self.current_hp)
     }
@@ -268,7 +276,7 @@ impl Ship {
     }
 
     pub fn is_carrier_like(&self) -> bool {
-        if (ShipType::CVL | ShipType::CV | ShipType::CVB).contains(self.ship_type) {
+        if matches!(self.ship_type, ShipType::CVL | ShipType::CV | ShipType::CVB) {
             return true;
         }
 
@@ -277,16 +285,18 @@ impl Ship {
         }
 
         self.gears.has_by(|g| {
-            (GearCategory::CbDiveBomber
-                | GearCategory::CbTorpedoBomber
-                | GearCategory::JetFighterBomber
-                | GearCategory::JetTorpedoBomber)
-                .contains(g.category)
+            matches!(
+                g.category,
+                GearCategory::CbDiveBomber
+                    | GearCategory::CbTorpedoBomber
+                    | GearCategory::JetFighterBomber
+                    | GearCategory::JetTorpedoBomber
+            )
         })
     }
 
-    pub fn get_possible_shelling_attack_type_set(&self) -> EnumSet<ShellingAttackType> {
-        let mut set: EnumSet<ShellingAttackType> = EnumSet::from(ShellingAttackType::Normal);
+    pub fn get_possible_day_cutin_set(&self) -> EnumSet<DayCutin> {
+        let mut set: EnumSet<DayCutin> = EnumSet::new();
 
         if self.damage_state() <= DamageState::Taiha {
             return set;
@@ -309,14 +319,14 @@ impl Ship {
                 return set;
             }
 
-            set.insert(ShellingAttackType::BA);
+            set.insert(DayCutin::BA);
 
             if cb_bomber_count >= 2 {
-                set.insert(ShellingAttackType::BBA);
+                set.insert(DayCutin::BBA);
             }
 
             if has_cb_fighter {
-                set.insert(ShellingAttackType::FBA);
+                set.insert(DayCutin::FBA);
             }
 
             return set;
@@ -333,39 +343,39 @@ impl Ship {
                 .gears_with_slot_size()
                 .filter(|(g, slot_size)| {
                     slot_size.unwrap_or_default() > 0
-                        && [
-                            const_gear_id!("瑞雲"),
-                            const_gear_id!("瑞雲(六三一空)"),
-                            const_gear_id!("瑞雲(六三四空)"),
-                            const_gear_id!("瑞雲(六三四空/熟練)"),
-                            const_gear_id!("瑞雲12型"),
-                            const_gear_id!("瑞雲12型(六三四空)"),
-                            const_gear_id!("瑞雲改二(六三四空)"),
-                            const_gear_id!("瑞雲改二(六三四空/熟練)"),
-                        ]
-                        .contains(&g.gear_id)
+                        && matches!(
+                            g.gear_id,
+                            const_gear_id!("瑞雲")
+                                | const_gear_id!("瑞雲(六三一空)")
+                                | const_gear_id!("瑞雲(六三四空)")
+                                | const_gear_id!("瑞雲(六三四空/熟練)")
+                                | const_gear_id!("瑞雲12型")
+                                | const_gear_id!("瑞雲12型(六三四空)")
+                                | const_gear_id!("瑞雲改二(六三四空)")
+                                | const_gear_id!("瑞雲改二(六三四空/熟練)")
+                        )
                 })
                 .count();
 
             if zuiun_count >= 2 {
-                set.insert(ShellingAttackType::Zuiun);
+                set.insert(DayCutin::Zuiun);
             }
 
             let suisei_634_count = self
                 .gears_with_slot_size()
                 .filter(|(g, slot_size)| {
                     slot_size.unwrap_or_default() > 0
-                        && [
-                            const_gear_id!("彗星一二型(六三四空/三号爆弾搭載機)"),
-                            const_gear_id!("彗星二二型(六三四空)"),
-                            const_gear_id!("彗星二二型(六三四空/熟練)"),
-                        ]
-                        .contains(&g.gear_id)
+                        && matches!(
+                            g.gear_id,
+                            const_gear_id!("彗星一二型(六三四空/三号爆弾搭載機)")
+                                | const_gear_id!("彗星二二型(六三四空)")
+                                | const_gear_id!("彗星二二型(六三四空/熟練)")
+                        )
                 })
                 .count();
 
             if suisei_634_count >= 2 {
-                set.insert(ShellingAttackType::Suisei);
+                set.insert(DayCutin::AirSea);
             }
         }
 
@@ -380,25 +390,25 @@ impl Ship {
         let secondary_gun_count = self
             .gears
             .count_by(|g| g.category == GearCategory::SecondaryGun);
-        let has_ap_shell = self.gears.has_by(|g| g.category == GearCategory::ApShell);
-        let has_rader = self.gears.has_by(|g| g.has_attr(GearAttr::Radar));
+        let has_ap_shell = self.gears.has_category(GearCategory::ApShell);
+        let has_rader = self.gears.has_attr(GearAttr::Radar);
 
         if main_gun_count >= 2 {
-            set.insert(ShellingAttackType::DoubleAttack);
+            set.insert(DayCutin::DoubleAttack);
 
             if has_ap_shell {
-                set.insert(ShellingAttackType::MainMain);
+                set.insert(DayCutin::MainMain);
             }
         }
 
         if secondary_gun_count >= 1 {
-            set.insert(ShellingAttackType::MainSecond);
+            set.insert(DayCutin::MainSecond);
 
             if has_rader {
-                set.insert(ShellingAttackType::MainRader);
+                set.insert(DayCutin::MainRader);
             }
             if has_ap_shell {
-                set.insert(ShellingAttackType::MainApShell);
+                set.insert(DayCutin::MainApShell);
             }
         }
 
@@ -408,23 +418,23 @@ impl Ship {
     pub fn calc_observation_term(
         &self,
         fleet_los_mod: f64,
-        air_state: AirState,
         is_main_flagship: bool,
-    ) -> Option<i32> {
+        air_state: AirState,
+    ) -> Option<f64> {
         let (as_mod1, as_mod2, as_mod3) = match air_state {
             AirState::AirSupremacy => (0.7, 1.6, 10.),
             AirState::AirSuperiority => (0.6, 1.2, 0.),
-            _ => return Some(0),
+            _ => return Some(0.),
         };
 
         let luck = self.luck()? as f64;
         let equipment_los = self.gears.sum_by(|g| g.luck) as f64;
 
         let luck_factor = (luck.sqrt() + 10.).floor();
-        let flagship_mod = if is_main_flagship { 15 } else { 0 };
+        let flagship_mod = if is_main_flagship { 15. } else { 0. };
 
         let result = (luck_factor + as_mod1 * (fleet_los_mod + as_mod2 * equipment_los) + as_mod3)
-            .floor() as i32
+            .floor()
             + flagship_mod;
 
         Some(result)
@@ -483,14 +493,6 @@ impl Ship {
         self.master.useful.unwrap_or_default()
     }
 
-    pub fn has_attr(&self, attr: ShipAttr) -> bool {
-        self.attrs.contains(attr)
-    }
-
-    pub fn master(&self) -> MasterShip {
-        self.master.clone()
-    }
-
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
         self.gears.get_by_gear_key(key).cloned()
     }
@@ -528,11 +530,11 @@ impl Ship {
         }
 
         if self.has_attr(ShipAttr::RoyalNavy) {
-            return [
-                const_gear_id!("Swordfish(水上機型)"),
-                const_gear_id!("Swordfish Mk.III改(水上機型)"),
-            ]
-            .contains(&gear.gear_id);
+            return matches!(
+                gear.gear_id,
+                const_gear_id!("Swordfish(水上機型)")
+                    | const_gear_id!("Swordfish Mk.III改(水上機型)")
+            );
         }
 
         let is_kai2 = self.has_attr(ShipAttr::Kai2);
@@ -548,12 +550,12 @@ impl Ship {
                     || gear.category == GearCategory::MidgetSubmarine);
             }
             if key == "g5" {
-                return [
-                    GearCategory::AntiAirGun,
-                    GearCategory::SmallRadar,
-                    GearCategory::CombatRation,
-                ]
-                .contains(&gear.category);
+                return matches!(
+                    gear.category,
+                    GearCategory::AntiAirGun
+                        | GearCategory::SmallRadar
+                        | GearCategory::CombatRation
+                );
             }
         }
 
@@ -683,22 +685,25 @@ impl Ship {
             .sum()
     }
 
-    pub fn fleet_los_factor(&self) -> Option<i32> {
+    pub fn fleet_los_factor(&self) -> Option<f64> {
         let total = self
             .gears
             .without_ex()
             .map(|(index, g)| {
-                let slot_size = self.get_slot_size(index)?;
-
                 if g.attrs.contains(GearAttr::ObservationSeaplane) {
-                    Some(g.los * (slot_size as f64).sqrt().floor() as i32)
+                    let los = g.los as f64;
+                    let slot_size = self.get_slot_size(index)? as f64;
+
+                    Some(los * slot_size.sqrt().floor())
                 } else {
-                    Some(0)
+                    Some(0.0)
                 }
             })
-            .sum::<Option<i32>>();
+            .sum::<Option<f64>>()?;
 
-        Some(self.naked_los()? + total?)
+        let laked_los = self.naked_los()? as f64;
+
+        Some(laked_los + total)
     }
 
     pub fn fleet_anti_air(&self) -> i32 {
@@ -719,9 +724,308 @@ impl Ship {
         Some(evasion + (2. * luck).sqrt())
     }
 
+    pub fn get_possible_anti_air_cutin_ids(&self) -> Vec<u8> {
+        let ship_id = self.ship_id;
+        let ship_class = self.ship_class;
+        let gears = &self.gears;
+        let mut vec: Vec<u8> = Vec::with_capacity(10);
+
+        if ship_class == ShipClass::FletcherClass {
+            let mk30_kai_count = gears.count(const_gear_id!("5inch単装砲 Mk.30改"));
+            let mk30_count = gears.count(const_gear_id!("5inch単装砲 Mk.30改")) + mk30_kai_count;
+            let mk30_gfcs_count = self
+                .gears
+                .count(const_gear_id!("5inch単装砲 Mk.30改+GFCS Mk.37"));
+
+            // 5inch単装砲 Mk.30改＋GFCS Mk.37 2本
+            if mk30_gfcs_count >= 2 {
+                vec.push(34)
+            }
+
+            // 5inch単装砲 Mk.30改＋GFCS Mk.37 && 5inch単装砲 Mk.30(改)
+            if mk30_gfcs_count > 0 && mk30_count > 0 {
+                vec.push(35)
+            }
+
+            // Mk.30(改) 2本
+            if mk30_count >= 2 && gears.has(const_gear_id!("GFCS Mk.37")) {
+                vec.push(36)
+            }
+
+            // Mk.30改 2本
+            if mk30_kai_count >= 2 {
+                vec.push(37)
+            }
+        }
+
+        let gfcs_5inch_count = gears.count(const_gear_id!("GFCS Mk.37+5inch連装両用砲(集中配備)"));
+        let atlanta_gun_count =
+            gears.count(const_gear_id!("5inch連装両用砲(集中配備)")) + gfcs_5inch_count;
+        if ship_class == ShipClass::AtlantaClass && atlanta_gun_count >= 2 {
+            if gfcs_5inch_count >= 1 {
+                vec.push(39)
+            }
+            if gears.has(const_gear_id!["GFCS Mk.37"]) {
+                vec.push(40)
+            }
+            vec.push(41)
+        }
+
+        // 秋月型 かつ 高角砲を装備
+        if ship_class == ShipClass::AkizukiClass && gears.has_attr(GearAttr::HighAngleMount) {
+            // 高角砲を2つ以上装備 かつ 電探を装備
+            if gears.count_attr(GearAttr::HighAngleMount) >= 2 && gears.has_attr(GearAttr::Radar) {
+                vec.push(1)
+            }
+            // 電探を装備
+            if gears.has_attr(GearAttr::Radar) {
+                vec.push(2)
+            }
+            // 高角砲を2つ以上装備
+            if gears.count_attr(GearAttr::HighAngleMount) >= 2 {
+                vec.push(3)
+            }
+
+            return vec;
+        }
+
+        let is_cdmg = |gear: &Gear| gear.category == GearCategory::AntiAirGun && gear.anti_air >= 9;
+        let is_standard_anti_air_gun =
+            |g: &Gear| g.category == GearCategory::AntiAirGun && g.anti_air >= 3 && g.anti_air <= 8;
+
+        let is_builtin_high_angle_mount =
+            |gear: &Gear| gear.has_attr(GearAttr::HighAngleMount) && gear.anti_air >= 8;
+
+        let has_air_radar = gears.has_attr(GearAttr::AirRadar);
+        let high_angle_mount_count = gears.count_attr(GearAttr::HighAngleMount);
+        let has_high_angle_mount = high_angle_mount_count > 0;
+
+        // 摩耶改二 かつ 高角砲を装備 かつ 特殊機銃を装備
+        if ship_id == const_ship_id!("摩耶改二") && has_high_angle_mount && gears.has_by(is_cdmg)
+        {
+            if has_air_radar {
+                vec.push(10)
+            }
+            vec.push(11)
+        }
+
+        // 五十鈴改二 かつ 高角砲を装備 かつ 対空機銃を装備
+        if ship_id == const_ship_id!("五十鈴改二")
+            && has_high_angle_mount
+            && gears.has_category(GearCategory::AntiAirGun)
+        {
+            if has_air_radar {
+                vec.push(14)
+            }
+            vec.push(15)
+        }
+
+        // 霞改二乙 かつ 高角砲を装備 かつ 対空機銃を装備
+        if ship_id == const_ship_id!("霞改二乙")
+            && has_high_angle_mount
+            && gears.has_category(GearCategory::AntiAirGun)
+        {
+            if has_air_radar {
+                vec.push(16)
+            }
+            vec.push(17)
+        }
+
+        if ship_id == const_ship_id!("夕張改二")
+            && has_high_angle_mount
+            && gears.has_category(GearCategory::AntiAirGun)
+            && has_air_radar
+        {
+            vec.push(16)
+        }
+
+        // 鬼怒改二 かつ 特殊機銃を装備 かつ 標準高角砲を装備
+        if ship_id == const_ship_id!("鬼怒改二")
+            && gears.has_by(is_cdmg)
+            && gears.has_by(|g| g.has_attr(GearAttr::HighAngleMount) && g.anti_air < 8)
+        {
+            vec.push(19)
+        }
+
+        // 由良改二 かつ 高角砲を装備 かつ 対空電探
+        if ship_id == const_ship_id!("由良改二") && has_high_angle_mount && has_air_radar {
+            vec.push(21)
+        }
+
+        // 伊勢型航空戦艦 かつ 12cm30連装噴進砲改二を装備 かつ 対空強化弾(三式弾)を装備 かつ 対空電探を装備
+        if ship_class == ShipClass::IseClass
+            && self.ship_type == ShipType::BBV
+            && gears.has(const_gear_id!("12cm30連装噴進砲改二"))
+            && gears.has_category(GearCategory::AntiAirShell)
+            && has_air_radar
+        {
+            vec.push(25)
+        }
+
+        // 高射装置を装備 かつ 大口径主砲を装備 かつ 対空強化弾(三式弾)を装備 かつ 対空電探を装備
+        if gears.has_category(GearCategory::AntiAirFireDirector)
+            && gears.has_category(GearCategory::LargeCaliberMainGun)
+            && gears.has_category(GearCategory::AntiAirShell)
+            && has_air_radar
+        {
+            vec.push(4)
+        }
+
+        // 特殊高角砲を2つ以上装備 かつ 対空電探を装備
+        if gears.count_by(is_builtin_high_angle_mount) >= 2 && has_air_radar {
+            vec.push(5)
+        }
+
+        // 高射装置を装備 かつ 大口径主砲を装備 かつ 対空強化弾(三式弾)を装備
+        if gears.has_category(GearCategory::AntiAirFireDirector)
+            && gears.has_category(GearCategory::LargeCaliberMainGun)
+            && gears.has_category(GearCategory::AntiAirShell)
+        {
+            vec.push(6)
+        }
+
+        // 特殊高角砲を装備 かつ 対空電探を装備
+        if gears.has_by(is_builtin_high_angle_mount) && has_air_radar {
+            vec.push(8)
+        }
+
+        // 高射装置を装備かつ 高角砲を装備 かつ 対空電探を装備
+        if gears.has_category(GearCategory::AntiAirFireDirector)
+            && has_high_angle_mount
+            && has_air_radar
+        {
+            vec.push(7)
+        }
+
+        // 武蔵改二 かつ 10cm連装高角砲改+増設機銃を装備 かつ 対空電探を装備
+        if ship_id == const_ship_id!("武蔵改二")
+            && gears.has(const_gear_id!("10cm連装高角砲改+増設機銃"))
+            && has_air_radar
+        {
+            vec.push(26)
+        }
+
+        // (伊勢型航空戦艦|武蔵改|武蔵改二) かつ 12cm30連装噴進砲改二を装備 かつ 対空電探を装備
+        if (ship_class == ShipClass::IseClass && self.ship_type == ShipType::BBV)
+            || matches!(
+                ship_id,
+                const_ship_id!("武蔵改") | const_ship_id!("武蔵改二")
+            )
+        {
+            if gears.has(const_gear_id!("12cm30連装噴進砲改二")) && has_air_radar {
+                vec.push(28)
+            }
+        }
+
+        // (浜風乙改 または 磯風乙改) かつ 高角砲を装備 かつ 対空電探を装備
+        if matches!(
+            ship_id,
+            const_ship_id!("浜風乙改") | const_ship_id!("磯風乙改")
+        ) {
+            if has_high_angle_mount && has_air_radar {
+                vec.push(29)
+            }
+        }
+
+        // 高射装置を装備 かつ 高角砲を装備
+        if gears.has_category(GearCategory::AntiAirFireDirector) && has_high_angle_mount {
+            vec.push(9)
+        }
+
+        // Gotland改以上 かつ 高角砲を装備 かつ 対空4以上の対空機銃を装備
+        if matches!(
+            ship_id,
+            const_ship_id!("Gotland改") | const_ship_id!("Gotland andra")
+        ) && has_high_angle_mount
+            && gears.has_by(|g| g.category == GearCategory::AntiAirGun && g.anti_air >= 4)
+        {
+            vec.push(33)
+        }
+
+        // 特殊機銃を装備 かつ 対空電探を装備 かつ 標準機銃または特殊機銃を装備
+        if gears.has_by(is_cdmg)
+            && has_air_radar
+            && gears.count_by(|g| g.category == GearCategory::AntiAirGun && g.anti_air >= 3) >= 2
+        {
+            vec.push(12)
+        }
+
+        // 特殊高角砲を装備 かつ 特殊機銃を装備 かつ 対空電探を装備
+        if gears.has_by(is_builtin_high_angle_mount) && gears.has_by(is_cdmg) && has_air_radar {
+            vec.push(13)
+        }
+
+        // 皐月改二 かつ 特殊機銃を装備
+        if ship_id == const_ship_id!("皐月改二") && gears.has_by(is_cdmg) {
+            vec.push(18)
+        }
+
+        // 鬼怒改二 かつ 特殊機銃を装備
+        if ship_id == const_ship_id!("鬼怒改二") && gears.has_by(is_cdmg) {
+            vec.push(20)
+        }
+
+        // 文月改二 かつ 特殊機銃を装備
+        if ship_id == const_ship_id!("文月改二") && gears.has_by(is_cdmg) {
+            vec.push(22)
+        }
+
+        // (UIT-25 または 伊504) かつ 標準機銃を装備
+        if ship_id == const_ship_id!("UIT-25") || ship_id == const_ship_id!("伊504") {
+            if gears.has_by(is_standard_anti_air_gun) {
+                vec.push(23)
+            }
+        }
+
+        // (龍田改二|天龍改二) かつ 高角砲を装備 かつ 標準機銃を装備
+        if matches!(
+            ship_id,
+            const_ship_id!("龍田改二") | const_ship_id!("天龍改二")
+        ) && has_high_angle_mount
+            && gears.has_by(is_standard_anti_air_gun)
+        {
+            vec.push(24)
+        }
+
+        // (天龍改二|Gotland改) かつ 高角砲を3つ以上装備
+        if matches!(
+            ship_id,
+            const_ship_id!("天龍改二") | const_ship_id!("Gotland改")
+        ) && high_angle_mount_count >= 3
+        {
+            vec.push(30)
+        }
+
+        // 天龍改二 かつ 高角砲を2つ以上装備
+        if ship_id == const_ship_id!("天龍改二") && high_angle_mount_count >= 2 {
+            vec.push(31)
+        }
+
+        if self.has_attr(ShipAttr::RoyalNavy)
+            || (ship_class == ShipClass::KongouClass && self.has_attr(ShipAttr::Kai2))
+        {
+            let rocket_launchers_count =
+                gears.count(const_gear_id!("20連装7inch UP Rocket Launchers"));
+            let has_rocket_launchers = rocket_launchers_count > 0;
+            let has_pom_pom_gun = gears.has(const_gear_id!("QF 2ポンド8連装ポンポン砲"));
+
+            if rocket_launchers_count >= 2
+                || (has_pom_pom_gun && has_rocket_launchers)
+                || (has_pom_pom_gun
+                    && gears.has(const_gear_id!("16inch Mk.I三連装砲改+FCR type284")))
+            {
+                vec.push(32)
+            }
+        }
+
+        vec
+    }
+
     pub fn get_possible_shelling_attack_type_array(&self) -> Vec<u8> {
-        let set = self.get_possible_shelling_attack_type_set();
-        set.into_iter().map(|t| t as u8).collect()
+        self.get_possible_day_cutin_set()
+            .into_iter()
+            .map(|t| t as u8)
+            .collect()
     }
 }
 

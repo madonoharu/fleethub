@@ -25,11 +25,11 @@ export type SelectComponentProps<T> = {
   className?: string;
   options: readonly T[];
   value: T;
-  onChange: (option: T) => void;
+  onChange?: (option: T) => void;
   getOptionLabel?: (option: T) => React.ReactNode;
 };
 
-export type SelectComponent<P = {}> = {
+export type SelectComponent<P = Record<string, unknown>> = {
   <T>(props: SelectComponentProps<T> & P): React.ReactElement;
 };
 
@@ -50,7 +50,7 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) =>
-      onChange(options[Number(event.target.value)]),
+      onChange?.(options[Number(event.target.value)]),
     [options, onChange]
   );
 

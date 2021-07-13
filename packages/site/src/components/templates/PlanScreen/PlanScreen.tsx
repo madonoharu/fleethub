@@ -23,6 +23,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
         file={file}
         onNameChange={fileActions.setName}
         onHqLevelChange={orgActions.setHqLevel}
+        onOrgTypeChange={(org_type) => orgActions.update({ org_type })}
       />
       <PlanTabs org={org} />
 
