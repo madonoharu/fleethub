@@ -1,11 +1,10 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
     array::ShipArray,
     ship::{Ship, ShipState},
-    types::DayCutin,
 };
 
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]

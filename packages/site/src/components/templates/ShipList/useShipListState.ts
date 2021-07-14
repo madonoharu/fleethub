@@ -1,5 +1,5 @@
 import { Ship } from "@fleethub/core";
-import { isNonNullable, ShipAttr, ShipType } from "@fleethub/utils";
+import { nonNullable, ShipAttr, ShipType } from "@fleethub/utils";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -56,7 +56,7 @@ export const useShipListState = () => {
   const masterShips = React.useMemo(() => {
     return master_data.ships
       .map((ship) => factory.create_ship({ ship_id: ship.ship_id }))
-      .filter(isNonNullable);
+      .filter(nonNullable);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [master_data]);
 

@@ -1,4 +1,4 @@
-import { MasterData } from "@fleethub/utils"
+import { MasterData } from "@fleethub/core/pkg/types";
 
-declare const md: MasterData
-export default md
+declare const md: MasterData;
+export default md;

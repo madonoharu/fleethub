@@ -1,4 +1,4 @@
-import { MasterData, MasterDataEquippable } from "@fleethub/utils/src";
+import { MasterDataInput, MasterEquippable } from "@fleethub/core/types";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import got from "got";
 import { Start2 } from "kc-tools";
@@ -26,7 +26,7 @@ export const log = async (message: string) => {
   ]);
 };
 
-const createEquippable = (start2: Start2): MasterDataEquippable => {
+const createEquippable = (start2: Start2): MasterEquippable => {
   const equip_exslot = start2.api_mst_equip_exslot;
   const equip_ship = start2.api_mst_equip_ship;
   const equip_exslot_ship = start2.api_mst_equip_exslot_ship;
@@ -34,8 +34,8 @@ const createEquippable = (start2: Start2): MasterDataEquippable => {
   const equip_stype = start2.api_mst_stype.map((stype) => {
     const id = stype.api_id;
     const equip_type = Object.entries(stype.api_equip_type)
-      .filter(([_, equippable]) => equippable === 1)
-      .map(([category, _]) => Number(category));
+      .filter(([, equippable]) => equippable === 1)
+      .map(([gtype]) => Number(gtype));
 
     return { id, equip_type };
   });
@@ -43,10 +43,10 @@ const createEquippable = (start2: Start2): MasterDataEquippable => {
   return { equip_stype, equip_exslot, equip_ship, equip_exslot_ship };
 };
 
-const createMasterData = async (
+const createMasterDataInput = async (
   doc: GoogleSpreadsheet,
   start2: Start2
-): Promise<Partial<MasterData>> => {
+): Promise<Partial<MasterDataInput>> => {
   const [shipData, gearData] = await Promise.all([
     updateShipData(doc, start2),
     updateGearData(doc, start2),
@@ -67,9 +67,9 @@ export const updateData = async () => {
   ]);
   await log("Start: update_data");
 
-  const nextMd = await createMasterData(doc, start2);
+  const nextMd = await createMasterDataInput(doc, start2);
 
-  const keys = Object.keys(nextMd) as (keyof MasterData)[];
+  const keys = Object.keys(nextMd) as (keyof MasterDataInput)[];
 
   const promises = keys.map((key) => {
     const next = nextMd[key];

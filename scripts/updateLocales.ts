@@ -1,4 +1,4 @@
-import { MasterData } from "@fleethub/utils/src";
+import { MasterDataInput } from "@fleethub/core/types";
 import child_process from "child_process";
 import { outputJSON } from "fs-extra";
 import got from "got";
@@ -22,7 +22,7 @@ const languages: Language[] = [
 class LocaleUpdater {
   public kc3: typeof got;
 
-  constructor(private md: MasterData, private language: Language) {
+  constructor(private md: MasterDataInput, private language: Language) {
     const { path, code } = language;
 
     this.kc3 = got.extend({
@@ -76,18 +76,18 @@ class LocaleUpdater {
     await this.output("gears.json", dictionary);
   };
 
-  public updateGearCategories = async () => {
+  public updateGearTypes = async () => {
     const equiptype = await this.getKC3Json<string[][]>("equiptype.json");
     const dictionary: Dictionary = {};
 
-    this.md.gear_categories.forEach((category) => {
-      const str = equiptype[2][category.id];
+    this.md.gear_types.forEach((type) => {
+      const str = equiptype[2][type.id];
       if (str) {
-        dictionary[category.name] = str;
+        dictionary[type.name] = str;
       }
     });
 
-    await this.output("gearCategories.json", dictionary);
+    await this.output("gearTypes.json", dictionary);
   };
 
   public updateTerms = async () => {
@@ -172,7 +172,7 @@ class LocaleUpdater {
   public update = async () => {
     await Promise.all([
       this.updateGears(),
-      this.updateGearCategories(),
+      this.updateGearTypes(),
       this.updateShips(),
       this.updateShipTypes(),
       this.updateShipClasses(),

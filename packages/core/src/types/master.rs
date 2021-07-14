@@ -10,20 +10,9 @@ use crate::{
     array::{MyArrayVec, SlotSizeArray},
     gear::{GearState, IBonuses},
     ship::ShipEquippable,
-    types::{DayCutin, Formation, GearAttr, GearCategory, NightCutin, ShipAttr, SpeedGroup},
+    types::{DayCutin, Formation, GearAttr, GearType, NightCutin, ShipAttr, SpeedGroup},
     utils::OrderedF64,
 };
-
-#[derive(Debug, Default, Clone, Deserialize, TS)]
-pub struct MasterDataGearCategory {
-    pub id: i32,
-    pub name: String,
-    pub key: String,
-}
-
-fn default_as_1() -> f64 {
-    1.0
-}
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct GearTypes(i32, i32, i32, i32, i32);
@@ -40,12 +29,12 @@ impl GearTypes {
         }
     }
 
-    fn category_id(&self) -> i32 {
+    fn gear_type_id(&self) -> i32 {
         self.2
     }
 
-    pub fn category(&self) -> GearCategory {
-        num_traits::FromPrimitive::from_i32(self.category_id()).unwrap_or_default()
+    pub fn gear_type(&self) -> GearType {
+        num_traits::FromPrimitive::from_i32(self.gear_type_id()).unwrap_or_default()
     }
 
     pub fn icon_id(&self) -> i32 {
@@ -59,77 +48,92 @@ pub struct MasterGear {
     pub name: String,
     pub types: GearTypes,
     pub special_type: Option<i32>,
-    #[serde(default)]
-    pub max_hp: i32,
-    #[serde(default)]
-    pub firepower: i32,
-    #[serde(default)]
-    pub armor: i32,
-    #[serde(default)]
-    pub torpedo: i32,
-    #[serde(default)]
-    pub anti_air: i32,
-    #[serde(default)]
-    pub speed: i32,
-    #[serde(default)]
-    pub bombing: i32,
-    #[serde(default)]
-    pub asw: i32,
-    #[serde(default)]
-    pub los: i32,
-    #[serde(default)]
-    pub luck: i32,
-    #[serde(default)]
-    pub accuracy: i32,
-    #[serde(default)]
-    pub evasion: i32,
-    #[serde(default)]
-    pub range: i32,
-    #[serde(default)]
-    pub radius: i32,
-    #[serde(default)]
-    pub cost: i32,
-    #[serde(default)]
-    pub improvable: bool,
-
-    #[serde(default = "default_as_1")]
-    pub adjusted_anti_air_resistance: f64,
-    #[serde(default = "default_as_1")]
-    pub fleet_anti_air_resistance: f64,
+    pub max_hp: Option<i32>,
+    pub firepower: Option<i32>,
+    pub armor: Option<i32>,
+    pub torpedo: Option<i32>,
+    pub anti_air: Option<i32>,
+    pub speed: Option<i32>,
+    pub bombing: Option<i32>,
+    pub asw: Option<i32>,
+    pub los: Option<i32>,
+    pub luck: Option<i32>,
+    pub accuracy: Option<i32>,
+    pub evasion: Option<i32>,
+    pub range: Option<i32>,
+    pub radius: Option<i32>,
+    pub cost: Option<i32>,
+    pub improvable: Option<bool>,
+    pub adjusted_anti_air_resistance: Option<f64>,
+    pub fleet_anti_air_resistance: Option<f64>,
 }
 
+macro_rules! impl_fields {
+    ($($key:ident),* $(,)?) => {
+        impl MasterGear {
+            $(
+                pub fn $key(&self) -> i32 {
+                    self.$key.unwrap_or_default()
+                }
+            )*
+        }
+    };
+}
+
+impl_fields!(
+    special_type,
+    max_hp,
+    firepower,
+    armor,
+    torpedo,
+    anti_air,
+    speed,
+    bombing,
+    asw,
+    los,
+    luck,
+    accuracy,
+    evasion,
+    range,
+    radius,
+    cost,
+);
+
 impl MasterGear {
-    fn eval(&self, expr_str: &str) -> Option<f64> {
-        let mut ns = |key: &str, args: Vec<f64>| match key {
-            "gear_id" => Some(self.gear_id as f64),
-            "special_type" => Some(self.special_type.unwrap_or_default() as f64),
-            "max_hp" => Some(self.max_hp as f64),
-            "firepower" => Some(self.firepower as f64),
-            "armor" => Some(self.armor as f64),
-            "torpedo" => Some(self.torpedo as f64),
-            "anti_air" => Some(self.anti_air as f64),
-            "speed" => Some(self.speed as f64),
-            "bombing" => Some(self.bombing as f64),
-            "asw" => Some(self.asw as f64),
-            "los" => Some(self.los as f64),
-            "luck" => Some(self.luck as f64),
-            "accuracy" => Some(self.accuracy as f64),
-            "evasion" => Some(self.evasion as f64),
-            "range" => Some(self.range as f64),
-            "radius" => Some(self.radius as f64),
-            "cost" => Some(self.cost as f64),
-            "improvable" => Some(bool_to_f64!(self.improvable)),
+    pub fn eval(&self, expr_str: &str) -> Option<f64> {
+        let mut ns = |key: &str, args: Vec<f64>| {
+            let val = match key {
+                "gear_id" => self.gear_id as f64,
+                "special_type" => self.special_type() as f64,
+                "max_hp" => self.max_hp() as f64,
+                "firepower" => self.firepower() as f64,
+                "armor" => self.armor() as f64,
+                "torpedo" => self.torpedo() as f64,
+                "anti_air" => self.anti_air() as f64,
+                "speed" => self.speed() as f64,
+                "bombing" => self.bombing() as f64,
+                "asw" => self.asw() as f64,
+                "los" => self.los() as f64,
+                "luck" => self.luck() as f64,
+                "accuracy" => self.accuracy() as f64,
+                "evasion" => self.evasion() as f64,
+                "range" => self.range() as f64,
+                "radius" => self.radius() as f64,
+                "cost" => self.cost() as f64,
+                "improvable" => bool_to_f64!(self.improvable?),
 
-            "types" => args
-                .get(0)
-                .and_then(|i| self.types.get(i.floor() as usize))
-                .map(|value| value as f64),
+                "types" => {
+                    let index = args.get(0)?.floor() as usize;
+                    self.types.get(index)? as f64
+                }
 
-            "gear_id_in" => Some(bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64))),
+                "gear_id_in" => bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64)),
+                "gear_type_in" => bool_to_f64!(args.iter().any(|v| *v == self.types.2 as f64)),
 
-            "category_in" => Some(bool_to_f64!(args.iter().any(|v| *v == self.types.2 as f64))),
+                _ => return None,
+            };
 
-            _ => None,
+            Some(val)
         };
 
         fasteval::ez_eval(expr_str, &mut ns).ok()
@@ -137,19 +141,26 @@ impl MasterGear {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
-pub struct MasterDataAttrRule {
+pub struct MasterVariantDef {
+    pub id: i32,
+    pub key: String,
+    pub name: String,
+}
+
+#[derive(Debug, Default, Clone, Deserialize, TS)]
+pub struct MasterAttrRule {
     pub key: String,
     pub name: String,
     pub expr: String,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
-pub struct MasterDataIBonusRule {
+pub struct MasterIBonusRule {
     pub expr: String,
     pub formula: String,
 }
 
-impl MasterDataIBonusRule {
+impl MasterIBonusRule {
     fn eval(&self, gear: &MasterGear, stars: i32) -> Option<f64> {
         if gear.eval(&self.expr).unwrap_or_default() == 1. {
             let mut ns = |name: &str, args: Vec<f64>| match name {
@@ -166,27 +177,27 @@ impl MasterDataIBonusRule {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
-pub struct MasterDataIBonuses {
-    shelling_power: Vec<MasterDataIBonusRule>,
-    shelling_accuracy: Vec<MasterDataIBonusRule>,
-    torpedo_power: Vec<MasterDataIBonusRule>,
-    torpedo_accuracy: Vec<MasterDataIBonusRule>,
-    torpedo_evasion: Vec<MasterDataIBonusRule>,
-    asw_power: Vec<MasterDataIBonusRule>,
-    asw_accuracy: Vec<MasterDataIBonusRule>,
-    night_power: Vec<MasterDataIBonusRule>,
-    night_accuracy: Vec<MasterDataIBonusRule>,
-    defense_power: Vec<MasterDataIBonusRule>,
-    contact_selection: Vec<MasterDataIBonusRule>,
-    fighter_power: Vec<MasterDataIBonusRule>,
-    adjusted_anti_air: Vec<MasterDataIBonusRule>,
-    fleet_anti_air: Vec<MasterDataIBonusRule>,
-    effective_los: Vec<MasterDataIBonusRule>,
+pub struct MasterIBonuses {
+    shelling_power: Vec<MasterIBonusRule>,
+    shelling_accuracy: Vec<MasterIBonusRule>,
+    torpedo_power: Vec<MasterIBonusRule>,
+    torpedo_accuracy: Vec<MasterIBonusRule>,
+    torpedo_evasion: Vec<MasterIBonusRule>,
+    asw_power: Vec<MasterIBonusRule>,
+    asw_accuracy: Vec<MasterIBonusRule>,
+    night_power: Vec<MasterIBonusRule>,
+    night_accuracy: Vec<MasterIBonusRule>,
+    defense_power: Vec<MasterIBonusRule>,
+    contact_selection: Vec<MasterIBonusRule>,
+    fighter_power: Vec<MasterIBonusRule>,
+    adjusted_anti_air: Vec<MasterIBonusRule>,
+    fleet_anti_air: Vec<MasterIBonusRule>,
+    effective_los: Vec<MasterIBonusRule>,
 }
 
-impl MasterDataIBonuses {
+impl MasterIBonuses {
     pub fn to_ibonuses(&self, gear: &MasterGear, stars: i32) -> IBonuses {
-        let calc = |rules: &Vec<MasterDataIBonusRule>| {
+        let calc = |rules: &Vec<MasterIBonusRule>| {
             rules
                 .iter()
                 .find_map(|rule| rule.eval(gear, stars))
@@ -294,7 +305,7 @@ pub struct MstEquipExslotShip {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
-pub struct MasterDataEquippable {
+pub struct MasterEquippable {
     pub equip_stype: Vec<EquipStype>,
     pub equip_exslot: Vec<i32>,
     pub equip_ship: Vec<MstEquipShip>,
@@ -304,13 +315,15 @@ pub struct MasterDataEquippable {
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
-    pub gear_categories: Vec<MasterDataGearCategory>,
-    pub gear_attrs: Vec<MasterDataAttrRule>,
+    pub gear_types: Vec<MasterVariantDef>,
+    pub gear_attrs: Vec<MasterAttrRule>,
     pub ships: Vec<MasterShip>,
-    pub ship_attrs: Vec<MasterDataAttrRule>,
+    pub ship_types: Vec<MasterVariantDef>,
+    pub ship_classes: Vec<MasterVariantDef>,
+    pub ship_attrs: Vec<MasterAttrRule>,
     pub ship_banners: HashMap<String, String>,
-    pub ibonuses: MasterDataIBonuses,
-    pub equippable: MasterDataEquippable,
+    pub ibonuses: MasterIBonuses,
+    pub equippable: MasterEquippable,
 }
 
 impl MasterData {
@@ -364,7 +377,7 @@ impl MasterData {
             .find(|es| es.api_ship_id == ship.ship_id)
             .map(|es| &es.api_equip_type);
 
-        let categories: Vec<i32> = equip_ship
+        let types: Vec<i32> = equip_ship
             .or(self
                 .equippable
                 .equip_stype
@@ -383,9 +396,9 @@ impl MasterData {
             .collect::<Vec<i32>>();
 
         ShipEquippable {
-            categories,
+            types,
             exslot_gear_ids,
-            exslot_categories: self.equippable.equip_exslot.clone(),
+            exslot_types: self.equippable.equip_exslot.clone(),
         }
     }
 }
@@ -489,23 +502,22 @@ pub mod test {
             name: "name".to_string(),
             types: GearTypes(0, 1, 2, 3, 4),
             special_type: Some(26),
-
-            max_hp: 11,
-            firepower: 12,
-            armor: 13,
-            torpedo: 14,
-            anti_air: 15,
-            speed: 16,
-            bombing: 17,
-            asw: 18,
-            los: 19,
-            luck: 20,
-            accuracy: 21,
-            evasion: 22,
-            range: 23,
-            radius: 24,
-            cost: 25,
-            improvable: true,
+            max_hp: Some(11),
+            firepower: Some(12),
+            armor: Some(13),
+            torpedo: Some(14),
+            anti_air: Some(15),
+            speed: Some(16),
+            bombing: Some(17),
+            asw: Some(18),
+            los: Some(19),
+            luck: Some(20),
+            accuracy: Some(21),
+            evasion: Some(22),
+            range: Some(23),
+            radius: Some(24),
+            cost: Some(25),
+            improvable: Some(true),
             ..Default::default()
         };
 
@@ -517,16 +529,19 @@ pub mod test {
         assert_eq!(gear.eval("special_type"), Some(26.));
 
         assert_eq!(gear.eval("gear_id_in(10)"), Some(1.));
-        assert_eq!(gear.eval("category_in(1,2,3,4,5)"), Some(1.));
-        assert_eq!(gear.eval("category_in(1,3,4,5)"), Some(0.));
-        assert_eq!(gear.eval("improvable"), Some(bool_to_f64!(gear.improvable)));
+        assert_eq!(gear.eval("gear_type_in(1,2,3,4,5)"), Some(1.));
+        assert_eq!(gear.eval("gear_type_in(1,3,4,5)"), Some(0.));
+        assert_eq!(
+            gear.eval("improvable"),
+            Some(bool_to_f64!(gear.improvable.unwrap()))
+        );
 
         macro_rules! test_fields {
             ($($field: ident),*) => (
                 {
                     $(assert_eq!(
                         gear.eval(stringify!($field)),
-                        Some(gear.$field as f64)
+                        Some(gear.$field.unwrap() as f64)
                     ));*
                 }
             )

@@ -4,7 +4,7 @@ use strum_macros::EnumString;
 use ts_rs::TS;
 
 #[derive(Debug, EnumSetType, FromPrimitive, TS)]
-pub enum GearCategory {
+pub enum GearType {
     Unknown = 0,
     SmallCaliberMainGun = 1,
     MediumCaliberMainGun = 2,
@@ -66,7 +66,7 @@ pub enum GearCategory {
     CbRecon2 = 94,
 }
 
-impl Default for GearCategory {
+impl Default for GearType {
     fn default() -> Self {
         Self::Unknown
     }

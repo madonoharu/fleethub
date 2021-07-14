@@ -1,10 +1,8 @@
 pub mod air_squadron;
 pub mod array;
-pub mod const_id;
 pub mod factory;
 pub mod fleet;
 pub mod gear;
-pub mod master;
 pub mod org;
 pub mod ship;
 
@@ -18,10 +16,10 @@ use air_squadron::AirSquadron;
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
-use master::MasterData;
 use org::Org;
 use ship::Ship;
 
+use types::MasterData;
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
@@ -34,22 +32,15 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen(typescript_custom_section)]
 const TS_APPEND_CONTENT: &'static str = r#"
-import { NullToOptional } from "../null_to_optional";
 import {
-  AirSquadronState,
-  FleetState,
-  GearState,
-  OrgState,
-  ShipState,
-} from "./types";
+  AirSquadronParams,
+  FleetParams,
+  GearParams,
+  OrgParams,
+  ShipParams,
+} from "../types";
 
-export type GearParams = NullToOptional<GearState>;
-export type ShipParams = NullToOptional<ShipState>;
-export type FleetParams = NullToOptional<FleetState>;
-export type AirSquadronParams = NullToOptional<AirSquadronState>;
-export type OrgParams = NullToOptional<OrgState>;
-
-export * from "./types";
+export * from "../types";
 "#;
 
 #[wasm_bindgen]
@@ -116,12 +107,12 @@ impl FhCore {
             .collect()
     }
 
-    pub fn find_gear_category_name(&self, id: i32) -> String {
+    pub fn find_gear_gear_type_name(&self, id: i32) -> String {
         self.factory
             .master_data
-            .gear_categories
+            .gear_types
             .iter()
             .find_map(|c| (c.id == id).then(|| c.name.clone()))
-            .unwrap_or_else(|| format!("category {}", id))
+            .unwrap_or_else(|| format!("gear_type {}", id))
     }
 }

@@ -1,11 +1,10 @@
-import { ShipClass, ShipId, ShipType } from "@fleethub/data/src";
 import {
-  MasterDataAttrRule,
-  MasterDataShip,
-  MasterDataShipClass,
-  MasterDataShipType,
+  MasterAttrRule,
+  MasterShipInput,
+  MasterVariantDef,
   SpeedGroup,
-} from "@fleethub/utils/src";
+} from "@fleethub/core/types";
+import { ShipClass, ShipType } from "@fleethub/utils/src";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,
@@ -20,24 +19,24 @@ const isPlayerShip = (ship: MstShip): ship is MstPlayerShip =>
   "api_houg" in ship;
 
 const getDefaultSpeedGroup = ({
-  ship_id,
+  name,
   yomi,
   stype,
-  ctype = 0,
+  ctype,
   speed,
-}: MasterDataShip): SpeedGroup => {
+}: MasterShipInput): SpeedGroup => {
   const isFastAV = stype == ShipType.AV && speed == 10;
 
   if (
     isFastAV ||
     [ShipType.SS, ShipType.SSV].includes(stype) ||
-    [ShipId["夕張"], ShipId["夕張改"]].includes(ship_id) ||
+    ["夕張", "夕張改"].includes(name) ||
     [
       ShipClass.KagaClass,
       ShipClass.R1,
       ShipClass.RepairShip,
       ShipClass.RevisedKazahayaClass,
-    ].includes(ctype)
+    ].includes(ctype || 0)
   ) {
     return "C";
   }
@@ -50,7 +49,7 @@ const getDefaultSpeedGroup = ({
       ShipClass.ShoukakuClass,
       ShipClass.ToneClass,
       ShipClass.MogamiClass,
-    ].includes(ctype)
+    ].includes(ctype || 0)
   ) {
     return "A";
   }
@@ -63,7 +62,7 @@ const getDefaultSpeedGroup = ({
       ShipClass.KongouClass,
       ShipClass.YamatoClass,
       ShipClass.IowaClass,
-    ].includes(ctype)
+    ].includes(ctype || 0)
   ) {
     return "B1";
   }
@@ -71,7 +70,7 @@ const getDefaultSpeedGroup = ({
   const isAmatsukaze = yomi === "あまつかぜ";
   const isUnryuu = yomi === "うんりゅう";
   const isAmagi = yomi === "あまぎ";
-  const isNagatoKai2 = ship_id === ShipId["長門改二"];
+  const isNagatoKai2 = name === "長門改二";
 
   if (isAmatsukaze || isUnryuu || isAmagi || isNagatoKai2) {
     return "B1";
@@ -80,22 +79,22 @@ const getDefaultSpeedGroup = ({
   return "B2";
 };
 
-const getConvertibleShips = (ships: MasterDataShip[]) => {
-  const findNextShip = ({ next_id }: MasterDataShip) =>
+const getConvertibleShips = (ships: MasterShipInput[]) => {
+  const findNextShip = ({ next_id }: MasterShipInput) =>
     next_id ? ships.find((s) => s.ship_id === next_id) : undefined;
 
-  const convertibleShips: MasterDataShip[] = [];
-  const irreversibleShips: MasterDataShip[] = [];
+  const convertibleShips: MasterShipInput[] = [];
+  const irreversibleShips: MasterShipInput[] = [];
 
-  const isConvertible = (base: MasterDataShip): boolean => {
+  const isConvertible = (base: MasterShipInput): boolean => {
     if (!base.next_id || irreversibleShips.includes(base)) return false;
     if (convertibleShips.includes(base)) return true;
 
-    const remodelList: MasterDataShip[] = [];
+    const remodelList: MasterShipInput[] = [];
 
     const setRemodelList = (
-      current: MasterDataShip
-    ): MasterDataShip | undefined => {
+      current: MasterShipInput
+    ): MasterShipInput | undefined => {
       remodelList.push(current);
       const next = findNextShip(current);
       if (!next) return current;
@@ -124,10 +123,10 @@ export const createShips = (
   rows: GoogleSpreadsheetRow[],
   start2: Start2
 ) => {
-  const createShip = (mst: MstShip): MasterDataShip => {
+  const createShip = (mst: MstShip): MasterShipInput => {
     const row = rows.find((row) => Number(row.ship_id) === mst.api_id);
 
-    const base: MasterDataShip = {
+    const base: MasterShipInput = {
       ship_id: mst.api_id,
       name: mst.api_name,
       yomi: mst.api_yomi,
@@ -189,8 +188,8 @@ export const createShips = (
       fuel: mst.api_fuel_max,
       ammo: mst.api_bull_max,
 
-      next_id: Number(api_aftershipid) || undefined,
-      next_level: api_afterlv || undefined,
+      next_id: Number(api_aftershipid) || null,
+      next_level: api_afterlv || null,
     };
   };
 
@@ -222,13 +221,13 @@ const createShipClasses = (rows: GoogleSpreadsheetRow[]) =>
 
 const readShipAttrs = async (
   sheet: GoogleSpreadsheetWorksheet,
-  ships: MasterDataShip[],
-  ship_types: MasterDataShipType[],
-  ship_classes: MasterDataShipClass[]
-): Promise<MasterDataAttrRule[]> => {
+  ships: MasterShipInput[],
+  ship_types: MasterVariantDef[],
+  ship_classes: MasterVariantDef[]
+): Promise<MasterAttrRule[]> => {
   const rows = await sheet.getRows();
 
-  const attrs: MasterDataAttrRule[] = [];
+  const attrs: MasterAttrRule[] = [];
 
   const replaceShipType = (str: string) => {
     return ship_types.reduce(

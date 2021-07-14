@@ -9,12 +9,13 @@ import {
 
 cloudinary.v2.config({
   cloud_name: "djg1epjdj",
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  api_key: process.env.CLOUDINARY_API_KEY || "",
+  api_secret: process.env.CLOUDINARY_API_SECRET || "",
 });
 
 const btoa = (str: string) => Buffer.from(str, "binary").toString("base64");
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const uploadJson = (
   object: Record<string, unknown>,
   options?: cloudinary.UploadApiOptions

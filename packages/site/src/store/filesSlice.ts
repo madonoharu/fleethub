@@ -1,5 +1,5 @@
 import { OrgParams } from "@fleethub/core";
-import { isNonNullable, uniq } from "@fleethub/utils";
+import { nonNullable, uniq } from "@fleethub/utils";
 import {
   AppThunk,
   createEntityAdapter,
@@ -107,7 +107,7 @@ const addChildren = (state: FilesState, to: ParentKey, children: string[]) => {
 
 const getAllFiles = (state: FilesState) =>
   [state.root, state.temp, ...Object.values(state.entities)].filter(
-    isNonNullable
+    nonNullable
   );
 
 const removeFromChildren = (state: FilesState, ids: string[]) => {

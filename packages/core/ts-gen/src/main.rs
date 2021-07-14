@@ -1,6 +1,6 @@
 use ts_rs::TS;
 
-const PATH: &'static str = "pkg/types.d.ts";
+const PATH: &'static str = "bindings.d.ts";
 
 macro_rules! gen_types {
     ($($p: path),* $(,)?) => {{
@@ -27,7 +27,7 @@ fn main() {
         types::SingleFormation,
         types::CombinedFormation,
         types::Formation,
-        types::GearCategory,
+        types::GearType,
         gear::GearState,
         ship::ShipState,
         fleet::FleetState,
@@ -40,13 +40,23 @@ fn main() {
         org::OrgDayCutinRateAnalysis,
         anti_air::ShipAntiAirAnalysis,
         anti_air::OrgAntiAirAnalysis,
-        master::FormationAttackModifiers,
-        master::FormationAttackDef,
-        master::FormationDef,
-        master::MasterData,
-        master::MasterGear,
-        master::MasterShip,
-        master::StatInterval,
+        types::FormationAttackModifiers,
+        types::FormationAttackDef,
+        types::FormationDef,
+        types::SpeedGroup,
+        types::GearTypes,
+        types::MasterGear,
+        types::MasterVariantDef,
+        types::MasterAttrRule,
+        types::StatInterval,
+        types::MasterShip,
+        types::MasterIBonusRule,
+        types::MasterIBonuses,
+        types::EquipStype,
+        types::MstEquipShip,
+        types::MstEquipExslotShip,
+        types::MasterEquippable,
+        types::MasterData,
     );
 
     let buffer =
