@@ -13,7 +13,7 @@ use ts_rs::TS;
 use crate::{
     gear::Gear,
     ship::Ship,
-    types::{GearAttr, GearCategory},
+    types::{GearAttr, GearType},
 };
 
 const GEAR_ARRAY_CAPACITY: usize = 6;
@@ -115,12 +115,12 @@ impl GearArray {
         self.count_by(|g| g.has_attr(attr))
     }
 
-    pub fn has_category(&self, category: GearCategory) -> bool {
-        self.has_by(|g| g.category == category)
+    pub fn has_type(&self, gear_type: GearType) -> bool {
+        self.has_by(|g| g.gear_type == gear_type)
     }
 
-    pub fn count_category(&self, category: GearCategory) -> usize {
-        self.count_by(|g| g.category == category)
+    pub fn count_type(&self, gear_type: GearType) -> usize {
+        self.count_by(|g| g.gear_type == gear_type)
     }
 
     pub fn get_by_gear_key(&self, key: &str) -> Option<&Gear> {
@@ -154,30 +154,26 @@ impl ShipArray {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct MyArrayVec<T, const CAP: usize> {
-    vec: ArrayVec<T, CAP>,
-}
+pub struct MyArrayVec<T, const CAP: usize>(ArrayVec<T, CAP>);
 
 impl<T, const CAP: usize> Deref for MyArrayVec<T, CAP> {
     type Target = ArrayVec<T, CAP>;
     #[inline]
     fn deref(&self) -> &Self::Target {
-        &self.vec
+        &self.0
     }
 }
 
 impl<T, const CAP: usize> DerefMut for MyArrayVec<T, CAP> {
     #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.vec
+        &mut self.0
     }
 }
 
 impl<T, const CAP: usize> FromIterator<T> for MyArrayVec<T, CAP> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        MyArrayVec {
-            vec: ArrayVec::from_iter(iter),
-        }
+        MyArrayVec( ArrayVec::from_iter(iter))
     }
 }
 

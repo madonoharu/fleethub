@@ -2,7 +2,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    const_gear_id,
+    gear_id,
     org::{Org, Side},
     ship::Ship,
     types::{ShipClass, ShipType},
@@ -171,10 +171,7 @@ impl<'a> ShipAntiAir<'a> {
         }
 
         let adjusted_anti_air = self.adjusted_anti_air()?;
-        let count = self
-            .ship
-            .gears
-            .count(const_gear_id!("12cm30連装噴進砲改二"));
+        let count = self.ship.gears.count(gear_id!("12cm30連装噴進砲改二"));
 
         if count == 0 {
             return Some(0.);

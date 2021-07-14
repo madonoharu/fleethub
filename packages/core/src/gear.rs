@@ -5,9 +5,8 @@ use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    const_gear_id,
-    master::{GearTypes, MasterGear},
-    types::{GearAttr, GearCategory},
+    gear_id,
+    types::{GearAttr, GearType, GearTypes, MasterGear},
     utils::xxh3,
 };
 
@@ -90,9 +89,9 @@ pub struct Gear {
     #[wasm_bindgen(skip)]
     pub ibonuses: IBonuses,
     #[wasm_bindgen(skip)]
-    pub category: GearCategory,
+    pub gear_type: GearType,
     #[wasm_bindgen(skip)]
-    pub special_type: GearCategory,
+    pub special_type: GearType,
 
     pub max_hp: i32,
     pub firepower: i32,
@@ -106,8 +105,6 @@ pub struct Gear {
     pub luck: i32,
     pub accuracy: i32,
     pub evasion: i32,
-    pub anti_bomber: i32,
-    pub interception: i32,
     pub range: i32,
     pub radius: i32,
     pub cost: i32,
@@ -125,19 +122,12 @@ impl Gear {
     ) -> Self {
         let xxh3 = xxh3(&state);
 
-        let category = master.types.category();
+        let gear_type = master.types.gear_type();
 
-        let special_type: GearCategory = master
+        let special_type: GearType = master
             .special_type
             .and_then(FromPrimitive::from_i32)
-            .unwrap_or(category);
-
-        let (accuracy, evasion, anti_bomber, interception) = if category == GearCategory::LbFighter
-        {
-            (0, 0, master.accuracy, master.evasion)
-        } else {
-            (master.accuracy, master.evasion, 0, 0)
-        };
+            .unwrap_or(gear_type);
 
         Gear {
             xxh3,
@@ -147,31 +137,29 @@ impl Gear {
             stars: state.stars.unwrap_or_default(),
             exp: state.exp.unwrap_or_default(),
 
-            category,
+            gear_type,
             special_type,
 
             name: master.name.clone(),
             types: master.types.clone(),
-            max_hp: master.max_hp,
-            firepower: master.firepower,
-            armor: master.armor,
-            torpedo: master.torpedo,
-            anti_air: master.anti_air,
-            speed: master.speed,
-            bombing: master.bombing,
-            asw: master.asw,
-            los: master.los,
-            luck: master.luck,
-            accuracy,
-            evasion,
-            anti_bomber,
-            interception,
-            range: master.range,
-            radius: master.radius,
-            cost: master.cost,
-            improvable: master.improvable,
-            adjusted_anti_air_resistance: master.adjusted_anti_air_resistance,
-            fleet_anti_air_resistance: master.fleet_anti_air_resistance,
+            max_hp: master.max_hp.unwrap_or_default(),
+            firepower: master.firepower.unwrap_or_default(),
+            armor: master.armor.unwrap_or_default(),
+            torpedo: master.torpedo.unwrap_or_default(),
+            anti_air: master.anti_air.unwrap_or_default(),
+            speed: master.speed.unwrap_or_default(),
+            bombing: master.bombing.unwrap_or_default(),
+            asw: master.asw.unwrap_or_default(),
+            los: master.los.unwrap_or_default(),
+            luck: master.luck.unwrap_or_default(),
+            accuracy: master.accuracy.unwrap_or_default(),
+            evasion: master.evasion.unwrap_or_default(),
+            range: master.range.unwrap_or_default(),
+            radius: master.radius.unwrap_or_default(),
+            cost: master.cost.unwrap_or_default(),
+            improvable: master.improvable.unwrap_or_default(),
+            adjusted_anti_air_resistance: master.adjusted_anti_air_resistance.unwrap_or(1.0),
+            fleet_anti_air_resistance: master.fleet_anti_air_resistance.unwrap_or(1.0),
 
             attrs,
             ibonuses,
@@ -211,9 +199,9 @@ impl Gear {
     }
 
     pub fn discern(&self) -> String {
-        use GearCategory::*;
+        use GearType::*;
 
-        let str = match self.category {
+        let str = match self.gear_type {
             CbFighter => "Fighter",
             CbDiveBomber | CbTorpedoBomber | JetFighterBomber | JetTorpedoBomber => "Bomber",
             CbRecon
@@ -255,10 +243,28 @@ impl Gear {
         }
     }
 
+    #[wasm_bindgen(getter)]
+    pub fn anti_bomber(&self) -> i32 {
+        if self.gear_type == GearType::LbFighter {
+            self.accuracy
+        } else {
+            0
+        }
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn interception(&self) -> i32 {
+        if self.gear_type == GearType::LbFighter {
+            self.evasion
+        } else {
+            0
+        }
+    }
+
     fn get_proficiency_type(&self) -> ProficiencyType {
         if self.attrs.contains(GearAttr::Fighter) {
             ProficiencyType::Fighter
-        } else if self.category == GearCategory::SeaplaneBomber {
+        } else if self.gear_type == GearType::SeaplaneBomber {
             ProficiencyType::SeaplaneBomber
         } else {
             ProficiencyType::Other
@@ -284,7 +290,7 @@ impl Gear {
         let pm = self.proficiency_fighter_power_modifier();
 
         let multiplier =
-            self.anti_air as f64 + 1.5 * (self.interception as f64) + self.ibonuses.fighter_power;
+            self.anti_air as f64 + 1.5 * (self.interception() as f64) + self.ibonuses.fighter_power;
 
         (multiplier * (slot_size as f64).sqrt() + pm).floor() as i32
     }
@@ -293,8 +299,8 @@ impl Gear {
         let pm = self.proficiency_fighter_power_modifier();
 
         let multiplier = self.anti_air as f64
-            + self.interception as f64
-            + 2. * (self.anti_bomber as f64)
+            + self.interception() as f64
+            + 2. * (self.anti_bomber() as f64)
             + self.ibonuses.fighter_power;
 
         (multiplier * (slot_size as f64).sqrt() + pm).floor() as i32
@@ -305,17 +311,17 @@ impl Gear {
             return 0.;
         }
 
-        let category = self.category;
+        let gear_type = self.gear_type;
 
-        let multiplier: f64 = if category == GearCategory::AntiAirFireDirector
+        let multiplier: f64 = if gear_type == GearType::AntiAirFireDirector
             || self.attrs.contains(GearAttr::HighAngleMount)
         {
             0.35
-        } else if category == GearCategory::AntiAirShell {
+        } else if gear_type == GearType::AntiAirShell {
             0.6
         } else if self.attrs.contains(GearAttr::Radar) {
             0.4
-        } else if self.gear_id == const_gear_id!("46cm三連装砲") {
+        } else if self.gear_id == gear_id!("46cm三連装砲") {
             0.25
         } else {
             0.2
@@ -329,9 +335,11 @@ impl Gear {
             return 0.;
         }
 
-        let multiplier = if self.category == GearCategory::AntiAirGun {
+        let gear_type = self.gear_type;
+
+        let multiplier = if gear_type == GearType::AntiAirGun {
             6.
-        } else if self.category == GearCategory::AntiAirFireDirector
+        } else if gear_type == GearType::AntiAirFireDirector
             || self.has_attr(GearAttr::HighAngleMount)
         {
             4.
@@ -372,9 +380,10 @@ mod test {
         );
 
         let gear2 = Gear {
+            gear_type: GearType::LbFighter,
             exp: 110,
             anti_air: 2,
-            interception: 3,
+            evasion: 3,
             ..Default::default()
         };
         let gear2_pfpm = gear2.proficiency_fighter_power_modifier();
@@ -399,10 +408,11 @@ mod test {
         );
 
         let gear2 = Gear {
+            gear_type: GearType::LbFighter,
             exp: 110,
             anti_air: 2,
-            interception: 3,
-            anti_bomber: 4,
+            accuracy: 4,
+            evasion: 3,
             ..Default::default()
         };
         let gear2_pfpm = gear2.proficiency_fighter_power_modifier();

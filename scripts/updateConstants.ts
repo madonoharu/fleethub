@@ -1,9 +1,15 @@
-import { MasterData } from "@fleethub/utils/src";
+import { MasterDataInput } from "@fleethub/core/types";
 import child_process from "child_process";
 import fs from "fs-extra";
 import { promisify } from "util";
 
 import storage from "./data/storage";
+
+const RS_GEAR_PATH = "packages/core/src/types/gear.rs";
+const RS_SHIP_PATH = "packages/core/src/types/ship.rs";
+const RS_CONST_ID_PATH = "packages/core/src/const_id.rs";
+
+const TS_PATH = "packages/utils/src/constants.ts";
 
 const exec = promisify(child_process.exec);
 
@@ -37,15 +43,16 @@ const replaceEnum = (config: EnumConfig) => (src: string) => {
   return src.replace(regex, text);
 };
 
-const RS_PATH = "packages/sim/src/constants.rs";
-const TS_PATH = "packages/utils/src/constants.ts";
-
-const updateFile = async (path: string, updater: (src: string) => string) => {
+const updateFile = async (
+  path: string,
+  ...updaters: ((src: string) => string)[]
+) => {
   const src = (await fs.readFile(path)).toString();
-  await fs.outputFile(path, updater(src));
+  const out = updaters.reduce((current, fn) => fn(current), src);
+  await fs.outputFile(path, out);
 };
 
-const updateRs = async (md: MasterData) => {
+const updateRs = async (md: MasterDataInput) => {
   const updateShipId = (src: string): string => {
     const inner = md.ships
       .filter((ship) => ship.ship_id < 1500)
@@ -74,66 +81,70 @@ const updateRs = async (md: MasterData) => {
     return src.replace(regex, macro);
   };
 
-  await updateFile(RS_PATH, (src) =>
-    [
-      updateShipId,
-      updateGearId,
-      replaceEnum({
-        name: "GearCategory",
-        items: md.gear_categories,
-        unknown: true,
-      }),
-      replaceEnum({
-        name: "GearAttr",
-        items: md.gear_attrs,
-      }),
-      replaceEnum({
-        name: "ShipType",
-        items: md.ship_types,
-        unknown: true,
-      }),
-      replaceEnum({
-        name: "ShipClass",
-        items: md.ship_classes,
-        unknown: true,
-      }),
-      replaceEnum({
-        name: "ShipAttr",
-        items: md.ship_attrs,
-      }),
-    ].reduce((current, fn) => fn(current), src)
+  await updateFile(
+    RS_GEAR_PATH,
+    replaceEnum({
+      name: "GearType",
+      items: md.gear_types,
+      unknown: true,
+    }),
+    replaceEnum({
+      name: "GearAttr",
+      items: md.gear_attrs,
+    })
   );
 
-  await exec(`rustfmt ${RS_PATH}`);
+  await updateFile(
+    RS_SHIP_PATH,
+    replaceEnum({
+      name: "ShipType",
+      items: md.ship_types,
+      unknown: true,
+    }),
+    replaceEnum({
+      name: "ShipClass",
+      items: md.ship_classes,
+      unknown: true,
+    }),
+    replaceEnum({
+      name: "ShipAttr",
+      items: md.ship_attrs,
+    })
+  );
+
+  await updateFile(RS_CONST_ID_PATH, updateShipId, updateGearId);
+
+  await exec(
+    `rustfmt {${[RS_GEAR_PATH, RS_SHIP_PATH, RS_CONST_ID_PATH].join(",")}}`
+  );
 };
 
-const updateTs = async (md: MasterData) => {
-  await updateFile(TS_PATH, (src) =>
-    [
-      replaceEnum({
-        name: "GearCategory",
-        items: md.gear_categories,
-        unknown: true,
-      }),
-      replaceEnum({
-        name: "GearAttr",
-        items: md.gear_attrs,
-      }),
-      replaceEnum({
-        name: "ShipType",
-        items: md.ship_types,
-        unknown: true,
-      }),
-      replaceEnum({
-        name: "ShipClass",
-        items: md.ship_classes,
-        unknown: true,
-      }),
-      replaceEnum({
-        name: "ShipAttr",
-        items: md.ship_attrs,
-      }),
-    ].reduce((current, fn) => fn(current), src)
+const updateTs = async (md: MasterDataInput) => {
+  await updateFile(
+    TS_PATH,
+    replaceEnum({
+      name: "GearType",
+      items: md.gear_types,
+      unknown: true,
+    }),
+    replaceEnum({
+      name: "GearAttr",
+      items: md.gear_attrs,
+    }),
+    replaceEnum({
+      name: "ShipType",
+      items: md.ship_types,
+      unknown: true,
+    }),
+    replaceEnum({
+      name: "ShipClass",
+      items: md.ship_classes,
+      unknown: true,
+    }),
+    replaceEnum({
+      name: "ShipAttr",
+      items: md.ship_attrs,
+    })
   );
 
   await exec(`prettier --write ${TS_PATH}`);

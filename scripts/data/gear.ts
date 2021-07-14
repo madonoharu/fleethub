@@ -1,11 +1,10 @@
 import {
-  IBonusType,
-  isNonNullable,
-  MasterDataAttrRule,
-  MasterDataGear,
-  MasterDataGearCategory,
-  MasterDataIBonuses,
-} from "@fleethub/utils/src";
+  MasterAttrRule,
+  MasterGearInput,
+  MasterIBonuses,
+  MasterVariantDef,
+} from "@fleethub/core/types";
+import { nonNullable } from "@fleethub/utils/src";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,
@@ -18,11 +17,11 @@ import { deleteFalsyValues, updateRows } from "./utils";
 const createGears = (
   rows: GoogleSpreadsheetRow[],
   start2: Start2
-): MasterDataGear[] => {
+): MasterGearInput[] => {
   const gears = start2.api_mst_slotitem.map((mst) => {
     const row = rows.find((row) => Number(row.gear_id) === mst.api_id);
 
-    const next: MasterDataGear = {
+    const next: MasterGearInput = {
       gear_id: mst.api_id,
       types: mst.api_type,
       name: mst.api_name,
@@ -39,8 +38,8 @@ const createGears = (
       accuracy: mst.api_houm,
       evasion: mst.api_houk,
       range: mst.api_leng,
-      radius: mst.api_distance,
-      cost: mst.api_cost,
+      radius: mst.api_distance || 0,
+      cost: mst.api_cost || 0,
 
       improvable: row?.improvable === "TRUE",
       special_type: Number(row?.special_type),
@@ -56,7 +55,7 @@ const createGears = (
   return gears;
 };
 
-const createGearCategories = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
+const createGearTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
   start2.api_mst_slotitem_equiptype.map((mst) => ({
     id: mst.api_id,
     name: mst.api_name,
@@ -64,14 +63,13 @@ const createGearCategories = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
   }));
 
 const makeReplaceGearExpr = (
-  gears: MasterDataGear[],
-  gear_categories: MasterDataGearCategory[],
-  gear_attrs: MasterDataAttrRule[]
+  gears: MasterGearInput[],
+  gear_types: MasterVariantDef[],
+  gear_attrs: MasterAttrRule[]
 ) => {
-  const replaceCategory = (str: string) => {
-    return gear_categories.reduce(
-      (current, category) =>
-        current.replace(`"${category.name}"`, category.id.toString()),
+  const replaceType = (str: string) => {
+    return gear_types.reduce(
+      (current, type) => current.replace(`"${type.name}"`, type.id.toString()),
       str
     );
   };
@@ -92,8 +90,8 @@ const makeReplaceGearExpr = (
 
   return (str: string) =>
     replaceAttr(str)
-      .replace(/category == "[^"]+"/g, replaceCategory)
-      .replace(/category_in\(\s*("[^"]+",?\s*)+\)/gs, replaceCategory)
+      .replace(/gear_type == "[^"]+"/g, replaceType)
+      .replace(/gear_type_in\(\s*("[^"]+",?\s*)+\)/gs, replaceType)
       .replace(/name == "[^"]+"/g, replaceName)
       .replace(/name_in\(\s*("[^"]+",?\s*)+\)/gs, replaceName)
       .replace(/\bname/g, "gear_id")
@@ -103,13 +101,13 @@ const makeReplaceGearExpr = (
 
 const readGearAttrs = async (
   sheet: GoogleSpreadsheetWorksheet,
-  gears: MasterDataGear[],
-  gear_categories: MasterDataGearCategory[]
+  gears: MasterGearInput[],
+  gear_types: MasterVariantDef[]
 ) => {
   const rows = await sheet.getRows();
 
-  const gear_attrs: MasterDataAttrRule[] = [];
-  const replaceExpr = makeReplaceGearExpr(gears, gear_categories, gear_attrs);
+  const gear_attrs: MasterAttrRule[] = [];
+  const replaceExpr = makeReplaceGearExpr(gears, gear_types, gear_attrs);
 
   rows.forEach((row) => {
     const expr = replaceExpr(row.expr);
@@ -121,11 +119,11 @@ const readGearAttrs = async (
 
 const readIBonuses = async (
   doc: GoogleSpreadsheet,
-  gears: MasterDataGear[],
-  gear_categories: MasterDataGearCategory[],
-  gear_attrs: MasterDataAttrRule[]
-): Promise<MasterDataIBonuses> => {
-  const sheets: Record<IBonusType, GoogleSpreadsheetWorksheet> = {
+  gears: MasterGearInput[],
+  gear_types: MasterVariantDef[],
+  gear_attrs: MasterAttrRule[]
+): Promise<MasterIBonuses> => {
+  const sheets: Record<keyof MasterIBonuses, GoogleSpreadsheetWorksheet> = {
     shelling_power: doc.sheetsByTitle["改修砲撃攻撃力"],
     shelling_accuracy: doc.sheetsByTitle["改修砲撃命中"],
     torpedo_power: doc.sheetsByTitle["改修雷撃攻撃力"],
@@ -143,7 +141,7 @@ const readIBonuses = async (
     effective_los: doc.sheetsByTitle["改修マップ索敵"],
   };
 
-  const replaceExpr = makeReplaceGearExpr(gears, gear_categories, gear_attrs);
+  const replaceExpr = makeReplaceGearExpr(gears, gear_types, gear_attrs);
 
   const promises = Object.entries(sheets).map(async ([key, sheet]) => {
     const rows = await sheet.getRows();
@@ -152,13 +150,13 @@ const readIBonuses = async (
         if (!expr || !formula) return undefined;
         return { expr: replaceExpr(expr), formula };
       })
-      .filter(isNonNullable);
+      .filter(nonNullable);
 
     return [key, rules];
   });
 
   const entries = await Promise.all(promises);
-  return Object.fromEntries(entries) as MasterDataIBonuses;
+  return Object.fromEntries(entries) as MasterIBonuses;
 };
 
 export const updateGearData = async (
@@ -167,27 +165,21 @@ export const updateGearData = async (
 ) => {
   const sheets = {
     gears: doc.sheetsByTitle["装備"],
-    gear_categories: doc.sheetsByTitle["装備カテゴリ"],
+    gear_types: doc.sheetsByTitle["装備種"],
     gear_attrs: doc.sheetsByTitle["装備属性"],
   };
 
-  const [gears, gear_categories] = await Promise.all([
+  const [gears, gear_types] = await Promise.all([
     updateRows(sheets.gears, (rows) => createGears(rows, start2)),
-    updateRows(sheets.gear_categories, (rows) =>
-      createGearCategories(rows, start2)
-    ),
+    updateRows(sheets.gear_types, (rows) => createGearTypes(rows, start2)),
   ]);
 
-  const gear_attrs = await readGearAttrs(
-    sheets.gear_attrs,
-    gears,
-    gear_categories
-  );
-  const ibonuses = await readIBonuses(doc, gears, gear_categories, gear_attrs);
+  const gear_attrs = await readGearAttrs(sheets.gear_attrs, gears, gear_types);
+  const ibonuses = await readIBonuses(doc, gears, gear_types, gear_attrs);
 
   const data = {
     gears,
-    gear_categories,
+    gear_types,
     gear_attrs,
     ibonuses,
   };

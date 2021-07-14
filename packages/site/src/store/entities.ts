@@ -1,4 +1,4 @@
-import { isNonNullable } from "@fleethub/utils";
+import { nonNullable } from "@fleethub/utils";
 import { AppThunk, combineReducers } from "@reduxjs/toolkit";
 
 import { cloneFilesData, FilesData } from "./filesData";
@@ -28,7 +28,7 @@ const createFilesData = (state: EntitiesState, id: string): FilesData => {
   const orgEntities = state.orgs.entities;
 
   const files = flatFile(fileEntities, id);
-  const orgs = files.map((file) => orgEntities[file.id]).filter(isNonNullable);
+  const orgs = files.map((file) => orgEntities[file.id]).filter(nonNullable);
 
   return { id, files, orgs };
 };

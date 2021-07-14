@@ -1,4 +1,4 @@
-import { isNonNullable, range } from "../src";
+import { nonNullable, range } from "../src";
 
 describe("utils/misc", () => {
   it("range", () => {
@@ -6,10 +6,10 @@ describe("utils/misc", () => {
   });
 
   it("cloneJson", () => {
-    expect(isNonNullable(0)).toBe(true);
-    expect(isNonNullable(false)).toBe(true);
-    expect(isNonNullable("")).toBe(true);
-    expect(isNonNullable(undefined)).toBe(false);
-    expect(isNonNullable(null)).toBe(false);
+    expect(nonNullable(0)).toBe(true);
+    expect(nonNullable(false)).toBe(true);
+    expect(nonNullable("")).toBe(true);
+    expect(nonNullable(undefined)).toBe(false);
+    expect(nonNullable(null)).toBe(false);
   });
 });

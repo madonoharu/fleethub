@@ -1,4 +1,4 @@
-import { MasterData } from "@fleethub/utils/src";
+import { MasterDataInput } from "@fleethub/core/types";
 import admin from "firebase-admin";
 import got from "got";
 
@@ -13,16 +13,18 @@ const getApp = () => {
   }));
 };
 
-const read = <K extends keyof MasterData>(key: K): Promise<MasterData[K]> =>
+const read = <K extends keyof MasterDataInput>(
+  key: K
+): Promise<MasterDataInput[K]> =>
   got
     .get(
       `https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`
     )
     .json();
 
-export const write = <K extends keyof MasterData>(
+export const write = <K extends keyof MasterDataInput>(
   key: K,
-  data: MasterData[K]
+  data: MasterDataInput[K]
 ) => {
   const str = JSON.stringify(data);
 
@@ -33,10 +35,10 @@ export const write = <K extends keyof MasterData>(
   return bucket.file(destination).save(str, { metadata });
 };
 
-export const update = async <K extends keyof MasterData>(
+export const update = async <K extends keyof MasterDataInput>(
   key: K,
-  cb: (current: MasterData[K]) => MasterData[K]
-): Promise<MasterData[K]> => {
+  cb: (current: MasterDataInput[K]) => MasterDataInput[K]
+): Promise<MasterDataInput[K]> => {
   const current = await read(key);
   const next = cb(current);
 
@@ -47,7 +49,7 @@ export const update = async <K extends keyof MasterData>(
   return next;
 };
 
-export const readMasterData = async (): Promise<MasterData> => {
+export const readMasterData = async (): Promise<MasterDataInput> => {
   const [
     ships,
     ship_types,
@@ -55,7 +57,7 @@ export const readMasterData = async (): Promise<MasterData> => {
     ship_attrs,
     ship_banners,
     gears,
-    gear_categories,
+    gear_types,
     gear_attrs,
     ibonuses,
     equippable,
@@ -66,7 +68,7 @@ export const readMasterData = async (): Promise<MasterData> => {
     read("ship_attrs"),
     read("ship_banners"),
     read("gears"),
-    read("gear_categories"),
+    read("gear_types"),
     read("gear_attrs"),
     read("ibonuses"),
     read("equippable"),
@@ -77,7 +79,7 @@ export const readMasterData = async (): Promise<MasterData> => {
     ship_types,
     ship_classes,
     ship_attrs,
-    gear_categories,
+    gear_types,
     gears,
     gear_attrs,
     ibonuses,
@@ -86,8 +88,8 @@ export const readMasterData = async (): Promise<MasterData> => {
   };
 };
 
-export const writeMasterData = async (md: MasterData) => {
-  const keys = Object.keys(md) as (keyof MasterData)[];
+export const writeMasterData = async (md: MasterDataInput) => {
+  const keys = Object.keys(md) as (keyof MasterDataInput)[];
 
   const promises = keys.map(async (key) => {
     const current = await read(key).catch();

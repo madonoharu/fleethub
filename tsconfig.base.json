@@ -9,6 +9,8 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "exactOptionalPropertyTypes": true,
+
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "esModuleInterop": true,
