@@ -48,8 +48,7 @@
     "recharts": "^2.0.10",
     "redux-persist": "^6.0.0",
     "redux-state-sync": "^3.1.2",
-    "redux-undo": "^1.0.1",
-    "use-immer": "^0.6.0"
+    "redux-undo": "^1.0.1"
   },
   "devDependencies": {
     "@emotion/babel-preset-css-prop": "^11.2.0",

@@ -3,14 +3,12 @@ use crate::{
     array::{GearArray, ShipArray},
     fleet::{Fleet, FleetState},
     gear::{Gear, GearState},
-    master::MasterData,
     org::{Org, OrgState},
     ship::Ship,
     ship::ShipState,
+    types::MasterData,
     utils::xxh3,
 };
-
-
 
 pub struct Factory {
     pub master_data: MasterData,
@@ -185,16 +183,5 @@ impl Factory {
             org_type: org_type.unwrap_or_default(),
             side: side.unwrap_or_default(),
         })
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn test_create_gear() {
-        let master_data = crate::master::test::get_master_data();
-        let _ = Factory { master_data };
     }
 }

@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! const_ship_id {
+macro_rules! ship_id {
     ("睦月") => {
         1
     };
@@ -1887,7 +1887,7 @@ macro_rules! const_ship_id {
 }
 
 #[macro_export]
-macro_rules! const_gear_id {
+macro_rules! gear_id {
     ("12cm単装砲") => {
         1
     };
@@ -3073,4 +3073,21 @@ macro_rules! const_gear_id {
     ("現地改装10cm連装高角砲") => {
         398
     };
+    ($( $pattern: tt )|+) => {
+        $(gear_id!($pattern))|+
+    };
+}
+
+#[macro_export]
+macro_rules! matches_ship_id {
+    ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
+        matches!($expression, $(ship_id!($pattern))|+)
+    }
+}
+
+#[macro_export]
+macro_rules! matches_gear_id {
+    ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
+        matches!($expression, $(gear_id!($pattern))|+)
+    }
 }

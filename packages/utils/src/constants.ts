@@ -1,4 +1,4 @@
-export enum GearCategory {
+export enum GearType {
   Unknown = 0,
   SmallCaliberMainGun = 1,
   MediumCaliberMainGun = 2,

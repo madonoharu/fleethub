@@ -44,7 +44,6 @@
     "@types/signale": "^1.4.2",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
-    "axios": "^0.21.1",
     "babel-jest": "^27.0.6",
     "cloudinary": "^1.26.2",
     "cross-env": "^7.0.3",
@@ -54,7 +53,6 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "expr-eval": "^2.0.2",
     "firebase-admin": "^9.10.0",
     "fs-extra": "^10.0.0",
     "google-spreadsheet": "^3.1.15",
@@ -70,7 +68,7 @@
     "signale": "^1.4.0",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.1.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.0-beta"
   },
   "engines": {
     "npm": "Please use yarn"

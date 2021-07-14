@@ -1,5 +1,5 @@
 import { Gear, Ship } from "@fleethub/core";
-import { GEAR_KEYS, GearKey, isNonNullable, mapValues } from "@fleethub/utils";
+import { GEAR_KEYS, GearKey, nonNullable, mapValues } from "@fleethub/utils";
 import {
   createEquipmentBonuses,
   EquipmentBonuses,
@@ -43,7 +43,7 @@ const getGears = (ship: Ship, excludedKey?: GearKey) =>
     gear?.free();
 
     return data;
-  }).filter(isNonNullable);
+  }).filter(nonNullable);
 
 const subtract = (
   left: EquipmentBonuses,

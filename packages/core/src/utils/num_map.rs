@@ -7,7 +7,6 @@ use std::{
 
 use counter::Counter;
 use num_traits::Zero;
-use serde::{Deserialize, Deserializer};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct NumMap<K, V>

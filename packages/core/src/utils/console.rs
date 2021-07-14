@@ -7,15 +7,15 @@ macro_rules! format_js {
 
 #[macro_export]
 macro_rules! log {
-  ($($t:tt)*) => (console::log_1(&format_js($($t)*)))
+  ($($t:tt)*) => (console::log_1(&format_js!($($t)*)))
 }
 
 #[macro_export]
 macro_rules! warn {
-  ($($t:tt)*) => (console::warn_1(&format_js($($t)*)))
+  ($($t:tt)*) => (console::warn_1(&format_js!($($t)*)))
 }
 
 #[macro_export]
 macro_rules! error {
-  ($($t:tt)*) => (console::error_1(&format_js($($t)*)))
+  ($($t:tt)*) => (console::error_1(&format_js!($($t)*)))
 }

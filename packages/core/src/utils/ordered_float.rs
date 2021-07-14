@@ -1,10 +1,6 @@
-use std::{collections::HashMap, str::FromStr};
 
-use arrayvec::ArrayVec;
-use enumset::EnumSet;
-use fasteval::bool_to_f64;
 use num_derive::FromPrimitive;
-use ordered_float::{Float, OrderedFloat};
+use ordered_float::{OrderedFloat};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -43,9 +39,3 @@ impl From<OrderedF64> for f64 {
     }
 }
 
-#[test]
-fn t() {
-    use num_traits::FromPrimitive;
-    let value = OrderedF64::from(1.0);
-    let a = f64::from(value);
-}
