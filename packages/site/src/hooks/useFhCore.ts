@@ -2,6 +2,7 @@ import {
   AirSquadronParams,
   FhCore,
   FleetParams,
+  MasterDataInput,
   OrgParams,
   Ship,
   ShipParams,
@@ -12,7 +13,6 @@ import {
   FLEET_KEYS,
   GEAR_KEYS,
   GearKey,
-  MasterData,
   SHIP_KEYS,
 } from "@fleethub/utils";
 import { nanoid } from "@reduxjs/toolkit";
@@ -35,7 +35,7 @@ import {
 import { createShallowEqualSelector } from "../utils";
 
 export type FhCoreState = {
-  master_data: MasterData;
+  master_data: MasterDataInput;
   core: FhCore;
 };
 
@@ -156,13 +156,13 @@ export const useFhCore = () => {
   const findShipClassName = (ctype: number) =>
     master_data.ship_classes.find((sc) => sc.id === ctype)?.name || "";
 
-  const findGearCategoryName = (id: number) => core.find_gear_category_name(id);
+  const findGearTypeName = (id: number) => core.find_gear_gear_type_name(id);
 
   return {
     master_data,
     core,
     findShipClassName,
-    findGearCategoryName,
+    findGearTypeName,
   };
 };
 

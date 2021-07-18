@@ -210,6 +210,22 @@ impl DamageState {
     }
 }
 
+#[derive(Debug, Default, Clone, Deserialize, TS)]
+pub struct EBonuses {
+    pub firepower: i32,
+    pub torpedo: i32,
+    pub anti_air: i32,
+    pub armor: i32,
+    pub evasion: i32,
+    pub asw: i32,
+    pub los: i32,
+    pub bombing: i32,
+    pub accuracy: i32,
+    pub range: i32,
+    pub speed: i32,
+    pub effective_los: i32,
+}
+
 #[cfg(test)]
 mod test {
 

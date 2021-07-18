@@ -14,7 +14,7 @@ const TS_PATH = "packages/utils/src/constants.ts";
 const exec = promisify(child_process.exec);
 
 type EnumItem = {
-  key: string;
+  tag: string;
   id?: number;
 };
 
@@ -25,8 +25,8 @@ type EnumConfig = {
 };
 
 const createEnum = ({ name, items, unknown }: EnumConfig) => {
-  const lines = items.map(({ id, key }) =>
-    id === undefined ? key : `${key} = ${id}`
+  const lines = items.map(({ id, tag }) =>
+    id === undefined ? tag : `${tag} = ${id}`
   );
 
   if (unknown) {

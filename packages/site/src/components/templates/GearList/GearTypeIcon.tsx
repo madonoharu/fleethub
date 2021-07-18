@@ -3,11 +3,11 @@ import React from "react";
 import { GearIcon } from "../../molecules";
 
 type Props = {
-  category: number;
+  type: number;
 };
 
-const CategoryIcon: React.FCX<Props> = ({ className, category }) => {
+const GearTypeIcon: React.FCX<Props> = ({ className, type }) => {
   return <GearIcon className={className} iconId={1} />;
 };
 
-export default CategoryIcon;
+export default GearTypeIcon;

@@ -4,8 +4,7 @@ import "@emotion/react/types/css-prop";
 import { AppDispatch, RootState } from "./store";
 
 declare module "react" {
-  import { Interpolation, Theme } from "@emotion/react";
-
+  // eslint-disable-next-line @typescript-eslint/ban-types
   type FCX<P = {}> = FC<P & { className?: string }>;
 }
 

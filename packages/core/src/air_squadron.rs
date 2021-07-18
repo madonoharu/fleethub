@@ -1,26 +1,9 @@
-use serde::Deserialize;
-use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
     array::{GearArray, SlotSizeArray},
-    gear::{Gear, GearState},
+    gear::Gear,
 };
-
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
-pub struct AirSquadronState {
-    pub id: Option<String>,
-
-    pub g1: Option<GearState>,
-    pub g2: Option<GearState>,
-    pub g3: Option<GearState>,
-    pub g4: Option<GearState>,
-
-    pub ss1: Option<i32>,
-    pub ss2: Option<i32>,
-    pub ss3: Option<i32>,
-    pub ss4: Option<i32>,
-}
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]

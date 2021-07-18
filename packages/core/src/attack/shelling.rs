@@ -42,7 +42,7 @@ impl DayCutin {
                 sp_power_mod: 1.5,
                 sp_accuracy_mod: 1.2,
             },
-            Self::MainApShell => ShellingDef {
+            Self::MainAp => ShellingDef {
                 attack_type,
                 times: 1,
                 denom: Some(140),
@@ -56,7 +56,7 @@ impl DayCutin {
                 sp_power_mod: 1.2,
                 sp_accuracy_mod: 1.5,
             },
-            Self::MainSecond => ShellingDef {
+            Self::MainSec => ShellingDef {
                 attack_type,
                 times: 1,
                 denom: Some(120),

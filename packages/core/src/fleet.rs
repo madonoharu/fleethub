@@ -1,24 +1,6 @@
-use serde::Deserialize;
-use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
-use crate::{
-    array::ShipArray,
-    ship::{Ship, ShipState},
-};
-
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
-pub struct FleetState {
-    pub id: Option<String>,
-
-    pub s1: Option<ShipState>,
-    pub s2: Option<ShipState>,
-    pub s3: Option<ShipState>,
-    pub s4: Option<ShipState>,
-    pub s5: Option<ShipState>,
-    pub s6: Option<ShipState>,
-    pub s7: Option<ShipState>,
-}
+use crate::{array::ShipArray, ship::Ship};
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]

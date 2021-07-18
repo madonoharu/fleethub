@@ -1,23 +1,13 @@
 use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
     gear_id,
-    types::{GearAttr, GearType, GearTypes, MasterGear},
+    types::{GearAttr, GearState, GearType, GearTypes, MasterGear},
     utils::xxh3,
 };
-
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
-pub struct GearState {
-    pub id: Option<String>,
-
-    pub gear_id: i32,
-    pub exp: Option<i32>,
-    pub stars: Option<i32>,
-}
 
 #[derive(Debug)]
 enum ProficiencyType {
@@ -191,6 +181,16 @@ impl Gear {
     #[wasm_bindgen(getter)]
     pub fn types(&self) -> JsValue {
         JsValue::from_serde(&self.types).unwrap()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn gear_type(&self) -> String {
+        self.gear_type.to_string()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn gear_type_id(&self) -> i32 {
+        self.types.gear_type_id()
     }
 
     #[wasm_bindgen(getter)]
