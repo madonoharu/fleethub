@@ -1,5 +1,5 @@
-import { Gear } from "@fleethub/core";
-import { isNonNullable } from "@fleethub/utils";
+import { Gear, GearType } from "@fleethub/core";
+import { nonNullable } from "@fleethub/utils";
 import master_data from "@fleethub/utils/master_data";
 import { EquipmentBonuses } from "equipment-bonus";
 import React, { useMemo, useState } from "react";
@@ -9,22 +9,22 @@ import { useFhCore } from "../../../hooks";
 import { gearListSlice, selectGearListState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { SearchInput } from "../../organisms";
-import CategoryContainer from "./CategoryContainer";
 import { idComparer } from "./comparers";
 import FilterBar from "./FilterBar";
 import { getFilter, getVisibleGroups } from "./filters";
 import GearSearchResult from "./GearSearchResult";
+import GearTypeContainer from "./GearTypeContainer";
 import searchGears from "./searchGears";
 
-const createCategoryGearEntries = (gears: Gear[]) => {
+const createTypeGearEntries = (gears: Gear[]) => {
   const map = new Map<number, Gear[]>();
 
   const setGear = (gear: Gear) => {
-    const list = map.get(gear.category);
+    const list = map.get(gear.gear_type_id);
     if (list) {
       list.push(gear);
     } else {
-      map.set(gear.category, [gear]);
+      map.set(gear.gear_type_id, [gear]);
     }
   };
 
@@ -47,7 +47,7 @@ type GearListProps = {
 };
 
 const useGearListState = () => {
-  const { factory } = useFhCore();
+  const { master_data, core } = useFhCore();
 
   const dispatch = useDispatch();
   const state = useSelector(selectGearListState);
@@ -55,8 +55,8 @@ const useGearListState = () => {
   const gears = useMemo(
     () =>
       master_data.gears
-        .map((mg) => factory.create_gear({ gear_id: mg.gear_id }))
-        .filter(isNonNullable),
+        .map((mg) => core.create_gear({ gear_id: mg.gear_id }))
+        .filter(nonNullable),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -103,7 +103,7 @@ const GearList: React.FC<GearListProps> = ({
 
   const visibleGears = equippableGears.filter(groupFilter).sort(idComparer);
 
-  const entries = createCategoryGearEntries(visibleGears);
+  const entries = createTypeGearEntries(visibleGears);
 
   const searchResult = searchValue && searchGears(equippableGears, searchValue);
 
@@ -135,7 +135,7 @@ const GearList: React.FC<GearListProps> = ({
           onSelect={handleSelect}
         />
       ) : (
-        <CategoryContainer
+        <GearTypeContainer
           entries={entries}
           onSelect={handleSelect}
           getNextEbonuses={getNextEbonuses}

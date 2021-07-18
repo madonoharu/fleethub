@@ -4,6 +4,7 @@ import got from "got";
 import { Start2 } from "kc-tools";
 
 import { updateCloudinary } from "./cloudinary";
+import { getConstants } from "./constants";
 import { updateGearData } from "./gear";
 import getGoogleSpreadsheet from "./getGoogleSpreadsheet";
 import { updateShipData } from "./ship";
@@ -47,9 +48,10 @@ const createMasterDataInput = async (
   doc: GoogleSpreadsheet,
   start2: Start2
 ): Promise<Partial<MasterDataInput>> => {
-  const [shipData, gearData] = await Promise.all([
+  const [shipData, gearData, constants] = await Promise.all([
     updateShipData(doc, start2),
     updateGearData(doc, start2),
+    getConstants(doc),
   ]);
   const equippable = createEquippable(start2);
 
@@ -57,6 +59,7 @@ const createMasterDataInput = async (
     ...shipData,
     ...gearData,
     equippable,
+    constants,
   };
 };
 

@@ -49,49 +49,29 @@ export const update = async <K extends keyof MasterDataInput>(
   return next;
 };
 
-export const readMasterData = async (): Promise<MasterDataInput> => {
-  const [
-    ships,
-    ship_types,
-    ship_classes,
-    ship_attrs,
-    ship_banners,
-    gears,
-    gear_types,
-    gear_attrs,
-    ibonuses,
-    equippable,
-  ] = await Promise.all([
-    read("ships"),
-    read("ship_types"),
-    read("ship_classes"),
-    read("ship_attrs"),
-    read("ship_banners"),
-    read("gears"),
-    read("gear_types"),
-    read("gear_attrs"),
-    read("ibonuses"),
-    read("equippable"),
-  ]);
+const MASTER_DATA_KEYS = [
+  "ships",
+  "ship_types",
+  "ship_classes",
+  "ship_attrs",
+  "ship_banners",
+  "gears",
+  "gear_types",
+  "gear_attrs",
+  "ibonuses",
+  "equippable",
+  "constants",
+] as const;
 
-  return {
-    ships,
-    ship_types,
-    ship_classes,
-    ship_attrs,
-    gear_types,
-    gears,
-    gear_attrs,
-    ibonuses,
-    equippable,
-    ship_banners,
-  };
+export const readMasterData = async (): Promise<MasterDataInput> => {
+  const entries = await Promise.all(
+    MASTER_DATA_KEYS.map((key) => [key, read(key)])
+  );
+  return Object.fromEntries(entries) as MasterDataInput;
 };
 
 export const writeMasterData = async (md: MasterDataInput) => {
-  const keys = Object.keys(md) as (keyof MasterDataInput)[];
-
-  const promises = keys.map(async (key) => {
+  const promises = MASTER_DATA_KEYS.map(async (key) => {
     const current = await read(key).catch();
     const data = md[key];
 

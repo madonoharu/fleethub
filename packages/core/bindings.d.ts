@@ -1,15 +1,3 @@
-export type DayCutin =
-  | "MainMain"
-  | "MainApShell"
-  | "MainRader"
-  | "MainSecond"
-  | "DoubleAttack"
-  | "FBA"
-  | "BBA"
-  | "BA"
-  | "Zuiun"
-  | "AirSea";
-
 export type SingleFormation =
   | "LineAhead"
   | "DoubleLine"
@@ -25,6 +13,89 @@ export type CombinedFormation =
   | "Cruising4";
 
 export type Formation = SingleFormation | CombinedFormation;
+
+export interface FormationAttackModifiers {
+  power_mod: number;
+  accuracy_mod: number;
+  evasion_mod: number;
+}
+
+export interface NormalFormationDef {
+  tag: Formation;
+  protection_rate: number;
+  fleet_anti_air_mod: number;
+  shelling: FormationAttackModifiers;
+  torpedo: FormationAttackModifiers;
+  asw: FormationAttackModifiers;
+  night: FormationAttackModifiers;
+}
+
+export type FormationDef =
+  | NormalFormationDef
+  | {
+      top_half: NormalFormationDef;
+      bottom_half: NormalFormationDef;
+    };
+
+export type DayCutin =
+  | "MainMain"
+  | "MainAp"
+  | "MainRader"
+  | "MainSec"
+  | "DoubleAttack"
+  | "FBA"
+  | "BBA"
+  | "BA"
+  | "Zuiun"
+  | "AirSea";
+
+export interface DayCutinDef {
+  tag: DayCutin;
+  hits: number;
+  chance_denom: number | null;
+  power_mod: number | null;
+  accuracy_mod: number | null;
+}
+
+export type NightCutin =
+  | "DoubleAttack"
+  | "TorpTorpMain"
+  | "TorpTorpTorp"
+  | "MainMainSec"
+  | "MainMainMain"
+  | "MainTorpRadar"
+  | "TorpLookoutRadar"
+  | "TorpLookoutTorp"
+  | "TorpLookoutDrum"
+  | "SubTorpTorp"
+  | "SubRadarTorp"
+  | "Cvci1_25"
+  | "Cvci1_20"
+  | "Cvci1_18"
+  | "Photobomber";
+
+export interface NightCutinDef {
+  tag: NightCutin;
+  hits: number;
+  chance_denom: number | null;
+  power_mod: number | null;
+  accuracy_mod: number | null;
+}
+
+export interface AntiAirCutinDef {
+  id: number;
+  chance_numer: number | null;
+  multiplier: number | null;
+  minimum_bonus: number | null;
+  sequential: boolean | null;
+}
+
+export type OrgType =
+  | "Single"
+  | "CarrierTaskForce"
+  | "SurfaceTaskForce"
+  | "TransportEscort"
+  | "EnemyCombined";
 
 export type GearType =
   | "Unknown"
@@ -144,13 +215,6 @@ export interface AirSquadronState {
   ss4: number | null;
 }
 
-export type OrgType =
-  | "Single"
-  | "CarrierTaskForce"
-  | "SurfaceTaskForce"
-  | "TransportEscort"
-  | "EnemyCombined";
-
 export interface OrgState {
   id: string | null;
   f1: FleetState | null;
@@ -163,68 +227,6 @@ export interface OrgState {
   hq_level: number | null;
   org_type: OrgType | null;
   side: Side | null;
-}
-
-export interface DayCutinRateAnalysis {
-  observation_term: number | null;
-  rates: Array<[DayCutin, number | null]>;
-  total_cutin_rate: number | null;
-}
-
-export interface ShipDayCutinRateAnalysis {
-  name: string;
-  banner: string | null;
-  air_supremacy: DayCutinRateAnalysis;
-  air_superiority: DayCutinRateAnalysis;
-}
-
-export interface FleetDayCutinRateAnalysis {
-  fleet_los_mod: number | null;
-  ships: Array<ShipDayCutinRateAnalysis>;
-}
-
-export interface OrgDayCutinRateAnalysis {
-  main: FleetDayCutinRateAnalysis;
-  escort: FleetDayCutinRateAnalysis;
-}
-
-export interface ShipAntiAirAnalysis {
-  ship_id: number;
-  adjusted_anti_air: number | null;
-  proportional_shotdown_rate: number | null;
-  fixed_shotdown_number: number | null;
-  minimum_bonus: number | null;
-  anti_air_cutin_chance: Array<[number, number]>;
-  anti_air_propellant_barrage_chance: number | null;
-}
-
-export interface OrgAntiAirAnalysis {
-  fleet_anti_air: number;
-  ships: Array<ShipAntiAirAnalysis>;
-  anti_air_cutin_chance: Array<[number, number]>;
-}
-
-export interface FormationAttackModifiers {
-  power: number;
-  accuracy: number;
-  evasion: number;
-}
-
-export type FormationAttackDef =
-  | FormationAttackModifiers
-  | {
-      top_half: FormationAttackModifiers;
-      bottom_half: FormationAttackModifiers;
-    };
-
-export interface FormationDef {
-  kind: Formation;
-  protection_rate: number;
-  fleet_anti_air: number;
-  shelling: FormationAttackDef;
-  torpedo: FormationAttackDef;
-  asw: FormationAttackDef;
-  night: FormationAttackDef;
 }
 
 export type SpeedGroup = "A" | "B1" | "B2" | "C";
@@ -257,13 +259,13 @@ export interface MasterGear {
 }
 
 export interface MasterVariantDef {
+  tag: string;
   id: number;
-  key: string;
   name: string;
 }
 
 export interface MasterAttrRule {
-  key: string;
+  tag: string;
   name: string;
   expr: string;
 }
@@ -344,6 +346,13 @@ export interface MasterEquippable {
   equip_exslot_ship: Array<MstEquipExslotShip>;
 }
 
+export interface MasterConstants {
+  formations: Array<FormationDef>;
+  anti_air_cutins: Array<AntiAirCutinDef>;
+  day_cutins: Array<DayCutinDef>;
+  night_cutins: Array<NightCutinDef>;
+}
+
 export interface MasterData {
   gears: Array<MasterGear>;
   gear_types: Array<MasterVariantDef>;
@@ -353,6 +362,46 @@ export interface MasterData {
   ship_classes: Array<MasterVariantDef>;
   ship_attrs: Array<MasterAttrRule>;
   ship_banners: Record<string, string>;
-  ibonuses: MasterIBonuses;
   equippable: MasterEquippable;
+  ibonuses: MasterIBonuses;
+  constants: MasterConstants;
+}
+
+export interface DayCutinRateAnalysis {
+  observation_term: number | null;
+  rates: Array<[DayCutin, number | null]>;
+  total_cutin_rate: number | null;
+}
+
+export interface ShipDayCutinRateAnalysis {
+  name: string;
+  banner: string | null;
+  air_supremacy: DayCutinRateAnalysis;
+  air_superiority: DayCutinRateAnalysis;
+}
+
+export interface FleetDayCutinRateAnalysis {
+  fleet_los_mod: number | null;
+  ships: Array<ShipDayCutinRateAnalysis>;
+}
+
+export interface OrgDayCutinRateAnalysis {
+  main: FleetDayCutinRateAnalysis;
+  escort: FleetDayCutinRateAnalysis;
+}
+
+export interface ShipAntiAirAnalysis {
+  ship_id: number;
+  adjusted_anti_air: number | null;
+  proportional_shotdown_rate: number | null;
+  fixed_shotdown_number: number | null;
+  minimum_bonus: number | null;
+  anti_air_cutin_chance: Array<[number, number]>;
+  anti_air_propellant_barrage_chance: number | null;
+}
+
+export interface OrgAntiAirAnalysis {
+  fleet_anti_air: number;
+  ships: Array<ShipAntiAirAnalysis>;
+  anti_air_cutin_chance: Array<[number, number]>;
 }

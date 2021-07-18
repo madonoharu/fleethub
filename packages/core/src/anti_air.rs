@@ -3,9 +3,9 @@ use ts_rs::TS;
 
 use crate::{
     gear_id,
-    org::{Org, Side},
+    org::Org,
     ship::Ship,
-    types::{ShipClass, ShipType},
+    types::{ShipClass, ShipType, Side},
 };
 
 const ANTI_AIR_CUTIN_DATA: [(u8, u8, f64, u8); 39] = [

@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import { Gear } from "@fleethub/core";
-import { GearCategory } from "@fleethub/utils";
+import { Gear, GearType } from "@fleethub/core";
 import { Button, Tooltip } from "@material-ui/core";
 import React from "react";
 
@@ -67,20 +66,20 @@ GearButton = styled(GearButton)`
 `;
 
 type Props = {
-  category: GearCategory;
+  type: GearType;
   gears: Gear[];
   onSelect?: (gearId: number) => void;
 };
 
-const CategoryContainer: React.FCX<Props> = ({
+const GearTypeContainer: React.FCX<Props> = ({
   className,
-  category,
+  type,
   gears,
   onSelect,
 }) => {
   return (
     <div className={className}>
-      <Divider label={category} />
+      <Divider label={type} />
       {gears.map((gear) => (
         <GearButton
           key={`gear-${gear.gear_id}`}
@@ -92,4 +91,4 @@ const CategoryContainer: React.FCX<Props> = ({
   );
 };
 
-export default styled(CategoryContainer)``;
+export default styled(GearTypeContainer)``;

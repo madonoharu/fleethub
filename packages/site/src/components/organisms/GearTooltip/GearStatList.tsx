@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
-import { isNonNullable } from "@fleethub/utils";
+import { nonNullable } from "@fleethub/utils";
 import { Typography } from "@material-ui/core";
 import { EquipmentBonuses } from "equipment-bonus";
 import { camelCase } from "literal-case";
@@ -83,7 +83,7 @@ export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) =>
     if (key === "range") return { key, value: getRangeName(value), bonus };
     if (key === "speed") return { key, value: "", bonus };
     return { key, value, bonus };
-  }).filter(isNonNullable);
+  }).filter(nonNullable);
 
 export type Props = {
   gear: Gear;

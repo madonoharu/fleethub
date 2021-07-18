@@ -1,67 +1,18 @@
 use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
-use serde::Deserialize;
-use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
     array::{GearArray, SlotSizeArray},
-    gear::{Gear, GearState},
+    gear::Gear,
     gear_id, ship_id,
     types::{
-        AirState, DamageState, DayCutin, GearAttr, GearType, MasterShip, ShipAttr, ShipClass,
-        ShipType, SpeedGroup, StatInterval,
+        AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, ShipAttr,
+        ShipClass, ShipState, ShipType, SpeedGroup, StatInterval,
     },
     utils::xxh3,
 };
-
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
-pub struct ShipState {
-    pub id: Option<String>,
-    pub ship_id: i32,
-    pub level: Option<i32>,
-    pub current_hp: Option<i32>,
-
-    pub max_hp_mod: Option<i32>,
-    pub firepower_mod: Option<i32>,
-    pub torpedo_mod: Option<i32>,
-    pub armor_mod: Option<i32>,
-    pub anti_air_mod: Option<i32>,
-    pub evasion_mod: Option<i32>,
-    pub asw_mod: Option<i32>,
-    pub los_mod: Option<i32>,
-    pub luck_mod: Option<i32>,
-
-    pub g1: Option<GearState>,
-    pub g2: Option<GearState>,
-    pub g3: Option<GearState>,
-    pub g4: Option<GearState>,
-    pub g5: Option<GearState>,
-    pub gx: Option<GearState>,
-
-    pub ss1: Option<i32>,
-    pub ss2: Option<i32>,
-    pub ss3: Option<i32>,
-    pub ss4: Option<i32>,
-    pub ss5: Option<i32>,
-}
-
-#[derive(Debug, Default, Clone, Deserialize)]
-pub struct EBonuses {
-    firepower: i32,
-    torpedo: i32,
-    anti_air: i32,
-    armor: i32,
-    evasion: i32,
-    asw: i32,
-    los: i32,
-    bombing: i32,
-    accuracy: i32,
-    range: i32,
-    speed: i32,
-    effective_los: i32,
-}
 
 #[derive(Debug, Default, Clone)]
 pub struct ShipEquippable {
@@ -401,13 +352,13 @@ impl Ship {
         }
 
         if secondary_gun_count >= 1 {
-            set.insert(DayCutin::MainSecond);
+            set.insert(DayCutin::MainSec);
 
             if has_rader {
                 set.insert(DayCutin::MainRader);
             }
             if has_ap_shell {
-                set.insert(DayCutin::MainApShell);
+                set.insert(DayCutin::MainAp);
             }
         }
 

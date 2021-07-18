@@ -59,7 +59,7 @@ const createGearTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
   start2.api_mst_slotitem_equiptype.map((mst) => ({
     id: mst.api_id,
     name: mst.api_name,
-    key: rows.find((row) => Number(row.id) === mst.api_id)?.key || "",
+    tag: rows.find((row) => Number(row.id) === mst.api_id)?.tag || "",
   }));
 
 const makeReplaceGearExpr = (
@@ -84,7 +84,7 @@ const makeReplaceGearExpr = (
   const replaceAttr = (str: string) =>
     gear_attrs.reduce(
       (current, attr) =>
-        current.replace(RegExp(`\\b${attr.key}\\b`, "g"), attr.expr),
+        current.replace(RegExp(`\\b${attr.tag}\\b`, "g"), attr.expr),
       str
     );
 
@@ -111,7 +111,7 @@ const readGearAttrs = async (
 
   rows.forEach((row) => {
     const expr = replaceExpr(row.expr);
-    gear_attrs.push({ key: row.key, name: row.name, expr });
+    gear_attrs.push({ tag: row.tag, name: row.name, expr });
   });
 
   return gear_attrs;

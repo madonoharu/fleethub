@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
-import { GearCategory } from "@fleethub/utils";
 import { EquipmentBonuses } from "equipment-bonus";
 import React from "react";
 
@@ -14,22 +13,23 @@ const Grid = styled.div`
 `;
 
 type Props = {
-  entries: Array<[GearCategory, Gear[]]>;
+  entries: Array<[number, Gear[]]>;
   onSelect?: (gear: Gear) => void;
   getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
-const CategoryContainer: React.FC<Props> = ({
+const GearTypeContainer: React.FC<Props> = ({
   entries,
   onSelect,
   getNextEbonuses,
 }) => {
-  const fhCore = useFhCore();
+  const { core } = useFhCore();
+
   return (
     <>
-      {entries.map(([category, gears]) => (
-        <div key={`category-${category}`}>
-          <Divider label={fhCore.findGearCategoryName(category)} />
+      {entries.map(([typeId, gears]) => (
+        <div key={typeId}>
+          <Divider label={core.find_gear_gear_type_name(typeId)} />
           <Grid>
             {gears.map((gear) => (
               <GearButton
@@ -46,4 +46,4 @@ const CategoryContainer: React.FC<Props> = ({
   );
 };
 
-export default CategoryContainer;
+export default GearTypeContainer;

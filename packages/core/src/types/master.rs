@@ -8,10 +8,12 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     array::{MyArrayVec, SlotSizeArray},
-    gear::{GearState, IBonuses},
+    gear::IBonuses,
     ship::ShipEquippable,
-    types::{DayCutin, Formation, GearAttr, GearType, NightCutin, ShipAttr, SpeedGroup},
-    utils::OrderedF64,
+    types::{
+        AntiAirCutinDef, DayCutinDef, FormationDef, GearAttr, GearState, GearType, NightCutinDef,
+        ShipAttr, SpeedGroup,
+    },
 };
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
@@ -29,7 +31,7 @@ impl GearTypes {
         }
     }
 
-    fn gear_type_id(&self) -> i32 {
+    pub fn gear_type_id(&self) -> i32 {
         self.2
     }
 
@@ -142,14 +144,14 @@ impl MasterGear {
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterVariantDef {
+    pub tag: String,
     pub id: i32,
-    pub key: String,
     pub name: String,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterAttrRule {
-    pub key: String,
+    pub tag: String,
     pub name: String,
     pub expr: String,
 }
@@ -313,6 +315,14 @@ pub struct MasterEquippable {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
+pub struct MasterConstants {
+    pub formations: Vec<FormationDef>,
+    pub anti_air_cutins: Vec<AntiAirCutinDef>,
+    pub day_cutins: Vec<DayCutinDef>,
+    pub night_cutins: Vec<NightCutinDef>,
+}
+
+#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
     pub gear_types: Vec<MasterVariantDef>,
@@ -322,8 +332,9 @@ pub struct MasterData {
     pub ship_classes: Vec<MasterVariantDef>,
     pub ship_attrs: Vec<MasterAttrRule>,
     pub ship_banners: HashMap<String, String>,
-    pub ibonuses: MasterIBonuses,
     pub equippable: MasterEquippable,
+    pub ibonuses: MasterIBonuses,
+    pub constants: MasterConstants,
 }
 
 impl MasterData {
@@ -332,7 +343,7 @@ impl MasterData {
             .iter()
             .filter_map(|rule| {
                 if gear.eval(&rule.expr).unwrap_or_default() == 1. {
-                    match GearAttr::from_str(&rule.key) {
+                    match GearAttr::from_str(&rule.tag) {
                         Ok(attr) => Some(attr),
                         Err(error) => {
                             eprintln!("{:?}", error);
@@ -351,7 +362,7 @@ impl MasterData {
             .iter()
             .filter_map(|rule| {
                 if ship.eval(&rule.expr).unwrap_or_default() == 1. {
-                    match ShipAttr::from_str(&rule.key) {
+                    match ShipAttr::from_str(&rule.tag) {
                         Ok(attr) => Some(attr),
                         Err(error) => {
                             eprintln!("{:?}", error);
@@ -401,63 +412,6 @@ impl MasterData {
             exslot_types: self.equippable.equip_exslot.clone(),
         }
     }
-}
-
-pub struct DayCutinDef {
-    pub kind: DayCutin,
-    pub times: usize,
-    pub denom: Option<u8>,
-    pub power_mod: Option<f64>,
-    pub accuracy_mod: Option<f64>,
-}
-
-pub struct NightCutinDef {
-    pub kind: NightCutin,
-    pub times: usize,
-    pub denom: Option<u8>,
-    pub power_mod: Option<f64>,
-    pub accuracy_mod: Option<f64>,
-}
-
-pub struct AntiAirCutinDef {
-    pub id: u8,
-    pub numer: Option<u8>,
-    pub minimum_bonus: Option<u8>,
-    pub fixed_air_defense_mod: Option<OrderedF64>,
-}
-
-#[derive(Debug, Serialize, Deserialize, TS)]
-pub struct FormationAttackModifiers {
-    power: OrderedF64,
-    accuracy: OrderedF64,
-    evasion: OrderedF64,
-}
-
-#[derive(Debug, Serialize, Deserialize, TS)]
-pub enum FormationAttackDef {
-    Single(FormationAttackModifiers),
-    Vanguard {
-        top_half: FormationAttackModifiers,
-        bottom_half: FormationAttackModifiers,
-    },
-}
-
-#[derive(Debug, Serialize, Deserialize, TS)]
-pub struct FormationDef {
-    kind: Formation,
-    protection_rate: OrderedF64,
-    fleet_anti_air: OrderedF64,
-    shelling: FormationAttackDef,
-    torpedo: FormationAttackDef,
-    asw: FormationAttackDef,
-    night: FormationAttackDef,
-}
-
-struct Config {
-    day_cutins: Vec<DayCutinDef>,
-    night_cutins: Vec<NightCutinDef>,
-    anti_air_cutins: Vec<AntiAirCutinDef>,
-    formations: Vec<FormationDef>,
 }
 
 #[cfg(test)]

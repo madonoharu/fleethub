@@ -149,20 +149,20 @@ export const createShips = (
     };
 
     if (row) {
-      headerValues.forEach((key) => {
-        const value = row[key];
+      headerValues.forEach((h) => {
+        const value = row[h];
 
         if (value === "" || value === undefined) return;
 
-        if (key === "name" || key === "yomi" || key === "speed_group") {
-          set(base, key, String(value));
+        if (h === "name" || h === "yomi" || h === "speed_group") {
+          set(base, h, String(value));
         } else if (value === "TRUE") {
-          set(base, key, true);
+          set(base, h, true);
         } else if (value !== "FALSE") {
           if (Number.isNaN(Number(value))) {
-            console.log(key, value);
+            console.log(h, value);
           }
-          set(base, key, Number(value));
+          set(base, h, Number(value));
         }
       });
     }
@@ -208,14 +208,14 @@ const createShipTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
     return {
       id: mst.api_id,
       name: mst.api_name,
-      key: row?.key,
+      tag: row?.tag,
     };
   });
 
 const createShipClasses = (rows: GoogleSpreadsheetRow[]) =>
   rows.map((row) => ({
     id: Number(row.id),
-    key: row.key,
+    tag: row.tag,
     name: row.name,
   }));
 
@@ -253,7 +253,7 @@ const readShipAttrs = async (
   const replaceAttr = (str: string) =>
     attrs.reduce(
       (current, attr) =>
-        current.replace(RegExp(`\\b${attr.key}\\b`, "g"), attr.expr),
+        current.replace(RegExp(`\\b${attr.tag}\\b`, "g"), attr.expr),
       str
     );
 
@@ -271,7 +271,7 @@ const readShipAttrs = async (
 
   rows.forEach((row) => {
     const expr = replaceExpr(row.expr);
-    attrs.push({ key: row.key, name: row.name, expr });
+    attrs.push({ tag: row.tag, name: row.name, expr });
   });
 
   return attrs;

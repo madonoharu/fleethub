@@ -46,7 +46,7 @@ const useEquipmentGearActions = ({ type, gearKey, updateEquipment }: Props) => {
           return;
         }
 
-        if (gear?.categoryIn("LargeFlyingBoat") && draft[slotKey] !== 1) {
+        if (gear?.typeIn("LargeFlyingBoat") && draft[slotKey] !== 1) {
           draft[slotKey] = 1;
           return;
         }
