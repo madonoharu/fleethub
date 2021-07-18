@@ -1,9 +1,9 @@
 use enumset::EnumSetType;
 use num_derive::FromPrimitive;
-use strum_macros::EnumString;
+use strum_macros::{EnumString, ToString};
 use ts_rs::TS;
 
-#[derive(Debug, EnumSetType, FromPrimitive, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToString, TS)]
 pub enum GearType {
     Unknown = 0,
     SmallCaliberMainGun = 1,

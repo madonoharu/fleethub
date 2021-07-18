@@ -1,71 +1,15 @@
-use serde::{Deserialize, Serialize};
-use strum_macros::ToString;
+use serde::Serialize;
 use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    air_squadron::{AirSquadron, AirSquadronState},
+    air_squadron::AirSquadron,
     anti_air::OrgAntiAirAnalysis,
     array::ShipArray,
-    fleet::{Fleet, FleetState},
+    fleet::Fleet,
     ship::Ship,
-    types::{AirState, DayCutin},
+    types::{AirState, DayCutin, OrgType, Role, Side},
 };
-
-#[derive(Debug, Clone, Copy, PartialEq, Hash, ToString, Deserialize, TS)]
-pub enum OrgType {
-    Single,
-    CarrierTaskForce,
-    SurfaceTaskForce,
-    TransportEscort,
-    EnemyCombined,
-}
-
-impl Default for OrgType {
-    fn default() -> Self {
-        OrgType::Single
-    }
-}
-
-impl OrgType {
-    pub fn is_combined(&self) -> bool {
-        matches!(
-            *self,
-            Self::CarrierTaskForce
-                | Self::SurfaceTaskForce
-                | Self::TransportEscort
-                | Self::EnemyCombined,
-        )
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub enum Role {
-    Main,
-    Escort,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, TS)]
-pub enum Side {
-    Player,
-    Enemy,
-}
-
-impl Default for Side {
-    fn default() -> Self {
-        Self::Player
-    }
-}
-
-impl Side {
-    pub fn is_player(&self) -> bool {
-        *self == Self::Player
-    }
-
-    pub fn is_enemy(&self) -> bool {
-        !self.is_player()
-    }
-}
 
 pub struct MainAndEscortShips<'a> {
     count: usize,
@@ -95,24 +39,6 @@ impl<'a> Iterator for MainAndEscortShips<'a> {
             self.next()
         }
     }
-}
-
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
-pub struct OrgState {
-    pub id: Option<String>,
-
-    pub f1: Option<FleetState>,
-    pub f2: Option<FleetState>,
-    pub f3: Option<FleetState>,
-    pub f4: Option<FleetState>,
-
-    pub a1: Option<AirSquadronState>,
-    pub a2: Option<AirSquadronState>,
-    pub a3: Option<AirSquadronState>,
-
-    pub hq_level: Option<i32>,
-    pub org_type: Option<OrgType>,
-    pub side: Option<Side>,
 }
 
 #[wasm_bindgen]

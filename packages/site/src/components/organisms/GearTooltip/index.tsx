@@ -9,13 +9,13 @@ import GearStatList from "./GearStatList";
 
 type ContentProps = {
   gear: Gear;
-  ebonuses?: EquipmentBonuses;
+  ebonuses?: EquipmentBonuses | undefined;
 };
 
 const Content: React.FC<ContentProps> = ({ gear, ebonuses }) => (
   <div>
     <Text>
-      ID {gear.gear_id} {gear.category}
+      ID {gear.gear_id} {gear.gear_type}
     </Text>
     <GearNameplate wrap iconId={gear.icon_id} name={gear.name} />
     <GearStatList gear={gear} ebonuses={ebonuses} />

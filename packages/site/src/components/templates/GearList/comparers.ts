@@ -6,17 +6,21 @@ type Key = {
 
 type Comparer = (left: Gear, right: Gear) => number;
 
-const createComparer = (...keys: Key[]): Comparer => (left, right) => {
-  for (const key of keys) {
-    const value = right[key] - left[key];
-    if (value === 0) continue;
-    return value;
-  }
-  return 0;
-};
+const createComparer =
+  (...keys: Key[]): Comparer =>
+  (left, right) => {
+    for (const key of keys) {
+      const value = right[key] - left[key];
+      if (value === 0) continue;
+      return value;
+    }
+    return 0;
+  };
 
-const reverse = (comparer: Comparer): Comparer => (left, right) =>
-  comparer(right, left);
+const reverse =
+  (comparer: Comparer): Comparer =>
+  (left, right) =>
+    comparer(right, left);
 
 const gunComparer = createComparer(
   "firepower",
@@ -67,20 +71,20 @@ const bomberComparer = createComparer(
 );
 
 export const defaultComparer: Comparer = (left, right) => {
-  // const categoryIn = (...keys: (keyof typeof GearCategory)[]) =>
-  //   keys.map((key) => GearCategory[key]).includes(left.category)
+  // const typeIn = (...keys: (keyof typeof GearType)[]) =>
+  //   keys.map((key) => GearType[key]).includes(left.gear_type)
 
   // const attrIn = (...keys: (keyof typeof GearAttr)[]) => keys.some((key) => left.has_attr(GearAttr[key]))
 
-  // if (attrIn("MainGun") || categoryIn("SecondaryGun")) return gunComparer(left, right)
-  // if (categoryIn("Torpedo", "SubmarineTorpedo", "MidgetSubmarine")) return torpedoComparer(left, right)
+  // if (attrIn("MainGun") || typeIn("SecondaryGun")) return gunComparer(left, right)
+  // if (typeIn("Torpedo", "SubmarineTorpedo", "MidgetSubmarine")) return torpedoComparer(left, right)
   // if (attrIn("Seaplane")) return seaplaneComparer(left, right)
   // if (attrIn("Fighter")) return fighterComparer(left, right)
-  // if (categoryIn("CbTorpedoBomber", "JetTorpedoBomber")) return attackerComparer(left, right)
-  // if (categoryIn("CbDiveBomber", "SeaplaneBomber", "JetFighterBomber")) return bomberComparer(left, right)
+  // if (typeIn("CbTorpedoBomber", "JetTorpedoBomber")) return attackerComparer(left, right)
+  // if (typeIn("CbDiveBomber", "SeaplaneBomber", "JetFighterBomber")) return bomberComparer(left, right)
   return gunComparer(left, right);
 };
 
 export const idComparer = reverse(
-  createComparer("category", "icon_id", "gear_id")
+  createComparer("gear_type_id", "icon_id", "gear_id")
 );
