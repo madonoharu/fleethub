@@ -10,8 +10,10 @@ export const withSign = (num?: number) => {
   return num > 0 ? `+${num}` : num.toString();
 };
 
-export const toPercent = (value: number, fractionDigits = 1) =>
-  (value * 100).toFixed(fractionDigits) + "%";
+export const toPercent = (value: number | null, fractionDigits = 1) => {
+  if (value == null || Number.isNaN(value)) return "?";
+  return (value * 100).toFixed(fractionDigits) + "%";
+};
 
 export const createShallowEqualSelector = createSelectorCreator(
   defaultMemoize,

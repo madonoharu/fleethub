@@ -11,6 +11,7 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 import { set } from "lodash";
 
 const maybeNumber = (val: unknown): number | null => {
+  if (val === "") return null;
   const num = Number(val);
   return Number.isNaN(num) ? null : num;
 };

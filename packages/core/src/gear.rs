@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     gear_id,
-    types::{GearAttr, GearState, GearType, GearTypes, MasterGear},
+    types::{ContactRank, GearAttr, GearState, GearType, GearTypes, MasterGear},
     utils::xxh3,
 };
 
@@ -350,6 +350,38 @@ impl Gear {
         };
 
         multiplier * (self.anti_air as f64) + self.ibonuses.adjusted_anti_air
+    }
+
+    pub(crate) fn contact_rank(&self) -> ContactRank {
+        if self.accuracy <= 1 {
+            ContactRank::Rank1
+        } else if self.accuracy == 2 {
+            ContactRank::Rank2
+        } else {
+            ContactRank::Rank3
+        }
+    }
+
+    fn is_contact_selection_plane(&self) -> bool {
+        self.has_attr(GearAttr::Recon) || self.gear_type == GearType::CbTorpedoBomber
+    }
+
+    fn calc_contact_selection_chance(&self, air_state_modifier: f64) -> f64 {
+        if !self.is_contact_selection_plane() {
+            return 0.0;
+        }
+
+        let los = self.los as f64;
+        let ibonus = self.ibonuses.contact_selection;
+
+        let value = (los + ibonus).ceil() / (20.0 - 2.0 * air_state_modifier);
+        value.min(1.0)
+    }
+
+    pub fn night_contact_rate(&self, level: i32) -> f64 {
+        let b = (self.los as f64).sqrt() * (level as f64).sqrt();
+        let rate = (b.floor() / 25.0).min(1.0);
+        rate
     }
 }
 

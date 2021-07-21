@@ -1,3 +1,147 @@
+export type ShipType =
+  | "Unknown"
+  | "DE"
+  | "DD"
+  | "CL"
+  | "CLT"
+  | "CA"
+  | "CAV"
+  | "CVL"
+  | "FBB"
+  | "BB"
+  | "BBV"
+  | "CV"
+  | "XBB"
+  | "SS"
+  | "SSV"
+  | "AP"
+  | "AV"
+  | "LHA"
+  | "CVB"
+  | "AR"
+  | "AS"
+  | "CT"
+  | "AO";
+
+export type ShipClass =
+  | "Unknown"
+  | "AyanamiClass"
+  | "IseClass"
+  | "KagaClass"
+  | "KumaClass"
+  | "AkatsukiClass"
+  | "KongouClass"
+  | "FurutakaClass"
+  | "TakaoClass"
+  | "MogamiClass"
+  | "HatsuharuClass"
+  | "ShouhouClass"
+  | "FubukiClass"
+  | "AobaClass"
+  | "AkagiClass"
+  | "ChitoseClass"
+  | "SendaiClass"
+  | "SouryuuClass"
+  | "AsashioClass"
+  | "NagatoClass"
+  | "NagaraClass"
+  | "TenryuuClass"
+  | "ShimakazeClass"
+  | "ShiratsuyuClass"
+  | "HiyouClass"
+  | "HiryuuClass"
+  | "FusouClass"
+  | "HoushouClass"
+  | "MutsukiClass"
+  | "MyoukouClass"
+  | "KagerouClass"
+  | "ToneClass"
+  | "RyuujouClass"
+  | "ShoukakuClass"
+  | "YuubariClass"
+  | "KaidaiVIClass"
+  | "JunsenTypeBKai2"
+  | "YamatoClass"
+  | "YuugumoClass"
+  | "JunsenTypeB"
+  | "Junsen3Class"
+  | "AganoClass"
+  | "FleetOfFog"
+  | "TaihouClass"
+  | "I400Class"
+  | "AkitsuMaruClass"
+  | "Type3SubmergenceTransportVehicle"
+  | "BismarckClass"
+  | "Z1Class"
+  | "RepairShip"
+  | "TaigeiClass"
+  | "RyuuhouClass"
+  | "OoyodoClass"
+  | "UnryuuClass"
+  | "AkizukiClass"
+  | "AdmiralHipperClass"
+  | "KatoriClass"
+  | "TypeIXCClass"
+  | "VittorioVenetoClass"
+  | "AkitsushimaClass"
+  | "RevisedKazahayaClass"
+  | "MaestraleClass"
+  | "MizuhoClass"
+  | "GrafZeppelinClass"
+  | "ZaraClass"
+  | "IowaClass"
+  | "KamikazeClass"
+  | "QueenElizabethClass"
+  | "AquilaClass"
+  | "LexingtonClass"
+  | "CommandantTesteClass"
+  | "JunsenTypeAKai2"
+  | "KamoiClass"
+  | "GangutClass"
+  | "ShimushuClass"
+  | "KasugaMaruClass"
+  | "TaiyouClass"
+  | "EtorofuClass"
+  | "ArkRoyalClass"
+  | "RichelieuClass"
+  | "MarconiClass"
+  | "TashkentClass"
+  | "JClass"
+  | "CasablancaClass"
+  | "EssexClass"
+  | "HiburiClass"
+  | "RoSeries"
+  | "JohnCButlerClass"
+  | "NelsonClass"
+  | "GotlandClass"
+  | "NisshinClass"
+  | "FletcherClass"
+  | "DucaDegliAbruzziClass"
+  | "ColoradoClass"
+  | "MikuraClass"
+  | "NorthamptonClass"
+  | "PerthClass"
+  | "R1"
+  | "DeRuyterClass"
+  | "AtlantaClass"
+  | "JingeiClass"
+  | "MatsuClass"
+  | "SouthDakotaClass"
+  | "JunsenTypeC"
+  | "TypeDCoastalDefenseShip"
+  | "YorktownClass"
+  | "StLouisClass";
+
+export type ShipAttr =
+  | "Abyssal"
+  | "NightCarrier"
+  | "Installation"
+  | "RoyalNavy"
+  | "Kai2"
+  | "TurbineSpeedBonus";
+
+export type DamageState = "Sunk" | "Taiha" | "Chuuha" | "Shouha" | "Normal";
+
 export type SingleFormation =
   | "LineAhead"
   | "DoubleLine"
@@ -15,14 +159,14 @@ export type CombinedFormation =
 export type Formation = SingleFormation | CombinedFormation;
 
 export interface FormationAttackModifiers {
-  power_mod: number;
-  accuracy_mod: number;
-  evasion_mod: number;
+  power_mod: number | null;
+  accuracy_mod: number | null;
+  evasion_mod: number | null;
 }
 
 export interface NormalFormationDef {
   tag: Formation;
-  protection_rate: number;
+  protection_rate: number | null;
   fleet_anti_air_mod: number;
   shelling: FormationAttackModifiers;
   torpedo: FormationAttackModifiers;
@@ -89,6 +233,8 @@ export interface AntiAirCutinDef {
   minimum_bonus: number | null;
   sequential: boolean | null;
 }
+
+export type ContactRank = "Rank1" | "Rank2" | "Rank3";
 
 export type OrgType =
   | "Single"
@@ -404,4 +550,25 @@ export interface OrgAntiAirAnalysis {
   fleet_anti_air: number;
   ships: Array<ShipAntiAirAnalysis>;
   anti_air_cutin_chance: Array<[number, number]>;
+}
+
+export interface NightCutinFleetState {
+  contact_rank: ContactRank | null;
+  searchlight: boolean;
+  starshell: boolean;
+}
+
+export interface NightCutinRateAnalysis {
+  cutin_term: number | null;
+  rates: Array<[NightCutin, number | null]>;
+}
+
+export interface ShipNightCutinRateAnalysis {
+  normal: NightCutinRateAnalysis;
+  chuuha: NightCutinRateAnalysis;
+}
+
+export interface OrgNightCutinRateAnalysis {
+  contact_chance: ContactChance;
+  ships: Array<ShipNightCutinRateAnalysis>;
 }

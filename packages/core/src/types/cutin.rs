@@ -11,6 +11,16 @@ pub struct AntiAirCutinDef {
     pub sequential: Option<bool>,
 }
 
+impl AntiAirCutinDef {
+    pub fn rate(&self) -> Option<f64> {
+        Some(self.chance_numer? as f64 / 101.)
+    }
+
+    pub fn is_sequential(&self) -> bool {
+        self.sequential.unwrap_or_default()
+    }
+}
+
 #[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, TS)]
 pub enum DayCutin {
     /// 主主
@@ -44,7 +54,7 @@ impl Default for DayCutin {
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct DayCutinDef {
     pub tag: DayCutin,
-    pub hits: f64,
+    pub hits: u8,
     pub chance_denom: Option<u8>,
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
@@ -100,4 +110,16 @@ pub struct NightCutinDef {
     pub chance_denom: Option<u8>,
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
+}
+
+impl NightCutinDef {
+    pub fn rate(&self, cutin_term: f64) -> Option<f64> {
+        let rate = if self.tag == NightCutin::DoubleAttack {
+            109. / 110.
+        } else {
+            (cutin_term.ceil() / self.chance_denom? as f64).min(1.)
+        };
+
+        Some(rate)
+    }
 }

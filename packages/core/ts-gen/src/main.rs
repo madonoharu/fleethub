@@ -23,6 +23,10 @@ fn main() {
     use core::*;
 
     let buffer = gen_types!(
+        types::ShipType,
+        types::ShipClass,
+        types::ShipAttr,
+        types::DamageState,
         types::SingleFormation,
         types::CombinedFormation,
         types::Formation,
@@ -34,6 +38,7 @@ fn main() {
         types::NightCutin,
         types::NightCutinDef,
         types::AntiAirCutinDef,
+        types::ContactRank,
         types::OrgType,
         types::GearType,
         types::GearState,
@@ -56,12 +61,16 @@ fn main() {
         types::MasterEquippable,
         types::MasterConstants,
         types::MasterData,
-        org::DayCutinRateAnalysis,
-        org::ShipDayCutinRateAnalysis,
-        org::FleetDayCutinRateAnalysis,
-        org::OrgDayCutinRateAnalysis,
-        anti_air::ShipAntiAirAnalysis,
-        anti_air::OrgAntiAirAnalysis,
+        analyzer::DayCutinRateAnalysis,
+        analyzer::ShipDayCutinRateAnalysis,
+        analyzer::FleetDayCutinRateAnalysis,
+        analyzer::OrgDayCutinRateAnalysis,
+        analyzer::ShipAntiAirAnalysis,
+        analyzer::OrgAntiAirAnalysis,
+        analyzer::NightCutinFleetState,
+        analyzer::NightCutinRateAnalysis,
+        analyzer::ShipNightCutinRateAnalysis,
+        analyzer::OrgNightCutinRateAnalysis,
     );
 
     let buffer =

@@ -42,6 +42,7 @@ impl Default for CombinedFormation {
 }
 
 #[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
+#[serde(untagged)]
 pub enum Formation {
     Single(SingleFormation),
     Combined(CombinedFormation),
@@ -53,27 +54,17 @@ impl Default for Formation {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct FormationAttackModifiers {
-    power_mod: f64,
-    accuracy_mod: f64,
-    evasion_mod: f64,
-}
-
-impl Default for FormationAttackModifiers {
-    fn default() -> Self {
-        Self {
-            power_mod: 1.,
-            accuracy_mod: 1.,
-            evasion_mod: 1.,
-        }
-    }
+    power_mod: Option<f64>,
+    accuracy_mod: Option<f64>,
+    evasion_mod: Option<f64>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct NormalFormationDef {
     tag: Formation,
-    protection_rate: f64,
+    protection_rate: Option<f64>,
     fleet_anti_air_mod: f64,
     shelling: FormationAttackModifiers,
     torpedo: FormationAttackModifiers,
@@ -82,6 +73,7 @@ pub struct NormalFormationDef {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[serde(untagged)]
 pub enum FormationDef {
     Normal(NormalFormationDef),
     Vanguard {
@@ -108,4 +100,11 @@ pub enum AirState {
     AirDenial,
     /// 制空喪失
     AirIncapability,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub enum ContactRank {
+    Rank1,
+    Rank2,
+    Rank3,
 }

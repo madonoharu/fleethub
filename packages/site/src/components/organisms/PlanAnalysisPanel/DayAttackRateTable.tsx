@@ -9,6 +9,7 @@ import {
 } from "@fleethub/core";
 import React from "react";
 
+import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { LabeledValue } from "../../atoms";
 import Table from "../Table";
@@ -109,7 +110,8 @@ type Props = {
 };
 
 const DayAttackRateTable: React.FCX<Props> = ({ className, org }) => {
-  const data: OrgDayCutinRateAnalysis = org.analyze_day_cutin_rate();
+  const { core } = useFhCore();
+  const data: OrgDayCutinRateAnalysis = core.analyze_day_cutin(org);
 
   return (
     <div className={className}>
