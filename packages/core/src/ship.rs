@@ -8,10 +8,11 @@ use crate::{
     gear::Gear,
     gear_id, ship_id,
     types::{
-        AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, ShipAttr,
-        ShipClass, ShipState, ShipType, SpeedGroup, StatInterval,
+        AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, NightCutin,
+        ShipAttr, ShipClass, ShipState, ShipType, SpeedGroup, StatInterval,
     },
     utils::xxh3,
+    JsShipAttr,
 };
 
 #[derive(Debug, Default, Clone)]
@@ -205,6 +206,36 @@ impl Ship {
             .map(move |(i, g)| (g, self.get_slot_size(i)))
     }
 
+    pub fn has_non_zero_slot_gear_by<F: FnMut(&Gear) -> bool>(&self, mut cb: F) -> bool {
+        self.gears_with_slot_size().any(|(gear, slot_size)| {
+            if let Some(slot_size) = slot_size {
+                slot_size > 0 && cb(gear)
+            } else {
+                false
+            }
+        })
+    }
+
+    pub fn has_non_zero_slot_gear(&self, id: i32) -> bool {
+        self.has_non_zero_slot_gear_by(|g| g.gear_id == id)
+    }
+
+    pub fn count_non_zero_slot_gear_by<F: FnMut(&Gear) -> bool>(&self, mut cb: F) -> usize {
+        self.gears_with_slot_size()
+            .filter(|(gear, slot_size)| {
+                if let Some(slot_size) = slot_size {
+                    *slot_size > 0 && cb(gear)
+                } else {
+                    false
+                }
+            })
+            .count()
+    }
+
+    pub fn count_non_zero_slot_gear(&self, id: i32) -> usize {
+        self.count_non_zero_slot_gear_by(|g| g.gear_id == id)
+    }
+
     pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
         let mut iter = self.gears.values();
         let has_main = iter.any(|g| g.attrs.contains(GearAttr::MainGun));
@@ -245,6 +276,21 @@ impl Ship {
         })
     }
 
+    pub fn is_night_carrier(&self) -> bool {
+        if !matches!(self.ship_type, ShipType::CVL | ShipType::CV | ShipType::CVB) {
+            return false;
+        }
+
+        let has_noap = self.has_attr(ShipAttr::NightCarrier)
+            || self.gears.has(gear_id!("夜間作戦航空要員"))
+            || self.gears.has(gear_id!("夜間作戦航空要員+熟練甲板員"));
+
+        has_noap
+            && self.has_non_zero_slot_gear_by(|g| {
+                g.has_attr(GearAttr::NightAttacker) || g.has_attr(GearAttr::NightFighter)
+            })
+    }
+
     pub fn get_possible_day_cutin_set(&self) -> EnumSet<DayCutin> {
         let mut set: EnumSet<DayCutin> = EnumSet::new();
 
@@ -257,13 +303,11 @@ impl Ship {
                 .gears
                 .count_by(|g| g.gear_type == GearType::CbDiveBomber);
 
-            let has_cb_torpedo_bomber = self.gears_with_slot_size().any(|(g, slot_size)| {
-                slot_size.unwrap_or_default() > 0 && g.gear_type == GearType::CbTorpedoBomber
-            });
+            let has_cb_torpedo_bomber =
+                self.has_non_zero_slot_gear_by(|gear| gear.gear_type == GearType::CbTorpedoBomber);
 
-            let has_cb_fighter = self.gears_with_slot_size().all(|(g, slot_size)| {
-                slot_size.unwrap_or_default() > 0 && g.gear_type == GearType::CbFighter
-            });
+            let has_cb_fighter =
+                self.has_non_zero_slot_gear_by(|gear| gear.gear_type == GearType::CbFighter);
 
             if cb_bomber_count == 0 || !has_cb_torpedo_bomber {
                 return set;
@@ -289,49 +333,40 @@ impl Ship {
         }
 
         if self.ship_class == ShipClass::IseClass && self.has_attr(ShipAttr::Kai2) {
-            let zuiun_count = self
-                .gears_with_slot_size()
-                .filter(|(g, slot_size)| {
-                    slot_size.unwrap_or_default() > 0
-                        && matches!(
-                            g.gear_id,
-                            gear_id!("瑞雲")
-                                | gear_id!("瑞雲(六三一空)")
-                                | gear_id!("瑞雲(六三四空)")
-                                | gear_id!("瑞雲(六三四空/熟練)")
-                                | gear_id!("瑞雲12型")
-                                | gear_id!("瑞雲12型(六三四空)")
-                                | gear_id!("瑞雲改二(六三四空)")
-                                | gear_id!("瑞雲改二(六三四空/熟練)")
-                        )
-                })
-                .count();
+            let zuiun_count = self.count_non_zero_slot_gear_by(|gear| {
+                matches!(
+                    gear.gear_id,
+                    gear_id!("瑞雲")
+                        | gear_id!("瑞雲(六三一空)")
+                        | gear_id!("瑞雲(六三四空)")
+                        | gear_id!("瑞雲(六三四空/熟練)")
+                        | gear_id!("瑞雲12型")
+                        | gear_id!("瑞雲12型(六三四空)")
+                        | gear_id!("瑞雲改二(六三四空)")
+                        | gear_id!("瑞雲改二(六三四空/熟練)")
+                )
+            });
 
             if zuiun_count >= 2 {
                 set.insert(DayCutin::Zuiun);
             }
 
-            let suisei_634_count = self
-                .gears_with_slot_size()
-                .filter(|(g, slot_size)| {
-                    slot_size.unwrap_or_default() > 0
-                        && matches!(
-                            g.gear_id,
-                            gear_id!("彗星一二型(六三四空/三号爆弾搭載機)")
-                                | gear_id!("彗星二二型(六三四空)")
-                                | gear_id!("彗星二二型(六三四空/熟練)")
-                        )
-                })
-                .count();
+            let suisei_634_count = self.count_non_zero_slot_gear_by(|gear| {
+                matches!(
+                    gear.gear_id,
+                    gear_id!("彗星一二型(六三四空/三号爆弾搭載機)")
+                        | gear_id!("彗星二二型(六三四空)")
+                        | gear_id!("彗星二二型(六三四空/熟練)")
+                )
+            });
 
             if suisei_634_count >= 2 {
                 set.insert(DayCutin::AirSea);
             }
         }
 
-        let has_observation_seaplane = self.gears_with_slot_size().any(|(g, slot_size)| {
-            slot_size.unwrap_or_default() > 0 && g.has_attr(GearAttr::ObservationSeaplane)
-        });
+        let has_observation_seaplane =
+            self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::ObservationSeaplane));
 
         if !has_observation_seaplane {
             return set;
@@ -360,6 +395,102 @@ impl Ship {
             if has_ap_shell {
                 set.insert(DayCutin::MainAp);
             }
+        }
+
+        set
+    }
+
+    pub fn get_possible_night_cutin_set(&self) -> EnumSet<NightCutin> {
+        let mut set = EnumSet::new();
+
+        if self.is_night_carrier() {
+            let night_fighter_count =
+                self.count_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::NightFighter));
+            let night_attacker_count =
+                self.count_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::NightAttacker));
+
+            if night_fighter_count >= 2 && night_attacker_count >= 1 {
+                set.insert(NightCutin::Cvci1_25);
+            }
+
+            if night_fighter_count >= 1 && night_attacker_count >= 1 {
+                set.insert(NightCutin::Cvci1_20);
+            }
+
+            let has_fuze_bomber =
+                self.has_non_zero_slot_gear(gear_id!("彗星一二型(三一号光電管爆弾搭載機)"));
+
+            if has_fuze_bomber && night_fighter_count + night_attacker_count >= 1 {
+                set.insert(NightCutin::Photobomber);
+            }
+
+            if night_fighter_count == 0 {
+                return set;
+            }
+
+            let semi_night_plane_count =
+                self.count_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::SemiNightPlane));
+
+            if night_fighter_count + semi_night_plane_count >= 3
+                || night_attacker_count + semi_night_plane_count >= 2
+            {
+                set.insert(NightCutin::Cvci1_18);
+            }
+
+            return set;
+        }
+
+        let torpedo_count = self.gears.count_type(GearType::Torpedo);
+        let main_gun_count = self.gears.count_attr(GearAttr::MainGun);
+        let sec_gun_count = self.gears.count_type(GearType::SecondaryGun);
+
+        if self.ship_type == ShipType::DD && torpedo_count >= 1 {
+            let has_surface_radar = self.gears.has_attr(GearAttr::SurfaceRadar);
+
+            let has_new_lookout = self.gears.has(gear_id!("水雷戦隊 熟練見張員"));
+            let has_lookout = has_new_lookout || self.gears.has(gear_id!("熟練見張員"));
+
+            if has_surface_radar {
+                if main_gun_count >= 1 {
+                    set.insert(NightCutin::MainTorpRadar);
+                }
+                if has_lookout {
+                    set.insert(NightCutin::TorpLookoutRadar);
+                }
+            }
+
+            if has_lookout {
+                if torpedo_count >= 2 {
+                    set.insert(NightCutin::TorpLookoutTorp);
+                }
+                if self.gears.has(gear_id!("ドラム缶(輸送用)")) {
+                    set.insert(NightCutin::TorpLookoutDrum);
+                }
+            }
+        }
+
+        let late_model_bow_torpedo_count = self.gears.count_by(|gear| {
+            matches!(
+                gear.gear_id,
+                gear_id!("後期型艦首魚雷(6門)") | gear_id!("熟練聴音員+後期型艦首魚雷(6門)")
+            )
+        });
+        let has_submarine_radar = self.gears.has_type(GearType::SubmarineEquipment);
+
+        if late_model_bow_torpedo_count >= 1 && has_submarine_radar {
+            set.insert(NightCutin::SubRadarTorp);
+        } else if late_model_bow_torpedo_count >= 2 {
+            set.insert(NightCutin::SubTorpTorp);
+        } else if main_gun_count >= 3 {
+            set.insert(NightCutin::MainMainMain);
+        } else if main_gun_count >= 2 && sec_gun_count >= 1 {
+            set.insert(NightCutin::MainMainSec);
+        } else if torpedo_count >= 2 {
+            set.insert(NightCutin::TorpTorpTorp);
+        } else if torpedo_count >= 1 && main_gun_count >= 1 {
+            set.insert(NightCutin::TorpTorpMain);
+        } else if main_gun_count + sec_gun_count >= 2 {
+            set.insert(NightCutin::DoubleAttack);
         }
 
         set
@@ -414,6 +545,16 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
+    pub fn ship_type(&self) -> String {
+        self.ship_type.to_string()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn ship_class(&self) -> String {
+        self.ship_class.to_string()
+    }
+
+    #[wasm_bindgen(getter)]
     pub fn ctype(&self) -> i32 {
         self.master.ctype.unwrap_or_default()
     }
@@ -441,6 +582,12 @@ impl Ship {
     #[wasm_bindgen(getter)]
     pub fn useful(&self) -> bool {
         self.master.useful.unwrap_or_default()
+    }
+
+    #[wasm_bindgen(js_name = has_attr)]
+    pub fn js_has_attr(&self, js: JsShipAttr) -> bool {
+        let attr = js.into_serde().unwrap();
+        self.has_attr(attr)
     }
 
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
@@ -941,6 +1088,32 @@ impl Ship {
         }
 
         vec
+    }
+
+    pub fn transport_point(&self) -> i32 {
+        let ship_type_tp = self.ship_type.transport_point();
+
+        let ship_bonus = if self.ship_id == ship_id!("鬼怒改二") {
+            8
+        } else {
+            0
+        };
+
+        let total = self.gears.sum_by(|gear| {
+            if gear.gear_type == GearType::LandingCraft {
+                8
+            } else if gear.gear_type == GearType::CombatRation {
+                1
+            } else if gear.gear_id == gear_id!("ドラム缶(輸送用)") {
+                5
+            } else if gear.gear_id == gear_id!("特二式内火艇") {
+                2
+            } else {
+                0
+            }
+        });
+
+        ship_type_tp + ship_bonus + total
     }
 
     pub fn get_possible_shelling_attack_type_array(&self) -> Vec<u8> {

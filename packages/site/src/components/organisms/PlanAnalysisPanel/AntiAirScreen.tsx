@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Org, OrgAntiAirAnalysis } from "@fleethub/core";
 import React from "react";
 
-import { useSelectState } from "../../../hooks";
+import { useFhCore, useSelectState } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
@@ -54,13 +54,15 @@ type AntiAirPanelProps = {
 };
 
 const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
+  const { core } = useFhCore();
   const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1);
   const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1);
   // const [formation, setFormation] = React.useState<Formation>(
   //   plan.isCombined ? "Cruising1" : "LineAhead"
   // );
 
-  const analysis: OrgAntiAirAnalysis = org.analyze_anti_air(
+  const analysis: OrgAntiAirAnalysis = core.analyze_anti_air(
+    org,
     adjustedAntiAirResist,
     fleetAntiAirResist
   );

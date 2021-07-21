@@ -1,10 +1,10 @@
 use enumset::EnumSetType;
 use num_derive::FromPrimitive;
-use serde::Deserialize;
-use strum_macros::EnumString;
+use serde::{Deserialize, Serialize};
+use strum_macros::{EnumString, ToString};
 use ts_rs::TS;
 
-#[derive(Debug, EnumSetType, FromPrimitive, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToString, TS)]
 pub enum ShipType {
     Unknown = 0,
     DE = 1,
@@ -37,7 +37,26 @@ impl Default for ShipType {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, TS)]
+impl ShipType {
+    pub fn transport_point(&self) -> i32 {
+        use ShipType::*;
+        match self {
+            SSV => 1,
+            DD => 5,
+            CL => 2,
+            CAV => 4,
+            BBV => 7,
+            AO => 12,
+            LHA => 12,
+            AV => 9,
+            AS => 7,
+            CT => 6,
+            _ => 0,
+        }
+    }
+}
+
+#[derive(Debug, EnumSetType, FromPrimitive, ToString, TS)]
 pub enum ShipClass {
     Unknown = 0,
     AyanamiClass = 1,
@@ -154,7 +173,7 @@ impl Default for ShipClass {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, EnumString)]
+#[derive(Debug, EnumSetType, FromPrimitive, EnumString, Serialize, Deserialize, TS)]
 pub enum ShipAttr {
     Abyssal,
     NightCarrier,
@@ -178,7 +197,7 @@ impl Default for SpeedGroup {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, TS)]
 pub enum DamageState {
     /// 轟沈
     Sunk,
