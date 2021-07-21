@@ -1,6 +1,10 @@
 use wasm_bindgen::prelude::*;
 
-use crate::{array::ShipArray, ship::Ship};
+use crate::{
+    array::ShipArray,
+    ship::Ship,
+    types::{ContactRank, GearAttr},
+};
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]

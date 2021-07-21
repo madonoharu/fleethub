@@ -1,4 +1,5 @@
 pub mod air_squadron;
+pub mod analyzer;
 pub mod array;
 pub mod factory;
 pub mod fleet;
@@ -6,13 +7,13 @@ pub mod gear;
 pub mod org;
 pub mod ship;
 
-pub mod anti_air;
 pub mod attack;
 pub mod damage;
 pub mod types;
 pub mod utils;
 
 use air_squadron::AirSquadron;
+use analyzer::Analyzer;
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
@@ -32,6 +33,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen(typescript_custom_section)]
 const TS_APPEND_CONTENT: &'static str = r#"
+import * as bindings from "../bindings";
 import {
   AirSquadronParams,
   FleetParams,
@@ -55,6 +57,12 @@ extern "C" {
     pub type AirSquadronParams;
     #[wasm_bindgen(typescript_type = "OrgParams")]
     pub type OrgParams;
+
+    #[wasm_bindgen(typescript_type = "bindings.ShipAttr")]
+    pub type JsShipAttr;
+
+    #[wasm_bindgen(typescript_type = "bindings.NightCutinFleetState")]
+    pub type JsNightCutinFleetState;
 }
 
 #[wasm_bindgen]
@@ -114,5 +122,40 @@ impl FhCore {
             .iter()
             .find_map(|c| (c.id == id).then(|| c.name.clone()))
             .unwrap_or_else(|| format!("gear_type {}", id))
+    }
+
+    pub fn analyze_anti_air(
+        &self,
+        org: &Org,
+        adjusted_anti_air_resist: Option<f64>,
+        fleet_anti_air_resist: Option<f64>,
+    ) -> JsValue {
+        let analyzer = Analyzer::new(&self.factory.master_data);
+
+        let result =
+            analyzer.analyze_anti_air(org, adjusted_anti_air_resist, fleet_anti_air_resist);
+
+        JsValue::from_serde(&result).unwrap()
+    }
+
+    pub fn analyze_day_cutin(&self, org: &Org) -> JsValue {
+        let analyzer = Analyzer::new(&self.factory.master_data);
+        let result = analyzer.analyze_day_cutin(org);
+
+        JsValue::from_serde(&result).unwrap()
+    }
+
+    pub fn analyze_night_cutin(
+        &self,
+        org: &Org,
+        attacker_fleet_state: JsNightCutinFleetState,
+        defender_fleet_state: JsNightCutinFleetState,
+    ) -> JsValue {
+        let attacker_fleet_state = attacker_fleet_state.into_serde().unwrap();
+        let defender_fleet_state = defender_fleet_state.into_serde().unwrap();
+        let analyzer = Analyzer::new(&self.factory.master_data);
+        let result = analyzer.analyze_night_cutin(org, attacker_fleet_state, defender_fleet_state);
+
+        JsValue::from_serde(&result).unwrap()
     }
 }

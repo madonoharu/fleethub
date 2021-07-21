@@ -1,15 +1,16 @@
 import { MasterDataInput } from "@fleethub/core/types";
 import child_process from "child_process";
 import fs from "fs-extra";
+import path from "path";
 import { promisify } from "util";
 
 import storage from "./data/storage";
 
-const RS_GEAR_PATH = "packages/core/src/types/gear.rs";
-const RS_SHIP_PATH = "packages/core/src/types/ship.rs";
-const RS_CONST_ID_PATH = "packages/core/src/const_id.rs";
+const RS_GEAR_PATH = path.resolve("packages/core/src/types/gear.rs");
+const RS_SHIP_PATH = path.resolve("packages/core/src/types/ship.rs");
+const RS_CONST_ID_PATH = path.resolve("packages/core/src/types/const_id.rs");
 
-const TS_PATH = "packages/utils/src/constants.ts";
+const TS_PATH = path.resolve("packages/utils/src/constants.ts");
 
 const exec = promisify(child_process.exec);
 
@@ -59,7 +60,7 @@ const updateRs = async (md: MasterDataInput) => {
       .map((ship) => `("${ship.name}") => { ${ship.ship_id} };`)
       .join("\n");
 
-    const macroName = "const_ship_id";
+    const macroName = "ship_id";
     const macro = `macro_rules! ${macroName} { ${inner} }`;
 
     const regex = RegExp(`macro_rules! ${macroName} .*?\\}(?!;)`, "s");
@@ -73,7 +74,7 @@ const updateRs = async (md: MasterDataInput) => {
       .map((gear) => `("${gear.name}") => { ${gear.gear_id} };`)
       .join("\n");
 
-    const macroName = "const_gear_id";
+    const macroName = "gear_id";
     const macro = `macro_rules! ${macroName} { ${inner} }`;
 
     const regex = RegExp(`macro_rules! ${macroName} .*?\\}(?!;)`, "s");
@@ -115,7 +116,7 @@ const updateRs = async (md: MasterDataInput) => {
   await updateFile(RS_CONST_ID_PATH, updateShipId, updateGearId);
 
   await exec(
-    `rustfmt {${[RS_GEAR_PATH, RS_SHIP_PATH, RS_CONST_ID_PATH].join(",")}}`
+    `rustfmt ${[RS_GEAR_PATH, RS_SHIP_PATH, RS_CONST_ID_PATH].join(" ")}`
   );
 };
 

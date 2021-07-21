@@ -173,7 +173,7 @@ impl<T, const CAP: usize> DerefMut for MyArrayVec<T, CAP> {
 
 impl<T, const CAP: usize> FromIterator<T> for MyArrayVec<T, CAP> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        MyArrayVec( ArrayVec::from_iter(iter))
+        MyArrayVec(ArrayVec::from_iter(iter))
     }
 }
 

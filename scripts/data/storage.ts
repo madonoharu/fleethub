@@ -65,7 +65,7 @@ const MASTER_DATA_KEYS = [
 
 export const readMasterData = async (): Promise<MasterDataInput> => {
   const entries = await Promise.all(
-    MASTER_DATA_KEYS.map((key) => [key, read(key)])
+    MASTER_DATA_KEYS.map(async (key) => [key, await read(key)])
   );
   return Object.fromEntries(entries) as MasterDataInput;
 };
