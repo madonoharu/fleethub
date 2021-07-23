@@ -1,22 +1,19 @@
 import styled from "@emotion/styled";
-import { AirState, ContactChance, Plan, PlanAnalyzer } from "@fleethub/core";
+import {
+  AirstrikeContactChance,
+  Org,
+  OrgAirstrikeAnalysis,
+} from "@fleethub/core";
 import { Typography } from "@material-ui/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useModal } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
-import { Table } from "../..";
-
-const AirStateDictionary: Record<AirState, string> = {
-  AirSupremacy: "確保",
-  AirSuperiority: "優勢",
-  AirParity: "均衡",
-  AirDenial: "劣勢",
-  AirIncapability: "喪失",
-};
+import Table from "../Table";
 
 type ContactChanceTableProps = {
-  data: ContactChance[];
+  data: AirstrikeContactChance[];
   label: string;
 };
 
@@ -25,7 +22,7 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
   data,
   label,
 }) => {
-  const Modal = useModal();
+  const { t } = useTranslation("terms");
   return (
     <div>
       <Typography color="textSecondary">{label}</Typography>
@@ -36,17 +33,17 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
         columns={[
           {
             label: "制空",
-            getValue: (datum) => AirStateDictionary[datum.airState],
+            getValue: (datum) => t(datum.air_state),
           },
           {
             label: "開始率",
             align: "right",
-            getValue: (datum) => toPercent(datum.trigger),
+            getValue: (datum) => toPercent(datum.trigger_rate),
           },
           {
             label: "x1.2触接率",
             align: "right",
-            getValue: (datum) => toPercent(datum.rank1),
+            getValue: (datum) => toPercent(datum.rank3),
           },
           {
             label: "x1.17触接率",
@@ -56,7 +53,7 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
           {
             label: "x1.12触接率",
             align: "right",
-            getValue: (datum) => toPercent(datum.rank3),
+            getValue: (datum) => toPercent(datum.rank1),
           },
           {
             label: "合計触接率",
@@ -70,16 +67,21 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
 };
 
 type Props = {
-  plan: Plan;
+  org: Org;
 };
 
-const ContactChancePanel: React.FCX<Props> = ({ className, plan }) => {
-  const { single, combined } = new PlanAnalyzer(plan).analyzeContact();
+const ContactChancePanel: React.FCX<Props> = ({ className, org }) => {
+  const { core } = useFhCore();
+  const { contact_chance }: OrgAirstrikeAnalysis = core.analyze_airstrike(org);
 
   return (
     <div className={className}>
-      <ContactChanceTable label="対通常戦" data={single} />
-      {combined && <ContactChanceTable label="対連合戦" data={combined} />}
+      {contact_chance.single && (
+        <ContactChanceTable label="対通常戦" data={contact_chance.single} />
+      )}
+      {contact_chance.combined && (
+        <ContactChanceTable label="対連合戦" data={contact_chance.combined} />
+      )}
     </div>
   );
 };

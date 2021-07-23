@@ -17,9 +17,9 @@ use crate::{
 
 #[derive(Debug, Default, Clone)]
 pub struct ShipEquippable {
-    pub types: Vec<i32>,
-    pub exslot_types: Vec<i32>,
-    pub exslot_gear_ids: Vec<i32>,
+    pub types: Vec<u8>,
+    pub exslot_types: Vec<u8>,
+    pub exslot_gear_ids: Vec<u16>,
 }
 
 #[wasm_bindgen]
@@ -30,24 +30,24 @@ pub struct Ship {
     #[wasm_bindgen(skip)]
     pub id: String,
 
-    pub ship_id: i32,
-    pub level: i32,
-    pub current_hp: i32,
+    pub ship_id: u16,
+    pub level: u16,
+    pub current_hp: u16,
 
     #[wasm_bindgen(skip)]
     pub ship_type: ShipType,
     #[wasm_bindgen(skip)]
     pub ship_class: ShipClass,
 
-    max_hp_mod: i32,
-    firepower_mod: i32,
-    torpedo_mod: i32,
-    armor_mod: i32,
-    anti_air_mod: i32,
-    evasion_mod: i32,
-    asw_mod: i32,
-    los_mod: i32,
-    luck_mod: i32,
+    max_hp_mod: i16,
+    firepower_mod: i16,
+    torpedo_mod: i16,
+    armor_mod: i16,
+    anti_air_mod: i16,
+    evasion_mod: i16,
+    asw_mod: i16,
+    los_mod: i16,
+    luck_mod: i16,
 
     #[wasm_bindgen(skip)]
     pub slots: SlotSizeArray,
@@ -62,7 +62,7 @@ pub struct Ship {
     banner: Option<String>,
 }
 
-fn get_marriage_bonus(left: i32) -> i32 {
+fn get_marriage_bonus(left: u16) -> u16 {
     match left {
         0..=29 => 4,
         30..=39 => 5,
@@ -80,8 +80,8 @@ macro_rules! impl_naked_stats {
             impl Ship {
                 $(
                     #[wasm_bindgen(getter)]
-                    pub fn [<naked_ $key>](&self) -> Option<i32> {
-                        self.master.$key.1.map(|v| v + self.[<$key _mod>])
+                    pub fn [<naked_ $key>](&self) -> Option<u16> {
+                        self.master.$key.1.map(|v| (v as i16 + self.[<$key _mod>]) as u16)
                     }
                 )*
             }
@@ -96,7 +96,7 @@ macro_rules! impl_naked_stats_with_level {
             impl Ship {
                 $(
                     #[wasm_bindgen(getter)]
-                    pub fn [<naked_ $key>](&self) -> Option<i32> {
+                    pub fn [<naked_ $key>](&self) -> Option<u16> {
                         match &self.master.$key {
                             StatInterval(Some(at1), Some(at99)) => Some(((at99 - at1) * self.level) / 99 + at1),
                             _ => None,
@@ -114,10 +114,10 @@ macro_rules! impl_stats {
         impl Ship {
             $(
                 #[wasm_bindgen(getter)]
-                pub fn $key(&self) -> Option<i32> {
+                pub fn $key(&self) -> Option<i16> {
                     paste! {
                         self.[<naked_ $key>]().map(|naked| {
-                            naked + self.ebonuses.$key + self.gears.values().map(|g| g.$key).sum::<i32>()
+                            naked as i16 + self.ebonuses.$key + self.gears.values().map(|g| g.$key).sum::<i16>()
                         })
                     }
                 }
@@ -159,10 +159,10 @@ impl Ship {
             ship_id: state.ship_id,
             level: state.level.unwrap_or(master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
-            ship_type: FromPrimitive::from_i32(master.stype).unwrap_or_default(),
+            ship_type: FromPrimitive::from_u8(master.stype).unwrap_or_default(),
             ship_class: master
                 .ctype
-                .and_then(FromPrimitive::from_i32)
+                .and_then(FromPrimitive::from_u8)
                 .unwrap_or_default(),
 
             attrs,
@@ -201,38 +201,32 @@ impl Ship {
     }
 
     pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (&Gear, Option<i32>)> {
-        self.gears
-            .iter()
-            .map(move |(i, g)| (g, self.get_slot_size(i)))
-    }
-
-    pub fn has_non_zero_slot_gear_by<F: FnMut(&Gear) -> bool>(&self, mut cb: F) -> bool {
-        self.gears_with_slot_size().any(|(gear, slot_size)| {
-            if let Some(slot_size) = slot_size {
-                slot_size > 0 && cb(gear)
+        self.gears.iter().map(move |(index, gear)| {
+            let slot_size = if index == GearArray::EXSLOT_INDEX {
+                Some(0)
             } else {
-                false
-            }
+                self.get_slot_size(index)
+            };
+            (gear, slot_size)
         })
     }
 
-    pub fn has_non_zero_slot_gear(&self, id: i32) -> bool {
+    pub fn has_non_zero_slot_gear_by<F: FnMut(&Gear) -> bool>(&self, mut cb: F) -> bool {
+        self.gears_with_slot_size()
+            .any(|(gear, slot_size)| slot_size.unwrap_or_default() > 0 && cb(gear))
+    }
+
+    pub fn has_non_zero_slot_gear(&self, id: u16) -> bool {
         self.has_non_zero_slot_gear_by(|g| g.gear_id == id)
     }
 
     pub fn count_non_zero_slot_gear_by<F: FnMut(&Gear) -> bool>(&self, mut cb: F) -> usize {
         self.gears_with_slot_size()
-            .filter(|(gear, slot_size)| {
-                if let Some(slot_size) = slot_size {
-                    *slot_size > 0 && cb(gear)
-                } else {
-                    false
-                }
-            })
+            .filter(|(gear, slot_size)| slot_size.unwrap_or_default() > 0 && cb(gear))
             .count()
     }
 
-    pub fn count_non_zero_slot_gear(&self, id: i32) -> usize {
+    pub fn count_non_zero_slot_gear(&self, id: u16) -> usize {
         self.count_non_zero_slot_gear_by(|g| g.gear_id == id)
     }
 
@@ -447,8 +441,8 @@ impl Ship {
         if self.ship_type == ShipType::DD && torpedo_count >= 1 {
             let has_surface_radar = self.gears.has_attr(GearAttr::SurfaceRadar);
 
-            let has_new_lookout = self.gears.has(gear_id!("水雷戦隊 熟練見張員"));
-            let has_lookout = has_new_lookout || self.gears.has(gear_id!("熟練見張員"));
+            let has_tslo = self.gears.has(gear_id!("水雷戦隊 熟練見張員"));
+            let has_lookout = has_tslo || self.gears.has(gear_id!("熟練見張員"));
 
             if has_surface_radar {
                 if main_gun_count >= 1 {
@@ -459,12 +453,12 @@ impl Ship {
                 }
             }
 
-            if has_lookout {
+            if has_tslo {
                 if torpedo_count >= 2 {
-                    set.insert(NightCutin::TorpLookoutTorp);
+                    set.insert(NightCutin::TorpTsloTorp);
                 }
                 if self.gears.has(gear_id!("ドラム缶(輸送用)")) {
-                    set.insert(NightCutin::TorpLookoutDrum);
+                    set.insert(NightCutin::TorpTsloDrum);
                 }
             }
         }
@@ -555,27 +549,27 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn ctype(&self) -> i32 {
+    pub fn ctype(&self) -> u8 {
         self.master.ctype.unwrap_or_default()
     }
 
     #[wasm_bindgen(getter)]
-    pub fn stype(&self) -> i32 {
+    pub fn stype(&self) -> u8 {
         self.master.stype
     }
 
     #[wasm_bindgen(getter)]
-    pub fn sort_id(&self) -> i32 {
+    pub fn sort_id(&self) -> u16 {
         self.master.sort_id.unwrap_or_default()
     }
 
     #[wasm_bindgen(getter)]
-    pub fn slotnum(&self) -> i32 {
+    pub fn slotnum(&self) -> usize {
         self.master.slotnum
     }
 
     #[wasm_bindgen(getter)]
-    pub fn next_id(&self) -> i32 {
+    pub fn next_id(&self) -> u16 {
         self.master.next_id.unwrap_or_default()
     }
 
@@ -603,7 +597,7 @@ impl Ship {
             return true;
         };
 
-        if !self.equippable.types.contains(&(gear.special_type as i32)) {
+        if !self.equippable.types.contains(&(gear.special_type as u8)) {
             return false;
         }
 
@@ -611,7 +605,7 @@ impl Ship {
             return self
                 .equippable
                 .exslot_types
-                .contains(&(gear.special_type as i32))
+                .contains(&(gear.special_type as u8))
                 || self.equippable.exslot_gear_ids.contains(&gear.gear_id)
                 || gear.gear_id == gear_id!("改良型艦本式タービン");
         }
@@ -653,33 +647,42 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn max_hp(&self) -> Option<i32> {
-        self.master.max_hp.0.map(|left| {
+    pub fn max_hp(&self) -> Option<u16> {
+        let base = self.master.max_hp.0.map(|left| {
             if self.level >= 100 {
-                left + self.max_hp_mod + get_marriage_bonus(left)
+                left + get_marriage_bonus(left)
             } else {
-                left + self.max_hp_mod
+                left
             }
-        })
+        });
+
+        let value = if let Some(base) = base {
+            (base as i16).saturating_add(self.max_hp_mod)
+        } else {
+            self.max_hp_mod
+        };
+
+        (value > 0).then(|| value as u16)
     }
 
     #[wasm_bindgen(getter)]
-    pub fn naked_range(&self) -> Option<i32> {
+    pub fn naked_range(&self) -> Option<u8> {
         self.master.range
     }
 
     #[wasm_bindgen(getter)]
-    pub fn naked_speed(&self) -> i32 {
+    pub fn naked_speed(&self) -> u8 {
         self.master.speed
     }
 
     #[wasm_bindgen(getter)]
-    pub fn luck(&self) -> Option<i32> {
-        Some(self.master.luck.0? + self.luck_mod)
+    pub fn luck(&self) -> Option<u16> {
+        let left = self.master.luck.0? as i16;
+        Some((left + self.luck_mod) as u16)
     }
 
     #[wasm_bindgen(getter)]
-    pub fn range(&self) -> Option<i32> {
+    pub fn range(&self) -> Option<u8> {
         let max = self.gears.values().map(|g| g.range).max();
 
         match (max, self.naked_range()) {
@@ -692,7 +695,7 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn speed_bonus(&self) -> i32 {
+    pub fn speed_bonus(&self) -> u8 {
         let speed_group = self.master.speed_group.unwrap_or_default();
 
         if self.has_attr(ShipAttr::Abyssal) || !self.gears.has(gear_id!("改良型艦本式タービン"))
@@ -747,7 +750,7 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn speed(&self) -> i32 {
+    pub fn speed(&self) -> u8 {
         self.naked_speed() + self.speed_bonus()
     }
 
@@ -1131,7 +1134,7 @@ mod test {
 
     #[test]
     fn test_max_hp() {
-        fn get_ship(level: i32, max_hp: i32) -> Ship {
+        fn get_ship(level: u16, max_hp: u16) -> Ship {
             Ship {
                 level,
                 master: MasterShip {

@@ -270,7 +270,7 @@ impl<'a> AntiAirAnalyzer<'a> {
 
 #[derive(Debug, Serialize, TS)]
 pub struct ShipAntiAirAnalysis {
-    ship_id: i32,
+    ship_id: u16,
     adjusted_anti_air: Option<f64>,
     proportional_shotdown_rate: Option<f64>,
     fixed_shotdown_number: Option<i32>,

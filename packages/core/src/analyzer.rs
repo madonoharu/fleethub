@@ -1,10 +1,11 @@
+mod airstrike;
 mod anti_air;
 mod night;
 mod shelling;
-mod airstrike;
 
 use crate::{org::Org, types::MasterData};
 
+pub use airstrike::*;
 pub use anti_air::*;
 pub use night::*;
 pub use shelling::*;
@@ -16,6 +17,10 @@ pub struct Analyzer<'a> {
 impl<'a> Analyzer<'a> {
     pub fn new(master_data: &'a MasterData) -> Self {
         Self { master_data }
+    }
+
+    pub fn analyze_airstrike(&self, org: &Org) -> OrgAirstrikeAnalysis {
+        airstrike::analyze_org(org)
     }
 
     pub fn analyze_anti_air(

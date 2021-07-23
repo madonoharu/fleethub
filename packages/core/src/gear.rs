@@ -66,9 +66,9 @@ pub struct Gear {
     #[wasm_bindgen(skip)]
     pub id: String,
 
-    pub gear_id: i32,
-    pub exp: i32,
-    pub stars: i32,
+    pub gear_id: u16,
+    pub exp: u8,
+    pub stars: u8,
 
     #[wasm_bindgen(skip)]
     pub name: String,
@@ -83,21 +83,21 @@ pub struct Gear {
     #[wasm_bindgen(skip)]
     pub special_type: GearType,
 
-    pub max_hp: i32,
-    pub firepower: i32,
-    pub armor: i32,
-    pub torpedo: i32,
-    pub anti_air: i32,
-    pub speed: i32,
-    pub bombing: i32,
-    pub asw: i32,
-    pub los: i32,
-    pub luck: i32,
-    pub accuracy: i32,
-    pub evasion: i32,
-    pub range: i32,
-    pub radius: i32,
-    pub cost: i32,
+    pub max_hp: i16,
+    pub firepower: i16,
+    pub armor: i16,
+    pub torpedo: i16,
+    pub anti_air: i16,
+    pub speed: i16,
+    pub bombing: i16,
+    pub asw: i16,
+    pub los: i16,
+    pub luck: i16,
+    pub accuracy: i16,
+    pub evasion: i16,
+    pub range: u8,
+    pub radius: u8,
+    pub cost: u8,
     pub improvable: bool,
     pub adjusted_anti_air_resistance: f64,
     pub fleet_anti_air_resistance: f64,
@@ -116,7 +116,7 @@ impl Gear {
 
         let special_type: GearType = master
             .special_type
-            .and_then(FromPrimitive::from_i32)
+            .and_then(FromPrimitive::from_u8)
             .unwrap_or(gear_type);
 
         Gear {
@@ -189,12 +189,12 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn gear_type_id(&self) -> i32 {
+    pub fn gear_type_id(&self) -> u8 {
         self.types.gear_type_id()
     }
 
     #[wasm_bindgen(getter)]
-    pub fn icon_id(&self) -> i32 {
+    pub fn icon_id(&self) -> u8 {
         self.types.icon_id()
     }
 
@@ -244,7 +244,7 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn anti_bomber(&self) -> i32 {
+    pub fn anti_bomber(&self) -> i16 {
         if self.gear_type == GearType::LbFighter {
             self.accuracy
         } else {
@@ -253,7 +253,7 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn interception(&self) -> i32 {
+    pub fn interception(&self) -> i16 {
         if self.gear_type == GearType::LbFighter {
             self.evasion
         } else {
@@ -362,15 +362,15 @@ impl Gear {
         }
     }
 
-    fn is_contact_selection_plane(&self) -> bool {
+    pub fn calc_contact_trigger_factor(&self, slot_size: i32) -> f64 {
+        ((self.los as f64) * (slot_size as f64).sqrt()).floor()
+    }
+
+    pub fn is_contact_selection_plane(&self) -> bool {
         self.has_attr(GearAttr::Recon) || self.gear_type == GearType::CbTorpedoBomber
     }
 
-    fn calc_contact_selection_chance(&self, air_state_modifier: f64) -> f64 {
-        if !self.is_contact_selection_plane() {
-            return 0.0;
-        }
-
+    pub fn contact_selection_rate(&self, air_state_modifier: f64) -> f64 {
         let los = self.los as f64;
         let ibonus = self.ibonuses.contact_selection;
 
@@ -378,7 +378,7 @@ impl Gear {
         value.min(1.0)
     }
 
-    pub fn night_contact_rate(&self, level: i32) -> f64 {
+    pub fn night_contact_rate(&self, level: u16) -> f64 {
         let b = (self.los as f64).sqrt() * (level as f64).sqrt();
         let rate = (b.floor() / 25.0).min(1.0);
         rate

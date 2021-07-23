@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { Org, OrgType } from "@fleethub/core";
 import { Button, ClickAwayListener } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 
 import { PlanFileEntity } from "../../../store";
@@ -97,6 +98,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
   onHqLevelChange,
   onOrgTypeChange,
 }) => {
+  const { t } = useTranslation("terms");
   const org_type = org.org_type;
   return (
     <div className={className}>
@@ -119,6 +121,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
           options={ORG_TYPES}
           onChange={onOrgTypeChange}
           value={org_type as OrgType}
+          getOptionLabel={t}
         />
 
         <PlanAction org={org} />

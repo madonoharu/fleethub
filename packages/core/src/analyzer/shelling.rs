@@ -62,8 +62,7 @@ impl DayCutinRateAnalysis {
 
 #[derive(Debug, Default, Serialize, TS)]
 pub struct ShipDayCutinRateAnalysis {
-    name: String,
-    banner: Option<String>,
+    ship_id: u16,
     air_supremacy: DayCutinRateAnalysis,
     air_superiority: DayCutinRateAnalysis,
 }
@@ -76,8 +75,7 @@ impl ShipDayCutinRateAnalysis {
         is_main_flagship: bool,
     ) -> Self {
         Self {
-            name: ship.name(),
-            banner: ship.banner(),
+            ship_id: ship.ship_id,
             air_supremacy: DayCutinRateAnalysis::new(
                 day_cutin_defs,
                 ship,

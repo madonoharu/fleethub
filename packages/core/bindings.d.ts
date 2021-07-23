@@ -156,6 +156,13 @@ export type CombinedFormation =
   | "Cruising3"
   | "Cruising4";
 
+export type AirState =
+  | "AirSupremacy"
+  | "AirSuperiority"
+  | "AirParity"
+  | "AirDenial"
+  | "AirIncapability";
+
 export type Formation = SingleFormation | CombinedFormation;
 
 export interface FormationAttackModifiers {
@@ -209,8 +216,8 @@ export type NightCutin =
   | "MainMainMain"
   | "MainTorpRadar"
   | "TorpLookoutRadar"
-  | "TorpLookoutTorp"
-  | "TorpLookoutDrum"
+  | "TorpTsloTorp"
+  | "TorpTsloDrum"
   | "SubTorpTorp"
   | "SubRadarTorp"
   | "Cvci1_25"
@@ -520,8 +527,7 @@ export interface DayCutinRateAnalysis {
 }
 
 export interface ShipDayCutinRateAnalysis {
-  name: string;
-  banner: string | null;
+  ship_id: number;
   air_supremacy: DayCutinRateAnalysis;
   air_superiority: DayCutinRateAnalysis;
 }
@@ -564,11 +570,37 @@ export interface NightCutinRateAnalysis {
 }
 
 export interface ShipNightCutinRateAnalysis {
+  ship_id: number;
   normal: NightCutinRateAnalysis;
   chuuha: NightCutinRateAnalysis;
 }
 
+export interface NightContactChance {
+  rank1: number;
+  rank2: number;
+  rank3: number;
+  total: number;
+}
+
 export interface OrgNightCutinRateAnalysis {
-  contact_chance: ContactChance;
+  contact_chance: NightContactChance;
   ships: Array<ShipNightCutinRateAnalysis>;
+}
+
+export interface AirstrikeContactChance {
+  air_state: AirState;
+  trigger_rate: number;
+  rank3: number;
+  rank2: number;
+  rank1: number;
+  total: number;
+}
+
+export interface OrgContactChanceAnalysis {
+  single: Array | null;
+  combined: Array | null;
+}
+
+export interface OrgAirstrikeAnalysis {
+  contact_chance: OrgContactChanceAnalysis;
 }

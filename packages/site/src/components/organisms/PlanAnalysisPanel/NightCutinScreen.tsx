@@ -4,15 +4,14 @@ import {
   Org,
   OrgNightCutinRateAnalysis,
 } from "@fleethub/core";
-import { Checkbox, FormControlLabel } from "@material-ui/core";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
-import { LabeledValue } from "../../atoms";
+import { Checkbox, LabeledValue } from "../../atoms";
+import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import AttackChip from "./AttackChip";
-import ShipNameCell from "./ShipNameCell";
 
 const StyledLabeledValue = styled(LabeledValue)`
   margin-top: 4px;
@@ -63,15 +62,16 @@ type Props = {
 const NightCutinTable: React.FCX<Props> = ({ className, analysis }) => {
   return (
     <div className={className}>
-      夜間触接率 {toPercent(0)}
+      夜間触接率 {toPercent(analysis.contact_chance.total)}
       <Table
         padding="none"
         data={analysis.ships}
         columns={[
-          // {
-          //   label: "艦娘",
-          //   getValue: (datum) => <ShipNameCell ship={datum.ship} />,
-          // },
+          {
+            label: "艦娘",
+            getValue: (datum) => <ShipNameplate shipId={datum.ship_id} />,
+            width: 160,
+          },
           {
             label: "小破以上",
             getValue: (datum) => <NightCutinRateCell data={datum.normal} />,
@@ -86,46 +86,57 @@ const NightCutinTable: React.FCX<Props> = ({ className, analysis }) => {
   );
 };
 
+const toggle = (value: boolean) => !value;
+
 const NightCutinPanel: React.FC<{ org: Org }> = ({ org }) => {
   const { core } = useFhCore();
 
-  const [asl, setAsl] = React.useState(false);
-  const [ass, setAss] = React.useState(false);
+  const [attackerSearchlight, setAttackerSearchlight] = React.useState(false);
+  const [attackerStarshell, setAttackerStarshell] = React.useState(false);
 
-  const [dsl, setDsl] = React.useState(false);
-  const [dss, setDss] = React.useState(false);
+  const [defenderSearchlight, setDefenderSearchlight] = React.useState(false);
+  const [defenderStarshell, setDefenderStarshell] = React.useState(false);
 
   const analysis: OrgNightCutinRateAnalysis = core.analyze_night_cutin(
     org,
-    { contact_rank: null, searchlight: asl, starshell: ass },
-    { contact_rank: null, searchlight: dsl, starshell: dss }
+    {
+      contact_rank: null,
+      searchlight: attackerSearchlight,
+      starshell: attackerStarshell,
+    },
+    {
+      contact_rank: null,
+      searchlight: defenderSearchlight,
+      starshell: defenderStarshell,
+    }
   );
 
   return (
     <div>
-      <FormControlLabel
+      <Checkbox
+        size="small"
         label="探照灯"
-        control={
-          <Checkbox size="small" checked={asl} onChange={() => setAsl(!asl)} />
-        }
+        checked={attackerSearchlight}
+        onChange={() => setAttackerSearchlight(toggle)}
       />
-      <FormControlLabel
+      <Checkbox
+        size="small"
         label="照明弾"
-        control={
-          <Checkbox size="small" checked={ass} onChange={() => setAss(!ass)} />
-        }
+        checked={attackerStarshell}
+        onChange={() => setAttackerStarshell(toggle)}
       />
-      <FormControlLabel
+      <Checkbox
+        size="small"
         label="相手探照灯"
-        control={
-          <Checkbox size="small" checked={dsl} onChange={() => setDsl(!dsl)} />
-        }
+        checked={defenderSearchlight}
+        onChange={() => setDefenderSearchlight(toggle)}
       />
-      <FormControlLabel
+
+      <Checkbox
+        size="small"
         label="相手照明弾"
-        control={
-          <Checkbox size="small" checked={dss} onChange={() => setDss(!dss)} />
-        }
+        checked={defenderStarshell}
+        onChange={() => setDefenderStarshell(toggle)}
       />
 
       <NightCutinTable analysis={analysis} />

@@ -17,7 +17,6 @@ use crate::{
 };
 
 const GEAR_ARRAY_CAPACITY: usize = 6;
-const EXSLOT_INDEX: usize = GEAR_ARRAY_CAPACITY - 1;
 
 const SLOT_SIZE_ARRAY_CAPACITY: usize = 5;
 
@@ -95,15 +94,17 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
 pub type GearArray = OptionalArray<Gear, GEAR_ARRAY_CAPACITY>;
 
 impl GearArray {
+    pub const EXSLOT_INDEX: usize = Self::CAPACITY - 1;
+
     pub fn without_ex(&self) -> impl Iterator<Item = (usize, &Gear)> {
-        self.iter().filter(|(i, _)| *i < EXSLOT_INDEX)
+        self.iter().filter(|(i, _)| *i < Self::EXSLOT_INDEX)
     }
 
-    pub fn has(&self, id: i32) -> bool {
+    pub fn has(&self, id: u16) -> bool {
         self.has_by(|g| g.gear_id == id)
     }
 
-    pub fn count(&self, id: i32) -> usize {
+    pub fn count(&self, id: u16) -> usize {
         self.count_by(|g| g.gear_id == id)
     }
 
