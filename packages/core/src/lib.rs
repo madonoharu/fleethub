@@ -106,7 +106,7 @@ impl FhCore {
         self.factory.create_org(input)
     }
 
-    pub fn get_gear_ids(&self) -> Vec<i32> {
+    pub fn get_gear_ids(&self) -> Vec<u16> {
         self.factory
             .master_data
             .gears
@@ -155,6 +155,13 @@ impl FhCore {
         let defender_fleet_state = defender_fleet_state.into_serde().unwrap();
         let analyzer = Analyzer::new(&self.factory.master_data);
         let result = analyzer.analyze_night_cutin(org, attacker_fleet_state, defender_fleet_state);
+
+        JsValue::from_serde(&result).unwrap()
+    }
+
+    pub fn analyze_airstrike(&self, org: &Org) -> JsValue {
+        let analyzer = Analyzer::new(&self.factory.master_data);
+        let result = analyzer.analyze_airstrike(org);
 
         JsValue::from_serde(&result).unwrap()
     }

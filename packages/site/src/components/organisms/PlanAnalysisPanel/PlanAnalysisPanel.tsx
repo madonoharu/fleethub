@@ -5,9 +5,9 @@ import React from "react";
 
 import { Tabs, TabsProps } from "../../molecules";
 import AntiAirScreen from "./AntiAirScreen";
-// import ContactChancePanel from "./ContactChancePanel";
+import ContactChancePanel from "./ContactChancePanel";
 import DayAttackRateTable from "./DayAttackRateTable";
-// import MiscPanel from "./MiscPanel";
+import MiscScreen from "./MiscScreen";
 import NightCutinScreen from "./NightCutinScreen";
 
 type Props = {
@@ -17,10 +17,10 @@ type Props = {
 const OrgAnalysisPanel: React.FCX<Props> = ({ className, org }) => {
   const list: TabsProps["list"] = [
     { label: "弾着戦爆発動率", panel: <DayAttackRateTable org={org} /> },
-    { label: "触接率", panel: null },
+    { label: "触接率", panel: <ContactChancePanel org={org} /> },
     { label: "夜戦CI率", panel: <NightCutinScreen org={org} /> },
     { label: "対空", panel: <AntiAirScreen org={org} /> },
-    { label: "その他", panel: null },
+    { label: "その他", panel: <MiscScreen org={org} /> },
   ];
 
   return (

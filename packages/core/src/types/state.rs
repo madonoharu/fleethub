@@ -6,27 +6,27 @@ use ts_rs::TS;
 pub struct GearState {
     pub id: Option<String>,
 
-    pub gear_id: i32,
-    pub exp: Option<i32>,
-    pub stars: Option<i32>,
+    pub gear_id: u16,
+    pub exp: Option<u8>,
+    pub stars: Option<u8>,
 }
 
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct ShipState {
     pub id: Option<String>,
-    pub ship_id: i32,
-    pub level: Option<i32>,
-    pub current_hp: Option<i32>,
+    pub ship_id: u16,
+    pub level: Option<u16>,
+    pub current_hp: Option<u16>,
 
-    pub max_hp_mod: Option<i32>,
-    pub firepower_mod: Option<i32>,
-    pub torpedo_mod: Option<i32>,
-    pub armor_mod: Option<i32>,
-    pub anti_air_mod: Option<i32>,
-    pub evasion_mod: Option<i32>,
-    pub asw_mod: Option<i32>,
-    pub los_mod: Option<i32>,
-    pub luck_mod: Option<i32>,
+    pub max_hp_mod: Option<i16>,
+    pub firepower_mod: Option<i16>,
+    pub torpedo_mod: Option<i16>,
+    pub armor_mod: Option<i16>,
+    pub anti_air_mod: Option<i16>,
+    pub evasion_mod: Option<i16>,
+    pub asw_mod: Option<i16>,
+    pub los_mod: Option<i16>,
+    pub luck_mod: Option<i16>,
 
     pub g1: Option<GearState>,
     pub g2: Option<GearState>,

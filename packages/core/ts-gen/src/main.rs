@@ -29,6 +29,7 @@ fn main() {
         types::DamageState,
         types::SingleFormation,
         types::CombinedFormation,
+        types::AirState,
         types::Formation,
         types::FormationAttackModifiers,
         types::NormalFormationDef,
@@ -70,7 +71,11 @@ fn main() {
         analyzer::NightCutinFleetState,
         analyzer::NightCutinRateAnalysis,
         analyzer::ShipNightCutinRateAnalysis,
+        analyzer::NightContactChance,
         analyzer::OrgNightCutinRateAnalysis,
+        analyzer::AirstrikeContactChance,
+        analyzer::OrgContactChanceAnalysis,
+        analyzer::OrgAirstrikeAnalysis,
     );
 
     let buffer =

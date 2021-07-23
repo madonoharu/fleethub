@@ -1,4 +1,11 @@
-import { MasterDataInput } from "@fleethub/core/types";
+import {
+  AirState,
+  DayCutin,
+  Formation,
+  MasterDataInput,
+  NightCutin,
+  OrgType,
+} from "@fleethub/core/types";
 import child_process from "child_process";
 import { outputJSON } from "fs-extra";
 import got from "got";
@@ -19,6 +26,15 @@ const languages: Language[] = [
   { code: "zh-TW", path: "tcn" },
 ];
 
+type KC3Ships = Record<string, string>;
+type KC3ShipAffixes = { suffixes: Record<string, string> };
+type KC3Battle = {
+  airbattle: string[][];
+  engagement: string[][];
+  cutinDay: string[];
+  cutinNight: string[];
+};
+
 class LocaleUpdater {
   public kc3: typeof got;
 
@@ -32,6 +48,10 @@ class LocaleUpdater {
     });
   }
 
+  get lang() {
+    return this.language.code;
+  }
+
   public getKC3Json = async <T = unknown>(filename: string) => {
     const text = await this.kc3.get(filename).text();
     return JSON.parse(text.replace(/^\ufeff/, "")) as T;
@@ -39,15 +59,12 @@ class LocaleUpdater {
 
   public output = async (filename: string, data: unknown) => {
     await outputJSON(
-      `packages/client/public/locales/${this.language.code}/${filename}`,
+      `packages/site/public/locales/${this.language.code}/${filename}`,
       data
     );
   };
 
   public updateShips = async () => {
-    type KC3Ships = Record<string, string>;
-    type KC3ShipAffixes = { suffixes: Record<string, string> };
-
     const [kc3Ships, kc3ShipAffixes] = await Promise.all([
       this.getKC3Json<KC3Ships>("ships.json"),
       this.getKC3Json<KC3ShipAffixes>("ship_affix.json"),
@@ -92,9 +109,82 @@ class LocaleUpdater {
 
   public updateTerms = async () => {
     const kc3Terms = await this.getKC3Json<Dictionary>("terms.json");
-    const kc3Battle = await this.getKC3Json<{ engagement: string[][] }>(
-      "battle.json"
-    );
+
+    const kc3Battle = await this.getKC3Json<KC3Battle>("battle.json");
+
+    const airStateDictionary: Record<AirState, string> = {
+      AirParity: kc3Battle.airbattle[0][0],
+      AirSupremacy: kc3Battle.airbattle[1][0],
+      AirSuperiority: kc3Battle.airbattle[2][0],
+      AirDenial: kc3Battle.airbattle[3][0],
+      AirIncapability: kc3Battle.airbattle[4][0],
+    };
+
+    const engagementDictionary = {
+      Parallel: kc3Battle.engagement[1][0],
+      HeadOn: kc3Battle.engagement[2][0],
+      GreenT: kc3Battle.engagement[3][0],
+      RedT: kc3Battle.engagement[4][0],
+    };
+
+    const orgTypeDictionary: Record<OrgType, string | undefined> = {
+      Single: kc3Terms["CombinedNone"],
+      CarrierTaskForce: kc3Terms["CombinedCarrier"],
+      SurfaceTaskForce: kc3Terms["CombinedSurface"],
+      TransportEscort: kc3Terms["CombinedTransport"],
+      EnemyCombined: kc3Terms["CombinedFleet"],
+    };
+
+    const formationDictionary: Record<Formation, string | undefined> = {
+      LineAhead: kc3Terms["SettingsForLineAhead"],
+      DoubleLine: kc3Terms["SettingsForDoubleLine"],
+      Diamond: kc3Terms["SettingsForDiamond"],
+      Echelon: kc3Terms["SettingsForEchelon"],
+      LineAbreast: kc3Terms["SettingsForLineAbreast"],
+      Vanguard: kc3Terms["SettingsForVanguard"],
+      Cruising1: kc3Terms["SettingsForCombAntiSub"],
+      Cruising2: kc3Terms["SettingsForCombForward"],
+      Cruising3: kc3Terms["SettingsForCombDiamond"],
+      Cruising4: kc3Terms["SettingsForCombBattle"],
+    };
+
+    const getDayCutin = (i: number) =>
+      kc3Battle.cutinDay[i].replace(/ \[.+\]/, "").replace(/CI$/, "");
+
+    const dayCutinDictionary: Record<DayCutin, string> = {
+      DoubleAttack: getDayCutin(2),
+      MainSec: getDayCutin(3),
+      MainRader: getDayCutin(4),
+      MainAp: getDayCutin(5),
+      MainMain: getDayCutin(6),
+      FBA: "FBA",
+      BBA: "BBA",
+      BA: "BA",
+      Zuiun: getDayCutin(30),
+      AirSea: getDayCutin(31),
+    };
+
+    const getNightCutin = (i: number) =>
+      kc3Battle.cutinNight[i].replace(/ \[.+\]/, "").replace(/CI$/, "");
+    const cvci = getNightCutin(6);
+
+    const nightCutinDictionary: Record<NightCutin, string | undefined> = {
+      DoubleAttack: getNightCutin(1),
+      TorpTorpMain: getNightCutin(2),
+      TorpTorpTorp: getNightCutin(3),
+      MainMainSec: getNightCutin(4),
+      MainMainMain: getNightCutin(5),
+      Cvci1_18: cvci + " 1.18",
+      Cvci1_20: cvci + " 1.20",
+      Photobomber: cvci + " 光電管",
+      Cvci1_25: cvci + " 1.25",
+      MainTorpRadar: getNightCutin(7),
+      TorpLookoutRadar: getNightCutin(8),
+      TorpTsloTorp: getNightCutin(9),
+      TorpTsloDrum: getNightCutin(10),
+      SubRadarTorp: kc3Terms["CutinLateTorpRadar"],
+      SubTorpTorp: kc3Terms["CutinLateTorpTorp"],
+    };
 
     const dictionary: Dictionary = {
       max_hp: kc3Terms["ShipHp"],
@@ -118,27 +208,12 @@ class LocaleUpdater {
       interception: kc3Terms["ShipEvaInterception"],
       cost: kc3Terms["ShipDeployCost"],
 
-      Single: kc3Terms["CombinedNone"],
-      CarrierTaskForce: kc3Terms["CombinedCarrier"],
-      SurfaceTaskForce: kc3Terms["CombinedSurface"],
-      TransportEscort: kc3Terms["CombinedTransport"],
-      Combined: kc3Terms["CombinedFleet"],
-
-      LineAhead: kc3Terms["SettingsForLineAhead"],
-      DoubleLine: kc3Terms["SettingsForDoubleLine"],
-      Diamond: kc3Terms["SettingsForDiamond"],
-      Echelon: kc3Terms["SettingsForEchelon"],
-      LineAbreast: kc3Terms["SettingsForLineAbreast"],
-      Vanguard: kc3Terms["SettingsForVanguard"],
-      Cruising1: kc3Terms["SettingsForCombAntiSub"],
-      Cruising2: kc3Terms["SettingsForCombForward"],
-      Cruising3: kc3Terms["SettingsForCombDiamond"],
-      Cruising4: kc3Terms["SettingsForCombBattle"],
-
-      Parallel: kc3Battle.engagement[1][0],
-      HeadOn: kc3Battle.engagement[2][0],
-      GreenT: kc3Battle.engagement[3][0],
-      RedT: kc3Battle.engagement[4][0],
+      ...airStateDictionary,
+      ...engagementDictionary,
+      ...orgTypeDictionary,
+      ...formationDictionary,
+      ...dayCutinDictionary,
+      ...nightCutinDictionary,
     };
 
     await this.output("terms.json", dictionary);
@@ -188,7 +263,7 @@ const updateLocales = async () => {
   );
 
   await Promise.all(promises);
-  await exec("yarn prettier --write packages/client/public/locales");
+  await exec("yarn prettier --write packages/site/public/locales");
 };
 
 updateLocales().catch((err) => console.error(err));

@@ -78,9 +78,9 @@ pub enum NightCutin {
     /// 魚見電
     TorpLookoutRadar,
     /// 魚水魚
-    TorpLookoutTorp,
+    TorpTsloTorp,
     /// 魚見ド,
-    TorpLookoutDrum,
+    TorpTsloDrum,
 
     /// 潜水魚魚
     SubTorpTorp,
