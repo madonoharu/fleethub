@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Chip } from "@material-ui/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 type Props = {
@@ -9,12 +10,13 @@ type Props = {
 };
 
 const AttackChip: React.FCX<Props> = ({ className, attack }) => {
+  const { t } = useTranslation("terms");
   return (
     <Chip
       className={className}
       variant="outlined"
       size="small"
-      label={attack}
+      label={t(attack)}
     />
   );
 };

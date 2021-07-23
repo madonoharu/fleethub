@@ -17,10 +17,10 @@ use crate::{
 };
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
-pub struct GearTypes(i32, i32, i32, i32, i32);
+pub struct GearTypes(u8, u8, u8, u8, u8);
 
 impl GearTypes {
-    pub fn get(&self, index: usize) -> Option<i32> {
+    pub fn get(&self, index: usize) -> Option<u8> {
         match index {
             0 => Some(self.0),
             1 => Some(self.1),
@@ -31,50 +31,50 @@ impl GearTypes {
         }
     }
 
-    pub fn gear_type_id(&self) -> i32 {
+    pub fn gear_type_id(&self) -> u8 {
         self.2
     }
 
     pub fn gear_type(&self) -> GearType {
-        num_traits::FromPrimitive::from_i32(self.gear_type_id()).unwrap_or_default()
+        num_traits::FromPrimitive::from_u8(self.gear_type_id()).unwrap_or_default()
     }
 
-    pub fn icon_id(&self) -> i32 {
+    pub fn icon_id(&self) -> u8 {
         self.3
     }
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterGear {
-    pub gear_id: i32,
+    pub gear_id: u16,
     pub name: String,
     pub types: GearTypes,
-    pub special_type: Option<i32>,
-    pub max_hp: Option<i32>,
-    pub firepower: Option<i32>,
-    pub armor: Option<i32>,
-    pub torpedo: Option<i32>,
-    pub anti_air: Option<i32>,
-    pub speed: Option<i32>,
-    pub bombing: Option<i32>,
-    pub asw: Option<i32>,
-    pub los: Option<i32>,
-    pub luck: Option<i32>,
-    pub accuracy: Option<i32>,
-    pub evasion: Option<i32>,
-    pub range: Option<i32>,
-    pub radius: Option<i32>,
-    pub cost: Option<i32>,
+    pub special_type: Option<u8>,
+    pub max_hp: Option<i16>,
+    pub firepower: Option<i16>,
+    pub armor: Option<i16>,
+    pub torpedo: Option<i16>,
+    pub anti_air: Option<i16>,
+    pub speed: Option<i16>,
+    pub bombing: Option<i16>,
+    pub asw: Option<i16>,
+    pub los: Option<i16>,
+    pub luck: Option<i16>,
+    pub accuracy: Option<i16>,
+    pub evasion: Option<i16>,
+    pub range: Option<u8>,
+    pub radius: Option<u8>,
+    pub cost: Option<u8>,
     pub improvable: Option<bool>,
     pub adjusted_anti_air_resistance: Option<f64>,
     pub fleet_anti_air_resistance: Option<f64>,
 }
 
-macro_rules! impl_fields {
+macro_rules! impl_i16_fields {
     ($($key:ident),* $(,)?) => {
         impl MasterGear {
             $(
-                pub fn $key(&self) -> i32 {
+                pub fn $key(&self) -> i16 {
                     self.$key.unwrap_or_default()
                 }
             )*
@@ -82,26 +82,29 @@ macro_rules! impl_fields {
     };
 }
 
-impl_fields!(
-    special_type,
-    max_hp,
-    firepower,
-    armor,
-    torpedo,
-    anti_air,
-    speed,
-    bombing,
-    asw,
-    los,
-    luck,
-    accuracy,
-    evasion,
-    range,
-    radius,
-    cost,
+macro_rules! impl_u8_fields {
+    ($($key:ident),* $(,)?) => {
+        impl MasterGear {
+            $(
+                pub fn $key(&self) -> u8 {
+                    self.$key.unwrap_or_default()
+                }
+            )*
+        }
+    };
+}
+
+impl_i16_fields!(
+    max_hp, firepower, armor, torpedo, anti_air, speed, bombing, asw, los, luck, accuracy, evasion,
 );
 
+impl_u8_fields!(range, radius, cost,);
+
 impl MasterGear {
+    pub fn special_type(&self) -> u8 {
+        self.special_type.unwrap_or_default()
+    }
+
     pub fn eval(&self, expr_str: &str) -> Option<f64> {
         let mut ns = |key: &str, args: Vec<f64>| {
             let val = match key {
@@ -163,7 +166,7 @@ pub struct MasterIBonusRule {
 }
 
 impl MasterIBonusRule {
-    fn eval(&self, gear: &MasterGear, stars: i32) -> Option<f64> {
+    fn eval(&self, gear: &MasterGear, stars: u8) -> Option<f64> {
         if gear.eval(&self.expr).unwrap_or_default() == 1. {
             let mut ns = |name: &str, args: Vec<f64>| match name {
                 "x" => Some(stars as f64),
@@ -198,7 +201,7 @@ pub struct MasterIBonuses {
 }
 
 impl MasterIBonuses {
-    pub fn to_ibonuses(&self, gear: &MasterGear, stars: i32) -> IBonuses {
+    pub fn to_ibonuses(&self, gear: &MasterGear, stars: u8) -> IBonuses {
         let calc = |rules: &Vec<MasterIBonusRule>| {
             rules
                 .iter()
@@ -228,16 +231,16 @@ impl MasterIBonuses {
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone, Copy, Deserialize, TS)]
-pub struct StatInterval(pub Option<i32>, pub Option<i32>);
+pub struct StatInterval(pub Option<u16>, pub Option<u16>);
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterShip {
-    pub ship_id: i32,
+    pub ship_id: u16,
     pub name: String,
     pub yomi: String,
-    pub stype: i32,
-    pub ctype: Option<i32>,
-    pub sort_id: Option<i32>,
+    pub stype: u8,
+    pub ctype: Option<u8>,
+    pub sort_id: Option<u16>,
     pub max_hp: StatInterval,
     pub firepower: StatInterval,
     pub armor: StatInterval,
@@ -247,13 +250,13 @@ pub struct MasterShip {
     pub asw: StatInterval,
     pub los: StatInterval,
     pub luck: StatInterval,
-    pub speed: i32,
-    pub range: Option<i32>,
-    pub fuel: Option<i32>,
-    pub ammo: Option<i32>,
-    pub next_id: Option<i32>,
-    pub next_level: Option<i32>,
-    pub slotnum: i32,
+    pub speed: u8,
+    pub range: Option<u8>,
+    pub fuel: Option<u8>,
+    pub ammo: Option<u8>,
+    pub next_id: Option<u16>,
+    pub next_level: Option<u16>,
+    pub slotnum: usize,
     pub slots: SlotSizeArray,
     pub stock: MyArrayVec<GearState, 5>,
     pub speed_group: Option<SpeedGroup>,
@@ -261,7 +264,7 @@ pub struct MasterShip {
 }
 
 impl MasterShip {
-    pub fn default_level(&self) -> i32 {
+    pub fn default_level(&self) -> u16 {
         if self.ship_id < 1500 {
             99
         } else {
@@ -290,26 +293,26 @@ impl MasterShip {
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct EquipStype {
-    pub id: i32,
-    pub equip_type: Vec<i32>,
+    pub id: u8,
+    pub equip_type: Vec<u8>,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MstEquipShip {
-    pub api_ship_id: i32,
-    pub api_equip_type: Vec<i32>,
+    pub api_ship_id: u16,
+    pub api_equip_type: Vec<u8>,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MstEquipExslotShip {
-    pub api_slotitem_id: i32,
-    pub api_ship_ids: Vec<i32>,
+    pub api_slotitem_id: u16,
+    pub api_ship_ids: Vec<u16>,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterEquippable {
     pub equip_stype: Vec<EquipStype>,
-    pub equip_exslot: Vec<i32>,
+    pub equip_exslot: Vec<u8>,
     pub equip_ship: Vec<MstEquipShip>,
     pub equip_exslot_ship: Vec<MstEquipExslotShip>,
 }
@@ -376,7 +379,7 @@ impl MasterData {
             .collect()
     }
 
-    pub fn get_ibonuses(&self, gear: &MasterGear, stars: i32) -> IBonuses {
+    pub fn get_ibonuses(&self, gear: &MasterGear, stars: u8) -> IBonuses {
         self.ibonuses.to_ibonuses(gear, stars)
     }
 
@@ -388,7 +391,7 @@ impl MasterData {
             .find(|es| es.api_ship_id == ship.ship_id)
             .map(|es| &es.api_equip_type);
 
-        let types: Vec<i32> = equip_ship
+        let types = equip_ship
             .or(self
                 .equippable
                 .equip_stype
@@ -404,7 +407,7 @@ impl MasterData {
             .iter()
             .filter(|ees| ees.api_ship_ids.contains(&ship.ship_id))
             .map(|ees| ees.api_slotitem_id)
-            .collect::<Vec<i32>>();
+            .collect();
 
         ShipEquippable {
             types,

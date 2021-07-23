@@ -102,9 +102,56 @@ pub enum AirState {
     AirIncapability,
 }
 
+impl AirState {
+    pub fn contact_mod(self) -> f64 {
+        match self {
+            AirState::AirSupremacy => 3.0,
+            AirState::AirSuperiority => 2.0,
+            AirState::AirDenial => 1.0,
+            _ => 0.0,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub enum ContactRank {
     Rank1,
     Rank2,
     Rank3,
+}
+
+pub struct NightContactModifiers {
+    power_mod: f64,
+    accuracy_mod: f64,
+    critical_rate_mod: f64,
+}
+
+impl ContactRank {
+    pub fn airstrike_power_mod(self) -> f64 {
+        match self {
+            Self::Rank1 => 1.2,
+            Self::Rank2 => 1.17,
+            Self::Rank3 => 1.12,
+        }
+    }
+
+    pub fn night_mods(self) -> NightContactModifiers {
+        match self {
+            Self::Rank1 => NightContactModifiers {
+                power_mod: 9.0,
+                accuracy_mod: 1.2,
+                critical_rate_mod: 1.7,
+            },
+            Self::Rank2 => NightContactModifiers {
+                power_mod: 7.0,
+                accuracy_mod: 1.1,
+                critical_rate_mod: 1.64,
+            },
+            Self::Rank3 => NightContactModifiers {
+                power_mod: 5.0,
+                accuracy_mod: 1.15,
+                critical_rate_mod: 1.57,
+            },
+        }
+    }
 }

@@ -4,10 +4,8 @@ use crate::{
     air_squadron::AirSquadron,
     array::ShipArray,
     fleet::Fleet,
-    gear_id,
     ship::Ship,
-    ship_id,
-    types::{GearType, OrgType, Role, Side},
+    types::{OrgType, Role, Side},
 };
 
 pub struct MainAndEscortShips<'a> {

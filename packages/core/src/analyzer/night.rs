@@ -3,7 +3,6 @@ use ts_rs::TS;
 
 use crate::{
     fleet::Fleet,
-    gear::Gear,
     gear_id,
     org::Org,
     ship::Ship,
@@ -70,14 +69,15 @@ fn night_cutin_term(ship: &Ship, params: NightCutinTermParams) -> Option<f64> {
 }
 
 #[derive(Debug, Default, Serialize, TS)]
-pub struct ContactChance {
+pub struct NightContactChance {
     rank1: f64,
     rank2: f64,
     rank3: f64,
+    total: f64,
 }
 
 impl Fleet {
-    fn night_contact_chance(&self) -> ContactChance {
+    fn night_contact_chance(&self) -> NightContactChance {
         let vec = self
             .ships
             .values()
@@ -108,10 +108,11 @@ impl Fleet {
         let rank2 = (1.0 - rank3) * at_least_one(ContactRank::Rank2);
         let rank1 = (1.0 - rank3 - rank2) * at_least_one(ContactRank::Rank1);
 
-        ContactChance {
+        NightContactChance {
             rank1,
             rank2,
             rank3,
+            total: rank1 + rank2 + rank3,
         }
     }
 }
@@ -124,13 +125,14 @@ pub struct NightCutinRateAnalysis {
 
 #[derive(Debug, Default, Serialize, TS)]
 pub struct ShipNightCutinRateAnalysis {
+    ship_id: u16,
     normal: NightCutinRateAnalysis,
     chuuha: NightCutinRateAnalysis,
 }
 
 #[derive(Debug, Default, Serialize, TS)]
 pub struct OrgNightCutinRateAnalysis {
-    contact_chance: ContactChance,
+    contact_chance: NightContactChance,
     ships: Vec<ShipNightCutinRateAnalysis>,
 }
 
@@ -207,7 +209,11 @@ impl<'a> NightAnalyzer<'a> {
             },
         );
 
-        ShipNightCutinRateAnalysis { normal, chuuha }
+        ShipNightCutinRateAnalysis {
+            ship_id: ship.ship_id,
+            normal,
+            chuuha,
+        }
     }
 
     pub fn analyze_org(

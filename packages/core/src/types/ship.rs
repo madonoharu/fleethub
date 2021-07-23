@@ -212,7 +212,7 @@ pub enum DamageState {
 }
 
 impl DamageState {
-    pub fn from_hp(max_hp: i32, current_hp: i32) -> Self {
+    pub fn from_hp(max_hp: u16, current_hp: u16) -> Self {
         let value = current_hp * 4;
 
         if value == 0 {
@@ -231,18 +231,18 @@ impl DamageState {
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct EBonuses {
-    pub firepower: i32,
-    pub torpedo: i32,
-    pub anti_air: i32,
-    pub armor: i32,
-    pub evasion: i32,
-    pub asw: i32,
-    pub los: i32,
-    pub bombing: i32,
-    pub accuracy: i32,
-    pub range: i32,
-    pub speed: i32,
-    pub effective_los: i32,
+    pub firepower: i16,
+    pub torpedo: i16,
+    pub anti_air: i16,
+    pub armor: i16,
+    pub evasion: i16,
+    pub asw: i16,
+    pub los: i16,
+    pub bombing: i16,
+    pub accuracy: i16,
+    pub range: u8,
+    pub speed: i16,
+    pub effective_los: i16,
 }
 
 #[cfg(test)]
