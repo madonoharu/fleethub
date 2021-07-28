@@ -35,7 +35,7 @@ impl AirSquadron {
         self.gears.get_by_gear_key(key).cloned()
     }
 
-    pub fn get_slot_size(&self, index: usize) -> Result<i32, JsValue> {
+    pub fn get_slot_size(&self, index: usize) -> Result<u8, JsValue> {
         self.slots
             .get(index)
             .map(|v| v.unwrap_or(18))

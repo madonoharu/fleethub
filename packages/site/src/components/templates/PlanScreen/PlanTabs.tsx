@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import { Org } from "@fleethub/core";
-import { FLEET_KEYS } from "@fleethub/utils";
+import { FLEET_KEYS, FleetKey } from "@fleethub/utils";
 import React from "react";
 
-import { Tabs } from "../../molecules";
+import { Tabs, TabsProps } from "../../molecules";
 import { FleetScreen, LandBaseScreen } from "../../organisms";
 
 const height = 40;
@@ -13,10 +13,10 @@ type PlanTabsProps = {
 };
 
 const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org }) => {
-  const fleetTabs = FLEET_KEYS.map((role) => ({
+  const fleetTabs: TabsProps["list"] = FLEET_KEYS.map((key) => ({
     className: "fleet-tab-label",
-    label: role,
-    panel: <FleetScreen fleet={org.get_fleet(role)} role={role} />,
+    label: key.toUpperCase(),
+    panel: <FleetScreen fleet={org.get_fleet(key)} />,
   }));
 
   const list = [
@@ -38,6 +38,7 @@ export default styled(PlanTabs)`
 
     .fleet-tab-label {
       padding: 0;
+      width: 40px;
     }
   }
 `;

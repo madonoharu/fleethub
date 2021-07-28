@@ -8,7 +8,7 @@
   "main": "pkg",
   "sideEffects": false,
   "scripts": {
-    "build": "cross-env WASM_BINDGEN_WEAKREF=1 wasm-pack build --out-name index",
+    "build": "cross-env WASM_BINDGEN_WEAKREF=1 wasm-pack build --dev --out-name index",
     "test": "cargo test",
     "coverage": "coverage.sh",
     "ts-gen": "cargo run --manifest-path ./ts-gen/Cargo.toml"

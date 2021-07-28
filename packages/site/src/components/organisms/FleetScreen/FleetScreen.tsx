@@ -1,18 +1,15 @@
 import styled from "@emotion/styled";
-import { Fleet } from "@fleethub/core";
-import { Role } from "@fleethub/utils";
+import { Fleet, Ship } from "@fleethub/core";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useMemo } from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
-import { Ship } from "../../../../public/pkg";
 import { ShipPosition, shipsSlice } from "../../../store";
 import FleetShipList from "./FleetShipList";
 
 type FleetScreenProps = {
   fleet: Fleet;
-  role: Role;
 };
 
 export const useFleetActions = (id: string) => {
@@ -33,17 +30,12 @@ export const useFleetActions = (id: string) => {
   );
 };
 
-const FleetScreen: React.FCX<FleetScreenProps> = ({
-  className,
-  fleet,
-  role,
-}) => {
+const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
   const actions = useFleetActions(fleet.id);
 
   return (
     <div className={className}>
-      <h3>{role}</h3>
-      <FleetShipList role={role} fleet={fleet} setShip={actions.setShip} />
+      <FleetShipList fleet={fleet} setShip={actions.setShip} />
     </div>
   );
 };

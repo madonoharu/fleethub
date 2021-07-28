@@ -13,6 +13,7 @@ import { GithubIcon } from "../../atoms";
 import { ImportButton, withIconButton } from "../../molecules";
 import { ImportMenu } from "../../organisms";
 import GearList from "../GearList";
+import MapList from "../MapList";
 import LanguageSelect from "./LanguageSelect";
 
 const UndoButton = withIconButton(UndoIcon);
@@ -109,6 +110,10 @@ const AppBar: React.FCX<Props> = ({
         <GearListModal full>
           <GearList />
         </GearListModal>
+
+        <MapListModal full>
+          <MapList />
+        </MapListModal>
       </div>
     </MuiAppBar>
   );

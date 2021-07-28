@@ -35,11 +35,11 @@ pub struct ShipState {
     pub g5: Option<GearState>,
     pub gx: Option<GearState>,
 
-    pub ss1: Option<i32>,
-    pub ss2: Option<i32>,
-    pub ss3: Option<i32>,
-    pub ss4: Option<i32>,
-    pub ss5: Option<i32>,
+    pub ss1: Option<u8>,
+    pub ss2: Option<u8>,
+    pub ss3: Option<u8>,
+    pub ss4: Option<u8>,
+    pub ss5: Option<u8>,
 }
 
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
@@ -64,10 +64,10 @@ pub struct AirSquadronState {
     pub g3: Option<GearState>,
     pub g4: Option<GearState>,
 
-    pub ss1: Option<i32>,
-    pub ss2: Option<i32>,
-    pub ss3: Option<i32>,
-    pub ss4: Option<i32>,
+    pub ss1: Option<u8>,
+    pub ss2: Option<u8>,
+    pub ss3: Option<u8>,
+    pub ss4: Option<u8>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Hash, ToString, Deserialize, TS)]

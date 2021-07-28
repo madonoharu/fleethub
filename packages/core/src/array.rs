@@ -199,7 +199,7 @@ where
     }
 }
 
-pub type SlotSizeArray = MyArrayVec<Option<i32>, SLOT_SIZE_ARRAY_CAPACITY>;
+pub type SlotSizeArray = MyArrayVec<Option<u8>, SLOT_SIZE_ARRAY_CAPACITY>;
 
 #[cfg(test)]
 mod test {

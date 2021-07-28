@@ -11,17 +11,21 @@ import GearSlot from "./GearSlot";
 import ShipHeader from "./ShipHeader";
 import ShipStats from "./ShipStats";
 
+const ShipCardContent = styled.div`
+  display: flex;
+  margin-left: 8px;
+  > * {
+    min-width: 0;
+  }
+`;
+
 const ShipCardInfo = styled.div`
   flex-shrink: 0;
 `;
 
-const ShipCardContent = styled.div`
-  display: flex;
-  margin-left: 8px;
-`;
-
 const GearList = styled.div`
   flex-grow: 1;
+  flex-shrink: 1;
   > * {
     height: 24px;
   }
