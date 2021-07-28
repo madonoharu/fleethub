@@ -73,12 +73,19 @@ pub struct FhCore {
 #[wasm_bindgen]
 impl FhCore {
     #[wasm_bindgen(constructor)]
-    pub fn new(js: JsValue) -> Option<FhCore> {
-        let master_data: MasterData = js.into_serde().ok()?;
+    pub fn new(js: JsValue) -> Result<FhCore, JsValue> {
+        let result: serde_json::Result<MasterData> = js.into_serde();
 
-        Some(Self {
-            factory: Factory { master_data },
-        })
+        result
+            .map(|master_data| Self {
+                factory: Factory { master_data },
+            })
+            .map_err(|err| JsValue::from(err.to_string()))
+    }
+
+    #[cfg(feature = "console_error_panic_hook")]
+    pub fn init_console_panic(&self) {
+        console_error_panic_hook::set_once();
     }
 
     pub fn create_gear(&self, js: GearParams) -> Option<Gear> {

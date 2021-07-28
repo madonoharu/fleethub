@@ -17774,8 +17774,8 @@
       "luck": [16, 73],
       "slots": [],
       "stock": [],
-      "ctype": 83,
       "range": 1,
+      "ctype": 83,
       "fuel": 30,
       "ammo": 40,
       "next_id": null,
@@ -19044,7 +19044,7 @@
       "asw": [0, 0],
       "los": [70, 70],
       "luck": [30, 30],
-      "slots": [0, 0, 50, 531],
+      "slots": [0, 0, 50, 0],
       "stock": [
         { "gear_id": 509 },
         { "gear_id": 505 },

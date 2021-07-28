@@ -11,7 +11,7 @@ import { outputJSON } from "fs-extra";
 import got from "got";
 import { promisify } from "util";
 
-import storage from "./data/storage";
+import { readMasterData } from "./data/storage";
 
 const exec = promisify(child_process.exec);
 
@@ -257,7 +257,7 @@ class LocaleUpdater {
 }
 
 const updateLocales = async () => {
-  const md = await storage.readMasterData();
+  const md = await readMasterData();
   const promises = languages.map((lang) =>
     new LocaleUpdater(md, lang).update()
   );

@@ -199,9 +199,6 @@ export const useFleet = (id: string) => {
   const state = useSelector((root) => selectFleetState(root, id));
   const dispatch = useDispatch();
 
-  const fleet = state && core.create_fleet(state);
-  fleet?.free();
-
   const setShip = useCallback(
     (position: Omit<ShipPosition, "id">, ship: Ship) => {
       dispatch(

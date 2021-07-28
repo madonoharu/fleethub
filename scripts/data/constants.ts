@@ -8,7 +8,7 @@ import {
   NormalFormationDef,
 } from "@fleethub/core/types";
 import { GoogleSpreadsheet } from "google-spreadsheet";
-import { set } from "lodash";
+import set from "lodash/set";
 
 const maybeNumber = (val: unknown): number | null => {
   if (val === "") return null;

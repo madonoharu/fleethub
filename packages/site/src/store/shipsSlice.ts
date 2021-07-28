@@ -1,5 +1,5 @@
 import { ShipParams } from "@fleethub/core";
-import { FhEntity, GearKey, Role, ShipKey } from "@fleethub/utils";
+import { FhEntity, GearKey, ShipKey } from "@fleethub/utils";
 import {
   createEntityAdapter,
   createSlice,
@@ -12,7 +12,7 @@ import { selectShipsState } from "./selectors";
 
 export type ShipEntity = FhEntity<ShipParams, GearKey>;
 
-export type ShipPosition = { id: string; role: Role; key: ShipKey };
+export type ShipPosition = { id: string; key: ShipKey };
 
 const adapter = createEntityAdapter<ShipEntity>();
 export const shipsSelectors: EntitySelectors<ShipEntity, DefaultRootState> =

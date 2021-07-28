@@ -8,7 +8,7 @@ import { getConstants } from "./constants";
 import { updateGearData } from "./gear";
 import getGoogleSpreadsheet from "./getGoogleSpreadsheet";
 import { updateShipData } from "./ship";
-import storage from "./storage";
+import { updateMaster } from "./storage";
 
 const fetchStart2 = async (): Promise<Start2> => {
   return got
@@ -76,7 +76,7 @@ export const updateData = async () => {
 
   const promises = keys.map((key) => {
     const next = nextMd[key];
-    return next && storage.update(key, () => next);
+    return next && updateMaster(key, () => next);
   });
 
   await Promise.all(promises);
@@ -89,7 +89,7 @@ export const updateImages = async () => {
   await log("Start: update_images");
 
   const banners = await updateCloudinary(start2);
-  await storage.update("ship_banners", () => banners);
+  await updateMaster("ship_banners", () => banners);
 
   await log("Success: update_images");
 };

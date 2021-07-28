@@ -13,6 +13,11 @@ import { StoreProvider } from "../store";
 
 const loader = import("@fleethub/core/pkg").then((mod) => {
   const core = new mod.FhCore(master_data);
+
+  if (process.env.NODE_ENV === "development") {
+    core.init_console_panic();
+  }
+
   const value = { master_data, core };
 
   const App: React.FC = () => (

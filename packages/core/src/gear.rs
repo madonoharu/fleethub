@@ -286,7 +286,7 @@ impl Gear {
         ace_modifier as f64 + (self.exp as f64).sqrt()
     }
 
-    pub fn calc_fighter_power(&self, slot_size: i32) -> i32 {
+    pub fn calc_fighter_power(&self, slot_size: u8) -> i32 {
         let pm = self.proficiency_fighter_power_modifier();
 
         let multiplier =
@@ -295,7 +295,7 @@ impl Gear {
         (multiplier * (slot_size as f64).sqrt() + pm).floor() as i32
     }
 
-    pub fn calc_interception_power(&self, slot_size: i32) -> i32 {
+    pub fn calc_interception_power(&self, slot_size: u8) -> i32 {
         let pm = self.proficiency_fighter_power_modifier();
 
         let multiplier = self.anti_air as f64
@@ -362,7 +362,7 @@ impl Gear {
         }
     }
 
-    pub fn calc_contact_trigger_factor(&self, slot_size: i32) -> f64 {
+    pub fn calc_contact_trigger_factor(&self, slot_size: u8) -> f64 {
         ((self.los as f64) * (slot_size as f64).sqrt()).floor()
     }
 

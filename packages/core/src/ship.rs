@@ -200,7 +200,7 @@ impl Ship {
         DamageState::from_hp(self.max_hp().unwrap_or_default(), self.current_hp)
     }
 
-    pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (&Gear, Option<i32>)> {
+    pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (&Gear, Option<u8>)> {
         self.gears.iter().map(move |(index, gear)| {
             let slot_size = if index == GearArray::EXSLOT_INDEX {
                 Some(0)
@@ -759,11 +759,11 @@ impl Ship {
         self.banner.clone()
     }
 
-    pub fn get_slot_size(&self, index: usize) -> Option<i32> {
+    pub fn get_slot_size(&self, index: usize) -> Option<u8> {
         self.slots.get(index).and_then(|&s| s)
     }
 
-    pub fn get_max_slot_size(&self, index: usize) -> Option<i32> {
+    pub fn get_max_slot_size(&self, index: usize) -> Option<u8> {
         self.master.slots.get(index).and_then(|&s| s)
     }
 

@@ -1,25 +1,22 @@
 import styled from "@emotion/styled";
 import {
-  DayCutin,
   DayCutinRateAnalysis,
   FleetDayCutinRateAnalysis,
   Org,
   OrgDayCutinRateAnalysis,
-  ShipDayCutinRateAnalysis,
 } from "@fleethub/core";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { LabeledValue } from "../../atoms";
+import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import AttackChip from "./AttackChip";
-import ShipNameCell from "./ShipNameCell";
 
 const LeftContainer = styled.div`
   > * {
     margin-top: 4px;
-    text-align: center;
   }
   > :last-child {
     margin-bottom: 4px;
@@ -31,7 +28,7 @@ const RightContainer = styled(LeftContainer)`
   line-height: 24px;
 `;
 
-const ShellingAbilityCell: React.FCX<{ data: DayCutinRateAnalysis }> = ({
+const CutinRateCell: React.FCX<{ data: DayCutinRateAnalysis }> = ({
   className,
   data,
 }) => {
@@ -39,23 +36,20 @@ const ShellingAbilityCell: React.FCX<{ data: DayCutinRateAnalysis }> = ({
   return (
     <div
       className={className}
-      style={{ display: "flex", alignItems: "flex-end" }}
+      css={{ display: "flex", alignItems: "flex-end" }}
     >
       <LeftContainer>
         {data.rates.map(([attack, rate], index) => (
           <LabeledValue
             key={index}
             label={<AttackChip attack={attack} />}
-            value={rate != null ? toPercent(rate) : "不明"}
+            value={toPercent(rate)}
           />
         ))}
       </LeftContainer>
       <RightContainer>
         <LabeledValue label="観測項" value={data.observation_term} />
-        <LabeledValue
-          label="特殊攻撃率"
-          value={total != null ? toPercent(total) : "不明"}
-        />
+        <LabeledValue label="特殊攻撃率" value={toPercent(total)} />
       </RightContainer>
     </div>
   );
@@ -82,20 +76,18 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({
           columns={[
             {
               label: "艦娘",
-              getValue: ({ name, banner }) => (
-                <ShipNameCell name={name} banner={banner || ""} />
-              ),
+              getValue: ({ ship_id }) => <ShipNameplate shipId={ship_id} />,
             },
             {
               label: "確保",
               getValue: (shipAnalysis) => (
-                <ShellingAbilityCell data={shipAnalysis.air_supremacy} />
+                <CutinRateCell data={shipAnalysis.air_supremacy} />
               ),
             },
             {
               label: "優勢",
               getValue: (shipAnalysis) => (
-                <ShellingAbilityCell data={shipAnalysis.air_superiority} />
+                <CutinRateCell data={shipAnalysis.air_superiority} />
               ),
             },
           ]}
@@ -109,7 +101,7 @@ type Props = {
   org: Org;
 };
 
-const DayAttackRateTable: React.FCX<Props> = ({ className, org }) => {
+const DayCutinRateTable: React.FCX<Props> = ({ className, org }) => {
   const { core } = useFhCore();
   const data: OrgDayCutinRateAnalysis = core.analyze_day_cutin(org);
 
@@ -123,7 +115,7 @@ const DayAttackRateTable: React.FCX<Props> = ({ className, org }) => {
   );
 };
 
-export default styled(DayAttackRateTable)`
+export default styled(DayCutinRateTable)`
   > * {
     margin-bottom: 24px;
   }

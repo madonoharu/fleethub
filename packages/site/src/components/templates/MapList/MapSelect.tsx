@@ -1,8 +1,7 @@
-import { MapData, maps } from "@fleethub/data";
 import { Button } from "@material-ui/core";
 import React from "react";
 
-import { Divider } from "../../../components";
+import { Divider } from "../../atoms";
 
 const worlds = [
   { id: 1, name: "鎮守府海域" },
@@ -20,20 +19,21 @@ const worlds = [
 const idToKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`;
 
 type Props = {
-  onSelect?: (map: MapData) => void;
+  mapIds: number[];
+  onSelect?: (mapId: number) => void;
 };
 
-const MapSelect: React.FCX<Props> = ({ className, onSelect }) => {
+const MapSelect: React.FCX<Props> = ({ className, mapIds, onSelect }) => {
   return (
     <div className={className}>
-      {worlds.map(({ id, name }) => (
-        <div key={id}>
-          <Divider label={name} />
-          {maps
-            .filter((data) => Math.floor(data.id / 10) === id)
-            .map((data) => (
-              <Button key={data.id} onClick={() => onSelect?.(data)}>
-                {idToKey(data.id)}
+      {worlds.map((world) => (
+        <div key={world.id}>
+          <Divider label={world.name} />
+          {mapIds
+            .filter((mapId) => Math.floor(mapId / 10) === world.id)
+            .map((mapId) => (
+              <Button key={mapId} onClick={() => onSelect?.(mapId)}>
+                {idToKey(mapId)}
               </Button>
             ))}
         </div>
