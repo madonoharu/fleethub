@@ -27,7 +27,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
       />
       <PlanTabs org={org} />
 
-      <PlanAnalysisPanel org={org} />
+      <PlanAnalysisPanel css={{ marginTop: 8 }} org={org} />
     </Container>
   );
 };

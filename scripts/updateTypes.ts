@@ -4,7 +4,7 @@ import fs from "fs-extra";
 import path from "path";
 import { promisify } from "util";
 
-import storage from "./data/storage";
+import { readMasterData } from "./data/storage";
 
 const RS_GEAR_PATH = path.resolve("packages/core/src/types/gear.rs");
 const RS_SHIP_PATH = path.resolve("packages/core/src/types/ship.rs");
@@ -152,7 +152,7 @@ const updateTs = async (md: MasterDataInput) => {
 };
 
 const main = async () => {
-  const md = await storage.readMasterData();
+  const md = await readMasterData();
   await Promise.all([updateRs(md), updateTs(md)]);
 };
 

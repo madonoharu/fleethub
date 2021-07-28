@@ -3,7 +3,8 @@ import {
   GoogleSpreadsheetRow,
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
-import { get, isEqual } from "lodash";
+import get from "lodash/get";
+import isEqual from "lodash/isEqual";
 
 type Row = Record<string, unknown>;
 

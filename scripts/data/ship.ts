@@ -11,7 +11,7 @@ import {
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
 import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
-import { set } from "lodash";
+import set from "lodash/set";
 
 import { updateRows } from "./utils";
 

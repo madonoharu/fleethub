@@ -13,14 +13,42 @@ const getApp = () => {
   }));
 };
 
-const read = <K extends keyof MasterDataInput>(
-  key: K
-): Promise<MasterDataInput[K]> =>
+export const getBucket = () => getApp().storage().bucket();
+
+export const readJson = <T>(path: string) =>
   got
-    .get(
-      `https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`
-    )
-    .json();
+    .get(`https://storage.googleapis.com/kcfleethub.appspot.com/${path}`)
+    .json<T>();
+
+export const exists = (path: string): Promise<boolean> =>
+  getBucket()
+    .file(path)
+    .exists()
+    .then((res) => res[0]);
+
+export const updateJson = async <T>(
+  path: string,
+  updater: (current: T | undefined) => T
+): Promise<T> => {
+  const file = getBucket().file(path);
+
+  let current: T | undefined;
+  if (await exists(path)) {
+    current = await readJson<T>(path);
+  }
+
+  const next = updater(current);
+
+  if (!equalJson(current, next)) {
+    await file.save(JSON.stringify(next));
+  }
+
+  return next;
+};
+
+export const readMaster = <K extends keyof MasterDataInput>(
+  key: K
+): Promise<MasterDataInput[K]> => readJson(`data/${key}.json`);
 
 export const write = <K extends keyof MasterDataInput>(
   key: K,
@@ -31,22 +59,15 @@ export const write = <K extends keyof MasterDataInput>(
   const destination = `data/${key}.json`;
   const metadata = { cacheControl: "public, max-age=60" };
 
-  const bucket = getApp().storage().bucket();
+  const bucket = getBucket();
   return bucket.file(destination).save(str, { metadata });
 };
 
-export const update = async <K extends keyof MasterDataInput>(
+export const updateMaster = <K extends keyof MasterDataInput>(
   key: K,
-  cb: (current: MasterDataInput[K]) => MasterDataInput[K]
+  cb: (current: MasterDataInput[K] | undefined) => MasterDataInput[K]
 ): Promise<MasterDataInput[K]> => {
-  const current = await read(key);
-  const next = cb(current);
-
-  if (!equalJson(current, next)) {
-    await write(key, next);
-  }
-
-  return next;
+  return updateJson(`data/${key}.json`, cb);
 };
 
 const MASTER_DATA_KEYS = [
@@ -65,28 +86,7 @@ const MASTER_DATA_KEYS = [
 
 export const readMasterData = async (): Promise<MasterDataInput> => {
   const entries = await Promise.all(
-    MASTER_DATA_KEYS.map(async (key) => [key, await read(key)])
+    MASTER_DATA_KEYS.map(async (key) => [key, await readMaster(key)])
   );
   return Object.fromEntries(entries) as MasterDataInput;
-};
-
-export const writeMasterData = async (md: MasterDataInput) => {
-  const promises = MASTER_DATA_KEYS.map(async (key) => {
-    const current = await read(key).catch();
-    const data = md[key];
-
-    if (equalJson(current, data)) return;
-
-    await write(key, data);
-  });
-
-  await Promise.all(promises);
-};
-
-export default {
-  read,
-  write,
-  update,
-  writeMasterData,
-  readMasterData,
 };
