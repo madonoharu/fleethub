@@ -33,7 +33,7 @@
     "literal-case": "^1.0.0",
     "localforage": "^1.9.0",
     "lz-string-uri-fix": "^1.4.5",
-    "next": "^11.0.1",
+    "next": "^11.1.0",
     "next-i18next": "^8.5.5",
     "normalizr": "^3.6.1",
     "re-reselect": "^4.0.0",
