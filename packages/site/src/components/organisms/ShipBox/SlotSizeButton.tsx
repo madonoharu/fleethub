@@ -50,7 +50,9 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
           <Button onClick={handleInit}>初期値({max ?? "?"})</Button>
         </div>
 
-        <Slider value={current} max={max} onChange={handleSliderChange} />
+        {max && (
+          <Slider value={current} max={max} onChange={handleSliderChange} />
+        )}
       </DialogContent>
     </>
   );

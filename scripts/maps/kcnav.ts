@@ -91,15 +91,15 @@ export type KcnavEnemyShip = {
   equips: [number, number, number, number, number];
 };
 
-export type EnemyFleetAirpower = [number, number, number, number];
+export type KcnavEnemyFleetFighterPower = [number, number, number, number];
 
 export type KcnavEnemyFleet = {
   mainFleet: KcnavEnemyShip[];
   escortFleet: KcnavEnemyShip[];
   formation: number;
   count: number;
-  airpower: EnemyFleetAirpower;
-  lbasAirpower: EnemyFleetAirpower;
+  airpower: KcnavEnemyFleetFighterPower;
+  lbasAirpower: KcnavEnemyFleetFighterPower;
   diff?: number;
 };
 
@@ -254,7 +254,7 @@ const writeCachedMap = (mapData: KcnavMap) => {
   fs.outputJsonSync(".cache/kcnav", data);
 };
 
-export const getKcnavMap = async (id: number, cache = false) => {
+export const getKcnavMap = async (id: number, cache = true) => {
   const mapClient = new KcnavMapClient(id);
 
   if (cache) {

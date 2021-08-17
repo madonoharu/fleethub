@@ -6,6 +6,10 @@ import { useModal } from "../../../hooks";
 import { Slider } from "../../atoms";
 import { NumberInput } from "../../molecules";
 
+const StyledButton = styled(Button)`
+  width: 80px;
+`;
+
 const SpaceBetween = styled.div`
   display: flex;
   justify-content: space-between;
@@ -25,12 +29,18 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
 
   return (
     <DialogContent>
-      <NumberInput fullWidth {...inputProps} />
+      <NumberInput startLabel="Level" fullWidth {...inputProps} />
       <Slider {...inputProps} />
       <SpaceBetween>
-        <Button onClick={set1}>Lv 1</Button>
-        <Button onClick={set99}>Lv 99</Button>
-        <Button onClick={set175}>Lv 175</Button>
+        <StyledButton variant="outlined" onClick={set1}>
+          Lv 1
+        </StyledButton>
+        <StyledButton variant="outlined" onClick={set99}>
+          Lv 99
+        </StyledButton>
+        <StyledButton variant="outlined" onClick={set175}>
+          Lv 175
+        </StyledButton>
       </SpaceBetween>
     </DialogContent>
   );
@@ -41,11 +51,12 @@ const Component: React.FCX<Props> = ({ className, value, onChange }) => {
 
   return (
     <>
-      <Tooltip title="levelを変更">
+      <Tooltip title="Change">
         <Button className={className} onClick={Modal.show}>
           Lv{value}
         </Button>
       </Tooltip>
+
       <Modal>
         <Form value={value} onChange={onChange} />
       </Modal>
@@ -54,7 +65,9 @@ const Component: React.FCX<Props> = ({ className, value, onChange }) => {
 };
 
 const StyledComponent = styled(Component)`
-  padding: 0 4px;
+  height: 100%;
+  justify-content: flex-start;
+  width: 56px;
 `;
 
 export default StyledComponent;

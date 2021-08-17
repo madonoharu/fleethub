@@ -15,6 +15,4 @@ export const FolderIcon = styled(MuiFolderIcon)(
   `
 );
 
-export { default as GithubIcon } from "./GithubIcon";
 export { default as KctoolsIcon } from "./KctoolsIcon";
-export { default as TwitterIcon } from "./TwitterIcon";

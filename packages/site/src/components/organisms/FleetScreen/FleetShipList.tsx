@@ -1,43 +1,24 @@
 import styled from "@emotion/styled";
-import { Fleet, Ship } from "@fleethub/core";
-import { SHIP_KEYS, ShipKey } from "@fleethub/utils";
-import React, { useCallback } from "react";
+import { Fleet } from "@fleethub/core";
+import { SHIP_KEYS } from "@fleethub/utils";
+import React from "react";
 
-import { ShipPosition } from "../../../store";
 import ShipBox from "../ShipBox";
 
 type FleetShipListProps = {
   fleet: Fleet;
   size?: number;
-  setShip?: (position: Omit<ShipPosition, "id">, ship: Ship) => void;
-};
-
-type ListItemProps = Pick<FleetShipListProps, "setShip"> & {
-  ship?: Ship;
-  shipKey: ShipKey;
-};
-
-const ListItem: React.FC<ListItemProps> = ({ shipKey, ship, setShip }) => {
-  const handleShipChange = useCallback(
-    (ship: Ship) => {
-      setShip?.({ key: shipKey }, ship);
-    },
-    [shipKey, setShip]
-  );
-
-  return <ShipBox ship={ship} onShipChange={handleShipChange} />;
 };
 
 const FleetShipList: React.FCX<FleetShipListProps> = React.memo(
-  ({ className, fleet, size = 6, setShip }) => {
+  ({ className, fleet, size = 6 }) => {
     return (
       <div className={className}>
         {SHIP_KEYS.filter((_, index) => index < size).map((key) => (
-          <ListItem
+          <ShipBox
             key={key}
-            shipKey={key}
             ship={fleet.get_ship(key)}
-            setShip={setShip}
+            position={{ id: fleet.id, key }}
           />
         ))}
       </div>

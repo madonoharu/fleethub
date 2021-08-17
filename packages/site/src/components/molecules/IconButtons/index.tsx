@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import AddIcon from "@material-ui/icons/Add";
 import CachedIcon from "@material-ui/icons/Cached";
 import ClearIcon from "@material-ui/icons/Clear";
@@ -14,8 +15,9 @@ import SaveIcon from "@material-ui/icons/Save";
 import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import ShareIcon from "@material-ui/icons/Share";
 import StarIcon from "@material-ui/icons/Star";
+import TwitterIcon from "@material-ui/icons/Twitter";
 
-import { KctoolsIcon, TwitterIcon } from "../../atoms";
+import { KctoolsIcon } from "../../atoms";
 import withIconButton from "./withIconButton";
 
 export { withIconButton };
@@ -37,7 +39,10 @@ export const EditButton = withIconButton(EditIcon);
 export const OpenInNewButton = withIconButton(OpenInNewIcon);
 export const ImportButton = withIconButton(SaveAltIcon);
 export const StarButton = withIconButton(StarIcon);
-export const TweetButton = withIconButton(TwitterIcon);
+
+export const TweetButton = styled(withIconButton(TwitterIcon))`
+  color: #3ba9ee;
+`;
 
 export const KctoolsButton = withIconButton(KctoolsIcon);
 KctoolsButton.defaultProps = {

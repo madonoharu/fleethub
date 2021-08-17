@@ -1,82 +1,65 @@
-import isEqual from "lodash/isEqual";
+import {
+  FhMap,
+  MapEnemyFleet,
+  MapLink,
+  MapNode,
+  MapNodeType,
+} from "@fleethub/utils/src";
+import isMatch from "lodash/isMatch";
 
 import { KcnavEnemyFleet, KcnavEnemyShip, KcnavMap } from "./kcnav";
 
 export * from "./kcnav";
 
-export enum MapNodeType {
-  Unknown = -1,
-  Start = 0,
-  Resource = 2,
-  Maelstrom = 3,
-  Normal = 4,
-  Boss = 5,
-  Transport = 6,
-  Aerial = 7,
-  Bounty = 8,
-  AerialReconnaissance = 9,
-  AirDefense = 10,
-  NightBattle = 11,
-  LongRangeRadarAmbush = 13,
-  EmergencyAnchorageRepair = 14,
-
-  NoEnemy = 90,
-  Selector = 91,
-}
-
-type MapEnemyShip = number;
-
-export type MapEnemyFleet = {
-  main: MapEnemyShip[];
-  escort?: MapEnemyShip[];
-  formations: number[];
-  diff?: number;
-};
-
-export type MapNode = {
-  point: string;
-  x: number;
-  y: number;
-  type: number;
-  d?: number;
-  enemies?: MapEnemyFleet[];
-};
-
-export type MapLink = [string, string];
-
-export type MapData = {
-  id: number;
-  nodes: MapNode[];
-  links: MapLink[];
-};
-
 const formatEnemyShip = (kcnavShip: KcnavEnemyShip) => kcnavShip.id;
+
 const formatEnemyFleet = ({
   mainFleet,
   escortFleet,
+  formation,
   diff,
-}: KcnavEnemyFleet) => {
+  airpower,
+  lbasAirpower,
+}: KcnavEnemyFleet): MapEnemyFleet => {
   const main = mainFleet.map(formatEnemyShip);
   const escort = escortFleet.length
     ? escortFleet.map(formatEnemyShip)
     : undefined;
-  return { main, escort, diff };
+
+  const formations = [formation];
+
+  return {
+    main,
+    escort,
+    formations,
+    diff,
+    fp: airpower,
+    lbasFp: lbasAirpower,
+  };
 };
+
 const formatKcnavEnemies = (kcnavEnemies: KcnavEnemyFleet[]) => {
   const enemies: MapEnemyFleet[] = [];
 
-  for (const kcnavFleet of kcnavEnemies) {
+  kcnavEnemies.forEach((kcnavFleet) => {
     const { formation } = kcnavFleet;
     const formatted = formatEnemyFleet(kcnavFleet);
     const found = enemies.find(({ main, escort, diff }) =>
-      isEqual({ main, escort, diff }, formatted)
+      isMatch(formatted, { main, escort, diff })
     );
+
+    if (found?.formations.includes(formation)) {
+      return;
+    }
+
     if (found) {
       found.formations.push(formation);
     } else {
-      enemies.push({ ...formatted, formations: [formation] });
+      enemies.push(formatted);
     }
-  }
+  });
+
+  enemies.forEach((enemy) => enemy.formations.sort());
 
   return enemies;
 };
@@ -100,7 +83,7 @@ export const formatKcnavMap = ({
   spots,
   lbasdistance,
   enemycomps,
-}: KcnavMap) => {
+}: KcnavMap): FhMap => {
   const nodes: MapNode[] = Object.entries(spots).map(([point, [x, y]]) => {
     const edgeEntries = Object.entries(route).filter(
       (entry) => entry[1][1] === point

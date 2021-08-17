@@ -1,9 +1,4 @@
-import {
-  AnyAction,
-  combineReducers,
-  configureStore,
-  getDefaultMiddleware,
-} from "@reduxjs/toolkit";
+import { AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import localforage from "localforage";
 import { persistReducer, WebStorage } from "redux-persist";
 import { ThunkAction } from "redux-thunk";
@@ -56,7 +51,17 @@ const persistedReducerBase: typeof combinedReducer = (...args) => {
 };
 
 const persistedReducer = persistReducer(
-  { key: "root", version: 1, storage, throttle: 50, timeout: 0 },
+  {
+    key: "root",
+    version: 1,
+    storage,
+    throttle: 50,
+    timeout: 0,
+    serialize: false,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    deserialize: false,
+  },
   persistedReducerBase
 );
 
@@ -67,11 +72,12 @@ const extraArgument = undefined;
 export const createStore = () => {
   const store = configureStore({
     reducer: rootReducer,
-    middleware: getDefaultMiddleware({
-      thunk: { extraArgument },
-      immutableCheck: false,
-      serializableCheck: false,
-    }),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        thunk: { extraArgument },
+        immutableCheck: false,
+        serializableCheck: false,
+      }),
   });
 
   return store;

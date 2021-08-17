@@ -5,8 +5,35 @@ use crate::{
     fleet::Fleet,
     org::Org,
     ship::Ship,
-    types::{AirState, DayCutin, DayCutinDef, MasterConstants, Role},
+    types::{
+        AirState, DamageState, DayCutin, DayCutinDef, Engagement, Formation,
+        FormationAttackModifiers, MasterConstants, MoraleState, Role,
+    },
 };
+
+struct ShellingContext {
+    engagement: Engagement,
+    formation: Formation,
+    fleet_factor: f64,
+    damage_state: DamageState,
+    cutin: Option<DayCutin>,
+    ship_index: usize,
+    fleet_size: usize,
+}
+
+struct ShellingParamsBase {
+    fleet_factors: (f64, f64),
+    ap_shell_mods: Option<(f64, f64)>,
+    formation_mods: FormationAttackModifiers,
+    engagement: Engagement,
+    damage_state: DamageState,
+    morale_state: MoraleState,
+    cutin_def: Option<DayCutinDef>,
+    ship_index: usize,
+    fleet_size: usize,
+
+    fit_gun_bonus: Option<f64>,
+}
 
 #[derive(Debug, Default, Serialize, TS)]
 pub struct DayCutinRateAnalysis {

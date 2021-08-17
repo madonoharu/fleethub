@@ -37,7 +37,7 @@ type StatEntry = {
 };
 
 const StatLabel: React.FCX<{ statKey: StatKey }> = ({ className, statKey }) => {
-  const { t } = useTranslation("terms");
+  const { t } = useTranslation("common");
   return (
     <div
       className={className}
@@ -75,7 +75,7 @@ export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) =>
       key !== "radius" &&
       key !== "speed"
     ) {
-      bonus = getBonusText(key, ebonuses[camelCase(key)]);
+      bonus = getBonusText(key, ebonuses[key]);
     }
 
     if (!value && !bonus) return;

@@ -1,16 +1,20 @@
 use crate::{
     air_squadron::AirSquadron,
-    array::{GearArray, ShipArray},
-    fleet::Fleet,
+    fleet::{Fleet, ShipArray},
     gear::Gear,
+    gear_array::GearArray,
     org::Org,
     ship::Ship,
-    types::{AirSquadronState, FleetState, GearState, MasterData, OrgState, ShipState},
+    types::{
+        AirSquadronState, EBonusFn, EBonuses, FleetState, GearState, MasterData, OrgState,
+        ShipAttr, ShipState,
+    },
     utils::xxh3,
 };
 
 pub struct Factory {
     pub master_data: MasterData,
+    pub ebonus_fn: EBonusFn,
 }
 
 impl Factory {
@@ -23,12 +27,11 @@ impl Factory {
             .iter()
             .find(|mg| mg.gear_id == state.gear_id)?;
 
-        let attrs = self.master_data.find_gear_attrs(master);
         let ibonuses = self
             .master_data
             .get_ibonuses(master, state.stars.unwrap_or_default());
 
-        Some(Gear::new(state, master, attrs, ibonuses))
+        Some(Gear::new(state, master, ibonuses))
     }
 
     pub fn create_ship(&self, input: Option<ShipState>) -> Option<Ship> {
@@ -55,23 +58,19 @@ impl Factory {
             create_gear(gx),
         ]);
 
-        let master = self
+        let master_ship = self
             .master_data
             .ships
             .iter()
             .find(|ship| ship.ship_id == state.ship_id)?;
 
-        let attrs = self.master_data.find_ship_attrs(&master);
+        let equippable = self.master_data.create_ship_equippable(&master_ship);
 
-        let equippable = self.master_data.create_ship_equippable(&master);
+        let ebonuses: EBonuses = self.ebonus_fn.call(&master_ship, &gears);
 
-        let banner = self
-            .master_data
-            .ship_banners
-            .get(&state.ship_id.to_string())
-            .cloned();
+        let ship = Ship::new(state, master_ship, equippable, gears, ebonuses);
 
-        Some(Ship::new(state, master, attrs, equippable, banner, gears))
+        Some(ship)
     }
 
     pub fn create_fleet(&self, input: Option<FleetState>) -> Fleet {
@@ -182,5 +181,34 @@ impl Factory {
             org_type: org_type.unwrap_or_default(),
             side: side.unwrap_or_default(),
         })
+    }
+
+    pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
+        let master_ship = self
+            .master_data
+            .ships
+            .iter()
+            .find(|ship| ship.ship_id == ship_id)?;
+
+        let state = if master_ship.has_attr(ShipAttr::Abyssal) {
+            let stock = &master_ship.stock;
+            ShipState {
+                ship_id,
+                g1: stock.get(0).cloned(),
+                g2: stock.get(1).cloned(),
+                g3: stock.get(2).cloned(),
+                g4: stock.get(3).cloned(),
+                g5: stock.get(4).cloned(),
+                gx: stock.get(5).cloned(),
+                ..Default::default()
+            }
+        } else {
+            ShipState {
+                ship_id,
+                ..Default::default()
+            }
+        };
+
+        self.create_ship(Some(state))
     }
 }

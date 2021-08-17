@@ -1,9 +1,9 @@
 pub mod air_squadron;
 pub mod analyzer;
-pub mod array;
 pub mod factory;
 pub mod fleet;
 pub mod gear;
+pub mod gear_array;
 pub mod org;
 pub mod ship;
 
@@ -20,7 +20,7 @@ use gear::Gear;
 use org::Org;
 use ship::Ship;
 
-use types::MasterData;
+use types::{EBonusFn, MasterData};
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
@@ -73,12 +73,15 @@ pub struct FhCore {
 #[wasm_bindgen]
 impl FhCore {
     #[wasm_bindgen(constructor)]
-    pub fn new(js: JsValue) -> Result<FhCore, JsValue> {
-        let result: serde_json::Result<MasterData> = js.into_serde();
+    pub fn new(js_master: JsValue, js_fn: js_sys::Function) -> Result<FhCore, JsValue> {
+        let result = MasterData::new(js_master);
 
         result
             .map(|master_data| Self {
-                factory: Factory { master_data },
+                factory: Factory {
+                    master_data,
+                    ebonus_fn: EBonusFn::new(js_fn),
+                },
             })
             .map_err(|err| JsValue::from(err.to_string()))
     }
@@ -111,6 +114,10 @@ impl FhCore {
     pub fn create_org(&self, js: OrgParams) -> Option<Org> {
         let input = js.into_serde().ok();
         self.factory.create_org(input)
+    }
+
+    pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
+        self.factory.create_ship_by_id(ship_id)
     }
 
     pub fn get_gear_ids(&self) -> Vec<u16> {

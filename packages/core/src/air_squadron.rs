@@ -1,9 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-use crate::{
-    array::{GearArray, SlotSizeArray},
-    gear::Gear,
-};
+use crate::{gear::Gear, gear_array::GearArray, types::SlotSizeArray};
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]

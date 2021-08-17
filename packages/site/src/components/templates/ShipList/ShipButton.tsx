@@ -3,7 +3,7 @@ import { Ship } from "@fleethub/core";
 import { Button } from "@material-ui/core";
 import React from "react";
 
-import ShipNameplate from "./ShipNameplate";
+import { ShipNameplate, ShipTooltip } from "../../organisms";
 
 type Props = {
   ship: Ship;
@@ -12,13 +12,11 @@ type Props = {
 
 const ShipButton: React.FCX<Props> = ({ className, ship, onClick }) => {
   return (
-    <Button className={className} onClick={onClick}>
-      <ShipNameplate
-        shipId={ship.ship_id}
-        banner={ship.banner}
-        name={ship.name}
-      />
-    </Button>
+    <ShipTooltip ship={ship}>
+      <Button className={className} onClick={onClick}>
+        <ShipNameplate shipId={ship.ship_id} />
+      </Button>
+    </ShipTooltip>
   );
 };
 

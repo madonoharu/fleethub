@@ -1,3 +1,5 @@
+import child_process from "child_process";
+import { promisify } from "util";
 import {
   AirState,
   DayCutin,
@@ -6,10 +8,9 @@ import {
   NightCutin,
   OrgType,
 } from "@fleethub/core/types";
-import child_process from "child_process";
-import { outputJSON } from "fs-extra";
+import { nonNullable, uniq } from "@fleethub/utils/src";
+import fs from "fs-extra";
 import got from "got";
-import { promisify } from "util";
 
 import { readMasterData } from "./data/storage";
 
@@ -27,7 +28,11 @@ const languages: Language[] = [
 ];
 
 type KC3Ships = Record<string, string>;
-type KC3ShipAffixes = { suffixes: Record<string, string> };
+type KC3ShipAffix = {
+  suffixes: Dictionary;
+  byId: Dictionary;
+  ctype: Dictionary;
+};
 type KC3Battle = {
   airbattle: string[][];
   engagement: string[][];
@@ -35,8 +40,28 @@ type KC3Battle = {
   cutinNight: string[];
 };
 
+const uniqDictionary = (dict: Dictionary): Dictionary => {
+  const state = new Map<string, string>();
+
+  const entries = Object.entries(dict)
+    .map(([key, value]) => {
+      if (!value) return undefined;
+
+      const duplicatedKey = state.get(value);
+      if (duplicatedKey) return [key, `$t(${duplicatedKey})`] as const;
+
+      state.set(value, key);
+
+      return [key, value] as const;
+    })
+    .filter(nonNullable);
+
+  return Object.fromEntries(entries);
+};
+
 class LocaleUpdater {
-  public kc3: typeof got;
+  private kc3: typeof got;
+  private tsun: typeof got;
 
   constructor(private md: MasterDataInput, private language: Language) {
     const { path, code } = language;
@@ -46,71 +71,52 @@ class LocaleUpdater {
         path || code
       }`,
     });
+
+    this.tsun = got.extend({
+      prefixUrl: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${code}`,
+    });
   }
 
   get lang() {
     return this.language.code;
   }
 
-  public getKC3Json = async <T = unknown>(filename: string) => {
+  private getKC3Json = async <T = unknown>(filename: string) => {
     const text = await this.kc3.get(filename).text();
-    return JSON.parse(text.replace(/^\ufeff/, "")) as T;
+    return JSON.parse(text.replace(/^\ufeff/, "").replaceAll("{ -}?", "")) as T;
   };
 
-  public output = async (filename: string, data: unknown) => {
-    await outputJSON(
+  private output = async (filename: string, data: unknown) => {
+    await fs.outputJSON(
       `packages/site/public/locales/${this.language.code}/${filename}`,
       data
     );
   };
 
-  public updateShips = async () => {
-    const [kc3Ships, kc3ShipAffixes] = await Promise.all([
-      this.getKC3Json<KC3Ships>("ships.json"),
-      this.getKC3Json<KC3ShipAffixes>("ship_affix.json"),
-    ]);
-
-    const dictionary: Dictionary = {};
-
-    this.md.ships.forEach(({ name }) => {
-      let translated = name;
-      Object.entries(kc3Ships).forEach(([key, value]) => {
-        translated = translated.replace(RegExp(`^${key}`), value);
-      });
-
-      Object.entries(kc3ShipAffixes.suffixes).forEach(([key, value]) => {
-        translated = translated.replace(key, value);
-      });
-
-      dictionary[name] = translated.replace("{ -}?", "");
-    });
-
-    await this.output("ships.json", dictionary);
+  private importKC3 = async (filename: string, outputName = filename) => {
+    const json = await this.getKC3Json(filename);
+    await this.output(outputName, json);
   };
 
-  public updateGears = async () => {
-    const dictionary = await this.getKC3Json<Dictionary>("items.json");
-    await this.output("gears.json", dictionary);
-  };
-
-  public updateGearTypes = async () => {
-    const equiptype = await this.getKC3Json<string[][]>("equiptype.json");
-    const dictionary: Dictionary = {};
-
-    this.md.gear_types.forEach((type) => {
-      const str = equiptype[2][type.id];
-      if (str) {
-        dictionary[type.name] = str;
-      }
-    });
-
-    await this.output("gearTypes.json", dictionary);
-  };
-
-  public updateTerms = async () => {
+  private updateCommon = async () => {
     const kc3Terms = await this.getKC3Json<Dictionary>("terms.json");
 
     const kc3Battle = await this.getKC3Json<KC3Battle>("battle.json");
+
+    const kcnav = await this.tsun.get("kcnav.json").json<Dictionary>();
+
+    const worldNames = Object.fromEntries(
+      Object.entries(kcnav).filter(([key]) => /^worldName\d+/.test(key))
+    );
+
+    const nodeTypes = Object.fromEntries(
+      Object.entries(kcnav)
+        .filter(([key]) => /^nodeType.+/.test(key))
+        .map(([key, value]) => [
+          key,
+          value?.replace("[[", "$t(").replace("]]", ")"),
+        ])
+    );
 
     const airStateDictionary: Record<AirState, string> = {
       AirParity: kc3Battle.airbattle[0][0],
@@ -186,6 +192,27 @@ class LocaleUpdater {
       SubTorpTorp: kc3Terms["CutinLateTorpTorp"],
     };
 
+    const exnteds = Object.fromEntries(
+      [
+        "SpeedLand",
+        "SpeedSlow",
+        "SpeedFast",
+        "SpeedFaster",
+        "SpeedFastest",
+        "RangeShortAbbr",
+        "RangeMediumAbbr",
+        "RangeLongAbbr",
+        "RangeVeryLongAbbr",
+        "RangeExtremeLongAbbr",
+
+        "SettingsReset",
+        "SettingsShipStatsCurrent",
+        "SettingsShipStatsUnequipped",
+
+        "Unknown",
+      ].map((key) => [key, kc3Terms[key]])
+    );
+
     const dictionary: Dictionary = {
       max_hp: kc3Terms["ShipHp"],
       firepower: kc3Terms["ShipFire"],
@@ -208,50 +235,120 @@ class LocaleUpdater {
       interception: kc3Terms["ShipEvaInterception"],
       cost: kc3Terms["ShipDeployCost"],
 
+      ...exnteds,
+
       ...airStateDictionary,
       ...engagementDictionary,
       ...orgTypeDictionary,
       ...formationDictionary,
       ...dayCutinDictionary,
       ...nightCutinDictionary,
+
+      ...worldNames,
+      ...nodeTypes,
+
+      termUnknown: "$t(Unknown)",
     };
 
-    await this.output("terms.json", dictionary);
+    await this.output("common.json", dictionary);
   };
 
-  public updateShipTypes = async () => {
-    const shipTypes: Dictionary = {};
-    const kc3stype = await this.getKC3Json<string[]>("stype.json");
+  private async updateShipsAndCtype() {
+    const [kc3Ships, kc3ShipAffixes, kc3Ctype] = await Promise.all([
+      this.getKC3Json<KC3Ships>("ships.json"),
+      this.getKC3Json<KC3ShipAffix>("ship_affix.json"),
+      got(
+        "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json"
+      ).json<string[]>(),
+    ]);
 
-    this.md.ship_types.forEach((type) => {
-      shipTypes[type.name] = kc3stype[type.id];
+    const kc3SuffixEntries = Object.entries(kc3ShipAffixes.suffixes);
+    const suffixes = Object.keys(kc3ShipAffixes.suffixes);
+    const re = RegExp(`(${suffixes.join("|")})+$`);
+
+    const entries = this.md.ships
+      .map(({ ship_id, name }) => {
+        if (ship_id in kc3ShipAffixes.byId) {
+          return [ship_id, kc3ShipAffixes.byId[ship_id] || ""] as const;
+        }
+
+        const baseName = name.replace(re, "");
+        const suffix = name.replace(baseName, "");
+
+        const translatedBaseName = Object.entries(kc3Ships).find(
+          ([key]) => key === baseName
+        )?.[1];
+
+        if (!translatedBaseName) return undefined;
+
+        let translatedSuffix = suffix;
+        kc3SuffixEntries.forEach(([key, value]) => {
+          if (value) {
+            translatedSuffix = translatedSuffix.replace(key, value);
+          }
+        });
+
+        const translated = `${translatedBaseName}${translatedSuffix}`;
+        return [ship_id, translated] as const;
+      })
+      .filter(nonNullable);
+
+    const ships = Object.fromEntries(entries);
+
+    const ctypeBase = kc3Ctype.map((name) => {
+      let translated = name;
+
+      Object.entries(kc3Ships).forEach(([key, value]) => {
+        if (name.startsWith(key)) {
+          translated = name.replace(key, value);
+        }
+      });
+
+      Object.entries(kc3ShipAffixes.ctype).forEach(([key, value]) => {
+        if (value) {
+          translated = translated.replace(key, value);
+        }
+      });
+
+      return translated;
     });
 
-    await this.output("shipTypes.json", shipTypes);
-  };
+    const ctypeEntries = uniq(this.md.ships.map((ship) => ship.ctype))
+      .map((ctype): [number, string] | undefined => {
+        let translated: string | undefined;
 
-  public updateShipClasses = async () => {
-    const shipClasses: Dictionary = {};
-    const kc3ctype = await this.getKC3Json<string[]>("ctype.json");
+        if (ctype <= 1500) {
+          translated = ctypeBase[ctype];
+        } else {
+          translated =
+            ships[ctype] ||
+            this.md.ships.find((ship) => ship.ship_id === ctype)?.name;
+        }
 
-    this.md.ship_classes.forEach((sc) => {
-      const name = kc3ctype[sc.id];
-      if (name) {
-        shipClasses[sc.name] = kc3ctype[sc.id];
-      }
-    });
+        return translated ? [ctype, translated] : undefined;
+      })
+      .filter(nonNullable);
 
-    await this.output("shipClasses.json", shipClasses);
+    const ctype = Object.fromEntries(ctypeEntries);
+
+    await Promise.all([
+      this.output("ships.json", uniqDictionary(ships)),
+      this.output("ctype.json", ctype),
+    ]);
+  }
+
+  private updateGearTypes = async () => {
+    const equiptype = await this.getKC3Json<string[][]>("equiptype.json");
+    await this.output("gear_types.json", equiptype[2]);
   };
 
   public update = async () => {
     await Promise.all([
-      this.updateGears(),
+      this.updateCommon(),
+      this.updateShipsAndCtype(),
       this.updateGearTypes(),
-      this.updateShips(),
-      this.updateShipTypes(),
-      this.updateShipClasses(),
-      this.updateTerms(),
+      this.importKC3("stype.json"),
+      this.importKC3("items.json", "gears.json"),
     ]);
   };
 }

@@ -2,6 +2,29 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 #[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
+pub enum Engagement {
+    /// 同航戦
+    Parallel,
+    /// 反航戦
+    HeadOn,
+    /// T有利
+    GreenT,
+    /// T不利
+    RedT,
+}
+
+impl Engagement {
+    pub fn modifier(&self) -> f64 {
+        match *self {
+            Self::Parallel => 1.0,
+            Self::HeadOn => 0.8,
+            Self::GreenT => 1.2,
+            Self::RedT => 0.6,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 pub enum SingleFormation {
     /// 単縦陣
     LineAhead,
@@ -23,7 +46,7 @@ impl Default for SingleFormation {
     }
 }
 
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 pub enum CombinedFormation {
     /// 第一警戒航行序列
     Cruising1,
@@ -41,7 +64,7 @@ impl Default for CombinedFormation {
     }
 }
 
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 #[serde(untagged)]
 pub enum Formation {
     Single(SingleFormation),
@@ -56,20 +79,20 @@ impl Default for Formation {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct FormationAttackModifiers {
-    power_mod: Option<f64>,
-    accuracy_mod: Option<f64>,
-    evasion_mod: Option<f64>,
+    pub power_mod: Option<f64>,
+    pub accuracy_mod: Option<f64>,
+    pub evasion_mod: Option<f64>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct NormalFormationDef {
-    tag: Formation,
-    protection_rate: Option<f64>,
-    fleet_anti_air_mod: f64,
-    shelling: FormationAttackModifiers,
-    torpedo: FormationAttackModifiers,
-    asw: FormationAttackModifiers,
-    night: FormationAttackModifiers,
+    pub tag: Formation,
+    pub protection_rate: Option<f64>,
+    pub fleet_anti_air_mod: f64,
+    pub shelling: FormationAttackModifiers,
+    pub torpedo: FormationAttackModifiers,
+    pub asw: FormationAttackModifiers,
+    pub night: FormationAttackModifiers,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
@@ -85,6 +108,31 @@ pub enum FormationDef {
 impl Default for FormationDef {
     fn default() -> Self {
         Self::Normal(Default::default())
+    }
+}
+
+impl FormationDef {
+    pub fn tag(&self) -> Formation {
+        match self {
+            Self::Normal(normal) => normal.tag,
+            Self::Vanguard { top_half, .. } => top_half.tag,
+        }
+    }
+
+    pub fn get_normal_def(&self, ship_index: usize, fleet_size: usize) -> &NormalFormationDef {
+        match self {
+            Self::Normal(normal) => normal,
+            Self::Vanguard {
+                top_half,
+                bottom_half,
+            } => {
+                if ship_index * 2 <= fleet_size {
+                    top_half
+                } else {
+                    bottom_half
+                }
+            }
+        }
     }
 }
 

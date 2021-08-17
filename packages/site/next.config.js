@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -13,6 +14,10 @@ const config = {
   },
   i18n,
   localePath: "./public/locales",
+  images: {
+    domains: ["res.cloudinary.com"],
+  },
+
   webpack: (config, options) => {
     config.module.rules.push({
       test: /\.wasm$/,

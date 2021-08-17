@@ -227,22 +227,78 @@ impl DamageState {
             Self::Normal
         }
     }
+
+    pub fn common_power_mod(&self) -> f64 {
+        match *self {
+            Self::Normal | Self::Shouha => 1.0,
+            Self::Chuuha => 0.7,
+            Self::Taiha => 0.4,
+            _ => 0.0,
+        }
+    }
+
+    pub fn torpedo_power_mod(&self) -> f64 {
+        match *self {
+            Self::Normal | Self::Shouha => 1.0,
+            Self::Chuuha => 0.8,
+            _ => 0.0,
+        }
+    }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
-pub struct EBonuses {
-    pub firepower: i16,
-    pub torpedo: i16,
-    pub anti_air: i16,
-    pub armor: i16,
-    pub evasion: i16,
-    pub asw: i16,
-    pub los: i16,
-    pub bombing: i16,
-    pub accuracy: i16,
-    pub range: u8,
-    pub speed: i16,
-    pub effective_los: i16,
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, TS)]
+pub enum MoraleState {
+    Sparkle,
+    Normal,
+    Orange,
+    Red,
+}
+
+impl Default for MoraleState {
+    fn default() -> Self {
+        Self::Normal
+    }
+}
+
+impl MoraleState {
+    pub fn new(value: u8) -> Self {
+        if value > 49 {
+            Self::Sparkle
+        } else if value > 29 {
+            Self::Normal
+        } else if value > 19 {
+            Self::Orange
+        } else {
+            Self::Red
+        }
+    }
+
+    pub fn common_accuracy_mod(&self) -> f64 {
+        match *self {
+            Self::Sparkle => 1.2,
+            Self::Normal => 1.0,
+            Self::Orange => 0.8,
+            Self::Red => 0.5,
+        }
+    }
+
+    pub fn torpedo_accuracy_mod(&self) -> f64 {
+        match *self {
+            Self::Sparkle => 1.3,
+            Self::Normal => 1.0,
+            Self::Orange => 0.7,
+            Self::Red => 0.35,
+        }
+    }
+
+    pub fn evasion_mod(&self) -> f64 {
+        match *self {
+            Self::Sparkle => 0.7,
+            Self::Normal => 1.0,
+            Self::Orange => 1.2,
+            Self::Red => 1.4,
+        }
+    }
 }
 
 #[cfg(test)]

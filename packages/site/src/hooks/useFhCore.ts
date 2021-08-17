@@ -140,7 +140,7 @@ export const selectOrgState = createCachedSelector(
   selectorCreator: createShallowEqualSelector,
 });
 
-const useFhCoreContext = () => {
+export const useFhCoreContext = () => {
   const contextValue = useContext(FhCoreContext);
 
   if (!contextValue) {
@@ -170,9 +170,8 @@ export const useMasterShip = (shipId: number) => {
   const { master_data } = useFhCoreContext();
 
   const ship = master_data.ships.find((ship) => ship.ship_id === shipId);
-  const banner = master_data.ship_banners[shipId];
 
-  return { ship, banner };
+  return ship;
 };
 
 export const useGear = (id?: string) => {

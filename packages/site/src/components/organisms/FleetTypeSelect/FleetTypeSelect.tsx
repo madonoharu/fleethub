@@ -11,7 +11,7 @@ type Props = SelectInputProps & {
 };
 
 const FleetTypeSelect: React.FC<Props> = ({ fleetType, onChange, ...rest }) => {
-  const { t } = useTranslation("terms");
+  const { t } = useTranslation("common");
   return (
     <Select
       value={fleetType}

@@ -10,35 +10,23 @@ use arrayvec::ArrayVec;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::{
-    gear::Gear,
-    ship::Ship,
-    types::{GearAttr, GearType},
-};
-
-const GEAR_ARRAY_CAPACITY: usize = 6;
-
-const SLOT_SIZE_ARRAY_CAPACITY: usize = 5;
-
-const SHIP_ARRAY_CAPACITY: usize = 7;
-
 #[derive(Debug, Clone)]
 pub struct OptionalArray<T: Debug + Default + Clone, const N: usize>(pub [Option<T>; N]);
 
 macro_rules! impl_default {
-    ($($n: expr),*) => {
-        $(
-            impl<T: Debug + Default + Clone> Default for OptionalArray<T, $n> {
-                fn default() -> Self {
-                    let array: [Option<T>; $n] = Default::default();
-                    Self(array)
-                }
-            }
-        )*
-    }
+  ($($n: expr),*) => {
+      $(
+          impl<T: Debug + Default + Clone> Default for OptionalArray<T, $n> {
+              fn default() -> Self {
+                  let array: [Option<T>; $n] = Default::default();
+                  Self(array)
+              }
+          }
+      )*
+  }
 }
 
-impl_default!(GEAR_ARRAY_CAPACITY, SHIP_ARRAY_CAPACITY);
+impl_default!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
 impl<T, Idx, const N: usize> Index<Idx> for OptionalArray<T, N>
 where
@@ -91,69 +79,6 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
     }
 }
 
-pub type GearArray = OptionalArray<Gear, GEAR_ARRAY_CAPACITY>;
-
-impl GearArray {
-    pub const EXSLOT_INDEX: usize = Self::CAPACITY - 1;
-
-    pub fn without_ex(&self) -> impl Iterator<Item = (usize, &Gear)> {
-        self.iter().filter(|(i, _)| *i < Self::EXSLOT_INDEX)
-    }
-
-    pub fn has(&self, id: u16) -> bool {
-        self.has_by(|g| g.gear_id == id)
-    }
-
-    pub fn count(&self, id: u16) -> usize {
-        self.count_by(|g| g.gear_id == id)
-    }
-
-    pub fn has_attr(&self, attr: GearAttr) -> bool {
-        self.has_by(|g| g.has_attr(attr))
-    }
-
-    pub fn count_attr(&self, attr: GearAttr) -> usize {
-        self.count_by(|g| g.has_attr(attr))
-    }
-
-    pub fn has_type(&self, gear_type: GearType) -> bool {
-        self.has_by(|g| g.gear_type == gear_type)
-    }
-
-    pub fn count_type(&self, gear_type: GearType) -> usize {
-        self.count_by(|g| g.gear_type == gear_type)
-    }
-
-    pub fn get_by_gear_key(&self, key: &str) -> Option<&Gear> {
-        match key {
-            "g1" => self.get(0),
-            "g2" => self.get(1),
-            "g3" => self.get(2),
-            "g4" => self.get(3),
-            "g5" => self.get(4),
-            "gx" => self.get(5),
-            _ => None,
-        }
-    }
-}
-
-pub type ShipArray = OptionalArray<Ship, SHIP_ARRAY_CAPACITY>;
-
-impl ShipArray {
-    pub fn get_by_ship_key(&self, key: &str) -> Option<&Ship> {
-        match key {
-            "s1" => self.get(0),
-            "s2" => self.get(1),
-            "s3" => self.get(2),
-            "s4" => self.get(3),
-            "s5" => self.get(4),
-            "s6" => self.get(5),
-            "s7" => self.get(6),
-            _ => None,
-        }
-    }
-}
-
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct MyArrayVec<T, const CAP: usize>(ArrayVec<T, CAP>);
 
@@ -198,8 +123,6 @@ where
         Vec::<T>::transparent()
     }
 }
-
-pub type SlotSizeArray = MyArrayVec<Option<u8>, SLOT_SIZE_ARRAY_CAPACITY>;
 
 #[cfg(test)]
 mod test {

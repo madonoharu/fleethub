@@ -10,8 +10,6 @@ import {
   selectTempIds,
 } from "./filesSlice";
 import { orgsSlice } from "./orgsSlice";
-import { selectEntitiesState } from "./selectors";
-import { ignoreUndoable } from "./undoableOptions";
 
 // eslint-disable-next-line @typescript-eslint/require-await
 const fetchUrlData = async (url: URL) => undefined;
@@ -44,21 +42,18 @@ export const cloneFilesDataById = (
 export const copyFile =
   (id: string, to?: string): AppThunk =>
   (dispatch, getState) => {
-    const state = getState();
-    const cloned = cloneFilesDataById(selectEntitiesState(state), id);
-
-    const parentFile = cloned.files.find((file) => file.id === cloned.id);
-    if (parentFile?.name) {
-      parentFile.name = parentFile.name + "-コピー";
-    }
-
-    if (!to) {
-      to = filesSelectors
-        .selectAll(state)
-        .find((file) => isDirectory(file) && file.children.includes(id))?.id;
-    }
-
-    dispatch(filesSlice.actions.set({ data: cloned, to }));
+    // const state = getState();
+    // const cloned = cloneFilesDataById(selectEntitiesState(state), id);
+    // const parentFile = cloned.files.find((file) => file.id === cloned.id);
+    // if (parentFile?.name) {
+    //   parentFile.name = parentFile.name + "-コピー";
+    // }
+    // if (!to) {
+    //   to = filesSelectors
+    //     .selectAll(state)
+    //     .find((file) => isDirectory(file) && file.children.includes(id))?.id;
+    // }
+    // dispatch(filesSlice.actions.set({ data: cloned, to }));
   };
 
 export const cleanEntities = (): AppThunk => (dispatch, getState) => {

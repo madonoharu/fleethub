@@ -11,11 +11,11 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-wasm-bindgen = { version = "0.2.74", features = ["serde-serialize"] }
-js-sys = "0.3.51"
-serde_derive = "1.0.126"
-serde = { version = "1.0.126", features = ["derive"] }
-serde_json = "1.0.64"
+wasm-bindgen = { version = "0.2.75", features = ["serde-serialize"] }
+js-sys = "0.3.52"
+serde_derive = "1.0.127"
+serde = { version = "1.0.127", features = ["derive"] }
+serde_json = "1.0.66"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -33,7 +33,7 @@ strum = "0.21.0"
 strum_macros = "0.21.1"
 num-traits = "0.2.14"
 num-derive = "0.3.3"
-num_enum = "0.5.2"
+num_enum = "0.5.4"
 fasteval = "0.2.4"
 paste = "1.0.5"
 arrayvec = { version = "0.7.1", features = ["serde"] }
@@ -50,13 +50,13 @@ git = "https://github.com/arendjr/ts-rs"
 rev = "af2c35ae74ed4f26e3163d229840038dd8f5f10d"
 
 [dependencies.web-sys]
-version = "0.3.51"
+version = "0.3.52"
 features = [
   "console"
 ]
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.24"
+wasm-bindgen-test = "0.3.25"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.

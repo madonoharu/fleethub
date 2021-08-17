@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
 import React from "react";
+import { ShipEntity } from "../../../store";
 
 import ShipStatLabel from "./ShipStatLabel";
 
@@ -22,13 +23,22 @@ export type ShipStatKey = typeof SHIP_STAT_KEYS[number];
 
 type Props = {
   ship: Ship;
+  onUpdate?: (state: Partial<ShipEntity>) => void;
 };
 
-const ShipStats: React.FCX<Props> = ({ className, ship }) => {
+const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
     <div className={className}>
-      {SHIP_STAT_KEYS.map((statKey) => (
-        <ShipStatLabel key={statKey} statKey={statKey} stat={ship[statKey]} />
+      {SHIP_STAT_KEYS.map((key) => (
+        <ShipStatLabel
+          key={key}
+          statKey={key}
+          stat={ship[key]}
+          naked={ship.get_naked_stat(key)}
+          mod={ship.get_stat_mod(key)}
+          ebonus={ship.get_ebonus(key)}
+          onUpdate={onUpdate}
+        />
       ))}
     </div>
   );

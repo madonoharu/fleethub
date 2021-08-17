@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@material-ui/core";
+import GitHubIcon from "@material-ui/icons/GitHub";
 import MenuIcon from "@material-ui/icons/Menu";
 import RedoIcon from "@material-ui/icons/Redo";
 import UndoIcon from "@material-ui/icons/Undo";
@@ -9,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActionCreators } from "redux-undo";
 
 import { useModal } from "../../../hooks";
-import { GithubIcon } from "../../atoms";
 import { ImportButton, withIconButton } from "../../molecules";
 import { ImportMenu } from "../../organisms";
 import GearList from "../GearList";
@@ -89,7 +89,7 @@ const AppBar: React.FCX<Props> = ({
       <div css={{ marginLeft: "auto" }}>
         <Tooltip title="GitHub repository">
           <Button
-            startIcon={<GithubIcon />}
+            startIcon={<GitHubIcon />}
             component={Link}
             href="https://github.com/MadonoHaru/fleethub"
             color="inherit"

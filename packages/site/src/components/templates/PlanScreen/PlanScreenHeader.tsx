@@ -98,7 +98,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
   onHqLevelChange,
   onOrgTypeChange,
 }) => {
-  const { t } = useTranslation("terms");
+  const { t } = useTranslation("common");
   const org_type = org.org_type;
   return (
     <div className={className}>

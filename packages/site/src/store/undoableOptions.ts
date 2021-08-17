@@ -1,7 +1,12 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { FilterFunction, GroupByFunction, UndoableOptions } from "redux-undo";
+import { airSquadronsSlice } from "./airSquadronsSlice";
 
 import { appSlice } from "./appSlice";
+import { fleetsSlice } from "./fleetsSlice";
+import { gearsSlice } from "./gearsSlice";
+import { orgsSlice } from "./orgsSlice";
+import { shipsSlice } from "./shipsSlice";
 
 const undoableState: { ignore: boolean; group?: string } = {
   ignore: false,
@@ -22,9 +27,13 @@ export const batchUndoable = (cb: () => void, group = nanoid()) => {
 export const batchGroupBy: GroupByFunction = () => undoableState.group;
 
 const actionTypeFilter: FilterFunction = (action) =>
-  ["entities", appSlice.actions.openFile.type].some((key) =>
-    (action.type as string).startsWith(key)
-  );
+  [
+    gearsSlice.name,
+    shipsSlice.name,
+    fleetsSlice.name,
+    airSquadronsSlice.name,
+    orgsSlice.name,
+  ].some((key) => (action.type as string).startsWith(key));
 
 const filter: FilterFunction = (...args) =>
   !undoableState.ignore && actionTypeFilter(...args);

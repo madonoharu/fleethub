@@ -1,6 +1,7 @@
 import { Gear } from "@fleethub/core";
 import { Tooltip, TooltipProps } from "@material-ui/core";
 import { EquipmentBonuses } from "equipment-bonus";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Text } from "../../atoms";
@@ -12,15 +13,18 @@ type ContentProps = {
   ebonuses?: EquipmentBonuses | undefined;
 };
 
-const Content: React.FC<ContentProps> = ({ gear, ebonuses }) => (
-  <div>
-    <Text>
-      ID {gear.gear_id} {gear.gear_type}
-    </Text>
-    <GearNameplate wrap iconId={gear.icon_id} name={gear.name} />
-    <GearStatList gear={gear} ebonuses={ebonuses} />
-  </div>
-);
+const Content: React.FC<ContentProps> = ({ gear, ebonuses }) => {
+  const { t } = useTranslation("gear_types");
+  return (
+    <div>
+      <Text>
+        ID {gear.gear_id} {t(gear.gear_type_id)}
+      </Text>
+      <GearNameplate wrap iconId={gear.icon_id} name={gear.name} />
+      <GearStatList gear={gear} ebonuses={ebonuses} />
+    </div>
+  );
+};
 
 type Props = ContentProps & Omit<TooltipProps, "title">;
 

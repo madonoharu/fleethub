@@ -62,6 +62,7 @@ const GearBox: React.FCX<Props> = ({
     inner = (
       <GearLabel
         gear={gear}
+        equippable={canEquip?.(gear)}
         onUpdate={actions.update}
         onRemove={actions.remove}
       />

@@ -1,22 +1,23 @@
 import { Ship } from "@fleethub/core";
-import { ShipClass, uniq } from "@fleethub/utils";
+import { groupBy } from "@fleethub/utils";
+import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 
 import { useFhCore } from "../../../hooks";
 import { Divider } from "../../atoms";
 import { SearchInput } from "../../organisms";
 import FilterBar from "./FilterBar";
-import searchShip from "./searchShip";
 import ShipButton from "./ShipButton";
 import ShipSearchResult from "./ShipSearchResult";
+import searchShip from "./searchShip";
 import { useShipListState } from "./useShipListState";
 
-const toShipClassEntries = (ships: Ship[]): Array<[number, Ship[]]> => {
-  const shipClasses = uniq(ships.map((ship) => ship.ship_class));
-  return shipClasses.map((shipClass) => [
-    shipClass,
-    ships.filter((ship) => ship.ship_class === shipClass),
-  ]);
+const getCtypeEntries = (ships: Ship[]): Array<[number, Ship[]]> => {
+  const group = groupBy(ships, (ship) => ship.ctype);
+
+  return Object.entries(group)
+    .filter((entry): entry is [string, Ship[]] => Boolean(entry[1]))
+    .map(([k, v]) => [Number(k), v]);
 };
 
 type Props = {
@@ -25,11 +26,11 @@ type Props = {
 };
 
 const ShipList: React.FC<Props> = ({ onSelect }) => {
+  const { t } = useTranslation("ctype");
   const { state, update, masterShips, visibleShips } = useShipListState();
   const [searchValue, setSearchValue] = useState("");
-  const { findShipClassName } = useFhCore();
 
-  const shipClassEntries = toShipClassEntries(visibleShips);
+  const ctypeEntries = getCtypeEntries(visibleShips);
 
   const searchResult = searchValue && searchShip(masterShips, searchValue);
 
@@ -52,9 +53,9 @@ const ShipList: React.FC<Props> = ({ onSelect }) => {
           renderShip={renderShip}
         />
       ) : (
-        shipClassEntries.map(([shipClass, ships]) => (
-          <React.Fragment key={`shipClass-${shipClass}`}>
-            <Divider label={findShipClassName(shipClass)} />
+        ctypeEntries.map(([ctype, ships]) => (
+          <React.Fragment key={`ctype-${ctype}`}>
+            <Divider label={t(`${ctype}`)} />
             {ships.map(renderShip)}
           </React.Fragment>
         ))
