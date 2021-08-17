@@ -1,40 +1,30 @@
-import { BattleFleet } from "@fleethub/core";
-import { Button, Container, Paper, Typography } from "@material-ui/core";
+import { MapEnemyFleet } from "@fleethub/utils";
 import React from "react";
 
-import { Flexbox, ShipBanner } from "../../../components";
+import { Flexbox } from "../../atoms";
+import ShipBanner from "../ShipBanner";
 import FighterPowerStats from "./FighterPowerStats";
-
 type Props = {
-  enemy: BattleFleet;
-  visibleAlbFp?: boolean;
+  enemy: MapEnemyFleet;
+  lbas?: boolean;
 };
 
-const EnemyFleetContent: React.FCX<Props> = ({
-  className,
-  enemy,
-  visibleAlbFp,
-}) => {
-  const fp = enemy.calcFighterPower();
-  const antiLbFp = visibleAlbFp && enemy.calcFighterPower(true);
-
+const EnemyFleetContent: React.FCX<Props> = ({ className, enemy, lbas }) => {
   return (
     <div className={className}>
       <Flexbox>
-        <FighterPowerStats label="制空" value={fp} />
-        {antiLbFp ? (
-          <FighterPowerStats label="基地戦" value={antiLbFp} />
-        ) : null}
+        <FighterPowerStats label="制空" fp={enemy.fp} />
+        {lbas ? <FighterPowerStats label="基地戦" fp={enemy.lbasFp} /> : null}
       </Flexbox>
 
       <div>
-        {enemy.main.ships.map((ship, index) => (
-          <ShipBanner key={index} publicId={ship.banner} />
+        {enemy.main.map((shipId, index) => (
+          <ShipBanner key={index} shipId={shipId} />
         ))}
       </div>
       <div>
-        {enemy.escort?.ships.map((ship, index) => (
-          <ShipBanner key={index} publicId={ship.banner} />
+        {enemy.escort?.map((shipId, index) => (
+          <ShipBanner key={index} shipId={shipId} />
         ))}
       </div>
     </div>

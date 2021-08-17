@@ -3,17 +3,19 @@ env:
   node: true
   es6: true
 extends:
-  - "eslint:recommended"
-  - "plugin:@typescript-eslint/recommended"
-  - "plugin:@typescript-eslint/recommended-requiring-type-checking"
-  - "plugin:react/recommended"
-  - "prettier"
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:@typescript-eslint/recommended-requiring-type-checking
+  - plugin:react/recommended
+  - plugin:import/recommended
+  - plugin:import/typescript
+  - plugin:@next/next/recommended
+  - prettier
 
 plugins:
   - "@typescript-eslint"
   - react
   - react-hooks
-  - simple-import-sort
 parser: "@typescript-eslint/parser"
 parserOptions:
   sourceType: module
@@ -24,19 +26,22 @@ settings:
     version: detect
 
 rules:
-  "no-console": off
+  no-console: off
   "@typescript-eslint/explicit-module-boundary-types": off
   "@typescript-eslint/no-unsafe-assignment": off
   "@typescript-eslint/unbound-method": off
   "@typescript-eslint/no-unused-vars":
     - warn
     - argsIgnorePattern: ^_
-  "react-hooks/rules-of-hooks": error
-  "react-hooks/exhaustive-deps": warn
-  "react/display-name": off
-  "react/prop-types": off
-  "simple-import-sort/imports": "error"
-  "simple-import-sort/exports": "error"
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-deps: warn
+  react/display-name: off
+  react/prop-types: off
+
+  import/order:
+    - error
+    - alphabetize:
+        order: asc
 
 ignorePatterns:
   - "**/dist/*"

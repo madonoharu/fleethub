@@ -181,12 +181,10 @@ export interface NormalFormationDef {
   night: FormationAttackModifiers;
 }
 
-export type FormationDef =
-  | NormalFormationDef
-  | {
-      top_half: NormalFormationDef;
-      bottom_half: NormalFormationDef;
-    };
+export type FormationDef = NormalFormationDef | {
+  top_half: NormalFormationDef;
+  bottom_half: NormalFormationDef;
+};
 
 export type DayCutin =
   | "MainMain"
@@ -430,7 +428,7 @@ export interface MasterShip {
   name: string;
   yomi: string;
   stype: number;
-  ctype: number | null;
+  ctype: number;
   sort_id: number | null;
   max_hp: StatInterval;
   firepower: StatInterval;

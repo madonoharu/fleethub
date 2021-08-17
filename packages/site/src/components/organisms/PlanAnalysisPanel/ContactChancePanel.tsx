@@ -22,7 +22,7 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
   data,
   label,
 }) => {
-  const { t } = useTranslation("terms");
+  const { t } = useTranslation("common");
   return (
     <div>
       <Typography color="textSecondary">{label}</Typography>

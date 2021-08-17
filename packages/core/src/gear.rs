@@ -17,7 +17,7 @@ enum ProficiencyType {
 }
 
 impl ProficiencyType {
-    fn fighter_power_ace_modifier(&self, ace: i32) -> i32 {
+    fn fighter_power_ace_modifier(&self, ace: u8) -> i32 {
         match self {
             ProficiencyType::Fighter => match ace {
                 7 => 22,
@@ -104,12 +104,7 @@ pub struct Gear {
 }
 
 impl Gear {
-    pub fn new(
-        state: GearState,
-        master: &MasterGear,
-        attrs: EnumSet<GearAttr>,
-        ibonuses: IBonuses,
-    ) -> Self {
+    pub fn new(state: GearState, master: &MasterGear, ibonuses: IBonuses) -> Self {
         let xxh3 = xxh3(&state);
 
         let gear_type = master.types.gear_type();
@@ -119,13 +114,30 @@ impl Gear {
             .and_then(FromPrimitive::from_u8)
             .unwrap_or(gear_type);
 
+        let exp = state.exp.unwrap_or_else(|| {
+            if master.has_attr(GearAttr::Abyssal) {
+                return 0;
+            }
+
+            match gear_type {
+                GearType::CbFighter
+                | GearType::CbRecon
+                | GearType::ReconSeaplane
+                | GearType::SeaplaneFighter => 120,
+                GearType::CbTorpedoBomber | GearType::CbDiveBomber | GearType::SeaplaneBomber => {
+                    100
+                }
+                _ => 0,
+            }
+        });
+
         Gear {
             xxh3,
 
             id: state.id.unwrap_or_default(),
             gear_id: state.gear_id,
             stars: state.stars.unwrap_or_default(),
-            exp: state.exp.unwrap_or_default(),
+            exp,
 
             gear_type,
             special_type,
@@ -151,7 +163,7 @@ impl Gear {
             adjusted_anti_air_resistance: master.adjusted_anti_air_resistance.unwrap_or(1.0),
             fleet_anti_air_resistance: master.fleet_anti_air_resistance.unwrap_or(1.0),
 
-            attrs,
+            attrs: master.attrs.clone(),
             ibonuses,
         }
     }
@@ -194,6 +206,11 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
+    pub fn special_type_id(&self) -> u8 {
+        num_traits::ToPrimitive::to_u8(&self.special_type).unwrap_or_default()
+    }
+
+    #[wasm_bindgen(getter)]
     pub fn icon_id(&self) -> u8 {
         self.types.icon_id()
     }
@@ -230,7 +247,7 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn ace(&self) -> i32 {
+    pub fn ace(&self) -> u8 {
         match self.exp {
             x if x < 10 => 0,
             x if x < 25 => 1,
@@ -284,6 +301,21 @@ impl Gear {
             .fighter_power_ace_modifier(self.ace());
 
         ace_modifier as f64 + (self.exp as f64).sqrt()
+    }
+
+    pub fn proficiency_critical_power_mod(&self) -> f64 {
+        let ace_bonus = match self.ace() {
+            7 => 10.0,
+            6 => 7.0,
+            5 => 5.0,
+            4 => 4.0,
+            3 => 3.0,
+            2 => 2.0,
+            1 => 1.0,
+            _ => 0.0,
+        };
+
+        ((self.exp as f64).sqrt() + ace_bonus).floor()
     }
 
     pub fn calc_fighter_power(&self, slot_size: u8) -> i32 {
@@ -470,7 +502,7 @@ mod test {
                 .enumerate()
                 .for_each(|(i, v)| {
                     let pt = ProficiencyType::Fighter;
-                    assert_eq!(pt.fighter_power_ace_modifier(i as i32), *v)
+                    assert_eq!(pt.fighter_power_ace_modifier(i as u8), *v)
                 });
 
             [0, 0, 1, 1, 1, 3, 3, 6]
@@ -478,7 +510,7 @@ mod test {
                 .enumerate()
                 .for_each(|(i, v)| {
                     let pt = ProficiencyType::SeaplaneBomber;
-                    assert_eq!(pt.fighter_power_ace_modifier(i as i32), *v)
+                    assert_eq!(pt.fighter_power_ace_modifier(i as u8), *v)
                 });
 
             assert_eq!(ProficiencyType::Other.fighter_power_ace_modifier(7), 0);

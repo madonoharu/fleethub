@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
-import { GEAR_KEYS, SlotSizeKey } from "@fleethub/utils";
+import { GearKey, GEAR_KEYS, SlotSizeKey } from "@fleethub/utils";
 import { Paper } from "@material-ui/core";
 import React from "react";
 
 import { ShipEntity } from "../../../store";
 import { makeGetNextEbonuses } from "../../../utils";
-import { ShipBanner } from "../../molecules";
+import ShipBanner from "../ShipBanner";
 import GearSlot from "./GearSlot";
 import ShipHeader from "./ShipHeader";
 import ShipStats from "./ShipStats";
@@ -35,6 +35,7 @@ type Props = {
   ship: Ship;
   onUpdate?: (state: Partial<ShipEntity>) => void;
   onDetailClick?: () => void;
+  onReselect?: () => void;
   onRemove?: () => void;
 };
 
@@ -43,6 +44,7 @@ const ShipCard: React.FCX<Props> = ({
   ship,
   onUpdate,
   onDetailClick,
+  onReselect,
   onRemove,
 }) => {
   const { slotnum, id } = ship;
@@ -51,32 +53,32 @@ const ShipCard: React.FCX<Props> = ({
     <Paper className={className}>
       <ShipHeader
         ship={ship}
+        onUpdate={onUpdate}
         onDetailClick={onDetailClick}
+        onReselect={onReselect}
         onRemove={onRemove}
       />
 
       <ShipCardContent>
         <ShipCardInfo>
-          <ShipBanner publicId={ship.banner} size="medium" />
-          <ShipStats ship={ship} />
+          <ShipBanner shipId={ship.ship_id} size="medium" />
+          <ShipStats ship={ship} onUpdate={onUpdate} />
         </ShipCardInfo>
         <GearList>
-          {GEAR_KEYS.filter((key, i) => i < slotnum || key === "gx").map(
-            (key, i) => (
-              <GearSlot
-                key={key}
-                gear={ship.get_gear(key)}
-                position={{ ship: id, key }}
-                slotSize={ship.get_slot_size(i)}
-                maxSlotSize={ship.get_max_slot_size(i)}
-                onSlotSizeChange={(value) => {
-                  onUpdate?.({ [`ss${i + 1}` as SlotSizeKey]: value });
-                }}
-                canEquip={(g) => ship.can_equip(g, key)}
-                getNextEbonuses={makeGetNextEbonuses(ship, key)}
-              />
-            )
-          )}
+          {(ship.gear_keys() as GearKey[]).map((key, i) => (
+            <GearSlot
+              key={key}
+              gear={ship.get_gear(key)}
+              position={{ ship: id, key }}
+              slotSize={ship.get_slot_size(i)}
+              maxSlotSize={ship.get_max_slot_size(i)}
+              onSlotSizeChange={(value) => {
+                onUpdate?.({ [`ss${i + 1}` as SlotSizeKey]: value });
+              }}
+              canEquip={(g) => ship.can_equip(g, key)}
+              getNextEbonuses={makeGetNextEbonuses(ship, key)}
+            />
+          ))}
         </GearList>
       </ShipCardContent>
     </Paper>

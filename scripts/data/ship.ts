@@ -15,6 +15,38 @@ import set from "lodash/set";
 
 import { updateRows } from "./utils";
 
+const SUFFIXES = [
+  "甲",
+  "乙",
+  "丙",
+  "丁",
+  "戊",
+  "特",
+  "改二",
+  "改II",
+  "乙改",
+  "丁改",
+  "改",
+  "航",
+  "母",
+  "護",
+  " zwei",
+  " drei",
+  " due",
+  " andra",
+  " два",
+  " Mod.2",
+  " Mk.II",
+  "後期型II",
+  "後期型",
+  " バカンスmode",
+  " 夏季上陸mode",
+  " 夏mode",
+  "-壊",
+];
+
+const SUFFIX_RE = RegExp(`(${SUFFIXES.join("|")})+$`);
+
 const isPlayerShip = (ship: MstShip): ship is MstPlayerShip =>
   "api_houg" in ship;
 
@@ -132,6 +164,7 @@ export const createShips = (
       yomi: mst.api_yomi,
       sort_id: mst.api_sort_id,
       stype: mst.api_stype,
+      ctype: mst.api_ctype,
       slotnum: mst.api_slot_num,
       speed: mst.api_soku,
 
@@ -167,30 +200,39 @@ export const createShips = (
       });
     }
 
-    if (!isPlayerShip(mst)) return base;
+    if (isPlayerShip(mst)) {
+      const { api_aftershipid, api_afterlv, api_tais } = mst;
 
-    const { api_aftershipid, api_afterlv, api_tais } = mst;
+      return {
+        speed_group: getDefaultSpeedGroup(base),
+        ...base,
 
-    return {
-      speed_group: getDefaultSpeedGroup(base),
-      ...base,
-      ctype: mst.api_ctype,
+        max_hp: mst.api_taik,
+        firepower: mst.api_houg,
+        torpedo: mst.api_raig,
+        anti_air: mst.api_tyku,
+        armor: mst.api_souk,
+        asw: api_tais ? [api_tais[0], api_tais[0]] : base.asw,
+        luck: mst.api_luck,
+        range: mst.api_leng,
 
-      max_hp: mst.api_taik,
-      firepower: mst.api_houg,
-      torpedo: mst.api_raig,
-      anti_air: mst.api_tyku,
-      armor: mst.api_souk,
-      asw: api_tais ? [api_tais[0], api_tais[0]] : base.asw,
-      luck: mst.api_luck,
-      range: mst.api_leng,
+        fuel: mst.api_fuel_max,
+        ammo: mst.api_bull_max,
 
-      fuel: mst.api_fuel_max,
-      ammo: mst.api_bull_max,
+        next_id: Number(api_aftershipid) || null,
+        next_level: api_afterlv || null,
+      };
+    } else {
+      const baseName = mst.api_name.replace(SUFFIX_RE, "");
+      const abyssal_ctype = start2.api_mst_ship.find(
+        (s) => s.api_name === baseName
+      )?.api_id;
 
-      next_id: Number(api_aftershipid) || null,
-      next_level: api_afterlv || null,
-    };
+      return {
+        ...base,
+        ctype: abyssal_ctype || 0,
+      };
+    }
   };
 
   const ships = start2.api_mst_ship.map((ship) => createShip(ship));

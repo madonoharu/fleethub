@@ -33,8 +33,8 @@ fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<Airst
         .iter()
         .map(|ship| ship.gears_with_slot_size())
         .flatten()
-        .filter(|(gear, _)| gear.has_attr(GearAttr::Recon))
-        .map(|(gear, slot_size)| Some(gear.calc_contact_trigger_factor(slot_size?)))
+        .filter(|(_, gear, _)| gear.has_attr(GearAttr::Recon))
+        .map(|(_, gear, slot_size)| Some(gear.calc_contact_trigger_factor(slot_size?)))
         .sum::<Option<f64>>()?;
 
     let trigger_rate =
@@ -46,10 +46,10 @@ fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<Airst
                 .iter()
                 .map(|ship| ship.gears_with_slot_size())
                 .flatten()
-                .filter(|(gear, _)| {
+                .filter(|(_, gear, _)| {
                     gear.is_contact_selection_plane() && gear.contact_rank() == rank
                 })
-                .map(|(gear, slot_size)| {
+                .map(|(_, gear, slot_size)| {
                     let rate = if slot_size? > 0 {
                         gear.contact_selection_rate(air_state.contact_mod())
                     } else {

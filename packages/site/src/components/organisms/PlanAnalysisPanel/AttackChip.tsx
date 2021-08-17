@@ -10,7 +10,7 @@ type Props = {
 };
 
 const AttackChip: React.FCX<Props> = ({ className, attack }) => {
-  const { t } = useTranslation("terms");
+  const { t } = useTranslation("common");
   return (
     <Chip
       className={className}

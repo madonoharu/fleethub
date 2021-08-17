@@ -8,7 +8,6 @@ export * from "./NumberInput";
 export { default as Select } from "./Select";
 export * from "./Select";
 export { default as SelectButtons } from "./SelectButtons";
-export { default as ShipBanner } from "./ShipBanner";
 export { default as StatIcon } from "./StatIcon";
 export { default as Tabs } from "./Tabs";
 export * from "./Tabs";

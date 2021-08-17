@@ -83,7 +83,7 @@ impl Fleet {
             .values()
             .map(|ship| {
                 ship.gears_with_slot_size()
-                    .filter_map(move |(gear, slot_size)| {
+                    .filter_map(move |(_, gear, slot_size)| {
                         if slot_size? > 0 && gear.has_attr(GearAttr::NightRecon) {
                             let rank = gear.contact_rank();
                             let rate = gear.night_contact_rate(ship.level);

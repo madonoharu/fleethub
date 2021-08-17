@@ -40,7 +40,8 @@ export const updateJson = async <T>(
   const next = updater(current);
 
   if (!equalJson(current, next)) {
-    await file.save(JSON.stringify(next));
+    const metadata = { cacheControl: "public, max-age=60" };
+    await file.save(JSON.stringify(next), { metadata });
   }
 
   return next;

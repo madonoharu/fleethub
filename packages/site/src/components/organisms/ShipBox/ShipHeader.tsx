@@ -1,28 +1,25 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
-import { Button, Tooltip, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useModal } from "../../../hooks";
 
 import { ShipEntity } from "../../../store";
 import {
   ClearButton,
-  EditButton,
   InfoButton,
   StarButton,
   UpdateButton,
 } from "../../molecules";
-
-const StyledButton = styled(Button)`
-  height: 100%;
-  justify-content: flex-start;
-  width: 56px;
-`;
+import ShipDetailScreen from "../ShipDetailScreen";
+import LevelButton from "./LevelButton";
 
 type Props = {
   ship: Ship;
   onUpdate?: (changes: Partial<ShipEntity>) => void;
   onDetailClick?: () => void;
+  onReselect?: () => void;
   onRemove?: () => void;
 };
 
@@ -31,25 +28,31 @@ const ShipHeader: React.FCX<Props> = ({
   ship,
   onUpdate,
   onDetailClick,
+  onReselect,
   onRemove,
 }) => {
+  const DetailModal = useModal();
   const { t } = useTranslation("ships");
 
   return (
     <div className={className}>
-      <Tooltip title="ステータスを編集">
-        <StyledButton>Lv{ship.level}</StyledButton>
-      </Tooltip>
+      <LevelButton
+        value={ship.level}
+        onChange={(level) => onUpdate?.({ level })}
+      />
 
       <Typography css={{ marginRight: "auto" }} noWrap variant="body2">
-        {t(ship.name)}
+        {t(`${ship.ship_id}`, ship.name)}
       </Typography>
 
-      <EditButton title="ステータスを編集" size="tiny" />
-      <InfoButton size="tiny" onClick={onDetailClick} />
+      <InfoButton title="詳細" size="tiny" onClick={DetailModal.show} />
       <StarButton title="艦娘プリセットに追加" size="tiny" />
-      <UpdateButton title="艦娘を変更" size="tiny" />
+      <UpdateButton title="艦娘を変更" size="tiny" onClick={onReselect} />
       <ClearButton title="削除" size="tiny" onClick={onRemove} />
+
+      <DetailModal>
+        <ShipDetailScreen ship={ship} />
+      </DetailModal>
     </div>
   );
 };

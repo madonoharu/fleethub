@@ -12,5 +12,20 @@ export const mapValues = <T, R>(
   return nextObj;
 };
 
+export const pick = <T, K extends keyof T>(
+  obj: T,
+  keys: readonly K[]
+): Pick<T, K> => {
+  const result = {} as Pick<T, K>;
+
+  keys.forEach((key) => {
+    if (key in obj) {
+      result[key] = obj[key];
+    }
+  });
+
+  return result;
+};
+
 export const cloneJson = <T>(json: T): T =>
   JSON.parse(JSON.stringify(json)) as T;

@@ -6,7 +6,23 @@ import Signal from "signale";
 import getGoogleSpreadsheet from "./data/getGoogleSpreadsheet";
 import * as storage from "./data/storage";
 import { updateRows } from "./data/utils";
-import { formatKcnavMap, getAllMapIds, getKcnavMap, KcnavMap } from "./maps";
+import {
+  formatKcnavMap,
+  getAllMapIds,
+  getKcnavMap,
+  KcnavEnemyShip,
+  KcnavMap,
+} from "./maps";
+
+const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
+  const record: Record<number, KcnavEnemyShip> = {};
+
+  ships.forEach((ship) => {
+    record[ship.id] = ship;
+  });
+
+  return Object.values(record);
+};
 
 const updateShips = async (maps: KcnavMap[]) => {
   const masterShips = await storage.readMaster("ships");
@@ -15,18 +31,22 @@ const updateShips = async (maps: KcnavMap[]) => {
     masterShips.find((ship) => ship.ship_id === id);
 
   const ships = maps
+    .sort((a, b) => a.id - b.id)
     .flatMap((map) => Object.values(map.enemycomps))
     .filter(nonNullable)
     .flat()
     .flatMap(({ mainFleet, escortFleet }) => mainFleet.concat(escortFleet));
 
-  ships.forEach((kcnavShip) => {
+  uniqByShipId(ships).forEach((kcnavShip) => {
     const masterShip = findMasterShip(kcnavShip.id);
     if (!masterShip) return;
 
-    const signale = Signal.scope(masterShip.name);
+    const signale = Signal.scope(`id:${masterShip.ship_id} ${masterShip.name}`);
 
-    const { armor, hp } = kcnavShip;
+    if (!kcnavShip.hp) {
+      signale.fatal("hp is None");
+      return;
+    }
 
     (
       [
@@ -37,18 +57,16 @@ const updateShips = async (maps: KcnavMap[]) => {
         ["aa", "anti_air"],
       ] as const
     ).forEach(([key1, key2]) => {
-      const next = kcnavShip[key1];
+      const next = kcnavShip[key1] || 0;
       const current = masterShip[key2][0];
 
       if (next === current) {
         return;
       }
 
-      if (next !== undefined || (armor && hp)) {
-        const n = next || 0;
-        masterShip[key2] = [n, n];
-        signale.info(`${key2} ${current ?? "null"} -> ${n}`);
-      }
+      const n = next || 0;
+      masterShip[key2] = [n, n];
+      signale.info(`${key2} ${current ?? "null"} -> ${n}`);
     });
 
     const equips = kcnavShip.equips.filter((eq) => eq > 0);
