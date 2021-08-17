@@ -23,6 +23,17 @@ declare module "@emotion/react" {
   export interface Theme extends MyTheme {}
 }
 
+declare module "react-i18next" {
+  interface Resources {
+    common: typeof import("../public/locales/en/common.json");
+    gear_types: string[];
+    stype: string[];
+    ctype: Record<string, string>;
+    ships: Record<string, string>;
+    gears: Record<string, string>;
+  }
+}
+
 declare module "*.png" {
   const path: string;
   export default path;

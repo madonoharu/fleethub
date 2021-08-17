@@ -37,7 +37,7 @@ type NodeBattleState = {
 };
 
 const NodeBattleAnalysisScreen: React.FCX<Props> = ({ plan, enemy }) => {
-  const { t } = useTranslation("terms");
+  const { t } = useTranslation("common");
   const { state, getHandlers } = useImmerFields<NodeBattleState>({
     engagement: "Parallel",
     player: {

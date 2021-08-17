@@ -1,28 +1,40 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import { Typography, StyledComponentProps } from "@material-ui/core";
+import { Variant } from "@material-ui/core/styles/createTypography";
 import React from "react";
 
-const Label = styled.div(
-  ({ theme }) => css`
-    color: ${theme.palette.text.secondary};
-    font-size: 0.75rem;
-    margin-right: 4px;
-  `
-);
-
-const Value = styled.div(
-  ({ theme }) => css`
-    font-size: ${theme.typography.body2.fontSize};
-  `
-);
-
-const LabeledValue: React.FCX<{
+type LabeledValueProps = StyledComponentProps<"label" | "value"> & {
   label: React.ReactNode;
   value: React.ReactNode;
-}> = ({ className, label, value }) => (
+  labelVariant?: Variant | undefined;
+  valueVariant?: Variant | undefined;
+};
+
+const LabeledValue: React.FCX<LabeledValueProps> = ({
+  className,
+  classes,
+  label,
+  value,
+  labelVariant = "body2",
+  valueVariant = "body2",
+}) => (
   <div className={className}>
-    <Label>{label}</Label>
-    <Value>{value}</Value>
+    <Typography
+      className={classes?.label}
+      css={{ marginRight: 8 }}
+      color="textSecondary"
+      variant={labelVariant}
+      component="div"
+    >
+      {label}
+    </Typography>
+    <Typography
+      className={classes?.value}
+      variant={valueVariant}
+      component="div"
+    >
+      {value}
+    </Typography>
   </div>
 );
 

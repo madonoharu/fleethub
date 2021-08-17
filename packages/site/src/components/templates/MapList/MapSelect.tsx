@@ -1,45 +1,54 @@
 import { Button } from "@material-ui/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
+import { useAsync } from "react-async-hook";
 
+import { uniq } from "../../../../../utils/cjs";
 import { Divider } from "../../atoms";
 
-const worlds = [
-  { id: 1, name: "鎮守府海域" },
-  { id: 2, name: "南西諸島海域" },
-  { id: 3, name: "北方海域" },
-  { id: 7, name: "南西海域" },
-  { id: 4, name: "西方海域" },
-  { id: 5, name: "南方海域" },
-  { id: 6, name: "中部海域" },
-  { id: 45, name: "欧州方面反撃作戦 発動！「シングル作戦」" },
-  { id: 46, name: "進撃！第二次作戦「南方作戦」" },
-  { id: 47, name: "桃の節句！沖に立つ波" },
-];
-
-const idToKey = (id: number) => `${Math.floor(id / 10)}-${id % 10}`;
+const fetchAll = () =>
+  fetch(
+    "https://storage.googleapis.com/kcfleethub.appspot.com/maps/all.json"
+  ).then((res) => res.json()) as Promise<number[]>;
 
 type Props = {
-  mapIds: number[];
   onSelect?: (mapId: number) => void;
 };
 
-const MapSelect: React.FCX<Props> = ({ className, mapIds, onSelect }) => {
-  return (
-    <div className={className}>
-      {worlds.map((world) => (
-        <div key={world.id}>
-          <Divider label={world.name} />
-          {mapIds
-            .filter((mapId) => Math.floor(mapId / 10) === world.id)
-            .map((mapId) => (
-              <Button key={mapId} onClick={() => onSelect?.(mapId)}>
-                {idToKey(mapId)}
-              </Button>
-            ))}
-        </div>
-      ))}
-    </div>
-  );
+const MapSelect: React.FCX<Props> = ({ className, onSelect }) => {
+  const { t } = useTranslation("common");
+  const asyncAll = useAsync(fetchAll, []);
+
+  let inner: React.ReactNode;
+
+  if (asyncAll.status === "loading") {
+    inner = "loading";
+  }
+
+  if (asyncAll.status === "success" && asyncAll.result) {
+    const all = asyncAll.result;
+
+    const worlds = uniq(all.map((mapId) => Math.floor(mapId / 10)));
+
+    inner = (
+      <>
+        {worlds.map((world) => (
+          <div key={world}>
+            <Divider label={t(`worldName${world}`)} />
+            {all
+              .filter((mapId) => Math.floor(mapId / 10) === world)
+              .map((mapId) => (
+                <Button key={mapId} onClick={() => onSelect?.(mapId)}>
+                  {world}-{mapId % 10}
+                </Button>
+              ))}
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  return <div className={className}>{inner}</div>;
 };
 
 export default MapSelect;

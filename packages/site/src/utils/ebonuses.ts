@@ -1,35 +1,35 @@
 import { Gear, Ship } from "@fleethub/core";
-import { GEAR_KEYS, GearKey, nonNullable, mapValues } from "@fleethub/utils";
+import { GEAR_KEYS, GearKey, mapValues, nonNullable } from "@fleethub/utils";
 import {
   createEquipmentBonuses,
   EquipmentBonuses,
-  GearData,
-  ShipData,
+  GearInput,
+  ShipInput,
 } from "equipment-bonus";
 
-const toGearData = (gear: Gear): GearData => ({
+const toGearInput = (gear: Gear): GearInput => ({
   accuracy: gear.accuracy,
-  antiAir: gear.anti_air,
+  anti_air: gear.anti_air,
   armor: gear.armor,
   asw: gear.asw,
   bombing: gear.bombing,
   evasion: gear.evasion,
   firepower: gear.firepower,
-  gearId: gear.gear_id,
+  gear_id: gear.gear_id,
   los: gear.los,
   name: gear.name,
   radius: gear.radius,
   range: gear.range,
-  specialType2: gear.special_type,
   torpedo: gear.torpedo,
   types: gear.types,
+  special_type: gear.special_type_id,
   ace: gear.ace,
   stars: gear.stars,
 });
 
-const toShipData = (ship: Ship): ShipData => ({
+const toShipInput = (ship: Ship): ShipInput => ({
   ctype: ship.ctype,
-  shipId: ship.ship_id,
+  ship_id: ship.ship_id,
   stype: ship.stype,
   yomi: ship.yomi,
 });
@@ -39,7 +39,7 @@ const getGears = (ship: Ship, excludedKey?: GearKey) =>
     if (excludedKey === key) return;
 
     const gear = ship.get_gear(key);
-    const data = gear && toGearData(gear);
+    const data = gear && toGearInput(gear);
     gear?.free();
 
     return data;
@@ -51,19 +51,19 @@ const subtract = (
 ): EquipmentBonuses => mapValues(left, (value, key) => value - right[key]);
 
 export const getEbonuses = (ship: Ship) =>
-  createEquipmentBonuses(toShipData(ship), getGears(ship));
+  createEquipmentBonuses(toShipInput(ship), getGears(ship));
 
 export const makeGetNextEbonuses = (ship: Ship, excludedKey: GearKey) => {
   const filtered = getGears(ship, excludedKey);
 
-  const shipData = toShipData(ship);
+  const ShipInput = toShipInput(ship);
 
-  const current = createEquipmentBonuses(shipData, filtered);
+  const current = createEquipmentBonuses(ShipInput, filtered);
 
   return (gear: Gear) => {
-    const next = createEquipmentBonuses(shipData, [
+    const next = createEquipmentBonuses(ShipInput, [
       ...filtered,
-      toGearData(gear),
+      toGearInput(gear),
     ]);
     return subtract(next, current);
   };

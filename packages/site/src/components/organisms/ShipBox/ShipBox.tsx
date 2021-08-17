@@ -2,10 +2,11 @@ import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
 import { Button, ButtonProps } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import React from "react";
+import React, { useState } from "react";
 import { shallowEqual } from "react-redux";
 
 import { useModal, useShipActions } from "../../../hooks";
+import { ShipPosition } from "../../../store";
 import ShipList from "../../templates/ShipList";
 import Swappable from "../Swappable";
 import ShipCard from "./ShipCard";
@@ -19,28 +20,37 @@ const AddShipButton: React.FC<ButtonProps> = (props) => (
 
 export type ShipBoxProps = {
   ship?: Ship;
-  onShipChange?: (ship: Ship) => void;
+  position?: ShipPosition;
 };
 
-const ShipBox: React.FCX<ShipBoxProps> = ({
-  className,
-  ship,
-  onShipChange,
-}) => {
+const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
   const id = ship?.id || "";
 
   const actions = useShipActions(id);
+
+  const [selectType, setSelectType] = useState("");
 
   const Modal = useModal();
 
   const handleShipChange = () => {
     Modal.show();
+    setSelectType("");
+  };
+
+  const handleReselect = () => {
+    Modal.show();
+    setSelectType("reselect");
   };
 
   const element = !ship ? (
     <AddShipButton onClick={handleShipChange} />
   ) : (
-    <ShipCard ship={ship} onUpdate={actions.update} onRemove={actions.remove} />
+    <ShipCard
+      ship={ship}
+      onUpdate={actions.update}
+      onReselect={handleReselect}
+      onRemove={actions.remove}
+    />
   );
 
   return (
@@ -57,7 +67,13 @@ const ShipBox: React.FCX<ShipBoxProps> = ({
       <Modal full>
         <ShipList
           onSelect={(ship) => {
-            onShipChange?.(ship);
+            if (position) {
+              if (selectType === "reselect") {
+                actions.reselect(ship);
+              } else {
+                actions.add(position, ship);
+              }
+            }
             Modal.hide();
           }}
         />

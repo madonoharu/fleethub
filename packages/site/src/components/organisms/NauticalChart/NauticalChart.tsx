@@ -1,19 +1,21 @@
 import styled from "@emotion/styled";
-import { MapData, MapNode } from "@fleethub/data";
+import { FhMap, MapNode } from "@fleethub/utils";
 import { Tooltip, Typography } from "@material-ui/core";
 import { Group } from "@visx/group";
 import { Graph } from "@visx/network";
 import { ScaleSVG } from "@visx/responsive";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { getNodeTypeStyle, NodeCircle } from "./NodeIcon";
 
 export const NodeLable: React.FC<{ node: MapNode }> = ({ node }) => {
+  const { t } = useTranslation("common");
   const distance = node.d && `距離: ${node.d}`;
 
   return (
     <Typography>
-      {node.point} {getNodeTypeStyle(node.type).name} {distance}
+      {node.point} {t(getNodeTypeStyle(node.type).name)} {distance}
     </Typography>
   );
 };
@@ -60,7 +62,7 @@ const NauticalChartEdge: React.FC<{ node1?: MapNode; node2?: MapNode }> = ({
   );
 };
 
-const getViewBox = ({ nodes }: MapData) => {
+const getViewBox = ({ nodes }: FhMap) => {
   const xs = nodes.map((node) => node.x);
   const ys = nodes.map((node) => node.y);
   const maxX = Math.max(...xs);
@@ -77,19 +79,19 @@ const getViewBox = ({ nodes }: MapData) => {
 };
 
 type Props = {
-  data: MapData;
+  map: FhMap;
   onClick?: (node: MapNode) => void;
 };
 
-const NauticalChart: React.FCX<Props> = ({ className, data, onClick }) => {
+const NauticalChart: React.FCX<Props> = ({ className, map, onClick }) => {
   const getNode = (name: string) =>
-    data.nodes.find((node) => node.point === name);
+    map.nodes.find((node) => node.point === name);
 
   const baseWidth = 1200;
   const baseHeight = 700;
 
   return (
-    <ScaleSVG {...getViewBox(data)}>
+    <ScaleSVG {...getViewBox(map)}>
       <Group className={className}>
         <defs>
           <marker
@@ -105,11 +107,11 @@ const NauticalChart: React.FCX<Props> = ({ className, data, onClick }) => {
           </marker>
         </defs>
         <Graph
-          graph={data}
+          graph={map}
           linkComponent={({ link }) => (
             <NauticalChartEdge
-              node1={getNode(link.source)}
-              node2={getNode(link.target)}
+              node1={getNode(link[0])}
+              node2={getNode(link[1])}
             />
           )}
           nodeComponent={(props) => (

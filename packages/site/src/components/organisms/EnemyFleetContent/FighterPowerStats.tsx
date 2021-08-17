@@ -32,46 +32,23 @@ const getMinFighterPowers = (fp: number) => {
 };
 
 type Props = {
-  value: number;
+  fp: [number, number, number, number];
   label?: string;
 };
 
-const FighterPowerStats: React.FCX<Props> = ({ className, value, label }) => {
-  let minFpsElement: React.ReactNode = null;
-  if (value > 0) {
-    const minFps = getMinFighterPowers(value);
-    minFpsElement = (
-      <>
-        <span>(</span>
-        <StyledFighterPowerValue
-          airState={"AirSupremacy"}
-          value={minFps.AirSupremacy}
-        />
-        <span>/</span>
-        <StyledFighterPowerValue
-          airState={"AirSuperiority"}
-          value={minFps.AirSuperiority}
-        />
-        <span>/</span>
-        <StyledFighterPowerValue
-          airState={"AirParity"}
-          value={minFps.AirParity}
-        />
-        <span>/</span>
-        <StyledFighterPowerValue
-          airState={"AirDenial"}
-          value={minFps.AirDenial}
-        />
-        <span>)</span>
-      </>
-    );
-  }
-
+const FighterPowerStats: React.FCX<Props> = ({ className, fp, label }) => {
   return (
     <Typography className={className} component="div">
       {label && <span>{label}</span>}
-      <span>{value}</span>
-      {minFpsElement}
+      <span>(</span>
+      <StyledFighterPowerValue airState={"AirSupremacy"} value={fp[3]} />
+      <span>/</span>
+      <StyledFighterPowerValue airState={"AirSuperiority"} value={fp[2]} />
+      <span>/</span>
+      <StyledFighterPowerValue airState={"AirParity"} value={fp[1]} />
+      <span>/</span>
+      <StyledFighterPowerValue airState={"AirDenial"} value={fp[0]} />
+      <span>)</span>
     </Typography>
   );
 };

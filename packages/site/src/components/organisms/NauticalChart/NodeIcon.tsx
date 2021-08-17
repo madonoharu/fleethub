@@ -1,35 +1,27 @@
 import styled from "@emotion/styled";
-import { MapNode } from "@fleethub/data";
-import { Tooltip, Typography } from "@material-ui/core";
+import { MapNode, MapNodeType } from "@fleethub/utils";
+import { Typography } from "@material-ui/core";
 import { Group } from "@visx/group";
 import React from "react";
 
 const nodeTypes = [
   {
-    id: -1,
-    name: "Unknown",
-    color: "#000000",
-    background: "#dddddd",
-    border: "#999999",
-  },
-
-  {
     id: 0,
-    name: "Start",
+    name: "nodeTypeStart",
     color: "#eeeeff",
     background: "#4a95e3",
     border: "#3a77db",
   },
   {
     id: 4,
-    name: "Battle",
+    name: "nodeTypeBattle",
     color: "#000000",
     background: "#ff7979",
     border: "#ef1a1a",
   },
   {
     id: 5,
-    name: "Boss",
+    name: "nodeTypeBoss",
     color: "#ffeeee",
     background: "#d92b2b",
     border: "#980d02",
@@ -37,21 +29,21 @@ const nodeTypes = [
 
   {
     id: 90,
-    name: "Nothing",
+    name: "nodeTypeNothing",
     color: "#000000",
     background: "#82e9ff",
     border: "#1abaef",
   },
   {
     id: 91,
-    name: "Choice",
+    name: "nodeTypeChoice",
     color: "#000000",
     background: "#82e9ff",
     border: "#f7f733",
   },
   {
     id: 14,
-    name: "Anchorage Repair",
+    name: "nodeTypeRepair",
     color: "#000000",
     background: "#a2efff",
     border: "#f0f0ff",
@@ -59,21 +51,21 @@ const nodeTypes = [
 
   {
     id: 2,
-    name: "Resource",
+    name: "nodeTypeResource",
     color: "#000000",
     background: "#b0ff5b",
     border: "#76d406",
   },
   {
     id: 9,
-    name: "Air Resource",
+    name: "nodeTypeAirResource",
     color: "#000000",
     background: "#8fa933",
     border: "#577c21",
   },
   {
     id: 6,
-    name: "Transport",
+    name: "nodeTypeTransport",
     color: "#000000",
     background: "#76d406",
     border: "#b0ff5b",
@@ -81,21 +73,21 @@ const nodeTypes = [
 
   {
     id: 10,
-    name: "Air Raid",
+    name: "nodeTypeAirRaid",
     color: "#000000",
     background: "#ff7979",
     border: "#fad0d3",
   },
   {
     id: 7,
-    name: "Air Battle",
+    name: "nodeTypeAirBattle",
     color: "#000000",
     background: "#ff7979",
     border: "#1abaef",
   },
   {
     id: 13,
-    name: "Ambush",
+    name: "nodeTypeAmbush",
     color: "#000000",
     background: "#ffad22",
     border: "#ef4b1a",
@@ -103,14 +95,14 @@ const nodeTypes = [
 
   {
     id: 11,
-    name: "Night Battle",
+    name: "nodeTypeNightBattle",
     color: "#000000",
     background: "#b076ec",
     border: "#dad0e1",
   },
   {
     id: 3,
-    name: "Maelstrom",
+    name: "nodeTypeMaelstrom",
     color: "#000000",
     background: "#d2c6ff",
     border: "#ae8ae7",
@@ -118,10 +110,25 @@ const nodeTypes = [
 
   {
     id: 8,
-    name: "Finish Line",
+    name: "nodeTypeFinishLine",
     color: "#000000",
     background: "#dbe5ea",
     border: "#497291",
+  },
+
+  {
+    id: -2,
+    name: "nodeTypeLBAS",
+    color: "#000000",
+    background: "#dddddd",
+    border: "#999999",
+  },
+  {
+    id: -1,
+    name: "nodeTypeUnknown",
+    color: "#000000",
+    background: "#dddddd",
+    border: "#999999",
   },
 ];
 

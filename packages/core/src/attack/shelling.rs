@@ -1,111 +1,120 @@
 use crate::attack::hit_rate::{HitRate, HitRateParams};
 use crate::damage::{DamageAttackerParams, DamageParams, DamageTargetParams};
-use crate::types::DayCutin;
 use crate::{
-    attack::attack_power::{AttackPower, AttackPowerParams},
+    attack::attack_power::{AttackPower, AttackPowerModifiers, AttackPowerParams},
     utils::NumMap,
 };
 
 const SHELLING_POWER_CAP: i32 = 180;
 const SHELLING_CRITICAL_RATE_MULTIPLIER: f64 = 1.3;
 
-pub struct ShellingDef {
-    pub attack_type: DayCutin,
-    pub times: usize,
-    pub denom: Option<u8>,
-    pub sp_power_mod: f64,
-    pub sp_accuracy_mod: f64,
+pub struct ProficiencyModifiers {
+    pub hit_percent_bonus: f64,
+    pub critical_power_mod: f64,
+    pub critical_percent_bonus: f64,
 }
 
-struct ShellingPowerParams {
-    firepower: f64,
-    ibonus: f64,
-    fleet_factor: f64,
-    air_power: Option<f64>,
-    health_modifier: f64,
-    cruiser_fit_bonus: f64,
-    ap_shell_modifier: Option<f64>,
-    formation_modifier: f64,
-    engagement_modifier: f64,
-    special_attack_modifier: Option<f64>,
-    special_enemy_modifiers: Option<f64>,
-    proficiency_critical_modifier: Option<f64>,
+impl Default for ProficiencyModifiers {
+    fn default() -> Self {
+        Self {
+            hit_percent_bonus: 0.0,
+            critical_power_mod: 1.0,
+            critical_percent_bonus: 0.0,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ShellingPowerParams {
+    pub firepower: Option<f64>,
+    pub ibonus: f64,
+    pub fleet_factor: f64,
+    pub damage_mod: f64,
+    pub cruiser_fit_bonus: f64,
+    pub ap_shell_mod: Option<f64>,
+    pub formation_mod: Option<f64>,
+    pub engagement_mod: f64,
+    pub cutin_mod: Option<f64>,
+
+    pub air_power: Option<f64>,
+    pub air_power_ebonus: Option<f64>,
+    pub proficiency_critical_mod: Option<f64>,
+
+    pub special_enemy_mods: AttackPowerModifiers,
 }
 
 impl ShellingPowerParams {
-    fn to_attack_power_params(&self) -> AttackPowerParams {
-        let basic = 5. + self.firepower + self.ibonus + self.fleet_factor;
+    fn to_attack_power_params(&self) -> Option<AttackPowerParams> {
+        let basic = 5. + self.firepower? + self.ibonus + self.fleet_factor;
 
-        let a14 = Some(self.formation_modifier * self.engagement_modifier * self.health_modifier);
-        let b14 = Some(self.cruiser_fit_bonus);
-        let a11 = self.special_attack_modifier;
+        let a14 = Some(self.formation_mod? * self.engagement_mod * self.damage_mod);
+        let b14 = Some(self.cruiser_fit_bonus + self.air_power_ebonus.unwrap_or_default());
+        let a11 = self.cutin_mod;
 
-        AttackPowerParams {
-            basic,
-            cap: SHELLING_POWER_CAP,
-
-            a12: None,
-            b12: None,
-            a13: None,
-            b13: None,
-            a13next: None,
-            b13next: None,
+        let mods_base = AttackPowerModifiers {
             a14,
             b14,
-            air_power: self.air_power,
-
             a11,
-            b11: None,
-            a5: None,
-            b5: None,
-            a6: None,
-            b6: None,
-            ap_shell_modifier: self.ap_shell_modifier,
-            proficiency_critical_modifier: self.proficiency_critical_modifier,
-        }
+            ..Default::default()
+        };
+
+        let params = AttackPowerParams {
+            basic,
+            cap: SHELLING_POWER_CAP,
+            mods: mods_base + self.special_enemy_mods.clone(),
+            ap_shell_mod: self.ap_shell_mod,
+            air_power: self.air_power,
+            proficiency_critical_mod: self.proficiency_critical_mod,
+        };
+
+        Some(params)
     }
 
     #[allow(dead_code)]
-    fn calc(&self) -> AttackPower {
-        self.to_attack_power_params().calc()
+    fn calc(&self) -> Option<AttackPower> {
+        self.to_attack_power_params().map(|params| params.calc())
     }
 }
 
-struct ShellingAccuracyParams {
-    fleet_factor: f64,
-    basic_accuracy_term: f64,
-    equipment_accuracy: f64,
-    ibonus: f64,
-    fit_gun_bonus: f64,
-    morale_modifier: f64,
-    formation_modifier: f64,
-    ap_shell_modifier: f64,
-    special_attack_modifier: f64,
+pub struct ShellingAccuracyParams {
+    pub fleet_factor: f64,
+    pub basic_accuracy_term: Option<f64>,
+    pub equipment_accuracy: f64,
+    pub ibonus: f64,
+    pub fit_gun_bonus: f64,
+    pub morale_mod: f64,
+    pub formation_mod: Option<f64>,
+    pub ap_shell_mod: Option<f64>,
+    pub cutin_mod: Option<f64>,
 }
 
 impl ShellingAccuracyParams {
-    fn calc(&self) -> i32 {
+    fn calc(&self) -> Option<f64> {
         let base =
-            (self.fleet_factor + self.basic_accuracy_term + self.equipment_accuracy + self.ibonus)
+            (self.fleet_factor + self.basic_accuracy_term? + self.equipment_accuracy + self.ibonus)
                 .floor();
 
-        ((base * self.formation_modifier * self.morale_modifier + self.fit_gun_bonus)
-            * self.special_attack_modifier
-            * self.ap_shell_modifier)
-            .floor() as i32
+        let result = ((base * self.formation_mod? * self.morale_mod + self.fit_gun_bonus)
+            * self.cutin_mod.unwrap_or(1.0)
+            * self.ap_shell_mod.unwrap_or(1.0))
+        .floor();
+
+        Some(result)
     }
 }
 
-struct ShellingHitRateParams {
-    morale_modifier: f64,
-    hit_rate_bonus: Option<f64>,
-    critical_rate_bonus: Option<f64>,
+#[derive(Debug, Default, Clone)]
+pub struct ShellingHitRateParams {
+    pub evasion_term: Option<f64>,
+    pub morale_mod: f64,
+    pub hit_percent_bonus: f64,
+    pub critical_percent_bonus: f64,
 }
 
-struct ShellingParams {
-    power: ShellingPowerParams,
-    accuracy: ShellingAccuracyParams,
-    hit_rate: ShellingHitRateParams,
+pub struct ShellingParams {
+    pub power: ShellingPowerParams,
+    pub accuracy: ShellingAccuracyParams,
+    pub hit_rate: ShellingHitRateParams,
 }
 
 struct DamageDistributionParams {
@@ -152,17 +161,18 @@ impl DamageDistributionParams {
 }
 
 impl ShellingParams {
-    pub fn analyze(&self) -> NumMap<i32, f64> {
-        let attack_power = self.power.calc();
-        let accuracy_term = self.accuracy.calc();
+    pub fn damage_distribution(&self) -> Option<NumMap<i32, f64>> {
+        let attack_power = self.power.calc()?;
+        let accuracy_term = self.accuracy.calc()?;
+        let evasion_term = self.hit_rate.evasion_term?;
 
         let hit_rate = HitRateParams {
             accuracy_term,
-            evasion_term: 0,
-            morale_mod: 1.,
-            critical_rate_bonus: 0.,
+            evasion_term,
+            morale_mod: self.hit_rate.morale_mod,
             critical_rate_multiplier: SHELLING_CRITICAL_RATE_MULTIPLIER,
-            hit_rate_bonus: 0.,
+            critical_percent_bonus: self.hit_rate.critical_percent_bonus,
+            hit_percent_bonus: self.hit_rate.hit_percent_bonus,
         }
         .calc();
 
@@ -177,12 +187,14 @@ impl ShellingParams {
             sinkable: false,
         };
 
-        DamageDistributionParams {
+        let map = DamageDistributionParams {
             attack_power,
             hit_rate,
             damage_target_params: damage_target_params,
         }
-        .calc(current_hp, 2)
+        .calc(current_hp, 2);
+
+        Some(map)
     }
 }
 

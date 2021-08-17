@@ -1,20 +1,22 @@
 use std::{collections::HashMap, str::FromStr};
 
 use enumset::EnumSet;
-use fasteval::bool_to_f64;
+use fasteval::{bool_to_f64, Compiler, Evaler, Instruction, Slab};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    array::{MyArrayVec, SlotSizeArray},
     gear::IBonuses,
     ship::ShipEquippable,
     types::{
         AntiAirCutinDef, DayCutinDef, FormationDef, GearAttr, GearState, GearType, NightCutinDef,
         ShipAttr, SpeedGroup,
     },
+    utils::MyArrayVec,
 };
+
+use super::{DayCutin, Formation, NormalFormationDef};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct GearTypes(u8, u8, u8, u8, u8);
@@ -44,6 +46,27 @@ impl GearTypes {
     }
 }
 
+const SLOT_SIZE_ARRAY_CAPACITY: usize = 5;
+pub type SlotSizeArray = MyArrayVec<Option<u8>, SLOT_SIZE_ARRAY_CAPACITY>;
+
+trait EvalerStruct {
+    fn ns(&self, key: &str, args: Vec<f64>) -> Option<f64>;
+
+    fn eval(&self, expr_str: &str) -> Result<f64, fasteval::Error> {
+        let mut ns = |key: &str, args: Vec<f64>| self.ns(key, args);
+        fasteval::ez_eval(expr_str, &mut ns)
+    }
+
+    fn eval_compiled(
+        &self,
+        compiled: &fasteval::Instruction,
+        slab: &fasteval::Slab,
+    ) -> Result<f64, fasteval::Error> {
+        let mut ns = |key: &str, args: Vec<f64>| self.ns(key, args);
+        Ok(fasteval::eval_compiled_ref!(compiled, slab, &mut ns))
+    }
+}
+
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterGear {
     pub gear_id: u16,
@@ -68,6 +91,9 @@ pub struct MasterGear {
     pub improvable: Option<bool>,
     pub adjusted_anti_air_resistance: Option<f64>,
     pub fleet_anti_air_resistance: Option<f64>,
+
+    #[serde(skip_deserializing)]
+    pub attrs: EnumSet<GearAttr>,
 }
 
 macro_rules! impl_i16_fields {
@@ -105,43 +131,45 @@ impl MasterGear {
         self.special_type.unwrap_or_default()
     }
 
-    pub fn eval(&self, expr_str: &str) -> Option<f64> {
-        let mut ns = |key: &str, args: Vec<f64>| {
-            let val = match key {
-                "gear_id" => self.gear_id as f64,
-                "special_type" => self.special_type() as f64,
-                "max_hp" => self.max_hp() as f64,
-                "firepower" => self.firepower() as f64,
-                "armor" => self.armor() as f64,
-                "torpedo" => self.torpedo() as f64,
-                "anti_air" => self.anti_air() as f64,
-                "speed" => self.speed() as f64,
-                "bombing" => self.bombing() as f64,
-                "asw" => self.asw() as f64,
-                "los" => self.los() as f64,
-                "luck" => self.luck() as f64,
-                "accuracy" => self.accuracy() as f64,
-                "evasion" => self.evasion() as f64,
-                "range" => self.range() as f64,
-                "radius" => self.radius() as f64,
-                "cost" => self.cost() as f64,
-                "improvable" => bool_to_f64!(self.improvable?),
+    pub fn has_attr(&self, attr: GearAttr) -> bool {
+        self.attrs.contains(attr)
+    }
+}
 
-                "types" => {
-                    let index = args.get(0)?.floor() as usize;
-                    self.types.get(index)? as f64
-                }
+impl EvalerStruct for MasterGear {
+    fn ns(&self, key: &str, args: Vec<f64>) -> Option<f64> {
+        let result = match key {
+            "gear_id" => self.gear_id as f64,
+            "special_type" => self.special_type() as f64,
+            "max_hp" => self.max_hp() as f64,
+            "firepower" => self.firepower() as f64,
+            "armor" => self.armor() as f64,
+            "torpedo" => self.torpedo() as f64,
+            "anti_air" => self.anti_air() as f64,
+            "speed" => self.speed() as f64,
+            "bombing" => self.bombing() as f64,
+            "asw" => self.asw() as f64,
+            "los" => self.los() as f64,
+            "luck" => self.luck() as f64,
+            "accuracy" => self.accuracy() as f64,
+            "evasion" => self.evasion() as f64,
+            "range" => self.range() as f64,
+            "radius" => self.radius() as f64,
+            "cost" => self.cost() as f64,
+            "improvable" => bool_to_f64!(self.improvable?),
 
-                "gear_id_in" => bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64)),
-                "gear_type_in" => bool_to_f64!(args.iter().any(|v| *v == self.types.2 as f64)),
+            "types" => {
+                let index = args.get(0)?.floor() as usize;
+                self.types.get(index)? as f64
+            }
 
-                _ => return None,
-            };
+            "gear_id_in" => bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64)),
+            "gear_type_in" => bool_to_f64!(args.iter().any(|v| *v == self.types.2 as f64)),
 
-            Some(val)
+            _ => return None,
         };
 
-        fasteval::ez_eval(expr_str, &mut ns).ok()
+        Some(result)
     }
 }
 
@@ -167,7 +195,7 @@ pub struct MasterIBonusRule {
 
 impl MasterIBonusRule {
     fn eval(&self, gear: &MasterGear, stars: u8) -> Option<f64> {
-        if gear.eval(&self.expr).unwrap_or_default() == 1. {
+        if gear.eval(&self.expr).unwrap_or_default() == 1.0 {
             let mut ns = |name: &str, args: Vec<f64>| match name {
                 "x" => Some(stars as f64),
                 "sqrt" => args.get(0).map(|v| v.sqrt()),
@@ -229,9 +257,19 @@ impl MasterIBonuses {
     }
 }
 
-#[wasm_bindgen]
 #[derive(Debug, Default, Clone, Copy, Deserialize, TS)]
 pub struct StatInterval(pub Option<u16>, pub Option<u16>);
+
+impl StatInterval {
+    pub fn zipped(self) -> Option<(u16, u16)> {
+        let StatInterval(left, right) = self;
+        left.zip(right)
+    }
+
+    pub fn is_unknown(&self) -> bool {
+        self.0.is_none() || self.1.is_none()
+    }
+}
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterShip {
@@ -239,7 +277,7 @@ pub struct MasterShip {
     pub name: String,
     pub yomi: String,
     pub stype: u8,
-    pub ctype: Option<u8>,
+    pub ctype: u16,
     pub sort_id: Option<u16>,
     pub max_hp: StatInterval,
     pub firepower: StatInterval,
@@ -261,9 +299,16 @@ pub struct MasterShip {
     pub stock: MyArrayVec<GearState, 5>,
     pub speed_group: Option<SpeedGroup>,
     pub useful: Option<bool>,
+
+    #[serde(skip_deserializing)]
+    pub attrs: EnumSet<ShipAttr>,
 }
 
 impl MasterShip {
+    pub fn has_attr(&self, attr: ShipAttr) -> bool {
+        self.attrs.contains(attr)
+    }
+
     pub fn default_level(&self) -> u16 {
         if self.ship_id < 1500 {
             99
@@ -271,23 +316,25 @@ impl MasterShip {
             1
         }
     }
+}
 
-    pub fn eval(&self, expr_str: &str) -> Option<f64> {
-        let mut ns = |key: &str, args: Vec<f64>| match key {
-            "ship_id" => Some(self.ship_id.into()),
-            "ship_type" => Some(self.stype.into()),
-            "ship_class" => Some(self.ctype.unwrap_or_default().into()),
+impl EvalerStruct for MasterShip {
+    fn ns(&self, key: &str, args: Vec<f64>) -> Option<f64> {
+        let result = match key {
+            "ship_id" => self.ship_id.into(),
+            "ship_type" => self.stype.into(),
+            "ship_class" => self.ctype.into(),
 
-            "ship_id_in" => Some(bool_to_f64!(args.contains(&self.ship_id.into()))),
-            "ship_type_in" => Some(bool_to_f64!(args.contains(&self.stype.into()))),
-            "ship_class_in" => Some(bool_to_f64!(
-                args.contains(&(self.ctype.unwrap_or_default().into()))
-            )),
+            "ship_id_in" => bool_to_f64!(args.contains(&self.ship_id.into())),
+            "ship_type_in" => bool_to_f64!(args.contains(&self.stype.into())),
+            "ship_class_in" => {
+                bool_to_f64!(args.contains(&(self.ctype.into())))
+            }
 
-            _ => None,
+            _ => return None,
         };
 
-        fasteval::ez_eval(expr_str, &mut ns).ok()
+        Some(result)
     }
 }
 
@@ -325,6 +372,22 @@ pub struct MasterConstants {
     pub night_cutins: Vec<NightCutinDef>,
 }
 
+impl MasterConstants {
+    pub fn get_formation_mod(
+        &self,
+        formation: Formation,
+        ship_index: usize,
+        fleet_size: usize,
+    ) -> Option<&NormalFormationDef> {
+        let def = self.formations.iter().find(|def| formation == def.tag())?;
+        Some(def.get_normal_def(ship_index, fleet_size))
+    }
+
+    pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {
+        self.day_cutins.iter().find(|def| def.tag == cutin)
+    }
+}
+
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
@@ -340,43 +403,84 @@ pub struct MasterData {
     pub constants: MasterConstants,
 }
 
-impl MasterData {
-    pub fn find_gear_attrs(&self, gear: &MasterGear) -> EnumSet<GearAttr> {
-        self.gear_attrs
-            .iter()
-            .filter_map(|rule| {
-                if gear.eval(&rule.expr).unwrap_or_default() == 1. {
-                    match GearAttr::from_str(&rule.tag) {
-                        Ok(attr) => Some(attr),
-                        Err(error) => {
-                            eprintln!("{:?}", error);
-                            None
-                        }
-                    }
-                } else {
-                    None
-                }
-            })
-            .collect()
-    }
+fn compile_attr_rules<T>(
+    parser: &fasteval::Parser,
+    slab: &mut Slab,
+    rules: &Vec<MasterAttrRule>,
+) -> Vec<(T, Instruction)>
+where
+    T: FromStr,
+{
+    rules
+        .iter()
+        .filter_map(|rule| {
+            let compiled = parser
+                .parse(&rule.expr, &mut slab.ps)
+                .ok()?
+                .from(&slab.ps)
+                .compile(&slab.ps, &mut slab.cs);
 
-    pub fn find_ship_attrs(&self, ship: &MasterShip) -> EnumSet<ShipAttr> {
-        self.ship_attrs
-            .iter()
-            .filter_map(|rule| {
-                if ship.eval(&rule.expr).unwrap_or_default() == 1. {
-                    match ShipAttr::from_str(&rule.tag) {
-                        Ok(attr) => Some(attr),
-                        Err(error) => {
-                            eprintln!("{:?}", error);
-                            None
-                        }
+            let attr = T::from_str(&rule.tag).ok()?;
+
+            Some((attr, compiled))
+        })
+        .collect()
+}
+
+impl MasterData {
+    pub fn new(js: JsValue) -> serde_json::Result<Self> {
+        let mut master: Self = js.into_serde()?;
+
+        let Self {
+            ships,
+            ship_attrs,
+            gears,
+            gear_attrs,
+            ..
+        } = &mut master;
+
+        let parser = fasteval::Parser::new();
+        let mut slab = fasteval::Slab::new();
+
+        let compiled_ship_attr_rules =
+            compile_attr_rules::<ShipAttr>(&parser, &mut slab, ship_attrs);
+
+        let compiled_gear_attr_rules =
+            compile_attr_rules::<GearAttr>(&parser, &mut slab, gear_attrs);
+
+        ships.iter_mut().for_each(|ship| {
+            let attrs = compiled_ship_attr_rules
+                .iter()
+                .filter_map(|(attr, compiled)| {
+                    if ship.eval_compiled(compiled, &slab).ok()? == 1.0 {
+                        Some(attr)
+                    } else {
+                        None
                     }
-                } else {
-                    None
-                }
-            })
-            .collect()
+                })
+                .cloned()
+                .collect::<EnumSet<_>>();
+
+            ship.attrs = attrs
+        });
+
+        gears.iter_mut().for_each(|gear| {
+            let attrs = compiled_gear_attr_rules
+                .iter()
+                .filter_map(|(attr, compiled)| {
+                    if gear.eval_compiled(compiled, &slab).ok()? == 1.0 {
+                        Some(attr)
+                    } else {
+                        None
+                    }
+                })
+                .cloned()
+                .collect::<EnumSet<_>>();
+
+            gear.attrs = attrs
+        });
+
+        Ok(master)
     }
 
     pub fn get_ibonuses(&self, gear: &MasterGear, stars: u8) -> IBonuses {
@@ -437,14 +541,6 @@ pub mod test {
     }
 
     #[test]
-    fn test_find_gear_attrs() {
-        let md = get_master_data();
-        let gear = md.gears.get(0).unwrap();
-        let attrs = md.find_gear_attrs(gear);
-        println!("{} {:#?}", gear.name, attrs);
-    }
-
-    #[test]
     fn test_get_ibonuses() {
         let md = get_master_data();
         let gear = md.gears.get(0).unwrap();
@@ -478,19 +574,19 @@ pub mod test {
             ..Default::default()
         };
 
-        assert_eq!(gear.eval("gear_id == 10 && types[1] == 1"), Some(1.));
-        assert_eq!(gear.eval("los > 5 && anti_air >= 2"), Some(1.));
+        assert_eq!(gear.eval("gear_id == 10 && types[1] == 1"), Ok(1.));
+        assert_eq!(gear.eval("los > 5 && anti_air >= 2"), Ok(1.));
 
-        assert_eq!(gear.eval("gear_id"), Some(10.));
-        assert_eq!(gear.eval("types[3]"), Some(3.));
-        assert_eq!(gear.eval("special_type"), Some(26.));
+        assert_eq!(gear.eval("gear_id"), Ok(10.));
+        assert_eq!(gear.eval("types[3]"), Ok(3.));
+        assert_eq!(gear.eval("special_type"), Ok(26.));
 
-        assert_eq!(gear.eval("gear_id_in(10)"), Some(1.));
-        assert_eq!(gear.eval("gear_type_in(1,2,3,4,5)"), Some(1.));
-        assert_eq!(gear.eval("gear_type_in(1,3,4,5)"), Some(0.));
+        assert_eq!(gear.eval("gear_id_in(10)"), Ok(1.));
+        assert_eq!(gear.eval("gear_type_in(1,2,3,4,5)"), Ok(1.));
+        assert_eq!(gear.eval("gear_type_in(1,3,4,5)"), Ok(0.));
         assert_eq!(
             gear.eval("improvable"),
-            Some(bool_to_f64!(gear.improvable.unwrap()))
+            Ok(bool_to_f64!(gear.improvable.unwrap()))
         );
 
         macro_rules! test_fields {
@@ -498,7 +594,7 @@ pub mod test {
                 {
                     $(assert_eq!(
                         gear.eval(stringify!($field)),
-                        Some(gear.$field.unwrap() as f64)
+                        Ok(gear.$field.unwrap() as f64)
                     ));*
                 }
             )

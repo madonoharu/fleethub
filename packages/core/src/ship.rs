@@ -4,12 +4,13 @@ use paste::paste;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    array::{GearArray, SlotSizeArray},
+    attack::shelling::ProficiencyModifiers,
     gear::Gear,
+    gear_array::{into_gear_index, into_gear_key, GearArray},
     gear_id, ship_id,
     types::{
         AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, NightCutin,
-        ShipAttr, ShipClass, ShipState, ShipType, SpeedGroup, StatInterval,
+        ShipAttr, ShipClass, ShipState, ShipType, SlotSizeArray,
     },
     utils::xxh3,
     JsShipAttr,
@@ -30,8 +31,11 @@ pub struct Ship {
     #[wasm_bindgen(skip)]
     pub id: String,
 
+    #[wasm_bindgen(readonly)]
     pub ship_id: u16,
+    #[wasm_bindgen(readonly)]
     pub level: u16,
+    #[wasm_bindgen(readonly)]
     pub current_hp: u16,
 
     #[wasm_bindgen(skip)]
@@ -39,27 +43,25 @@ pub struct Ship {
     #[wasm_bindgen(skip)]
     pub ship_class: ShipClass,
 
-    max_hp_mod: i16,
-    firepower_mod: i16,
-    torpedo_mod: i16,
-    armor_mod: i16,
-    anti_air_mod: i16,
-    evasion_mod: i16,
-    asw_mod: i16,
-    los_mod: i16,
-    luck_mod: i16,
+    max_hp_mod: Option<i16>,
+    firepower_mod: Option<i16>,
+    torpedo_mod: Option<i16>,
+    armor_mod: Option<i16>,
+    anti_air_mod: Option<i16>,
+    evasion_mod: Option<i16>,
+    asw_mod: Option<i16>,
+    los_mod: Option<i16>,
+    luck_mod: Option<i16>,
 
     #[wasm_bindgen(skip)]
     pub slots: SlotSizeArray,
     #[wasm_bindgen(skip)]
-    pub attrs: EnumSet<ShipAttr>,
-    #[wasm_bindgen(skip)]
     pub gears: GearArray,
+    #[wasm_bindgen(skip)]
+    pub ebonuses: EBonuses,
 
     master: MasterShip,
-    ebonuses: EBonuses,
     equippable: ShipEquippable,
-    banner: Option<String>,
 }
 
 fn get_marriage_bonus(left: u16) -> u16 {
@@ -73,6 +75,51 @@ fn get_marriage_bonus(left: u16) -> u16 {
     }
 }
 
+fn get_average_exp_modifiers(planes: &Vec<(usize, &Gear)>) -> (f64, f64, f64) {
+    let average_exp =
+        planes.iter().map(|(_, gear)| gear.exp as f64).sum::<f64>() / (planes.len() as f64);
+
+    let a = if average_exp >= 10.0 {
+        average_exp.sqrt().floor()
+    } else {
+        0.0
+    };
+
+    let b = if average_exp >= 100.0 {
+        9.0
+    } else if average_exp >= 80.0 {
+        6.0
+    } else if average_exp >= 70.0 {
+        4.0
+    } else if average_exp >= 55.0 {
+        3.0
+    } else if average_exp >= 40.0 {
+        2.0
+    } else if average_exp >= 25.0 {
+        1.0
+    } else {
+        0.0
+    };
+
+    (average_exp, a, b)
+}
+
+macro_rules! match_stat {
+    ($key: ident, $obj: expr) => {
+        match $key {
+            "firepower" => $obj.firepower,
+            "torpedo" => $obj.torpedo,
+            "armor" => $obj.armor,
+            "anti_air" => $obj.anti_air,
+            "evasion" => $obj.evasion,
+            "asw" => $obj.asw,
+            "los" => $obj.los,
+            "range" => $obj.range as i16,
+            _ => 0,
+        }
+    };
+}
+
 macro_rules! impl_naked_stats {
     ($($key:ident),*) => {
         paste! {
@@ -81,7 +128,12 @@ macro_rules! impl_naked_stats {
                 $(
                     #[wasm_bindgen(getter)]
                     pub fn [<naked_ $key>](&self) -> Option<u16> {
-                        self.master.$key.1.map(|v| (v as i16 + self.[<$key _mod>]) as u16)
+                        self.master
+                            .$key
+                            .1
+                            .map(|base| base as i16 + self.[<$key _mod>].unwrap_or_default())
+                            .or(self.[<$key _mod>])
+                            .map(|v| v as u16)
                     }
                 )*
             }
@@ -97,10 +149,21 @@ macro_rules! impl_naked_stats_with_level {
                 $(
                     #[wasm_bindgen(getter)]
                     pub fn [<naked_ $key>](&self) -> Option<u16> {
-                        match &self.master.$key {
-                            StatInterval(Some(at1), Some(at99)) => Some(((at99 - at1) * self.level) / 99 + at1),
-                            _ => None,
-                        }
+                        let stat_mod = self.[<$key _mod>];
+
+                        self.master
+                            .$key
+                            .zipped()
+                            .map(|(at1, at99)| {
+                                let at1 = at1 as f64;
+                                let at99 = at99 as f64;
+                                let stat_mod = stat_mod.unwrap_or_default();
+
+                                let value = (((at99 - at1) * self.level as f64) / 99.0 + at1).floor() as i16;
+                                value + stat_mod
+                            })
+                            .or(stat_mod)
+                            .map(|v| v as u16)
                     }
                 )*
             }
@@ -114,11 +177,13 @@ macro_rules! impl_stats {
         impl Ship {
             $(
                 #[wasm_bindgen(getter)]
-                pub fn $key(&self) -> Option<i16> {
+                pub fn $key(&self) -> Option<u16> {
                     paste! {
-                        self.[<naked_ $key>]().map(|naked| {
-                            naked as i16 + self.ebonuses.$key + self.gears.values().map(|g| g.$key).sum::<i16>()
-                        })
+                        let naked = self.[<naked_ $key>]()? as i16;
+                        let ebonus = self.ebonuses.$key;
+                        let total = self.gears.sum_by(|gear| gear.$key);
+
+                        Some((naked + ebonus + total).max(0) as u16)
                     }
                 }
             )*
@@ -136,21 +201,17 @@ impl Ship {
     pub fn new(
         state: ShipState,
         master: &MasterShip,
-        attrs: EnumSet<ShipAttr>,
         equippable: ShipEquippable,
-        banner: Option<String>,
         gears: GearArray,
+        ebonuses: EBonuses,
     ) -> Self {
         let xxh3 = xxh3(&state);
 
-        let ebonuses = EBonuses::default();
-        let state_slots = [state.ss1, state.ss2, state.ss3, state.ss4, state.ss5];
-        let slots = master
-            .slots
-            .iter()
-            .enumerate()
-            .map(|(i, default_size)| state_slots.get(i).cloned().flatten().or(*default_size))
-            .collect();
+        let slots =
+            std::array::IntoIter::new([state.ss1, state.ss2, state.ss3, state.ss4, state.ss5])
+                .enumerate()
+                .map(|(i, slot_size)| slot_size.or_else(|| master.slots.get(i).cloned().flatten()))
+                .collect();
 
         let mut ship = Ship {
             xxh3,
@@ -160,29 +221,24 @@ impl Ship {
             level: state.level.unwrap_or(master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
             ship_type: FromPrimitive::from_u8(master.stype).unwrap_or_default(),
-            ship_class: master
-                .ctype
-                .and_then(FromPrimitive::from_u8)
-                .unwrap_or_default(),
+            ship_class: FromPrimitive::from_u16(master.ctype).unwrap_or_default(),
 
-            attrs,
             slots,
             gears,
 
             ebonuses,
             equippable,
-            banner,
             master: master.clone(),
 
-            max_hp_mod: state.max_hp_mod.unwrap_or_default(),
-            firepower_mod: state.firepower_mod.unwrap_or_default(),
-            torpedo_mod: state.torpedo_mod.unwrap_or_default(),
-            armor_mod: state.armor_mod.unwrap_or_default(),
-            anti_air_mod: state.anti_air_mod.unwrap_or_default(),
-            evasion_mod: state.evasion_mod.unwrap_or_default(),
-            asw_mod: state.asw_mod.unwrap_or_default(),
-            los_mod: state.los_mod.unwrap_or_default(),
-            luck_mod: state.luck_mod.unwrap_or_default(),
+            max_hp_mod: state.max_hp_mod,
+            firepower_mod: state.firepower_mod,
+            torpedo_mod: state.torpedo_mod,
+            armor_mod: state.armor_mod,
+            anti_air_mod: state.anti_air_mod,
+            evasion_mod: state.evasion_mod,
+            asw_mod: state.asw_mod,
+            los_mod: state.los_mod,
+            luck_mod: state.luck_mod,
         };
 
         if ship.current_hp == 0 {
@@ -193,27 +249,27 @@ impl Ship {
     }
 
     pub fn has_attr(&self, attr: ShipAttr) -> bool {
-        self.attrs.contains(attr)
+        self.master.attrs.contains(attr)
     }
 
     pub fn damage_state(&self) -> DamageState {
         DamageState::from_hp(self.max_hp().unwrap_or_default(), self.current_hp)
     }
 
-    pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (&Gear, Option<u8>)> {
+    pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (usize, &Gear, Option<u8>)> {
         self.gears.iter().map(move |(index, gear)| {
             let slot_size = if index == GearArray::EXSLOT_INDEX {
                 Some(0)
             } else {
                 self.get_slot_size(index)
             };
-            (gear, slot_size)
+            (index, gear, slot_size)
         })
     }
 
     pub fn has_non_zero_slot_gear_by<F: FnMut(&Gear) -> bool>(&self, mut cb: F) -> bool {
         self.gears_with_slot_size()
-            .any(|(gear, slot_size)| slot_size.unwrap_or_default() > 0 && cb(gear))
+            .any(|(_, gear, slot_size)| slot_size.unwrap_or_default() > 0 && cb(gear))
     }
 
     pub fn has_non_zero_slot_gear(&self, id: u16) -> bool {
@@ -222,7 +278,7 @@ impl Ship {
 
     pub fn count_non_zero_slot_gear_by<F: FnMut(&Gear) -> bool>(&self, mut cb: F) -> usize {
         self.gears_with_slot_size()
-            .filter(|(gear, slot_size)| slot_size.unwrap_or_default() > 0 && cb(gear))
+            .filter(|(_, gear, slot_size)| slot_size.unwrap_or_default() > 0 && cb(gear))
             .count()
     }
 
@@ -268,6 +324,161 @@ impl Ship {
                     | GearType::JetTorpedoBomber
             )
         })
+    }
+
+    pub fn shelling_air_power(&self, is_anti_land: bool) -> i16 {
+        let (torpedo, bombing) = if is_anti_land {
+            let torpedo = 0;
+            let bombing = self.gears.sum_by(|gear| {
+                if gear.has_attr(GearAttr::AntiInstallationCbBomber)
+                    || gear.gear_type == GearType::CbTorpedoBomber
+                {
+                    gear.bombing
+                } else {
+                    0
+                }
+            });
+
+            (torpedo, bombing)
+        } else {
+            let torpedo = self.gears.sum_by(|gear| gear.torpedo);
+            let bombing = self.gears.sum_by(|gear| gear.bombing);
+
+            (torpedo, bombing)
+        };
+
+        (1.3 * (bombing as f64)).floor() as i16 + torpedo + 15
+    }
+
+    pub fn proficiency_modifiers(&self, cutin: Option<DayCutin>) -> ProficiencyModifiers {
+        if let Some(cutin) = cutin {
+            return self.carrier_cutin_proficiency_modifiers(cutin);
+        }
+
+        let planes = self
+            .gears_with_slot_size()
+            // 使い勝手のためにslot_sizeがNoneの場合スルーする
+            .filter_map(|(i, g, slot_size)| (slot_size? > 0).then(|| (i, g)))
+            .filter(|(index, gear)| {
+                matches!(
+                    gear.gear_type,
+                    GearType::CbDiveBomber
+                        | GearType::CbTorpedoBomber
+                        | GearType::SeaplaneBomber
+                        | GearType::LargeFlyingBoat
+                        | GearType::JetFighterBomber
+                        | GearType::JetTorpedoBomber
+                )
+            })
+            .collect::<Vec<_>>();
+
+        let (average_exp, average_exp_mod_a, average_exp_mod_b) =
+            get_average_exp_modifiers(&planes);
+
+        let hit_percent_bonus = average_exp_mod_a + average_exp_mod_b;
+
+        let critical_power_mod = planes
+            .iter()
+            .map(|(index, gear)| {
+                let m = gear.proficiency_critical_power_mod();
+                if *index == 0 {
+                    m / 100.0
+                } else {
+                    m / 200.0
+                }
+            })
+            .sum::<f64>();
+
+        let critical_percent_bonus = planes
+            .iter()
+            .map(|(index, gear)| {
+                let first_slot_bonus = if *index == 0 { 6.0 } else { 0.0 };
+                let exp = gear.exp as f64;
+                let ace = gear.ace() as f64;
+                let modifier = ((exp * 0.1).sqrt() + ace) / 2.0 + 1.0;
+
+                (modifier + first_slot_bonus).floor()
+            })
+            .sum::<f64>();
+
+        ProficiencyModifiers {
+            hit_percent_bonus,
+            critical_power_mod,
+            critical_percent_bonus,
+        }
+    }
+
+    /// 戦爆連合熟練度補正の仮定式
+    ///
+    /// `critical_percent_bonus` は21%程度？
+    ///
+    /// 命中項下限で 命中率 > クリティカル率 であることから `hit_percent_bonus` と `critical_percent_bonus` は同程度のボーナスあり？
+    /// https://twitter.com/MorimotoKou/status/1046257562230771712
+    /// https://docs.google.com/spreadsheets/d/1i5jTixnOVjqrwZvF_4Uqf3L9ObHhS7dFqG8KiE5awkY
+    /// https://twitter.com/kankenRJ/status/995827605801709568
+    fn carrier_cutin_proficiency_modifiers(&self, cutin: DayCutin) -> ProficiencyModifiers {
+        let mut f_count: usize = 0;
+        let mut db_count: usize = 0;
+        let mut tb_count: usize = 0;
+
+        let (f_limit, db_limit, tb_limit) = match cutin {
+            DayCutin::FBA => (1, 1, 1),
+            DayCutin::BBA => (0, 2, 1),
+            DayCutin::BA => (0, 1, 1),
+            _ => {
+                return ProficiencyModifiers::default();
+            }
+        };
+
+        let planes = self
+            .gears_with_slot_size()
+            // 使い勝手のためにslot_sizeがNoneの場合スルーする
+            .filter_map(|(i, g, slot_size)| (slot_size? > 0).then(|| (i, g)))
+            .filter(|(_, gear)| match gear.gear_type {
+                GearType::CbFighter => {
+                    f_count += 1;
+                    f_count <= f_limit
+                }
+                GearType::CbDiveBomber => {
+                    db_count += 1;
+                    db_count <= db_limit
+                }
+                GearType::CbTorpedoBomber => {
+                    tb_count += 1;
+                    tb_count <= tb_limit
+                }
+                _ => false,
+            })
+            .collect::<Vec<_>>();
+
+        let (average_exp, average_exp_mod_a, average_exp_mod_b) =
+            get_average_exp_modifiers(&planes);
+
+        let y = if average_exp < 50.0 {
+            1.0
+        } else if average_exp <= 116.0 {
+            1.0 + (average_exp - 50.0) / 1000.0
+        } else if average_exp < 119.0 {
+            1.066 + 0.03
+        } else {
+            1.066 + 0.04
+        };
+
+        let captain_participates = planes.iter().any(|(i, _)| *i == 0);
+
+        let critical_power_mod = if captain_participates {
+            y + 0.1 * (average_exp / 100.0).powf(2.0)
+        } else {
+            y
+        };
+
+        let hit_percent_bonus = average_exp_mod_a + average_exp_mod_b + 2.0;
+
+        ProficiencyModifiers {
+            hit_percent_bonus,
+            critical_power_mod,
+            critical_percent_bonus: hit_percent_bonus,
+        }
     }
 
     pub fn is_night_carrier(&self) -> bool {
@@ -549,8 +760,8 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn ctype(&self) -> u8 {
-        self.master.ctype.unwrap_or_default()
+    pub fn ctype(&self) -> u16 {
+        self.master.ctype
     }
 
     #[wasm_bindgen(getter)]
@@ -584,12 +795,80 @@ impl Ship {
         self.has_attr(attr)
     }
 
+    pub fn gear_keys(&self) -> JsValue {
+        let slotnum = self.master.slotnum;
+
+        let keys = (0..GearArray::CAPACITY)
+            .filter(|&index| {
+                index < slotnum
+                    || index == GearArray::EXSLOT_INDEX
+                    || self.gears.get(index).is_some()
+            })
+            .filter_map(into_gear_key)
+            .collect::<Vec<_>>();
+
+        JsValue::from_serde(&keys).unwrap()
+    }
+
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
         self.gears.get_by_gear_key(key).cloned()
     }
 
-    pub fn set_ebonuses(&mut self, js: JsValue) {
-        self.ebonuses = js.into_serde().unwrap();
+    pub fn has_unknown_stat(&self, key: &str) -> bool {
+        match key {
+            "max_hp" => self.master.max_hp.is_unknown(),
+            "firepower" => self.master.firepower.is_unknown(),
+            "torpedo" => self.master.torpedo.is_unknown(),
+            "armor" => self.master.armor.is_unknown(),
+            "anti_air" => self.master.anti_air.is_unknown(),
+            "evasion" => self.master.evasion.is_unknown(),
+            "asw" => self.master.asw.is_unknown(),
+            "los" => self.master.los.is_unknown(),
+            "luck" => self.master.luck.is_unknown(),
+            "range" => self.master.range.is_none(),
+            "speed" => false,
+            _ => false,
+        }
+    }
+
+    pub fn get_naked_stat(&self, key: &str) -> Option<u16> {
+        match key {
+            "max_hp" => self.max_hp(),
+            "firepower" => self.naked_firepower(),
+            "torpedo" => self.naked_torpedo(),
+            "armor" => self.naked_armor(),
+            "anti_air" => self.naked_anti_air(),
+            "evasion" => self.naked_evasion(),
+            "asw" => self.naked_asw(),
+            "los" => self.naked_los(),
+            "luck" => self.luck(),
+            "range" => self.naked_range().map(|v| v as u16),
+            "speed" => Some(self.naked_speed() as u16),
+            _ => None,
+        }
+    }
+
+    pub fn get_gear_stat(&self, key: &str) -> i16 {
+        self.gears.sum_by(|gear| match_stat!(key, gear))
+    }
+
+    pub fn get_ebonus(&self, key: &str) -> i16 {
+        match_stat!(key, self.ebonuses)
+    }
+
+    pub fn get_stat_mod(&self, key: &str) -> Option<i16> {
+        match key {
+            "max_hp" => self.max_hp_mod,
+            "firepower" => self.firepower_mod,
+            "torpedo" => self.torpedo_mod,
+            "armor" => self.armor_mod,
+            "anti_air" => self.anti_air_mod,
+            "evasion" => self.evasion_mod,
+            "asw" => self.asw_mod,
+            "los" => self.los_mod,
+            "luck" => self.luck_mod,
+            _ => None,
+        }
     }
 
     pub fn can_equip(&self, gear: &Gear, key: &str) -> bool {
@@ -608,6 +887,12 @@ impl Ship {
                 .contains(&(gear.special_type as u8))
                 || self.equippable.exslot_gear_ids.contains(&gear.gear_id)
                 || gear.gear_id == gear_id!("改良型艦本式タービン");
+        }
+
+        if let Some(index) = into_gear_index(key) {
+            if index >= self.master.slotnum {
+                return false;
+            }
         }
 
         if self.ship_class == ShipClass::RichelieuClass
@@ -648,21 +933,21 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn max_hp(&self) -> Option<u16> {
-        let base = self.master.max_hp.0.map(|left| {
-            if self.level >= 100 {
-                left + get_marriage_bonus(left)
-            } else {
-                left
-            }
-        });
+        self.master
+            .max_hp
+            .0
+            .map(|left| {
+                let base = if self.level >= 100 {
+                    left + get_marriage_bonus(left)
+                } else {
+                    left
+                };
 
-        let value = if let Some(base) = base {
-            (base as i16).saturating_add(self.max_hp_mod)
-        } else {
-            self.max_hp_mod
-        };
-
-        (value > 0).then(|| value as u16)
+                let value = base as i16 + self.max_hp_mod.unwrap_or_default();
+                value
+            })
+            .or(self.max_hp_mod)
+            .map(|v| v as u16)
     }
 
     #[wasm_bindgen(getter)]
@@ -677,8 +962,14 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn luck(&self) -> Option<u16> {
-        let left = self.master.luck.0? as i16;
-        Some((left + self.luck_mod) as u16)
+        let left = self.master.luck.0;
+
+        if let Some(base) = left {
+            Some(base as i16 + self.luck_mod.unwrap_or_default())
+        } else {
+            self.luck_mod
+        }
+        .map(|v| v as u16)
     }
 
     #[wasm_bindgen(getter)]
@@ -691,72 +982,16 @@ impl Ship {
             (_, Some(naked)) => Some(naked),
             _ => None,
         }
-        .map(|range| range + self.ebonuses.range)
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn speed_bonus(&self) -> u8 {
-        let speed_group = self.master.speed_group.unwrap_or_default();
-
-        if self.has_attr(ShipAttr::Abyssal) || !self.gears.has(gear_id!("改良型艦本式タービン"))
-        {
-            return 0;
-        }
-
-        let enhanced_boiler_count = self.gears.count(gear_id!("強化型艦本式缶"));
-        let new_model_boiler_count = self.gears.count(gear_id!("新型高温高圧缶"));
-        let total_boiler_count = enhanced_boiler_count + new_model_boiler_count;
-
-        let synergy = match speed_group {
-            SpeedGroup::A => {
-                if new_model_boiler_count >= 1 || total_boiler_count >= 2 {
-                    10
-                } else {
-                    0
-                }
-            }
-            SpeedGroup::B1 => {
-                if new_model_boiler_count == 0 {
-                    0
-                } else if total_boiler_count >= 3 {
-                    15
-                } else if total_boiler_count >= 2 {
-                    10
-                } else {
-                    0
-                }
-            }
-            SpeedGroup::B2 => {
-                if new_model_boiler_count >= 2 || total_boiler_count >= 3 {
-                    10
-                } else {
-                    0
-                }
-            }
-            SpeedGroup::C => {
-                if total_boiler_count >= 1 {
-                    5
-                } else {
-                    0
-                }
-            }
-        };
-
-        if synergy == 0 && total_boiler_count >= 1 || self.has_attr(ShipAttr::TurbineSpeedBonus) {
-            5
-        } else {
-            synergy
-        }
+        .map(|range| range + self.ebonuses.range.max(0) as u8)
     }
 
     #[wasm_bindgen(getter)]
     pub fn speed(&self) -> u8 {
-        self.naked_speed() + self.speed_bonus()
+        self.naked_speed() + self.ebonuses.speed
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn banner(&self) -> Option<String> {
-        self.banner.clone()
+    pub fn is_land(&self) -> bool {
+        self.speed() == 0
     }
 
     pub fn get_slot_size(&self, index: usize) -> Option<u8> {
@@ -802,6 +1037,39 @@ impl Ship {
         self.gears.sum_by(|g| g.fleet_anti_air()).floor() as i32
     }
 
+    pub fn cruiser_fit_bonus(&self) -> f64 {
+        if matches!(self.ship_type, ShipType::CL | ShipType::CLT | ShipType::CT) {
+            let single_gun_count = self.gears.count_by(|gear| {
+                matches!(
+                    gear.gear_id,
+                    gear_id!("14cm単装砲") | gear_id!("15.2cm単装砲")
+                )
+            });
+
+            let twin_gun_count = self.gears.count_by(|gear| {
+                matches!(
+                    gear.gear_id,
+                    gear_id!("15.2cm連装砲")
+                        | gear_id!("14cm連装砲")
+                        | gear_id!("15.2cm連装砲改")
+                        | gear_id!("Bofors 15.2cm連装砲 Model 1930")
+                        | gear_id!("14cm連装砲改")
+                        | gear_id!("6inch 連装速射砲 Mk.XXI")
+                        | gear_id!("Bofors 15cm連装速射砲 Mk.9 Model 1938")
+                        | gear_id!("Bofors 15cm連装速射砲 Mk.9改+単装速射砲 Mk.10改 Model 1938")
+                        | gear_id!("15.2cm連装砲改二")
+                )
+            });
+
+            (single_gun_count as f64).sqrt() + 2.0 * (twin_gun_count as f64).sqrt()
+        } else if self.ship_class == ShipClass::ZaraClass {
+            let zara_gun_count = self.gears.count(gear_id!("203mm/53 連装砲"));
+            (zara_gun_count as f64).sqrt()
+        } else {
+            0.0
+        }
+    }
+
     pub fn basic_accuracy_term(&self) -> Option<f64> {
         let luck = self.luck()? as f64;
         let level = self.level as f64;
@@ -814,6 +1082,30 @@ impl Ship {
         let luck = self.luck()? as f64;
 
         Some(evasion + (2. * luck).sqrt())
+    }
+
+    pub fn evasion_term(&self, formation_mod: f64, postcap_mod: Option<f64>) -> Option<f64> {
+        let base = (self.basic_evasion_term()? * formation_mod).floor();
+
+        let postcap = if base >= 65.0 {
+            (55.0 + 2.0 * (base - 65.0).sqrt()).floor()
+        } else if base >= 40.0 {
+            (40.0 + 3.0 * (base - 40.0).sqrt()).floor()
+        } else {
+            base
+        };
+
+        let total_stars = self.gears.sum_by(|gear| {
+            if gear.gear_type == GearType::EngineImprovement {
+                gear.stars
+            } else {
+                0
+            }
+        }) as f64;
+
+        let ibonus = (1.5 * total_stars.sqrt()).floor();
+
+        Some((postcap + postcap_mod.unwrap_or_default()).floor() + ibonus)
     }
 
     pub fn get_possible_anti_air_cutin_ids(&self) -> Vec<u8> {
@@ -1130,7 +1422,7 @@ impl Ship {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::gear::Gear;
+    use crate::{gear::Gear, types::StatInterval};
 
     #[test]
     fn test_max_hp() {
@@ -1172,7 +1464,7 @@ mod test {
                 $(
                     paste! {
                         let mut ship = Ship {
-                            [<$key _mod>]: 3,
+                            [<$key _mod>]: Some(3),
                             master: MasterShip {
                                 $key: StatInterval(Some(0), Some(10)),
                                 ..Default::default()
@@ -1198,7 +1490,7 @@ mod test {
                     paste! {
                         let mut ship = Ship {
                             level: 15,
-                            [<$key _mod>]: 3,
+                            [<$key _mod>]: Some(3),
                             master: MasterShip {
                                 $key: StatInterval(Some(1), Some(100)),
                                 ..Default::default()

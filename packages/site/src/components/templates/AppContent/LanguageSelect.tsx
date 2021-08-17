@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import TranslateIcon from "@material-ui/icons/Translate";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -24,6 +25,7 @@ const LanguageSelect: React.FCX = ({ className }) => {
   return (
     <Select
       className={className}
+      startLabel={<TranslateIcon fontSize="inherit" />}
       options={locales || []}
       value={locale || ""}
       onChange={handleChange}

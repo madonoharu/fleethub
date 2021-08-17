@@ -86,21 +86,29 @@ impl Default for OrgType {
 }
 
 impl OrgType {
+    pub fn is_single(&self) -> bool {
+        *self == Self::Single
+    }
+
     pub fn is_combined(&self) -> bool {
-        matches!(
-            *self,
-            Self::CarrierTaskForce
-                | Self::SurfaceTaskForce
-                | Self::TransportEscort
-                | Self::EnemyCombined,
-        )
+        !self.is_single()
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Role {
     Main,
     Escort,
+}
+
+impl Role {
+    pub fn is_main(&self) -> bool {
+        *self == Self::Main
+    }
+
+    pub fn is_escort(&self) -> bool {
+        !self.is_main()
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, TS)]

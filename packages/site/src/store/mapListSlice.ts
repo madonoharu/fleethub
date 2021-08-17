@@ -3,13 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export type MapListState = {
   mapId: number;
   point: string;
-  difficulty: number;
+  diff: number;
 };
 
 const initialState: MapListState = {
   mapId: 11,
   point: "A",
-  difficulty: 4,
+  diff: 4,
 };
 
 export const mapListSlice = createSlice({

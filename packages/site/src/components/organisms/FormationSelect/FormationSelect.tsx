@@ -24,7 +24,7 @@ const FormationSelect: React.FC<Props> = ({
   const options: readonly Formation[] = combined
     ? CombinedFleetFormations
     : SingleFleetFormations;
-  const { t } = useTranslation("terms");
+  const { t } = useTranslation("common");
 
   useEffect(() => {
     if (options.includes(value)) return;

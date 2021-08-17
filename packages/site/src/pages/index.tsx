@@ -1,8 +1,9 @@
 import master_data from "@fleethub/utils/master_data";
+import { createEquipmentBonuses } from "equipment-bonus";
 import type { GetStaticProps, NextComponentType } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -12,7 +13,7 @@ import { FhCoreContext } from "../hooks";
 import { StoreProvider } from "../store";
 
 const loader = import("@fleethub/core/pkg").then((mod) => {
-  const core = new mod.FhCore(master_data);
+  const core = new mod.FhCore(master_data, createEquipmentBonuses);
 
   if (process.env.NODE_ENV === "development") {
     core.init_console_panic();
@@ -59,7 +60,13 @@ const Index: NextComponentType = () => {
 
 export const getStaticProps: GetStaticProps = async ({ locale = "" }) => ({
   props: {
-    ...(await serverSideTranslations(locale, ["terms", "gears"])),
+    ...(await serverSideTranslations(locale, [
+      "common",
+      "gears",
+      "gear_types",
+      "ships",
+      "ctype",
+    ])),
   },
 });
 

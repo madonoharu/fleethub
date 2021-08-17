@@ -19,3 +19,50 @@ export type FhEntity<T extends Record<string, unknown>, K extends keyof T> = {
   id: string;
 } & Omit<T, K> &
   Dict<K, string>;
+
+export enum MapNodeType {
+  Lbas = -2,
+  Unknown = -1,
+  Start = 0,
+  Resource = 2,
+  Maelstrom = 3,
+  Normal = 4,
+  Boss = 5,
+  Transport = 6,
+  Aerial = 7,
+  Bounty = 8,
+  AerialReconnaissance = 9,
+  AirDefense = 10,
+  NightBattle = 11,
+  LongRangeRadarAmbush = 13,
+  EmergencyAnchorageRepair = 14,
+
+  NoEnemy = 90,
+  Selector = 91,
+}
+
+export type MapEnemyFleet = {
+  main: number[];
+  escort?: number[];
+  formations: number[];
+  diff?: number;
+  fp: [number, number, number, number];
+  lbasFp: [number, number, number, number];
+};
+
+export type MapNode = {
+  point: string;
+  x: number;
+  y: number;
+  type: number;
+  d?: number;
+  enemies?: MapEnemyFleet[];
+};
+
+export type MapLink = [string, string];
+
+export type FhMap = {
+  id: number;
+  nodes: MapNode[];
+  links: MapLink[];
+};

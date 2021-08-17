@@ -1,60 +1,59 @@
-import { EnemyFleetState } from "@fleethub/core";
-import { MapEnemyFleet } from "@fleethub/data";
+import { Formation } from "@fleethub/core";
+import { MapEnemyFleet } from "@fleethub/utils";
 import { Button, Paper } from "@material-ui/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { EnemyFleetContent } from "../../../components";
-import { useFhSystem } from "../../../hooks";
+import EnemyFleetContent from "../../organisms/EnemyFleetContent";
 
-const getFormationName = (form: number) => {
-  const dict: Record<number, string | undefined> = {
-    [1]: "単縦陣",
-    [2]: "複縦陣",
-    [3]: "輪形陣",
-    [4]: "梯形陣",
-    [5]: "単横陣",
-    [6]: "警戒陣",
-    [11]: "第一警戒航行序列",
-    [12]: "第二警戒航行序列",
-    [13]: "第三警戒航行序列",
-    [14]: "第四警戒航行序列",
+const getFormation = (id: number) => {
+  const dict: Record<number, Formation | undefined> = {
+    [1]: "LineAhead",
+    [2]: "DoubleLine",
+    [3]: "Diamond",
+    [4]: "Echelon",
+    [5]: "LineAbreast",
+    [6]: "Vanguard",
+    [11]: "Cruising1",
+    [12]: "Cruising2",
+    [13]: "Cruising3",
+    [14]: "Cruising4",
   };
 
-  return dict[form] || "不明";
+  return dict[id] || "Unknown";
 };
 
 const FormationButton: React.FC<{
   formation: number;
   onClick?: () => void;
 }> = ({ formation, onClick }) => {
-  const name = getFormationName(formation);
-  return <Button onClick={onClick}>{name}</Button>;
+  const { t } = useTranslation("common");
+
+  const name = getFormation(formation);
+
+  return <Button onClick={onClick}>{t(name)}</Button>;
 };
 
 type Props = {
-  mapEnemyFleet: MapEnemyFleet;
-  visibleAlbFp?: boolean;
-  onSelect?: (enemy: EnemyFleetState) => void;
+  enemy: MapEnemyFleet;
+  lbas?: boolean;
+  onSelect?: (enemy: MapEnemyFleet) => void;
 };
 
 const MapEnemyFleetCard: React.FCX<Props> = ({
   className,
-  mapEnemyFleet,
-  visibleAlbFp,
+  enemy,
+  lbas,
   onSelect,
 }) => {
-  const { mapEnemyFleetToState, createEnemyFleet } = useFhSystem();
-  const state = mapEnemyFleetToState(mapEnemyFleet);
-  const fleet = createEnemyFleet(state);
-
   return (
     <Paper className={className}>
-      <EnemyFleetContent enemy={fleet} visibleAlbFp={visibleAlbFp} />
-      {mapEnemyFleet.formations.map((formation) => (
+      <EnemyFleetContent enemy={enemy} lbas={lbas} />
+      {enemy.formations.map((formation) => (
         <FormationButton
           key={formation}
           formation={formation}
-          onClick={() => onSelect?.(state)}
+          onClick={() => onSelect?.(enemy)}
         />
       ))}
     </Paper>

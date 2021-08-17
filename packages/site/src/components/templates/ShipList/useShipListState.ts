@@ -51,7 +51,7 @@ export const useShipListState = () => {
 
   const masterShips = React.useMemo(() => {
     return master_data.ships
-      .map((ship) => core.create_ship({ ship_id: ship.ship_id }))
+      .map((ship) => core.create_ship_by_id(ship.ship_id))
       .filter(nonNullable);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [master_data]);

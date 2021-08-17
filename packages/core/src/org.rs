@@ -2,8 +2,7 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     air_squadron::AirSquadron,
-    array::ShipArray,
-    fleet::Fleet,
+    fleet::{Fleet, ShipArray},
     ship::Ship,
     types::{OrgType, Role, Side},
 };

@@ -1,9 +1,10 @@
 import { ShipParams } from "@fleethub/core";
-import { FhEntity, GearKey, ShipKey } from "@fleethub/utils";
+import { pick, FhEntity, GearKey, ShipKey, GEAR_KEYS } from "@fleethub/utils";
 import {
   createEntityAdapter,
   createSlice,
   EntitySelectors,
+  PayloadAction,
 } from "@reduxjs/toolkit";
 import { DefaultRootState } from "react-redux";
 
@@ -28,6 +29,25 @@ export const shipsSlice = createSlice({
         payload: state,
         meta: { fleet: to },
       }),
+    },
+    reselect: (
+      state,
+      action: PayloadAction<{ id: string; ship_id: number }>
+    ) => {
+      const { id, ship_id } = action.payload;
+      const current = state.entities[id];
+
+      if (current) {
+        const next: ShipEntity = {
+          id,
+          ship_id,
+          ...pick(current, GEAR_KEYS),
+        };
+
+        adapter.setOne(state, next);
+      } else {
+        adapter.addOne(state, { id, ship_id });
+      }
     },
     update: adapter.updateOne,
     remove: adapter.removeOne,

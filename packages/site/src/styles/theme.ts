@@ -45,6 +45,13 @@ const muiTheme = createTheme({
         placement: "top",
         disableInteractive: true,
       },
+      styleOverrides: {
+        tooltip: {
+          fontSize: "0.875rem",
+          background: "rgba(30, 20, 20, 0.85)",
+          backdropFilter: "blur(8px)",
+        },
+      },
     },
     MuiSnackbar: {
       defaultProps: {
@@ -130,16 +137,16 @@ const acrylic = isFirefox
     `
   : css`
       background: rgba(60, 60, 70, 0.6) !important;
-      backdrop-filter: blur(8px) !important;
+      backdrop-filter: blur(8px);
     `;
 
 const darkAcrylic = isFirefox
   ? css`
-      background: rgba(30, 30, 35, 0.98) !important;
+      background: rgba(30, 30, 35, 0.98);
     `
   : css`
       background: rgba(30, 30, 35, 0.85) !important;
-      backdrop-filter: blur(8px) !important;
+      backdrop-filter: blur(8px);
     `;
 
 const swappable = css`
