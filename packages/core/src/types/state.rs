@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use strum_macros::ToString;
+use strum::ToString;
 use ts_rs::TS;
 
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
@@ -63,52 +63,14 @@ pub struct AirSquadronState {
     pub g2: Option<GearState>,
     pub g3: Option<GearState>,
     pub g4: Option<GearState>,
+    pub g5: Option<GearState>,
+    pub gx: Option<GearState>,
 
     pub ss1: Option<u8>,
     pub ss2: Option<u8>,
     pub ss3: Option<u8>,
     pub ss4: Option<u8>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Hash, ToString, Deserialize, TS)]
-pub enum OrgType {
-    Single,
-    CarrierTaskForce,
-    SurfaceTaskForce,
-    TransportEscort,
-    EnemyCombined,
-}
-
-impl Default for OrgType {
-    fn default() -> Self {
-        OrgType::Single
-    }
-}
-
-impl OrgType {
-    pub fn is_single(&self) -> bool {
-        *self == Self::Single
-    }
-
-    pub fn is_combined(&self) -> bool {
-        !self.is_single()
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Role {
-    Main,
-    Escort,
-}
-
-impl Role {
-    pub fn is_main(&self) -> bool {
-        *self == Self::Main
-    }
-
-    pub fn is_escort(&self) -> bool {
-        !self.is_main()
-    }
+    pub ss5: Option<u8>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, TS)]
@@ -133,6 +95,76 @@ impl Side {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash, ToString, Deserialize, TS)]
+pub enum OrgType {
+    /// 通常艦隊
+    Single,
+    /// 空母機動部隊
+    CarrierTaskForce,
+    /// 水上打撃部隊
+    SurfaceTaskForce,
+    /// 輸送護衛部隊
+    TransportEscort,
+    /// 敵通常
+    EnemySingle,
+    /// 敵連合
+    EnemyCombined,
+}
+
+impl Default for OrgType {
+    fn default() -> Self {
+        OrgType::Single
+    }
+}
+
+impl OrgType {
+    pub fn is_single(&self) -> bool {
+        matches!(*self, Self::Single | Self::EnemySingle)
+    }
+
+    pub fn is_combined(&self) -> bool {
+        !self.is_single()
+    }
+
+    pub fn is_enemy(&self) -> bool {
+        matches!(*self, Self::EnemySingle | Self::EnemyCombined)
+    }
+
+    pub fn is_player(&self) -> bool {
+        !self.is_enemy()
+    }
+
+    pub fn side(&self) -> Side {
+        if self.is_player() {
+            Side::Player
+        } else {
+            Side::Enemy
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Role {
+    Main,
+    Escort,
+}
+
+impl Default for Role {
+    fn default() -> Self {
+        Self::Main
+    }
+}
+
+impl Role {
+    pub fn is_main(&self) -> bool {
+        *self == Self::Main
+    }
+
+    pub fn is_escort(&self) -> bool {
+        !self.is_main()
+    }
+}
+
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct OrgState {
     pub id: Option<String>,
@@ -148,5 +180,4 @@ pub struct OrgState {
 
     pub hq_level: Option<i32>,
     pub org_type: Option<OrgType>,
-    pub side: Option<Side>,
 }

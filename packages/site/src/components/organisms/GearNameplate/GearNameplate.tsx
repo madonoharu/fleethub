@@ -7,6 +7,11 @@ import { useTranslation } from "react-i18next";
 import { Flexbox } from "../../atoms";
 import { GearIcon } from "../../molecules";
 
+const StyledGearIcon = styled(GearIcon)`
+  flex-shrink: 0;
+  margin-right: 4px;
+`;
+
 type Props = {
   className?: string;
   name: string;
@@ -22,7 +27,7 @@ export const GearNameplate = React.forwardRef<HTMLDivElement, Props>(
     const { t } = useTranslation("gears");
     return (
       <Flexbox ref={ref} className={className}>
-        <GearIcon iconId={iconId} />
+        <StyledGearIcon iconId={iconId} />
         <Typography variant="body2" align="left" noWrap={!wrap}>
           {t(name)}
         </Typography>
@@ -44,12 +49,7 @@ export default styled(GearNameplate)(
   ({ size, equippable, theme }) => css`
     max-width: 100%;
 
-    color: ${!equippable && theme.palette.secondary.main};
-
-    ${GearIcon} {
-      flex-shrink: 0;
-      margin-right: 4px;
-    }
+    color: ${!equippable && theme.palette.error.light};
 
     p {
       max-width: calc(100% - 28px);

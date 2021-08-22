@@ -1,3 +1,18 @@
+use serde::Serialize;
+use ts_rs::TS;
+
+use crate::{
+    attack::{
+        shelling::{ShellingAccuracyParams, ShellingHitRateParams, ShellingPowerParams},
+        special_enemy_mods::special_enemy_modifiers,
+    },
+    ship::Ship,
+    types::{
+        AirState, DamageState, DayCutin, DayCutinDef, Engagement, Formation, MasterConstants,
+        MoraleState, NormalFormationDef, OrgType, Role, ShipType, Side, SpecialEnemyType,
+    },
+};
+
 mod attack_power;
 mod damage;
 mod fit_gun_bonus;
@@ -6,59 +21,46 @@ mod hit_rate;
 pub mod shelling;
 mod special_enemy_mods;
 
-use crate::{
-    attack::{
-        shelling::{ShellingAccuracyParams, ShellingHitRateParams, ShellingPowerParams},
-        special_enemy_mods::special_enemy_modifiers,
-    },
-    org::Org,
-    ship::Ship,
-    types::{
-        AirState, DamageState, DayCutin, DayCutinDef, Engagement, Formation, MasterConstants,
-        MoraleState, NormalFormationDef, Role, ShipType, Side,
-    },
-};
+pub use attack_power::*;
 use shelling::ShellingParams;
 
-pub struct AttackShipContext<'a> {
-    ship: &'a Ship,
-    org: &'a Org,
-    formation: Formation,
-    damage_state: DamageState,
-    morale_state: MoraleState,
+#[derive(Debug, Clone)]
+pub struct ShipAttackContext<'a> {
+    pub ship: &'a Ship,
+    pub org_type: OrgType,
+    pub side: Side,
+    pub role: Role,
+    pub index: usize,
+    pub fleet_len: usize,
+    pub formation: Formation,
+    pub damage_state: DamageState,
+    pub morale_state: MoraleState,
 }
 
-impl<'a> AttackShipContext<'a> {
-    fn side(&self) -> Side {
-        self.org.side
-    }
-
-    fn position(&self) -> (Role, usize, usize) {
-        let (role, index) = self
-            .org
-            .main_and_escort_ships()
-            .find(|(_, _, ship)| ship.id == self.ship.id)
-            .map_or((Role::Main, 0), |(role, index, _)| (role, index));
-
-        let fleet_size = if role.is_main() {
-            self.org.main().size()
-        } else {
-            self.org.escort().size()
-        };
-
-        (role, index, fleet_size)
+impl<'a> ShipAttackContext<'a> {
+    pub fn new(ship: &'a Ship) -> Self {
+        Self {
+            ship,
+            org_type: Default::default(),
+            side: Default::default(),
+            role: Default::default(),
+            index: 0,
+            fleet_len: 6,
+            formation: Default::default(),
+            damage_state: Default::default(),
+            morale_state: Default::default(),
+        }
     }
 }
 
 pub struct AttackContext<'a> {
-    master_constants: &'a MasterConstants,
-
-    air_state: AirState,
-    engagement: Engagement,
-    cutin: Option<DayCutin>,
-
-    attacker: AttackShipContext<'a>,
-    target: AttackShipContext<'a>,
+    pub master_constants: &'a MasterConstants,
+    pub attacker: ShipAttackContext<'a>,
+    pub target: ShipAttackContext<'a>,
+    pub target_special_enemy_type: SpecialEnemyType,
+    pub air_state: AirState,
+    pub engagement: Engagement,
+    pub cutin: Option<DayCutin>,
 }
 
 impl<'a> AttackContext<'a> {
@@ -67,30 +69,23 @@ impl<'a> AttackContext<'a> {
     }
 
     fn get_target_formation_def(&self) -> Option<&NormalFormationDef> {
-        let (_, ship_index, fleet_size) = self.target.position();
-
-        self.master_constants
-            .get_formation_mod(self.attacker.formation, ship_index, fleet_size)
+        self.master_constants.get_formation_mod(
+            self.target.formation,
+            self.target.index,
+            self.target.fleet_len,
+        )
     }
 
-    fn shelling_params(&self) -> ShellingParams {
+    pub fn shelling_params(&self) -> ShellingParams {
         let is_day = true;
 
-        let (player_org_type, enemy_org_type) = if self.attacker.side().is_player() {
-            (self.attacker.org.org_type, self.target.org.org_type)
-        } else {
-            (self.target.org.org_type, self.attacker.org.org_type)
-        };
-
         let fleet_power_factor = fleet_factor::find_shelling_power_factor(
-            player_org_type,
-            enemy_org_type,
-            self.attacker.side(),
-            self.attacker.position().0,
+            self.attacker.org_type,
+            self.target.org_type,
+            self.attacker.role,
         );
 
         let ship = self.attacker.ship;
-        let (role, ship_index, fleet_size) = self.attacker.position();
 
         let ap_shell_mods = matches!(
             self.target.ship.ship_type,
@@ -107,14 +102,15 @@ impl<'a> AttackContext<'a> {
 
         let formation_def = self.master_constants.get_formation_mod(
             self.attacker.formation,
-            ship_index,
-            fleet_size,
+            self.attacker.index,
+            self.attacker.fleet_len,
         );
 
         let engagement_mod = self.engagement.modifier();
         let cutin_def = self.cutin_def();
 
-        let special_enemy_mods = special_enemy_modifiers(ship, self.target.ship, is_day);
+        let special_enemy_mods =
+            special_enemy_modifiers(ship, self.target.ship.special_enemy_type(), is_day);
 
         let power_params_base = ShellingPowerParams {
             firepower: ship.firepower().map(|v| v as f64),
@@ -139,9 +135,8 @@ impl<'a> AttackContext<'a> {
 
         let accuracy_params = ShellingAccuracyParams {
             fleet_factor: fleet_factor::find_shelling_accuracy_factor(
-                self.attacker.org.org_type,
-                self.attacker.side(),
-                role,
+                self.attacker.org_type,
+                self.attacker.role,
             ) as f64,
             basic_accuracy_term: ship.basic_accuracy_term(),
             equipment_accuracy,
@@ -202,10 +197,5 @@ impl<'a> AttackContext<'a> {
                 hit_rate: hit_rate_params_base,
             }
         }
-    }
-
-    pub fn analyze_shelling(&self) {
-        let params = self.shelling_params();
-        let damage_distribution = params.damage_distribution();
     }
 }

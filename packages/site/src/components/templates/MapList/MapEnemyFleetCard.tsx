@@ -1,63 +1,71 @@
+import styled from "@emotion/styled";
 import { Formation } from "@fleethub/core";
-import { MapEnemyFleet } from "@fleethub/utils";
+import { MapEnemyFleet, nonNullable } from "@fleethub/utils";
 import { Button, Paper } from "@material-ui/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import EnemyFleetContent from "../../organisms/EnemyFleetContent";
+import { Flexbox } from "../../atoms";
+import { ShipBannerGroup } from "../../organisms";
+import EnemyFighterPower from "./EnemyFighterPower";
 
-const getFormation = (id: number) => {
-  const dict: Record<number, Formation | undefined> = {
-    [1]: "LineAhead",
-    [2]: "DoubleLine",
-    [3]: "Diamond",
-    [4]: "Echelon",
-    [5]: "LineAbreast",
-    [6]: "Vanguard",
-    [11]: "Cruising1",
-    [12]: "Cruising2",
-    [13]: "Cruising3",
-    [14]: "Cruising4",
-  };
-
-  return dict[id] || "Unknown";
+const FORMATION_MAP: Record<number, Formation | undefined> = {
+  [1]: "LineAhead",
+  [2]: "DoubleLine",
+  [3]: "Diamond",
+  [4]: "Echelon",
+  [5]: "LineAbreast",
+  [6]: "Vanguard",
+  [11]: "Cruising1",
+  [12]: "Cruising2",
+  [13]: "Cruising3",
+  [14]: "Cruising4",
 };
 
-const FormationButton: React.FC<{
-  formation: number;
-  onClick?: () => void;
-}> = ({ formation, onClick }) => {
-  const { t } = useTranslation("common");
+const toFormation = (id: number) => FORMATION_MAP[id];
 
-  const name = getFormation(formation);
-
-  return <Button onClick={onClick}>{t(name)}</Button>;
-};
-
-type Props = {
+type MapEnemyFleetCardProps = {
   enemy: MapEnemyFleet;
   lbas?: boolean;
-  onSelect?: (enemy: MapEnemyFleet) => void;
+  onSelect?: (enemy: MapEnemyFleet, formation: Formation) => void;
 };
 
-const MapEnemyFleetCard: React.FCX<Props> = ({
+const MapEnemyFleetCard: React.FCX<MapEnemyFleetCardProps> = ({
   className,
   enemy,
   lbas,
   onSelect,
 }) => {
+  const { t } = useTranslation("common");
+
   return (
     <Paper className={className}>
-      <EnemyFleetContent enemy={enemy} lbas={lbas} />
-      {enemy.formations.map((formation) => (
-        <FormationButton
-          key={formation}
-          formation={formation}
-          onClick={() => onSelect?.(enemy)}
-        />
-      ))}
+      <div>
+        <EnemyFighterPower label="制空" fp={enemy.fp} />
+        {lbas ? <EnemyFighterPower label="基地戦" fp={enemy.lbasFp} /> : null}
+
+        <ShipBannerGroup main={enemy.main} escort={enemy.escort} />
+      </div>
+
+      <Flexbox gap={1}>
+        {enemy.formations
+          .map(toFormation)
+          .filter(nonNullable)
+          .map((formation) => (
+            <Button
+              key={formation}
+              size="small"
+              variant="outlined"
+              onClick={() => onSelect?.(enemy, formation)}
+            >
+              {t(formation)}
+            </Button>
+          ))}
+      </Flexbox>
     </Paper>
   );
 };
 
-export default MapEnemyFleetCard;
+export default styled(MapEnemyFleetCard)`
+  padding: 8px;
+`;

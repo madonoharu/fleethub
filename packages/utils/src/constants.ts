@@ -233,4 +233,11 @@ export enum ShipAttr {
   RoyalNavy,
   Kai2,
   TurbineSpeedBonus,
+  Pillbox,
+  IsolatedIsland,
+  HarbourSummerPrincess,
+  SupplyDepot,
+  PtImp,
+  BattleshipSummerPrincess,
+  HeavyCruiserSummerPrincess,
 }

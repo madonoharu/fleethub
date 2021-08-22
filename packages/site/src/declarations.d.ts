@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from "./store";
 
 declare module "react" {
   // eslint-disable-next-line @typescript-eslint/ban-types
-  type FCX<P = {}> = FC<P & { className?: string }>;
+  type FCX<P = {}> = FC<P & { className?: string; style?: CSSProperties }>;
 }
 
 declare module "react-redux" {
@@ -25,7 +25,7 @@ declare module "@emotion/react" {
 
 declare module "react-i18next" {
   interface Resources {
-    common: typeof import("../public/locales/en/common.json");
+    common: Record<string, string>;
     gear_types: string[];
     stype: string[];
     ctype: Record<string, string>;

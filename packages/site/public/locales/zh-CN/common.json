@@ -42,11 +42,12 @@
   "HeadOn": "反航",
   "GreenT": "T有利",
   "RedT": "T不利",
-  "Single": "非联合舰队",
+  "Single": "单舰队",
   "CarrierTaskForce": "空母机动部队",
   "SurfaceTaskForce": "水上打击部队",
-  "TransportEscort": "海上输送部队",
-  "EnemyCombined": "联合舰队",
+  "TransportEscort": "输送护卫部队",
+  "EnemySingle": "敌方 单舰队",
+  "EnemyCombined": "敌方 联合舰队",
   "LineAhead": "单纵阵",
   "DoubleLine": "复纵阵",
   "Diamond": "轮型阵",
@@ -114,5 +115,6 @@
   "nodeTypeFinishLine": "终止",
   "nodeTypeLBAS": "基地航空队",
   "nodeTypeUnknown": "$t(termUnknown)",
+  "LbasDistance": "航程",
   "termUnknown": "$t(Unknown)"
 }

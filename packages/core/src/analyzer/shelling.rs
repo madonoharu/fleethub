@@ -1,15 +1,89 @@
 use serde::Serialize;
+use strum::IntoEnumIterator;
 use ts_rs::TS;
 
 use crate::{
+    attack::{AttackContext, AttackPower, ShipAttackContext},
     fleet::Fleet,
     org::Org,
     ship::Ship,
     types::{
         AirState, DamageState, DayCutin, DayCutinDef, Engagement, Formation,
-        FormationAttackModifiers, MasterConstants, MoraleState, Role,
+        FormationAttackModifiers, MasterConstants, MoraleState, Role, SpecialEnemyType,
     },
 };
+
+pub fn create_attack_context<'a>(
+    master_constants: &'a MasterConstants,
+    attacker_ship: &'a Ship,
+    target_ship: &'a Ship,
+    engagement: Engagement,
+    cutin: Option<DayCutin>,
+    target_special_enemy_type: SpecialEnemyType,
+) -> AttackContext<'a> {
+    let attacker = ShipAttackContext {
+        ship: attacker_ship,
+        side: Default::default(),
+        role: Default::default(),
+        org_type: Default::default(),
+        index: 0,
+        fleet_len: 6,
+        formation: Default::default(),
+        morale_state: Default::default(),
+        damage_state: Default::default(),
+    };
+
+    let target = ShipAttackContext::new(&target_ship);
+
+    AttackContext {
+        air_state: Default::default(),
+        attacker,
+        target,
+        target_special_enemy_type,
+        cutin,
+        engagement,
+        master_constants,
+    }
+}
+
+pub struct AnalyzeShipShellingParams {
+    formation: Formation,
+    engagement: Engagement,
+    special_enemy_type: SpecialEnemyType,
+}
+
+pub fn analyze_ship_shelling(
+    master_constants: &MasterConstants,
+    attacker_ship: &Ship,
+    params: AnalyzeShipShellingParams,
+) -> Vec<(Option<DayCutin>, AttackPower)> {
+    let target_ship = Ship::default();
+
+    let cutin_set = attacker_ship.get_possible_day_cutin_set();
+
+    let result = cutin_set
+        .iter()
+        .map(Some)
+        .chain([None])
+        .filter_map(|cutin| {
+            let ctx = create_attack_context(
+                master_constants,
+                attacker_ship,
+                &target_ship,
+                params.engagement,
+                cutin,
+                SpecialEnemyType::None,
+            );
+
+            let shelling_params = ctx.shelling_params();
+            let attack_power = shelling_params.power.calc()?;
+
+            Some((cutin, attack_power))
+        })
+        .collect::<Vec<_>>();
+
+    result
+}
 
 struct ShellingContext {
     engagement: Engagement,

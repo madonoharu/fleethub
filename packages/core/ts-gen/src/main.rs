@@ -26,10 +26,12 @@ fn main() {
         types::ShipType,
         types::ShipClass,
         types::ShipAttr,
+        types::SpecialEnemyType,
         types::DamageState,
         types::SingleFormation,
         types::CombinedFormation,
         types::AirState,
+        types::Engagement,
         types::Formation,
         types::FormationAttackModifiers,
         types::NormalFormationDef,
@@ -40,6 +42,7 @@ fn main() {
         types::NightCutinDef,
         types::AntiAirCutinDef,
         types::ContactRank,
+        types::Side,
         types::OrgType,
         types::GearType,
         types::GearState,
@@ -76,6 +79,7 @@ fn main() {
         analyzer::AirstrikeContactChance,
         analyzer::OrgContactChanceAnalysis,
         analyzer::OrgAirstrikeAnalysis,
+        attack::AttackPower,
     );
 
     let buffer =

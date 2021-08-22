@@ -1,30 +1,20 @@
-import { ShipParams } from "@fleethub/core";
-import { pick, FhEntity, GearKey, ShipKey, GEAR_KEYS } from "@fleethub/utils";
-import {
-  createEntityAdapter,
-  createSlice,
-  EntitySelectors,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-import { DefaultRootState } from "react-redux";
+import { pick, ShipKey, GEAR_KEYS } from "@fleethub/utils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { shipsAdapter } from "./adapters";
+import { sweep } from "./entities";
+import { isEntitiesAction } from "./filesSlice";
 import { gearsSlice } from "./gearsSlice";
-import { selectShipsState } from "./selectors";
-
-export type ShipEntity = FhEntity<ShipParams, GearKey>;
+import { ShipEntity } from "./schema";
 
 export type ShipPosition = { id: string; key: ShipKey };
 
-const adapter = createEntityAdapter<ShipEntity>();
-export const shipsSelectors: EntitySelectors<ShipEntity, DefaultRootState> =
-  adapter.getSelectors(selectShipsState);
-
 export const shipsSlice = createSlice({
-  name: "ships",
-  initialState: adapter.getInitialState(),
+  name: "entities/ships",
+  initialState: shipsAdapter.getInitialState(),
   reducers: {
     add: {
-      reducer: adapter.addOne,
+      reducer: shipsAdapter.addOne,
       prepare: (state: ShipEntity, to: ShipPosition) => ({
         payload: state,
         meta: { fleet: to },
@@ -44,22 +34,32 @@ export const shipsSlice = createSlice({
           ...pick(current, GEAR_KEYS),
         };
 
-        adapter.setOne(state, next);
+        shipsAdapter.setOne(state, next);
       } else {
-        adapter.addOne(state, { id, ship_id });
+        shipsAdapter.addOne(state, { id, ship_id });
       }
     },
-    update: adapter.updateOne,
-    remove: adapter.removeOne,
+    update: shipsAdapter.updateOne,
+    remove: shipsAdapter.removeOne,
   },
   extraReducers: (builder) => {
-    builder.addCase(gearsSlice.actions.add, (state, { payload, meta }) => {
-      const { position } = meta;
-      const entity =
-        "ship" in position && position.ship && state.entities[position.ship];
-      if (!entity) return;
+    builder
+      .addCase(gearsSlice.actions.add, (state, { payload, meta }) => {
+        const { position } = meta;
+        const entity =
+          "ship" in position && position.ship && state.entities[position.ship];
+        if (!entity) return;
 
-      entity[position.key] = payload.id;
-    });
+        entity[position.key] = payload.id;
+      })
+      .addCase(sweep, (state, { payload }) => {
+        shipsAdapter.removeMany(state, payload.ships);
+      })
+      .addMatcher(isEntitiesAction, (state, { payload }) => {
+        const { ships } = payload.entities;
+        if (ships) {
+          shipsAdapter.addMany(state, ships);
+        }
+      });
   },
 });

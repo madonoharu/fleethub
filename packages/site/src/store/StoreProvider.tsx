@@ -1,11 +1,11 @@
 import React from "react";
-import { Provider as ReduxProvider } from "react-redux";
+import { batch, Provider as ReduxProvider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { ActionCreators } from "redux-undo";
 
 import { createStore } from "./createStore";
-import { cleanEntities, fetchLocationData } from "./entities";
+import { sweepEntities, fetchLocationData } from "./entities";
 
 const StoreProvider: React.FC = ({ children }) => {
   const store = createStore();
@@ -14,9 +14,11 @@ const StoreProvider: React.FC = ({ children }) => {
   const handleBeforeLift = () => {
     if (!process.browser) return;
 
-    store.dispatch(cleanEntities());
-    store.dispatch(fetchLocationData());
-    store.dispatch(ActionCreators.clearHistory());
+    batch(() => {
+      store.dispatch(sweepEntities(true));
+      store.dispatch(fetchLocationData());
+      store.dispatch(ActionCreators.clearHistory());
+    });
   };
 
   return (

@@ -12,16 +12,16 @@ pub mod damage;
 pub mod types;
 pub mod utils;
 
+use wasm_bindgen::prelude::*;
+
 use air_squadron::AirSquadron;
-use analyzer::Analyzer;
+use analyzer::{analyze_ship_shelling, AnalyzeShipShellingParams, Analyzer};
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
 use org::Org;
 use ship::Ship;
-
 use types::{EBonusFn, MasterData};
-use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -179,4 +179,13 @@ impl FhCore {
 
         JsValue::from_serde(&result).unwrap()
     }
+
+    // pub fn test(&self, ship: &Ship) -> JsValue {
+    //     let res = analyze_ship_shelling(
+    //         &self.factory.master_data.constants,
+    //         ship,
+    //         AnalyzeShipShellingParams {},
+    //     );
+    //     JsValue::from_serde(&res).unwrap()
+    // }
 }

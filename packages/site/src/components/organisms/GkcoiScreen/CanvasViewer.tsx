@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Fab, IconButton, Tooltip } from "@material-ui/core";
-import SaveIcon from "@material-ui/icons/Save";
+import { Fab, Tooltip } from "@material-ui/core";
+import FileDownloadIcon from "@material-ui/icons/FileDownload";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -36,13 +36,13 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
     <div className={className}>
       <Tooltip title="download">
         <Fab
-          css={{ position: "absolute", right: -64 }}
+          css={{ position: "absolute", top: -32, right: -40 }}
           color="secondary"
           component="a"
           href={dataUrl}
           download="canvas.png"
         >
-          <SaveIcon />
+          <FileDownloadIcon />
         </Fab>
       </Tooltip>
 

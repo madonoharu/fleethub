@@ -12,6 +12,7 @@ import { gearListSlice } from "./gearListSlice";
 import { gearsSlice } from "./gearsSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
 import { mapListSlice } from "./mapListSlice";
+import { navSlice } from "./navSlice";
 import { orgsSlice } from "./orgsSlice";
 import { shipListSlice } from "./shipListSlice";
 import { shipsSlice } from "./shipsSlice";
@@ -27,18 +28,18 @@ const storage = process.browser ? localforage : noopStorage;
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
+  nav: navSlice.reducer,
   mapList: mapListSlice.reducer,
   gearList: gearListSlice.reducer,
   shipList: shipListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
-
-  files: filesSlice.reducer,
 
   gears: gearsSlice.reducer,
   ships: shipsSlice.reducer,
   airSquadrons: airSquadronsSlice.reducer,
   fleets: fleetsSlice.reducer,
   orgs: orgsSlice.reducer,
+  files: filesSlice.reducer,
 });
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {
@@ -61,6 +62,7 @@ const persistedReducer = persistReducer(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     deserialize: false,
+    blacklist: ["nav"],
   },
   persistedReducerBase
 );

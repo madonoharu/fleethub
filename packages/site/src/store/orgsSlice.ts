@@ -1,23 +1,9 @@
-import { OrgParams } from "@fleethub/core";
-import { AirSquadronKey, FhEntity, FleetKey } from "@fleethub/utils";
-import {
-  createEntityAdapter,
-  createSlice,
-  EntitySelectors,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-import { DefaultRootState } from "react-redux";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { filesSlice } from "./filesSlice";
-import { makeActionMatcher } from "./makeActionMatcher";
-
-export type OrgEntity = FhEntity<OrgParams, FleetKey | AirSquadronKey>;
-
-const selectOrgsState = (root: DefaultRootState) => root.present.orgs;
-
-const orgsAdapter = createEntityAdapter<OrgEntity>();
-export const orgsSelectors: EntitySelectors<OrgEntity, DefaultRootState> =
-  orgsAdapter.getSelectors(selectOrgsState);
+import { orgsAdapter } from "./adapters";
+import { sweep } from "./entities";
+import { isEntitiesAction } from "./filesSlice";
+import { OrgEntity } from "./schema";
 
 export const orgsSlice = createSlice({
   name: "entities/orgs",
@@ -32,17 +18,13 @@ export const orgsSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      .addCase(filesSlice.actions.createPlan, (state, { payload, meta }) => {
-        orgsAdapter.addOne(state, { id: payload.org.id, ...meta });
+      .addCase(sweep, (state, { payload }) => {
+        orgsAdapter.removeMany(state, payload.orgs);
       })
-
-      .addCase(filesSlice.actions.remove, orgsAdapter.removeMany)
-
-      .addMatcher(
-        makeActionMatcher(filesSlice.actions.set, filesSlice.actions.add),
-        () => {
-          throw "todo";
+      .addMatcher(isEntitiesAction, (state, { payload }) => {
+        if (payload.entities.orgs) {
+          orgsAdapter.addMany(state, payload.entities.orgs);
         }
-      );
+      });
   },
 });

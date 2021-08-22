@@ -1,7 +1,7 @@
 use enumset::EnumSetType;
 use num_derive::FromPrimitive;
 use serde::{Deserialize, Serialize};
-use strum_macros::{EnumString, ToString};
+use strum::{EnumString, ToString};
 use ts_rs::TS;
 
 #[derive(Debug, EnumSetType, FromPrimitive, ToString, TS)]
@@ -181,6 +181,13 @@ pub enum ShipAttr {
     RoyalNavy,
     Kai2,
     TurbineSpeedBonus,
+    Pillbox,
+    IsolatedIsland,
+    HarbourSummerPrincess,
+    SupplyDepot,
+    PtImp,
+    BattleshipSummerPrincess,
+    HeavyCruiserSummerPrincess,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize, TS)]
@@ -209,6 +216,12 @@ pub enum DamageState {
     Shouha,
     /// 小破未満
     Normal,
+}
+
+impl Default for DamageState {
+    fn default() -> Self {
+        Self::Normal
+    }
 }
 
 impl DamageState {
@@ -298,6 +311,34 @@ impl MoraleState {
             Self::Orange => 1.2,
             Self::Red => 1.4,
         }
+    }
+}
+
+/// 特殊敵種別
+#[derive(Debug, Clone, Copy, PartialEq, Eq, TS)]
+pub enum SpecialEnemyType {
+    None,
+    /// 砲台小鬼
+    Pillbox,
+    /// 離島棲姫
+    IsolatedIsland,
+    /// ソフトスキン
+    SoftSkinned,
+    /// 港湾夏姫
+    HarbourSummerPrincess,
+    /// 集積地
+    SupplyDepot,
+    /// PT小鬼群
+    PtImp,
+    /// 戦艦夏姫
+    BattleshipSummerPrincess,
+    /// 重巡夏姫
+    HeavyCruiserSummerPrincess,
+}
+
+impl SpecialEnemyType {
+    pub fn is_none(&self) -> bool {
+        matches!(*self, Self::None)
     }
 }
 
