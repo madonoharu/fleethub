@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Drawer } from "@material-ui/core";
 import React from "react";
 
-import FileTreeView from "../FileTreeView";
+import Explorer from "../Explorer";
 
 const appBarHeight = 40;
 const drawerWidth = 8 * 40;
@@ -12,6 +12,7 @@ const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paper {
     margin-top: ${appBarHeight}px;
     width: ${drawerWidth}px;
+    height: calc(100% - ${appBarHeight}px);
   }
 `;
 
@@ -37,7 +38,7 @@ const ExplorerDrawer: React.FC<Props> = ({ open, children }) => {
   return (
     <>
       <StyledDrawer variant="persistent" open={open}>
-        <FileTreeView />
+        <Explorer />
       </StyledDrawer>
       <Container $open={open}>{children}</Container>
     </>

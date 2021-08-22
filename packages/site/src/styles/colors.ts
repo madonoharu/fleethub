@@ -1,13 +1,13 @@
-import { colors as muiColors } from "@material-ui/core";
-import { createTheme } from "@material-ui/core";
+import { colors as muiColors, createTheme } from "@material-ui/core";
 
-const { blue, cyan, pink, grey, lightBlue } = muiColors;
+const { blue, cyan, pink, grey, lightBlue, green } = muiColors;
 
 export const { palette } = createTheme({
   palette: {
     mode: "dark",
     primary: blue,
     secondary: pink,
+    success: green,
     background: {
       paper: "rgba(100, 100, 100, 0.1)",
     },

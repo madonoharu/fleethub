@@ -11,8 +11,10 @@ type PlanScreenProps = {
 };
 
 const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
-  const { org, actions: orgActions } = useOrg(id);
   const { file, actions: fileActions } = useFile(id);
+  const { org, actions: orgActions } = useOrg(
+    file?.type === "plan" ? file.org : ""
+  );
 
   if (!org || file?.type !== "plan") return null;
 
@@ -21,15 +23,17 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
       <PlanScreenHeader
         org={org}
         file={file}
+        actions={fileActions}
         onNameChange={fileActions.setName}
         onHqLevelChange={orgActions.setHqLevel}
         onOrgTypeChange={(org_type) => orgActions.update({ org_type })}
       />
-      <PlanTabs org={org} />
+
+      <PlanTabs org={org} file={file} />
 
       <PlanAnalysisPanel css={{ marginTop: 8 }} org={org} />
     </Container>
   );
 };
 
-export default PlanScreen;
+export default React.memo(PlanScreen);

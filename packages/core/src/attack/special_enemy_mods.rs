@@ -3,34 +3,23 @@ use paste::paste;
 use crate::{
     gear_id,
     ship::Ship,
-    types::{GearType, ShipType},
+    types::{GearType, ShipType, SpecialEnemyType},
 };
 
 use super::attack_power::AttackPowerModifiers;
 
-#[derive(Debug, PartialEq, Eq)]
-enum InstallationType {
-    Pillbox,
-    IsolatedIsland,
-    SoftSkinned,
-    HarbourSummerPrincess,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum SpecialEnemyType {
-    SupplyDepot,
-    PtImp,
-    BattleshipSummerPrincess,
-    HeavyCruiserSummerPrincess,
-}
-
 /// 特効補正
 pub fn special_enemy_modifiers(
     attacker: &Ship,
-    target: &Ship,
+    special_enemy_type: SpecialEnemyType,
     is_day: bool,
 ) -> AttackPowerModifiers {
     let mut mods = AttackPowerModifiers::default();
+
+    if special_enemy_type.is_none() {
+        return mods;
+    }
+
     let gears = &attacker.gears;
 
     macro_rules! apply_mod {
@@ -98,9 +87,6 @@ pub fn special_enemy_modifiers(
         };
     }
 
-    let installation_type = InstallationType::Pillbox;
-    let special_enemy_type = SpecialEnemyType::SupplyDepot;
-
     let has_seaplane = gears.has_by(|gear| {
         matches!(
             gear.gear_type,
@@ -147,13 +133,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(a6, has_seaplane, 1.15);
             apply_mod!(a6, has_ap_shell, 1.1);
         }
-        SpecialEnemyType::SupplyDepot => {
-            // 下で記述
-        }
-    }
-
-    if !target.is_land() {
-        return mods;
+        _ => (),
     }
 
     let wg42_count = gears.count(gear_id!("WG42 (Wurfgerät 42)"));
@@ -175,6 +155,7 @@ pub fn special_enemy_modifiers(
     let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
 
+    // 改修補正
     let landing_craft_stars = gears.sum_by(|gear| {
         if gear.gear_type == GearType::LandingCraft {
             gear.stars
@@ -191,9 +172,24 @@ pub fn special_enemy_modifiers(
         }
     });
 
+    let landing_craft_stars_average = if landing_craft_count > 0 {
+        (landing_craft_stars as f64) / (landing_craft_count as f64)
+    } else {
+        0.0
+    };
+
+    let tank_stars_average = if tank_count > 0 {
+        (tank_stars as f64) / (tank_count as f64)
+    } else {
+        0.0
+    };
+
+    let landing_craft_ibonus = 1.0 + landing_craft_stars_average / 50.0;
+    let tank_ibonus = 1.0 + tank_stars_average / 30.0;
+
     // 陸上共通 a13
-    mods.apply_a13(1.0 + (landing_craft_stars as f64) / (landing_craft_count as f64) / 50.0);
-    mods.apply_a13(1.0 + (tank_stars as f64) / (tank_count as f64) / 30.0);
+    mods.apply_a13(landing_craft_ibonus);
+    mods.apply_a13(tank_ibonus);
 
     // 陸上共通 b13
     apply_mod!(
@@ -268,6 +264,13 @@ pub fn special_enemy_modifiers(
     }
 
     if special_enemy_type == SpecialEnemyType::SupplyDepot {
+        if t89_tank_count > 0 {
+            mods.apply_a6(landing_craft_ibonus.powf(2.0))
+        } else {
+            mods.apply_a6(landing_craft_ibonus)
+        }
+        mods.apply_a6(tank_ibonus);
+
         apply_mod!(a6, type4_rocket_group_count, [1.2, 1.2 * 1.4]);
         apply_mod!(a6, mortar_group_count, [1.15, 1.15 * 1.2]);
         apply_mod!(a6, landing_craft_count, [1.7]);
@@ -278,8 +281,8 @@ pub fn special_enemy_modifiers(
         apply_mod!(a6, armored_boat_group_count, [1.5, 1.5 * 1.1]);
     }
 
-    match installation_type {
-        InstallationType::Pillbox => {
+    match special_enemy_type {
+        SpecialEnemyType::Pillbox => {
             apply_mod!(a13, has_ap_shell, 1.85);
             apply_mod!(a13, wg42_count, [1.6, 1.6 * 1.7]);
             apply_mod!(a13, type4_rocket_group_count, [1.5, 1.5 * 1.8]);
@@ -300,7 +303,7 @@ pub fn special_enemy_modifiers(
                 apply_mod!(a13, armored_boat_group_count, [1.3, 1.3 * 1.2]);
             }
         }
-        InstallationType::IsolatedIsland => {
+        SpecialEnemyType::IsolatedIsland => {
             apply_mod!(a13, has_aa_shell, 1.75);
             apply_mod!(a13, wg42_count, [1.4, 1.4 * 1.5]);
             apply_mod!(a13, type4_rocket_group_count, [1.3, 1.3 * 1.65]);
@@ -317,7 +320,7 @@ pub fn special_enemy_modifiers(
                 apply_mod!(a13, armored_boat_group_count, [1.3, 1.3 * 1.1]);
             }
         }
-        InstallationType::HarbourSummerPrincess => {
+        SpecialEnemyType::HarbourSummerPrincess => {
             apply_mod!(a13, has_aa_shell, 1.75);
             apply_mod!(a13, has_ap_shell, 1.3);
             apply_mod!(a13, wg42_count, [1.4, 1.4 * 1.2]);
@@ -332,7 +335,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, m4a1dd_count, [2.0]);
             apply_mod!(a13, t2_tank_count, [2.8]);
         }
-        InstallationType::SoftSkinned => {
+        SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => {
             apply_mod!(a13, has_aa_shell, 2.5);
             apply_mod!(a13, wg42_count, [1.3, 1.3 * 1.4]);
             apply_mod!(a13, type4_rocket_group_count, [1.25, 1.25 * 1.5]);
@@ -349,6 +352,7 @@ pub fn special_enemy_modifiers(
                 apply_mod!(a13, armored_boat_group_count, [1.1, 1.1 * 1.1]);
             }
         }
+        _ => (),
     }
 
     mods

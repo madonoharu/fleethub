@@ -46,7 +46,8 @@
   "CarrierTaskForce": "空母機動",
   "SurfaceTaskForce": "水上打撃",
   "TransportEscort": "輸送護衛",
-  "EnemyCombined": "連合艦隊",
+  "EnemySingle": "敵軍 通常艦隊",
+  "EnemyCombined": "敵軍 連合艦隊",
   "LineAhead": "単縦陣",
   "DoubleLine": "複縦陣",
   "Diamond": "輪形陣",
@@ -114,5 +115,6 @@
   "nodeTypeFinishLine": "ゴール地点",
   "nodeTypeLBAS": "基地航空隊",
   "nodeTypeUnknown": "$t(termUnknown)",
+  "LbasDistance": "戦闘行動半径",
   "termUnknown": "$t(Unknown)"
 }

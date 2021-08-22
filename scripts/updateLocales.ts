@@ -99,11 +99,15 @@ class LocaleUpdater {
   };
 
   private updateCommon = async () => {
-    const kc3Terms = await this.getKC3Json<Dictionary>("terms.json");
+    const kc3Terms = await this.getKC3Json<Record<string, string>>(
+      "terms.json"
+    );
 
     const kc3Battle = await this.getKC3Json<KC3Battle>("battle.json");
 
-    const kcnav = await this.tsun.get("kcnav.json").json<Dictionary>();
+    const kcnav = await this.tsun
+      .get("kcnav.json")
+      .json<Record<string, string>>();
 
     const worldNames = Object.fromEntries(
       Object.entries(kcnav).filter(([key]) => /^worldName\d+/.test(key))
@@ -134,11 +138,12 @@ class LocaleUpdater {
     };
 
     const orgTypeDictionary: Record<OrgType, string | undefined> = {
-      Single: kc3Terms["CombinedNone"],
-      CarrierTaskForce: kc3Terms["CombinedCarrier"],
-      SurfaceTaskForce: kc3Terms["CombinedSurface"],
-      TransportEscort: kc3Terms["CombinedTransport"],
-      EnemyCombined: kc3Terms["CombinedFleet"],
+      Single: kcnav["fleetTypeSingle"],
+      CarrierTaskForce: kcnav["fleetTypeCTF"],
+      SurfaceTaskForce: kcnav["fleetTypeSTF"],
+      TransportEscort: kcnav["fleetTypeTCF"],
+      EnemySingle: `${kc3Terms["BattleEnemy"]} ${kcnav["fleetTypeSingle"]}`,
+      EnemyCombined: `${kc3Terms["BattleEnemy"]} ${kc3Terms["CombinedFleet"]}`,
     };
 
     const formationDictionary: Record<Formation, string | undefined> = {
@@ -247,6 +252,7 @@ class LocaleUpdater {
       ...worldNames,
       ...nodeTypes,
 
+      LbasDistance: kcnav["displayLBASDistanceLabel"],
       termUnknown: "$t(Unknown)",
     };
 

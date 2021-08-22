@@ -1,39 +1,38 @@
 import { GearParams } from "@fleethub/core";
 import { GearKey } from "@fleethub/utils";
-import {
-  createEntityAdapter,
-  createSlice,
-  EntitySelectors,
-  nanoid,
-} from "@reduxjs/toolkit";
-import { DefaultRootState } from "react-redux";
-
-import { selectGearsState } from "./selectors";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { gearsAdapter } from "./adapters";
+import { sweep } from "./entities";
+import { isEntitiesAction } from "./filesSlice";
 
 export type GearPosition =
   | { ship: string; key: GearKey }
   | { airSquadron: string; key: GearKey };
 
-export type GearEntity = {
-  id: string;
-} & GearParams;
-
-const adapter = createEntityAdapter<GearEntity>();
-export const gearsSelectors: EntitySelectors<GearEntity, DefaultRootState> =
-  adapter.getSelectors(selectGearsState);
-
 export const gearsSlice = createSlice({
-  name: "gears",
-  initialState: adapter.getInitialState(),
+  name: "entities/gears",
+  initialState: gearsAdapter.getInitialState(),
   reducers: {
     add: {
-      reducer: adapter.addOne,
+      reducer: gearsAdapter.addOne,
       prepare: (position: GearPosition, state: GearParams) => ({
         payload: { ...state, id: nanoid() },
         meta: { position },
       }),
     },
-    update: adapter.updateOne,
-    remove: adapter.removeOne,
+    update: gearsAdapter.updateOne,
+    remove: gearsAdapter.removeOne,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(sweep, (state, { payload }) => {
+        gearsAdapter.removeMany(state, payload.gears);
+      })
+      .addMatcher(isEntitiesAction, (state, { payload }) => {
+        const { gears } = payload.entities;
+        if (gears) {
+          gearsAdapter.addMany(state, gears);
+        }
+      });
   },
 });

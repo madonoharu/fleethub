@@ -138,7 +138,25 @@ export type ShipAttr =
   | "Installation"
   | "RoyalNavy"
   | "Kai2"
-  | "TurbineSpeedBonus";
+  | "TurbineSpeedBonus"
+  | "Pillbox"
+  | "IsolatedIsland"
+  | "HarbourSummerPrincess"
+  | "SupplyDepot"
+  | "PtImp"
+  | "BattleshipSummerPrincess"
+  | "HeavyCruiserSummerPrincess";
+
+export type SpecialEnemyType =
+  | "None"
+  | "Pillbox"
+  | "IsolatedIsland"
+  | "SoftSkinned"
+  | "HarbourSummerPrincess"
+  | "SupplyDepot"
+  | "PtImp"
+  | "BattleshipSummerPrincess"
+  | "HeavyCruiserSummerPrincess";
 
 export type DamageState = "Sunk" | "Taiha" | "Chuuha" | "Shouha" | "Normal";
 
@@ -162,6 +180,8 @@ export type AirState =
   | "AirParity"
   | "AirDenial"
   | "AirIncapability";
+
+export type Engagement = "GreenT" | "Parallel" | "HeadOn" | "RedT";
 
 export type Formation = SingleFormation | CombinedFormation;
 
@@ -241,11 +261,14 @@ export interface AntiAirCutinDef {
 
 export type ContactRank = "Rank1" | "Rank2" | "Rank3";
 
+export type Side = "Player" | "Enemy";
+
 export type OrgType =
   | "Single"
   | "CarrierTaskForce"
   | "SurfaceTaskForce"
   | "TransportEscort"
+  | "EnemySingle"
   | "EnemyCombined";
 
 export type GearType =
@@ -360,10 +383,13 @@ export interface AirSquadronState {
   g2: GearState | null;
   g3: GearState | null;
   g4: GearState | null;
+  g5: GearState | null;
+  gx: GearState | null;
   ss1: number | null;
   ss2: number | null;
   ss3: number | null;
   ss4: number | null;
+  ss5: number | null;
 }
 
 export interface OrgState {
@@ -377,7 +403,6 @@ export interface OrgState {
   a3: AirSquadronState | null;
   hq_level: number | null;
   org_type: OrgType | null;
-  side: Side | null;
 }
 
 export type SpeedGroup = "A" | "B1" | "B2" | "C";
@@ -601,4 +626,12 @@ export interface OrgContactChanceAnalysis {
 
 export interface OrgAirstrikeAnalysis {
   contact_chance: OrgContactChanceAnalysis;
+}
+
+export interface AttackPower {
+  precap: number;
+  is_capped: boolean;
+  capped: number;
+  normal: number;
+  critical: number;
 }

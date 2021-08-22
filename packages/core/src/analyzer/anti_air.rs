@@ -212,7 +212,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         let formation_mod = 1.0;
         let combined_fleet_mod = 1.0;
         let fleet_anti_air = org.fleet_anti_air(formation_mod);
-        let side = org.side;
+        let side = org.side();
         let anti_air_cutin = None;
 
         let ships = org

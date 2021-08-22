@@ -1,32 +1,15 @@
-import { AirSquadronParams } from "@fleethub/core";
-import { FhEntity, GearKey, SlotSizeKey } from "@fleethub/utils";
-import {
-  createEntityAdapter,
-  createSlice,
-  EntitySelectors,
-} from "@reduxjs/toolkit";
-import { DefaultRootState } from "react-redux";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { filesSlice } from "./filesSlice";
+import { airSquadronsAdapter } from "./adapters";
+import { sweep } from "./entities";
+import { isEntitiesAction } from "./filesSlice";
 import { gearsSlice } from "./gearsSlice";
 
-export type AirSquadronEntity = FhEntity<
-  AirSquadronParams,
-  (GearKey | SlotSizeKey) & keyof AirSquadronParams
->;
-
-const adapter = createEntityAdapter<AirSquadronEntity>();
-
-export const airSquadronsSelectors: EntitySelectors<
-  AirSquadronEntity,
-  DefaultRootState
-> = adapter.getSelectors((root) => root.present.airSquadrons);
-
 export const airSquadronsSlice = createSlice({
-  name: "airSquadron",
-  initialState: adapter.getInitialState(),
+  name: "entities/airSquadrons",
+  initialState: airSquadronsAdapter.getInitialState(),
   reducers: {
-    update: adapter.updateOne,
+    update: airSquadronsAdapter.updateOne,
   },
   extraReducers: (builder) => {
     builder
@@ -40,12 +23,12 @@ export const airSquadronsSlice = createSlice({
 
         entity[position.key as "g1"] = payload.id;
       })
-      .addCase(filesSlice.actions.createPlan, (state, { meta }) => {
-        adapter.addMany(state, [
-          { id: meta.a1 },
-          { id: meta.a2 },
-          { id: meta.a3 },
-        ]);
+      .addCase(sweep, (state, { payload }) => {
+        airSquadronsAdapter.removeMany(state, payload.airSquadrons);
+      })
+      .addMatcher(isEntitiesAction, (state, { payload }) => {
+        const { airSquadrons } = payload.entities;
+        if (airSquadrons) airSquadronsAdapter.addMany(state, airSquadrons);
       });
   },
 });

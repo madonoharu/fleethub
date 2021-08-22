@@ -3,7 +3,7 @@ import React from "react";
 
 import { useFile, useModal } from "../../../hooks";
 import { PlanFileEntity } from "../../../store";
-import { CopyButton, MoreVertButton, RemoveButton } from "../../molecules";
+import { CopyButton, MoreVertButton, DeleteButton } from "../../molecules";
 import { FileMenu } from "../../organisms";
 import FileLabel from "./FileLabel";
 
@@ -27,7 +27,7 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
         action={
           <>
             <CopyButton size="tiny" title="コピー" onClick={actions.copy} />
-            <RemoveButton size="tiny" title="削除" onClick={actions.remove} />
+            <DeleteButton size="tiny" title="削除" onClick={actions.remove} />
             <MoreVertButton
               size="tiny"
               title="メニュー"

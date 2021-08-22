@@ -6,7 +6,7 @@ use crate::{
     org::Org,
     ship::Ship,
     types::{
-        AirSquadronState, EBonusFn, EBonuses, FleetState, GearState, MasterData, OrgState,
+        AirSquadronState, EBonusFn, EBonuses, FleetState, GearState, MasterData, OrgState, OrgType,
         ShipAttr, ShipState,
     },
     utils::xxh3,
@@ -119,6 +119,7 @@ impl Factory {
             ss2,
             ss3,
             ss4,
+            ..
         } = state;
 
         let create_gear = |g: Option<GearState>| self.create_gear(g);
@@ -161,25 +162,48 @@ impl Factory {
             a3,
             hq_level,
             org_type,
-            side,
         } = state;
+
+        let f1 = self.create_fleet(f1);
+        let f2 = self.create_fleet(f2);
+        let f3 = self.create_fleet(f3);
+        let f4 = self.create_fleet(f4);
+
+        let org_type = org_type.unwrap_or_else(|| {
+            if f1.len() == 0 {
+                return OrgType::Single;
+            }
+
+            let is_abyssal = f1
+                .ships
+                .values()
+                .chain(f2.ships.values())
+                .any(|ship| ship.is_abyssal());
+
+            if !is_abyssal {
+                OrgType::Single
+            } else if f2.len() > 0 {
+                OrgType::EnemyCombined
+            } else {
+                OrgType::EnemySingle
+            }
+        });
 
         Some(Org {
             xxh3,
             id: id.unwrap_or_default(),
 
-            f1: self.create_fleet(f1),
-            f2: self.create_fleet(f2),
-            f3: self.create_fleet(f3),
-            f4: self.create_fleet(f4),
+            f1,
+            f2,
+            f3,
+            f4,
 
             a1: self.create_air_squadron(a1),
             a2: self.create_air_squadron(a2),
             a3: self.create_air_squadron(a3),
 
             hq_level: hq_level.unwrap_or(120),
-            org_type: org_type.unwrap_or_default(),
-            side: side.unwrap_or_default(),
+            org_type,
         })
     }
 

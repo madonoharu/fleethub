@@ -1,31 +1,21 @@
-import { FleetParams } from "@fleethub/core";
-import { FhEntity, ShipKey } from "@fleethub/utils";
-import { createEntityAdapter, createSlice, nanoid } from "@reduxjs/toolkit";
-import { DefaultRootState } from "react-redux";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
-import { filesSlice } from "./filesSlice";
-import { getPresentState } from "./selectors";
+import { fleetsAdapter } from "./adapters";
+import { sweep } from "./entities";
+import { isEntitiesAction } from "./filesSlice";
 import { shipsSlice } from "./shipsSlice";
 
-export type FleetEntity = FhEntity<FleetParams, ShipKey>;
-
-const adapter = createEntityAdapter<FleetEntity>();
-
-export const fleetsSelectors = adapter.getSelectors(
-  (root: DefaultRootState) => getPresentState(root).fleets
-);
-
 export const fleetsSlice = createSlice({
-  name: "fleets",
-  initialState: adapter.getInitialState(),
+  name: "entities/fleets",
+  initialState: fleetsAdapter.getInitialState(),
   reducers: {
     add: {
-      reducer: adapter.addOne,
+      reducer: fleetsAdapter.addOne,
       prepare: () => {
         return { payload: { id: nanoid() } };
       },
     },
-    remove: adapter.removeOne,
+    remove: fleetsAdapter.removeOne,
   },
 
   extraReducers: (builder) => {
@@ -37,13 +27,12 @@ export const fleetsSlice = createSlice({
 
         entity[position.key] = payload.id;
       })
-      .addCase(filesSlice.actions.createPlan, (state, { meta }) => {
-        adapter.addMany(state, [
-          { id: meta.f1 },
-          { id: meta.f2 },
-          { id: meta.f3 },
-          { id: meta.f4 },
-        ]);
+      .addCase(sweep, (state, { payload }) => {
+        fleetsAdapter.removeMany(state, payload.fleets);
+      })
+      .addMatcher(isEntitiesAction, (state, { payload }) => {
+        const { fleets } = payload.entities;
+        if (fleets) fleetsAdapter.addMany(state, fleets);
       });
   },
 });

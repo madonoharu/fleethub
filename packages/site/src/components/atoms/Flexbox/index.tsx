@@ -1,10 +1,19 @@
-import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import styled, { CSSObject } from "@emotion/styled";
 import React from "react";
 
-export default styled.div`
-  display: flex;
-  align-items: center;
-  > * {
-    min-width: 0;
-  }
-`;
+type FlexboxProps = Pick<CSSObject, "alignItems"> & {
+  gap?: number | undefined;
+};
+
+export default styled.div<FlexboxProps>(
+  ({ alignItems, gap, theme }) => css`
+    display: flex;
+    align-items: ${alignItems || "center"};
+    gap: ${theme.spacing(gap || 0)};
+    > * {
+      min-width: 0;
+      min-height: 0;
+    }
+  `
+);

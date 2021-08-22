@@ -377,10 +377,10 @@ impl MasterConstants {
         &self,
         formation: Formation,
         ship_index: usize,
-        fleet_size: usize,
+        fleet_len: usize,
     ) -> Option<&NormalFormationDef> {
         let def = self.formations.iter().find(|def| formation == def.tag())?;
-        Some(def.get_normal_def(ship_index, fleet_size))
+        Some(def.get_normal_def(ship_index, fleet_len))
     }
 
     pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {

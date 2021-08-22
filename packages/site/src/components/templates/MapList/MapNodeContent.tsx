@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { FhMap, MapEnemyFleet, MapNode } from "@fleethub/utils";
+import { Formation } from "@fleethub/core";
+import { MapEnemyFleet, MapNode } from "@fleethub/utils";
 import React from "react";
 
 import { NodeLable } from "../../organisms/NauticalChart";
@@ -10,9 +11,10 @@ const StyledMapEnemyFleetCard = styled(MapEnemyFleetCard)`
 `;
 
 type Props = {
+  mapId: number;
   node: MapNode;
   difficulty?: number;
-  onEnemySelect?: (enemy: MapEnemyFleet) => void;
+  onEnemySelect?: (enemy: MapEnemyFleet, formation: Formation) => void;
 };
 
 const MapNodeContent: React.FCX<Props> = ({
@@ -21,12 +23,10 @@ const MapNodeContent: React.FCX<Props> = ({
   difficulty,
   onEnemySelect,
 }) => {
-  const { point, enemies } = node;
-
   return (
     <div className={className}>
       <NodeLable node={node} />
-      {enemies
+      {node.enemies
         ?.filter(
           (enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty
         )

@@ -34,4 +34,4 @@ const LanguageSelect: React.FCX = ({ className }) => {
   );
 };
 
-export default styled(LanguageSelect)``;
+export default LanguageSelect;

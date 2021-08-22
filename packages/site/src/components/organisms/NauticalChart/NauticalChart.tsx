@@ -11,7 +11,7 @@ import { getNodeTypeStyle, NodeCircle } from "./NodeIcon";
 
 export const NodeLable: React.FC<{ node: MapNode }> = ({ node }) => {
   const { t } = useTranslation("common");
-  const distance = node.d && `距離: ${node.d}`;
+  const distance = node.d && `${t("LbasDistance")}: ${node.d}`;
 
   return (
     <Typography>

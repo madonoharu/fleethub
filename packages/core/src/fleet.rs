@@ -43,6 +43,10 @@ impl Fleet {
         format!("{:X}", self.xxh3)
     }
 
+    pub fn len(&self) -> usize {
+        self.ships.values().count()
+    }
+
     pub fn get_ship(&self, key: &str) -> Option<Ship> {
         self.ships.get_by_ship_key(key).cloned()
     }

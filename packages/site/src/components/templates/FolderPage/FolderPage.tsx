@@ -1,12 +1,11 @@
 import styled from "@emotion/styled";
 import { Button, Container } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
+import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import React from "react";
 
 import { useFile } from "../../../hooks";
-import { Divider, Flexbox } from "../../atoms";
-import { SaveButton } from "../../molecules";
+import { Flexbox } from "../../atoms";
 import { FileDropZone, FileForm } from "../../organisms";
 import FolderPageItem from "./FolderPageItem";
 
@@ -14,16 +13,14 @@ const ListContainer = styled.div`
   margin-top: 16px;
 `;
 
-type Props = {
+type FolderPageProps = {
   id: string;
 };
 
-const FolderPage: React.FCX<Props> = ({ className, id }) => {
-  const { file, actions, canDrop, isTemp } = useFile(id);
+const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
+  const { file, actions, canDrop } = useFile(id);
 
   if (file?.type !== "folder") return null;
-
-  const { name, children } = file;
 
   const handlePlanCreate = () => {
     actions.createPlan();
@@ -31,10 +28,6 @@ const FolderPage: React.FCX<Props> = ({ className, id }) => {
 
   const handleFolderCreate = () => {
     actions.createFolder();
-  };
-
-  const handleNameChange = (name: string) => {
-    actions.update({ name });
   };
 
   return (
@@ -49,20 +42,26 @@ const FolderPage: React.FCX<Props> = ({ className, id }) => {
         />
 
         <ListContainer>
-          <Flexbox>
-            <Button onClick={handlePlanCreate} startIcon={<AddIcon />}>
+          <Flexbox gap={1}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePlanCreate}
+              startIcon={<NoteAddIcon />}
+            >
               編成を作成
             </Button>
             <Button
+              variant="contained"
+              color="primary"
               onClick={handleFolderCreate}
               startIcon={<CreateNewFolderIcon />}
             >
               フォルダを作成
             </Button>
-            {isTemp && <SaveButton title="保存する" onClick={actions.save} />}
           </Flexbox>
 
-          {children.map((id) => (
+          {file.children.map((id) => (
             <FolderPageItem key={id} id={id} parent={id} />
           ))}
         </ListContainer>

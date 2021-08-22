@@ -1,17 +1,21 @@
 import styled from "@emotion/styled";
+import {
+  FleetParams,
+  Formation,
+  MasterDataInput,
+  OrgParams,
+  ShipParams,
+} from "@fleethub/core";
 import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fleethub/utils";
 import { Button } from "@material-ui/core";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import React from "react";
 import { useAsync } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useModal } from "../../../hooks";
-import {
-  appSlice,
-  mapListSlice,
-  MapListState,
-  selectMapListState,
-} from "../../../store";
+import { useFhCoreContext, useModal } from "../../../hooks";
+import { mapListSlice, MapListState, selectMapListState } from "../../../store";
+import { Flexbox } from "../../atoms";
 import { Select } from "../../molecules";
 import { NauticalChart } from "../../organisms";
 import MapNodeContent from "./MapNodeContent";
@@ -28,8 +32,50 @@ const StyledMapSelect = styled(MapSelect)`
   margin: 8px;
 `;
 
+const MapSelectButton = styled(Button)`
+  height: 40px;
+  margin-right: 8px;
+  .MuiButton-endIcon {
+    font-size: 1.5rem;
+  }
+`;
+
+const toShipParams = (md: MasterDataInput, ship_id: number): ShipParams => {
+  const masterShip = md.ships.find(
+    (masterShip) => masterShip.ship_id === ship_id
+  );
+  const gearEntries = masterShip?.stock.map(
+    (g, i) => [`g${i + 1}`, g] as const
+  );
+  const gears = gearEntries && Object.fromEntries(gearEntries);
+
+  return { ship_id, ...gears };
+};
+
+const toFleetParams = (md: MasterDataInput, shipIds: number[]): FleetParams => {
+  const entries = shipIds.map(
+    (id, i) => [`s${i + 1}`, toShipParams(md, id)] as const
+  );
+
+  return Object.fromEntries(entries);
+};
+
+const createOrgParams = (
+  md: MasterDataInput,
+  enemy: MapEnemyFleet
+): OrgParams => {
+  const { main, escort } = enemy;
+
+  return {
+    org_type: escort ? "EnemyCombined" : "EnemySingle",
+    f1: toFleetParams(md, main),
+    f2: escort && toFleetParams(md, escort),
+  };
+};
+
 const useMapListState = () => {
   const { mapId, point, diff } = useSelector(selectMapListState);
+
   const dispatch = useDispatch();
 
   const asyncMap = useAsync((id: number) => fetchMap(id), [mapId]);
@@ -67,24 +113,61 @@ const useMapListState = () => {
   };
 };
 
-type MapListProps = {
-  onSelectEnemy?: (value: { node: MapNode; enemy: MapEnemyFleet }) => void;
+export type MapEnemySelectEvent = {
+  name: string;
+  point: string;
+  d?: number;
+  type: number;
+  org: OrgParams;
+  formation: Formation;
 };
 
-const MapList: React.FCX<MapListProps> = ({ onSelectEnemy }) => {
+type MapListProps = {
+  onMapEnemySelect?: (event: MapEnemySelectEvent) => void;
+};
+
+const MapList: React.FCX<MapListProps> = ({ onMapEnemySelect }) => {
   const Modal = useModal();
   const { mapId, map, setMapId, node, setNode, diff, setDiff } =
     useMapListState();
+
+  const { master_data } = useFhCoreContext();
 
   const handleMapSelect = (id: number) => {
     setMapId(id);
     Modal.hide();
   };
 
-  const handleEnemySelect = (enemy: MapEnemyFleet) => {
-    if (!onSelectEnemy || !node) return;
+  const createEnemySelectEvent = (
+    enemy: MapEnemyFleet,
+    formation: Formation
+  ): MapEnemySelectEvent | undefined => {
+    if (!node) return;
+    const { point, type, d } = node;
 
-    onSelectEnemy({ node, enemy });
+    const mapKey = `${Math.floor(mapId / 10)}-${mapId % 10}`;
+    const name = `${mapKey} ${point}`;
+
+    const org = createOrgParams(master_data, enemy);
+
+    const event = {
+      point,
+      name,
+      d,
+      type,
+      formation,
+      org,
+    };
+
+    return event;
+  };
+
+  const handleEnemySelect = (enemy: MapEnemyFleet, formation: Formation) => {
+    const event = createEnemySelectEvent(enemy, formation);
+
+    if (event && onMapEnemySelect) {
+      onMapEnemySelect(event);
+    }
   };
 
   const handleNodeClick = (node: MapNode) => {
@@ -98,25 +181,36 @@ const MapList: React.FCX<MapListProps> = ({ onSelectEnemy }) => {
         <StyledMapSelect onSelect={handleMapSelect} />
       </Modal>
 
-      <Button onClick={Modal.show} variant="outlined">
-        海域 {mapId}
-      </Button>
-      <Select
-        options={[4, 3, 2, 1]}
-        value={diff}
-        onChange={setDiff}
-        getOptionLabel={(diff) => ["丁", "丙", "乙", "甲"][diff - 1]}
-      />
+      <Flexbox>
+        <MapSelectButton
+          onClick={Modal.show}
+          variant="contained"
+          color="primary"
+          endIcon={<ArrowDropDownIcon />}
+        >
+          海域 {mapId}
+        </MapSelectButton>
 
-      {map && <NauticalChart map={map} onClick={handleNodeClick} />}
-
-      {node && (
-        <MapNodeContent
-          node={node}
-          difficulty={diff}
-          onEnemySelect={handleEnemySelect}
+        <Select
+          options={[4, 3, 2, 1]}
+          value={diff}
+          onChange={setDiff}
+          getOptionLabel={(diff) => ["丁", "丙", "乙", "甲"][diff - 1]}
         />
-      )}
+      </Flexbox>
+
+      <div style={{ width: 640 }}>
+        {map && <NauticalChart map={map} onClick={handleNodeClick} />}
+
+        {node && (
+          <MapNodeContent
+            mapId={mapId}
+            node={node}
+            difficulty={diff}
+            onEnemySelect={handleEnemySelect}
+          />
+        )}
+      </div>
     </div>
   );
 };

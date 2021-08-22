@@ -2,10 +2,9 @@ import styled from "@emotion/styled";
 import { Breadcrumbs } from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import React from "react";
-import { useDispatch } from "react-redux";
 
 import { useFile } from "../../../hooks";
-import { appSlice, FileEntity } from "../../../store";
+import { FileEntity } from "../../../store";
 import FileLink from "./FileLink";
 
 type Props = {
@@ -13,20 +12,16 @@ type Props = {
 };
 
 const DirectoryBreadcrumbs: React.FCX<Props> = ({ className, file }) => {
-  const { parents } = useFile(file.id);
-
-  const dispatch = useDispatch();
-  const handleClick = (id: string) => {
-    dispatch(appSlice.actions.openFile(id));
-  };
+  const { parents, isTemp } = useFile(file.id);
 
   return (
     <Breadcrumbs
       className={className}
       separator={<NavigateNextIcon fontSize="small" />}
     >
+      {isTemp && <div>{"一時領域"}</div>}
       {parents.concat(file).map((file) => (
-        <FileLink key={file.id} file={file} onClick={handleClick} />
+        <FileLink key={file.id} file={file} />
       ))}
     </Breadcrumbs>
   );

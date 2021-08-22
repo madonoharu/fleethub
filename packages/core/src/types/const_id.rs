@@ -3250,6 +3250,15 @@ macro_rules! gear_id {
     ("FR-1 Fireball") => {
         422
     };
+    ("Fulmar(戦闘偵察/熟練)") => {
+        423
+    };
+    ("Barracuda Mk.II") => {
+        424
+    };
+    ("Barracuda Mk.III") => {
+        425
+    };
 }
 
 #[macro_export]
