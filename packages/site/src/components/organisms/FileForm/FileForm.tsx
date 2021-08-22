@@ -1,11 +1,10 @@
-import styled from "@emotion/styled";
 import React from "react";
 
 import { FileEntity } from "../../../store";
 import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
-import { CopyButton, RemoveButton, TextField } from "../../molecules";
+import { CopyButton, DeleteButton, TextField } from "../../molecules";
 
-type Props = {
+type FileFormProps = {
   file: FileEntity;
   onCopy: () => void;
   onRemove: () => void;
@@ -13,7 +12,7 @@ type Props = {
   onDescriptionChange: (name: string) => void;
 };
 
-const FileForm: React.FCX<Props> = ({
+const FileForm: React.FCX<FileFormProps> = ({
   className,
   file,
   onCopy,
@@ -25,7 +24,7 @@ const FileForm: React.FCX<Props> = ({
 
   return (
     <div className={className}>
-      <Flexbox>
+      <Flexbox gap={1}>
         <TextField
           placeholder="name"
           fullWidth
@@ -34,7 +33,7 @@ const FileForm: React.FCX<Props> = ({
           onChange={onNameChange}
         />
         <CopyButton title="コピーする" onClick={onCopy} />
-        <RemoveButton title="削除する" onClick={onRemove} />
+        <DeleteButton title="削除する" onClick={onRemove} />
       </Flexbox>
 
       <TextField

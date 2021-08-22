@@ -9,18 +9,18 @@ import {
 
 import {
   appSlice,
-  copyFile,
+  cloneFile,
+  createPlan,
   FileEntity,
   filesSelectors,
   filesSlice,
-  isDirectory,
-  removeFile,
+  isFolder,
   selectTempIds,
 } from "../store";
 
 const getParents = (files: FileEntity[], id: string): FileEntity[] => {
   const parent = files.find(
-    (file) => isDirectory(file) && file.children.includes(id)
+    (file) => isFolder(file) && file.children.includes(id)
   );
 
   if (!parent) return [];
@@ -30,14 +30,21 @@ const getParents = (files: FileEntity[], id: string): FileEntity[] => {
 
 const makeSelectParents = () =>
   createSelector(
-    (state: DefaultRootState, id: string) => filesSelectors.selectAll(state),
-    (state, id) => id,
+    (state: DefaultRootState) => filesSelectors.selectAll(state),
+    (state: DefaultRootState, id: string) => id,
     (files, id) => getParents(files, id)
   );
 
+export const useIsTemp = (id: string) =>
+  useSelector((root) => {
+    const tempIds = selectTempIds(root);
+    return tempIds.includes(id);
+  });
+
 export const useFile = (id: string) => {
-  const file = useSelector((state) => filesSelectors.selectById(state, id));
-  const isTemp = useSelector((state) => selectTempIds(state).includes(id));
+  const file = useSelector((root) => filesSelectors.selectById(root, id));
+
+  const isTemp = useIsTemp(id);
 
   const selectParents = useMemo(makeSelectParents, []);
   const parents = useSelector(
@@ -51,16 +58,14 @@ export const useFile = (id: string) => {
     const open = () => dispatch(appSlice.actions.openFile(id));
     const update = (changes: Partial<FileEntity>) =>
       dispatch(filesSlice.actions.update({ id, changes }));
-    const copy = () => dispatch(copyFile(id));
-    const remove = () => dispatch(removeFile(id));
-    const save = () => dispatch(filesSlice.actions.move({ id, to: "root" }));
+    const copy = () => dispatch(cloneFile(id));
+    const remove = () => dispatch(filesSlice.actions.remove(id));
+    const save = () => dispatch(filesSlice.actions.move(id));
 
-    const createPlan = () =>
-      dispatch(filesSlice.actions.createPlan({ to: id }));
     const createFolder = () => dispatch(filesSlice.actions.createFolder(id));
 
     const drop = (dragFile: FileEntity) =>
-      dispatch(filesSlice.actions.move({ id: dragFile.id, to: id }));
+      dispatch(filesSlice.actions.move(dragFile.id, id));
 
     const setName = (name: string) => update({ name });
     const setDescription = (description: string) => update({ description });
@@ -72,7 +77,7 @@ export const useFile = (id: string) => {
       copy,
       remove,
       save,
-      createPlan,
+      createPlan: () => dispatch(createPlan({ to: id })),
       createFolder,
       setName,
       setDescription,
@@ -82,7 +87,7 @@ export const useFile = (id: string) => {
   const canDrop = (dragFile: FileEntity) => {
     if (dragFile === file) return false;
 
-    if (isDirectory(file) && file.children.includes(dragFile.id)) return false;
+    if (isFolder(file) && file.children.includes(dragFile.id)) return false;
 
     return !parents.includes(dragFile);
   };

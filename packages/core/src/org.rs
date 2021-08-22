@@ -66,12 +66,13 @@ pub struct Org {
 
     #[wasm_bindgen(skip)]
     pub org_type: OrgType,
-
-    #[wasm_bindgen(skip)]
-    pub side: Side,
 }
 
 impl Org {
+    pub fn side(&self) -> Side {
+        self.org_type.side()
+    }
+
     pub fn main(&self) -> &Fleet {
         &self.f1
     }
@@ -113,6 +114,22 @@ impl Org {
     #[wasm_bindgen(getter)]
     pub fn org_type(&self) -> String {
         self.org_type.to_string()
+    }
+
+    pub fn main_ship_ids(&self) -> Vec<u16> {
+        self.main()
+            .ships
+            .values()
+            .map(|ship| ship.ship_id)
+            .collect()
+    }
+
+    pub fn escort_ship_ids(&self) -> Vec<u16> {
+        self.escort()
+            .ships
+            .values()
+            .map(|ship| ship.ship_id)
+            .collect()
     }
 
     pub fn get_fleet(&self, key: &str) -> Result<Fleet, JsValue> {
@@ -158,7 +175,7 @@ impl Org {
 
         let post_floor = (total * formation_mod).floor() * 2.;
 
-        if self.side.is_player() {
+        if self.side().is_player() {
             post_floor / 1.3
         } else {
             post_floor

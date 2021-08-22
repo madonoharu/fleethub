@@ -6,6 +6,11 @@ import { useMasterShip } from "../../../hooks";
 import { Flexbox, Text } from "../../atoms";
 import ShipBanner from "../ShipBanner";
 
+const StyledShipBanner = styled(ShipBanner)`
+  margin-right: 8px;
+  flex-shrink: 0;
+`;
+
 type Props = {
   className?: string;
   shipId: number;
@@ -20,7 +25,7 @@ const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
 
   return (
     <Flexbox ref={ref} className={className}>
-      <ShipBanner shipId={shipId} />
+      <StyledShipBanner shipId={shipId} />
       <div>
         {shipId > 1500 && <Text>ID:{shipId}</Text>}
         <Text noWrap>{displayName}</Text>
@@ -32,9 +37,4 @@ const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
 export default styled(ShipNameplate)`
   text-align: start;
   width: 100%;
-
-  ${ShipBanner} {
-    margin-right: 8px;
-    flex-shrink: 0;
-  }
 `;

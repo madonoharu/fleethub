@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const useTimeout = <T>(cb: () => T, delay: number) => {
+export const useTimeout = <T>(cb: () => T, delay: number) => {
   const cbRef = useRef<typeof cb>();
 
   useEffect(() => {
@@ -13,5 +13,3 @@ const useTimeout = <T>(cb: () => T, delay: number) => {
     return () => clearTimeout(id);
   }, [delay]);
 };
-
-export default useTimeout;

@@ -128,8 +128,4 @@ export default styled(AppBar)`
   .MuiButton-root {
     height: 40px;
   }
-
-  ${LanguageSelect} {
-    flex-grow: 10;
-  }
 `;

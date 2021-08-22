@@ -16,9 +16,8 @@ const Container = styled.div<{ $zoom: boolean }>`
       }
     `}
 `;
-type Props = {};
 
-const CanvasModalContainer: React.FCX<Props> = ({ className, children }) => {
+const CanvasModalContainer: React.FCX = ({ className, children }) => {
   const [zoom, setZoom] = useState(true);
 
   const handleToggle = () => setZoom((value) => !value);

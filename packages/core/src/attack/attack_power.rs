@@ -1,44 +1,33 @@
 use std::ops::Add;
 
 use paste::paste;
-
-fn apply_modifier(input: f64, a: Option<f64>, b: Option<f64>) -> f64 {
-    let mut result = input;
-
-    if let Some(v) = a {
-        result = result * v
-    }
-    if let Some(v) = b {
-        result = result + v
-    }
-
-    result
-}
+use serde::Serialize;
+use ts_rs::TS;
 
 macro_rules! declare_attack_power_modifiers {
     (($( $an:ident ),* $(,)?) , ($( $bn:ident ),* $(,)?)) => {
-        #[derive(Debug, Default, Clone)]
+        #[derive(Debug, Clone)]
         pub struct AttackPowerModifiers {
-            $( pub $an: Option<f64>, pub $bn: Option<f64> ),*
+            $( pub $an: f64, pub $bn: f64 ),*
+        }
+
+        impl Default for AttackPowerModifiers {
+            fn default() -> Self {
+                Self {
+                    $( $an: 1.0, $bn: 0.0 ),*
+                }
+            }
         }
 
         impl AttackPowerModifiers {
             paste! {
                 $(
                     pub fn [<apply_ $an>](&mut self, v: f64) {
-                        self.$an = if self.$an.is_some() {
-                            self.$an.map(|current| current * v)
-                        } else {
-                            Some(v)
-                        };
+                        self.$an *= v;
                     }
 
                     pub fn [<apply_ $bn>](&mut self, v: f64) {
-                        self.$bn = if self.$bn.is_some() {
-                            self.$bn.map(|current| current + v)
-                        } else {
-                            Some(v)
-                        };
+                        self.$bn += v;
                     }
                 )*
             }
@@ -50,24 +39,12 @@ macro_rules! declare_attack_power_modifiers {
             fn add(self, rhs: Self) -> Self::Output {
                 let mut out = Self::default();
 
-                paste! {
+                Self {
                     $(
-                        if let Some(v) = rhs.$an {
-                            out.[<apply_ $an>](v);
-                        }
-                        if let Some(v) = self.$an {
-                            out.[<apply_ $an>](v);
-                        }
-                        if let Some(v) = rhs.$bn {
-                            out.[<apply_ $bn>](v);
-                        }
-                        if let Some(v) = self.$bn {
-                            out.[<apply_ $bn>](v);
-                        }
+                        $an: self.$an * rhs.$an,
+                        $bn: self.$bn + rhs.$bn,
                     )*
                 }
-
-                out
             }
         }
     };
@@ -88,6 +65,7 @@ pub struct AttackPowerParams {
     pub proficiency_critical_mod: Option<f64>,
 }
 
+#[derive(Debug, Serialize, TS)]
 pub struct AttackPower {
     pub precap: f64,
     pub is_capped: bool,
@@ -101,25 +79,25 @@ impl AttackPowerParams {
         let mods = &self.mods;
         let mut precap = basic;
 
-        precap = apply_modifier(precap, mods.a12, mods.b12);
-        precap = apply_modifier(precap, mods.a13, mods.b13);
-        precap = apply_modifier(precap, mods.a13_2, mods.b13_2);
+        precap = precap * mods.a12 + mods.b12;
+        precap = precap * mods.a13 + mods.b13;
+        precap = precap * mods.a13_2 + mods.b13_2;
 
         if let Some(v) = self.air_power {
             precap = ((precap + v) * 1.5).floor() + 25.
         }
 
-        apply_modifier(precap, mods.a14, mods.b14)
+        precap * mods.a14 + mods.b14
     }
 
     fn apply_postcap_modifiers(&self, capped: f64) -> (f64, f64) {
         let mods = &self.mods;
         let mut normal = capped;
 
-        normal = apply_modifier(normal, mods.a5, mods.b5).floor();
-        normal = apply_modifier(normal, mods.a6, mods.b6).floor();
-        normal = apply_modifier(normal, mods.a7, mods.b7).floor();
-        normal = apply_modifier(normal, mods.a11, mods.b11);
+        normal = (normal * mods.a5 + mods.b5).floor();
+        normal = (normal * mods.a6 + mods.b6).floor();
+        normal = (normal * mods.a7 + mods.b7).floor();
+        normal = normal * mods.a11 + mods.b11;
 
         if let Some(v) = self.ap_shell_mod {
             normal = (normal * v).floor()

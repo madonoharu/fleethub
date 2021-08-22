@@ -1,17 +1,20 @@
 import styled from "@emotion/styled";
 import { Link } from "@material-ui/core";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import { FileEntity } from "../../../store";
+import { appSlice, FileEntity } from "../../../store";
 
 type FileLinkProps = {
   file: FileEntity;
-  onClick: (id: string) => void;
 };
 
-const FileLink: React.FCX<FileLinkProps> = ({ className, file, onClick }) => {
-  const handleClick = () => onClick(file.id);
+const FileLink: React.FCX<FileLinkProps> = ({ className, file }) => {
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch(appSlice.actions.openFile(file.id));
+  };
 
   return (
     <Link className={className} color="inherit" noWrap onClick={handleClick}>

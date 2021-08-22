@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import BrokenImage from "@material-ui/icons/BrokenImage";
 import Image from "next/image";
 import React from "react";
@@ -47,4 +46,4 @@ const ShipBanner: React.FCX<Props> = ({
   );
 };
 
-export default styled(ShipBanner)``;
+export default ShipBanner;

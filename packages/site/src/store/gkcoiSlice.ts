@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GkcoiLang, GkcoiTheme } from "../utils";
 
 export type GkcoiState = {
-  theme: any;
-  lang: any;
+  theme: GkcoiTheme;
+  lang: GkcoiLang;
 };
 
 const initialState: GkcoiState = {
@@ -15,10 +16,10 @@ export const gkcoiSlice = createSlice({
   initialState,
 
   reducers: {
-    setTheme: (state, { payload }: PayloadAction<any>) => {
+    setTheme: (state, { payload }: PayloadAction<GkcoiTheme>) => {
       state.theme = payload;
     },
-    setLang: (state, { payload }: PayloadAction<any>) => {
+    setLang: (state, { payload }: PayloadAction<GkcoiLang>) => {
       state.lang = payload;
     },
   },

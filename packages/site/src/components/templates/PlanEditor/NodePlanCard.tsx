@@ -8,14 +8,13 @@ import {
   RadioGroup,
   Typography,
 } from "@material-ui/core";
-import React from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 import {
   EnemyFleetContent,
   Flexbox,
   InfoButton,
-  RemoveButton,
+  DeleteButton,
 } from "../../../components";
 import { useFhSystem, useModal } from "../../../hooks";
 import { Update } from "../../../utils";
@@ -110,10 +109,10 @@ const NodePlanCard: React.FC<NodePlanCardProps> = ({
 
   const lbas = node.d !== undefined;
 
-  const enemyFleet = useMemo(() => node.enemy && createEnemyFleet(node.enemy), [
-    node.enemy,
-    createEnemyFleet,
-  ]);
+  const enemyFleet = useMemo(
+    () => node.enemy && createEnemyFleet(node.enemy),
+    [node.enemy, createEnemyFleet]
+  );
 
   return (
     <Paper>
@@ -122,7 +121,7 @@ const NodePlanCard: React.FC<NodePlanCardProps> = ({
           {node.name} {node.d !== undefined && `距離: ${node.d}`}
         </Typography>
         <InfoButton size="tiny" />
-        <RemoveButton size="tiny" onClick={onRemove} />
+        <DeleteButton size="tiny" onClick={onRemove} />
       </Flexbox>
 
       <Button size="small" variant="outlined" onClick={Modal.show}>

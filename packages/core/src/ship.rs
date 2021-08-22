@@ -10,7 +10,7 @@ use crate::{
     gear_id, ship_id,
     types::{
         AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, NightCutin,
-        ShipAttr, ShipClass, ShipState, ShipType, SlotSizeArray,
+        ShipAttr, ShipClass, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
     },
     utils::xxh3,
     JsShipAttr,
@@ -252,6 +252,28 @@ impl Ship {
         self.master.attrs.contains(attr)
     }
 
+    pub fn special_enemy_type(&self) -> SpecialEnemyType {
+        if self.has_attr(ShipAttr::Pillbox) {
+            SpecialEnemyType::Pillbox
+        } else if self.has_attr(ShipAttr::IsolatedIsland) {
+            SpecialEnemyType::IsolatedIsland
+        } else if self.has_attr(ShipAttr::HarbourSummerPrincess) {
+            SpecialEnemyType::HarbourSummerPrincess
+        } else if self.has_attr(ShipAttr::SupplyDepot) {
+            SpecialEnemyType::SupplyDepot
+        } else if self.has_attr(ShipAttr::PtImp) {
+            SpecialEnemyType::PtImp
+        } else if self.has_attr(ShipAttr::BattleshipSummerPrincess) {
+            SpecialEnemyType::BattleshipSummerPrincess
+        } else if self.has_attr(ShipAttr::HeavyCruiserSummerPrincess) {
+            SpecialEnemyType::HeavyCruiserSummerPrincess
+        } else if self.has_attr(ShipAttr::Installation) {
+            SpecialEnemyType::SoftSkinned
+        } else {
+            SpecialEnemyType::None
+        }
+    }
+
     pub fn damage_state(&self) -> DamageState {
         DamageState::from_hp(self.max_hp().unwrap_or_default(), self.current_hp)
     }
@@ -359,7 +381,7 @@ impl Ship {
             .gears_with_slot_size()
             // 使い勝手のためにslot_sizeがNoneの場合スルーする
             .filter_map(|(i, g, slot_size)| (slot_size? > 0).then(|| (i, g)))
-            .filter(|(index, gear)| {
+            .filter(|(_, gear)| {
                 matches!(
                     gear.gear_type,
                     GearType::CbDiveBomber
@@ -372,8 +394,7 @@ impl Ship {
             })
             .collect::<Vec<_>>();
 
-        let (average_exp, average_exp_mod_a, average_exp_mod_b) =
-            get_average_exp_modifiers(&planes);
+        let (_, average_exp_mod_a, average_exp_mod_b) = get_average_exp_modifiers(&planes);
 
         let hit_percent_bonus = average_exp_mod_a + average_exp_mod_b;
 
@@ -871,8 +892,12 @@ impl Ship {
         }
     }
 
+    pub fn is_abyssal(&self) -> bool {
+        self.has_attr(ShipAttr::Abyssal)
+    }
+
     pub fn can_equip(&self, gear: &Gear, key: &str) -> bool {
-        if self.has_attr(ShipAttr::Abyssal) {
+        if self.is_abyssal() {
             return true;
         };
 

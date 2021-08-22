@@ -5,7 +5,7 @@ use crate::{
     utils::NumMap,
 };
 
-const SHELLING_POWER_CAP: i32 = 180;
+const SHELLING_POWER_CAP: i32 = 220;
 const SHELLING_CRITICAL_RATE_MULTIPLIER: f64 = 1.3;
 
 pub struct ProficiencyModifiers {
@@ -44,12 +44,12 @@ pub struct ShellingPowerParams {
 }
 
 impl ShellingPowerParams {
-    fn to_attack_power_params(&self) -> Option<AttackPowerParams> {
+    pub fn to_attack_power_params(&self) -> Option<AttackPowerParams> {
         let basic = 5. + self.firepower? + self.ibonus + self.fleet_factor;
 
-        let a14 = Some(self.formation_mod? * self.engagement_mod * self.damage_mod);
-        let b14 = Some(self.cruiser_fit_bonus + self.air_power_ebonus.unwrap_or_default());
-        let a11 = self.cutin_mod;
+        let a14 = self.formation_mod? * self.engagement_mod * self.damage_mod;
+        let b14 = self.cruiser_fit_bonus + self.air_power_ebonus.unwrap_or_default();
+        let a11 = self.cutin_mod.unwrap_or(1.0);
 
         let mods_base = AttackPowerModifiers {
             a14,
@@ -71,11 +71,12 @@ impl ShellingPowerParams {
     }
 
     #[allow(dead_code)]
-    fn calc(&self) -> Option<AttackPower> {
+    pub fn calc(&self) -> Option<AttackPower> {
         self.to_attack_power_params().map(|params| params.calc())
     }
 }
 
+#[derive(Debug)]
 pub struct ShellingAccuracyParams {
     pub fleet_factor: f64,
     pub basic_accuracy_term: Option<f64>,
@@ -111,6 +112,7 @@ pub struct ShellingHitRateParams {
     pub critical_percent_bonus: f64,
 }
 
+#[derive(Debug)]
 pub struct ShellingParams {
     pub power: ShellingPowerParams,
     pub accuracy: ShellingAccuracyParams,

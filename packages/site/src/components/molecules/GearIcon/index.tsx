@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import Image from "next/image";
 import React from "react";
 
 import { getCloudinaryUrl } from "../../../utils";
@@ -9,8 +9,10 @@ type Props = {
 
 const GearIcon: React.FCX<Props> = ({ className, iconId }) => {
   if (!iconId) return null;
+
   const width = 24;
   const height = 24;
+
   const url = getCloudinaryUrl({
     publicId: iconId,
     folder: "gear_icons",
@@ -18,7 +20,11 @@ const GearIcon: React.FCX<Props> = ({ className, iconId }) => {
     height,
   });
 
-  return <img className={className} width={width} height={height} src={url} />;
+  return (
+    <div className={className} css={{ width, height }}>
+      <Image layout="fixed" width={width} height={height} src={url} />
+    </div>
+  );
 };
 
-export default styled(GearIcon)``;
+export default GearIcon;

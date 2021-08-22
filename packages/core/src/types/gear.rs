@@ -1,6 +1,6 @@
 use enumset::EnumSetType;
 use num_derive::{FromPrimitive, ToPrimitive};
-use strum_macros::{EnumString, ToString};
+use strum::{EnumString, ToString};
 use ts_rs::TS;
 
 #[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, ToString, TS)]

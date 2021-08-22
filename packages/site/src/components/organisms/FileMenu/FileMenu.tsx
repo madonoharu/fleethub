@@ -36,7 +36,11 @@ const FileMenu: React.FCX<Props> = ({ className, id, onClose }) => {
         onDescriptionChange={actions.setDescription}
       />
 
-      {file.type === "folder" ? <FolderMenu id={id} /> : <PlanMenu id={id} />}
+      {file.type === "folder" ? (
+        <FolderMenu file={file} />
+      ) : (
+        <PlanMenu file={file} />
+      )}
     </div>
   );
 };

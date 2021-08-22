@@ -1,56 +1,36 @@
 import styled from "@emotion/styled";
-import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { ListItemIcon, ListItemText, ListItemButton } from "@material-ui/core";
 import React from "react";
 
-import { useFile, useModal } from "../../../hooks";
+import { useFile, useModal, useOrg } from "../../../hooks";
 import { FileEntity, FolderEntity, PlanFileEntity } from "../../../store";
-import { Flexbox, FolderIcon } from "../../atoms";
-import { CopyButton, MoreVertButton, RemoveButton } from "../../molecules";
-import { DraggableFile, FileMenu } from "../../organisms";
+import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
+import { CopyButton, MoreVertButton, DeleteButton } from "../../molecules";
+import { DraggableFile, FileMenu, ShipBannerGroup } from "../../organisms";
 import FileItemPrimary from "./FileItemPrimary";
 
-const ShipsContainer = styled.div`
-  overflow: hidden;
-  white-space: nowrap;
-
-  line-height: 0;
-  > * {
-    margin-bottom: 4px;
-  }
-`;
-
-const FileAction = styled(Flexbox)`
-  margin-left: auto;
-`;
-
 const PlanItem: React.FC<{ file: PlanFileEntity }> = ({ file }) => {
-  return null;
+  const { org } = useOrg(file.org);
 
-  // return (
-  //   <>
-  //     <ListItemIcon>
-  //       <PlanIcon />
-  //     </ListItemIcon>
-  //     <ListItemText
-  //       disableTypography
-  //       primary={<FileItemPrimary file={file} />}
-  //       secondary={
-  //         <ShipsContainer>
-  //           <div>
-  //             {plan.main.ships.map((ship, index) => (
-  //               <ShipBanner key={index} publicId={ship.banner} />
-  //             ))}
-  //           </div>
-  //           <div>
-  //             {plan.escort?.ships.map((ship, index) => (
-  //               <ShipBanner key={index} publicId={ship.banner} />
-  //             ))}
-  //           </div>
-  //         </ShipsContainer>
-  //       }
-  //     />
-  //   </>
-  // )
+  if (!org) return null;
+
+  return (
+    <>
+      <ListItemIcon>
+        <PlanIcon />
+      </ListItemIcon>
+      <ListItemText
+        disableTypography
+        primary={<FileItemPrimary file={file} />}
+        secondary={
+          <ShipBannerGroup
+            main={Array.from(org.main_ship_ids())}
+            escort={Array.from(org.escort_ship_ids())}
+          />
+        }
+      />
+    </>
+  );
 };
 
 const FolderItem: React.FC<{ file: FolderEntity }> = ({ file }) => {
@@ -67,8 +47,11 @@ const FolderItem: React.FC<{ file: FolderEntity }> = ({ file }) => {
   );
 };
 
-const StyledListItem = styled(ListItem)`
-  padding: 0;
+const FileAction = styled(Flexbox)`
+  margin-left: auto;
+  > * {
+    height: 40px;
+  }
 `;
 
 const renderFile = (file: FileEntity) => {
@@ -77,42 +60,38 @@ const renderFile = (file: FileEntity) => {
 };
 
 type FolderPageItemProps = {
-  className?: string;
   file: FileEntity;
-
   onOpen?: () => void;
   onCopy?: () => void;
   onRemove?: () => void;
 };
 
-const FolderPageItem = React.forwardRef<HTMLElement, FolderPageItemProps>(
-  ({ className, file, onOpen, onCopy, onRemove }, ref) => {
-    const MenuModal = useModal();
+const FolderPageItem: React.FCX<FolderPageItemProps> = ({
+  className,
+  file,
+  onOpen,
+  onCopy,
+  onRemove,
+}) => {
+  const MenuModal = useModal();
 
-    return (
-      <>
-        <ListItem
-          className={className}
-          buttonRef={ref}
-          onClick={onOpen}
-          button
-          divider
-        >
-          {renderFile(file)}
-          <FileAction onClick={(e) => e.stopPropagation()}>
-            <CopyButton title="コピーする" onClick={onCopy} />
-            <RemoveButton title="削除する" onClick={onRemove} />
-            <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
-          </FileAction>
-        </ListItem>
+  return (
+    <>
+      <ListItemButton className={className} divider onClick={onOpen}>
+        {renderFile(file)}
+        <FileAction onClick={(e) => e.stopPropagation()}>
+          <CopyButton title="コピーする" onClick={onCopy} />
+          <DeleteButton title="削除する" onClick={onRemove} />
+          <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
+        </FileAction>
+      </ListItemButton>
 
-        <MenuModal>
-          <FileMenu id={file.id} onClose={MenuModal.hide} />
-        </MenuModal>
-      </>
-    );
-  }
-);
+      <MenuModal>
+        <FileMenu id={file.id} onClose={MenuModal.hide} />
+      </MenuModal>
+    </>
+  );
+};
 
 const StyledFolderPageItem = styled(FolderPageItem)`
   min-height: 56px;
@@ -139,7 +118,7 @@ type ConnectedProps = {
   parent: string;
 };
 
-const FolderPageItemConnected: React.FC<ConnectedProps> = ({ id, parent }) => {
+const FolderPageItemConnected: React.FC<ConnectedProps> = ({ id }) => {
   const { file, actions, canDrop } = useFile(id);
 
   if (!file) return null;

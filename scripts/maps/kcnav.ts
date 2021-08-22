@@ -1,10 +1,8 @@
-import { Dict } from "@fleethub/utils";
+import { Dict, MapNodeType } from "@fleethub/utils";
 import fs from "fs-extra";
 import got from "got";
 import moment from "moment";
 import Signale from "signale";
-
-import { MapNodeType } from "./index";
 
 const instance = got.extend({
   prefixUrl: "https://tsunkit.net/api/routing",
@@ -91,15 +89,13 @@ export type KcnavEnemyShip = {
   equips: [number, number, number, number, number];
 };
 
-export type KcnavEnemyFleetFighterPower = [number, number, number, number];
-
 export type KcnavEnemyFleet = {
   mainFleet: KcnavEnemyShip[];
   escortFleet: KcnavEnemyShip[];
   formation: number;
   count: number;
-  airpower: KcnavEnemyFleetFighterPower;
-  lbasAirpower: KcnavEnemyFleetFighterPower;
+  airpower: [number, number, number, number];
+  lbasAirpower: [number, number, number, number];
   diff?: number;
 };
 

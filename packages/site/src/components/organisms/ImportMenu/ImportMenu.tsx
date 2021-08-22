@@ -4,9 +4,14 @@ import React from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useSnackbar } from "../../../hooks";
-import { appSlice, filesSlice, selectAppState } from "../../../store";
-import { fetchUrlData } from "../../../utils";
+import { useFhCoreContext, useSnackbar } from "../../../hooks";
+import {
+  appSlice,
+  createPlan,
+  importEntities,
+  selectAppState,
+} from "../../../store";
+import { createOrgParamsByDeck, Deck, fetchUrlData } from "../../../utils";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
 import { ImportButton, TextField } from "../../molecules";
 
@@ -21,6 +26,7 @@ type Props = {
 const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   const [deckStr, setDeckStr] = React.useState("");
   const [urlStr, setUrlStr] = React.useState("");
+  const { master_data } = useFhCoreContext();
 
   const Snackbar = useSnackbar();
 
@@ -33,17 +39,18 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
     dispatch(appSlice.actions.setImportToTemp(value));
   };
 
-  const to = importToTemp ? "temp" : "root";
-
   const handleDeckImport = () => {
-    const plan = undefined;
+    try {
+      const deck: Deck = JSON.parse(deckStr);
+      const orgParams = createOrgParamsByDeck(master_data, deck);
 
-    if (!plan) {
+      dispatch(createPlan({ org: orgParams, to: "temp" }));
+
+      onClose?.();
+    } catch (error) {
+      console.error(error);
       Snackbar.show({ message: "失敗しました", severity: "error" });
-      return;
     }
-
-    onClose?.();
   };
 
   const asyncOnUrlImport = useAsyncCallback(
@@ -51,7 +58,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
       const data = await fetchUrlData(urlStr);
 
       if (data) {
-        dispatch(filesSlice.actions.add({ data, to }));
+        dispatch(importEntities(data));
         onClose?.();
       } else {
         Snackbar.show({ message: "失敗しました", severity: "error" });
@@ -70,19 +77,19 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
       </Flexbox>
 
       <Checkbox
-        label="一時領域に保存"
+        label="一時領域で開く"
         checked={importToTemp}
         onChange={handleImportToTempChange}
       />
 
       <StyledDivider label="デッキビルダー形式から" />
-      <Flexbox>
+      <Flexbox gap={1}>
         <TextField variant="outlined" value={deckStr} onChange={setDeckStr} />
         <ImportButton onClick={handleDeckImport} />
       </Flexbox>
 
       <StyledDivider label="共有URLから" />
-      <Flexbox>
+      <Flexbox gap={1}>
         <TextField variant="outlined" value={urlStr} onChange={setUrlStr} />
         <ImportButton
           onClick={asyncOnUrlImport.execute}

@@ -1,16 +1,23 @@
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
 use ts_rs::TS;
 
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, EnumIter, Serialize, Deserialize, TS)]
 pub enum Engagement {
+    /// T有利
+    GreenT,
     /// 同航戦
     Parallel,
     /// 反航戦
     HeadOn,
-    /// T有利
-    GreenT,
     /// T不利
     RedT,
+}
+
+impl Default for Engagement {
+    fn default() -> Self {
+        Self::Parallel
+    }
 }
 
 impl Engagement {
@@ -119,14 +126,14 @@ impl FormationDef {
         }
     }
 
-    pub fn get_normal_def(&self, ship_index: usize, fleet_size: usize) -> &NormalFormationDef {
+    pub fn get_normal_def(&self, ship_index: usize, fleet_len: usize) -> &NormalFormationDef {
         match self {
             Self::Normal(normal) => normal,
             Self::Vanguard {
                 top_half,
                 bottom_half,
             } => {
-                if ship_index * 2 <= fleet_size {
+                if ship_index * 2 <= fleet_len {
                     top_half
                 } else {
                     bottom_half
@@ -148,6 +155,12 @@ pub enum AirState {
     AirDenial,
     /// 制空喪失
     AirIncapability,
+}
+
+impl Default for AirState {
+    fn default() -> Self {
+        Self::AirSupremacy
+    }
 }
 
 impl AirState {

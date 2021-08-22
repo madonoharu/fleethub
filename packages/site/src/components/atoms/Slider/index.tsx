@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import MuiSlider, { SliderProps } from "@material-ui/core/Slider";
 import React from "react";
 
@@ -19,4 +18,4 @@ const Slider = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   return <MuiSlider ref={ref} {...props} onChange={handleChange} />;
 });
 
-export default styled(Slider)``;
+export default Slider;

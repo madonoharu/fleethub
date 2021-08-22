@@ -1,8 +1,5 @@
 import styled from "@emotion/styled";
-import { Button, Typography } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import TreeItem from "@material-ui/lab/TreeItem";
 import TreeView from "@material-ui/lab/TreeView";
@@ -10,23 +7,29 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  appSlice,
+  createPlan,
   FileEntity,
   filesSlice,
-  isDirectory,
+  isFolder,
   selectFilesState,
 } from "../../../store";
 import { FileDropZone } from "../../organisms";
+import ExplorerHeader from "./ExplorerHeader";
 import FolderLabel from "./FolderLabel";
 import PlanFileLabel from "./PlanFileLabel";
 
 const TransitionProps = { timeout: 150 };
 
-const FileTreeView: React.FCX = ({ className }) => {
+const Explorer: React.FCX = ({ className }) => {
   const dispatch = useDispatch();
-  const { entities, root, temp } = useSelector(selectFilesState);
+  const { rootIds, tempIds, entities } = useSelector(selectFilesState);
 
-  const [expanded, setExpanded] = React.useState<string[]>([]);
+  const [expanded, setExpanded] = React.useState<string[]>(["root"]);
   const [selected, setSelected] = React.useState<string>("");
+
+  const toggleExplorerOpen = () =>
+    dispatch(appSlice.actions.toggleExplorerOpen());
 
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]) => {
     setExpanded(nodeIds);
@@ -37,15 +40,15 @@ const FileTreeView: React.FCX = ({ className }) => {
   };
 
   const handlePlanCreate = () => {
-    dispatch(filesSlice.actions.createPlan({ to: "root" }));
+    dispatch(createPlan());
   };
 
   const handleFolderCreate = () => {
-    dispatch(filesSlice.actions.createFolder("root"));
+    dispatch(filesSlice.actions.createFolder());
   };
 
   const handleRootDrop = ({ id }: FileEntity) => {
-    dispatch(filesSlice.actions.move({ id, to: "root" }));
+    dispatch(filesSlice.actions.move(id));
   };
 
   const renderFile = (id: string) => {
@@ -60,7 +63,7 @@ const FileTreeView: React.FCX = ({ className }) => {
       label = <FolderLabel file={file} />;
     }
 
-    const children = isDirectory(file) ? file.children.map(renderFile) : null;
+    const children = isFolder(file) ? file.children.map(renderFile) : null;
 
     return (
       <TreeItem
@@ -76,17 +79,12 @@ const FileTreeView: React.FCX = ({ className }) => {
 
   return (
     <div className={className}>
-      <div>
-        <Button onClick={() => handlePlanCreate()} startIcon={<AddIcon />}>
-          編成を作成
-        </Button>
-        <Button
-          onClick={() => handleFolderCreate()}
-          startIcon={<CreateNewFolderIcon />}
-        >
-          フォルダを作成
-        </Button>
-      </div>
+      <ExplorerHeader
+        onPlanCreate={handlePlanCreate}
+        onFolderCreate={handleFolderCreate}
+        onClose={toggleExplorerOpen}
+      />
+
       <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
@@ -95,32 +93,36 @@ const FileTreeView: React.FCX = ({ className }) => {
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
       >
-        {root.children.map(renderFile)}
-
-        {Boolean(temp.children.length) && (
-          <TreeItem
-            key="temp"
-            nodeId="temp"
-            label={<Typography variant="body2">一時ファイル</Typography>}
-            TransitionProps={TransitionProps}
-          >
-            {temp.children.map(renderFile)}
-          </TreeItem>
-        )}
+        <TreeItem
+          key="root"
+          nodeId="root"
+          label={"root"}
+          TransitionProps={TransitionProps}
+        >
+          {rootIds.map(renderFile)}
+          <FileDropZone css={{ height: 8 * 5 }} onDrop={handleRootDrop} />
+        </TreeItem>
+        <TreeItem
+          key="temp"
+          nodeId="temp"
+          label="temp"
+          TransitionProps={TransitionProps}
+        >
+          {tempIds.map(renderFile)}
+        </TreeItem>
       </TreeView>
-      <FileDropZone
-        className={className}
-        onDrop={handleRootDrop}
-        canDrop={() => true}
-      />
     </div>
   );
 };
 
-export default styled(FileTreeView)`
+export default styled(Explorer)`
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  .MuiTreeView-root {
+    overflow: scroll;
+  }
 
   .MuiTreeItem-label {
     min-width: 0;

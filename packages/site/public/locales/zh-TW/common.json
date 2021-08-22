@@ -43,10 +43,11 @@
   "GreenT": "T有利",
   "RedT": "T不利",
   "Single": "單艦隊",
-  "CarrierTaskForce": "空母機動部隊",
-  "SurfaceTaskForce": "水上打擊部隊",
-  "TransportEscort": "護衛輸送部隊",
-  "EnemyCombined": "聯合艦隊",
+  "CarrierTaskForce": "空母機動",
+  "SurfaceTaskForce": "水上打擊",
+  "TransportEscort": "運輸聯合",
+  "EnemySingle": "敵方 單艦隊",
+  "EnemyCombined": "敵方 聯合艦隊",
   "LineAhead": "單縱陣",
   "DoubleLine": "複縱陣",
   "Diamond": "輪型陣",
@@ -114,5 +115,6 @@
   "nodeTypeFinishLine": "運輸目標",
   "nodeTypeLBAS": "陸航",
   "nodeTypeUnknown": "$t(termUnknown)",
+  "LbasDistance": "陸航距離",
   "termUnknown": "$t(Unknown)"
 }

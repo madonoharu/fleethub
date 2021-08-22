@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { createTheme } from "@material-ui/core";
+import { createTheme } from "@material-ui/core/styles";
 
 import { colors, palette } from "./colors";
 
@@ -9,13 +9,26 @@ BlinkMacSystemFont,
 "Segoe UI",
 Roboto,
 "Hiragino Sans",
-"Noto Sans CJK JP",
 sans-serif,
 "Apple Color Emoji",
 "Segoe UI Emoji",
 "Segoe UI Symbol",
 "Noto Sans Emoji"
 `;
+
+// const fontFamily = `
+// -apple-system,
+// BlinkMacSystemFont,
+// "Segoe UI",
+// Roboto,
+// "Hiragino Sans",
+// "Noto Sans CJK JP",
+// sans-serif,
+// "Apple Color Emoji",
+// "Segoe UI Emoji",
+// "Segoe UI Symbol",
+// "Noto Sans Emoji"
+// `;
 
 const muiTheme = createTheme({
   typography: {
@@ -128,26 +141,23 @@ const muiTheme = createTheme({
   },
 });
 
-const isFirefox =
-  process.browser && window.navigator.userAgent.includes("Firefox");
+const acrylic = css`
+  background: rgba(60, 60, 70, 0.95) !important;
 
-const acrylic = isFirefox
-  ? css`
-      background: rgba(60, 60, 70, 0.95) !important;
-    `
-  : css`
-      background: rgba(60, 60, 70, 0.6) !important;
-      backdrop-filter: blur(8px);
-    `;
+  @supports (backdrop-filter: blur(8px)) {
+    background: rgba(60, 60, 70, 0.6) !important;
+    backdrop-filter: blur(8px);
+  }
+`;
 
-const darkAcrylic = isFirefox
-  ? css`
-      background: rgba(30, 30, 35, 0.98);
-    `
-  : css`
-      background: rgba(30, 30, 35, 0.85) !important;
-      backdrop-filter: blur(8px);
-    `;
+const darkAcrylic = css`
+  background: rgba(30, 30, 35, 0.98);
+
+  @supports (backdrop-filter: blur(8px)) {
+    background: rgba(30, 30, 35, 0.85) !important;
+    backdrop-filter: blur(8px);
+  }
+`;
 
 const swappable = css`
   border-radius: 4px;

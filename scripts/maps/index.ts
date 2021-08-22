@@ -5,13 +5,28 @@ import {
   MapNode,
   MapNodeType,
 } from "@fleethub/utils/src";
-import isMatch from "lodash/isMatch";
+import isEqual from "lodash/isEqual";
 
 import { KcnavEnemyFleet, KcnavEnemyShip, KcnavMap } from "./kcnav";
 
 export * from "./kcnav";
 
 const formatEnemyShip = (kcnavShip: KcnavEnemyShip) => kcnavShip.id;
+
+const formatFp = (
+  kcnavAirpower: [number, number, number, number]
+): [number, number, number, number] => {
+  const fp = kcnavAirpower[3] / 3;
+
+  if (!fp) return [0, 0, 0, 0];
+
+  return [
+    Math.floor((1 / 3) * fp) + 1,
+    Math.floor((2 / 3) * fp) + 1,
+    Math.ceil(1.5 * fp),
+    kcnavAirpower[3],
+  ];
+};
 
 const formatEnemyFleet = ({
   mainFleet,
@@ -33,8 +48,8 @@ const formatEnemyFleet = ({
     escort,
     formations,
     diff,
-    fp: airpower,
-    lbasFp: lbasAirpower,
+    fp: formatFp(airpower),
+    lbasFp: formatFp(lbasAirpower),
   };
 };
 
@@ -44,8 +59,11 @@ const formatKcnavEnemies = (kcnavEnemies: KcnavEnemyFleet[]) => {
   kcnavEnemies.forEach((kcnavFleet) => {
     const { formation } = kcnavFleet;
     const formatted = formatEnemyFleet(kcnavFleet);
-    const found = enemies.find(({ main, escort, diff }) =>
-      isMatch(formatted, { main, escort, diff })
+    const found = enemies.find(
+      ({ main, escort, diff }) =>
+        isEqual(formatted.main, main) &&
+        isEqual(formatted.escort, escort) &&
+        formatted.diff === diff
     );
 
     if (found?.formations.includes(formation)) {

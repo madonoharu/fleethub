@@ -1,5 +1,5 @@
+import { shallowEqual, deepEqual } from "fast-equals";
 import { Draft } from "immer";
-import { shallowEqual } from "react-redux";
 import { createSelectorCreator, defaultMemoize } from "reselect";
 
 export type Recipe<T> = (draft: Draft<T>) => void;
@@ -20,9 +20,16 @@ export const createShallowEqualSelector = createSelectorCreator(
   shallowEqual
 );
 
+export const createDeepEqualSelector = createSelectorCreator(
+  defaultMemoize,
+  deepEqual
+);
+
 export { default as batch } from "./batch";
 export * from "./cloudinary";
 export * from "./ebonuses";
 export * from "./FhDictionary";
 export * from "./link";
 export * from "./publish";
+export * from "./deck";
+export * from "./gkcoi";
