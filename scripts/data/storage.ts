@@ -2,7 +2,7 @@ import { MasterDataInput } from "@fleethub/core/types";
 import admin from "firebase-admin";
 import got from "got";
 
-import getServiceAccount from "./getServiceAccount";
+import { getServiceAccount } from "./google";
 import { equalJson } from "./utils";
 
 let app: admin.app.App | undefined;
@@ -73,12 +73,9 @@ export const updateMaster = <K extends keyof MasterDataInput>(
 
 const MASTER_DATA_KEYS = [
   "ships",
-  "ship_types",
-  "ship_classes",
   "ship_attrs",
   "ship_banners",
   "gears",
-  "gear_types",
   "gear_attrs",
   "ibonuses",
   "equippable",

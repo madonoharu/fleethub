@@ -1,13 +1,25 @@
 import styled from "@emotion/styled";
-import {
-  CombinedFleetFormations,
-  Formation,
-  SingleFleetFormations,
-} from "@fleethub/core";
+import { CombinedFormation, Formation, SingleFormation } from "@fleethub/core";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Select, SelectInputProps } from "../../molecules";
+
+const SINGLE_FORMATIONS: SingleFormation[] = [
+  "LineAhead",
+  "DoubleLine",
+  "Diamond",
+  "Echelon",
+  "LineAbreast",
+  "Vanguard",
+];
+
+const COMBINED_FLEET_FORMATIONS: CombinedFormation[] = [
+  "Cruising1",
+  "Cruising2",
+  "Cruising3",
+  "Cruising4",
+];
 
 type Props = SelectInputProps & {
   value: Formation;
@@ -22,8 +34,8 @@ const FormationSelect: React.FC<Props> = ({
   ...rest
 }) => {
   const options: readonly Formation[] = combined
-    ? CombinedFleetFormations
-    : SingleFleetFormations;
+    ? SINGLE_FORMATIONS
+    : COMBINED_FLEET_FORMATIONS;
   const { t } = useTranslation("common");
 
   useEffect(() => {

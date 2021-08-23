@@ -263,20 +263,19 @@ const createShipClasses = (rows: GoogleSpreadsheetRow[]) =>
 
 const readShipAttrs = async (
   sheet: GoogleSpreadsheetWorksheet,
-  ships: MasterShipInput[],
-  ship_types: MasterVariantDef[],
+  start2: Start2,
   ship_classes: MasterVariantDef[]
 ): Promise<MasterAttrRule[]> => {
   const rows = await sheet.getRows();
 
   const attrs: MasterAttrRule[] = [];
 
-  const replaceShipType = (str: string) => {
-    return ship_types.reduce(
-      (current, { name, id }) => current.replace(`"${name}"`, id.toString()),
+  const replaceShipType = (str: string) =>
+    start2.api_mst_stype.reduce(
+      (current, stype) =>
+        current.replace(`"${stype.api_name}"`, stype.api_id.toString()),
       str
     );
-  };
 
   const replaceShipClass = (str: string) => {
     return ship_classes.reduce(
@@ -286,9 +285,9 @@ const readShipAttrs = async (
   };
 
   const replaceName = (str: string) =>
-    ships.reduce(
+    start2.api_mst_ship.reduce(
       (current, ship) =>
-        current.replace(`"${ship.name}"`, ship.ship_id.toString()),
+        current.replace(`"${ship.api_name}"`, ship.api_id.toString()),
       str
     );
 
@@ -336,12 +335,7 @@ export const updateShipData = async (
     updateRows(shipClassesSheet, createShipClasses),
   ]);
 
-  const ship_attrs = await readShipAttrs(
-    shipAttrsSheet,
-    ships,
-    ship_types,
-    ship_classes
-  );
+  const ship_attrs = await readShipAttrs(shipAttrsSheet, start2, ship_classes);
 
   const data = {
     ships,

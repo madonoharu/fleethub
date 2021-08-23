@@ -12,6 +12,7 @@ const SHIP_STAT_KEYS = [
   "torpedo",
   "evasion",
   "anti_air",
+  "accuracy",
   "asw",
   "speed",
   "los",
@@ -47,10 +48,5 @@ const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
 export default styled(ShipStats)`
   display: grid;
   grid-template-columns: 50% 50%;
-
-  button {
-    height: 20px;
-    padding: 0;
-    justify-content: flex-start;
-  }
+  grid-template-rows: repeat(6, 1fr);
 `;

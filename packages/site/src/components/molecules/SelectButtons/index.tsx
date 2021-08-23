@@ -22,7 +22,7 @@ const SelectButtons: SelectComponent<{ buttonProps?: ButtonProps }> = (
         <Button
           key={index}
           aria-selected={option === value}
-          onClick={() => onChange(option)}
+          onClick={() => onChange?.(option)}
           {...buttonProps}
         >
           {getOptionLabel(option)}

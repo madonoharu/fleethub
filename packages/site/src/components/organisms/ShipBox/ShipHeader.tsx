@@ -60,5 +60,4 @@ const ShipHeader: React.FCX<Props> = ({
 export default styled(ShipHeader)`
   display: flex;
   align-items: center;
-  height: 24px;
 `;

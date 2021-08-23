@@ -16,22 +16,18 @@ type Props = {
 };
 
 const Component: React.FCX<Props> = ({ className, onChange }) => {
-  const handleChange: React.MouseEventHandler<HTMLButtonElement> = React.useCallback(
-    (event) => {
-      onChange && onChange(Number(event.currentTarget.id));
-    },
-    [onChange]
-  );
+  const handleChange: React.MouseEventHandler<HTMLButtonElement> =
+    React.useCallback(
+      (event) => {
+        onChange && onChange(Number(event.currentTarget.id));
+      },
+      [onChange]
+    );
 
   return (
     <div className={className}>
       {range(11).map((stars) => (
-        <Button
-          key={stars}
-          id={stars.toString()}
-          size="small"
-          onClick={handleChange}
-        >
+        <Button key={stars} id={stars.toString()} onClick={handleChange}>
           {starsToString(stars)}
         </Button>
       ))}

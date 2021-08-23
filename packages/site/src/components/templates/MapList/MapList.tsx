@@ -13,7 +13,7 @@ import React from "react";
 import { useAsync } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCoreContext, useModal } from "../../../hooks";
+import { useFhCore, useModal } from "../../../hooks";
 import { mapListSlice, MapListState, selectMapListState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { Select } from "../../molecules";
@@ -131,7 +131,7 @@ const MapList: React.FCX<MapListProps> = ({ onMapEnemySelect }) => {
   const { mapId, map, setMapId, node, setNode, diff, setDiff } =
     useMapListState();
 
-  const { master_data } = useFhCoreContext();
+  const { masterData } = useFhCore();
 
   const handleMapSelect = (id: number) => {
     setMapId(id);
@@ -148,7 +148,7 @@ const MapList: React.FCX<MapListProps> = ({ onMapEnemySelect }) => {
     const mapKey = `${Math.floor(mapId / 10)}-${mapId % 10}`;
     const name = `${mapKey} ${point}`;
 
-    const org = createOrgParams(master_data, enemy);
+    const org = createOrgParams(masterData, enemy);
 
     const event = {
       point,

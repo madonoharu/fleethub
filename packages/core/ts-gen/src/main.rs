@@ -45,6 +45,7 @@ fn main() {
         types::Side,
         types::OrgType,
         types::GearType,
+        types::AirSquadronMode,
         types::GearState,
         types::ShipState,
         types::FleetState,

@@ -111,6 +111,7 @@ macro_rules! match_stat {
             "torpedo" => $obj.torpedo,
             "armor" => $obj.armor,
             "anti_air" => $obj.anti_air,
+            "accuracy" => $obj.accuracy,
             "evasion" => $obj.evasion,
             "asw" => $obj.asw,
             "los" => $obj.los,
@@ -197,6 +198,18 @@ impl_naked_stats_with_level!(evasion, asw, los);
 
 impl_stats!(firepower, torpedo, armor, anti_air, evasion, asw, los);
 
+fn nisshin_max_slot_size(master: &MasterShip, gears: &GearArray, index: usize) -> Option<u8> {
+    if gears
+        .get(index)
+        .map(|gear| gear.gear_type == GearType::LargeFlyingBoat)
+        .unwrap_or_default()
+    {
+        Some(1)
+    } else {
+        master.get_max_slot_size(index)
+    }
+}
+
 impl Ship {
     pub fn new(
         state: ShipState,
@@ -207,10 +220,21 @@ impl Ship {
     ) -> Self {
         let xxh3 = xxh3(&state);
 
+        let ship_class = FromPrimitive::from_u16(master.ctype).unwrap_or_default();
+        let is_nisshin = ship_class == ShipClass::NisshinClass;
+
         let slots =
             std::array::IntoIter::new([state.ss1, state.ss2, state.ss3, state.ss4, state.ss5])
                 .enumerate()
-                .map(|(i, slot_size)| slot_size.or_else(|| master.slots.get(i).cloned().flatten()))
+                .map(|(index, slot_size)| {
+                    slot_size.or_else(|| {
+                        if is_nisshin {
+                            nisshin_max_slot_size(master, &gears, index)
+                        } else {
+                            master.get_max_slot_size(index)
+                        }
+                    })
+                })
                 .collect();
 
         let mut ship = Ship {
@@ -221,7 +245,7 @@ impl Ship {
             level: state.level.unwrap_or(master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
             ship_type: FromPrimitive::from_u8(master.stype).unwrap_or_default(),
-            ship_class: FromPrimitive::from_u16(master.ctype).unwrap_or_default(),
+            ship_class,
 
             slots,
             gears,
@@ -859,6 +883,7 @@ impl Ship {
             "torpedo" => self.naked_torpedo(),
             "armor" => self.naked_armor(),
             "anti_air" => self.naked_anti_air(),
+            "accuracy" => Some(0),
             "evasion" => self.naked_evasion(),
             "asw" => self.naked_asw(),
             "los" => self.naked_los(),
@@ -1015,6 +1040,12 @@ impl Ship {
         self.naked_speed() + self.ebonuses.speed
     }
 
+    #[wasm_bindgen(getter)]
+    pub fn accuracy(&self) -> i16 {
+        let accuracy = self.gears.sum_by(|gear| gear.accuracy);
+        accuracy + self.ebonuses.accuracy
+    }
+
     pub fn is_land(&self) -> bool {
         self.speed() == 0
     }
@@ -1024,15 +1055,26 @@ impl Ship {
     }
 
     pub fn get_max_slot_size(&self, index: usize) -> Option<u8> {
-        self.master.slots.get(index).and_then(|&s| s)
+        if self.ship_class == ShipClass::NisshinClass {
+            nisshin_max_slot_size(&self.master, &self.gears, index)
+        } else {
+            self.master.get_max_slot_size(index)
+        }
     }
 
-    pub fn calc_fighter_power(&self) -> Option<i32> {
+    pub fn fighter_power(&self, anti_lbas: bool) -> Option<i32> {
         self.gears
             .without_ex()
             .map(|(i, g)| {
                 let slot_size = self.get_slot_size(i)?;
-                Some(g.calc_fighter_power(slot_size))
+
+                if slot_size == 0 || !g.has_proficiency() {
+                    Some(0)
+                } else if !anti_lbas && g.has_attr(GearAttr::Recon) {
+                    Some(0)
+                } else {
+                    Some(g.calc_fighter_power(slot_size))
+                }
             })
             .sum()
     }
@@ -1270,7 +1312,7 @@ impl Ship {
 
         // 高射装置を装備 かつ 大口径主砲を装備 かつ 対空強化弾(三式弾)を装備 かつ 対空電探を装備
         if gears.has_type(GearType::AntiAirFireDirector)
-            && gears.has_type(GearType::LargeCaliberMainGun)
+            && gears.has_type(GearType::LargeMainGun)
             && gears.has_type(GearType::AntiAirShell)
             && has_air_radar
         {
@@ -1284,7 +1326,7 @@ impl Ship {
 
         // 高射装置を装備 かつ 大口径主砲を装備 かつ 対空強化弾(三式弾)を装備
         if gears.has_type(GearType::AntiAirFireDirector)
-            && gears.has_type(GearType::LargeCaliberMainGun)
+            && gears.has_type(GearType::LargeMainGun)
             && gears.has_type(GearType::AntiAirShell)
         {
             vec.push(6)
@@ -1441,6 +1483,14 @@ impl Ship {
             .into_iter()
             .map(|t| t as u8)
             .collect()
+    }
+
+    pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
+        let naked_los = self.naked_los()? as f64;
+        let total = self.gears.sum_by(|gear| gear.elos());
+        let ebonus = self.ebonuses.effective_los as f64;
+
+        Some((naked_los + ebonus).sqrt() + total * (node_divaricated_factor as f64) - 2.0)
     }
 }
 

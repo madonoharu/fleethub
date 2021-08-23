@@ -109,6 +109,7 @@
   "109": "Sentaka Type",
   "110": "Brooklyn Class",
   "111": "Ice-strengthened Auxiliary Transport Ship",
+  "113": "Conte di Cavour Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -212,5 +213,7 @@
   "1999": "Ri-Class Heavy Cruiser B",
   "2000": "Lunga Point Heavy Cruiser Princess",
   "2006": "New Light Cruiser Princess",
-  "2013": "Wa-Class Transport Ship B"
+  "2013": "Wa-Class Transport Ship B",
+  "2023": "Summer Harbor Princess B",
+  "2029": "Mediterranean Dreadnought Water Princess"
 }

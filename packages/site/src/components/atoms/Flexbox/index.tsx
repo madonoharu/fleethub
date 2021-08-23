@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import styled, { CSSObject } from "@emotion/styled";
-import React from "react";
 
 type FlexboxProps = Pick<CSSObject, "alignItems"> & {
   gap?: number | undefined;

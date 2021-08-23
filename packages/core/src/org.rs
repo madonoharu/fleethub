@@ -4,7 +4,7 @@ use crate::{
     air_squadron::AirSquadron,
     fleet::{Fleet, ShipArray},
     ship::Ship,
-    types::{OrgType, Role, Side},
+    types::{GearAttr, OrgType, Role, Side},
 };
 
 pub struct MainAndEscortShips<'a> {
@@ -182,9 +182,74 @@ impl Org {
         }
     }
 
+    pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
+        let main = self.main().fighter_power(anti_lbas)?;
+
+        if self.org_type.is_single() || !anti_combined {
+            Some(main)
+        } else {
+            Some(main + self.escort().fighter_power(anti_lbas)?)
+        }
+    }
+
+    /// 防空時の基地制空値
+    pub fn interception_power(&self) -> i32 {
+        let as_vec = std::array::IntoIter::new([&self.a1, &self.a2, &self.a3])
+            .filter(|air_squadron| air_squadron.mode.is_air_defense())
+            .collect::<Vec<_>>();
+
+        let interception_power = as_vec
+            .iter()
+            .map(|air_squadron| air_squadron.interception_power())
+            .sum::<i32>();
+
+        interception_power
+    }
+
+    /// 高高度迎撃時の基地制空値
+    pub fn high_altitude_interception_power(&self) -> i32 {
+        let as_vec = std::array::IntoIter::new([&self.a1, &self.a2, &self.a3])
+            .filter(|air_squadron| air_squadron.mode.is_air_defense())
+            .collect::<Vec<_>>();
+
+        let count = as_vec
+            .iter()
+            .map(|air_squadron| {
+                air_squadron
+                    .gears
+                    .count_attr(GearAttr::HighAltitudeInterceptor)
+            })
+            .sum::<usize>();
+
+        let modifier = match count {
+            0 => 0.5,
+            1 => 0.8,
+            2 => 1.1,
+            _ => 1.2,
+        };
+
+        let interception_power = as_vec
+            .iter()
+            .map(|air_squadron| air_squadron.interception_power())
+            .sum::<i32>();
+
+        (interception_power as f64 * modifier).floor() as i32
+    }
+
+    /// 輸送物資量(TP)
     pub fn transport_point(&self) -> i32 {
         self.main_and_escort_ships()
             .map(|(_, _, ship)| ship.transport_point())
             .sum()
+    }
+
+    /// マップ索敵
+    pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
+        let total = self
+            .main_and_escort_ships()
+            .map(|(_, _, ship)| ship.elos(node_divaricated_factor))
+            .sum::<Option<f64>>()?;
+
+        Some(total - (0.4 * self.hq_level as f64).ceil() + 12.0)
     }
 }

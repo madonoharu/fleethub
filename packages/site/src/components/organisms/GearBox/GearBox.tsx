@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
 import { EquipmentBonuses } from "equipment-bonus";
@@ -14,6 +15,7 @@ import AddGearButton from "./AddGearButton";
 type Props = {
   gear?: Gear;
   position?: GearPosition;
+  size?: "small" | "medium" | undefined;
   canEquip?: (gear: Gear) => boolean;
   getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
@@ -38,6 +40,7 @@ const GearBox: React.FCX<Props> = ({
   className,
   gear,
   position,
+  size,
   canEquip,
   getNextEbonuses,
 }) => {
@@ -63,6 +66,7 @@ const GearBox: React.FCX<Props> = ({
       <GearLabel
         gear={gear}
         equippable={canEquip?.(gear)}
+        size={size}
         onUpdate={actions.update}
         onRemove={actions.remove}
       />
@@ -95,7 +99,9 @@ const GearBox: React.FCX<Props> = ({
   );
 };
 
-export default styled(GearBox)`
-  height: 100%;
-  width: 100%;
-`;
+export default styled(GearBox)(
+  ({ size }) => css`
+    height: ${size === "small" ? 24 : 28}px;
+    width: 100%;
+  `
+);

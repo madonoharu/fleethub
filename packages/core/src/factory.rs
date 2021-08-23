@@ -6,8 +6,8 @@ use crate::{
     org::Org,
     ship::Ship,
     types::{
-        AirSquadronState, EBonusFn, EBonuses, FleetState, GearState, MasterData, OrgState, OrgType,
-        ShipAttr, ShipState,
+        AirSquadronState, EBonusFn, EBonuses, FleetState, GearAttr, GearState, GearType,
+        MasterData, OrgState, OrgType, ShipAttr, ShipState, SlotSizeArray,
     },
     utils::xxh3,
 };
@@ -111,6 +111,7 @@ impl Factory {
 
         let AirSquadronState {
             id,
+            mode,
             g1,
             g2,
             g3,
@@ -133,17 +134,35 @@ impl Factory {
             None,
         ]);
 
-        let slots = [ss1, ss2, ss3, ss4]
-            .iter()
-            .cloned()
-            .map(|ss| ss.or(Some(18)))
+        let max_slots: SlotSizeArray = (0..4)
+            .map(|index| {
+                if let Some(gear) = gears.get(index) {
+                    if gear.gear_type == GearType::LargeLbAircraft {
+                        9
+                    } else if gear.has_attr(GearAttr::Recon) {
+                        4
+                    } else {
+                        18
+                    }
+                } else {
+                    18
+                }
+            })
+            .map(Some)
+            .collect();
+
+        let slots = std::array::IntoIter::new([ss1, ss2, ss3, ss4])
+            .enumerate()
+            .map(|(index, ss)| ss.or_else(|| max_slots.get(index).cloned().flatten()))
             .collect();
 
         AirSquadron {
             id: id.unwrap_or_default(),
             xxh3,
+            mode: mode.unwrap_or_default(),
             gears,
             slots,
+            max_slots,
         }
     }
 

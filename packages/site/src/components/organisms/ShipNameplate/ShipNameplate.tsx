@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
+import { Typography } from "@material-ui/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useMasterShip } from "../../../hooks";
-import { Flexbox, Text } from "../../atoms";
+import { Flexbox } from "../../atoms";
 import ShipBanner from "../ShipBanner";
 
 const StyledShipBanner = styled(ShipBanner)`
@@ -27,8 +28,14 @@ const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
     <Flexbox ref={ref} className={className}>
       <StyledShipBanner shipId={shipId} />
       <div>
-        {shipId > 1500 && <Text>ID:{shipId}</Text>}
-        <Text noWrap>{displayName}</Text>
+        {shipId > 1500 && (
+          <Typography variant="caption" display="block">
+            ID:{shipId}
+          </Typography>
+        )}
+        <Typography noWrap variant="caption" display="block">
+          {displayName}
+        </Typography>
       </div>
     </Flexbox>
   );

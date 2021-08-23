@@ -9,8 +9,8 @@ const ShipList = styled.div`
 `;
 
 type ShipBannerGroupProps = {
-  main?: number[];
-  escort?: number[];
+  main?: number[] | Uint16Array;
+  escort?: number[] | Uint16Array;
 };
 
 const ShipBannerGroup: React.FCX<ShipBannerGroupProps> = ({
@@ -22,14 +22,14 @@ const ShipBannerGroup: React.FCX<ShipBannerGroupProps> = ({
     <div className={className}>
       {main?.length ? (
         <ShipList>
-          {main.map((id, index) => (
+          {Array.from(main).map((id, index) => (
             <ShipBanner key={`main-${index}`} shipId={id} />
           ))}
         </ShipList>
       ) : null}
       {escort?.length ? (
         <ShipList>
-          {escort.map((id, index) => (
+          {Array.from(escort).map((id, index) => (
             <ShipBanner key={`escort-${index}`} shipId={id} />
           ))}
         </ShipList>

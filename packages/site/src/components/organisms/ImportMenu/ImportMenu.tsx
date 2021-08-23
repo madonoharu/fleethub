@@ -4,7 +4,7 @@ import React from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCoreContext, useSnackbar } from "../../../hooks";
+import { useFhCore, useSnackbar } from "../../../hooks";
 import {
   appSlice,
   createPlan,
@@ -26,7 +26,7 @@ type Props = {
 const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   const [deckStr, setDeckStr] = React.useState("");
   const [urlStr, setUrlStr] = React.useState("");
-  const { master_data } = useFhCoreContext();
+  const { masterData } = useFhCore();
 
   const Snackbar = useSnackbar();
 
@@ -42,7 +42,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   const handleDeckImport = () => {
     try {
       const deck: Deck = JSON.parse(deckStr);
-      const orgParams = createOrgParamsByDeck(master_data, deck);
+      const orgParams = createOrgParamsByDeck(masterData, deck);
 
       dispatch(createPlan({ org: orgParams, to: "temp" }));
 

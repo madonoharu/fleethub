@@ -225,7 +225,7 @@ pub struct MasterIBonuses {
     fighter_power: Vec<MasterIBonusRule>,
     adjusted_anti_air: Vec<MasterIBonusRule>,
     fleet_anti_air: Vec<MasterIBonusRule>,
-    effective_los: Vec<MasterIBonusRule>,
+    elos: Vec<MasterIBonusRule>,
 }
 
 impl MasterIBonuses {
@@ -252,7 +252,7 @@ impl MasterIBonuses {
             fighter_power: calc(&self.fighter_power),
             adjusted_anti_air: calc(&self.adjusted_anti_air),
             fleet_anti_air: calc(&self.fleet_anti_air),
-            effective_los: calc(&self.effective_los),
+            elos: calc(&self.elos),
         }
     }
 }
@@ -307,6 +307,10 @@ pub struct MasterShip {
 impl MasterShip {
     pub fn has_attr(&self, attr: ShipAttr) -> bool {
         self.attrs.contains(attr)
+    }
+
+    pub fn get_max_slot_size(&self, index: usize) -> Option<u8> {
+        self.slots.get(index).cloned().flatten()
     }
 
     pub fn default_level(&self) -> u16 {
@@ -391,11 +395,8 @@ impl MasterConstants {
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
-    pub gear_types: Vec<MasterVariantDef>,
     pub gear_attrs: Vec<MasterAttrRule>,
     pub ships: Vec<MasterShip>,
-    pub ship_types: Vec<MasterVariantDef>,
-    pub ship_classes: Vec<MasterVariantDef>,
     pub ship_attrs: Vec<MasterAttrRule>,
     pub ship_banners: HashMap<String, String>,
     pub equippable: MasterEquippable,

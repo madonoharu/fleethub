@@ -55,9 +55,29 @@ pub struct FleetState {
     pub s7: Option<ShipState>,
 }
 
+#[derive(Debug, Clone, Copy, Hash, ToString, Deserialize, TS)]
+pub enum AirSquadronMode {
+    Sortie,
+    AirDefense,
+}
+
+impl Default for AirSquadronMode {
+    fn default() -> Self {
+        Self::Sortie
+    }
+}
+
+impl AirSquadronMode {
+    pub fn is_air_defense(&self) -> bool {
+        matches!(*self, Self::AirDefense)
+    }
+}
+
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct AirSquadronState {
     pub id: Option<String>,
+
+    pub mode: Option<AirSquadronMode>,
 
     pub g1: Option<GearState>,
     pub g2: Option<GearState>,

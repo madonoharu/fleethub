@@ -11,7 +11,7 @@ import {
   DeckBuilderShip as GkcoiDeckShip,
 } from "gkcoi";
 
-import { createDeckItems } from "./deck";
+import { createDeckItems, getModeNumber } from "./deck";
 
 export type { GkcoiDeck };
 
@@ -78,6 +78,7 @@ export const createGkcoiDeck = (
 
     deck[key] = {
       items: createDeckItems(as) || {},
+      mode: getModeNumber(as.mode),
     };
   });
 

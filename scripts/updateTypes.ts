@@ -1,10 +1,14 @@
-import { MasterDataInput } from "@fleethub/core/types";
+import "dotenv/config";
+
 import child_process from "child_process";
-import fs from "fs-extra";
 import path from "path";
 import { promisify } from "util";
+import { Dict, mapValues } from "@fleethub/utils/src";
+import fs from "fs-extra";
+import { Start2 } from "kc-tools";
 
-import { readMasterData } from "./data/storage";
+import { getGoogleSpreadsheet } from "./data/google";
+import { fetchStart2 } from "./data/utils";
 
 const RS_GEAR_PATH = path.resolve("packages/core/src/types/gear.rs");
 const RS_SHIP_PATH = path.resolve("packages/core/src/types/ship.rs");
@@ -14,9 +18,20 @@ const TS_PATH = path.resolve("packages/utils/src/constants.ts");
 
 const exec = promisify(child_process.exec);
 
+const ENUM_NAMES = [
+  "GearType",
+  "GearAttr",
+  "ShipType",
+  "ShipClass",
+  "ShipAttr",
+] as const;
+
+type EnumName = typeof ENUM_NAMES[number];
+
 type EnumItem = {
   tag: string;
   id?: number;
+  name?: string;
 };
 
 type EnumConfig = {
@@ -26,9 +41,10 @@ type EnumConfig = {
 };
 
 const createEnum = ({ name, items, unknown }: EnumConfig) => {
-  const lines = items.map(({ id, tag }) =>
-    id === undefined ? tag : `${tag} = ${id}`
-  );
+  const lines = items.map(({ id, tag, name }) => {
+    const line = id === undefined ? tag : `${tag} = ${id}`;
+    return name ? `\n/// ${name}\n${line}` : line;
+  });
 
   if (unknown) {
     lines.unshift("Unknown = 0");
@@ -53,11 +69,14 @@ const updateFile = async (
   await fs.outputFile(path, out);
 };
 
-const updateRs = async (md: MasterDataInput) => {
+const updateRs = async (
+  start2: Start2,
+  configs: Record<EnumName, EnumConfig>
+) => {
   const updateShipId = (src: string): string => {
-    const inner = md.ships
-      .filter((ship) => ship.ship_id < 1500)
-      .map((ship) => `("${ship.name}") => { ${ship.ship_id} };`)
+    const inner = start2.api_mst_ship
+      .filter((ship) => ship.api_id < 1500)
+      .map((ship) => `("${ship.api_name}") => { ${ship.api_id} };`)
       .join("\n");
 
     const macroName = "ship_id";
@@ -69,9 +88,9 @@ const updateRs = async (md: MasterDataInput) => {
   };
 
   const updateGearId = (src: string): string => {
-    const inner = md.gears
-      .filter((gear) => gear.gear_id < 500)
-      .map((gear) => `("${gear.name}") => { ${gear.gear_id} };`)
+    const inner = start2.api_mst_slotitem
+      .filter((gear) => gear.api_id < 500)
+      .map((gear) => `("${gear.api_name}") => { ${gear.api_id} };`)
       .join("\n");
 
     const macroName = "gear_id";
@@ -84,33 +103,15 @@ const updateRs = async (md: MasterDataInput) => {
 
   await updateFile(
     RS_GEAR_PATH,
-    replaceEnum({
-      name: "GearType",
-      items: md.gear_types,
-      unknown: true,
-    }),
-    replaceEnum({
-      name: "GearAttr",
-      items: md.gear_attrs,
-    })
+    replaceEnum(configs.GearType),
+    replaceEnum(configs.GearAttr)
   );
 
   await updateFile(
     RS_SHIP_PATH,
-    replaceEnum({
-      name: "ShipType",
-      items: md.ship_types,
-      unknown: true,
-    }),
-    replaceEnum({
-      name: "ShipClass",
-      items: md.ship_classes,
-      unknown: true,
-    }),
-    replaceEnum({
-      name: "ShipAttr",
-      items: md.ship_attrs,
-    })
+    replaceEnum(configs.ShipType),
+    replaceEnum(configs.ShipClass),
+    replaceEnum(configs.ShipAttr)
   );
 
   await updateFile(RS_CONST_ID_PATH, updateShipId, updateGearId);
@@ -120,40 +121,67 @@ const updateRs = async (md: MasterDataInput) => {
   );
 };
 
-const updateTs = async (md: MasterDataInput) => {
-  await updateFile(
-    TS_PATH,
-    replaceEnum({
-      name: "GearType",
-      items: md.gear_types,
-      unknown: true,
-    }),
-    replaceEnum({
-      name: "GearAttr",
-      items: md.gear_attrs,
-    }),
-    replaceEnum({
-      name: "ShipType",
-      items: md.ship_types,
-      unknown: true,
-    }),
-    replaceEnum({
-      name: "ShipClass",
-      items: md.ship_classes,
-      unknown: true,
-    }),
-    replaceEnum({
-      name: "ShipAttr",
-      items: md.ship_attrs,
-    })
-  );
-
+const updateTs = async (configs: Record<EnumName, EnumConfig>) => {
+  await updateFile(TS_PATH, ...Object.values(configs).map(replaceEnum));
   await exec(`prettier --write ${TS_PATH}`);
 };
 
+const createEnumItem = (row: Dict<string, unknown>): EnumItem => {
+  const tag = row.tag;
+
+  if (typeof tag !== "string") {
+    throw new Error("tag is not found");
+  }
+
+  const name = "name" in row ? String(row.name) : undefined;
+  const id = "id" in row ? Number(row.id) : undefined;
+
+  return { tag, id, name };
+};
+
 const main = async () => {
-  const md = await readMasterData();
-  await Promise.all([updateRs(md), updateTs(md)]);
+  const [doc, start2] = await Promise.all([
+    getGoogleSpreadsheet(),
+    fetchStart2(),
+  ]);
+
+  const sheets = {
+    GearType: await doc.sheetsByTitle["装備種"].getRows(),
+    GearAttr: await doc.sheetsByTitle["装備属性"].getRows(),
+    ShipType: await doc.sheetsByTitle["艦種"].getRows(),
+    ShipClass: await doc.sheetsByTitle["艦級"].getRows(),
+    ShipAttr: await doc.sheetsByTitle["艦娘属性"].getRows(),
+  };
+
+  const data = mapValues(sheets, (rows) => rows.map(createEnumItem));
+
+  const configs: Record<EnumName, EnumConfig> = {
+    GearType: {
+      name: "GearType",
+      items: data.GearType,
+      unknown: true,
+    },
+    GearAttr: {
+      name: "GearAttr",
+      items: data.GearAttr,
+    },
+    ShipType: {
+      name: "ShipType",
+      items: data.ShipType,
+      unknown: true,
+    },
+    ShipClass: {
+      name: "ShipClass",
+      items: data.ShipClass,
+      unknown: true,
+    },
+    ShipAttr: {
+      name: "ShipAttr",
+      items: data.ShipAttr,
+    },
+  };
+
+  await Promise.all([updateRs(start2, configs), updateTs(configs)]);
 };
 
 main().catch((err) => console.error(err));

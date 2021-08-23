@@ -1,10 +1,9 @@
 import { Gear } from "@fleethub/core";
-import { Tooltip, TooltipProps } from "@material-ui/core";
+import { Tooltip, TooltipProps, Typography } from "@material-ui/core";
 import { EquipmentBonuses } from "equipment-bonus";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { Text } from "../../atoms";
 import GearNameplate from "../GearNameplate";
 import GearStatList from "./GearStatList";
 
@@ -17,9 +16,9 @@ const Content: React.FC<ContentProps> = ({ gear, ebonuses }) => {
   const { t } = useTranslation("gear_types");
   return (
     <div>
-      <Text>
+      <Typography variant="caption">
         ID {gear.gear_id} {t(gear.gear_type_id)}
-      </Text>
+      </Typography>
       <GearNameplate wrap iconId={gear.icon_id} name={gear.name} />
       <GearStatList gear={gear} ebonuses={ebonuses} />
     </div>

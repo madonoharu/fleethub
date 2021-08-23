@@ -273,9 +273,9 @@ export type OrgType =
 
 export type GearType =
   | "Unknown"
-  | "SmallCaliberMainGun"
-  | "MediumCaliberMainGun"
-  | "LargeCaliberMainGun"
+  | "SmallMainGun"
+  | "MediumMainGun"
+  | "LargeMainGun"
   | "SecondaryGun"
   | "Torpedo"
   | "CbFighter"
@@ -310,7 +310,7 @@ export type GearType =
   | "AviationPersonnel"
   | "AntiAirFireDirector"
   | "AntiGroundEquipment"
-  | "LargeCaliberMainGun2"
+  | "LargeMainGun2"
   | "SurfaceShipPersonnel"
   | "LargeSonar"
   | "LargeFlyingBoat"
@@ -331,6 +331,8 @@ export type GearType =
   | "JetRecon"
   | "LargeRadar2"
   | "CbRecon2";
+
+export type AirSquadronMode = "Sortie" | "AirDefense";
 
 export interface GearState {
   id: string | null;
@@ -379,6 +381,7 @@ export interface FleetState {
 
 export interface AirSquadronState {
   id: string | null;
+  mode: AirSquadronMode | null;
   g1: GearState | null;
   g2: GearState | null;
   g3: GearState | null;
@@ -497,7 +500,7 @@ export interface MasterIBonuses {
   fighter_power: Array<MasterIBonusRule>;
   adjusted_anti_air: Array<MasterIBonusRule>;
   fleet_anti_air: Array<MasterIBonusRule>;
-  effective_los: Array<MasterIBonusRule>;
+  elos: Array<MasterIBonusRule>;
 }
 
 export interface EquipStype {
@@ -531,11 +534,8 @@ export interface MasterConstants {
 
 export interface MasterData {
   gears: Array<MasterGear>;
-  gear_types: Array<MasterVariantDef>;
   gear_attrs: Array<MasterAttrRule>;
   ships: Array<MasterShip>;
-  ship_types: Array<MasterVariantDef>;
-  ship_classes: Array<MasterVariantDef>;
   ship_attrs: Array<MasterAttrRule>;
   ship_banners: Record<string, string>;
   equippable: MasterEquippable;

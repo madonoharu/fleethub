@@ -1,6 +1,6 @@
 import "firebase/storage";
 
-import { OrgParams } from "@fleethub/core";
+import { MasterDataInput, OrgParams } from "@fleethub/core";
 import firebase from "firebase/app";
 
 const firebaseConfig = {
@@ -18,10 +18,30 @@ if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
 
-// const provider = new firebase.auth.TwitterAuthProvider()
-// firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-// export const login = () => firebase.auth().signInWithPopup(provider)
-// export const logout = () => firebase.auth().signOut()
+const MASTER_DATA_KEYS = [
+  "ships",
+  "ship_attrs",
+  "ship_banners",
+  "gears",
+  "gear_attrs",
+  "ibonuses",
+  "equippable",
+  "constants",
+] as const;
+
+export const fetchMasterData = async (): Promise<MasterDataInput> => {
+  const entries = await Promise.all(
+    MASTER_DATA_KEYS.map(async (key) => {
+      const res = await fetch(
+        `https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`
+      );
+
+      return [key, await res.json()] as const;
+    })
+  );
+
+  return Object.fromEntries(entries) as MasterDataInput;
+};
 
 export const publicStorageRef = firebase.storage().ref("public");
 

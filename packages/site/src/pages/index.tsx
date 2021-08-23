@@ -1,6 +1,6 @@
-import master_data from "@fleethub/utils/master_data";
+import { MasterDataInput } from "@fleethub/core";
 import { createEquipmentBonuses } from "equipment-bonus";
-import type { GetStaticProps, NextComponentType } from "next";
+import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -8,39 +8,39 @@ import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import AppContent from "../components/templates/AppContent";
+import { AppContent } from "../components/templates";
+import { fetchMasterData } from "../firebase";
 import { FhCoreContext } from "../hooks";
 import { StoreProvider } from "../store";
 
-const loader = import("@fleethub/core/pkg").then((mod) => {
-  const core = new mod.FhCore(master_data, createEquipmentBonuses);
+const loader = async () => {
+  const module = await import("@fleethub/core");
 
-  if (process.env.NODE_ENV === "development") {
-    core.init_console_panic();
-  }
+  const App: React.FC<{ masterData: MasterDataInput }> = ({ masterData }) => {
+    const core = new module.FhCore(masterData, createEquipmentBonuses);
 
-  const value = { master_data, core };
+    if (process.env.NODE_ENV === "development") {
+      core.init_console_panic();
+    }
 
-  const App: React.FC = () => (
-    <FhCoreContext.Provider value={value}>
-      <AppContent />
-    </FhCoreContext.Provider>
-  );
+    return (
+      <FhCoreContext.Provider value={{ masterData, module, core }}>
+        <AppContent />
+      </FhCoreContext.Provider>
+    );
+  };
 
   return App;
-});
+};
 
-const App = dynamic(loader, { ssr: false });
+const App = dynamic(loader);
 
-const Inner = React.memo(() => (
-  <DndProvider backend={HTML5Backend}>
-    <StoreProvider>
-      <App />
-    </StoreProvider>
-  </DndProvider>
-));
-
-const Index: NextComponentType = () => {
+const Index: NextComponentType<
+  NextPageContext,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  {},
+  { masterData: MasterDataInput }
+> = ({ masterData }) => {
   return (
     <div>
       <Head>
@@ -53,21 +53,33 @@ const Index: NextComponentType = () => {
         <meta name="twitter:creator" content="@MadonoHaru" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Inner />
+
+      <DndProvider backend={HTML5Backend}>
+        <StoreProvider>
+          <App masterData={masterData} />
+        </StoreProvider>
+      </DndProvider>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale = "" }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, [
-      "common",
-      "gears",
-      "gear_types",
-      "ships",
-      "ctype",
-    ])),
-  },
-});
+export const getStaticProps: GetStaticProps<{ masterData: MasterDataInput }> =
+  async ({ locale = "" }) => {
+    const masterData = await fetchMasterData();
+
+    return {
+      props: {
+        masterData,
+
+        ...(await serverSideTranslations(locale, [
+          "common",
+          "gears",
+          "gear_types",
+          "ships",
+          "ctype",
+        ])),
+      },
+    };
+  };
 
 export default Index;

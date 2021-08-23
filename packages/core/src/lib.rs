@@ -129,15 +129,6 @@ impl FhCore {
             .collect()
     }
 
-    pub fn find_gear_gear_type_name(&self, id: i32) -> String {
-        self.factory
-            .master_data
-            .gear_types
-            .iter()
-            .find_map(|c| (c.id == id).then(|| c.name.clone()))
-            .unwrap_or_else(|| format!("gear_type {}", id))
-    }
-
     pub fn analyze_anti_air(
         &self,
         org: &Org,

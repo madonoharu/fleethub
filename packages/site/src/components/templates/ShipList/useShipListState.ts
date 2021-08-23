@@ -45,16 +45,16 @@ const createFilterFn = (state: ShipListState): FilterFn => {
 const sortIdComparer = (a: Ship, b: Ship) => a.sort_id - b.sort_id;
 
 export const useShipListState = () => {
-  const { master_data, core } = useFhCore();
+  const { masterData, core } = useFhCore();
   const state = useSelector(selectShipListState);
   const dispatch = useDispatch();
 
   const masterShips = React.useMemo(() => {
-    return master_data.ships
+    return masterData.ships
       .map((ship) => core.create_ship_by_id(ship.ship_id))
       .filter(nonNullable);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [master_data]);
+  }, [masterData]);
 
   const update = (changes: Partial<ShipListState>) =>
     dispatch(shipListSlice.actions.update(changes));
