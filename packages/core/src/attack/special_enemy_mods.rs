@@ -105,7 +105,7 @@ pub fn special_enemy_modifiers(
 
     match special_enemy_type {
         SpecialEnemyType::PtImp => {
-            let small_gun_count = gears.count_type(GearType::SmallCaliberMainGun);
+            let small_gun_count = gears.count_type(GearType::SmallMainGun);
             let sec_gun_count = gears.count_type(GearType::SecondaryGun);
             let jet_fighter_bomber_count = gears.count_type(GearType::JetFighterBomber);
             let aa_gun_count = gears.count_type(GearType::AntiAirGun);

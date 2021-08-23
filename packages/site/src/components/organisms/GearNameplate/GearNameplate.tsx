@@ -16,7 +16,6 @@ type Props = {
   className?: string;
   name: string;
   iconId: number;
-  size?: "small";
   wrap?: boolean;
   equippable?: boolean;
 };
@@ -36,24 +35,18 @@ export const GearNameplate = React.forwardRef<HTMLDivElement, Props>(
   }
 );
 
-const smallText = css`
-  font-size: 0.75rem;
-  line-height: 1.66;
-`;
-
 GearNameplate.defaultProps = {
   equippable: true,
 };
 
 export default styled(GearNameplate)(
-  ({ size, equippable, theme }) => css`
+  ({ equippable, theme }) => css`
     max-width: 100%;
-
     color: ${!equippable && theme.palette.error.light};
 
     p {
-      max-width: calc(100% - 28px);
-      ${size === "small" && smallText}
+      font-size: 0.75rem;
+      line-height: 1.66;
     }
   `
 );

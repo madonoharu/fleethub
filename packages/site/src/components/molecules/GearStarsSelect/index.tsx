@@ -1,17 +1,10 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Button, Tooltip } from "@material-ui/core";
+import { Button, Tooltip, Typography } from "@material-ui/core";
 import React from "react";
 
 import { usePopover } from "../../../hooks";
 import Buttons from "./Buttons";
-
-const starsToString = (stars: number) => {
-  if (stars === 10) {
-    return "★M";
-  }
-  return `★${stars}`;
-};
 
 type Props = {
   className?: string;
@@ -32,8 +25,9 @@ const Component: React.FC<Props> = ({ className, stars, onChange }) => {
   return (
     <>
       <Tooltip title="改修値選択">
-        <Button className={className} size="small" onClick={Popover.show}>
-          {starsToString(stars)}
+        <Button className={className} onClick={Popover.show}>
+          <span>★</span>
+          <span>{stars === 10 ? "M" : stars}</span>
         </Button>
       </Tooltip>
 
@@ -46,10 +40,13 @@ const Component: React.FC<Props> = ({ className, stars, onChange }) => {
 
 const StyledComponent = styled(Component)(
   ({ theme, stars }) => css`
-    width: 24px;
-    height: 100%;
-    padding: 0;
+    justify-content: flex-start;
+    width: 32px;
+    padding: 0 2px;
     color: ${stars === 0 ? theme.palette.action.disabled : theme.colors.stars};
+    > * {
+      flex-basis: 100%;
+    }
   `
 );
 

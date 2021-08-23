@@ -130,16 +130,13 @@ impl<'a> AttackContext<'a> {
             proficiency_critical_mod: None,
         };
 
-        let equipment_accuracy =
-            (ship.gears.sum_by(|gear| gear.accuracy) + ship.ebonuses.accuracy) as f64;
-
         let accuracy_params = ShellingAccuracyParams {
             fleet_factor: fleet_factor::find_shelling_accuracy_factor(
                 self.attacker.org_type,
                 self.attacker.role,
             ) as f64,
             basic_accuracy_term: ship.basic_accuracy_term(),
-            equipment_accuracy,
+            ship_accuracy: ship.accuracy() as f64,
             ibonus: ship.gears.sum_by(|gear| gear.ibonuses.shelling_accuracy),
             fit_gun_bonus: fit_gun_bonus::fit_gun_bonus(ship, !is_day),
             morale_mod: self.attacker.morale_state.common_accuracy_mod(),

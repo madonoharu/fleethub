@@ -30,7 +30,7 @@ const withIconButton = (WrappedIcon: React.FC) => {
         css={size === "tiny" && tinyStyle}
         {...iconButonProps}
       >
-        <WrappedIcon css={{ fontSize: "inherit" }} />
+        <WrappedIcon css={{ display: "block", fontSize: "inherit" }} />
         {label}
       </IconButton>
     );

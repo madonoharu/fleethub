@@ -3,7 +3,7 @@ import { Formation } from "@fleethub/core";
 import { MapEnemyFleet, MapNode } from "@fleethub/utils";
 import React from "react";
 
-import { NodeLable } from "../../organisms/NauticalChart";
+import { NodeLable } from "../../molecules";
 import MapEnemyFleetCard from "./MapEnemyFleetCard";
 
 const StyledMapEnemyFleetCard = styled(MapEnemyFleetCard)`
@@ -25,7 +25,7 @@ const MapNodeContent: React.FCX<Props> = ({
 }) => {
   return (
     <div className={className}>
-      <NodeLable node={node} />
+      <NodeLable name={node.point} type={node.type} d={node.d} />
       {node.enemies
         ?.filter(
           (enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty

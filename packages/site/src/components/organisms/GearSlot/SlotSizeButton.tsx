@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import BuildIcon from "@material-ui/icons/Build";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -24,12 +25,14 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
   max,
   onChange,
 }) => {
+  const { t } = useTranslation("common");
+
   const handleSliderChange = (event: unknown, value: number | number[]) => {
     if (typeof value === "number" && onChange) onChange(value);
   };
 
   const handleInit = () => {
-    onChange && onChange(max);
+    onChange?.(undefined);
   };
 
   return (
@@ -47,7 +50,7 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
             min={0}
             onChange={onChange}
           />
-          <Button onClick={handleInit}>初期値({max ?? "?"})</Button>
+          <Button onClick={handleInit}>{t("SettingsReset")}</Button>
         </div>
 
         {max && (

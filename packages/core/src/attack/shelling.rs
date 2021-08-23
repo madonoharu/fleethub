@@ -80,7 +80,7 @@ impl ShellingPowerParams {
 pub struct ShellingAccuracyParams {
     pub fleet_factor: f64,
     pub basic_accuracy_term: Option<f64>,
-    pub equipment_accuracy: f64,
+    pub ship_accuracy: f64,
     pub ibonus: f64,
     pub fit_gun_bonus: f64,
     pub morale_mod: f64,
@@ -92,7 +92,7 @@ pub struct ShellingAccuracyParams {
 impl ShellingAccuracyParams {
     fn calc(&self) -> Option<f64> {
         let base =
-            (self.fleet_factor + self.basic_accuracy_term? + self.equipment_accuracy + self.ibonus)
+            (self.fleet_factor + self.basic_accuracy_term? + self.ship_accuracy + self.ibonus)
                 .floor();
 
         let result = ((base * self.formation_mod? * self.morale_mod + self.fit_gun_bonus)

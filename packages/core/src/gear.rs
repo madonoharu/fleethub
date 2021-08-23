@@ -55,7 +55,7 @@ pub struct IBonuses {
     pub fighter_power: f64,
     pub adjusted_anti_air: f64,
     pub fleet_anti_air: f64,
-    pub effective_los: f64,
+    pub elos: f64,
 }
 
 #[wasm_bindgen]
@@ -119,14 +119,26 @@ impl Gear {
                 return 0;
             }
 
+            if master.gear_id == gear_id!("二式陸上偵察機(熟練)") {
+                return 25;
+            }
+
             match gear_type {
                 GearType::CbFighter
                 | GearType::CbRecon
                 | GearType::ReconSeaplane
-                | GearType::SeaplaneFighter => 120,
-                GearType::CbTorpedoBomber | GearType::CbDiveBomber | GearType::SeaplaneBomber => {
-                    100
-                }
+                | GearType::SeaplaneFighter
+                | GearType::LargeFlyingBoat
+                | GearType::JetFighter
+                | GearType::JetFighterBomber
+                | GearType::JetRecon
+                | GearType::JetTorpedoBomber => 120,
+                GearType::CbTorpedoBomber
+                | GearType::CbDiveBomber
+                | GearType::SeaplaneBomber
+                | GearType::LbFighter
+                | GearType::LbAttacker
+                | GearType::LargeLbAircraft => 100,
                 _ => 0,
             }
         });
@@ -227,7 +239,7 @@ impl Gear {
             | SeaplaneFighter
             | Autogyro
             | AntiSubPatrolAircraft => "Recon",
-            SmallCaliberMainGun | MediumCaliberMainGun | LargeCaliberMainGun => "MainGun",
+            SmallMainGun | MediumMainGun | LargeMainGun => "MainGun",
             SecondaryGun | AntiAirGun => "Secondary",
             Torpedo | SubmarineTorpedo | MidgetSubmarine => "Torpedo",
             Sonar | LargeSonar | DepthCharge => "AntiSub",
@@ -279,7 +291,7 @@ impl Gear {
     }
 
     fn get_proficiency_type(&self) -> ProficiencyType {
-        if self.attrs.contains(GearAttr::Fighter) {
+        if self.has_attr(GearAttr::Fighter) {
             ProficiencyType::Fighter
         } else if self.gear_type == GearType::SeaplaneBomber {
             ProficiencyType::SeaplaneBomber
@@ -296,11 +308,11 @@ impl Gear {
     }
 
     fn proficiency_fighter_power_modifier(&self) -> f64 {
-        let ace_modifier = self
+        let ace_mod = self
             .get_proficiency_type()
             .fighter_power_ace_modifier(self.ace());
 
-        ace_modifier as f64 + (self.exp as f64).sqrt()
+        ace_mod as f64 + (self.exp as f64 / 10.0).sqrt()
     }
 
     pub fn proficiency_critical_power_mod(&self) -> f64 {
@@ -332,7 +344,7 @@ impl Gear {
 
         let multiplier = self.anti_air as f64
             + self.interception() as f64
-            + 2. * (self.anti_bomber() as f64)
+            + 2.0 * (self.anti_bomber() as f64)
             + self.ibonuses.fighter_power;
 
         (multiplier * (slot_size as f64).sqrt() + pm).floor() as i32
@@ -414,6 +426,18 @@ impl Gear {
         let b = (self.los as f64).sqrt() * (level as f64).sqrt();
         let rate = (b.floor() / 25.0).min(1.0);
         rate
+    }
+
+    pub fn elos(&self) -> f64 {
+        let multiplier = match self.gear_type {
+            GearType::CbTorpedoBomber => 0.8,
+            GearType::CbRecon => 1.0,
+            GearType::ReconSeaplane => 1.2,
+            GearType::SeaplaneBomber => 1.1,
+            _ => 0.6,
+        };
+
+        multiplier * (self.los as f64 + self.ibonuses.elos)
     }
 }
 
