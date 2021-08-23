@@ -2,7 +2,7 @@ import BrokenImage from "@material-ui/icons/BrokenImage";
 import Image from "next/image";
 import React from "react";
 
-import { useFhCoreContext } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import { getCloudinaryUrl } from "../../../utils";
 
 type Props = {
@@ -21,8 +21,8 @@ const ShipBanner: React.FCX<Props> = ({
   shipId,
   size = "small",
 }) => {
-  const { master_data } = useFhCoreContext();
-  const publicId = master_data.ship_banners[shipId] || "";
+  const { masterData } = useFhCore();
+  const publicId = masterData.ship_banners[shipId] || "";
 
   const scale = SIZES[size];
   const width = scale * 32;

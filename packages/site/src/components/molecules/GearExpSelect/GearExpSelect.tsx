@@ -38,7 +38,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
   return (
     <div className={className}>
       <Tooltip title="熟練度選択">
-        <Button onClick={Popover.show}>
+        <Button css={{ height: "100%" }} onClick={Popover.show}>
           <ProficiencyIcon exp={exp} />
         </Button>
       </Tooltip>
@@ -67,6 +67,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
 
 export default styled(GearExpSelect)`
   button {
+    width: 28px;
     display: flex;
     padding: 0 3px;
   }

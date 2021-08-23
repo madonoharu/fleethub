@@ -24,8 +24,8 @@ const PlanItem: React.FC<{ file: PlanFileEntity }> = ({ file }) => {
         primary={<FileItemPrimary file={file} />}
         secondary={
           <ShipBannerGroup
-            main={Array.from(org.main_ship_ids())}
-            escort={Array.from(org.escort_ship_ids())}
+            main={org.main_ship_ids()}
+            escort={org.escort_ship_ids()}
           />
         }
       />

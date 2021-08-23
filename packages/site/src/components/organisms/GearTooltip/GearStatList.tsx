@@ -4,7 +4,6 @@ import { Gear } from "@fleethub/core";
 import { nonNullable } from "@fleethub/utils";
 import { Typography } from "@material-ui/core";
 import { EquipmentBonuses } from "equipment-bonus";
-import { camelCase } from "literal-case";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -63,8 +62,14 @@ const Bonus = styled(Value)(
   `
 );
 
-export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) =>
-  STAT_KEYS.map((key): StatEntry | undefined => {
+export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) => {
+  const isLbFighter = gear.gear_type == "LbFighter";
+
+  return STAT_KEYS.map((key): StatEntry | undefined => {
+    if (isLbFighter && (key === "accuracy" || key === "evasion")) {
+      return;
+    }
+
     const value = gear[key];
 
     let bonus = "";
@@ -84,6 +89,7 @@ export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) =>
     if (key === "speed") return { key, value: "", bonus };
     return { key, value, bonus };
   }).filter(nonNullable);
+};
 
 export type Props = {
   gear: Gear;

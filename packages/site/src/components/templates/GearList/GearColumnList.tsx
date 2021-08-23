@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import { Gear, GearType } from "@fleethub/core";
-import { Button, Tooltip } from "@material-ui/core";
+import { Button, Tooltip, Typography } from "@material-ui/core";
 import React from "react";
 
-import { Divider, Flexbox, Text } from "../../atoms";
+import { Divider, Flexbox } from "../../atoms";
 import { StatIcon } from "../../molecules";
 import { GearNameplate, GearTooltip } from "../../organisms";
 import { toStatEntries } from "../../organisms/GearTooltip/GearStatList";
@@ -24,7 +24,7 @@ const StatList: React.FC<{ gear: Gear }> = ({ gear }) => {
         <Tooltip key={key} title={key}>
           <Margin>
             <StatIcon icon={key} />
-            <Text>{value}</Text>
+            <Typography>{value}</Typography>
           </Margin>
         </Tooltip>
       ))}

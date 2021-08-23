@@ -1,7 +1,10 @@
 import styled from "@emotion/styled";
 import { Org } from "@fleethub/core";
 import { AIR_SQUADRON_KEYS } from "@fleethub/utils";
+import { Paper } from "@material-ui/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
+import { Flexbox, LabeledValue } from "../../atoms";
 
 import AirSquadronCard from "./AirSquadronCard";
 
@@ -10,21 +13,38 @@ type LandBaseScreenProps = {
 };
 
 const LandBaseScreen: React.FCX<LandBaseScreenProps> = ({ className, org }) => {
+  const { t } = useTranslation("common");
   return (
-    <div className={className}>
-      {AIR_SQUADRON_KEYS.map((key) => {
-        const as = org.get_air_squadron(key);
-        return <AirSquadronCard key={key} airSquadron={as} />;
-      })}
-    </div>
+    <Paper className={className}>
+      <Flexbox
+        gap={1}
+        css={{
+          width: "100%",
+          "> *": {
+            flexBasis: "100%",
+          },
+        }}
+      >
+        {AIR_SQUADRON_KEYS.map((key) => {
+          const as = org.get_air_squadron(key);
+          return <AirSquadronCard key={key} airSquadron={as} />;
+        })}
+      </Flexbox>
+
+      <div css={{ display: "inline-block" }}>
+        <LabeledValue
+          label={t("InterceptionPower")}
+          value={org.interception_power()}
+        />
+        <LabeledValue
+          label={t("HighAltitudeInterceptionPower")}
+          value={org.high_altitude_interception_power()}
+        />
+      </div>
+    </Paper>
   );
 };
 
 export default styled(LandBaseScreen)`
-  display: flex;
-  width: 100%;
-
-  > * {
-    flex-grow: 1;
-  }
+  padding: 8px;
 `;

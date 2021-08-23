@@ -1,6 +1,6 @@
 import { Gear, GearType } from "@fleethub/core";
 import { nonNullable } from "@fleethub/utils";
-import master_data from "@fleethub/utils/master_data";
+import masterData from "@fleethub/utils/masterData";
 import { EquipmentBonuses } from "equipment-bonus";
 import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,11 +9,11 @@ import { useFhCore } from "../../../hooks";
 import { gearListSlice, selectGearListState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { SearchInput } from "../../organisms";
-import { idComparer } from "./comparers";
 import FilterBar from "./FilterBar";
-import { getFilter, getVisibleGroups } from "./filters";
 import GearSearchResult from "./GearSearchResult";
 import GearTypeContainer from "./GearTypeContainer";
+import { idComparer } from "./comparers";
+import { getFilter, getVisibleGroups } from "./filters";
 import searchGears from "./searchGears";
 
 const createTypeGearEntries = (gears: Gear[]) => {
@@ -47,14 +47,14 @@ type GearListProps = {
 };
 
 const useGearListState = () => {
-  const { master_data, core } = useFhCore();
+  const { masterData, core } = useFhCore();
 
   const dispatch = useDispatch();
   const state = useSelector(selectGearListState);
 
   const gears = useMemo(
     () =>
-      master_data.gears
+      masterData.gears
         .map((mg) => core.create_gear({ gear_id: mg.gear_id }))
         .filter(nonNullable),
     // eslint-disable-next-line react-hooks/exhaustive-deps

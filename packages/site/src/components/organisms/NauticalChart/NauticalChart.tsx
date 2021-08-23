@@ -1,24 +1,13 @@
 import styled from "@emotion/styled";
 import { FhMap, MapNode } from "@fleethub/utils";
-import { Tooltip, Typography } from "@material-ui/core";
+import { Tooltip } from "@material-ui/core";
 import { Group } from "@visx/group";
 import { Graph } from "@visx/network";
 import { ScaleSVG } from "@visx/responsive";
-import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { getNodeTypeStyle, NodeCircle } from "./NodeIcon";
-
-export const NodeLable: React.FC<{ node: MapNode }> = ({ node }) => {
-  const { t } = useTranslation("common");
-  const distance = node.d && `${t("LbasDistance")}: ${node.d}`;
-
-  return (
-    <Typography>
-      {node.point} {t(getNodeTypeStyle(node.type).name)} {distance}
-    </Typography>
-  );
-};
+import { NodeLable } from "../../molecules";
+import { NodeCircle } from "./NodeIcon";
 
 const NauticalChartNode: React.FC<{
   node: MapNode;
@@ -29,7 +18,9 @@ const NauticalChartNode: React.FC<{
   };
 
   return (
-    <Tooltip title={<NodeLable node={node} />}>
+    <Tooltip
+      title={<NodeLable name={node.point} type={node.type} d={node.d} />}
+    >
       <NodeCircle
         type={node.type}
         point={node.point}

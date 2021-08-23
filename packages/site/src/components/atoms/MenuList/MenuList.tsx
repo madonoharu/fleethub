@@ -21,7 +21,7 @@ const MenuList: React.FC<Props> = ({ list, ...menuProps }) => {
   return (
     <MuiMenuList {...menuProps}>
       {list.map(({ icon, text, ...rest }, index) => (
-        <MenuItem key={index} button {...rest}>
+        <MenuItem key={index} {...rest}>
           {icon && <ListItemIcon>{icon}</ListItemIcon>}
           <ListItemText primary={text} />
         </MenuItem>

@@ -5,9 +5,12 @@ import React from "react";
 import { PlanFileEntity } from "../../../store";
 
 import { Tabs, TabsProps } from "../../molecules";
-import { FleetScreen, LandBaseScreen, GkcoiScreen } from "../../organisms";
-
-import PlanNodeList from "./PlanNodeList";
+import {
+  FleetScreen,
+  LandBaseScreen,
+  GkcoiScreen,
+  PlanNodeList,
+} from "../../organisms";
 
 const height = 40;
 

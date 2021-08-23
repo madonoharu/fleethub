@@ -43,15 +43,16 @@ export type DeckShip = {
 
 export type DeckFleet = Dict<ShipKey, DeckShip>;
 
-export type DeckAirbase = {
+export type DeckAirSquadron = {
   items?: DeckItems | undefined;
+  mode?: number;
 };
 
 export type Deck = {
   version: 4;
   hqlv?: number | undefined;
 } & Dict<FleetKey, DeckFleet> &
-  Dict<AirSquadronKey, DeckAirbase>;
+  Dict<AirSquadronKey, DeckAirSquadron>;
 
 const createGearParams = (deck: DeckGear): GearParams => {
   return {
@@ -196,6 +197,17 @@ const createDeckFleet = (fleet: Fleet): DeckFleet => {
   return result;
 };
 
+export const getModeNumber = (mode: string) => {
+  switch (mode) {
+    case "Sortie":
+      return 1;
+    case "AirDefense":
+      return 2;
+  }
+
+  return undefined;
+};
+
 export const createDeck = (org?: Org): Deck => {
   if (!org) return { version: 4 };
 
@@ -216,6 +228,7 @@ export const createDeck = (org?: Org): Deck => {
 
     deck[key] = {
       items: createDeckItems(as),
+      mode: getModeNumber(as.mode),
     };
   });
 

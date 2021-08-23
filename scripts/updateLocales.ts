@@ -1,8 +1,10 @@
 import child_process from "child_process";
 import { promisify } from "util";
 import {
+  AirSquadronMode,
   AirState,
   DayCutin,
+  Engagement,
   Formation,
   MasterDataInput,
   NightCutin,
@@ -130,14 +132,14 @@ class LocaleUpdater {
       AirIncapability: kc3Battle.airbattle[4][0],
     };
 
-    const engagementDictionary = {
+    const engagementDictionary: Record<Engagement, string> = {
       Parallel: kc3Battle.engagement[1][0],
       HeadOn: kc3Battle.engagement[2][0],
       GreenT: kc3Battle.engagement[3][0],
       RedT: kc3Battle.engagement[4][0],
     };
 
-    const orgTypeDictionary: Record<OrgType, string | undefined> = {
+    const orgTypeDictionary: Record<OrgType, string> = {
       Single: kcnav["fleetTypeSingle"],
       CarrierTaskForce: kcnav["fleetTypeCTF"],
       SurfaceTaskForce: kcnav["fleetTypeSTF"],
@@ -146,7 +148,7 @@ class LocaleUpdater {
       EnemyCombined: `${kc3Terms["BattleEnemy"]} ${kc3Terms["CombinedFleet"]}`,
     };
 
-    const formationDictionary: Record<Formation, string | undefined> = {
+    const formationDictionary: Record<Formation, string> = {
       LineAhead: kc3Terms["SettingsForLineAhead"],
       DoubleLine: kc3Terms["SettingsForDoubleLine"],
       Diamond: kc3Terms["SettingsForDiamond"],
@@ -179,7 +181,7 @@ class LocaleUpdater {
       kc3Battle.cutinNight[i].replace(/ \[.+\]/, "").replace(/CI$/, "");
     const cvci = getNightCutin(6);
 
-    const nightCutinDictionary: Record<NightCutin, string | undefined> = {
+    const nightCutinDictionary: Record<NightCutin, string> = {
       DoubleAttack: getNightCutin(1),
       TorpTorpMain: getNightCutin(2),
       TorpTorpTorp: getNightCutin(3),
@@ -195,6 +197,11 @@ class LocaleUpdater {
       TorpTsloDrum: getNightCutin(10),
       SubRadarTorp: kc3Terms["CutinLateTorpRadar"],
       SubTorpTorp: kc3Terms["CutinLateTorpTorp"],
+    };
+
+    const airSquadronModeDictionary: Record<AirSquadronMode, string> = {
+      Sortie: kc3Terms["LandBaseActionSortie"],
+      AirDefense: kc3Terms["LandBaseActionDefend"],
     };
 
     const exnteds = Object.fromEntries(
@@ -240,6 +247,14 @@ class LocaleUpdater {
       interception: kc3Terms["ShipEvaInterception"],
       cost: kc3Terms["ShipDeployCost"],
 
+      ElosNodeFactor: kc3Terms["PanelElosNodeFactor"].replace("{0}", ""),
+
+      LandBaseFighterPower: kc3Terms["LandBaseFighterPower"],
+      InterceptionPower: kc3Terms["LandBaseTipAirDefensePower"],
+      HighAltitudeInterceptionPower: kc3Terms[
+        "LandBaseTipHighAltitudeAirDefensePower"
+      ].replace(": ≈{0}", ""),
+
       ...exnteds,
 
       ...airStateDictionary,
@@ -248,7 +263,7 @@ class LocaleUpdater {
       ...formationDictionary,
       ...dayCutinDictionary,
       ...nightCutinDictionary,
-
+      ...airSquadronModeDictionary,
       ...worldNames,
       ...nodeTypes,
 

@@ -3,10 +3,20 @@ import {
   GoogleSpreadsheetRow,
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
+import got from "got";
+import { Start2 } from "kc-tools";
 import get from "lodash/get";
 import isEqual from "lodash/isEqual";
 
 type Row = Record<string, unknown>;
+
+export const fetchStart2 = async (): Promise<Start2> => {
+  return got
+    .get(
+      "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json"
+    )
+    .json();
+};
 
 export const equalJson = (arg1: unknown, arg2: unknown) =>
   isEqual(cloneJson(arg1), cloneJson(arg2));

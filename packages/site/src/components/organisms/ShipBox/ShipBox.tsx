@@ -64,6 +64,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
       >
         {element}
       </Swappable>
+
       <Modal full>
         <ShipList
           onSelect={(ship) => {
@@ -89,7 +90,7 @@ const Memoized = React.memo(
 );
 
 const Styled = styled(Memoized)`
-  height: ${24 * 7 + 16}px;
+  height: ${24 * 8}px;
 
   > * {
     width: 100%;

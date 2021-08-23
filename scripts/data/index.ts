@@ -1,22 +1,14 @@
 import { MasterDataInput, MasterEquippable } from "@fleethub/core/types";
 import { GoogleSpreadsheet } from "google-spreadsheet";
-import got from "got";
 import { Start2 } from "kc-tools";
 
 import { updateCloudinary } from "./cloudinary";
 import { getConstants } from "./constants";
 import { updateGearData } from "./gear";
-import getGoogleSpreadsheet from "./getGoogleSpreadsheet";
+import { getGoogleSpreadsheet } from "./google";
 import { updateShipData } from "./ship";
 import { updateMaster } from "./storage";
-
-const fetchStart2 = async (): Promise<Start2> => {
-  return got
-    .get(
-      "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json"
-    )
-    .json();
-};
+import { fetchStart2 } from "./utils";
 
 export const log = async (message: string) => {
   const doc = await getGoogleSpreadsheet();
@@ -55,9 +47,14 @@ const createMasterDataInput = async (
   ]);
   const equippable = createEquippable(start2);
 
+  const { ships, ship_attrs } = shipData;
+  const { gears, gear_attrs } = gearData;
+
   return {
-    ...shipData,
-    ...gearData,
+    ships,
+    ship_attrs,
+    gears,
+    gear_attrs,
     equippable,
     constants,
   };
@@ -93,3 +90,5 @@ export const updateImages = async () => {
 
   await log("Success: update_images");
 };
+
+export { getGoogleSpreadsheet, updateShipData, updateGearData };

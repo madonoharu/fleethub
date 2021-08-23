@@ -51,8 +51,9 @@ export type FolderEntity = FileEntityBase<
 >;
 
 export type PlanNode = {
-  d?: number;
   name: string;
+  type: number;
+  d?: number;
   org: string;
   formation: Formation;
 };

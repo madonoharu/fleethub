@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BattleContextImpl, ShellingImpl, Ship } from "@fleethub/core";
+import { Ship } from "@fleethub/core";
 import { Tooltip, Typography } from "@material-ui/core";
 import React from "react";
 
@@ -9,7 +9,6 @@ import DamageDistributionChart from "./DamageDistributionChart";
 import HitRateDetailScreen from "./HitRateDetailScreen";
 
 type AttackAnalysisScreenProps = {
-  ctx: BattleContextImpl;
   attacker: Ship;
   defender: Ship;
 };

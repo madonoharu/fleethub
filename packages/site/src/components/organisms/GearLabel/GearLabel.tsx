@@ -16,14 +16,20 @@ import GearNameplate from "../GearNameplate";
 import GearTooltip from "../GearTooltip";
 
 const GearLabelAction = styled.div`
+  height: 100%;
   display: flex;
   align-items: center;
   margin-left: auto;
+  > * {
+    height: 100%;
+  }
 `;
 
-type Props = {
+type GearLabelProps = {
   gear: Gear;
   equippable?: boolean;
+
+  size?: "small" | "medium" | undefined;
 
   onUpdate?: (changes: Partial<GearEntity>) => void;
   onRemove?: () => void;
@@ -39,11 +45,13 @@ const styles = {
   `,
 };
 
-const GearLabel: React.FCX<Props> = ({
+const GearLabel: React.FCX<GearLabelProps> = ({
   className,
 
   gear,
   equippable = true,
+
+  size,
 
   onUpdate,
   onRemove,
@@ -62,7 +70,6 @@ const GearLabel: React.FCX<Props> = ({
       <GearTooltip gear={gear}>
         <div>
           <GearNameplate
-            size="small"
             equippable={equippable}
             iconId={gear.icon_id}
             name={gear.name}
@@ -73,13 +80,13 @@ const GearLabel: React.FCX<Props> = ({
       <UpdateButton
         css={styles.action}
         title="変更"
-        size="tiny"
+        size={size == "small" ? "tiny" : "small"}
         onClick={onReselect}
       />
       <ClearButton
         css={styles.action}
         title="削除"
-        size="tiny"
+        size={size == "small" ? "tiny" : "small"}
         onClick={onRemove}
       />
 
@@ -100,10 +107,11 @@ const Memoized = React.memo(
 );
 
 const Styled = styled(Memoized)(
-  ({ theme }) => css`
+  ({ size, theme }) => css`
+    height: ${size === "small" ? 24 : 28}px;
     width: 100%;
     transition: 250ms;
-    padding: 0 4px;
+    padding-left: 4px;
 
     > :not(div:first-of-type) {
       flex-shrink: 0;

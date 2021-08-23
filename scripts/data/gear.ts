@@ -2,7 +2,6 @@ import {
   MasterAttrRule,
   MasterGearInput,
   MasterIBonuses,
-  MasterVariantDef,
 } from "@fleethub/core/types";
 import { nonNullable } from "@fleethub/utils/src";
 import {
@@ -62,22 +61,18 @@ const createGearTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
     tag: rows.find((row) => Number(row.id) === mst.api_id)?.tag || "",
   }));
 
-const makeReplaceGearExpr = (
-  gears: MasterGearInput[],
-  gear_types: MasterVariantDef[],
-  gear_attrs: MasterAttrRule[]
-) => {
-  const replaceType = (str: string) => {
-    return gear_types.reduce(
-      (current, type) => current.replace(`"${type.name}"`, type.id.toString()),
+const makeReplaceGearExpr = (start2: Start2, gear_attrs: MasterAttrRule[]) => {
+  const replaceType = (str: string) =>
+    start2.api_mst_slotitem_equiptype.reduce(
+      (current, type) =>
+        current.replace(`"${type.api_name}"`, type.api_id.toString()),
       str
     );
-  };
 
   const replaceName = (str: string) =>
-    gears.reduce(
+    start2.api_mst_slotitem.reduce(
       (current, gear) =>
-        current.replace(`"${gear.name}"`, gear.gear_id.toString()),
+        current.replace(`"${gear.api_name}"`, gear.api_id.toString()),
       str
     );
 
@@ -101,13 +96,12 @@ const makeReplaceGearExpr = (
 
 const readGearAttrs = async (
   sheet: GoogleSpreadsheetWorksheet,
-  gears: MasterGearInput[],
-  gear_types: MasterVariantDef[]
+  start2: Start2
 ) => {
   const rows = await sheet.getRows();
 
   const gear_attrs: MasterAttrRule[] = [];
-  const replaceExpr = makeReplaceGearExpr(gears, gear_types, gear_attrs);
+  const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
   rows.forEach((row) => {
     const expr = replaceExpr(row.expr);
@@ -119,8 +113,7 @@ const readGearAttrs = async (
 
 const readIBonuses = async (
   doc: GoogleSpreadsheet,
-  gears: MasterGearInput[],
-  gear_types: MasterVariantDef[],
+  start2: Start2,
   gear_attrs: MasterAttrRule[]
 ): Promise<MasterIBonuses> => {
   const sheets: Record<keyof MasterIBonuses, GoogleSpreadsheetWorksheet> = {
@@ -138,10 +131,10 @@ const readIBonuses = async (
     fighter_power: doc.sheetsByTitle["改修制空"],
     adjusted_anti_air: doc.sheetsByTitle["改修加重対空"],
     fleet_anti_air: doc.sheetsByTitle["改修艦隊対空"],
-    effective_los: doc.sheetsByTitle["改修マップ索敵"],
+    elos: doc.sheetsByTitle["改修マップ索敵"],
   };
 
-  const replaceExpr = makeReplaceGearExpr(gears, gear_types, gear_attrs);
+  const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
   const promises = Object.entries(sheets).map(async ([key, sheet]) => {
     const rows = await sheet.getRows();
@@ -174,8 +167,8 @@ export const updateGearData = async (
     updateRows(sheets.gear_types, (rows) => createGearTypes(rows, start2)),
   ]);
 
-  const gear_attrs = await readGearAttrs(sheets.gear_attrs, gears, gear_types);
-  const ibonuses = await readIBonuses(doc, gears, gear_types, gear_attrs);
+  const gear_attrs = await readGearAttrs(sheets.gear_attrs, start2);
+  const ibonuses = await readIBonuses(doc, start2, gear_attrs);
 
   const data = {
     gears,

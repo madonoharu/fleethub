@@ -1,12 +1,12 @@
-import { HealthState } from "@fleethub/core";
-import { NumberRecord, randint } from "@fleethub/utils";
+import { DamageState } from "@fleethub/core";
+import { NumberRecord } from "@fleethub/utils";
 import { colors } from "@material-ui/core";
 import React from "react";
 import { Bar, ComposedChart, Legend, XAxis, YAxis } from "recharts";
 
 import { toPercent } from "../../../utils";
 
-type AttackResultState = HealthState | "Miss";
+type AttackResultState = DamageState | "Miss";
 
 const getColor = (state: AttackResultState) =>
   ({
@@ -57,7 +57,7 @@ const AttackResultChart: React.FCX<AttackResultChartProps> = ({
         <XAxis type="number" hide={true} />
         <YAxis type="category" hide={true} />
         <Legend
-          formatter={(key: HealthState) =>
+          formatter={(key: DamageState) =>
             `${key} ${toPercent(rec[key] || 0, 3)}`
           }
         />

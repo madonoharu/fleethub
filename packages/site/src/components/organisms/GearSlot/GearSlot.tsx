@@ -27,17 +27,21 @@ const GearSlot: React.FCX<Props> = ({
   canEquip,
   getNextEbonuses,
 }) => {
+  const has_proficiency = gear?.has_proficiency();
+
   return (
     <div className={className}>
       <SlotSizeButton
         exslot={position?.key === "gx"}
         current={slotSize}
         max={maxSlotSize}
+        disabled={!has_proficiency}
         onChange={onSlotSizeChange}
       />
       <GearBox
         gear={gear}
         position={position}
+        size="small"
         canEquip={canEquip}
         getNextEbonuses={getNextEbonuses}
       />

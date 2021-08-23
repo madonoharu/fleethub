@@ -125,8 +125,9 @@ export const filesSlice = createSlice({
         const { result, entities } = normalizeOrgParams(event.org);
 
         const node: PlanNode = {
-          d: event.d,
           name: event.name,
+          type: event.type,
+          d: event.d,
           formation: event.formation,
           org: result,
         };
@@ -135,6 +136,24 @@ export const filesSlice = createSlice({
           payload: { id, node, entities },
         };
       },
+    },
+
+    removePlanNode: (
+      state,
+      { payload }: PayloadAction<{ id: string; index: number }>
+    ) => {
+      const file = state.entities[payload.id];
+
+      if (!isPlanFile(file) || payload.index < 0) return;
+
+      file.nodes.splice(payload.index, 1);
+    },
+
+    removePlanNodeAll: (state, { payload }: PayloadAction<string>) => {
+      filesAdapter.updateOne(state, {
+        id: payload,
+        changes: { nodes: [] },
+      });
     },
 
     createFolder: (state, { payload }: PayloadAction<string | undefined>) => {

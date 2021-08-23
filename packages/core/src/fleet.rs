@@ -60,7 +60,10 @@ impl Fleet {
             .map(|base| (base.sqrt() + 0.1 * base).floor())
     }
 
-    pub fn size(&self) -> usize {
-        self.ships.values().count()
+    pub fn fighter_power(&self, anti_lbas: bool) -> Option<i32> {
+        self.ships
+            .values()
+            .map(|ship| ship.fighter_power(anti_lbas))
+            .sum()
     }
 }

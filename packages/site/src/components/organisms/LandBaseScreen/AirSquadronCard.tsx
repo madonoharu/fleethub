@@ -1,14 +1,17 @@
 import styled from "@emotion/styled";
-import { AirSquadron } from "@fleethub/core";
+import { AirSquadron, AirSquadronMode } from "@fleethub/core";
 import { GEAR_KEYS, SlotSizeKey } from "@fleethub/utils";
 import { Paper, Typography } from "@material-ui/core";
-import React from "react";
-import { useMemo } from "react";
+import { useTranslation } from "next-i18next";
+import React, { useMemo } from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
 import { AirSquadronEntity, airSquadronsSlice } from "../../../store";
 import { Flexbox, LabeledValue } from "../../atoms";
-import GearSlot from "../ShipBox/GearSlot";
+import { Select } from "../../molecules";
+import GearSlot from "../GearSlot";
+
+const AIR_SQUADRON_MODES: AirSquadronMode[] = ["Sortie", "AirDefense"];
 
 const useAirSquadronActions = (id: string) => {
   const dispatch = useDispatch();
@@ -17,7 +20,11 @@ const useAirSquadronActions = (id: string) => {
     const update = (changes: Partial<AirSquadronEntity>) =>
       dispatch(airSquadronsSlice.actions.update({ id, changes }));
 
-    return { update };
+    const setMode = (mode: AirSquadronMode) => {
+      update({ mode });
+    };
+
+    return { update, setMode };
   }, [id, dispatch]);
 };
 
@@ -34,6 +41,7 @@ type Props = {
 const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
   ({ className, label, airSquadron }, ref) => {
     const { id } = airSquadron;
+    const { t } = useTranslation("common");
     const actions = useAirSquadronActions(id);
 
     return (
@@ -43,15 +51,30 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
         </Flexbox>
 
         <Flexbox>
-          <StyledLabeledValue label="制空" value={100} />
-          <StyledLabeledValue label="防空" value={100} />
-          <StyledLabeledValue label="半径" value={100} />
+          <StyledLabeledValue
+            label="制空"
+            value={airSquadron.fighter_power()}
+          />
+          <StyledLabeledValue
+            label="防空"
+            value={airSquadron.interception_power()}
+          />
+          <StyledLabeledValue label="半径" value={airSquadron.radius()} />
+
+          <Select
+            css={{ marginLeft: "auto" }}
+            options={AIR_SQUADRON_MODES}
+            value={airSquadron.mode as AirSquadronMode}
+            getOptionLabel={t}
+            onChange={actions.setMode}
+          />
         </Flexbox>
 
         <div>
           {GEAR_KEYS.filter((_, i) => i < 4).map((key, i) => {
             const gear = airSquadron.get_gear(key);
             const ss = airSquadron.get_slot_size(i);
+            const max = airSquadron.get_max_slot_size(i);
             const position = { airSquadron: id, key };
 
             return (
@@ -59,12 +82,10 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
                 key={key}
                 gear={gear}
                 slotSize={ss}
-                maxSlotSize={18}
+                maxSlotSize={max}
                 position={position}
                 onSlotSizeChange={(value) => {
-                  if (value !== undefined) {
-                    actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
-                  }
+                  actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
                 }}
               />
             );
