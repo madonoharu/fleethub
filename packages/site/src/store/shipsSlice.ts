@@ -1,44 +1,16 @@
-import { pick, ShipKey, GEAR_KEYS } from "@fleethub/utils";
+import { pick, GEAR_KEYS } from "@fleethub/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { shipsAdapter } from "./adapters";
-import { sweep } from "./entities";
-import { isEntitiesAction } from "./filesSlice";
+import { createShip, isEntitiesAction, sweep } from "./entities";
 import { gearsSlice } from "./gearsSlice";
+import { exclude } from "./matchers";
 import { ShipEntity } from "./schema";
-
-export type ShipPosition = { id: string; key: ShipKey };
 
 export const shipsSlice = createSlice({
   name: "entities/ships",
   initialState: shipsAdapter.getInitialState(),
   reducers: {
-    add: {
-      reducer: shipsAdapter.addOne,
-      prepare: (state: ShipEntity, to: ShipPosition) => ({
-        payload: state,
-        meta: { fleet: to },
-      }),
-    },
-    reselect: (
-      state,
-      action: PayloadAction<{ id: string; ship_id: number }>
-    ) => {
-      const { id, ship_id } = action.payload;
-      const current = state.entities[id];
-
-      if (current) {
-        const next: ShipEntity = {
-          id,
-          ship_id,
-          ...pick(current, GEAR_KEYS),
-        };
-
-        shipsAdapter.setOne(state, next);
-      } else {
-        shipsAdapter.addOne(state, { id, ship_id });
-      }
-    },
     update: shipsAdapter.updateOne,
     remove: shipsAdapter.removeOne,
   },
@@ -55,11 +27,29 @@ export const shipsSlice = createSlice({
       .addCase(sweep, (state, { payload }) => {
         shipsAdapter.removeMany(state, payload.ships);
       })
-      .addMatcher(isEntitiesAction, (state, { payload }) => {
-        const { ships } = payload.entities;
-        if (ships) {
-          shipsAdapter.addMany(state, ships);
+      .addCase(createShip, (state, { payload }) => {
+        const current = state.entities[payload.id];
+        const ship = payload.entities.ships?.[payload.id];
+
+        if (!ship) return;
+
+        if (payload.reselect && current) {
+          const next: ShipEntity = {
+            id: ship.id,
+            ship_id: ship.ship_id,
+            ...pick(current, GEAR_KEYS),
+          };
+
+          shipsAdapter.setOne(state, next);
+        } else {
+          shipsAdapter.setOne(state, ship);
         }
+      })
+      .addMatcher(exclude(isEntitiesAction, createShip), (state, action) => {
+        const { ships } = action.payload.entities;
+
+        if (!ships) return;
+        shipsAdapter.addMany(state, ships);
       });
   },
 });

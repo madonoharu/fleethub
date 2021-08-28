@@ -328,6 +328,8 @@ impl EvalerStruct for MasterShip {
             "ship_id" => self.ship_id.into(),
             "ship_type" => self.stype.into(),
             "ship_class" => self.ctype.into(),
+            "sort_id" => self.sort_id.unwrap_or_default().into(),
+            "speed" => self.speed.into(),
 
             "ship_id_in" => bool_to_f64!(args.contains(&self.ship_id.into())),
             "ship_type_in" => bool_to_f64!(args.contains(&self.stype.into())),
@@ -377,7 +379,7 @@ pub struct MasterConstants {
 }
 
 impl MasterConstants {
-    pub fn get_formation_mod(
+    pub fn get_formation_def(
         &self,
         formation: Formation,
         ship_index: usize,

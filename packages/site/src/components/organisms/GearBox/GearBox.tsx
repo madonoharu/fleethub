@@ -103,5 +103,6 @@ export default styled(GearBox)(
   ({ size }) => css`
     height: ${size === "small" ? 24 : 28}px;
     width: 100%;
+    line-height: initial;
   `
 );

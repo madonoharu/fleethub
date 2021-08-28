@@ -1,6 +1,7 @@
 import { Button } from "@material-ui/core";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Flexbox } from "../../atoms";
@@ -18,17 +19,18 @@ const ExplorerHeader: React.FCX<ExplorerHeaderProps> = ({
   onPlanCreate,
   onFolderCreate,
 }) => {
+  const { t } = useTranslation("common");
   return (
     <Flexbox className={className}>
       <Button onClick={onPlanCreate} startIcon={<NoteAddIcon />}>
-        編成を作成
+        {t("CreateComposition")}
       </Button>
       <Button onClick={onFolderCreate} startIcon={<CreateNewFolderIcon />}>
-        フォルダを作成
+        {t("CreateFolder")}
       </Button>
       <ClearButton
         css={{ marginLeft: "auto" }}
-        title="一覧を閉じる"
+        title={t("Close")}
         size="small"
         onClick={onClose}
       />

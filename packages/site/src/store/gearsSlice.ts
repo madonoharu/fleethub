@@ -2,8 +2,7 @@ import { GearParams } from "@fleethub/core";
 import { GearKey } from "@fleethub/utils";
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { gearsAdapter } from "./adapters";
-import { sweep } from "./entities";
-import { isEntitiesAction } from "./filesSlice";
+import { isEntitiesAction, sweep } from "./entities";
 
 export type GearPosition =
   | { ship: string; key: GearKey }

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { ListItemIcon, ListItemText, ListItemButton } from "@material-ui/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFile, useModal, useOrg } from "../../../hooks";
@@ -74,14 +75,15 @@ const FolderPageItem: React.FCX<FolderPageItemProps> = ({
   onRemove,
 }) => {
   const MenuModal = useModal();
+  const { t } = useTranslation("common");
 
   return (
     <>
       <ListItemButton className={className} divider onClick={onOpen}>
         {renderFile(file)}
         <FileAction onClick={(e) => e.stopPropagation()}>
-          <CopyButton title="コピーする" onClick={onCopy} />
-          <DeleteButton title="削除する" onClick={onRemove} />
+          <CopyButton title={t("Copy")} onClick={onCopy} />
+          <DeleteButton title={t("Remove")} onClick={onRemove} />
           <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
         </FileAction>
       </ListItemButton>

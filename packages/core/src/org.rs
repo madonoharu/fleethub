@@ -4,7 +4,7 @@ use crate::{
     air_squadron::AirSquadron,
     fleet::{Fleet, ShipArray},
     ship::Ship,
-    types::{GearAttr, OrgType, Role, Side},
+    types::{CombinedFormation, GearAttr, OrgType, Role, Side, SingleFormation},
 };
 
 pub struct MainAndEscortShips<'a> {
@@ -64,7 +64,6 @@ pub struct Org {
 
     pub hq_level: i32,
 
-    #[wasm_bindgen(skip)]
     pub org_type: OrgType,
 }
 
@@ -79,6 +78,14 @@ impl Org {
 
     pub fn escort(&self) -> &Fleet {
         &self.f2
+    }
+
+    pub fn route_sup(&self) -> &Fleet {
+        &self.f3
+    }
+
+    pub fn boss_sup(&self) -> &Fleet {
+        &self.f4
     }
 
     pub fn night_fleet(&self) -> &Fleet {
@@ -97,6 +104,34 @@ impl Org {
             escort_ships: &self.escort().ships,
         }
     }
+
+    pub fn find_role_index(&self, ship: &Ship) -> Option<(Role, usize)> {
+        self.main_and_escort_ships()
+            .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
+            .or_else(|| {
+                let role = Role::RouteSup;
+                self.route_sup()
+                    .ships
+                    .iter()
+                    .find_map(|(index, current)| (ship == current).then(|| (role, index)))
+            })
+            .or_else(|| {
+                let role = Role::BossSup;
+                self.boss_sup()
+                    .ships
+                    .iter()
+                    .find_map(|(index, current)| (ship == current).then(|| (role, index)))
+            })
+    }
+
+    pub fn get_fleet_by_role(&self, role: Role) -> &Fleet {
+        match role {
+            Role::Main => self.main(),
+            Role::Escort => self.escort(),
+            Role::RouteSup => self.route_sup(),
+            Role::BossSup => self.boss_sup(),
+        }
+    }
 }
 
 #[wasm_bindgen]
@@ -111,9 +146,34 @@ impl Org {
         self.id.clone()
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn org_type(&self) -> String {
-        self.org_type.to_string()
+    pub fn fleet_len(&self, role: Role) -> usize {
+        self.get_fleet_by_role(role).len
+    }
+
+    pub fn get_ship_entity_id(&self, role: Role, key: &str) -> Option<String> {
+        self.get_ship(role, key).map(|ship| ship.id())
+    }
+
+    pub fn ship_keys(&self, role: Role) -> JsValue {
+        self.get_fleet_by_role(role).ship_keys()
+    }
+
+    pub fn sortie_ship_keys(&self, role: Role) -> JsValue {
+        if self.is_single() && role.is_escort() {
+            return JsValue::null();
+        }
+
+        self.get_fleet_by_role(role).ship_keys()
+    }
+
+    #[wasm_bindgen(js_name = find_role_index)]
+    pub fn js_find_role_index(&self, ship: &Ship) -> JsValue {
+        let role_index = self.find_role_index(ship);
+        JsValue::from_serde(&role_index).unwrap()
+    }
+
+    pub fn fleet_los_mod(&self, role: Role) -> Option<f64> {
+        self.get_fleet_by_role(role).fleet_los_mod()
     }
 
     pub fn main_ship_ids(&self) -> Vec<u16> {
@@ -148,6 +208,24 @@ impl Org {
         Ok(fleet.clone())
     }
 
+    pub fn get_ship(&self, role: Role, key: &str) -> Option<Ship> {
+        self.get_fleet_by_role(role).get_ship(key)
+    }
+
+    pub fn get_ship_by_id(&self, id: &str) -> Option<Ship> {
+        let fleets = [&self.f1, &self.f2, &self.f3, &self.f4];
+
+        let ship = fleets
+            .iter()
+            .find_map(|fleet| fleet.ships.values().find(|ship| ship.eq_id(id)));
+
+        ship.cloned()
+    }
+
+    pub fn get_fleet_id_by_role(&self, role: Role) -> String {
+        self.get_fleet_by_role(role).id.clone()
+    }
+
     pub fn get_air_squadron(&self, key: &str) -> Result<AirSquadron, JsValue> {
         let air_squadron = match key {
             "a1" => &self.a1,
@@ -163,10 +241,31 @@ impl Org {
         Ok(air_squadron.clone())
     }
 
+    pub fn is_player(&self) -> bool {
+        self.org_type.is_player()
+    }
+
+    pub fn is_enemy(&self) -> bool {
+        self.org_type.is_enemy()
+    }
+
+    pub fn is_single(&self) -> bool {
+        self.org_type.is_single()
+    }
+
     pub fn is_combined(&self) -> bool {
         self.org_type.is_combined()
     }
 
+    pub fn default_formation(&self) -> String {
+        if self.is_combined() {
+            CombinedFormation::default().as_ref().to_string()
+        } else {
+            SingleFormation::default().as_ref().to_string()
+        }
+    }
+
+    /// 艦隊対空値
     pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
         let total = self
             .main_and_escort_ships()
@@ -182,6 +281,7 @@ impl Org {
         }
     }
 
+    /// 制空値
     pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
         let main = self.main().fighter_power(anti_lbas)?;
 
@@ -251,5 +351,12 @@ impl Org {
             .sum::<Option<f64>>()?;
 
         Some(total - (0.4 * self.hq_level as f64).ceil() + 12.0)
+    }
+}
+
+#[wasm_bindgen]
+impl Org {
+    pub fn default() -> Self {
+        Default::default()
     }
 }

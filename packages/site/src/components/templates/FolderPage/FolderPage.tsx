@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { Button, Container } from "@material-ui/core";
 import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFile } from "../../../hooks";
@@ -19,6 +20,7 @@ type FolderPageProps = {
 
 const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
   const { file, actions, canDrop } = useFile(id);
+  const { t } = useTranslation("common");
 
   if (file?.type !== "folder") return null;
 
@@ -49,7 +51,7 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
               onClick={handlePlanCreate}
               startIcon={<NoteAddIcon />}
             >
-              編成を作成
+              {t("CreateComposition")}
             </Button>
             <Button
               variant="contained"
@@ -57,7 +59,7 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
               onClick={handleFolderCreate}
               startIcon={<CreateNewFolderIcon />}
             >
-              フォルダを作成
+              {t("CreateFolder")}
             </Button>
           </Flexbox>
 

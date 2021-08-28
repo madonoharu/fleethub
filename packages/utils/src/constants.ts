@@ -1,3 +1,41 @@
+export const AIR_STATES = [
+  "AirSupremacy",
+  "AirSuperiority",
+  "AirParity",
+  "AirIncapability",
+  "AirDenial",
+] as const;
+
+export const SPECIAL_ENEMY_TYPES = [
+  "None",
+  "Pillbox",
+  "IsolatedIsland",
+  "HarbourSummerPrincess",
+  "SupplyDepot",
+  "SoftSkinned",
+  "PtImp",
+  "BattleshipSummerPrincess",
+  "HeavyCruiserSummerPrincess",
+] as const;
+
+export const ENGAGEMENTS = ["Parallel", "HeadOn", "GreenT", "RedT"] as const;
+
+export const SINGLE_FORMATIONS = [
+  "LineAhead",
+  "DoubleLine",
+  "Diamond",
+  "Echelon",
+  "LineAbreast",
+  "Vanguard",
+] as const;
+
+export const COMBINED_FLEET_FORMATIONS = [
+  "Cruising1",
+  "Cruising2",
+  "Cruising3",
+  "Cruising4",
+] as const;
+
 export enum GearType {
   Unknown = 0,
   /// 小口径主砲

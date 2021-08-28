@@ -1,8 +1,10 @@
+use std::str::FromStr;
+
 use serde::{Deserialize, Serialize};
-use strum::EnumIter;
+use strum::{AsRefStr, EnumString};
 use ts_rs::TS;
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, EnumIter, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub enum Engagement {
     /// T有利
     GreenT,
@@ -31,7 +33,7 @@ impl Engagement {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, Serialize, Deserialize, TS)]
 pub enum SingleFormation {
     /// 単縦陣
     LineAhead,
@@ -53,7 +55,7 @@ impl Default for SingleFormation {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, Serialize, Deserialize, TS)]
 pub enum CombinedFormation {
     /// 第一警戒航行序列
     Cruising1,
@@ -76,6 +78,24 @@ impl Default for CombinedFormation {
 pub enum Formation {
     Single(SingleFormation),
     Combined(CombinedFormation),
+}
+
+impl AsRef<str> for Formation {
+    fn as_ref(&self) -> &str {
+        match self {
+            Self::Single(v) => v.as_ref(),
+            Self::Combined(v) => v.as_ref(),
+        }
+    }
+}
+
+impl FromStr for Formation {
+    type Err = serde_json::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let json = ["\"", s, "\""].concat();
+        serde_json::from_str(&json)
+    }
 }
 
 impl Default for Formation {
@@ -133,7 +153,7 @@ impl FormationDef {
                 top_half,
                 bottom_half,
             } => {
-                if ship_index * 2 <= fleet_len {
+                if ship_index < fleet_len / 2 {
                     top_half
                 } else {
                     bottom_half

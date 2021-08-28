@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { orgsAdapter } from "./adapters";
-import { sweep } from "./entities";
-import { isEntitiesAction } from "./filesSlice";
+import { isEntitiesAction, sweep } from "./entities";
 import { OrgEntity } from "./schema";
 
 export const orgsSlice = createSlice({

@@ -1,53 +1,78 @@
 import { Ship } from "@fleethub/core";
 import { nonNullable } from "@fleethub/utils";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { TFunction, useTranslation } from "next-i18next";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { useImmer } from "use-immer";
 
 import { useFhCore } from "../../../hooks";
-import {
-  selectShipListState,
-  shipListSlice,
-  ShipListState,
-} from "../../../store";
 
 type FilterFn = (ship: Ship) => boolean;
 
-const getShipGroup = ({ ship_type }: Ship) => {
-  if (["FBB", "BB", "BBV", "XBB"].includes(ship_type)) return "Battleship";
-  if (["CVL", "CV", "CVB"].includes(ship_type)) return "AircraftCarrier";
-  if (["CA", "CAV"].includes(ship_type)) return "HeavyCruiser";
-  if (["CL", "CLT"].includes(ship_type)) return "LightCruiser";
-  if (["DD"].includes(ship_type)) return "Destroyer";
-  if (["DE"].includes(ship_type)) return "CoastalDefenseShip";
-  if (["SS", "SSV"].includes(ship_type)) return "Submarine";
-  return "SupportShip";
+export type ShipFilterState = {
+  abyssal: boolean;
+  all: boolean;
+  group: string;
 };
 
-const createFilterFn = (state: ShipListState): FilterFn => {
+const createFilterFn = (state: ShipFilterState): FilterFn => {
   const fns: FilterFn[] = [];
 
   if (state.abyssal) {
-    fns.push((ship) => ship.has_attr("Abyssal"));
+    fns.push((ship) => ship.is_abyssal());
   } else {
-    fns.push((ship) => !ship.has_attr("Abyssal"));
+    fns.push((ship) => !ship.is_abyssal());
     if (!state.all) {
       fns.push((ship) => !ship.next_id || ship.useful);
     }
   }
 
-  if (state.basicFilter) {
-    fns.push((ship) => getShipGroup(ship) === state.basicFilter);
-  }
+  fns.push((ship) => ship.filter_group() === state.group);
 
   return (ship) => fns.every((fn) => fn(ship));
 };
 
 const sortIdComparer = (a: Ship, b: Ship) => a.sort_id - b.sort_id;
 
+const searchById = (ships: Ship[], searchValue: string) => {
+  const str = /^id(\d+)/.exec(searchValue)?.[1];
+  if (!str) return;
+
+  const id = Number(str);
+  return ships.find((ship) => ship.ship_id === id);
+};
+
+const searchShip = (t: TFunction, ships: Ship[], searchValue: string) => {
+  const idFound = searchById(ships, searchValue);
+
+  if (idFound) {
+    return [idFound];
+  }
+
+  return ships.filter((ship) => {
+    const name = t(`${ship.ship_id}`, ship.name);
+
+    return (
+      name.toUpperCase().includes(searchValue.toUpperCase()) ||
+      ship.yomi.includes(searchValue)
+    );
+  });
+};
+
 export const useShipListState = () => {
   const { masterData, core } = useFhCore();
-  const state = useSelector(selectShipListState);
-  const dispatch = useDispatch();
+
+  const { t } = useTranslation("ships");
+
+  const abyssal = useSelector((root) => root.present.shipSelect.abyssal);
+
+  const [state, update] = useImmer<ShipFilterState>({
+    abyssal: abyssal || false,
+    all: false,
+    group: "Battleship",
+  });
+
+  const [searchValue, setSearchValue] = useState("");
 
   const masterShips = React.useMemo(() => {
     return masterData.ships
@@ -56,13 +81,21 @@ export const useShipListState = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [masterData]);
 
-  const update = (changes: Partial<ShipListState>) =>
-    dispatch(shipListSlice.actions.update(changes));
-
   const visibleShips = React.useMemo(() => {
+    if (searchValue) {
+      return searchShip(t, masterShips, searchValue);
+    }
+
     const filterFn = createFilterFn(state);
     return masterShips.filter(filterFn).sort(sortIdComparer);
-  }, [state, masterShips]);
+  }, [searchValue, t, state, masterShips]);
 
-  return { state, update, masterShips, visibleShips };
+  return {
+    state,
+    update,
+    masterShips,
+    visibleShips,
+    searchValue,
+    setSearchValue,
+  };
 };

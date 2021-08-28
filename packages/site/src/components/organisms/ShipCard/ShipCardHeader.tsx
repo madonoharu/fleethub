@@ -7,17 +7,19 @@ import { useModal } from "../../../hooks";
 
 import { ShipEntity } from "../../../store";
 import {
+  EditButton,
   ClearButton,
   InfoButton,
   StarButton,
   UpdateButton,
 } from "../../molecules";
-import ShipDetailScreen from "../ShipDetailScreen";
+import ShipDetails from "../ShipDetails";
 import LevelButton from "./LevelButton";
 
 type Props = {
   ship: Ship;
   onUpdate?: (changes: Partial<ShipEntity>) => void;
+  onEditClick?: () => void;
   onDetailClick?: () => void;
   onReselect?: () => void;
   onRemove?: () => void;
@@ -27,12 +29,14 @@ const ShipHeader: React.FCX<Props> = ({
   className,
   ship,
   onUpdate,
+  onEditClick,
   onDetailClick,
   onReselect,
   onRemove,
 }) => {
   const DetailModal = useModal();
-  const { t } = useTranslation("ships");
+
+  const { t } = useTranslation(["ships", "common"]);
 
   return (
     <div className={className}>
@@ -42,16 +46,28 @@ const ShipHeader: React.FCX<Props> = ({
       />
 
       <Typography css={{ marginRight: "auto" }} noWrap variant="body2">
-        {t(`${ship.ship_id}`, ship.name)}
+        {t(`ships:${ship.ship_id}`, ship.name)}
       </Typography>
 
-      <InfoButton title="詳細" size="tiny" onClick={DetailModal.show} />
-      <StarButton title="艦娘プリセットに追加" size="tiny" />
-      <UpdateButton title="艦娘を変更" size="tiny" onClick={onReselect} />
-      <ClearButton title="削除" size="tiny" onClick={onRemove} />
+      <EditButton
+        title={t("common:EditMiscStats")}
+        size="tiny"
+        onClick={onEditClick}
+      />
+      <InfoButton
+        title={t("common:Details")}
+        size="tiny"
+        onClick={DetailModal.show}
+      />
+      <UpdateButton
+        title={t("common:Change")}
+        size="tiny"
+        onClick={onReselect}
+      />
+      <ClearButton title={t("common:Remove")} size="tiny" onClick={onRemove} />
 
-      <DetailModal>
-        <ShipDetailScreen ship={ship} />
+      <DetailModal full>
+        <ShipDetails ship={ship} />
       </DetailModal>
     </div>
   );

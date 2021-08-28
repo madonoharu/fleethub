@@ -218,7 +218,7 @@ export const createDeck = (org?: Org): Deck => {
 
   FLEET_KEYS.forEach((key) => {
     const fleet = org.get_fleet(key);
-    if (fleet.len() > 0) {
+    if (fleet.count_ships() > 0) {
       deck[key] = createDeckFleet(fleet);
     }
   });

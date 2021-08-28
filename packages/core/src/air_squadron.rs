@@ -44,6 +44,10 @@ impl AirSquadron {
         self.gears.get_by_gear_key(key).cloned()
     }
 
+    pub fn can_equip(&self, gear: &Gear) -> bool {
+        gear.has_proficiency()
+    }
+
     pub fn get_slot_size(&self, index: usize) -> Result<u8, JsValue> {
         self.slots
             .get(index)

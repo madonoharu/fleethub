@@ -24,8 +24,11 @@ impl ShipArray {
 pub struct Fleet {
     pub(crate) xxh3: u64,
 
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(getter_with_clone)]
     pub id: String,
+
+    #[wasm_bindgen(readonly)]
+    pub len: usize,
 
     #[wasm_bindgen(skip)]
     pub ships: ShipArray,
@@ -34,16 +37,23 @@ pub struct Fleet {
 #[wasm_bindgen]
 impl Fleet {
     #[wasm_bindgen(getter)]
-    pub fn id(&self) -> String {
-        self.id.clone()
-    }
-
-    #[wasm_bindgen(getter)]
     pub fn xxh3(&self) -> String {
         format!("{:X}", self.xxh3)
     }
 
     pub fn len(&self) -> usize {
+        self.ships.values().count()
+    }
+
+    pub fn ship_keys(&self) -> JsValue {
+        let keys = (0..self.len)
+            .map(|i| format!("s{}", i + 1))
+            .collect::<Vec<String>>();
+
+        JsValue::from_serde(&keys).unwrap()
+    }
+
+    pub fn count_ships(&self) -> usize {
         self.ships.values().count()
     }
 

@@ -1,5 +1,6 @@
 import Assignment from "@material-ui/icons/Assignment";
 import copy from "copy-to-clipboard";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useSnackbar } from "../../../hooks";
@@ -9,11 +10,11 @@ const AssignmentButton = withIconButton(Assignment);
 
 type Props = {
   value: string;
-  message?: string;
 };
 
-const CopyTextButton: React.FC<Props> = ({ value, message = "copied" }) => {
+const CopyTextButton: React.FC<Props> = ({ value }) => {
   const Snackbar = useSnackbar();
+  const { t } = useTranslation("common");
 
   const handleClick = () => {
     const result = copy(value);
@@ -23,7 +24,7 @@ const CopyTextButton: React.FC<Props> = ({ value, message = "copied" }) => {
 
   return (
     <>
-      <AssignmentButton title="コピー" onClick={handleClick} />
+      <AssignmentButton title={t("Copy")} onClick={handleClick} />
       <Snackbar />
     </>
   );

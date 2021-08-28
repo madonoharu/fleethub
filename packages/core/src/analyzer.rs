@@ -1,12 +1,19 @@
 mod airstrike;
 mod anti_air;
+mod damage;
 mod night;
 mod shelling;
 
-use crate::{org::Org, types::MasterData};
+use crate::{
+    attack::{WarfareContext, WarfareSideState},
+    org::Org,
+    ship::Ship,
+    types::{AirState, Engagement, Formation, MasterData, Side},
+};
 
 pub use airstrike::*;
 pub use anti_air::*;
+pub use damage::*;
 pub use night::*;
 pub use shelling::*;
 
@@ -49,4 +56,64 @@ impl<'a> Analyzer<'a> {
         let n_analyzer = NightAnalyzer::new(&self.master_data.constants);
         n_analyzer.analyze_org(org, attacker_fleet_state, defender_fleet_state)
     }
+
+    pub fn analyze_warfare(
+        &self,
+        player_org: &Org,
+        player_ship: &Ship,
+        player_formation: Formation,
+        enemy_org: &Org,
+        enemy_ship: &Ship,
+        enemy_formation: Formation,
+        attacker_side: Side,
+        air_state: AirState,
+        engagement: Engagement,
+    ) -> Option<ShellingAttackAnalysis> {
+        let (attacker_context, target_context, attacker, target) = if attacker_side.is_player() {
+            (
+                create_ship_warfare_context(player_org, player_ship, player_formation)?,
+                create_ship_warfare_context(enemy_org, enemy_ship, enemy_formation)?,
+                player_ship,
+                enemy_ship,
+            )
+        } else {
+            (
+                create_ship_warfare_context(enemy_org, enemy_ship, enemy_formation)?,
+                create_ship_warfare_context(player_org, player_ship, player_formation)?,
+                enemy_ship,
+                player_ship,
+            )
+        };
+
+        let context = WarfareContext {
+            attacker: attacker_context,
+            target: target_context,
+            air_state,
+            engagement,
+        };
+
+        Some(analyze_ship_shelling(
+            self.master_data,
+            attacker,
+            target,
+            context,
+        ))
+    }
+}
+
+fn create_ship_warfare_context(
+    org: &Org,
+    ship: &Ship,
+    formation: Formation,
+) -> Option<WarfareSideState> {
+    let (role, ship_index) = org.find_role_index(ship)?;
+
+    Some(WarfareSideState {
+        org_type: org.org_type,
+        fleet_len: org.fleet_len(role),
+        ship_index,
+        role,
+        formation,
+        fleet_los_mod: org.fleet_los_mod(role),
+    })
 }

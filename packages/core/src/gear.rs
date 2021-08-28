@@ -237,6 +237,7 @@ impl Gear {
             | ReconSeaplane
             | SeaplaneBomber
             | SeaplaneFighter
+            | LargeFlyingBoat
             | Autogyro
             | AntiSubPatrolAircraft => "Recon",
             SmallMainGun | MediumMainGun | LargeMainGun => "MainGun",
@@ -461,10 +462,10 @@ mod test {
         };
         let gear1_pfpm = gear1.proficiency_fighter_power_modifier();
 
-        assert_eq!(gear1_pfpm, 50f64.sqrt());
+        assert_eq!(gear1_pfpm, 5f64.sqrt());
         assert_eq!(
             gear1.calc_fighter_power(5),
-            (7. * 5f64.sqrt() + gear1_pfpm) as i32
+            (7.0 * 5f64.sqrt() + gear1_pfpm) as i32
         );
 
         let gear2 = Gear {
@@ -475,10 +476,10 @@ mod test {
             ..Default::default()
         };
         let gear2_pfpm = gear2.proficiency_fighter_power_modifier();
-        assert_eq!(gear2_pfpm, 110f64.sqrt());
+        assert_eq!(gear2_pfpm, 11f64.sqrt());
         assert_eq!(
             gear2.calc_fighter_power(5),
-            ((2f64 + 3. * 1.5) * 5f64.sqrt() + gear2_pfpm) as i32
+            ((2f64 + 3.0 * 1.5) * 5f64.sqrt() + gear2_pfpm) as i32
         )
     }
 

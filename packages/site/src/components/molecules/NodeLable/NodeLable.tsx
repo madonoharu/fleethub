@@ -22,7 +22,7 @@ const NodeLable: React.FCX<NodeLableProps> = ({
   const distance = d && `${t("LbasDistance")}: ${d}`;
 
   return (
-    <Typography className={className} style={style}>
+    <Typography className={className} style={style} variant="subtitle2">
       <span>{name}</span>
       <span>{t(getNodeTypeStyle(type).name)}</span>
       <span>{distance}</span>

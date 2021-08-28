@@ -149,16 +149,18 @@ export type ShipAttr =
 
 export type SpecialEnemyType =
   | "None"
+  | "SoftSkinned"
   | "Pillbox"
   | "IsolatedIsland"
-  | "SoftSkinned"
-  | "HarbourSummerPrincess"
   | "SupplyDepot"
+  | "HarbourSummerPrincess"
   | "PtImp"
   | "BattleshipSummerPrincess"
   | "HeavyCruiserSummerPrincess";
 
 export type DamageState = "Sunk" | "Taiha" | "Chuuha" | "Shouha" | "Normal";
+
+export type MoraleState = "Sparkle" | "Normal" | "Orange" | "Red";
 
 export type SingleFormation =
   | "LineAhead"
@@ -263,6 +265,8 @@ export type ContactRank = "Rank1" | "Rank2" | "Rank3";
 
 export type Side = "Player" | "Enemy";
 
+export type Role = "Main" | "Escort" | "RouteSup" | "BossSup";
+
 export type OrgType =
   | "Single"
   | "CarrierTaskForce"
@@ -346,6 +350,9 @@ export interface ShipState {
   ship_id: number;
   level: number | null;
   current_hp: number | null;
+  morale: number | null;
+  ammo: number | null;
+  fuel: number | null;
   max_hp_mod: number | null;
   firepower_mod: number | null;
   torpedo_mod: number | null;
@@ -370,6 +377,7 @@ export interface ShipState {
 
 export interface FleetState {
   id: string | null;
+  len: number | null;
   s1: ShipState | null;
   s2: ShipState | null;
   s3: ShipState | null;
@@ -545,7 +553,7 @@ export interface MasterData {
 
 export interface DayCutinRateAnalysis {
   observation_term: number | null;
-  rates: Array<[DayCutin, number | null]>;
+  rates: Array<[DayCutin | null, number | null]>;
   total_cutin_rate: number | null;
 }
 
@@ -628,10 +636,100 @@ export interface OrgAirstrikeAnalysis {
   contact_chance: OrgContactChanceAnalysis;
 }
 
+export interface AttackPowerModifiers {
+  a5: number;
+  b5: number;
+  a6: number;
+  b6: number;
+  a7: number;
+  b7: number;
+  a11: number;
+  b11: number;
+  a12: number;
+  b12: number;
+  a13: number;
+  b13: number;
+  a13_2: number;
+  b13_2: number;
+  a14: number;
+  b14: number;
+}
+
+export interface AttackPowerParams {
+  basic: number;
+  cap: number;
+  mods: AttackPowerModifiers;
+  ap_shell_mod: number | null;
+  carrier_power: number | null;
+  proficiency_critical_mod: number | null;
+  armor_penetration: number;
+  remaining_ammo_mod: number;
+}
+
 export interface AttackPower {
   precap: number;
   is_capped: boolean;
   capped: number;
   normal: number;
   critical: number;
+  armor_penetration: number;
+  remaining_ammo_mod: number;
+}
+
+export interface HitRateParams {
+  accuracy_term: number;
+  evasion_term: number;
+  morale_mod: number;
+  critical_rate_multiplier: number;
+  critical_percent_bonus: number;
+  hit_percent_bonus: number;
+}
+
+export interface HitRate {
+  total: number;
+  normal: number;
+  critical: number;
+}
+
+export interface WarfareSideState {
+  org_type: OrgType;
+  role: Role;
+  ship_index: number;
+  fleet_len: number;
+  formation: Formation;
+  fleet_los_mod: number | null;
+}
+
+export interface WarfareContext {
+  attacker: WarfareSideState;
+  target: WarfareSideState;
+  engagement: Engagement;
+  air_state: AirState;
+}
+
+export interface ShellingAttackAnalysisItem {
+  cutin: DayCutin | null;
+  rate: number | null;
+  attack_power_params: AttackPowerParams | null;
+  attack_power: AttackPower | null;
+  hit_rate_params: HitRateParams | null;
+  hit_rate: HitRate | null;
+  damage: DamageAnalysis | null;
+}
+
+export interface ShellingAttackAnalysis {
+  items: Array<ShellingAttackAnalysisItem>;
+  damage_state_map: Record<DamageState, number>;
+  damage_state_map_is_empty: boolean;
+}
+
+export interface DamageAnalysis {
+  miss_damage_min: number;
+  miss_damage_max: number;
+  normal_damage_min: number;
+  normal_damage_max: number;
+  critical_damage_min: number;
+  critical_damage_max: number;
+  damage_map: Record<number, number>;
+  damage_state_map: Record<DamageState, number>;
 }

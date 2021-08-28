@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFile, useModal } from "../../../hooks";
@@ -14,6 +15,7 @@ type Props = {
 const FolderLabel: React.FCX<Props> = ({ className, file }) => {
   const { actions, canDrop } = useFile(file.id);
   const Modal = useModal();
+  const { t } = useTranslation("common");
 
   return (
     <FileLabel
@@ -26,10 +28,14 @@ const FolderLabel: React.FCX<Props> = ({ className, file }) => {
         <>
           <OpenInNewButton
             size="tiny"
-            title="フォルダーページを開く"
+            title={t("OpenFolderPage")}
             onClick={actions.open}
           />
-          <DeleteButton size="tiny" title="削除" onClick={actions.remove} />
+          <DeleteButton
+            size="tiny"
+            title={t("Remove")}
+            onClick={actions.remove}
+          />
           <MoreVertButton size="tiny" title="メニュー" onClick={Modal.show} />
 
           <Modal>

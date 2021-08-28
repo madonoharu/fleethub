@@ -7,7 +7,6 @@ import {
 import { GkcoiTheme } from "../utils";
 
 import { createPlan, importEntities } from "./entities";
-import { ignoreUndoable } from "./undoableOptions";
 
 type AppState = {
   fileId?: string;
@@ -55,9 +54,7 @@ export const openDefaultFile = (): AppThunk => (dispatch, getState) => {
   const root = getState();
   const rootIds = root.present.files.rootIds;
 
-  ignoreUndoable(() => {
-    if (rootIds.length) {
-      dispatch(appSlice.actions.openFile(rootIds[rootIds.length - 1]));
-    }
-  });
+  if (rootIds.length) {
+    dispatch(appSlice.actions.openFile(rootIds[rootIds.length - 1]));
+  }
 };

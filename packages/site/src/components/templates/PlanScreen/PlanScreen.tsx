@@ -1,7 +1,7 @@
 import { Container } from "@material-ui/core";
 import React from "react";
 
-import { useFile, useOrg } from "../../../hooks";
+import { OrgContext, PlanContext, useFile, useOrg } from "../../../hooks";
 import { PlanAnalysisPanel } from "../../organisms";
 import PlanScreenHeader from "./PlanScreenHeader";
 import PlanTabs from "./PlanTabs";
@@ -20,18 +20,22 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
 
   return (
     <Container>
-      <PlanScreenHeader
-        org={org}
-        file={file}
-        actions={fileActions}
-        onNameChange={fileActions.setName}
-        onHqLevelChange={orgActions.setHqLevel}
-        onOrgTypeChange={(org_type) => orgActions.update({ org_type })}
-      />
+      <PlanContext.Provider value={file}>
+        <OrgContext.Provider value={org}>
+          <PlanScreenHeader
+            org={org}
+            file={file}
+            actions={fileActions}
+            onNameChange={fileActions.setName}
+            onHqLevelChange={orgActions.setHqLevel}
+            onOrgTypeChange={(org_type) => orgActions.update({ org_type })}
+          />
 
-      <PlanTabs org={org} file={file} />
+          <PlanTabs org={org} file={file} />
 
-      <PlanAnalysisPanel css={{ marginTop: 8 }} org={org} />
+          <PlanAnalysisPanel css={{ marginTop: 8 }} org={org} />
+        </OrgContext.Provider>
+      </PlanContext.Provider>
     </Container>
   );
 };

@@ -46,6 +46,7 @@ const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
 };
 
 export default styled(ShipStats)`
+  height: 100%;
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: repeat(6, 1fr);

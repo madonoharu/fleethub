@@ -3,7 +3,7 @@ import React from "react";
 
 import ShipBanner from "../ShipBanner";
 
-const ShipList = styled.div`
+const Container = styled.div`
   display: flex;
   gap: 4px;
 `;
@@ -21,18 +21,18 @@ const ShipBannerGroup: React.FCX<ShipBannerGroupProps> = ({
   return (
     <div className={className}>
       {main?.length ? (
-        <ShipList>
+        <Container>
           {Array.from(main).map((id, index) => (
             <ShipBanner key={`main-${index}`} shipId={id} />
           ))}
-        </ShipList>
+        </Container>
       ) : null}
       {escort?.length ? (
-        <ShipList>
+        <Container>
           {Array.from(escort).map((id, index) => (
             <ShipBanner key={`escort-${index}`} shipId={id} />
           ))}
-        </ShipList>
+        </Container>
       ) : null}
     </div>
   );

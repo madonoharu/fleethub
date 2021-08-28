@@ -10,6 +10,8 @@ import {
   createPlan,
   isPlanFile,
   importEntities,
+  createShip,
+  createPlanNode,
 } from "./entities";
 import {
   FileEntity,
@@ -106,38 +108,22 @@ export const filesSlice = createSlice({
   initialState,
 
   reducers: {
-    addPlanNode: {
-      reducer: (
-        state,
-        { payload }: PayloadAction<{ id: string; node: PlanNode }>
-      ) => {
-        const file = state.entities[payload.id];
+    updatePlanNode: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string;
+        index: number;
+        changes: Partial<PlanNode>;
+      }>
+    ) => {
+      const file = state.entities[payload.id];
+      const node = isPlanFile(file) && file.nodes[payload.index];
+      if (!node) return;
 
-        if (file?.type !== "plan") return;
-
-        if (file.nodes) {
-          file.nodes.push(payload.node);
-        } else {
-          file.nodes = [payload.node];
-        }
-      },
-      prepare: (id: string, event: MapEnemySelectEvent) => {
-        const { result, entities } = normalizeOrgParams(event.org);
-
-        const node: PlanNode = {
-          name: event.name,
-          type: event.type,
-          d: event.d,
-          formation: event.formation,
-          org: result,
-        };
-
-        return {
-          payload: { id, node, entities },
-        };
-      },
+      Object.assign(node, payload.changes);
     },
-
     removePlanNode: (
       state,
       { payload }: PayloadAction<{ id: string; index: number }>
@@ -164,7 +150,7 @@ export const filesSlice = createSlice({
       const newFolder: FolderEntity = {
         id: nanoid(),
         type: "folder",
-        name: `フォルダー${count}`,
+        name: `Folder${count}`,
         description: "",
         children: [],
       };
@@ -198,6 +184,17 @@ export const filesSlice = createSlice({
         filesAdapter.removeMany(state, payload.files);
         unlink(state, payload.files);
       })
+      .addCase(createPlanNode, (state, { payload }) => {
+        const file = state.entities[payload.fileId];
+
+        if (file?.type !== "plan") return;
+
+        if (file.nodes) {
+          file.nodes.push(payload.node);
+        } else {
+          file.nodes = [payload.node];
+        }
+      })
       .addMatcher(
         isAnyOf(createPlan, setEntities, importEntities),
         (state, action) => {
@@ -214,17 +211,10 @@ export const filesSlice = createSlice({
               const count = Object.values(state.entities).filter(
                 isPlanFile
               ).length;
-              mainFile.name = `編成${count}`;
+              mainFile.name = `${count}`;
             }
           }
         }
       );
   },
 });
-
-export const isEntitiesAction = isAnyOf(
-  filesSlice.actions.addPlanNode,
-  createPlan,
-  setEntities,
-  importEntities
-);

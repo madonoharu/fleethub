@@ -57,7 +57,11 @@ const toFleetParams = (md: MasterDataInput, shipIds: number[]): FleetParams => {
     (id, i) => [`s${i + 1}`, toShipParams(md, id)] as const
   );
 
-  return Object.fromEntries(entries);
+  const fleet: FleetParams = Object.fromEntries(entries);
+
+  fleet.len = shipIds.length;
+
+  return fleet;
 };
 
 const createOrgParams = (

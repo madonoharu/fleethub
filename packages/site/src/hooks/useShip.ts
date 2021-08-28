@@ -1,31 +1,37 @@
 import { Ship } from "@fleethub/core";
-import { nanoid } from "@reduxjs/toolkit";
 import { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { DefaultRootState, useDispatch, useSelector } from "react-redux";
+import { createStructuredSelector } from "reselect";
 
-import { ShipEntity, ShipPosition, shipsSelectors, shipsSlice } from "../store";
-import { selectShipState, useFhCore } from "./useFhCore";
+import {
+  createShip,
+  denormalizeShip,
+  gearsSelectors,
+  NormalizedDictionaries,
+  NormalizedEntities,
+  ShipEntity,
+  ShipPosition,
+  shipSelectSlice,
+  shipsSelectors,
+  shipsSlice,
+} from "../store";
+import { useFhCore } from "./useFhCore";
 
-export const useShipActions = (id: string) => {
+export const useShipActions = (id?: string) => {
   const dispatch = useDispatch();
 
   return useMemo(() => {
-    const add = (position: ShipPosition, ship: Ship) => {
-      dispatch(
-        shipsSlice.actions.add(
-          { id: nanoid(), ship_id: ship.ship_id },
-          position
-        )
-      );
+    const add = (ship: Ship, position?: ShipPosition) => {
+      dispatch(createShip({ ship, position }));
     };
 
     const update = (changes: Partial<ShipEntity>) => {
       id && dispatch(shipsSlice.actions.update({ id, changes }));
     };
 
-    const reselect = (ship: Ship) => {
+    const reselect = () => {
       if (id) {
-        dispatch(shipsSlice.actions.reselect({ id, ship_id: ship.ship_id }));
+        dispatch(shipSelectSlice.actions.create({ id, reselect: true }));
       }
     };
 
@@ -37,17 +43,28 @@ export const useShipActions = (id: string) => {
   }, [dispatch, id]);
 };
 
-export const useShip = (id: string) => {
+const selectShipAllEntities = createStructuredSelector<
+  DefaultRootState,
+  Required<Pick<NormalizedDictionaries, "ships" | "gears">>
+>({
+  ships: shipsSelectors.selectEntities,
+  gears: gearsSelectors.selectEntities,
+});
+
+export const useShip = (id?: string) => {
   const { core } = useFhCore();
-  const actions = useShipActions(id);
-  const entity = useSelector((root) => shipsSelectors.selectById(root, id));
-  const state = useSelector((root) => selectShipState(root, id));
 
-  const ship = useMemo(() => state && core.create_ship(state), [core, state]);
+  const ship = useSelector(
+    (root) => {
+      if (!id) return;
 
-  return {
-    ship,
-    entity,
-    actions,
-  };
+      const entities = selectShipAllEntities(root);
+      const state = denormalizeShip(entities as NormalizedEntities, id);
+
+      return state && core.create_ship(state);
+    },
+    (a, b) => a?.xxh3 === b?.xxh3
+  );
+
+  return ship;
 };

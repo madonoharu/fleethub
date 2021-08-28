@@ -1,5 +1,7 @@
 import {
   AirSquadronParams,
+  AirState,
+  Engagement,
   FleetParams,
   Formation,
   GearParams,
@@ -55,7 +57,10 @@ export type PlanNode = {
   type: number;
   d?: number;
   org: string;
-  formation: Formation;
+  player_formation?: Formation;
+  enemy_formation?: Formation;
+  air_state?: AirState;
+  engagement?: Engagement;
 };
 
 export type PlanFileEntity = FileEntityBase<
@@ -164,6 +169,23 @@ export const normalizeOrgParams = (
   });
 
   return normalize(cloned, org);
+};
+
+export const normalizeShipParams = (
+  params: ShipParams,
+  id?: string
+): NormalizedSchema<NormalizedEntities, string> => {
+  setIdToShip(params);
+
+  if (id) {
+    params.id = id;
+  }
+
+  return normalize(params, ship);
+};
+
+export const denormalizeShip = (entities: NormalizedEntities, id: string) => {
+  return denormalize(id, ship, entities) as ShipParams | undefined;
 };
 
 export const denormalizeOrg = (

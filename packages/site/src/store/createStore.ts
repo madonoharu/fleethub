@@ -15,6 +15,7 @@ import { mapListSlice } from "./mapListSlice";
 import { navSlice } from "./navSlice";
 import { orgsSlice } from "./orgsSlice";
 import { shipListSlice } from "./shipListSlice";
+import { shipSelectSlice } from "./shipSelectSlice";
 import { shipsSlice } from "./shipsSlice";
 import undoableOptions from "./undoableOptions";
 
@@ -29,10 +30,6 @@ const storage = process.browser ? localforage : noopStorage;
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
   nav: navSlice.reducer,
-  mapList: mapListSlice.reducer,
-  gearList: gearListSlice.reducer,
-  shipList: shipListSlice.reducer,
-  gkcoi: gkcoiSlice.reducer,
 
   gears: gearsSlice.reducer,
   ships: shipsSlice.reducer,
@@ -40,6 +37,13 @@ const combinedReducer = combineReducers({
   fleets: fleetsSlice.reducer,
   orgs: orgsSlice.reducer,
   files: filesSlice.reducer,
+
+  shipSelect: shipSelectSlice.reducer,
+
+  mapList: mapListSlice.reducer,
+  gearList: gearListSlice.reducer,
+  shipList: shipListSlice.reducer,
+  gkcoi: gkcoiSlice.reducer,
 });
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {

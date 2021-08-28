@@ -10,9 +10,18 @@ export const withSign = (num?: number) => {
   return num > 0 ? `+${num}` : num.toString();
 };
 
-export const toPercent = (value: number | null, fractionDigits = 1) => {
-  if (value == null || Number.isNaN(value)) return "?";
-  return (value * 100).toFixed(fractionDigits) + "%";
+export const numstr = (
+  v: number | null | undefined,
+  fractionDigits = 3
+): string => {
+  if (v === null || v === undefined) return "";
+  if (Number.isInteger(v)) return v.toString();
+  return v.toFixed(fractionDigits);
+};
+
+export const toPercent = (v: number | null | undefined, fractionDigits = 1) => {
+  if (v == null || v === undefined || Number.isNaN(v)) return "?%";
+  return (v * 100).toFixed(fractionDigits) + "%";
 };
 
 export const createShallowEqualSelector = createSelectorCreator(

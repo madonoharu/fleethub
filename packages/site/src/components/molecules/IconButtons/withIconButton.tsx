@@ -9,9 +9,10 @@ const tinyStyle = css`
   line-height: 0;
 `;
 
-export interface WithIconButtonProps extends Omit<IconButtonProps, "size"> {
+export interface WithIconButtonProps
+  extends Omit<IconButtonProps, "size" | "title"> {
   label?: string;
-  title?: string;
+  title?: TooltipProps["title"];
   size?: "tiny" | "small" | "medium";
   tooltipProps?: Omit<TooltipProps, "title">;
 }

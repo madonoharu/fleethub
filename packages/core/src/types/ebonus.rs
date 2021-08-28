@@ -29,7 +29,7 @@ pub struct EBonuses {
     #[serde(skip_deserializing)]
     pub speed: u8,
     #[serde(skip_deserializing)]
-    pub airstrike_power: i16,
+    pub carrier_power: i16,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
@@ -168,7 +168,7 @@ impl EBonusFn {
             .unwrap()
     }
 
-    fn airstrike_power(&self, ship: &EBonusFnShipInput, gears: &GearArray) -> i16 {
+    fn carrier_power(&self, ship: &EBonusFnShipInput, gears: &GearArray) -> i16 {
         let min_air_torpedo_bonus = gears
             .values()
             .filter(|gear| gear.has_proficiency())
@@ -205,7 +205,7 @@ impl EBonusFn {
         };
 
         base.effective_los = base.los - sg_radar_los;
-        base.airstrike_power = self.airstrike_power(&ebfn_ship, gears);
+        base.carrier_power = self.carrier_power(&ebfn_ship, gears);
         base.speed = get_speed_bonus(ship, gears);
 
         base

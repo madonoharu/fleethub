@@ -1,3 +1,4 @@
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { FileEntity } from "../../../store";
@@ -20,6 +21,7 @@ const FileForm: React.FCX<FileFormProps> = ({
   onNameChange,
   onDescriptionChange,
 }) => {
+  const { t } = useTranslation("common");
   const icon = file.type === "folder" ? <FolderIcon /> : <PlanIcon />;
 
   return (
@@ -32,8 +34,8 @@ const FileForm: React.FCX<FileFormProps> = ({
           value={file.name}
           onChange={onNameChange}
         />
-        <CopyButton title="コピーする" onClick={onCopy} />
-        <DeleteButton title="削除する" onClick={onRemove} />
+        <CopyButton title={t("Copy")} onClick={onCopy} />
+        <DeleteButton title={t("Remove")} onClick={onRemove} />
       </Flexbox>
 
       <TextField

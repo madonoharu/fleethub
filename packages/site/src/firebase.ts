@@ -1,7 +1,6 @@
-import "firebase/storage";
-
 import { MasterDataInput, OrgParams } from "@fleethub/core";
-import firebase from "firebase/app";
+import { initializeApp } from "firebase/app";
+import { getStorage, ref } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",
@@ -14,9 +13,7 @@ const firebaseConfig = {
   measurementId: "G-9F914T0225",
 };
 
-if (firebase.apps.length === 0) {
-  firebase.initializeApp(firebaseConfig);
-}
+export const firebaseApp = initializeApp(firebaseConfig);
 
 const MASTER_DATA_KEYS = [
   "ships",
@@ -43,7 +40,8 @@ export const fetchMasterData = async (): Promise<MasterDataInput> => {
   return Object.fromEntries(entries) as MasterDataInput;
 };
 
-export const publicStorageRef = firebase.storage().ref("public");
+const storage = getStorage();
+export const publicStorageRef = ref(storage, "public");
 
 export const shorten = async (url: string, domain: "fleethub") => {
   const apiKey = firebaseConfig.apiKey;
@@ -87,5 +85,3 @@ type FhPlanFile = {
 };
 
 type FhFile = FhPlanFile | FhFolder;
-
-export { firebase };

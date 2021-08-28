@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
+import { uniq } from "@fleethub/utils";
 import { Button } from "@material-ui/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useAsync } from "react-async-hook";
 
-import { uniq } from "../../../../../utils/cjs";
 import { Divider, Flexbox } from "../../atoms";
 
 const fetchAll = () =>

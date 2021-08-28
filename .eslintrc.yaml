@@ -48,5 +48,6 @@ ignorePatterns:
   - "**/lib/*"
   - "**/esm/*"
   - "**/cjs/*"
-  - "**/pkg/*"
-  - "**/*.rs"
+  - "**/core/pkg/*"
+  - "**/core/node/*"
+  - "**/*.config.js"

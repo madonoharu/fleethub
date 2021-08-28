@@ -1,8 +1,20 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { FilterFunction, GroupByFunction, UndoableOptions } from "redux-undo";
 
+const groupSet = new Set<string>();
+
 const undoableState: { ignore: boolean; group?: string } = {
   ignore: false,
+};
+
+export const batchGroupBy = {
+  start: (id: string) => {
+    groupSet.add(id);
+    return id;
+  },
+  end: (id: string) => {
+    groupSet.delete(id);
+  },
 };
 
 export const ignoreUndoable = (cb: () => void) => {
@@ -12,12 +24,13 @@ export const ignoreUndoable = (cb: () => void) => {
 };
 
 export const batchUndoable = (cb: () => void, group = nanoid()) => {
-  undoableState.group = group;
+  batchGroupBy.start(group);
   cb();
-  undoableState.group = undefined;
+  batchGroupBy.end(group);
 };
 
-export const batchGroupBy: GroupByFunction = () => undoableState.group;
+const groupBy: GroupByFunction = () =>
+  groupSet.keys().next().value as string | undefined;
 
 const actionTypeFilter: FilterFunction = (action) =>
   typeof action.type === "string" && action.type.startsWith("entities");
@@ -27,7 +40,7 @@ const filter: FilterFunction = (...args) =>
 
 const undoableOptions: UndoableOptions = {
   filter,
-  groupBy: batchGroupBy,
+  groupBy,
   limit: 10,
   neverSkipReducer: true,
 };

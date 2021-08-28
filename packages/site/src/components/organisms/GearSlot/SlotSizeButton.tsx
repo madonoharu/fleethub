@@ -50,7 +50,7 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
             min={0}
             onChange={onChange}
           />
-          <Button onClick={handleInit}>{t("SettingsReset")}</Button>
+          <Button onClick={handleInit}>{t("Reset")}</Button>
         </div>
 
         {max && (

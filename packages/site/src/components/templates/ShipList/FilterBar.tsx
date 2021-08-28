@@ -1,11 +1,11 @@
-import styled from "@emotion/styled";
 import React from "react";
+import { Updater } from "use-immer";
 
-import { ShipListState } from "../../../store";
 import { Checkbox, Flexbox } from "../../atoms";
 import { SelectButtons } from "../../molecules";
+import { ShipFilterState } from "./useShipListState";
 
-const basicFilterMap = {
+const shipFilterGroupMap = {
   Battleship: "戦艦級",
   AircraftCarrier: "航空母艦",
   HeavyCruiser: "重巡級",
@@ -16,25 +16,38 @@ const basicFilterMap = {
   SupportShip: "補助艦艇",
 } as const;
 
+type ShipFilterGroup = keyof typeof shipFilterGroupMap;
+
 type Props = {
-  state: ShipListState;
-  onChange: (state: Partial<ShipListState>) => void;
+  state: ShipFilterState;
+  update: Updater<ShipFilterState>;
 };
 
-const FilterBar: React.FCX<Props> = ({ className, state, onChange }) => {
-  const toggleAll = () => onChange({ all: !state.all });
-  const toggleAbyssal = () => onChange({ abyssal: !state.abyssal });
+const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
+  const toggleAbyssal = () =>
+    update((s) => {
+      s.abyssal = !s.abyssal;
+    });
+
+  const toggleAll = () =>
+    update((s) => {
+      s.all = !s.all;
+    });
+
+  const handleGroupChange = (group: string) => {
+    update((s) => {
+      s.group = group;
+    });
+  };
 
   return (
     <Flexbox className={className}>
       <SelectButtons
         css={{ marginRight: "auto" }}
-        options={Object.keys(basicFilterMap)}
-        value={state.basicFilter}
-        onChange={(basicFilter) => onChange({ basicFilter })}
-        getOptionLabel={(key) =>
-          basicFilterMap[key as keyof typeof basicFilterMap]
-        }
+        options={Object.keys(shipFilterGroupMap) as ShipFilterGroup[]}
+        value={state.group as ShipFilterGroup}
+        onChange={handleGroupChange}
+        getOptionLabel={(key) => shipFilterGroupMap[key]}
       />
       <Checkbox
         label="全表示"
