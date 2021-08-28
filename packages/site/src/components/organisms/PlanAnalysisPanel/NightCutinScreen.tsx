@@ -9,9 +9,9 @@ import React from "react";
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { Checkbox, LabeledValue } from "../../atoms";
+import AttackChip from "../AttackChip";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
-import AttackChip from "./AttackChip";
 
 const StyledLabeledValue = styled(LabeledValue)`
   margin-top: 4px;

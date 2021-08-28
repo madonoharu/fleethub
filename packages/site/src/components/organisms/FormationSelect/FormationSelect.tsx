@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { CombinedFormation, Formation, SingleFormation } from "@fleethub/core";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,7 +22,7 @@ const COMBINED_FLEET_FORMATIONS: CombinedFormation[] = [
 
 type Props = SelectInputProps & {
   value: Formation;
-  onChange: (formation: Formation) => void;
+  onChange?: (formation: Formation) => void;
   combined?: boolean;
 };
 
@@ -34,13 +33,13 @@ const FormationSelect: React.FC<Props> = ({
   ...rest
 }) => {
   const options: readonly Formation[] = combined
-    ? SINGLE_FORMATIONS
-    : COMBINED_FLEET_FORMATIONS;
+    ? COMBINED_FLEET_FORMATIONS
+    : SINGLE_FORMATIONS;
   const { t } = useTranslation("common");
 
   useEffect(() => {
     if (options.includes(value)) return;
-    onChange(combined ? "Cruising4" : "LineAhead");
+    onChange?.(combined ? "Cruising4" : "LineAhead");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combined]);
 

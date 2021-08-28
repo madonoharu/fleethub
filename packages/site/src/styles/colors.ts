@@ -6,7 +6,9 @@ export const { palette } = createTheme({
   palette: {
     mode: "dark",
     primary: blue,
-    secondary: pink,
+    secondary: {
+      main: pink[400],
+    },
     success: green,
     background: {
       paper: "rgba(100, 100, 100, 0.1)",
@@ -45,6 +47,17 @@ export const colors = {
   AirParity: muiColors.orange[300],
   AirDenial: muiColors.pink[300],
   AirIncapability: muiColors.red[300],
+
+  DamageNormal: muiColors.green[500],
+  DamageShouha: muiColors.yellow[500],
+  DamageChuuha: muiColors.orange[500],
+  DamageTaiha: muiColors.red[500],
+  DamageSunk: muiColors.blue[500],
+
+  Sparkle: muiColors.yellow[500],
+  Normal: muiColors.blue[500],
+  Orange: muiColors.orange[500],
+  Red: muiColors.red[500],
 
   scrollbar: grey[700],
   droppable: muiColors.yellow[300],

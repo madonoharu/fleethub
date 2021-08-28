@@ -1,12 +1,12 @@
 use std::ops::Add;
 
 use paste::paste;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 macro_rules! declare_attack_power_modifiers {
     (($( $an:ident ),* $(,)?) , ($( $bn:ident ),* $(,)?)) => {
-        #[derive(Debug, Clone)]
+        #[derive(Debug, Clone, Serialize, Deserialize, TS)]
         pub struct AttackPowerModifiers {
             $( pub $an: f64, pub $bn: f64 ),*
         }
@@ -37,8 +37,6 @@ macro_rules! declare_attack_power_modifiers {
             type Output = Self;
 
             fn add(self, rhs: Self) -> Self::Output {
-                let mut out = Self::default();
-
                 Self {
                     $(
                         $an: self.$an * rhs.$an,
@@ -55,23 +53,27 @@ declare_attack_power_modifiers!(
     (b5, b6, b7, b11, b12, b13, b13_2, b14)
 );
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Serialize, TS)]
 pub struct AttackPowerParams {
     pub basic: f64,
     pub cap: i32,
     pub mods: AttackPowerModifiers,
     pub ap_shell_mod: Option<f64>,
-    pub air_power: Option<f64>,
+    pub carrier_power: Option<f64>,
     pub proficiency_critical_mod: Option<f64>,
+    pub armor_penetration: f64,
+    pub remaining_ammo_mod: f64,
 }
 
-#[derive(Debug, Serialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, TS)]
 pub struct AttackPower {
     pub precap: f64,
     pub is_capped: bool,
     pub capped: f64,
     pub normal: f64,
     pub critical: f64,
+    pub armor_penetration: f64,
+    pub remaining_ammo_mod: f64,
 }
 
 impl AttackPowerParams {
@@ -83,8 +85,8 @@ impl AttackPowerParams {
         precap = precap * mods.a13 + mods.b13;
         precap = precap * mods.a13_2 + mods.b13_2;
 
-        if let Some(v) = self.air_power {
-            precap = ((precap + v) * 1.5).floor() + 25.
+        if let Some(v) = self.carrier_power {
+            precap = ((precap + v) * 1.5).floor() + 25.0
         }
 
         precap * mods.a14 + mods.b14
@@ -92,18 +94,19 @@ impl AttackPowerParams {
 
     fn apply_postcap_modifiers(&self, capped: f64) -> (f64, f64) {
         let mods = &self.mods;
-        let mut normal = capped;
+        let mut postcap = capped;
 
-        normal = (normal * mods.a5 + mods.b5).floor();
-        normal = (normal * mods.a6 + mods.b6).floor();
-        normal = (normal * mods.a7 + mods.b7).floor();
-        normal = normal * mods.a11 + mods.b11;
+        postcap = (postcap * mods.a5 + mods.b5).floor();
+        postcap = (postcap * mods.a6 + mods.b6).floor();
+        postcap = (postcap * mods.a7 + mods.b7).floor();
+        postcap = postcap * mods.a11 + mods.b11;
 
         if let Some(v) = self.ap_shell_mod {
-            normal = (normal * v).floor()
+            postcap = (postcap * v).floor()
         }
 
-        let critical = (normal * 1.5 * self.proficiency_critical_mod.unwrap_or(1.)).floor();
+        let normal = postcap;
+        let critical = (normal * 1.5 * self.proficiency_critical_mod.unwrap_or(1.0)).floor();
 
         return (normal, critical);
     }
@@ -128,6 +131,8 @@ impl AttackPowerParams {
             capped,
             normal,
             critical,
+            armor_penetration: self.armor_penetration,
+            remaining_ammo_mod: self.remaining_ammo_mod,
         }
     }
 }

@@ -1,15 +1,12 @@
-//! Test suite for the Web and headless browsers.
+// #![cfg(target_arch = "wasm32")]
 
-#![cfg(target_arch = "wasm32")]
-
-extern crate wasm_bindgen_test;
-
-use gear::Gear;
 use wasm_bindgen_test::*;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
+use fh_core::{org::Org, types::Role};
+
 #[wasm_bindgen_test]
 fn pass() {
-    assert_eq!(gear.max_hp, 0);
+    let org = Org::default();
 }

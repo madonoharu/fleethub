@@ -1,15 +1,13 @@
 import { Ship } from "@fleethub/core";
 import { groupBy } from "@fleethub/utils";
 import { useTranslation } from "next-i18next";
-import React, { useState } from "react";
+import React from "react";
 
-import { useFhCore } from "../../../hooks";
 import { Divider } from "../../atoms";
 import { SearchInput } from "../../organisms";
 import FilterBar from "./FilterBar";
 import ShipButton from "./ShipButton";
 import ShipSearchResult from "./ShipSearchResult";
-import searchShip from "./searchShip";
 import { useShipListState } from "./useShipListState";
 
 const getCtypeEntries = (ships: Ship[]): Array<[number, Ship[]]> => {
@@ -26,13 +24,10 @@ type Props = {
 };
 
 const ShipList: React.FC<Props> = ({ onSelect }) => {
+  const { state, update, visibleShips, searchValue, setSearchValue } =
+    useShipListState();
+
   const { t } = useTranslation("ctype");
-  const { state, update, masterShips, visibleShips } = useShipListState();
-  const [searchValue, setSearchValue] = useState("");
-
-  const ctypeEntries = getCtypeEntries(visibleShips);
-
-  const searchResult = searchValue && searchShip(masterShips, searchValue);
 
   const renderShip = (ship: Ship) => (
     <ShipButton
@@ -45,15 +40,15 @@ const ShipList: React.FC<Props> = ({ onSelect }) => {
   return (
     <>
       <SearchInput value={searchValue} onChange={setSearchValue} />
-      <FilterBar state={state} onChange={update} />
-      {searchResult ? (
+      <FilterBar state={state} update={update} />
+      {searchValue ? (
         <ShipSearchResult
           searchValue={searchValue}
-          ships={searchResult}
+          ships={visibleShips}
           renderShip={renderShip}
         />
       ) : (
-        ctypeEntries.map(([ctype, ships]) => (
+        getCtypeEntries(visibleShips).map(([ctype, ships]) => (
           <React.Fragment key={`ctype-${ctype}`}>
             <Divider label={t(`${ctype}`)} />
             {ships.map(renderShip)}

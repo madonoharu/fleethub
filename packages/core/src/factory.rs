@@ -48,15 +48,9 @@ impl Factory {
         } = &state;
 
         let create_gear = |g: &Option<GearState>| self.create_gear(g.clone());
-
-        let gears = GearArray::new([
-            create_gear(g1),
-            create_gear(g2),
-            create_gear(g3),
-            create_gear(g4),
-            create_gear(g5),
-            create_gear(gx),
-        ]);
+        let gears = std::array::IntoIter::new([g1, g2, g3, g4, g5, gx])
+            .map(create_gear)
+            .collect::<GearArray>();
 
         let master_ship = self
             .master_data
@@ -79,6 +73,7 @@ impl Factory {
 
         let FleetState {
             id,
+            len,
             s1,
             s2,
             s3,
@@ -88,18 +83,16 @@ impl Factory {
             s7,
         } = state;
 
-        let ships = ShipArray::new([
-            self.create_ship(s1),
-            self.create_ship(s2),
-            self.create_ship(s3),
-            self.create_ship(s4),
-            self.create_ship(s5),
-            self.create_ship(s6),
-            self.create_ship(s7),
-        ]);
+        let len = len.unwrap_or_else(|| if s7.is_some() { 7 } else { 6 });
+
+        let ships = std::array::IntoIter::new([s1, s2, s3, s4, s5, s6, s7])
+            .take(len)
+            .map(|state| self.create_ship(state))
+            .collect::<ShipArray>();
 
         Fleet {
             id: id.unwrap_or_default(),
+            len,
             xxh3,
             ships,
         }
@@ -125,14 +118,9 @@ impl Factory {
 
         let create_gear = |g: Option<GearState>| self.create_gear(g);
 
-        let gears = GearArray::new([
-            create_gear(g1),
-            create_gear(g2),
-            create_gear(g3),
-            create_gear(g4),
-            None,
-            None,
-        ]);
+        let gears = std::array::IntoIter::new([g1, g2, g3, g4])
+            .map(create_gear)
+            .collect::<GearArray>();
 
         let max_slots: SlotSizeArray = (0..4)
             .map(|index| {

@@ -9,11 +9,11 @@ use crate::{
     gear_array::{into_gear_index, into_gear_key, GearArray},
     gear_id, ship_id,
     types::{
-        AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, NightCutin,
-        ShipAttr, ShipClass, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
+        AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
+        NightCutin, ShipAttr, ShipClass, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
     },
     utils::xxh3,
-    JsShipAttr,
+    wasm_abi::JsShipAttr,
 };
 
 #[derive(Debug, Default, Clone)]
@@ -28,30 +28,23 @@ pub struct ShipEquippable {
 pub struct Ship {
     pub(crate) xxh3: u64,
 
-    #[wasm_bindgen(skip)]
-    pub id: String,
-
     #[wasm_bindgen(readonly)]
     pub ship_id: u16,
     #[wasm_bindgen(readonly)]
     pub level: u16,
     #[wasm_bindgen(readonly)]
     pub current_hp: u16,
+    #[wasm_bindgen(readonly)]
+    pub morale: u8,
+    #[wasm_bindgen(readonly)]
+    pub ammo: u16,
+    #[wasm_bindgen(readonly)]
+    pub fuel: u16,
 
     #[wasm_bindgen(skip)]
     pub ship_type: ShipType,
     #[wasm_bindgen(skip)]
     pub ship_class: ShipClass,
-
-    max_hp_mod: Option<i16>,
-    firepower_mod: Option<i16>,
-    torpedo_mod: Option<i16>,
-    armor_mod: Option<i16>,
-    anti_air_mod: Option<i16>,
-    evasion_mod: Option<i16>,
-    asw_mod: Option<i16>,
-    los_mod: Option<i16>,
-    luck_mod: Option<i16>,
 
     #[wasm_bindgen(skip)]
     pub slots: SlotSizeArray,
@@ -60,6 +53,7 @@ pub struct Ship {
     #[wasm_bindgen(skip)]
     pub ebonuses: EBonuses,
 
+    state: ShipState,
     master: MasterShip,
     equippable: ShipEquippable,
 }
@@ -132,8 +126,8 @@ macro_rules! impl_naked_stats {
                         self.master
                             .$key
                             .1
-                            .map(|base| base as i16 + self.[<$key _mod>].unwrap_or_default())
-                            .or(self.[<$key _mod>])
+                            .map(|base| base as i16 + self.state.[<$key _mod>].unwrap_or_default())
+                            .or(self.state.[<$key _mod>])
                             .map(|v| v as u16)
                     }
                 )*
@@ -150,7 +144,7 @@ macro_rules! impl_naked_stats_with_level {
                 $(
                     #[wasm_bindgen(getter)]
                     pub fn [<naked_ $key>](&self) -> Option<u16> {
-                        let stat_mod = self.[<$key _mod>];
+                        let stat_mod = self.state.[<$key _mod>];
 
                         self.master
                             .$key
@@ -158,9 +152,10 @@ macro_rules! impl_naked_stats_with_level {
                             .map(|(at1, at99)| {
                                 let at1 = at1 as f64;
                                 let at99 = at99 as f64;
+                                let level = self.level as f64;
                                 let stat_mod = stat_mod.unwrap_or_default();
 
-                                let value = (((at99 - at1) * self.level as f64) / 99.0 + at1).floor() as i16;
+                                let value = (((at99 - at1) * level) / 99.0 + at1).floor() as i16;
                                 value + stat_mod
                             })
                             .or(stat_mod)
@@ -210,6 +205,16 @@ fn nisshin_max_slot_size(master: &MasterShip, gears: &GearArray, index: usize) -
     }
 }
 
+impl PartialEq for Ship {
+    fn eq(&self, other: &Self) -> bool {
+        self.state.id.is_some() && self.state.id == other.state.id
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        !self.eq(other)
+    }
+}
+
 impl Ship {
     pub fn new(
         state: ShipState,
@@ -240,10 +245,12 @@ impl Ship {
         let mut ship = Ship {
             xxh3,
 
-            id: state.id.unwrap_or_default(),
             ship_id: state.ship_id,
             level: state.level.unwrap_or(master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
+            morale: state.morale.unwrap_or(49),
+            ammo: state.ammo.unwrap_or(master.ammo.unwrap_or_default()),
+            fuel: state.fuel.unwrap_or(master.fuel.unwrap_or_default()),
             ship_type: FromPrimitive::from_u8(master.stype).unwrap_or_default(),
             ship_class,
 
@@ -253,16 +260,7 @@ impl Ship {
             ebonuses,
             equippable,
             master: master.clone(),
-
-            max_hp_mod: state.max_hp_mod,
-            firepower_mod: state.firepower_mod,
-            torpedo_mod: state.torpedo_mod,
-            armor_mod: state.armor_mod,
-            anti_air_mod: state.anti_air_mod,
-            evasion_mod: state.evasion_mod,
-            asw_mod: state.asw_mod,
-            los_mod: state.los_mod,
-            luck_mod: state.luck_mod,
+            state,
         };
 
         if ship.current_hp == 0 {
@@ -299,7 +297,11 @@ impl Ship {
     }
 
     pub fn damage_state(&self) -> DamageState {
-        DamageState::from_hp(self.max_hp().unwrap_or_default(), self.current_hp)
+        DamageState::new(self.max_hp().unwrap_or_default(), self.current_hp)
+    }
+
+    pub fn morale_state(&self) -> MoraleState {
+        MoraleState::new(self.morale)
     }
 
     pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (usize, &Gear, Option<u8>)> {
@@ -332,6 +334,20 @@ impl Ship {
         self.count_non_zero_slot_gear_by(|g| g.gear_id == id)
     }
 
+    pub fn is_heavily_armored_ship(&self) -> bool {
+        matches!(
+            self.ship_type,
+            ShipType::CA
+                | ShipType::CAV
+                | ShipType::FBB
+                | ShipType::BB
+                | ShipType::BBV
+                | ShipType::CV
+                | ShipType::XBB
+                | ShipType::CVB
+        )
+    }
+
     pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
         let mut iter = self.gears.values();
         let has_main = iter.any(|g| g.attrs.contains(GearAttr::MainGun));
@@ -357,23 +373,23 @@ impl Ship {
             return true;
         }
 
-        if self.ship_id != ship_id!("速吸改") && self.has_attr(ShipAttr::Installation) {
-            return false;
+        if self.ship_id == ship_id!("速吸改") || self.is_installation() {
+            self.gears.has_by(|g| {
+                matches!(
+                    g.gear_type,
+                    GearType::CbDiveBomber
+                        | GearType::CbTorpedoBomber
+                        | GearType::JetFighterBomber
+                        | GearType::JetTorpedoBomber
+                )
+            })
+        } else {
+            false
         }
-
-        self.gears.has_by(|g| {
-            matches!(
-                g.gear_type,
-                GearType::CbDiveBomber
-                    | GearType::CbTorpedoBomber
-                    | GearType::JetFighterBomber
-                    | GearType::JetTorpedoBomber
-            )
-        })
     }
 
-    pub fn shelling_air_power(&self, is_anti_land: bool) -> i16 {
-        let (torpedo, bombing) = if is_anti_land {
+    pub fn carrier_power(&self, anti_installation: bool) -> i16 {
+        let (torpedo, bombing) = if anti_installation {
             let torpedo = 0;
             let bombing = self.gears.sum_by(|gear| {
                 if gear.has_attr(GearAttr::AntiInstallationCbBomber)
@@ -422,17 +438,18 @@ impl Ship {
 
         let hit_percent_bonus = average_exp_mod_a + average_exp_mod_b;
 
-        let critical_power_mod = planes
-            .iter()
-            .map(|(index, gear)| {
-                let m = gear.proficiency_critical_power_mod();
-                if *index == 0 {
-                    m / 100.0
-                } else {
-                    m / 200.0
-                }
-            })
-            .sum::<f64>();
+        let critical_power_mod = 1.0
+            + planes
+                .iter()
+                .map(|(index, gear)| {
+                    let m = gear.proficiency_critical_power_mod();
+                    if *index == 0 {
+                        m / 100.0
+                    } else {
+                        m / 200.0
+                    }
+                })
+                .sum::<f64>();
 
         let critical_percent_bonus = planes
             .iter()
@@ -776,12 +793,20 @@ impl Ship {
 impl Ship {
     #[wasm_bindgen(getter)]
     pub fn id(&self) -> String {
-        self.id.clone()
+        self.state.id.clone().unwrap_or_default()
+    }
+
+    pub fn eq_id(&self, id: &str) -> bool {
+        matches!(self.state.id.as_ref(), Some(state_id) if state_id == id)
     }
 
     #[wasm_bindgen(getter)]
     pub fn xxh3(&self) -> String {
         format!("{:X}", self.xxh3)
+    }
+
+    pub fn state(&self) -> JsValue {
+        JsValue::from_serde(&self.state).unwrap()
     }
 
     #[wasm_bindgen(getter)]
@@ -832,6 +857,20 @@ impl Ship {
     #[wasm_bindgen(getter)]
     pub fn useful(&self) -> bool {
         self.master.useful.unwrap_or_default()
+    }
+
+    #[wasm_bindgen(js_name = damage_state)]
+    pub fn js_damage_state(&self) -> String {
+        self.damage_state().to_string()
+    }
+
+    #[wasm_bindgen(js_name = morale_state)]
+    pub fn js_morale_state(&self) -> String {
+        self.morale_state().to_string()
+    }
+
+    pub fn filter_group(&self) -> String {
+        self.ship_type.filter_group().to_string()
     }
 
     #[wasm_bindgen(js_name = has_attr)]
@@ -904,15 +943,15 @@ impl Ship {
 
     pub fn get_stat_mod(&self, key: &str) -> Option<i16> {
         match key {
-            "max_hp" => self.max_hp_mod,
-            "firepower" => self.firepower_mod,
-            "torpedo" => self.torpedo_mod,
-            "armor" => self.armor_mod,
-            "anti_air" => self.anti_air_mod,
-            "evasion" => self.evasion_mod,
-            "asw" => self.asw_mod,
-            "los" => self.los_mod,
-            "luck" => self.luck_mod,
+            "max_hp" => self.state.max_hp_mod,
+            "firepower" => self.state.firepower_mod,
+            "torpedo" => self.state.torpedo_mod,
+            "armor" => self.state.armor_mod,
+            "anti_air" => self.state.anti_air_mod,
+            "evasion" => self.state.evasion_mod,
+            "asw" => self.state.asw_mod,
+            "los" => self.state.los_mod,
+            "luck" => self.state.luck_mod,
             _ => None,
         }
     }
@@ -983,21 +1022,35 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn max_hp(&self) -> Option<u16> {
-        self.master
-            .max_hp
-            .0
-            .map(|left| {
-                let base = if self.level >= 100 {
-                    left + get_marriage_bonus(left)
-                } else {
-                    left
-                };
+        if let Some(left) = self.master.max_hp.0 {
+            let base = if self.level >= 100 {
+                left + get_marriage_bonus(left)
+            } else {
+                left
+            };
 
-                let value = base as i16 + self.max_hp_mod.unwrap_or_default();
-                value
-            })
-            .or(self.max_hp_mod)
-            .map(|v| v as u16)
+            let value = base as i16 + self.state.max_hp_mod.unwrap_or_default();
+            let capped = self
+                .master
+                .max_hp
+                .1
+                .map_or(value, |right| value.min(right as i16));
+
+            Some(capped)
+        } else {
+            self.state.max_hp_mod
+        }
+        .map(|v| v as u16)
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn max_ammo(&self) -> u16 {
+        self.master.ammo.unwrap_or_default()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn max_fuel(&self) -> u16 {
+        self.master.fuel.unwrap_or_default()
     }
 
     #[wasm_bindgen(getter)]
@@ -1015,9 +1068,9 @@ impl Ship {
         let left = self.master.luck.0;
 
         if let Some(base) = left {
-            Some(base as i16 + self.luck_mod.unwrap_or_default())
+            Some(base as i16 + self.state.luck_mod.unwrap_or_default())
         } else {
-            self.luck_mod
+            self.state.luck_mod
         }
         .map(|v| v as u16)
     }
@@ -1046,8 +1099,8 @@ impl Ship {
         accuracy + self.ebonuses.accuracy
     }
 
-    pub fn is_land(&self) -> bool {
-        self.speed() == 0
+    pub fn is_installation(&self) -> bool {
+        self.has_attr(ShipAttr::Installation)
     }
 
     pub fn get_slot_size(&self, index: usize) -> Option<u8> {
@@ -1059,6 +1112,38 @@ impl Ship {
             nisshin_max_slot_size(&self.master, &self.gears, index)
         } else {
             self.master.get_max_slot_size(index)
+        }
+    }
+
+    pub fn remaining_ammo_mod(&self) -> f64 {
+        let max = self.max_ammo();
+
+        if max == 0 {
+            return 1.0;
+        }
+
+        let rate = self.ammo as f64 / max as f64;
+
+        if rate >= 0.5 {
+            1.0
+        } else {
+            rate * 2.0
+        }
+    }
+
+    pub fn remaining_fuel_mod(&self) -> f64 {
+        let max = self.max_ammo();
+
+        if max == 0 {
+            return 0.0;
+        }
+
+        let rate = self.ammo as f64 / max as f64;
+
+        if rate < 0.75 {
+            75.0 - (rate * 100.0).floor()
+        } else {
+            0.0
         }
     }
 
@@ -1151,7 +1236,7 @@ impl Ship {
         Some(evasion + (2. * luck).sqrt())
     }
 
-    pub fn evasion_term(&self, formation_mod: f64, postcap_mod: Option<f64>) -> Option<f64> {
+    pub fn evasion_term(&self, formation_mod: f64, postcap_mod: f64) -> Option<f64> {
         let base = (self.basic_evasion_term()? * formation_mod).floor();
 
         let postcap = if base >= 65.0 {
@@ -1172,7 +1257,14 @@ impl Ship {
 
         let ibonus = (1.5 * total_stars.sqrt()).floor();
 
-        Some((postcap + postcap_mod.unwrap_or_default()).floor() + ibonus)
+        Some((postcap + postcap_mod).floor() + ibonus)
+    }
+
+    pub fn basic_defense_power(&self, armor_penetration: f64) -> Option<f64> {
+        let value = self.armor()? as f64 + self.gears.sum_by(|gear| gear.ibonuses.defense_power)
+            - armor_penetration;
+
+        Some(value.max(1.0))
     }
 
     pub fn get_possible_anti_air_cutin_ids(&self) -> Vec<u8> {
@@ -1214,7 +1306,7 @@ impl Ship {
             if gfcs_5inch_count >= 1 {
                 vec.push(39)
             }
-            if gears.has(gear_id!["GFCS Mk.37"]) {
+            if gears.has(gear_id!("GFCS Mk.37")) {
                 vec.push(40)
             }
             vec.push(41)
@@ -1539,7 +1631,10 @@ mod test {
                 $(
                     paste! {
                         let mut ship = Ship {
-                            [<$key _mod>]: Some(3),
+                            state: ShipState {
+                                [<$key _mod>]: Some(3),
+                                ..Default::default()
+                            },
                             master: MasterShip {
                                 $key: StatInterval(Some(0), Some(10)),
                                 ..Default::default()
@@ -1547,7 +1642,7 @@ mod test {
                             ..Default::default()
                         };
 
-                        ship.gears.put(0, Gear {
+                        ship.gears.push(Gear {
                             $key: 5,
                             ..Default::default()
                         });
@@ -1565,7 +1660,11 @@ mod test {
                     paste! {
                         let mut ship = Ship {
                             level: 15,
-                            [<$key _mod>]: Some(3),
+                            state: ShipState {
+                                [<$key _mod>]: Some(3),
+                                ..Default::default()
+                            },
+
                             master: MasterShip {
                                 $key: StatInterval(Some(1), Some(100)),
                                 ..Default::default()
@@ -1573,13 +1672,13 @@ mod test {
                             ..Default::default()
                         };
 
-                        ship.gears.put(0, Gear {
+                        ship.gears.push(Gear {
                             $key: 5,
                             ..Default::default()
                         });
 
-                        assert_eq!(ship.[<naked_ $key>](), Some(16));
-                        assert_eq!(ship.$key(), Some(21));
+                        assert_eq!(ship.[<naked_ $key>](), Some(15 + 1 + 3));
+                        assert_eq!(ship.$key(), Some(15 + 1 + 3 + 5));
                     }
                 )*
             };

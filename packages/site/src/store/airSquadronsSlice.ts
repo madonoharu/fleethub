@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { airSquadronsAdapter } from "./adapters";
-import { sweep } from "./entities";
-import { isEntitiesAction } from "./filesSlice";
+import { isEntitiesAction, sweep } from "./entities";
 import { gearsSlice } from "./gearsSlice";
 
 export const airSquadronsSlice = createSlice({

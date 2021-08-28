@@ -6,7 +6,7 @@ import React from "react";
 
 type Props = {
   night?: boolean;
-  attack: string;
+  attack?: string | null | undefined;
 };
 
 const AttackChip: React.FCX<Props> = ({ className, attack }) => {
@@ -16,19 +16,20 @@ const AttackChip: React.FCX<Props> = ({ className, attack }) => {
       className={className}
       variant="outlined"
       size="small"
-      label={t(attack)}
+      label={t(attack || "None")}
     />
   );
 };
 
-export default styled(AttackChip)(({ theme, night }) => {
+export default styled(AttackChip)(({ theme, attack, night }) => {
   const type = night ? "night" : "shelling";
+  const color = attack ? theme.colors[type] : theme.palette.text.secondary;
   const minWidth = night ? 72 : 48;
 
   return css`
     border-radius: 4px;
     min-width: ${minWidth}px;
-    border-color: ${theme.colors[type]};
-    color: ${theme.colors[type]};
+    border-color: ${color};
+    color: ${color};
   `;
 });

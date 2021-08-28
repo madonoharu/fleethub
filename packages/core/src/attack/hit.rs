@@ -1,4 +1,14 @@
-#[derive(Debug)]
+use serde::Serialize;
+use ts_rs::TS;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum HitType {
+    Miss,
+    Normal,
+    Critical,
+}
+
+#[derive(Debug, Default, Serialize, TS)]
 pub struct HitRateParams {
     pub accuracy_term: f64,
     pub evasion_term: f64,
@@ -8,6 +18,7 @@ pub struct HitRateParams {
     pub hit_percent_bonus: f64,
 }
 
+#[derive(Debug, Default, Serialize, TS)]
 pub struct HitRate {
     pub total: f64,
     pub normal: f64,
@@ -17,7 +28,7 @@ pub struct HitRate {
 impl HitRateParams {
     fn calc_basis(&self) -> f64 {
         let value = (self.accuracy_term - self.evasion_term) * self.morale_mod;
-        value.clamp(10., 96.)
+        value.clamp(10.0, 96.0)
     }
 
     pub fn calc(&self) -> HitRate {
@@ -31,8 +42,8 @@ impl HitRateParams {
             .floor()
             .max(critical_percent);
 
-        let total = (hit_percent / 100.).min(1.);
-        let critical = (critical_percent / 100.).min(1.);
+        let total = (hit_percent / 100.0).min(1.0);
+        let critical = (critical_percent / 100.0).min(1.0);
         let normal = total - critical;
 
         HitRate {
@@ -64,16 +75,16 @@ mod test {
             ..min
         };
 
-        assert_eq!(min.calc_basis(), 10.);
-        assert_eq!(max.calc_basis(), 96.);
-        assert_eq!(max.calc().total, 1.);
+        assert_eq!(min.calc_basis(), 10.0);
+        assert_eq!(max.calc_basis(), 96.0);
+        assert_eq!(max.calc().total, 1.0);
 
         let hit_rate = HitRateParams {
             accuracy_term: 60.0,
             evasion_term: 10.0,
             morale_mod: 1.2,
             critical_rate_multiplier: 1.3,
-            critical_percent_bonus: 0.12,
+            critical_percent_bonus: 12.0,
             hit_percent_bonus: 9.0,
         }
         .calc();

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFile, useModal } from "../../../hooks";
@@ -13,6 +14,7 @@ type Props = {
 
 const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
   const { actions, canDrop } = useFile(file.id);
+  const { t } = useTranslation("common");
   const MenuModal = useModal();
 
   return (
@@ -26,8 +28,12 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
         onDrop={actions.drop}
         action={
           <>
-            <CopyButton size="tiny" title="コピー" onClick={actions.copy} />
-            <DeleteButton size="tiny" title="削除" onClick={actions.remove} />
+            <CopyButton size="tiny" title={t("Copy")} onClick={actions.copy} />
+            <DeleteButton
+              size="tiny"
+              title={t("Remove")}
+              onClick={actions.remove}
+            />
             <MoreVertButton
               size="tiny"
               title="メニュー"

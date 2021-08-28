@@ -9,6 +9,7 @@ import { NumberInput, Select } from "../../molecules";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart";
+import AntiAirCutinChip from "./AntiAirCutinChip";
 
 type CutinChanceCellProps = {
   rates: [number, number][];

@@ -3,7 +3,7 @@ import "dotenv/config";
 import { nonNullable } from "@fleethub/utils/src";
 import Signal from "signale";
 
-import getGoogleSpreadsheet from "./data/getGoogleSpreadsheet";
+import { getGoogleSpreadsheet } from "./data/google";
 import * as storage from "./data/storage";
 import { updateRows } from "./data/utils";
 import {

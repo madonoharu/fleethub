@@ -3,7 +3,12 @@ import { Button, Paper } from "@material-ui/core";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../../hooks";
-import { filesSlice, PlanFileEntity, PlanNode } from "../../../store";
+import {
+  createPlanNode,
+  filesSlice,
+  PlanFileEntity,
+  PlanNode,
+} from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton } from "../../molecules";
 import MapList, { MapEnemySelectEvent } from "../../templates/MapList";
@@ -62,7 +67,7 @@ const PlanNodeList: React.FCX<PlanNodeListProps> = ({ className, file }) => {
   const actions = usePlanNodesActions(file);
 
   const handleMapEnemySelect = (event: MapEnemySelectEvent) => {
-    dispatch(filesSlice.actions.addPlanNode(file.id, event));
+    dispatch(createPlanNode(file.id, event));
 
     if (!multiple) {
       Modal.hide();
@@ -70,7 +75,7 @@ const PlanNodeList: React.FCX<PlanNodeListProps> = ({ className, file }) => {
   };
 
   return (
-    <Paper className={className}>
+    <div className={className}>
       <Flexbox gap={1}>
         <Button
           variant="contained"
@@ -103,14 +108,16 @@ const PlanNodeList: React.FCX<PlanNodeListProps> = ({ className, file }) => {
       {file.nodes?.map((node, index) => (
         <PlanNodeListItem
           key={`${node.org}-${index}`}
+          css={{ marginTop: 8 }}
           index={index}
+          plan={file}
           node={node}
           onUpdate={actions.updateNode}
           onRemove={() => actions.removeOne(index)}
           onSwap={actions.swap}
         />
       ))}
-    </Paper>
+    </div>
   );
 };
 

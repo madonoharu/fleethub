@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActionCreators } from "redux-undo";
 
 import { useModal } from "../../../hooks";
+import { shipSelectSlice } from "../../../store";
 import { ImportButton, withIconButton } from "../../molecules";
 import { ImportMenu } from "../../organisms";
 import GearList from "../GearList";
@@ -48,12 +49,17 @@ const AppBar: React.FCX<Props> = ({
 }) => {
   const { t } = useTranslation();
 
+  const dispatch = useDispatch();
+
   const { canUndo, canRedo, undo, redo } = useUndo();
 
   const ImprotMenuModal = useModal();
-  const ShipListModal = useModal();
   const GearListModal = useModal();
   const MapListModal = useModal();
+
+  const handleShipSelectOpen = () => {
+    dispatch(shipSelectSlice.actions.show());
+  };
 
   const handleExplorerOpen = () => {
     onExplorerOpen();
@@ -98,9 +104,9 @@ const AppBar: React.FCX<Props> = ({
           </Button>
         </Tooltip>
 
-        <Button onClick={ShipListModal.show}>{t("艦娘")}</Button>
-        <Button onClick={GearListModal.show}>{t("装備")}</Button>
-        <Button onClick={MapListModal.show}>{t("海域")}</Button>
+        <Button onClick={handleShipSelectOpen}>{t("Ships")}</Button>
+        <Button onClick={GearListModal.show}>{t("Equipment")}</Button>
+        <Button onClick={MapListModal.show}>{t("Maps")}</Button>
         <LanguageSelect />
 
         <ImprotMenuModal>

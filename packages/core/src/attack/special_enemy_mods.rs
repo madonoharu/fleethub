@@ -124,16 +124,26 @@ pub fn special_enemy_modifiers(
             apply_mod!(a7, aa_gun_count, [1.2, 1.2 * 1.2]);
             apply_mod!(a7, lookouts_count, [1.1]);
             apply_mod!(a7, armored_boat_group_count, [1.2, 1.2 * 1.1]);
+
+            return mods;
         }
         SpecialEnemyType::BattleshipSummerPrincess => {
             apply_mod!(a6, has_seaplane, 1.1);
             apply_mod!(a6, has_ap_shell, 1.2);
+
+            return mods;
         }
         SpecialEnemyType::HeavyCruiserSummerPrincess => {
             apply_mod!(a6, has_seaplane, 1.15);
             apply_mod!(a6, has_ap_shell, 1.1);
+
+            return mods;
         }
         _ => (),
+    }
+
+    if !special_enemy_type.is_installation() {
+        return mods;
     }
 
     let wg42_count = gears.count(gear_id!("WG42 (Wurfgerät 42)"));

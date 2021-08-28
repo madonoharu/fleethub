@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFhCore } from "../../../hooks";
 import { Select } from "../../molecules";
 import { GearNameplate } from "../../organisms";
 
@@ -12,13 +12,13 @@ type Props = {
 };
 
 const GearTypeSelect: React.FCX<Props> = (props) => {
-  const { core } = useFhCore();
+  const { t } = useTranslation("gear_types");
 
   const getTypeLabel = (typeId: number) => {
     if (!typeId) return "カテゴリー";
-    const name = core.find_gear_gear_type_name(typeId);
+    const name = t(typeId);
 
-    return <GearNameplate size="small" iconId={1} name={name} />;
+    return <GearNameplate iconId={1} name={name} />;
   };
 
   return <Select getOptionLabel={getTypeLabel} {...props} />;

@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
 import { EquipmentBonuses } from "equipment-bonus";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -23,13 +24,13 @@ const GearTypeContainer: React.FC<Props> = ({
   onSelect,
   getNextEbonuses,
 }) => {
-  const { core } = useFhCore();
+  const { t } = useTranslation("gear_types");
 
   return (
     <>
       {entries.map(([typeId, gears]) => (
         <div key={typeId}>
-          <Divider label={core.find_gear_gear_type_name(typeId)} />
+          <Divider label={t(typeId)} />
           <Grid>
             {gears.map((gear) => (
               <GearButton

@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Gear } from "@fleethub/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual } from "react-redux";
 
@@ -57,6 +58,8 @@ const GearLabel: React.FCX<GearLabelProps> = ({
   onRemove,
   onReselect,
 }) => {
+  const { t } = useTranslation("common");
+
   const hanldeExpChange = (exp: number) => {
     onUpdate?.({ exp });
   };
@@ -79,13 +82,13 @@ const GearLabel: React.FCX<GearLabelProps> = ({
 
       <UpdateButton
         css={styles.action}
-        title="変更"
+        title={t("Change")}
         size={size == "small" ? "tiny" : "small"}
         onClick={onReselect}
       />
       <ClearButton
         css={styles.action}
-        title="削除"
+        title={t("Remove")}
         size={size == "small" ? "tiny" : "small"}
         onClick={onRemove}
       />

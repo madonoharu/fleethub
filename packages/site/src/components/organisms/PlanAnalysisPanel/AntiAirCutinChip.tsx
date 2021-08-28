@@ -1,32 +1,32 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { AntiAirCutin } from "@fleethub/core";
+import { AntiAirCutinDef } from "@fleethub/core";
 import { Chip, Tooltip, Typography } from "@material-ui/core";
 import React from "react";
 
 import { LabeledValue } from "../../atoms";
 
 type Props = {
-  antiAirCutin: AntiAirCutin;
+  antiAirCutin: AntiAirCutinDef;
 };
 
 const AntiAirCutinChip: React.FCX<Props> = ({ className, antiAirCutin }) => (
   <Tooltip
     title={
       <>
-        <Typography variant="subtitle2">{antiAirCutin.name}</Typography>
-        <LabeledValue label="固定" value={antiAirCutin.minimumBonus} />
+        <Typography variant="subtitle2">{antiAirCutin.id}</Typography>
+        <LabeledValue label="固定" value={antiAirCutin.minimum_bonus} />
+        <LabeledValue label="変動" value={antiAirCutin.multiplier} />
         <LabeledValue
-          label="変動"
-          value={antiAirCutin.fixedAirDefenseModifier}
+          label="発動定数(推測)"
+          value={antiAirCutin.chance_numer}
         />
-        <LabeledValue label="発動定数(推測)" value={antiAirCutin.baseRate} />
       </>
     }
   >
     <Chip
       className={className}
-      label={antiAirCutin.name}
+      label={antiAirCutin.id}
       size="small"
       variant="outlined"
     />
@@ -37,7 +37,7 @@ export default styled(AntiAirCutinChip)(
   ({ theme }) => css`
     width: 48px;
     border-radius: 4px;
-    color: ${theme.colors.antiAir};
-    border-color: ${theme.colors.antiAir};
+    color: ${theme.colors.anti_air};
+    border-color: ${theme.colors.anti_air};
   `
 );

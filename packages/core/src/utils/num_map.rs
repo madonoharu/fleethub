@@ -1,12 +1,15 @@
 use std::{
+    any::TypeId,
     collections::{hash_map, HashMap},
     hash::Hash,
-    iter::FromIterator,
+    iter::{FromIterator, Sum},
     ops::{Add, AddAssign, Mul},
 };
 
 use counter::Counter;
 use num_traits::Zero;
+use serde::Serialize;
+use ts_rs::TS;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct NumMap<K, V>
@@ -47,6 +50,10 @@ where
         self.map.values()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.map.is_empty()
+    }
+
     pub fn into_vec(self) -> Vec<(K, V)> {
         self.into_iter().collect()
     }
@@ -68,10 +75,23 @@ where
 impl<K, V> FromIterator<(K, V)> for NumMap<K, V>
 where
     K: Hash + Eq,
-    V: Zero,
+    V: AddAssign + Zero,
 {
     fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
-        iter.into_iter().collect::<HashMap<K, V>>().into()
+        let mut result = Self::new();
+        for kv in iter {
+            result += kv;
+        }
+        result
+    }
+}
+
+impl<K, V> Into<HashMap<K, V>> for NumMap<K, V>
+where
+    K: Hash + Eq,
+{
+    fn into(self) -> HashMap<K, V> {
+        self.map
     }
 }
 
@@ -90,7 +110,7 @@ where
 impl<K, V, const N: usize> From<[(K, V); N]> for NumMap<K, V>
 where
     K: Hash + Eq + Clone,
-    V: Zero + Clone,
+    V: Zero + AddAssign + Clone,
 {
     fn from(array: [(K, V); N]) -> Self {
         array.iter().cloned().collect()
@@ -152,7 +172,56 @@ where
     fn mul(self, rhs: V) -> Self::Output {
         self.into_iter()
             .map(|(k, v)| (k, v * rhs.clone()))
-            .collect::<NumMap<K, V>>()
+            .collect::<HashMap<K, V>>()
+            .into()
+    }
+}
+
+impl<K, V> Sum for NumMap<K, V>
+where
+    K: Hash + Eq,
+    V: Zero + AddAssign,
+{
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Self>,
+    {
+        iter.fold(Self::new(), |a, b| a + b)
+    }
+}
+
+impl<K, V> Serialize for NumMap<K, V>
+where
+    K: Hash + Eq + Serialize,
+    V: Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.map.serialize(serializer)
+    }
+}
+
+impl<K, V> TS for NumMap<K, V>
+where
+    K: Hash + Eq + TS,
+    V: TS,
+{
+    fn name() -> String {
+        HashMap::<K, V>::name()
+    }
+
+    fn inline(indent: usize) -> String {
+        HashMap::<K, V>::inline(indent)
+    }
+
+    fn dependencies() -> Vec<(TypeId, String)> {
+        HashMap::<K, V>::dependencies()
+    }
+
+    fn transparent() -> bool {
+        true
     }
 }
 

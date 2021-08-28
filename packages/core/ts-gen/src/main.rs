@@ -20,7 +20,7 @@ fn main() {
     let path = std::path::Path::new(PATH);
     let fmt_config = ts_rs::export::FmtCfg::new().deno().build();
 
-    use core::*;
+    use fh_core::*;
 
     let buffer = gen_types!(
         types::ShipType,
@@ -28,6 +28,7 @@ fn main() {
         types::ShipAttr,
         types::SpecialEnemyType,
         types::DamageState,
+        types::MoraleState,
         types::SingleFormation,
         types::CombinedFormation,
         types::AirState,
@@ -43,6 +44,7 @@ fn main() {
         types::AntiAirCutinDef,
         types::ContactRank,
         types::Side,
+        types::Role,
         types::OrgType,
         types::GearType,
         types::AirSquadronMode,
@@ -80,7 +82,16 @@ fn main() {
         analyzer::AirstrikeContactChance,
         analyzer::OrgContactChanceAnalysis,
         analyzer::OrgAirstrikeAnalysis,
+        attack::AttackPowerModifiers,
+        attack::AttackPowerParams,
         attack::AttackPower,
+        attack::HitRateParams,
+        attack::HitRate,
+        attack::WarfareSideState,
+        attack::WarfareContext,
+        analyzer::ShellingAttackAnalysisItem,
+        analyzer::ShellingAttackAnalysis,
+        analyzer::DamageAnalysis,
     );
 
     let buffer =

@@ -1,8 +1,8 @@
 import { Ship } from "@fleethub/core";
+import { GEAR_KEYS } from "@fleethub/utils";
 import { Tooltip, TooltipProps } from "@material-ui/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { GEAR_KEYS } from "../../../../../utils/cjs";
 import GearNameplate from "../GearNameplate";
 
 const SHIP_STAT_KEYS = [

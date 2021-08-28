@@ -10,23 +10,8 @@ use arrayvec::ArrayVec;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-#[derive(Debug, Clone)]
-pub struct OptionalArray<T: Debug + Default + Clone, const N: usize>(pub [Option<T>; N]);
-
-macro_rules! impl_default {
-  ($($n: expr),*) => {
-      $(
-          impl<T: Debug + Default + Clone> Default for OptionalArray<T, $n> {
-              fn default() -> Self {
-                  let array: [Option<T>; $n] = Default::default();
-                  Self(array)
-              }
-          }
-      )*
-  }
-}
-
-impl_default!(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+#[derive(Debug, Clone, Default)]
+pub struct OptionalArray<T: Debug + Default + Clone, const N: usize>(pub ArrayVec<Option<T>, N>);
 
 impl<T, Idx, const N: usize> Index<Idx> for OptionalArray<T, N>
 where
@@ -43,8 +28,8 @@ where
 impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
     pub const CAPACITY: usize = N;
 
-    pub fn new(inner: [Option<T>; N]) -> Self {
-        Self(inner)
+    pub fn new() -> Self {
+        Self(ArrayVec::new())
     }
 
     pub fn iter(&self) -> impl Iterator<Item = (usize, &T)> {
@@ -58,8 +43,8 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
         self.0.iter().filter_map(|item| item.as_ref())
     }
 
-    pub fn put(&mut self, index: usize, value: T) {
-        self.0[index] = Some(value)
+    pub fn push(&mut self, value: T) {
+        self.0.push(Some(value))
     }
 
     pub fn get(&self, index: usize) -> Option<&T> {
@@ -76,6 +61,17 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
 
     pub fn count_by<F: FnMut(&T) -> bool>(&self, mut cb: F) -> usize {
         self.values().filter(|item| cb(item)).count()
+    }
+}
+
+impl<T, const CAP: usize> std::iter::FromIterator<Option<T>> for OptionalArray<T, CAP>
+where
+    T: Debug + Default + Clone,
+{
+    fn from_iter<I: IntoIterator<Item = Option<T>>>(iter: I) -> Self {
+        let mut array = ArrayVec::new();
+        array.extend(iter);
+        Self(array)
     }
 }
 
@@ -132,12 +128,12 @@ mod test {
     fn test_optional_array() {
         let mut arr = OptionalArray::<i32, 6>::default();
 
-        assert_eq!(arr.0, [None, None, None, None, None, None]);
+        assert_eq!(arr.get(0), None);
 
-        arr.put(1, 5);
-        assert_eq!(arr.0[1], Some(5));
+        arr.push(5);
+        assert_eq!(arr.get(0), Some(&5));
 
-        arr.put(2, 6);
+        arr.push(6);
         assert_eq!(arr.sum_by(|&v| v), 5 + 6);
     }
 }

@@ -1,75 +1,82 @@
-import { Org } from "@fleethub/core";
-import { Divider, Typography } from "@material-ui/core";
-import { useWhatChanged } from "@simbathesailor/use-what-changed";
+import styled from "@emotion/styled";
+import { Formation, Org } from "@fleethub/core";
+import {
+  Typography,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Collapse,
+} from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { useModal, useOrg } from "../../../hooks";
-import { PlanNode } from "../../../store";
+
+import { useOrg } from "../../../hooks";
+import { PlanFileEntity, PlanNode } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { ClearButton, EditButton, NodeLable } from "../../molecules";
+import { ClearButton, NodeLable } from "../../molecules";
 import { FleetScreen, ShipBannerGroup } from "../../organisms";
+import PlanNodeDetails from "../PlanNodeDetails";
 import Swappable from "../Swappable";
-
-const PlanNodeOrgInfo: React.FC<{ org: Org }> = ({ org }) => {
-  const main = org.get_fleet("f1");
-  const escort = org.get_fleet("f2");
-
-  return (
-    <div>
-      <FleetScreen fleet={main} />
-      {org.is_combined() && <FleetScreen fleet={escort} />}
-    </div>
-  );
-};
 
 type PlanNodeListItemProps = {
   index: number;
+  plan: PlanFileEntity;
   node: PlanNode;
   onUpdate?: (index: number, node: PlanNode) => void;
   onRemove?: () => void;
   onSwap?: (a: number, b: number) => void;
 };
 
-const PlanNodeListItem: React.FC<PlanNodeListItemProps> = ({
+const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
   index,
+  plan,
   node,
   onRemove,
   onSwap,
+  className,
 }) => {
   const { org } = useOrg(node.org);
-  const Modal = useModal();
   const { t } = useTranslation("common");
-
-  useWhatChanged([node], `node: ${index}`);
 
   if (!org) return null;
 
   const main = org.main_ship_ids();
   const escort = org.escort_ship_ids();
+  const formation =
+    node.enemy_formation || (org.default_formation() as Formation);
 
   return (
     <Swappable
+      className={className}
       item={{ index }}
       type="node"
       onSwap={(drag, drop) => onSwap?.(drag.index, drop.index)}
     >
-      <Flexbox>
-        <NodeLable name={node.name} type={node.type} d={node.d} />
-        <Typography>{t(node.formation)}</Typography>
+      <Accordion disableGutters>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <div>
+            <Flexbox gap={1}>
+              <NodeLable name={node.name} type={node.type} d={node.d} />
+              <Typography variant="subtitle2">{t(formation)}</Typography>
+              <ClearButton size="small" onClick={onRemove} />
+            </Flexbox>
 
-        <EditButton size="small" onClick={Modal.show} />
-        <ClearButton size="small" onClick={onRemove} />
-      </Flexbox>
-
-      <ShipBannerGroup main={main} escort={escort} />
-
-      <Divider />
-
-      <Modal full>
-        <PlanNodeOrgInfo org={org} />
-      </Modal>
+            <ShipBannerGroup main={main} escort={escort} />
+          </div>
+        </AccordionSummary>
+        <AccordionDetails>
+          <PlanNodeDetails plan={plan} node={node} />
+        </AccordionDetails>
+      </Accordion>
     </Swappable>
   );
 };
 
-export default PlanNodeListItem;
+export default styled(PlanNodeListItem)`
+  .MuiAccordionSummary-root[aria-expanded="true"] {
+    ${ShipBannerGroup} {
+      display: none;
+    }
+  }
+`;

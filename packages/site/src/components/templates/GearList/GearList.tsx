@@ -1,6 +1,5 @@
-import { Gear, GearType } from "@fleethub/core";
+import { Gear } from "@fleethub/core";
 import { nonNullable } from "@fleethub/utils";
-import masterData from "@fleethub/utils/masterData";
 import { EquipmentBonuses } from "equipment-bonus";
 import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";

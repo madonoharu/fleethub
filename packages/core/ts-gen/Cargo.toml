@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
-core = { path = "../../core" }
+fh-core = { path = "../../core" }
 
 [dependencies.ts-rs]
 git = "https://github.com/arendjr/ts-rs"
-rev = "af2c35ae74ed4f26e3163d229840038dd8f5f10d"
+rev = "945b336e26bef0bfeba74f4d26768fede91f57f5"

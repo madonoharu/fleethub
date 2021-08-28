@@ -1,4 +1,4 @@
-import { OrgParams } from "@fleethub/core";
+import { OrgParams, Ship, ShipParams } from "@fleethub/core";
 import {
   AIR_SQUADRON_KEYS,
   Dict,
@@ -7,6 +7,7 @@ import {
   GEAR_KEYS,
   mapValues,
   nonNullable,
+  ShipKey,
   SHIP_KEYS,
   uniq,
 } from "@fleethub/utils";
@@ -16,6 +17,7 @@ import {
   createAsyncThunk,
   createSelector,
   Dictionary,
+  isAnyOf,
   nanoid,
   PrepareAction,
 } from "@reduxjs/toolkit";
@@ -25,6 +27,7 @@ import xor from "lodash/xor";
 import { createCachedSelector } from "re-reselect";
 import { DefaultRootState } from "react-redux";
 import { createStructuredSelector } from "reselect";
+import { MapEnemySelectEvent } from "../components/templates/MapList";
 
 import {
   createDeepEqualSelector,
@@ -49,9 +52,10 @@ import {
   NormalizedDictionaries,
   NormalizedEntities,
   normalizeOrgParams,
+  normalizeShipParams,
   PlanFileEntity,
+  PlanNode,
 } from "./schema";
-import { ignoreUndoable } from "./undoableOptions";
 
 export const isFolder = (file?: FileEntity): file is FolderEntity =>
   Boolean(file && "children" in file);
@@ -298,7 +302,7 @@ export const cloneNormalizedEntities = (
 type SetEntitiesPayload = {
   entities: NormalizedEntities;
   fileId: string;
-  to?: string;
+  to?: string | undefined;
 };
 
 const cloneSetEntitiesPayload = (
@@ -312,6 +316,50 @@ const cloneSetEntitiesPayload = (
     entities: cloned.entities,
   };
 };
+
+export type ShipPosition = { fleet?: string; key: ShipKey };
+
+type CreateShipArg = {
+  ship: Ship;
+  position?: ShipPosition | undefined;
+  id?: string;
+  reselect?: boolean;
+};
+
+export const createShip = createAction(
+  "entities/createShip",
+  (arg: CreateShipArg) => {
+    const { ship, position, id, reselect } = arg;
+    const state: ShipParams = ship.state();
+
+    const normalized = normalizeShipParams(state, id);
+
+    const payload = {
+      id: normalized.result,
+      entities: normalized.entities,
+      position,
+      reselect,
+    };
+
+    return { payload };
+  }
+);
+
+export const selectShip =
+  (ship: Ship, id?: string): AppThunk =>
+  (dispatch, getState) => {
+    const root = getState();
+    const shipSelectState = root.present.shipSelect;
+
+    dispatch(
+      createShip({
+        ship,
+        position: shipSelectState.position,
+        id: id || shipSelectState.id,
+        reselect: shipSelectState.reselect,
+      })
+    );
+  };
 
 export const createPlan = createAction<PrepareAction<SetEntitiesPayload>>(
   "entities/createPlan",
@@ -340,6 +388,25 @@ export const createPlan = createAction<PrepareAction<SetEntitiesPayload>>(
   }
 );
 
+export const createPlanNode = createAction(
+  "entities/createPlanNode",
+  (fileId: string, event: MapEnemySelectEvent) => {
+    const { result, entities } = normalizeOrgParams(event.org);
+
+    const node: PlanNode = {
+      name: event.name,
+      type: event.type,
+      d: event.d,
+      enemy_formation: event.formation,
+      org: result,
+    };
+
+    return {
+      payload: { fileId, node, entities },
+    };
+  }
+);
+
 export const setEntities = createAction<SetEntitiesPayload>("entities/set");
 
 export const importEntities = createAction(
@@ -361,11 +428,25 @@ export const cloneFile =
     const cloned = cloneNormalizedEntities(linkedEntities);
     const clonedId = cloned.idMap.get(sourceId);
 
+    let to: string | undefined;
+
+    if (isFolder(filesSelectors.selectById(root, sourceId))) {
+      const parentId = filesSelectors
+        .selectAll(root)
+        .find((file) => isFolder(file) && file.children.includes(sourceId))?.id;
+
+      if (parentId) {
+        to = parentId;
+      }
+    } else {
+      to = sourceId;
+    }
+
     dispatch(
       setEntities({
         entities: cloned.entities,
         fileId: clonedId || "",
-        to: sourceId,
+        to,
       })
     );
   };
@@ -411,6 +492,14 @@ export const sweepEntities =
     );
   };
 
+export const isEntitiesAction = isAnyOf(
+  createPlan,
+  createPlanNode,
+  setEntities,
+  importEntities,
+  createShip
+);
+
 export type PublicData = {
   fileId: string;
   entities: NormalizedEntities;
@@ -455,8 +544,6 @@ export const fetchLocationData = (): AppThunk => async (dispatch) => {
   window.history.replaceState(null, "", location.origin);
 
   if (data) {
-    ignoreUndoable(() => {
-      dispatch(importEntities({ ...data, to: "temp" }));
-    });
+    dispatch(importEntities({ ...data, to: "temp" }));
   }
 };

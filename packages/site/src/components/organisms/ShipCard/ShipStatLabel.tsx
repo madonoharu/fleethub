@@ -78,12 +78,9 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
         <span css={{ marginLeft: 8 }}>{t(statKey)}</span>
       </Typography>
       <div>
+        <LabeledValue label={t("ShipStatsCurrent")} value={maybeNumber(stat)} />
         <LabeledValue
-          label={t("SettingsShipStatsCurrent")}
-          value={maybeNumber(stat)}
-        />
-        <LabeledValue
-          label={t("SettingsShipStatsUnequipped")}
+          label={t("ShipStatsUnequipped")}
           value={maybeNumber(naked)}
         />
         <LabeledValue label={"装備ボーナス"} value={ebonusText} />
@@ -105,7 +102,7 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
             variant="outlined"
             onClick={handleDefaultClick}
           >
-            {t("SettingsReset")}
+            {t("Reset")}
           </Button>
         </Flexbox>
       )}

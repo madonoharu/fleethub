@@ -1,9 +1,7 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 import { fleetsAdapter } from "./adapters";
-import { sweep } from "./entities";
-import { isEntitiesAction } from "./filesSlice";
-import { shipsSlice } from "./shipsSlice";
+import { createShip, isEntitiesAction, sweep } from "./entities";
 
 export const fleetsSlice = createSlice({
   name: "entities/fleets",
@@ -20,9 +18,10 @@ export const fleetsSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      .addCase(shipsSlice.actions.add, (state, { payload, meta }) => {
-        const position = meta.fleet;
-        const entity = position && state.entities[position.id];
+      .addCase(createShip, (state, { payload }) => {
+        const position = payload.position;
+        const entity = position?.fleet && state.entities[position.fleet];
+
         if (!position || !entity) return;
 
         entity[position.key] = payload.id;

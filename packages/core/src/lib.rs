@@ -8,20 +8,27 @@ pub mod org;
 pub mod ship;
 
 pub mod attack;
-pub mod damage;
 pub mod types;
 pub mod utils;
+pub mod wasm_abi;
 
+use std::str::FromStr;
+
+use attack::WarfareContext;
+use wasm_abi::{
+    AirSquadronParams, FleetParams, GearParams, JsNightCutinFleetState, JsWarfareContext,
+    OrgParams, ShipParams,
+};
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
-use analyzer::{analyze_ship_shelling, AnalyzeShipShellingParams, Analyzer};
+use analyzer::{Analyzer, ShellingAttackAnalysis};
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
 use org::Org;
 use ship::Ship;
-use types::{EBonusFn, MasterData};
+use types::{AirState, EBonusFn, Engagement, Formation, MasterData, Role, Side};
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -30,40 +37,6 @@ use types::{EBonusFn, MasterData};
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
-#[wasm_bindgen(typescript_custom_section)]
-const TS_APPEND_CONTENT: &'static str = r#"
-import * as bindings from "../bindings";
-import {
-  AirSquadronParams,
-  FleetParams,
-  GearParams,
-  OrgParams,
-  ShipParams,
-} from "../types";
-
-export * from "../types";
-"#;
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(typescript_type = "GearParams")]
-    pub type GearParams;
-    #[wasm_bindgen(typescript_type = "ShipParams")]
-    pub type ShipParams;
-    #[wasm_bindgen(typescript_type = "FleetParams")]
-    pub type FleetParams;
-    #[wasm_bindgen(typescript_type = "AirSquadronParams")]
-    pub type AirSquadronParams;
-    #[wasm_bindgen(typescript_type = "OrgParams")]
-    pub type OrgParams;
-
-    #[wasm_bindgen(typescript_type = "bindings.ShipAttr")]
-    pub type JsShipAttr;
-
-    #[wasm_bindgen(typescript_type = "bindings.NightCutinFleetState")]
-    pub type JsNightCutinFleetState;
-}
 
 #[wasm_bindgen]
 pub struct FhCore {
@@ -120,6 +93,10 @@ impl FhCore {
         self.factory.create_ship_by_id(ship_id)
     }
 
+    pub fn create_default_ship(&self) -> Ship {
+        Ship::default()
+    }
+
     pub fn get_gear_ids(&self) -> Vec<u16> {
         self.factory
             .master_data
@@ -150,6 +127,22 @@ impl FhCore {
         JsValue::from_serde(&result).unwrap()
     }
 
+    pub fn analyze_shelling(
+        &self,
+        context: WarfareContext,
+        attacker_ship: &Ship,
+        target_ship: &Ship,
+    ) -> JsValue {
+        let result = analyzer::analyze_ship_shelling(
+            &self.factory.master_data,
+            attacker_ship,
+            target_ship,
+            context,
+        );
+
+        JsValue::from_serde(&result).unwrap()
+    }
+
     pub fn analyze_night_cutin(
         &self,
         org: &Org,
@@ -171,12 +164,39 @@ impl FhCore {
         JsValue::from_serde(&result).unwrap()
     }
 
-    // pub fn test(&self, ship: &Ship) -> JsValue {
-    //     let res = analyze_ship_shelling(
-    //         &self.factory.master_data.constants,
-    //         ship,
-    //         AnalyzeShipShellingParams {},
-    //     );
-    //     JsValue::from_serde(&res).unwrap()
-    // }
+    pub fn analyze_warfare(
+        &self,
+        player_org: &Org,
+        player_ship: &Ship,
+        player_formation: Formation,
+        enemy_org: &Org,
+        enemy_ship: &Ship,
+        enemy_formation: Formation,
+        attacker_side: Side,
+        air_state: AirState,
+        engagement: Engagement,
+    ) -> Option<ShellingAttackAnalysis> {
+        let analyzer = Analyzer::new(&self.factory.master_data);
+
+        analyzer.analyze_warfare(
+            player_org,
+            player_ship,
+            player_formation,
+            enemy_org,
+            enemy_ship,
+            enemy_formation,
+            attacker_side,
+            air_state,
+            engagement,
+        )
+    }
+}
+
+#[wasm_bindgen]
+pub fn org_type_side(str: &str) -> Result<String, JsValue> {
+    use crate::types::OrgType;
+
+    let org_type = OrgType::from_str(str).map_err(|err| JsValue::from(&err.to_string()))?;
+
+    Ok(org_type.side().to_string())
 }

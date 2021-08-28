@@ -43,8 +43,8 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
 }) => {
   const { t } = useTranslation("common");
 
-  const antiSingleFp = `${org.fighter_power(false, false) || t("Unknown")}`;
-  const antiCombinedFp = `${org.fighter_power(true, false) || t("Unknown")}`;
+  const antiSingleFp = `${org.fighter_power(false, false) || "?"}`;
+  const antiCombinedFp = `${org.fighter_power(true, false) || "?"}`;
   const fpText = org.is_combined()
     ? `対連合: ${antiCombinedFp} 対通常: ${antiSingleFp}`
     : antiSingleFp;
@@ -59,7 +59,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
           onChange={onNameChange}
         />
         <LevelInput
-          startLabel="司令部Lv"
+          startLabel={t("HQAdmiralLv")}
           value={org.hq_level}
           min={1}
           max={120}

@@ -20,14 +20,16 @@ const exec = promisify(child_process.exec);
 
 type Dictionary = Partial<Record<string, string>>;
 
-type Language = { code: string; path?: string };
-const languages: Language[] = [
-  { code: "ja", path: "jp" },
+const languages = [
+  { code: "ja", kc3: "jp" },
   { code: "en" },
-  { code: "ko", path: "kr" },
-  { code: "zh-CN", path: "scn" },
-  { code: "zh-TW", path: "tcn" },
-];
+  { code: "ko", kc3: "kr" },
+  { code: "zh-CN", kc3: "scn" },
+  { code: "zh-TW", kc3: "tcn" },
+] as const;
+
+type LanguageCode = typeof languages[number]["code"];
+type Language = { code: LanguageCode; kc3?: string };
 
 type KC3Ships = Record<string, string>;
 type KC3ShipAffix = {
@@ -42,6 +44,219 @@ type KC3Battle = {
   cutinNight: string[];
 };
 
+const fhCommonJa = {
+  Ships: "艦娘",
+  Equipment: "装備",
+  Maps: "海域",
+  Composition: "編成",
+  Folder: "フォルダ",
+
+  DamageState: "損傷",
+  Normal: "通常",
+  Shouha: "小破",
+  Chuuha: "中破",
+  Taiha: "大破",
+  Sunk: "轟沈",
+  MoraleState: "疲労度",
+  Sparkle: "キラ",
+  Orange: "橙疲労",
+  Red: "赤疲労",
+  Shelling: "砲撃",
+  Night: "夜戦",
+  Chance: "確率",
+  SoftSkinned: "ソフトスキン",
+  ApShellModifier: "徹甲弾補正",
+  CarrierModifier: "空母補正",
+  Proficiency: "熟練度",
+  Critical: "クリティカル",
+  AttackPower: "攻撃力",
+  BasicAttackPower: "基本攻撃力",
+  SpecialAttack: "特殊攻撃",
+  ProficiencyCriticalModifier: "熟練度クリティカル補正",
+  Searchlight: "$t(gear_types:29)",
+  Starshell: "$t(gear_types:33)",
+
+  Copy: "コピーする",
+  Change: "変更する",
+  Remove: "削除する",
+  Consume: "消費する",
+  EditMiscStats: "その他のステータスを編集",
+  CreateComposition: "編成を作成",
+  CreateFolder: "フォルダを作成",
+  OpenFolderPage: "フォルダページを開く",
+};
+
+const fhCommon: Record<
+  LanguageCode,
+  Record<keyof typeof fhCommonJa, string>
+> = {
+  ja: fhCommonJa,
+  en: {
+    Ships: "Ships",
+    Equipment: "Equipment",
+    Maps: "Maps",
+    Composition: "Composition",
+    Folder: "Folder",
+
+    DamageState: "Damage",
+    Normal: "Normal",
+    Shouha: "Shouha",
+    Chuuha: "Chuuha",
+    Taiha: "Taiha",
+    Sunk: "Sunk",
+    MoraleState: "Morale",
+    Sparkle: "Sparkle",
+    Orange: "Orange",
+    Red: "Red",
+    Shelling: "Shelling",
+    Night: "Night Battle",
+    Chance: "Chance",
+    SoftSkinned: "Soft-Skinned",
+    ApShellModifier: "AP Shell modifier",
+    CarrierModifier: "Carrier modifier",
+    Proficiency: "Proficiency",
+    Critical: "Critical",
+    AttackPower: "Attack Power",
+    BasicAttackPower: "Basic Attack Power",
+    SpecialAttack: "Special Attack",
+    ProficiencyCriticalModifier: "Proficiency critical modifier",
+    Searchlight: "$t(gear_types:29)",
+    Starshell: "$t(gear_types:33)",
+
+    Copy: "Copy",
+    Change: "Change",
+    Remove: "Remove",
+    Consume: "Consume",
+    EditMiscStats: "Edit misc stats",
+    CreateComposition: "Create composition",
+    CreateFolder: "Create folder",
+    OpenFolderPage: "Open folder page",
+  },
+  ko: {
+    Ships: "칸무스",
+    Equipment: "장비",
+    Maps: "해역",
+    Composition: "편성",
+    Folder: "폴더",
+
+    DamageState: "손상",
+    Normal: "통상",
+    Shouha: "소파",
+    Chuuha: "중파",
+    Taiha: "대파",
+    Sunk: "굉침",
+    MoraleState: "피로도",
+    Sparkle: "키라",
+    Orange: "주황 피로",
+    Red: "빨간 피로",
+    Shelling: "포격",
+    Night: "야간전",
+    Chance: "확률",
+    SoftSkinned: "소프트 스킨",
+    ApShellModifier: "철갑탄 보정",
+    CarrierModifier: "항모 보정",
+    Proficiency: "숙련도",
+    Critical: "크리티컬",
+    AttackPower: "공격력",
+    BasicAttackPower: "기본 공격력",
+    SpecialAttack: "특수 공격",
+    ProficiencyCriticalModifier: "숙련도 크리티컬 보정",
+    Searchlight: "$t(gear_types:29)",
+    Starshell: "$t(gear_types:33)",
+
+    Copy: "복사",
+    Change: "변경하다",
+    Remove: "삭제하다",
+    Consume: "소비하다",
+    EditMiscStats: "기타 상태를 편집합니다",
+    CreateComposition: "편성 만들기",
+    CreateFolder: "폴더 만들기",
+    OpenFolderPage: "폴더 페이지를 열다",
+  },
+  "zh-CN": {
+    Ships: "舰娘",
+    Equipment: "装备",
+    Maps: "海域",
+    Composition: "编成",
+    Folder: "文件夹",
+
+    DamageState: "损伤",
+    Normal: "通常",
+    Shouha: "小破",
+    Chuuha: "中破",
+    Taiha: "大破",
+    Sunk: "轰沉",
+    MoraleState: "士气值",
+    Sparkle: "刷闪",
+    Orange: "橙疲劳",
+    Red: "红疲劳",
+    Shelling: "炮击",
+    Night: "夜战",
+    Chance: "概率",
+    SoftSkinned: "软皮",
+    ApShellModifier: "彻甲弹补正",
+    CarrierModifier: "空母补正",
+    Proficiency: "熟练度",
+    Critical: "爆击",
+    AttackPower: "攻击力",
+    BasicAttackPower: "基本攻击力",
+    SpecialAttack: "特殊攻击",
+    ProficiencyCriticalModifier: "熟练度爆击补正",
+    Searchlight: "$t(gear_types:29)",
+    Starshell: "$t(gear_types:33)",
+
+    Copy: "复制",
+    Change: "变化",
+    Remove: "删除",
+    Consume: "消费",
+    EditMiscStats: "编辑杂项状态",
+    CreateComposition: "编成",
+    CreateFolder: "创建文件夹",
+    OpenFolderPage: "打开文件夹页面",
+  },
+  "zh-TW": {
+    Ships: "艦娘",
+    Equipment: "裝備",
+    Maps: "海域",
+    Composition: "編成",
+    Folder: "文件夾",
+
+    DamageState: "損傷",
+    Normal: "通常",
+    Shouha: "小破",
+    Chuuha: "中破",
+    Taiha: "大破",
+    Sunk: "轟沉",
+    MoraleState: "士氣值",
+    Sparkle: "刷閃",
+    Orange: "橙疲勞",
+    Red: "紅疲勞",
+    Shelling: "砲擊",
+    Night: "夜戰",
+    Chance: "概率",
+    SoftSkinned: "軟皮",
+    ApShellModifier: "徹甲彈補正",
+    CarrierModifier: "空母補正",
+    Proficiency: "熟練度",
+    Critical: "爆擊",
+    AttackPower: "攻擊力",
+    BasicAttackPower: "基本攻擊力",
+    SpecialAttack: "特殊攻擊",
+    ProficiencyCriticalModifier: "熟練度爆擊補正",
+    Searchlight: "$t(gear_types:29)",
+    Starshell: "$t(gear_types:33)",
+
+    Copy: "複製",
+    Change: "變化",
+    Remove: "刪除",
+    Consume: "消耗",
+    EditMiscStats: "編輯雜項狀態",
+    CreateComposition: "編成",
+    CreateFolder: "創建文件夾",
+    OpenFolderPage: "打開文件夾頁麵",
+  },
+};
+
 const uniqDictionary = (dict: Dictionary): Dictionary => {
   const state = new Map<string, string>();
 
@@ -50,7 +265,9 @@ const uniqDictionary = (dict: Dictionary): Dictionary => {
       if (!value) return undefined;
 
       const duplicatedKey = state.get(value);
-      if (duplicatedKey) return [key, `$t(${duplicatedKey})`] as const;
+      if (duplicatedKey) {
+        return [key, `$t(${duplicatedKey})`] as const;
+      }
 
       state.set(value, key);
 
@@ -64,23 +281,23 @@ const uniqDictionary = (dict: Dictionary): Dictionary => {
 class LocaleUpdater {
   private kc3: typeof got;
   private tsun: typeof got;
+  private code: LanguageCode;
+  private path: string;
 
   constructor(private md: MasterDataInput, private language: Language) {
-    const { path, code } = language;
+    this.code = language.code;
 
     this.kc3 = got.extend({
       prefixUrl: `https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/${
-        path || code
+        language.kc3 || this.code
       }`,
     });
 
     this.tsun = got.extend({
-      prefixUrl: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${code}`,
+      prefixUrl: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${this.code}`,
     });
-  }
 
-  get lang() {
-    return this.language.code;
+    this.path = `packages/site/public/locales/${this.code}`;
   }
 
   private getKC3Json = async <T = unknown>(filename: string) => {
@@ -88,11 +305,24 @@ class LocaleUpdater {
     return JSON.parse(text.replace(/^\ufeff/, "").replaceAll("{ -}?", "")) as T;
   };
 
+  private getKcnavJson = async () => {
+    const kcnav = await this.tsun
+      .get("kcnav.json")
+      .json<Record<string, string>>();
+
+    Object.entries(kcnav).forEach(([key, value]) => {
+      const result = /\[\[(.+)\]\]/.exec(value);
+
+      if (result) {
+        kcnav[key] = kcnav[result[1]];
+      }
+    });
+
+    return kcnav;
+  };
+
   private output = async (filename: string, data: unknown) => {
-    await fs.outputJSON(
-      `packages/site/public/locales/${this.language.code}/${filename}`,
-      data
-    );
+    await fs.outputJSON(`${this.path}/${filename}`, data);
   };
 
   private importKC3 = async (filename: string, outputName = filename) => {
@@ -101,27 +331,18 @@ class LocaleUpdater {
   };
 
   private updateCommon = async () => {
-    const kc3Terms = await this.getKC3Json<Record<string, string>>(
-      "terms.json"
-    );
-
-    const kc3Battle = await this.getKC3Json<KC3Battle>("battle.json");
-
-    const kcnav = await this.tsun
-      .get("kcnav.json")
-      .json<Record<string, string>>();
+    const [kc3Terms, kc3Battle, kcnav] = await Promise.all([
+      this.getKC3Json<Record<string, string>>("terms.json"),
+      this.getKC3Json<KC3Battle>("battle.json"),
+      this.getKcnavJson(),
+    ]);
 
     const worldNames = Object.fromEntries(
       Object.entries(kcnav).filter(([key]) => /^worldName\d+/.test(key))
     );
 
     const nodeTypes = Object.fromEntries(
-      Object.entries(kcnav)
-        .filter(([key]) => /^nodeType.+/.test(key))
-        .map(([key, value]) => [
-          key,
-          value?.replace("[[", "$t(").replace("]]", ")"),
-        ])
+      Object.entries(kcnav).filter(([key]) => /^nodeType.+/.test(key))
     );
 
     const airStateDictionary: Record<AirState, string> = {
@@ -217,10 +438,9 @@ class LocaleUpdater {
         "RangeVeryLongAbbr",
         "RangeExtremeLongAbbr",
 
-        "SettingsReset",
-        "SettingsShipStatsCurrent",
-        "SettingsShipStatsUnequipped",
+        "HQAdmiralLv",
 
+        "None",
         "Unknown",
       ].map((key) => [key, kc3Terms[key]])
     );
@@ -247,6 +467,18 @@ class LocaleUpdater {
       interception: kc3Terms["ShipEvaInterception"],
       cost: kc3Terms["ShipDeployCost"],
 
+      Fleet: kcnav["termFleet"],
+      Main: kcnav["termMain"],
+      Escort: kcnav["termEscort"],
+      Ship: kcnav["termShip"],
+      ShipClass: kcnav["termClass"],
+      Difficulty: kcnav["termDifficulty"],
+      Details: kcnav["termDetails"],
+      Map: kcnav["termMap"],
+      Org: kcnav["ribbonCompsTabName"],
+
+      LbasDistance: kcnav["displayLBASDistanceLabel"],
+
       ElosNodeFactor: kc3Terms["PanelElosNodeFactor"].replace("{0}", ""),
 
       LandBaseFighterPower: kc3Terms["LandBaseFighterPower"],
@@ -254,6 +486,14 @@ class LocaleUpdater {
       HighAltitudeInterceptionPower: kc3Terms[
         "LandBaseTipHighAltitudeAirDefensePower"
       ].replace(": ≈{0}", ""),
+
+      Engagement: kc3Terms["BattleEngangement"],
+      Contact: kc3Terms["BattleContact"],
+      AirBattle: kc3Terms["BattleAirBattle"],
+
+      Reset: kc3Terms["SettingsReset"],
+      ShipStatsCurrent: kc3Terms["SettingsShipStatsCurrent"],
+      ShipStatsUnequipped: kc3Terms["SettingsShipStatsUnequipped"],
 
       ...exnteds,
 
@@ -266,9 +506,7 @@ class LocaleUpdater {
       ...airSquadronModeDictionary,
       ...worldNames,
       ...nodeTypes,
-
-      LbasDistance: kcnav["displayLBASDistanceLabel"],
-      termUnknown: "$t(Unknown)",
+      ...fhCommon[this.code],
     };
 
     await this.output("common.json", dictionary);

@@ -4,6 +4,18 @@ use serde::{Deserialize, Serialize};
 use strum::{EnumString, ToString};
 use ts_rs::TS;
 
+#[derive(Debug, Clone, Copy, ToString, TS)]
+pub enum ShipFilterGroup {
+    Battleship,
+    AircraftCarrier,
+    HeavyCruiser,
+    LightCruiser,
+    Destroyer,
+    CoastalDefenseShip,
+    Submarine,
+    SupportShip,
+}
+
 #[derive(Debug, EnumSetType, FromPrimitive, ToString, TS)]
 pub enum ShipType {
     Unknown = 0,
@@ -60,6 +72,22 @@ impl Default for ShipType {
 }
 
 impl ShipType {
+    pub fn filter_group(&self) -> ShipFilterGroup {
+        use ShipFilterGroup::*;
+        use ShipType::*;
+
+        match *self {
+            FBB | BB | BBV | XBB => Battleship,
+            CVL | CV | CVB => AircraftCarrier,
+            CA | CAV => HeavyCruiser,
+            CL | CLT | CT => LightCruiser,
+            DD => Destroyer,
+            DE => CoastalDefenseShip,
+            SS | SSV => Submarine,
+            _ => SupportShip,
+        }
+    }
+
     pub fn transport_point(&self) -> i32 {
         use ShipType::*;
         match self {
@@ -345,7 +373,9 @@ impl Default for SpeedGroup {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, TS)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, ToString, Serialize, Deserialize, TS,
+)]
 pub enum DamageState {
     /// 轟沈
     Sunk,
@@ -366,7 +396,7 @@ impl Default for DamageState {
 }
 
 impl DamageState {
-    pub fn from_hp(max_hp: u16, current_hp: u16) -> Self {
+    pub fn new(max_hp: u16, current_hp: u16) -> Self {
         let value = current_hp * 4;
 
         if value == 0 {
@@ -400,7 +430,9 @@ impl DamageState {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, TS)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ToString, Serialize, Deserialize, TS,
+)]
 pub enum MoraleState {
     Sparkle,
     Normal,
@@ -456,19 +488,19 @@ impl MoraleState {
 }
 
 /// 特殊敵種別
-#[derive(Debug, Clone, Copy, PartialEq, Eq, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, TS)]
 pub enum SpecialEnemyType {
     None,
+    /// ソフトスキン
+    SoftSkinned,
     /// 砲台小鬼
     Pillbox,
     /// 離島棲姫
     IsolatedIsland,
-    /// ソフトスキン
-    SoftSkinned,
-    /// 港湾夏姫
-    HarbourSummerPrincess,
     /// 集積地
     SupplyDepot,
+    /// 港湾夏姫
+    HarbourSummerPrincess,
     /// PT小鬼群
     PtImp,
     /// 戦艦夏姫
@@ -480,6 +512,17 @@ pub enum SpecialEnemyType {
 impl SpecialEnemyType {
     pub fn is_none(&self) -> bool {
         matches!(*self, Self::None)
+    }
+
+    pub fn is_installation(&self) -> bool {
+        matches!(
+            *self,
+            Self::SoftSkinned
+                | Self::Pillbox
+                | Self::IsolatedIsland
+                | Self::SupplyDepot
+                | Self::HarbourSummerPrincess
+        )
     }
 }
 
@@ -516,7 +559,7 @@ mod test {
         ];
 
         for &(max_hp, current_hp, expected) in table.iter() {
-            assert_eq!(DamageState::from_hp(max_hp, current_hp), expected);
+            assert_eq!(DamageState::new(max_hp, current_hp), expected);
         }
     }
 }

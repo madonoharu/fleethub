@@ -1,8 +1,8 @@
-use serde::Deserialize;
-use strum::ToString;
+use serde::{Deserialize, Serialize};
+use strum::{AsRefStr, EnumString, ToString};
 use ts_rs::TS;
 
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS)]
 pub struct GearState {
     pub id: Option<String>,
 
@@ -11,12 +11,15 @@ pub struct GearState {
     pub stars: Option<u8>,
 }
 
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS)]
 pub struct ShipState {
     pub id: Option<String>,
     pub ship_id: u16,
     pub level: Option<u16>,
     pub current_hp: Option<u16>,
+    pub morale: Option<u8>,
+    pub ammo: Option<u16>,
+    pub fuel: Option<u16>,
 
     pub max_hp_mod: Option<i16>,
     pub firepower_mod: Option<i16>,
@@ -45,6 +48,7 @@ pub struct ShipState {
 #[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
 pub struct FleetState {
     pub id: Option<String>,
+    pub len: Option<usize>,
 
     pub s1: Option<ShipState>,
     pub s2: Option<ShipState>,
@@ -93,7 +97,7 @@ pub struct AirSquadronState {
     pub ss5: Option<u8>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, ToString, Serialize, Deserialize, TS)]
 pub enum Side {
     Player,
     Enemy,
@@ -115,7 +119,7 @@ impl Side {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Hash, ToString, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Hash, EnumString, AsRefStr, Serialize, Deserialize, TS)]
 pub enum OrgType {
     /// 通常艦隊
     Single,
@@ -163,10 +167,12 @@ impl OrgType {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, EnumString, AsRefStr, Serialize, Deserialize, TS)]
 pub enum Role {
     Main,
     Escort,
+    RouteSup,
+    BossSup,
 }
 
 impl Default for Role {
@@ -177,11 +183,11 @@ impl Default for Role {
 
 impl Role {
     pub fn is_main(&self) -> bool {
-        *self == Self::Main
+        matches!(*self, Self::Main)
     }
 
     pub fn is_escort(&self) -> bool {
-        !self.is_main()
+        matches!(*self, Self::Escort)
     }
 }
 

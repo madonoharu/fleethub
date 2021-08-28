@@ -1,9 +1,11 @@
-use crate::attack::hit_rate::{HitRate, HitRateParams};
-use crate::damage::{DamageAttackerParams, DamageParams, DamageTargetParams};
 use crate::{
-    attack::attack_power::{AttackPower, AttackPowerModifiers, AttackPowerParams},
-    utils::NumMap,
+    attack::{AttackPower, AttackPowerModifiers, AttackPowerParams, HitRateParams},
+    ship::Ship,
 };
+
+use super::context::ShellingContext;
+use super::special_enemy_mods::special_enemy_modifiers;
+use super::{fit_gun_bonus, fleet_factor};
 
 const SHELLING_POWER_CAP: i32 = 220;
 const SHELLING_CRITICAL_RATE_MULTIPLIER: f64 = 1.3;
@@ -36,19 +38,22 @@ pub struct ShellingPowerParams {
     pub engagement_mod: f64,
     pub cutin_mod: Option<f64>,
 
-    pub air_power: Option<f64>,
-    pub air_power_ebonus: Option<f64>,
+    pub carrier_power: Option<f64>,
+    pub carrier_power_ebonus: Option<f64>,
     pub proficiency_critical_mod: Option<f64>,
 
     pub special_enemy_mods: AttackPowerModifiers,
+
+    pub armor_penetration: f64,
+    pub remaining_ammo_mod: f64,
 }
 
 impl ShellingPowerParams {
-    pub fn to_attack_power_params(&self) -> Option<AttackPowerParams> {
+    fn to_attack_power_params(&self) -> Option<AttackPowerParams> {
         let basic = 5. + self.firepower? + self.ibonus + self.fleet_factor;
 
         let a14 = self.formation_mod? * self.engagement_mod * self.damage_mod;
-        let b14 = self.cruiser_fit_bonus + self.air_power_ebonus.unwrap_or_default();
+        let b14 = self.cruiser_fit_bonus + self.carrier_power_ebonus.unwrap_or_default();
         let a11 = self.cutin_mod.unwrap_or(1.0);
 
         let mods_base = AttackPowerModifiers {
@@ -63,16 +68,13 @@ impl ShellingPowerParams {
             cap: SHELLING_POWER_CAP,
             mods: mods_base + self.special_enemy_mods.clone(),
             ap_shell_mod: self.ap_shell_mod,
-            air_power: self.air_power,
+            carrier_power: self.carrier_power,
             proficiency_critical_mod: self.proficiency_critical_mod,
+            armor_penetration: self.armor_penetration,
+            remaining_ammo_mod: self.remaining_ammo_mod,
         };
 
         Some(params)
-    }
-
-    #[allow(dead_code)]
-    pub fn calc(&self) -> Option<AttackPower> {
-        self.to_attack_power_params().map(|params| params.calc())
     }
 }
 
@@ -91,6 +93,7 @@ pub struct ShellingAccuracyParams {
 
 impl ShellingAccuracyParams {
     fn calc(&self) -> Option<f64> {
+        // 乗算補正前に切り捨て
         let base =
             (self.fleet_factor + self.basic_accuracy_term? + self.ship_accuracy + self.ibonus)
                 .floor();
@@ -119,87 +122,143 @@ pub struct ShellingParams {
     pub hit_rate: ShellingHitRateParams,
 }
 
-struct DamageDistributionParams {
-    attack_power: AttackPower,
-    hit_rate: HitRate,
-    damage_target_params: DamageTargetParams,
-}
+impl ShellingParams {
+    pub fn new(context: &ShellingContext, attacker: &Ship, target: &Ship) -> Self {
+        let is_day = true;
 
-impl DamageDistributionParams {
-    fn calc(&self, current_hp: i32, count: usize) -> NumMap<i32, f64> {
-        let normal_damage_distribution = DamageParams {
-            attacker: DamageAttackerParams {
-                attack_term: self.attack_power.normal,
-                armor_penetration: 0.,
-                remaining_ammo_mod: 1.,
-            },
-            target: self.damage_target_params.clone(),
-        }
-        .to_distribution();
+        let fleet_power_factor = fleet_factor::find_shelling_power_factor(
+            context.attacker.org_type,
+            context.target.org_type,
+            context.attacker.role,
+        );
 
-        let critical_damage_distribution = DamageParams {
-            attacker: DamageAttackerParams {
-                attack_term: self.attack_power.critical,
-                armor_penetration: 0.,
-                remaining_ammo_mod: 1.,
-            },
-            target: self.damage_target_params.clone(),
-        }
-        .to_distribution();
+        let ap_shell_mods = target
+            .is_heavily_armored_ship()
+            .then(|| attacker.get_ap_shell_modifiers());
 
-        let d1: NumMap<i32, f64> = normal_damage_distribution * self.hit_rate.normal
-            + critical_damage_distribution * self.hit_rate.critical
-            + [(0, 1. - self.hit_rate.total)].into();
+        let attacker_formation_mods = context.attacker_formation_mods();
 
-        if count <= 1 {
-            d1
+        let engagement_mod = context.engagement.modifier();
+        let cutin_def = context.cutin_def();
+
+        let special_enemy_mods =
+            special_enemy_modifiers(attacker, target.special_enemy_type(), is_day);
+
+        let power_params_base = ShellingPowerParams {
+            firepower: attacker.firepower().map(|v| v as f64),
+            ibonus: attacker.gears.sum_by(|gear| gear.ibonuses.shelling_power),
+            fleet_factor: fleet_power_factor as f64,
+            damage_mod: attacker.damage_state().common_power_mod(),
+            cruiser_fit_bonus: attacker.cruiser_fit_bonus(),
+            ap_shell_mod: ap_shell_mods.map(|mods| mods.0),
+            formation_mod: attacker_formation_mods
+                .as_ref()
+                .and_then(|mods| mods.power_mod),
+            engagement_mod,
+            cutin_mod: cutin_def.and_then(|def| def.power_mod),
+
+            special_enemy_mods,
+
+            carrier_power: None,
+            carrier_power_ebonus: None,
+            proficiency_critical_mod: None,
+
+            armor_penetration: 0.0,
+            remaining_ammo_mod: attacker.remaining_ammo_mod(),
+        };
+
+        let accuracy_params = ShellingAccuracyParams {
+            fleet_factor: fleet_factor::find_shelling_accuracy_factor(
+                context.attacker.org_type,
+                context.attacker.role,
+            ) as f64,
+            basic_accuracy_term: attacker.basic_accuracy_term(),
+            ship_accuracy: attacker.accuracy() as f64,
+            ibonus: attacker
+                .gears
+                .sum_by(|gear| gear.ibonuses.shelling_accuracy),
+            fit_gun_bonus: fit_gun_bonus::fit_gun_bonus(attacker, !is_day),
+            morale_mod: attacker.morale_state().common_accuracy_mod(),
+            formation_mod: attacker_formation_mods.and_then(|mods| mods.accuracy_mod),
+            ap_shell_mod: ap_shell_mods.map(|mods| mods.1),
+            cutin_mod: cutin_def.and_then(|def| def.accuracy_mod),
+        };
+
+        let hit_rate_params_base = {
+            let target_formation_mods = context.target_formation_mods();
+            let target_formation_mod = target_formation_mods
+                .and_then(|mods| mods.evasion_mod)
+                .unwrap_or(1.0);
+
+            let evasion_term =
+                target.evasion_term(target_formation_mod, target.remaining_fuel_mod());
+
+            ShellingHitRateParams {
+                morale_mod: target.morale_state().evasion_mod(),
+                evasion_term,
+                critical_percent_bonus: 0.0,
+                hit_percent_bonus: 0.0,
+            }
+        };
+
+        if attacker.is_carrier_like() {
+            let anti_installation = target.is_installation();
+
+            let carrier_power = Some(attacker.carrier_power(anti_installation) as f64);
+            let carrier_power_ebonus = Some(attacker.ebonuses.carrier_power as f64);
+            let proficiency_mods = attacker.proficiency_modifiers(context.cutin);
+
+            let power_params = ShellingPowerParams {
+                carrier_power,
+                carrier_power_ebonus,
+                proficiency_critical_mod: Some(proficiency_mods.critical_power_mod),
+
+                ..power_params_base
+            };
+
+            let hit_rate_params = ShellingHitRateParams {
+                hit_percent_bonus: proficiency_mods.hit_percent_bonus,
+                critical_percent_bonus: proficiency_mods.critical_percent_bonus,
+                ..hit_rate_params_base
+            };
+
+            Self {
+                power: power_params,
+                accuracy: accuracy_params,
+                hit_rate: hit_rate_params,
+            }
         } else {
-            d1.into_iter().fold(NumMap::new(), |d2, item| {
-                let hp = current_hp - item.0;
-                d2 + self.calc(hp, count - 1) * item.1
-            })
+            Self {
+                power: power_params_base,
+                accuracy: accuracy_params,
+                hit_rate: hit_rate_params_base,
+            }
         }
     }
-}
 
-impl ShellingParams {
-    pub fn damage_distribution(&self) -> Option<NumMap<i32, f64>> {
-        let attack_power = self.power.calc()?;
-        let accuracy_term = self.accuracy.calc()?;
+    pub fn to_attack_power_params(&self) -> Option<AttackPowerParams> {
+        self.power.to_attack_power_params()
+    }
+
+    pub fn attack_power(&self) -> Option<AttackPower> {
+        self.to_attack_power_params().map(|params| params.calc())
+    }
+
+    pub fn accuracy_term(&self) -> Option<f64> {
+        self.accuracy.calc()
+    }
+
+    pub fn hit_rate_params(&self) -> Option<HitRateParams> {
+        let accuracy_term = self.accuracy_term()?;
         let evasion_term = self.hit_rate.evasion_term?;
 
-        let hit_rate = HitRateParams {
+        Some(HitRateParams {
             accuracy_term,
             evasion_term,
             morale_mod: self.hit_rate.morale_mod,
             critical_rate_multiplier: SHELLING_CRITICAL_RATE_MULTIPLIER,
             critical_percent_bonus: self.hit_rate.critical_percent_bonus,
             hit_percent_bonus: self.hit_rate.hit_percent_bonus,
-        }
-        .calc();
-
-        let current_hp = 0;
-
-        let damage_target_params = DamageTargetParams {
-            armor: 0,
-            ibonus: 0.,
-            max_hp: 0,
-            current_hp,
-            overkill_protection: false,
-            sinkable: false,
-        };
-
-        let map = DamageDistributionParams {
-            attack_power,
-            hit_rate,
-            damage_target_params: damage_target_params,
-        }
-        .calc(current_hp, 2);
-
-        Some(map)
+        })
     }
-}
-
-struct ShellingAttack {
-    params: ShellingParams,
 }

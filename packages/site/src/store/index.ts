@@ -16,3 +16,4 @@ export * from "./schema";
 export { default as StoreProvider } from "./StoreProvider";
 export * from "./undoableOptions";
 export * from "./adapters";
+export * from "./shipSelectSlice";
