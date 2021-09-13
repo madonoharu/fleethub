@@ -1,10 +1,19 @@
-import { Container } from "@material-ui/core";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
+import { Container } from "@mui/material";
 import React from "react";
 
 import { OrgContext, PlanContext, useFile, useOrg } from "../../../hooks";
 import { PlanAnalysisPanel } from "../../organisms";
 import PlanScreenHeader from "./PlanScreenHeader";
 import PlanTabs from "./PlanTabs";
+
+const StyledContainer = styled(Container)(
+  ({ theme }) =>
+    css`
+      min-width: ${theme.breakpoints.values.md}px;
+    `
+);
 
 type PlanScreenProps = {
   id: string;
@@ -19,7 +28,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
   if (!org || file?.type !== "plan") return null;
 
   return (
-    <Container>
+    <StyledContainer>
       <PlanContext.Provider value={file}>
         <OrgContext.Provider value={org}>
           <PlanScreenHeader
@@ -36,7 +45,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
           <PlanAnalysisPanel css={{ marginTop: 8 }} org={org} />
         </OrgContext.Provider>
       </PlanContext.Provider>
-    </Container>
+    </StyledContainer>
   );
 };
 

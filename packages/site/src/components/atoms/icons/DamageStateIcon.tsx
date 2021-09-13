@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { DamageState } from "@fleethub/core";
-import { SvgIconProps } from "@material-ui/core";
-import CircleIcon from "@material-ui/icons/Circle";
-import ErrorIcon from "@material-ui/icons/Error";
-import HealingIcon from "@material-ui/icons/Healing";
+import ErrorIcon from "@mui/icons-material/Error";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import HealingIcon from "@mui/icons-material/Healing";
+import { SvgIconProps } from "@mui/material";
 import React from "react";
 
 const DamageStateIcon: React.FC<SvgIconProps & { state: DamageState }> = ({
@@ -13,9 +13,9 @@ const DamageStateIcon: React.FC<SvgIconProps & { state: DamageState }> = ({
 }) => {
   switch (state) {
     case "Normal":
-      return <CircleIcon {...svgProps} />;
+      return <FavoriteIcon {...svgProps} />;
     case "Shouha":
-      return <CircleIcon {...svgProps} />;
+      return <FavoriteIcon {...svgProps} />;
     case "Chuuha":
       return <HealingIcon {...svgProps} />;
     case "Taiha":

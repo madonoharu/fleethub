@@ -1,81 +1,101 @@
 import styled from "@emotion/styled";
-import {
-  Ship,
-  SpecialEnemyType,
-  Engagement,
-  AirState,
-  WarfareContext,
-} from "@fleethub/core";
+import { OrgType, Ship, WarfareContext } from "@fleethub/core";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { useImmer } from "use-immer";
+  Button,
+  Stack,
+} from "@mui/material";
+import { produce } from "immer";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { useFhCore, useOrgContext } from "../../../hooks";
 import {
-  useFhCore,
-  useModal,
-  useOrgContext,
-  usePlanContext,
-  useSelectState,
-} from "../../../hooks";
-import { createShip } from "../../../store";
-import { Divider, Flexbox, LabeledValue } from "../../atoms";
-import { Select } from "../../molecules";
+  shipDetailsSlice,
+  ShipDetailsState,
+  shipSelectSlice,
+} from "../../../store";
+import { Flexbox } from "../../atoms";
+import AirStateSelect from "../AirStateSelect";
+import EngagementSelect from "../EngagementSelect";
 import ShipCard from "../ShipCard";
-import ShipAnalyzer from "./ShipAnalyzer";
+import AttackPowerAnalyzer from "./AttackPowerAnalyzer";
 import ShipDetailsEnemyList from "./ShipDetailsEnemyList";
-import WarfareSideStateSetting, {
-  useShipWarfareSettings,
-} from "./ShipWarfareSettings";
-import { useDummyEnemySelectState } from "./useDummyEnemySelectState";
+import ShipParamsSettings from "./ShipParamsSettings";
 
-const AIR_STATES: AirState[] = [
-  "AirSupremacy",
-  "AirSuperiority",
-  "AirParity",
-  "AirIncapability",
-  "AirDenial",
-];
-
-const ENGAGEMENTS: Engagement[] = ["Parallel", "HeadOn", "GreenT", "RedT"];
+const isEnemy = (type: OrgType) =>
+  type === "EnemySingle" || type === "EnemyCombined";
 
 type ShipDetailsProps = {
   ship: Ship;
 };
 
 const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship }) => {
-  const { t } = useTranslation("common");
   const { core } = useFhCore();
   const org = useOrgContext();
 
-  const attackerSettings = useShipWarfareSettings(ship, org);
-  const targetSettings = useShipWarfareSettings(ship, undefined, true);
+  const state = useSelector((root) => root.present.shipDetails);
+  const dispatch = useDispatch();
 
-  const [airState, setAirState] = useState<AirState>("AirSupremacy");
-  const [engagement, setEngagement] = useState<Engagement>("Parallel");
+  const update = (payload: Partial<ShipDetailsState>) => {
+    dispatch(shipDetailsSlice.actions.update(payload));
+  };
 
-  const dummyEnemySelectState = useDummyEnemySelectState();
+  const handleEnemySelect = () => {
+    dispatch(
+      shipSelectSlice.actions.create({
+        abyssal: true,
+        position: { tag: "shipDetails" },
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (!org) return;
+    const env = org.create_warfare_ship_environment(
+      ship,
+      state.player.formation
+    );
+
+    if (!env) return;
+
+    const next = produce(state, (draft) => {
+      if (org.is_enemy() === isEnemy(draft.enemy.org_type)) {
+        if (org.is_player()) {
+          draft.enemy.org_type = "EnemySingle";
+        } else {
+          draft.enemy.org_type = "Single";
+        }
+      }
+
+      Object.assign(draft.player, env);
+    });
+
+    update(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const context: WarfareContext = {
-    attacker: attackerSettings.context,
-    target: targetSettings.context,
-    engagement,
-    air_state: airState,
+    attacker_env: state.player,
+    target_env: state.enemy,
+    engagement: state.engagement,
+    air_state: state.air_state,
   };
 
   return (
-    <div className={className}>
+    <Stack className={className} gap={1}>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           自艦隊設定
         </AccordionSummary>
         <AccordionDetails>
-          <WarfareSideStateSetting state={attackerSettings} />
+          <ShipParamsSettings
+            value={state.player}
+            onChange={(player) => update({ player })}
+          />
         </AccordionDetails>
       </Accordion>
 
@@ -84,63 +104,45 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship }) => {
           相手艦設定
         </AccordionSummary>
         <AccordionDetails>
-          <WarfareSideStateSetting state={targetSettings} />
+          <ShipParamsSettings
+            value={state.enemy}
+            onChange={(enemy) => update({ enemy })}
+          />
         </AccordionDetails>
       </Accordion>
 
-      <Divider label="交戦設定" />
-      <Flexbox
-        gap={1}
-        css={{
-          "> *": {
-            minWidth: 120,
-          },
-        }}
-      >
-        <Select
-          label={t("Engagement")}
-          options={ENGAGEMENTS}
-          value={engagement}
-          onChange={setEngagement}
-          getOptionLabel={t}
-        ></Select>
-        <Select
-          label={t("AirBattle")}
-          options={AIR_STATES}
-          value={airState}
-          onChange={setAirState}
-          getOptionLabel={t}
+      <Flexbox gap={1}>
+        <EngagementSelect
+          value={state.engagement}
+          onChange={(engagement) => update({ engagement })}
         />
-
-        <Select label="敵種別補正" {...dummyEnemySelectState} />
+        <AirStateSelect
+          value={state.air_state}
+          onChange={(air_state) => update({ air_state })}
+        />
+        <Button variant="contained" color="primary" onClick={handleEnemySelect}>
+          敵を追加して攻撃力を計算する
+        </Button>
       </Flexbox>
 
       <Flexbox
         gap={1}
         css={{
           "> *": {
-            width: "100%",
+            width: "50%",
           },
         }}
       >
-        <ShipCard ship={ship} />
-        <ShipAnalyzer
-          core={core}
-          context={context}
-          ship={ship}
-          target={dummyEnemySelectState.value.ship}
-        />
+        <ShipCard ship={ship} visibleMiscStats />
+        <AttackPowerAnalyzer core={core} context={context} ship={ship} />
       </Flexbox>
 
-      <ShipDetailsEnemyList context={context} ship={ship} />
-    </div>
+      <ShipDetailsEnemyList state={state} ship={ship} />
+    </Stack>
   );
 };
 
 export default styled(ShipDetails)`
   min-height: 80vh;
-
-  > * {
-    margin-top: 8px;
-  }
+  padding-bottom: 400px;
 `;

@@ -1,24 +1,23 @@
 import styled from "@emotion/styled";
 import { Fleet } from "@fleethub/core";
-import { SHIP_KEYS } from "@fleethub/utils";
+import { ShipKey } from "@fleethub/utils";
 import React from "react";
 
 import ShipBox from "../ShipBox";
 
 type FleetShipListProps = {
   fleet: Fleet;
-  size?: number;
 };
 
 const FleetShipList: React.FCX<FleetShipListProps> = React.memo(
-  ({ className, fleet, size = 6 }) => {
+  ({ className, fleet }) => {
     return (
       <div className={className}>
-        {SHIP_KEYS.filter((_, index) => index < size).map((key) => (
+        {(fleet.ship_keys() as ShipKey[]).map((key) => (
           <ShipBox
             key={key}
             ship={fleet.get_ship(key)}
-            position={{ fleet: fleet.id, key }}
+            position={{ tag: "fleet", id: fleet.id, key }}
           />
         ))}
       </div>

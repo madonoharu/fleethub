@@ -1,13 +1,13 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import BuildIcon from "@mui/icons-material/Build";
 import {
   Button,
   DialogContent,
   DialogTitle,
   Slider,
   Tooltip,
-} from "@material-ui/core";
-import BuildIcon from "@material-ui/icons/Build";
+} from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

@@ -41,10 +41,6 @@ impl Fleet {
         format!("{:X}", self.xxh3)
     }
 
-    pub fn len(&self) -> usize {
-        self.ships.values().count()
-    }
-
     pub fn ship_keys(&self) -> JsValue {
         let keys = (0..self.len)
             .map(|i| format!("s{}", i + 1))

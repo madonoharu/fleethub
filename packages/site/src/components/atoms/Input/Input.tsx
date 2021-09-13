@@ -3,7 +3,7 @@ import {
   InputAdornment,
   TextField as MuiTextField,
   TextFieldProps as MuiTextFieldProps,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 
 const StartInputAdornment = styled(InputAdornment)`

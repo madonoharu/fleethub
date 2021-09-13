@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use strum::{EnumString, ToString};
 use ts_rs::TS;
 
-#[derive(Debug, Clone, Copy, ToString, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
 pub enum ShipFilterGroup {
     Battleship,
     AircraftCarrier,
@@ -16,7 +16,7 @@ pub enum ShipFilterGroup {
     SupportShip,
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToString, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, TS)]
 pub enum ShipType {
     Unknown = 0,
     /// 海防艦
@@ -76,7 +76,7 @@ impl ShipType {
         use ShipFilterGroup::*;
         use ShipType::*;
 
-        match *self {
+        match self {
             FBB | BB | BBV | XBB => Battleship,
             CVL | CV | CVB => AircraftCarrier,
             CA | CAV => HeavyCruiser,
@@ -86,6 +86,14 @@ impl ShipType {
             SS | SSV => Submarine,
             _ => SupportShip,
         }
+    }
+
+    pub fn is_aircraft_carrier(&self) -> bool {
+        self.filter_group() == ShipFilterGroup::AircraftCarrier
+    }
+
+    pub fn is_submarine(&self) -> bool {
+        self.filter_group() == ShipFilterGroup::Submarine
     }
 
     pub fn transport_point(&self) -> i32 {
@@ -106,7 +114,7 @@ impl ShipType {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToString, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, TS)]
 pub enum ShipClass {
     Unknown = 0,
     /// 綾波型
@@ -377,16 +385,16 @@ impl Default for SpeedGroup {
     Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, ToString, Serialize, Deserialize, TS,
 )]
 pub enum DamageState {
-    /// 轟沈
-    Sunk,
-    /// 大破
-    Taiha,
-    /// 中破
-    Chuuha,
-    /// 小破
-    Shouha,
     /// 小破未満
     Normal,
+    /// 小破
+    Shouha,
+    /// 中破
+    Chuuha,
+    /// 大破
+    Taiha,
+    /// 轟沈
+    Sunk,
 }
 
 impl Default for DamageState {
@@ -413,7 +421,7 @@ impl DamageState {
     }
 
     pub fn common_power_mod(&self) -> f64 {
-        match *self {
+        match self {
             Self::Normal | Self::Shouha => 1.0,
             Self::Chuuha => 0.7,
             Self::Taiha => 0.4,
@@ -422,7 +430,7 @@ impl DamageState {
     }
 
     pub fn torpedo_power_mod(&self) -> f64 {
-        match *self {
+        match self {
             Self::Normal | Self::Shouha => 1.0,
             Self::Chuuha => 0.8,
             _ => 0.0,
@@ -459,8 +467,9 @@ impl MoraleState {
         }
     }
 
+    /// 雷撃戦以外の命中補正
     pub fn common_accuracy_mod(&self) -> f64 {
-        match *self {
+        match self {
             Self::Sparkle => 1.2,
             Self::Normal => 1.0,
             Self::Orange => 0.8,
@@ -469,7 +478,7 @@ impl MoraleState {
     }
 
     pub fn torpedo_accuracy_mod(&self) -> f64 {
-        match *self {
+        match self {
             Self::Sparkle => 1.3,
             Self::Normal => 1.0,
             Self::Orange => 0.7,
@@ -477,8 +486,8 @@ impl MoraleState {
         }
     }
 
-    pub fn evasion_mod(&self) -> f64 {
-        match *self {
+    pub fn hit_rate_mod(&self) -> f64 {
+        match self {
             Self::Sparkle => 0.7,
             Self::Normal => 1.0,
             Self::Orange => 1.2,
@@ -488,7 +497,7 @@ impl MoraleState {
 }
 
 /// 特殊敵種別
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub enum SpecialEnemyType {
     None,
     /// ソフトスキン
@@ -535,9 +544,9 @@ mod test {
     fn test_damage_state() {
         use DamageState::*;
 
-        let mut vec: Vec<DamageState> = vec![Normal, Chuuha, Shouha, Sunk, Taiha];
+        let mut vec: Vec<DamageState> = vec![Normal, Shouha, Chuuha, Sunk, Taiha];
         vec.sort();
-        assert_eq!(vec, vec![Sunk, Taiha, Chuuha, Shouha, Normal]);
+        assert_eq!(vec, vec![Normal, Shouha, Chuuha, Taiha, Sunk]);
 
         let table = [
             (99, 0, Sunk),

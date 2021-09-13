@@ -53,10 +53,16 @@ declare_attack_power_modifiers!(
     (b5, b6, b7, b11, b12, b13, b13_2, b14)
 );
 
+impl AttackPowerModifiers {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
 #[derive(Debug, Default, Clone, Serialize, TS)]
 pub struct AttackPowerParams {
     pub basic: f64,
-    pub cap: i32,
+    pub cap: f64,
     pub mods: AttackPowerModifiers,
     pub ap_shell_mod: Option<f64>,
     pub carrier_power: Option<f64>,
@@ -112,13 +118,13 @@ impl AttackPowerParams {
     }
 
     pub fn calc(&self) -> AttackPower {
+        let cap = self.cap;
         let precap = self.apply_precap_modifiers(self.basic);
 
-        let capf64 = self.cap as f64;
-        let is_capped = precap > (capf64);
+        let is_capped = precap > cap;
 
         let capped = if is_capped {
-            capf64 + (precap - capf64).sqrt()
+            cap + (precap - cap).sqrt()
         } else {
             precap
         };

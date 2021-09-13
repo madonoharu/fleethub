@@ -11,7 +11,7 @@ use num_traits::Zero;
 use serde::Serialize;
 use ts_rs::TS;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct NumMap<K, V>
 where
     K: Hash + Eq,

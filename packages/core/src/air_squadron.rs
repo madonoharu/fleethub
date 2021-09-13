@@ -11,9 +11,9 @@ use crate::{
 pub struct AirSquadron {
     #[wasm_bindgen(skip)]
     pub xxh3: u64,
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(readonly)]
     pub mode: AirSquadronMode,
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
@@ -26,18 +26,8 @@ pub struct AirSquadron {
 #[wasm_bindgen]
 impl AirSquadron {
     #[wasm_bindgen(getter)]
-    pub fn id(&self) -> String {
-        self.id.clone()
-    }
-
-    #[wasm_bindgen(getter)]
     pub fn xxh3(&self) -> String {
         format!("{:X}", self.xxh3)
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn mode(&self) -> String {
-        self.mode.to_string()
     }
 
     pub fn get_gear(&self, key: &str) -> Option<Gear> {

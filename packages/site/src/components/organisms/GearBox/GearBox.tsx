@@ -6,7 +6,12 @@ import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 
 import { useModal } from "../../../hooks";
-import { GearEntity, GearPosition, gearsSlice } from "../../../store";
+import {
+  GearEntity,
+  GearPosition,
+  gearsSlice,
+  swapGearPosition,
+} from "../../../store";
 import GearList from "../../templates/GearList";
 import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
@@ -32,7 +37,11 @@ const useGearActions = (id?: string) => {
       id && dispatch(gearsSlice.actions.remove(id));
     };
 
-    return { update, remove };
+    const swap = (event: Parameters<typeof swapGearPosition>[0]) => {
+      dispatch(swapGearPosition(event));
+    };
+
+    return { update, remove, swap };
   }, [id, dispatch]);
 };
 
@@ -73,14 +82,33 @@ const GearBox: React.FCX<Props> = ({
     );
   }
 
+  if (!position) {
+    return (
+      <>
+        <div className={className}>{inner}</div>
+
+        <GearListModal full>
+          <GearList
+            onSelect={(g) => {
+              handleGearChange(g);
+              GearListModal.hide();
+            }}
+            canEquip={canEquip}
+            getNextEbonuses={getNextEbonuses}
+          />
+        </GearListModal>
+      </>
+    );
+  }
+
   return (
     <>
       <Swappable
         className={className}
         type="gear"
-        item={{ position }}
+        item={{ position, id }}
         canDrag={Boolean(position && id)}
-        onSwap={(dragItem, dropItem) => console.log(dragItem, dropItem)}
+        onSwap={actions.swap}
       >
         {inner}
       </Swappable>

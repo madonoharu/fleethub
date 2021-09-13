@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { AntiAirCutinDef } from "@fleethub/core";
-import { Chip, Tooltip, Typography } from "@material-ui/core";
+import { Chip, Tooltip, Typography } from "@mui/material";
 import React from "react";
 
 import { LabeledValue } from "../../atoms";

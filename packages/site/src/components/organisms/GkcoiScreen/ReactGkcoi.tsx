@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Alert, CircularProgress } from "@material-ui/core";
+import { Alert, CircularProgress } from "@mui/material";
 import { DeckBuilder, generate } from "gkcoi";
 import React from "react";
 import { useAsync } from "react-async-hook";

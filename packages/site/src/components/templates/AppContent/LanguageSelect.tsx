@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import TranslateIcon from "@material-ui/icons/Translate";
+import TranslateIcon from "@mui/icons-material/Translate";
 import { useRouter } from "next/router";
 import React from "react";
 

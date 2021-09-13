@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import IconButton, { IconButtonProps } from "@material-ui/core/IconButton";
-import Tooltip, { TooltipProps } from "@material-ui/core/Tooltip";
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import Tooltip, { TooltipProps } from "@mui/material/Tooltip";
 import React from "react";
 
 const tinyStyle = css`

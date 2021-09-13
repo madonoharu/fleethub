@@ -21,15 +21,15 @@ const exec = promisify(child_process.exec);
 type Dictionary = Partial<Record<string, string>>;
 
 const languages = [
-  { code: "ja", kc3: "jp" },
-  { code: "en" },
-  { code: "ko", kc3: "kr" },
+  { code: "ja", kc3: "jp", poi: "ja-JP" },
+  { code: "en", poi: "en-US" },
+  { code: "ko", kc3: "kr", poi: "ko-KR" },
   { code: "zh-CN", kc3: "scn" },
   { code: "zh-TW", kc3: "tcn" },
 ] as const;
 
 type LanguageCode = typeof languages[number]["code"];
-type Language = { code: LanguageCode; kc3?: string };
+type Language = { code: LanguageCode; kc3?: string; poi?: string };
 
 type KC3Ships = Record<string, string>;
 type KC3ShipAffix = {
@@ -45,12 +45,11 @@ type KC3Battle = {
 };
 
 const fhCommonJa = {
-  Ships: "艦娘",
   Equipment: "装備",
   Maps: "海域",
-  Composition: "編成",
   Folder: "フォルダ",
 
+  AirState: "制空状態",
   DamageState: "損傷",
   Normal: "通常",
   Shouha: "小破",
@@ -76,7 +75,6 @@ const fhCommonJa = {
   Searchlight: "$t(gear_types:29)",
   Starshell: "$t(gear_types:33)",
 
-  Copy: "コピーする",
   Change: "変更する",
   Remove: "削除する",
   Consume: "消費する",
@@ -92,12 +90,11 @@ const fhCommon: Record<
 > = {
   ja: fhCommonJa,
   en: {
-    Ships: "Ships",
     Equipment: "Equipment",
     Maps: "Maps",
-    Composition: "Composition",
     Folder: "Folder",
 
+    AirState: "Air State",
     DamageState: "Damage",
     Normal: "Normal",
     Shouha: "Shouha",
@@ -123,7 +120,6 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
-    Copy: "Copy",
     Change: "Change",
     Remove: "Remove",
     Consume: "Consume",
@@ -133,12 +129,11 @@ const fhCommon: Record<
     OpenFolderPage: "Open folder page",
   },
   ko: {
-    Ships: "칸무스",
     Equipment: "장비",
     Maps: "해역",
-    Composition: "편성",
     Folder: "폴더",
 
+    AirState: "제공상태",
     DamageState: "손상",
     Normal: "통상",
     Shouha: "소파",
@@ -164,7 +159,6 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
-    Copy: "복사",
     Change: "변경하다",
     Remove: "삭제하다",
     Consume: "소비하다",
@@ -174,12 +168,11 @@ const fhCommon: Record<
     OpenFolderPage: "폴더 페이지를 열다",
   },
   "zh-CN": {
-    Ships: "舰娘",
     Equipment: "装备",
     Maps: "海域",
-    Composition: "编成",
     Folder: "文件夹",
 
+    AirState: "制空状态",
     DamageState: "损伤",
     Normal: "通常",
     Shouha: "小破",
@@ -205,7 +198,6 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
-    Copy: "复制",
     Change: "变化",
     Remove: "删除",
     Consume: "消费",
@@ -215,12 +207,11 @@ const fhCommon: Record<
     OpenFolderPage: "打开文件夹页面",
   },
   "zh-TW": {
-    Ships: "艦娘",
     Equipment: "裝備",
     Maps: "海域",
-    Composition: "編成",
     Folder: "文件夾",
 
+    AirState: "制空狀態",
     DamageState: "損傷",
     Normal: "通常",
     Shouha: "小破",
@@ -246,7 +237,6 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
-    Copy: "複製",
     Change: "變化",
     Remove: "刪除",
     Consume: "消耗",
@@ -281,6 +271,7 @@ const uniqDictionary = (dict: Dictionary): Dictionary => {
 class LocaleUpdater {
   private kc3: typeof got;
   private tsun: typeof got;
+  private poi: typeof got;
   private code: LanguageCode;
   private path: string;
 
@@ -295,6 +286,10 @@ class LocaleUpdater {
 
     this.tsun = got.extend({
       prefixUrl: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${this.code}`,
+    });
+
+    this.poi = got.extend({
+      prefixUrl: `https://raw.githubusercontent.com/poooi/poi/master/i18n`,
     });
 
     this.path = `packages/site/public/locales/${this.code}`;
@@ -321,6 +316,13 @@ class LocaleUpdater {
     return kcnav;
   };
 
+  private getPoiJson = async <T = unknown>(dir: string) => {
+    const json = await this.poi
+      .get(`${dir}/${this.language.poi || this.language.code}.json`)
+      .json<T>();
+    return json;
+  };
+
   private output = async (filename: string, data: unknown) => {
     await fs.outputJSON(`${this.path}/${filename}`, data);
   };
@@ -331,11 +333,15 @@ class LocaleUpdater {
   };
 
   private updateCommon = async () => {
-    const [kc3Terms, kc3Battle, kcnav] = await Promise.all([
-      this.getKC3Json<Record<string, string>>("terms.json"),
-      this.getKC3Json<KC3Battle>("battle.json"),
-      this.getKcnavJson(),
-    ]);
+    const [kc3Terms, kc3Battle, kcnav, poiMenu, poiMain, poiOthers] =
+      await Promise.all([
+        this.getKC3Json<Record<string, string>>("terms.json"),
+        this.getKC3Json<KC3Battle>("battle.json"),
+        this.getKcnavJson(),
+        this.getPoiJson<Record<string, string>>("menu"),
+        this.getPoiJson<Record<string, string>>("main"),
+        this.getPoiJson<Record<string, string>>("others"),
+      ]);
 
     const worldNames = Object.fromEntries(
       Object.entries(kcnav).filter(([key]) => /^worldName\d+/.test(key))
@@ -382,8 +388,18 @@ class LocaleUpdater {
       Cruising4: kc3Terms["SettingsForCombBattle"],
     };
 
-    const getDayCutin = (i: number) =>
-      kc3Battle.cutinDay[i].replace(/ \[.+\]/, "").replace(/CI$/, "");
+    const getDayCutin = (i: number) => {
+      if (this.code === "zh-TW") {
+        return kc3Battle.cutinDay[i].replace(/(Cut-In| 判定).+/, "");
+      }
+
+      if (this.code === "ko" && (i === 30 || i === 31)) {
+        if (i === 30) return "Zuiun CI";
+        if (i === 31) return "Air/Sea CI";
+      }
+
+      return kc3Battle.cutinDay[i].replace(/ \[.+\]/, "");
+    };
 
     const dayCutinDictionary: Record<DayCutin, string> = {
       DoubleAttack: getDayCutin(2),
@@ -398,8 +414,14 @@ class LocaleUpdater {
       AirSea: getDayCutin(31),
     };
 
-    const getNightCutin = (i: number) =>
-      kc3Battle.cutinNight[i].replace(/ \[.+\]/, "").replace(/CI$/, "");
+    const getNightCutin = (i: number) => {
+      if (this.code === "zh-TW") {
+        return kc3Battle.cutinDay[i].replace(/(Cut-In| 判定).+/, "");
+      }
+
+      return kc3Battle.cutinNight[i].replace(/ \[.+\]/, "");
+    };
+
     const cvci = getNightCutin(6);
 
     const nightCutinDictionary: Record<NightCutin, string> = {
@@ -467,15 +489,17 @@ class LocaleUpdater {
       interception: kc3Terms["ShipEvaInterception"],
       cost: kc3Terms["ShipDeployCost"],
 
+      Ship: kcnav["termShip"],
       Fleet: kcnav["termFleet"],
+      Lbas: kc3Terms["LodgerLbas"],
+      Composition: kcnav["ribbonCompsTabName"],
       Main: kcnav["termMain"],
       Escort: kcnav["termEscort"],
-      Ship: kcnav["termShip"],
       ShipClass: kcnav["termClass"],
       Difficulty: kcnav["termDifficulty"],
       Details: kcnav["termDetails"],
       Map: kcnav["termMap"],
-      Org: kcnav["ribbonCompsTabName"],
+      Enemies: kcnav["panelEnemiesTabName"],
 
       LbasDistance: kcnav["displayLBASDistanceLabel"],
 
@@ -488,12 +512,28 @@ class LocaleUpdater {
       ].replace(": ≈{0}", ""),
 
       Engagement: kc3Terms["BattleEngangement"],
+      Formation: kcnav["panelEnemiesFormationHeader"],
       Contact: kc3Terms["BattleContact"],
       AirBattle: kc3Terms["BattleAirBattle"],
 
       Reset: kc3Terms["SettingsReset"],
       ShipStatsCurrent: kc3Terms["SettingsShipStatsCurrent"],
       ShipStatsUnequipped: kc3Terms["SettingsShipStatsUnequipped"],
+
+      FighterPower: poiMain["Fighter Power"],
+      AntiAirCutin: poiMain["AACI"],
+      AntiAirPropellantBarrage: poiMain["AAPB"],
+      Total: poiMain["Total"],
+
+      Edit: poiMenu["Edit"],
+      Undo: poiMenu["Undo"],
+      Redo: poiMenu["Redo"],
+      Copy: poiMenu["Copy"],
+      View: poiMenu["View"],
+      Close: poiMenu["Close"],
+      Help: poiMenu["Help"],
+
+      CopyToClipboard: poiOthers["Copy to clipboard"],
 
       ...exnteds,
 

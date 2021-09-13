@@ -109,7 +109,7 @@ pub fn special_enemy_modifiers(
             let sec_gun_count = gears.count_type(GearType::SecondaryGun);
             let jet_fighter_bomber_count = gears.count_type(GearType::JetFighterBomber);
             let aa_gun_count = gears.count_type(GearType::AntiAirGun);
-            let lookouts_count = gears.count_type(GearType::SurfaceShipPersonnel);
+            let lookouts_count = gears.count_type(GearType::ShipPersonnel);
 
             mods.apply_a6(0.35);
             mods.apply_b6(15.0);
@@ -157,7 +157,7 @@ pub fn special_enemy_modifiers(
     let type4_rocket_group_count = type4_rocket_count + type4_rocket_cd_count;
 
     let landing_craft_count = gears.count_type(GearType::LandingCraft);
-    let tank_count = gears.count_type(GearType::SpecialAmphibiousTank);
+    let tank_count = gears.count_type(GearType::AmphibiousTank);
 
     let toku_daihatsu_count = gears.count(gear_id!("特大発動艇"));
     let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
@@ -175,7 +175,7 @@ pub fn special_enemy_modifiers(
     });
 
     let tank_stars = gears.sum_by(|gear| {
-        if gear.gear_type == GearType::SpecialAmphibiousTank {
+        if gear.gear_type == GearType::AmphibiousTank {
             gear.stars
         } else {
             0

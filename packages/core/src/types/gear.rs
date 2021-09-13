@@ -1,9 +1,10 @@
 use enumset::EnumSetType;
 use num_derive::{FromPrimitive, ToPrimitive};
-use strum::{EnumString, ToString};
+use serde::{Deserialize, Serialize};
+use strum::EnumString;
 use ts_rs::TS;
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, ToString, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS)]
 pub enum GearType {
     Unknown = 0,
     /// 小口径主砲
@@ -39,7 +40,7 @@ pub enum GearType {
     /// 追加装甲
     ExtraArmor = 16,
     /// 機関部強化
-    EngineImprovement = 17,
+    Engine = 17,
     /// 対空強化弾
     AntiAirShell = 18,
     /// 対艦強化弾
@@ -51,21 +52,21 @@ pub enum GearType {
     /// 特殊潜航艇
     MidgetSubmarine = 22,
     /// 応急修理要員
-    EmergencyRepairPersonnel = 23,
+    EmergencyRepair = 23,
     /// 上陸用舟艇
     LandingCraft = 24,
     /// オートジャイロ
-    Autogyro = 25,
+    Rotorcraft = 25,
     /// 対潜哨戒機
     AntiSubPatrolAircraft = 26,
     /// 追加装甲(中型)
-    MediumExtraArmor = 27,
+    MediumArmor = 27,
     /// 追加装甲(大型)
-    LargeExtraArmor = 28,
+    LargeArmor = 28,
     /// 探照灯
     Searchlight = 29,
     /// 簡易輸送部材
-    SupplyTransportContainer = 30,
+    SupplyContainer = 30,
     /// 艦艇修理施設
     ShipRepairFacility = 31,
     /// 潜水艦魚雷
@@ -83,7 +84,7 @@ pub enum GearType {
     /// 大口径主砲（II）
     LargeMainGun2 = 38,
     /// 水上艦要員
-    SurfaceShipPersonnel = 39,
+    ShipPersonnel = 39,
     /// 大型ソナー
     LargeSonar = 40,
     /// 大型飛行艇
@@ -97,7 +98,7 @@ pub enum GearType {
     /// 水上戦闘機
     SeaplaneFighter = 45,
     /// 特型内火艇
-    SpecialAmphibiousTank = 46,
+    AmphibiousTank = 46,
     /// 陸上攻撃機
     LbAttacker = 47,
     /// 局地戦闘機
@@ -130,7 +131,7 @@ impl Default for GearType {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, EnumString, TS)]
+#[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, TS)]
 pub enum GearAttr {
     /// 深海
     Abyssal,
@@ -177,7 +178,7 @@ pub enum GearAttr {
     /// 艦上爆戦
     CbFighterBomber,
     /// 対地艦爆
-    AntiInstallationCbBomber,
+    AntiInstDiveBomber,
     /// 夜間偵察機
     NightRecon,
     /// 艦上Swordfish

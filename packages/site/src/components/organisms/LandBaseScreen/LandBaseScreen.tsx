@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Org } from "@fleethub/core";
 import { AIR_SQUADRON_KEYS } from "@fleethub/utils";
-import { Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { Flexbox, LabeledValue } from "../../atoms";

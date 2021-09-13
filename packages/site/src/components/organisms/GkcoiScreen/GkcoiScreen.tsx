@@ -1,13 +1,15 @@
 import styled from "@emotion/styled";
 import { Org } from "@fleethub/core";
 import { Dict } from "@fleethub/utils";
-import { Paper } from "@material-ui/core";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import { Paper, Button, Link } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { appSlice } from "../../../store";
 import { createGkcoiDeck, GkcoiLang, GkcoiTheme } from "../../../utils";
+import { Flexbox } from "../../atoms";
 import { Select } from "../../molecules";
 import ReactGkcoi from "./ReactGkcoi";
 
@@ -55,14 +57,22 @@ const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
 
   return (
     <Paper className={className} style={style}>
-      <Select
-        css={{ marginBottom: 8 }}
-        label="theme"
-        options={GKCOI_THEMES}
-        value={theme}
-        onChange={handleChange}
-        getOptionLabel={getThemeLabel}
-      />
+      <Flexbox gap={1} mb={1}>
+        <Select
+          label="theme"
+          options={GKCOI_THEMES}
+          value={theme}
+          onChange={handleChange}
+          getOptionLabel={getThemeLabel}
+        />
+        <Button
+          startIcon={<GitHubIcon />}
+          LinkComponent={Link}
+          href="https://github.com/Nishisonic/gkcoi"
+        >
+          Nishisonic/gkcoi
+        </Button>
+      </Flexbox>
       <ReactGkcoi deck={deck} />
     </Paper>
   );

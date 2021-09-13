@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import React from "react";
 
 import { Divider } from "../../atoms";

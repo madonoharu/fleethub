@@ -1,11 +1,15 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fleethub/core";
-import { Button, ButtonProps } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import AddIcon from "@mui/icons-material/Add";
+import { Button, ButtonProps } from "@mui/material";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
-import { ShipPosition, shipSelectSlice } from "../../../store";
+import {
+  ShipPosition,
+  shipSelectSlice,
+  swapShipPosition,
+} from "../../../store";
 import ShipCard from "../ShipCard";
 import Swappable from "../Swappable";
 
@@ -30,19 +34,28 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
     dispatch(shipSelectSlice.actions.create({ position, id }));
   };
 
+  const handleSwap = (event: Parameters<typeof swapShipPosition>[0]) => {
+    dispatch(swapShipPosition(event));
+  };
+
   const element = !ship ? (
     <AddShipButton onClick={handleShipChange} />
   ) : (
     <ShipCard ship={ship} />
   );
 
+  if (!position) {
+    return <div className={className}>{element}</div>;
+  }
+
   return (
     <Swappable
       className={className}
       type="ship"
-      item={{ id }}
-      onSwap={(dragItem, dropItem) => console.log(dragItem, dropItem)}
-      dragLayer={"a"}
+      item={{ id, position }}
+      onSwap={handleSwap}
+      canDrag={Boolean(ship)}
+      dragLayer={<div />}
     >
       {element}
     </Swappable>

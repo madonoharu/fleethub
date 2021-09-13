@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import {
   Dialog as MuiDialog,
   DialogProps as MuiDialogProps,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 
 import { CloseButton } from "../../molecules";

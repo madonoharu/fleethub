@@ -2,6 +2,7 @@ import { CombinedFormation, Formation, SingleFormation } from "@fleethub/core";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { ignoreUndoable } from "../../../store";
 import { Select, SelectInputProps } from "../../molecules";
 
 const SINGLE_FORMATIONS: SingleFormation[] = [
@@ -38,8 +39,11 @@ const FormationSelect: React.FC<Props> = ({
   const { t } = useTranslation("common");
 
   useEffect(() => {
-    if (options.includes(value)) return;
-    onChange?.(combined ? "Cruising4" : "LineAhead");
+    if (options.includes(value) || !onChange) return;
+
+    ignoreUndoable(() => {
+      onChange(combined ? "Cruising4" : "LineAhead");
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [combined]);
 

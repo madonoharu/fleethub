@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Button, Tooltip, Typography } from "@material-ui/core";
+import { Button, Tooltip, Typography } from "@mui/material";
 import React from "react";
 
 import { usePopover } from "../../../hooks";

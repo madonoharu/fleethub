@@ -158,7 +158,7 @@ export type SpecialEnemyType =
   | "BattleshipSummerPrincess"
   | "HeavyCruiserSummerPrincess";
 
-export type DamageState = "Sunk" | "Taiha" | "Chuuha" | "Shouha" | "Normal";
+export type DamageState = "Normal" | "Shouha" | "Chuuha" | "Taiha" | "Sunk";
 
 export type MoraleState = "Sparkle" | "Normal" | "Orange" | "Red";
 
@@ -187,7 +187,7 @@ export type Engagement = "GreenT" | "Parallel" | "HeadOn" | "RedT";
 
 export type Formation = SingleFormation | CombinedFormation;
 
-export interface FormationAttackModifiers {
+export interface FormationWarfareDef {
   power_mod: number | null;
   accuracy_mod: number | null;
   evasion_mod: number | null;
@@ -197,10 +197,10 @@ export interface NormalFormationDef {
   tag: Formation;
   protection_rate: number | null;
   fleet_anti_air_mod: number;
-  shelling: FormationAttackModifiers;
-  torpedo: FormationAttackModifiers;
-  asw: FormationAttackModifiers;
-  night: FormationAttackModifiers;
+  shelling: FormationWarfareDef;
+  torpedo: FormationWarfareDef;
+  asw: FormationWarfareDef;
+  night: FormationWarfareDef;
 }
 
 export type FormationDef = NormalFormationDef | {
@@ -293,20 +293,20 @@ export type GearType =
   | "Sonar"
   | "DepthCharge"
   | "ExtraArmor"
-  | "EngineImprovement"
+  | "Engine"
   | "AntiAirShell"
   | "ApShell"
   | "VtFuze"
   | "AntiAirGun"
   | "MidgetSubmarine"
-  | "EmergencyRepairPersonnel"
+  | "EmergencyRepair"
   | "LandingCraft"
-  | "Autogyro"
+  | "Rotorcraft"
   | "AntiSubPatrolAircraft"
-  | "MediumExtraArmor"
-  | "LargeExtraArmor"
+  | "MediumArmor"
+  | "LargeArmor"
   | "Searchlight"
-  | "SupplyTransportContainer"
+  | "SupplyContainer"
   | "ShipRepairFacility"
   | "SubmarineTorpedo"
   | "Starshell"
@@ -315,14 +315,14 @@ export type GearType =
   | "AntiAirFireDirector"
   | "AntiGroundEquipment"
   | "LargeMainGun2"
-  | "SurfaceShipPersonnel"
+  | "ShipPersonnel"
   | "LargeSonar"
   | "LargeFlyingBoat"
   | "LargeSearchlight"
   | "CombatRation"
   | "Supplies"
   | "SeaplaneFighter"
-  | "SpecialAmphibiousTank"
+  | "AmphibiousTank"
   | "LbAttacker"
   | "LbFighter"
   | "LbRecon"
@@ -335,6 +335,35 @@ export type GearType =
   | "JetRecon"
   | "LargeRadar2"
   | "CbRecon2";
+
+export type GearAttr =
+  | "Abyssal"
+  | "HighAngleMount"
+  | "NightFighter"
+  | "NightAttacker"
+  | "HeavyBomber"
+  | "MainGun"
+  | "Radar"
+  | "SurfaceRadar"
+  | "AirRadar"
+  | "DepthChargeProjector"
+  | "AdditionalDepthCharge"
+  | "AntiSubMortar"
+  | "AntiSubWeapon"
+  | "AntiSubAircraft"
+  | "Seaplane"
+  | "CbAircraft"
+  | "LbAircraft"
+  | "JetAircraft"
+  | "Fighter"
+  | "Recon"
+  | "ObservationSeaplane"
+  | "CbFighterBomber"
+  | "AntiInstDiveBomber"
+  | "NightRecon"
+  | "CbSwordfish"
+  | "SemiNightPlane"
+  | "HighAltitudeInterceptor";
 
 export type AirSquadronMode = "Sortie" | "AirDefense";
 
@@ -551,91 +580,6 @@ export interface MasterData {
   constants: MasterConstants;
 }
 
-export interface DayCutinRateAnalysis {
-  observation_term: number | null;
-  rates: Array<[DayCutin | null, number | null]>;
-  total_cutin_rate: number | null;
-}
-
-export interface ShipDayCutinRateAnalysis {
-  ship_id: number;
-  air_supremacy: DayCutinRateAnalysis;
-  air_superiority: DayCutinRateAnalysis;
-}
-
-export interface FleetDayCutinRateAnalysis {
-  fleet_los_mod: number | null;
-  ships: Array<ShipDayCutinRateAnalysis>;
-}
-
-export interface OrgDayCutinRateAnalysis {
-  main: FleetDayCutinRateAnalysis;
-  escort: FleetDayCutinRateAnalysis;
-}
-
-export interface ShipAntiAirAnalysis {
-  ship_id: number;
-  adjusted_anti_air: number | null;
-  proportional_shotdown_rate: number | null;
-  fixed_shotdown_number: number | null;
-  minimum_bonus: number | null;
-  anti_air_cutin_chance: Array<[number, number]>;
-  anti_air_propellant_barrage_chance: number | null;
-}
-
-export interface OrgAntiAirAnalysis {
-  fleet_anti_air: number;
-  ships: Array<ShipAntiAirAnalysis>;
-  anti_air_cutin_chance: Array<[number, number]>;
-}
-
-export interface NightCutinFleetState {
-  contact_rank: ContactRank | null;
-  searchlight: boolean;
-  starshell: boolean;
-}
-
-export interface NightCutinRateAnalysis {
-  cutin_term: number | null;
-  rates: Array<[NightCutin, number | null]>;
-}
-
-export interface ShipNightCutinRateAnalysis {
-  ship_id: number;
-  normal: NightCutinRateAnalysis;
-  chuuha: NightCutinRateAnalysis;
-}
-
-export interface NightContactChance {
-  rank1: number;
-  rank2: number;
-  rank3: number;
-  total: number;
-}
-
-export interface OrgNightCutinRateAnalysis {
-  contact_chance: NightContactChance;
-  ships: Array<ShipNightCutinRateAnalysis>;
-}
-
-export interface AirstrikeContactChance {
-  air_state: AirState;
-  trigger_rate: number;
-  rank3: number;
-  rank2: number;
-  rank1: number;
-  total: number;
-}
-
-export interface OrgContactChanceAnalysis {
-  single: Array | null;
-  combined: Array | null;
-}
-
-export interface OrgAirstrikeAnalysis {
-  contact_chance: OrgContactChanceAnalysis;
-}
-
 export interface AttackPowerModifiers {
   a5: number;
   b5: number;
@@ -680,9 +624,9 @@ export interface HitRateParams {
   accuracy_term: number;
   evasion_term: number;
   morale_mod: number;
-  critical_rate_multiplier: number;
-  critical_percent_bonus: number;
-  hit_percent_bonus: number;
+  critical_rate_constant: number;
+  critical_percentage_bonus: number;
+  hit_percentage_bonus: number;
 }
 
 export interface HitRate {
@@ -691,7 +635,7 @@ export interface HitRate {
   critical: number;
 }
 
-export interface WarfareSideState {
+export interface WarfareShipEnvironment {
   org_type: OrgType;
   role: Role;
   ship_index: number;
@@ -701,29 +645,125 @@ export interface WarfareSideState {
 }
 
 export interface WarfareContext {
-  attacker: WarfareSideState;
-  target: WarfareSideState;
+  attacker_env: WarfareShipEnvironment;
+  target_env: WarfareShipEnvironment;
   engagement: Engagement;
   air_state: AirState;
 }
 
-export interface ShellingAttackAnalysisItem {
-  cutin: DayCutin | null;
-  rate: number | null;
-  attack_power_params: AttackPowerParams | null;
-  attack_power: AttackPower | null;
-  hit_rate_params: HitRateParams | null;
-  hit_rate: HitRate | null;
-  damage: DamageAnalysis | null;
+export interface NightSituation {
+  night_contact_rank: ContactRank | null;
+  starshell: boolean;
+  searchlight: boolean;
 }
 
-export interface ShellingAttackAnalysis {
-  items: Array<ShellingAttackAnalysisItem>;
+export type ShellingAttackType = "Normal" | "Carrier";
+
+export type NightAttackType = "Normal" | "ArkRoyal" | "Carrier";
+
+export type AswAttackType = "DepthCharge" | "Aircraft";
+
+export interface DayCutinRateInfo {
+  observation_term: number | null;
+  rates: Array<[DayCutin | null, number | null]>;
+  total_cutin_rate: number | null;
+}
+
+export interface ShipDayCutinRateInfo {
+  ship_id: number;
+  air_supremacy: DayCutinRateInfo;
+  air_superiority: DayCutinRateInfo;
+}
+
+export interface FleetDayCutinRateInfo {
+  fleet_los_mod: number | null;
+  ships: Array<ShipDayCutinRateInfo>;
+}
+
+export interface OrgDayCutinRateInfo {
+  main: FleetDayCutinRateInfo;
+  escort: FleetDayCutinRateInfo;
+}
+
+export interface ShipAntiAirInfo {
+  ship_id: number;
+  adjusted_anti_air: number | null;
+  proportional_shotdown_rate: number | null;
+  fixed_shotdown_number: number | null;
+  minimum_bonus: number | null;
+  anti_air_cutin_chance: Array<[number, number]>;
+  anti_air_propellant_barrage_chance: number | null;
+}
+
+export interface OrgAntiAirInfo {
+  fleet_anti_air: number;
+  ships: Array<ShipAntiAirInfo>;
+  anti_air_cutin_chance: Array<[number, number]>;
+}
+
+export interface NightCutinRateInfo {
+  cutin_term: number | null;
+  rates: Array<[NightCutin | null, number | null]>;
+}
+
+export interface ShipNightCutinRateInfo {
+  ship_id: number;
+  normal: NightCutinRateInfo;
+  chuuha: NightCutinRateInfo;
+}
+
+export interface NightContactChance {
+  rank1: number;
+  rank2: number;
+  rank3: number;
+  total: number;
+}
+
+export interface OrgNightCutinRateInfo {
+  contact_chance: NightContactChance;
+  ships: Array<ShipNightCutinRateInfo>;
+}
+
+export interface AirstrikeContactChance {
+  air_state: AirState;
+  trigger_rate: number;
+  rank3: number;
+  rank2: number;
+  rank1: number;
+  total: number;
+}
+
+export interface OrgContactChanceInfo {
+  single: Array | null;
+  combined: Array | null;
+}
+
+export interface OrgAirstrikeInfo {
+  contact_chance: OrgContactChanceInfo;
+}
+
+export interface AttackStats {
+  attack_power: AttackPower | null;
+  attack_power_params: AttackPowerParams | null;
+  hit_rate: HitRate | null;
+  hit_rate_params: HitRateParams | null;
+  damage: DamageInfo | null;
+}
+
+export interface AttackInfoItem<Cutin> {
+  cutin: Cutin;
+  rate: number | null;
+  stats: AttackStats;
+}
+
+export interface AttackInfo<AttackType, Cutin> {
+  attack_type: AttackType;
+  items: Array<AttackInfoItem<Cutin>>;
   damage_state_map: Record<DamageState, number>;
   damage_state_map_is_empty: boolean;
 }
 
-export interface DamageAnalysis {
+export interface DamageInfo {
   miss_damage_min: number;
   miss_damage_max: number;
   normal_damage_min: number;
@@ -732,4 +772,26 @@ export interface DamageAnalysis {
   critical_damage_max: number;
   damage_map: Record<number, number>;
   damage_state_map: Record<DamageState, number>;
+}
+
+export type DayBattleAttackType = { t: "Shelling"; c: ShellingAttackType } | {
+  t: "Asw";
+  c: AswAttackType;
+};
+
+export type NightBattleAttackType = { t: "NightAttack"; c: NightAttackType } | {
+  t: "Asw";
+  c: AswAttackType;
+};
+
+export interface WarfareAnalysisParams {
+  warfare_context: WarfareContext;
+  attacker_night_situation: NightSituation;
+  target_night_situation: NightSituation;
+}
+
+export interface WarfareInfo {
+  day: AttackInfo<DayBattleAttackType, DayCutin | null> | null;
+  closing_torpedo: AttackInfo<null, null> | null;
+  night: AttackInfo<NightBattleAttackType, NightCutin | null> | null;
 }

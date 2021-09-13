@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 import { Formation, Org } from "@fleethub/core";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Typography,
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Collapse,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+} from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -27,6 +27,8 @@ type PlanNodeListItemProps = {
   onRemove?: () => void;
   onSwap?: (a: number, b: number) => void;
 };
+
+const TransitionProps = { mountOnEnter: true };
 
 const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
   index,
@@ -51,9 +53,9 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
       className={className}
       item={{ index }}
       type="node"
-      onSwap={(drag, drop) => onSwap?.(drag.index, drop.index)}
+      onSwap={({ drag, drop }) => onSwap?.(drag.index, drop.index)}
     >
-      <Accordion disableGutters>
+      <Accordion disableGutters TransitionProps={TransitionProps}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <div>
             <Flexbox gap={1}>

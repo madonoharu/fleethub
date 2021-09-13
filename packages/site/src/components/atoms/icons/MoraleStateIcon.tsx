@@ -1,12 +1,12 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { MoraleState } from "@fleethub/core";
-import { SvgIconProps } from "@material-ui/core";
-import CircleIcon from "@material-ui/icons/Circle";
-import FlareIcon from "@material-ui/icons/Flare";
-import MoodBadIcon from "@material-ui/icons/MoodBad";
-import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
-import SentimentSatisfiedAltIcon from "@material-ui/icons/SentimentSatisfiedAlt";
+import CircleIcon from "@mui/icons-material/Circle";
+import FlareIcon from "@mui/icons-material/Flare";
+import MoodBadIcon from "@mui/icons-material/MoodBad";
+import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
+import { SvgIconProps } from "@mui/material";
 import React from "react";
 
 const MoraleStateIcon: React.FC<SvgIconProps & { state: MoraleState }> = ({

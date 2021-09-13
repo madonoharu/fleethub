@@ -1,4 +1,4 @@
-import { AlertColor } from "@material-ui/core";
+import { AlertColor } from "@mui/material";
 import { createSlice, isRejected, PayloadAction } from "@reduxjs/toolkit";
 
 import { publishFile } from "./entities";

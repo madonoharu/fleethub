@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { createTheme } from "@material-ui/core/styles";
+import { createTheme } from "@mui/material/styles";
 
 import { colors, palette } from "./colors";
 
@@ -136,6 +136,11 @@ const muiTheme = createTheme({
         paper: {
           backgroundColor: "rgba(30, 30, 35)",
         },
+      },
+    },
+    MuiMenu: {
+      defaultProps: {
+        transitionDuration: 200,
       },
     },
   },

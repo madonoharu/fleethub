@@ -3,7 +3,7 @@ import "dotenv/config";
 import child_process from "child_process";
 import path from "path";
 import { promisify } from "util";
-import { Dict, mapValues } from "@fleethub/utils/src";
+import { Dict, mapValues, uniqBy } from "@fleethub/utils/src";
 import fs from "fs-extra";
 import { Start2 } from "kc-tools";
 
@@ -88,8 +88,7 @@ const updateRs = async (
   };
 
   const updateGearId = (src: string): string => {
-    const inner = start2.api_mst_slotitem
-      .filter((gear) => gear.api_id < 500)
+    const inner = uniqBy(start2.api_mst_slotitem, (gear) => gear.api_name)
       .map((gear) => `("${gear.api_name}") => { ${gear.api_id} };`)
       .join("\n");
 

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { AirSquadron, AirSquadronMode } from "@fleethub/core";
 import { GEAR_KEYS, SlotSizeKey } from "@fleethub/utils";
-import { Paper, Typography } from "@material-ui/core";
+import { Paper, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 import { shallowEqual, useDispatch } from "react-redux";

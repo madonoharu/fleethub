@@ -63,14 +63,14 @@ pub struct IBonuses {
 pub struct Gear {
     pub(crate) xxh3: u64,
 
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(getter_with_clone)]
     pub id: String,
 
     pub gear_id: u16,
     pub exp: u8,
     pub stars: u8,
 
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(getter_with_clone)]
     pub name: String,
     #[wasm_bindgen(skip)]
     pub types: GearTypes,
@@ -78,7 +78,7 @@ pub struct Gear {
     pub attrs: EnumSet<GearAttr>,
     #[wasm_bindgen(skip)]
     pub ibonuses: IBonuses,
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(readonly)]
     pub gear_type: GearType,
     #[wasm_bindgen(skip)]
     pub special_type: GearType,
@@ -179,17 +179,12 @@ impl Gear {
             ibonuses,
         }
     }
-
-    pub fn has_attr(&self, attr: GearAttr) -> bool {
-        self.attrs.contains(attr)
-    }
 }
 
 #[wasm_bindgen]
 impl Gear {
-    #[wasm_bindgen(getter)]
-    pub fn id(&self) -> String {
-        self.id.clone()
+    pub fn default() -> Self {
+        Default::default()
     }
 
     #[wasm_bindgen(getter)]
@@ -198,18 +193,8 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn name(&self) -> String {
-        self.name.clone()
-    }
-
-    #[wasm_bindgen(getter)]
     pub fn types(&self) -> JsValue {
         JsValue::from_serde(&self.types).unwrap()
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn gear_type(&self) -> String {
-        self.gear_type.to_string()
     }
 
     #[wasm_bindgen(getter)]
@@ -227,6 +212,10 @@ impl Gear {
         self.types.icon_id()
     }
 
+    pub fn has_attr(&self, attr: GearAttr) -> bool {
+        self.attrs.contains(attr)
+    }
+
     pub fn discern(&self) -> String {
         use GearType::*;
 
@@ -238,14 +227,14 @@ impl Gear {
             | SeaplaneBomber
             | SeaplaneFighter
             | LargeFlyingBoat
-            | Autogyro
+            | Rotorcraft
             | AntiSubPatrolAircraft => "Recon",
             SmallMainGun | MediumMainGun | LargeMainGun => "MainGun",
             SecondaryGun | AntiAirGun => "Secondary",
             Torpedo | SubmarineTorpedo | MidgetSubmarine => "Torpedo",
             Sonar | LargeSonar | DepthCharge => "AntiSub",
             SmallRadar | LargeRadar => "Radar",
-            LandingCraft | SpecialAmphibiousTank | SupplyTransportContainer => "Landing",
+            LandingCraft | AmphibiousTank | SupplyContainer => "Landing",
 
             _ => {
                 if self.attrs.contains(GearAttr::LbAircraft) {
@@ -289,6 +278,16 @@ impl Gear {
         } else {
             0
         }
+    }
+
+    pub fn is_carrier_shelling_plane(&self) -> bool {
+        matches!(
+            self.gear_type,
+            GearType::CbDiveBomber
+                | GearType::CbTorpedoBomber
+                | GearType::JetFighterBomber
+                | GearType::JetTorpedoBomber
+        )
     }
 
     fn get_proficiency_type(&self) -> ProficiencyType {
@@ -429,6 +428,35 @@ impl Gear {
         rate
     }
 
+    pub fn is_night_plane(&self) -> bool {
+        self.has_attr(GearAttr::NightAttacker)
+            || self.has_attr(GearAttr::NightFighter)
+            || self.has_attr(GearAttr::SemiNightPlane)
+    }
+
+    pub fn night_plane_power(&self, slot_size: u8, anti_inst: bool) -> f64 {
+        if !self.is_night_plane() || slot_size == 0 {
+            return 0.0;
+        }
+
+        let torpedo = if anti_inst { 0 } else { self.torpedo };
+        let base = (self.firepower + self.bombing + torpedo) as f64;
+
+        let (a, b) =
+            if self.has_attr(GearAttr::NightAttacker) || self.has_attr(GearAttr::NightFighter) {
+                (3.0, 0.45)
+            } else {
+                (0.0, 0.3)
+            };
+
+        let ss = slot_size as f64;
+        let gear_multiplier = (self.firepower + self.torpedo + self.torpedo + self.asw) as f64;
+
+        let slot_size_mod = a * ss + b * gear_multiplier * ss.sqrt();
+
+        base + slot_size_mod + self.ibonuses.night_power
+    }
+
     pub fn elos(&self) -> f64 {
         let multiplier = match self.gear_type {
             GearType::CbTorpedoBomber => 0.8,
@@ -439,6 +467,19 @@ impl Gear {
         };
 
         multiplier * (self.los as f64 + self.ibonuses.elos)
+    }
+
+    pub fn is_abyssal_cuttlefish_torpedo(&self) -> bool {
+        self.gear_id == gear_id!("深海烏賊魚雷")
+    }
+
+    pub fn is_abyssal_patrolling_attack_hawk(&self) -> bool {
+        matches!(
+            self.gear_id,
+            gear_id!("深海攻撃哨戒鷹")
+                | gear_id!("深海攻撃哨戒鷹改")
+                | gear_id!("深海攻撃哨戒鷹改二")
+        )
     }
 }
 

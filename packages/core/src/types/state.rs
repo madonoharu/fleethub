@@ -59,7 +59,7 @@ pub struct FleetState {
     pub s7: Option<ShipState>,
 }
 
-#[derive(Debug, Clone, Copy, Hash, ToString, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
 pub enum AirSquadronMode {
     Sortie,
     AirDefense,

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Org } from "@fleethub/core";
-import { Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
 import React from "react";
 
 import { Tabs, TabsProps } from "../../molecules";

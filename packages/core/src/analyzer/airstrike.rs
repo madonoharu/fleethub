@@ -18,14 +18,14 @@ pub struct AirstrikeContactChance {
 }
 
 #[derive(Debug, Clone, Serialize, TS)]
-pub struct OrgContactChanceAnalysis {
+pub struct OrgContactChanceInfo {
     single: Option<Vec<AirstrikeContactChance>>,
     combined: Option<Vec<AirstrikeContactChance>>,
 }
 
 #[derive(Debug, Clone, Serialize, TS)]
-pub struct OrgAirstrikeAnalysis {
-    contact_chance: OrgContactChanceAnalysis,
+pub struct OrgAirstrikeInfo {
+    contact_chance: OrgContactChanceInfo,
 }
 
 fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<AirstrikeContactChance> {
@@ -89,7 +89,7 @@ fn analyze_ships_contact_chance(ships: Vec<&Ship>) -> Option<Vec<AirstrikeContac
     Some(vec![air_supremacy, air_superiority, air_denial])
 }
 
-fn analyze_org_contact_chance(org: &Org) -> OrgContactChanceAnalysis {
+fn analyze_org_contact_chance(org: &Org) -> OrgContactChanceInfo {
     let main_ships = org.main().ships.values().collect();
     let single = analyze_ships_contact_chance(main_ships);
 
@@ -103,10 +103,10 @@ fn analyze_org_contact_chance(org: &Org) -> OrgContactChanceAnalysis {
         None
     };
 
-    OrgContactChanceAnalysis { single, combined }
+    OrgContactChanceInfo { single, combined }
 }
 
-pub fn analyze_org(org: &Org) -> OrgAirstrikeAnalysis {
+pub fn analyze_org(org: &Org) -> OrgAirstrikeInfo {
     let contact_chance = analyze_org_contact_chance(org);
-    OrgAirstrikeAnalysis { contact_chance }
+    OrgAirstrikeInfo { contact_chance }
 }

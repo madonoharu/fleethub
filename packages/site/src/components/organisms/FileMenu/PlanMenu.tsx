@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Button, Link } from "@material-ui/core";
-import LinkIcon from "@material-ui/icons/Link";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
+import LinkIcon from "@mui/icons-material/Link";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { Button, Link } from "@mui/material";
 import React from "react";
 
 import { useAsyncOnPublish, useOrg } from "../../../hooks";

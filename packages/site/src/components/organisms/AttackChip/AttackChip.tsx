@@ -1,30 +1,35 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Chip } from "@material-ui/core";
+import { DayBattleAttackType, NightBattleAttackType } from "@fleethub/core";
+import { Chip } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+type AttackChipType =
+  | DayBattleAttackType["t"]
+  | NightBattleAttackType["t"]
+  | "Torpedo";
+
 type Props = {
-  night?: boolean;
-  attack?: string | null | undefined;
+  type: AttackChipType;
+  cutin?: string | null | undefined;
 };
 
-const AttackChip: React.FCX<Props> = ({ className, attack }) => {
+const AttackChip: React.FCX<Props> = ({ className, type, cutin }) => {
   const { t } = useTranslation("common");
   return (
     <Chip
       className={className}
       variant="outlined"
       size="small"
-      label={t(attack || "None")}
+      label={t(cutin || type)}
     />
   );
 };
 
-export default styled(AttackChip)(({ theme, attack, night }) => {
-  const type = night ? "night" : "shelling";
-  const color = attack ? theme.colors[type] : theme.palette.text.secondary;
-  const minWidth = night ? 72 : 48;
+export default styled(AttackChip)(({ theme, type }) => {
+  const color = theme.colors[type];
+  const minWidth = type === "NightAttack" ? 72 : 48;
 
   return css`
     border-radius: 4px;

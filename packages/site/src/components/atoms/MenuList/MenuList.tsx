@@ -5,7 +5,7 @@ import {
   MenuItemProps as MuiMenuItemProps,
   MenuList as MuiMenuList,
   MenuListProps as MuiMenuListProps,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 
 export type MenuItemProps = Omit<MuiMenuItemProps, "button"> & {

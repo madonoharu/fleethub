@@ -10,6 +10,7 @@
   "scripts": {
     "build:node": "cross-env WASM_BINDGEN_WEAKREF=1 wasm-pack build --target nodejs --out-dir node --out-name index",
     "build": "cross-env WASM_BINDGEN_WEAKREF=1 wasm-pack build --out-name index",
+    "test:js": "yarn test",
     "test": "RUST_BACKTRACE=1 cargo test",
     "coverage": "coverage.sh",
     "ts-gen": "cargo run --manifest-path ./ts-gen/Cargo.toml"

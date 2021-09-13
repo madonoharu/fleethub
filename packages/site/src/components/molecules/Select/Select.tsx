@@ -1,4 +1,4 @@
-import { MenuItem } from "@material-ui/core";
+import { MenuItem } from "@mui/material";
 import React, { useCallback } from "react";
 
 import { Input, InputProps } from "../../atoms";

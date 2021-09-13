@@ -1,13 +1,15 @@
-import { useForkRef } from "@material-ui/core";
+import { useForkRef } from "@mui/material";
 import React from "react";
 
 import { useDrag } from "./useDrag";
 import { useDrop } from "./useDrop";
 
+export type SwapEvent<T> = { drag: T; drop: T };
+
 export type SwapSpec<T extends Record<string, unknown>> = {
   type: string;
   item: T;
-  onSwap: (dragItem: T, dropItem: T) => void;
+  onSwap: (event: SwapEvent<T>) => void;
   canDrag?: boolean;
   dragLayer?: React.ReactNode;
 };
@@ -29,7 +31,7 @@ export const useSwap = <T extends Record<string, unknown>>({
   const dropRef = useDrop({
     accept: type,
     drop: (dragItem: typeof item) => {
-      onSwap(dragItem, item);
+      onSwap({ drag: dragItem, drop: item });
     },
     canDrop: (dragItem) => dragItem !== item,
   });
