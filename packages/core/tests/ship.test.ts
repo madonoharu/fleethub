@@ -1,4 +1,4 @@
-import { Ship } from "../node/index";
+import { Ship } from "../node/fh_core";
 
 it("Ship", () => {
   const ship = Ship.default();
