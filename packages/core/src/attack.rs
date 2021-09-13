@@ -1,13 +1,22 @@
+mod asw;
+mod attack;
 mod attack_power;
 mod context;
 mod damage;
 mod fit_gun_bonus;
 mod fleet_factor;
 mod hit;
-pub mod shelling;
+mod night;
+mod shelling;
 mod special_enemy_mods;
+mod torpedo;
 
+pub use asw::*;
+pub use attack::*;
 pub use attack_power::*;
 pub use context::*;
 pub use damage::*;
 pub use hit::*;
+pub use night::*;
+pub use shelling::*;
+pub use torpedo::*;

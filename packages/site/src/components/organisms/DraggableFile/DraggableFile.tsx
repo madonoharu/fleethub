@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useForkRef } from "@material-ui/core";
+import { useForkRef } from "@mui/material";
 import React from "react";
 
 import { useDrag } from "../../../hooks";

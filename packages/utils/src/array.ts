@@ -9,11 +9,11 @@ export const uniqBy = <T>(array: T[], iteratee: (value: T) => unknown): T[] => {
     const v = iteratee(item);
 
     if (state.has(v)) {
-      return true;
+      return false;
     }
 
     state.add(v);
-    return false;
+    return true;
   });
 };
 

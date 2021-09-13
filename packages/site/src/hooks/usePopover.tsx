@@ -1,7 +1,7 @@
 import {
   Popover as MuiPopover,
   PopoverProps as MuiPopoverProps,
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useCallback, useState } from "react";
 
 type PopoverProps = Partial<MuiPopoverProps>;

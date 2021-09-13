@@ -181,7 +181,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         anti_air_cutin: Option<&AntiAirCutinDef>,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
-    ) -> ShipAntiAirAnalysis {
+    ) -> ShipAntiAirInfo {
         let ship_anti_air = ShipAntiAir {
             ship,
             side,
@@ -190,7 +190,7 @@ impl<'a> AntiAirAnalyzer<'a> {
             anti_air_cutin,
         };
 
-        ShipAntiAirAnalysis {
+        ShipAntiAirInfo {
             ship_id: ship.ship_id,
             adjusted_anti_air: ship_anti_air.adjusted_anti_air(),
             proportional_shotdown_rate: ship_anti_air
@@ -208,7 +208,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         org: &Org,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
-    ) -> OrgAntiAirAnalysis {
+    ) -> OrgAntiAirInfo {
         let formation_mod = 1.0;
         let combined_fleet_mod = 1.0;
         let fleet_anti_air = org.fleet_anti_air(formation_mod);
@@ -260,7 +260,7 @@ impl<'a> AntiAirAnalyzer<'a> {
             })
             .collect::<Vec<_>>();
 
-        OrgAntiAirAnalysis {
+        OrgAntiAirInfo {
             fleet_anti_air,
             ships,
             anti_air_cutin_chance,
@@ -269,7 +269,7 @@ impl<'a> AntiAirAnalyzer<'a> {
 }
 
 #[derive(Debug, Serialize, TS)]
-pub struct ShipAntiAirAnalysis {
+pub struct ShipAntiAirInfo {
     ship_id: u16,
     adjusted_anti_air: Option<f64>,
     proportional_shotdown_rate: Option<f64>,
@@ -280,8 +280,8 @@ pub struct ShipAntiAirAnalysis {
 }
 
 #[derive(Debug, Serialize, TS)]
-pub struct OrgAntiAirAnalysis {
+pub struct OrgAntiAirInfo {
     fleet_anti_air: f64,
-    ships: Vec<ShipAntiAirAnalysis>,
+    ships: Vec<ShipAntiAirInfo>,
     anti_air_cutin_chance: Vec<(u8, f64)>,
 }

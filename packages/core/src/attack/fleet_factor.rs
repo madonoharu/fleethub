@@ -118,10 +118,16 @@ pub fn find_shelling_accuracy_factor(org_type: OrgType, role: Role) -> i32 {
     }
 }
 
-pub fn find_torpedo_power_factor(player_org_type: OrgType, enemy_org_type: OrgType) -> i32 {
-    if enemy_org_type.is_combined() {
+pub fn find_torpedo_power_factor(attacker_org_type: OrgType, target_org_type: OrgType) -> i32 {
+    let (player, enemy) = if attacker_org_type.is_player() {
+        (attacker_org_type, target_org_type)
+    } else {
+        (target_org_type, attacker_org_type)
+    };
+
+    if enemy.is_combined() {
         15
-    } else if player_org_type.is_single() {
+    } else if player.is_single() {
         5
     } else {
         0

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Fab, Tooltip } from "@material-ui/core";
-import FileDownloadIcon from "@material-ui/icons/FileDownload";
+import { Fab, Tooltip } from "@mui/material";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import React from "react";
 
 import { useModal } from "../../../hooks";

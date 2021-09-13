@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Button, Tooltip } from "@material-ui/core";
+import { Button, Tooltip } from "@mui/material";
 import React from "react";
 
 import { usePopover } from "../../../hooks";

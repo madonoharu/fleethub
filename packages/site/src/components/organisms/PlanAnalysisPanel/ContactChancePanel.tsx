@@ -1,10 +1,6 @@
 import styled from "@emotion/styled";
-import {
-  AirstrikeContactChance,
-  Org,
-  OrgAirstrikeAnalysis,
-} from "@fleethub/core";
-import { Typography } from "@material-ui/core";
+import { AirstrikeContactChance, Org, OrgAirstrikeInfo } from "@fleethub/core";
+import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -72,7 +68,7 @@ type Props = {
 
 const ContactChancePanel: React.FCX<Props> = ({ className, org }) => {
   const { core } = useFhCore();
-  const { contact_chance }: OrgAirstrikeAnalysis = core.analyze_airstrike(org);
+  const { contact_chance }: OrgAirstrikeInfo = core.analyze_airstrike(org);
 
   return (
     <div className={className}>

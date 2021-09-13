@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Formation } from "@fleethub/core";
 import { MapEnemyFleet, nonNullable } from "@fleethub/utils";
-import { Button, Paper } from "@material-ui/core";
+import { Button, Paper } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

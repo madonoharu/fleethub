@@ -2,9 +2,10 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     air_squadron::AirSquadron,
+    attack::WarfareShipEnvironment,
     fleet::{Fleet, ShipArray},
     ship::Ship,
-    types::{CombinedFormation, GearAttr, OrgType, Role, Side, SingleFormation},
+    types::{CombinedFormation, Formation, GearAttr, OrgType, Role, Side, SingleFormation},
 };
 
 pub struct MainAndEscortShips<'a> {
@@ -43,7 +44,7 @@ pub struct Org {
     #[wasm_bindgen(skip)]
     pub xxh3: u64,
 
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(getter_with_clone)]
     pub id: String,
 
     #[wasm_bindgen(skip)]
@@ -62,8 +63,9 @@ pub struct Org {
     #[wasm_bindgen(skip)]
     pub a3: AirSquadron,
 
+    #[wasm_bindgen(readonly)]
     pub hq_level: i32,
-
+    #[wasm_bindgen(readonly)]
     pub org_type: OrgType,
 }
 
@@ -139,11 +141,6 @@ impl Org {
     #[wasm_bindgen(getter)]
     pub fn xxh3(&self) -> String {
         format!("{:X}", self.xxh3)
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn id(&self) -> String {
-        self.id.clone()
     }
 
     pub fn fleet_len(&self, role: Role) -> usize {
@@ -257,11 +254,11 @@ impl Org {
         self.org_type.is_combined()
     }
 
-    pub fn default_formation(&self) -> String {
+    pub fn default_formation(&self) -> Formation {
         if self.is_combined() {
-            CombinedFormation::default().as_ref().to_string()
+            Formation::Combined(CombinedFormation::default())
         } else {
-            SingleFormation::default().as_ref().to_string()
+            Formation::Single(SingleFormation::default())
         }
     }
 
@@ -351,6 +348,23 @@ impl Org {
             .sum::<Option<f64>>()?;
 
         Some(total - (0.4 * self.hq_level as f64).ceil() + 12.0)
+    }
+
+    pub fn create_warfare_ship_environment(
+        &self,
+        ship: &Ship,
+        formation: Formation,
+    ) -> Option<WarfareShipEnvironment> {
+        let (role, ship_index) = self.find_role_index(ship)?;
+
+        Some(WarfareShipEnvironment {
+            org_type: self.org_type,
+            fleet_len: self.fleet_len(role),
+            ship_index,
+            role,
+            formation,
+            fleet_los_mod: self.fleet_los_mod(role),
+        })
     }
 }
 

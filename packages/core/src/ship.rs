@@ -4,16 +4,16 @@ use paste::paste;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    attack::shelling::ProficiencyModifiers,
+    attack::{AswAttackType, ProficiencyModifiers},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
     gear_id, ship_id,
     types::{
         AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
-        NightCutin, ShipAttr, ShipClass, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
+        NightCutin, ShipAttr, ShipClass, ShipFilterGroup, ShipState, ShipType, SlotSizeArray,
+        SpecialEnemyType,
     },
     utils::xxh3,
-    wasm_abi::JsShipAttr,
 };
 
 #[derive(Debug, Default, Clone)]
@@ -41,9 +41,9 @@ pub struct Ship {
     #[wasm_bindgen(readonly)]
     pub fuel: u16,
 
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(readonly)]
     pub ship_type: ShipType,
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(readonly)]
     pub ship_class: ShipClass,
 
     #[wasm_bindgen(skip)]
@@ -270,10 +270,6 @@ impl Ship {
         ship
     }
 
-    pub fn has_attr(&self, attr: ShipAttr) -> bool {
-        self.master.attrs.contains(attr)
-    }
-
     pub fn special_enemy_type(&self) -> SpecialEnemyType {
         if self.has_attr(ShipAttr::Pillbox) {
             SpecialEnemyType::Pillbox
@@ -374,25 +370,50 @@ impl Ship {
         }
 
         if self.ship_id == ship_id!("速吸改") || self.is_installation() {
-            self.gears.has_by(|g| {
-                matches!(
-                    g.gear_type,
-                    GearType::CbDiveBomber
-                        | GearType::CbTorpedoBomber
-                        | GearType::JetFighterBomber
-                        | GearType::JetTorpedoBomber
-                )
-            })
+            self.gears.has_by(|gear| gear.is_carrier_shelling_plane())
         } else {
             false
         }
     }
 
-    pub fn carrier_power(&self, anti_installation: bool) -> i16 {
-        let (torpedo, bombing) = if anti_installation {
+    pub fn participates_day(&self, anti_inst: bool) -> bool {
+        if self.is_carrier_like() {
+            if anti_inst
+                && self.has_non_zero_slot_gear_by(|gear| {
+                    gear.gear_type == GearType::CbDiveBomber
+                        && !gear.has_attr(GearAttr::AntiInstDiveBomber)
+                })
+            {
+                return false;
+            }
+
+            self.has_non_zero_slot_gear_by(|gear| gear.is_carrier_shelling_plane())
+        } else if self.ship_type.is_submarine() {
+            anti_inst && self.gears.has_type(GearType::AmphibiousTank)
+        } else {
+            self.naked_firepower().unwrap_or_default() > 0
+        }
+    }
+
+    pub fn is_healthy_as_carrier(&self) -> bool {
+        let ds = self.damage_state();
+
+        if self.ship_type == ShipType::CVB {
+            ds < DamageState::Taiha
+        } else {
+            ds < DamageState::Chuuha
+        }
+    }
+
+    pub fn can_do_normal_night_attack(&self) -> bool {
+        self.master.firepower.0.unwrap_or_default() + self.master.torpedo.0.unwrap_or_default() > 0
+    }
+
+    pub fn carrier_power(&self, anti_inst: bool) -> i16 {
+        let (torpedo, bombing) = if anti_inst {
             let torpedo = 0;
             let bombing = self.gears.sum_by(|gear| {
-                if gear.has_attr(GearAttr::AntiInstallationCbBomber)
+                if gear.has_attr(GearAttr::AntiInstDiveBomber)
                     || gear.gear_type == GearType::CbTorpedoBomber
                 {
                     gear.bombing
@@ -436,7 +457,7 @@ impl Ship {
 
         let (_, average_exp_mod_a, average_exp_mod_b) = get_average_exp_modifiers(&planes);
 
-        let hit_percent_bonus = average_exp_mod_a + average_exp_mod_b;
+        let hit_percentage_bonus = average_exp_mod_a + average_exp_mod_b;
 
         let critical_power_mod = 1.0
             + planes
@@ -451,7 +472,7 @@ impl Ship {
                 })
                 .sum::<f64>();
 
-        let critical_percent_bonus = planes
+        let critical_percentage_bonus = planes
             .iter()
             .map(|(index, gear)| {
                 let first_slot_bonus = if *index == 0 { 6.0 } else { 0.0 };
@@ -464,17 +485,17 @@ impl Ship {
             .sum::<f64>();
 
         ProficiencyModifiers {
-            hit_percent_bonus,
+            hit_percentage_bonus,
             critical_power_mod,
-            critical_percent_bonus,
+            critical_percentage_bonus,
         }
     }
 
     /// 戦爆連合熟練度補正の仮定式
     ///
-    /// `critical_percent_bonus` は21%程度？
+    /// `critical_percentage_bonus` は21%程度？
     ///
-    /// 命中項下限で 命中率 > クリティカル率 であることから `hit_percent_bonus` と `critical_percent_bonus` は同程度のボーナスあり？
+    /// 命中項下限で 命中率 > クリティカル率 であることから `hit_percentage_bonus` と `critical_percentage_bonus` は同程度のボーナスあり？
     /// https://twitter.com/MorimotoKou/status/1046257562230771712
     /// https://docs.google.com/spreadsheets/d/1i5jTixnOVjqrwZvF_4Uqf3L9ObHhS7dFqG8KiE5awkY
     /// https://twitter.com/kankenRJ/status/995827605801709568
@@ -534,12 +555,12 @@ impl Ship {
             y
         };
 
-        let hit_percent_bonus = average_exp_mod_a + average_exp_mod_b + 2.0;
+        let hit_percentage_bonus = average_exp_mod_a + average_exp_mod_b + 2.0;
 
         ProficiencyModifiers {
-            hit_percent_bonus,
+            hit_percentage_bonus,
             critical_power_mod,
-            critical_percent_bonus: hit_percent_bonus,
+            critical_percentage_bonus: hit_percentage_bonus,
         }
     }
 
@@ -556,6 +577,223 @@ impl Ship {
             && self.has_non_zero_slot_gear_by(|g| {
                 g.has_attr(GearAttr::NightAttacker) || g.has_attr(GearAttr::NightFighter)
             })
+    }
+
+    pub fn night_carrier_power(&self, anti_inst: bool) -> Option<f64> {
+        let naked_firepower = self.naked_firepower()? as f64;
+
+        let night_plane_power = self
+            .gears_with_slot_size()
+            .filter_map(|(_, gear, slot_size)| Some(gear.night_plane_power(slot_size?, anti_inst)))
+            .sum::<f64>();
+
+        Some(naked_firepower + night_plane_power)
+    }
+
+    pub fn night_ark_royal_power(&self, anti_inst: bool) -> Option<f64> {
+        let naked_firepower = self.naked_firepower()? as f64;
+
+        let night_plane_power = self
+            .gears_with_slot_size()
+            .filter_map(|(_, gear, slot_size)| {
+                if slot_size? == 0 || !gear.has_attr(GearAttr::CbSwordfish) {
+                    return None;
+                }
+
+                let firepower = gear.firepower as f64;
+                let torpedo = if anti_inst { 0 } else { gear.torpedo } as f64;
+                let ibonus = gear.ibonuses.night_power;
+
+                Some(firepower + torpedo + ibonus)
+            })
+            .sum::<f64>();
+
+        Some(naked_firepower + night_plane_power)
+    }
+
+    pub fn is_escort_light_carrier(&self) -> bool {
+        self.ship_type == ShipType::CVL && self.master.asw.0.unwrap_or_default() > 0
+    }
+
+    pub fn asw_attack_type(&self, is_night: bool) -> Option<AswAttackType> {
+        use ShipType::*;
+
+        if self.is_submarine() {
+            return None;
+        }
+
+        let is_abyssal = self.is_abyssal();
+
+        // 改式では敵軽空母の場合flagshipのみ対潜に参加するが、ブラウザでは軽母ヌ級改eliteなどの例外が存在する。
+        // 深海攻撃哨戒鷹系統を所持している敵軽空母の場合、対戦に参加する？
+        // @see https://wikiwiki.jp/kancolle/敵艦船
+        if is_abyssal
+            && self.ship_type == CVL
+            && (self.master.yomi.ne("flagship")
+                || self.has_non_zero_slot_gear_by(|gear| gear.is_abyssal_patrolling_attack_hawk()))
+        {
+            return None;
+        }
+
+        let naked_asw = self.naked_asw().unwrap_or_default();
+
+        if !is_night {
+            let has_anti_sub_aircraft =
+                || self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiSubAircraft));
+
+            if matches!(self.ship_type, CAV | CVL | BBV | AV | LHA) {
+                if !is_abyssal {
+                    return has_anti_sub_aircraft().then(|| AswAttackType::Aircraft);
+                }
+
+                if has_anti_sub_aircraft() {
+                    return Some(AswAttackType::Aircraft);
+                }
+            }
+
+            if self.ship_id == ship_id!("速吸改") && has_anti_sub_aircraft() {
+                return Some(AswAttackType::Aircraft);
+            }
+        }
+
+        let is_anti_sub_ship = naked_asw > 0
+            && (matches!(self.ship_type, DE | DD | CL | CLT | CVL | CT | AO)
+                || self.ship_id == ship_id!("加賀改二護")
+                || is_abyssal);
+
+        is_anti_sub_ship.then(|| AswAttackType::DepthCharge)
+    }
+
+    pub fn can_do_oasw(&self) -> bool {
+        let &Self {
+            ship_id,
+            ship_type,
+            ship_class,
+            ..
+        } = self;
+
+        if matches!(
+            ship_id,
+            ship_id!("五十鈴改二")
+                | ship_id!("龍田改二")
+                | ship_id!("夕張改二丁")
+                | ship_id!("Samuel B.Roberts改")
+        ) || ship_class == ShipClass::FletcherClass
+            || (ship_class == ShipClass::JClass && self.remodel_rank() >= 2)
+        {
+            return true;
+        }
+
+        let has_sonar =
+            self.gears.has_type(GearType::Sonar) || self.gears.has_type(GearType::LargeSonar);
+        let asw = self.asw().unwrap_or_default();
+
+        if asw >= 100 && has_sonar {
+            return true;
+        }
+
+        if ship_id == ship_id!("日向改二") {
+            return self
+                .gears
+                .has_by(|gear| matches!(gear.gear_id, gear_id!("S-51J") | gear_id!("S-51J改")))
+                || self.gears.count_type(GearType::Rotorcraft) >= 2;
+        }
+
+        let is_taiyou_class_kai_after = (ship_class == ShipClass::TaiyouClass
+            && self.remodel_rank() >= 3)
+            || ship_id == ship_id!("神鷹改");
+
+        if ship_id == ship_id!("加賀改二護") || is_taiyou_class_kai_after {
+            return self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiSubAircraft));
+        }
+
+        let naked_asw = self.naked_asw().unwrap_or_default() as i32;
+        let equipment_asw = self.gears.sum_by(|gear| gear.asw) as i32;
+
+        let threshold = match ship_type {
+            ShipType::CVL => {
+                let has_high_asw_aircraft = self.gears.has_by(|gear| {
+                    gear.asw >= 7
+                        && matches!(
+                            gear.gear_type,
+                            GearType::CbTorpedoBomber
+                                | GearType::Rotorcraft
+                                | GearType::AntiSubPatrolAircraft
+                        )
+                });
+
+                if !has_high_asw_aircraft {
+                    return false;
+                }
+
+                if has_sonar {
+                    50
+                } else {
+                    65
+                }
+            }
+            ShipType::DE => {
+                if has_sonar {
+                    60
+                } else if equipment_asw >= 4 {
+                    75
+                } else {
+                    return false;
+                }
+            }
+            _ => {
+                return false;
+            }
+        };
+
+        threshold <= naked_asw + equipment_asw
+    }
+
+    pub fn asw_synergy_mod(&self) -> f64 {
+        let gears = &self.gears;
+
+        let has_sonar = gears.has_type(GearType::Sonar);
+        let has_large_sonar = gears.has_type(GearType::LargeSonar);
+        let has_depth_charge = gears.has_type(GearType::DepthCharge);
+        let has_additional_depth_charge = gears.has_attr(GearAttr::AdditionalDepthCharge);
+        let has_depth_charge_projector = gears.has_attr(GearAttr::DepthChargeProjector);
+
+        let old_mod = if (has_sonar || has_large_sonar) && has_depth_charge {
+            1.15
+        } else {
+            1.0
+        };
+
+        let new_mod = if has_additional_depth_charge && has_depth_charge_projector {
+            if has_sonar {
+                1.25
+            } else {
+                1.1
+            }
+        } else {
+            1.0
+        };
+
+        old_mod * new_mod
+    }
+
+    pub fn asw_armor_penetration(&self) -> f64 {
+        let total = self.gears.sum_by(|gear| {
+            if gear.has_attr(GearAttr::AdditionalDepthCharge) {
+                let asw = gear.asw as f64;
+                (asw - 2.0).max(0.0).sqrt()
+            } else {
+                0.0
+            }
+        });
+
+        let ship_type_bonus = if self.ship_type == ShipType::DE {
+            1.0
+        } else {
+            0.0
+        };
+
+        total + ship_type_bonus
     }
 
     pub fn get_possible_day_cutin_set(&self) -> EnumSet<DayCutin> {
@@ -791,6 +1029,10 @@ impl Ship {
 
 #[wasm_bindgen]
 impl Ship {
+    pub fn default() -> Self {
+        Default::default()
+    }
+
     #[wasm_bindgen(getter)]
     pub fn id(&self) -> String {
         self.state.id.clone().unwrap_or_default()
@@ -820,16 +1062,6 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn ship_type(&self) -> String {
-        self.ship_type.to_string()
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn ship_class(&self) -> String {
-        self.ship_class.to_string()
-    }
-
-    #[wasm_bindgen(getter)]
     pub fn ctype(&self) -> u16 {
         self.master.ctype
     }
@@ -842,6 +1074,10 @@ impl Ship {
     #[wasm_bindgen(getter)]
     pub fn sort_id(&self) -> u16 {
         self.master.sort_id.unwrap_or_default()
+    }
+
+    pub fn remodel_rank(&self) -> u16 {
+        self.sort_id() % 10
     }
 
     #[wasm_bindgen(getter)]
@@ -869,14 +1105,12 @@ impl Ship {
         self.morale_state().to_string()
     }
 
-    pub fn filter_group(&self) -> String {
-        self.ship_type.filter_group().to_string()
+    pub fn filter_group(&self) -> ShipFilterGroup {
+        self.ship_type.filter_group()
     }
 
-    #[wasm_bindgen(js_name = has_attr)]
-    pub fn js_has_attr(&self, js: JsShipAttr) -> bool {
-        let attr = js.into_serde().unwrap();
-        self.has_attr(attr)
+    pub fn has_attr(&self, attr: ShipAttr) -> bool {
+        self.master.attrs.contains(attr)
     }
 
     pub fn gear_keys(&self) -> JsValue {
@@ -958,6 +1192,10 @@ impl Ship {
 
     pub fn is_abyssal(&self) -> bool {
         self.has_attr(ShipAttr::Abyssal)
+    }
+
+    pub fn is_submarine(&self) -> bool {
+        self.ship_type.is_submarine()
     }
 
     pub fn can_equip(&self, gear: &Gear, key: &str) -> bool {
@@ -1132,13 +1370,13 @@ impl Ship {
     }
 
     pub fn remaining_fuel_mod(&self) -> f64 {
-        let max = self.max_ammo();
+        let max = self.max_fuel();
 
         if max == 0 {
             return 0.0;
         }
 
-        let rate = self.ammo as f64 / max as f64;
+        let rate = self.fuel as f64 / max as f64;
 
         if rate < 0.75 {
             75.0 - (rate * 100.0).floor()
@@ -1236,7 +1474,12 @@ impl Ship {
         Some(evasion + (2. * luck).sqrt())
     }
 
-    pub fn evasion_term(&self, formation_mod: f64, postcap_mod: f64) -> Option<f64> {
+    pub fn evasion_term(
+        &self,
+        formation_mod: f64,
+        postcap_additive: f64,
+        postcap_multiplicative: f64,
+    ) -> Option<f64> {
         let base = (self.basic_evasion_term()? * formation_mod).floor();
 
         let postcap = if base >= 65.0 {
@@ -1248,7 +1491,7 @@ impl Ship {
         };
 
         let total_stars = self.gears.sum_by(|gear| {
-            if gear.gear_type == GearType::EngineImprovement {
+            if gear.gear_type == GearType::Engine {
                 gear.stars
             } else {
                 0
@@ -1256,8 +1499,9 @@ impl Ship {
         }) as f64;
 
         let ibonus = (1.5 * total_stars.sqrt()).floor();
+        let post_multiplicative = (postcap + ibonus + postcap_additive) * postcap_multiplicative;
 
-        Some((postcap + postcap_mod).floor() + ibonus)
+        Some(post_multiplicative.floor() - self.remaining_ammo_mod())
     }
 
     pub fn basic_defense_power(&self, armor_penetration: f64) -> Option<f64> {

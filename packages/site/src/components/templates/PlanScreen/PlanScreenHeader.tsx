@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Org, OrgType } from "@fleethub/core";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -46,7 +46,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
   const antiSingleFp = `${org.fighter_power(false, false) || "?"}`;
   const antiCombinedFp = `${org.fighter_power(true, false) || "?"}`;
   const fpText = org.is_combined()
-    ? `対連合: ${antiCombinedFp} 対通常: ${antiSingleFp}`
+    ? `連合 ${antiCombinedFp} 第一 ${antiSingleFp}`
     : antiSingleFp;
 
   return (
@@ -69,15 +69,17 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
         <Select<OrgType>
           options={ORG_TYPES}
           onChange={onOrgTypeChange}
-          value={org.org_type as OrgType}
+          value={org.org_type}
           getOptionLabel={t}
         />
 
         <PlanAction file={file} org={org} actions={actions} />
       </Flexbox>
 
-      <Flexbox gap={1}>
-        <Typography variant="body2">制空 {fpText}</Typography>
+      <Flexbox gap={1} mt={1}>
+        <Typography variant="body2" mr={1}>
+          制空 {fpText}
+        </Typography>
         {[1, 2, 3, 4].map((factor) => (
           <ElosLabel key={factor} factor={factor} elos={org.elos(factor)} />
         ))}

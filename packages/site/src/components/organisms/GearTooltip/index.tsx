@@ -1,5 +1,5 @@
 import { Gear } from "@fleethub/core";
-import { Tooltip, TooltipProps, Typography } from "@material-ui/core";
+import { Tooltip, TooltipProps, Typography } from "@mui/material";
 import { EquipmentBonuses } from "equipment-bonus";
 import { useTranslation } from "next-i18next";
 import React from "react";

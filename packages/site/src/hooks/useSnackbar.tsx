@@ -3,7 +3,7 @@ import {
   AlertProps,
   Snackbar as MuiSnackbar,
   SnackbarProps as MuiSnackbarProps,
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useCallback, useState } from "react";
 
 type SnackbarProps = MuiSnackbarProps &

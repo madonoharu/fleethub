@@ -103,6 +103,20 @@ impl Default for NightCutin {
     }
 }
 
+pub struct CutinModifiers {
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+}
+
+impl Default for CutinModifiers {
+    fn default() -> Self {
+        Self {
+            power_mod: 1.0,
+            accuracy_mod: 1.0,
+        }
+    }
+}
+
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct NightCutinDef {
     pub tag: NightCutin,
@@ -113,6 +127,13 @@ pub struct NightCutinDef {
 }
 
 impl NightCutinDef {
+    pub fn to_modifiers(&self) -> CutinModifiers {
+        CutinModifiers {
+            power_mod: self.power_mod.unwrap_or(1.0),
+            accuracy_mod: self.accuracy_mod.unwrap_or(1.0),
+        }
+    }
+
     pub fn rate(&self, cutin_term: f64) -> Option<f64> {
         let rate = if self.tag == NightCutin::DoubleAttack {
             109. / 110.

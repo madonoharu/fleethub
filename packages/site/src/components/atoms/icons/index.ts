@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import DescriptionIcon from "@material-ui/icons/Description";
-import MuiFolderIcon from "@material-ui/icons/Folder";
+import DescriptionIcon from "@mui/icons-material/Description";
+import MuiFolderIcon from "@mui/icons-material/Folder";
 
 export const PlanIcon = styled(DescriptionIcon)(
   ({ theme }) => css`

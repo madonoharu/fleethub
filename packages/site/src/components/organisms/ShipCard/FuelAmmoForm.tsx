@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useModal } from "../../../hooks";
@@ -72,8 +72,8 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
   const { t } = useTranslation("common");
   const Modal = useModal();
 
-  const ammoRate = max_ammo && ammo / max_ammo;
-  const fuelRate = max_fuel && fuel / max_fuel;
+  const ammoRate = max_ammo ? ammo / max_ammo : 1;
+  const fuelRate = max_fuel ? fuel / max_fuel : 1;
 
   const setFuel = (fuel: number) => {
     if (fuel === max_fuel) {

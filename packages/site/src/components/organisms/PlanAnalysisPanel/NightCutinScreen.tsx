@@ -1,9 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  NightCutinRateAnalysis,
-  Org,
-  OrgNightCutinRateAnalysis,
-} from "@fleethub/core";
+import { Org, NightCutinRateInfo, OrgNightCutinRateInfo } from "@fleethub/core";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -29,26 +25,26 @@ const RightContainer = styled.div`
   line-height: 24px;
 `;
 
-const NightCutinRateCell: React.FC<{ data: NightCutinRateAnalysis }> = ({
-  data,
+const NightCutinRateCell: React.FC<{ info: NightCutinRateInfo }> = ({
+  info,
 }) => {
-  const total = data.rates
+  const total = info.rates
     .map(([, rate]) => Number(rate))
     .reduce((a, b) => a + b, 0);
 
   return (
     <div style={{ display: "flex", alignItems: "flex-end" }}>
       <LeftContainer>
-        {data.rates.map(([ci, rate]) => (
+        {info.rates.map(([cutin, rate]) => (
           <StyledLabeledValue
-            key={ci}
-            label={<AttackChip night attack={ci} />}
+            key={cutin}
+            label={<AttackChip type="NightAttack" cutin={cutin} />}
             value={toPercent(rate)}
           />
         ))}
       </LeftContainer>
       <RightContainer>
-        <StyledLabeledValue label="CI項" value={data.cutin_term} />
+        <StyledLabeledValue label="CI項" value={info.cutin_term} />
         <StyledLabeledValue label="合計" value={toPercent(total)} />
       </RightContainer>
     </div>
@@ -56,29 +52,33 @@ const NightCutinRateCell: React.FC<{ data: NightCutinRateAnalysis }> = ({
 };
 
 type Props = {
-  analysis: OrgNightCutinRateAnalysis;
+  info: OrgNightCutinRateInfo;
 };
 
-const NightCutinTable: React.FCX<Props> = ({ className, analysis }) => {
+const NightCutinTable: React.FCX<Props> = ({ className, info }) => {
   return (
     <div className={className}>
-      夜間触接率 {toPercent(analysis.contact_chance.total)}
+      夜間触接率 {toPercent(info.contact_chance.total)}
       <Table
         padding="none"
-        data={analysis.ships}
+        data={info.ships}
         columns={[
           {
             label: "艦娘",
-            getValue: (datum) => <ShipNameplate shipId={datum.ship_id} />,
+            getValue: (shipInfo) => <ShipNameplate shipId={shipInfo.ship_id} />,
             width: 160,
           },
           {
             label: "小破以上",
-            getValue: (datum) => <NightCutinRateCell data={datum.normal} />,
+            getValue: (shipInfo) => (
+              <NightCutinRateCell info={shipInfo.normal} />
+            ),
           },
           {
             label: "中破",
-            getValue: (datum) => <NightCutinRateCell data={datum.chuuha} />,
+            getValue: (shipInfo) => (
+              <NightCutinRateCell info={shipInfo.chuuha} />
+            ),
           },
         ]}
       />
@@ -97,15 +97,16 @@ const NightCutinPanel: React.FC<{ org: Org }> = ({ org }) => {
   const [defenderSearchlight, setDefenderSearchlight] = React.useState(false);
   const [defenderStarshell, setDefenderStarshell] = React.useState(false);
 
-  const analysis: OrgNightCutinRateAnalysis = core.analyze_night_cutin(
+  // todo!
+  const info: OrgNightCutinRateInfo = core.analyze_night_cutin(
     org,
     {
-      contact_rank: null,
+      night_contact_rank: null,
       searchlight: attackerSearchlight,
       starshell: attackerStarshell,
     },
     {
-      contact_rank: null,
+      night_contact_rank: null,
       searchlight: defenderSearchlight,
       starshell: defenderStarshell,
     }
@@ -139,7 +140,7 @@ const NightCutinPanel: React.FC<{ org: Org }> = ({ org }) => {
         onChange={() => setDefenderStarshell(toggle)}
       />
 
-      <NightCutinTable analysis={analysis} />
+      <NightCutinTable info={info} />
     </div>
   );
 };

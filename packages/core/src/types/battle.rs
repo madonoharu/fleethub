@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, EnumString};
+use strum::AsRefStr;
 use ts_rs::TS;
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, TS)]
@@ -24,7 +24,7 @@ impl Default for Engagement {
 
 impl Engagement {
     pub fn modifier(&self) -> f64 {
-        match *self {
+        match self {
             Self::Parallel => 1.0,
             Self::HeadOn => 0.8,
             Self::GreenT => 1.2,
@@ -104,11 +104,37 @@ impl Default for Formation {
     }
 }
 
+pub struct FormationWarfareModifiers {
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub evasion_mod: f64,
+}
+
+impl Default for FormationWarfareModifiers {
+    fn default() -> Self {
+        Self {
+            power_mod: 1.0,
+            accuracy_mod: 1.0,
+            evasion_mod: 1.0,
+        }
+    }
+}
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
-pub struct FormationAttackModifiers {
+pub struct FormationWarfareDef {
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
     pub evasion_mod: Option<f64>,
+}
+
+impl FormationWarfareDef {
+    pub fn to_modifiers(&self) -> FormationWarfareModifiers {
+        FormationWarfareModifiers {
+            power_mod: self.power_mod.unwrap_or(1.0),
+            accuracy_mod: self.accuracy_mod.unwrap_or(1.0),
+            evasion_mod: self.evasion_mod.unwrap_or(1.0),
+        }
+    }
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
@@ -116,10 +142,10 @@ pub struct NormalFormationDef {
     pub tag: Formation,
     pub protection_rate: Option<f64>,
     pub fleet_anti_air_mod: f64,
-    pub shelling: FormationAttackModifiers,
-    pub torpedo: FormationAttackModifiers,
-    pub asw: FormationAttackModifiers,
-    pub night: FormationAttackModifiers,
+    pub shelling: FormationWarfareDef,
+    pub torpedo: FormationWarfareDef,
+    pub asw: FormationWarfareDef,
+    pub night: FormationWarfareDef,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
@@ -202,9 +228,9 @@ pub enum ContactRank {
 }
 
 pub struct NightContactModifiers {
-    power_mod: f64,
-    accuracy_mod: f64,
-    critical_rate_mod: f64,
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub critical_rate_constant: f64,
 }
 
 impl ContactRank {
@@ -221,17 +247,17 @@ impl ContactRank {
             Self::Rank1 => NightContactModifiers {
                 power_mod: 9.0,
                 accuracy_mod: 1.2,
-                critical_rate_mod: 1.7,
+                critical_rate_constant: 1.7,
             },
             Self::Rank2 => NightContactModifiers {
                 power_mod: 7.0,
                 accuracy_mod: 1.1,
-                critical_rate_mod: 1.64,
+                critical_rate_constant: 1.64,
             },
             Self::Rank3 => NightContactModifiers {
                 power_mod: 5.0,
                 accuracy_mod: 1.15,
-                critical_rate_mod: 1.57,
+                critical_rate_constant: 1.57,
             },
         }
     }

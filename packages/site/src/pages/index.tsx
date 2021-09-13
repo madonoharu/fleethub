@@ -37,8 +37,7 @@ const App = dynamic(loader);
 
 const Index: NextComponentType<
   NextPageContext,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  {},
+  unknown,
   { masterData: MasterDataInput }
 > = ({ masterData }) => {
   return (
@@ -47,7 +46,7 @@ const Index: NextComponentType<
         <title>作戦室</title>
         <meta
           name="description"
-          content="作戦室 Jervis改は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。"
+          content="作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。"
         />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:creator" content="@MadonoHaru" />

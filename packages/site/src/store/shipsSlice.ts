@@ -1,11 +1,29 @@
 import { pick, GEAR_KEYS } from "@fleethub/utils";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, EntityState } from "@reduxjs/toolkit";
 
 import { shipsAdapter } from "./adapters";
-import { createShip, isEntitiesAction, sweep } from "./entities";
-import { gearsSlice } from "./gearsSlice";
+import {
+  createShip,
+  isEntitiesAction,
+  swapGearPosition,
+  sweep,
+} from "./entities";
+import { GearPosition, gearsSlice } from "./gearsSlice";
 import { exclude } from "./matchers";
 import { ShipEntity } from "./schema";
+
+const setGearId = (
+  state: EntityState<ShipEntity>,
+  position: GearPosition,
+  id: string | undefined
+) => {
+  if (!("ship" in position)) return;
+  const entity = state.entities[position.ship];
+
+  if (entity) {
+    entity[position.key] = id;
+  }
+};
 
 export const shipsSlice = createSlice({
   name: "entities/ships",
@@ -18,11 +36,14 @@ export const shipsSlice = createSlice({
     builder
       .addCase(gearsSlice.actions.add, (state, { payload, meta }) => {
         const { position } = meta;
-        const entity =
-          "ship" in position && position.ship && state.entities[position.ship];
-        if (!entity) return;
 
-        entity[position.key] = payload.id;
+        setGearId(state, position, payload.id);
+      })
+      .addCase(swapGearPosition, (state, { payload }) => {
+        const { drag, drop } = payload;
+
+        setGearId(state, drag.position, drop.id);
+        setGearId(state, drop.position, drag.id);
       })
       .addCase(sweep, (state, { payload }) => {
         shipsAdapter.removeMany(state, payload.ships);

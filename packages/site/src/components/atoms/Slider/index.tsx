@@ -1,4 +1,4 @@
-import MuiSlider, { SliderProps } from "@material-ui/core/Slider";
+import MuiSlider, { SliderProps } from "@mui/material/Slider";
 import React from "react";
 
 type Props = Omit<SliderProps, "onChange" | "value"> & {

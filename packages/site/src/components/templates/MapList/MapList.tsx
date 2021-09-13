@@ -7,8 +7,8 @@ import {
   ShipParams,
 } from "@fleethub/core";
 import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fleethub/utils";
-import { Button } from "@material-ui/core";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import { Button } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import React from "react";
 import { useAsync } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";

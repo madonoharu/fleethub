@@ -5,9 +5,12 @@ use wasm_bindgen::{
 };
 
 use crate::{
-    analyzer::ShellingAttackAnalysis,
-    attack::WarfareContext,
-    types::{AirState, Engagement, Formation, OrgType, Role, Side},
+    analyzer::{WarfareAnalysisParams, WarfareInfo},
+    attack::{NightSituation, WarfareContext, WarfareShipEnvironment},
+    types::{
+        AirSquadronMode, AirState, Engagement, Formation, GearAttr, GearType, OrgType, Role,
+        ShipAttr, ShipClass, ShipFilterGroup, ShipType, Side,
+    },
 };
 
 #[wasm_bindgen(typescript_custom_section)]
@@ -36,15 +39,6 @@ extern "C" {
     pub type AirSquadronParams;
     #[wasm_bindgen(typescript_type = "OrgParams")]
     pub type OrgParams;
-
-    #[wasm_bindgen(typescript_type = "bindings.ShipAttr")]
-    pub type JsShipAttr;
-
-    #[wasm_bindgen(typescript_type = "bindings.NightCutinFleetState")]
-    pub type JsNightCutinFleetState;
-
-    #[wasm_bindgen(typescript_type = "bindings.WarfareContext")]
-    pub type JsWarfareContext;
 }
 
 macro_rules! impl_wasm_abi_as_string {
@@ -155,6 +149,20 @@ macro_rules! impl_into_wasm_abi {
     };
 }
 
-impl_wasm_abi_as_string!(AirState, Engagement, Formation, OrgType, Role, Side);
-impl_from_wasm_abi!(WarfareContext);
-impl_into_wasm_abi!(ShellingAttackAnalysis);
+impl_wasm_abi_as_string!(
+    AirSquadronMode,
+    AirState,
+    Engagement,
+    Formation,
+    GearAttr,
+    GearType,
+    OrgType,
+    Role,
+    ShipAttr,
+    ShipClass,
+    ShipFilterGroup,
+    ShipType,
+    Side,
+);
+impl_from_wasm_abi!(WarfareContext, NightSituation, WarfareAnalysisParams);
+impl_into_wasm_abi!(WarfareShipEnvironment, WarfareInfo);

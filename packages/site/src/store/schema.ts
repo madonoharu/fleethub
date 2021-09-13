@@ -5,6 +5,7 @@ import {
   FleetParams,
   Formation,
   GearParams,
+  NightSituation,
   OrgParams,
   ShipParams,
 } from "@fleethub/core";
@@ -57,10 +58,12 @@ export type PlanNode = {
   type: number;
   d?: number;
   org: string;
-  player_formation?: Formation;
-  enemy_formation?: Formation;
   air_state?: AirState;
   engagement?: Engagement;
+  player_formation?: Formation;
+  enemy_formation?: Formation;
+  playerNightSituation?: NightSituation;
+  enemyNightSituation?: NightSituation;
 };
 
 export type PlanFileEntity = FileEntityBase<

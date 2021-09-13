@@ -1,5 +1,6 @@
 use std::{collections::HashMap, str::FromStr};
 
+use anyhow::Result;
 use enumset::EnumSet;
 use fasteval::{bool_to_f64, Compiler, Evaler, Instruction, Slab};
 use serde::{Deserialize, Serialize};
@@ -7,6 +8,7 @@ use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
+    attack::WarfareShipEnvironment,
     gear::IBonuses,
     ship::ShipEquippable,
     types::{
@@ -16,7 +18,7 @@ use crate::{
     utils::MyArrayVec,
 };
 
-use super::{DayCutin, Formation, NormalFormationDef};
+use super::{DayCutin, NightCutin, NormalFormationDef};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct GearTypes(u8, u8, u8, u8, u8);
@@ -379,18 +381,21 @@ pub struct MasterConstants {
 }
 
 impl MasterConstants {
-    pub fn get_formation_def(
-        &self,
-        formation: Formation,
-        ship_index: usize,
-        fleet_len: usize,
-    ) -> Option<&NormalFormationDef> {
-        let def = self.formations.iter().find(|def| formation == def.tag())?;
-        Some(def.get_normal_def(ship_index, fleet_len))
+    pub fn get_formation_def(&self, env: &WarfareShipEnvironment) -> Option<&NormalFormationDef> {
+        let def = self
+            .formations
+            .iter()
+            .find(|def| env.formation == def.tag())?;
+
+        Some(def.get_normal_def(env.ship_index, env.fleet_len))
     }
 
     pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {
         self.day_cutins.iter().find(|def| def.tag == cutin)
+    }
+
+    pub fn get_night_cutin_def(&self, cutin: NightCutin) -> Option<&NightCutinDef> {
+        self.night_cutins.iter().find(|def| def.tag == cutin)
     }
 }
 
@@ -412,20 +417,27 @@ fn compile_attr_rules<T>(
     rules: &Vec<MasterAttrRule>,
 ) -> Vec<(T, Instruction)>
 where
-    T: FromStr,
+    T: FromStr<Err = strum::ParseError>,
 {
     rules
         .iter()
-        .filter_map(|rule| {
+        .map(|rule| -> Result<(T, Instruction)> {
             let compiled = parser
                 .parse(&rule.expr, &mut slab.ps)
-                .ok()?
+                .map_err(|err| anyhow::format_err!("{:?}: {}", err, &rule.expr))?
                 .from(&slab.ps)
                 .compile(&slab.ps, &mut slab.cs);
 
-            let attr = T::from_str(&rule.tag).ok()?;
+            let attr = T::from_str(&rule.tag)?;
 
-            Some((attr, compiled))
+            Ok((attr, compiled))
+        })
+        .filter_map(|result| match result {
+            Ok(v) => Some(v),
+            Err(err) => {
+                crate::error!("{:#?}", err);
+                None
+            }
         })
         .collect()
 }

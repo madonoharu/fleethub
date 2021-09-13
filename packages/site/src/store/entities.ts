@@ -28,6 +28,7 @@ import { createCachedSelector } from "re-reselect";
 import { DefaultRootState } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { MapEnemySelectEvent } from "../components/templates/MapList";
+import { SwapEvent } from "../hooks";
 
 import {
   createDeepEqualSelector,
@@ -45,6 +46,7 @@ import {
   shipsSelectors,
 } from "./adapters";
 import { FilesState } from "./filesSlice";
+import { GearPosition } from "./gearsSlice";
 import {
   denormalizeOrg,
   FileEntity,
@@ -317,7 +319,9 @@ const cloneSetEntitiesPayload = (
   };
 };
 
-export type ShipPosition = { fleet?: string; key: ShipKey };
+export type ShipPosition =
+  | { tag: "fleet"; id: string; key: ShipKey }
+  | { tag: "shipDetails" };
 
 type CreateShipArg = {
   ship: Ship;
@@ -547,3 +551,11 @@ export const fetchLocationData = (): AppThunk => async (dispatch) => {
     dispatch(importEntities({ ...data, to: "temp" }));
   }
 };
+
+export const swapGearPosition = createAction<
+  SwapEvent<{ id?: string | undefined; position: GearPosition }>
+>("entities/swapGearPosition");
+
+export const swapShipPosition = createAction<
+  SwapEvent<{ id?: string | undefined; position: ShipPosition }>
+>("entities/swapShipPosition");

@@ -1,4 +1,4 @@
-import { colors as muiColors, createTheme } from "@material-ui/core";
+import { colors as muiColors, createTheme } from "@mui/material";
 
 const { blue, cyan, pink, grey, lightBlue, green } = muiColors;
 
@@ -16,7 +16,7 @@ export const { palette } = createTheme({
   },
 });
 
-export const colors = {
+const stats = {
   firepower: muiColors.pink[300],
   torpedo: muiColors.blue[300],
   anti_air: muiColors.green[300],
@@ -30,17 +30,17 @@ export const colors = {
   armor: muiColors.amber[300],
   range: muiColors.purple[200],
   radius: muiColors.lightGreen[300],
-
   max_hp: palette.text.primary,
   speed: palette.text.primary,
   luck: muiColors.yellow[300],
+};
+
+export const colors = {
+  ...stats,
 
   stars: cyan[400],
   bonus: lightBlue[300],
   diff: palette.secondary.light,
-
-  shelling: muiColors.orange[500],
-  night: muiColors.indigo[200],
 
   AirSupremacy: muiColors.green[300],
   AirSuperiority: muiColors.blue[300],
@@ -64,4 +64,9 @@ export const colors = {
 
   planFile: muiColors.blue[400],
   folder: muiColors.green[300],
+
+  Shelling: muiColors.orange[400],
+  NightAttack: muiColors.indigo[200],
+  Asw: stats.asw,
+  Torpedo: stats.torpedo,
 };

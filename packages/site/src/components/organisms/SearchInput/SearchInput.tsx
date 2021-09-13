@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Tooltip } from "@material-ui/core";
-import HelpIcon from "@material-ui/icons/HelpOutline";
-import SearchIcon from "@material-ui/icons/Search";
+import HelpIcon from "@mui/icons-material/HelpOutline";
+import SearchIcon from "@mui/icons-material/Search";
+import { Tooltip } from "@mui/material";
 import React from "react";
 
 import { Flexbox } from "../../atoms";

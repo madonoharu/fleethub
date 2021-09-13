@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { round } from "@fleethub/utils";
-import { Button, InputAdornment } from "@material-ui/core";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import { Button, InputAdornment } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Input, InputProps } from "../../atoms";
@@ -90,12 +90,14 @@ const NumberInput: React.FC<NumberInputProps> = ({
   );
 
   const [isFocused, setIsFocused] = useState(false);
-  const handleFocus = React.useCallback(() => setIsFocused(true), [
-    setIsFocused,
-  ]);
-  const handleBlur = React.useCallback(() => setIsFocused(false), [
-    setIsFocused,
-  ]);
+  const handleFocus = React.useCallback(
+    () => setIsFocused(true),
+    [setIsFocused]
+  );
+  const handleBlur = React.useCallback(
+    () => setIsFocused(false),
+    [setIsFocused]
+  );
 
   const [inputStr, setInputStr] = React.useState(value.toString());
 

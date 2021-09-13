@@ -1,17 +1,30 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
   Tab as MuiTab,
   TabProps as MuiTabProps,
   Tabs as MuiTabs,
   TabsProps as MuiTabsProps,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 
 const StyledMuiTab = styled(MuiTab)`
   min-width: auto;
 `;
 
-type TabItem = {
+const smallStyle = css`
+  .MuiTabs-root {
+    height: 32px;
+    min-height: 0;
+
+    .MuiTab-root {
+      height: 32px;
+      min-height: 0;
+    }
+  }
+`;
+
+export type TabItem = {
   panel: React.ReactNode;
 } & MuiTabProps;
 
@@ -19,29 +32,43 @@ type TabsPropsBase = {
   value?: number;
   onChange?: (value: number) => void;
   list: TabItem[];
+  size?: "small";
 };
 
 export type TabsProps = Omit<MuiTabsProps, keyof TabsPropsBase> & TabsPropsBase;
 
-const Tabs: React.FC<TabsProps> = ({ className, value, onChange, list }) => {
+const Tabs: React.FC<TabsProps> = ({
+  className,
+  value,
+  onChange,
+  list,
+  size,
+  ...rest
+}) => {
   const [inner, setInner] = React.useState(0);
 
-  const current = value ?? inner;
+  let current = value ?? inner;
+  let item = list.at(current);
 
-  const handleChange = (event: React.ChangeEvent<{}>, next: number) => {
+  if (list.length > 0 && !item) {
+    current = 0;
+    item = list.at(0);
+  }
+
+  const handleChange = (event: React.SyntheticEvent, next: number) => {
     onChange?.(next);
     setInner(next);
   };
 
   return (
-    <div className={className}>
-      <MuiTabs value={current} onChange={handleChange}>
-        {list.map(({ panel, ...tabProps }, index) => (
+    <div className={className} css={size === "small" && smallStyle}>
+      <MuiTabs value={current} onChange={handleChange} classes={{}} {...rest}>
+        {list.map(({ panel: _, ...tabProps }, index) => (
           <StyledMuiTab key={index} {...tabProps} />
         ))}
       </MuiTabs>
 
-      {list[current]?.panel}
+      {item?.panel}
     </div>
   );
 };

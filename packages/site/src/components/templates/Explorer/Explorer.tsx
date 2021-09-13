@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import TreeItem from "@material-ui/lab/TreeItem";
-import TreeView from "@material-ui/lab/TreeView";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TreeItem from "@mui/lab/TreeItem";
+import TreeView from "@mui/lab/TreeView";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 

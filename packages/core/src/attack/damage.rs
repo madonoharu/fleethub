@@ -2,15 +2,19 @@ use std::{hash::Hash, ops::Range};
 
 use rand::prelude::*;
 
-use crate::utils::{NumMap, RandomRange, RandomRangeToDistribution, ToDistribution};
+use crate::{
+    ship::Ship,
+    types::MoraleState,
+    utils::{NumMap, RandomRange, RandomRangeToDistribution, ToDistribution},
+};
 
-use super::{AttackPower, HitType};
+use super::{AttackPower, HitType, WarfareShipEnvironment};
 
-#[derive(Debug, Hash, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Hash, Clone, PartialEq, Eq)]
 enum DamageType {
-    Effective,
+    Just(u16),
     Scratch,
-    Overkill,
+    OverkillProtection,
 }
 
 struct DefensePowerRange {
@@ -109,6 +113,25 @@ pub struct DefenseParams {
 }
 
 impl DefenseParams {
+    pub fn from_target(
+        target_env: &WarfareShipEnvironment,
+        target: &Ship,
+        armor_penetration: f64,
+    ) -> Option<Self> {
+        let overkill_protection =
+            target_env.org_type.is_player() && target.morale_state() != MoraleState::Red;
+
+        let sinkable = target_env.org_type.is_enemy();
+
+        Some(Self {
+            basic_defense_power: target.basic_defense_power(armor_penetration)?,
+            max_hp: target.max_hp()?,
+            current_hp: target.current_hp,
+            overkill_protection,
+            sinkable,
+        })
+    }
+
     fn defense_power_range(&self) -> DefensePowerRange {
         DefensePowerRange {
             basic_defense_power: self.basic_defense_power,
@@ -132,12 +155,12 @@ impl Damage {
         }
     }
 
-    fn calc_typed_damage(&self, defense_power: f64) -> (u16, DamageType) {
+    fn calc_damage_type(&self, defense_power: f64) -> DamageType {
         if self.hit_type == HitType::Miss {
             return if self.is_cutin {
-                (0, DamageType::Scratch)
+                DamageType::Scratch
             } else {
-                (0, DamageType::Effective)
+                DamageType::Just(0)
             };
         }
 
@@ -147,15 +170,21 @@ impl Damage {
             .floor()
             .max(0.0) as u16;
 
-        let damage_type = if 0 == value {
-            DamageType::Scratch
-        } else if value >= self.defense_params.current_hp {
-            DamageType::Overkill
-        } else {
-            DamageType::Effective
-        };
+        let current_hp = self.defense_params.current_hp;
 
-        (value, damage_type)
+        if 0 == value {
+            DamageType::Scratch
+        } else if value < current_hp {
+            DamageType::Just(value)
+        } else if self.defense_params.overkill_protection {
+            DamageType::OverkillProtection
+        } else if self.defense_params.sinkable {
+            DamageType::Just(value)
+        } else if current_hp <= 1 {
+            DamageType::Just(0)
+        } else {
+            DamageType::Just(current_hp - 1)
+        }
     }
 
     pub fn scratch_damage_range(&self) -> ScratchDamageRange {
@@ -168,60 +197,34 @@ impl Damage {
 
     pub fn min(&self) -> u16 {
         let max_defense_power = self.defense_params.defense_power_range().max();
-        let (value, damage_type) = self.calc_typed_damage(max_defense_power);
+        let damage_type = self.calc_damage_type(max_defense_power);
 
         match damage_type {
-            DamageType::Effective => value,
+            DamageType::Just(value) => value,
             DamageType::Scratch => self.scratch_damage_range().min(),
-            DamageType::Overkill => {
-                if self.defense_params.overkill_protection {
-                    self.overkill_protection_damage_range().min()
-                } else if self.defense_params.sinkable {
-                    value
-                } else {
-                    self.defense_params.current_hp - 1
-                }
-            }
+            DamageType::OverkillProtection => self.overkill_protection_damage_range().min(),
         }
     }
 
     pub fn max(&self) -> u16 {
         let min_defense_power = self.defense_params.defense_power_range().min();
-        let (value, damage_type) = self.calc_typed_damage(min_defense_power);
+        let damage_type = self.calc_damage_type(min_defense_power);
 
         match damage_type {
-            DamageType::Effective => value,
+            DamageType::Just(value) => value,
             DamageType::Scratch => self.scratch_damage_range().max(),
-            DamageType::Overkill => {
-                if self.defense_params.overkill_protection {
-                    self.overkill_protection_damage_range().max()
-                } else if self.defense_params.sinkable {
-                    value
-                } else {
-                    self.defense_params.current_hp - 1
-                }
-            }
+            DamageType::OverkillProtection => self.overkill_protection_damage_range().max(),
         }
     }
 
     pub fn choose<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
         let defense_power = self.defense_params.defense_power_range().choose(rng);
-        let (value, damage_type) = self.calc_typed_damage(defense_power);
+        let damage_type = self.calc_damage_type(defense_power);
 
         match damage_type {
-            DamageType::Effective => value,
-
+            DamageType::Just(value) => value,
             DamageType::Scratch => self.scratch_damage_range().choose(rng),
-
-            DamageType::Overkill => {
-                if self.defense_params.overkill_protection {
-                    self.overkill_protection_damage_range().choose(rng)
-                } else if self.defense_params.sinkable {
-                    value
-                } else {
-                    self.defense_params.current_hp - 1
-                }
-            }
+            DamageType::OverkillProtection => self.overkill_protection_damage_range().choose(rng),
         }
     }
 
@@ -234,48 +237,43 @@ impl Damage {
             };
         }
 
-        let mut normal_damages: Vec<u16> = Vec::new();
-        let mut scratch_damages: Vec<u16> = Vec::new();
-        let mut overkill_damages: Vec<u16> = Vec::new();
+        let mut just_count = 0.0;
+        let mut scratch_count = 0.0;
+        let mut overkill_protection_count = 0.0;
 
-        self.defense_params
+        let just_damages = self
+            .defense_params
             .defense_power_range()
             .to_vec()
             .into_iter()
-            .for_each(|defense_power| {
-                let (value, damage_type) = self.calc_typed_damage(defense_power);
+            .map(|defense_power| {
+                let damage_type = self.calc_damage_type(defense_power);
 
                 match damage_type {
-                    DamageType::Effective => normal_damages.push(value),
-                    DamageType::Scratch => scratch_damages.push(value),
-                    DamageType::Overkill => overkill_damages.push(value),
-                }
-            });
+                    DamageType::Just(_) => just_count += 1.0,
+                    DamageType::Scratch => scratch_count += 1.0,
+                    DamageType::OverkillProtection => overkill_protection_count += 1.0,
+                };
 
-        let normal_count = normal_damages.len() as f64;
-        let scratch_count = scratch_damages.len() as f64;
-        let overkill_count = overkill_damages.len() as f64;
-        let total_count = normal_count + scratch_count + overkill_count;
+                damage_type
+            })
+            .filter_map(|damage_type| match damage_type {
+                DamageType::Just(value) => Some(value),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
 
-        let normal_rate = normal_count / total_count;
+        let total_count = just_count + scratch_count + overkill_protection_count;
+
+        let just_rate = just_count / total_count;
         let scratch_rate = scratch_count / total_count;
-        let overkill_rate = overkill_count / total_count;
-
-        let current_hp = self.defense_params.current_hp;
+        let overkill_rate = overkill_protection_count / total_count;
 
         let scratch_distribution = self.scratch_damage_range().to_distribution();
+        let overkill_distribution = self.overkill_protection_damage_range().to_distribution();
+        let just_distribution = just_damages.into_iter().to_distribution();
 
-        let overkill_distribution: NumMap<u16, f64> = if self.defense_params.sinkable {
-            overkill_damages.into_iter().to_distribution()
-        } else if self.defense_params.overkill_protection {
-            self.overkill_protection_damage_range().to_distribution()
-        } else {
-            Some((current_hp - 1, 1.0)).into_iter().collect()
-        };
-
-        let normal_distribution = normal_damages.into_iter().to_distribution();
-
-        normal_distribution * normal_rate
+        just_distribution * just_rate
             + scratch_distribution * scratch_rate
             + overkill_distribution * overkill_rate
     }
@@ -336,15 +334,5 @@ mod test {
 
         assert_eq!(hp100_damage.choose(&mut rng), 59);
         assert_eq!(hp100_damage.choose(&mut rng), 61);
-    }
-
-    #[test]
-    fn test_damage() {
-        use rand::prelude::*;
-
-        let mut rng = thread_rng();
-        let range = OverkillProtectionDamageRange { current_hp: 10 };
-
-        range.choose(&mut rng);
     }
 }

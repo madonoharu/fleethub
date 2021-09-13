@@ -1,4 +1,10 @@
 import murmurhash2_32_gc from "@emotion/hash";
+import {
+  StringFormat,
+  uploadString,
+  ref,
+  StorageError,
+} from "@firebase/storage";
 import { nanoid } from "@reduxjs/toolkit";
 import {
   compressToEncodedURIComponent,
@@ -6,7 +12,7 @@ import {
 } from "lz-string-uri-fix";
 import objectHash from "object-hash";
 
-import { firebase, publicStorageRef } from "../firebase";
+import { publicStorageRef } from "../firebase";
 import { PublicData } from "../store";
 
 const origin = process.browser ? window.location.origin : "";
@@ -31,18 +37,16 @@ const hash = (data: Record<string, unknown>): string => {
 
 export const publishFileData = async (data: PublicData) => {
   const publicId = hash(data);
+  const fileRef = ref(publicStorageRef, `${publicId}.json`);
 
-  await publicStorageRef
-    .child(`${publicId}.json`)
-    .putString(JSON.stringify(data), firebase.storage.StringFormat.RAW, {
-      contentType: "application/json",
-      cacheControl: "public, immutable, max-age=365000000",
-    })
-    .catch((err) => {
-      if (err.code !== "storage/unauthorized") {
-        throw err;
-      }
-    });
+  await uploadString(fileRef, JSON.stringify(data), StringFormat.RAW, {
+    contentType: "application/json",
+    cacheControl: "public, immutable, max-age=365000000",
+  }).catch((err: StorageError) => {
+    if (err.code !== "storage/unauthorized") {
+      throw err;
+    }
+  });
 
   const url = new URL(origin);
   url.searchParams.set(PUBLIC_ID_KEY, publicId);

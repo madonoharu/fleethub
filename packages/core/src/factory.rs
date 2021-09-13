@@ -177,7 +177,7 @@ impl Factory {
         let f4 = self.create_fleet(f4);
 
         let org_type = org_type.unwrap_or_else(|| {
-            if f1.len() == 0 {
+            if f1.count_ships() == 0 {
                 return OrgType::Single;
             }
 
@@ -189,7 +189,7 @@ impl Factory {
 
             if !is_abyssal {
                 OrgType::Single
-            } else if f2.len() > 0 {
+            } else if f2.count_ships() > 0 {
                 OrgType::EnemyCombined
             } else {
                 OrgType::EnemySingle

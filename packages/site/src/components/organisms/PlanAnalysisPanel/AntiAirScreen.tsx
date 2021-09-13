@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { Org, OrgAntiAirAnalysis } from "@fleethub/core";
+import { Org, OrgAntiAirInfo } from "@fleethub/core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFhCore, useSelectState } from "../../../hooks";
@@ -55,6 +56,7 @@ type AntiAirPanelProps = {
 };
 
 const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
+  const { t } = useTranslation("common");
   const { core } = useFhCore();
   const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1);
   const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1);
@@ -62,7 +64,7 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
   //   plan.isCombined ? "Cruising1" : "LineAhead"
   // );
 
-  const analysis: OrgAntiAirAnalysis = core.analyze_anti_air(
+  const info: OrgAntiAirInfo = core.analyze_anti_air(
     org,
     adjustedAntiAirResist,
     fleetAntiAirResist
@@ -71,10 +73,7 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
   return (
     <div>
       <Container>
-        <LabeledValue
-          label="艦隊対空"
-          value={analysis.fleet_anti_air.toFixed(4)}
-        />
+        <LabeledValue label="艦隊対空" value={info.fleet_anti_air.toFixed(4)} />
 
         {/* <FormationSelect
           variant="outlined"
@@ -113,10 +112,10 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
 
       <Table
         padding="none"
-        data={analysis.ships}
+        data={info.ships}
         columns={[
           {
-            label: "艦娘",
+            label: t("Ship"),
             getValue: (datum) => <ShipNameplate shipId={datum.ship_id} />,
           },
           {
@@ -148,7 +147,7 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
             ),
           },
           {
-            label: "噴進弾幕発動率",
+            label: t("AntiAirPropellantBarrage"),
             align: "right",
             getValue: ({ anti_air_propellant_barrage_chance: rate }) => {
               if (rate === null) return "?";
@@ -160,7 +159,7 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
       />
       <StyledChanceChart
         label="対空CI艦隊発動率"
-        chance={analysis.anti_air_cutin_chance}
+        chance={info.anti_air_cutin_chance}
       />
     </div>
   );

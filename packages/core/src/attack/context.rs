@@ -1,67 +1,32 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::types::{
-    AirState, DayCutin, DayCutinDef, Engagement, Formation, FormationAttackModifiers,
-    MasterConstants, OrgType, Role,
-};
+use crate::types::{AirState, Engagement, Formation, OrgType, Role};
 
-#[derive(Debug, Clone, Deserialize, TS)]
-pub struct WarfareSideState {
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+pub struct WarfareShipEnvironment {
     pub org_type: OrgType,
     pub role: Role,
     pub ship_index: usize,
     pub fleet_len: usize,
     pub formation: Formation,
-
     pub fleet_los_mod: Option<f64>,
+}
+
+impl WarfareShipEnvironment {
+    pub fn is_flagship(&self) -> bool {
+        self.ship_index == 0
+    }
+
+    pub fn is_main_flagship(&self) -> bool {
+        self.is_flagship() && self.role.is_main()
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, TS)]
 pub struct WarfareContext {
-    pub attacker: WarfareSideState,
-    pub target: WarfareSideState,
+    pub attacker_env: WarfareShipEnvironment,
+    pub target_env: WarfareShipEnvironment,
     pub engagement: Engagement,
     pub air_state: AirState,
-}
-
-pub struct ShellingContext<'a> {
-    pub master_constants: &'a MasterConstants,
-    pub attacker: WarfareSideState,
-    pub target: WarfareSideState,
-    pub engagement: Engagement,
-    pub air_state: AirState,
-    pub cutin: Option<DayCutin>,
-}
-
-impl<'a> ShellingContext<'a> {
-    pub fn attacker_formation_mods(&self) -> Option<FormationAttackModifiers> {
-        let WarfareSideState {
-            formation,
-            ship_index,
-            fleet_len,
-            ..
-        } = self.attacker;
-
-        self.master_constants
-            .get_formation_def(formation, ship_index, fleet_len)
-            .map(|def| def.shelling.clone())
-    }
-
-    pub fn target_formation_mods(&self) -> Option<FormationAttackModifiers> {
-        let WarfareSideState {
-            formation,
-            ship_index,
-            fleet_len,
-            ..
-        } = self.target;
-
-        self.master_constants
-            .get_formation_def(formation, ship_index, fleet_len)
-            .map(|def| def.shelling.clone())
-    }
-
-    pub fn cutin_def(&self) -> Option<&DayCutinDef> {
-        self.master_constants.get_day_cutin_def(self.cutin?)
-    }
 }

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Breadcrumbs } from "@material-ui/core";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import { Breadcrumbs } from "@mui/material";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import React from "react";
 
 import { useFile } from "../../../hooks";

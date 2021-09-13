@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Button, Paper } from "@material-ui/core";
+import { Button, Paper } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../../hooks";

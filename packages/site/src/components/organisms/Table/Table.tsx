@@ -8,7 +8,7 @@ import {
   TableHead as MuiTableHead,
   TableProps as MuiTableProps,
   TableRow as MuiTableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 
 export type ColumnProps<Datum> = {

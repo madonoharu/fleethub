@@ -1,4 +1,4 @@
-import BrokenImage from "@material-ui/icons/BrokenImage";
+import BrokenImage from "@mui/icons-material/BrokenImage";
 import Image from "next/image";
 import React from "react";
 

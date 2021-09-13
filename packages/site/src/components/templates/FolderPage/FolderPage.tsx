@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Button, Container } from "@material-ui/core";
-import CreateNewFolderIcon from "@material-ui/icons/CreateNewFolder";
-import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
+import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import { Button, Container } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

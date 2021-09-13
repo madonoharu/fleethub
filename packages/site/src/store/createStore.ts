@@ -14,6 +14,7 @@ import { gkcoiSlice } from "./gkcoiSlice";
 import { mapListSlice } from "./mapListSlice";
 import { navSlice } from "./navSlice";
 import { orgsSlice } from "./orgsSlice";
+import { shipDetailsSlice } from "./shipDetailsSlice";
 import { shipListSlice } from "./shipListSlice";
 import { shipSelectSlice } from "./shipSelectSlice";
 import { shipsSlice } from "./shipsSlice";
@@ -44,6 +45,7 @@ const combinedReducer = combineReducers({
   gearList: gearListSlice.reducer,
   shipList: shipListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
+  shipDetails: shipDetailsSlice.reducer,
 });
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {
@@ -66,7 +68,7 @@ const persistedReducer = persistReducer(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     deserialize: false,
-    blacklist: ["nav"],
+    blacklist: ["nav", "shipDetails"],
   },
   persistedReducerBase
 );

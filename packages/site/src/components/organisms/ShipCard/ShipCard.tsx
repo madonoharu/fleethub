@@ -1,17 +1,21 @@
 import styled from "@emotion/styled";
 import { DamageState, MoraleState, Ship } from "@fleethub/core";
 import { GearKey, SlotSizeKey } from "@fleethub/utils";
-import { Tooltip, Paper, IconButton } from "@material-ui/core";
+import { Tooltip, Paper, IconButton, Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useModal, useShipActions } from "../../../hooks";
-import { makeGetNextEbonuses } from "../../../utils";
-import { DamageStateIcon, Flexbox, MoraleStateIcon } from "../../atoms";
+import { makeGetNextEbonuses, toPercent } from "../../../utils";
+import {
+  AmmoIcon,
+  DamageStateIcon,
+  Flexbox,
+  FuelIcon,
+  MoraleStateIcon,
+} from "../../atoms";
 import GearSlot from "../GearSlot";
 import ShipBanner from "../ShipBanner";
-import DamageSelect from "./DamageStateSelect";
-import MoraleStateSelect from "./MoraleStateSelect";
 import ShipCardHeader from "./ShipCardHeader";
 import ShipMiscEditForm from "./ShipMiscEditForm";
 import ShipStats from "./ShipStats";
@@ -29,6 +33,15 @@ const TinyIconButton = styled(IconButton)`
   }
 `;
 
+const TinyButton = styled(Button)`
+  padding: 0 4px;
+
+  .MuiButton-startIcon {
+    margin-right: 4px;
+    margin-left: 0;
+  }
+`;
+
 const StyledShipBanner = styled(ShipBanner)`
   margin-left: 4px;
 `;
@@ -40,6 +53,7 @@ const GearList = styled.div`
 
 type Props = {
   ship: Ship;
+  visibleMiscStats?: boolean;
   disableHeaderAction?: boolean;
   onDetailClick?: () => void;
 };
@@ -47,6 +61,7 @@ type Props = {
 const ShipCard: React.FCX<Props> = ({
   className,
   ship,
+  visibleMiscStats,
   disableHeaderAction,
   onDetailClick,
 }) => {
@@ -57,6 +72,15 @@ const ShipCard: React.FCX<Props> = ({
 
   const damageState = ship.damage_state() as DamageState;
   const moraleState = ship.morale_state() as MoraleState;
+  const { ammo, max_ammo, fuel, max_fuel } = ship;
+
+  const visibleDamageState = visibleMiscStats || damageState !== "Normal";
+  const visibleMoraleState = visibleMiscStats || moraleState !== "Normal";
+
+  const ammoRate = max_ammo ? ammo / max_ammo : 1;
+  const fuelRate = max_fuel ? fuel / max_fuel : 1;
+  const visibleAmmo = visibleMiscStats || ammoRate < 1;
+  const visibleFuel = visibleMiscStats || fuelRate < 1;
 
   return (
     <Paper className={className}>
@@ -92,18 +116,36 @@ const ShipCard: React.FCX<Props> = ({
         </GearList>
 
         <Flexbox>
-          {damageState !== "Normal" && (
+          {visibleDamageState && (
             <Tooltip title={`${t("DamageState")} ${t(damageState)}`}>
               <TinyIconButton onClick={EditModal.show}>
                 <DamageStateIcon state={damageState} />
               </TinyIconButton>
             </Tooltip>
           )}
-          {moraleState !== "Normal" && (
+          {visibleMoraleState && (
             <Tooltip title={`${t("MoraleState")} ${t(moraleState)}`}>
               <TinyIconButton onClick={EditModal.show}>
                 <MoraleStateIcon state={moraleState} />
               </TinyIconButton>
+            </Tooltip>
+          )}
+          {visibleFuel && (
+            <Tooltip title={t("fuel")}>
+              <TinyButton
+                onClick={EditModal.show}
+                startIcon={<FuelIcon />}
+                size="small"
+              >
+                {toPercent(fuelRate, 0)}
+              </TinyButton>
+            </Tooltip>
+          )}
+          {visibleAmmo && (
+            <Tooltip title={t("ammo")}>
+              <TinyButton onClick={EditModal.show} startIcon={<AmmoIcon />}>
+                {toPercent(ammoRate, 0)}
+              </TinyButton>
             </Tooltip>
           )}
         </Flexbox>

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Typography, StyledComponentProps } from "@material-ui/core";
-import { Variant } from "@material-ui/core/styles/createTypography";
+import { Typography, StyledComponentProps } from "@mui/material";
+import { Variant } from "@mui/material/styles/createTypography";
 import React from "react";
 
 type LabeledValueProps = StyledComponentProps<"label" | "value"> & {

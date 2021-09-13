@@ -1,9 +1,7 @@
-import styled from "@emotion/styled";
-import { Org, OrgType } from "@fleethub/core";
-import { Typography } from "@material-ui/core";
+import { OrgType } from "@fleethub/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { Select } from "../../molecules";
+import { Select, SelectInputProps } from "../../molecules";
 
 const ORG_TYPES: OrgType[] = [
   "Single",
@@ -15,6 +13,7 @@ const ORG_TYPES: OrgType[] = [
 ];
 
 type OrgTypeSelectProps = {
+  color: SelectInputProps["color"];
   value: OrgType;
   onChange?: (value: OrgType) => void;
 };

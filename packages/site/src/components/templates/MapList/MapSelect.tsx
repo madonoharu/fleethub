@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { uniq } from "@fleethub/utils";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useAsync } from "react-async-hook";

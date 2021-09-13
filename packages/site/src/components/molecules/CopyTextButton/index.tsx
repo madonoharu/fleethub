@@ -1,4 +1,4 @@
-import Assignment from "@material-ui/icons/Assignment";
+import Assignment from "@mui/icons-material/Assignment";
 import copy from "copy-to-clipboard";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -18,13 +18,13 @@ const CopyTextButton: React.FC<Props> = ({ value }) => {
 
   const handleClick = () => {
     const result = copy(value);
-    if (result) Snackbar.show({ message: "コピーしました" });
-    else Snackbar.show({ message: "失敗しました", severity: "error" });
+    if (result) Snackbar.show({ message: "Success" });
+    else Snackbar.show({ message: "Error", severity: "error" });
   };
 
   return (
     <>
-      <AssignmentButton title={t("Copy")} onClick={handleClick} />
+      <AssignmentButton title={t("CopyToClipboard")} onClick={handleClick} />
       <Snackbar />
     </>
   );

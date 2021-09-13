@@ -5,8 +5,8 @@ import { gearsAdapter } from "./adapters";
 import { isEntitiesAction, sweep } from "./entities";
 
 export type GearPosition =
-  | { ship: string; key: GearKey }
-  | { airSquadron: string; key: GearKey };
+  | { id?: string; ship: string; key: GearKey }
+  | { id?: string; airSquadron: string; key: GearKey };
 
 export const gearsSlice = createSlice({
   name: "entities/gears",

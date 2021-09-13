@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { FhMap, MapNode } from "@fleethub/utils";
-import { Tooltip } from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 import { Group } from "@visx/group";
 import { Graph } from "@visx/network";
 import { ScaleSVG } from "@visx/responsive";

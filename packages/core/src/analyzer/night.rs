@@ -1,27 +1,24 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
+    attack::{AttackPower, AttackPowerParams, HitRate, HitRateParams, NightSituation},
     fleet::Fleet,
     gear_id,
     org::Org,
     ship::Ship,
     types::{ContactRank, DamageState, GearAttr, MasterConstants, NightCutin, NightCutinDef},
+    utils::NumMap,
 };
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
-pub struct NightCutinFleetState {
-    contact_rank: Option<ContactRank>,
-    searchlight: bool,
-    starshell: bool,
-}
+use super::DamageInfo;
 
 #[derive(Debug)]
 struct NightCutinTermParams<'a> {
     is_flagship: bool,
     damage_state: DamageState,
-    attacker_fleet_state: &'a NightCutinFleetState,
-    defender_fleet_state: &'a NightCutinFleetState,
+    attacker_situation: &'a NightSituation,
+    target_situation: &'a NightSituation,
 }
 
 fn night_cutin_term(ship: &Ship, params: NightCutinTermParams) -> Option<f64> {
@@ -49,19 +46,19 @@ fn night_cutin_term(ship: &Ship, params: NightCutinTermParams) -> Option<f64> {
         value += 5.
     }
 
-    if params.attacker_fleet_state.searchlight {
+    if params.attacker_situation.searchlight {
         value += 7.
     }
 
-    if params.defender_fleet_state.searchlight {
+    if params.target_situation.searchlight {
         value += -5.
     }
 
-    if params.attacker_fleet_state.starshell {
+    if params.attacker_situation.starshell {
         value += 4.
     }
 
-    if params.defender_fleet_state.starshell {
+    if params.target_situation.starshell {
         value += -10.
     }
 
@@ -118,22 +115,22 @@ impl Fleet {
 }
 
 #[derive(Debug, Default, Serialize, TS)]
-pub struct NightCutinRateAnalysis {
-    cutin_term: Option<f64>,
-    rates: Vec<(NightCutin, Option<f64>)>,
+pub struct NightCutinRateInfo {
+    pub cutin_term: Option<f64>,
+    pub rates: Vec<(Option<NightCutin>, Option<f64>)>,
 }
 
 #[derive(Debug, Default, Serialize, TS)]
-pub struct ShipNightCutinRateAnalysis {
+pub struct ShipNightCutinRateInfo {
     ship_id: u16,
-    normal: NightCutinRateAnalysis,
-    chuuha: NightCutinRateAnalysis,
+    normal: NightCutinRateInfo,
+    chuuha: NightCutinRateInfo,
 }
 
 #[derive(Debug, Default, Serialize, TS)]
-pub struct OrgNightCutinRateAnalysis {
+pub struct OrgNightCutinRateInfo {
     contact_chance: NightContactChance,
-    ships: Vec<ShipNightCutinRateAnalysis>,
+    ships: Vec<ShipNightCutinRateInfo>,
 }
 
 pub struct NightAnalyzer<'a> {
@@ -152,17 +149,28 @@ impl<'a> NightAnalyzer<'a> {
             .find(|def| def.tag == cutin)
     }
 
-    fn analyze_cutin_rates(
+    fn analyze_cutin_rates_with_damage_state(
         &self,
         ship: &Ship,
-        params: NightCutinTermParams,
-    ) -> NightCutinRateAnalysis {
+        is_flagship: bool,
+        attacker_situation: &NightSituation,
+        target_situation: &NightSituation,
+        damage_state: DamageState,
+    ) -> NightCutinRateInfo {
+        let params = NightCutinTermParams {
+            is_flagship,
+            damage_state,
+            attacker_situation,
+            target_situation,
+        };
         let cutin_term = night_cutin_term(ship, params);
 
-        let rates = ship
+        let cutins = ship
             .get_possible_night_cutin_set()
             .into_iter()
-            .filter_map(|cutin| self.get_cutin_def(cutin))
+            .filter_map(|cutin| self.get_cutin_def(cutin));
+
+        let mut rates = cutins
             .scan(0.0, |total, def| {
                 let actual_rate =
                     cutin_term
@@ -175,41 +183,62 @@ impl<'a> NightAnalyzer<'a> {
                             actual_rate
                         });
 
-                Some((def.tag, actual_rate))
+                Some((Some(def.tag), actual_rate))
             })
             .collect::<Vec<_>>();
 
-        NightCutinRateAnalysis { cutin_term, rates }
+        let total_cutin_rate = rates
+            .iter()
+            .map(|(_, rate)| rate.as_ref())
+            .sum::<Option<f64>>();
+
+        let normal_attack_rate = total_cutin_rate.map(|r| 1.0 - r);
+
+        rates.insert(0, (None, normal_attack_rate));
+
+        NightCutinRateInfo { cutin_term, rates }
+    }
+
+    pub fn analyze_cutin_rates(
+        &self,
+        ship: &Ship,
+        is_flagship: bool,
+        attacker_situation: &NightSituation,
+        target_situation: &NightSituation,
+    ) -> NightCutinRateInfo {
+        self.analyze_cutin_rates_with_damage_state(
+            ship,
+            is_flagship,
+            attacker_situation,
+            target_situation,
+            ship.damage_state(),
+        )
     }
 
     fn analyze_ship(
         &self,
         ship: &Ship,
         is_flagship: bool,
-        attacker_fleet_state: &NightCutinFleetState,
-        defender_fleet_state: &NightCutinFleetState,
-    ) -> ShipNightCutinRateAnalysis {
-        let normal = self.analyze_cutin_rates(
+        attacker_situation: &NightSituation,
+        target_situation: &NightSituation,
+    ) -> ShipNightCutinRateInfo {
+        let normal = self.analyze_cutin_rates_with_damage_state(
             ship,
-            NightCutinTermParams {
-                is_flagship,
-                damage_state: DamageState::Normal,
-                attacker_fleet_state,
-                defender_fleet_state,
-            },
+            is_flagship,
+            attacker_situation,
+            target_situation,
+            DamageState::Normal,
         );
 
-        let chuuha = self.analyze_cutin_rates(
+        let chuuha = self.analyze_cutin_rates_with_damage_state(
             ship,
-            NightCutinTermParams {
-                is_flagship,
-                damage_state: DamageState::Chuuha,
-                attacker_fleet_state,
-                defender_fleet_state,
-            },
+            is_flagship,
+            attacker_situation,
+            target_situation,
+            DamageState::Chuuha,
         );
 
-        ShipNightCutinRateAnalysis {
+        ShipNightCutinRateInfo {
             ship_id: ship.ship_id,
             normal,
             chuuha,
@@ -219,9 +248,9 @@ impl<'a> NightAnalyzer<'a> {
     pub fn analyze_org(
         &self,
         org: &Org,
-        attacker_fleet_state: NightCutinFleetState,
-        defender_fleet_state: NightCutinFleetState,
-    ) -> OrgNightCutinRateAnalysis {
+        attacker_situation: NightSituation,
+        target_situation: NightSituation,
+    ) -> OrgNightCutinRateInfo {
         let fleet = org.night_fleet();
         let contact_chance = fleet.night_contact_chance();
 
@@ -231,16 +260,11 @@ impl<'a> NightAnalyzer<'a> {
             .map(|(index, ship)| {
                 let is_flagship = index == 0;
 
-                self.analyze_ship(
-                    ship,
-                    is_flagship,
-                    &attacker_fleet_state,
-                    &defender_fleet_state,
-                )
+                self.analyze_ship(ship, is_flagship, &attacker_situation, &target_situation)
             })
             .collect();
 
-        OrgNightCutinRateAnalysis {
+        OrgNightCutinRateInfo {
             contact_chance,
             ships,
         }

@@ -14,21 +14,18 @@ pub mod wasm_abi;
 
 use std::str::FromStr;
 
-use attack::WarfareContext;
-use wasm_abi::{
-    AirSquadronParams, FleetParams, GearParams, JsNightCutinFleetState, JsWarfareContext,
-    OrgParams, ShipParams,
-};
+use attack::NightSituation;
+use wasm_abi::{AirSquadronParams, FleetParams, GearParams, OrgParams, ShipParams};
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
-use analyzer::{Analyzer, ShellingAttackAnalysis};
+use analyzer::{Analyzer, WarfareAnalysisParams, WarfareInfo};
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
 use org::Org;
 use ship::Ship;
-use types::{AirState, EBonusFn, Engagement, Formation, MasterData, Role, Side};
+use types::{EBonusFn, MasterData};
 
 // When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
 // allocator.
@@ -127,32 +124,14 @@ impl FhCore {
         JsValue::from_serde(&result).unwrap()
     }
 
-    pub fn analyze_shelling(
-        &self,
-        context: WarfareContext,
-        attacker_ship: &Ship,
-        target_ship: &Ship,
-    ) -> JsValue {
-        let result = analyzer::analyze_ship_shelling(
-            &self.factory.master_data,
-            attacker_ship,
-            target_ship,
-            context,
-        );
-
-        JsValue::from_serde(&result).unwrap()
-    }
-
     pub fn analyze_night_cutin(
         &self,
         org: &Org,
-        attacker_fleet_state: JsNightCutinFleetState,
-        defender_fleet_state: JsNightCutinFleetState,
+        attacker_situation: NightSituation,
+        defender_situation: NightSituation,
     ) -> JsValue {
-        let attacker_fleet_state = attacker_fleet_state.into_serde().unwrap();
-        let defender_fleet_state = defender_fleet_state.into_serde().unwrap();
         let analyzer = Analyzer::new(&self.factory.master_data);
-        let result = analyzer.analyze_night_cutin(org, attacker_fleet_state, defender_fleet_state);
+        let result = analyzer.analyze_night_cutin(org, attacker_situation, defender_situation);
 
         JsValue::from_serde(&result).unwrap()
     }
@@ -166,29 +145,12 @@ impl FhCore {
 
     pub fn analyze_warfare(
         &self,
-        player_org: &Org,
-        player_ship: &Ship,
-        player_formation: Formation,
-        enemy_org: &Org,
-        enemy_ship: &Ship,
-        enemy_formation: Formation,
-        attacker_side: Side,
-        air_state: AirState,
-        engagement: Engagement,
-    ) -> Option<ShellingAttackAnalysis> {
+        params: WarfareAnalysisParams,
+        attacker: &Ship,
+        target: &Ship,
+    ) -> WarfareInfo {
         let analyzer = Analyzer::new(&self.factory.master_data);
-
-        analyzer.analyze_warfare(
-            player_org,
-            player_ship,
-            player_formation,
-            enemy_org,
-            enemy_ship,
-            enemy_formation,
-            attacker_side,
-            air_state,
-            engagement,
-        )
+        analyzer.analyze_warfare(params, attacker, target)
     }
 }
 

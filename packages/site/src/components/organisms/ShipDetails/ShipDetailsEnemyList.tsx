@@ -1,88 +1,91 @@
-import styled from "@emotion/styled";
-import { Ship, WarfareContext, ShellingAttackAnalysis } from "@fleethub/core";
-import { Button, Paper } from "@material-ui/core";
-import { nanoid } from "@reduxjs/toolkit";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { useImmer } from "use-immer";
-import { useFhCore, useModal, useShip } from "../../../hooks";
-import { createShip, shipSelectSlice } from "../../../store";
+import { Ship, Side, WarfareAnalysisParams } from "@fleethub/core";
+import { Divider, Stack } from "@mui/material";
+import React from "react";
+
+import { useShip } from "../../../hooks";
+import { ShipDetailsState, WarfareAnalysisShipParams } from "../../../store";
 import { Flexbox } from "../../atoms";
 import ShipCard from "../ShipCard";
-import AttackTabele from "./AttackTabele";
+import WarfareAnalyzer from "../WarfareAnalyzer";
 
-const EnemyListItem: React.FCX<{
-  ship1: Ship;
+type EnemyListItemProps = {
+  ship: Ship;
   id: string;
-  context: WarfareContext;
-}> = ({ id, context, ship1 }) => {
-  const ship2 = useShip(id);
-  const { core } = useFhCore();
+  state: ShipDetailsState;
+};
 
-  if (!ship2) return null;
+const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
+  const enemy = useShip(id);
 
-  const data: ShellingAttackAnalysis = core.analyze_shelling(
-    context,
-    ship1,
-    ship2
-  );
+  if (!enemy) return null;
+
+  const createArgs = (side: Side) => {
+    let attacker: Ship;
+    let attackerParams: WarfareAnalysisShipParams;
+    let target: Ship;
+    let targetParams: WarfareAnalysisShipParams;
+
+    if (side === "Player") {
+      attacker = ship;
+      attackerParams = state.player;
+      target = enemy;
+      targetParams = state.enemy;
+    } else {
+      attacker = enemy;
+      attackerParams = state.enemy;
+      target = ship;
+      targetParams = state.player;
+    }
+
+    const params: WarfareAnalysisParams = {
+      warfare_context: {
+        attacker_env: attackerParams,
+        target_env: targetParams,
+        air_state: state.air_state,
+        engagement: state.engagement,
+      },
+      attacker_night_situation: attackerParams,
+      target_night_situation: targetParams,
+    };
+
+    return { params, attacker, target };
+  };
 
   return (
-    <Flexbox
-      gap={1}
-      css={{
-        "> *": {
-          width: "100%",
-        },
-      }}
-    >
-      <ShipCard ship={ship2} />
-      <Paper
+    <Stack gap={1}>
+      <Divider />
+      <ShipCard ship={enemy} css={{ maxWidth: 1178 / 2 - 4 }} />
+      <Flexbox
+        gap={1}
         css={{
-          minHeight: 24 * 8,
-          padding: 8,
+          "> *": {
+            width: "50%",
+          },
         }}
       >
-        <AttackTabele data={data} />
-      </Paper>
-    </Flexbox>
+        <WarfareAnalyzer {...createArgs("Player")} />
+        <WarfareAnalyzer {...createArgs("Enemy")} />
+      </Flexbox>
+    </Stack>
   );
 };
 
 type ShipDetailsEnemyListProps = {
   ship: Ship;
-  context: WarfareContext;
+  state: ShipDetailsState;
 };
 
 const ShipDetailsEnemyList: React.FCX<ShipDetailsEnemyListProps> = ({
   className,
   ship,
-  context,
+  state,
 }) => {
-  const dispatch = useDispatch();
-  const [enemies, updateEnemies] = useImmer<string[]>([]);
-
-  const handleEnemySelect = () => {
-    const id = nanoid();
-
-    // todo!
-    dispatch(shipSelectSlice.actions.create({ id }));
-
-    updateEnemies((state) => {
-      state.push(id);
-    });
-  };
-
   return (
-    <div className={className}>
-      <Button variant="contained" color="primary" onClick={handleEnemySelect}>
-        敵を追加して攻撃力を計算する
-      </Button>
-      {enemies.map((id) => (
-        <EnemyListItem key={id} id={id} context={context} ship1={ship} />
+    <Stack className={className} gap={1}>
+      {state.enemies.map((id) => (
+        <EnemyListItem key={id} id={id} state={state} ship={ship} />
       ))}
-    </div>
+    </Stack>
   );
 };
 

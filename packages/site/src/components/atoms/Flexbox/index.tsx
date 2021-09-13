@@ -6,18 +6,21 @@ type FlexboxProps = Pick<
   "alignItems" | "justifyContent" | "flexDirection"
 > & {
   gap?: number | undefined;
+  mt?: number | undefined;
+  mb?: number | undefined;
 };
 
 export default styled.div<FlexboxProps>(
-  ({ alignItems, justifyContent, flexDirection, gap, theme }) => css`
+  ({ alignItems, justifyContent, flexDirection, gap, mt, mb, theme }) => css`
     display: flex;
     align-items: ${alignItems || "center"};
     justify-content: ${justifyContent};
     flex-direction: ${flexDirection};
-    gap: ${theme.spacing(gap || 0)};
+    gap: ${gap && theme.spacing(gap)};
+    margin-top: ${mt && theme.spacing(mt)};
+    margin-bottom: ${mb && theme.spacing(mb)};
     > * {
       min-width: 0;
-      min-height: 0;
     }
   `
 );

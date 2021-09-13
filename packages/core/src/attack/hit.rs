@@ -13,9 +13,9 @@ pub struct HitRateParams {
     pub accuracy_term: f64,
     pub evasion_term: f64,
     pub morale_mod: f64,
-    pub critical_rate_multiplier: f64,
-    pub critical_percent_bonus: f64,
-    pub hit_percent_bonus: f64,
+    pub critical_rate_constant: f64,
+    pub critical_percentage_bonus: f64,
+    pub hit_percentage_bonus: f64,
 }
 
 #[derive(Debug, Default, Serialize, TS)]
@@ -35,10 +35,10 @@ impl HitRateParams {
         let basis = self.calc_basis();
 
         let critical_percent =
-            (basis.sqrt() * self.critical_rate_multiplier + 1.0 + self.critical_percent_bonus)
+            (basis.sqrt() * self.critical_rate_constant + 1.0 + self.critical_percentage_bonus)
                 .floor();
 
-        let hit_percent = (basis + 1.0 + self.hit_percent_bonus)
+        let hit_percent = (basis + 1.0 + self.hit_percentage_bonus)
             .floor()
             .max(critical_percent);
 
@@ -64,14 +64,14 @@ mod test {
             accuracy_term: 0.0,
             evasion_term: 0.0,
             morale_mod: 1.0,
-            critical_rate_multiplier: 1.0,
-            critical_percent_bonus: 0.0,
-            hit_percent_bonus: 0.0,
+            critical_rate_constant: 1.0,
+            critical_percentage_bonus: 0.0,
+            hit_percentage_bonus: 0.0,
         };
 
         let max = HitRateParams {
             accuracy_term: 100.0,
-            hit_percent_bonus: 10.0,
+            hit_percentage_bonus: 10.0,
             ..min
         };
 
@@ -83,9 +83,9 @@ mod test {
             accuracy_term: 60.0,
             evasion_term: 10.0,
             morale_mod: 1.2,
-            critical_rate_multiplier: 1.3,
-            critical_percent_bonus: 12.0,
-            hit_percent_bonus: 9.0,
+            critical_rate_constant: 1.3,
+            critical_percentage_bonus: 12.0,
+            hit_percentage_bonus: 9.0,
         }
         .calc();
 

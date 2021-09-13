@@ -1,6 +1,6 @@
 import { Ship } from "@fleethub/core";
 import { GEAR_KEYS } from "@fleethub/utils";
-import { Tooltip, TooltipProps } from "@material-ui/core";
+import { Tooltip, TooltipProps } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import GearNameplate from "../GearNameplate";

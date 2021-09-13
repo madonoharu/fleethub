@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
-import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@material-ui/core";
-import GitHubIcon from "@material-ui/icons/GitHub";
-import MenuIcon from "@material-ui/icons/Menu";
-import RedoIcon from "@material-ui/icons/Redo";
-import UndoIcon from "@material-ui/icons/Undo";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import MenuIcon from "@mui/icons-material/Menu";
+import RedoIcon from "@mui/icons-material/Redo";
+import UndoIcon from "@mui/icons-material/Undo";
+import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@mui/material";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -104,7 +104,7 @@ const AppBar: React.FCX<Props> = ({
           </Button>
         </Tooltip>
 
-        <Button onClick={handleShipSelectOpen}>{t("Ships")}</Button>
+        <Button onClick={handleShipSelectOpen}>{t("Ship")}</Button>
         <Button onClick={GearListModal.show}>{t("Equipment")}</Button>
         <Button onClick={MapListModal.show}>{t("Maps")}</Button>
         <LanguageSelect />

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useForkRef } from "@material-ui/core";
+import { useForkRef } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 
 import { Input, InputProps } from "../../atoms";

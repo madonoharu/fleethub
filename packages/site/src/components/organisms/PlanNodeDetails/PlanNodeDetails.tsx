@@ -1,7 +1,6 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { DamageState, Formation, MoraleState } from "@fleethub/core";
-import { Container } from "@material-ui/core";
+import { NightSituation } from "@fleethub/core";
+import { Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,18 +11,20 @@ import { Flexbox } from "../../atoms";
 import AirStateSelect from "../AirStateSelect";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
+import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
-import WarfareAnalyzer from "../WarfareAnalyzer";
 import OrgShipSelect from "./OrgShipSelect";
-
-export type NodeAnalyzerShipConfigs = {
-  damage_state: DamageState;
-  morale_state: MoraleState;
-};
+import WarfareDetails from "./WarfareDetails";
 
 type PlanNodeDetailsProps = {
   plan: PlanFileEntity;
   node: PlanNode;
+};
+
+const initalNightSituation: NightSituation = {
+  night_contact_rank: null,
+  searchlight: false,
+  starshell: false,
 };
 
 const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
@@ -32,10 +33,11 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
   plan,
   node,
 }) => {
+  const { t } = useTranslation("common");
+  const dispatch = useDispatch();
+
   const { org: playerOrg } = useOrg(plan.org);
   const { org: enemyOrg } = useOrg(node.org);
-  const dispatch = useDispatch();
-  const { t } = useTranslation("common");
 
   const [playerShipId, setPlayerShipId] = useState<string | undefined>(
     playerOrg?.get_ship_entity_id("Main", "s1")
@@ -64,83 +66,109 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
     : undefined;
 
   const player_formation =
-    node.player_formation || (playerOrg.default_formation() as Formation);
-  const enemy_formation =
-    node.enemy_formation || (enemyOrg.default_formation() as Formation);
+    node.player_formation || playerOrg.default_formation();
+  const enemy_formation = node.enemy_formation || enemyOrg.default_formation();
+
+  const playerNightSituation =
+    node.playerNightSituation || initalNightSituation;
+  const enemyNightSituation = node.enemyNightSituation || initalNightSituation;
 
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       <Flexbox
         justifyContent="space-between"
         alignItems="flex-start"
         css={{ maxWidth: 720 }}
-      >
-        <OrgShipSelect
-          org={playerOrg}
-          value={playerShipId}
-          onSelect={setPlayerShipId}
-        />
-
-        <OrgShipSelect
-          enemy
-          org={enemyOrg}
-          value={enemyShipId}
-          onSelect={setEnemyShipId}
-        />
-      </Flexbox>
-
-      <Flexbox gap={1} css={{ maxWidth: 720 }}>
-        <FormationSelect
-          color="primary"
-          label={t("Formation")}
-          combined={playerOrg.is_combined()}
-          value={player_formation}
-          onChange={(player_formation) => update({ player_formation })}
-        />
-        <AirStateSelect
-          label={t("AirState")}
-          value={node.air_state || "AirSupremacy"}
-          onChange={(air_state) => update({ air_state })}
-        />
-        <EngagementSelect
-          label={t("Engagement")}
-          value={node.engagement || "Parallel"}
-          onChange={(engagement) => update({ engagement })}
-        />
-
-        <FormationSelect
-          css={{ marginLeft: "auto" }}
-          label={t("Formation")}
-          color="secondary"
-          combined={enemyOrg.is_combined()}
-          value={enemy_formation}
-          onChange={(enemy_formation) => update({ enemy_formation })}
-        />
-      </Flexbox>
+      ></Flexbox>
 
       <Flexbox
         gap={1}
         css={{
-          width: "100%",
           "> *": {
             width: "50%",
           },
         }}
       >
-        {playerShip && <ShipCard ship={playerShip} />}
+        <Stack gap={1}>
+          <OrgShipSelect
+            org={playerOrg}
+            value={playerShipId}
+            onSelect={setPlayerShipId}
+          />
+          <Flexbox gap={1}>
+            <FormationSelect
+              color="primary"
+              label={t("Formation")}
+              combined={playerOrg.is_combined()}
+              value={player_formation}
+              onChange={(player_formation) => update({ player_formation })}
+            />
+            <AirStateSelect
+              label={t("AirState")}
+              value={node.air_state || "AirSupremacy"}
+              onChange={(air_state) => update({ air_state })}
+            />
+            <EngagementSelect
+              label={t("Engagement")}
+              value={node.engagement || "Parallel"}
+              onChange={(engagement) => update({ engagement })}
+            />
+          </Flexbox>
+          <NightSituationForm
+            color="primary"
+            value={playerNightSituation}
+            onChange={(playerNightSituation) =>
+              update({ playerNightSituation })
+            }
+          />
+        </Stack>
 
-        {enemyShip && <ShipCard ship={enemyShip} />}
+        <Stack gap={1}>
+          <OrgShipSelect
+            enemy
+            org={enemyOrg}
+            value={enemyShipId}
+            onSelect={setEnemyShipId}
+          />
+          <FormationSelect
+            css={{ display: "block" }}
+            label={t("Formation")}
+            color="secondary"
+            combined={enemyOrg.is_combined()}
+            value={enemy_formation}
+            onChange={(enemy_formation) => update({ enemy_formation })}
+          />
+          <NightSituationForm
+            color="secondary"
+            value={enemyNightSituation}
+            onChange={(enemyNightSituation) => update({ enemyNightSituation })}
+          />
+        </Stack>
+      </Flexbox>
+
+      <Flexbox
+        gap={1}
+        css={{
+          "> *": {
+            width: "50%",
+          },
+        }}
+      >
+        {playerShip && <ShipCard ship={playerShip} visibleMiscStats />}
+
+        {enemyShip && <ShipCard ship={enemyShip} visibleMiscStats />}
       </Flexbox>
 
       {playerShip && enemyShip && playerOrg && enemyOrg && (
-        <WarfareAnalyzer
+        <WarfareDetails
           playerOrg={playerOrg}
           playerShip={playerShip}
-          player_formation={player_formation}
+          playerFormation={player_formation}
+          playerNightSituation={playerNightSituation}
           enemyOrg={enemyOrg}
           enemyShip={enemyShip}
-          enemy_formation={enemy_formation}
-          attacker_side="Player"
+          enemyFormation={enemy_formation}
+          enemyNightSituation={enemyNightSituation}
           air_state={node.air_state || "AirSupremacy"}
           engagement={node.engagement || "Parallel"}
         />

@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Drawer } from "@material-ui/core";
+import { Drawer } from "@mui/material";
 import React from "react";
 
 import Explorer from "../Explorer";

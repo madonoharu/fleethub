@@ -1,4 +1,4 @@
-import { colors } from "@material-ui/core";
+import { colors } from "@mui/material";
 import React from "react";
 import { Cell, Label, Pie, PieChart } from "recharts";
 

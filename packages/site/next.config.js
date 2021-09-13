@@ -1,5 +1,5 @@
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-const withTM = require("next-transpile-modules")(["@material-ui/icons"]);
+const withTM = require("next-transpile-modules")(["@mui/icons-material"]);
 const { i18n } = require("./next-i18next.config");
 
 const config = {
@@ -12,7 +12,7 @@ const config = {
     domains: ["res.cloudinary.com"],
   },
 
-  webpack: (config, options) => {
+  webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.wasm$/,
       type: "webassembly/sync",
@@ -22,11 +22,14 @@ const config = {
       syncWebAssembly: true,
     };
 
+    config.output.webassemblyModuleFilename =
+      (isServer ? "../" : "") + "static/wasm/webassembly.wasm";
+
     if (process.env.ANALYZE) {
       config.plugins.push(
         new BundleAnalyzerPlugin({
           analyzerMode: "static",
-          reportFilename: options.isServer
+          reportFilename: isServer
             ? "../analyze/server.html"
             : "./analyze/client.html",
         })

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
 
