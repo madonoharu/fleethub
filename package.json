@@ -8,8 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "prebuild": "yarn build:utils & yarn build:core",
-    "build": "yarn build:utils && yarn build:core && yarn build:site",
+    "build": "yarn build:utils && yarn build:site",
     "build:core": "yarn workspace @fleethub/core build",
     "build:site": "yarn workspace @fleethub/site build",
     "build:utils": "yarn workspace @fleethub/utils build",
@@ -19,6 +18,7 @@
     "lint": "eslint --cache packages && yarn tscheck",
     "prepare": "husky install",
     "site": "yarn workspace @fleethub/site",
+    "start": "yarn workspace @fleethub/core start",
     "test": "jest",
     "tscheck": "tsc --noEmit",
     "update:constants": "yarn esn scripts/updateConstants",
