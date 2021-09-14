@@ -1,5 +1,5 @@
-import { Gear } from "@fleethub/core";
-import { uniq } from "@fleethub/utils";
+import { Gear } from "@fh/core";
+import { uniq } from "@fh/utils";
 
 export type GearFilterFn = (gear: Gear) => boolean;
 

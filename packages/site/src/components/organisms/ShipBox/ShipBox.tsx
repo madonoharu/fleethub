@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Ship } from "@fleethub/core";
+import { Ship } from "@fh/core";
 import AddIcon from "@mui/icons-material/Add";
 import { Button, ButtonProps } from "@mui/material";
 import React from "react";

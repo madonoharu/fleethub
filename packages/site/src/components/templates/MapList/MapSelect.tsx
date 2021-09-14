@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { uniq } from "@fleethub/utils";
+import { uniq } from "@fh/utils";
 import { Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";

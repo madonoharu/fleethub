@@ -1,4 +1,4 @@
-import { Ship, Side, WarfareAnalysisParams } from "@fleethub/core";
+import { Ship, Side, WarfareAnalysisParams } from "@fh/core";
 import { Divider, Stack } from "@mui/material";
 import React from "react";
 

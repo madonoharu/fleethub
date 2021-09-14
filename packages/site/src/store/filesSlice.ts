@@ -1,4 +1,4 @@
-import { nonNullable } from "@fleethub/utils";
+import { nonNullable } from "@fh/utils";
 import { createSlice, isAnyOf, nanoid, PayloadAction } from "@reduxjs/toolkit";
 
 import { MapEnemySelectEvent } from "../components/templates/MapList/MapList";

@@ -1,5 +1,5 @@
-import { GearParams } from "@fleethub/core";
-import { GearKey } from "@fleethub/utils";
+import { GearParams } from "@fh/core";
+import { GearKey } from "@fh/utils";
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { gearsAdapter } from "./adapters";
 import { isEntitiesAction, sweep } from "./entities";

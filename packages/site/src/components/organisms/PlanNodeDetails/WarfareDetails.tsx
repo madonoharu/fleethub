@@ -7,7 +7,7 @@ import {
   Side,
   NightSituation,
   WarfareAnalysisParams,
-} from "@fleethub/core";
+} from "@fh/core";
 import React from "react";
 import { Flexbox } from "../../atoms";
 import WarfareAnalyzer from "../WarfareAnalyzer";

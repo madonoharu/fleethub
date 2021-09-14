@@ -1,4 +1,4 @@
-import { SHIP_KEYS } from "@fleethub/utils";
+import { SHIP_KEYS } from "@fh/utils";
 import {
   createSlice,
   EntityState,

@@ -1,4 +1,4 @@
-import { Ship } from "@fleethub/core";
+import { Ship } from "@fh/core";
 import { useMemo } from "react";
 import { DefaultRootState, useDispatch, useSelector } from "react-redux";
 import { createStructuredSelector } from "reselect";

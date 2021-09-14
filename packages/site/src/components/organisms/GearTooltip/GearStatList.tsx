@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Gear } from "@fleethub/core";
-import { nonNullable } from "@fleethub/utils";
+import { Gear } from "@fh/core";
+import { nonNullable } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { EquipmentBonuses } from "equipment-bonus";
 import { useTranslation } from "next-i18next";

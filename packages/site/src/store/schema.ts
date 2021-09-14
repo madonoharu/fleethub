@@ -8,7 +8,7 @@ import {
   NightSituation,
   OrgParams,
   ShipParams,
-} from "@fleethub/core";
+} from "@fh/core";
 import {
   AirSquadronKey,
   AIR_SQUADRON_KEYS,
@@ -20,7 +20,7 @@ import {
   nonNullable,
   ShipKey,
   SHIP_KEYS,
-} from "@fleethub/utils";
+} from "@fh/utils";
 import { Dictionary, nanoid } from "@reduxjs/toolkit";
 import cloneDeep from "lodash/cloneDeep";
 import { normalize, schema, NormalizedSchema, denormalize } from "normalizr";
@@ -188,14 +188,14 @@ export const normalizeShipParams = (
 };
 
 export const denormalizeShip = (entities: NormalizedEntities, id: string) => {
-  return denormalize(id, ship, entities) as ShipParams | undefined;
+  return denormalize(id, ship, entities);
 };
 
 export const denormalizeOrg = (
   entities: NormalizedEntities,
   id: string
 ): OrgParams | undefined => {
-  return denormalize(id, org, entities) as OrgParams | undefined;
+  return denormalize(id, org, entities);
 };
 
 export const denormalizeOrgs = (

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { OrgType, Ship, WarfareAnalysisParams } from "@fleethub/core";
-import { nonNullable } from "@fleethub/utils";
+import { OrgType, Ship, WarfareAnalysisParams } from "@fh/core";
+import { nonNullable } from "@fh/utils";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Paper, Typography } from "@mui/material";
 import React from "react";

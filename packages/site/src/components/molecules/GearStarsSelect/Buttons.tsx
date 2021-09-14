@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { range } from "@fleethub/utils";
+import { range } from "@fh/utils";
 import Button from "@mui/material/Button";
 import React from "react";
 

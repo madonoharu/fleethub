@@ -5,8 +5,8 @@ import {
   MasterDataInput,
   OrgParams,
   ShipParams,
-} from "@fleethub/core";
-import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fleethub/utils";
+} from "@fh/core";
+import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fh/utils";
 import { Button } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import React from "react";

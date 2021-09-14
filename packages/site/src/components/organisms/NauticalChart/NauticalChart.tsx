@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { FhMap, MapNode } from "@fleethub/utils";
+import { FhMap, MapNode } from "@fh/utils";
 import { Tooltip } from "@mui/material";
 import { Group } from "@visx/group";
 import { Graph } from "@visx/network";

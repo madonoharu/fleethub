@@ -1,5 +1,5 @@
-import { Ship } from "@fleethub/core";
-import { GEAR_KEYS } from "@fleethub/utils";
+import { Ship } from "@fh/core";
+import { GEAR_KEYS } from "@fh/utils";
 import { Tooltip, TooltipProps } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";

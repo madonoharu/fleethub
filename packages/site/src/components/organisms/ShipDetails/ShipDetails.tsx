@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { OrgType, Ship, WarfareContext } from "@fleethub/core";
+import { OrgType, Ship, WarfareContext } from "@fh/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,

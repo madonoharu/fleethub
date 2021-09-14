@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Org, NightCutinRateInfo, OrgNightCutinRateInfo } from "@fleethub/core";
+import { Org, NightCutinRateInfo, OrgNightCutinRateInfo } from "@fh/core";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";

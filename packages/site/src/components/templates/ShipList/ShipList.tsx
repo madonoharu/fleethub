@@ -1,5 +1,5 @@
-import { Ship } from "@fleethub/core";
-import { groupBy } from "@fleethub/utils";
+import { Ship } from "@fh/core";
+import { groupBy } from "@fh/utils";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

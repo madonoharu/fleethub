@@ -1,4 +1,4 @@
-import { Org } from "@fleethub/core";
+import { Org } from "@fh/core";
 
 import { createDeck } from "./deck";
 

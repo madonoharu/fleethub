@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Org } from "@fleethub/core";
+import { Org } from "@fh/core";
 import { Paper } from "@mui/material";
 import React from "react";
 

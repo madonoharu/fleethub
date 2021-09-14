@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Gear } from "@fleethub/core";
+import { Gear } from "@fh/core";
 import { Typography } from "@mui/material";
 import React from "react";
 

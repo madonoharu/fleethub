@@ -1,4 +1,4 @@
-import { MapNode } from "@fleethub/utils";
+import { MapNode } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { Group } from "@visx/group";
 import React from "react";

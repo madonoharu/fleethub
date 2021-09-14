@@ -1,5 +1,5 @@
-import { Gear, Ship } from "@fleethub/core";
-import { GEAR_KEYS, GearKey, mapValues, nonNullable } from "@fleethub/utils";
+import { Gear, Ship } from "@fh/core";
+import { GEAR_KEYS, GearKey, mapValues, nonNullable } from "@fh/utils";
 import {
   createEquipmentBonuses,
   EquipmentBonuses,

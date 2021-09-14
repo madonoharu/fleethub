@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { AirSquadron, AirSquadronMode } from "@fleethub/core";
-import { GEAR_KEYS, SlotSizeKey } from "@fleethub/utils";
+import { AirSquadron, AirSquadronMode } from "@fh/core";
+import { GEAR_KEYS, SlotSizeKey } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
@@ -64,7 +64,7 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
           <Select
             css={{ marginLeft: "auto" }}
             options={AIR_SQUADRON_MODES}
-            value={airSquadron.mode as AirSquadronMode}
+            value={airSquadron.mode}
             getOptionLabel={t}
             onChange={actions.setMode}
           />
