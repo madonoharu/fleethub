@@ -1,4 +1,4 @@
-import { Gear } from "@fleethub/core";
+import { Gear } from "@fh/core";
 
 type Key = {
   [K in keyof Gear]-?: Required<Gear>[K] extends number ? K : never;

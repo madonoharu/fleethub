@@ -1,5 +1,5 @@
 {
-  "name": "@fleethub/site",
+  "name": "@fh/site",
   "version": "0.0.1",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
@@ -15,8 +15,8 @@
     "@emotion/react": "^11.4.1",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.3.0",
-    "@fleethub/core": "*",
-    "@fleethub/utils": "*",
+    "@fh/core": "*",
+    "@fh/utils": "*",
     "@mui/icons-material": "^5.0.0-rc.1",
     "@mui/lab": "^5.0.0-alpha.46",
     "@mui/material": "^5.0.0-rc.1",

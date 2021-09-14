@@ -1,5 +1,5 @@
-import { Ship } from "@fleethub/core";
-import { nonNullable } from "@fleethub/utils";
+import { Ship } from "@fh/core";
+import { nonNullable } from "@fh/utils";
 import { TFunction, useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";

@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
-import { DamageState } from "@fleethub/core";
-import { Dict } from "@fleethub/utils";
+import { DamageState } from "@fh/core";
+import { Dict } from "@fh/utils";
 import { LegendOrdinal, LegendItem, LegendLabel } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { useTranslation } from "next-i18next";

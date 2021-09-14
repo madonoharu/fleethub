@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Org } from "@fleethub/core";
-import { FLEET_KEYS, nonNullable } from "@fleethub/utils";
+import { Org } from "@fh/core";
+import { FLEET_KEYS, nonNullable } from "@fh/utils";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";

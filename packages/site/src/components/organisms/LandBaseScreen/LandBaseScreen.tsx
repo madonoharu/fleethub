@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Org } from "@fleethub/core";
-import { AIR_SQUADRON_KEYS } from "@fleethub/utils";
+import { Org } from "@fh/core";
+import { AIR_SQUADRON_KEYS } from "@fh/utils";
 import { Paper } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";

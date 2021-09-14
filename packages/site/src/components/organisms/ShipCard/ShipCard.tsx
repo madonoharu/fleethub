@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { DamageState, MoraleState, Ship } from "@fleethub/core";
-import { GearKey, SlotSizeKey } from "@fleethub/utils";
+import { DamageState, MoraleState, Ship } from "@fh/core";
+import { GearKey, SlotSizeKey } from "@fh/utils";
 import { Tooltip, Paper, IconButton, Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";

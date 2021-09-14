@@ -3,7 +3,7 @@ import {
   NightSituation,
   AirState,
   Engagement,
-} from "@fleethub/core";
+} from "@fh/core";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createShip } from "./entities";
 

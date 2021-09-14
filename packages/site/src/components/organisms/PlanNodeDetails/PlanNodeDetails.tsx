@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { NightSituation } from "@fleethub/core";
+import { NightSituation } from "@fh/core";
 import { Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";

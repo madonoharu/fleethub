@@ -1,4 +1,4 @@
-import { Engagement } from "@fleethub/core";
+import { Engagement } from "@fh/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 

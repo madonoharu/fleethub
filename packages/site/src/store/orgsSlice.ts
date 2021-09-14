@@ -1,4 +1,4 @@
-import { FleetKey } from "@fleethub/utils";
+import { FleetKey } from "@fh/utils";
 import { createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { SwapEvent } from "../hooks";
 

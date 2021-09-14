@@ -4,7 +4,7 @@ import {
   FleetDayCutinRateInfo,
   Org,
   OrgDayCutinRateInfo,
-} from "@fleethub/core";
+} from "@fh/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

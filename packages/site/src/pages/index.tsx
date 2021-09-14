@@ -1,4 +1,4 @@
-import { MasterDataInput } from "@fleethub/core";
+import { MasterDataInput } from "@fh/core";
 import { createEquipmentBonuses } from "equipment-bonus";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -14,7 +14,7 @@ import { FhCoreContext } from "../hooks";
 import { StoreProvider } from "../store";
 
 const loader = async () => {
-  const module = await import("@fleethub/core");
+  const module = await import("@fh/core");
 
   const App: React.FC<{ masterData: MasterDataInput }> = ({ masterData }) => {
     const core = new module.FhCore(masterData, createEquipmentBonuses);

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Ship } from "@fleethub/core";
+import { Ship } from "@fh/core";
 import React from "react";
 import { ShipEntity } from "../../../store";
 

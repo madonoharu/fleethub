@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { AirstrikeContactChance, Org, OrgAirstrikeInfo } from "@fleethub/core";
+import { AirstrikeContactChance, Org, OrgAirstrikeInfo } from "@fh/core";
 import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";

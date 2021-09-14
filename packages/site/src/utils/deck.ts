@@ -8,7 +8,7 @@ import {
   OrgParams,
   Ship,
   ShipParams,
-} from "@fleethub/core";
+} from "@fh/core";
 import {
   AirSquadronKey,
   AIR_SQUADRON_KEYS,
@@ -19,7 +19,7 @@ import {
   GEAR_KEYS,
   ShipKey,
   SHIP_KEYS,
-} from "@fleethub/utils";
+} from "@fh/utils";
 
 export type DeckGear = {
   id: number;

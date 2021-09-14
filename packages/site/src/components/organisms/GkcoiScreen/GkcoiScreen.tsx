@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Org } from "@fleethub/core";
-import { Dict } from "@fleethub/utils";
+import { Org } from "@fh/core";
+import { Dict } from "@fh/utils";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Paper, Button, Link } from "@mui/material";
 import { useTranslation } from "next-i18next";

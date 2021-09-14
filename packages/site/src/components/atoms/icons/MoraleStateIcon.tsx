@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { MoraleState } from "@fleethub/core";
+import { MoraleState } from "@fh/core";
 import CircleIcon from "@mui/icons-material/Circle";
 import FlareIcon from "@mui/icons-material/Flare";
 import MoodBadIcon from "@mui/icons-material/MoodBad";

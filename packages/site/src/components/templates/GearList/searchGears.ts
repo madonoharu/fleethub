@@ -1,4 +1,4 @@
-import { Gear } from "@fleethub/core";
+import { Gear } from "@fh/core";
 
 const searchById = (gears: Gear[], searchValue: string) => {
   const str = /^id(\d+)/.exec(searchValue)?.[1];

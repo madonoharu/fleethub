@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { DayBattleAttackType, NightBattleAttackType } from "@fleethub/core";
+import { DayBattleAttackType, NightBattleAttackType } from "@fh/core";
 import { Chip } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";

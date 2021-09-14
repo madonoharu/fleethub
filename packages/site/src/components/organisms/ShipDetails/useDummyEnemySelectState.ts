@@ -1,4 +1,4 @@
-import { Ship } from "@fleethub/core";
+import { Ship } from "@fh/core";
 import { useTranslation } from "next-i18next";
 import { useMemo, useState } from "react";
 import { useFhCore } from "../../../hooks";

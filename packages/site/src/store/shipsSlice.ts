@@ -1,4 +1,4 @@
-import { pick, GEAR_KEYS } from "@fleethub/utils";
+import { pick, GEAR_KEYS } from "@fh/utils";
 import { createSlice, EntityState } from "@reduxjs/toolkit";
 
 import { shipsAdapter } from "./adapters";

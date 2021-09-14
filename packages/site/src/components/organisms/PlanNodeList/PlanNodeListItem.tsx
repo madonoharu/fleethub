@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Formation, Org } from "@fleethub/core";
+import { Formation, Org } from "@fh/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Typography,

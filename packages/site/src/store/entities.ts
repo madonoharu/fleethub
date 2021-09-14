@@ -1,4 +1,4 @@
-import { OrgParams, Ship, ShipParams } from "@fleethub/core";
+import { OrgParams, Ship, ShipParams } from "@fh/core";
 import {
   AIR_SQUADRON_KEYS,
   Dict,
@@ -10,7 +10,7 @@ import {
   ShipKey,
   SHIP_KEYS,
   uniq,
-} from "@fleethub/utils";
+} from "@fh/utils";
 import {
   AppThunk,
   createAction,

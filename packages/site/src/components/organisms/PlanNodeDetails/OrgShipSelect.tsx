@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Org, Role } from "@fleethub/core";
-import { ShipKey } from "@fleethub/utils";
+import { Org, Role } from "@fh/core";
+import { ShipKey } from "@fh/utils";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import React from "react";

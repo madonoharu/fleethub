@@ -1,4 +1,4 @@
-import { MasterDataInput, OrgParams } from "@fleethub/core";
+import { MasterDataInput, OrgParams } from "@fh/core";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref } from "firebase/storage";
 

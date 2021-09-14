@@ -1,4 +1,4 @@
-import { OrgType } from "@fleethub/core";
+import { OrgType } from "@fh/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { Select, SelectInputProps } from "../../molecules";

@@ -1,4 +1,4 @@
-import { Gear } from "@fleethub/core";
+import { Gear } from "@fh/core";
 import { Tooltip, TooltipProps, Typography } from "@mui/material";
 import { EquipmentBonuses } from "equipment-bonus";
 import { useTranslation } from "next-i18next";

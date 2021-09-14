@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Fleet } from "@fleethub/core";
+import { Fleet } from "@fh/core";
 import { Typography } from "@mui/material";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";

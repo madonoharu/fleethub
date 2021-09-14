@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { AntiAirCutinDef } from "@fleethub/core";
+import { AntiAirCutinDef } from "@fh/core";
 import { Chip, Tooltip, Typography } from "@mui/material";
 import React from "react";
 

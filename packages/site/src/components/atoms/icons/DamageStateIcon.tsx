@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { DamageState } from "@fleethub/core";
+import { DamageState } from "@fh/core";
 import ErrorIcon from "@mui/icons-material/Error";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HealingIcon from "@mui/icons-material/Healing";

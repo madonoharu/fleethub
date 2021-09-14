@@ -1,4 +1,4 @@
-import { Org } from "@fleethub/core";
+import { Org } from "@fh/core";
 import React from "react";
 
 import { useAsyncOnPublish, useFile, useModal } from "../../../hooks";
