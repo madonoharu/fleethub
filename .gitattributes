@@ -1,1 +1,3 @@
+* text eol=lf
+/.yarn/** linguist-vendored
 /packages/core/pkg/** linguist-generated

@@ -30,7 +30,7 @@
     "clsx": "^1.1.0",
     "constate": "^3.3.0",
     "copy-to-clipboard": "^3.3.1",
-    "equipment-bonus": "^7.0.0",
+    "equipment-bonus": "^6.0.0",
     "firebase": "^9.0.2",
     "gkcoi": "^1.2.4",
     "literal-case": "^1.0.0",

@@ -15,8 +15,8 @@
     "core": "yarn workspace @fh/core",
     "dev": "yarn workspace @fh/site dev",
     "esn": "node -r esbuild-register",
+    "postinstall": "husky install",
     "lint": "eslint --cache packages && yarn tscheck",
-    "prepare": "husky install",
     "site": "yarn workspace @fh/site",
     "start": "yarn workspace @fh/core start",
     "test": "jest",
@@ -69,5 +69,6 @@
   },
   "engines": {
     "npm": "Please use yarn"
-  }
+  },
+  "packageManager": "yarn@3.0.2"
 }
