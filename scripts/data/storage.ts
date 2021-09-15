@@ -1,9 +1,9 @@
 import { MasterDataInput } from "@fh/core";
 import admin from "firebase-admin";
 import got from "got";
+import isEqual from "lodash/isEqual";
 
 import { getServiceAccount } from "./google";
-import { equalJson } from "./utils";
 
 let app: admin.app.App | undefined;
 const getApp = () => {
@@ -39,7 +39,7 @@ export const updateJson = async <T>(
 
   const next = updater(current);
 
-  if (!equalJson(current, next)) {
+  if (!isEqual(current, next)) {
     const metadata = { cacheControl: "public, max-age=60" };
     await file.save(JSON.stringify(next), { metadata });
   }

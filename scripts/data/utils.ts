@@ -1,4 +1,3 @@
-import { cloneJson } from "@fh/utils/src";
 import {
   GoogleSpreadsheetRow,
   GoogleSpreadsheetWorksheet,
@@ -6,7 +5,6 @@ import {
 import got from "got";
 import { Start2 } from "kc-tools";
 import get from "lodash/get";
-import isEqual from "lodash/isEqual";
 
 type Row = Record<string, unknown>;
 
@@ -17,9 +15,6 @@ export const fetchStart2 = async (): Promise<Start2> => {
     )
     .json();
 };
-
-export const equalJson = (arg1: unknown, arg2: unknown) =>
-  isEqual(cloneJson(arg1), cloneJson(arg2));
 
 export const deleteFalsyValues = (obj: Record<string, unknown>) => {
   Object.entries(obj).forEach(([key, value]) => {
