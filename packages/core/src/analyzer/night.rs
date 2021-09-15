@@ -2,16 +2,13 @@ use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    attack::{AttackPower, AttackPowerParams, HitRate, HitRateParams, NightSituation},
+    attack::NightSituation,
     fleet::Fleet,
     gear_id,
     org::Org,
     ship::Ship,
     types::{ContactRank, DamageState, GearAttr, MasterConstants, NightCutin, NightCutinDef},
-    utils::NumMap,
 };
-
-use super::DamageInfo;
 
 #[derive(Debug)]
 struct NightCutinTermParams<'a> {
