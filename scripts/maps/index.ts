@@ -120,7 +120,7 @@ export const formatKcnavMap = ({
       point,
       x,
       y,
-      d: lbasdistance[point],
+      d: lbasdistance[point]?.map((v) => v.distance),
       type,
       enemies,
     };

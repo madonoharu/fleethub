@@ -1,4 +1,4 @@
-import { Dict, MapNodeType } from "@fh/utils";
+import { Dict, MapNodeType } from "@fh/utils/src";
 import fs from "fs-extra";
 import got from "got";
 import moment from "moment";
@@ -76,7 +76,10 @@ type KcnavGraph = {
 
 type KcnavHeatmaps = Record<string, number>;
 
-type KcnavLbasdistance = Record<string, number>;
+type KcnavLbasdistance = Dict<
+  string,
+  { unlockedEdges: number; distance: number }[]
+>;
 
 export type KcnavEnemyShip = {
   id: number;

@@ -7,8 +7,8 @@ import {
   ShipParams,
 } from "@fh/core";
 import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fh/utils";
-import { Button } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { Button } from "@mui/material";
 import React from "react";
 import { useAsync } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
@@ -120,8 +120,8 @@ const useMapListState = () => {
 export type MapEnemySelectEvent = {
   name: string;
   point: string;
-  d?: number;
-  type: number;
+  d: MapNode["d"];
+  type: MapNode["type"];
   org: OrgParams;
   formation: Formation;
 };
