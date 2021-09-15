@@ -3,8 +3,8 @@ import {
   MasterShipInput,
   MasterVariantDef,
   SpeedGroup,
-} from "@fleethub/core/types";
-import { ShipClass, ShipType } from "@fleethub/utils/src";
+} from "@fh/core";
+import { ShipClass, ShipType } from "@fh/utils/src";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,

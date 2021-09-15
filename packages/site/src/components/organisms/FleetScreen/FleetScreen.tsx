@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Fleet } from "@fh/core";
 import { Typography } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 import { fleetsSlice } from "../../../store";
@@ -17,6 +18,7 @@ type FleetScreenProps = {
 
 const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation("common");
 
   const handleFleetLenChange = (len: number) => {
     dispatch(fleetsSlice.actions.update({ id: fleet.id, changes: { len } }));
@@ -30,7 +32,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
     <div className={className}>
       <Flexbox gap={1}>
         <Typography variant="body2" css={{ marginLeft: "auto" }}>
-          制空 {fleet.fighter_power(false)}
+          {t("FighterPower")} {fleet.fighter_power(false)}
         </Typography>
         <SelectedMenu
           label="艦数"

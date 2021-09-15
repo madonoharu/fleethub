@@ -1,4 +1,4 @@
-import { MasterDataInput, MasterEquippable } from "@fleethub/core/types";
+import { MasterDataInput, MasterEquippable } from "@fh/core";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { Start2 } from "kc-tools";
 

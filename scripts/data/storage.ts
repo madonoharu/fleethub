@@ -1,4 +1,4 @@
-import { MasterDataInput } from "@fleethub/core/types";
+import { MasterDataInput } from "@fh/core";
 import admin from "firebase-admin";
 import got from "got";
 

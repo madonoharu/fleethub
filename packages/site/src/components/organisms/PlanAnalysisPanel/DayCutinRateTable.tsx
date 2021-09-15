@@ -33,6 +33,7 @@ const CutinRateCell: React.FCX<{ info: DayCutinRateInfo }> = ({
   className,
   info,
 }) => {
+  const { t } = useTranslation("common");
   const total = info.total_cutin_rate;
   return (
     <div
@@ -50,7 +51,7 @@ const CutinRateCell: React.FCX<{ info: DayCutinRateInfo }> = ({
       </LeftContainer>
       <RightContainer>
         <LabeledValue label="観測項" value={info.observation_term} />
-        <LabeledValue label="特殊攻撃率" value={toPercent(total)} />
+        <LabeledValue label={t("SpecialAttack")} value={toPercent(total)} />
       </RightContainer>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Dict, MapNodeType } from "@fleethub/utils";
+import { Dict, MapNodeType } from "@fh/utils";
 import fs from "fs-extra";
 import got from "got";
 import moment from "moment";

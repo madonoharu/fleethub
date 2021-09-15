@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { Ship, WarfareContext, FhCore } from "@fh/core";
 import { nonNullable } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -28,6 +29,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   context,
   ship,
 }) => {
+  const { t } = useTranslation("common");
   const { core } = useFhCore();
   const dummyEnemySelectState = useDummyEnemySelectState();
 
@@ -53,23 +55,23 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
 
   const list: TabItem[] = [
     day && {
-      label: "昼戦",
+      label: t("Day"),
       panel: <AttackTable type={day.attack_type.t} info={day} disableDamage />,
     },
     closing_torpedo && {
-      label: "雷撃",
+      label: t("WarfareTorpedo"),
       panel: (
         <AttackTable type="Torpedo" info={closing_torpedo} disableDamage />
       ),
     },
     night && {
-      label: "夜戦",
+      label: t("Night"),
       panel: (
         <AttackTable type={night.attack_type.t} info={night} disableDamage />
       ),
     },
     asw && {
-      label: "対潜",
+      label: t("WarfareAntiSub"),
       panel: <AttackTable type={asw.attack_type.t} info={asw} disableDamage />,
     },
   ].filter(nonNullable);
@@ -77,7 +79,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   return (
     <Paper className={className} style={style} sx={{ paddingX: 1 }}>
       <Flexbox>
-        <Typography variant="subtitle2">攻撃力</Typography>
+        <Typography variant="subtitle2">{t("AttackPower")}</Typography>
         <SelectedMenu label="敵種別" {...dummyEnemySelectState} />
       </Flexbox>
 

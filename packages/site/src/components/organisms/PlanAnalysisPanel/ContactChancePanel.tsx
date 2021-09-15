@@ -28,7 +28,7 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
         data={data}
         columns={[
           {
-            label: "制空",
+            label: t("AirState"),
             getValue: (datum) => t(datum.air_state),
           },
           {

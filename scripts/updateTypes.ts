@@ -3,7 +3,7 @@ import "dotenv/config";
 import child_process from "child_process";
 import path from "path";
 import { promisify } from "util";
-import { Dict, mapValues, uniqBy } from "@fleethub/utils/src";
+import { Dict, mapValues, uniqBy } from "@fh/utils/src";
 import fs from "fs-extra";
 import { Start2 } from "kc-tools";
 

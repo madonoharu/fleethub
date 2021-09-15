@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { nonNullable } from "@fleethub/utils/src";
+import { nonNullable } from "@fh/utils/src";
 import Signal from "signale";
 
 import { getGoogleSpreadsheet } from "./data/google";
@@ -96,7 +96,7 @@ const updateMaps = async (kcnavMaps: KcnavMap[]) => {
   await Promise.all(promises);
 };
 
-const HOT_MAPS: number[] = [];
+const HOT_MAPS: number[] = [511, 512, 513];
 
 const updateByKcnav = async () => {
   const ids = await getAllMapIds();

@@ -41,7 +41,7 @@ const MapEnemyFleetCard: React.FCX<MapEnemyFleetCardProps> = ({
   return (
     <Paper className={className}>
       <div>
-        <EnemyFighterPower label="制空" fp={enemy.fp} />
+        <EnemyFighterPower label={t("FighterPower")} fp={enemy.fp} />
         {lbas ? <EnemyFighterPower label="基地戦" fp={enemy.lbasFp} /> : null}
 
         <ShipBannerGroup main={enemy.main} escort={enemy.escort} />

@@ -1,9 +1,5 @@
-import {
-  MasterAttrRule,
-  MasterGearInput,
-  MasterIBonuses,
-} from "@fleethub/core/types";
-import { nonNullable } from "@fleethub/utils/src";
+import { nonNullable } from "@fh/utils/src";
+import { MasterAttrRule, MasterGearInput, MasterIBonuses } from "@fh/core";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,

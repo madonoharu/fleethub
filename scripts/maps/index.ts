@@ -4,7 +4,7 @@ import {
   MapLink,
   MapNode,
   MapNodeType,
-} from "@fleethub/utils/src";
+} from "@fh/utils/src";
 import isEqual from "lodash/isEqual";
 
 import { KcnavEnemyFleet, KcnavEnemyShip, KcnavMap } from "./kcnav";

@@ -20,11 +20,11 @@ const HitRateDetails: React.FCX<HitRateDetailsProps> = ({
     <div className={className}>
       <LabeledValue label={t("HitRate")} value={toPercent(hitRate?.total)} />
       <LabeledValue
-        label={t("HitRateNormal")}
+        label={`${t("HitRate")} ${t("Normal")}`}
         value={toPercent(hitRate?.normal)}
       />
       <LabeledValue
-        label={t("HitRateCritical")}
+        label={`${t("HitRate")} ${t("Critical")}`}
         value={toPercent(hitRate?.critical)}
       />
       <LabeledValue
@@ -36,7 +36,7 @@ const HitRateDetails: React.FCX<HitRateDetailsProps> = ({
         value={numstr(params?.evasion_term) || "-"}
       />
       <LabeledValue
-        label={t("MoraleMod")}
+        label={t("MoraleState")}
         value={numstr(params?.morale_mod) || "-"}
       />
       <LabeledValue

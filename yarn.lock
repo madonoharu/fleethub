@@ -797,8 +797,8 @@ __metadata:
     "@mui/material": ^5.0.0-rc.1
     "@reduxjs/toolkit": ^1.6.1
     "@simbathesailor/use-what-changed": ^2.0.0
-    "@types/object-hash": ^2.2.0
-    "@types/react": ^17.0.20
+    "@types/object-hash": ^2.2.1
+    "@types/react": ^17.0.21
     "@types/react-dom": ^17.0.9
     "@types/react-redux": ^7.1.18
     "@visx/legend": ^2.1.0
@@ -806,10 +806,10 @@ __metadata:
     "@visx/responsive": ^2.1.1
     "@visx/shape": ^2.1.1
     "@visx/tooltip": ^2.1.0
-    clsx: ^1.1.0
+    clsx: ^1.1.1
     constate: ^3.3.0
     copy-to-clipboard: ^3.3.1
-    equipment-bonus: ^6.0.0
+    equipment-bonus: ^7.0.1
     firebase: ^9.0.2
     gkcoi: ^1.2.4
     literal-case: ^1.0.0
@@ -2549,7 +2549,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/google-spreadsheet@npm:^3.1.4":
+"@types/google-spreadsheet@npm:^3.1.5":
   version: 3.1.5
   resolution: "@types/google-spreadsheet@npm:3.1.5"
   checksum: dfae513260a80263f63688decfe21c9db4ecf2f240c429935e09a7df864cdcfe762c54d9c70581b5a6f55cd57423331a9943c253015a8615fda4cdca0329570c
@@ -2693,10 +2693,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/object-hash@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@types/object-hash@npm:2.2.0"
-  checksum: 143f61cf2148d52df99dafa014167e5b97e2fc5b64682b5f1172cf0dd0ae97d110afb6b323174d9ad1d27be1b27c5e735bd3ac3e8adad1ee850898ac719ed931
+"@types/object-hash@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "@types/object-hash@npm:2.2.1"
+  checksum: bbcbf076903e11fa6d61dd5cc365bce2b080b18502ef52672a427443262e465d7b46b8f2821e8cea0307de66aee2eb92ad6e2bed2346acd7c8de118d4123fe3a
   languageName: node
   linkType: hard
 
@@ -2774,7 +2774,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17.0.20":
+"@types/react@npm:*":
   version: 17.0.20
   resolution: "@types/react@npm:17.0.20"
   dependencies:
@@ -2782,6 +2782,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: e342bfaa4fe052fc3a445ea49f746f3fd82cfc9c8028eae139a3e0763ead1871f353bd40da2a472f23d2b52544d2781d40e3159c0703e7e2ff08c13f067a3b9c
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^17.0.21":
+  version: 17.0.21
+  resolution: "@types/react@npm:17.0.21"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: a590bd2e50e4ec0b1957388e198cf248bac3051e525e036901dea10f7d12203bf1c58350aa899e66494cbf8a60ee56402522273866c29748217f72552bb27d04
   languageName: node
   linkType: hard
 
@@ -4367,7 +4378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.1.0, clsx@npm:^1.1.1":
+"clsx@npm:^1.1.1":
   version: 1.1.1
   resolution: "clsx@npm:1.1.1"
   checksum: ff052650329773b9b245177305fc4c4dc3129f7b2be84af4f58dc5defa99538c61d4207be7419405a5f8f3d92007c954f4daba5a7b74e563d5de71c28c830063
@@ -5440,10 +5451,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"equipment-bonus@npm:^6.0.0":
-  version: 6.0.21
-  resolution: "equipment-bonus@npm:6.0.21"
-  checksum: 52f45cfe86bb6c71f08793bb20f2aa73a0f220ed64c2b5be59e2ce29c93dfe2f87b348654ac836687cc157f00eea9ada93206e859d2efaa25ba5c260680f1b3c
+"equipment-bonus@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "equipment-bonus@npm:7.0.1"
+  checksum: 9b670fabdc9003be38f3082374271b78d561fe8105437b3d4fdd4d74342100c6b0fb6668048a8c0192423ca65eda60aaded74cc4b365bf1f9f755e45ad69dcd5
   languageName: node
   linkType: hard
 
@@ -6263,7 +6274,7 @@ __metadata:
     "@fh/utils": "*"
     "@next/eslint-plugin-next": ^11.1.2
     "@types/fs-extra": ^9.0.12
-    "@types/google-spreadsheet": ^3.1.4
+    "@types/google-spreadsheet": ^3.1.5
     "@types/jest": ^27.0.1
     "@types/lodash-es": ^4.17.5
     "@types/node": ^16.9.1

@@ -6,7 +6,7 @@ import {
   MasterConstants,
   NightCutinDef,
   NormalFormationDef,
-} from "@fleethub/core/types";
+} from "@fh/core";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import set from "lodash/set";
 
@@ -66,13 +66,6 @@ export const getFormations = async (
 
     def.tag = tag.replace(/\.(top_half|bottom_half)/, "") as Formation;
   });
-
-  const vanguardDef = rec["Vanguard"] as {
-    top_half: NormalFormationDef;
-    bottom_half: NormalFormationDef;
-  };
-
-  vanguardDef;
 
   return Object.values(rec);
 };

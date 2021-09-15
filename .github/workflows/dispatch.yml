@@ -28,7 +28,7 @@ jobs:
       - name: Install
         run: yarn install --frozen-lockfile
 
-      - run: yarn ts-node scripts/dispatch
+      - run: yarn dispatch
         env:
           CLIENT_PAYLOAD: ${{ toJson(github.event.client_payload) }}
           SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_CLIENT_EMAIL }}

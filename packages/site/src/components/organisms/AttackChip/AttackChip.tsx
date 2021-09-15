@@ -5,14 +5,24 @@ import { Chip } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-type AttackChipType =
+type WarfareType =
   | DayBattleAttackType["t"]
   | NightBattleAttackType["t"]
   | "Torpedo";
 
 type Props = {
-  type: AttackChipType;
+  type: WarfareType;
   cutin?: string | null | undefined;
+};
+
+const getLabel = (type: WarfareType, cutin: string | null | undefined) => {
+  if (cutin) return cutin;
+
+  if (type === "NightAttack") return "Night";
+  if (type === "Shelling") return "AttackTypeSingleAttack";
+  if (type === "Torpedo") return "AttackTypeTorpedo";
+  if (type === "Asw") return "WarfareAntiSub";
+  return "Unknown";
 };
 
 const AttackChip: React.FCX<Props> = ({ className, type, cutin }) => {
@@ -22,7 +32,7 @@ const AttackChip: React.FCX<Props> = ({ className, type, cutin }) => {
       className={className}
       variant="outlined"
       size="small"
-      label={t(cutin || type)}
+      label={t(getLabel(type, cutin))}
     />
   );
 };

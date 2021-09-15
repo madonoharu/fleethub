@@ -8,7 +8,7 @@ import { shallowEqual, useDispatch } from "react-redux";
 
 import { AirSquadronEntity, airSquadronsSlice } from "../../../store";
 import { Flexbox, LabeledValue } from "../../atoms";
-import { Select } from "../../molecules";
+import { SelectedMenu } from "../../molecules";
 import GearSlot from "../GearSlot";
 
 const AIR_SQUADRON_MODES: AirSquadronMode[] = ["Sortie", "AirDefense"];
@@ -48,25 +48,28 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
       <Paper ref={ref} className={className}>
         <Flexbox>
           <Typography variant="subtitle2">{label}</Typography>
-        </Flexbox>
-
-        <Flexbox>
-          <StyledLabeledValue
-            label="制空"
-            value={airSquadron.fighter_power()}
-          />
-          <StyledLabeledValue
-            label="防空"
-            value={airSquadron.interception_power()}
-          />
-          <StyledLabeledValue label="半径" value={airSquadron.radius()} />
-
-          <Select
+          <SelectedMenu
             css={{ marginLeft: "auto" }}
             options={AIR_SQUADRON_MODES}
             value={airSquadron.mode}
             getOptionLabel={t}
             onChange={actions.setMode}
+          />
+        </Flexbox>
+
+        <Flexbox gap={1}>
+          <Typography variant="body2">{t("FighterPower")}</Typography>
+          <StyledLabeledValue
+            label={t("Sortie")}
+            value={airSquadron.fighter_power()}
+          />
+          <StyledLabeledValue
+            label={t("AirDefense")}
+            value={airSquadron.interception_power()}
+          />
+          <StyledLabeledValue
+            label={t("radius")}
+            value={airSquadron.radius()}
           />
         </Flexbox>
 
@@ -104,6 +107,6 @@ const Memoized = React.memo(
 );
 
 export default styled(Memoized)`
-  padding: 8px;
+  padding: 8px 8px 24px;
   min-width: 160px;
 `;
