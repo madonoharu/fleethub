@@ -96,7 +96,7 @@ const createColumns = (
 
   const columns: ColumnProps<InfoItem>[] = [
     {
-      label: t("Attack"),
+      label: t("Type"),
       getValue: (item) => <AttackChip type={type} cutin={item.cutin} />,
     },
     {

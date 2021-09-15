@@ -10,6 +10,7 @@ import { filesSelectors, filesSlice, selectAppState } from "../../../store";
 import { DirectoryBreadcrumbs } from "../../organisms";
 import FolderPage from "../FolderPage";
 import PlanScreen from "../PlanScreen";
+import WelcomePage from "../WelcomePage";
 
 const StyledDirectoryBreadcrumbs = styled(DirectoryBreadcrumbs)`
   margin-left: 8px;
@@ -25,7 +26,7 @@ const FileViewer: React.FC = () => {
 
   const isTemp = useIsTemp(file?.id || "");
 
-  if (!file) return null;
+  if (!file) return <WelcomePage />;
 
   return (
     <>

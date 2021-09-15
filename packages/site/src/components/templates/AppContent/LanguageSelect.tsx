@@ -3,7 +3,7 @@ import TranslateIcon from "@mui/icons-material/Translate";
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Select } from "../../molecules";
+import { SelectedMenu } from "../../molecules";
 
 const languageNameMap = {
   ja: "日本語",
@@ -23,9 +23,9 @@ const LanguageSelect: React.FCX = ({ className }) => {
     [replace]
   );
   return (
-    <Select
+    <SelectedMenu
       className={className}
-      startLabel={<TranslateIcon fontSize="inherit" />}
+      startIcon={<TranslateIcon fontSize="small" />}
       options={locales || []}
       value={locale || ""}
       onChange={handleChange}

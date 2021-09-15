@@ -78,7 +78,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
 
       <Flexbox gap={1} mt={1}>
         <Typography variant="body2" mr={1}>
-          制空 {fpText}
+          {t("FighterPower")} {fpText}
         </Typography>
         {[1, 2, 3, 4].map((factor) => (
           <ElosLabel key={factor} factor={factor} elos={org.elos(factor)} />

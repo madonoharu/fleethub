@@ -71,7 +71,7 @@ const AppBar: React.FCX<Props> = ({
         onClick={handleExplorerOpen}
         startIcon={<MenuIcon color={explorerOpen ? "primary" : "action"} />}
       >
-        編成一覧
+        {t("Composition")}
       </Button>
 
       <ImportButton
@@ -81,13 +81,13 @@ const AppBar: React.FCX<Props> = ({
       />
       <UndoButton
         size="small"
-        title="操作を戻す"
+        title={t("Undo")}
         disabled={!canUndo}
         onClick={undo}
       />
       <RedoButton
         size="small"
-        title="操作を進める"
+        title={t("Redo")}
         disabled={!canRedo}
         onClick={redo}
       />
