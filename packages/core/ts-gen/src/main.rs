@@ -20,7 +20,6 @@ fn main() {
     let path = std::path::Path::new(PATH);
     let fmt_config = ts_rs::export::FmtCfg::new().deno().build();
 
-    use analyzer::DayBattleAttackInfo;
     use fh_core::*;
 
     let buffer = gen_types!(

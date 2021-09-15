@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Org, OrgType } from "@fh/core";
 import { Typography } from "@mui/material";
@@ -6,7 +5,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Flexbox, PlanIcon } from "../../atoms";
-import { NumberInput, Select, StatIcon, TextField } from "../../molecules";
+import { NumberInput, Select, TextField } from "../../molecules";
 import { ElosLabel } from "../../organisms";
 import PlanAction, { PlanActionProps } from "./PlanAction";
 
@@ -43,8 +42,8 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
 }) => {
   const { t } = useTranslation("common");
 
-  const antiSingleFp = `${org.fighter_power(false, false) || "?"}`;
-  const antiCombinedFp = `${org.fighter_power(true, false) || "?"}`;
+  const antiSingleFp = `${org.fighter_power(false, false) ?? "?"}`;
+  const antiCombinedFp = `${org.fighter_power(true, false) ?? "?"}`;
   const fpText = org.is_combined()
     ? `連合 ${antiCombinedFp} 第一 ${antiSingleFp}`
     : antiSingleFp;

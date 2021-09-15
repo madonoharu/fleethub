@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
-import { getCloudinaryUrl } from "../../../utils";
+import { cloudinaryLoader } from "../../../utils";
 
 type Props = {
   shipId: number;
@@ -28,20 +28,19 @@ const ShipBanner: React.FCX<Props> = ({
   const width = scale * 32;
   const height = scale * 8;
 
-  const url = getCloudinaryUrl({
-    publicId,
-    folder: "ships",
-    width,
-    height,
-  });
-
-  if (!url) {
+  if (!publicId) {
     return <BrokenImage className={className} style={{ width, height }} />;
   }
 
   return (
     <div className={className} css={{ width, height }}>
-      <Image layout="fixed" width={width} height={height} src={url} />
+      <Image
+        layout="fixed"
+        loader={cloudinaryLoader}
+        width={width}
+        height={height}
+        src={`ships/${publicId}.png`}
+      />
     </div>
   );
 };

@@ -8,9 +8,6 @@ const config = {
   },
   i18n,
   localePath: "./public/locales",
-  images: {
-    domains: ["res.cloudinary.com"],
-  },
 
   webpack: (config, { isServer }) => {
     config.module.rules.push({
