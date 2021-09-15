@@ -55,7 +55,7 @@ export type MapNode = {
   x: number;
   y: number;
   type: number;
-  d?: number;
+  d?: number[];
   enemies?: MapEnemyFleet[];
 };
 

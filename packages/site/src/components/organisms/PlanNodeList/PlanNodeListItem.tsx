@@ -1,12 +1,10 @@
 import styled from "@emotion/styled";
-import { Formation, Org } from "@fh/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Typography,
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Collapse,
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -15,7 +13,7 @@ import { useOrg } from "../../../hooks";
 import { PlanFileEntity, PlanNode } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { ClearButton, NodeLable } from "../../molecules";
-import { FleetScreen, ShipBannerGroup } from "../../organisms";
+import { ShipBannerGroup } from "../../organisms";
 import PlanNodeDetails from "../PlanNodeDetails";
 import Swappable from "../Swappable";
 
@@ -45,8 +43,7 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
 
   const main = org.main_ship_ids();
   const escort = org.escort_ship_ids();
-  const formation =
-    node.enemy_formation || (org.default_formation() as Formation);
+  const formation = node.enemy_formation || org.default_formation();
 
   return (
     <Swappable

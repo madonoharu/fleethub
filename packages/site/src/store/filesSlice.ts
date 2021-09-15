@@ -1,7 +1,6 @@
 import { nonNullable } from "@fh/utils";
 import { createSlice, isAnyOf, nanoid, PayloadAction } from "@reduxjs/toolkit";
 
-import { MapEnemySelectEvent } from "../components/templates/MapList/MapList";
 import { filesAdapter } from "./adapters";
 import {
   isFolder,
@@ -10,15 +9,9 @@ import {
   createPlan,
   isPlanFile,
   importEntities,
-  createShip,
   createPlanNode,
 } from "./entities";
-import {
-  FileEntity,
-  FolderEntity,
-  normalizeOrgParams,
-  PlanNode,
-} from "./schema";
+import { FileEntity, FolderEntity, PlanNode } from "./schema";
 
 const initialState = filesAdapter.getInitialState<{
   rootIds: string[];

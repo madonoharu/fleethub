@@ -78,9 +78,6 @@ const NauticalChart: React.FCX<Props> = ({ className, map, onClick }) => {
   const getNode = (name: string) =>
     map.nodes.find((node) => node.point === name);
 
-  const baseWidth = 1200;
-  const baseHeight = 700;
-
   return (
     <ScaleSVG {...getViewBox(map)}>
       <Group className={className}>

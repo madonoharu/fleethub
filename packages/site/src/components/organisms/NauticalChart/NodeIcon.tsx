@@ -49,7 +49,7 @@ export const NodeCircle = React.forwardRef<SVGGElement, NodeCircleProps>(
               textAnchor="middle"
               dominantBaseline="central"
             >
-              {d}
+              {d.join("→")}
             </Typography>
           </Group>
         )}

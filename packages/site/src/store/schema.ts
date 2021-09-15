@@ -17,6 +17,7 @@ import {
   FLEET_KEYS,
   GearKey,
   GEAR_KEYS,
+  MapNode,
   nonNullable,
   ShipKey,
   SHIP_KEYS,
@@ -55,8 +56,8 @@ export type FolderEntity = FileEntityBase<
 
 export type PlanNode = {
   name: string;
-  type: number;
-  d?: number;
+  type: MapNode["type"];
+  d: MapNode["d"];
   org: string;
   air_state?: AirState;
   engagement?: Engagement;
@@ -187,15 +188,18 @@ export const normalizeShipParams = (
   return normalize(params, ship);
 };
 
-export const denormalizeShip = (entities: NormalizedEntities, id: string) => {
-  return denormalize(id, ship, entities);
+export const denormalizeShip = (
+  entities: NormalizedEntities,
+  id: string
+): ShipParams | undefined => {
+  return denormalize(id, ship, entities) as ShipParams | undefined;
 };
 
 export const denormalizeOrg = (
   entities: NormalizedEntities,
   id: string
 ): OrgParams | undefined => {
-  return denormalize(id, org, entities);
+  return denormalize(id, org, entities) as OrgParams | undefined;
 };
 
 export const denormalizeOrgs = (

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { MapNode } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -7,8 +8,8 @@ import { getNodeTypeStyle } from "../../../styles";
 
 type NodeLableProps = {
   name: string;
-  type: number;
-  d?: number;
+  type: MapNode["type"];
+  d: MapNode["d"];
 };
 
 const NodeLable: React.FCX<NodeLableProps> = ({
@@ -19,7 +20,7 @@ const NodeLable: React.FCX<NodeLableProps> = ({
   d,
 }) => {
   const { t } = useTranslation("common");
-  const distance = d && `${t("LbasDistance")}: ${d}`;
+  const distance = d && `${t("LbasDistance")}: ${d.join("→")}`;
 
   return (
     <Typography className={className} style={style} variant="subtitle2">
