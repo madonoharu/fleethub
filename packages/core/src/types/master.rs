@@ -142,6 +142,7 @@ impl EvalerStruct for MasterGear {
     fn ns(&self, key: &str, args: Vec<f64>) -> Option<f64> {
         let result = match key {
             "gear_id" => self.gear_id as f64,
+            "gear_type" => self.types.2 as f64,
             "special_type" => self.special_type() as f64,
             "max_hp" => self.max_hp() as f64,
             "firepower" => self.firepower() as f64,

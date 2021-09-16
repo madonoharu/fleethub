@@ -1228,11 +1228,14 @@ impl Ship {
             return gear.gear_id == gear_id!("Laté 298B");
         }
 
-        if self.has_attr(ShipAttr::RoyalNavy) {
-            return matches!(
+        if self.has_attr(ShipAttr::RoyalNavy)
+            && self.ship_type == ShipType::BB
+            && matches!(
                 gear.gear_id,
                 gear_id!("Swordfish(水上機型)") | gear_id!("Swordfish Mk.III改(水上機型)")
-            );
+            )
+        {
+            return true;
         }
 
         let is_kai2 = self.has_attr(ShipAttr::Kai2);

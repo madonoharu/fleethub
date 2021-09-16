@@ -475,6 +475,12 @@ export enum ShipClass {
   YorktownClass = 105,
   /// St. Louis級
   StLouisClass = 106,
+  /// North Carolina級
+  NorthCarolinaClass = 107,
+  /// Town級
+  TownClass = 108,
+  /// 潜高型
+  SentakaType = 109,
 }
 
 export enum ShipAttr {
