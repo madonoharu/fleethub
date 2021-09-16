@@ -15,7 +15,6 @@ import { mapListSlice } from "./mapListSlice";
 import { navSlice } from "./navSlice";
 import { orgsSlice } from "./orgsSlice";
 import { shipDetailsSlice } from "./shipDetailsSlice";
-import { shipListSlice } from "./shipListSlice";
 import { shipSelectSlice } from "./shipSelectSlice";
 import { shipsSlice } from "./shipsSlice";
 import undoableOptions from "./undoableOptions";
@@ -43,7 +42,6 @@ const combinedReducer = combineReducers({
 
   mapList: mapListSlice.reducer,
   gearList: gearListSlice.reducer,
-  shipList: shipListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
   shipDetails: shipDetailsSlice.reducer,
 });
