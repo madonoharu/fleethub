@@ -1,11 +1,20 @@
 import styled from "@emotion/styled";
-import { Org, NightCutinRateInfo, OrgNightCutinRateInfo } from "@fh/core";
+import {
+  Org,
+  NightCutinRateInfo,
+  OrgNightCutinRateInfo,
+  NightSituation,
+} from "@fh/core";
+import { Typography, Stack } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React from "react";
+import { useImmer } from "use-immer";
 
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
-import { Checkbox, LabeledValue } from "../../atoms";
+import { LabeledValue, Flexbox } from "../../atoms";
 import AttackChip from "../AttackChip";
+import NightSituationForm from "../NightSituationForm";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 
@@ -57,91 +66,73 @@ type Props = {
 
 const NightCutinTable: React.FCX<Props> = ({ className, info }) => {
   return (
-    <div className={className}>
-      夜間触接率 {toPercent(info.contact_chance.total)}
-      <Table
-        padding="none"
-        data={info.ships}
-        columns={[
-          {
-            label: "艦娘",
-            getValue: (shipInfo) => <ShipNameplate shipId={shipInfo.ship_id} />,
-            width: 160,
-          },
-          {
-            label: "小破以上",
-            getValue: (shipInfo) => (
-              <NightCutinRateCell info={shipInfo.normal} />
-            ),
-          },
-          {
-            label: "中破",
-            getValue: (shipInfo) => (
-              <NightCutinRateCell info={shipInfo.chuuha} />
-            ),
-          },
-        ]}
-      />
-    </div>
+    <Table
+      className={className}
+      padding="none"
+      data={info.ships}
+      columns={[
+        {
+          label: "艦娘",
+          getValue: (shipInfo) => <ShipNameplate shipId={shipInfo.ship_id} />,
+          width: 160,
+        },
+        {
+          label: "小破以上",
+          getValue: (shipInfo) => <NightCutinRateCell info={shipInfo.normal} />,
+        },
+        {
+          label: "中破",
+          getValue: (shipInfo) => <NightCutinRateCell info={shipInfo.chuuha} />,
+        },
+      ]}
+    />
   );
 };
 
-const toggle = (value: boolean) => !value;
+const initalNightSituation: NightSituation = {
+  night_contact_rank: null,
+  searchlight: false,
+  starshell: false,
+};
 
 const NightCutinPanel: React.FC<{ org: Org }> = ({ org }) => {
   const { core } = useFhCore();
+  const { t } = useTranslation("common");
 
-  const [attackerSearchlight, setAttackerSearchlight] = React.useState(false);
-  const [attackerStarshell, setAttackerStarshell] = React.useState(false);
+  const [attacker, updateAttacker] =
+    useImmer<NightSituation>(initalNightSituation);
+  const [target, updateTarget] = useImmer<NightSituation>(initalNightSituation);
 
-  const [defenderSearchlight, setDefenderSearchlight] = React.useState(false);
-  const [defenderStarshell, setDefenderStarshell] = React.useState(false);
-
-  // todo!
   const info: OrgNightCutinRateInfo = core.analyze_night_cutin(
     org,
-    {
-      night_contact_rank: null,
-      searchlight: attackerSearchlight,
-      starshell: attackerStarshell,
-    },
-    {
-      night_contact_rank: null,
-      searchlight: defenderSearchlight,
-      starshell: defenderStarshell,
-    }
+    attacker,
+    target
   );
 
   return (
-    <div>
-      <Checkbox
-        size="small"
-        label="探照灯"
-        checked={attackerSearchlight}
-        onChange={() => setAttackerSearchlight(toggle)}
-      />
-      <Checkbox
-        size="small"
-        label="照明弾"
-        checked={attackerStarshell}
-        onChange={() => setAttackerStarshell(toggle)}
-      />
-      <Checkbox
-        size="small"
-        label="相手探照灯"
-        checked={defenderSearchlight}
-        onChange={() => setDefenderSearchlight(toggle)}
-      />
+    <Stack gap={1}>
+      <Flexbox gap={1}>
+        <Typography>
+          夜間触接率 {toPercent(info.contact_chance.total)}
+        </Typography>
 
-      <Checkbox
-        size="small"
-        label="相手照明弾"
-        checked={defenderStarshell}
-        onChange={() => setDefenderStarshell(toggle)}
-      />
+        <Typography ml={5}>{t("攻撃側")}</Typography>
+        <NightSituationForm
+          value={attacker}
+          onChange={updateAttacker}
+          color="primary"
+        />
+
+        <Typography ml={5}>{t("相手側")}</Typography>
+        <NightSituationForm
+          value={target}
+          onChange={updateTarget}
+          color="secondary"
+        />
+      </Flexbox>
 
       <NightCutinTable info={info} />
-    </div>
+    </Stack>
   );
 };
 

@@ -2,9 +2,17 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { Button, Container, Divider, Typography, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { createPlan } from "../../../store";
 
 const WelcomePage: React.FCX = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const handleCreatePlan = () => {
+    dispatch(createPlan());
+  };
+
   return (
     <Container maxWidth="md" sx={{ pt: 5 }}>
       <Typography variant="h4">作戦室 v{process.env.VERSION}</Typography>
@@ -12,11 +20,24 @@ const WelcomePage: React.FCX = () => {
         作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。
       </Typography>
 
-      <Button startIcon={<NoteAddIcon />} variant="contained" color="primary">
+      <Button
+        startIcon={<NoteAddIcon />}
+        variant="contained"
+        color="primary"
+        onClick={handleCreatePlan}
+      >
         {t("CreateComposition")}
       </Button>
 
       <Stack gap={1}>
+        <Typography variant="h5" mt={4}>
+          Tips
+        </Typography>
+        <Divider />
+        <Typography>
+          デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
+        </Typography>
+
         <Typography variant="h5" mt={4}>
           免責事項
         </Typography>

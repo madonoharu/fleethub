@@ -35,11 +35,11 @@ const loader = async () => {
 
 const App = dynamic(loader);
 
-const Index: NextComponentType<
-  NextPageContext,
-  unknown,
-  { masterData: MasterDataInput }
-> = ({ masterData }) => {
+type StaticProps = { masterData: MasterDataInput };
+
+const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
+  masterData,
+}) => {
   return (
     <div>
       <Head>
@@ -54,7 +54,7 @@ const Index: NextComponentType<
       </Head>
 
       <DndProvider backend={HTML5Backend}>
-        <StoreProvider>
+        <StoreProvider masterData={masterData}>
           <App masterData={masterData} />
         </StoreProvider>
       </DndProvider>
@@ -62,23 +62,24 @@ const Index: NextComponentType<
   );
 };
 
-export const getStaticProps: GetStaticProps<{ masterData: MasterDataInput }> =
-  async ({ locale = "" }) => {
-    const masterData = await fetchMasterData();
+export const getStaticProps: GetStaticProps<StaticProps> = async ({
+  locale = "",
+}) => {
+  const masterData = await fetchMasterData();
 
-    return {
-      props: {
-        masterData,
+  return {
+    props: {
+      masterData,
 
-        ...(await serverSideTranslations(locale, [
-          "common",
-          "gears",
-          "gear_types",
-          "ships",
-          "ctype",
-        ])),
-      },
-    };
+      ...(await serverSideTranslations(locale, [
+        "common",
+        "gears",
+        "gear_types",
+        "ships",
+        "ctype",
+      ])),
+    },
   };
+};
 
 export default Index;

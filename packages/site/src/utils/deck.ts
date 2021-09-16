@@ -234,3 +234,19 @@ export const createDeck = (org?: Org): Deck => {
 
   return deck;
 };
+
+export const parsePredeck = (url: URL): Deck | undefined => {
+  const predeck = url.searchParams.get("predeck");
+
+  try {
+    const parsed = predeck && JSON.parse(predeck);
+
+    if (typeof parsed === "object" && parsed) {
+      return parsed as Deck;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  return;
+};

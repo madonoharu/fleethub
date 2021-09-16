@@ -1,38 +1,31 @@
-import murmurhash2_32_gc from "@emotion/hash";
+import murmurhash from "@emotion/hash";
 import {
   StringFormat,
   uploadString,
   ref,
   StorageError,
 } from "@firebase/storage";
-import { nanoid } from "@reduxjs/toolkit";
-import {
-  compressToEncodedURIComponent,
-  decompressFromEncodedURIComponent,
-} from "lz-string-uri-fix";
 import objectHash from "object-hash";
 
 import { publicStorageRef } from "../firebase";
 import { PublicData } from "../store";
 
 const origin = process.browser ? window.location.origin : "";
-const dataParamKey = "data";
 const PUBLIC_ID_KEY = "publicId";
 
 const hash = (data: Record<string, unknown>): string => {
-  // return objectHash(data, { respectType: false, encoding: "base64" });
   let str = "";
   objectHash.writeToStream(
     data,
     { respectType: false },
     {
-      update: (chunk, encoding, cb) => {
+      update: (chunk, _encoding, _cb) => {
         str += chunk;
       },
     }
   );
 
-  return murmurhash2_32_gc(str);
+  return murmurhash(str);
 };
 
 export const publishFileData = async (data: PublicData) => {
@@ -54,7 +47,7 @@ export const publishFileData = async (data: PublicData) => {
   return url.href;
 };
 
-export const fetchUrlData = async (
+export const fetchPublicDataByUrl = async (
   arg: URL | string
 ): Promise<PublicData | undefined> => {
   const url = typeof arg === "string" ? new URL(arg) : arg;
@@ -72,18 +65,6 @@ export const fetchUrlData = async (
     );
     const data = await res.json();
     return data as PublicData;
-  }
-
-  const dataParam = getParam(dataParamKey);
-  if (dataParam) {
-    try {
-      return JSON.parse(
-        decompressFromEncodedURIComponent(dataParam)
-      ) as PublicData;
-    } catch (error) {
-      console.warn(error);
-      return;
-    }
   }
 
   return;

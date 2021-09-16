@@ -11,7 +11,11 @@ import {
   importEntities,
   selectAppState,
 } from "../../../store";
-import { createOrgParamsByDeck, Deck, fetchUrlData } from "../../../utils";
+import {
+  createOrgParamsByDeck,
+  Deck,
+  fetchPublicDataByUrl,
+} from "../../../utils";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
 import { ImportButton, TextField } from "../../molecules";
 
@@ -55,7 +59,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
   const asyncOnUrlImport = useAsyncCallback(
     async () => {
-      const data = await fetchUrlData(urlStr);
+      const data = await fetchPublicDataByUrl(urlStr);
 
       if (data) {
         dispatch(importEntities(data));
