@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 use strum::{AsRefStr, EnumString, ToString};
 use ts_rs::TS;
+use wasm_bindgen::prelude::*;
+
+use super::{CombinedFormation, Formation, SingleFormation};
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS)]
 pub struct GearState {
@@ -150,6 +153,14 @@ impl OrgType {
         !self.is_single()
     }
 
+    pub fn default_formation(&self) -> Formation {
+        if self.is_combined() {
+            Formation::Combined(CombinedFormation::default())
+        } else {
+            Formation::Single(SingleFormation::default())
+        }
+    }
+
     pub fn is_enemy(&self) -> bool {
         matches!(*self, Self::EnemySingle | Self::EnemyCombined)
     }
@@ -165,6 +176,26 @@ impl OrgType {
             Side::Enemy
         }
     }
+}
+
+#[wasm_bindgen]
+pub fn org_type_is_single(org_type: OrgType) -> bool {
+    org_type.is_single()
+}
+
+#[wasm_bindgen]
+pub fn org_type_default_formation(org_type: OrgType) -> Formation {
+    org_type.default_formation()
+}
+
+#[wasm_bindgen]
+pub fn org_type_is_player(org_type: OrgType) -> bool {
+    org_type.is_player()
+}
+
+#[wasm_bindgen]
+pub fn org_type_side(org_type: OrgType) -> Side {
+    org_type.side()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, EnumString, AsRefStr, Serialize, Deserialize, TS)]

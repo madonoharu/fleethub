@@ -1,3 +1,4 @@
-* text eol=lf
+*.wasm binary
+*.png binary
 /.yarn/** linguist-vendored
 /packages/core/pkg/** linguist-generated

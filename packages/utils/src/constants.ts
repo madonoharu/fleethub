@@ -481,6 +481,14 @@ export enum ShipClass {
   TownClass = 108,
   /// 潜高型
   SentakaType = 109,
+  /// Brooklyn級
+  BrooklynClass = 110,
+  /// 耐氷型雑用輸送艦
+  AuxiliaryTransportShip = 111,
+  /// Illustrious級
+  IllustriousClass = 112,
+  /// Conte di Cavour級
+  ConteDiCavourClass = 113,
 }
 
 export enum ShipAttr {

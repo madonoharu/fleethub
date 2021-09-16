@@ -24,6 +24,7 @@
     "tscheck": "tsc --noEmit",
     "update:constants": "yarn esn scripts/updateConstants",
     "update:locales": "yarn esn scripts/updateLocales",
+    "update:storage": "yarn esn scripts/updateStorage",
     "utils": "yarn workspace @fh/utils"
   },
   "lint-staged": {

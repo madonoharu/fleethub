@@ -1,6 +1,8 @@
+import { OrgType } from "@fh/core";
 import { Button, Stack } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useFhCore } from "../../../hooks";
 
 import { WarfareAnalysisShipParams } from "../../../store";
 import { Divider, Flexbox } from "../../atoms";
@@ -20,6 +22,21 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
   onChange,
 }) => {
   const { t } = useTranslation("common");
+  const { org_type_is_single, org_type_default_formation, org_type_is_player } =
+    useFhCore().module;
+
+  const handleOrgTypeChange = (org_type: OrgType) => {
+    const changesForm =
+      org_type_is_single(org_type) !== org_type_is_single(value.org_type);
+
+    onChange({
+      ...value,
+      org_type,
+      formation: changesForm
+        ? org_type_default_formation(org_type)
+        : value.formation,
+    });
+  };
 
   const bind =
     <K extends keyof WarfareAnalysisShipParams>(key: K) =>
@@ -28,9 +45,8 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
 
   const setShipIndex = (i: number) => bind("ship_index")(i);
 
-  const isEnemy =
-    value.org_type === "EnemySingle" || value.org_type === "EnemyCombined";
-  const color = isEnemy ? "secondary" : "primary";
+  const isPlayer = org_type_is_player(value.org_type);
+  const color = isPlayer ? "primary" : "secondary";
 
   return (
     <Stack className={className} gap={1}>
@@ -39,7 +55,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
         <OrgTypeSelect
           color={color}
           value={value.org_type}
-          onChange={bind("org_type")}
+          onChange={handleOrgTypeChange}
         />
 
         <Select

@@ -118,7 +118,7 @@ impl<'a> NightAttackContext<'a> {
     fn night_contact_power_mod(&self) -> f64 {
         self.attacker_situation
             .night_contact_rank
-            .map(|rank| rank.night_mods().accuracy_mod)
+            .map(|rank| rank.night_mods().power_mod)
             .unwrap_or(0.0)
     }
 

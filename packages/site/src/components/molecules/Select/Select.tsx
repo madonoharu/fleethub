@@ -27,6 +27,7 @@ export type SelectComponentProps<T> = {
   value: T;
   onChange?: (option: T) => void;
   getOptionLabel?: (option: T) => React.ReactNode;
+  itemFilter?: (option: T) => boolean;
 };
 
 export type SelectComponent<P = Record<string, unknown>> = {
@@ -45,6 +46,7 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
     onChange,
     getOptionLabel = getDefaultOptionLabel,
     variant,
+    itemFilter,
     ...muiProps
   } = props;
 
@@ -53,6 +55,12 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
       onChange?.(options[Number(event.target.value)]),
     [options, onChange]
   );
+
+  const getSx = (option: typeof value) => {
+    const visible = itemFilter ? itemFilter(option) : true;
+    if (visible) return;
+    return { display: "none" };
+  };
 
   const index = options.indexOf(value);
 
@@ -68,8 +76,8 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
       select
       {...muiProps}
     >
-      {options.map((option, index) => (
-        <MenuItem key={index} value={index}>
+      {options.map((option, i) => (
+        <MenuItem key={i} value={i} sx={getSx(option)}>
           {getOptionLabel(option)}
         </MenuItem>
       ))}

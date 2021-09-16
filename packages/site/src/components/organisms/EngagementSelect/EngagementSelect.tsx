@@ -11,7 +11,7 @@ type Props = SelectInputProps & {
   onChange?: (engagement: Engagement) => void;
 };
 
-const FormationSelect: React.FC<Props> = ({ value, onChange, ...rest }) => {
+const EngagementSelect: React.FC<Props> = ({ value, onChange, ...rest }) => {
   const { t } = useTranslation("common");
 
   return (
@@ -25,4 +25,4 @@ const FormationSelect: React.FC<Props> = ({ value, onChange, ...rest }) => {
   );
 };
 
-export default FormationSelect;
+export default EngagementSelect;

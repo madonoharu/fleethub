@@ -1,8 +1,7 @@
 import { CombinedFormation, Formation, SingleFormation } from "@fh/core";
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { ignoreUndoable } from "../../../store";
 import { Select, SelectInputProps } from "../../molecules";
 
 const SINGLE_FORMATIONS: SingleFormation[] = [
@@ -14,12 +13,22 @@ const SINGLE_FORMATIONS: SingleFormation[] = [
   "Vanguard",
 ];
 
-const COMBINED_FLEET_FORMATIONS: CombinedFormation[] = [
+const COMBINED_FORMATIONS: CombinedFormation[] = [
   "Cruising1",
   "Cruising2",
   "Cruising3",
   "Cruising4",
 ];
+
+const FORMATIONS = Array<Formation>().concat(
+  SINGLE_FORMATIONS,
+  COMBINED_FORMATIONS
+);
+
+const isSingleFormation = (f: Formation) =>
+  (SINGLE_FORMATIONS as Formation[]).includes(f);
+const isCombinedFormation = (f: Formation) =>
+  (COMBINED_FORMATIONS as Formation[]).includes(f);
 
 type Props = SelectInputProps & {
   value: Formation;
@@ -33,30 +42,17 @@ const FormationSelect: React.FC<Props> = ({
   combined,
   ...rest
 }) => {
-  const options: readonly Formation[] = combined
-    ? COMBINED_FLEET_FORMATIONS
-    : SINGLE_FORMATIONS;
   const { t } = useTranslation("common");
 
-  useEffect(() => {
-    if (options.includes(value) || !onChange) return;
-
-    ignoreUndoable(() => {
-      onChange(combined ? "Cruising4" : "LineAhead");
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [combined]);
-
-  if (!options.includes(value)) {
-    value = combined ? "Cruising4" : "LineAhead";
-  }
+  const itemFilter = combined ? isCombinedFormation : isSingleFormation;
 
   return (
     <Select
-      options={options}
+      options={FORMATIONS}
       value={value}
       onChange={onChange}
       getOptionLabel={t}
+      itemFilter={itemFilter}
       {...rest}
     />
   );

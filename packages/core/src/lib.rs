@@ -12,8 +12,6 @@ pub mod types;
 pub mod utils;
 pub mod wasm_abi;
 
-use std::str::FromStr;
-
 use attack::NightSituation;
 use wasm_abi::{AirSquadronParams, FleetParams, GearParams, OrgParams, ShipParams};
 use wasm_bindgen::prelude::*;
@@ -27,10 +25,6 @@ use org::Org;
 use ship::Ship;
 use types::{EBonusFn, MasterData};
 
-// When the `wee_alloc` feature is enabled, this uses `wee_alloc` as the global
-// allocator.
-//
-// If you don't want to use `wee_alloc`, you can safely delete this.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
@@ -152,13 +146,4 @@ impl FhCore {
         let analyzer = Analyzer::new(&self.factory.master_data);
         analyzer.analyze_warfare(params, attacker, target)
     }
-}
-
-#[wasm_bindgen]
-pub fn org_type_side(str: &str) -> Result<String, JsValue> {
-    use crate::types::OrgType;
-
-    let org_type = OrgType::from_str(str).map_err(|err| JsValue::from(&err.to_string()))?;
-
-    Ok(org_type.side().to_string())
 }

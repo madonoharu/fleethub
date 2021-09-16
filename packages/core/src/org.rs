@@ -5,7 +5,7 @@ use crate::{
     attack::WarfareShipEnvironment,
     fleet::{Fleet, ShipArray},
     ship::Ship,
-    types::{CombinedFormation, Formation, GearAttr, OrgType, Role, Side, SingleFormation},
+    types::{Formation, GearAttr, OrgType, Role, Side},
 };
 
 pub struct MainAndEscortShips<'a> {
@@ -255,11 +255,7 @@ impl Org {
     }
 
     pub fn default_formation(&self) -> Formation {
-        if self.is_combined() {
-            Formation::Combined(CombinedFormation::default())
-        } else {
-            Formation::Single(SingleFormation::default())
-        }
+        self.org_type.default_formation()
     }
 
     /// 艦隊対空値

@@ -52,13 +52,7 @@ export const fetchPublicDataByUrl = async (
 ): Promise<PublicData | undefined> => {
   const url = typeof arg === "string" ? new URL(arg) : arg;
 
-  const getParam = (key: string) => {
-    const value = url.searchParams.get(key);
-    url.searchParams.delete(key);
-    return value;
-  };
-
-  const fileId = getParam(PUBLIC_ID_KEY);
+  const fileId = url.searchParams.get(PUBLIC_ID_KEY);
   if (fileId) {
     const res = await fetch(
       `https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}.json`
