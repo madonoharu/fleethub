@@ -31,10 +31,13 @@ const OrgAnalysisPanel: React.FCX<Props> = ({ className, org }) => {
 };
 
 export default styled(OrgAnalysisPanel)`
-  padding: 16px;
+  padding: 8px;
   min-height: 480px;
   > * {
     margin-right: auto;
     margin-left: auto;
+  }
+  > .MuiTabs-root {
+    margin-bottom: 8px;
   }
 `;

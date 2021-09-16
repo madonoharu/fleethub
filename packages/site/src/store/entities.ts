@@ -1,4 +1,4 @@
-import { OrgParams, Ship, ShipParams } from "@fh/core";
+import { MasterDataInput, OrgParams, Ship, ShipParams } from "@fh/core";
 import {
   AIR_SQUADRON_KEYS,
   Dict,
@@ -32,8 +32,10 @@ import { SwapEvent } from "../hooks";
 
 import {
   createDeepEqualSelector,
+  createOrgParamsByDeck,
   createShallowEqualSelector,
-  fetchUrlData,
+  fetchPublicDataByUrl,
+  parsePredeck,
   publishFileData,
   tweet,
 } from "../utils";
@@ -301,7 +303,7 @@ export const cloneNormalizedEntities = (
   return { entities, idMap };
 };
 
-type SetEntitiesPayload = {
+export type SetEntitiesPayload = {
   entities: NormalizedEntities;
   fileId: string;
   to?: string | undefined;
@@ -541,16 +543,20 @@ export const publishFile = createAsyncThunk(
   }
 );
 
-export const fetchLocationData = (): AppThunk => async (dispatch) => {
-  if (!process.browser) return;
+export const parseUrl =
+  (masterData: MasterDataInput, url: URL): AppThunk =>
+  async (dispatch) => {
+    const data = await fetchPublicDataByUrl(location.href);
+    if (data) {
+      dispatch(importEntities({ ...data, to: "temp" }));
+    }
 
-  const data = await fetchUrlData(location.href);
-  window.history.replaceState(null, "", location.origin);
-
-  if (data) {
-    dispatch(importEntities({ ...data, to: "temp" }));
-  }
-};
+    const predeck = parsePredeck(url);
+    if (predeck) {
+      const org = createOrgParamsByDeck(masterData, predeck);
+      dispatch(createPlan({ org, to: "temp" }));
+    }
+  };
 
 export const swapGearPosition = createAction<
   SwapEvent<{ id?: string | undefined; position: GearPosition }>
