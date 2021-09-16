@@ -10,7 +10,6 @@ export * from "./gkcoiSlice";
 export * from "./mapListSlice";
 export * from "./orgsSlice";
 export * from "./selectors";
-export * from "./shipListSlice";
 export * from "./shipsSlice";
 export * from "./schema";
 export { default as StoreProvider } from "./StoreProvider";
