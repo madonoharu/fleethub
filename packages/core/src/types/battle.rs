@@ -236,18 +236,18 @@ pub struct NightContactModifiers {
 impl ContactRank {
     pub fn airstrike_power_mod(self) -> f64 {
         match self {
-            Self::Rank1 => 1.2,
+            Self::Rank1 => 1.12,
             Self::Rank2 => 1.17,
-            Self::Rank3 => 1.12,
+            Self::Rank3 => 1.2,
         }
     }
 
     pub fn night_mods(self) -> NightContactModifiers {
         match self {
             Self::Rank1 => NightContactModifiers {
-                power_mod: 9.0,
-                accuracy_mod: 1.2,
-                critical_rate_constant: 1.7,
+                power_mod: 5.0,
+                accuracy_mod: 1.15,
+                critical_rate_constant: 1.57,
             },
             Self::Rank2 => NightContactModifiers {
                 power_mod: 7.0,
@@ -255,9 +255,9 @@ impl ContactRank {
                 critical_rate_constant: 1.64,
             },
             Self::Rank3 => NightContactModifiers {
-                power_mod: 5.0,
-                accuracy_mod: 1.15,
-                critical_rate_constant: 1.57,
+                power_mod: 9.0,
+                accuracy_mod: 1.2,
+                critical_rate_constant: 1.7,
             },
         }
     }

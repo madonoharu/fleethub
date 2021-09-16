@@ -345,14 +345,13 @@ impl Ship {
     }
 
     pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
-        let mut iter = self.gears.values();
-        let has_main = iter.any(|g| g.attrs.contains(GearAttr::MainGun));
-        let has_ap_shell = iter.any(|g| g.gear_type == GearType::ApShell);
-        let has_rader = iter.any(|g| g.attrs.contains(GearAttr::Radar));
-        let has_secondary = iter.any(|g| g.gear_type == GearType::SecondaryGun);
+        let has_main = self.gears.has_attr(GearAttr::MainGun);
+        let has_ap_shell = self.gears.has_type(GearType::ApShell);
+        let has_rader = self.gears.has_attr(GearAttr::Radar);
+        let has_secondary = self.gears.has_type(GearType::SecondaryGun);
 
         if !has_ap_shell || !has_main {
-            (1., 1.)
+            (1.0, 1.0)
         } else if has_secondary && has_rader {
             (1.15, 1.3)
         } else if has_secondary {
@@ -1504,7 +1503,7 @@ impl Ship {
         let ibonus = (1.5 * total_stars.sqrt()).floor();
         let post_multiplicative = (postcap + ibonus + postcap_additive) * postcap_multiplicative;
 
-        Some(post_multiplicative.floor() - self.remaining_ammo_mod())
+        Some(post_multiplicative.floor() - self.remaining_fuel_mod())
     }
 
     pub fn basic_defense_power(&self, armor_penetration: f64) -> Option<f64> {

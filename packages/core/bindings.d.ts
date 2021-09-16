@@ -130,7 +130,14 @@ export type ShipClass =
   | "JunsenTypeC"
   | "TypeDCoastalDefenseShip"
   | "YorktownClass"
-  | "StLouisClass";
+  | "StLouisClass"
+  | "NorthCarolinaClass"
+  | "TownClass"
+  | "SentakaType"
+  | "BrooklynClass"
+  | "AuxiliaryTransportShip"
+  | "IllustriousClass"
+  | "ConteDiCavourClass";
 
 export type ShipAttr =
   | "Abyssal"
@@ -203,10 +210,12 @@ export interface NormalFormationDef {
   night: FormationWarfareDef;
 }
 
-export type FormationDef = NormalFormationDef | {
-  top_half: NormalFormationDef;
-  bottom_half: NormalFormationDef;
-};
+export type FormationDef =
+  | NormalFormationDef
+  | {
+      top_half: NormalFormationDef;
+      bottom_half: NormalFormationDef;
+    };
 
 export type DayCutin =
   | "MainMain"
@@ -774,15 +783,19 @@ export interface DamageInfo {
   damage_state_map: Record<DamageState, number>;
 }
 
-export type DayBattleAttackType = { t: "Shelling"; c: ShellingAttackType } | {
-  t: "Asw";
-  c: AswAttackType;
-};
+export type DayBattleAttackType =
+  | { t: "Shelling"; c: ShellingAttackType }
+  | {
+      t: "Asw";
+      c: AswAttackType;
+    };
 
-export type NightBattleAttackType = { t: "NightAttack"; c: NightAttackType } | {
-  t: "Asw";
-  c: AswAttackType;
-};
+export type NightBattleAttackType =
+  | { t: "NightAttack"; c: NightAttackType }
+  | {
+      t: "Asw";
+      c: AswAttackType;
+    };
 
 export interface WarfareAnalysisParams {
   warfare_context: WarfareContext;

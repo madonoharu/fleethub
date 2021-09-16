@@ -288,12 +288,20 @@ export const cloneNormalizedEntities = (
 
   const getNextId = (prev: string) => idMap.get(prev) || "";
 
-  const base: NormalizedEntities = cloneDeepWith(sauceEntities, (value) => {
-    if (typeof value === "string" && idMap.has(value)) {
-      return getNextId(value);
+  const base: NormalizedEntities = cloneDeepWith(
+    sauceEntities,
+    (value, key) => {
+      if (
+        key !== "name" &&
+        key !== "description" &&
+        typeof value === "string" &&
+        idMap.has(value)
+      ) {
+        return getNextId(value);
+      }
+      return;
     }
-    return;
-  });
+  );
 
   const entities = mapValues(
     base,
@@ -519,7 +527,7 @@ export const publishFile = createAsyncThunk(
     const linkedEntities = getLinkedEntities(root, fileId);
 
     let count = 0;
-    const genId = () => `${count++}`;
+    const genId = () => `${(count++).toString(32)}`;
 
     const cloned = cloneNormalizedEntities(linkedEntities, genId);
 
@@ -546,7 +554,7 @@ export const publishFile = createAsyncThunk(
 export const parseUrl =
   (masterData: MasterDataInput, url: URL): AppThunk =>
   async (dispatch) => {
-    const data = await fetchPublicDataByUrl(location.href);
+    const data = await fetchPublicDataByUrl(url);
     if (data) {
       dispatch(importEntities({ ...data, to: "temp" }));
     }

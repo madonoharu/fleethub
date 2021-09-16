@@ -21,19 +21,21 @@ export type PlanActionProps = {
 
 const PlanAction: React.FCX<PlanActionProps> = ({ className, file, org }) => {
   const MenuModal = useModal();
-  const { asyncOnPublish, Snackbar } = useAsyncOnPublish(file.id);
+  const { asyncOnPublish, onUrlCopy, onTweet, Snackbar } = useAsyncOnPublish(
+    file.id
+  );
 
   return (
     <>
       <Flexbox className={className}>
         <LinkButton
           title="共有URLをコピー"
-          onClick={asyncOnPublish.execute}
+          onClick={onUrlCopy}
           disabled={asyncOnPublish.loading}
         />
         <TweetButton
           title="編成をツイート"
-          onClick={asyncOnPublish.execute}
+          onClick={onTweet}
           disabled={asyncOnPublish.loading}
         />
         <KctoolsButton

@@ -24,7 +24,7 @@ type Props = {
 };
 
 const PlanMenu: React.FCX<Props> = ({ className, file }) => {
-  const { asyncOnPublish, Snackbar } = useAsyncOnPublish(file.id);
+  const { asyncOnPublish, onUrlCopy, Snackbar } = useAsyncOnPublish(file.id);
   const url = asyncOnPublish.result;
 
   const { org } = useOrg(file.org);
@@ -37,7 +37,7 @@ const PlanMenu: React.FCX<Props> = ({ className, file }) => {
 
       <StyledButton
         startIcon={<LinkIcon />}
-        onClick={asyncOnPublish.execute}
+        onClick={onUrlCopy}
         disabled={asyncOnPublish.loading}
       >
         共有URLをクリップボードにコピー
