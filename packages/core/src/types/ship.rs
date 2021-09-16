@@ -1,5 +1,5 @@
 use enumset::EnumSetType;
-use num_derive::FromPrimitive;
+use num_derive::{FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 use strum::{EnumString, ToString};
 use ts_rs::TS;
@@ -114,7 +114,7 @@ impl ShipType {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS)]
 pub enum ShipClass {
     Unknown = 0,
     /// 綾波型
@@ -329,6 +329,12 @@ pub enum ShipClass {
     YorktownClass = 105,
     /// St. Louis級
     StLouisClass = 106,
+    /// North Carolina級
+    NorthCarolinaClass = 107,
+    /// Town級
+    TownClass = 108,
+    /// 潜高型
+    SentakaType = 109,
 }
 
 impl Default for ShipClass {

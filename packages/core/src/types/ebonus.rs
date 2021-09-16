@@ -1,3 +1,4 @@
+use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use wasm_bindgen::JsValue;
@@ -6,7 +7,7 @@ use crate::{
     gear::Gear,
     gear_array::GearArray,
     gear_id,
-    types::{ShipAttr, SpeedGroup},
+    types::{ShipAttr, ShipClass, SpeedGroup},
 };
 
 use super::{GearTypes, MasterShip};
@@ -141,6 +142,12 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
             }
         }
     };
+
+    if ship.ctype == ShipClass::SentakaType.to_u16().unwrap_or_default()
+        && new_model_boiler_count >= 1
+    {
+        return synergy + 5;
+    }
 
     if synergy == 0 && total_boiler_count >= 1 || ship.has_attr(ShipAttr::TurbineSpeedBonus) {
         5
