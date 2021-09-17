@@ -13,7 +13,7 @@ pub enum ShipFilterGroup {
     Destroyer,
     CoastalDefenseShip,
     Submarine,
-    SupportShip,
+    AuxiliaryShip,
 }
 
 #[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, TS)]
@@ -84,7 +84,7 @@ impl ShipType {
             DD => Destroyer,
             DE => CoastalDefenseShip,
             SS | SSV => Submarine,
-            _ => SupportShip,
+            _ => AuxiliaryShip,
         }
     }
 

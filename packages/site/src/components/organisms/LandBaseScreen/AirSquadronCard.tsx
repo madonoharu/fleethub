@@ -78,7 +78,6 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
             const gear = airSquadron.get_gear(key);
             const ss = airSquadron.get_slot_size(i);
             const max = airSquadron.get_max_slot_size(i);
-            const position = { airSquadron: id, key };
 
             return (
               <GearSlot
@@ -86,8 +85,8 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
                 gear={gear}
                 slotSize={ss}
                 maxSlotSize={max}
-                position={position}
-                canEquip={(gear) => airSquadron.can_equip(gear)}
+                position={{ tag: "airSquadron", id, key }}
+                equippable={gear && airSquadron.can_equip(gear)}
                 onSlotSizeChange={(value) => {
                   actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
                 }}

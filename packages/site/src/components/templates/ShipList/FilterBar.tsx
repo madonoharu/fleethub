@@ -1,3 +1,4 @@
+import { ShipFilterGroup } from "@fh/core";
 import React from "react";
 import { Updater } from "use-immer";
 
@@ -5,7 +6,7 @@ import { Checkbox, Flexbox } from "../../atoms";
 import { SelectButtons } from "../../molecules";
 import { ShipFilterState } from "./useShipListState";
 
-const shipFilterGroupMap = {
+const shipFilterGroupMap: Record<ShipFilterGroup, string> = {
   Battleship: "戦艦級",
   AircraftCarrier: "航空母艦",
   HeavyCruiser: "重巡級",
@@ -13,10 +14,12 @@ const shipFilterGroupMap = {
   Destroyer: "駆逐艦",
   CoastalDefenseShip: "海防艦",
   Submarine: "潜水艦",
-  SupportShip: "補助艦艇",
-} as const;
+  AuxiliaryShip: "補助艦艇",
+};
 
-type ShipFilterGroup = keyof typeof shipFilterGroupMap;
+const SHIP_FILTER_GROUP_OPTIONS = Object.keys(
+  shipFilterGroupMap
+) as ShipFilterGroup[];
 
 type Props = {
   state: ShipFilterState;
@@ -44,7 +47,7 @@ const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
     <Flexbox className={className}>
       <SelectButtons
         css={{ marginRight: "auto" }}
-        options={Object.keys(shipFilterGroupMap) as ShipFilterGroup[]}
+        options={SHIP_FILTER_GROUP_OPTIONS}
         value={state.group as ShipFilterGroup}
         onChange={handleGroupChange}
         getOptionLabel={(key) => shipFilterGroupMap[key]}

@@ -23,9 +23,13 @@ fn main() {
     use fh_core::*;
 
     let buffer = gen_types!(
+        types::GearType,
+        types::GearAttr,
+        types::GearFilterGroup,
         types::ShipType,
         types::ShipClass,
         types::ShipAttr,
+        types::ShipFilterGroup,
         types::SpecialEnemyType,
         types::DamageState,
         types::MoraleState,
@@ -46,8 +50,6 @@ fn main() {
         types::Side,
         types::Role,
         types::OrgType,
-        types::GearType,
-        types::GearAttr,
         types::AirSquadronMode,
         types::GearState,
         types::ShipState,

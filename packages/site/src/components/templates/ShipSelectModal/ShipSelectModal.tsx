@@ -24,7 +24,7 @@ const ShipSelectModal: React.FCX = () => {
   return (
     <>
       <Dialog open={open} full onClose={handleClose}>
-        <ShipList onSelect={handleSelect} />
+        {open && <ShipList onSelect={handleSelect} />}
       </Dialog>
     </>
   );

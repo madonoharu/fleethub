@@ -125,6 +125,51 @@ pub enum GearType {
     CbRecon2 = 94,
 }
 
+#[derive(Debug, Serialize, Deserialize, TS)]
+pub enum GearFilterGroup {
+    Fighter,
+    Bomber,
+    Recon,
+    MainGun,
+    Secondary,
+    Torpedo,
+    AntiSub,
+    Radar,
+    Landing,
+    Ration,
+    LandBased,
+    Misc,
+}
+
+impl GearType {
+    pub fn filter_group(&self) -> GearFilterGroup {
+        use GearType::*;
+
+        match self {
+            CbFighter => GearFilterGroup::Fighter,
+            CbDiveBomber | CbTorpedoBomber | JetFighterBomber | JetTorpedoBomber => {
+                GearFilterGroup::Bomber
+            }
+            CbRecon
+            | ReconSeaplane
+            | SeaplaneBomber
+            | SeaplaneFighter
+            | LargeFlyingBoat
+            | Rotorcraft
+            | AntiSubPatrolAircraft => GearFilterGroup::Recon,
+            SmallMainGun | MediumMainGun | LargeMainGun => GearFilterGroup::MainGun,
+            SecondaryGun | AntiAirGun => GearFilterGroup::Secondary,
+            Torpedo | SubmarineTorpedo | MidgetSubmarine => GearFilterGroup::Torpedo,
+            Sonar | LargeSonar | DepthCharge => GearFilterGroup::AntiSub,
+            SmallRadar | LargeRadar => GearFilterGroup::Radar,
+            LandingCraft | AmphibiousTank | SupplyContainer => GearFilterGroup::Landing,
+            LbFighter | LbAttacker | LbRecon | LargeLbAircraft => GearFilterGroup::LandBased,
+            CombatRation | Supplies => GearFilterGroup::Ration,
+            _ => GearFilterGroup::Misc,
+        }
+    }
+}
+
 impl Default for GearType {
     fn default() -> Self {
         Self::Unknown

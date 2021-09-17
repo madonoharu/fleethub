@@ -8,8 +8,8 @@ use crate::{
     analyzer::{WarfareAnalysisParams, WarfareInfo},
     attack::{NightSituation, WarfareContext, WarfareShipEnvironment},
     types::{
-        AirSquadronMode, AirState, Engagement, Formation, GearAttr, GearType, OrgType, Role,
-        ShipAttr, ShipClass, ShipFilterGroup, ShipType, Side,
+        AirSquadronMode, AirState, Engagement, Formation, GearAttr, GearFilterGroup, GearType,
+        OrgType, Role, ShipAttr, ShipClass, ShipFilterGroup, ShipType, Side,
     },
 };
 
@@ -155,6 +155,7 @@ impl_wasm_abi_as_string!(
     Engagement,
     Formation,
     GearAttr,
+    GearFilterGroup,
     GearType,
     OrgType,
     Role,

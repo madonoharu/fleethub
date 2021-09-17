@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { Gear } from "@fh/core";
-import { EquipmentBonuses } from "equipment-bonus";
 import React from "react";
 
 import { GearPosition } from "../../../store";
@@ -12,9 +11,8 @@ type Props = {
   position?: GearPosition;
   slotSize?: number;
   maxSlotSize?: number;
+  equippable?: boolean;
   onSlotSizeChange?: (value?: number) => void;
-  canEquip?: (gear: Gear) => boolean;
-  getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
 const GearSlot: React.FCX<Props> = ({
@@ -23,9 +21,8 @@ const GearSlot: React.FCX<Props> = ({
   position,
   slotSize,
   maxSlotSize,
+  equippable,
   onSlotSizeChange,
-  canEquip,
-  getNextEbonuses,
 }) => {
   const has_proficiency = gear?.has_proficiency();
 
@@ -42,8 +39,7 @@ const GearSlot: React.FCX<Props> = ({
         gear={gear}
         position={position}
         size="small"
-        canEquip={canEquip}
-        getNextEbonuses={getNextEbonuses}
+        equippable={equippable}
       />
     </div>
   );

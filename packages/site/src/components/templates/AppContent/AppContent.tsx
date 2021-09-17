@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { DragLayerProvider } from "../../../hooks";
 import { appSlice, selectAppState } from "../../../store";
+import GearSelectModal from "../GearSelectModal";
 import ShipSelectModal from "../ShipSelectModal";
 import AppBar from "./AppBar";
 import ExplorerDrawer from "./ExplorerDrawer";
@@ -30,6 +31,7 @@ const AppContent: React.FC = () => {
       </ExplorerDrawer>
 
       <ShipSelectModal />
+      <GearSelectModal />
     </DragLayerProvider>
   );
 };

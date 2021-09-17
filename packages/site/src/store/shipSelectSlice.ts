@@ -14,7 +14,7 @@ const initialState: ShipSelectState = {
   open: false,
 };
 
-const close = () => initialState;
+const hide = () => initialState;
 
 export const shipSelectSlice = createSlice({
   name: "shipSelect",
@@ -32,8 +32,8 @@ export const shipSelectSlice = createSlice({
     show: (state) => {
       state.open = true;
     },
-    hide: close,
+    hide,
   },
 
-  extraReducers: (builder) => builder.addCase(createShip, close),
+  extraReducers: (builder) => builder.addCase(createShip, hide),
 });

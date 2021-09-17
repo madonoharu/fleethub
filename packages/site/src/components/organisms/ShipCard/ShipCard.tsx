@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useModal, useShipActions } from "../../../hooks";
-import { makeGetNextEbonuses, toPercent } from "../../../utils";
+import { toPercent } from "../../../utils";
 import {
   AmmoIcon,
   DamageStateIcon,
@@ -99,20 +99,22 @@ const ShipCard: React.FCX<Props> = ({
 
       <Column>
         <GearList>
-          {(ship.gear_keys() as GearKey[]).map((key, i) => (
-            <GearSlot
-              key={key}
-              gear={ship.get_gear(key)}
-              position={{ ship: id, key }}
-              slotSize={ship.get_slot_size(i)}
-              maxSlotSize={ship.get_max_slot_size(i)}
-              onSlotSizeChange={(value) => {
-                actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
-              }}
-              canEquip={(g) => ship.can_equip(g, key)}
-              getNextEbonuses={makeGetNextEbonuses(ship, key)}
-            />
-          ))}
+          {(ship.gear_keys() as GearKey[]).map((key, i) => {
+            const gear = ship.get_gear(key);
+            return (
+              <GearSlot
+                key={key}
+                gear={gear}
+                position={{ tag: "ship", id, key }}
+                slotSize={ship.get_slot_size(i)}
+                maxSlotSize={ship.get_max_slot_size(i)}
+                equippable={gear && ship.can_equip(gear, key)}
+                onSlotSizeChange={(value) => {
+                  actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
+                }}
+              />
+            );
+          })}
         </GearList>
 
         <Flexbox>

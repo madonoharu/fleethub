@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     gear_id,
-    types::{ContactRank, GearAttr, GearState, GearType, GearTypes, MasterGear},
+    types::{ContactRank, GearAttr, GearFilterGroup, GearState, GearType, GearTypes, MasterGear},
     utils::xxh3,
 };
 
@@ -216,36 +216,8 @@ impl Gear {
         self.attrs.contains(attr)
     }
 
-    pub fn discern(&self) -> String {
-        use GearType::*;
-
-        let str = match self.gear_type {
-            CbFighter => "Fighter",
-            CbDiveBomber | CbTorpedoBomber | JetFighterBomber | JetTorpedoBomber => "Bomber",
-            CbRecon
-            | ReconSeaplane
-            | SeaplaneBomber
-            | SeaplaneFighter
-            | LargeFlyingBoat
-            | Rotorcraft
-            | AntiSubPatrolAircraft => "Recon",
-            SmallMainGun | MediumMainGun | LargeMainGun => "MainGun",
-            SecondaryGun | AntiAirGun => "Secondary",
-            Torpedo | SubmarineTorpedo | MidgetSubmarine => "Torpedo",
-            Sonar | LargeSonar | DepthCharge => "AntiSub",
-            SmallRadar | LargeRadar => "Radar",
-            LandingCraft | AmphibiousTank | SupplyContainer => "Landing",
-
-            _ => {
-                if self.attrs.contains(GearAttr::LbAircraft) {
-                    "LandBased"
-                } else {
-                    "Misc"
-                }
-            }
-        };
-
-        str.to_string()
+    pub fn filter_group(&self) -> GearFilterGroup {
+        self.gear_type.filter_group()
     }
 
     #[wasm_bindgen(getter)]

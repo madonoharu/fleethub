@@ -122,10 +122,11 @@ impl<'a> AswAttackContext<'a> {
                 + self.attack_type.type_constant();
 
             let formation_mod = self.formation_power_mod;
+            let engagement_mod = self.engagement.modifier();
             let damage_mod = attacker.damage_state().common_power_mod();
             let asw_synergy_mod = attacker.asw_synergy_mod();
 
-            let a14 = damage_mod * formation_mod * asw_synergy_mod;
+            let a14 = damage_mod * formation_mod * engagement_mod * asw_synergy_mod;
 
             let mut mods = AttackPowerModifiers::new();
             mods.apply_a14(a14);
