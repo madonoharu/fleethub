@@ -99,13 +99,22 @@ impl EBonusFnGearInput {
 
 fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
     let speed_group = ship.speed_group.unwrap_or_default();
+    let new_model_boiler_count = gears.count(gear_id!("新型高温高圧缶"));
+
+    // 新型高速潜水艦補正
+    let sentaka_type_mod = if ship.ctype == ShipClass::SentakaType.to_u16().unwrap_or_default()
+        && new_model_boiler_count >= 1
+    {
+        5
+    } else {
+        0
+    };
 
     if ship.has_attr(ShipAttr::Abyssal) || !gears.has(gear_id!("改良型艦本式タービン")) {
-        return 0;
+        return sentaka_type_mod;
     }
 
     let enhanced_boiler_count = gears.count(gear_id!("強化型艦本式缶"));
-    let new_model_boiler_count = gears.count(gear_id!("新型高温高圧缶"));
     let total_boiler_count = enhanced_boiler_count + new_model_boiler_count;
 
     let synergy = match speed_group {
@@ -143,17 +152,14 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
         }
     };
 
-    if ship.ctype == ShipClass::SentakaType.to_u16().unwrap_or_default()
-        && new_model_boiler_count >= 1
-    {
-        return synergy + 5;
-    }
+    let turbine_bonus =
+        if synergy == 0 && total_boiler_count >= 1 || ship.has_attr(ShipAttr::TurbineSpeedBonus) {
+            5
+        } else {
+            0
+        };
 
-    if synergy == 0 && total_boiler_count >= 1 || ship.has_attr(ShipAttr::TurbineSpeedBonus) {
-        5
-    } else {
-        synergy
-    }
+    sentaka_type_mod + turbine_bonus + synergy
 }
 
 pub struct EBonusFn(js_sys::Function);

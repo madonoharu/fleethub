@@ -19,6 +19,15 @@ const getSpeedRank = (v: number | undefined) => {
   return "SpeedFastest";
 };
 
+const getRangeLabel = (v: number | undefined) => {
+  if (!v || v <= 0) return "?";
+  if (v === 1) return "RangeShortAbbr";
+  if (v === 2) return "RangeMediumAbbr";
+  if (v === 3) return "RangeLongAbbr";
+  if (v === 4) return "RangeVeryLongAbbr";
+  return "RangeExtremeLongAbbr";
+};
+
 const maybeNumber = (v: number | undefined) => v ?? "?";
 
 const BonusText = styled.span(
@@ -148,7 +157,11 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
   }
 
   let text: React.ReactNode;
-  if (statKey === "speed") {
+
+  if (statKey === "range") {
+    const label = getRangeLabel(stat);
+    text = <span css={{ marginLeft: 8 }}>{t(label)}</span>;
+  } else if (statKey === "speed") {
     const rank = getSpeedRank(stat);
     text = <span css={{ marginLeft: 8 }}>{t(rank)}</span>;
   } else if (typeof stat === "number") {

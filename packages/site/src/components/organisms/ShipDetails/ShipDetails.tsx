@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { OrgType, Ship, WarfareContext } from "@fh/core";
+import { OrgType, Ship } from "@fh/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -78,13 +78,6 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const context: WarfareContext = {
-    attacker_env: state.player,
-    target_env: state.enemy,
-    engagement: state.engagement,
-    air_state: state.air_state,
-  };
-
   return (
     <Stack className={className} gap={1}>
       <Accordion>
@@ -134,7 +127,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship }) => {
         }}
       >
         <ShipCard ship={ship} visibleMiscStats />
-        <AttackPowerAnalyzer core={core} context={context} ship={ship} />
+        <AttackPowerAnalyzer core={core} state={state} ship={ship} />
       </Flexbox>
 
       <ShipDetailsEnemyList state={state} ship={ship} />

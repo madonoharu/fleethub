@@ -1,18 +1,16 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Gear } from "@fh/core";
-import { EquipmentBonuses } from "equipment-bonus";
 import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 
-import { useModal } from "../../../hooks";
 import {
   GearEntity,
   GearPosition,
+  gearSelectSlice,
   gearsSlice,
   swapGearPosition,
 } from "../../../store";
-import GearList from "../../templates/GearList";
 import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
 import AddGearButton from "./AddGearButton";
@@ -21,8 +19,7 @@ type Props = {
   gear?: Gear;
   position?: GearPosition;
   size?: "small" | "medium" | undefined;
-  canEquip?: (gear: Gear) => boolean;
-  getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
+  equippable?: boolean;
 };
 
 const useGearActions = (id?: string) => {
@@ -50,16 +47,12 @@ const GearBox: React.FCX<Props> = ({
   gear,
   position,
   size,
-  canEquip,
-  getNextEbonuses,
+  equippable,
 }) => {
-  const GearListModal = useModal();
   const dispatch = useDispatch();
 
-  const handleGearChange = (gear: Gear) => {
-    if (position) {
-      dispatch(gearsSlice.actions.add(position, { gear_id: gear.gear_id }));
-    }
+  const handleAdd = () => {
+    dispatch(gearSelectSlice.actions.create({ id: gear?.id, position }));
   };
 
   const id = gear?.id;
@@ -69,61 +62,34 @@ const GearBox: React.FCX<Props> = ({
   let inner: React.ReactElement;
 
   if (!gear) {
-    inner = <AddGearButton onClick={GearListModal.show} />;
+    inner = <AddGearButton onClick={handleAdd} />;
   } else {
     inner = (
       <GearLabel
         gear={gear}
-        equippable={canEquip?.(gear)}
+        equippable={equippable}
         size={size}
         onUpdate={actions.update}
+        onReselect={handleAdd}
         onRemove={actions.remove}
       />
     );
   }
 
   if (!position) {
-    return (
-      <>
-        <div className={className}>{inner}</div>
-
-        <GearListModal full>
-          <GearList
-            onSelect={(g) => {
-              handleGearChange(g);
-              GearListModal.hide();
-            }}
-            canEquip={canEquip}
-            getNextEbonuses={getNextEbonuses}
-          />
-        </GearListModal>
-      </>
-    );
+    return <div className={className}>{inner}</div>;
   }
 
   return (
-    <>
-      <Swappable
-        className={className}
-        type="gear"
-        item={{ position, id }}
-        canDrag={Boolean(position && id)}
-        onSwap={actions.swap}
-      >
-        {inner}
-      </Swappable>
-
-      <GearListModal full>
-        <GearList
-          onSelect={(g) => {
-            handleGearChange(g);
-            GearListModal.hide();
-          }}
-          canEquip={canEquip}
-          getNextEbonuses={getNextEbonuses}
-        />
-      </GearListModal>
-    </>
+    <Swappable
+      className={className}
+      type="gear"
+      item={{ position, id }}
+      canDrag={Boolean(position && id)}
+      onSwap={actions.swap}
+    >
+      {inner}
+    </Swappable>
   );
 };
 

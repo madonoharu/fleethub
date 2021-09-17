@@ -8,7 +8,7 @@ import { airSquadronsSlice } from "./airSquadronsSlice";
 import { appSlice } from "./appSlice";
 import { filesSlice } from "./filesSlice";
 import { fleetsSlice } from "./fleetsSlice";
-import { gearListSlice } from "./gearListSlice";
+import { gearSelectSlice } from "./gearSelectSlice";
 import { gearsSlice } from "./gearsSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
 import { mapListSlice } from "./mapListSlice";
@@ -39,9 +39,9 @@ const combinedReducer = combineReducers({
   files: filesSlice.reducer,
 
   shipSelect: shipSelectSlice.reducer,
+  gearSelect: gearSelectSlice.reducer,
 
   mapList: mapListSlice.reducer,
-  gearList: gearListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
   shipDetails: shipDetailsSlice.reducer,
 });

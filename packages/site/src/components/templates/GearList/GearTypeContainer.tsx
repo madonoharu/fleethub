@@ -4,7 +4,6 @@ import { EquipmentBonuses } from "equipment-bonus";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFhCore } from "../../../hooks";
 import { Divider } from "../../atoms";
 import GearButton from "./GearButton";
 

@@ -24,6 +24,11 @@ pub struct AirSquadron {
 }
 
 #[wasm_bindgen]
+pub fn air_squadron_can_equip(gear: &Gear) -> bool {
+    gear.has_proficiency()
+}
+
+#[wasm_bindgen]
 impl AirSquadron {
     #[wasm_bindgen(getter)]
     pub fn xxh3(&self) -> String {
@@ -35,7 +40,7 @@ impl AirSquadron {
     }
 
     pub fn can_equip(&self, gear: &Gear) -> bool {
-        gear.has_proficiency()
+        air_squadron_can_equip(gear)
     }
 
     pub fn get_slot_size(&self, index: usize) -> Result<u8, JsValue> {

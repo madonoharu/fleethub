@@ -1,11 +1,7 @@
-import { Gear } from "@fh/core";
-import { nonNullable } from "@fh/utils";
+import { Gear, GearFilterGroup } from "@fh/core";
 import { EquipmentBonuses } from "equipment-bonus";
-import React, { useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 
-import { useFhCore } from "../../../hooks";
-import { gearListSlice, selectGearListState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { SearchInput } from "../../organisms";
 import FilterBar from "./FilterBar";
@@ -14,6 +10,7 @@ import GearTypeContainer from "./GearTypeContainer";
 import { idComparer } from "./comparers";
 import { getFilter, getVisibleGroups } from "./filters";
 import searchGears from "./searchGears";
+import { useGearListState } from "./useGearListState";
 
 const createTypeGearEntries = (gears: Gear[]) => {
   const map = new Map<number, Gear[]>();
@@ -32,11 +29,16 @@ const createTypeGearEntries = (gears: Gear[]) => {
   return Array.from(map.entries());
 };
 
-const getDefaultFilterKey = (keys: string[]) => {
-  const found = ["mainGun", "torpedo", "landBased", "fighter"].find((key) =>
-    keys.includes(key)
-  );
-  return found || keys[0] || "all";
+const getDefaultFilterKey = (keys: (GearFilterGroup | "All")[]) => {
+  const list: GearFilterGroup[] = [
+    "MainGun",
+    "Torpedo",
+    "LandBased",
+    "Fighter",
+  ];
+  const found = list.find((key) => keys.includes(key));
+
+  return found || keys.at(0) || "All";
 };
 
 type GearListProps = {
@@ -45,40 +47,12 @@ type GearListProps = {
   getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
-const useGearListState = () => {
-  const { masterData, core } = useFhCore();
-
-  const dispatch = useDispatch();
-  const state = useSelector(selectGearListState);
-
-  const gears = useMemo(
-    () =>
-      masterData.gears
-        .map((mg) => core.create_gear({ gear_id: mg.gear_id }))
-        .filter(nonNullable),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  const actions = useMemo(() => {
-    const update = (...args: Parameters<typeof gearListSlice.actions.update>) =>
-      dispatch(gearListSlice.actions.update(...args));
-
-    const setAbyssal = (abyssal: boolean) => update({ abyssal });
-    const setGroup = (group: string) => update({ group });
-
-    return { update, setAbyssal, setGroup };
-  }, [dispatch]);
-
-  return { gears, ...state, actions };
-};
-
 const GearList: React.FC<GearListProps> = ({
   canEquip,
   onSelect,
   getNextEbonuses,
 }) => {
-  const { gears, abyssal, group, actions } = useGearListState();
+  const { gears, abyssal, group, setAbyssal, setGroup } = useGearListState();
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -124,8 +98,8 @@ const GearList: React.FC<GearListProps> = ({
         visibleGroups={visibleGroups}
         abyssal={abyssal}
         group={currentGroup}
-        onAbyssalChange={actions.setAbyssal}
-        onGroupChange={actions.setGroup}
+        onAbyssalChange={setAbyssal}
+        onGroupChange={setGroup}
       />
       {searchResult ? (
         <GearSearchResult

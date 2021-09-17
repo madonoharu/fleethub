@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
 import { useFhCore } from "../../../hooks";
+import { ShipDetailsState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { TabItem, Tabs, SelectedMenu } from "../../molecules";
 import AttackTable from "../AttackTable";
@@ -13,20 +14,14 @@ import { useDummyEnemySelectState } from "./useDummyEnemySelectState";
 
 type AttackPowerAnalyzerProps = {
   core: FhCore;
-  context: WarfareContext;
+  state: ShipDetailsState;
   ship: Ship;
-};
-
-const ns = {
-  night_contact_rank: null,
-  starshell: false,
-  searchlight: false,
 };
 
 const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   className,
   style,
-  context,
+  state,
   ship,
 }) => {
   const { t } = useTranslation("common");
@@ -35,10 +30,17 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
 
   const submarine = useMemo(() => core.create_ship_by_id(1530), [core]);
 
+  const warfare_context: WarfareContext = {
+    attacker_env: state.player,
+    target_env: state.enemy,
+    engagement: state.engagement,
+    air_state: state.air_state,
+  };
+
   const params = {
-    attacker_night_situation: ns,
-    target_night_situation: ns,
-    warfare_context: context,
+    attacker_night_situation: state.player,
+    target_night_situation: state.enemy,
+    warfare_context,
   };
 
   const info = core.analyze_warfare(

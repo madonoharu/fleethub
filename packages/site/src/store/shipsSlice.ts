@@ -8,7 +8,8 @@ import {
   swapGearPosition,
   sweep,
 } from "./entities";
-import { GearPosition, gearsSlice } from "./gearsSlice";
+import { createGear } from "./gearSelectSlice";
+import { GearPosition } from "./gearsSlice";
 import { exclude } from "./matchers";
 import { ShipEntity } from "./schema";
 
@@ -17,8 +18,8 @@ const setGearId = (
   position: GearPosition,
   id: string | undefined
 ) => {
-  if (!("ship" in position)) return;
-  const entity = state.entities[position.ship];
+  if (position.tag !== "ship") return;
+  const entity = state.entities[position.id];
 
   if (entity) {
     entity[position.key] = id;
@@ -34,10 +35,8 @@ export const shipsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(gearsSlice.actions.add, (state, { payload, meta }) => {
-        const { position } = meta;
-
-        setGearId(state, position, payload.id);
+      .addCase(createGear, (state, { payload }) => {
+        setGearId(state, payload.position, payload.gear.id);
       })
       .addCase(swapGearPosition, (state, { payload }) => {
         const { drag, drop } = payload;

@@ -61,8 +61,10 @@ impl<'a> TorpedoAttackContext<'a> {
         ) as f64;
         let basic = torpedo + ibonus + fleet_factor;
 
+        let a14 = self.formation_power_mod * self.engagement.modifier();
+
         let mut mods = AttackPowerModifiers::new();
-        mods.apply_a14(self.formation_power_mod);
+        mods.apply_a14(a14);
 
         Some(AttackPowerParams {
             basic,
