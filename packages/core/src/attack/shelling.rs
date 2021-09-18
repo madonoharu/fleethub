@@ -114,6 +114,7 @@ impl<'a> ShellingAttackContext<'a> {
         let mut carrier_power = None;
         let mut carrier_power_ebonus = 0.0;
         let mut proficiency_mods = None;
+        let mut carrier_shelling_power_ibonus = 0.0;
 
         if self.attack_type == ShellingAttackType::Carrier {
             let anti_inst = target.is_installation();
@@ -121,6 +122,10 @@ impl<'a> ShellingAttackContext<'a> {
             carrier_power = Some(attacker.carrier_power(anti_inst) as f64);
             carrier_power_ebonus = attacker.ebonuses.carrier_power as f64;
             proficiency_mods = Some(attacker.proficiency_modifiers(ctx.cutin));
+
+            carrier_shelling_power_ibonus = attacker
+                .gears
+                .sum_by(|gear| gear.ibonuses.carrier_shelling_power);
         }
 
         let calc_attack_power_params = || -> Option<AttackPowerParams> {
@@ -143,7 +148,7 @@ impl<'a> ShellingAttackContext<'a> {
                 .map(|mods| mods.critical_power_mod);
             let remaining_ammo_mod = attacker.remaining_ammo_mod();
 
-            let basic = 5.0 + firepower + ibonus + fleet_factor;
+            let basic = 5.0 + fleet_factor + firepower + ibonus + carrier_shelling_power_ibonus;
 
             let a14 = formation_mod * engagement_mod * damage_mod;
             let b14 = cruiser_fit_bonus + carrier_power_ebonus;

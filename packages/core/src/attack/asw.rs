@@ -113,7 +113,15 @@ impl<'a> AswAttackContext<'a> {
 
         let calc_attack_power_params = || -> Option<AttackPowerParams> {
             let naked_asw = attacker.naked_asw()? as f64;
-            let equip_asw = attacker.gears.sum_by(|gear| gear.asw) as f64;
+
+            let equip_asw = attacker.gears.sum_by(|gear| {
+                if gear.has_attr(GearAttr::AntiSubWeapon) {
+                    gear.asw
+                } else {
+                    0
+                }
+            }) as f64;
+
             let ibonus = attacker.gears.sum_by(|gear| gear.ibonuses.asw_power);
 
             let basic = naked_asw.sqrt() * 2.0

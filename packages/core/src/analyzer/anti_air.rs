@@ -136,30 +136,30 @@ impl<'a> AntiAirAnalyzer<'a> {
             .filter_map(|id| self.find_aaci(id))
             .partition::<Vec<_>, _>(|aaci| aaci.is_sequential());
 
-        let mut total_sequential_rate = 0.;
+        let mut total_sequential_rate = 0.0;
 
         let sequential_ci_vec = sequential_cis
             .into_iter()
             .filter_map(|aaci| {
                 let current = aaci.rate()?;
-                let actual = ((1. - total_sequential_rate) * current).min(1.);
+                let actual = ((1.0 - total_sequential_rate) * current).min(1.0);
                 total_sequential_rate += actual;
 
                 Some((aaci.id, actual))
             })
             .collect::<Vec<_>>();
 
-        let normal_ci_iter = normal_cis.into_iter().scan(0., |prev, aaci| {
+        let normal_ci_iter = normal_cis.into_iter().scan(0.0, |prev, aaci| {
             let current = aaci.rate()?;
 
             if current < *prev {
-                return Some((aaci.id, 0.));
+                return Some((aaci.id, 0.0));
             }
 
             let mut actual = current - *prev;
 
-            if total_sequential_rate > 0. {
-                actual = (1. - total_sequential_rate) * actual;
+            if total_sequential_rate > 0.0 {
+                actual = (1.0 - total_sequential_rate) * actual;
             }
 
             *prev = current;
@@ -240,23 +240,22 @@ impl<'a> AntiAirAnalyzer<'a> {
         let anti_air_cutin_chance = aaci_id_set
             .into_iter()
             .rev()
-            .scan(0., |total, target| {
-                let at_least_one = 1.
-                    - ships
-                        .iter()
-                        .map(|s| {
-                            s.anti_air_cutin_chance
-                                .iter()
-                                .filter(|r| r.0 == target)
-                                .map(|r| r.1)
-                                .sum::<f64>()
-                        })
-                        .map(|r| 1. - r)
-                        .product::<f64>();
+            .scan(0.0, |state, current_id| {
+                let complement_of_ge_current_id = ships
+                    .iter()
+                    .map(|s| {
+                        1.0 - s
+                            .anti_air_cutin_chance
+                            .iter()
+                            .filter(|r| r.0 >= current_id)
+                            .map(|r| r.1)
+                            .sum::<f64>()
+                    })
+                    .product::<f64>();
 
-                let actual = (1. - *total) * at_least_one;
-                *total += actual;
-                Some((target, actual))
+                let actual = 1.0 - (*state + complement_of_ge_current_id);
+                *state += actual;
+                Some((current_id, actual))
             })
             .collect::<Vec<_>>();
 

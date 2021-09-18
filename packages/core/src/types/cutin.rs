@@ -17,6 +17,7 @@ impl AntiAirCutinDef {
     }
 
     pub fn is_sequential(&self) -> bool {
+        crate::log!("{} {:?}", self.id, self.sequential);
         self.sequential.unwrap_or_default()
     }
 }

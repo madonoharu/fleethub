@@ -557,6 +557,7 @@ export interface MasterIBonusRule {
 
 export interface MasterIBonuses {
   shelling_power: Array<MasterIBonusRule>;
+  carrier_shelling_power: Array<MasterIBonusRule>;
   shelling_accuracy: Array<MasterIBonusRule>;
   torpedo_power: Array<MasterIBonusRule>;
   torpedo_accuracy: Array<MasterIBonusRule>;

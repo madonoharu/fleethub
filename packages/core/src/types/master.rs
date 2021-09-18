@@ -215,6 +215,7 @@ impl MasterIBonusRule {
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterIBonuses {
     shelling_power: Vec<MasterIBonusRule>,
+    carrier_shelling_power: Vec<MasterIBonusRule>,
     shelling_accuracy: Vec<MasterIBonusRule>,
     torpedo_power: Vec<MasterIBonusRule>,
     torpedo_accuracy: Vec<MasterIBonusRule>,
@@ -242,6 +243,7 @@ impl MasterIBonuses {
 
         IBonuses {
             shelling_power: calc(&self.shelling_power),
+            carrier_shelling_power: calc(&self.carrier_shelling_power),
             shelling_accuracy: calc(&self.shelling_accuracy),
             torpedo_power: calc(&self.torpedo_power),
             torpedo_accuracy: calc(&self.torpedo_accuracy),
