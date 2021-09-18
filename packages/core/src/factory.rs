@@ -21,7 +21,7 @@ impl Factory {
     pub fn create_gear(&self, input: Option<GearState>) -> Option<Gear> {
         let state = input?;
 
-        let master = self
+        let master_gear = self
             .master_data
             .gears
             .iter()
@@ -29,9 +29,9 @@ impl Factory {
 
         let ibonuses = self
             .master_data
-            .get_ibonuses(master, state.stars.unwrap_or_default());
+            .get_ibonuses(master_gear, state.stars.unwrap_or_default());
 
-        Some(Gear::new(state, master, ibonuses))
+        Some(Gear::new(state, master_gear, ibonuses))
     }
 
     pub fn create_ship(&self, input: Option<ShipState>) -> Option<Ship> {

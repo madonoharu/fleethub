@@ -48,13 +48,14 @@ const createMasterDataInput = async (
   const equippable = createEquippable(start2);
 
   const { ships, ship_attrs } = shipData;
-  const { gears, gear_attrs } = gearData;
+  const { gears, gear_attrs, ibonuses } = gearData;
 
   return {
     ships,
     ship_attrs,
     gears,
     gear_attrs,
+    ibonuses,
     equippable,
     constants,
   };

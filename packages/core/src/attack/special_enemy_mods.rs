@@ -351,7 +351,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, type4_rocket_group_count, [1.25, 1.25 * 1.5]);
             apply_mod!(a13, mortar_group_count, [1.2, 1.2 * 1.3]);
             apply_mod!(a13, has_seaplane, 1.2);
-            apply_mod!(a13, landing_craft_count, [1.2]);
+            apply_mod!(a13, landing_craft_count, [1.4]);
             apply_mod!(a13, toku_daihatsu_count, [1.15]);
             apply_mod!(a13, t89_tank_count, [1.5, 1.5 * 1.3]);
             apply_mod!(a13, shikon_count, [1.8]);

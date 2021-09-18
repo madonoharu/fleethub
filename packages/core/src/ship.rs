@@ -798,7 +798,7 @@ impl Ship {
     pub fn get_possible_day_cutin_set(&self) -> EnumSet<DayCutin> {
         let mut set: EnumSet<DayCutin> = EnumSet::new();
 
-        if self.damage_state() <= DamageState::Taiha {
+        if self.damage_state() >= DamageState::Taiha {
             return set;
         }
 
@@ -1238,6 +1238,14 @@ impl Ship {
         }
 
         let is_kai2 = self.has_attr(ShipAttr::Kai2);
+
+        if self.ship_class == ShipClass::AganoClass
+            && is_kai2
+            && key == "g4"
+            && gear.gear_type == GearType::Torpedo
+        {
+            return false;
+        }
 
         if self.ship_class == ShipClass::IseClass && is_kai2 {
             return key == "g1" || key == "g2" || !gear.has_attr(GearAttr::MainGun);

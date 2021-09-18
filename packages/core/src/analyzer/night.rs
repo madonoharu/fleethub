@@ -173,7 +173,7 @@ impl<'a> NightAnalyzer<'a> {
                     cutin_term
                         .and_then(|term| def.rate(term))
                         .map(|individual_rate| {
-                            let actual_rate = (1. - *total) * individual_rate;
+                            let actual_rate = (1.0 - *total) * individual_rate;
 
                             *total += actual_rate;
 

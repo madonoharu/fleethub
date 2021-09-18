@@ -28,7 +28,11 @@ export const getAntiAirCutins = async (
 
     headerValues.forEach((h) => {
       const value = row[h];
-      set(def, h, maybeNumber(value));
+      if (h === "sequential") {
+        set(def, h, value === "TRUE");
+      } else {
+        set(def, h, maybeNumber(value));
+      }
     });
 
     return def;

@@ -1,5 +1,5 @@
-import { nonNullable } from "@fh/utils/src";
 import { MasterAttrRule, MasterGearInput, MasterIBonuses } from "@fh/core";
+import { nonNullable } from "@fh/utils/src";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,
@@ -115,6 +115,7 @@ const readIBonuses = async (
   const sheets: Record<keyof MasterIBonuses, GoogleSpreadsheetWorksheet> = {
     shelling_power: doc.sheetsByTitle["改修砲撃攻撃力"],
     shelling_accuracy: doc.sheetsByTitle["改修砲撃命中"],
+    carrier_shelling_power: doc.sheetsByTitle["改修空母砲撃攻撃力"],
     torpedo_power: doc.sheetsByTitle["改修雷撃攻撃力"],
     torpedo_accuracy: doc.sheetsByTitle["改修雷撃命中"],
     torpedo_evasion: doc.sheetsByTitle["改修雷撃回避"],
@@ -134,6 +135,7 @@ const readIBonuses = async (
 
   const promises = Object.entries(sheets).map(async ([key, sheet]) => {
     const rows = await sheet.getRows();
+
     const rules = rows
       .map(({ expr, formula }) => {
         if (!expr || !formula) return undefined;

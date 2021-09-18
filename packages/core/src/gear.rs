@@ -42,6 +42,7 @@ impl ProficiencyType {
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct IBonuses {
     pub shelling_power: f64,
+    pub carrier_shelling_power: f64,
     pub shelling_accuracy: f64,
     pub torpedo_power: f64,
     pub torpedo_accuracy: f64,
