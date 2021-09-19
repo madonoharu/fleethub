@@ -10,9 +10,8 @@ use crate::{
 
 pub struct MainAndEscortShips<'a> {
     count: usize,
-    is_combined: bool,
     main_ships: &'a ShipArray,
-    escort_ships: &'a ShipArray,
+    escort_ships: Option<&'a ShipArray>,
 }
 
 impl<'a> Iterator for MainAndEscortShips<'a> {
@@ -24,8 +23,12 @@ impl<'a> Iterator for MainAndEscortShips<'a> {
 
         let (role, index, ships) = if count < ShipArray::CAPACITY {
             (Role::Main, count, self.main_ships)
-        } else if self.is_combined && count < ShipArray::CAPACITY * 2 {
-            (Role::Escort, count - ShipArray::CAPACITY, self.escort_ships)
+        } else if count < ShipArray::CAPACITY * 2 {
+            if let Some(escort_ships) = self.escort_ships {
+                (Role::Escort, count - ShipArray::CAPACITY, escort_ships)
+            } else {
+                return None;
+            }
         } else {
             return None;
         };
@@ -34,6 +37,25 @@ impl<'a> Iterator for MainAndEscortShips<'a> {
             Some((role, index, ship))
         } else {
             self.next()
+        }
+    }
+}
+
+pub struct MainAndEscortFleet<'a> {
+    pub main: &'a Fleet,
+    pub escort: Option<&'a Fleet>,
+}
+
+impl<'a> MainAndEscortFleet<'a> {
+    pub fn is_combined(&self) -> bool {
+        self.escort.is_some()
+    }
+
+    pub fn ships(&self) -> MainAndEscortShips<'a> {
+        MainAndEscortShips {
+            count: 0,
+            main_ships: &self.main.ships,
+            escort_ships: self.escort.map(|f| &f.ships),
         }
     }
 }
@@ -98,12 +120,25 @@ impl Org {
         }
     }
 
+    pub fn get_main_and_escort_fleet_by_key(&self, key: &str) -> MainAndEscortFleet {
+        let visible_escort = self.is_combined() && matches!(key, "f1" | "f2");
+
+        let main = if visible_escort {
+            self.main()
+        } else {
+            self.get_fleet_by_key(key)
+        };
+
+        let escort = visible_escort.then(|| self.escort());
+
+        MainAndEscortFleet { main, escort }
+    }
+
     pub fn main_and_escort_ships(&self) -> MainAndEscortShips {
         MainAndEscortShips {
             count: 0,
-            is_combined: self.is_combined(),
             main_ships: &self.main().ships,
-            escort_ships: &self.escort().ships,
+            escort_ships: self.is_combined().then(|| &self.escort().ships),
         }
     }
 
@@ -132,6 +167,19 @@ impl Org {
             Role::Escort => self.escort(),
             Role::RouteSup => self.route_sup(),
             Role::BossSup => self.boss_sup(),
+        }
+    }
+
+    pub fn get_fleet_by_key(&self, key: &str) -> &Fleet {
+        match key {
+            "f1" => &self.f1,
+            "f2" => &self.f2,
+            "f3" => &self.f3,
+            "f4" => &self.f4,
+            _ => {
+                crate::error!(r#"get_fleet() argument must be "f1", "f2", "f3" or "f4""#);
+                panic!(r#"get_fleet() argument must be "f1", "f2", "f3" or "f4""#);
+            }
         }
     }
 }
@@ -189,20 +237,8 @@ impl Org {
             .collect()
     }
 
-    pub fn get_fleet(&self, key: &str) -> Result<Fleet, JsValue> {
-        let fleet = match key {
-            "f1" => &self.f1,
-            "f2" => &self.f2,
-            "f3" => &self.f3,
-            "f4" => &self.f4,
-            _ => {
-                return Err(JsValue::from_str(
-                    r#"get_fleet() argument must be "f1", "f2", "f3" or "f4""#,
-                ))
-            }
-        };
-
-        Ok(fleet.clone())
+    pub fn clone_fleet(&self, key: &str) -> Fleet {
+        self.get_fleet_by_key(key).clone()
     }
 
     pub fn get_ship(&self, role: Role, key: &str) -> Option<Ship> {

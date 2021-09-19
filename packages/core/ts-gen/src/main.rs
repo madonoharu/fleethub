@@ -91,7 +91,7 @@ fn main() {
         analyzer::NightCutinRateInfo,
         analyzer::ShipNightCutinRateInfo,
         analyzer::NightContactChance,
-        analyzer::OrgNightCutinRateInfo,
+        analyzer::FleetNightCutinRateInfo,
         analyzer::AirstrikeContactChance,
         analyzer::OrgContactChanceInfo,
         analyzer::OrgAirstrikeInfo,

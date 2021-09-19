@@ -204,5 +204,6 @@
   "ProficiencyCriticalModifier": "숙련도 크리티컬 보정",
   "HitRate": "명중률",
   "AccuracyTerm": "정확율",
-  "EvasionTerm": "회피율"
+  "EvasionTerm": "회피율",
+  "ScratchDamage": "지근탄"
 }

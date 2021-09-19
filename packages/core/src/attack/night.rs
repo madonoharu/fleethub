@@ -183,7 +183,23 @@ fn calc_attack_power_params(
 
     let remaining_ammo_mod = attacker.remaining_ammo_mod();
 
-    let a14 = damage_mod * formation_mod * cutin_mod;
+    // 主魚電 | 魚見電 のみでD型補正
+    let model_d_small_gun_mod = if ctx
+        .cutin
+        .map(|cutin| {
+            matches!(
+                cutin,
+                NightCutin::MainTorpRadar | NightCutin::TorpLookoutRadar
+            )
+        })
+        .unwrap_or_default()
+    {
+        attacker.model_d_small_gun_mod()
+    } else {
+        1.0
+    };
+
+    let a14 = damage_mod * formation_mod * cutin_mod * model_d_small_gun_mod;
     let b14 = cruiser_fit_bonus;
 
     let mut mods = special_enemy_modifiers(attacker, target.special_enemy_type(), false);

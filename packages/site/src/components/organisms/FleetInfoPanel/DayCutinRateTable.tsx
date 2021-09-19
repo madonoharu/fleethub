@@ -5,6 +5,7 @@ import {
   Org,
   OrgDayCutinRateInfo,
 } from "@fh/core";
+import { FleetKey } from "@fh/utils";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -102,18 +103,20 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({
 
 type Props = {
   org: Org;
+  fleetKey: FleetKey;
 };
 
-const DayCutinRateTable: React.FCX<Props> = ({ className, org }) => {
+const DayCutinRateTable: React.FCX<Props> = ({ className, org, fleetKey }) => {
   const { t } = useTranslation("common");
   const { core } = useFhCore();
-  const data: OrgDayCutinRateInfo = core.analyze_day_cutin(org);
+
+  const info: OrgDayCutinRateInfo = core.analyze_day_cutin(org, fleetKey);
 
   return (
     <div className={className}>
-      <FleetDayAttackRateTable label={t("Main")} info={data.main} />
-      {org.is_combined() && (
-        <FleetDayAttackRateTable label={t("Escort")} info={data.escort} />
+      <FleetDayAttackRateTable label={t("Main")} info={info.main} />
+      {info.escort && (
+        <FleetDayAttackRateTable label={t("Escort")} info={info.escort} />
       )}
     </div>
   );

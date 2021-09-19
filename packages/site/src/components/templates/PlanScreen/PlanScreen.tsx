@@ -4,7 +4,6 @@ import { Container } from "@mui/material";
 import React from "react";
 
 import { OrgContext, PlanContext, useFile, useOrg } from "../../../hooks";
-import { PlanAnalysisPanel } from "../../organisms";
 import PlanScreenHeader from "./PlanScreenHeader";
 import PlanTabs from "./PlanTabs";
 
@@ -41,8 +40,6 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
           />
 
           <PlanTabs org={org} file={file} />
-
-          <PlanAnalysisPanel css={{ marginTop: 8 }} org={org} />
         </OrgContext.Provider>
       </PlanContext.Provider>
     </StyledContainer>

@@ -13,6 +13,7 @@ use super::{DamageAnalyzer, DamageInfo};
 pub struct AttackStats {
     pub attack_power: Option<AttackPower>,
     pub attack_power_params: Option<AttackPowerParams>,
+    pub hits: f64,
     pub hit_rate: Option<HitRate>,
     pub hit_rate_params: Option<HitRateParams>,
     pub damage: Option<DamageInfo>,
@@ -48,6 +49,7 @@ impl AttackParams {
         AttackStats {
             attack_power,
             attack_power_params,
+            hits,
             hit_rate,
             hit_rate_params,
             damage,

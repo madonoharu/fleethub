@@ -18,7 +18,7 @@ use crate::{
     utils::MyArrayVec,
 };
 
-use super::{DayCutin, NightCutin, NormalFormationDef};
+use super::{DayCutin, Formation, NightCutin, NormalFormationDef};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct GearTypes(u8, u8, u8, u8, u8);
@@ -391,6 +391,16 @@ impl MasterConstants {
             .find(|def| env.formation == def.tag())?;
 
         Some(def.get_normal_def(env.ship_index, env.fleet_len))
+    }
+
+    pub fn get_formation_fleet_anti_air_mod(&self, formation: Formation) -> f64 {
+        let found = self.formations.iter().find(|def| formation == def.tag());
+
+        if let Some(def) = found {
+            def.get_normal_def(0, 6).fleet_anti_air_mod
+        } else {
+            1.0
+        }
     }
 
     pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {

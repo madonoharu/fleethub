@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { AirstrikeContactChance, Org, OrgAirstrikeInfo } from "@fh/core";
+import { AirstrikeContactChance, OrgContactChanceInfo } from "@fh/core";
 import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -7,6 +7,7 @@ import React from "react";
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import Table from "../Table";
+import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 type ContactChanceTableProps = {
   data: AirstrikeContactChance[];
@@ -62,21 +63,21 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
   );
 };
 
-type Props = {
-  org: Org;
-};
-
-const ContactChancePanel: React.FCX<Props> = ({ className, org }) => {
+const ContactChancePanel: React.FCX<FleetInfoPanelProps> = ({
+  className,
+  org,
+  fleetKey,
+}) => {
   const { core } = useFhCore();
-  const { contact_chance }: OrgAirstrikeInfo = core.analyze_airstrike(org);
+  const info: OrgContactChanceInfo = core.analyze_contact_chance(org, fleetKey);
 
   return (
     <div className={className}>
-      {contact_chance.single && (
-        <ContactChanceTable label="対通常戦" data={contact_chance.single} />
+      {info.single && (
+        <ContactChanceTable label="対通常戦" data={info.single} />
       )}
-      {contact_chance.combined && (
-        <ContactChanceTable label="対連合戦" data={contact_chance.combined} />
+      {info.combined && (
+        <ContactChanceTable label="対連合戦" data={info.combined} />
       )}
     </div>
   );

@@ -228,6 +228,22 @@ impl Damage {
         }
     }
 
+    pub fn scratch_rate(&self) -> f64 {
+        let defense_power_vec = self.defense_params.defense_power_range().to_vec();
+
+        let len = defense_power_vec.len() as f64;
+
+        let scratch_count = defense_power_vec
+            .into_iter()
+            .filter(|defense_power| {
+                let damage_type = self.calc_damage_type(*defense_power);
+                damage_type == DamageType::Scratch
+            })
+            .count() as f64;
+
+        scratch_count / len
+    }
+
     pub fn to_distribution(&self) -> NumMap<u16, f64> {
         if self.hit_type == HitType::Miss {
             return if self.is_cutin {
@@ -273,9 +289,11 @@ impl Damage {
         let overkill_distribution = self.overkill_protection_damage_range().to_distribution();
         let just_distribution = just_damages.into_iter().to_distribution();
 
-        just_distribution * just_rate
+        let damage_map = just_distribution * just_rate
             + scratch_distribution * scratch_rate
-            + overkill_distribution * overkill_rate
+            + overkill_distribution * overkill_rate;
+
+        damage_map
     }
 }
 

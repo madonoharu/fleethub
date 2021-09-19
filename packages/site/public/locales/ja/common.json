@@ -205,5 +205,6 @@
   "ProficiencyCriticalModifier": "熟練度クリティカル補正",
   "HitRate": "命中率",
   "AccuracyTerm": "命中項",
-  "EvasionTerm": "回避項"
+  "EvasionTerm": "回避項",
+  "ScratchDamage": "割合"
 }

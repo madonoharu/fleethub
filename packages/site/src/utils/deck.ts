@@ -62,13 +62,23 @@ const createGearParams = (deck: DeckGear): GearParams => {
   };
 };
 
-const createGearParamsDict = (items: DeckItems): Dict<GearKey, GearParams> => {
+const createGearParamsDict = (
+  items: DeckItems,
+  slotnum?: number
+): Dict<GearKey, GearParams> => {
   const result: Dict<GearKey, GearParams> = {};
 
-  GEAR_KEYS.forEach((key) => {
+  GEAR_KEYS.forEach((key, i) => {
     const item = items[key.replace("g", "i") as DeckItemKey];
-    if (item) {
-      result[key] = createGearParams(item);
+
+    if (!item) return;
+
+    const gear = createGearParams(item);
+
+    if (i === slotnum && !items.ix) {
+      result.gx = gear;
+    } else {
+      result[key] = gear;
     }
   });
 
@@ -78,21 +88,23 @@ const createGearParamsDict = (items: DeckItems): Dict<GearKey, GearParams> => {
 const createShipParams = (
   master: MasterDataInput,
   deck: DeckShip
-): ShipParams => {
+): ShipParams | undefined => {
   const ship_id = Number(deck.id);
-  const gears = deck.items && createGearParamsDict(deck.items);
+
+  const masterShip = master.ships.find(
+    (masterShip) => masterShip.ship_id === ship_id
+  );
+
+  if (!masterShip) return;
+
+  const gears =
+    deck.items && createGearParamsDict(deck.items, masterShip.slotnum);
 
   const base: ShipParams = {
     ship_id,
     level: deck.lv,
     ...gears,
   };
-
-  const masterShip = master.ships.find(
-    (masterShip) => masterShip.ship_id === ship_id
-  );
-
-  if (!masterShip) return base;
 
   const { luck, hp, asw } = deck;
   if (luck && luck > 0) {
@@ -217,7 +229,7 @@ export const createDeck = (org?: Org): Deck => {
   };
 
   FLEET_KEYS.forEach((key) => {
-    const fleet = org.get_fleet(key);
+    const fleet = org.clone_fleet(key);
     if (fleet.count_ships() > 0) {
       deck[key] = createDeckFleet(fleet);
     }

@@ -8,12 +8,12 @@ import { useDispatch } from "react-redux";
 import { PlanFileEntity, orgsSlice } from "../../../store";
 import { Tabs, TabsProps } from "../../molecules";
 import {
-  FleetScreen,
   LandBaseScreen,
   GkcoiScreen,
   PlanNodeList,
   Swappable,
 } from "../../organisms";
+import PlanFleetPanel from "./PlanFleetPanel";
 
 const StyledSwappable = styled(Swappable)`
   display: flex;
@@ -51,7 +51,7 @@ const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
         {key.toUpperCase()}
       </StyledSwappable>
     ),
-    panel: <FleetScreen fleet={org.get_fleet(key)} />,
+    panel: <PlanFleetPanel org={org} fleetKey={key} />,
   }));
 
   const list = [

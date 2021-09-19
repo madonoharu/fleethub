@@ -205,5 +205,6 @@
   "ProficiencyCriticalModifier": "熟練度爆擊補正",
   "HitRate": "命中率",
   "AccuracyTerm": "命中值",
-  "EvasionTerm": "迴避值"
+  "EvasionTerm": "迴避值",
+  "ScratchDamage": "擦彈"
 }

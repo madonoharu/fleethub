@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Org, OrgAntiAirInfo } from "@fh/core";
+import { Formation, Org, OrgAntiAirInfo } from "@fh/core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -7,10 +7,12 @@ import { useFhCore, useSelectState } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
+import FormationSelect from "../FormationSelect";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart";
 import AntiAirCutinChip from "./AntiAirCutinChip";
+import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 type CutinChanceCellProps = {
   rates: [number, number][];
@@ -51,21 +53,19 @@ const StyledNumberInput = styled(NumberInput)`
   width: 120px;
 `;
 
-type AntiAirPanelProps = {
-  org: Org;
-};
-
-const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
+const AntiAirPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
   const { t } = useTranslation("common");
   const { core } = useFhCore();
   const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1);
   const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1);
-  // const [formation, setFormation] = React.useState<Formation>(
-  //   plan.isCombined ? "Cruising1" : "LineAhead"
-  // );
+  const [formation, setFormation] = React.useState<Formation>(
+    org.default_formation()
+  );
 
   const info: OrgAntiAirInfo = core.analyze_anti_air(
     org,
+    fleetKey,
+    formation,
     adjustedAntiAirResist,
     fleetAntiAirResist
   );
@@ -75,13 +75,13 @@ const AntiAirPanel: React.FC<AntiAirPanelProps> = ({ org }) => {
       <Container>
         <LabeledValue label="艦隊対空" value={info.fleet_anti_air.toFixed(4)} />
 
-        {/* <FormationSelect
+        <FormationSelect
           variant="outlined"
           label="陣形"
-          combined={plan.isCombined}
+          combined={org.is_combined()}
           value={formation}
           onChange={setFormation}
-        /> */}
+        />
 
         {/* <Select
           css={{ width: 120 }}
