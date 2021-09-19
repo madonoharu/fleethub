@@ -4,10 +4,12 @@ import { TFunction, useTranslation } from "next-i18next";
 import React from "react";
 
 import { toPercent } from "../../../utils";
+import { Flexbox } from "../../atoms";
 import { InfoButton } from "../../molecules";
 import AttackChip from "../AttackChip";
 import Table, { ColumnProps } from "../Table";
 import AttackPowerDetails from "./AttackPowerDetails";
+import DamageRange from "./DamageRange";
 import DamageStateMapBarChart from "./DamageStateMapBarChart";
 import HitRateDetails from "./HitRateDetails";
 
@@ -23,10 +25,11 @@ const createDamageColumns = (
   t: TFunction
 ): ColumnProps<InfoItem>[] => [
   {
-    label: t("HitRate"),
+    label: `${t("HitRate")} (${t("Critical")})`,
     getValue: (item) => (
-      <div>
+      <Flexbox gap={1}>
         <span>{toPercent(item.stats.hit_rate?.total)}</span>
+        <span>({toPercent(item.stats.hit_rate?.critical)})</span>
         <InfoButton
           size="tiny"
           title={
@@ -36,30 +39,36 @@ const createDamageColumns = (
             />
           }
         />
-      </div>
+      </Flexbox>
     ),
   },
   {
     label: t("Normal"),
-    getValue: (item) => (
-      <Typography variant="inherit">
-        <span>{item.stats.damage?.normal_damage_min || "?"}</span>
-        <span>~</span>
-        <span>{item.stats.damage?.normal_damage_max || "?"}</span>
-        <span>({toPercent(item.stats.hit_rate?.normal)})</span>
-      </Typography>
-    ),
+    getValue: (item) => {
+      const { damage } = item.stats;
+      if (!damage) return "?";
+      const {
+        normal_damage_min: min,
+        normal_damage_max: max,
+        normal_scratch_rate: sr,
+      } = damage;
+
+      return <DamageRange min={min} max={max} scratchRate={sr} />;
+    },
   },
   {
     label: t("Critical"),
-    getValue: (item) => (
-      <Typography variant="inherit">
-        <span>{item.stats.damage?.critical_damage_min || "?"}</span>
-        <span>~</span>
-        <span>{item.stats.damage?.critical_damage_max || "?"}</span>
-        <span>({toPercent(item.stats.hit_rate?.critical)})</span>
-      </Typography>
-    ),
+    getValue: (item) => {
+      const { damage } = item.stats;
+      if (!damage) return "?";
+      const {
+        critical_damage_min: min,
+        critical_damage_max: max,
+        critical_scratch_rate: sr,
+      } = damage;
+
+      return <DamageRange min={min} max={max} scratchRate={sr} />;
+    },
   },
 ];
 
@@ -97,12 +106,14 @@ const createColumns = (
   const columns: ColumnProps<InfoItem>[] = [
     {
       label: t("Type"),
-      getValue: (item) => <AttackChip type={type} cutin={item.cutin} />,
+      getValue: (item) => (
+        <Flexbox gap={1}>
+          <AttackChip type={type} cutin={item.cutin} />
+          <span>{toPercent(item.rate)}</span>
+        </Flexbox>
+      ),
     },
-    {
-      label: t("Chance"),
-      getValue: (item) => toPercent(item.rate),
-    },
+
     ...inner,
     {
       label: t("Details"),

@@ -11,7 +11,7 @@ use crate::{
     types::{DamageState, DayCutin, GearAttr, MasterData, NightCutin, ShipClass},
 };
 
-use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightAnalyzer};
+use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightCutinRateAnalyzer};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, TS)]
 #[serde(tag = "t", content = "c")]
@@ -158,12 +158,13 @@ pub fn analyze_night_battle(
 
     let items = match attack_type {
         NightBattleAttackType::NightAttack(attack_type) => {
-            let cutin_rate_info = NightAnalyzer::new(&master_data.constants).analyze_cutin_rates(
-                attacker,
-                ctx.attacker_env.is_flagship(),
-                attacker_situation,
-                target_situation,
-            );
+            let cutin_rate_info = NightCutinRateAnalyzer::new(&master_data.constants)
+                .analyze_cutin_rates(
+                    attacker,
+                    ctx.attacker_env.is_flagship(),
+                    attacker_situation,
+                    target_situation,
+                );
 
             let items = cutin_rate_info
                 .rates

@@ -5,7 +5,6 @@ use crate::{
     attack::NightSituation,
     fleet::Fleet,
     gear_id,
-    org::Org,
     ship::Ship,
     types::{ContactRank, DamageState, GearAttr, MasterConstants, NightCutin, NightCutinDef},
 };
@@ -125,16 +124,16 @@ pub struct ShipNightCutinRateInfo {
 }
 
 #[derive(Debug, Default, Serialize, TS)]
-pub struct OrgNightCutinRateInfo {
-    contact_chance: NightContactChance,
+pub struct FleetNightCutinRateInfo {
+    night_contact_chance: NightContactChance,
     ships: Vec<ShipNightCutinRateInfo>,
 }
 
-pub struct NightAnalyzer<'a> {
+pub struct NightCutinRateAnalyzer<'a> {
     constants: &'a MasterConstants,
 }
 
-impl<'a> NightAnalyzer<'a> {
+impl<'a> NightCutinRateAnalyzer<'a> {
     pub fn new(constants: &'a MasterConstants) -> Self {
         Self { constants }
     }
@@ -242,14 +241,13 @@ impl<'a> NightAnalyzer<'a> {
         }
     }
 
-    pub fn analyze_org(
+    pub fn analyze_fleet(
         &self,
-        org: &Org,
-        attacker_situation: NightSituation,
-        target_situation: NightSituation,
-    ) -> OrgNightCutinRateInfo {
-        let fleet = org.night_fleet();
-        let contact_chance = fleet.night_contact_chance();
+        fleet: &Fleet,
+        attacker_situation: &NightSituation,
+        target_situation: &NightSituation,
+    ) -> FleetNightCutinRateInfo {
+        let night_contact_chance = fleet.night_contact_chance();
 
         let ships = fleet
             .ships
@@ -257,12 +255,12 @@ impl<'a> NightAnalyzer<'a> {
             .map(|(index, ship)| {
                 let is_flagship = index == 0;
 
-                self.analyze_ship(ship, is_flagship, &attacker_situation, &target_situation)
+                self.analyze_ship(ship, is_flagship, attacker_situation, target_situation)
             })
-            .collect();
+            .collect::<Vec<_>>();
 
-        OrgNightCutinRateInfo {
-            contact_chance,
+        FleetNightCutinRateInfo {
+            night_contact_chance,
             ships,
         }
     }

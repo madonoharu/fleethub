@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
 import {
-  Org,
   NightCutinRateInfo,
-  OrgNightCutinRateInfo,
+  FleetNightCutinRateInfo,
   NightSituation,
 } from "@fh/core";
 import { Typography, Stack } from "@mui/material";
@@ -17,6 +16,7 @@ import AttackChip from "../AttackChip";
 import NightSituationForm from "../NightSituationForm";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
+import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 const StyledLabeledValue = styled(LabeledValue)`
   margin-top: 4px;
@@ -61,7 +61,7 @@ const NightCutinRateCell: React.FC<{ info: NightCutinRateInfo }> = ({
 };
 
 type Props = {
-  info: OrgNightCutinRateInfo;
+  info: FleetNightCutinRateInfo;
 };
 
 const NightCutinTable: React.FCX<Props> = ({ className, info }) => {
@@ -95,7 +95,7 @@ const initalNightSituation: NightSituation = {
   starshell: false,
 };
 
-const NightCutinPanel: React.FC<{ org: Org }> = ({ org }) => {
+const NightCutinPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
   const { core } = useFhCore();
   const { t } = useTranslation("common");
 
@@ -103,8 +103,9 @@ const NightCutinPanel: React.FC<{ org: Org }> = ({ org }) => {
     useImmer<NightSituation>(initalNightSituation);
   const [target, updateTarget] = useImmer<NightSituation>(initalNightSituation);
 
-  const info: OrgNightCutinRateInfo = core.analyze_night_cutin(
+  const info: FleetNightCutinRateInfo = core.analyze_night_cutin(
     org,
+    fleetKey,
     attacker,
     target
   );
@@ -113,7 +114,7 @@ const NightCutinPanel: React.FC<{ org: Org }> = ({ org }) => {
     <Stack gap={1}>
       <Flexbox gap={1}>
         <Typography>
-          夜間触接率 {toPercent(info.contact_chance.total)}
+          夜間触接率 {toPercent(info.night_contact_chance.total)}
         </Typography>
 
         <Typography ml={5}>{t("攻撃側")}</Typography>

@@ -80,7 +80,7 @@ pub enum NightCutin {
     TorpLookoutRadar,
     /// 魚水魚
     TorpTsloTorp,
-    /// 魚見ド,
+    /// 魚見ド
     TorpTsloDrum,
 
     /// 潜水魚魚

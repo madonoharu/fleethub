@@ -87,6 +87,7 @@ const fhCommonJa = {
   HitRate: "命中率",
   AccuracyTerm: "命中項",
   EvasionTerm: "回避項",
+  ScratchDamage: "割合",
 };
 
 const fhCommon: Record<
@@ -137,6 +138,7 @@ const fhCommon: Record<
     HitRate: "Hit Rate",
     AccuracyTerm: "Accuracy Term",
     EvasionTerm: "Evasion Term",
+    ScratchDamage: "Scratch",
   },
   ko: {
     Equipment: "장비",
@@ -181,6 +183,7 @@ const fhCommon: Record<
     HitRate: "명중률",
     AccuracyTerm: "정확율",
     EvasionTerm: "회피율",
+    ScratchDamage: "지근탄",
   },
   "zh-CN": {
     Equipment: "装备",
@@ -225,6 +228,7 @@ const fhCommon: Record<
     HitRate: "命中率",
     AccuracyTerm: "命中值",
     EvasionTerm: "回避值",
+    ScratchDamage: "擦弹",
   },
   "zh-TW": {
     Equipment: "裝備",
@@ -269,6 +273,7 @@ const fhCommon: Record<
     HitRate: "命中率",
     AccuracyTerm: "命中值",
     EvasionTerm: "迴避值",
+    ScratchDamage: "擦彈",
   },
 };
 

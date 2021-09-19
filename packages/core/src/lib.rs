@@ -17,13 +17,13 @@ use wasm_abi::{AirSquadronParams, FleetParams, GearParams, OrgParams, ShipParams
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
-use analyzer::{Analyzer, WarfareAnalysisParams, WarfareInfo};
+use analyzer::{analyze_warfare, OrgAnalyzer, WarfareAnalysisParams, WarfareInfo};
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
 use org::Org;
 use ship::Ship;
-use types::{EBonusFn, MasterData};
+use types::{EBonusFn, Formation, MasterData};
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -97,23 +97,31 @@ impl FhCore {
             .collect()
     }
 
+    fn org_analyzer(&self) -> OrgAnalyzer {
+        OrgAnalyzer::new(&self.factory.master_data.constants)
+    }
+
     pub fn analyze_anti_air(
         &self,
         org: &Org,
+        key: &str,
+        formation: Formation,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
     ) -> JsValue {
-        let analyzer = Analyzer::new(&self.factory.master_data);
-
-        let result =
-            analyzer.analyze_anti_air(org, adjusted_anti_air_resist, fleet_anti_air_resist);
+        let result = self.org_analyzer().analyze_anti_air(
+            org,
+            key,
+            formation,
+            adjusted_anti_air_resist,
+            fleet_anti_air_resist,
+        );
 
         JsValue::from_serde(&result).unwrap()
     }
 
-    pub fn analyze_day_cutin(&self, org: &Org) -> JsValue {
-        let analyzer = Analyzer::new(&self.factory.master_data);
-        let result = analyzer.analyze_day_cutin(org);
+    pub fn analyze_day_cutin(&self, org: &Org, key: &str) -> JsValue {
+        let result = self.org_analyzer().analyze_day_cutin(org, key);
 
         JsValue::from_serde(&result).unwrap()
     }
@@ -121,19 +129,22 @@ impl FhCore {
     pub fn analyze_night_cutin(
         &self,
         org: &Org,
+        key: &str,
         attacker_situation: NightSituation,
         defender_situation: NightSituation,
     ) -> JsValue {
-        let analyzer = Analyzer::new(&self.factory.master_data);
-        let result = analyzer.analyze_night_cutin(org, attacker_situation, defender_situation);
+        let result = self.org_analyzer().analyze_night_cutin(
+            org,
+            key,
+            attacker_situation,
+            defender_situation,
+        );
 
         JsValue::from_serde(&result).unwrap()
     }
 
-    pub fn analyze_airstrike(&self, org: &Org) -> JsValue {
-        let analyzer = Analyzer::new(&self.factory.master_data);
-        let result = analyzer.analyze_airstrike(org);
-
+    pub fn analyze_contact_chance(&self, org: &Org, key: &str) -> JsValue {
+        let result = self.org_analyzer().analyze_contact_chance(org, key);
         JsValue::from_serde(&result).unwrap()
     }
 
@@ -143,7 +154,6 @@ impl FhCore {
         attacker: &Ship,
         target: &Ship,
     ) -> WarfareInfo {
-        let analyzer = Analyzer::new(&self.factory.master_data);
-        analyzer.analyze_warfare(params, attacker, target)
+        analyze_warfare(&self.factory.master_data, &params, attacker, target)
     }
 }

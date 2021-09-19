@@ -5,7 +5,7 @@ use crate::{
     gear_id,
     org::Org,
     ship::Ship,
-    types::{AntiAirCutinDef, ShipClass, ShipType, Side},
+    types::{AntiAirCutinDef, Formation, MasterConstants, ShipClass, ShipType, Side},
 };
 
 struct ShipAntiAir<'a> {
@@ -115,18 +115,19 @@ impl<'a> ShipAntiAir<'a> {
 }
 
 pub struct AntiAirAnalyzer<'a> {
-    anti_air_cutin_defs: &'a Vec<AntiAirCutinDef>,
+    master_constants: &'a MasterConstants,
 }
 
 impl<'a> AntiAirAnalyzer<'a> {
-    pub fn new(anti_air_cutin_defs: &'a Vec<AntiAirCutinDef>) -> Self {
-        Self {
-            anti_air_cutin_defs,
-        }
+    pub fn new(master_constants: &'a MasterConstants) -> Self {
+        Self { master_constants }
     }
 
     fn find_aaci(&self, id: u8) -> Option<&AntiAirCutinDef> {
-        self.anti_air_cutin_defs.iter().find(|def| def.id == id)
+        self.master_constants
+            .anti_air_cutins
+            .iter()
+            .find(|def| def.id == id)
     }
 
     pub fn ship_anti_air_cutin_chance(&self, ship: &Ship) -> Vec<(u8, f64)> {
@@ -206,18 +207,33 @@ impl<'a> AntiAirAnalyzer<'a> {
     pub fn analyze_org(
         &self,
         org: &Org,
+        key: &str,
+        formation: Formation,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
     ) -> OrgAntiAirInfo {
-        let formation_mod = 1.0;
-        let combined_fleet_mod = 1.0;
+        let formation_mod = self
+            .master_constants
+            .get_formation_fleet_anti_air_mod(formation);
+
         let fleet_anti_air = org.fleet_anti_air(formation_mod);
         let side = org.side();
         let anti_air_cutin = None;
 
-        let ships = org
-            .main_and_escort_ships()
-            .map(|(_, _, ship)| {
+        let main_and_escort_fleet = org.get_main_and_escort_fleet_by_key(key);
+        let is_combined = main_and_escort_fleet.is_combined();
+
+        let ships = main_and_escort_fleet
+            .ships()
+            .map(|(role, _, ship)| {
+                let combined_fleet_mod = if !is_combined {
+                    1.0
+                } else if role.is_escort() {
+                    0.48
+                } else {
+                    0.8
+                };
+
                 self.analyze_ship(
                     ship,
                     side,

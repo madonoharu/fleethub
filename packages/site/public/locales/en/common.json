@@ -200,5 +200,6 @@
   "ProficiencyCriticalModifier": "Proficiency critical modifier",
   "HitRate": "Hit Rate",
   "AccuracyTerm": "Accuracy Term",
-  "EvasionTerm": "Evasion Term"
+  "EvasionTerm": "Evasion Term",
+  "ScratchDamage": "Scratch"
 }

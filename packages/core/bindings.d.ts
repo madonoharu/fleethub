@@ -716,7 +716,7 @@ export interface FleetDayCutinRateInfo {
 
 export interface OrgDayCutinRateInfo {
   main: FleetDayCutinRateInfo;
-  escort: FleetDayCutinRateInfo;
+  escort: FleetDayCutinRateInfo | null;
 }
 
 export interface ShipAntiAirInfo {
@@ -753,8 +753,8 @@ export interface NightContactChance {
   total: number;
 }
 
-export interface OrgNightCutinRateInfo {
-  contact_chance: NightContactChance;
+export interface FleetNightCutinRateInfo {
+  night_contact_chance: NightContactChance;
   ships: Array<ShipNightCutinRateInfo>;
 }
 
@@ -779,6 +779,7 @@ export interface OrgAirstrikeInfo {
 export interface AttackStats {
   attack_power: AttackPower | null;
   attack_power_params: AttackPowerParams | null;
+  hits: number;
   hit_rate: HitRate | null;
   hit_rate_params: HitRateParams | null;
   damage: DamageInfo | null;
@@ -804,6 +805,8 @@ export interface DamageInfo {
   normal_damage_max: number;
   critical_damage_min: number;
   critical_damage_max: number;
+  normal_scratch_rate: number;
+  critical_scratch_rate: number;
   damage_map: Record<number, number>;
   damage_state_map: Record<DamageState, number>;
 }

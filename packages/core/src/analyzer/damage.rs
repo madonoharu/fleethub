@@ -15,6 +15,8 @@ pub struct DamageInfo {
     pub normal_damage_max: u16,
     pub critical_damage_min: u16,
     pub critical_damage_max: u16,
+    pub normal_scratch_rate: f64,
+    pub critical_scratch_rate: f64,
     pub damage_map: NumMap<u16, f64>,
     pub damage_state_map: NumMap<DamageState, f64>,
 }
@@ -130,6 +132,9 @@ impl<'a> DamageAnalyzer<'a> {
         let critical_damage_min = critical.min();
         let critical_damage_max = critical.max();
 
+        let normal_scratch_rate = normal.scratch_rate();
+        let critical_scratch_rate = critical.scratch_rate();
+
         let damage_map = self
             .hit_rate
             .map(|hit_rate| {
@@ -165,6 +170,8 @@ impl<'a> DamageAnalyzer<'a> {
             normal_damage_max,
             critical_damage_min,
             critical_damage_max,
+            normal_scratch_rate,
+            critical_scratch_rate,
             damage_map,
             damage_state_map,
         })

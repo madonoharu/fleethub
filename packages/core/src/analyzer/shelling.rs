@@ -132,7 +132,7 @@ impl FleetDayCutinRateInfo {
 #[derive(Debug, Default, Serialize, TS)]
 pub struct OrgDayCutinRateInfo {
     main: FleetDayCutinRateInfo,
-    escort: FleetDayCutinRateInfo,
+    escort: Option<FleetDayCutinRateInfo>,
 }
 
 pub struct OrgShellingAnalyzer<'a> {
@@ -144,12 +144,16 @@ impl<'a> OrgShellingAnalyzer<'a> {
         Self { master_constants }
     }
 
-    pub fn analyze_org(&self, org: &Org) -> OrgDayCutinRateInfo {
+    pub fn analyze_org(&self, org: &Org, key: &str) -> OrgDayCutinRateInfo {
         let day_cutin_defs = &self.master_constants.day_cutins;
 
+        let main_and_escort = org.get_main_and_escort_fleet_by_key(key);
+
         OrgDayCutinRateInfo {
-            main: FleetDayCutinRateInfo::new(day_cutin_defs, org.main(), Role::Main),
-            escort: FleetDayCutinRateInfo::new(day_cutin_defs, org.escort(), Role::Escort),
+            main: FleetDayCutinRateInfo::new(day_cutin_defs, main_and_escort.main, Role::Main),
+            escort: main_and_escort
+                .escort
+                .map(|fleet| FleetDayCutinRateInfo::new(day_cutin_defs, fleet, Role::Escort)),
         }
     }
 }

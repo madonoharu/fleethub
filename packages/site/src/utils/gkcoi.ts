@@ -62,7 +62,7 @@ export const createGkcoiDeck = (
   };
 
   FLEET_KEYS.forEach((key) => {
-    const fleet = org.get_fleet(key);
+    const fleet = org.clone_fleet(key);
     if (fleet.count_ships() > 0) {
       deck[key] = createGkcoiFleet(fleet);
     }

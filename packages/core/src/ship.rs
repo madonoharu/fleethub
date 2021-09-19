@@ -610,6 +610,25 @@ impl Ship {
         Some(naked_firepower + night_plane_power)
     }
 
+    /// D型砲補正
+    pub fn model_d_small_gun_mod(&self) -> f64 {
+        let k2_count = self.gears.count(gear_id!("12.7cm連装砲D型改二"));
+        let k3_count = self.gears.count(gear_id!("12.7cm連装砲D型改三"));
+        let total = k2_count + k3_count;
+
+        if total == 0 {
+            return 1.0;
+        }
+
+        let base = if total == 1 { 1.25 } else { 1.4 };
+
+        if k3_count > 0 {
+            base * 1.05
+        } else {
+            base
+        }
+    }
+
     pub fn is_escort_light_carrier(&self) -> bool {
         self.ship_type == ShipType::CVL && self.master.asw.0.unwrap_or_default() > 0
     }
@@ -1822,13 +1841,6 @@ impl Ship {
         });
 
         ship_type_tp + ship_bonus + total
-    }
-
-    pub fn get_possible_shelling_attack_type_array(&self) -> Vec<u8> {
-        self.get_possible_day_cutin_set()
-            .into_iter()
-            .map(|t| t as u8)
-            .collect()
     }
 
     pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {

@@ -89,24 +89,18 @@ fn analyze_ships_contact_chance(ships: Vec<&Ship>) -> Option<Vec<AirstrikeContac
     Some(vec![air_supremacy, air_superiority, air_denial])
 }
 
-fn analyze_org_contact_chance(org: &Org) -> OrgContactChanceInfo {
-    let main_ships = org.main().ships.values().collect();
-    let single = analyze_ships_contact_chance(main_ships);
+pub fn analyze_org_contact_chance(org: &Org, key: &str) -> OrgContactChanceInfo {
+    let main_and_escort = org.get_main_and_escort_fleet_by_key(key);
 
-    let combined = if org.org_type.is_combined() {
-        let combined_ships = org
-            .main_and_escort_ships()
-            .map(|(_, _, ship)| ship)
-            .collect();
-        analyze_ships_contact_chance(combined_ships)
-    } else {
-        None
-    };
+    let single = analyze_ships_contact_chance(main_and_escort.main.ships.values().collect());
+
+    let combined = main_and_escort
+        .is_combined()
+        .then(|| {
+            let combined_ships = main_and_escort.ships().map(|(_, _, s)| s).collect();
+            analyze_ships_contact_chance(combined_ships)
+        })
+        .flatten();
 
     OrgContactChanceInfo { single, combined }
-}
-
-pub fn analyze_org(org: &Org) -> OrgAirstrikeInfo {
-    let contact_chance = analyze_org_contact_chance(org);
-    OrgAirstrikeInfo { contact_chance }
 }

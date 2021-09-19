@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Org } from "@fh/core";
+import { FleetKey } from "@fh/utils";
 import { Paper } from "@mui/material";
 import React from "react";
 
@@ -10,16 +11,30 @@ import DayCutinRateTable from "./DayCutinRateTable";
 import MiscScreen from "./MiscScreen";
 import NightCutinScreen from "./NightCutinScreen";
 
-type Props = {
+export type FleetInfoPanelProps = {
   org: Org;
+  fleetKey: FleetKey;
 };
 
-const OrgAnalysisPanel: React.FCX<Props> = ({ className, org }) => {
+const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
+  className,
+  org,
+  fleetKey,
+}) => {
   const list: TabsProps["list"] = [
-    { label: "弾着戦爆発動率", panel: <DayCutinRateTable org={org} /> },
-    { label: "触接率", panel: <ContactChancePanel org={org} /> },
-    { label: "夜戦CI率", panel: <NightCutinScreen org={org} /> },
-    { label: "対空", panel: <AntiAirScreen org={org} /> },
+    {
+      label: "弾着戦爆発動率",
+      panel: <DayCutinRateTable org={org} fleetKey={fleetKey} />,
+    },
+    {
+      label: "触接率",
+      panel: <ContactChancePanel org={org} fleetKey={fleetKey} />,
+    },
+    {
+      label: "夜戦CI率",
+      panel: <NightCutinScreen org={org} fleetKey={fleetKey} />,
+    },
+    { label: "対空", panel: <AntiAirScreen org={org} fleetKey={fleetKey} /> },
     { label: "その他", panel: <MiscScreen org={org} /> },
   ];
 
@@ -30,7 +45,7 @@ const OrgAnalysisPanel: React.FCX<Props> = ({ className, org }) => {
   );
 };
 
-export default styled(OrgAnalysisPanel)`
+export default styled(FleetInfoPanel)`
   padding: 8px;
   min-height: 480px;
   > * {
