@@ -26,7 +26,7 @@ export type DialogProps = Partial<MuiDialogProps> & {
 const Dialog: React.FC<DialogProps> = ({
   children,
   full,
-  fullHeight,
+  fullHeight: _,
   ...rest
 }) => (
   <MuiDialog open={false} transitionDuration={100} fullWidth={full} {...rest}>

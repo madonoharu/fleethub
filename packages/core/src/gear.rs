@@ -67,9 +67,14 @@ pub struct Gear {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
 
+    #[wasm_bindgen(readonly)]
     pub gear_id: u16,
-    pub exp: u8,
+    #[wasm_bindgen(readonly)]
     pub stars: u8,
+    #[wasm_bindgen(readonly)]
+    pub exp: u8,
+    #[wasm_bindgen(readonly)]
+    pub default_exp: u8,
 
     #[wasm_bindgen(getter_with_clone)]
     pub name: String,
@@ -84,23 +89,41 @@ pub struct Gear {
     #[wasm_bindgen(skip)]
     pub special_type: GearType,
 
+    #[wasm_bindgen(readonly)]
     pub max_hp: i16,
+    #[wasm_bindgen(readonly)]
     pub firepower: i16,
+    #[wasm_bindgen(readonly)]
     pub armor: i16,
+    #[wasm_bindgen(readonly)]
     pub torpedo: i16,
+    #[wasm_bindgen(readonly)]
     pub anti_air: i16,
+    #[wasm_bindgen(readonly)]
     pub speed: i16,
+    #[wasm_bindgen(readonly)]
     pub bombing: i16,
+    #[wasm_bindgen(readonly)]
     pub asw: i16,
+    #[wasm_bindgen(readonly)]
     pub los: i16,
+    #[wasm_bindgen(readonly)]
     pub luck: i16,
+    #[wasm_bindgen(readonly)]
     pub accuracy: i16,
+    #[wasm_bindgen(readonly)]
     pub evasion: i16,
+    #[wasm_bindgen(readonly)]
     pub range: u8,
+    #[wasm_bindgen(readonly)]
     pub radius: u8,
+    #[wasm_bindgen(readonly)]
     pub cost: u8,
+    #[wasm_bindgen(readonly)]
     pub improvable: bool,
+    #[wasm_bindgen(readonly)]
     pub adjusted_anti_air_resistance: f64,
+    #[wasm_bindgen(readonly)]
     pub fleet_anti_air_resistance: f64,
 }
 
@@ -115,34 +138,8 @@ impl Gear {
             .and_then(FromPrimitive::from_u8)
             .unwrap_or(gear_type);
 
-        let exp = state.exp.unwrap_or_else(|| {
-            if master.has_attr(GearAttr::Abyssal) {
-                return 0;
-            }
-
-            if master.gear_id == gear_id!("二式陸上偵察機(熟練)") {
-                return 25;
-            }
-
-            match gear_type {
-                GearType::CbFighter
-                | GearType::CbRecon
-                | GearType::ReconSeaplane
-                | GearType::SeaplaneFighter
-                | GearType::LargeFlyingBoat
-                | GearType::JetFighter
-                | GearType::JetFighterBomber
-                | GearType::JetRecon
-                | GearType::JetTorpedoBomber => 120,
-                GearType::CbTorpedoBomber
-                | GearType::CbDiveBomber
-                | GearType::SeaplaneBomber
-                | GearType::LbFighter
-                | GearType::LbAttacker
-                | GearType::LargeLbAircraft => 100,
-                _ => 0,
-            }
-        });
+        let default_exp = master.default_exp();
+        let exp = state.exp.unwrap_or(default_exp);
 
         Gear {
             xxh3,
@@ -151,6 +148,7 @@ impl Gear {
             gear_id: state.gear_id,
             stars: state.stars.unwrap_or_default(),
             exp,
+            default_exp,
 
             gear_type,
             special_type,
@@ -278,6 +276,10 @@ impl Gear {
             || self.has_attr(GearAttr::Seaplane)
             || self.has_attr(GearAttr::JetAircraft)
             || self.has_attr(GearAttr::LbAircraft)
+    }
+
+    pub fn max_exp_eq_120(&self) -> bool {
+        self.has_proficiency() && self.default_exp >= 100
     }
 
     fn proficiency_fighter_power_modifier(&self) -> f64 {
@@ -453,6 +455,15 @@ impl Gear {
                 | gear_id!("深海攻撃哨戒鷹改")
                 | gear_id!("深海攻撃哨戒鷹改二")
         )
+    }
+
+    pub fn expedition_bonus(&self) -> f64 {
+        match self.gear_id {
+            gear_id!("大発動艇") | gear_id!("特大発動艇") => 0.05,
+            gear_id!("大発動艇(八九式中戦車&陸戦隊)") => 0.02,
+            gear_id!("特二式内火艇") => 0.01,
+            _ => 0.0,
+        }
     }
 }
 

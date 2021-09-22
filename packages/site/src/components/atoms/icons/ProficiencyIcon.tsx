@@ -1,9 +1,8 @@
 import styled from "@emotion/styled";
+import { GEAR_EXP_TABLE } from "@fh/utils";
 import { Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
-
-export const GEAR_EXP_TABLE = [0, 10, 25, 40, 55, 70, 85, 100, 120];
 
 const expToAce = (exp: number) =>
   Math.min(

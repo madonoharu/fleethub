@@ -10,6 +10,7 @@ use wasm_bindgen::prelude::*;
 use crate::{
     attack::WarfareShipEnvironment,
     gear::IBonuses,
+    gear_id,
     ship::ShipEquippable,
     types::{
         AntiAirCutinDef, DayCutinDef, FormationDef, GearAttr, GearState, GearType, NightCutinDef,
@@ -135,6 +136,37 @@ impl MasterGear {
 
     pub fn has_attr(&self, attr: GearAttr) -> bool {
         self.attrs.contains(attr)
+    }
+
+    pub fn default_exp(&self) -> u8 {
+        if self.has_attr(GearAttr::Abyssal) {
+            return 0;
+        }
+
+        if self.gear_id == gear_id!("二式陸上偵察機(熟練)") {
+            return 25;
+        }
+
+        let gear_type = self.types.gear_type();
+
+        match gear_type {
+            GearType::CbFighter
+            | GearType::CbRecon
+            | GearType::ReconSeaplane
+            | GearType::SeaplaneFighter
+            | GearType::LargeFlyingBoat
+            | GearType::JetFighter
+            | GearType::JetFighterBomber
+            | GearType::JetRecon
+            | GearType::JetTorpedoBomber => 120,
+            GearType::CbTorpedoBomber
+            | GearType::CbDiveBomber
+            | GearType::SeaplaneBomber
+            | GearType::LbFighter
+            | GearType::LbAttacker
+            | GearType::LargeLbAircraft => 100,
+            _ => 0,
+        }
     }
 }
 

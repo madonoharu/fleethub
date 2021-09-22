@@ -22,40 +22,40 @@ fn night_cutin_term(ship: &Ship, params: NightCutinTermParams) -> Option<f64> {
     let luck = ship.luck()? as f64;
 
     let mut value = if luck < 50. {
-        luck + 15. + 0.75 * level.sqrt()
+        luck + 15.0 + 0.75 * level.sqrt()
     } else {
-        (luck - 50.).sqrt() + 65. + 0.8 * level.sqrt()
+        (luck - 50.0).sqrt() + 65.0 + 0.8 * level.sqrt()
     }
     .floor();
 
     if params.is_flagship {
-        value += 15.
+        value += 15.0
     }
 
     if params.damage_state == DamageState::Chuuha {
-        value += 18.
+        value += 18.0
     }
 
     if ship.gears.has(gear_id!("水雷戦隊 熟練見張員")) {
-        value += 9.
+        value += 9.0
     } else if ship.gears.has(gear_id!("熟練見張員")) {
-        value += 5.
+        value += 5.0
     }
 
     if params.attacker_situation.searchlight {
-        value += 7.
+        value += 7.0
     }
 
     if params.target_situation.searchlight {
-        value += -5.
+        value += -5.0
     }
 
     if params.attacker_situation.starshell {
-        value += 4.
+        value += 4.0
     }
 
     if params.target_situation.starshell {
-        value += -10.
+        value += -10.0
     }
 
     Some(value)

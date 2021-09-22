@@ -8,3 +8,4 @@ export { default as LabeledValue } from "./LabeledValue";
 export { default as MenuList } from "./MenuList";
 export * from "./MenuList";
 export { default as Slider } from "./Slider";
+export { default as StarsLabel } from "./StarsLabel";

@@ -142,31 +142,10 @@ impl Org {
         }
     }
 
-    pub fn find_role_index(&self, ship: &Ship) -> Option<(Role, usize)> {
-        self.main_and_escort_ships()
-            .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
-            .or_else(|| {
-                let role = Role::RouteSup;
-                self.route_sup()
-                    .ships
-                    .iter()
-                    .find_map(|(index, current)| (ship == current).then(|| (role, index)))
-            })
-            .or_else(|| {
-                let role = Role::BossSup;
-                self.boss_sup()
-                    .ships
-                    .iter()
-                    .find_map(|(index, current)| (ship == current).then(|| (role, index)))
-            })
-    }
-
     pub fn get_fleet_by_role(&self, role: Role) -> &Fleet {
         match role {
             Role::Main => self.main(),
             Role::Escort => self.escort(),
-            Role::RouteSup => self.route_sup(),
-            Role::BossSup => self.boss_sup(),
         }
     }
 
@@ -209,12 +188,6 @@ impl Org {
         }
 
         self.get_fleet_by_role(role).ship_keys()
-    }
-
-    #[wasm_bindgen(js_name = find_role_index)]
-    pub fn js_find_role_index(&self, ship: &Ship) -> JsValue {
-        let role_index = self.find_role_index(ship);
-        JsValue::from_serde(&role_index).unwrap()
     }
 
     pub fn fleet_los_mod(&self, role: Role) -> Option<f64> {
@@ -366,8 +339,10 @@ impl Org {
     }
 
     /// 輸送物資量(TP)
-    pub fn transport_point(&self) -> i32 {
-        self.main_and_escort_ships()
+    pub fn transport_point(&self, key: &str) -> i32 {
+        self.get_main_and_escort_fleet_by_key(key)
+            .ships()
+            .into_iter()
             .map(|(_, _, ship)| ship.transport_point())
             .sum()
     }
@@ -386,17 +361,28 @@ impl Org {
         &self,
         ship: &Ship,
         formation: Formation,
-    ) -> Option<WarfareShipEnvironment> {
-        let (role, ship_index) = self.find_role_index(ship)?;
+    ) -> WarfareShipEnvironment {
+        let (role, ship_index) = self
+            .main_and_escort_ships()
+            .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
+            .or_else(|| {
+                self.f2
+                    .ships
+                    .iter()
+                    .chain(self.f3.ships.iter())
+                    .chain(self.f4.ships.iter())
+                    .find_map(|(index, current)| (ship == current).then(|| (Role::Main, index)))
+            })
+            .unwrap_or_default();
 
-        Some(WarfareShipEnvironment {
+        WarfareShipEnvironment {
             org_type: self.org_type,
             fleet_len: self.fleet_len(role),
             ship_index,
             role,
             formation,
             fleet_los_mod: self.fleet_los_mod(role),
-        })
+        }
     }
 }
 

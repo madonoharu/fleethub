@@ -49,6 +49,7 @@ pub struct AswAttackContext<'a> {
 
     pub attacker_env: &'a WarfareShipEnvironment,
     pub target_env: &'a WarfareShipEnvironment,
+    pub external_power_mods: &'a AttackPowerModifiers,
     pub engagement: Engagement,
     pub formation_power_mod: f64,
     pub formation_accuracy_mod: f64,
@@ -65,6 +66,7 @@ impl<'a> AswAttackContext<'a> {
         let WarfareContext {
             attacker_env,
             target_env,
+            external_power_mods,
             engagement,
             ..
         } = ctx;
@@ -88,6 +90,7 @@ impl<'a> AswAttackContext<'a> {
 
             attacker_env,
             target_env,
+            external_power_mods,
             engagement: *engagement,
             formation_power_mod,
             formation_accuracy_mod,
@@ -136,8 +139,11 @@ impl<'a> AswAttackContext<'a> {
 
             let a14 = damage_mod * formation_mod * engagement_mod * asw_synergy_mod;
 
-            let mut mods = AttackPowerModifiers::new();
-            mods.apply_a14(a14);
+            let mods = {
+                let mut base = self.external_power_mods.clone();
+                base.apply_a14(a14);
+                base
+            };
 
             let proficiency_critical_mod = proficiency_mods
                 .as_ref()

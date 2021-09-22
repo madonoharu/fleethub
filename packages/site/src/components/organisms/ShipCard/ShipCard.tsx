@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { DamageState, MoraleState, Ship } from "@fh/core";
+import { DamageState, MoraleState, Org, Ship } from "@fh/core";
 import { GearKey, SlotSizeKey } from "@fh/utils";
 import { Tooltip, Paper, IconButton, Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
@@ -16,6 +16,7 @@ import {
 } from "../../atoms";
 import GearSlot from "../GearSlot";
 import ShipBanner from "../ShipBanner";
+import ShipDetails from "../ShipDetails";
 import ShipCardHeader from "./ShipCardHeader";
 import ShipMiscEditForm from "./ShipMiscEditForm";
 import ShipStats from "./ShipStats";
@@ -51,24 +52,25 @@ const GearList = styled.div`
   flex-shrink: 1;
 `;
 
-type Props = {
+type ShipCardProps = {
   ship: Ship;
+  org?: Org;
   visibleMiscStats?: boolean;
   disableHeaderAction?: boolean;
-  onDetailClick?: () => void;
 };
 
-const ShipCard: React.FCX<Props> = ({
+const ShipCard: React.FCX<ShipCardProps> = ({
   className,
   ship,
+  org,
   visibleMiscStats,
   disableHeaderAction,
-  onDetailClick,
 }) => {
   const { id } = ship;
   const actions = useShipActions(id);
   const { t } = useTranslation("common");
   const EditModal = useModal();
+  const DetailModal = useModal();
 
   const damageState = ship.damage_state() as DamageState;
   const moraleState = ship.morale_state() as MoraleState;
@@ -88,9 +90,10 @@ const ShipCard: React.FCX<Props> = ({
         ship={ship}
         onUpdate={actions.update}
         onEditClick={EditModal.show}
-        onDetailClick={onDetailClick}
+        onDetailClick={DetailModal.show}
         onReselect={actions.reselect}
         onRemove={actions.remove}
+        disableHeaderAction={disableHeaderAction}
       />
       <Column>
         <StyledShipBanner shipId={ship.ship_id} size="medium" />
@@ -156,6 +159,10 @@ const ShipCard: React.FCX<Props> = ({
       <EditModal>
         <ShipMiscEditForm ship={ship} onChange={actions.update} />
       </EditModal>
+
+      <DetailModal full>
+        <ShipDetails ship={ship} org={org} />
+      </DetailModal>
     </Paper>
   );
 };

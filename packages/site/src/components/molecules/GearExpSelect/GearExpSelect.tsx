@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
+import { GEAR_EXP_TABLE } from "@fh/utils";
 import { Button, Tooltip } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { usePopover } from "../../../hooks";
+import { ProficiencyIcon } from "../../atoms";
 import NumberInput from "../NumberInput";
-import ProficiencyIcon, { GEAR_EXP_TABLE } from "./ProficiencyIcon";
 
 const ColumnReverse = styled.div`
   display: flex;
@@ -28,6 +30,7 @@ type Props = {
 };
 
 const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
+  const { t } = useTranslation("common");
   const Popover = usePopover();
 
   const handleChange: React.MouseEventHandler = (event) => {
@@ -37,7 +40,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
 
   return (
     <div className={className}>
-      <Tooltip title="熟練度選択">
+      <Tooltip title={t("Proficiency")}>
         <Button css={{ height: "100%" }} onClick={Popover.show}>
           <ProficiencyIcon exp={exp} />
         </Button>

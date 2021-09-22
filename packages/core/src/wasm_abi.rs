@@ -5,7 +5,7 @@ use wasm_bindgen::{
 };
 
 use crate::{
-    analyzer::{WarfareAnalysisParams, WarfareInfo},
+    analyzer::{WarfareAnalyzerContext, WarfareInfo},
     attack::{NightSituation, WarfareContext, WarfareShipEnvironment},
     types::{
         AirSquadronMode, AirState, Engagement, Formation, GearAttr, GearFilterGroup, GearType,
@@ -165,5 +165,5 @@ impl_wasm_abi_as_string!(
     ShipType,
     Side,
 );
-impl_from_wasm_abi!(WarfareContext, NightSituation, WarfareAnalysisParams);
+impl_from_wasm_abi!(WarfareContext, NightSituation, WarfareAnalyzerContext);
 impl_into_wasm_abi!(WarfareShipEnvironment, WarfareInfo);

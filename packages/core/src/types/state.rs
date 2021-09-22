@@ -202,8 +202,6 @@ pub fn org_type_side(org_type: OrgType) -> Side {
 pub enum Role {
     Main,
     Escort,
-    RouteSup,
-    BossSup,
 }
 
 impl Default for Role {

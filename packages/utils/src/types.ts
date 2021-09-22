@@ -15,6 +15,8 @@ export type AirSquadronKey = typeof AIR_SQUADRON_KEYS[number];
 export const FLEET_KEYS = ["f1", "f2", "f3", "f4"] as const;
 export type FleetKey = typeof FLEET_KEYS[number];
 
+export const GEAR_EXP_TABLE = [0, 10, 25, 40, 55, 70, 85, 100, 120];
+
 export type FhEntity<T extends Record<string, unknown>, K extends keyof T> = {
   id: string;
 } & Omit<T, K> &

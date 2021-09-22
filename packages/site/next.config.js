@@ -1,5 +1,5 @@
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-const withTM = require("next-transpile-modules")(["@mui/icons-material"]);
+const withTM = require("next-transpile-modules")([]);
 const { i18n } = require("./next-i18next.config");
 
 const config = {

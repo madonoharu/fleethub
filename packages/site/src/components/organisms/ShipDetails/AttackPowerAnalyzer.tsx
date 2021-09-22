@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Ship, WarfareContext, FhCore } from "@fh/core";
+import { Ship, WarfareAnalyzerContext, FhCore } from "@fh/core";
 import { nonNullable } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
@@ -30,29 +30,24 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
 
   const submarine = useMemo(() => core.create_ship_by_id(1530), [core]);
 
-  const warfare_context: WarfareContext = {
+  const ctx: WarfareAnalyzerContext = {
     attacker_env: state.player,
     target_env: state.enemy,
     engagement: state.engagement,
     air_state: state.air_state,
   };
 
-  const params = {
-    attacker_night_situation: state.player,
-    target_night_situation: state.enemy,
-    warfare_context,
-  };
-
   const info = core.analyze_warfare(
-    params,
+    ctx,
     ship,
     dummyEnemySelectState.value.ship
   );
+
   const day = info?.day;
   const closing_torpedo = info?.closing_torpedo;
   const night = info?.night;
 
-  const aswInfo = submarine && core.analyze_warfare(params, ship, submarine);
+  const aswInfo = submarine && core.analyze_warfare(ctx, ship, submarine);
   const asw = aswInfo?.day;
 
   const list: TabItem[] = [

@@ -6,8 +6,7 @@ import React from "react";
 type LabeledValueProps = StyledComponentProps<"label" | "value"> & {
   label: React.ReactNode;
   value: React.ReactNode;
-  labelVariant?: Variant | undefined;
-  valueVariant?: Variant | undefined;
+  variant?: Variant | undefined;
 };
 
 const LabeledValue: React.FCX<LabeledValueProps> = ({
@@ -15,24 +14,19 @@ const LabeledValue: React.FCX<LabeledValueProps> = ({
   classes,
   label,
   value,
-  labelVariant = "body2",
-  valueVariant = "body2",
+  variant = "body2",
 }) => (
   <div className={className}>
     <Typography
       className={classes?.label}
       css={{ marginRight: 8 }}
       color="textSecondary"
-      variant={labelVariant}
+      variant={variant}
       component="div"
     >
       {label}
     </Typography>
-    <Typography
-      className={classes?.value}
-      variant={valueVariant}
-      component="div"
-    >
+    <Typography className={classes?.value} variant={variant} component="div">
       {value}
     </Typography>
   </div>

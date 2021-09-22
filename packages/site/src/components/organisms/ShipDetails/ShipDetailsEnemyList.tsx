@@ -1,9 +1,14 @@
-import { Ship, Side, WarfareAnalysisParams } from "@fh/core";
+import {
+  Ship,
+  Side,
+  WarfareAnalyzerContext,
+  WarfareAnalyzerShipEnvironment,
+} from "@fh/core";
 import { Divider, Stack } from "@mui/material";
 import React from "react";
 
 import { useShip } from "../../../hooks";
-import { ShipDetailsState, WarfareAnalysisShipParams } from "../../../store";
+import { ShipDetailsState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import ShipCard from "../ShipCard";
 import WarfareAnalyzer from "../WarfareAnalyzer";
@@ -19,36 +24,32 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
 
   if (!enemy) return null;
 
-  const createArgs = (side: Side) => {
+  const createProps = (side: Side) => {
     let attacker: Ship;
-    let attackerParams: WarfareAnalysisShipParams;
+    let attacker_env: WarfareAnalyzerShipEnvironment;
     let target: Ship;
-    let targetParams: WarfareAnalysisShipParams;
+    let target_env: WarfareAnalyzerShipEnvironment;
 
     if (side === "Player") {
       attacker = ship;
-      attackerParams = state.player;
+      attacker_env = state.player;
       target = enemy;
-      targetParams = state.enemy;
+      target_env = state.enemy;
     } else {
       attacker = enemy;
-      attackerParams = state.enemy;
+      attacker_env = state.enemy;
       target = ship;
-      targetParams = state.player;
+      target_env = state.player;
     }
 
-    const params: WarfareAnalysisParams = {
-      warfare_context: {
-        attacker_env: attackerParams,
-        target_env: targetParams,
-        air_state: state.air_state,
-        engagement: state.engagement,
-      },
-      attacker_night_situation: attackerParams,
-      target_night_situation: targetParams,
+    const ctx: WarfareAnalyzerContext = {
+      air_state: state.air_state,
+      engagement: state.engagement,
+      attacker_env,
+      target_env,
     };
 
-    return { params, attacker, target };
+    return { ctx, attacker, target };
   };
 
   return (
@@ -63,8 +64,8 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
           },
         }}
       >
-        <WarfareAnalyzer {...createArgs("Player")} />
-        <WarfareAnalyzer {...createArgs("Enemy")} />
+        <WarfareAnalyzer {...createProps("Player")} />
+        <WarfareAnalyzer {...createProps("Enemy")} />
       </Flexbox>
     </Stack>
   );
