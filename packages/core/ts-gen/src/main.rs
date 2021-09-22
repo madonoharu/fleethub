@@ -101,7 +101,8 @@ fn main() {
         analyzer::DamageInfo,
         analyzer::DayBattleAttackType,
         analyzer::NightBattleAttackType,
-        analyzer::WarfareAnalysisParams,
+        analyzer::WarfareAnalyzerShipEnvironment,
+        analyzer::WarfareAnalyzerContext,
         analyzer::WarfareInfo
     );
 

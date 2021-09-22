@@ -1,19 +1,19 @@
-import { OrgType } from "@fh/core";
+import { OrgType, WarfareAnalyzerShipEnvironment } from "@fh/core";
 import { Button, Stack } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useFhCore } from "../../../hooks";
 
-import { WarfareAnalysisShipParams } from "../../../store";
 import { Divider, Flexbox } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
+import AttackPowerModifiersForm from "../AttackPowerModifiersForm";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import OrgTypeSelect from "../OrgTypeSelect";
 
 type ShipParamsSettingsProps = {
-  value: WarfareAnalysisShipParams;
-  onChange: (changes: WarfareAnalysisShipParams) => void;
+  value: WarfareAnalyzerShipEnvironment;
+  onChange: (changes: WarfareAnalyzerShipEnvironment) => void;
 };
 
 const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
@@ -39,8 +39,8 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
   };
 
   const bind =
-    <K extends keyof WarfareAnalysisShipParams>(key: K) =>
-    (next: WarfareAnalysisShipParams[K]) =>
+    <K extends keyof WarfareAnalyzerShipEnvironment>(key: K) =>
+    (next: WarfareAnalyzerShipEnvironment[K]) =>
       onChange({ ...value, [key]: next });
 
   const setShipIndex = (i: number) => bind("ship_index")(i);
@@ -127,8 +127,14 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
       <Divider label="夜戦設定" />
       <NightSituationForm
         color={color}
-        value={value}
-        onChange={(ns) => onChange({ ...value, ...ns })}
+        value={value.night_situation}
+        onChange={bind("night_situation")}
+      />
+
+      <Divider label="特攻" />
+      <AttackPowerModifiersForm
+        value={value.external_power_mods}
+        onChange={bind("external_power_mods")}
       />
     </Stack>
   );

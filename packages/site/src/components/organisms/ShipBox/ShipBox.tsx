@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 import { Ship } from "@fh/core";
 import AddIcon from "@mui/icons-material/Add";
-import { Button, ButtonProps } from "@mui/material";
+import { Button } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
+import { useOrgContext } from "../../../hooks";
 import {
   ShipPosition,
   shipSelectSlice,
@@ -13,22 +15,18 @@ import {
 import ShipCard from "../ShipCard";
 import Swappable from "../Swappable";
 
-const AddShipButton: React.FC<ButtonProps> = (props) => (
-  <Button variant="outlined" {...props}>
-    <AddIcon />
-    艦娘
-  </Button>
-);
-
 export type ShipBoxProps = {
   ship?: Ship;
   position?: ShipPosition;
 };
 
 const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
-  const id = ship?.id || "";
+  const { t } = useTranslation("common");
 
   const dispatch = useDispatch();
+  const org = useOrgContext();
+
+  const id = ship?.id || "";
 
   const handleShipChange = () => {
     dispatch(shipSelectSlice.actions.create({ position, id }));
@@ -39,9 +37,15 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
   };
 
   const element = !ship ? (
-    <AddShipButton onClick={handleShipChange} />
+    <Button
+      variant="outlined"
+      startIcon={<AddIcon />}
+      onClick={handleShipChange}
+    >
+      {t("Ship")}
+    </Button>
   ) : (
-    <ShipCard ship={ship} />
+    <ShipCard ship={ship} org={org} />
   );
 
   if (!position) {

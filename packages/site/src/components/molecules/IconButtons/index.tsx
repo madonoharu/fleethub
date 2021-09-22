@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
+import BuildIcon from "@mui/icons-material/Build";
 import CachedIcon from "@mui/icons-material/Cached";
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
@@ -39,6 +40,7 @@ export const EditButton = withIconButton(EditIcon);
 export const OpenInNewButton = withIconButton(OpenInNewIcon);
 export const ImportButton = withIconButton(SaveAltIcon);
 export const StarButton = withIconButton(StarIcon);
+export const BuildButton = withIconButton(BuildIcon);
 
 export const TweetButton = styled(withIconButton(TwitterIcon))`
   color: #3ba9ee;

@@ -1,12 +1,19 @@
 import styled from "@emotion/styled";
-import { NightSituation } from "@fh/core";
+import { Path, PathValue } from "@fh/utils";
 import { Stack } from "@mui/material";
+import { produce } from "immer";
+import set from "lodash/set";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { useOrg } from "../../../hooks";
-import { filesSlice, PlanFileEntity, PlanNode } from "../../../store";
+import {
+  filesSlice,
+  PlanFileEntity,
+  PlanNode,
+  PlanNodeDetailsConfig,
+} from "../../../store";
 import { Flexbox } from "../../atoms";
 import AirStateSelect from "../AirStateSelect";
 import EngagementSelect from "../EngagementSelect";
@@ -19,12 +26,6 @@ import WarfareDetails from "./WarfareDetails";
 type PlanNodeDetailsProps = {
   plan: PlanFileEntity;
   node: PlanNode;
-};
-
-const initalNightSituation: NightSituation = {
-  night_contact_rank: null,
-  searchlight: false,
-  starshell: false,
 };
 
 const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
@@ -48,15 +49,23 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
 
   if (!playerOrg || !enemyOrg) return null;
 
-  const update = (changes: Partial<PlanNode>) => {
-    dispatch(
-      filesSlice.actions.updatePlanNode({
-        id: plan.id,
-        index: plan.nodes.indexOf(node),
-        changes,
-      })
-    );
-  };
+  const { config } = node;
+
+  const bind =
+    <P extends Path<PlanNodeDetailsConfig>>(path: P) =>
+    (value: PathValue<PlanNodeDetailsConfig, P>) => {
+      const next = produce(config, (draft) => {
+        set(draft, path, value);
+      });
+
+      dispatch(
+        filesSlice.actions.updatePlanNode({
+          id: plan.id,
+          index: plan.nodes.indexOf(node),
+          changes: { config: next },
+        })
+      );
+    };
 
   const playerShip = playerShipId
     ? playerOrg.get_ship_by_id(playerShipId)
@@ -64,14 +73,6 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
   const enemyShip = enemyShipId
     ? enemyOrg.get_ship_by_id(enemyShipId)
     : undefined;
-
-  const player_formation =
-    node.player_formation || playerOrg.default_formation();
-  const enemy_formation = node.enemy_formation || enemyOrg.default_formation();
-
-  const playerNightSituation =
-    node.playerNightSituation || initalNightSituation;
-  const enemyNightSituation = node.enemyNightSituation || initalNightSituation;
 
   return (
     <div className={className} style={style}>
@@ -100,26 +101,24 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
               color="primary"
               label={t("Formation")}
               combined={playerOrg.is_combined()}
-              value={player_formation}
-              onChange={(player_formation) => update({ player_formation })}
+              value={config.player.formation}
+              onChange={bind("player.formation")}
             />
             <AirStateSelect
               label={t("AirState")}
-              value={node.air_state || "AirSupremacy"}
-              onChange={(air_state) => update({ air_state })}
+              value={config.air_state}
+              onChange={bind("air_state")}
             />
             <EngagementSelect
               label={t("Engagement")}
-              value={node.engagement || "Parallel"}
-              onChange={(engagement) => update({ engagement })}
+              value={config.engagement}
+              onChange={bind("engagement")}
             />
           </Flexbox>
           <NightSituationForm
             color="primary"
-            value={playerNightSituation}
-            onChange={(playerNightSituation) =>
-              update({ playerNightSituation })
-            }
+            value={config.player.night_situation}
+            onChange={bind("player.night_situation")}
           />
         </Stack>
 
@@ -135,13 +134,13 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
             label={t("Formation")}
             color="secondary"
             combined={enemyOrg.is_combined()}
-            value={enemy_formation}
-            onChange={(enemy_formation) => update({ enemy_formation })}
+            value={config.enemy.formation}
+            onChange={bind("enemy.formation")}
           />
           <NightSituationForm
             color="secondary"
-            value={enemyNightSituation}
-            onChange={(enemyNightSituation) => update({ enemyNightSituation })}
+            value={config.enemy.night_situation}
+            onChange={bind("enemy.night_situation")}
           />
         </Stack>
       </Flexbox>
@@ -154,23 +153,22 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
           },
         }}
       >
-        {playerShip && <ShipCard ship={playerShip} visibleMiscStats />}
+        {playerShip && (
+          <ShipCard ship={playerShip} org={playerOrg} visibleMiscStats />
+        )}
 
-        {enemyShip && <ShipCard ship={enemyShip} visibleMiscStats />}
+        {enemyShip && (
+          <ShipCard ship={enemyShip} org={enemyOrg} visibleMiscStats />
+        )}
       </Flexbox>
 
       {playerShip && enemyShip && playerOrg && enemyOrg && (
         <WarfareDetails
           playerOrg={playerOrg}
           playerShip={playerShip}
-          playerFormation={player_formation}
-          playerNightSituation={playerNightSituation}
           enemyOrg={enemyOrg}
           enemyShip={enemyShip}
-          enemyFormation={enemy_formation}
-          enemyNightSituation={enemyNightSituation}
-          air_state={node.air_state || "AirSupremacy"}
-          engagement={node.engagement || "Parallel"}
+          config={node.config}
         />
       )}
     </div>

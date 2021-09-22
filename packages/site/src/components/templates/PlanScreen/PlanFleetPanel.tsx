@@ -1,5 +1,6 @@
 import { Org } from "@fh/core";
 import { FleetKey } from "@fh/utils";
+import { Stack } from "@mui/material";
 import React from "react";
 import { FleetScreen, FleetInfoPanel } from "../../organisms";
 
@@ -8,14 +9,19 @@ type PlanFleetPanelProps = {
   fleetKey: FleetKey;
 };
 
-const PlanFleetPanel: React.FCX<PlanFleetPanelProps> = ({ org, fleetKey }) => {
+const PlanFleetPanel: React.FCX<PlanFleetPanelProps> = ({
+  className,
+  style,
+  org,
+  fleetKey,
+}) => {
   const fleet = org.clone_fleet(fleetKey);
 
   return (
-    <div>
+    <Stack className={className} style={style} gap={1}>
       <FleetScreen fleet={fleet} />
       <FleetInfoPanel org={org} fleetKey={fleetKey} />
-    </div>
+    </Stack>
   );
 };
 

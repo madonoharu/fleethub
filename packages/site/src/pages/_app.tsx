@@ -13,13 +13,17 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppProps> = ({
   Component,
   pageProps,
 }) => {
-  return (
-    <CacheProvider value={cache}>
-      <ThemeProvider>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </CacheProvider>
-  );
+  try {
+    return (
+      <CacheProvider value={cache}>
+        <ThemeProvider>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </CacheProvider>
+    );
+  } catch (err) {
+    return null;
+  }
 };
 
 export default appWithTranslation(MyApp);

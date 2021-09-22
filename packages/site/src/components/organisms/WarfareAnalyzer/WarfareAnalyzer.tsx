@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { OrgType, Ship, WarfareAnalysisParams } from "@fh/core";
+import { OrgType, Ship, WarfareAnalyzerContext } from "@fh/core";
 import { nonNullable } from "@fh/utils";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Paper, Typography } from "@mui/material";
@@ -16,7 +16,7 @@ const getTypeColor = (type: OrgType) =>
   isEnemy(type) ? "secondary.light" : "primary.light";
 
 type WarfareAnalyzerProps = {
-  params: WarfareAnalysisParams;
+  ctx: WarfareAnalyzerContext;
   attacker: Ship;
   target: Ship;
 };
@@ -24,13 +24,13 @@ type WarfareAnalyzerProps = {
 const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
   className,
   style,
-  params,
+  ctx,
   attacker,
   target,
 }) => {
   const { core } = useFhCore();
 
-  const info = core.analyze_warfare(params, attacker, target);
+  const info = core.analyze_warfare(ctx, attacker, target);
   const day = info?.day;
   const closing_torpedo = info?.closing_torpedo;
   const night = info?.night;
@@ -50,10 +50,8 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
     },
   ].filter(nonNullable);
 
-  const attackerColor = getTypeColor(
-    params.warfare_context.attacker_env.org_type
-  );
-  const targetColor = getTypeColor(params.warfare_context.target_env.org_type);
+  const attackerColor = getTypeColor(ctx.attacker_env.org_type);
+  const targetColor = getTypeColor(ctx.target_env.org_type);
 
   return (
     <Paper className={className} style={style}>

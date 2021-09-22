@@ -177,10 +177,6 @@ export const createDeckItems = (obj: {
     }
   });
 
-  if (Object.keys(result).length === 0) {
-    return;
-  }
-
   return result;
 };
 

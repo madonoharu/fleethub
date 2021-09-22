@@ -161,6 +161,7 @@ pub fn special_enemy_modifiers(
 
     let toku_daihatsu_count = gears.count(gear_id!("特大発動艇"));
     let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
+    let africa_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
     let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
     let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
@@ -286,6 +287,7 @@ pub fn special_enemy_modifiers(
         apply_mod!(a6, landing_craft_count, [1.7]);
         apply_mod!(a6, toku_daihatsu_count, [1.2]);
         apply_mod!(a6, t89_tank_count, [1.3, 1.3 * 1.6]);
+        apply_mod!(a6, africa_count, [1.3]); //2積み検証待ち
         apply_mod!(a6, m4a1dd_count, [1.2]);
         apply_mod!(a6, t2_tank_count, [1.7, 1.7 * 1.5]);
         apply_mod!(a6, armored_boat_group_count, [1.5, 1.5 * 1.1]);
@@ -302,6 +304,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, landing_craft_count, [1.8]);
             apply_mod!(a13, toku_daihatsu_count, [1.15]);
             apply_mod!(a13, t89_tank_count, [1.5, 1.5 * 1.4]);
+            apply_mod!(a13, africa_count, [1.5]); //2積み検証待ち
             apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [2.0]);
             apply_mod!(a13, t2_tank_count, [2.4, 2.4 * 1.35]);
@@ -322,6 +325,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, landing_craft_count, [1.8]);
             apply_mod!(a13, toku_daihatsu_count, [1.15]);
             apply_mod!(a13, t89_tank_count, [1.2, 1.2 * 1.4]);
+            // apply_mod!(a13, africa_count, [1.2]); //検証待ち
             apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [1.8]);
             apply_mod!(a13, t2_tank_count, [2.4, 2.4 * 1.35]);
@@ -341,6 +345,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, landing_craft_count, [1.7]);
             apply_mod!(a13, toku_daihatsu_count, [1.2]);
             apply_mod!(a13, t89_tank_count, [1.6, 1.6 * 1.5]);
+            // apply_mod!(a13, africa_count, [1.6]); //検証待ち
             apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [2.0]);
             apply_mod!(a13, t2_tank_count, [2.8]);
@@ -354,6 +359,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, landing_craft_count, [1.4]);
             apply_mod!(a13, toku_daihatsu_count, [1.15]);
             apply_mod!(a13, t89_tank_count, [1.5, 1.5 * 1.3]);
+            apply_mod!(a13, africa_count, [1.5]); //2積み検証待ち
             apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [1.1]);
             apply_mod!(a13, t2_tank_count, [1.5, 1.5 * 1.2]);

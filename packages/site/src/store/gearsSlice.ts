@@ -13,6 +13,7 @@ export const gearsSlice = createSlice({
   initialState: gearsAdapter.getInitialState(),
   reducers: {
     update: gearsAdapter.updateOne,
+    updateMany: gearsAdapter.updateMany,
     remove: gearsAdapter.removeOne,
   },
   extraReducers: (builder) => {

@@ -35,7 +35,7 @@ const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
       panel: <NightCutinScreen org={org} fleetKey={fleetKey} />,
     },
     { label: "対空", panel: <AntiAirScreen org={org} fleetKey={fleetKey} /> },
-    { label: "その他", panel: <MiscScreen org={org} /> },
+    { label: "その他", panel: <MiscScreen org={org} fleetKey={fleetKey} /> },
   ];
 
   return (
@@ -48,10 +48,7 @@ const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
 export default styled(FleetInfoPanel)`
   padding: 8px;
   min-height: 480px;
-  > * {
-    margin-right: auto;
-    margin-left: auto;
-  }
+
   > .MuiTabs-root {
     margin-bottom: 8px;
   }

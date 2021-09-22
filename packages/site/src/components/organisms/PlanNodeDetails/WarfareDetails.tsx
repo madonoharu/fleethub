@@ -1,99 +1,68 @@
 import {
-  AirState,
-  Engagement,
-  Formation,
   Org,
   Ship,
   Side,
-  NightSituation,
-  WarfareAnalysisParams,
+  WarfareAnalyzerContext,
+  WarfareAnalyzerShipEnvironment,
 } from "@fh/core";
 import React from "react";
+import { PlanNodeDetailsConfig } from "../../../store";
 import { Flexbox } from "../../atoms";
 import WarfareAnalyzer from "../WarfareAnalyzer";
 
 type WarfareDetailsProps = {
   playerOrg: Org;
   playerShip: Ship;
-  playerFormation: Formation;
-  playerNightSituation: NightSituation;
   enemyOrg: Org;
   enemyShip: Ship;
-  enemyFormation: Formation;
-  enemyNightSituation: NightSituation;
-  air_state: AirState;
-  engagement: Engagement;
+  config: PlanNodeDetailsConfig;
 };
 
-const createArgs = (
-  {
-    playerOrg,
-    playerShip,
-    playerFormation,
-    playerNightSituation,
-    enemyOrg,
-    enemyShip,
-    enemyFormation,
-    enemyNightSituation,
-    air_state,
-    engagement,
-  }: WarfareDetailsProps,
+const createAnalyzerProps = (
+  { playerOrg, playerShip, enemyOrg, enemyShip, config }: WarfareDetailsProps,
   attackerSide: Side
-): [WarfareAnalysisParams, Ship, Ship] | undefined => {
-  let attackerOrg: Org;
-  let attackerFormation: Formation;
-  let attacker_night_situation: NightSituation;
-  let attacker: Ship;
-  let targetOrg: Org;
-  let targetFormation: Formation;
-  let target_night_situation: NightSituation;
-  let target: Ship;
-
-  if (attackerSide == "Player") {
-    attackerOrg = playerOrg;
-    attackerFormation = playerFormation;
-    attacker_night_situation = playerNightSituation;
-    attacker = playerShip;
-    targetOrg = enemyOrg;
-    targetFormation = enemyFormation;
-    target_night_situation = enemyNightSituation;
-    target = enemyShip;
-  } else {
-    attackerOrg = enemyOrg;
-    attackerFormation = enemyFormation;
-    attacker_night_situation = enemyNightSituation;
-    attacker = enemyShip;
-    targetOrg = playerOrg;
-    targetFormation = playerFormation;
-    target_night_situation = playerNightSituation;
-    target = playerShip;
-  }
-
-  const attacker_env = attackerOrg.create_warfare_ship_environment(
-    attacker,
-    attackerFormation
-  );
-  const target_env = targetOrg.create_warfare_ship_environment(
-    target,
-    targetFormation
-  );
-
-  if (!attacker_env || !target_env) {
-    return;
-  }
-
-  const params: WarfareAnalysisParams = {
-    warfare_context: {
-      attacker_env,
-      target_env,
-      air_state,
-      engagement,
-    },
-    attacker_night_situation,
-    target_night_situation,
+) => {
+  const playerEnv = {
+    ...playerOrg.create_warfare_ship_environment(
+      playerShip,
+      config.player.formation
+    ),
+    ...config.player,
   };
 
-  return [params, attacker, target];
+  const enemyEnv = {
+    ...enemyOrg.create_warfare_ship_environment(
+      enemyShip,
+      config.enemy.formation
+    ),
+    ...config.enemy,
+  };
+
+  let attacker: Ship;
+  let attacker_env: WarfareAnalyzerShipEnvironment;
+  let target: Ship;
+  let target_env: WarfareAnalyzerShipEnvironment;
+
+  if (attackerSide == "Player") {
+    attacker = playerShip;
+    attacker_env = playerEnv;
+    target = enemyShip;
+    target_env = enemyEnv;
+  } else {
+    attacker = enemyShip;
+    attacker_env = enemyEnv;
+    target = playerShip;
+    target_env = playerEnv;
+  }
+
+  const ctx: WarfareAnalyzerContext = {
+    attacker_env,
+    target_env,
+    air_state: config.air_state,
+    engagement: config.engagement,
+  };
+
+  return { ctx, attacker, target };
 };
 
 const WarfareDetails: React.FCX<WarfareDetailsProps> = ({
@@ -101,8 +70,8 @@ const WarfareDetails: React.FCX<WarfareDetailsProps> = ({
   style,
   ...rest
 }) => {
-  const args1 = createArgs(rest, "Player");
-  const args2 = createArgs(rest, "Enemy");
+  const props1 = createAnalyzerProps(rest, "Player");
+  const props2 = createAnalyzerProps(rest, "Enemy");
 
   return (
     <Flexbox
@@ -115,20 +84,8 @@ const WarfareDetails: React.FCX<WarfareDetailsProps> = ({
         },
       }}
     >
-      {args1 && (
-        <WarfareAnalyzer
-          params={args1[0]}
-          attacker={args1[1]}
-          target={args1[2]}
-        />
-      )}
-      {args2 && (
-        <WarfareAnalyzer
-          params={args2[0]}
-          attacker={args2[1]}
-          target={args2[2]}
-        />
-      )}
+      {props1 && <WarfareAnalyzer {...props1} />}
+      {props2 && <WarfareAnalyzer {...props2} />}
     </Flexbox>
   );
 };

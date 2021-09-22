@@ -30,7 +30,7 @@ export type FileLabelProps = {
   onClick?: () => void;
 } & DraggableFileProps;
 
-const handleActionClick = (event: React.MouseEvent) => event.preventDefault();
+const handleActionClick = (event: React.MouseEvent) => event.stopPropagation();
 
 const FileLabel: React.FCX<FileLabelProps> = ({
   className,

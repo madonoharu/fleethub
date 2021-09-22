@@ -4,10 +4,12 @@ import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
-import { fleetsSlice } from "../../../store";
-import { Flexbox } from "../../atoms";
-import { DeleteButton, MoreVertButton, SelectedMenu } from "../../molecules";
 
+import { useModal } from "../../../hooks";
+import { fleetsSlice, gearsSlice } from "../../../store";
+import { Flexbox } from "../../atoms";
+import { DeleteButton, BuildButton, SelectedMenu } from "../../molecules";
+import BatchOperations from "../BatchOperations";
 import FleetShipList from "./FleetShipList";
 
 const FLEET_LENS = [1, 2, 3, 4, 5, 6, 7];
@@ -18,6 +20,7 @@ type FleetScreenProps = {
 
 const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
   const dispatch = useDispatch();
+  const BatchOperationModal = useModal();
   const { t } = useTranslation("common");
 
   const handleFleetLenChange = (len: number) => {
@@ -40,14 +43,38 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
           value={fleet.len}
           onChange={handleFleetLenChange}
         />
-        <MoreVertButton size="small" />
+        <BuildButton
+          title={t("BatchOperation")}
+          size="small"
+          onClick={BatchOperationModal.show}
+        />
         <DeleteButton
           title="この艦隊の艦娘を削除"
           size="small"
           onClick={handleRemoveShips}
         />
       </Flexbox>
+
       <FleetShipList fleet={fleet} />
+
+      <BatchOperationModal>
+        <BatchOperations
+          onStarsClick={(stars) => {
+            const ids = fleet.get_gear_ids_by_improvable();
+            const changes = { stars };
+            const payload = ids.map((id) => ({ id, changes }));
+
+            dispatch(gearsSlice.actions.updateMany(payload));
+          }}
+          onExpClick={(exp) => {
+            const ids = fleet.get_gear_ids_by_proficiency();
+            const changes = { exp };
+            const payload = ids.map((id) => ({ id, changes }));
+
+            dispatch(gearsSlice.actions.updateMany(payload));
+          }}
+        />
+      </BatchOperationModal>
     </div>
   );
 };

@@ -85,6 +85,8 @@ const ContactChancePanel: React.FCX<FleetInfoPanelProps> = ({
 
 export default styled(ContactChancePanel)`
   width: 620px;
+  margin-right: auto;
+  margin-left: auto;
   > * {
     margin-bottom: 16px;
   }

@@ -3,21 +3,19 @@ import { Ship } from "@fh/core";
 import { Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useModal } from "../../../hooks";
 
 import { ShipEntity } from "../../../store";
 import {
   EditButton,
   ClearButton,
   InfoButton,
-  StarButton,
   UpdateButton,
 } from "../../molecules";
-import ShipDetails from "../ShipDetails";
 import LevelButton from "./LevelButton";
 
 type Props = {
   ship: Ship;
+  disableHeaderAction?: boolean;
   onUpdate?: (changes: Partial<ShipEntity>) => void;
   onEditClick?: () => void;
   onDetailClick?: () => void;
@@ -28,14 +26,13 @@ type Props = {
 const ShipHeader: React.FCX<Props> = ({
   className,
   ship,
+  disableHeaderAction,
   onUpdate,
   onEditClick,
   onDetailClick,
   onReselect,
   onRemove,
 }) => {
-  const DetailModal = useModal();
-
   const { t } = useTranslation(["ships", "common"]);
 
   return (
@@ -49,26 +46,30 @@ const ShipHeader: React.FCX<Props> = ({
         {t(`ships:${ship.ship_id}`, ship.name)}
       </Typography>
 
-      <EditButton
-        title={t("common:EditMiscStats")}
-        size="tiny"
-        onClick={onEditClick}
-      />
-      <InfoButton
-        title={t("common:Details")}
-        size="tiny"
-        onClick={DetailModal.show}
-      />
-      <UpdateButton
-        title={t("common:Change")}
-        size="tiny"
-        onClick={onReselect}
-      />
-      <ClearButton title={t("common:Remove")} size="tiny" onClick={onRemove} />
-
-      <DetailModal full>
-        <ShipDetails ship={ship} />
-      </DetailModal>
+      {!disableHeaderAction && (
+        <>
+          <EditButton
+            title={t("common:EditMiscStats")}
+            size="tiny"
+            onClick={onEditClick}
+          />
+          <InfoButton
+            title={t("common:Details")}
+            size="tiny"
+            onClick={onDetailClick}
+          />
+          <UpdateButton
+            title={t("common:Change")}
+            size="tiny"
+            onClick={onReselect}
+          />
+          <ClearButton
+            title={t("common:Remove")}
+            size="tiny"
+            onClick={onRemove}
+          />
+        </>
+      )}
     </div>
   );
 };

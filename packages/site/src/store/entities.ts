@@ -1,4 +1,11 @@
-import { MasterDataInput, OrgParams, Ship, ShipParams } from "@fh/core";
+import {
+  AttackPowerModifiers,
+  MasterDataInput,
+  NightSituation,
+  OrgParams,
+  Ship,
+  ShipParams,
+} from "@fh/core";
 import {
   AIR_SQUADRON_KEYS,
   Dict,
@@ -402,6 +409,31 @@ export const createPlan = createAction<PrepareAction<SetEntitiesPayload>>(
   }
 );
 
+export const initalNightSituation: NightSituation = {
+  night_contact_rank: null,
+  searchlight: false,
+  starshell: false,
+};
+
+export const initalAttackPowerModifiers: AttackPowerModifiers = {
+  a11: 1,
+  a12: 1,
+  a13: 1,
+  a13_2: 1,
+  a14: 1,
+  a5: 1,
+  a6: 1,
+  a7: 1,
+  b11: 0,
+  b12: 0,
+  b13: 0,
+  b13_2: 0,
+  b14: 0,
+  b5: 0,
+  b6: 0,
+  b7: 0,
+};
+
 export const createPlanNode = createAction(
   "entities/createPlanNode",
   (fileId: string, event: MapEnemySelectEvent) => {
@@ -411,8 +443,21 @@ export const createPlanNode = createAction(
       name: event.name,
       type: event.type,
       d: event.d,
-      enemy_formation: event.formation,
       org: result,
+      config: {
+        air_state: "AirSupremacy",
+        engagement: "Parallel",
+        player: {
+          formation: "LineAhead",
+          night_situation: initalNightSituation,
+          external_power_mods: initalAttackPowerModifiers,
+        },
+        enemy: {
+          formation: event.formation,
+          night_situation: initalNightSituation,
+          external_power_mods: initalAttackPowerModifiers,
+        },
+      },
     };
 
     return {

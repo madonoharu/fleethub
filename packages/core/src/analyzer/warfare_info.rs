@@ -3,12 +3,15 @@ use ts_rs::TS;
 
 use crate::{
     attack::{
-        AswAttackContext, AswAttackType, AswTime, NightAttackContext, NightAttackType,
-        NightSituation, ShellingAttackContext, ShellingAttackType, TorpedoAttackContext,
-        WarfareContext,
+        AswAttackContext, AswAttackType, AswTime, AttackPowerModifiers, NightAttackContext,
+        NightAttackType, NightSituation, ShellingAttackContext, ShellingAttackType,
+        TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
     },
     ship::Ship,
-    types::{DamageState, DayCutin, GearAttr, MasterData, NightCutin, ShipClass},
+    types::{
+        AirState, DamageState, DayCutin, Engagement, Formation, GearAttr, MasterData, NightCutin,
+        OrgType, Role, ShipClass,
+    },
 };
 
 use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightCutinRateAnalyzer};
@@ -87,134 +90,66 @@ pub type DayBattleAttackInfo = AttackInfo<DayBattleAttackType, Option<DayCutin>>
 pub type NightBattleAttackInfo = AttackInfo<NightBattleAttackType, Option<NightCutin>>;
 pub type TorpedoAttackInfo = AttackInfo<(), ()>;
 
-fn analyze_asw_attack(
-    master_data: &MasterData,
-    ctx: &WarfareContext,
-    attack_type: AswAttackType,
-    time: AswTime,
-    attacker: &Ship,
-    target: &Ship,
-) -> AttackStats {
-    let asw_ctx = AswAttackContext::new(master_data, ctx, attack_type, time);
-    asw_ctx.attack_params(attacker, target).into_stats()
+#[derive(Debug, Clone, Deserialize, TS)]
+pub struct WarfareAnalyzerShipEnvironment {
+    pub org_type: OrgType,
+    pub role: Role,
+    pub ship_index: usize,
+    pub fleet_len: usize,
+    pub formation: Formation,
+    pub fleet_los_mod: Option<f64>,
+    pub night_situation: NightSituation,
+    pub external_power_mods: AttackPowerModifiers,
 }
 
-pub fn analyze_day_battle_attack(
-    master_data: &MasterData,
-    ctx: &WarfareContext,
-    attacker: &Ship,
-    target: &Ship,
-) -> Option<DayBattleAttackInfo> {
-    let attack_type = get_day_battle_attack_type(attacker, target)?;
+impl WarfareAnalyzerShipEnvironment {
+    pub fn is_flagship(&self) -> bool {
+        self.ship_index == 0
+    }
+    pub fn is_main_flagship(&self) -> bool {
+        self.role.is_main() && self.is_flagship()
+    }
 
-    let items = match attack_type {
-        DayBattleAttackType::Shelling(t) => {
-            let day_cutin_rate_info = DayCutinRateInfo::new(
-                &master_data.constants.day_cutins,
-                attacker,
-                ctx.attacker_env.fleet_los_mod,
-                ctx.attacker_env.is_main_flagship(),
-                ctx.air_state,
-            );
+    pub fn as_warfare_ship_environment(&self) -> WarfareShipEnvironment {
+        let Self {
+            org_type,
+            role,
+            ship_index,
+            fleet_len,
+            formation,
+            fleet_los_mod,
+            ..
+        } = *self;
 
-            let items = day_cutin_rate_info
-                .rates
-                .into_iter()
-                .map(|(cutin, rate)| {
-                    let shelling_ctx = ShellingAttackContext::new(master_data, &ctx, t, cutin);
-                    let stats = shelling_ctx.attack_params(attacker, target).into_stats();
-
-                    AttackInfoItem { rate, cutin, stats }
-                })
-                .collect::<Vec<_>>();
-
-            items
+        WarfareShipEnvironment {
+            org_type,
+            role,
+            ship_index,
+            fleet_len,
+            formation,
+            fleet_los_mod,
         }
-        DayBattleAttackType::Asw(t) => {
-            let stats = analyze_asw_attack(master_data, ctx, t, AswTime::Day, attacker, target);
-
-            let item = AttackInfoItem {
-                cutin: None,
-                rate: Some(1.0),
-                stats,
-            };
-
-            vec![item]
-        }
-    };
-
-    Some(DayBattleAttackInfo::new(attack_type, items))
+    }
 }
 
-pub fn analyze_night_battle(
-    master_data: &MasterData,
-    ctx: &WarfareContext,
-    attacker_situation: &NightSituation,
-    target_situation: &NightSituation,
-    attacker: &Ship,
-    target: &Ship,
-) -> Option<NightBattleAttackInfo> {
-    let attack_type = get_night_battle_attack_type(attacker, target)?;
-
-    let items = match attack_type {
-        NightBattleAttackType::NightAttack(attack_type) => {
-            let cutin_rate_info = NightCutinRateAnalyzer::new(&master_data.constants)
-                .analyze_cutin_rates(
-                    attacker,
-                    ctx.attacker_env.is_flagship(),
-                    attacker_situation,
-                    target_situation,
-                );
-
-            let items = cutin_rate_info
-                .rates
-                .into_iter()
-                .map(|(cutin, rate)| {
-                    let night_ctx = NightAttackContext::new(
-                        master_data,
-                        ctx,
-                        attacker_situation,
-                        target_situation,
-                        attack_type,
-                        cutin,
-                    );
-
-                    let stats = night_ctx.attack_params(attacker, target).into_stats();
-
-                    AttackInfoItem { cutin, rate, stats }
-                })
-                .collect::<Vec<_>>();
-
-            items
-        }
-        NightBattleAttackType::Asw(attack_type) => {
-            let stats = analyze_asw_attack(
-                master_data,
-                ctx,
-                attack_type,
-                AswTime::Night,
-                attacker,
-                target,
-            );
-
-            let item = AttackInfoItem {
-                cutin: None,
-                rate: Some(1.0),
-                stats,
-            };
-
-            vec![item]
-        }
-    };
-
-    Some(NightBattleAttackInfo::new(attack_type, items))
+#[derive(Debug, Clone, Deserialize, TS)]
+pub struct WarfareAnalyzerContext {
+    pub attacker_env: WarfareAnalyzerShipEnvironment,
+    pub target_env: WarfareAnalyzerShipEnvironment,
+    pub engagement: Engagement,
+    pub air_state: AirState,
 }
 
-#[derive(Debug, Deserialize, TS)]
-pub struct WarfareAnalysisParams {
-    warfare_context: WarfareContext,
-    attacker_night_situation: NightSituation,
-    target_night_situation: NightSituation,
+impl WarfareAnalyzerContext {
+    pub fn to_warfare_context(&self) -> WarfareContext {
+        WarfareContext {
+            attacker_env: self.attacker_env.as_warfare_ship_environment(),
+            target_env: self.target_env.as_warfare_ship_environment(),
+            engagement: self.engagement,
+            air_state: self.air_state,
+            external_power_mods: self.attacker_env.external_power_mods.clone(),
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -259,9 +194,134 @@ impl TS for WarfareInfo {
     }
 }
 
-fn analyze_torpedo_attack(
+fn analyze_asw_attack(
     master_data: &MasterData,
     ctx: &WarfareContext,
+    attack_type: AswAttackType,
+    time: AswTime,
+    attacker: &Ship,
+    target: &Ship,
+) -> AttackStats {
+    let asw_ctx = AswAttackContext::new(master_data, ctx, attack_type, time);
+    asw_ctx.attack_params(attacker, target).into_stats()
+}
+
+pub fn analyze_day_battle_attack(
+    master_data: &MasterData,
+    ctx: &WarfareAnalyzerContext,
+    attacker: &Ship,
+    target: &Ship,
+) -> Option<DayBattleAttackInfo> {
+    let attack_type = get_day_battle_attack_type(attacker, target)?;
+    let warfare_ctx = ctx.to_warfare_context();
+
+    let items = match attack_type {
+        DayBattleAttackType::Shelling(t) => {
+            let day_cutin_rate_info = DayCutinRateInfo::new(
+                &master_data.constants.day_cutins,
+                attacker,
+                ctx.attacker_env.fleet_los_mod,
+                ctx.attacker_env.is_main_flagship(),
+                ctx.air_state,
+            );
+
+            let items = day_cutin_rate_info
+                .rates
+                .into_iter()
+                .map(|(cutin, rate)| {
+                    let shelling_ctx =
+                        ShellingAttackContext::new(master_data, &warfare_ctx, t, cutin);
+                    let stats = shelling_ctx.attack_params(attacker, target).into_stats();
+
+                    AttackInfoItem { rate, cutin, stats }
+                })
+                .collect::<Vec<_>>();
+
+            items
+        }
+        DayBattleAttackType::Asw(t) => {
+            let stats =
+                analyze_asw_attack(master_data, &warfare_ctx, t, AswTime::Day, attacker, target);
+
+            let item = AttackInfoItem {
+                cutin: None,
+                rate: Some(1.0),
+                stats,
+            };
+
+            vec![item]
+        }
+    };
+
+    Some(DayBattleAttackInfo::new(attack_type, items))
+}
+
+pub fn analyze_night_battle(
+    master_data: &MasterData,
+    ctx: &WarfareAnalyzerContext,
+    attacker: &Ship,
+    target: &Ship,
+) -> Option<NightBattleAttackInfo> {
+    let attack_type = get_night_battle_attack_type(attacker, target)?;
+    let warfare_ctx = ctx.to_warfare_context();
+
+    let items = match attack_type {
+        NightBattleAttackType::NightAttack(attack_type) => {
+            let cutin_rate_info = NightCutinRateAnalyzer::new(&master_data.constants)
+                .analyze_cutin_rates(
+                    attacker,
+                    ctx.attacker_env.is_flagship(),
+                    &ctx.attacker_env.night_situation,
+                    &ctx.target_env.night_situation,
+                );
+
+            let items = cutin_rate_info
+                .rates
+                .into_iter()
+                .map(|(cutin, rate)| {
+                    let night_ctx = NightAttackContext::new(
+                        master_data,
+                        &warfare_ctx,
+                        &ctx.attacker_env.night_situation,
+                        &ctx.target_env.night_situation,
+                        attack_type,
+                        cutin,
+                    );
+
+                    let stats = night_ctx.attack_params(attacker, target).into_stats();
+
+                    AttackInfoItem { cutin, rate, stats }
+                })
+                .collect::<Vec<_>>();
+
+            items
+        }
+        NightBattleAttackType::Asw(attack_type) => {
+            let stats = analyze_asw_attack(
+                master_data,
+                &warfare_ctx,
+                attack_type,
+                AswTime::Night,
+                attacker,
+                target,
+            );
+
+            let item = AttackInfoItem {
+                cutin: None,
+                rate: Some(1.0),
+                stats,
+            };
+
+            vec![item]
+        }
+    };
+
+    Some(NightBattleAttackInfo::new(attack_type, items))
+}
+
+fn analyze_torpedo_attack(
+    master_data: &MasterData,
+    ctx: &WarfareAnalyzerContext,
     attacker: &Ship,
     target: &Ship,
 ) -> Option<AttackInfo<(), ()>> {
@@ -271,8 +331,9 @@ fn analyze_torpedo_attack(
     {
         return None;
     }
+    let warfare_ctx = ctx.to_warfare_context();
 
-    let torpedo_ctx = TorpedoAttackContext::new(master_data, ctx);
+    let torpedo_ctx = TorpedoAttackContext::new(master_data, &warfare_ctx);
     let stats = torpedo_ctx.attack_params(attacker, target).into_stats();
 
     let item = AttackInfoItem {
@@ -287,27 +348,15 @@ fn analyze_torpedo_attack(
 
 pub fn analyze_warfare(
     master_data: &MasterData,
-    params: &WarfareAnalysisParams,
+    ctx: &WarfareAnalyzerContext,
     attacker: &Ship,
     target: &Ship,
 ) -> WarfareInfo {
-    let WarfareAnalysisParams {
-        warfare_context,
-        attacker_night_situation,
-        target_night_situation,
-    } = params;
-    let day = analyze_day_battle_attack(master_data, warfare_context, attacker, target);
+    let day = analyze_day_battle_attack(master_data, ctx, attacker, target);
 
-    let night = analyze_night_battle(
-        master_data,
-        warfare_context,
-        attacker_night_situation,
-        target_night_situation,
-        attacker,
-        target,
-    );
+    let night = analyze_night_battle(master_data, ctx, attacker, target);
 
-    let closing_torpedo = analyze_torpedo_attack(master_data, warfare_context, attacker, target);
+    let closing_torpedo = analyze_torpedo_attack(master_data, ctx, attacker, target);
 
     WarfareInfo {
         day,

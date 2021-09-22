@@ -3,11 +3,10 @@ import {
   AirState,
   Engagement,
   FleetParams,
-  Formation,
   GearParams,
-  NightSituation,
   OrgParams,
   ShipParams,
+  WarfareAnalyzerShipEnvironment,
 } from "@fh/core";
 import {
   AirSquadronKey,
@@ -54,17 +53,24 @@ export type FolderEntity = FileEntityBase<
   }
 >;
 
+type PlanNodeDetailsConfigShipEnv = Pick<
+  WarfareAnalyzerShipEnvironment,
+  "formation" | "night_situation" | "external_power_mods"
+>;
+
+export type PlanNodeDetailsConfig = {
+  player: PlanNodeDetailsConfigShipEnv;
+  enemy: PlanNodeDetailsConfigShipEnv;
+  air_state: AirState;
+  engagement: Engagement;
+};
+
 export type PlanNode = {
   name: string;
   type: MapNode["type"];
   d: MapNode["d"];
   org: string;
-  air_state?: AirState;
-  engagement?: Engagement;
-  player_formation?: Formation;
-  enemy_formation?: Formation;
-  playerNightSituation?: NightSituation;
-  enemyNightSituation?: NightSituation;
+  config: PlanNodeDetailsConfig;
 };
 
 export type PlanFileEntity = FileEntityBase<

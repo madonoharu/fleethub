@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { OrgType, Ship } from "@fh/core";
+import { Org, OrgType, Ship } from "@fh/core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -12,7 +12,7 @@ import { produce } from "immer";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCore, useOrgContext } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import {
   shipDetailsSlice,
   ShipDetailsState,
@@ -31,11 +31,11 @@ const isEnemy = (type: OrgType) =>
 
 type ShipDetailsProps = {
   ship: Ship;
+  org?: Org;
 };
 
-const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship }) => {
+const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
   const { core } = useFhCore();
-  const org = useOrgContext();
 
   const state = useSelector((root) => root.present.shipDetails);
   const dispatch = useDispatch();
@@ -126,7 +126,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship }) => {
           },
         }}
       >
-        <ShipCard ship={ship} visibleMiscStats />
+        <ShipCard ship={ship} org={org} visibleMiscStats disableHeaderAction />
         <AttackPowerAnalyzer core={core} state={state} ship={ship} />
       </Flexbox>
 
