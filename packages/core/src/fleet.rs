@@ -42,12 +42,17 @@ impl Fleet {
         format!("{:X}", self.xxh3)
     }
 
-    pub fn ship_keys(&self) -> JsValue {
-        let keys = (0..self.len)
-            .map(|i| format!("s{}", i + 1))
-            .collect::<Vec<String>>();
+    pub fn ship_keys(&self) -> Vec<JsString> {
+        (0..self.len)
+            .map(|i| JsString::from(format!("s{}", i + 1)))
+            .collect()
+    }
 
-        JsValue::from_serde(&keys).unwrap()
+    pub fn ship_ids(&self) -> Vec<JsString> {
+        self.ships
+            .values()
+            .map(|ship| JsString::from(ship.id()))
+            .collect()
     }
 
     pub fn get_gear_ids_by_improvable(&self) -> Vec<JsString> {

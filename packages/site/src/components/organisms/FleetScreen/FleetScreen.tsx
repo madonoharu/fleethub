@@ -6,7 +6,7 @@ import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
 import { useModal } from "../../../hooks";
-import { fleetsSlice, gearsSlice } from "../../../store";
+import { fleetsSlice, gearsSlice, shipsSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton, BuildButton, SelectedMenu } from "../../molecules";
 import BatchOperations from "../BatchOperations";
@@ -20,7 +20,7 @@ type FleetScreenProps = {
 
 const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
   const dispatch = useDispatch();
-  const BatchOperationModal = useModal();
+  const BatchOperationsModal = useModal();
   const { t } = useTranslation("common");
 
   const handleFleetLenChange = (len: number) => {
@@ -29,6 +29,27 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
 
   const handleRemoveShips = () => {
     dispatch(fleetsSlice.actions.removeShips(fleet.id));
+  };
+
+  const handleStarsClick = (value: number | undefined) => {
+    const ids = fleet.get_gear_ids_by_improvable();
+    const changes = { stars: value };
+    const payload = ids.map((id) => ({ id, changes }));
+
+    dispatch(gearsSlice.actions.updateMany(payload));
+  };
+
+  const handleExpClick = (value: number | undefined) => {
+    const ids = fleet.get_gear_ids_by_proficiency();
+    const changes = { exp: value };
+    const payload = ids.map((id) => ({ id, changes }));
+
+    dispatch(gearsSlice.actions.updateMany(payload));
+  };
+
+  const handleSlotSizeReset = () => {
+    const ids = fleet.ship_ids();
+    dispatch(shipsSlice.actions.resetSlotSize(ids));
   };
 
   return (
@@ -46,7 +67,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
         <BuildButton
           title={t("BatchOperation")}
           size="small"
-          onClick={BatchOperationModal.show}
+          onClick={BatchOperationsModal.show}
         />
         <DeleteButton
           title="この艦隊の艦娘を削除"
@@ -57,24 +78,13 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
 
       <FleetShipList fleet={fleet} />
 
-      <BatchOperationModal>
+      <BatchOperationsModal>
         <BatchOperations
-          onStarsClick={(stars) => {
-            const ids = fleet.get_gear_ids_by_improvable();
-            const changes = { stars };
-            const payload = ids.map((id) => ({ id, changes }));
-
-            dispatch(gearsSlice.actions.updateMany(payload));
-          }}
-          onExpClick={(exp) => {
-            const ids = fleet.get_gear_ids_by_proficiency();
-            const changes = { exp };
-            const payload = ids.map((id) => ({ id, changes }));
-
-            dispatch(gearsSlice.actions.updateMany(payload));
-          }}
+          onStarsClick={handleStarsClick}
+          onExpClick={handleExpClick}
+          onSlotSizeReset={handleSlotSizeReset}
         />
-      </BatchOperationModal>
+      </BatchOperationsModal>
     </div>
   );
 };

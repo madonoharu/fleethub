@@ -21,11 +21,13 @@ const createHandler =
 type BatchOperationPropss = {
   onStarsClick?: (value: number | undefined) => void;
   onExpClick?: (value: number | undefined) => void;
+  onSlotSizeReset?: () => void;
 };
 
 const BatchOperations: React.FCX<BatchOperationPropss> = ({
   onStarsClick,
   onExpClick,
+  onSlotSizeReset,
   ...rest
 }) => {
   const { t } = useTranslation("common");
@@ -63,6 +65,9 @@ const BatchOperations: React.FCX<BatchOperationPropss> = ({
           </Button>
         ))}
       </Flexbox>
+
+      <Divider />
+      <Button onClick={onSlotSizeReset}>搭載数を初期化</Button>
     </div>
   );
 };

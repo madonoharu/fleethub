@@ -1,3 +1,4 @@
+use js_sys::JsString;
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -112,14 +113,6 @@ impl Org {
         &self.f4
     }
 
-    pub fn night_fleet(&self) -> &Fleet {
-        if self.is_combined() {
-            self.escort()
-        } else {
-            self.main()
-        }
-    }
-
     pub fn get_main_and_escort_fleet_by_key(&self, key: &str) -> MainAndEscortFleet {
         let visible_escort = self.is_combined() && matches!(key, "f1" | "f2");
 
@@ -178,16 +171,23 @@ impl Org {
         self.get_ship(role, key).map(|ship| ship.id())
     }
 
-    pub fn ship_keys(&self, role: Role) -> JsValue {
+    pub fn air_squadron_ids(&self) -> Vec<JsString> {
+        [&self.a1.id, &self.a2.id, &self.a3.id]
+            .iter()
+            .map(|&id| JsString::from(id.clone()))
+            .collect()
+    }
+
+    pub fn ship_keys(&self, role: Role) -> Vec<JsString> {
         self.get_fleet_by_role(role).ship_keys()
     }
 
-    pub fn sortie_ship_keys(&self, role: Role) -> JsValue {
+    pub fn sortie_ship_keys(&self, role: Role) -> Option<Vec<JsString>> {
         if self.is_single() && role.is_escort() {
-            return JsValue::null();
+            return None;
         }
 
-        self.get_fleet_by_role(role).ship_keys()
+        Some(self.get_fleet_by_role(role).ship_keys())
     }
 
     pub fn fleet_los_mod(&self, role: Role) -> Option<f64> {
@@ -245,6 +245,24 @@ impl Org {
         };
 
         Ok(air_squadron.clone())
+    }
+
+    pub fn get_air_squadron_gear_ids_by_improvable(&self) -> Vec<JsString> {
+        [&self.a1, &self.a2, &self.a3]
+            .iter()
+            .flat_map(|air_squadron| air_squadron.gears.values())
+            .filter(|gear| gear.improvable)
+            .map(|gear| JsString::from(gear.id.clone()))
+            .collect()
+    }
+
+    pub fn get_air_squadron_gear_ids_by_proficiency(&self) -> Vec<JsString> {
+        [&self.a1, &self.a2, &self.a3]
+            .iter()
+            .flat_map(|air_squadron| air_squadron.gears.values())
+            .filter(|gear| gear.has_proficiency())
+            .map(|gear| JsString::from(gear.id.clone()))
+            .collect()
     }
 
     pub fn is_player(&self) -> bool {

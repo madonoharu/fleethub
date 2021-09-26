@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { nonNullable } from "@fh/utils";
 import { Divider as MuiDivider, DividerProps, Typography } from "@mui/material";
 import React from "react";
 
@@ -8,15 +9,17 @@ const StyledDivider = styled(MuiDivider)`
 `;
 
 type Props = DividerProps & {
-  label: React.ReactNode;
+  label?: React.ReactNode;
 };
 
 const Divider: React.FCX<Props> = ({ className, label, ...muiProps }) => {
   return (
     <div className={className}>
-      <Typography variant="caption" color="textSecondary">
-        {label}
-      </Typography>
+      {nonNullable(label) && (
+        <Typography variant="caption" color="textSecondary">
+          {label}
+        </Typography>
+      )}
       <StyledDivider {...muiProps} />
     </div>
   );

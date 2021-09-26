@@ -1026,16 +1026,16 @@ impl Ship {
         air_state: AirState,
     ) -> Option<f64> {
         let (as_mod1, as_mod2, as_mod3) = match air_state {
-            AirState::AirSupremacy => (0.7, 1.6, 10.),
-            AirState::AirSuperiority => (0.6, 1.2, 0.),
-            _ => return Some(0.),
+            AirState::AirSupremacy => (0.7, 1.6, 10.0),
+            AirState::AirSuperiority => (0.6, 1.2, 0.0),
+            _ => return Some(0.0),
         };
 
         let luck = self.luck()? as f64;
-        let equipment_los = self.gears.sum_by(|g| g.luck) as f64;
+        let equipment_los = self.gears.sum_by(|g| g.los) as f64;
 
-        let luck_factor = (luck.sqrt() + 10.).floor();
-        let flagship_mod = if is_main_flagship { 15. } else { 0. };
+        let luck_factor = (luck.sqrt() + 10.0).floor();
+        let flagship_mod = if is_main_flagship { 15.0 } else { 0.0 };
 
         let result = (luck_factor + as_mod1 * (fleet_los_mod + as_mod2 * equipment_los) + as_mod3)
             .floor()
@@ -1435,9 +1435,9 @@ impl Ship {
         let total = self
             .gears
             .without_ex()
-            .map(|(index, g)| {
-                if g.attrs.contains(GearAttr::ObservationSeaplane) {
-                    let los = g.los as f64;
+            .map(|(index, gear)| {
+                if gear.has_attr(GearAttr::ObservationSeaplane) {
+                    let los = gear.los as f64;
                     let slot_size = self.get_slot_size(index)? as f64;
 
                     Some(los * slot_size.sqrt().floor())
@@ -1447,9 +1447,9 @@ impl Ship {
             })
             .sum::<Option<f64>>()?;
 
-        let laked_los = self.naked_los()? as f64;
+        let naked_los = self.naked_los()? as f64;
 
-        Some(laked_los + total)
+        Some(naked_los + total)
     }
 
     pub fn fleet_anti_air(&self) -> i32 {

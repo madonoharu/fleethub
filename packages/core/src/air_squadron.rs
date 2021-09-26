@@ -135,17 +135,18 @@ impl AirSquadron {
         (total as f64 * recon_mod).floor() as i32
     }
 
+    /// 行動半径
     pub fn radius(&self) -> u8 {
         let min_radius = self
-            .gears
-            .values()
+            .gears_with_slot_size()
+            .filter_map(|(_, gear, slot_size)| (slot_size.unwrap_or_default() > 0).then(|| gear))
             .map(|gear| gear.radius)
             .min()
             .unwrap_or_default();
 
         let recon_max_radius = self
-            .gears
-            .values()
+            .gears_with_slot_size()
+            .filter_map(|(_, gear, slot_size)| (slot_size.unwrap_or_default() > 0).then(|| gear))
             .filter(|gear| gear.has_attr(GearAttr::Recon))
             .map(|gear| gear.radius)
             .max()
