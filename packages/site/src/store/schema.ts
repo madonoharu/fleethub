@@ -70,7 +70,7 @@ export type PlanNode = {
   type: MapNode["type"];
   d: MapNode["d"];
   org: string;
-  config: PlanNodeDetailsConfig;
+  config?: PlanNodeDetailsConfig;
 };
 
 export type PlanFileEntity = FileEntityBase<

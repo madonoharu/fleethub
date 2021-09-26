@@ -67,6 +67,7 @@ import {
   PlanFileEntity,
   PlanNode,
 } from "./schema";
+import { PlanNodeDetailsConfig } from ".";
 
 export const isFolder = (file?: FileEntity): file is FolderEntity =>
   Boolean(file && "children" in file);
@@ -434,6 +435,21 @@ export const initalAttackPowerModifiers: AttackPowerModifiers = {
   b7: 0,
 };
 
+export const initalPlanNodeDetailsConfig: PlanNodeDetailsConfig = {
+  air_state: "AirSupremacy",
+  engagement: "Parallel",
+  player: {
+    formation: "LineAhead",
+    night_situation: initalNightSituation,
+    external_power_mods: initalAttackPowerModifiers,
+  },
+  enemy: {
+    formation: "LineAhead",
+    night_situation: initalNightSituation,
+    external_power_mods: initalAttackPowerModifiers,
+  },
+};
+
 export const createPlanNode = createAction(
   "entities/createPlanNode",
   (fileId: string, event: MapEnemySelectEvent) => {
@@ -445,17 +461,10 @@ export const createPlanNode = createAction(
       d: event.d,
       org: result,
       config: {
-        air_state: "AirSupremacy",
-        engagement: "Parallel",
-        player: {
-          formation: "LineAhead",
-          night_situation: initalNightSituation,
-          external_power_mods: initalAttackPowerModifiers,
-        },
+        ...initalPlanNodeDetailsConfig,
         enemy: {
+          ...initalPlanNodeDetailsConfig.enemy,
           formation: event.formation,
-          night_situation: initalNightSituation,
-          external_power_mods: initalAttackPowerModifiers,
         },
       },
     };

@@ -6,6 +6,7 @@ pub mod gear;
 pub mod gear_array;
 pub mod org;
 pub mod ship;
+pub mod sortied_fleet;
 
 pub mod attack;
 pub mod types;
@@ -48,11 +49,6 @@ impl FhCore {
                 },
             })
             .map_err(|err| JsValue::from(err.to_string()))
-    }
-
-    #[cfg(feature = "console_error_panic_hook")]
-    pub fn init_console_panic(&self) {
-        console_error_panic_hook::set_once();
     }
 
     pub fn create_gear(&self, js: GearParams) -> Option<Gear> {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 export type Dict<K extends string | number | symbol, T> = Partial<Record<K, T>>;
 
 export type NullableArray<T> = Array<T | undefined>;
@@ -22,7 +23,7 @@ export type ValueOf<T> = { [K in keyof T]: T[K] }[keyof T];
 export type Literal = string | number | bigint | boolean;
 
 type PathImpl<T, Key extends keyof T> = Key extends string
-  ? T[Key] extends Record<string, unknown>
+  ? T[Key] extends object
     ?
         | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof unknown[]>> &
             string}`

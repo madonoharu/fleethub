@@ -4,62 +4,11 @@ use wasm_bindgen::prelude::*;
 use crate::{
     air_squadron::AirSquadron,
     attack::WarfareShipEnvironment,
-    fleet::{Fleet, ShipArray},
+    fleet::Fleet,
     ship::Ship,
+    sortied_fleet::SortiedFleet,
     types::{Formation, GearAttr, OrgType, Role, Side},
 };
-
-pub struct MainAndEscortShips<'a> {
-    count: usize,
-    main_ships: &'a ShipArray,
-    escort_ships: Option<&'a ShipArray>,
-}
-
-impl<'a> Iterator for MainAndEscortShips<'a> {
-    type Item = (Role, usize, &'a Ship);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let count = self.count;
-        self.count += 1;
-
-        let (role, index, ships) = if count < ShipArray::CAPACITY {
-            (Role::Main, count, self.main_ships)
-        } else if count < ShipArray::CAPACITY * 2 {
-            if let Some(escort_ships) = self.escort_ships {
-                (Role::Escort, count - ShipArray::CAPACITY, escort_ships)
-            } else {
-                return None;
-            }
-        } else {
-            return None;
-        };
-
-        if let Some(ship) = ships.get(index) {
-            Some((role, index, ship))
-        } else {
-            self.next()
-        }
-    }
-}
-
-pub struct MainAndEscortFleet<'a> {
-    pub main: &'a Fleet,
-    pub escort: Option<&'a Fleet>,
-}
-
-impl<'a> MainAndEscortFleet<'a> {
-    pub fn is_combined(&self) -> bool {
-        self.escort.is_some()
-    }
-
-    pub fn ships(&self) -> MainAndEscortShips<'a> {
-        MainAndEscortShips {
-            count: 0,
-            main_ships: &self.main.ships,
-            escort_ships: self.escort.map(|f| &f.ships),
-        }
-    }
-}
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
@@ -97,48 +46,24 @@ impl Org {
         self.org_type.side()
     }
 
-    pub fn main(&self) -> &Fleet {
-        &self.f1
-    }
-
-    pub fn escort(&self) -> &Fleet {
-        &self.f2
-    }
-
-    pub fn route_sup(&self) -> &Fleet {
-        &self.f3
-    }
-
-    pub fn boss_sup(&self) -> &Fleet {
-        &self.f4
-    }
-
-    pub fn get_main_and_escort_fleet_by_key(&self, key: &str) -> MainAndEscortFleet {
+    pub fn get_sortied_fleet_by_key(&self, key: &str) -> SortiedFleet {
         let visible_escort = self.is_combined() && matches!(key, "f1" | "f2");
 
         let main = if visible_escort {
-            self.main()
+            &self.f1
         } else {
             self.get_fleet_by_key(key)
         };
 
-        let escort = visible_escort.then(|| self.escort());
+        let escort = visible_escort.then(|| &self.f2);
 
-        MainAndEscortFleet { main, escort }
-    }
-
-    pub fn main_and_escort_ships(&self) -> MainAndEscortShips {
-        MainAndEscortShips {
-            count: 0,
-            main_ships: &self.main().ships,
-            escort_ships: self.is_combined().then(|| &self.escort().ships),
-        }
+        SortiedFleet { main, escort }
     }
 
     pub fn get_fleet_by_role(&self, role: Role) -> &Fleet {
         match role {
-            Role::Main => self.main(),
-            Role::Escort => self.escort(),
+            Role::Main => &self.f1,
+            Role::Escort => &self.f2,
         }
     }
 
@@ -195,19 +120,11 @@ impl Org {
     }
 
     pub fn main_ship_ids(&self) -> Vec<u16> {
-        self.main()
-            .ships
-            .values()
-            .map(|ship| ship.ship_id)
-            .collect()
+        self.f1.ships.values().map(|ship| ship.ship_id).collect()
     }
 
     pub fn escort_ship_ids(&self) -> Vec<u16> {
-        self.escort()
-            .ships
-            .values()
-            .map(|ship| ship.ship_id)
-            .collect()
+        self.f2.ships.values().map(|ship| ship.ship_id).collect()
     }
 
     pub fn clone_fleet(&self, key: &str) -> Fleet {
@@ -288,7 +205,8 @@ impl Org {
     /// 艦隊対空値
     pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
         let total = self
-            .main_and_escort_ships()
+            .get_sortied_fleet_by_key("f1")
+            .ships()
             .map(|(_, _, ship)| ship.fleet_anti_air())
             .sum::<i32>() as f64;
 
@@ -303,12 +221,12 @@ impl Org {
 
     /// 制空値
     pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
-        let main = self.main().fighter_power(anti_lbas)?;
+        let main = self.f1.fighter_power(anti_lbas)?;
 
         if self.org_type.is_single() || !anti_combined {
             Some(main)
         } else {
-            Some(main + self.escort().fighter_power(anti_lbas)?)
+            Some(main + self.f2.fighter_power(anti_lbas)?)
         }
     }
 
@@ -358,7 +276,7 @@ impl Org {
 
     /// 輸送物資量(TP)
     pub fn transport_point(&self, key: &str) -> i32 {
-        self.get_main_and_escort_fleet_by_key(key)
+        self.get_sortied_fleet_by_key(key)
             .ships()
             .into_iter()
             .map(|(_, _, ship)| ship.transport_point())
@@ -367,12 +285,8 @@ impl Org {
 
     /// マップ索敵
     pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
-        let total = self
-            .main_and_escort_ships()
-            .map(|(_, _, ship)| ship.elos(node_divaricated_factor))
-            .sum::<Option<f64>>()?;
-
-        Some(total - (0.4 * self.hq_level as f64).ceil() + 12.0)
+        self.get_sortied_fleet_by_key("f1")
+            .elos(self.hq_level as u8, node_divaricated_factor)
     }
 
     pub fn create_warfare_ship_environment(
@@ -381,7 +295,8 @@ impl Org {
         formation: Formation,
     ) -> WarfareShipEnvironment {
         let (role, ship_index) = self
-            .main_and_escort_ships()
+            .get_sortied_fleet_by_key("f1")
+            .ships()
             .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
             .or_else(|| {
                 self.f2

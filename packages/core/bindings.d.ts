@@ -388,7 +388,7 @@ export type ContactRank = "Rank1" | "Rank2" | "Rank3";
 
 export type Side = "Player" | "Enemy";
 
-export type Role = "Main" | "Escort" | "RouteSup" | "BossSup";
+export type Role = "Main" | "Escort";
 
 export type OrgType =
   | "Single"
@@ -683,6 +683,7 @@ export interface WarfareContext {
   target_env: WarfareShipEnvironment;
   engagement: Engagement;
   air_state: AirState;
+  external_power_mods: AttackPowerModifiers;
 }
 
 export interface NightSituation {
@@ -825,10 +826,22 @@ export type NightBattleAttackType =
       c: AswAttackType;
     };
 
-export interface WarfareAnalysisParams {
-  warfare_context: WarfareContext;
-  attacker_night_situation: NightSituation;
-  target_night_situation: NightSituation;
+export interface WarfareAnalyzerShipEnvironment {
+  org_type: OrgType;
+  role: Role;
+  ship_index: number;
+  fleet_len: number;
+  formation: Formation;
+  fleet_los_mod: number | null;
+  night_situation: NightSituation;
+  external_power_mods: AttackPowerModifiers;
+}
+
+export interface WarfareAnalyzerContext {
+  attacker_env: WarfareAnalyzerShipEnvironment;
+  target_env: WarfareAnalyzerShipEnvironment;
+  engagement: Engagement;
+  air_state: AirState;
 }
 
 export interface WarfareInfo {

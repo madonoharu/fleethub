@@ -10,7 +10,11 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useOrg } from "../../../hooks";
-import { PlanFileEntity, PlanNode } from "../../../store";
+import {
+  initalPlanNodeDetailsConfig,
+  PlanFileEntity,
+  PlanNode,
+} from "../../../store";
 import { Flexbox } from "../../atoms";
 import { ClearButton, NodeLable } from "../../molecules";
 import { ShipBannerGroup } from "../../organisms";
@@ -43,7 +47,7 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
 
   const main = org.main_ship_ids();
   const escort = org.escort_ship_ids();
-  const formation = node.enemy_formation || org.default_formation();
+  const config = node.config || initalPlanNodeDetailsConfig;
 
   return (
     <Swappable
@@ -57,7 +61,9 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
           <div>
             <Flexbox gap={1}>
               <NodeLable name={node.name} type={node.type} d={node.d} />
-              <Typography variant="subtitle2">{t(formation)}</Typography>
+              <Typography variant="subtitle2">
+                {t(config.enemy.formation)}
+              </Typography>
               <ClearButton size="small" onClick={onRemove} />
             </Flexbox>
 
