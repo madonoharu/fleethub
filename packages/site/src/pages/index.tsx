@@ -20,7 +20,7 @@ const loader = async () => {
     const core = new module.FhCore(masterData, createEquipmentBonuses);
 
     if (process.env.NODE_ENV === "development") {
-      core.init_console_panic();
+      module.set_panic_hook();
     }
 
     return (

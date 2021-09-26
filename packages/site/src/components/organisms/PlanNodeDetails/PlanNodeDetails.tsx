@@ -10,11 +10,13 @@ import { useDispatch } from "react-redux";
 import { useOrg } from "../../../hooks";
 import {
   filesSlice,
+  initalPlanNodeDetailsConfig,
   PlanFileEntity,
   PlanNode,
   PlanNodeDetailsConfig,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
+import { NumberInput } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
@@ -49,7 +51,7 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
 
   if (!playerOrg || !enemyOrg) return null;
 
-  const { config } = node;
+  const config = node.config || initalPlanNodeDetailsConfig;
 
   const bind =
     <P extends Path<PlanNodeDetailsConfig>>(path: P) =>
@@ -114,6 +116,14 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
               value={config.engagement}
               onChange={bind("engagement")}
             />
+            <NumberInput
+              label="a11"
+              min={0}
+              step={0.1}
+              sx={{ width: 80 }}
+              value={config.player.external_power_mods.a11}
+              onChange={bind("player.external_power_mods.a11")}
+            />
           </Flexbox>
           <NightSituationForm
             color="primary"
@@ -168,7 +178,7 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
           playerShip={playerShip}
           enemyOrg={enemyOrg}
           enemyShip={enemyShip}
-          config={node.config}
+          config={config}
         />
       )}
     </div>

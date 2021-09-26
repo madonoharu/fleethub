@@ -220,7 +220,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         let side = org.side();
         let anti_air_cutin = None;
 
-        let main_and_escort_fleet = org.get_main_and_escort_fleet_by_key(key);
+        let main_and_escort_fleet = org.get_sortied_fleet_by_key(key);
         let is_combined = main_and_escort_fleet.is_combined();
 
         let ships = main_and_escort_fleet

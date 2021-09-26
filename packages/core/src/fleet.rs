@@ -97,6 +97,17 @@ impl Fleet {
             .sum()
     }
 
+    /// マップ索敵
+    pub fn elos(&self, hq_level: u8, node_divaricated_factor: u8) -> Option<f64> {
+        let total = self
+            .ships
+            .values()
+            .map(|ship| ship.elos(node_divaricated_factor))
+            .sum::<Option<f64>>()?;
+
+        Some(total - (0.4 * hq_level as f64).ceil() + 12.0)
+    }
+
     /// 航空索敵スコア
     pub fn aviation_detection_score(&self) -> Option<f64> {
         self.ships
