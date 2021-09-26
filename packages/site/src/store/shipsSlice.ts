@@ -1,5 +1,5 @@
 import { pick, GEAR_KEYS } from "@fh/utils";
-import { createSlice, EntityState } from "@reduxjs/toolkit";
+import { createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 
 import { shipsAdapter } from "./adapters";
 import {
@@ -32,6 +32,23 @@ export const shipsSlice = createSlice({
   reducers: {
     update: shipsAdapter.updateOne,
     remove: shipsAdapter.removeOne,
+    resetSlotSize: (state, { payload }: PayloadAction<string[]>) => {
+      const changes = {
+        ss1: undefined,
+        ss2: undefined,
+        ss3: undefined,
+        ss4: undefined,
+        ss5: undefined,
+      };
+
+      shipsAdapter.updateMany(
+        state,
+        payload.map((id) => ({
+          id,
+          changes,
+        }))
+      );
+    },
   },
   extraReducers: (builder) => {
     builder

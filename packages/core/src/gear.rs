@@ -425,7 +425,7 @@ impl Gear {
             };
 
         let ss = slot_size as f64;
-        let gear_multiplier = (self.firepower + self.torpedo + self.torpedo + self.asw) as f64;
+        let gear_multiplier = (self.firepower + self.torpedo + self.bombing + self.asw) as f64;
 
         let slot_size_mod = a * ss + b * gear_multiplier * ss.sqrt();
 

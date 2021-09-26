@@ -1,4 +1,4 @@
-import { createSlice, EntityState } from "@reduxjs/toolkit";
+import { createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { airSquadronsAdapter } from "./adapters";
 import { isEntitiesAction, swapGearPosition, sweep } from "./entities";
 import { createGear } from "./gearSelectSlice";
@@ -23,6 +23,26 @@ export const airSquadronsSlice = createSlice({
   initialState: airSquadronsAdapter.getInitialState(),
   reducers: {
     update: airSquadronsAdapter.updateOne,
+    reset: (state, { payload }: PayloadAction<string[]>) => {
+      airSquadronsAdapter.setMany(
+        state,
+        payload.map((id) => ({ id }))
+      );
+    },
+    resetSlotSize: (state, { payload }: PayloadAction<string[]>) => {
+      const changes = {
+        ss1: undefined,
+        ss2: undefined,
+        ss3: undefined,
+        ss4: undefined,
+        ss5: undefined,
+      };
+
+      airSquadronsAdapter.updateMany(
+        state,
+        payload.map((id) => ({ id, changes }))
+      );
+    },
   },
   extraReducers: (builder) => {
     builder

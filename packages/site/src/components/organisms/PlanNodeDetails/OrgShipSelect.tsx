@@ -38,7 +38,7 @@ const OrgShipSelect: React.FCX<OrgShipSelectProps> = ({
   const isCombined = org.is_combined();
 
   const renderShips = (role: Role) =>
-    (org.sortie_ship_keys(role) as string[] | null)?.map((key) => {
+    org.sortie_ship_keys(role)?.map((key) => {
       const ship = org.get_ship(role, key);
 
       if (!ship) {
