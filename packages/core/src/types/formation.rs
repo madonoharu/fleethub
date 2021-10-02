@@ -4,35 +4,6 @@ use serde::{Deserialize, Serialize};
 use strum::AsRefStr;
 use ts_rs::TS;
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize, TS)]
-pub enum Engagement {
-    /// T有利
-    GreenT,
-    /// 同航戦
-    Parallel,
-    /// 反航戦
-    HeadOn,
-    /// T不利
-    RedT,
-}
-
-impl Default for Engagement {
-    fn default() -> Self {
-        Self::Parallel
-    }
-}
-
-impl Engagement {
-    pub fn modifier(&self) -> f64 {
-        match self {
-            Self::Parallel => 1.0,
-            Self::HeadOn => 0.8,
-            Self::GreenT => 1.2,
-            Self::RedT => 0.6,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, Serialize, Deserialize, TS)]
 pub enum SingleFormation {
     /// 単縦陣
@@ -78,6 +49,28 @@ impl Default for CombinedFormation {
 pub enum Formation {
     Single(SingleFormation),
     Combined(CombinedFormation),
+}
+
+impl Formation {
+    /// 陣形相性
+    ///
+    /// 砲撃戦と対潜戦では攻撃側と防御側は以下の陣形条件を満たすなら命中補正は1.0となる
+    /// - 複縦 → 単横
+    /// - 単横 → 梯形
+    /// - 梯形 → 単縦
+    pub fn is_ineffective(&self, other: Self) -> bool {
+        match (*self, other) {
+            (Self::Single(a), Self::Single(b)) => {
+                matches!(
+                    (a, b),
+                    (SingleFormation::DoubleLine, SingleFormation::LineAbreast)
+                        | (SingleFormation::LineAbreast, SingleFormation::Echelon)
+                        | (SingleFormation::Echelon, SingleFormation::LineAhead)
+                )
+            }
+            _ => false,
+        }
+    }
 }
 
 impl AsRef<str> for Formation {
@@ -185,80 +178,6 @@ impl FormationDef {
                     bottom_half
                 }
             }
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
-pub enum AirState {
-    /// 制空確保
-    AirSupremacy,
-    /// 制空優勢
-    AirSuperiority,
-    /// 制空均衡
-    AirParity,
-    /// 制空劣勢
-    AirDenial,
-    /// 制空喪失
-    AirIncapability,
-}
-
-impl Default for AirState {
-    fn default() -> Self {
-        Self::AirSupremacy
-    }
-}
-
-impl AirState {
-    pub fn contact_mod(self) -> f64 {
-        match self {
-            AirState::AirSupremacy => 3.0,
-            AirState::AirSuperiority => 2.0,
-            AirState::AirDenial => 1.0,
-            _ => 0.0,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
-pub enum ContactRank {
-    Rank1,
-    Rank2,
-    Rank3,
-}
-
-pub struct NightContactModifiers {
-    pub power_mod: f64,
-    pub accuracy_mod: f64,
-    pub critical_rate_constant: f64,
-}
-
-impl ContactRank {
-    pub fn airstrike_power_mod(self) -> f64 {
-        match self {
-            Self::Rank1 => 1.12,
-            Self::Rank2 => 1.17,
-            Self::Rank3 => 1.2,
-        }
-    }
-
-    pub fn night_mods(self) -> NightContactModifiers {
-        match self {
-            Self::Rank1 => NightContactModifiers {
-                power_mod: 5.0,
-                accuracy_mod: 1.15,
-                critical_rate_constant: 1.57,
-            },
-            Self::Rank2 => NightContactModifiers {
-                power_mod: 7.0,
-                accuracy_mod: 1.1,
-                critical_rate_constant: 1.64,
-            },
-            Self::Rank3 => NightContactModifiers {
-                power_mod: 9.0,
-                accuracy_mod: 1.2,
-                critical_rate_constant: 1.7,
-            },
         }
     }
 }

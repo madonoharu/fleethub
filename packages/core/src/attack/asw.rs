@@ -77,9 +77,14 @@ impl<'a> AswAttackContext<'a> {
         let formation_power_mod = attacker_formation_def
             .and_then(|def| def.asw.power_mod)
             .unwrap_or(1.0);
-        let formation_accuracy_mod = attacker_formation_def
-            .and_then(|def| def.asw.accuracy_mod)
-            .unwrap_or(1.0);
+        let formation_accuracy_mod = if attacker_env.formation.is_ineffective(target_env.formation)
+        {
+            1.0
+        } else {
+            attacker_formation_def
+                .and_then(|def| def.asw.accuracy_mod)
+                .unwrap_or(1.0)
+        };
         let formation_evasion_mod = target_formation_def
             .and_then(|def| def.asw.evasion_mod)
             .unwrap_or(1.0);

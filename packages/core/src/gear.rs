@@ -460,8 +460,15 @@ impl Gear {
     pub fn expedition_bonus(&self) -> f64 {
         match self.gear_id {
             gear_id!("大発動艇") | gear_id!("特大発動艇") => 0.05,
-            gear_id!("大発動艇(八九式中戦車&陸戦隊)") => 0.02,
+
+            gear_id!("武装大発") => 0.03,
+
+            gear_id!("大発動艇(八九式中戦車&陸戦隊)")
+            | gear_id!("装甲艇(AB艇)")
+            | gear_id!("大発動艇(II号戦車/北アフリカ仕様)") => 0.02,
+
             gear_id!("特二式内火艇") => 0.01,
+
             _ => 0.0,
         }
     }
