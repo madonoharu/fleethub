@@ -45,9 +45,9 @@ const FileLabel: React.FCX<FileLabelProps> = ({
 
   return (
     <DraggableFile file={file} canDrop={canDrop} onDrop={onDrop}>
-      <Flexbox className={className}>
+      <Flexbox className={className} onClick={onClick}>
         <Icon fontSize="small" />
-        <FileLabelText onClick={onClick}>{text}</FileLabelText>
+        <FileLabelText>{text}</FileLabelText>
         <FileLabelAction onClick={handleActionClick}>{action}</FileLabelAction>
       </Flexbox>
     </DraggableFile>

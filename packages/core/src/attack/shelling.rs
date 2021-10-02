@@ -74,9 +74,14 @@ impl<'a> ShellingAttackContext<'a> {
         let formation_power_mod = attacker_formation_def
             .and_then(|def| def.shelling.power_mod)
             .unwrap_or(1.0);
-        let formation_accuracy_mod = attacker_formation_def
-            .and_then(|def| def.shelling.accuracy_mod)
-            .unwrap_or(1.0);
+        let formation_accuracy_mod = if attacker_env.formation.is_ineffective(target_env.formation)
+        {
+            1.0
+        } else {
+            attacker_formation_def
+                .and_then(|def| def.shelling.accuracy_mod)
+                .unwrap_or(1.0)
+        };
         let target_formation_evasion_mod = target_formation_def
             .and_then(|def| def.shelling.evasion_mod)
             .unwrap_or(1.0);
@@ -192,7 +197,7 @@ impl<'a> ShellingAttackContext<'a> {
                 .sum_by(|gear| gear.ibonuses.shelling_accuracy);
             let fit_gun_bonus = fit_gun_bonus::fit_gun_bonus(attacker, !IS_DAY);
             let morale_mod = attacker.morale_state().common_accuracy_mod();
-            let formation_mod = ctx.formation_power_mod;
+            let formation_mod = ctx.formation_accuracy_mod;
             let ap_shell_mod = ap_shell_mods.map(|mods| mods.1).unwrap_or(1.0);
             let cutin_mod = ctx.cutin_accuracy_mod;
 
