@@ -1,6 +1,6 @@
 use ts_rs::TS;
 
-const PATH: &'static str = "bindings.d.ts";
+const PATH: &'static str = "packages/core/bindings.d.ts";
 
 macro_rules! gen_types {
     ($($p: path),* $(,)?) => {{

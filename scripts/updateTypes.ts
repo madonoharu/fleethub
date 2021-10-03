@@ -10,9 +10,9 @@ import { Start2 } from "kc-tools";
 import { getGoogleSpreadsheet } from "./data/google";
 import { fetchStart2 } from "./data/utils";
 
-const RS_GEAR_PATH = path.resolve("packages/core/src/types/gear.rs");
-const RS_SHIP_PATH = path.resolve("packages/core/src/types/ship.rs");
-const RS_CONST_ID_PATH = path.resolve("packages/core/src/types/const_id.rs");
+const RS_GEAR_PATH = path.resolve("crates/fh-core/src/types/gear.rs");
+const RS_SHIP_PATH = path.resolve("crates/fh-core/src/types/ship.rs");
+const RS_CONST_ID_PATH = path.resolve("crates/fh-core/src/types/const_id.rs");
 
 const TS_PATH = path.resolve("packages/utils/src/constants.ts");
 
