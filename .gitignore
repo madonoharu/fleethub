@@ -64,6 +64,13 @@ typings/
 # Mac files
 .DS_Store
 
+# Rust
+/target
+**/*.rs.bk
+Cargo.lock
+bin/
+wasm-pack.log
+
 # Yarn
 yarn-error.log
 

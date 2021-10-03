@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "build": "yarn build:utils && yarn build:site",
-    "build:core": "yarn workspace @fh/core build",
+    "build:core": "cross-env WASM_BINDGEN_WEAKREF=1 wasm-pack build crates/fh-core --out-dir ../../packages/core/pkg",
+    "build:node-fh-core": "cross-env WASM_BINDGEN_WEAKREF=1 wasm-pack build crates/fh-core --out-dir ../../packages/core/node --target nodejs",
     "build:site": "yarn workspace @fh/site build",
     "build:utils": "yarn workspace @fh/utils build",
     "core": "yarn workspace @fh/core",
