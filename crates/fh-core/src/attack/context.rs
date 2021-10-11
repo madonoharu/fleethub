@@ -1,3 +1,4 @@
+use fh_macro::FhAbi;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -5,7 +6,7 @@ use crate::types::{AirState, Engagement, Formation, OrgType, Role};
 
 use super::AttackPowerModifiers;
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
 pub struct WarfareShipEnvironment {
     pub org_type: OrgType,
     pub role: Role,
@@ -25,7 +26,7 @@ impl WarfareShipEnvironment {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
 pub struct WarfareContext {
     pub attacker_env: WarfareShipEnvironment,
     pub target_env: WarfareShipEnvironment,

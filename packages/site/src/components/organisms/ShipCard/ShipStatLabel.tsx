@@ -3,30 +3,13 @@ import styled from "@emotion/styled";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
+
 import { useModal } from "../../../hooks";
 import { ShipEntity } from "../../../store";
-import { withSign } from "../../../utils";
+import { withSign, getRangeLabel, getSpeedLabel } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { NumberInput, StatIcon } from "../../molecules";
 import { ShipStatKey } from "./ShipStats";
-
-const getSpeedRank = (v: number | undefined) => {
-  if (v === undefined || v < 0) return "Unknown";
-  if (v === 0) return "SpeedLand";
-  if (v <= 5) return "SpeedSlow";
-  if (v <= 10) return "SpeedFast";
-  if (v <= 15) return "SpeedFaster";
-  return "SpeedFastest";
-};
-
-const getRangeLabel = (v: number | undefined) => {
-  if (!v || v <= 0) return "?";
-  if (v === 1) return "RangeShortAbbr";
-  if (v === 2) return "RangeMediumAbbr";
-  if (v === 3) return "RangeLongAbbr";
-  if (v === 4) return "RangeVeryLongAbbr";
-  return "RangeExtremeLongAbbr";
-};
 
 const maybeNumber = (v: number | undefined) => v ?? "?";
 
@@ -48,7 +31,6 @@ type StatProps = {
   naked: number | undefined;
   mod: number | undefined;
   ebonus: number;
-  unknown?: boolean;
 };
 
 type ShipStatEditorProps = StatProps & {
@@ -61,7 +43,6 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
   naked,
   mod,
   ebonus,
-  unknown,
   onChange,
 }) => {
   const { t } = useTranslation("common");
@@ -162,8 +143,8 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
     const label = getRangeLabel(stat);
     text = <span css={{ marginLeft: 8 }}>{t(label)}</span>;
   } else if (statKey === "speed") {
-    const rank = getSpeedRank(stat);
-    text = <span css={{ marginLeft: 8 }}>{t(rank)}</span>;
+    const label = getSpeedLabel(stat);
+    text = <span css={{ marginLeft: 8 }}>{t(label)}</span>;
   } else if (typeof stat === "number") {
     text = <ValueText>{stat}</ValueText>;
   } else {

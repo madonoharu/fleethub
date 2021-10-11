@@ -1,10 +1,11 @@
 use enumset::EnumSetType;
+use fh_macro::FhAbi;
 use num_derive::{FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 use strum::EnumString;
 use ts_rs::TS;
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS, FhAbi)]
 pub enum GearType {
     Unknown = 0,
     /// 小口径主砲
@@ -125,8 +126,8 @@ pub enum GearType {
     CbRecon2 = 94,
 }
 
-#[derive(Debug, Serialize, Deserialize, TS)]
-pub enum GearFilterGroup {
+#[derive(Debug, Serialize, Deserialize, TS, FhAbi)]
+pub enum GearCategory {
     Fighter,
     Bomber,
     Recon,
@@ -142,13 +143,13 @@ pub enum GearFilterGroup {
 }
 
 impl GearType {
-    pub fn filter_group(&self) -> GearFilterGroup {
+    pub fn category(&self) -> GearCategory {
         use GearType::*;
 
         match self {
-            CbFighter => GearFilterGroup::Fighter,
+            CbFighter => GearCategory::Fighter,
             CbDiveBomber | CbTorpedoBomber | JetFighterBomber | JetTorpedoBomber => {
-                GearFilterGroup::Bomber
+                GearCategory::Bomber
             }
             CbRecon
             | ReconSeaplane
@@ -156,16 +157,16 @@ impl GearType {
             | SeaplaneFighter
             | LargeFlyingBoat
             | Rotorcraft
-            | AntiSubPatrolAircraft => GearFilterGroup::Recon,
-            SmallMainGun | MediumMainGun | LargeMainGun => GearFilterGroup::MainGun,
-            SecondaryGun | AntiAirGun => GearFilterGroup::Secondary,
-            Torpedo | SubmarineTorpedo | MidgetSubmarine => GearFilterGroup::Torpedo,
-            Sonar | LargeSonar | DepthCharge => GearFilterGroup::AntiSub,
-            SmallRadar | LargeRadar => GearFilterGroup::Radar,
-            LandingCraft | AmphibiousTank | SupplyContainer => GearFilterGroup::Landing,
-            LbFighter | LbAttacker | LbRecon | LargeLbAircraft => GearFilterGroup::LandBased,
-            CombatRation | Supplies => GearFilterGroup::Ration,
-            _ => GearFilterGroup::Misc,
+            | AntiSubPatrolAircraft => GearCategory::Recon,
+            SmallMainGun | MediumMainGun | LargeMainGun => GearCategory::MainGun,
+            SecondaryGun | AntiAirGun => GearCategory::Secondary,
+            Torpedo | SubmarineTorpedo | MidgetSubmarine => GearCategory::Torpedo,
+            Sonar | LargeSonar | DepthCharge => GearCategory::AntiSub,
+            SmallRadar | LargeRadar => GearCategory::Radar,
+            LandingCraft | AmphibiousTank | SupplyContainer => GearCategory::Landing,
+            LbFighter | LbAttacker | LbRecon | LargeLbAircraft => GearCategory::LandBased,
+            CombatRation | Supplies => GearCategory::Ration,
+            _ => GearCategory::Misc,
         }
     }
 }
@@ -176,7 +177,7 @@ impl Default for GearType {
     }
 }
 
-#[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, TS)]
+#[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, TS, FhAbi)]
 pub enum GearAttr {
     /// 深海
     Abyssal,

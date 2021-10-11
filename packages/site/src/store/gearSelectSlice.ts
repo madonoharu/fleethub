@@ -1,4 +1,4 @@
-import { GearParams } from "@fh/core";
+import { GearCategory, GearParams } from "@fh/core";
 import {
   createAction,
   createSlice,
@@ -7,18 +7,21 @@ import {
 } from "@reduxjs/toolkit";
 import { GearPosition } from "./gearsSlice";
 
+export type GearCategoryFilter = GearCategory | "All";
+
 export type GearSelectState = {
   open: boolean;
   create?: boolean;
   id?: string;
   position?: GearPosition;
+  abyssal?: boolean;
+  category?: GearCategoryFilter;
 };
 
 const initialState: GearSelectState = {
   open: false,
+  category: "All",
 };
-
-const hide = () => initialState;
 
 export const createGear = createAction(
   "entities/createGear",
@@ -26,6 +29,13 @@ export const createGear = createAction(
     payload: { position, gear: { ...state, id: nanoid() } },
   })
 );
+
+const hide = (state: GearSelectState) => {
+  state.open = false;
+  delete state.create;
+  delete state.id;
+  delete state.position;
+};
 
 export const gearSelectSlice = createSlice({
   name: "gearSelect",

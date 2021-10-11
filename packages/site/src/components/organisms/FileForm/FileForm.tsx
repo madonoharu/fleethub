@@ -3,10 +3,17 @@ import React from "react";
 
 import { FileEntity } from "../../../store";
 import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
-import { CopyButton, DeleteButton, TextField } from "../../molecules";
+import {
+  CopyButton,
+  DeleteButton,
+  SaveButton,
+  TextField,
+} from "../../molecules";
 
 type FileFormProps = {
   file: FileEntity;
+  isTemp: boolean;
+  onSave: () => void;
   onCopy: () => void;
   onRemove: () => void;
   onNameChange: (name: string) => void;
@@ -16,6 +23,8 @@ type FileFormProps = {
 const FileForm: React.FCX<FileFormProps> = ({
   className,
   file,
+  isTemp,
+  onSave,
   onCopy,
   onRemove,
   onNameChange,
@@ -36,6 +45,8 @@ const FileForm: React.FCX<FileFormProps> = ({
         />
         <CopyButton title={t("Copy")} onClick={onCopy} />
         <DeleteButton title={t("Remove")} onClick={onRemove} />
+
+        {isTemp && <SaveButton title={t("Save")} onClick={onSave} />}
       </Flexbox>
 
       <TextField

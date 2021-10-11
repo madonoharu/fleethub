@@ -1,3 +1,4 @@
+use fh_macro::FhAbi;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -5,7 +6,7 @@ use crate::{
     attack::{
         AswAttackContext, AswAttackType, AswTime, AttackPowerModifiers, NightAttackContext,
         NightAttackType, NightSituation, ShellingAttackContext, ShellingAttackType,
-        TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
+        ShellingSupportAttackContext, TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
     },
     ship::Ship,
     types::{
@@ -16,14 +17,14 @@ use crate::{
 
 use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightCutinRateAnalyzer};
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
 #[serde(tag = "t", content = "c")]
 pub enum DayBattleAttackType {
     Shelling(ShellingAttackType),
     Asw(AswAttackType),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
 #[serde(tag = "t", content = "c")]
 pub enum NightBattleAttackType {
     NightAttack(NightAttackType),
@@ -90,7 +91,7 @@ pub type DayBattleAttackInfo = AttackInfo<DayBattleAttackType, Option<DayCutin>>
 pub type NightBattleAttackInfo = AttackInfo<NightBattleAttackType, Option<NightCutin>>;
 pub type TorpedoAttackInfo = AttackInfo<(), ()>;
 
-#[derive(Debug, Clone, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
 pub struct WarfareAnalyzerShipEnvironment {
     pub org_type: OrgType,
     pub role: Role,
@@ -132,7 +133,7 @@ impl WarfareAnalyzerShipEnvironment {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
 pub struct WarfareAnalyzerContext {
     pub attacker_env: WarfareAnalyzerShipEnvironment,
     pub target_env: WarfareAnalyzerShipEnvironment,
@@ -152,11 +153,12 @@ impl WarfareAnalyzerContext {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize, FhAbi)]
 pub struct WarfareInfo {
     day: Option<DayBattleAttackInfo>,
-    night: Option<NightBattleAttackInfo>,
     closing_torpedo: Option<TorpedoAttackInfo>,
+    night: Option<NightBattleAttackInfo>,
+    shelling_support: Option<AttackInfo<(), ()>>,
 }
 
 // ts_rsがうまく動かないので自前実装
@@ -171,6 +173,7 @@ impl TS for WarfareInfo {
                 day: {} | null;
                 closing_torpedo: {} | null;
                 night: {} | null;
+                shelling_support: {} | null;
             }}",
             Self::name(),
             DayBattleAttackInfo::name_with_type_args(vec![
@@ -181,7 +184,8 @@ impl TS for WarfareInfo {
             NightBattleAttackInfo::name_with_type_args(vec![
                 NightBattleAttackType::name(),
                 Option::<NightCutin>::name()
-            ])
+            ]),
+            AttackInfo::<(), ()>::name_with_type_args(vec![<()>::name(), <()>::name()]),
         )
     }
 
@@ -346,21 +350,42 @@ fn analyze_torpedo_attack(
     Some(info)
 }
 
+fn analyze_shelling_support_attack(
+    master_data: &MasterData,
+    ctx: &WarfareAnalyzerContext,
+    attacker: &Ship,
+    target: &Ship,
+) -> Option<AttackInfo<(), ()>> {
+    if let Some(DayBattleAttackType::Shelling(attack_type)) =
+        get_day_battle_attack_type(attacker, target)
+    {
+        let warfare_context = ctx.to_warfare_context();
+        let shelling_ctx =
+            ShellingSupportAttackContext::new(master_data, &warfare_context, attack_type);
+        let stats = shelling_ctx.attack_params(attacker, target).into_stats();
+
+        let item = AttackInfoItem {
+            cutin: (),
+            rate: Some(1.0),
+            stats,
+        };
+        let info = AttackInfo::new((), vec![item]);
+        Some(info)
+    } else {
+        None
+    }
+}
+
 pub fn analyze_warfare(
     master_data: &MasterData,
     ctx: &WarfareAnalyzerContext,
     attacker: &Ship,
     target: &Ship,
 ) -> WarfareInfo {
-    let day = analyze_day_battle_attack(master_data, ctx, attacker, target);
-
-    let night = analyze_night_battle(master_data, ctx, attacker, target);
-
-    let closing_torpedo = analyze_torpedo_attack(master_data, ctx, attacker, target);
-
     WarfareInfo {
-        day,
-        night,
-        closing_torpedo,
+        day: analyze_day_battle_attack(master_data, ctx, attacker, target),
+        night: analyze_night_battle(master_data, ctx, attacker, target),
+        closing_torpedo: analyze_torpedo_attack(master_data, ctx, attacker, target),
+        shelling_support: analyze_shelling_support_attack(master_data, ctx, attacker, target),
     }
 }

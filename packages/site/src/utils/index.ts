@@ -24,6 +24,24 @@ export const toPercent = (v: number | null | undefined, fractionDigits = 1) => {
   return (v * 100).toFixed(fractionDigits) + "%";
 };
 
+export const getSpeedLabel = (v: number | undefined) => {
+  if (v === undefined || v < 0) return "?";
+  if (v === 0) return "SpeedLand";
+  if (v <= 5) return "SpeedSlow";
+  if (v <= 10) return "SpeedFast";
+  if (v <= 15) return "SpeedFaster";
+  return "SpeedFastest";
+};
+
+export const getRangeLabel = (v: number | undefined) => {
+  if (!v || v <= 0) return "?";
+  if (v === 1) return "RangeShortAbbr";
+  if (v === 2) return "RangeMediumAbbr";
+  if (v === 3) return "RangeLongAbbr";
+  if (v === 4) return "RangeVeryLongAbbr";
+  return "RangeExtremeLongAbbr";
+};
+
 export const createShallowEqualSelector = createSelectorCreator(
   defaultMemoize,
   shallowEqual
@@ -37,8 +55,8 @@ export const createDeepEqualSelector = createSelectorCreator(
 export { default as batch } from "./batch";
 export * from "./cloudinary";
 export * from "./ebonuses";
-export * from "./FhDictionary";
 export * from "./link";
 export * from "./publish";
 export * from "./deck";
 export * from "./gkcoi";
+export * from "./jor";

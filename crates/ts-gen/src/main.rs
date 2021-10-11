@@ -25,11 +25,11 @@ fn main() {
     let buffer = gen_types!(
         types::GearType,
         types::GearAttr,
-        types::GearFilterGroup,
+        types::GearCategory,
         types::ShipType,
         types::ShipClass,
         types::ShipAttr,
-        types::ShipFilterGroup,
+        types::ShipCategory,
         types::SpecialEnemyType,
         types::DamageState,
         types::MoraleState,

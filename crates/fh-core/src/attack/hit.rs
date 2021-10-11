@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -8,7 +8,7 @@ pub enum HitType {
     Critical,
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Deserialize, TS)]
 pub struct HitRateParams {
     pub accuracy_term: f64,
     pub evasion_term: f64,
@@ -18,7 +18,7 @@ pub struct HitRateParams {
     pub hit_percentage_bonus: f64,
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Deserialize, TS)]
 pub struct HitRate {
     pub total: f64,
     pub normal: f64,

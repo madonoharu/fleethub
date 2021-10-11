@@ -8,7 +8,7 @@ use std::{
 
 use counter::Counter;
 use num_traits::Zero;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 #[derive(Debug, Default, Clone, PartialEq)]
@@ -200,6 +200,19 @@ where
         S: serde::Serializer,
     {
         self.map.serialize(serializer)
+    }
+}
+
+impl<'de, K, V> Deserialize<'de> for NumMap<K, V>
+where
+    K: Hash + Eq + Deserialize<'de>,
+    V: Zero + Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        HashMap::<K, V>::deserialize(deserializer).map(|map| map.into())
     }
 }
 

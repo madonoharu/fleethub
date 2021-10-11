@@ -12,9 +12,14 @@ type Props = {
 };
 
 const FileMenu: React.FCX<Props> = ({ className, id, onClose }) => {
-  const { file, actions } = useFile(id);
+  const { file, actions, isTemp } = useFile(id);
 
   if (!file) return null;
+
+  const handleSave = () => {
+    actions.save();
+    onClose?.();
+  };
 
   const handleCopy = () => {
     actions.copy();
@@ -30,6 +35,8 @@ const FileMenu: React.FCX<Props> = ({ className, id, onClose }) => {
     <div className={className}>
       <FileForm
         file={file}
+        isTemp={isTemp}
+        onSave={handleSave}
         onCopy={handleCopy}
         onRemove={handleRemove}
         onNameChange={actions.setName}

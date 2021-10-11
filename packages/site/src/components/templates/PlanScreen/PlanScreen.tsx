@@ -19,7 +19,7 @@ type PlanScreenProps = {
 };
 
 const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
-  const { file, actions: fileActions } = useFile(id);
+  const { file, actions: fileActions, isTemp } = useFile(id);
   const { org, actions: orgActions } = useOrg(
     file?.type === "plan" ? file.org : ""
   );
@@ -33,6 +33,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
           <PlanScreenHeader
             org={org}
             file={file}
+            isTemp={isTemp}
             actions={fileActions}
             onNameChange={fileActions.setName}
             onHqLevelChange={orgActions.setHqLevel}

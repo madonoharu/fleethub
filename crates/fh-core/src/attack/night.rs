@@ -1,3 +1,4 @@
+use fh_macro::FhAbi;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -15,7 +16,7 @@ use super::{
 const NIGHT_POWER_CAP: f64 = 360.0;
 const NIGHT_ACCURACY_CONSTANT: f64 = 69.0;
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
 pub struct NightSituation {
     pub night_contact_rank: Option<ContactRank>,
     pub starshell: bool,

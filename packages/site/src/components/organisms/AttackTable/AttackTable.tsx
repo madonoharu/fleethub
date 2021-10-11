@@ -45,7 +45,7 @@ const createDamageColumns = (
   {
     label: t("Normal"),
     getValue: (item) => {
-      const { damage } = item.stats;
+      const { damage, attack_power } = item.stats;
       if (!damage) return "?";
       const {
         normal_damage_min: min,
@@ -53,13 +53,20 @@ const createDamageColumns = (
         normal_scratch_rate: sr,
       } = damage;
 
-      return <DamageRange min={min} max={max} scratchRate={sr} />;
+      return (
+        <DamageRange
+          min={min}
+          max={max}
+          scratchRate={sr}
+          isCapped={attack_power?.is_capped}
+        />
+      );
     },
   },
   {
     label: t("Critical"),
     getValue: (item) => {
-      const { damage } = item.stats;
+      const { damage, attack_power } = item.stats;
       if (!damage) return "?";
       const {
         critical_damage_min: min,
@@ -67,7 +74,14 @@ const createDamageColumns = (
         critical_scratch_rate: sr,
       } = damage;
 
-      return <DamageRange min={min} max={max} scratchRate={sr} />;
+      return (
+        <DamageRange
+          min={min}
+          max={max}
+          scratchRate={sr}
+          isCapped={attack_power?.is_capped}
+        />
+      );
     },
   },
 ];
@@ -79,7 +93,10 @@ const createAttackPowerColumns = (
   {
     label: t("Normal"),
     getValue: (item) => (
-      <Typography variant="inherit">
+      <Typography
+        variant="inherit"
+        color={item.stats.attack_power?.is_capped ? "secondary" : undefined}
+      >
         {item.stats.attack_power?.normal || "?"}
       </Typography>
     ),
@@ -87,7 +104,10 @@ const createAttackPowerColumns = (
   {
     label: t("Critical"),
     getValue: (item) => (
-      <Typography variant="inherit">
+      <Typography
+        variant="inherit"
+        color={item.stats.attack_power?.is_capped ? "secondary" : undefined}
+      >
         {item.stats.attack_power?.critical || "?"}
       </Typography>
     ),

@@ -10,7 +10,7 @@ use crate::{
     gear_id, ship_id,
     types::{
         AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
-        NightCutin, ShipAttr, ShipClass, ShipFilterGroup, ShipState, ShipType, SlotSizeArray,
+        NightCutin, ShipAttr, ShipCategory, ShipClass, ShipState, ShipType, SlotSizeArray,
         SpecialEnemyType,
     },
     utils::xxh3,
@@ -1123,8 +1123,8 @@ impl Ship {
         self.morale_state().to_string()
     }
 
-    pub fn filter_group(&self) -> ShipFilterGroup {
-        self.ship_type.filter_group()
+    pub fn category(&self) -> ShipCategory {
+        self.ship_type.category()
     }
 
     pub fn has_attr(&self, attr: ShipAttr) -> bool {
@@ -1181,6 +1181,36 @@ impl Ship {
             "luck" => self.luck(),
             "range" => self.naked_range().map(|v| v as u16),
             "speed" => Some(self.naked_speed() as u16),
+            _ => None,
+        }
+    }
+
+    pub fn get_stat_interval_left(&self, key: &str) -> Option<u16> {
+        match key {
+            "max_hp" => self.master.max_hp.0,
+            "firepower" => self.master.firepower.0,
+            "torpedo" => self.master.torpedo.0,
+            "armor" => self.master.armor.0,
+            "anti_air" => self.master.anti_air.0,
+            "evasion" => self.master.evasion.0,
+            "asw" => self.master.asw.0,
+            "los" => self.master.los.0,
+            "luck" => self.master.luck.0,
+            _ => None,
+        }
+    }
+
+    pub fn get_stat_interval_right(&self, key: &str) -> Option<u16> {
+        match key {
+            "max_hp" => self.master.max_hp.1,
+            "firepower" => self.master.firepower.1,
+            "torpedo" => self.master.torpedo.1,
+            "armor" => self.master.armor.1,
+            "anti_air" => self.master.anti_air.1,
+            "evasion" => self.master.evasion.1,
+            "asw" => self.master.asw.1,
+            "los" => self.master.los.1,
+            "luck" => self.master.luck.1,
             _ => None,
         }
     }

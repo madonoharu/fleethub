@@ -1,4 +1,4 @@
-import { Ship } from "@fh/core";
+import { Ship, ShipCategory } from "@fh/core";
 import { nonNullable } from "@fh/utils";
 import { TFunction, useTranslation } from "next-i18next";
 import React, { useState } from "react";
@@ -11,8 +11,8 @@ type FilterFn = (ship: Ship) => boolean;
 
 export type ShipFilterState = {
   abyssal: boolean;
-  all: boolean;
-  group: string;
+  visiblePrevForm: boolean;
+  category: ShipCategory;
 };
 
 const createFilterFn = (state: ShipFilterState): FilterFn => {
@@ -22,12 +22,12 @@ const createFilterFn = (state: ShipFilterState): FilterFn => {
     fns.push((ship) => ship.is_abyssal());
   } else {
     fns.push((ship) => !ship.is_abyssal());
-    if (!state.all) {
+    if (!state.visiblePrevForm) {
       fns.push((ship) => !ship.next_id || ship.useful);
     }
   }
 
-  fns.push((ship) => ship.filter_group() === state.group);
+  fns.push((ship) => ship.category() === state.category);
 
   return (ship) => fns.every((fn) => fn(ship));
 };
@@ -68,8 +68,8 @@ export const useShipListState = () => {
 
   const [state, update] = useImmer<ShipFilterState>({
     abyssal: abyssal || false,
-    all: false,
-    group: "Battleship",
+    visiblePrevForm: false,
+    category: "Battleship",
   });
 
   const [searchValue, setSearchValue] = useState("");

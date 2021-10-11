@@ -1,4 +1,4 @@
-import { Gear, GearFilterGroup } from "@fh/core";
+import { Gear, GearCategory } from "@fh/core";
 import { EquipmentBonuses } from "equipment-bonus";
 import React, { useState } from "react";
 
@@ -8,7 +8,7 @@ import FilterBar from "./FilterBar";
 import GearSearchResult from "./GearSearchResult";
 import GearTypeContainer from "./GearTypeContainer";
 import { idComparer } from "./comparers";
-import { getFilter, getVisibleGroups } from "./filters";
+import { getFilter, getVisibleCategories } from "./filters";
 import searchGears from "./searchGears";
 import { useGearListState } from "./useGearListState";
 
@@ -29,13 +29,8 @@ const createTypeGearEntries = (gears: Gear[]) => {
   return Array.from(map.entries());
 };
 
-const getDefaultFilterKey = (keys: (GearFilterGroup | "All")[]) => {
-  const list: GearFilterGroup[] = [
-    "MainGun",
-    "Torpedo",
-    "LandBased",
-    "Fighter",
-  ];
+const getDefaultFilterKey = (keys: (GearCategory | "All")[]) => {
+  const list: GearCategory[] = ["MainGun", "Torpedo", "LandBased", "Fighter"];
   const found = list.find((key) => keys.includes(key));
 
   return found || keys.at(0) || "All";
@@ -52,29 +47,31 @@ const GearList: React.FC<GearListProps> = ({
   onSelect,
   getNextEbonuses,
 }) => {
-  const { gears, abyssal, group, setAbyssal, setGroup } = useGearListState();
+  const { gears, abyssal, category, setAbyssal, setCategory } =
+    useGearListState();
 
   const [searchValue, setSearchValue] = useState("");
 
   const handleSelect = (gear: Gear) => onSelect?.(gear);
 
-  const { equippableGears, visibleGroups } = React.useMemo(() => {
+  const { equippableGears, visibleCategories } = React.useMemo(() => {
     const equippableGears = gears.filter((gear) => {
       if (abyssal !== gear.gear_id >= 500) return false;
       return !canEquip || canEquip(gear);
     });
 
-    const visibleGroups = getVisibleGroups(equippableGears);
+    const visibleCategories = getVisibleCategories(equippableGears);
 
-    return { equippableGears, visibleGroups };
+    return { equippableGears, visibleCategories };
   }, [gears, abyssal, canEquip]);
 
-  const currentGroup = visibleGroups.includes(group)
-    ? group
-    : getDefaultFilterKey(visibleGroups);
-  const groupFilter = getFilter(currentGroup);
+  const currentCategory =
+    category && visibleCategories.includes(category)
+      ? category
+      : getDefaultFilterKey(visibleCategories);
+  const categoryFilter = getFilter(currentCategory);
 
-  const visibleGears = equippableGears.filter(groupFilter).sort(idComparer);
+  const visibleGears = equippableGears.filter(categoryFilter).sort(idComparer);
 
   const entries = createTypeGearEntries(visibleGears);
 
@@ -95,11 +92,11 @@ const GearList: React.FC<GearListProps> = ({
         />
       </Flexbox>
       <FilterBar
-        visibleGroups={visibleGroups}
+        visibleCategories={visibleCategories}
         abyssal={abyssal}
-        group={currentGroup}
+        category={currentCategory}
         onAbyssalChange={setAbyssal}
-        onGroupChange={setGroup}
+        onCategoryChange={setCategory}
       />
       {searchResult ? (
         <GearSearchResult

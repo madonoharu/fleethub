@@ -5,18 +5,9 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Flexbox, PlanIcon } from "../../atoms";
-import { NumberInput, Select, TextField } from "../../molecules";
-import { ElosLabel } from "../../organisms";
+import { NumberInput, TextField } from "../../molecules";
+import { ElosLabel, OrgTypeSelect } from "../../organisms";
 import PlanAction, { PlanActionProps } from "./PlanAction";
-
-const ORG_TYPES: OrgType[] = [
-  "Single",
-  "CarrierTaskForce",
-  "SurfaceTaskForce",
-  "TransportEscort",
-  "EnemySingle",
-  "EnemyCombined",
-];
 
 const LevelInput = styled(NumberInput)`
   input {
@@ -35,6 +26,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
   className,
   org,
   file,
+  isTemp,
   actions,
   onNameChange,
   onHqLevelChange,
@@ -64,15 +56,9 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
           max={120}
           onChange={onHqLevelChange}
         />
+        <OrgTypeSelect onChange={onOrgTypeChange} value={org.org_type} />
 
-        <Select<OrgType>
-          options={ORG_TYPES}
-          onChange={onOrgTypeChange}
-          value={org.org_type}
-          getOptionLabel={t}
-        />
-
-        <PlanAction file={file} org={org} actions={actions} />
+        <PlanAction file={file} org={org} isTemp={isTemp} actions={actions} />
       </Flexbox>
 
       <Flexbox gap={1} mt={1}>

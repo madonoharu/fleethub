@@ -1,11 +1,12 @@
 use enumset::EnumSetType;
+use fh_macro::FhAbi;
 use num_derive::{FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 use strum::{EnumString, ToString};
 use ts_rs::TS;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
-pub enum ShipFilterGroup {
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS, FhAbi)]
+pub enum ShipCategory {
     Battleship,
     AircraftCarrier,
     HeavyCruiser,
@@ -16,7 +17,7 @@ pub enum ShipFilterGroup {
     AuxiliaryShip,
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, TS, FhAbi)]
 pub enum ShipType {
     Unknown = 0,
     /// 海防艦
@@ -72,8 +73,8 @@ impl Default for ShipType {
 }
 
 impl ShipType {
-    pub fn filter_group(&self) -> ShipFilterGroup {
-        use ShipFilterGroup::*;
+    pub fn category(&self) -> ShipCategory {
+        use ShipCategory::*;
         use ShipType::*;
 
         match self {
@@ -89,11 +90,11 @@ impl ShipType {
     }
 
     pub fn is_aircraft_carrier(&self) -> bool {
-        self.filter_group() == ShipFilterGroup::AircraftCarrier
+        self.category() == ShipCategory::AircraftCarrier
     }
 
     pub fn is_submarine(&self) -> bool {
-        self.filter_group() == ShipFilterGroup::Submarine
+        self.category() == ShipCategory::Submarine
     }
 
     pub fn transport_point(&self) -> i32 {
@@ -114,7 +115,7 @@ impl ShipType {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS, FhAbi)]
 pub enum ShipClass {
     Unknown = 0,
     /// 綾波型
@@ -351,7 +352,7 @@ impl Default for ShipClass {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, EnumString, Serialize, Deserialize, TS)]
+#[derive(Debug, EnumSetType, FromPrimitive, EnumString, Serialize, Deserialize, TS, FhAbi)]
 pub enum ShipAttr {
     /// 深海
     Abyssal,

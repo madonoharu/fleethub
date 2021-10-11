@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use fh_macro::FhAbi;
 use serde::{Deserialize, Serialize};
 use strum::AsRefStr;
 use ts_rs::TS;
@@ -44,7 +45,7 @@ impl Default for CombinedFormation {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS, FhAbi)]
 #[serde(untagged)]
 pub enum Formation {
     Single(SingleFormation),
@@ -139,6 +140,7 @@ pub struct NormalFormationDef {
     pub torpedo: FormationWarfareDef,
     pub asw: FormationWarfareDef,
     pub night: FormationWarfareDef,
+    pub shelling_support: FormationWarfareDef,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]

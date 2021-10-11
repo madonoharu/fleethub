@@ -4,6 +4,7 @@ import { nonNullable } from "@fh/utils";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Paper, Typography } from "@mui/material";
 import React from "react";
+import { useTranslation } from "next-i18next";
 
 import { useFhCore } from "../../../hooks";
 import { Tabs, TabItem } from "../../molecules";
@@ -29,24 +30,30 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
   target,
 }) => {
   const { core } = useFhCore();
+  const { t } = useTranslation("common");
 
   const info = core.analyze_warfare(ctx, attacker, target);
   const day = info?.day;
   const closing_torpedo = info?.closing_torpedo;
   const night = info?.night;
+  const shelling_support = info?.shelling_support;
 
   const list: TabItem[] = [
     day && {
-      label: "昼戦",
+      label: t("Day"),
       panel: <AttackTable type={day.attack_type.t} info={day} />,
     },
     closing_torpedo && {
-      label: "雷撃",
+      label: t("WarfareTorpedo"),
       panel: <AttackTable type="Torpedo" info={closing_torpedo} />,
     },
     night && {
-      label: "夜戦",
+      label: t("Night"),
       panel: <AttackTable type={night.attack_type.t} info={night} />,
+    },
+    shelling_support && {
+      label: t("Support"),
+      panel: <AttackTable type="Shelling" info={shelling_support} />,
     },
   ].filter(nonNullable);
 
