@@ -59,7 +59,7 @@ impl AttackPowerModifiers {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct AttackPowerParams {
     pub basic: f64,
     pub cap: f64,
@@ -71,7 +71,7 @@ pub struct AttackPowerParams {
     pub remaining_ammo_mod: f64,
 }
 
-#[derive(Debug, Default, Clone, Serialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct AttackPower {
     pub precap: f64,
     pub is_capped: bool,

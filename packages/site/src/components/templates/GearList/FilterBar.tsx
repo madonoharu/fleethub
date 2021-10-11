@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { FormControlLabel } from "@mui/material";
 import React from "react";
+import { GearCategoryFilter } from "../../../store";
 
-import { Flexbox } from "../../atoms";
+import { Flexbox, Checkbox } from "../../atoms";
 import { SelectButtons } from "../../molecules";
 import FilterIcon from "./FilterIcon";
-import { Group } from "./useGearListState";
 
 const getFilterIcon = (key: string) => <FilterIcon icon={key} />;
 
@@ -15,43 +15,37 @@ const Right = styled(Flexbox)`
 `;
 
 type Props = {
-  abyssal: boolean;
-  group: Group;
-  visibleGroups: Group[];
+  abyssal?: boolean;
+  category: GearCategoryFilter;
+  visibleCategories: GearCategoryFilter[];
 
   onAbyssalChange: (next: boolean) => void;
-  onGroupChange: (next: Group) => void;
+  onCategoryChange: (next: GearCategoryFilter) => void;
 };
 
 const FilterBar: React.FCX<Props> = ({
   className,
-  visibleGroups,
+  visibleCategories,
   abyssal,
-  group,
+  category,
   onAbyssalChange,
-  onGroupChange,
+  onCategoryChange,
 }) => {
-  const toggleAbyssal = () => onAbyssalChange(!abyssal);
-
   return (
     <>
       <div className={className}>
         <SelectButtons
-          value={group}
-          options={visibleGroups}
-          onChange={onGroupChange}
+          value={category}
+          options={visibleCategories}
+          onChange={onCategoryChange}
           getOptionLabel={getFilterIcon}
         />
         <Right>
-          <FormControlLabel
+          <Checkbox
             label="深海"
-            control={
-              <Checkbox
-                size="small"
-                checked={abyssal}
-                onClick={toggleAbyssal}
-              />
-            }
+            size="small"
+            checked={abyssal || false}
+            onChange={onAbyssalChange}
           />
         </Right>
       </div>

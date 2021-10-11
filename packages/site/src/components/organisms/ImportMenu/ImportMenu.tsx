@@ -43,12 +43,14 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
     dispatch(appSlice.actions.setImportToTemp(value));
   };
 
+  const to = importToTemp ? "temp" : undefined;
+
   const handleDeckImport = () => {
     try {
       const deck: Deck = JSON.parse(deckStr);
       const orgParams = createOrgParamsByDeck(masterData, deck);
 
-      dispatch(createPlan({ org: orgParams, to: "temp" }));
+      dispatch(createPlan({ org: orgParams, to }));
 
       onClose?.();
     } catch (error) {
@@ -62,7 +64,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
       const data = await fetchPublicDataByUrl(urlStr);
 
       if (data) {
-        dispatch(importEntities(data));
+        dispatch(importEntities({ ...data, to }));
         onClose?.();
       } else {
         Snackbar.show({ message: "失敗しました", severity: "error" });

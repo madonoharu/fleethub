@@ -61,6 +61,7 @@ const fhCommonJa = {
   Chance: "確率",
   Day: "昼戦",
   Night: "夜戦",
+  Support: "支援",
 
   AirState: "制空状態",
   DamageState: "損傷",
@@ -114,6 +115,7 @@ const fhCommon: Record<
     Chance: "Chance",
     Day: "Day Battle",
     Night: "Night Battle",
+    Support: "Support",
 
     AirState: "Air State",
     DamageState: "Damage",
@@ -161,6 +163,7 @@ const fhCommon: Record<
     Chance: "확률",
     Day: "주간전",
     Night: "야간전",
+    Support: "지원",
 
     AirState: "제공상태",
     DamageState: "손상",
@@ -208,6 +211,7 @@ const fhCommon: Record<
     Chance: "概率",
     Day: "昼战",
     Night: "夜战",
+    Support: "支援",
 
     AirState: "制空状态",
     DamageState: "损伤",
@@ -255,6 +259,7 @@ const fhCommon: Record<
     Chance: "概率",
     Day: "晝戰",
     Night: "夜戰",
+    Support: "支援",
 
     AirState: "制空狀態",
     DamageState: "損傷",
@@ -373,15 +378,23 @@ class LocaleUpdater {
   };
 
   private updateCommon = async () => {
-    const [kc3Terms, kc3Battle, kcnav, poiMenu, poiMain, poiOthers] =
-      await Promise.all([
-        this.getKC3Json<Record<string, string>>("terms.json"),
-        this.getKC3Json<KC3Battle>("battle.json"),
-        this.getKcnavJson(),
-        this.getPoiJson<Record<string, string>>("menu"),
-        this.getPoiJson<Record<string, string>>("main"),
-        this.getPoiJson<Record<string, string>>("others"),
-      ]);
+    const [
+      kc3Terms,
+      kc3Battle,
+      kcnav,
+      poiMenu,
+      poiMain,
+      poiOthers,
+      poiSetting,
+    ] = await Promise.all([
+      this.getKC3Json<Record<string, string>>("terms.json"),
+      this.getKC3Json<KC3Battle>("battle.json"),
+      this.getKcnavJson(),
+      this.getPoiJson<Record<string, string>>("menu"),
+      this.getPoiJson<Record<string, string>>("main"),
+      this.getPoiJson<Record<string, string>>("others"),
+      this.getPoiJson<Record<string, string>>("setting"),
+    ]);
 
     const worldNames = Object.fromEntries(
       Object.entries(kcnav).filter(([key]) => /^worldName\d+/.test(key))
@@ -590,6 +603,7 @@ class LocaleUpdater {
       View: poiMenu["View"],
       Close: poiMenu["Close"],
       Help: poiMenu["Help"],
+      Save: poiSetting["Save"],
 
       CopyToClipboard: poiOthers["Copy to clipboard"],
 

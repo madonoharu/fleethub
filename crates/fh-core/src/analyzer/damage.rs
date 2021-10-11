@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
@@ -7,7 +7,7 @@ use crate::{
     utils::NumMap,
 };
 
-#[derive(Debug, Serialize, TS)]
+#[derive(Debug, Serialize, Deserialize, TS)]
 pub struct DamageInfo {
     pub miss_damage_min: u16,
     pub miss_damage_max: u16,

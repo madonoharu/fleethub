@@ -5,7 +5,4 @@ edition = "2018"
 
 [dependencies]
 fh-core = { path = "../fh-core" }
-
-[dependencies.ts-rs]
-git = "https://github.com/arendjr/ts-rs"
-rev = "945b336e26bef0bfeba74f4d26768fede91f57f5"
+ts-rs = { version = "4.0.0", features = ["serde-compat"] }

@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     gear_id,
-    types::{ContactRank, GearAttr, GearFilterGroup, GearState, GearType, GearTypes, MasterGear},
+    types::{ContactRank, GearAttr, GearCategory, GearState, GearType, GearTypes, MasterGear},
     utils::xxh3,
 };
 
@@ -215,8 +215,8 @@ impl Gear {
         self.attrs.contains(attr)
     }
 
-    pub fn filter_group(&self) -> GearFilterGroup {
-        self.gear_type.filter_group()
+    pub fn category(&self) -> GearCategory {
+        self.gear_type.category()
     }
 
     #[wasm_bindgen(getter)]

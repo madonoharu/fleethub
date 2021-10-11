@@ -1,4 +1,6 @@
 import { Org } from "@fh/core";
+import SaveIcon from "@mui/icons-material/Save";
+import { Fab } from "@mui/material";
 import React from "react";
 
 import { useAsyncOnPublish, useFile, useModal } from "../../../hooks";
@@ -16,10 +18,17 @@ import { FileMenu } from "../../organisms";
 export type PlanActionProps = {
   file: PlanFileEntity;
   org: Org;
+  isTemp: boolean;
   actions: ReturnType<typeof useFile>["actions"];
 };
 
-const PlanAction: React.FCX<PlanActionProps> = ({ className, file, org }) => {
+const PlanAction: React.FCX<PlanActionProps> = ({
+  className,
+  file,
+  org,
+  isTemp,
+  actions,
+}) => {
   const MenuModal = useModal();
   const { asyncOnPublish, onUrlCopy, onTweet, Snackbar } = useAsyncOnPublish(
     file.id
@@ -27,7 +36,7 @@ const PlanAction: React.FCX<PlanActionProps> = ({ className, file, org }) => {
 
   return (
     <>
-      <Flexbox className={className}>
+      <Flexbox className={className} gap={1}>
         <LinkButton
           title="共有URLをコピー"
           onClick={onUrlCopy}
@@ -43,6 +52,11 @@ const PlanAction: React.FCX<PlanActionProps> = ({ className, file, org }) => {
           onClick={() => openKctools(org)}
         />
         <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
+        {isTemp && (
+          <Fab color="primary" size="small" onClick={actions.save}>
+            <SaveIcon />
+          </Fab>
+        )}
       </Flexbox>
 
       <MenuModal>

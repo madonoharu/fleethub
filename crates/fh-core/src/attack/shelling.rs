@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
@@ -31,7 +31,7 @@ impl Default for ProficiencyModifiers {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
 pub enum ShellingAttackType {
     Normal,
     Carrier,

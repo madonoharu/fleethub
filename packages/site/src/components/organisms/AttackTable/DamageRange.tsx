@@ -7,12 +7,14 @@ type DamageRangeProps = {
   min: number;
   max: number;
   scratchRate: number;
+  isCapped?: boolean | null;
 };
 
 const DamageRange: React.FCX<DamageRangeProps> = ({
   min,
   max,
   scratchRate,
+  isCapped,
 }) => {
   const { t } = useTranslation("common");
 
@@ -28,7 +30,11 @@ const DamageRange: React.FCX<DamageRangeProps> = ({
     text = `${min} ~ ${max}`;
   }
 
-  return <Typography variant="inherit">{text}</Typography>;
+  return (
+    <Typography variant="inherit" color={isCapped ? "secondary" : undefined}>
+      {text}
+    </Typography>
+  );
 };
 
 export default DamageRange;

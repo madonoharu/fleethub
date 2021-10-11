@@ -9,6 +9,7 @@ import objectHash from "object-hash";
 
 import { publicStorageRef } from "../firebase";
 import { PublicData } from "../store";
+import { parseJorUrlData } from "./jor";
 
 const origin = process.browser ? window.location.origin : "";
 const PUBLIC_ID_KEY = "publicId";
@@ -47,18 +48,38 @@ export const publishFileData = async (data: PublicData) => {
   return url.href;
 };
 
+export const fetchPublicData = async (id: string): Promise<PublicData> => {
+  const res = await fetch(
+    `https://storage.googleapis.com/kcfleethub.appspot.com/public/${id}.json`
+  );
+  const data = await res.json();
+  return data as PublicData;
+};
+
 export const fetchPublicDataByUrl = async (
   arg: URL | string
 ): Promise<PublicData | undefined> => {
   const url = typeof arg === "string" ? new URL(arg) : arg;
 
-  const fileId = url.searchParams.get(PUBLIC_ID_KEY);
-  if (fileId) {
+  if (url.hostname === "jervis.page.link") {
     const res = await fetch(
-      `https://storage.googleapis.com/kcfleethub.appspot.com/public/${fileId}.json`
+      `http://localhost:3000/api/hello?url=${encodeURIComponent(
+        url.toString()
+      )}`
     );
-    const data = await res.json();
-    return data as PublicData;
+    const json = await res.json();
+
+    if (typeof json.url === "string") {
+      const url = new URL(json.url);
+      parseJorUrlData(url);
+    }
+
+    return;
+  }
+  const id = url.searchParams.get(PUBLIC_ID_KEY);
+
+  if (id) {
+    return await fetchPublicData(id);
   }
 
   return;

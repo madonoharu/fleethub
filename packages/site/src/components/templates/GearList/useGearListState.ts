@@ -1,16 +1,20 @@
-import { GearFilterGroup } from "@fh/core";
 import { nonNullable } from "@fh/utils";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import { useFhCore } from "../../../hooks";
-
-export type Group = GearFilterGroup | "All";
+import { GearCategoryFilter, gearSelectSlice } from "../../../store";
 
 export const useGearListState = () => {
   const { masterData, core } = useFhCore();
+  const dispatch = useDispatch();
+  const state = useSelector((root) => root.present.gearSelect);
+  const { category, abyssal } = state;
 
-  const [group, setGroup] = useState<Group>("All");
-  const [abyssal, setAbyssal] = useState(false);
+  const setAbyssal = (abyssal: boolean) =>
+    dispatch(gearSelectSlice.actions.update({ abyssal }));
+  const setCategory = (category: GearCategoryFilter) =>
+    dispatch(gearSelectSlice.actions.update({ category }));
 
   const gears = useMemo(
     () =>
@@ -23,9 +27,9 @@ export const useGearListState = () => {
 
   return {
     gears,
-    group,
+    category,
     abyssal,
-    setGroup,
+    setCategory,
     setAbyssal,
   };
 };

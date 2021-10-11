@@ -1,3 +1,4 @@
+use fh_macro::FhAbi;
 use serde::{Deserialize, Serialize};
 use strum::{AsRefStr, EnumString, ToString};
 use ts_rs::TS;
@@ -62,7 +63,7 @@ pub struct FleetState {
     pub s7: Option<ShipState>,
 }
 
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub enum AirSquadronMode {
     Sortie,
     AirDefense,
@@ -100,7 +101,7 @@ pub struct AirSquadronState {
     pub ss5: Option<u8>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, ToString, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, ToString, Serialize, Deserialize, TS, FhAbi)]
 pub enum Side {
     Player,
     Enemy,
@@ -122,7 +123,9 @@ impl Side {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Hash, EnumString, AsRefStr, Serialize, Deserialize, TS)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Hash, EnumString, AsRefStr, Serialize, Deserialize, TS, FhAbi,
+)]
 pub enum OrgType {
     /// 通常艦隊
     Single,
@@ -198,7 +201,9 @@ pub fn org_type_side(org_type: OrgType) -> Side {
     org_type.side()
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, EnumString, AsRefStr, Serialize, Deserialize, TS)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, EnumString, AsRefStr, Serialize, Deserialize, TS, FhAbi,
+)]
 pub enum Role {
     Main,
     Escort,

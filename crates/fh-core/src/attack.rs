@@ -8,6 +8,7 @@ mod fleet_factor;
 mod hit;
 mod night;
 mod shelling;
+mod shelling_support;
 mod special_enemy_mods;
 mod torpedo;
 
@@ -19,4 +20,5 @@ pub use damage::*;
 pub use hit::*;
 pub use night::*;
 pub use shelling::*;
+pub use shelling_support::*;
 pub use torpedo::*;

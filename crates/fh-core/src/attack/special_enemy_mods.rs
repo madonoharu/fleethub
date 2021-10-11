@@ -8,6 +8,26 @@ use crate::{
 
 use super::attack_power::AttackPowerModifiers;
 
+/// 砲撃支援特効補正
+pub fn shelling_support_special_enemy_modifiers(
+    attacker: &Ship,
+    special_enemy_type: SpecialEnemyType,
+) -> AttackPowerModifiers {
+    let mut mods = AttackPowerModifiers::new();
+
+    if attacker.gears.has_type(GearType::AntiAirShell) {
+        let aa_shell_mod = match special_enemy_type {
+            SpecialEnemyType::IsolatedIsland | SpecialEnemyType::HarbourSummerPrincess => 1.75,
+            SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => 2.5,
+            _ => 1.0,
+        };
+
+        mods.apply_a13(aa_shell_mod);
+    }
+
+    mods
+}
+
 /// 特効補正
 pub fn special_enemy_modifiers(
     attacker: &Ship,

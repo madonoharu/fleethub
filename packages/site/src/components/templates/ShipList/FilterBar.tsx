@@ -1,4 +1,4 @@
-import { ShipFilterGroup } from "@fh/core";
+import { ShipCategory } from "@fh/core";
 import React from "react";
 import { Updater } from "use-immer";
 
@@ -6,7 +6,7 @@ import { Checkbox, Flexbox } from "../../atoms";
 import { SelectButtons } from "../../molecules";
 import { ShipFilterState } from "./useShipListState";
 
-const shipFilterGroupMap: Record<ShipFilterGroup, string> = {
+const shipCategoryMap: Record<ShipCategory, string> = {
   Battleship: "戦艦級",
   AircraftCarrier: "航空母艦",
   HeavyCruiser: "重巡級",
@@ -17,9 +17,7 @@ const shipFilterGroupMap: Record<ShipFilterGroup, string> = {
   AuxiliaryShip: "補助艦艇",
 };
 
-const SHIP_FILTER_GROUP_OPTIONS = Object.keys(
-  shipFilterGroupMap
-) as ShipFilterGroup[];
+const SHIP_CATEGORY_OPTIONS = Object.keys(shipCategoryMap) as ShipCategory[];
 
 type Props = {
   state: ShipFilterState;
@@ -27,19 +25,19 @@ type Props = {
 };
 
 const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
-  const toggleAbyssal = () =>
+  const handleAbyssalChange = (value: boolean) =>
     update((s) => {
-      s.abyssal = !s.abyssal;
+      s.abyssal = value;
     });
 
-  const toggleAll = () =>
+  const handleVisiblePrevFormChange = (value: boolean) =>
     update((s) => {
-      s.all = !s.all;
+      s.visiblePrevForm = value;
     });
 
-  const handleGroupChange = (group: string) => {
+  const handleCategoryChange = (category: ShipCategory) => {
     update((s) => {
-      s.group = group;
+      s.category = category;
     });
   };
 
@@ -47,22 +45,22 @@ const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
     <Flexbox className={className}>
       <SelectButtons
         css={{ marginRight: "auto" }}
-        options={SHIP_FILTER_GROUP_OPTIONS}
-        value={state.group as ShipFilterGroup}
-        onChange={handleGroupChange}
-        getOptionLabel={(key) => shipFilterGroupMap[key]}
+        options={SHIP_CATEGORY_OPTIONS}
+        value={state.category}
+        onChange={handleCategoryChange}
+        getOptionLabel={(key) => shipCategoryMap[key]}
       />
       <Checkbox
-        label="全表示"
+        label="改造前表示"
         size="small"
-        checked={state.all}
-        onChange={toggleAll}
+        checked={state.visiblePrevForm}
+        onChange={handleVisiblePrevFormChange}
       />
       <Checkbox
         label="深海"
         size="small"
         checked={state.abyssal}
-        onChange={toggleAbyssal}
+        onChange={handleAbyssalChange}
       />
     </Flexbox>
   );

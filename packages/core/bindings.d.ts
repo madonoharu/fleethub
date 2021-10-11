@@ -88,7 +88,7 @@ export type GearAttr =
   | "SemiNightPlane"
   | "HighAltitudeInterceptor";
 
-export type GearFilterGroup =
+export type GearCategory =
   | "Fighter"
   | "Bomber"
   | "Recon"
@@ -258,7 +258,7 @@ export type ShipAttr =
   | "BattleshipSummerPrincess"
   | "HeavyCruiserSummerPrincess";
 
-export type ShipFilterGroup =
+export type ShipCategory =
   | "Battleship"
   | "AircraftCarrier"
   | "HeavyCruiser"
@@ -322,6 +322,7 @@ export interface NormalFormationDef {
   torpedo: FormationWarfareDef;
   asw: FormationWarfareDef;
   night: FormationWarfareDef;
+  shelling_support: FormationWarfareDef;
 }
 
 export type FormationDef =
@@ -848,4 +849,5 @@ export interface WarfareInfo {
   day: AttackInfo<DayBattleAttackType, DayCutin | null> | null;
   closing_torpedo: AttackInfo<null, null> | null;
   night: AttackInfo<NightBattleAttackType, NightCutin | null> | null;
+  shelling_support: AttackInfo<null, null> | null;
 }

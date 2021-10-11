@@ -7,7 +7,7 @@ import { EquipmentBonuses } from "equipment-bonus";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { getBonusText, getRangeName } from "../../../utils";
+import { getRangeLabel, withSign } from "../../../utils";
 import { StatIcon } from "../../molecules";
 
 const STAT_KEYS = [
@@ -80,12 +80,12 @@ export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) => {
       key !== "radius" &&
       key !== "speed"
     ) {
-      bonus = getBonusText(key, ebonuses[key]);
+      bonus = withSign(ebonuses[key]);
     }
 
     if (!value && !bonus) return;
 
-    if (key === "range") return { key, value: getRangeName(value), bonus };
+    if (key === "range") return { key, value: getRangeLabel(value), bonus };
     if (key === "speed") return { key, value: "", bonus };
     return { key, value, bonus };
   }).filter(nonNullable);
@@ -97,13 +97,17 @@ export type Props = {
 };
 
 const GearStatList: React.FCX<Props> = ({ className, gear, ebonuses }) => {
+  const { t } = useTranslation("common");
   const data = toStatEntries(gear, ebonuses);
+
   return (
     <Typography className={className} variant="body2" component="div">
       {data.map((datum) => (
         <React.Fragment key={datum.key}>
           <StatLabel statKey={datum.key} />
-          <Value>{datum.value}</Value>
+          <Value>
+            {datum.key === "range" ? t(`${datum.value}`) : datum.value}
+          </Value>
           <Bonus>{datum.bonus}</Bonus>
         </React.Fragment>
       ))}

@@ -13,7 +13,7 @@ const ORG_TYPES: OrgType[] = [
 ];
 
 type OrgTypeSelectProps = {
-  color: SelectInputProps["color"];
+  color?: SelectInputProps["color"];
   value: OrgType;
   onChange?: (value: OrgType) => void;
 };

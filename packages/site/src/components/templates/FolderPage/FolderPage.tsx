@@ -19,7 +19,7 @@ type FolderPageProps = {
 };
 
 const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
-  const { file, actions, canDrop } = useFile(id);
+  const { file, actions, isTemp, canDrop } = useFile(id);
   const { t } = useTranslation("common");
 
   if (file?.type !== "folder") return null;
@@ -37,8 +37,10 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
       <Container>
         <FileForm
           file={file}
+          isTemp={isTemp}
           onNameChange={actions.setName}
           onDescriptionChange={actions.setDescription}
+          onSave={actions.save}
           onCopy={actions.copy}
           onRemove={actions.remove}
         />

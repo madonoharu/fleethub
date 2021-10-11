@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
@@ -9,7 +9,7 @@ use crate::{
 
 use super::{DamageAnalyzer, DamageInfo};
 
-#[derive(Debug, Serialize, TS)]
+#[derive(Debug, Serialize, Deserialize, TS)]
 pub struct AttackStats {
     pub attack_power: Option<AttackPower>,
     pub attack_power_params: Option<AttackPowerParams>,
@@ -57,7 +57,7 @@ impl AttackParams {
     }
 }
 
-#[derive(Debug, Serialize, TS)]
+#[derive(Debug, Serialize, Deserialize, TS)]
 pub struct AttackInfoItem<Cutin>
 where
     Cutin: Serialize + TS,
@@ -67,7 +67,7 @@ where
     pub stats: AttackStats,
 }
 
-#[derive(Debug, Serialize, TS)]
+#[derive(Debug, Serialize, Deserialize, TS)]
 pub struct AttackInfo<AttackType, Cutin>
 where
     AttackType: Serialize + TS,
