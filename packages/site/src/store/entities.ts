@@ -1,10 +1,10 @@
 import {
   AttackPowerModifiers,
-  MasterDataInput,
+  MasterData,
   NightSituation,
-  OrgParams,
+  OrgState,
   Ship,
-  ShipParams,
+  ShipState,
 } from "@fh/core";
 import {
   AIR_SQUADRON_KEYS,
@@ -39,7 +39,7 @@ import { SwapEvent } from "../hooks";
 
 import {
   createDeepEqualSelector,
-  createOrgParamsByDeck,
+  createOrgStateByDeck,
   createShallowEqualSelector,
   fetchPublicDataByUrl,
   parsePredeck,
@@ -62,8 +62,8 @@ import {
   FolderEntity,
   NormalizedDictionaries,
   NormalizedEntities,
-  normalizeOrgParams,
-  normalizeShipParams,
+  normalizeOrgState,
+  normalizeShipState,
   PlanFileEntity,
   PlanNode,
 } from "./schema";
@@ -352,9 +352,9 @@ export const createShip = createAction(
   "entities/createShip",
   (arg: CreateShipArg) => {
     const { ship, position, id, reselect } = arg;
-    const state: ShipParams = ship.state();
+    const state: ShipState = ship.state();
 
-    const normalized = normalizeShipParams(state, id);
+    const normalized = normalizeShipState(state, id);
 
     const payload = {
       id: normalized.result,
@@ -385,8 +385,8 @@ export const selectShip =
 
 export const createPlan = createAction<PrepareAction<SetEntitiesPayload>>(
   "entities/createPlan",
-  (arg: { name?: string; org?: OrgParams; to?: string } | undefined) => {
-    const normalized = normalizeOrgParams(arg?.org || {});
+  (arg: { name?: string; org?: OrgState; to?: string } | undefined) => {
+    const normalized = normalizeOrgState(arg?.org || {});
 
     const fileId = nanoid();
 
@@ -453,7 +453,7 @@ export const initalPlanNodeDetailsConfig: PlanNodeDetailsConfig = {
 export const createPlanNode = createAction(
   "entities/createPlanNode",
   (fileId: string, event: MapEnemySelectEvent) => {
-    const { result, entities } = normalizeOrgParams(event.org);
+    const { result, entities } = normalizeOrgState(event.org);
 
     const node: PlanNode = {
       name: event.name,
@@ -606,7 +606,7 @@ export const publishFile = createAsyncThunk(
 );
 
 export const parseUrl =
-  (masterData: MasterDataInput, url: URL): AppThunk =>
+  (masterData: MasterData, url: URL): AppThunk =>
   async (dispatch) => {
     const data = await fetchPublicDataByUrl(url);
     if (data) {
@@ -615,7 +615,7 @@ export const parseUrl =
 
     const predeck = parsePredeck(url);
     if (predeck) {
-      const org = createOrgParamsByDeck(masterData, predeck);
+      const org = createOrgStateByDeck(masterData, predeck);
       dispatch(createPlan({ org, to: "temp" }));
     }
   };

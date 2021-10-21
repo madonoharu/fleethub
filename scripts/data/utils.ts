@@ -16,10 +16,10 @@ export const fetchStart2 = async (): Promise<Start2> => {
     .json();
 };
 
-export const deleteFalsyValues = (obj: Record<string, unknown>) => {
+export const deleteFalsyValues = (obj: object) => {
   Object.entries(obj).forEach(([key, value]) => {
     if (!value) {
-      delete obj[key];
+      delete (obj as Record<string, unknown>)[key];
     }
   });
 };
@@ -94,17 +94,17 @@ export const writeRows = async (
   await sheet.saveUpdatedCells();
 };
 
-export const updateRows = async <T extends Record<string, unknown>[]>(
+export const updateRows = async <T extends object[]>(
   sheet: GoogleSpreadsheetWorksheet,
   cb: (rows: GoogleSpreadsheetRow[], sheet: GoogleSpreadsheetWorksheet) => T
 ): Promise<T> => {
   const rows = await sheet.getRows();
   const next = cb(rows, sheet);
 
-  if (equalRows(sheet.headerValues, rows, next)) {
+  if (equalRows(sheet.headerValues, rows, next as Row[])) {
     console.log(`skip ${sheet.a1SheetName}`);
   } else {
-    await writeRows(sheet, next);
+    await writeRows(sheet, next as Row[]);
   }
 
   return next;

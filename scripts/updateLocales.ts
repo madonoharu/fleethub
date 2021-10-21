@@ -6,7 +6,7 @@ import {
   DayCutin,
   Engagement,
   Formation,
-  MasterDataInput,
+  MasterData,
   NightCutin,
   OrgType,
 } from "@fh/core";
@@ -320,7 +320,7 @@ class LocaleUpdater {
   private code: LanguageCode;
   private path: string;
 
-  constructor(private md: MasterDataInput, private language: Language) {
+  constructor(private md: MasterData, private language: Language) {
     this.code = language.code;
 
     this.kc3 = got.extend({

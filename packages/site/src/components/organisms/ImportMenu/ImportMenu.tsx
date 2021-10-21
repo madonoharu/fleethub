@@ -12,7 +12,7 @@ import {
   selectAppState,
 } from "../../../store";
 import {
-  createOrgParamsByDeck,
+  createOrgStateByDeck,
   Deck,
   fetchPublicDataByUrl,
 } from "../../../utils";
@@ -48,9 +48,9 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   const handleDeckImport = () => {
     try {
       const deck: Deck = JSON.parse(deckStr);
-      const orgParams = createOrgParamsByDeck(masterData, deck);
+      const OrgState = createOrgStateByDeck(masterData, deck);
 
-      dispatch(createPlan({ org: orgParams, to }));
+      dispatch(createPlan({ org: OrgState, to }));
 
       onClose?.();
     } catch (error) {

@@ -1,9 +1,9 @@
-import { FhCore, MasterDataInput } from "@fh/core";
+import { FhCore, MasterData } from "@fh/core";
 import { createContext, useContext } from "react";
 
 export type FhCoreState = {
   module: typeof import("@fh/core");
-  masterData: MasterDataInput;
+  masterData: MasterData;
   core: FhCore;
 };
 

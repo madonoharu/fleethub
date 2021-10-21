@@ -1,4 +1,4 @@
-import { GearCategory, GearParams } from "@fh/core";
+import { GearCategory, GearState } from "@fh/core";
 import {
   createAction,
   createSlice,
@@ -25,7 +25,7 @@ const initialState: GearSelectState = {
 
 export const createGear = createAction(
   "entities/createGear",
-  (position: GearPosition, state: GearParams) => ({
+  (position: GearPosition, state: GearState) => ({
     payload: { position, gear: { ...state, id: nanoid() } },
   })
 );

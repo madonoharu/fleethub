@@ -1,4 +1,4 @@
-import { MasterDataInput, MasterEquippable } from "@fh/core";
+import { MasterData, MasterEquippable } from "@fh/core";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { Start2 } from "kc-tools";
 
@@ -36,10 +36,10 @@ const createEquippable = (start2: Start2): MasterEquippable => {
   return { equip_stype, equip_exslot, equip_ship, equip_exslot_ship };
 };
 
-const createMasterDataInput = async (
+const createMasterData = async (
   doc: GoogleSpreadsheet,
   start2: Start2
-): Promise<Partial<MasterDataInput>> => {
+): Promise<Partial<MasterData>> => {
   const [shipData, gearData, constants] = await Promise.all([
     updateShipData(doc, start2),
     updateGearData(doc, start2),
@@ -68,9 +68,9 @@ export const updateData = async () => {
   ]);
   await log("Start: update_data");
 
-  const nextMd = await createMasterDataInput(doc, start2);
+  const nextMd = await createMasterData(doc, start2);
 
-  const keys = Object.keys(nextMd) as (keyof MasterDataInput)[];
+  const keys = Object.keys(nextMd) as (keyof MasterData)[];
 
   const promises = keys.map((key) => {
     const next = nextMd[key];

@@ -1,4 +1,4 @@
-import { MasterDataInput } from "@fh/core";
+import { MasterData } from "@fh/core";
 import React, { useMemo } from "react";
 import { batch, Provider as ReduxProvider } from "react-redux";
 import { persistStore } from "redux-persist";
@@ -9,7 +9,7 @@ import { createStore } from "./createStore";
 import { sweepEntities, parseUrl } from "./entities";
 
 type StoreProviderProps = {
-  masterData: MasterDataInput;
+  masterData: MasterData;
 };
 
 const StoreProvider: React.FC<StoreProviderProps> = ({

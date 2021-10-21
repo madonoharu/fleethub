@@ -11,12 +11,12 @@ import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import OrgTypeSelect from "../OrgTypeSelect";
 
-type ShipParamsSettingsProps = {
+type ShipStateSettingsProps = {
   value: WarfareAnalyzerShipEnvironment;
   onChange: (changes: WarfareAnalyzerShipEnvironment) => void;
 };
 
-const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
+const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
   className,
   value,
   onChange,
@@ -140,4 +140,4 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
   );
 };
 
-export default ShipParamsSettings;
+export default ShipStateSettings;

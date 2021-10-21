@@ -1,11 +1,11 @@
 import {
-  AirSquadronParams,
+  AirSquadronState,
   AirState,
   Engagement,
-  FleetParams,
-  GearParams,
-  OrgParams,
-  ShipParams,
+  FleetState,
+  GearState,
+  OrgState,
+  ShipState,
   WarfareAnalyzerShipEnvironment,
 } from "@fh/core";
 import {
@@ -33,11 +33,11 @@ import {
   shipsSelectors,
 } from "./adapters";
 
-export type GearEntity = { id: string } & GearParams;
-export type ShipEntity = FhEntity<ShipParams, GearKey>;
-export type FleetEntity = FhEntity<FleetParams, ShipKey>;
-export type AirSquadronEntity = FhEntity<AirSquadronParams, GearKey>;
-export type OrgEntity = FhEntity<OrgParams, FleetKey | AirSquadronKey>;
+export type GearEntity = { id: string } & GearState;
+export type ShipEntity = FhEntity<ShipState, GearKey>;
+export type FleetEntity = FhEntity<FleetState, ShipKey>;
+export type AirSquadronEntity = FhEntity<AirSquadronState, GearKey>;
+export type OrgEntity = FhEntity<OrgState, FleetKey | AirSquadronKey>;
 
 type FileEntityBase<T extends string, P = Record<string, unknown>> = {
   id: string;
@@ -100,18 +100,14 @@ const airSquadron = new schema.Entity<AirSquadronEntity>(
   Object.fromEntries(GEAR_KEYS.map((key) => [key, gear] as const))
 );
 
-const org = new schema.Entity<OrgEntity>(
-  "orgs",
-  Object.fromEntries([
-    ...FLEET_KEYS.map((key) => [key, fleet] as const),
-    ...AIR_SQUADRON_KEYS.map((key) => [key, airSquadron] as const),
-  ])
-);
+const org = new schema.Entity<OrgEntity>("orgs", {
+  ...Object.fromEntries(FLEET_KEYS.map((key) => [key, fleet] as const)),
+  ...Object.fromEntries(
+    AIR_SQUADRON_KEYS.map((key) => [key, airSquadron] as const)
+  ),
+});
 
-const setIdBy = <
-  T extends Record<string, unknown> & { id?: string | null },
-  K extends keyof T
->(
+const setIdBy = <T extends object & { id?: string | null }, K extends keyof T>(
   p: T,
   keys: readonly K[],
   nest: (v: NonNullable<T[K]>) => void
@@ -123,18 +119,18 @@ const setIdBy = <
     .forEach(nest);
 };
 
-const setIdToGear = (p: GearParams) => {
+const setIdToGear = (p: GearState) => {
   p.id = nanoid();
 };
 
-const setIdToShip = (p: ShipParams) => setIdBy(p, GEAR_KEYS, setIdToGear);
+const setIdToShip = (p: ShipState) => setIdBy(p, GEAR_KEYS, setIdToGear);
 
-const setIdToFleet = (p: FleetParams) => setIdBy(p, SHIP_KEYS, setIdToShip);
+const setIdToFleet = (p: FleetState) => setIdBy(p, SHIP_KEYS, setIdToShip);
 
-const setIdToAirSquadron = (p: AirSquadronParams) =>
+const setIdToAirSquadron = (p: AirSquadronState) =>
   setIdBy(p, GEAR_KEYS, setIdToGear);
 
-const setIdToOrg = (p: OrgParams) => {
+const setIdToOrg = (p: OrgState) => {
   setIdBy(p, FLEET_KEYS, setIdToFleet);
   setIdBy(p, AIR_SQUADRON_KEYS, setIdToAirSquadron);
 };
@@ -157,8 +153,8 @@ export type NormalizedDictionaries = {
   files?: Dictionary<FileEntity> | undefined;
 };
 
-export const normalizeOrgParams = (
-  params: OrgParams
+export const normalizeOrgState = (
+  params: OrgState
 ): NormalizedSchema<NormalizedEntities, string> => {
   const cloned = cloneDeep({
     f1: {},
@@ -181,8 +177,8 @@ export const normalizeOrgParams = (
   return normalize(cloned, org);
 };
 
-export const normalizeShipParams = (
-  params: ShipParams,
+export const normalizeShipState = (
+  params: ShipState,
   id?: string
 ): NormalizedSchema<NormalizedEntities, string> => {
   setIdToShip(params);
@@ -197,21 +193,21 @@ export const normalizeShipParams = (
 export const denormalizeShip = (
   entities: NormalizedEntities,
   id: string
-): ShipParams | undefined => {
-  return denormalize(id, ship, entities) as ShipParams | undefined;
+): ShipState | undefined => {
+  return denormalize(id, ship, entities) as ShipState | undefined;
 };
 
 export const denormalizeOrg = (
   entities: NormalizedEntities,
   id: string
-): OrgParams | undefined => {
-  return denormalize(id, org, entities) as OrgParams | undefined;
+): OrgState | undefined => {
+  return denormalize(id, org, entities) as OrgState | undefined;
 };
 
 export const denormalizeOrgs = (
   root: DefaultRootState,
   orgs: string[]
-): OrgParams[] => {
+): OrgState[] => {
   const entities = {
     gears: gearsSelectors.selectEntities(root),
     ships: shipsSelectors.selectEntities(root),
@@ -221,6 +217,6 @@ export const denormalizeOrgs = (
   };
 
   return (
-    denormalize(orgs, [org], entities) as (OrgParams | undefined)[]
+    denormalize(orgs, [org], entities) as (OrgState | undefined)[]
   ).filter(nonNullable);
 };

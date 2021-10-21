@@ -1,6 +1,6 @@
 import {
   MasterAttrRule,
-  MasterShipInput,
+  MasterShip,
   MasterVariantDef,
   SpeedGroup,
 } from "@fh/core";
@@ -56,7 +56,7 @@ const getDefaultSpeedGroup = ({
   stype,
   ctype,
   speed,
-}: MasterShipInput): SpeedGroup => {
+}: MasterShip): SpeedGroup => {
   const isFastAV = stype == ShipType.AV && speed == 10;
 
   if (
@@ -111,22 +111,20 @@ const getDefaultSpeedGroup = ({
   return "B2";
 };
 
-const getConvertibleShips = (ships: MasterShipInput[]) => {
-  const findNextShip = ({ next_id }: MasterShipInput) =>
+const getConvertibleShips = (ships: MasterShip[]) => {
+  const findNextShip = ({ next_id }: MasterShip) =>
     next_id ? ships.find((s) => s.ship_id === next_id) : undefined;
 
-  const convertibleShips: MasterShipInput[] = [];
-  const irreversibleShips: MasterShipInput[] = [];
+  const convertibleShips: MasterShip[] = [];
+  const irreversibleShips: MasterShip[] = [];
 
-  const isConvertible = (base: MasterShipInput): boolean => {
+  const isConvertible = (base: MasterShip): boolean => {
     if (!base.next_id || irreversibleShips.includes(base)) return false;
     if (convertibleShips.includes(base)) return true;
 
-    const remodelList: MasterShipInput[] = [];
+    const remodelList: MasterShip[] = [];
 
-    const setRemodelList = (
-      current: MasterShipInput
-    ): MasterShipInput | undefined => {
+    const setRemodelList = (current: MasterShip): MasterShip | undefined => {
       remodelList.push(current);
       const next = findNextShip(current);
       if (!next) return current;
@@ -155,10 +153,10 @@ export const createShips = (
   rows: GoogleSpreadsheetRow[],
   start2: Start2
 ) => {
-  const createShip = (mst: MstShip): MasterShipInput => {
+  const createShip = (mst: MstShip): MasterShip => {
     const row = rows.find((row) => Number(row.ship_id) === mst.api_id);
 
-    const base: MasterShipInput = {
+    const base: MasterShip = {
       ship_id: mst.api_id,
       name: mst.api_name,
       yomi: mst.api_yomi,
@@ -219,8 +217,8 @@ export const createShips = (
         fuel: mst.api_fuel_max,
         ammo: mst.api_bull_max,
 
-        next_id: Number(api_aftershipid) || null,
-        next_level: api_afterlv || null,
+        next_id: Number(api_aftershipid) || undefined,
+        next_level: api_afterlv || undefined,
       };
     } else {
       const baseName = mst.api_name.replace(SUFFIX_RE, "");
@@ -311,7 +309,7 @@ const readShipAttrs = async (
       .replace(/\s{2,}/g, " ");
 
   rows.forEach((row) => {
-    const expr = replaceExpr(row.expr);
+    const expr = replaceExpr(row.expr as string);
     attrs.push({ tag: row.tag, name: row.name, expr });
   });
 

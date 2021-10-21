@@ -1,4 +1,4 @@
-import { MasterAttrRule, MasterGearInput, MasterIBonuses } from "@fh/core";
+import { MasterAttrRule, MasterGear, MasterIBonuses } from "@fh/core";
 import { nonNullable } from "@fh/utils/src";
 import {
   GoogleSpreadsheet,
@@ -12,11 +12,11 @@ import { deleteFalsyValues, updateRows } from "./utils";
 const createGears = (
   rows: GoogleSpreadsheetRow[],
   start2: Start2
-): MasterGearInput[] => {
+): MasterGear[] => {
   const gears = start2.api_mst_slotitem.map((mst) => {
     const row = rows.find((row) => Number(row.gear_id) === mst.api_id);
 
-    const next: MasterGearInput = {
+    const next: MasterGear = {
       gear_id: mst.api_id,
       types: mst.api_type,
       name: mst.api_name,
@@ -100,7 +100,7 @@ const readGearAttrs = async (
   const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
   rows.forEach((row) => {
-    const expr = replaceExpr(row.expr);
+    const expr = replaceExpr(row.expr as string);
     gear_attrs.push({ tag: row.tag, name: row.name, expr });
   });
 
@@ -139,7 +139,7 @@ const readIBonuses = async (
     const rules = rows
       .map(({ expr, formula }) => {
         if (!expr || !formula) return undefined;
-        return { expr: replaceExpr(expr), formula };
+        return { expr: replaceExpr(expr as string), formula };
       })
       .filter(nonNullable);
 

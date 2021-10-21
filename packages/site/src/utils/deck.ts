@@ -1,13 +1,13 @@
 import {
   Fleet,
-  FleetParams,
+  FleetState,
   Gear,
-  GearParams,
-  MasterDataInput,
+  GearState,
+  MasterData,
   Org,
-  OrgParams,
+  OrgState,
   Ship,
-  ShipParams,
+  ShipState,
 } from "@fh/core";
 import {
   AirSquadronKey,
@@ -54,7 +54,7 @@ export type Deck = {
 } & Dict<FleetKey, DeckFleet> &
   Dict<AirSquadronKey, DeckAirSquadron>;
 
-const createGearParams = (deck: DeckGear): GearParams => {
+const createGearState = (deck: DeckGear): GearState => {
   return {
     gear_id: deck.id,
     stars: deck.rf,
@@ -62,18 +62,18 @@ const createGearParams = (deck: DeckGear): GearParams => {
   };
 };
 
-const createGearParamsDict = (
+const createGearStateDict = (
   items: DeckItems,
   slotnum?: number
-): Dict<GearKey, GearParams> => {
-  const result: Dict<GearKey, GearParams> = {};
+): Dict<GearKey, GearState> => {
+  const result: Dict<GearKey, GearState> = {};
 
   GEAR_KEYS.forEach((key, i) => {
     const item = items[key.replace("g", "i") as DeckItemKey];
 
     if (!item) return;
 
-    const gear = createGearParams(item);
+    const gear = createGearState(item);
 
     if (i === slotnum && !items.ix) {
       result.gx = gear;
@@ -85,10 +85,10 @@ const createGearParamsDict = (
   return result;
 };
 
-const createShipParams = (
-  master: MasterDataInput,
+const createShipState = (
+  master: MasterData,
   deck: DeckShip
-): ShipParams | undefined => {
+): ShipState | undefined => {
   const ship_id = Number(deck.id);
 
   const masterShip = master.ships.find(
@@ -98,9 +98,9 @@ const createShipParams = (
   if (!masterShip) return;
 
   const gears =
-    deck.items && createGearParamsDict(deck.items, masterShip.slotnum);
+    deck.items && createGearStateDict(deck.items, masterShip.slotnum);
 
-  const base: ShipParams = {
+  const base: ShipState = {
     ship_id,
     level: deck.lv,
     ...gears,
@@ -120,39 +120,36 @@ const createShipParams = (
   return base;
 };
 
-const createFleetParams = (
-  master: MasterDataInput,
-  deck: DeckFleet
-): FleetParams => {
-  const fleet: FleetParams = {};
+const createFleetState = (master: MasterData, deck: DeckFleet): FleetState => {
+  const fleet: FleetState = {};
 
   SHIP_KEYS.forEach((key) => {
     const s = deck[key];
     if (s) {
-      fleet[key] = createShipParams(master, s);
+      fleet[key] = createShipState(master, s);
     }
   });
 
   return fleet;
 };
 
-export const createOrgParamsByDeck = (
-  master: MasterDataInput,
+export const createOrgStateByDeck = (
+  master: MasterData,
   deck: Deck
-): OrgParams => {
-  const org: OrgParams = {};
+): OrgState => {
+  const org: OrgState = {};
 
   FLEET_KEYS.forEach((key) => {
     const f = deck[key];
     if (f) {
-      org[key] = createFleetParams(master, f);
+      org[key] = createFleetState(master, f);
     }
   });
 
   AIR_SQUADRON_KEYS.forEach((key) => {
     const as = deck[key];
     if (as) {
-      const gears = as.items && createGearParamsDict(as.items);
+      const gears = as.items && createGearStateDict(as.items);
       org[key] = gears;
     }
   });

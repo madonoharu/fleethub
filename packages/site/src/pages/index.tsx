@@ -1,4 +1,4 @@
-import { MasterDataInput } from "@fh/core";
+import { MasterData } from "@fh/core";
 import { createEquipmentBonuses } from "equipment-bonus";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -16,7 +16,7 @@ import { StoreProvider } from "../store";
 const loader = async () => {
   const module = await import("@fh/core");
 
-  const App: React.FC<{ masterData: MasterDataInput }> = ({ masterData }) => {
+  const App: React.FC<{ masterData: MasterData }> = ({ masterData }) => {
     const core = new module.FhCore(masterData, createEquipmentBonuses);
 
     if (process.env.NODE_ENV === "development") {
@@ -35,7 +35,7 @@ const loader = async () => {
 
 const App = dynamic(loader);
 
-type StaticProps = { masterData: MasterDataInput };
+type StaticProps = { masterData: MasterData };
 
 const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
   masterData,

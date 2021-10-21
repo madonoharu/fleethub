@@ -1,4 +1,4 @@
-import { MasterDataInput } from "@fh/core";
+import { MasterData } from "@fh/core";
 import admin from "firebase-admin";
 import got from "got";
 import isEqual from "lodash/isEqual";
@@ -48,13 +48,13 @@ export const updateJson = async <T>(
   return next;
 };
 
-export const readMaster = <K extends keyof MasterDataInput>(
+export const readMaster = <K extends keyof MasterData>(
   key: K
-): Promise<MasterDataInput[K]> => readJson(`data/${key}.json`);
+): Promise<MasterData[K]> => readJson(`data/${key}.json`);
 
-export const write = <K extends keyof MasterDataInput>(
+export const write = <K extends keyof MasterData>(
   key: K,
-  data: MasterDataInput[K]
+  data: MasterData[K]
 ) => {
   const str = JSON.stringify(data);
 
@@ -65,10 +65,10 @@ export const write = <K extends keyof MasterDataInput>(
   return bucket.file(destination).save(str, { metadata });
 };
 
-export const updateMaster = <K extends keyof MasterDataInput>(
+export const updateMaster = <K extends keyof MasterData>(
   key: K,
-  cb: (current: MasterDataInput[K] | undefined) => MasterDataInput[K]
-): Promise<MasterDataInput[K]> => {
+  cb: (current: MasterData[K] | undefined) => MasterData[K]
+): Promise<MasterData[K]> => {
   return updateJson(`data/${key}.json`, cb);
 };
 
@@ -83,9 +83,9 @@ const MASTER_DATA_KEYS = [
   "constants",
 ] as const;
 
-export const readMasterData = async (): Promise<MasterDataInput> => {
+export const readMasterData = async (): Promise<MasterData> => {
   const entries = await Promise.all(
     MASTER_DATA_KEYS.map(async (key) => [key, await readMaster(key)])
   );
-  return Object.fromEntries(entries) as MasterDataInput;
+  return Object.fromEntries(entries) as MasterData;
 };
