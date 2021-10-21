@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 export type Optional<T extends object, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
 
@@ -20,7 +19,7 @@ export type SerInput<T> = T extends UnkownFn | Primitive
     >
   : T;
 
-import * as bindings from "./bindings";
+import type * as bindings from "./bindings";
 
 export type GearParams = SerInput<bindings.GearState>;
 export type ShipParams = SerInput<bindings.ShipState>;
@@ -32,4 +31,4 @@ export type MasterGearInput = SerInput<bindings.MasterGear>;
 export type MasterShipInput = SerInput<bindings.MasterShip>;
 export type MasterDataInput = SerInput<bindings.MasterData>;
 
-export * from "./bindings";
+export type * from "./bindings.d";

@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { FormControlLabel } from "@mui/material";
 import React from "react";
 import { GearCategoryFilter } from "../../../store";
 

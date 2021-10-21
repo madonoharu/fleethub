@@ -3,8 +3,8 @@ import { OrgType, Ship, WarfareAnalyzerContext } from "@fh/core";
 import { nonNullable } from "@fh/utils";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Paper, Typography } from "@mui/material";
-import React from "react";
 import { useTranslation } from "next-i18next";
+import React from "react";
 
 import { useFhCore } from "../../../hooks";
 import { Tabs, TabItem } from "../../molecules";
@@ -36,6 +36,7 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
   const day = info?.day;
   const closing_torpedo = info?.closing_torpedo;
   const night = info?.night;
+  const openingAsw = info?.opening_asw;
   const shelling_support = info?.shelling_support;
 
   const list: TabItem[] = [
@@ -50,6 +51,10 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
     night && {
       label: t("Night"),
       panel: <AttackTable type={night.attack_type.t} info={night} />,
+    },
+    openingAsw && {
+      label: t("PhaseOpeningAsw"),
+      panel: <AttackTable type="Asw" info={openingAsw} />,
     },
     shelling_support && {
       label: t("Support"),

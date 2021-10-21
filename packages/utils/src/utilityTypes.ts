@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 export type Dict<K extends string | number | symbol, T> = Partial<Record<K, T>>;
 
 export type NullableArray<T> = Array<T | undefined>;

@@ -48,8 +48,11 @@ const combinedReducer = combineReducers({
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {
   const next = combinedReducer(...args);
+
   if (
-    [UndoableActionTypes.UNDO, UndoableActionTypes.REDO].includes(args[1].type)
+    [UndoableActionTypes.UNDO, UndoableActionTypes.REDO].includes(
+      args[1].type as string
+    )
   )
     return { ...next };
   return next;

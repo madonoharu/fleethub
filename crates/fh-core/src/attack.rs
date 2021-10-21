@@ -1,6 +1,7 @@
 mod asw;
 mod attack;
 mod attack_power;
+mod attack_type;
 mod context;
 mod damage;
 mod fit_gun_bonus;
@@ -15,6 +16,7 @@ mod torpedo;
 pub use asw::*;
 pub use attack::*;
 pub use attack_power::*;
+pub use attack_type::*;
 pub use context::*;
 pub use damage::*;
 pub use hit::*;

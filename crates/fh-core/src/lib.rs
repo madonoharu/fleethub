@@ -18,7 +18,7 @@ use wasm_abi::{AirSquadronParams, FleetParams, GearParams, OrgParams, ShipParams
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
-use analyzer::{analyze_warfare, OrgAnalyzer, WarfareAnalyzerContext, WarfareInfo};
+use analyzer::{OrgAnalyzer, WarfareAnalyzer, WarfareAnalyzerContext, WarfareInfo};
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
@@ -150,6 +150,7 @@ impl FhCore {
         attacker: &Ship,
         target: &Ship,
     ) -> WarfareInfo {
-        analyze_warfare(&self.factory.master_data, &params, attacker, target)
+        let analyzer = WarfareAnalyzer::new(&self.factory.master_data, &params, attacker, target);
+        analyzer.analyze()
     }
 }
