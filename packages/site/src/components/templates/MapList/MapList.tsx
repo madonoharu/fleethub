@@ -1,18 +1,19 @@
 import styled from "@emotion/styled";
 import {
-  FleetParams,
+  FleetState,
   Formation,
-  MasterDataInput,
-  OrgParams,
-  ShipParams,
+  MasterData,
+  OrgState,
+  ShipState,
 } from "@fh/core";
-import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fh/utils";
+import { MapEnemyFleet, MapNode, MapNodeType } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button } from "@mui/material";
 import React from "react";
 import { useAsync } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
 
+import { fetchMap } from "../../../firebase";
 import { useFhCore, useModal } from "../../../hooks";
 import { mapListSlice, MapListState, selectMapListState } from "../../../store";
 import { Flexbox } from "../../atoms";
@@ -20,13 +21,6 @@ import { Select } from "../../molecules";
 import { NauticalChart } from "../../organisms";
 import MapNodeContent from "./MapNodeContent";
 import MapSelect from "./MapSelect";
-
-const fetchStorage = <T extends unknown = unknown>(path: string) =>
-  fetch(`https://storage.googleapis.com/kcfleethub.appspot.com/${path}`).then(
-    (res) => res.json()
-  ) as Promise<T>;
-
-const fetchMap = (id: number) => fetchStorage<FhMap>(`maps/${id}.json`);
 
 const StyledMapSelect = styled(MapSelect)`
   margin: 8px;
@@ -40,7 +34,7 @@ const MapSelectButton = styled(Button)`
   }
 `;
 
-const toShipParams = (md: MasterDataInput, ship_id: number): ShipParams => {
+const toShipState = (md: MasterData, ship_id: number): ShipState => {
   const masterShip = md.ships.find(
     (masterShip) => masterShip.ship_id === ship_id
   );
@@ -52,28 +46,25 @@ const toShipParams = (md: MasterDataInput, ship_id: number): ShipParams => {
   return { ship_id, ...gears };
 };
 
-const toFleetParams = (md: MasterDataInput, shipIds: number[]): FleetParams => {
+const toFleetState = (md: MasterData, shipIds: number[]): FleetState => {
   const entries = shipIds.map(
-    (id, i) => [`s${i + 1}`, toShipParams(md, id)] as const
+    (id, i) => [`s${i + 1}`, toShipState(md, id)] as const
   );
 
-  const fleet: FleetParams = Object.fromEntries(entries);
+  const fleet: FleetState = Object.fromEntries(entries);
 
   fleet.len = shipIds.length;
 
   return fleet;
 };
 
-const createOrgParams = (
-  md: MasterDataInput,
-  enemy: MapEnemyFleet
-): OrgParams => {
+const createOrgState = (md: MasterData, enemy: MapEnemyFleet): OrgState => {
   const { main, escort } = enemy;
 
   return {
     org_type: escort ? "EnemyCombined" : "EnemySingle",
-    f1: toFleetParams(md, main),
-    f2: escort && toFleetParams(md, escort),
+    f1: toFleetState(md, main),
+    f2: escort && toFleetState(md, escort),
   };
 };
 
@@ -122,7 +113,7 @@ export type MapEnemySelectEvent = {
   point: string;
   d: MapNode["d"];
   type: MapNode["type"];
-  org: OrgParams;
+  org: OrgState;
   formation: Formation;
 };
 
@@ -152,7 +143,7 @@ const MapList: React.FCX<MapListProps> = ({ onMapEnemySelect }) => {
     const mapKey = `${Math.floor(mapId / 10)}-${mapId % 10}`;
     const name = `${mapKey} ${point}`;
 
-    const org = createOrgParams(masterData, enemy);
+    const org = createOrgState(masterData, enemy);
 
     const event = {
       point,

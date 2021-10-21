@@ -402,81 +402,81 @@ export type OrgType =
 export type AirSquadronMode = "Sortie" | "AirDefense";
 
 export interface GearState {
-  id: string | null;
+  id?: string;
   gear_id: number;
-  exp: number | null;
-  stars: number | null;
+  exp?: number;
+  stars?: number;
 }
 
 export interface ShipState {
-  id: string | null;
+  id?: string;
   ship_id: number;
-  level: number | null;
-  current_hp: number | null;
-  morale: number | null;
-  ammo: number | null;
-  fuel: number | null;
-  max_hp_mod: number | null;
-  firepower_mod: number | null;
-  torpedo_mod: number | null;
-  armor_mod: number | null;
-  anti_air_mod: number | null;
-  evasion_mod: number | null;
-  asw_mod: number | null;
-  los_mod: number | null;
-  luck_mod: number | null;
-  g1: GearState | null;
-  g2: GearState | null;
-  g3: GearState | null;
-  g4: GearState | null;
-  g5: GearState | null;
-  gx: GearState | null;
-  ss1: number | null;
-  ss2: number | null;
-  ss3: number | null;
-  ss4: number | null;
-  ss5: number | null;
+  level?: number;
+  current_hp?: number;
+  morale?: number;
+  ammo?: number;
+  fuel?: number;
+  max_hp_mod?: number;
+  firepower_mod?: number;
+  torpedo_mod?: number;
+  armor_mod?: number;
+  anti_air_mod?: number;
+  evasion_mod?: number;
+  asw_mod?: number;
+  los_mod?: number;
+  luck_mod?: number;
+  g1?: GearState;
+  g2?: GearState;
+  g3?: GearState;
+  g4?: GearState;
+  g5?: GearState;
+  gx?: GearState;
+  ss1?: number;
+  ss2?: number;
+  ss3?: number;
+  ss4?: number;
+  ss5?: number;
 }
 
 export interface FleetState {
-  id: string | null;
-  len: number | null;
-  s1: ShipState | null;
-  s2: ShipState | null;
-  s3: ShipState | null;
-  s4: ShipState | null;
-  s5: ShipState | null;
-  s6: ShipState | null;
-  s7: ShipState | null;
+  id?: string;
+  len?: number;
+  s1?: ShipState;
+  s2?: ShipState;
+  s3?: ShipState;
+  s4?: ShipState;
+  s5?: ShipState;
+  s6?: ShipState;
+  s7?: ShipState;
 }
 
 export interface AirSquadronState {
-  id: string | null;
-  mode: AirSquadronMode | null;
-  g1: GearState | null;
-  g2: GearState | null;
-  g3: GearState | null;
-  g4: GearState | null;
-  g5: GearState | null;
-  gx: GearState | null;
-  ss1: number | null;
-  ss2: number | null;
-  ss3: number | null;
-  ss4: number | null;
-  ss5: number | null;
+  id?: string;
+  mode?: AirSquadronMode;
+  g1?: GearState;
+  g2?: GearState;
+  g3?: GearState;
+  g4?: GearState;
+  g5?: GearState;
+  gx?: GearState;
+  ss1?: number;
+  ss2?: number;
+  ss3?: number;
+  ss4?: number;
+  ss5?: number;
 }
 
 export interface OrgState {
-  id: string | null;
-  f1: FleetState | null;
-  f2: FleetState | null;
-  f3: FleetState | null;
-  f4: FleetState | null;
-  a1: AirSquadronState | null;
-  a2: AirSquadronState | null;
-  a3: AirSquadronState | null;
-  hq_level: number | null;
-  org_type: OrgType | null;
+  id?: string;
+  f1?: FleetState;
+  f2?: FleetState;
+  f3?: FleetState;
+  f4?: FleetState;
+  a1?: AirSquadronState;
+  a2?: AirSquadronState;
+  a3?: AirSquadronState;
+  hq_level?: number;
+  org_type?: OrgType;
 }
 
 export type SpeedGroup = "A" | "B1" | "B2" | "C";
@@ -487,25 +487,25 @@ export interface MasterGear {
   gear_id: number;
   name: string;
   types: GearTypes;
-  special_type: number | null;
-  max_hp: number | null;
-  firepower: number | null;
-  armor: number | null;
-  torpedo: number | null;
-  anti_air: number | null;
-  speed: number | null;
-  bombing: number | null;
-  asw: number | null;
-  los: number | null;
-  luck: number | null;
-  accuracy: number | null;
-  evasion: number | null;
-  range: number | null;
-  radius: number | null;
-  cost: number | null;
-  improvable: boolean | null;
-  adjusted_anti_air_resistance: number | null;
-  fleet_anti_air_resistance: number | null;
+  special_type?: number;
+  max_hp?: number;
+  firepower?: number;
+  armor?: number;
+  torpedo?: number;
+  anti_air?: number;
+  speed?: number;
+  bombing?: number;
+  asw?: number;
+  los?: number;
+  luck?: number;
+  accuracy?: number;
+  evasion?: number;
+  range?: number;
+  radius?: number;
+  cost?: number;
+  improvable?: boolean;
+  adjusted_anti_air_resistance?: number;
+  fleet_anti_air_resistance?: number;
 }
 
 export interface MasterVariantDef {
@@ -528,7 +528,7 @@ export interface MasterShip {
   yomi: string;
   stype: number;
   ctype: number;
-  sort_id: number | null;
+  sort_id?: number;
   max_hp: StatInterval;
   firepower: StatInterval;
   armor: StatInterval;
@@ -539,16 +539,16 @@ export interface MasterShip {
   los: StatInterval;
   luck: StatInterval;
   speed: number;
-  range: number | null;
-  fuel: number | null;
-  ammo: number | null;
-  next_id: number | null;
-  next_level: number | null;
+  range?: number;
+  fuel?: number;
+  ammo?: number;
+  next_id?: number;
+  next_level?: number;
   slotnum: number;
   slots: Array;
   stock: Array<GearState>;
-  speed_group: SpeedGroup | null;
-  useful: boolean | null;
+  speed_group?: SpeedGroup;
+  useful?: boolean;
 }
 
 export interface MasterIBonusRule {

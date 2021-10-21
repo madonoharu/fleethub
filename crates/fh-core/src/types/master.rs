@@ -75,24 +75,43 @@ pub struct MasterGear {
     pub gear_id: u16,
     pub name: String,
     pub types: GearTypes,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub special_type: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_hp: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub firepower: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub armor: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub torpedo: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub anti_air: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub speed: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bombing: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub asw: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub los: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub luck: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub accuracy: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub evasion: Option<i16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub range: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub radius: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub cost: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub improvable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub adjusted_anti_air_resistance: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fleet_anti_air_resistance: Option<f64>,
 
     #[serde(skip_deserializing)]
@@ -315,6 +334,7 @@ pub struct MasterShip {
     pub yomi: String,
     pub stype: u8,
     pub ctype: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_id: Option<u16>,
     pub max_hp: StatInterval,
     pub firepower: StatInterval,
@@ -326,15 +346,22 @@ pub struct MasterShip {
     pub los: StatInterval,
     pub luck: StatInterval,
     pub speed: u8,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub range: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub fuel: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ammo: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub next_id: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub next_level: Option<u16>,
     pub slotnum: usize,
     pub slots: SlotSizeArray,
     pub stock: MyArrayVec<GearState, 5>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub speed_group: Option<SpeedGroup>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub useful: Option<bool>,
 
     #[serde(skip_deserializing)]

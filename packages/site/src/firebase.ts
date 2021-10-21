@@ -1,4 +1,5 @@
-import { MasterDataInput, OrgParams } from "@fh/core";
+import { MasterData, OrgState } from "@fh/core";
+import { FhMap } from "@fh/utils";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref } from "firebase/storage";
 
@@ -26,7 +27,7 @@ const MASTER_DATA_KEYS = [
   "constants",
 ] as const;
 
-export const fetchMasterData = async (): Promise<MasterDataInput> => {
+export const fetchMasterData = async (): Promise<MasterData> => {
   const entries = await Promise.all(
     MASTER_DATA_KEYS.map(async (key) => {
       const res = await fetch(
@@ -37,8 +38,13 @@ export const fetchMasterData = async (): Promise<MasterDataInput> => {
     })
   );
 
-  return Object.fromEntries(entries) as MasterDataInput;
+  return Object.fromEntries(entries) as MasterData;
 };
+
+export const fetchMap = (id: number) =>
+  fetch(
+    `https://storage.googleapis.com/kcfleethub.appspot.com/maps/${id}.json`
+  ).then((res) => res.json()) as Promise<FhMap>;
 
 const storage = getStorage();
 export const publicStorageRef = ref(storage, "public");
@@ -81,7 +87,7 @@ type FhFolder = {
 type FhPlanFile = {
   id: string;
   type: "plan";
-  data: OrgParams;
+  data: OrgState;
 };
 
 type FhFile = FhPlanFile | FhFolder;

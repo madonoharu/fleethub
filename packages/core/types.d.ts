@@ -19,16 +19,4 @@ export type SerInput<T> = T extends UnkownFn | Primitive
     >
   : T;
 
-import type * as bindings from "./bindings";
-
-export type GearParams = SerInput<bindings.GearState>;
-export type ShipParams = SerInput<bindings.ShipState>;
-export type FleetParams = SerInput<bindings.FleetState>;
-export type AirSquadronParams = SerInput<bindings.AirSquadronState>;
-export type OrgParams = SerInput<bindings.OrgState>;
-
-export type MasterGearInput = SerInput<bindings.MasterGear>;
-export type MasterShipInput = SerInput<bindings.MasterShip>;
-export type MasterDataInput = SerInput<bindings.MasterData>;
-
 export type * from "./bindings.d";
