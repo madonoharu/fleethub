@@ -131,10 +131,12 @@ impl<'a> AswAttackContext<'a> {
             }) as f64;
 
             let ibonus = attacker.gears.sum_by(|gear| gear.ibonuses.asw_power);
+            let ebonus = attacker.ebonuses.asw as f64;
 
             let basic = naked_asw.sqrt() * 2.0
                 + equip_asw * 1.5
                 + ibonus
+                + ebonus
                 + self.attack_type.type_constant();
 
             let formation_mod = self.formation_power_mod;

@@ -46,11 +46,11 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   const day = info?.day;
   const closing_torpedo = info?.closing_torpedo;
   const night = info?.night;
+  const shelling_support = info.shelling_support;
 
   const aswInfo = submarine && core.analyze_warfare(ctx, ship, submarine);
   const asw = aswInfo?.day;
-
-  const shelling_support = info.shelling_support;
+  const openingAsw = aswInfo?.opening_asw;
 
   const list: TabItem[] = [
     day && {
@@ -68,6 +68,10 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
       panel: (
         <AttackTable type={night.attack_type.t} info={night} disableDamage />
       ),
+    },
+    openingAsw && {
+      label: t("PhaseOpeningAsw"),
+      panel: <AttackTable type="Asw" info={openingAsw} disableDamage />,
     },
     asw && {
       label: t("WarfareAntiSub"),

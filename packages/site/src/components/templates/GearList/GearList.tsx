@@ -56,7 +56,7 @@ const GearList: React.FC<GearListProps> = ({
 
   const { equippableGears, visibleCategories } = React.useMemo(() => {
     const equippableGears = gears.filter((gear) => {
-      if (abyssal !== gear.gear_id >= 500) return false;
+      if (Boolean(abyssal) !== gear.has_attr("Abyssal")) return false;
       return !canEquip || canEquip(gear);
     });
 

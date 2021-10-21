@@ -82,6 +82,8 @@ fn main() {
         attack::ShellingAttackType,
         attack::NightAttackType,
         attack::AswAttackType,
+        attack::DayBattleAttackType,
+        attack::NightBattleAttackType,
         analyzer::DayCutinRateInfo,
         analyzer::ShipDayCutinRateInfo,
         analyzer::FleetDayCutinRateInfo,
@@ -99,8 +101,6 @@ fn main() {
         analyzer::AttackInfoItem<()>,
         analyzer::AttackInfo<(),()>,
         analyzer::DamageInfo,
-        analyzer::DayBattleAttackType,
-        analyzer::NightBattleAttackType,
         analyzer::WarfareAnalyzerShipEnvironment,
         analyzer::WarfareAnalyzerContext,
         analyzer::WarfareInfo

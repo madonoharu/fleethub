@@ -699,6 +699,20 @@ export type NightAttackType = "Normal" | "ArkRoyal" | "Carrier";
 
 export type AswAttackType = "DepthCharge" | "Aircraft";
 
+export type DayBattleAttackType =
+  | { t: "Shelling"; c: ShellingAttackType }
+  | {
+      t: "Asw";
+      c: AswAttackType;
+    };
+
+export type NightBattleAttackType =
+  | { t: "NightAttack"; c: NightAttackType }
+  | {
+      t: "Asw";
+      c: AswAttackType;
+    };
+
 export interface DayCutinRateInfo {
   observation_term: number | null;
   rates: Array<[DayCutin | null, number | null]>;
@@ -813,20 +827,6 @@ export interface DamageInfo {
   damage_state_map: Record<DamageState, number>;
 }
 
-export type DayBattleAttackType =
-  | { t: "Shelling"; c: ShellingAttackType }
-  | {
-      t: "Asw";
-      c: AswAttackType;
-    };
-
-export type NightBattleAttackType =
-  | { t: "NightAttack"; c: NightAttackType }
-  | {
-      t: "Asw";
-      c: AswAttackType;
-    };
-
 export interface WarfareAnalyzerShipEnvironment {
   org_type: OrgType;
   role: Role;
@@ -850,4 +850,5 @@ export interface WarfareInfo {
   closing_torpedo: AttackInfo<null, null> | null;
   night: AttackInfo<NightBattleAttackType, NightCutin | null> | null;
   shelling_support: AttackInfo<null, null> | null;
+  opening_asw: AttackInfo<null, null> | null;
 }

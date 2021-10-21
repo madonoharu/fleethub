@@ -63,15 +63,12 @@ export const fetchPublicDataByUrl = async (
 
   if (url.hostname === "jervis.page.link") {
     const res = await fetch(
-      `http://localhost:3000/api/hello?url=${encodeURIComponent(
-        url.toString()
-      )}`
+      `${location.hostname}/api/hello?url=${encodeURIComponent(url.toString())}`
     );
-    const json = await res.json();
+    const json: { url?: string } = await res.json();
 
     if (typeof json.url === "string") {
-      const url = new URL(json.url);
-      parseJorUrlData(url);
+      parseJorUrlData(new URL(json.url));
     }
 
     return;
