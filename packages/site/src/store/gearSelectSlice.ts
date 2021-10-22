@@ -1,10 +1,10 @@
-import { GearCategory, GearState } from "@fh/core";
 import {
   createAction,
   createSlice,
   nanoid,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import { GearCategory, GearState } from "fleethub-core";
 import { GearPosition } from "./gearsSlice";
 
 export type GearCategoryFilter = GearCategory | "All";

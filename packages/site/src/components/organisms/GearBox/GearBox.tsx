@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Gear } from "@fh/core";
+import { Gear } from "fleethub-core";
 import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 

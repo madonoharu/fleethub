@@ -1,4 +1,4 @@
-import { AttackPowerModifiers } from "@fh/core";
+import { AttackPowerModifiers } from "fleethub-core";
 import React from "react";
 import { NumberInput } from "../../molecules";
 

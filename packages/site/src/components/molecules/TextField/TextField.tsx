@@ -22,7 +22,6 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
 
     useEffect(() => {
       if (str !== value) setStr(value);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

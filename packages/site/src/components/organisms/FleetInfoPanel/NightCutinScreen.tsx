@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
+import { Typography, Stack } from "@mui/material";
 import {
   NightCutinRateInfo,
   FleetNightCutinRateInfo,
   NightSituation,
-} from "@fh/core";
-import { Typography, Stack } from "@mui/material";
+} from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useImmer } from "use-immer";

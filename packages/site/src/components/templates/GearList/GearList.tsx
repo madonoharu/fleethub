@@ -1,5 +1,5 @@
-import { Gear, GearCategory } from "@fh/core";
 import { EquipmentBonuses } from "equipment-bonus";
+import { Gear, GearCategory } from "fleethub-core";
 import React, { useState } from "react";
 
 import { Flexbox } from "../../atoms";

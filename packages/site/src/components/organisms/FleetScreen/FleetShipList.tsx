@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Fleet } from "@fh/core";
 import { ShipKey } from "@fh/utils";
+import { Fleet } from "fleethub-core";
 import React from "react";
 
 import ShipBox from "../ShipBox";

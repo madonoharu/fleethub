@@ -1,6 +1,6 @@
-import { Org } from "@fh/core";
 import SaveIcon from "@mui/icons-material/Save";
 import { Fab } from "@mui/material";
+import { Org } from "fleethub-core";
 import React from "react";
 
 import { useAsyncOnPublish, useFile, useModal } from "../../../hooks";

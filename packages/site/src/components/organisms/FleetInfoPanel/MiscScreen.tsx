@@ -1,6 +1,6 @@
-import { Org } from "@fh/core";
 import { FleetKey } from "@fh/utils";
 import { Divider, Stack } from "@mui/material";
+import { Org } from "fleethub-core";
 import React from "react";
 import { toPercent } from "../../../utils";
 import { LabeledValue } from "../../atoms";

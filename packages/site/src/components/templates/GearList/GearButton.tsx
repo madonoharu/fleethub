@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Gear } from "@fh/core";
 import { Button } from "@mui/material";
 import { EquipmentBonuses } from "equipment-bonus";
+import { Gear } from "fleethub-core";
 import React from "react";
 
 import { GearNameplate, GearTooltip } from "../../organisms";

@@ -1,4 +1,3 @@
-import { Gear, Ship } from "@fh/core";
 import { GEAR_KEYS, GearKey, mapValues, nonNullable } from "@fh/utils";
 import {
   createEquipmentBonuses,
@@ -6,6 +5,7 @@ import {
   GearInput,
   ShipInput,
 } from "equipment-bonus";
+import { Gear, Ship } from "fleethub-core";
 
 const toGearInput = (gear: Gear): GearInput => ({
   accuracy: gear.accuracy,

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Org } from "@fh/core";
 import { FleetKey } from "@fh/utils";
 import { Paper } from "@mui/material";
+import { Org } from "fleethub-core";
 import React from "react";
 
 import { Tabs, TabsProps } from "../../molecules";

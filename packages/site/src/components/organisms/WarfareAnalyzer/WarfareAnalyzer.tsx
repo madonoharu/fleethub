@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import { OrgType, Ship, WarfareAnalyzerContext } from "@fh/core";
 import { nonNullable } from "@fh/utils";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Paper, Typography } from "@mui/material";
+import { OrgType, Ship, WarfareAnalyzerContext } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

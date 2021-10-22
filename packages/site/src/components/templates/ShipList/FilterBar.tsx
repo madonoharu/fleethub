@@ -1,4 +1,4 @@
-import { ShipCategory } from "@fh/core";
+import { ShipCategory } from "fleethub-core";
 import React from "react";
 import { Updater } from "use-immer";
 

@@ -1,5 +1,5 @@
-import { MasterData } from "@fh/core";
 import admin from "firebase-admin";
+import { MasterData } from "fleethub-core";
 import got from "got";
 import isEqual from "lodash/isEqual";
 

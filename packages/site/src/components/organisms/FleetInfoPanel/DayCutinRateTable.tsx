@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
+import { FleetKey } from "@fh/utils";
 import {
   DayCutinRateInfo,
   FleetDayCutinRateInfo,
   Org,
   OrgDayCutinRateInfo,
-} from "@fh/core";
-import { FleetKey } from "@fh/utils";
+} from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

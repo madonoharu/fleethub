@@ -1,4 +1,4 @@
-import { Gear } from "../node/fh_core";
+import { Gear } from "..";
 
 it("Gear", () => {
   const gear = Gear.default();

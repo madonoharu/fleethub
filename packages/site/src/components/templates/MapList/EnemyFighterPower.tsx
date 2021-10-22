@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { AirState } from "@fh/core";
 import { Typography } from "@mui/material";
+import { AirState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

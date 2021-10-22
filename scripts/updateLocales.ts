@@ -1,5 +1,6 @@
 import child_process from "child_process";
 import { promisify } from "util";
+import { nonNullable, uniq } from "@fh/utils/src";
 import {
   AirSquadronMode,
   AirState,
@@ -9,8 +10,7 @@ import {
   MasterData,
   NightCutin,
   OrgType,
-} from "@fh/core";
-import { nonNullable, uniq } from "@fh/utils/src";
+} from "fleethub-core";
 import fs from "fs-extra";
 import got from "got";
 

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { Ship } from "@fh/core";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
+import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";

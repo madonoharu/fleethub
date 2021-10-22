@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import { Org } from "@fh/core";
 import { Dict } from "@fh/utils";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Paper, Button, Link } from "@mui/material";
+import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";

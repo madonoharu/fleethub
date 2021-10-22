@@ -1,5 +1,5 @@
-import { MasterAttrRule, MasterGear, MasterIBonuses } from "@fh/core";
 import { nonNullable } from "@fh/utils/src";
+import { MasterAttrRule, MasterGear, MasterIBonuses } from "fleethub-core";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,

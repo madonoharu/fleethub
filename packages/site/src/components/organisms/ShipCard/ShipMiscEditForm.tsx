@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { DamageState, MoraleState, Ship } from "@fh/core";
+import { DamageState, MoraleState, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { ShipEntity } from "../../../store";

@@ -1,10 +1,10 @@
+import { ShipClass, ShipType } from "@fh/utils/src";
 import {
   MasterAttrRule,
   MasterShip,
   MasterVariantDef,
   SpeedGroup,
-} from "@fh/core";
-import { ShipClass, ShipType } from "@fh/utils/src";
+} from "fleethub-core";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,

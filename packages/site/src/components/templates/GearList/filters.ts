@@ -1,5 +1,5 @@
-import { Gear, GearCategory } from "@fh/core";
 import { uniq } from "@fh/utils";
+import { Gear, GearCategory } from "fleethub-core";
 
 export type GearFilterFn = (gear: Gear) => boolean;
 

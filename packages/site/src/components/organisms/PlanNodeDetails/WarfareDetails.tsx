@@ -4,7 +4,7 @@ import {
   Side,
   WarfareAnalyzerContext,
   WarfareAnalyzerShipEnvironment,
-} from "@fh/core";
+} from "fleethub-core";
 import React from "react";
 import { PlanNodeDetailsConfig } from "../../../store";
 import { Flexbox } from "../../atoms";

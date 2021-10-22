@@ -1,4 +1,4 @@
-import { Org } from "../node/fh_core";
+import { Org } from "..";
 
 it("org", () => {
   const org = Org.default();

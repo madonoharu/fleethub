@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Fleet } from "@fh/core";
 import { Typography } from "@mui/material";
+import { Fleet } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";

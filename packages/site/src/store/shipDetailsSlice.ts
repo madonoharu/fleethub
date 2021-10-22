@@ -1,5 +1,9 @@
-import { WarfareAnalyzerShipEnvironment, AirState, Engagement } from "@fh/core";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  WarfareAnalyzerShipEnvironment,
+  AirState,
+  Engagement,
+} from "fleethub-core";
 import {
   createShip,
   initalNightSituation,

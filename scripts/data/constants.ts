@@ -6,7 +6,7 @@ import {
   MasterConstants,
   NightCutinDef,
   NormalFormationDef,
-} from "@fh/core";
+} from "fleethub-core";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import set from "lodash/set";
 

@@ -1,4 +1,4 @@
-import { Ship, ShipCategory } from "@fh/core";
+import { Ship, ShipCategory } from "fleethub-core";
 import { nonNullable } from "@fh/utils";
 import { TFunction, useTranslation } from "next-i18next";
 import React, { useState } from "react";
