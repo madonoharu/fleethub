@@ -1,3 +1,4 @@
+import { SaveOptions } from "@google-cloud/storage";
 import admin from "firebase-admin";
 import { MasterData } from "fleethub-core";
 import got from "got";
@@ -15,7 +16,12 @@ const getApp = () => {
 
 export const getBucket = () => getApp().storage().bucket();
 
-export const readJson = <T>(path: string) =>
+export const readJson = <
+  P extends string,
+  T extends P extends "data/master_data.json" ? MasterData : unknown
+>(
+  path: P
+) =>
   got
     .get(`https://storage.googleapis.com/kcfleethub.appspot.com/${path}`)
     .json<T>();
@@ -26,66 +32,54 @@ export const exists = (path: string): Promise<boolean> =>
     .exists()
     .then((res) => res[0]);
 
-export const updateJson = async <T>(
-  path: string,
-  updater: (current: T | undefined) => T
+export const writeJson = async <
+  P extends string,
+  T extends P extends "data/master_data.json" ? MasterData : unknown
+>(
+  path: P,
+  data: T,
+  options?: SaveOptions
 ): Promise<T> => {
   const file = getBucket().file(path);
 
+  await file.save(JSON.stringify(data), {
+    contentType: "application/json",
+    ...options,
+  });
+
+  return data;
+};
+
+export const updateJson = async <
+  P extends string,
+  T extends P extends "data/master_data.json" ? MasterData : unknown
+>(
+  path: P,
+  updater: (current: T | undefined) => T,
+  options?: SaveOptions
+): Promise<T> => {
   let current: T | undefined;
   if (await exists(path)) {
-    current = await readJson<T>(path);
+    current = await readJson<P, T>(path);
   }
 
   const next = updater(current);
 
   if (!isEqual(current, next)) {
     console.log(`update: ${path}`);
-    const metadata = { cacheControl: "public, max-age=60" };
-    await file.save(JSON.stringify(next), { metadata });
+    await writeJson<P, T>(path, next, options);
   }
 
   return next;
 };
 
-export const readMaster = <K extends keyof MasterData>(
-  key: K
-): Promise<MasterData[K]> => readJson(`data/${key}.json`);
+export const mergeMasterData = (
+  next: Partial<MasterData>
+): Promise<MasterData> =>
+  updateJson("data/master_data.json", (current) => {
+    if (!current) {
+      throw new Error("data/master_data.json was not found");
+    }
 
-export const write = <K extends keyof MasterData>(
-  key: K,
-  data: MasterData[K]
-) => {
-  const str = JSON.stringify(data);
-
-  const destination = `data/${key}.json`;
-  const metadata = { cacheControl: "public, max-age=60" };
-
-  const bucket = getBucket();
-  return bucket.file(destination).save(str, { metadata });
-};
-
-export const updateMaster = <K extends keyof MasterData>(
-  key: K,
-  cb: (current: MasterData[K] | undefined) => MasterData[K]
-): Promise<MasterData[K]> => {
-  return updateJson(`data/${key}.json`, cb);
-};
-
-const MASTER_DATA_KEYS = [
-  "ships",
-  "ship_attrs",
-  "ship_banners",
-  "gears",
-  "gear_attrs",
-  "ibonuses",
-  "equippable",
-  "constants",
-] as const;
-
-export const readMasterData = async (): Promise<MasterData> => {
-  const entries = await Promise.all(
-    MASTER_DATA_KEYS.map(async (key) => [key, await readMaster(key)])
-  );
-  return Object.fromEntries(entries) as MasterData;
-};
+    return { ...current, ...next };
+  });

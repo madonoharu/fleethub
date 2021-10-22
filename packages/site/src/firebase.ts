@@ -16,29 +16,12 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 
-const MASTER_DATA_KEYS = [
-  "ships",
-  "ship_attrs",
-  "ship_banners",
-  "gears",
-  "gear_attrs",
-  "ibonuses",
-  "equippable",
-  "constants",
-] as const;
-
 export const fetchMasterData = async (): Promise<MasterData> => {
-  const entries = await Promise.all(
-    MASTER_DATA_KEYS.map(async (key) => {
-      const res = await fetch(
-        `https://storage.googleapis.com/kcfleethub.appspot.com/data/${key}.json`
-      );
-
-      return [key, await res.json()] as const;
-    })
+  const res = await fetch(
+    `https://storage.googleapis.com/kcfleethub.appspot.com/data/master_data.json`
   );
 
-  return Object.fromEntries(entries) as MasterData;
+  return (await res.json()) as MasterData;
 };
 
 export const fetchMap = (id: number) =>

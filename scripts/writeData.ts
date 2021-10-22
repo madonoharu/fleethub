@@ -1,13 +1,6 @@
 import "dotenv/config";
 
-import child_process from "child_process";
-import { outputJsonSync } from "fs-extra";
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const main = async () => {};
 
-import { readMasterData } from "./data/storage";
-
-readMasterData()
-  .then((md) => {
-    outputJsonSync("packages/utils/master_data.json", md);
-    child_process.execSync("prettier --write packages/utils/master_data.json");
-  })
-  .catch((err) => console.error(err));
+main().catch(console.error);

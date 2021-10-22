@@ -7,7 +7,7 @@ import { getConstants } from "./constants";
 import { updateGearData } from "./gear";
 import { getGoogleSpreadsheet } from "./google";
 import { updateShipData } from "./ship";
-import { updateMaster } from "./storage";
+import * as storage from "./storage";
 import { fetchStart2 } from "./utils";
 
 export const log = async (message: string) => {
@@ -68,17 +68,8 @@ export const updateData = async () => {
   ]);
   await log("Start: update_data");
 
-  const nextMd = await createMasterData(doc, start2);
-
-  const keys = Object.keys(nextMd) as (keyof MasterData)[];
-
-  const promises = keys.map((key) => {
-    const next = nextMd[key];
-    return next && updateMaster(key, () => next);
-  });
-
-  await Promise.all(promises);
-
+  const next = await createMasterData(doc, start2);
+  await storage.mergeMasterData(next);
   await log("Success: update_data");
 };
 
@@ -86,8 +77,8 @@ export const updateImages = async () => {
   const start2 = await fetchStart2();
   await log("Start: update_images");
 
-  const banners = await updateCloudinary(start2);
-  await updateMaster("ship_banners", () => banners);
+  const ship_banners = await updateCloudinary(start2);
+  await storage.mergeMasterData({ ship_banners });
 
   await log("Success: update_images");
 };

@@ -1,9 +1,10 @@
 import "dotenv/config";
 
 import { nonNullable } from "@fh/utils/src";
+import { SaveOptions } from "@google-cloud/storage";
 import Signal from "signale";
 
-import { getGoogleSpreadsheet } from "./data/google";
+import { getGoogleSpreadsheet } from "./data";
 import * as storage from "./data/storage";
 import { updateRows } from "./data/utils";
 import {
@@ -13,6 +14,13 @@ import {
   KcnavEnemyShip,
   KcnavMap,
 } from "./maps";
+
+const SAVE_OPTIONS: SaveOptions = {
+  gzip: true,
+  metadata: {
+    cacheControl: "public, max-age=60",
+  },
+};
 
 const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
   const record: Record<number, KcnavEnemyShip> = {};
@@ -25,7 +33,8 @@ const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
 };
 
 const updateShips = async (maps: KcnavMap[]) => {
-  const masterShips = await storage.readMaster("ships");
+  const md = await storage.readJson("data/master_data.json");
+  const masterShips = md.ships;
 
   const findMasterShip = (id: number) =>
     masterShips.find((ship) => ship.ship_id === id);
@@ -82,7 +91,7 @@ const updateShips = async (maps: KcnavMap[]) => {
   const spreadsheet = await getGoogleSpreadsheet();
 
   await Promise.all([
-    storage.updateMaster("ships", () => masterShips),
+    storage.mergeMasterData({ ships: masterShips }),
     updateRows(spreadsheet.sheetsByTitle["艦娘"], () => masterShips),
   ]);
 };
@@ -90,7 +99,7 @@ const updateShips = async (maps: KcnavMap[]) => {
 const updateMaps = async (kcnavMaps: KcnavMap[]) => {
   const promises = kcnavMaps.map((kcnavMap) => {
     const map = formatKcnavMap(kcnavMap);
-    return storage.updateJson(`maps/${map.id}.json`, () => map);
+    return storage.updateJson(`maps/${map.id}.json`, () => map, SAVE_OPTIONS);
   });
 
   await Promise.all(promises);
@@ -100,8 +109,7 @@ const HOT_MAPS: number[] = [511, 512, 513];
 
 const updateByKcnav = async () => {
   const ids = await getAllMapIds();
-
-  await storage.updateJson(`maps/all.json`, () => ids);
+  await storage.updateJson(`maps/all.json`, () => ids, SAVE_OPTIONS);
 
   const kcnavMaps: KcnavMap[] = [];
 
