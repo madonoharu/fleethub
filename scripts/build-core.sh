@@ -2,8 +2,8 @@
 
 set -e
 
-PKG_DIR=packages/core/pkg
-NODE_DIR=packages/core/node
+PKG_DIR=packages/fleethub-core/pkg
+NODE_DIR=packages/fleethub-core/node
 
 export WASM_BINDGEN_WEAKREF=1
 wasm-pack build crates/fh-core -d $(realpath $PKG_DIR)
