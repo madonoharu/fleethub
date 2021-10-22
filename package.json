@@ -28,7 +28,8 @@
     "utils": "yarn workspace @fh/utils"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json}": "prettier --write"
+    "*.{js,jsx,ts,tsx,json}": "prettier --write",
+    "*.{js,jsx,ts,tsx}": "eslint --ext .ts,.tsx --fix"
   },
   "devDependencies": {
     "@fh/utils": "*",
@@ -46,15 +47,15 @@
     "dotenv": "^10.0.0",
     "esbuild": "^0.13.8",
     "esbuild-jest": "^0.5.0",
-    "esbuild-node-tsc": "^1.7.0",
     "esbuild-register": "^3.0.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-react": "^7.26.1",
-    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-react-hooks": "next",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "firebase-admin": "^10.0.0",
+    "fleethub-core": "npm:latest",
     "fs-extra": "^10.0.0",
     "google-spreadsheet": "^3.1.15",
     "got": "^11.8.2",
@@ -62,7 +63,6 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "kc-tools": "^1.1.0",
-    "ky": "^0.28.6",
     "lint-staged": "^11.2.3",
     "lodash-es": "^4.17.21",
     "prettier": "^2.4.1",

@@ -47,8 +47,9 @@ const Adornment: React.FCX<AdornmentProps> = ({
   );
 };
 
-const toHalf = (str: string) =>
-  str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
+// todo!
+// const toHalf = (str: string) =>
+//   str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
 
 const isNumeric = (str: string) => {
   if (str === "") return false;

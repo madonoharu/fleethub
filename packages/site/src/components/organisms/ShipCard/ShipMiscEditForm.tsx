@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { DamageState, MoraleState, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
@@ -72,7 +71,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
   };
 
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       <Divider label={`損傷を設定`} />
 
       <Flexbox gap={1}>
@@ -125,13 +124,11 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
   );
 };
 
-export default styled(ShipMiscEditForm)(
-  ({ theme }) => css`
-    ${NumberInput} {
-      width: 128px;
-    }
-    > * {
-      margin-bottom: 8px;
-    }
-  `
-);
+export default styled(ShipMiscEditForm)`
+  ${NumberInput} {
+    width: 128px;
+  }
+  > * {
+    margin-bottom: 8px;
+  }
+`;

@@ -24,15 +24,17 @@ parserOptions:
 settings:
   react:
     version: detect
+  next:
+    rootDir: "packages/site"
 
 rules:
   no-console: off
-  "@typescript-eslint/explicit-module-boundary-types": off
   "@typescript-eslint/no-unsafe-assignment": off
   "@typescript-eslint/unbound-method": off
   "@typescript-eslint/no-unused-vars":
     - warn
     - argsIgnorePattern: ^_
+      varsIgnorePattern: ^_
   react-hooks/rules-of-hooks: error
   react-hooks/exhaustive-deps: warn
   react/display-name: off
@@ -48,6 +50,6 @@ ignorePatterns:
   - "**/lib/*"
   - "**/esm/*"
   - "**/cjs/*"
-  - "**/core/pkg/*"
-  - "**/core/node/*"
+  - "**/fleethub-core/pkg/*"
+  - "**/fleethub-core/node/*"
   - "**/*.config.js"

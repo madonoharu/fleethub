@@ -15,7 +15,6 @@ import {
   createAction,
   createAsyncThunk,
   createSelector,
-  Dictionary,
   isAnyOf,
   nanoid,
   PrepareAction,
@@ -92,34 +91,34 @@ const filterEntities = <T>(
   return result;
 };
 
-const toRecord = <T>(dict: Dictionary<T>): Record<string, T> => {
-  const result: Record<string, T> = {};
+// todo!
+// const toRecord = <T>(dict: Dictionary<T>): Record<string, T> => {
+//   const result: Record<string, T> = {};
 
-  for (const k in dict) {
-    const v = dict[k];
-    if (v) {
-      result[k] = v;
-    }
-  }
+//   for (const k in dict) {
+//     const v = dict[k];
+//     if (v) {
+//       result[k] = v;
+//     }
+//   }
 
-  return result;
-};
+//   return result;
+// };
+// const toNormalizedEntities = (
+//   entities: NormalizedDictionaries
+// ): NormalizedEntities => {
+//   const result: NormalizedEntities = {};
 
-const toNormalizedEntities = (
-  entities: NormalizedDictionaries
-): NormalizedEntities => {
-  const result: NormalizedEntities = {};
+//   for (const key in entities) {
+//     const k = key as "files";
+//     const dict = entities[k];
+//     if (dict) {
+//       result[k] = toRecord(dict);
+//     }
+//   }
 
-  for (const key in entities) {
-    const k = key as "files";
-    const dict = entities[k];
-    if (dict) {
-      result[k] = toRecord(dict);
-    }
-  }
-
-  return result;
-};
+//   return result;
+// };
 
 const mergeNormalizedEntities = (
   a: NormalizedEntities,

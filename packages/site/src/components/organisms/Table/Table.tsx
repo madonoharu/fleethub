@@ -1,10 +1,8 @@
-import styled from "@emotion/styled";
 import {
   Table as MuiTable,
   TableBody as MuiTableBody,
   TableCell as MuiTableCell,
   TableCellProps as MuiTableCellProps,
-  TableContainer as MuiTableContainer,
   TableHead as MuiTableHead,
   TableProps as MuiTableProps,
   TableRow as MuiTableRow,
@@ -27,7 +25,7 @@ function TableClell<Datum>({
   datumIndex,
   column,
 }: TableClellProps<Datum>) {
-  const { label, getValue, ...rest } = column;
+  const { label: _, getValue, ...rest } = column;
 
   return <MuiTableCell {...rest}>{getValue(datum, datumIndex)}</MuiTableCell>;
 }
@@ -35,7 +33,7 @@ function TableClell<Datum>({
 function TableHeadCell<Datum>({
   column,
 }: Omit<TableClellProps<Datum>, "datum">) {
-  const { label, getValue, ...rest } = column;
+  const { label, getValue: _, ...rest } = column;
 
   return <MuiTableCell {...rest}>{label}</MuiTableCell>;
 }
