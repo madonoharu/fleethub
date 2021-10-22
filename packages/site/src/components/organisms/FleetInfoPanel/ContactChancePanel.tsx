@@ -69,7 +69,10 @@ const ContactChancePanel: React.FCX<FleetInfoPanelProps> = ({
   fleetKey,
 }) => {
   const { core } = useFhCore();
-  const info: OrgContactChanceInfo = core.analyze_contact_chance(org, fleetKey);
+  const info = core.analyze_contact_chance(
+    org,
+    fleetKey
+  ) as OrgContactChanceInfo;
 
   return (
     <div className={className}>

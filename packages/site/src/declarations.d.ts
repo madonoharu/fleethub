@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import "@emotion/react/types/css-prop";
-
+import type {} from "@emotion/react/types/css-prop";
 import { AppDispatch, RootState } from "./store";
 
 declare module "react" {

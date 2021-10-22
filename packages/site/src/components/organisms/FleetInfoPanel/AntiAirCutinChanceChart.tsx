@@ -50,7 +50,7 @@ const AntiAirCutinChanceChart: React.FCX<Props> = ({
     color: colors.grey[300],
   });
 
-  const renderLabel = (datum: typeof data[number]): any =>
+  const renderLabel = (datum: typeof data[number]) =>
     `${datum.name}: ${toPercent(datum.rate)}`;
 
   return (

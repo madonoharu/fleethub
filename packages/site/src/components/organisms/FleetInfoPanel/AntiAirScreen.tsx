@@ -1,17 +1,16 @@
 import styled from "@emotion/styled";
-import { Formation, Org, OrgAntiAirInfo } from "fleethub-core";
+import { Formation, OrgAntiAirInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFhCore, useSelectState } from "../../../hooks";
+import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
-import { NumberInput, Select } from "../../molecules";
+import { NumberInput } from "../../molecules";
 import FormationSelect from "../FormationSelect";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart";
-import AntiAirCutinChip from "./AntiAirCutinChip";
 import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 type CutinChanceCellProps = {
@@ -62,13 +61,13 @@ const AntiAirPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
     org.default_formation()
   );
 
-  const info: OrgAntiAirInfo = core.analyze_anti_air(
+  const info = core.analyze_anti_air(
     org,
     fleetKey,
     formation,
     adjustedAntiAirResist,
     fleetAntiAirResist
-  );
+  ) as OrgAntiAirInfo;
 
   return (
     <div>

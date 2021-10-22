@@ -181,7 +181,7 @@ export const createShips = (
 
     if (row) {
       headerValues.forEach((h) => {
-        const value = row[h];
+        const value: unknown = row[h];
 
         if (value === "" || value === undefined) return;
 
@@ -248,15 +248,15 @@ const createShipTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
     return {
       id: mst.api_id,
       name: mst.api_name,
-      tag: row?.tag,
+      tag: row?.tag as string | null,
     };
   });
 
 const createShipClasses = (rows: GoogleSpreadsheetRow[]) =>
   rows.map((row) => ({
     id: Number(row.id),
-    tag: row.tag,
-    name: row.name,
+    tag: row.tag as string,
+    name: row.name as string,
   }));
 
 const readShipAttrs = async (
@@ -310,7 +310,11 @@ const readShipAttrs = async (
 
   rows.forEach((row) => {
     const expr = replaceExpr(row.expr as string);
-    attrs.push({ tag: row.tag, name: row.name, expr });
+    attrs.push({
+      tag: row.tag as string,
+      name: row.name as string,
+      expr,
+    });
   });
 
   return attrs;

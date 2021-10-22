@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { Org, OrgType, Ship } from "fleethub-core";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
@@ -8,6 +7,7 @@ import {
   Button,
   Stack,
 } from "@mui/material";
+import { Org, OrgType, Ship } from "fleethub-core";
 import { produce } from "immer";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";

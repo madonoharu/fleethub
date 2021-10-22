@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Gear } from "fleethub-core";
 
 type Key = {

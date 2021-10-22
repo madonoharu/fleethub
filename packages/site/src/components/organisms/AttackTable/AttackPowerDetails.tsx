@@ -74,7 +74,11 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
             key.startsWith("a") ? value !== 1 : value !== 0
           )
           .map(([key, value]) => (
-            <LabeledValue key={key} label={key} value={numstr(value) || "-"} />
+            <LabeledValue
+              key={key}
+              label={key}
+              value={numstr(value as number) || "-"}
+            />
           ))}
       </ModifiersGrid>
     </div>
