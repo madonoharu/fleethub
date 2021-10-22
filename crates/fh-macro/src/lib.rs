@@ -31,7 +31,7 @@ fn literal_abi(input: DeriveInput) -> proc_macro2::TokenStream {
         #[allow(clippy::all)]
         const _: () = {
             use wasm_bindgen::{
-                convert::{FromWasmAbi, IntoWasmAbi, OptionIntoWasmAbi},
+                convert::{FromWasmAbi, IntoWasmAbi, OptionIntoWasmAbi, OptionFromWasmAbi},
                 describe::WasmDescribe,
                 prelude::*,
             };
@@ -59,6 +59,11 @@ fn literal_abi(input: DeriveInput) -> proc_macro2::TokenStream {
                 unsafe fn from_abi(js: Self::Abi) -> Self {
                     JsValue::from_abi(js).into_serde().unwrap_throw()
                 }
+            }
+
+            impl OptionFromWasmAbi for #ident {
+                #[inline]
+                fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
             }
         };
     }

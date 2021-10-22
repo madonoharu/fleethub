@@ -1,12 +1,12 @@
 use fh_macro::FhAbi;
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, EnumString, ToString};
+use strum::{AsRefStr, EnumString};
 use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use super::{CombinedFormation, Formation, SingleFormation};
 
-#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub struct GearState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -18,7 +18,7 @@ pub struct GearState {
     pub stars: Option<u8>,
 }
 
-#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub struct ShipState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -78,7 +78,7 @@ pub struct ShipState {
     pub ss5: Option<u8>,
 }
 
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub struct FleetState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -119,7 +119,7 @@ impl AirSquadronMode {
     }
 }
 
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub struct AirSquadronState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -152,7 +152,7 @@ pub struct AirSquadronState {
     pub ss5: Option<u8>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, ToString, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub enum Side {
     Player,
     Enemy,
@@ -276,7 +276,7 @@ impl Role {
     }
 }
 
-#[derive(Debug, Default, Clone, Hash, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub struct OrgState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
