@@ -11,20 +11,26 @@ pub mod sortied_fleet;
 pub mod attack;
 pub mod types;
 pub mod utils;
-pub mod wasm_abi;
 
-use attack::NightSituation;
-use wasm_abi::{AirSquadronParams, FleetParams, GearParams, OrgParams, ShipParams};
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
 use analyzer::{OrgAnalyzer, WarfareAnalyzer, WarfareAnalyzerContext, WarfareInfo};
+use attack::NightSituation;
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
 use org::Org;
 use ship::Ship;
-use types::{EBonusFn, Formation, MasterData};
+use types::{
+    AirSquadronState, EBonusFn, FleetState, Formation, GearState, MasterData, OrgState, ShipState,
+};
+
+#[wasm_bindgen(typescript_custom_section)]
+const TS_APPEND_CONTENT: &'static str = r#"
+import * as bindings from "../bindings";
+export * from "../bindings";
+"#;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -51,28 +57,23 @@ impl FhCore {
             .map_err(|err| JsValue::from(err.to_string()))
     }
 
-    pub fn create_gear(&self, js: GearParams) -> Option<Gear> {
-        let input = js.into_serde().ok();
+    pub fn create_gear(&self, input: Option<GearState>) -> Option<Gear> {
         self.factory.create_gear(input)
     }
 
-    pub fn create_ship(&self, js: ShipParams) -> Option<Ship> {
-        let input = js.into_serde().ok();
+    pub fn create_ship(&self, input: Option<ShipState>) -> Option<Ship> {
         self.factory.create_ship(input)
     }
 
-    pub fn create_air_squadron(&self, js: AirSquadronParams) -> AirSquadron {
-        let input = js.into_serde().ok();
+    pub fn create_air_squadron(&self, input: Option<AirSquadronState>) -> AirSquadron {
         self.factory.create_air_squadron(input)
     }
 
-    pub fn create_fleet(&self, js: FleetParams) -> Fleet {
-        let input = js.into_serde().ok();
+    pub fn create_fleet(&self, input: Option<FleetState>) -> Fleet {
         self.factory.create_fleet(input)
     }
 
-    pub fn create_org(&self, js: OrgParams) -> Option<Org> {
-        let input = js.into_serde().ok();
+    pub fn create_org(&self, input: Option<OrgState>) -> Option<Org> {
         self.factory.create_org(input)
     }
 

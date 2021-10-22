@@ -2,7 +2,7 @@ use enumset::EnumSetType;
 use fh_macro::FhAbi;
 use num_derive::{FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
-use strum::{EnumString, ToString};
+use strum::{Display, EnumString};
 use ts_rs::TS;
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS, FhAbi)]
@@ -397,7 +397,7 @@ impl Default for SpeedGroup {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, ToString, Serialize, Deserialize, TS,
+    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS,
 )]
 pub enum DamageState {
     /// 小破未満
@@ -454,7 +454,7 @@ impl DamageState {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, ToString, Serialize, Deserialize, TS,
+    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS,
 )]
 pub enum MoraleState {
     Sparkle,
