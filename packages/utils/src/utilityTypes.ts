@@ -1,3 +1,17 @@
+export type Optional<T extends object, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>>;
+
+export type Primitive =
+  | string
+  | number
+  | bigint
+  | boolean
+  | symbol
+  | null
+  | undefined;
+
+export type UnkownFn = (...args: unknown[]) => unknown;
+
 export type Dict<K extends string | number | symbol, T> = Partial<Record<K, T>>;
 
 export type NullableArray<T> = Array<T | undefined>;
