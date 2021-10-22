@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn build:utils && yarn build:site",
+    "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn build:utils && yarn build:site",
     "build:core": "sh scripts/build-core.sh",
     "build:site": "yarn workspace @fh/site build",
     "build:utils": "yarn workspace @fh/utils build",
