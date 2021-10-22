@@ -1,10 +1,10 @@
+import { Divider, Stack } from "@mui/material";
 import {
   Ship,
   Side,
   WarfareAnalyzerContext,
   WarfareAnalyzerShipEnvironment,
-} from "@fh/core";
-import { Divider, Stack } from "@mui/material";
+} from "fleethub-core";
 import React from "react";
 
 import { useShip } from "../../../hooks";

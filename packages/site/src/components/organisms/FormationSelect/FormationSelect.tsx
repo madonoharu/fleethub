@@ -1,4 +1,4 @@
-import { CombinedFormation, Formation, SingleFormation } from "@fh/core";
+import { CombinedFormation, Formation, SingleFormation } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 

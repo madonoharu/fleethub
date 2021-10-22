@@ -1,5 +1,10 @@
-import { AttackInfoItem, DayCutin, NightCutin, WarfareInfo } from "@fh/core";
 import { Typography } from "@mui/material";
+import {
+  AttackInfoItem,
+  DayCutin,
+  NightCutin,
+  WarfareInfo,
+} from "fleethub-core";
 import { TFunction, useTranslation } from "next-i18next";
 import React from "react";
 

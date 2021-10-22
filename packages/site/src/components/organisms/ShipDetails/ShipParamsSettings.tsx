@@ -1,5 +1,5 @@
-import { OrgType, WarfareAnalyzerShipEnvironment } from "@fh/core";
 import { Button, Stack } from "@mui/material";
+import { OrgType, WarfareAnalyzerShipEnvironment } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useFhCore } from "../../../hooks";

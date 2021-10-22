@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Org, OrgType } from "@fh/core";
 import { Typography } from "@mui/material";
+import { Org, OrgType } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

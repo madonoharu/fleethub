@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Gear } from "@fh/core";
 import { EquipmentBonuses } from "equipment-bonus";
+import { Gear } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

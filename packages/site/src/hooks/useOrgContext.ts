@@ -1,4 +1,4 @@
-import { Org } from "@fh/core";
+import { Org } from "fleethub-core";
 import { createContext, useContext } from "react";
 import { PlanFileEntity } from "../store";
 

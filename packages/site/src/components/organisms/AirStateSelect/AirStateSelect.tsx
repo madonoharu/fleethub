@@ -1,4 +1,4 @@
-import { AirState } from "@fh/core";
+import { AirState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

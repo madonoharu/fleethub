@@ -1,5 +1,5 @@
-import { MasterData } from "@fh/core";
 import { createEquipmentBonuses } from "equipment-bonus";
+import { MasterData } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
@@ -14,7 +14,7 @@ import { FhCoreContext } from "../hooks";
 import { StoreProvider } from "../store";
 
 const loader = async () => {
-  const module = await import("@fh/core");
+  const module = await import("fleethub-core");
 
   const App: React.FC<{ masterData: MasterData }> = ({ masterData }) => {
     const core = new module.FhCore(masterData, createEquipmentBonuses);

@@ -1,4 +1,4 @@
-import { MasterData } from "@fh/core";
+import { MasterData } from "fleethub-core";
 import React, { useMemo } from "react";
 import { batch, Provider as ReduxProvider } from "react-redux";
 import { persistStore } from "redux-persist";

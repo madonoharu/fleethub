@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { DamageState } from "@fh/core";
 import ErrorIcon from "@mui/icons-material/Error";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HealingIcon from "@mui/icons-material/Healing";
 import { SvgIconProps } from "@mui/material";
+import { DamageState } from "fleethub-core";
 import React from "react";
 
 const DamageStateIcon: React.FC<SvgIconProps & { state: DamageState }> = ({

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Gear } from "@fh/core";
+import { Gear } from "fleethub-core";
 import React from "react";
 
 import { GearPosition } from "../../../store";

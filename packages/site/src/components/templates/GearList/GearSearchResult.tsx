@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Gear } from "@fh/core";
 import { Typography } from "@mui/material";
+import { Gear } from "fleethub-core";
 import React from "react";
 
 import GearButton from "./GearButton";

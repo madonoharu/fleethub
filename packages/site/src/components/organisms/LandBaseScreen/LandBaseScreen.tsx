@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Org } from "@fh/core";
 import { AIR_SQUADRON_KEYS } from "@fh/utils";
 import { Paper } from "@mui/material";
+import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";

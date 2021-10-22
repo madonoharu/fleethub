@@ -1,15 +1,4 @@
 import {
-  Fleet,
-  FleetState,
-  Gear,
-  GearState,
-  MasterData,
-  Org,
-  OrgState,
-  Ship,
-  ShipState,
-} from "@fh/core";
-import {
   AirSquadronKey,
   AIR_SQUADRON_KEYS,
   Dict,
@@ -20,6 +9,17 @@ import {
   ShipKey,
   SHIP_KEYS,
 } from "@fh/utils";
+import {
+  Fleet,
+  FleetState,
+  Gear,
+  GearState,
+  MasterData,
+  Org,
+  OrgState,
+  Ship,
+  ShipState,
+} from "fleethub-core";
 
 export type DeckGear = {
   id: number;

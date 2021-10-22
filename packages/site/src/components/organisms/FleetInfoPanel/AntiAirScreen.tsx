@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Formation, Org, OrgAntiAirInfo } from "@fh/core";
+import { Formation, Org, OrgAntiAirInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

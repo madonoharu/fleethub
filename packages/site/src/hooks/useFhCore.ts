@@ -1,8 +1,8 @@
-import { FhCore, MasterData } from "@fh/core";
+import { FhCore, MasterData } from "fleethub-core";
 import { createContext, useContext } from "react";
 
 export type FhCoreState = {
-  module: typeof import("@fh/core");
+  module: typeof import("fleethub-core");
   masterData: MasterData;
   core: FhCore;
 };

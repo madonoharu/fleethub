@@ -1,7 +1,7 @@
-import { MasterData, OrgState } from "@fh/core";
 import { FhMap } from "@fh/utils";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref } from "firebase/storage";
+import { MasterData, OrgState } from "fleethub-core";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",

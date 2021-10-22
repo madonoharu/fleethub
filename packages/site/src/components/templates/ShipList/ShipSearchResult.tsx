@@ -1,9 +1,6 @@
-import styled from "@emotion/styled";
-import { Ship } from "@fh/core";
 import { Typography } from "@mui/material";
+import { Ship } from "fleethub-core";
 import React from "react";
-
-import { Divider } from "../../atoms";
 
 type Props = {
   searchValue: string;

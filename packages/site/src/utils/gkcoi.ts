@@ -1,5 +1,5 @@
-import { Fleet, Org, Ship } from "@fh/core";
 import { AIR_SQUADRON_KEYS, FLEET_KEYS, Mutable, SHIP_KEYS } from "@fh/utils";
+import { Fleet, Org, Ship } from "fleethub-core";
 import {
   DeckBuilder as GkcoiDeck,
   DeckBuilderFleet as GkcoiDeckFleet,

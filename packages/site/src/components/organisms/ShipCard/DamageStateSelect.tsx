@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { DamageState } from "@fh/core";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Button, Tooltip, Typography } from "@mui/material";
+import { DamageState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useModal } from "../../../hooks";

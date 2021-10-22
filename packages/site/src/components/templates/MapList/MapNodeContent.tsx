@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Formation } from "@fh/core";
 import { MapEnemyFleet, MapNode } from "@fh/utils";
+import { Formation } from "fleethub-core";
 import React from "react";
 
 import { NodeLable } from "../../molecules";

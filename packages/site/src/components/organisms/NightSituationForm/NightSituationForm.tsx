@@ -1,5 +1,5 @@
-import { NightSituation } from "@fh/core";
 import { ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
+import { NightSituation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 

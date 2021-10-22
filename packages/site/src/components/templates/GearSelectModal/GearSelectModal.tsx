@@ -1,4 +1,4 @@
-import { Gear } from "@fh/core";
+import { Gear } from "fleethub-core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFhCore, useShip } from "../../../hooks";

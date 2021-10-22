@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Ship } from "@fh/core";
 import { Button } from "@mui/material";
+import { Ship } from "fleethub-core";
 import React from "react";
 
 import { ShipNameplate, ShipTooltip } from "../../organisms";
