@@ -16,13 +16,10 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 
-export const fetchMasterData = async (): Promise<MasterData> => {
-  const res = await fetch(
+export const fetchMasterData = async (): Promise<MasterData> =>
+  fetch(
     `https://storage.googleapis.com/kcfleethub.appspot.com/data/master_data.json`
-  );
-
-  return (await res.json()) as MasterData;
-};
+  ).then((res) => res.json()) as Promise<MasterData>;
 
 export const fetchMap = (id: number) =>
   fetch(
