@@ -48,7 +48,8 @@ impl Factory {
         } = &state;
 
         let create_gear = |g: &Option<GearState>| self.create_gear(g.clone());
-        let gears = std::array::IntoIter::new([g1, g2, g3, g4, g5, gx])
+        let gears = [g1, g2, g3, g4, g5, gx]
+            .into_iter()
             .map(create_gear)
             .collect::<GearArray>();
 
@@ -85,7 +86,8 @@ impl Factory {
 
         let len = len.unwrap_or_else(|| if s7.is_some() { 7 } else { 6 });
 
-        let ships = std::array::IntoIter::new([s1, s2, s3, s4, s5, s6, s7])
+        let ships = [s1, s2, s3, s4, s5, s6, s7]
+            .into_iter()
             .take(len)
             .map(|state| self.create_ship(state))
             .collect::<ShipArray>();
@@ -118,7 +120,8 @@ impl Factory {
 
         let create_gear = |g: Option<GearState>| self.create_gear(g);
 
-        let gears = std::array::IntoIter::new([g1, g2, g3, g4])
+        let gears = [g1, g2, g3, g4]
+            .into_iter()
             .map(create_gear)
             .collect::<GearArray>();
 
@@ -139,7 +142,8 @@ impl Factory {
             .map(Some)
             .collect();
 
-        let slots = std::array::IntoIter::new([ss1, ss2, ss3, ss4])
+        let slots = [ss1, ss2, ss3, ss4]
+            .into_iter()
             .enumerate()
             .map(|(index, ss)| ss.or_else(|| max_slots.get(index).cloned().flatten()))
             .collect();
