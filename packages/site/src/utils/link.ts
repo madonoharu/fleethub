@@ -2,16 +2,18 @@ import { Org } from "fleethub-core";
 
 import { createDeck } from "./deck";
 
+const MAX_LENGTH = 7350;
+
 const getPredeckUrl = (base: string, org?: Org | undefined) => {
   const url = new URL(base);
   const deck = createDeck(org);
 
   url.searchParams.set("predeck", JSON.stringify(deck));
-  if (url.href.length < 7900) return url.href;
+  if (url.href.length < MAX_LENGTH) return url.href;
 
   delete deck.f4;
   url.searchParams.set("predeck", JSON.stringify(deck));
-  if (url.href.length < 7900) return url.href;
+  if (url.href.length < MAX_LENGTH) return url.href;
 
   delete deck.f3;
   url.searchParams.set("predeck", JSON.stringify(deck));
