@@ -228,19 +228,19 @@ impl Ship {
         let ship_class = FromPrimitive::from_u16(master.ctype).unwrap_or_default();
         let is_nisshin = ship_class == ShipClass::NisshinClass;
 
-        let slots =
-            std::array::IntoIter::new([state.ss1, state.ss2, state.ss3, state.ss4, state.ss5])
-                .enumerate()
-                .map(|(index, slot_size)| {
-                    slot_size.or_else(|| {
-                        if is_nisshin {
-                            nisshin_max_slot_size(master, &gears, index)
-                        } else {
-                            master.get_max_slot_size(index)
-                        }
-                    })
+        let slots = [state.ss1, state.ss2, state.ss3, state.ss4, state.ss5]
+            .into_iter()
+            .enumerate()
+            .map(|(index, slot_size)| {
+                slot_size.or_else(|| {
+                    if is_nisshin {
+                        nisshin_max_slot_size(master, &gears, index)
+                    } else {
+                        master.get_max_slot_size(index)
+                    }
                 })
-                .collect();
+            })
+            .collect();
 
         let mut ship = Ship {
             xxh3,

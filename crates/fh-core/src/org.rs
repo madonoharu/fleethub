@@ -232,7 +232,8 @@ impl Org {
 
     /// 防空時の基地制空値
     pub fn interception_power(&self) -> i32 {
-        let as_vec = std::array::IntoIter::new([&self.a1, &self.a2, &self.a3])
+        let as_vec = [&self.a1, &self.a2, &self.a3]
+            .into_iter()
             .filter(|air_squadron| air_squadron.mode.is_air_defense())
             .collect::<Vec<_>>();
 
@@ -246,7 +247,8 @@ impl Org {
 
     /// 高高度迎撃時の基地制空値
     pub fn high_altitude_interception_power(&self) -> i32 {
-        let as_vec = std::array::IntoIter::new([&self.a1, &self.a2, &self.a3])
+        let as_vec = [&self.a1, &self.a2, &self.a3]
+            .into_iter()
             .filter(|air_squadron| air_squadron.mode.is_air_defense())
             .collect::<Vec<_>>();
 
