@@ -1,7 +1,5 @@
 use ts_rs::TS;
 
-const PATH: &'static str = "packages/core/bindings.d.ts";
-
 macro_rules! gen_types {
     ($($p: path),* $(,)?) => {{
         let mut buffer = String::new();
@@ -17,9 +15,9 @@ macro_rules! gen_types {
 }
 
 fn main() {
-    let path = std::path::Path::new(PATH);
+    let args: Vec<String> = std::env::args().collect();
+    let path = std::path::Path::new(&args[2]);
     let fmt_config = ts_rs::export::FmtCfg::new().deno().build();
-
     use fh_core::*;
 
     let buffer = gen_types!(
