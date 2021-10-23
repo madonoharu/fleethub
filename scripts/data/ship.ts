@@ -200,8 +200,7 @@ export const createShips = (
 
     if (isPlayerShip(mst)) {
       const { api_aftershipid, api_afterlv, api_tais } = mst;
-
-      return {
+      const ship: MasterShip = {
         speed_group: getDefaultSpeedGroup(base),
         ...base,
 
@@ -216,10 +215,18 @@ export const createShips = (
 
         fuel: mst.api_fuel_max,
         ammo: mst.api_bull_max,
-
-        next_id: Number(api_aftershipid) || undefined,
-        next_level: api_afterlv || undefined,
       };
+
+      const next_id = Number(api_aftershipid);
+      const next_level = api_afterlv;
+      if (next_id) {
+        ship.next_id = next_id;
+      }
+      if (next_level) {
+        ship.next_level = next_level;
+      }
+
+      return ship;
     } else {
       const baseName = mst.api_name.replace(SUFFIX_RE, "");
       const abyssal_ctype = start2.api_mst_ship.find(

@@ -42,10 +42,7 @@ export const writeJson = async <
 ): Promise<T> => {
   const file = getBucket().file(path);
 
-  await file.save(JSON.stringify(data), {
-    contentType: "application/json",
-    ...options,
-  });
+  await file.save(JSON.stringify(data), options);
 
   return data;
 };
@@ -76,10 +73,19 @@ export const updateJson = async <
 export const mergeMasterData = (
   next: Partial<MasterData>
 ): Promise<MasterData> =>
-  updateJson("data/master_data.json", (current) => {
-    if (!current) {
-      throw new Error("data/master_data.json was not found");
-    }
+  updateJson(
+    "data/master_data.json",
+    (current) => {
+      if (!current) {
+        throw new Error("data/master_data.json was not found");
+      }
 
-    return { ...current, ...next };
-  });
+      return { ...current, ...next };
+    },
+    {
+      gzip: true,
+      metadata: {
+        cacheControl: "no-store",
+      },
+    }
+  );
