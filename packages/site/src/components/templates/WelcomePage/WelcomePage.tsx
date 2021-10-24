@@ -10,7 +10,7 @@ const WelcomePage: React.FCX = () => {
   const dispatch = useDispatch();
 
   const handleCreatePlan = () => {
-    dispatch(createPlan());
+    dispatch(createPlan({}));
   };
 
   return (

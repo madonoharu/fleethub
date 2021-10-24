@@ -382,9 +382,11 @@ export const selectShip =
     );
   };
 
-export const createSetEntitiesPayloadByOrg = (
-  arg: { name?: string; org?: OrgState; to?: string } | undefined
-): SetEntitiesPayload => {
+export const createSetEntitiesPayloadByOrg = (arg: {
+  name?: string;
+  org?: OrgState;
+  to?: string;
+}): SetEntitiesPayload => {
   const normalized = normalizeOrgState(arg?.org || {});
 
   const fileId = nanoid();
@@ -393,7 +395,7 @@ export const createSetEntitiesPayloadByOrg = (
     id: fileId,
     org: normalized.result,
     type: "plan",
-    name: arg?.name || "",
+    name: arg.name || "",
     description: "",
     nodes: [],
   };
@@ -406,7 +408,7 @@ export const createSetEntitiesPayloadByOrg = (
   return {
     fileId,
     entities,
-    to: arg?.to,
+    to: arg.to,
   };
 };
 
