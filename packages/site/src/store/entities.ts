@@ -17,7 +17,6 @@ import {
   createSelector,
   isAnyOf,
   nanoid,
-  PrepareAction,
 } from "@reduxjs/toolkit";
 import {
   AttackPowerModifiers,
@@ -38,9 +37,10 @@ import { SwapEvent } from "../hooks";
 
 import {
   createDeepEqualSelector,
-  createOrgStateByDeck,
   createShallowEqualSelector,
-  fetchPublicDataByUrl,
+  getPublicId,
+  readPublicFile,
+  importFromJor,
   parsePredeck,
   publishFileData,
   tweet,
@@ -382,31 +382,41 @@ export const selectShip =
     );
   };
 
-export const createPlan = createAction<PrepareAction<SetEntitiesPayload>>(
+export const createSetEntitiesPayloadByOrg = (arg: {
+  name?: string;
+  org?: OrgState;
+  to?: string;
+}): SetEntitiesPayload => {
+  const normalized = normalizeOrgState(arg?.org || {});
+
+  const fileId = nanoid();
+
+  const file: PlanFileEntity = {
+    id: fileId,
+    org: normalized.result,
+    type: "plan",
+    name: arg.name || "",
+    description: "",
+    nodes: [],
+  };
+
+  const entities = normalized.entities;
+  entities.files = {
+    [fileId]: file,
+  };
+
+  return {
+    fileId,
+    entities,
+    to: arg.to,
+  };
+};
+
+export const createPlan = createAction(
   "entities/createPlan",
-  (arg: { name?: string; org?: OrgState; to?: string } | undefined) => {
-    const normalized = normalizeOrgState(arg?.org || {});
-
-    const fileId = nanoid();
-
-    const file: PlanFileEntity = {
-      id: fileId,
-      org: normalized.result,
-      type: "plan",
-      name: arg?.name || "",
-      description: "",
-      nodes: [],
-    };
-
-    const entities = normalized.entities;
-    entities.files = {
-      [fileId]: file,
-    };
-
-    return {
-      payload: { fileId, entities, to: arg?.to },
-    };
-  }
+  (arg: Parameters<typeof createSetEntitiesPayloadByOrg>[0]) => ({
+    payload: createSetEntitiesPayloadByOrg(arg),
+  })
 );
 
 export const initalNightSituation: NightSituation = {
@@ -567,7 +577,7 @@ export const isEntitiesAction = isAnyOf(
   createShip
 );
 
-export type PublicData = {
+export type PublicFile = {
   fileId: string;
   entities: NormalizedEntities;
 };
@@ -584,7 +594,7 @@ export const publishFile = createAsyncThunk(
 
     const cloned = cloneNormalizedEntities(linkedEntities, genId);
 
-    const data: PublicData = {
+    const data: PublicFile = {
       fileId: cloned.idMap.get(fileId) || "",
       entities: cloned.entities,
     };
@@ -604,20 +614,27 @@ export const publishFile = createAsyncThunk(
   }
 );
 
-export const parseUrl =
-  (masterData: MasterData, url: URL): AppThunk =>
-  async (dispatch) => {
-    const data = await fetchPublicDataByUrl(url);
-    if (data) {
-      dispatch(importEntities({ ...data, to: "temp" }));
-    }
+export const parseUrl = async (masterData: MasterData, url: URL) => {
+  const publicId = getPublicId(url);
+  if (publicId) {
+    const res = await readPublicFile(publicId);
+    return res;
+  }
 
-    const predeck = parsePredeck(url);
-    if (predeck) {
-      const org = createOrgStateByDeck(masterData, predeck);
-      dispatch(createPlan({ org, to: "temp" }));
-    }
-  };
+  if (url.hostname === "jervis.page.link") {
+    const res = await importFromJor(url);
+    return (
+      res &&
+      createSetEntitiesPayloadByOrg({
+        name: res?.name,
+        org: res.org,
+      })
+    );
+  }
+
+  const org = parsePredeck(masterData, url);
+  return org && createSetEntitiesPayloadByOrg({ org });
+};
 
 export const swapGearPosition = createAction<
   SwapEvent<{ id?: string | undefined; position: GearPosition }>
