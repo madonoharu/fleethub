@@ -40,7 +40,7 @@ const Explorer: React.FCX = ({ className }) => {
   };
 
   const handlePlanCreate = () => {
-    dispatch(createPlan());
+    dispatch(createPlan({}));
   };
 
   const handleFolderCreate = () => {
