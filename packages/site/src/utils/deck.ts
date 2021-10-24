@@ -19,6 +19,7 @@ import {
   OrgState,
   Ship,
   ShipState,
+  StatInterval,
 } from "fleethub-core";
 
 export type DeckGear = {
@@ -85,6 +86,14 @@ const createGearStateDict = (
   return result;
 };
 
+const calcCurrentLevelAsw = ([at1, at99]: StatInterval, level: number) => {
+  if (at1 === null || at99 === null) {
+    return null;
+  }
+
+  return Math.floor(((at99 - at1) / 99) * level + at1);
+};
+
 const createShipState = (
   master: MasterData,
   deck: DeckShip
@@ -114,7 +123,8 @@ const createShipState = (
     base.max_hp_mod = hp - (masterShip.max_hp[0] || 0);
   }
   if (asw && asw > 0) {
-    base.asw_mod = asw - (masterShip.asw[0] || 0);
+    const currentLevelAsw = calcCurrentLevelAsw(masterShip.asw, deck.lv || 99);
+    base.asw_mod = asw - (currentLevelAsw || 0);
   }
 
   return base;
