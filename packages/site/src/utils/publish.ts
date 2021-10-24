@@ -8,8 +8,7 @@ import {
 import objectHash from "object-hash";
 
 import { publicStorageRef } from "../firebase";
-import { PublicData } from "../store";
-import { parseJorUrlData } from "./jor";
+import { PublicFile } from "../store";
 
 const origin = process.browser ? window.location.origin : "";
 const PUBLIC_ID_KEY = "publicId";
@@ -29,7 +28,7 @@ const hash = (data: Record<string, unknown>): string => {
   return murmurhash(str);
 };
 
-export const publishFileData = async (data: PublicData) => {
+export const publishFileData = async (data: PublicFile) => {
   const publicId = hash(data);
   const fileRef = ref(publicStorageRef, `${publicId}.json`);
 
@@ -48,35 +47,25 @@ export const publishFileData = async (data: PublicData) => {
   return url.href;
 };
 
-export const fetchPublicData = async (id: string): Promise<PublicData> => {
+export const readPublicFile = async (id: string): Promise<PublicFile> => {
   const res = await fetch(
     `https://storage.googleapis.com/kcfleethub.appspot.com/public/${id}.json`
   );
   const data = await res.json();
-  return data as PublicData;
+  return data as PublicFile;
 };
 
-export const fetchPublicDataByUrl = async (
+export const getPublicId = (url: URL) => url.searchParams.get(PUBLIC_ID_KEY);
+
+export const fetchPublicFile = async (
   arg: URL | string
-): Promise<PublicData | undefined> => {
+): Promise<PublicFile | undefined> => {
   const url = typeof arg === "string" ? new URL(arg) : arg;
 
-  if (url.hostname === "jervis.page.link") {
-    const res = await fetch(
-      `${location.hostname}/api/hello?url=${encodeURIComponent(url.toString())}`
-    );
-    const json: { url?: string } = await res.json();
-
-    if (typeof json.url === "string") {
-      parseJorUrlData(new URL(json.url));
-    }
-
-    return;
-  }
   const id = url.searchParams.get(PUBLIC_ID_KEY);
 
   if (id) {
-    return await fetchPublicData(id);
+    return await readPublicFile(id);
   }
 
   return;
