@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
