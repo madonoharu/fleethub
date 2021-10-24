@@ -9,13 +9,10 @@ import {
   appSlice,
   createPlan,
   importEntities,
+  parseUrl,
   selectAppState,
 } from "../../../store";
-import {
-  createOrgStateByDeck,
-  Deck,
-  fetchPublicDataByUrl,
-} from "../../../utils";
+import { createOrgStateByDeck, Deck } from "../../../utils";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
 import { ImportButton, TextField } from "../../molecules";
 
@@ -61,10 +58,11 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
   const asyncOnUrlImport = useAsyncCallback(
     async () => {
-      const data = await fetchPublicDataByUrl(urlStr);
+      const url = new URL(urlStr);
+      const parsed = await parseUrl(masterData, url);
 
-      if (data) {
-        dispatch(importEntities({ ...data, to }));
+      if (parsed) {
+        dispatch(importEntities({ ...parsed, to }));
         onClose?.();
       } else {
         Snackbar.show({ message: "失敗しました", severity: "error" });
