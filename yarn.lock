@@ -795,6 +795,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fh/admin@workspace:packages/admin":
+  version: 0.0.0-use.local
+  resolution: "@fh/admin@workspace:packages/admin"
+  dependencies:
+    "@fh/utils": "workspace:packages/utils"
+    cloudinary: ^1.27.1
+    firebase-admin: ^10.0.0
+    fleethub-core: "npm:latest"
+    google-spreadsheet: ^3.1.15
+    got: ^11.8.2
+  languageName: unknown
+  linkType: soft
+
 "@fh/site@workspace:packages/site":
   version: 0.0.0-use.local
   resolution: "@fh/site@workspace:packages/site"
@@ -5860,15 +5873,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-simple-import-sort@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "eslint-plugin-simple-import-sort@npm:7.0.0"
-  peerDependencies:
-    eslint: ">=5.0.0"
-  checksum: 6aacb7179c213cd2081950630368d1f3b1dcb4f5674d8b989fe7839e7b317ee521d74761676e8b1a7cab49f20405dbcc9aac05358ae804e6bcba6cbf1daccb3d
-  languageName: node
-  linkType: hard
-
 "eslint-scope@npm:^5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
@@ -6426,7 +6430,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "fleethub@workspace:."
   dependencies:
-    "@fh/utils": "*"
+    "@fh/admin": "workspace:packages/admin"
+    "@fh/utils": "workspace:packages/utils"
     "@next/eslint-plugin-next": ^11.1.2
     "@types/fs-extra": ^9.0.13
     "@types/google-spreadsheet": ^3.1.5
@@ -6436,7 +6441,6 @@ __metadata:
     "@types/signale": ^1.4.2
     "@typescript-eslint/eslint-plugin": ^5.1.0
     "@typescript-eslint/parser": ^5.1.0
-    cloudinary: ^1.27.1
     cross-env: ^7.0.3
     dotenv: ^10.0.0
     esbuild: ^0.13.8
@@ -6447,11 +6451,8 @@ __metadata:
     eslint-plugin-import: ^2.25.2
     eslint-plugin-react: ^7.26.1
     eslint-plugin-react-hooks: ^4.2.0
-    eslint-plugin-simple-import-sort: ^7.0.0
-    firebase-admin: ^10.0.0
     fleethub-core: "npm:latest"
     fs-extra: ^10.0.0
-    google-spreadsheet: ^3.1.15
     got: ^11.8.2
     husky: ^7.0.4
     identity-obj-proxy: ^3.0.0
