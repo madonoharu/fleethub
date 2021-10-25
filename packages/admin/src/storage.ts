@@ -4,7 +4,7 @@ import { MasterData } from "fleethub-core";
 import got from "got";
 import isEqual from "lodash/isEqual";
 
-import { getServiceAccount } from "./google";
+import { getServiceAccount } from "./credentials";
 
 let app: admin.app.App | undefined;
 const getApp = () => {

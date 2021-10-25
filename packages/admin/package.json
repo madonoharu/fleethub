@@ -1,0 +1,16 @@
+{
+  "name": "@fh/admin",
+  "license": "UNLICENSED",
+  "main": "cjs/index.js",
+  "scripts": {
+    "build": "tsc -m commonjs --outDir cjs"
+  },
+  "dependencies": {
+    "@fh/utils": "workspace:packages/utils",
+    "cloudinary": "^1.27.1",
+    "firebase-admin": "^10.0.0",
+    "fleethub-core": "npm:latest",
+    "google-spreadsheet": "^3.1.15",
+    "got": "^11.8.2"
+  }
+}

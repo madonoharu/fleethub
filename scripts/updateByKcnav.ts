@@ -1,12 +1,11 @@
 import "dotenv/config";
 
+import { storage, getGoogleSpreadsheet } from "@fh/admin/src";
+import { updateRows } from "@fh/admin/src/utils";
 import { nonNullable } from "@fh/utils/src";
 import { SaveOptions } from "@google-cloud/storage";
 import Signal from "signale";
 
-import { getGoogleSpreadsheet } from "./data";
-import * as storage from "./data/storage";
-import { updateRows } from "./data/utils";
 import {
   formatKcnavMap,
   getAllMapIds,

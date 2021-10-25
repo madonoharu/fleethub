@@ -1,4 +1,4 @@
-import { log, updateData, updateImages } from "./data";
+import { log, updateData, updateImages } from "@fh/admin/src";
 
 type ClientPayload = {
   type: string;
