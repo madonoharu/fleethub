@@ -24,6 +24,7 @@ const updateMasterData: NextApiHandler = async (req, res) => {
         .json({ error: getReasonPhrase(StatusCodes.FORBIDDEN) });
     }
   } catch (error) {
+    console.error(error);
     return res.status(StatusCodes.BAD_REQUEST).json({ error });
   }
 
