@@ -1,4 +1,8 @@
-import { log, updateData, updateImages } from "@fh/admin/src";
+import {
+  log,
+  updateMasterDataBySpreadsheet,
+  updateImages,
+} from "@fh/admin/src";
 
 type ClientPayload = {
   type: string;
@@ -32,7 +36,7 @@ const main = async () => {
     await log(`${type}: Start`);
 
     if (type === "update_data") {
-      await updateData();
+      await updateMasterDataBySpreadsheet();
     }
 
     if (type === "update_images") {

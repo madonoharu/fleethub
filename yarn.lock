@@ -800,6 +800,7 @@ __metadata:
   resolution: "@fh/admin@workspace:packages/admin"
   dependencies:
     "@fh/utils": "workspace:packages/utils"
+    "@google-cloud/asset": ^3.20.0
     cloudinary: ^1.27.1
     firebase-admin: ^10.0.0
     fleethub-core: "npm:latest"
@@ -839,6 +840,7 @@ __metadata:
     firebase: ^9.1.3
     fleethub-core: "npm:latest"
     gkcoi: ^1.2.4
+    http-status-codes: ^2.1.4
     literal-case: ^1.0.0
     localforage: ^1.10.0
     lz-string-uri-fix: ^1.4.5
@@ -1414,6 +1416,15 @@ __metadata:
   version: 1.1.2
   resolution: "@gar/promisify@npm:1.1.2"
   checksum: d05081e0887a49c178b75ee3067bd6ee086f73c154d121b854fb2e044e8a89cb1cbb6de3a0dd93a519b80f0531fda68b099dd7256205f7fbb3490324342f2217
+  languageName: node
+  linkType: hard
+
+"@google-cloud/asset@npm:^3.20.0":
+  version: 3.20.0
+  resolution: "@google-cloud/asset@npm:3.20.0"
+  dependencies:
+    google-gax: ^2.24.1
+  checksum: b69d14c1b176170bff08d47997995647499728921593a3322c1bb081c5fbb684735bec4a6f2ee8b1be012c7a07cfddbfe1e9ff4762f766fceb429e17815c0d9b
   languageName: node
   linkType: hard
 
@@ -7167,6 +7178,13 @@ __metadata:
     agent-base: 6
     debug: 4
   checksum: c6a5da5a1929416b6bbdf77b1aca13888013fe7eb9d59fc292e25d18e041bb154a8dfada58e223fc7b76b9b2d155a87e92e608235201f77d34aa258707963a82
+  languageName: node
+  linkType: hard
+
+"http-status-codes@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "http-status-codes@npm:2.1.4"
+  checksum: 44fedd7b2cfe8672e647fd03a1baf6662a62e7bf1669a866404830e98853dc0239b5cd054938e562cdd7b8228a9a7bc0e27b0eacc6a07814b1639a9c518a7220
   languageName: node
   linkType: hard
 

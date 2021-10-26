@@ -1,18 +1,9 @@
 import { SaveOptions } from "@google-cloud/storage";
-import admin from "firebase-admin";
 import { MasterData } from "fleethub-core";
 import got from "got";
 import isEqual from "lodash/isEqual";
 
-import { getServiceAccount } from "./credentials";
-
-let app: admin.app.App | undefined;
-const getApp = () => {
-  return (app ??= admin.initializeApp({
-    credential: admin.credential.cert(getServiceAccount()),
-    storageBucket: "kcfleethub.appspot.com",
-  }));
-};
+import { getApp } from "./credentials";
 
 export const getBucket = () => getApp().storage().bucket();
 

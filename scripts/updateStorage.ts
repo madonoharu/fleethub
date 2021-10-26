@@ -1,5 +1,5 @@
 import "dotenv/config";
 
-import { updateData } from "@fh/admin/src";
+import { updateMasterDataBySpreadsheet } from "@fh/admin/src";
 
-updateData().catch((err) => console.error(err));
+updateMasterDataBySpreadsheet().catch((err) => console.error(err));
