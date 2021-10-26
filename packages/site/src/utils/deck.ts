@@ -94,6 +94,21 @@ const calcCurrentLevelAsw = ([at1, at99]: StatInterval, level: number) => {
   return Math.floor(((at99 - at1) / 99) * level + at1);
 };
 
+const getMarriageBonus = (l: number) => {
+  if (l < 30) return 4;
+  if (l < 40) return 5;
+  if (l < 50) return 6;
+  if (l < 70) return 7;
+  if (l < 90) return 8;
+  return 9;
+};
+
+const calcCurrentLevelMaxHp = ([l, r]: StatInterval, level: number) => {
+  if (l === null || r === null) return null;
+  if (level < 100) return l;
+  return Math.min(l + getMarriageBonus(l), r);
+};
+
 const createShipState = (
   master: MasterData,
   deck: DeckShip
@@ -120,7 +135,11 @@ const createShipState = (
     base.luck_mod = luck - (masterShip.luck[0] || 0);
   }
   if (hp && hp > 0) {
-    base.max_hp_mod = hp - (masterShip.max_hp[0] || 0);
+    const currentLevelMaxHp = calcCurrentLevelMaxHp(
+      masterShip.max_hp,
+      deck.lv || 99
+    );
+    base.max_hp_mod = hp - (currentLevelMaxHp || 0);
   }
   if (asw && asw > 0) {
     const currentLevelAsw = calcCurrentLevelAsw(masterShip.asw, deck.lv || 99);
