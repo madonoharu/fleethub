@@ -17,15 +17,12 @@ const updateMasterData: NextApiHandler = async (req, res) => {
       .json({ error: getReasonPhrase(StatusCodes.BAD_REQUEST) });
   }
 
-  try {
-    if (!(await isProjectMember(idToken))) {
-      return res
-        .status(StatusCodes.FORBIDDEN)
-        .json({ error: getReasonPhrase(StatusCodes.FORBIDDEN) });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(StatusCodes.BAD_REQUEST).json({ error });
+  const login = await isProjectMember(idToken);
+
+  if (!login) {
+    return res
+      .status(StatusCodes.FORBIDDEN)
+      .json({ error: getReasonPhrase(StatusCodes.FORBIDDEN) });
   }
 
   await updateMasterDataBySpreadsheet();
