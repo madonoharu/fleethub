@@ -1,5 +1,6 @@
 {
   "name": "@fh/admin",
+  "version": "0.0.1",
   "license": "UNLICENSED",
   "main": "cjs/index.js",
   "scripts": {
