@@ -1,4 +1,4 @@
-import { nonNullable } from "@fh/utils/src";
+import { nonNullable } from "@fh/utils";
 import { MasterAttrRule, MasterGear, MasterIBonuses } from "fleethub-core";
 import {
   GoogleSpreadsheet,
@@ -7,7 +7,7 @@ import {
 } from "google-spreadsheet";
 import { Start2 } from "kc-tools";
 
-import { deleteFalsyValues, updateRows } from "./utils";
+import { deleteFalsyValues, updateRows } from "../utils";
 
 const createGears = (
   rows: GoogleSpreadsheetRow[],

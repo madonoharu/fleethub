@@ -3,12 +3,10 @@ import "dotenv/config";
 import child_process from "child_process";
 import path from "path";
 import { promisify } from "util";
+import { getGoogleSpreadsheet, fetchStart2 } from "@fh/admin/src";
 import { Dict, mapValues, uniqBy } from "@fh/utils/src";
 import fs from "fs-extra";
 import { Start2 } from "kc-tools";
-
-import { getGoogleSpreadsheet } from "./data/google";
-import { fetchStart2 } from "./data/utils";
 
 const RS_GEAR_PATH = path.resolve("crates/fh-core/src/types/gear.rs");
 const RS_SHIP_PATH = path.resolve("crates/fh-core/src/types/ship.rs");

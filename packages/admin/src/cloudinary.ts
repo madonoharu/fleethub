@@ -13,20 +13,19 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET || "",
 });
 
-const btoa = (str: string) => Buffer.from(str, "binary").toString("base64");
+// const btoa = (str: string) => Buffer.from(str, "binary").toString("base64");
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const uploadJson = (
-  object: Record<string, unknown>,
-  options?: cloudinary.UploadApiOptions
-) =>
-  cloudinary.v2.uploader.upload(
-    `data:application/json;base64,${btoa(JSON.stringify(object))}`,
-    {
-      resource_type: "raw",
-      ...options,
-    }
-  );
+// const uploadJson = (
+//   object: Record<string, unknown>,
+//   options?: cloudinary.UploadApiOptions
+// ) =>
+//   cloudinary.v2.uploader.upload(
+//     `data:application/json;base64,${btoa(JSON.stringify(object))}`,
+//     {
+//       resource_type: "raw",
+//       ...options,
+//     }
+//   );
 
 const uploadShipBanner = async (id: number) => {
   const resourceType = "ship";
