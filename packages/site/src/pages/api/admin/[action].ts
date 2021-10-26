@@ -1,4 +1,8 @@
-import { isProjectMember, updateMasterDataBySpreadsheet } from "@fh/admin";
+import {
+  isProjectMember,
+  updateImages,
+  updateMasterDataBySpreadsheet,
+} from "@fh/admin";
 import { getReasonPhrase, StatusCodes } from "http-status-codes";
 import { NextApiHandler } from "next";
 
@@ -25,9 +29,19 @@ const updateMasterData: NextApiHandler = async (req, res) => {
       .json({ error: getReasonPhrase(StatusCodes.FORBIDDEN) });
   }
 
-  await updateMasterDataBySpreadsheet();
+  if (req.query.action === "update-master-data") {
+    await updateMasterDataBySpreadsheet();
+  } else if (req.query.action === "update-images") {
+    await updateImages();
+  } else {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ error: getReasonPhrase(StatusCodes.NOT_FOUND) });
+  }
 
-  return res.status(StatusCodes.OK).json({ message: "ok" });
+  return res
+    .status(StatusCodes.OK)
+    .json({ message: getReasonPhrase(StatusCodes.OK) });
 };
 
 export default updateMasterData;
