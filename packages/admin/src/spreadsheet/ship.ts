@@ -1,4 +1,4 @@
-import { ShipClass, ShipType } from "@fh/utils/src";
+import { ShipClass, ShipType } from "@fh/utils";
 import {
   MasterAttrRule,
   MasterShip,
@@ -13,7 +13,7 @@ import {
 import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
 import set from "lodash/set";
 
-import { updateRows } from "./utils";
+import { updateRows } from "../utils";
 
 const SUFFIXES = [
   "甲",

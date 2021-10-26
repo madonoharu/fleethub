@@ -1,8 +1,5 @@
 import admin from "firebase-admin";
-import {
-  GoogleSpreadsheet,
-  ServiceAccountCredentials,
-} from "google-spreadsheet";
+import { ServiceAccountCredentials } from "google-spreadsheet";
 
 export const getServiceAccount = () => {
   const {
@@ -20,20 +17,13 @@ export const getServiceAccount = () => {
   } as ServiceAccountCredentials & admin.ServiceAccount;
 };
 
-const doc = new GoogleSpreadsheet(
-  "1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA"
-);
+export const getApp = () => {
+  if (admin.apps.length === 0) {
+    return admin.initializeApp({
+      credential: admin.credential.cert(getServiceAccount()),
+      storageBucket: "kcfleethub.appspot.com",
+    });
+  }
 
-let initialized = false;
-
-export const getGoogleSpreadsheet = async () => {
-  if (initialized) return doc;
-
-  const serviceAccount = getServiceAccount();
-  await doc.useServiceAccountAuth(serviceAccount);
-  await doc.loadInfo();
-
-  initialized = true;
-
-  return doc;
+  return admin.app();
 };

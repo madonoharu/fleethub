@@ -8,7 +8,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn build:utils && yarn build:site",
+    "prebuild": "yarn build:utils && yarn build:admin",
+    "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn prebuild && yarn build:site",
+    "build:admin": "yarn workspace @fh/admin build",
     "build:core": "bash scripts/build-core.sh",
     "build:site": "yarn workspace @fh/site build",
     "build:utils": "yarn workspace @fh/utils build",
@@ -32,7 +34,8 @@
     "*.{js,jsx,ts,tsx}": "eslint --ext .ts,.tsx --fix"
   },
   "devDependencies": {
-    "@fh/utils": "*",
+    "@fh/admin": "workspace:packages/admin",
+    "@fh/utils": "workspace:packages/utils",
     "@next/eslint-plugin-next": "^11.1.2",
     "@types/fs-extra": "^9.0.13",
     "@types/google-spreadsheet": "^3.1.5",
@@ -42,7 +45,6 @@
     "@types/signale": "^1.4.2",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
-    "cloudinary": "^1.27.1",
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "esbuild": "^0.13.8",
@@ -53,11 +55,8 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
-    "firebase-admin": "^10.0.0",
     "fleethub-core": "npm:latest",
     "fs-extra": "^10.0.0",
-    "google-spreadsheet": "^3.1.15",
     "got": "^11.8.2",
     "husky": "^7.0.4",
     "identity-obj-proxy": "^3.0.0",

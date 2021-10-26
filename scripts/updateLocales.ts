@@ -1,5 +1,6 @@
 import child_process from "child_process";
 import { promisify } from "util";
+import { storage } from "@fh/admin/src";
 import { nonNullable, uniq } from "@fh/utils/src";
 import {
   AirSquadronMode,
@@ -13,8 +14,6 @@ import {
 } from "fleethub-core";
 import fs from "fs-extra";
 import got from "got";
-
-import { readJson } from "./data/storage";
 
 const exec = promisify(child_process.exec);
 
@@ -725,7 +724,7 @@ class LocaleUpdater {
 }
 
 const updateLocales = async () => {
-  const md: MasterData = await readJson("data/master_data.json");
+  const md: MasterData = await storage.readJson("data/master_data.json");
   const promises = languages.map((lang) =>
     new LocaleUpdater(md, lang).update()
   );
