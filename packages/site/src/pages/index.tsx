@@ -68,9 +68,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   const masterData = await fetchMasterData();
 
   return {
+    revalidate: 60,
     props: {
       masterData,
-
       ...(await serverSideTranslations(locale, [
         "common",
         "gears",
