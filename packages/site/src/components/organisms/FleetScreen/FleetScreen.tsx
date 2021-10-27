@@ -54,8 +54,8 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
 
   return (
     <div className={className}>
-      <Flexbox gap={1}>
-        <Typography variant="body2" css={{ marginLeft: "auto" }}>
+      <Flexbox gap={1} mb={0.5}>
+        <Typography variant="body2" ml="auto">
           {t("FighterPower")} {fleet.fighter_power(false)}
         </Typography>
         <SelectedMenu
@@ -95,8 +95,4 @@ const Memoized = React.memo(
     prevFleet.xxh3 === nextFleet.xxh3 && shallowEqual(prevRest, nextRest)
 );
 
-export default styled(Memoized)`
-  ${FleetShipList} {
-    margin-top: 4px;
-  }
-`;
+export default Memoized;

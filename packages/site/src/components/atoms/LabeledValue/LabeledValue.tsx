@@ -19,7 +19,7 @@ const LabeledValue: React.FCX<LabeledValueProps> = ({
   <div className={className}>
     <Typography
       className={classes?.label}
-      css={{ marginRight: 8 }}
+      mr={1}
       color="textSecondary"
       variant={variant}
       component="div"
