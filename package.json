@@ -36,7 +36,7 @@
   "devDependencies": {
     "@fh/admin": "workspace:packages/admin",
     "@fh/utils": "workspace:packages/utils",
-    "@next/eslint-plugin-next": "^11.1.2",
+    "@next/eslint-plugin-next": "^12.0.1",
     "@types/fs-extra": "^9.0.13",
     "@types/google-spreadsheet": "^3.1.5",
     "@types/jest": "^27.0.2",
@@ -62,7 +62,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "kc-tools": "^1.1.0",
-    "lint-staged": "^11.2.5",
+    "lint-staged": "^11.2.6",
     "lodash-es": "^4.17.21",
     "prettier": "^2.4.1",
     "signale": "^1.4.0",
