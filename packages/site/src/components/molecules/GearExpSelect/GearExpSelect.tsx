@@ -41,7 +41,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
   return (
     <div className={className}>
       <Tooltip title={t("Proficiency")}>
-        <Button css={{ height: "100%" }} onClick={Popover.show}>
+        <Button onClick={Popover.show} sx={{ height: "100%" }}>
           <ProficiencyIcon exp={exp} />
         </Button>
       </Tooltip>

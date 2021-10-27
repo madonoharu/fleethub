@@ -48,11 +48,11 @@ const GearSlot: React.FCX<Props> = ({
 export default styled(GearSlot)`
   display: flex;
 
-  ${SlotSizeButton} {
+  > div:nth-of-type(1) {
     flex-shrink: 0;
   }
 
-  ${GearBox} {
+  > div:nth-of-type(2) {
     min-width: 0;
   }
 `;

@@ -65,11 +65,11 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
 );
 
 export default styled(TextField)`
-  ${ClearButton} {
+  .MuiInputAdornment-positionEnd {
     visibility: hidden;
   }
 
-  :hover ${ClearButton} {
+  :hover .MuiInputAdornment-positionEnd {
     visibility: visible;
   }
 `;

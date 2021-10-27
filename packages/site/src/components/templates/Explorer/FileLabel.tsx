@@ -57,7 +57,7 @@ const FileLabel: React.FCX<FileLabelProps> = ({
 export default styled(FileLabel)`
   height: 24px;
 
-  :hover ${FileLabelAction} {
+  :hover > div:last-of-type {
     display: block;
   }
 `;

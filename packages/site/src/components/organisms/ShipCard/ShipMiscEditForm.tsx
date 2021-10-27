@@ -15,6 +15,10 @@ import FuelAmmoForm from "./FuelAmmoForm";
 const DAMAGE_STATES: DamageState[] = ["Normal", "Shouha", "Chuuha", "Taiha"];
 const MORALE_STATE: MoraleState[] = ["Sparkle", "Normal", "Orange", "Red"];
 
+const StyledNumberInput = styled(NumberInput)`
+  width: 128px;
+`;
+
 const StartIcon = styled.div`
   display: flex;
   gap: 8px;
@@ -75,7 +79,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
       <Divider label={`損傷を設定`} />
 
       <Flexbox gap={1}>
-        <NumberInput
+        <StyledNumberInput
           startLabel="HP"
           value={ship.current_hp}
           max={ship.max_hp || 0}
@@ -97,7 +101,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
       <Divider label={`疲労度を設定`} />
       <Flexbox gap={1}>
-        <NumberInput value={ship.morale} max={100} min={0} />
+        <StyledNumberInput value={ship.morale} max={100} min={0} />
         <Select
           label={t("MoraleState")}
           options={MORALE_STATE}
@@ -125,9 +129,6 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 };
 
 export default styled(ShipMiscEditForm)`
-  ${NumberInput} {
-    width: 128px;
-  }
   > * {
     margin-bottom: 8px;
   }

@@ -8,12 +8,13 @@ import { StatIcon } from "../../molecules";
 import { GearNameplate, GearTooltip } from "../../organisms";
 import { toStatEntries } from "../../organisms/GearTooltip/GearStatList";
 
+const StyledStatIcon = styled(StatIcon)`
+  margin-right: 4px;
+`;
+
 const Margin = styled(Flexbox)`
   margin-left: 8px;
   width: 36px;
-  ${StatIcon} {
-    margin-right: 4px;
-  }
 `;
 
 const StatList: React.FC<{ gear: Gear }> = ({ gear }) => {
@@ -23,7 +24,7 @@ const StatList: React.FC<{ gear: Gear }> = ({ gear }) => {
       {entries.map(({ key, value }) => (
         <Tooltip key={key} title={key}>
           <Margin>
-            <StatIcon icon={key} />
+            <StyledStatIcon icon={key} />
             <Typography>{value}</Typography>
           </Margin>
         </Tooltip>
