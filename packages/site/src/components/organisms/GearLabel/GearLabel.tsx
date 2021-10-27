@@ -37,15 +37,6 @@ type GearLabelProps = {
   onReselect?: () => void;
 };
 
-const styles = {
-  action: css`
-    display: none;
-  `,
-  right: css`
-    margin-left: auto;
-  `,
-};
-
 const GearLabel: React.FCX<GearLabelProps> = ({
   className,
 
@@ -81,13 +72,11 @@ const GearLabel: React.FCX<GearLabelProps> = ({
       </GearTooltip>
 
       <UpdateButton
-        css={styles.action}
         title={t("Change")}
         size={size == "small" ? "tiny" : "small"}
         onClick={onReselect}
       />
       <ClearButton
-        css={styles.action}
         title={t("Remove")}
         size={size == "small" ? "tiny" : "small"}
         onClick={onRemove}
@@ -120,12 +109,16 @@ const Styled = styled(Memoized)(
       flex-shrink: 0;
     }
 
+    .MuiIconButton-root {
+      display: none;
+    }
+
     :hover {
       background: ${theme.palette.action.hover};
-      ${UpdateButton} {
+      .MuiIconButton-root {
         display: block;
       }
-      ${GearNameplate} p {
+      > div:first-of-type p {
         display: none;
       }
     }

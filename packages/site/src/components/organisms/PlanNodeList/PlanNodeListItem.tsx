@@ -67,7 +67,11 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
               <ClearButton size="small" onClick={onRemove} />
             </Flexbox>
 
-            <ShipBannerGroup main={main} escort={escort} />
+            <ShipBannerGroup
+              className="ShipBannerGroup"
+              main={main}
+              escort={escort}
+            />
           </div>
         </AccordionSummary>
         <AccordionDetails>
@@ -80,7 +84,7 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
 
 export default styled(PlanNodeListItem)`
   .MuiAccordionSummary-root[aria-expanded="true"] {
-    ${ShipBannerGroup} {
+    .ShipBannerGroup {
       display: none;
     }
   }

@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { AIR_SQUADRON_KEYS } from "@fh/utils";
 import { Paper } from "@mui/material";
@@ -19,6 +18,12 @@ import { BuildButton, DeleteButton } from "../../molecules";
 import BatchOperations from "../BatchOperations";
 import Swappable from "../Swappable";
 import AirSquadronCard from "./AirSquadronCard";
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+`;
 
 type LandBaseScreenProps = {
   org: Org;
@@ -72,13 +77,7 @@ const LandBaseScreen: React.FCX<LandBaseScreenProps> = ({ className, org }) => {
         />
         <DeleteButton size="small" onClick={handleReset} />
       </Flexbox>
-      <div
-        css={css`
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 8px;
-        `}
-      >
+      <GridContainer>
         {AIR_SQUADRON_KEYS.map((key) => {
           const as = org.get_air_squadron(key);
           return (
@@ -96,9 +95,9 @@ const LandBaseScreen: React.FCX<LandBaseScreenProps> = ({ className, org }) => {
             </Swappable>
           );
         })}
-      </div>
+      </GridContainer>
 
-      <div css={{ display: "inline-block" }}>
+      <div>
         <LabeledValue
           label={t("InterceptionPower")}
           value={org.interception_power()}

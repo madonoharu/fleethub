@@ -176,20 +176,20 @@ const Styled = styled(ShipCard)`
     "a a"
     "b c";
 
-  ${ShipCardHeader} {
+  > div:nth-of-type(1) {
     grid-area: a;
+    svg {
+      visibility: hidden;
+    }
   }
-  div:nth-of-type(2) {
+  > div:nth-of-type(2) {
     grid-area: b;
   }
-  div:nth-of-type(3) {
+  > div:nth-of-type(3) {
     grid-area: c;
   }
 
-  ${ShipCardHeader} svg {
-    visibility: hidden;
-  }
-  :hover ${ShipCardHeader} svg {
+  :hover > div:nth-of-type(1) svg {
     visibility: visible;
   }
 `;
