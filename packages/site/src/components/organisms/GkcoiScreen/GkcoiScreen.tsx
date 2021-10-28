@@ -5,6 +5,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import { Paper, Button, Link } from "@mui/material";
 import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
+import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,7 +13,8 @@ import { appSlice } from "../../../store";
 import { createGkcoiDeck, GkcoiLang, GkcoiTheme } from "../../../utils";
 import { Flexbox } from "../../atoms";
 import { Select } from "../../molecules";
-import ReactGkcoi from "./ReactGkcoi";
+
+const ReactGkcoi = dynamic(() => import("./ReactGkcoi"), { ssr: false });
 
 const THEME_NAMES: Record<GkcoiTheme, string> = {
   dark: "Dark",
