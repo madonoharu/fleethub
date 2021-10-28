@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { EquipmentBonuses } from "equipment-bonus";
 import { Gear } from "fleethub-core";

@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { FleetKey } from "@fh/utils";
 import { Paper } from "@mui/material";

@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { FleetKey } from "@fh/utils";
 import { Stack } from "@mui/material";
 import { Org } from "fleethub-core";

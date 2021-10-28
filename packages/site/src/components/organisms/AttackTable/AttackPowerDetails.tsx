@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { AttackPowerParams, AttackPower } from "fleethub-core";
 import { useTranslation } from "next-i18next";

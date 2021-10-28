@@ -7,6 +7,8 @@ import { getGoogleSpreadsheet, readSpreadsheetMasterData } from "./spreadsheet";
 import * as storage from "./storage";
 import { fetchStart2 } from "./utils";
 
+const ROLES = ["roles/viewer", "roles/editor", "roles/owner"];
+
 export const isProjectMember = async (idToken: string) => {
   const email = (await verifyGasIdToken(idToken))?.email || "";
 
@@ -24,7 +26,7 @@ export const isProjectMember = async (idToken: string) => {
   });
 
   return analyzeIamPolicyResponse.mainAnalysis?.analysisResults?.some(
-    (ima) => ima.iamBinding?.role === "roles/viewer"
+    (result) => ROLES.includes(result.iamBinding?.role || "")
   );
 };
 

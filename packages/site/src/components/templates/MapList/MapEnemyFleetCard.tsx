@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { MapEnemyFleet, nonNullable } from "@fh/utils";
 import { Button, Paper } from "@mui/material";

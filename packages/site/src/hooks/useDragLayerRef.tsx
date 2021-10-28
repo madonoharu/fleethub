@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import throttle from "lodash/throttle";
@@ -37,17 +38,18 @@ const DragLayerBox = styled.div(
     border-radius: 4px;
   `
 );
-const getStyle = throttle((monitor: DragLayerMonitor):
-  | React.CSSProperties
-  | undefined => {
-  const offset = monitor.getSourceClientOffset();
+const getStyle = throttle(
+  (monitor: DragLayerMonitor): React.CSSProperties | undefined => {
+    const offset = monitor.getSourceClientOffset();
 
-  if (!offset) return;
+    if (!offset) return;
 
-  return {
-    transform: `translate(${offset.x}px, ${offset.y}px)`,
-  };
-}, wait);
+    return {
+      transform: `translate(${offset.x}px, ${offset.y}px)`,
+    };
+  },
+  wait
+);
 
 const DragLayer: React.FC = () => {
   const style = useDragLayer((monitor) => {
