@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { EquipmentBonuses } from "equipment-bonus";
 import { Gear, GearCategory } from "fleethub-core";
 import React, { useState } from "react";

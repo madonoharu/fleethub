@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { NextComponentType, NextPageContext } from "next";
 import { ErrorProps } from "next/error";
 import React from "react";

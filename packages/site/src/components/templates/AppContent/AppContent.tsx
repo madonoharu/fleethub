@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
