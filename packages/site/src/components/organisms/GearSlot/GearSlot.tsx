@@ -29,6 +29,7 @@ const GearSlot: React.FCX<Props> = ({
   return (
     <div className={className}>
       <SlotSizeButton
+        className="SlotSizeButton"
         exslot={position?.key === "gx"}
         current={slotSize}
         max={maxSlotSize}
@@ -36,6 +37,7 @@ const GearSlot: React.FCX<Props> = ({
         onChange={onSlotSizeChange}
       />
       <GearBox
+        className="GearBox"
         gear={gear}
         position={position}
         size="small"
@@ -48,11 +50,11 @@ const GearSlot: React.FCX<Props> = ({
 export default styled(GearSlot)`
   display: flex;
 
-  > div:nth-of-type(1) {
+  > .SlotSizeButton {
     flex-shrink: 0;
   }
 
-  > div:nth-of-type(2) {
+  > .GearBox {
     min-width: 0;
   }
 `;

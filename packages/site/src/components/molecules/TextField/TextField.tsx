@@ -56,7 +56,13 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         InputProps={{
-          endAdornment: <ClearButton size="tiny" onClick={handleClear} />,
+          endAdornment: (
+            <ClearButton
+              className="ClearButton"
+              size="tiny"
+              onClick={handleClear}
+            />
+          ),
         }}
         {...rest}
       />
@@ -65,11 +71,11 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
 );
 
 export default styled(TextField)`
-  .MuiInputAdornment-positionEnd {
+  .ClearButton {
     visibility: hidden;
   }
 
-  :hover .MuiInputAdornment-positionEnd {
+  :hover .ClearButton {
     visibility: visible;
   }
 `;
