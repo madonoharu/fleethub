@@ -15,10 +15,7 @@ const config = {
       type: "webassembly/sync",
     });
 
-    config.experiments = {
-      syncWebAssembly: true,
-    };
-
+    config.experiments.syncWebAssembly = true;
     config.output.webassemblyModuleFilename =
       (isServer ? "../" : "") + "static/wasm/webassembly.wasm";
 
