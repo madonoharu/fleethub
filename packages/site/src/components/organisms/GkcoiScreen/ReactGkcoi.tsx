@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Alert, CircularProgress } from "@mui/material";
 import { DeckBuilder, generate } from "gkcoi";

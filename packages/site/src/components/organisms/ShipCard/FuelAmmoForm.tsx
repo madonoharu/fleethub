@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
@@ -52,6 +53,10 @@ const calcCost = (
   return Math.max(current - cost, 0);
 };
 
+const StyledNumberInput = styled(NumberInput)`
+  width: 128px;
+`;
+
 type FuelAmmoFormProps = {
   fuel: number;
   max_fuel: number;
@@ -94,7 +99,7 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
   return (
     <>
       <Flexbox className={className} style={style} gap={1}>
-        <NumberInput
+        <StyledNumberInput
           startLabel={<FuelIcon />}
           label={`${t("fuel")} ${toPercent(fuelRate)}`}
           value={fuel}
@@ -102,7 +107,7 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
           max={max_fuel}
           onChange={setFuel}
         />
-        <NumberInput
+        <StyledNumberInput
           startLabel={<AmmoIcon />}
           label={`${t("ammo")} ${toPercent(ammoRate)}`}
           value={ammo}
@@ -147,8 +152,4 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
   );
 };
 
-export default styled(FuelAmmoForm)`
-  ${NumberInput} {
-    width: 128px;
-  }
-`;
+export default FuelAmmoForm;

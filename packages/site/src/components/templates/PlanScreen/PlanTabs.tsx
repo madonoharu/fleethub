@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { FLEET_KEYS, nonNullable } from "@fh/utils";
 import { Org } from "fleethub-core";

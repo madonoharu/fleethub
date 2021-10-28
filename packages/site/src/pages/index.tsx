@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { createEquipmentBonuses } from "equipment-bonus";
 import { MasterData } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";

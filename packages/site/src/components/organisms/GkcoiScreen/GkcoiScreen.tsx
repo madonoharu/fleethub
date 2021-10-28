@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Dict } from "@fh/utils";
 import GitHubIcon from "@mui/icons-material/GitHub";

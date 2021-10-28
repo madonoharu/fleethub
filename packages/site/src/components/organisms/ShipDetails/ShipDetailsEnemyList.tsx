@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { Divider, Stack } from "@mui/material";
 import {
   Ship,

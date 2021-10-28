@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { ListItemIcon, ListItemText, ListItemButton } from "@mui/material";
 import { useTranslation } from "next-i18next";

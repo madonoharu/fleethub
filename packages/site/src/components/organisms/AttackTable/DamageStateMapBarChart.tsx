@@ -1,5 +1,7 @@
+/** @jsxImportSource @emotion/react */
 import { useTheme } from "@emotion/react";
 import { Dict } from "@fh/utils";
+import { Stack } from "@mui/material";
 import { LegendOrdinal, LegendItem, LegendLabel } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { DamageState } from "fleethub-core";
@@ -54,14 +56,7 @@ const DamageStateMapBarChart: React.FCX<DamageStateMapBarChartProps> = ({
 
       <LegendOrdinal scale={ordinalColorScale}>
         {(labels) => (
-          <div
-            css={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              fontSize: "0.875rem",
-            }}
-          >
+          <Stack flexDirection="row" flexWrap="wrap" fontSize="0.875rem">
             {labels.map((label) => {
               const rate = data[label.datum];
               if (!rate) return null;
@@ -83,7 +78,7 @@ const DamageStateMapBarChart: React.FCX<DamageStateMapBarChartProps> = ({
                 </LegendItem>
               );
             })}
-          </div>
+          </Stack>
         )}
       </LegendOrdinal>
     </div>

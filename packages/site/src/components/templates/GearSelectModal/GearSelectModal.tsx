@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { Gear } from "fleethub-core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";

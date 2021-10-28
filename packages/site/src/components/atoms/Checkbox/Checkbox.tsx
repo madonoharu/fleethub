@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import {
   Checkbox as MuiCheckbox,
   CheckboxProps as MuiCheckboxProps,

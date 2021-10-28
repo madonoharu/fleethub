@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
@@ -62,7 +63,7 @@ const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div className={className} css={size === "small" && smallStyle}>
-      <MuiTabs value={current} onChange={handleChange} classes={{}} {...rest}>
+      <MuiTabs value={current} onChange={handleChange} {...rest}>
         {list.map(({ panel: _, ...tabProps }, index) => (
           <StyledMuiTab key={index} {...tabProps} />
         ))}

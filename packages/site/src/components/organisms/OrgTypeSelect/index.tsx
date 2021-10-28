@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { OrgType } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
