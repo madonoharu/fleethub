@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { useTheme } from "@emotion/react";
 import { Dict } from "@fh/utils";
 import { Stack } from "@mui/material";

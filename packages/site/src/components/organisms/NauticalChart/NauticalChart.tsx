@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { FhMap, MapNode } from "@fh/utils";
 import { Tooltip } from "@mui/material";

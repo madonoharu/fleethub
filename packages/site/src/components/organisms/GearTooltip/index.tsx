@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { Tooltip, TooltipProps, Typography } from "@mui/material";
 import { EquipmentBonuses } from "equipment-bonus";
 import { Gear } from "fleethub-core";

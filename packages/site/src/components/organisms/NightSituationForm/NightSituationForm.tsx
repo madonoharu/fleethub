@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
 import { NightSituation } from "fleethub-core";
 import { useTranslation } from "next-i18next";

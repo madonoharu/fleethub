@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs } from "@mui/material";

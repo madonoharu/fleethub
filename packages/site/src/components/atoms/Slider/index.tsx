@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import MuiSlider, { SliderProps } from "@mui/material/Slider";
 import React from "react";
 

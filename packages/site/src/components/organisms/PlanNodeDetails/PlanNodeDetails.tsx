@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Path, PathValue } from "@fh/utils";
 import { Stack } from "@mui/material";

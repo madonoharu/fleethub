@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { AttackPowerModifiers } from "fleethub-core";
 import React from "react";
 import { NumberInput } from "../../molecules";
