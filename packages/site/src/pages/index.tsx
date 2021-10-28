@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { createEquipmentBonuses } from "equipment-bonus";
 import { MasterData } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
@@ -68,9 +69,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   const masterData = await fetchMasterData();
 
   return {
+    revalidate: 60,
     props: {
       masterData,
-
       ...(await serverSideTranslations(locale, [
         "common",
         "gears",

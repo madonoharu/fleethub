@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import React from "react";
 
 import { useDrop } from "../../../hooks";

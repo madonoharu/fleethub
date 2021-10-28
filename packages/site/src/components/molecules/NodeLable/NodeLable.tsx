@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { MapNode } from "@fh/utils";
 import { Typography } from "@mui/material";

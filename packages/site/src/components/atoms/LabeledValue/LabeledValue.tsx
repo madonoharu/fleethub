@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Typography, StyledComponentProps } from "@mui/material";
 import { Variant } from "@mui/material/styles/createTypography";
@@ -19,7 +20,7 @@ const LabeledValue: React.FCX<LabeledValueProps> = ({
   <div className={className}>
     <Typography
       className={classes?.label}
-      css={{ marginRight: 8 }}
+      mr={1}
       color="textSecondary"
       variant={variant}
       component="div"

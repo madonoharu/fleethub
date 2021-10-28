@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import SaveIcon from "@mui/icons-material/Save";
 import { Fab } from "@mui/material";
 import { Org } from "fleethub-core";

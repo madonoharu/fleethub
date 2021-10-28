@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import TranslateIcon from "@mui/icons-material/Translate";
 import { useRouter } from "next/router";
 import React from "react";

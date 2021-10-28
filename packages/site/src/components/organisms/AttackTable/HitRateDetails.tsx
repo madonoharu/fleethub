@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { HitRateParams, HitRate } from "fleethub-core";
 import { useTranslation } from "next-i18next";

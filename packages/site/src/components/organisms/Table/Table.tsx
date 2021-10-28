@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import {
   Table as MuiTable,
   TableBody as MuiTableBody,

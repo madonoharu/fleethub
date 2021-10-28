@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";

@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { GEAR_EXP_TABLE, range } from "@fh/utils";
 import { Button, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";

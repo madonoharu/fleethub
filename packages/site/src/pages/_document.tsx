@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import createEmotionServer from "@emotion/server/create-instance";

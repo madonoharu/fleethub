@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
 import { Divider as MuiDivider, DividerProps, Typography } from "@mui/material";

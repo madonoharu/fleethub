@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Gear } from "fleethub-core";
 import React from "react";
@@ -29,6 +30,7 @@ const GearSlot: React.FCX<Props> = ({
   return (
     <div className={className}>
       <SlotSizeButton
+        className="SlotSizeButton"
         exslot={position?.key === "gx"}
         current={slotSize}
         max={maxSlotSize}
@@ -36,6 +38,7 @@ const GearSlot: React.FCX<Props> = ({
         onChange={onSlotSizeChange}
       />
       <GearBox
+        className="GearBox"
         gear={gear}
         position={position}
         size="small"
@@ -48,11 +51,11 @@ const GearSlot: React.FCX<Props> = ({
 export default styled(GearSlot)`
   display: flex;
 
-  ${SlotSizeButton} {
+  > .SlotSizeButton {
     flex-shrink: 0;
   }
 
-  ${GearBox} {
+  > .GearBox {
     min-width: 0;
   }
 `;
