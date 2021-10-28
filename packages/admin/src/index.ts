@@ -1,34 +1,8 @@
-import { AssetServiceClient } from "@google-cloud/asset";
-
 import { verifyGasIdToken } from "./auth";
 import { updateCloudinary } from "./cloudinary";
-import { getServiceAccount } from "./credentials";
 import { getGoogleSpreadsheet, readSpreadsheetMasterData } from "./spreadsheet";
 import * as storage from "./storage";
 import { fetchStart2 } from "./utils";
-
-const ROLES = ["roles/viewer", "roles/editor", "roles/owner"];
-
-export const isProjectMember = async (idToken: string) => {
-  const email = (await verifyGasIdToken(idToken))?.email || "";
-
-  const assetServiceClient = new AssetServiceClient({
-    credentials: getServiceAccount(),
-  });
-
-  const [analyzeIamPolicyResponse] = await assetServiceClient.analyzeIamPolicy({
-    analysisQuery: {
-      scope: "projects/kcfleethub",
-      identitySelector: {
-        identity: `user:${email}`,
-      },
-    },
-  });
-
-  return analyzeIamPolicyResponse.mainAnalysis?.analysisResults?.some(
-    (result) => ROLES.includes(result.iamBinding?.role || "")
-  );
-};
 
 export const log = async (message: string) => {
   const doc = await getGoogleSpreadsheet();
@@ -56,4 +30,5 @@ export const updateImages = async () => {
   await log("Success: update_images");
 };
 
+export { isProjectMember } from "./auth";
 export { verifyGasIdToken, fetchStart2, storage, getGoogleSpreadsheet };
