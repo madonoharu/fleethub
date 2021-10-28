@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -67,7 +68,11 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
               <ClearButton size="small" onClick={onRemove} />
             </Flexbox>
 
-            <ShipBannerGroup main={main} escort={escort} />
+            <ShipBannerGroup
+              className="ShipBannerGroup"
+              main={main}
+              escort={escort}
+            />
           </div>
         </AccordionSummary>
         <AccordionDetails>
@@ -80,7 +85,7 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
 
 export default styled(PlanNodeListItem)`
   .MuiAccordionSummary-root[aria-expanded="true"] {
-    ${ShipBannerGroup} {
+    .ShipBannerGroup {
       display: none;
     }
   }

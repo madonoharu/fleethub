@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import { MapNode } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { Group } from "@visx/group";

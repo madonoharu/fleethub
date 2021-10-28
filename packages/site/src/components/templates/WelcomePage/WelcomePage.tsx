@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { Button, Container, Divider, Typography, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";

@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { NextComponentType } from "next";

@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { GEAR_KEYS, SlotSizeKey } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";

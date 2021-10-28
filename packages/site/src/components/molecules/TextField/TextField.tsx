@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { useForkRef } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
@@ -56,7 +57,13 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         InputProps={{
-          endAdornment: <ClearButton size="tiny" onClick={handleClear} />,
+          endAdornment: (
+            <ClearButton
+              className="ClearButton"
+              size="tiny"
+              onClick={handleClear}
+            />
+          ),
         }}
         {...rest}
       />
@@ -65,11 +72,11 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
 );
 
 export default styled(TextField)`
-  ${ClearButton} {
+  .ClearButton {
     visibility: hidden;
   }
 
-  :hover ${ClearButton} {
+  :hover .ClearButton {
     visibility: visible;
   }
 `;
