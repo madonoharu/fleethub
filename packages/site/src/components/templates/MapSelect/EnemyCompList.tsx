@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import styled from "@emotion/styled";
-import { MapEnemyFleet, nonNullable } from "@fh/utils";
-import { Button, Paper } from "@mui/material";
+import { MapEnemyFleet, MapNode, nonNullable } from "@fh/utils";
+import { Button, Paper, Stack } from "@mui/material";
 import { Formation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-
 import { Flexbox } from "../../atoms";
+
+import { NodeLable } from "../../molecules";
 import { ShipBannerGroup } from "../../organisms";
 import EnemyFighterPower from "./EnemyFighterPower";
 
@@ -25,13 +25,13 @@ const FORMATION_MAP: Record<number, Formation | undefined> = {
 
 const toFormation = (id: number) => FORMATION_MAP[id];
 
-type MapEnemyFleetCardProps = {
+type EnemyCompListItem = {
   enemy: MapEnemyFleet;
   lbas?: boolean;
   onSelect?: (enemy: MapEnemyFleet, formation: Formation) => void;
 };
 
-const MapEnemyFleetCard: React.FCX<MapEnemyFleetCardProps> = ({
+const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
   className,
   enemy,
   lbas,
@@ -40,7 +40,7 @@ const MapEnemyFleetCard: React.FCX<MapEnemyFleetCardProps> = ({
   const { t } = useTranslation("common");
 
   return (
-    <Paper className={className}>
+    <Paper className={className} sx={{ p: 1 }}>
       <div>
         <EnemyFighterPower label={t("FighterPower")} fp={enemy.fp} />
         {lbas ? <EnemyFighterPower label="基地戦" fp={enemy.lbasFp} /> : null}
@@ -67,6 +67,35 @@ const MapEnemyFleetCard: React.FCX<MapEnemyFleetCardProps> = ({
   );
 };
 
-export default styled(MapEnemyFleetCard)`
-  padding: 8px;
-`;
+type EnemyCompListProps = {
+  node: MapNode;
+  difficulty?: number;
+  onSelect?: (enemy: MapEnemyFleet, formation: Formation) => void;
+};
+
+const EnemyCompList: React.FCX<EnemyCompListProps> = ({
+  className,
+  node,
+  difficulty,
+  onSelect,
+}) => {
+  return (
+    <Stack className={className} gap={1}>
+      <NodeLable name={node.point} type={node.type} d={node.d} />
+      {node.enemies
+        ?.filter(
+          (enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty
+        )
+        .map((enemy, index) => (
+          <EnemyCompListItem
+            key={index}
+            enemy={enemy}
+            lbas={node.d !== undefined}
+            onSelect={onSelect}
+          />
+        ))}
+    </Stack>
+  );
+};
+
+export default EnemyCompList;

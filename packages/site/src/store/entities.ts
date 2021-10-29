@@ -32,7 +32,7 @@ import xor from "lodash/xor";
 import { createCachedSelector } from "re-reselect";
 import { DefaultRootState } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { MapEnemySelectEvent } from "../components/templates/MapList";
+import { MapEnemySelectEvent } from "../components/templates/MapSelect/MapMenu";
 import { SwapEvent } from "../hooks";
 
 import {
