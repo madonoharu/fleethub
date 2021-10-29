@@ -11,11 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActionCreators } from "redux-undo";
 
 import { useModal } from "../../../hooks";
-import { shipSelectSlice } from "../../../store";
+import {
+  shipSelectSlice,
+  gearSelectSlice,
+  mapSelectSlice,
+} from "../../../store";
 import { ImportButton, withIconButton } from "../../molecules";
 import { ImportMenu } from "../../organisms";
-import GearList from "../GearList";
-import MapList from "../MapList";
 import LanguageSelect from "./LanguageSelect";
 
 const UndoButton = withIconButton(UndoIcon);
@@ -55,11 +57,17 @@ const AppBar: React.FCX<Props> = ({
   const { canUndo, canRedo, undo, redo } = useUndo();
 
   const ImprotMenuModal = useModal();
-  const GearListModal = useModal();
-  const MapListModal = useModal();
 
   const handleShipSelectOpen = () => {
     dispatch(shipSelectSlice.actions.show());
+  };
+
+  const handleGearSelectOpen = () => {
+    dispatch(gearSelectSlice.actions.show());
+  };
+
+  const handleMapSelectOpen = () => {
+    dispatch(mapSelectSlice.actions.show());
   };
 
   const handleExplorerOpen = () => {
@@ -106,21 +114,13 @@ const AppBar: React.FCX<Props> = ({
         </Tooltip>
 
         <Button onClick={handleShipSelectOpen}>{t("Ship")}</Button>
-        <Button onClick={GearListModal.show}>{t("Equipment")}</Button>
-        <Button onClick={MapListModal.show}>{t("Maps")}</Button>
+        <Button onClick={handleGearSelectOpen}>{t("Equipment")}</Button>
+        <Button onClick={handleMapSelectOpen}>{t("Maps")}</Button>
         <LanguageSelect />
 
         <ImprotMenuModal>
           <ImportMenu onClose={ImprotMenuModal.hide} />
         </ImprotMenuModal>
-
-        <GearListModal full>
-          <GearList />
-        </GearListModal>
-
-        <MapListModal full>
-          <MapList />
-        </MapListModal>
       </div>
     </MuiAppBar>
   );

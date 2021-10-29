@@ -11,7 +11,7 @@ import { fleetsSlice } from "./fleetsSlice";
 import { gearSelectSlice } from "./gearSelectSlice";
 import { gearsSlice } from "./gearsSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
-import { mapListSlice } from "./mapListSlice";
+import { mapSelectSlice } from "./mapSelectSlice";
 import { navSlice } from "./navSlice";
 import { orgsSlice } from "./orgsSlice";
 import { shipDetailsSlice } from "./shipDetailsSlice";
@@ -40,8 +40,8 @@ const combinedReducer = combineReducers({
 
   shipSelect: shipSelectSlice.reducer,
   gearSelect: gearSelectSlice.reducer,
+  mapSelect: mapSelectSlice.reducer,
 
-  mapList: mapListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
   shipDetails: shipDetailsSlice.reducer,
 });

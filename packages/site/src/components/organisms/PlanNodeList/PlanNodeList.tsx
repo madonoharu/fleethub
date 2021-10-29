@@ -1,18 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
-import { useModal } from "../../../hooks";
 import {
-  createPlanNode,
   filesSlice,
+  mapSelectSlice,
   PlanFileEntity,
   PlanNode,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton } from "../../molecules";
-import MapList, { MapEnemySelectEvent } from "../../templates/MapList";
 import PlanNodeListItem from "./PlanNodeListItem";
 
 const usePlanNodesActions = (file: PlanFileEntity) => {
@@ -61,19 +59,8 @@ type PlanNodeListProps = {
 };
 
 const PlanNodeList: React.FCX<PlanNodeListProps> = ({ className, file }) => {
-  const Modal = useModal();
   const dispatch = useDispatch();
-  const [multiple, setMultiple] = useState(false);
-
   const actions = usePlanNodesActions(file);
-
-  const handleMapEnemySelect = (event: MapEnemySelectEvent) => {
-    dispatch(createPlanNode(file.id, event));
-
-    if (!multiple) {
-      Modal.hide();
-    }
-  };
 
   return (
     <div className={className}>
@@ -82,8 +69,12 @@ const PlanNodeList: React.FCX<PlanNodeListProps> = ({ className, file }) => {
           variant="contained"
           color="primary"
           onClick={() => {
-            setMultiple(false);
-            Modal.show();
+            dispatch(
+              mapSelectSlice.actions.show({
+                create: true,
+                multiple: false,
+              })
+            );
           }}
         >
           敵編成を追加
@@ -92,8 +83,12 @@ const PlanNodeList: React.FCX<PlanNodeListProps> = ({ className, file }) => {
           variant="contained"
           color="primary"
           onClick={() => {
-            setMultiple(true);
-            Modal.show();
+            dispatch(
+              mapSelectSlice.actions.show({
+                create: true,
+                multiple: true,
+              })
+            );
           }}
         >
           敵編成を一括入力
@@ -101,10 +96,6 @@ const PlanNodeList: React.FCX<PlanNodeListProps> = ({ className, file }) => {
 
         <DeleteButton onClick={actions.removeAll} />
       </Flexbox>
-
-      <Modal fullHeight>
-        <MapList onMapEnemySelect={handleMapEnemySelect} />
-      </Modal>
 
       {file.nodes?.map((node, index) => (
         <PlanNodeListItem

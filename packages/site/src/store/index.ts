@@ -6,7 +6,7 @@ export * from "./filesSlice";
 export * from "./fleetsSlice";
 export * from "./gearsSlice";
 export * from "./gkcoiSlice";
-export * from "./mapListSlice";
+export * from "./mapSelectSlice";
 export * from "./orgsSlice";
 export * from "./selectors";
 export * from "./shipsSlice";
