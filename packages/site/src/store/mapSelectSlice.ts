@@ -1,19 +1,29 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createStep } from "./entities";
 
 export type MapSelectState = {
-  open?: boolean;
-  create?: boolean;
-  multiple?: boolean;
+  open: boolean;
   mapId: number;
   point: string;
   diff: number;
+  createStep?: boolean;
+  position?: string;
+  multiple?: boolean;
 };
 
 const initialState: MapSelectState = {
+  open: false,
   mapId: 11,
   point: "A",
   diff: 4,
 };
+
+const hide = ({ mapId, point, diff }: MapSelectState) => ({
+  open: false,
+  mapId,
+  point,
+  diff,
+});
 
 export const mapSelectSlice = createSlice({
   name: "mapSelect",
@@ -25,15 +35,22 @@ export const mapSelectSlice = createSlice({
     },
     show: (
       state,
-      payload: PayloadAction<Partial<MapSelectState> | undefined>
+      { payload }: PayloadAction<Partial<MapSelectState> | undefined>
     ) => {
       if (payload) {
         Object.assign(state, payload);
       }
       state.open = true;
     },
-    hide: (state) => {
-      state.open = false;
-    },
+    hide,
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(createStep, (state) => {
+      if (!state.multiple) {
+        return hide(state);
+      }
+      return;
+    });
   },
 });

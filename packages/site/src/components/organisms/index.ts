@@ -23,7 +23,7 @@ export { default as Table } from "./Table";
 export * from "./Table";
 export { default as ShipTooltip } from "./ShipTooltip";
 export { default as GkcoiScreen } from "./GkcoiScreen";
-export { default as PlanNodeList } from "./PlanNodeList";
+export { default as StepList } from "./StepList";
 export { default as ElosLabel } from "./ElosLabel";
 export { default as Swappable } from "./Swappable";
 export { default as OrgTypeSelect } from "./OrgTypeSelect";
