@@ -1,9 +1,15 @@
+import { promisify } from "util";
+import zlib from "zlib";
 import { SaveOptions } from "@google-cloud/storage";
 import { MasterData } from "fleethub-core";
 import got from "got";
 import isEqual from "lodash/isEqual";
 
 import { getApp } from "./credentials";
+
+const MASTER_DATA_PATH = "data/master_data.json";
+
+const brotliCompress = promisify(zlib.brotliCompress);
 
 export const getBucket = () => getApp().storage().bucket();
 
@@ -23,24 +29,41 @@ export const exists = (path: string): Promise<boolean> =>
     .exists()
     .then((res) => res[0]);
 
+export const write = async (
+  path: string,
+  data: string | Buffer,
+  options?: SaveOptions
+) => {
+  const file = getBucket().file(path);
+  await file.save(data, options);
+};
+
 export const writeJson = async <
   P extends string,
-  T extends P extends "data/master_data.json" ? MasterData : unknown
+  T extends P extends typeof MASTER_DATA_PATH ? MasterData : object
 >(
   path: P,
   data: T,
   options?: SaveOptions
 ): Promise<T> => {
-  const file = getBucket().file(path);
+  const str = JSON.stringify(data);
+  const compressed = await brotliCompress(str);
 
-  await file.save(JSON.stringify(data), options);
+  await write(path, compressed, {
+    contentType: "application/json",
+    ...options,
+    metadata: {
+      ...options?.metadata,
+      contentEncoding: "br",
+    },
+  });
 
   return data;
 };
 
 export const updateJson = async <
   P extends string,
-  T extends P extends "data/master_data.json" ? MasterData : unknown
+  T extends P extends typeof MASTER_DATA_PATH ? MasterData : object
 >(
   path: P,
   updater: (current: T | undefined) => T,
@@ -61,22 +84,22 @@ export const updateJson = async <
   return next;
 };
 
-export const mergeMasterData = (
-  next: Partial<MasterData>
-): Promise<MasterData> =>
-  updateJson(
-    "data/master_data.json",
-    (current) => {
-      if (!current) {
-        throw new Error("data/master_data.json was not found");
-      }
+export const mergeMasterData = async (
+  input: Partial<MasterData>
+): Promise<MasterData> => {
+  const current = await readJson(MASTER_DATA_PATH);
+  const next: MasterData = { ...current, ...input };
 
-      return { ...current, ...next };
-    },
-    {
-      gzip: true,
-      metadata: {
-        cacheControl: "no-store",
-      },
-    }
-  );
+  if (!isEqual(current, next)) {
+    return next;
+  }
+
+  console.log(`update: ${MASTER_DATA_PATH}`);
+
+  const cacheControl = "public, max-age=60";
+  await writeJson(MASTER_DATA_PATH, next, {
+    metadata: { cacheControl },
+  });
+
+  return next;
+};
