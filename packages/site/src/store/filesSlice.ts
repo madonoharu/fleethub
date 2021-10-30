@@ -9,9 +9,9 @@ import {
   createPlan,
   isPlanFile,
   importEntities,
-  createPlanNode,
+  createStep,
 } from "./entities";
-import { FileEntity, FolderEntity, PlanNode } from "./schema";
+import { FileEntity, FolderEntity } from "./schema";
 
 const initialState = filesAdapter.getInitialState<{
   rootIds: string[];
@@ -101,37 +101,10 @@ export const filesSlice = createSlice({
   initialState,
 
   reducers: {
-    updatePlanNode: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        id: string;
-        index: number;
-        changes: Partial<PlanNode>;
-      }>
-    ) => {
-      const file = state.entities[payload.id];
-      const node = isPlanFile(file) && file.nodes[payload.index];
-      if (!node) return;
-
-      Object.assign(node, payload.changes);
-    },
-    removePlanNode: (
-      state,
-      { payload }: PayloadAction<{ id: string; index: number }>
-    ) => {
-      const file = state.entities[payload.id];
-
-      if (!isPlanFile(file) || payload.index < 0) return;
-
-      file.nodes.splice(payload.index, 1);
-    },
-
-    removePlanNodeAll: (state, { payload }: PayloadAction<string>) => {
+    removeSteps: (state, { payload }: PayloadAction<string>) => {
       filesAdapter.updateOne(state, {
         id: payload,
-        changes: { nodes: [] },
+        changes: { steps: [] },
       });
     },
 
@@ -177,15 +150,11 @@ export const filesSlice = createSlice({
         filesAdapter.removeMany(state, payload.files);
         unlink(state, payload.files);
       })
-      .addCase(createPlanNode, (state, { payload }) => {
+      .addCase(createStep, (state, { payload }) => {
         const file = state.entities[payload.fileId];
 
-        if (file?.type !== "plan") return;
-
-        if (file.nodes) {
-          file.nodes.push(payload.node);
-        } else {
-          file.nodes = [payload.node];
+        if (isPlanFile(file)) {
+          (file.steps ||= []).push(payload.stepId);
         }
       })
       .addMatcher(

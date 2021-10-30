@@ -10,11 +10,11 @@ import { useDispatch } from "react-redux";
 
 import { useOrg } from "../../../hooks";
 import {
-  filesSlice,
-  initalPlanNodeDetailsConfig,
+  initalStepConfig,
   PlanFileEntity,
-  PlanNode,
-  PlanNodeDetailsConfig,
+  StepEntity,
+  StepConfig,
+  stepsSlices,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { NumberInput } from "../../molecules";
@@ -26,22 +26,22 @@ import ShipCard from "../ShipCard";
 import OrgShipSelect from "./OrgShipSelect";
 import WarfareDetails from "./WarfareDetails";
 
-type PlanNodeDetailsProps = {
+type StepDetailsProps = {
   plan: PlanFileEntity;
-  node: PlanNode;
+  step: StepEntity;
 };
 
-const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
+const StepDetails: React.FCX<StepDetailsProps> = ({
   className,
   style,
   plan,
-  node,
+  step,
 }) => {
   const { t } = useTranslation("common");
   const dispatch = useDispatch();
 
   const { org: playerOrg } = useOrg(plan.org);
-  const { org: enemyOrg } = useOrg(node.org);
+  const { org: enemyOrg } = useOrg(step.org);
 
   const [playerShipId, setPlayerShipId] = useState<string | undefined>(
     playerOrg?.get_ship_entity_id("Main", "s1")
@@ -52,19 +52,18 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
 
   if (!playerOrg || !enemyOrg) return null;
 
-  const config = node.config || initalPlanNodeDetailsConfig;
+  const config = step.config || initalStepConfig;
 
   const bind =
-    <P extends Path<PlanNodeDetailsConfig>>(path: P) =>
-    (value: PathValue<PlanNodeDetailsConfig, P>) => {
+    <P extends Path<StepConfig>>(path: P) =>
+    (value: PathValue<StepConfig, P>) => {
       const next = produce(config, (draft) => {
         set(draft, path, value);
       });
 
       dispatch(
-        filesSlice.actions.updatePlanNode({
+        stepsSlices.actions.update({
           id: plan.id,
-          index: plan.nodes.indexOf(node),
           changes: { config: next },
         })
       );
@@ -186,7 +185,7 @@ const PlanNodeDetails: React.FCX<PlanNodeDetailsProps> = ({
   );
 };
 
-export default styled(PlanNodeDetails)`
+export default styled(StepDetails)`
   > * {
     margin-top: 8px;
   }

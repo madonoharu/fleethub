@@ -11,12 +11,13 @@ import { fleetsSlice } from "./fleetsSlice";
 import { gearSelectSlice } from "./gearSelectSlice";
 import { gearsSlice } from "./gearsSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
-import { mapListSlice } from "./mapListSlice";
+import { mapSelectSlice } from "./mapSelectSlice";
 import { navSlice } from "./navSlice";
 import { orgsSlice } from "./orgsSlice";
 import { shipDetailsSlice } from "./shipDetailsSlice";
 import { shipSelectSlice } from "./shipSelectSlice";
 import { shipsSlice } from "./shipsSlice";
+import { stepsSlices } from "./stepsSlice";
 import undoableOptions from "./undoableOptions";
 
 const noopStorage: WebStorage = {
@@ -36,12 +37,13 @@ const combinedReducer = combineReducers({
   airSquadrons: airSquadronsSlice.reducer,
   fleets: fleetsSlice.reducer,
   orgs: orgsSlice.reducer,
+  steps: stepsSlices.reducer,
   files: filesSlice.reducer,
 
   shipSelect: shipSelectSlice.reducer,
   gearSelect: gearSelectSlice.reducer,
+  mapSelect: mapSelectSlice.reducer,
 
-  mapList: mapListSlice.reducer,
   gkcoi: gkcoiSlice.reducer,
   shipDetails: shipDetailsSlice.reducer,
 });
@@ -69,7 +71,7 @@ const persistedReducer = persistReducer(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     deserialize: false,
-    blacklist: ["nav", "shipDetails"],
+    blacklist: ["nav", "shipDetails", "shipSelect", "gearsSelect", "mapSelect"],
   },
   persistedReducerBase
 );
