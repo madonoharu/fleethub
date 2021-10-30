@@ -1,9 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { createEquipmentBonuses } from "equipment-bonus";
-import { MasterData } from "fleethub-core";
+import {
+  set_panic_hook,
+  org_type_is_single,
+  org_type_default_formation,
+  org_type_is_player,
+  air_squadron_can_equip,
+  FhCore,
+  MasterData,
+} from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
 import { DndProvider } from "react-dnd";
@@ -14,28 +21,6 @@ import { fetchMasterData } from "../firebase";
 import { FhCoreContext } from "../hooks";
 import { StoreProvider } from "../store";
 
-const loader = async () => {
-  const module = await import("fleethub-core");
-
-  const App: React.FC<{ masterData: MasterData }> = ({ masterData }) => {
-    const core = new module.FhCore(masterData, createEquipmentBonuses);
-
-    if (process.env.NODE_ENV === "development") {
-      module.set_panic_hook();
-    }
-
-    return (
-      <FhCoreContext.Provider value={{ masterData, module, core }}>
-        <AppContent />
-      </FhCoreContext.Provider>
-    );
-  };
-
-  return App;
-};
-
-const App = dynamic(loader);
-
 type StaticProps = { date: string; masterData: MasterData };
 
 const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
@@ -45,6 +30,13 @@ const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
   if (process.browser) {
     console.log(date);
   }
+
+  const core = new FhCore(masterData, createEquipmentBonuses);
+
+  if (process.env.NODE_ENV === "development") {
+    set_panic_hook();
+  }
+
   return (
     <div>
       <Head>
@@ -60,7 +52,20 @@ const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
 
       <DndProvider backend={HTML5Backend}>
         <StoreProvider masterData={masterData}>
-          <App masterData={masterData} />
+          <FhCoreContext.Provider
+            value={{
+              masterData,
+              core,
+              module: {
+                org_type_is_single,
+                org_type_default_formation,
+                org_type_is_player,
+                air_squadron_can_equip,
+              },
+            }}
+          >
+            <AppContent />
+          </FhCoreContext.Provider>
         </StoreProvider>
       </DndProvider>
     </div>
