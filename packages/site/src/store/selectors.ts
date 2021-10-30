@@ -8,8 +8,6 @@ export const selectAppState = (root: DefaultRootState) =>
 export const selectFilesState = (root: DefaultRootState) =>
   getPresentState(root).files;
 
-export const selectMapListState = (root: DefaultRootState) =>
-  getPresentState(root).mapList;
 export const selectGkcoiState = (root: DefaultRootState) =>
   getPresentState(root).gkcoi;
 
