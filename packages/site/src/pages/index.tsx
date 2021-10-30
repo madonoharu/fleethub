@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { createEquipmentBonuses } from "equipment-bonus";
-import { MasterData } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
@@ -15,9 +14,12 @@ import { FhCoreContext } from "../hooks";
 import { StoreProvider } from "../store";
 
 const loader = async () => {
-  const module = await import("fleethub-core");
+  const [module, masterData] = await Promise.all([
+    import("fleethub-core"),
+    fetchMasterData(),
+  ]);
 
-  const App: React.FC<{ masterData: MasterData }> = ({ masterData }) => {
+  const App: React.FC = () => {
     const core = new module.FhCore(masterData, createEquipmentBonuses);
 
     if (process.env.NODE_ENV === "development") {
@@ -26,7 +28,9 @@ const loader = async () => {
 
     return (
       <FhCoreContext.Provider value={{ masterData, module, core }}>
-        <AppContent />
+        <StoreProvider masterData={masterData}>
+          <AppContent />
+        </StoreProvider>
       </FhCoreContext.Provider>
     );
   };
@@ -36,15 +40,7 @@ const loader = async () => {
 
 const App = dynamic(loader);
 
-type StaticProps = { date: string; masterData: MasterData };
-
-const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
-  date,
-  masterData,
-}) => {
-  if (process.browser) {
-    console.log(date);
-  }
+const Index: NextComponentType<NextPageContext, unknown> = () => {
   return (
     <div>
       <Head>
@@ -59,24 +55,15 @@ const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
       </Head>
 
       <DndProvider backend={HTML5Backend}>
-        <StoreProvider masterData={masterData}>
-          <App masterData={masterData} />
-        </StoreProvider>
+        <App />
       </DndProvider>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps<StaticProps> = async ({
-  locale = "",
-}) => {
-  const masterData = await fetchMasterData();
-  const date = new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+export const getStaticProps: GetStaticProps = async ({ locale = "" }) => {
   return {
-    revalidate: 60,
     props: {
-      date,
-      masterData,
       ...(await serverSideTranslations(locale, [
         "common",
         "gears",
