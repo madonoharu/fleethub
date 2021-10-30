@@ -9,46 +9,51 @@ import {
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
+import { useDispatch } from "react-redux";
 
 import { useOrg } from "../../../hooks";
 import {
-  initalPlanNodeDetailsConfig,
+  initalStepConfig,
   PlanFileEntity,
-  PlanNode,
+  StepEntity,
+  stepsSlices,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { ClearButton, NodeLable } from "../../molecules";
 import { ShipBannerGroup } from "../../organisms";
-import PlanNodeDetails from "../PlanNodeDetails";
+import StepDetails from "../StepDetails";
 import Swappable from "../Swappable";
 
-type PlanNodeListItemProps = {
-  index: number;
+type StepListItemProps = {
   plan: PlanFileEntity;
-  node: PlanNode;
-  onUpdate?: (index: number, node: PlanNode) => void;
+  step: StepEntity;
+  index: number;
   onRemove?: () => void;
   onSwap?: (a: number, b: number) => void;
 };
 
 const TransitionProps = { mountOnEnter: true };
 
-const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
-  index,
+const StepListItem: React.FCX<StepListItemProps> = ({
   plan,
-  node,
-  onRemove,
+  step,
+  index,
   onSwap,
   className,
 }) => {
-  const { org } = useOrg(node.org);
+  const { org } = useOrg(step.org);
   const { t } = useTranslation("common");
+  const dispatch = useDispatch();
 
   if (!org) return null;
 
   const main = org.main_ship_ids();
   const escort = org.escort_ship_ids();
-  const config = node.config || initalPlanNodeDetailsConfig;
+  const config = step.config || initalStepConfig;
+
+  const handleRemove = () => {
+    dispatch(stepsSlices.actions.remove(step.id));
+  };
 
   return (
     <Swappable
@@ -61,11 +66,11 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <div>
             <Flexbox gap={1}>
-              <NodeLable name={node.name} type={node.type} d={node.d} />
+              <NodeLable name={step.name} type={step.type} d={step.d} />
               <Typography variant="subtitle2">
                 {t(config.enemy.formation)}
               </Typography>
-              <ClearButton size="small" onClick={onRemove} />
+              <ClearButton size="small" onClick={handleRemove} />
             </Flexbox>
 
             <ShipBannerGroup
@@ -76,14 +81,14 @@ const PlanNodeListItem: React.FCX<PlanNodeListItemProps> = ({
           </div>
         </AccordionSummary>
         <AccordionDetails>
-          <PlanNodeDetails plan={plan} node={node} />
+          <StepDetails plan={plan} step={step} />
         </AccordionDetails>
       </Accordion>
     </Swappable>
   );
 };
 
-export default styled(PlanNodeListItem)`
+export default styled(StepListItem)`
   .MuiAccordionSummary-root[aria-expanded="true"] {
     .ShipBannerGroup {
       display: none;

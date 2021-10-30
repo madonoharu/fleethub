@@ -53,31 +53,32 @@ export type FolderEntity = FileEntityBase<
   }
 >;
 
-type PlanNodeDetailsConfigShipEnv = Pick<
+type StepConfigShipEnv = Pick<
   WarfareAnalyzerShipEnvironment,
   "formation" | "night_situation" | "external_power_mods"
 >;
 
-export type PlanNodeDetailsConfig = {
-  player: PlanNodeDetailsConfigShipEnv;
-  enemy: PlanNodeDetailsConfigShipEnv;
+export type StepConfig = {
+  player: StepConfigShipEnv;
+  enemy: StepConfigShipEnv;
   air_state: AirState;
   engagement: Engagement;
 };
 
-export type PlanNode = {
+export type StepEntity = {
+  id: string;
   name: string;
   type: MapNode["type"];
   d: MapNode["d"];
   org: string;
-  config?: PlanNodeDetailsConfig;
+  config?: StepConfig;
 };
 
 export type PlanFileEntity = FileEntityBase<
   "plan",
   {
     org: string;
-    nodes: PlanNode[];
+    steps?: string[];
   }
 >;
 export type FileEntity = FolderEntity | PlanFileEntity;
@@ -141,6 +142,7 @@ export type NormalizedEntities = {
   fleets?: Record<string, FleetEntity> | undefined;
   airSquadrons?: Record<string, AirSquadronEntity> | undefined;
   orgs?: Record<string, OrgEntity> | undefined;
+  steps?: Record<string, StepEntity> | undefined;
   files?: Record<string, FileEntity> | undefined;
 };
 

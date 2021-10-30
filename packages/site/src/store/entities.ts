@@ -32,7 +32,7 @@ import xor from "lodash/xor";
 import { createCachedSelector } from "re-reselect";
 import { DefaultRootState } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { MapEnemySelectEvent } from "../components/templates/MapList";
+import { MapEnemySelectEvent } from "../components/templates/MapSelect/MapMenu";
 import { SwapEvent } from "../hooks";
 
 import {
@@ -64,9 +64,10 @@ import {
   normalizeOrgState,
   normalizeShipState,
   PlanFileEntity,
-  PlanNode,
+  StepConfig,
+  StepEntity,
 } from "./schema";
-import { PlanNodeDetailsConfig } from ".";
+import { stepsSelectors } from ".";
 
 export const isFolder = (file?: FileEntity): file is FolderEntity =>
   Boolean(file && "children" in file);
@@ -138,48 +139,24 @@ const mergeNormalizedEntities = (
   return result;
 };
 
-export const getLinkedFiles = (state: FilesState, id: string) => {
-  const result: Record<string, FileEntity> = {};
+const getReferencedFiles = (state: FilesState, id: string): FileEntity[] => {
   const file = state.entities[id];
 
-  if (!file) return result;
+  if (!file) return [];
 
-  result[id] = file;
+  if (!isFolder(file)) return [file];
 
-  if (!isFolder(file)) return result;
-
-  file.children.forEach((childId) => {
-    Object.assign(result, getLinkedFiles(state, childId));
-  });
-
-  return result;
-};
-
-export const getLinkedFileEntities = (
-  root: DefaultRootState,
-  id: string
-): Record<string, FileEntity> => {
-  const result: Record<string, FileEntity> = {};
-  const file = filesSelectors.selectById(root, id);
-
-  if (!file) return result;
-
-  result[id] = file;
-
-  if (!isFolder(file)) return result;
-
-  file.children.forEach((childId) => {
-    Object.assign(result, getLinkedFileEntities(root, childId));
-  });
-
-  return result;
+  return [
+    file,
+    ...file.children.flatMap((childId) => getReferencedFiles(state, childId)),
+  ];
 };
 
 export const selectTempIds = createSelector(
   (root: DefaultRootState) => root.present.files,
   (state) => {
     return state.tempIds
-      .flatMap((id) => Object.values(getLinkedFiles(state, id)))
+      .flatMap((id) => getReferencedFiles(state, id))
       .map((file) => file.id);
   }
 );
@@ -249,7 +226,7 @@ export const selectOrgState = createCachedSelector(
   selectorCreator: createDeepEqualSelector,
 });
 
-const selectLinkedEntitiesByOrgIds = createShallowEqualSelector(
+const selectReferencedEntitiesByOrgIds = createShallowEqualSelector(
   (root: DefaultRootState, orgIds: string[]) =>
     orgIds.map((id) => selectNormalizedOrgState(root, id)),
 
@@ -262,20 +239,52 @@ const selectLinkedEntitiesByOrgIds = createShallowEqualSelector(
   }
 );
 
-export const getLinkedEntities = (
+const entityArrayToRecord = <T extends { id: string }>(
+  array: T[]
+): Record<string, T> => {
+  const result: Record<string, T> = {};
+
+  array.forEach((entity) => {
+    result[entity.id] = entity;
+  });
+
+  return result;
+};
+
+export const getReferencedEntities = (
   root: DefaultRootState,
-  fileId: string
+  fileId: string | string[]
 ): NormalizedEntities => {
   const result: NormalizedEntities = {};
-  result.files = getLinkedFileEntities(root, fileId);
 
-  Object.values(result.files).forEach((file) => {
-    if (isPlanFile(file)) {
-      const orgIds = [file.org, ...file.nodes.map((node) => node.org)];
-      const orgLinkedEntities = selectLinkedEntitiesByOrgIds(root, orgIds);
-      mergeNormalizedEntities(result, orgLinkedEntities);
-    }
-  });
+  const files: FileEntity[] = [];
+  if (Array.isArray(fileId)) {
+    files.push(
+      ...fileId.flatMap((id) => getReferencedFiles(root.present.files, id))
+    );
+  } else {
+    files.push(...getReferencedFiles(root.present.files, fileId));
+  }
+
+  const planFiles = files.filter(isPlanFile);
+
+  result.files = entityArrayToRecord(files);
+
+  const steps = planFiles
+    .flatMap((file) => {
+      return file.steps?.map((id) => stepsSelectors.selectById(root, id));
+    })
+    .filter(nonNullable);
+
+  result.steps = entityArrayToRecord(steps);
+
+  const orgIds = [
+    ...planFiles.map((file) => file.org),
+    ...steps.map((step) => step.org),
+  ];
+
+  const orgReferencedEntities = selectReferencedEntitiesByOrgIds(root, orgIds);
+  mergeNormalizedEntities(result, orgReferencedEntities);
 
   return result;
 };
@@ -397,7 +406,7 @@ export const createSetEntitiesPayloadByOrg = (arg: {
     type: "plan",
     name: arg.name || "",
     description: "",
-    nodes: [],
+    steps: [],
   };
 
   const entities = normalized.entities;
@@ -444,7 +453,7 @@ export const initalAttackPowerModifiers: AttackPowerModifiers = {
   b7: 0,
 };
 
-export const initalPlanNodeDetailsConfig: PlanNodeDetailsConfig = {
+export const initalStepConfig: StepConfig = {
   air_state: "AirSupremacy",
   engagement: "Parallel",
   player: {
@@ -459,27 +468,37 @@ export const initalPlanNodeDetailsConfig: PlanNodeDetailsConfig = {
   },
 };
 
-export const createPlanNode = createAction(
-  "entities/createPlanNode",
+export const createStep = createAction(
+  "entities/createStep",
   (fileId: string, event: MapEnemySelectEvent) => {
     const { result, entities } = normalizeOrgState(event.org);
 
-    const node: PlanNode = {
+    const stepId = nanoid();
+
+    const step: StepEntity = {
+      id: stepId,
       name: event.name,
       type: event.type,
       d: event.d,
       org: result,
       config: {
-        ...initalPlanNodeDetailsConfig,
+        ...initalStepConfig,
         enemy: {
-          ...initalPlanNodeDetailsConfig.enemy,
+          ...initalStepConfig.enemy,
           formation: event.formation,
         },
       },
     };
 
     return {
-      payload: { fileId, node, entities },
+      payload: {
+        fileId,
+        stepId,
+        entities: {
+          ...entities,
+          steps: [step],
+        },
+      },
     };
   }
 );
@@ -500,9 +519,9 @@ export const cloneFile =
   (sourceId: string): AppThunk =>
   (dispatch, getState) => {
     const root = getState();
-    const linkedEntities = getLinkedEntities(root, sourceId);
+    const referencedEntities = getReferencedEntities(root, sourceId);
 
-    const cloned = cloneNormalizedEntities(linkedEntities);
+    const cloned = cloneNormalizedEntities(referencedEntities);
     const clonedId = cloned.idMap.get(sourceId);
 
     let to: string | undefined;
@@ -538,40 +557,36 @@ export const sweepEntities =
       rootFileIds.push(...root.present.files.tempIds);
     }
 
-    const entities: NormalizedEntities = {};
-
-    rootFileIds.forEach((fileId) => {
-      const linkedEntities = getLinkedEntities(root, fileId);
-      mergeNormalizedEntities(entities, linkedEntities);
-    });
-
-    const { files, orgs, fleets, airSquadrons, ships, gears } = entities;
+    const entities = getReferencedEntities(root, rootFileIds);
+    const { files, steps, orgs, fleets, airSquadrons, ships, gears } = entities;
 
     const fileIds = files ? Object.keys(files) : [];
+    const stepIds = steps ? Object.keys(steps) : [];
     const orgIds = orgs ? Object.keys(orgs) : [];
     const fleetIds = fleets ? Object.keys(fleets) : [];
     const airSquadronIds = airSquadrons ? Object.keys(airSquadrons) : [];
     const shipIds = ships ? Object.keys(ships) : [];
     const gearIds = gears ? Object.keys(gears) : [];
 
-    dispatch(
-      sweep({
-        files: xor(fileIds, filesSelectors.selectIds(root) as string[]),
-        orgs: xor(orgIds, orgsSelectors.selectIds(root) as string[]),
-        fleets: xor(fleetIds, fleetsSelectors.selectIds(root) as string[]),
-        airSquadrons: xor(
-          airSquadronIds,
-          airSquadronsSelectors.selectIds(root) as string[]
-        ),
-        ships: xor(shipIds, shipsSelectors.selectIds(root) as string[]),
-        gears: xor(gearIds, gearsSelectors.selectIds(root) as string[]),
-      })
-    );
+    const payload = {
+      files: xor(fileIds, filesSelectors.selectIds(root) as string[]),
+      steps: xor(stepIds, stepsSelectors.selectIds(root) as string[]),
+      orgs: xor(orgIds, orgsSelectors.selectIds(root) as string[]),
+      fleets: xor(fleetIds, fleetsSelectors.selectIds(root) as string[]),
+      airSquadrons: xor(
+        airSquadronIds,
+        airSquadronsSelectors.selectIds(root) as string[]
+      ),
+      ships: xor(shipIds, shipsSelectors.selectIds(root) as string[]),
+      gears: xor(gearIds, gearsSelectors.selectIds(root) as string[]),
+    };
+
+    dispatch(sweep(payload));
   };
 
 export const isEntitiesAction = isAnyOf(
   createPlan,
-  createPlanNode,
+  createStep,
   setEntities,
   importEntities,
   createShip
@@ -587,12 +602,12 @@ export const publishFile = createAsyncThunk(
   async (arg: { fileId: string; tweets?: boolean }, thunkAPI) => {
     const { fileId, tweets } = arg;
     const root = thunkAPI.getState() as DefaultRootState;
-    const linkedEntities = getLinkedEntities(root, fileId);
+    const referencedEntities = getReferencedEntities(root, fileId);
 
     let count = 0;
     const genId = () => `${(count++).toString(32)}`;
 
-    const cloned = cloneNormalizedEntities(linkedEntities, genId);
+    const cloned = cloneNormalizedEntities(referencedEntities, genId);
 
     const data: PublicFile = {
       fileId: cloned.idMap.get(fileId) || "",
@@ -602,7 +617,7 @@ export const publishFile = createAsyncThunk(
     const url = await publishFileData(data);
 
     if (tweets) {
-      const name = linkedEntities.files?.[fileId]?.name || "";
+      const name = referencedEntities.files?.[fileId]?.name || "";
 
       tweet({
         text: name && `【${name}】`,
