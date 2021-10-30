@@ -7,7 +7,7 @@ import {
   WarfareAnalyzerShipEnvironment,
 } from "fleethub-core";
 import React from "react";
-import { PlanNodeDetailsConfig } from "../../../store";
+import { StepConfig } from "../../../store";
 import { Flexbox } from "../../atoms";
 import WarfareAnalyzer from "../WarfareAnalyzer";
 
@@ -16,7 +16,7 @@ type WarfareDetailsProps = {
   playerShip: Ship;
   enemyOrg: Org;
   enemyShip: Ship;
-  config: PlanNodeDetailsConfig;
+  config: StepConfig;
 };
 
 const createAnalyzerProps = (

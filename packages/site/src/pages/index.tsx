@@ -36,11 +36,15 @@ const loader = async () => {
 
 const App = dynamic(loader);
 
-type StaticProps = { masterData: MasterData };
+type StaticProps = { date: string; masterData: MasterData };
 
 const Index: NextComponentType<NextPageContext, unknown, StaticProps> = ({
+  date,
   masterData,
 }) => {
+  if (process.browser) {
+    console.log(date);
+  }
   return (
     <div>
       <Head>
@@ -67,10 +71,11 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   locale = "",
 }) => {
   const masterData = await fetchMasterData();
-
+  const date = new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
   return {
     revalidate: 60,
     props: {
+      date,
       masterData,
       ...(await serverSideTranslations(locale, [
         "common",

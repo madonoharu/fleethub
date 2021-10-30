@@ -1,6 +1,6 @@
 [package]
 name = "fh-core"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
@@ -20,7 +20,7 @@ serde_json = "1.0.68"
 # logging them with `console.error`. This is great for development, but requires
 # all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
 # code size when deploying.
-console_error_panic_hook = { version = "0.1.6", optional = true }
+console_error_panic_hook = { version = "0.1.7", optional = true }
 
 # `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
 # compared to the default allocator's ~10K. It is slower than the default

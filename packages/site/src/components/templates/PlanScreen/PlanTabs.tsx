@@ -11,7 +11,7 @@ import { Tabs, TabsProps } from "../../molecules";
 import {
   LandBaseScreen,
   GkcoiScreen,
-  PlanNodeList,
+  StepList,
   Swappable,
 } from "../../organisms";
 import PlanFleetPanel from "./PlanFleetPanel";
@@ -58,7 +58,7 @@ const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
   const list = [
     ...fleetTabs,
     { label: t("Lbas"), panel: <LandBaseScreen org={org} /> },
-    file && { label: t("Enemies"), panel: <PlanNodeList file={file} /> },
+    file && { label: t("Enemies"), panel: <StepList file={file} /> },
     { label: "画像出力", panel: <GkcoiScreen org={org} /> },
   ].filter(nonNullable);
 

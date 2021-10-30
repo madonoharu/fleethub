@@ -7,6 +7,7 @@ import {
   GearEntity,
   OrgEntity,
   ShipEntity,
+  StepEntity,
 } from "./schema";
 import { selectGearsState, selectShipsState } from "./selectors";
 
@@ -34,4 +35,9 @@ export const orgsSelectors = orgsAdapter.getSelectors(
 export const filesAdapter = createEntityAdapter<FileEntity>();
 export const filesSelectors = filesAdapter.getSelectors(
   (root: DefaultRootState) => root.present.files
+);
+
+export const stepsAdapter = createEntityAdapter<StepEntity>();
+export const stepsSelectors = stepsAdapter.getSelectors(
+  (root: DefaultRootState) => root.present.steps
 );
