@@ -50,8 +50,9 @@ export const writeJson = async <
   const compressed = await brotliCompress(str);
 
   await write(path, compressed, {
-    contentType: "application/json",
     ...options,
+    gzip: false,
+    contentType: "application/json",
     metadata: {
       ...options?.metadata,
       contentEncoding: "br",
@@ -90,7 +91,7 @@ export const mergeMasterData = async (
   const current = await readJson(MASTER_DATA_PATH);
   const next: MasterData = { ...current, ...input };
 
-  if (!isEqual(current, next)) {
+  if (isEqual(current, next)) {
     return next;
   }
 

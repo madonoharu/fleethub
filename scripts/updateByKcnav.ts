@@ -15,7 +15,6 @@ import {
 } from "./maps";
 
 const SAVE_OPTIONS: SaveOptions = {
-  gzip: true,
   metadata: {
     cacheControl: "public, max-age=60",
   },
@@ -104,16 +103,16 @@ const updateMaps = async (kcnavMaps: KcnavMap[]) => {
   await Promise.all(promises);
 };
 
-const HOT_MAPS: number[] = [511, 512, 513];
+const HOT_MAPS: number[] = [521];
 
 const updateByKcnav = async () => {
   const ids = await getAllMapIds();
-  await storage.updateJson(`maps/all.json`, () => ids, SAVE_OPTIONS);
+  await storage.writeJson(`maps/all.json`, ids, SAVE_OPTIONS);
 
   const kcnavMaps: KcnavMap[] = [];
 
   for (const id of ids) {
-    if (!HOT_MAPS.includes(id) || (await storage.exists(`maps/${id}.json`))) {
+    if (!HOT_MAPS.includes(id) && (await storage.exists(`maps/${id}.json`))) {
       continue;
     }
 

@@ -6,6 +6,8 @@ import Signale from "signale";
 
 const instance = got.extend({
   prefixUrl: "https://tsunkit.net/api/routing",
+  timeout: 1000 * 60 * 3,
+  retry: 5,
 });
 
 type KcnavParams = Partial<{
@@ -74,7 +76,7 @@ type KcnavGraph = {
   spots: Record<string, KcnavSpot>;
 };
 
-type KcnavHeatmaps = Record<string, number>;
+type KcnavNodesummary = Dict<string, { runs: number }>;
 
 type KcnavLbasdistance = Dict<
   string,
@@ -109,8 +111,8 @@ type KcnavEnemycomps = {
 
 export type KcnavMap = KcnavGraph & {
   id: number;
+  nodesummary: KcnavNodesummary;
   lbasdistance: KcnavLbasdistance;
-  heatmaps: KcnavHeatmaps;
   enemycomps: Dict<string, KcnavEnemyFleet[]>;
 };
 
@@ -136,11 +138,11 @@ class KcnavMapClient {
     return this.worldId > 10;
   }
 
-  public getHeatmaps = () =>
-    instance(`heatmaps/${this.key}`, {
+  public getNodesummary = () =>
+    instance(`nodesummary/${this.key}`, {
       searchParams: { start: start(-10) },
     })
-      .json<{ result: KcnavHeatmaps }>()
+      .json<{ result: KcnavNodesummary }>()
       .then((res) => res.result);
 
   public getGraph = () => instance(`maps/${this.key}`).json<KcnavGraph>();
@@ -200,10 +202,11 @@ class KcnavMapClient {
 
   public get = async (): Promise<KcnavMap> => {
     const { route, spots } = await this.getGraph();
+    const nodesummary = await this.getNodesummary();
     const lbasdistance = await this.getLbasdistance();
-    const heatmaps = await this.getHeatmaps();
 
     const enemycomps: KcnavMap["enemycomps"] = {};
+
     for (const name of Object.keys(spots)) {
       const signale = Signale.scope(`${this.key} ${name}`);
       signale.await();
@@ -212,7 +215,10 @@ class KcnavMapClient {
         .filter((entry) => entry[1][1] === name)
         .map(([edgeId]) => edgeId);
 
-      const count = edgeIds.reduce((c, id) => c + heatmaps[id], 0);
+      const count = edgeIds.reduce(
+        (c, id) => c + (nodesummary[id]?.runs || 0),
+        0
+      );
       const edges = edgeIds.join(",");
 
       enemycomps[edges] = await this.getEnemycomps(edges, count);
@@ -221,10 +227,10 @@ class KcnavMapClient {
 
     return {
       id: this.id,
+      nodesummary,
+      lbasdistance,
       route,
       spots,
-      lbasdistance,
-      heatmaps,
       enemycomps,
     };
   };
