@@ -1,6 +1,6 @@
 {
   "name": "fleethub",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
@@ -8,15 +8,14 @@
     "packages/*"
   ],
   "scripts": {
-    "prebuild": "yarn build:utils && yarn build:admin",
-    "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn prebuild && yarn build:site",
+    "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn build:site",
     "build:admin": "yarn workspace @fh/admin build",
     "build:core": "bash scripts/build-core.sh",
     "build:site": "yarn workspace @fh/site build",
     "build:utils": "yarn workspace @fh/utils build",
     "dev": "yarn workspace @fh/site dev",
     "dispatch": "yarn ts scripts/dispatch",
-    "postinstall": "husky install",
+    "postinstall": "husky install && yarn build:utils && yarn build:admin",
     "lint": "eslint --cache packages && yarn tscheck",
     "site": "yarn workspace @fh/site",
     "start": "yarn workspace @fh/core start",
