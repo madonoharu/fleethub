@@ -80,7 +80,8 @@ const createGear = (input: JorGearState): GearState => {
 };
 
 const createGearDict = (
-  input: (JorGearState | undefined)[]
+  input: (JorGearState | undefined)[],
+  slotnum?: number
 ): Dict<GearKey, GearState> => {
   const result: Dict<GearKey, GearState> = {};
 
@@ -89,7 +90,12 @@ const createGearDict = (
     if (!item) return;
 
     const gear = createGear(item);
-    result[key] = gear;
+
+    if (i === slotnum) {
+      result.gx = gear;
+    } else {
+      result[key] = gear;
+    }
   });
 
   return result;
@@ -110,9 +116,9 @@ const createSlotSizeDict = (input: number[]): Dict<SlotSizeKey, number> => {
 };
 
 const createShip = (input: JorShipState): ShipState => {
-  const gears = input.equipments && createGearDict(input.equipments);
-  const slots = input.slots && createSlotSizeDict(input.slots);
-  const { increased } = input;
+  const { equipments, slots, increased } = input;
+  const gears = equipments && createGearDict(equipments, slots?.length);
+  const slotSizeDict = slots && createSlotSizeDict(slots);
 
   const result: ShipState = {
     ship_id: input.masterId,
@@ -129,7 +135,7 @@ const createShip = (input: JorShipState): ShipState => {
     max_hp_mod: increased?.hp,
     torpedo_mod: increased?.torpedo,
     ...gears,
-    ...slots,
+    ...slotSizeDict,
   };
 
   return result;
