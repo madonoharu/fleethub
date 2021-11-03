@@ -10,6 +10,11 @@ const config = {
   i18n,
   localePath: "./public/locales",
 
+  // https://github.com/vercel/next.js/issues/30425
+  experimental: {
+    esmExternals: false,
+  },
+
   webpack: (config, { isServer }) => {
     config.experiments.asyncWebAssembly = true;
     config.output.webassemblyModuleFilename =
