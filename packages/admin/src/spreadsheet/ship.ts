@@ -199,7 +199,7 @@ export const createShips = (
     }
 
     if (isPlayerShip(mst)) {
-      const { api_aftershipid, api_afterlv, api_tais } = mst;
+      const { api_aftershipid, api_afterlv } = mst;
       const ship: MasterShip = {
         speed_group: getDefaultSpeedGroup(base),
         ...base,
@@ -209,7 +209,6 @@ export const createShips = (
         torpedo: mst.api_raig,
         anti_air: mst.api_tyku,
         armor: mst.api_souk,
-        asw: api_tais ? [api_tais[0], api_tais[0]] : base.asw,
         luck: mst.api_luck,
         range: mst.api_leng,
 
