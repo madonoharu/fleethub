@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import { Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
 import React from "react";
@@ -11,20 +12,24 @@ import {
   ClearButton,
   InfoButton,
   UpdateButton,
+  withIconButton,
 } from "../../molecules";
 import LevelButton from "./LevelButton";
 
-type Props = {
+const BusinessCenterButton = withIconButton(BusinessCenterIcon);
+
+type ShipHeaderProps = {
   ship: Ship;
   disableHeaderAction?: boolean;
   onUpdate?: (changes: Partial<ShipEntity>) => void;
   onEditClick?: () => void;
   onDetailClick?: () => void;
   onReselect?: () => void;
+  onPreset?: () => void;
   onRemove?: () => void;
 };
 
-const ShipHeader: React.FCX<Props> = ({
+const ShipHeader: React.FCX<ShipHeaderProps> = ({
   className,
   ship,
   disableHeaderAction,
@@ -32,9 +37,11 @@ const ShipHeader: React.FCX<Props> = ({
   onEditClick,
   onDetailClick,
   onReselect,
+  onPreset,
   onRemove,
 }) => {
   const { t } = useTranslation(["ships", "common"]);
+  const { ship_id, name } = ship;
 
   return (
     <div className={className}>
@@ -44,7 +51,7 @@ const ShipHeader: React.FCX<Props> = ({
       />
 
       <Typography css={{ marginRight: "auto" }} noWrap variant="body2">
-        {t(`ships:${ship.ship_id}`, ship.name)}
+        {t(`ships:${ship_id}`, name)}
       </Typography>
 
       {!disableHeaderAction && (
@@ -63,6 +70,11 @@ const ShipHeader: React.FCX<Props> = ({
             title={t("common:Change")}
             size="tiny"
             onClick={onReselect}
+          />
+          <BusinessCenterButton
+            title={t("common:Preset")}
+            size="tiny"
+            onClick={onPreset}
           />
           <ClearButton
             title={t("common:Remove")}

@@ -1,16 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { EquipmentBonuses } from "equipment-bonus";
 import { Gear, GearCategory } from "fleethub-core";
-import React, { useState } from "react";
+import React from "react";
 
-import { Flexbox } from "../../atoms";
-import { SearchInput } from "../../organisms";
 import FilterBar from "./FilterBar";
-import GearSearchResult from "./GearSearchResult";
 import GearTypeContainer from "./GearTypeContainer";
 import { idComparer } from "./comparers";
 import { getFilter, getVisibleCategories } from "./filters";
-import searchGears from "./searchGears";
 import { useGearListState } from "./useGearListState";
 
 const createTypeGearEntries = (gears: Gear[]) => {
@@ -38,20 +34,19 @@ const getDefaultFilterKey = (keys: (GearCategory | "All")[]) => {
 };
 
 type GearListProps = {
+  gears: Gear[];
   canEquip?: (gear: Gear) => boolean;
   onSelect?: (gear: Gear) => void;
   getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
 };
 
 const GearList: React.FC<GearListProps> = ({
+  gears,
   canEquip,
   onSelect,
   getNextEbonuses,
 }) => {
-  const { gears, abyssal, category, setAbyssal, setCategory } =
-    useGearListState();
-
-  const [searchValue, setSearchValue] = useState("");
+  const { abyssal, category, setAbyssal, setCategory } = useGearListState();
 
   const handleSelect = (gear: Gear) => onSelect?.(gear);
 
@@ -76,22 +71,8 @@ const GearList: React.FC<GearListProps> = ({
 
   const entries = createTypeGearEntries(visibleGears);
 
-  const searchResult = searchValue && searchGears(equippableGears, searchValue);
-
   return (
     <div>
-      <Flexbox>
-        <SearchInput
-          value={searchValue}
-          onChange={setSearchValue}
-          hint={
-            <>
-              <p>id検索もできます</p>
-              <p>&quot;id308&quot; → 5inch単装砲 Mk.30改+GFCS Mk.37</p>
-            </>
-          }
-        />
-      </Flexbox>
       <FilterBar
         visibleCategories={visibleCategories}
         abyssal={abyssal}
@@ -99,19 +80,11 @@ const GearList: React.FC<GearListProps> = ({
         onAbyssalChange={setAbyssal}
         onCategoryChange={setCategory}
       />
-      {searchResult ? (
-        <GearSearchResult
-          searchValue={searchValue}
-          gears={searchResult}
-          onSelect={handleSelect}
-        />
-      ) : (
-        <GearTypeContainer
-          entries={entries}
-          onSelect={handleSelect}
-          getNextEbonuses={getNextEbonuses}
-        />
-      )}
+      <GearTypeContainer
+        entries={entries}
+        onSelect={handleSelect}
+        getNextEbonuses={getNextEbonuses}
+      />
     </div>
   );
 };

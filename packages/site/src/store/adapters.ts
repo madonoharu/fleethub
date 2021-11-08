@@ -1,6 +1,7 @@
 import { createEntityAdapter } from "@reduxjs/toolkit";
 import { DefaultRootState } from "react-redux";
 import {
+  PresetEntity,
   AirSquadronEntity,
   FileEntity,
   FleetEntity,
@@ -40,4 +41,9 @@ export const filesSelectors = filesAdapter.getSelectors(
 export const stepsAdapter = createEntityAdapter<StepEntity>();
 export const stepsSelectors = stepsAdapter.getSelectors(
   (root: DefaultRootState) => root.present.steps
+);
+
+export const presetsAdapter = createEntityAdapter<PresetEntity>();
+export const presetsSelectors = presetsAdapter.getSelectors(
+  (root: DefaultRootState) => root.present.presets
 );
