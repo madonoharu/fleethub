@@ -3,13 +3,14 @@ import {
   Checkbox as MuiCheckbox,
   CheckboxProps as MuiCheckboxProps,
   FormControlLabel,
+  FormControlLabelProps,
 } from "@mui/material";
 import React from "react";
 
 type CheckboxProps = {
   checked?: boolean;
   onChange?: (value: boolean) => void;
-  label?: React.ReactNode;
+  label?: FormControlLabelProps["label"];
 } & Pick<MuiCheckboxProps, "size" | "color">;
 
 const Checkbox: React.FCX<CheckboxProps> = ({

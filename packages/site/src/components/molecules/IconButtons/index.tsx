@@ -2,6 +2,7 @@
 import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import BuildIcon from "@mui/icons-material/Build";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import CachedIcon from "@mui/icons-material/Cached";
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
@@ -12,7 +13,6 @@ import InfoIcon from "@mui/icons-material/Info";
 import LinkIcon from "@mui/icons-material/Link";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import RemoveIcon from "@mui/icons-material/Remove";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import ShareIcon from "@mui/icons-material/Share";
@@ -23,8 +23,6 @@ import { KctoolsIcon } from "../../atoms";
 import { withIconButton } from "./withIconButton";
 
 export const AddButton = withIconButton(AddIcon);
-export const IncreaseButton = AddButton;
-export const DecreaseButton = withIconButton(RemoveIcon);
 export const CopyButton = withIconButton(FileCopyIcon);
 export const CloseButton = withIconButton(CloseIcon);
 export const ClearButton = withIconButton(ClearIcon);
@@ -40,6 +38,7 @@ export const OpenInNewButton = withIconButton(OpenInNewIcon);
 export const ImportButton = withIconButton(SaveAltIcon);
 export const StarButton = withIconButton(StarIcon);
 export const BuildButton = withIconButton(BuildIcon);
+export const BusinessCenterButton = withIconButton(BusinessCenterIcon);
 
 export const TweetButton = styled(withIconButton(TwitterIcon))`
   color: #3ba9ee;
