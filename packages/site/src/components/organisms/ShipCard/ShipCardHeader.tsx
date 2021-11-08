@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import { Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
 import React from "react";
@@ -12,11 +11,9 @@ import {
   ClearButton,
   InfoButton,
   UpdateButton,
-  withIconButton,
+  BusinessCenterButton,
 } from "../../molecules";
 import LevelButton from "./LevelButton";
-
-const BusinessCenterButton = withIconButton(BusinessCenterIcon);
 
 type ShipHeaderProps = {
   ship: Ship;

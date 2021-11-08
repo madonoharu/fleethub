@@ -6,11 +6,13 @@ import { AirSquadron, AirSquadronMode } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 import { shallowEqual, useDispatch } from "react-redux";
+import { useModal } from "../../../hooks";
 
 import { AirSquadronEntity, airSquadronsSlice } from "../../../store";
 import { Flexbox, LabeledValue } from "../../atoms";
-import { SelectedMenu } from "../../molecules";
+import { BusinessCenterButton, SelectedMenu } from "../../molecules";
 import GearSlot from "../GearSlot";
+import PresetMenu from "../PresetMenu";
 
 const AIR_SQUADRON_MODES: AirSquadronMode[] = ["Sortie", "AirDefense"];
 
@@ -43,14 +45,19 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
   ({ className, label, airSquadron }, ref) => {
     const { id } = airSquadron;
     const { t } = useTranslation("common");
+    const PresetModal = useModal();
     const actions = useAirSquadronActions(id);
 
     return (
       <Paper ref={ref} className={className}>
         <Flexbox>
           <Typography variant="subtitle2">{label}</Typography>
+          <BusinessCenterButton
+            sx={{ ml: "auto" }}
+            title={t("Preset")}
+            onClick={PresetModal.show}
+          />
           <SelectedMenu
-            css={{ marginLeft: "auto" }}
             options={AIR_SQUADRON_MODES}
             value={airSquadron.mode}
             getOptionLabel={t}
@@ -74,27 +81,29 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
           />
         </Flexbox>
 
-        <div>
-          {GEAR_KEYS.filter((_, i) => i < 4).map((key, i) => {
-            const gear = airSquadron.get_gear(key);
-            const ss = airSquadron.get_slot_size(i);
-            const max = airSquadron.get_max_slot_size(i);
+        {GEAR_KEYS.filter((_, i) => i < 4).map((key, i) => {
+          const gear = airSquadron.get_gear(key);
+          const ss = airSquadron.get_slot_size(i);
+          const max = airSquadron.get_max_slot_size(i);
 
-            return (
-              <GearSlot
-                key={key}
-                gear={gear}
-                slotSize={ss}
-                maxSlotSize={max}
-                position={{ tag: "airSquadron", id, key }}
-                equippable={gear && airSquadron.can_equip(gear)}
-                onSlotSizeChange={(value) => {
-                  actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
-                }}
-              />
-            );
-          })}
-        </div>
+          return (
+            <GearSlot
+              key={key}
+              gear={gear}
+              slotSize={ss}
+              maxSlotSize={max}
+              position={{ tag: "airSquadron", id, key }}
+              equippable={gear && airSquadron.can_equip(gear)}
+              onSlotSizeChange={(value) => {
+                actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
+              }}
+            />
+          );
+        })}
+
+        <PresetModal>
+          <PresetMenu position={{ tag: "airSquadron", id }} />
+        </PresetModal>
       </Paper>
     );
   }
@@ -107,6 +116,9 @@ const Memoized = React.memo(
 );
 
 export default styled(Memoized)`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   padding: 8px 8px 24px;
   min-width: 160px;
 `;
