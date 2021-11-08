@@ -1,30 +1,31 @@
 /** @jsxImportSource @emotion/react */
-import createCache from "@emotion/cache";
-import { CacheProvider } from "@emotion/react";
+import { CacheProvider, EmotionCache } from "@emotion/react";
 import { NextComponentType } from "next";
 import { appWithTranslation } from "next-i18next";
 import { AppContext, AppInitialProps, AppProps } from "next/app";
 import React from "react";
 
-import { ThemeProvider } from "../styles";
+import { createEmotionCache, ThemeProvider } from "../styles";
 
-export const cache = createCache({ key: "css" });
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
 
-const MyApp: NextComponentType<AppContext, AppInitialProps, AppProps> = ({
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+const MyApp: NextComponentType<AppContext, AppInitialProps, MyAppProps> = ({
   Component,
   pageProps,
+  emotionCache = clientSideEmotionCache,
 }) => {
-  try {
-    return (
-      <CacheProvider value={cache}>
-        <ThemeProvider>
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </CacheProvider>
-    );
-  } catch (err) {
-    return null;
-  }
+  return (
+    <CacheProvider value={emotionCache}>
+      <ThemeProvider>
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </CacheProvider>
+  );
 };
 
 export default appWithTranslation(MyApp);
