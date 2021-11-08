@@ -16,6 +16,7 @@ import {
   MoraleStateIcon,
 } from "../../atoms";
 import GearSlot from "../GearSlot";
+import PresetMenu from "../PresetMenu";
 import ShipBanner from "../ShipBanner";
 import ShipDetails from "../ShipDetails";
 import ShipCardHeader from "./ShipCardHeader";
@@ -68,10 +69,11 @@ const ShipCard: React.FCX<ShipCardProps> = ({
   disableHeaderAction,
 }) => {
   const { id } = ship;
-  const actions = useShipActions(id);
   const { t } = useTranslation("common");
+  const actions = useShipActions(id);
   const EditModal = useModal();
   const DetailModal = useModal();
+  const PresetModal = useModal();
 
   const damageState = ship.damage_state() as DamageState;
   const moraleState = ship.morale_state() as MoraleState;
@@ -93,6 +95,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
         onEditClick={EditModal.show}
         onDetailClick={DetailModal.show}
         onReselect={actions.reselect}
+        onPreset={PresetModal.show}
         onRemove={actions.remove}
         disableHeaderAction={disableHeaderAction}
       />
@@ -164,6 +167,10 @@ const ShipCard: React.FCX<ShipCardProps> = ({
       <DetailModal full>
         <ShipDetails ship={ship} org={org} />
       </DetailModal>
+
+      <PresetModal>
+        <PresetMenu position={{ tag: "ship", id }} onEquip={PresetModal.hide} />
+      </PresetModal>
     </Paper>
   );
 };

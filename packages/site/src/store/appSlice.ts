@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { GkcoiTheme } from "../utils";
 
-import { createPlan, importEntities } from "./entities";
+import { createPlan, importFile } from "./entities";
 
 type AppState = {
   fileId?: string;
@@ -42,7 +42,7 @@ export const appSlice = createSlice({
 
   extraReducers: (bapplder) => {
     bapplder.addMatcher(
-      isAnyOf(createPlan, importEntities),
+      isAnyOf(createPlan, importFile),
       (state, { payload }) => {
         state.fileId = payload.fileId;
       }

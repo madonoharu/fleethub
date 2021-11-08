@@ -2,15 +2,8 @@ import { nonNullable } from "@fh/utils";
 import { createSlice, isAnyOf, nanoid, PayloadAction } from "@reduxjs/toolkit";
 
 import { filesAdapter } from "./adapters";
-import {
-  isFolder,
-  sweep,
-  setEntities,
-  createPlan,
-  isPlanFile,
-  importEntities,
-  createStep,
-} from "./entities";
+import { sweep, addFile, createPlan, importFile, createStep } from "./entities";
+import { isFolder, isPlanFile } from "./entityHelpers";
 import { FileEntity, FolderEntity } from "./schema";
 
 const initialState = filesAdapter.getInitialState<{
@@ -157,26 +150,23 @@ export const filesSlice = createSlice({
           (file.steps ||= []).push(payload.stepId);
         }
       })
-      .addMatcher(
-        isAnyOf(createPlan, setEntities, importEntities),
-        (state, action) => {
-          const { entities, fileId, to } = action.payload;
+      .addMatcher(isAnyOf(createPlan, addFile, importFile), (state, action) => {
+        const { entities, fileId, to } = action.payload;
 
-          if (!entities.files) return;
+        if (!entities.files) return;
 
-          insert(state, fileId, to);
-          filesAdapter.addMany(state, entities.files);
+        insert(state, fileId, to);
+        filesAdapter.addMany(state, entities.files);
 
-          if (action.type === createPlan.type) {
-            const mainFile = state.entities[fileId];
-            if (mainFile && mainFile.name === "") {
-              const count = Object.values(state.entities).filter(
-                isPlanFile
-              ).length;
-              mainFile.name = `${count}`;
-            }
+        if (action.type === createPlan.type) {
+          const mainFile = state.entities[fileId];
+          if (mainFile && mainFile.name === "") {
+            const count = Object.values(state.entities).filter(
+              isPlanFile
+            ).length;
+            mainFile.name = `${count}`;
           }
         }
-      );
+      });
   },
 });
