@@ -1,10 +1,7 @@
-import {
-  createAction,
-  createSlice,
-  nanoid,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-import { GearCategory, GearState } from "fleethub-core";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GearCategory } from "fleethub-core";
+
+import { equip } from "./entities";
 import { GearPosition } from "./gearsSlice";
 
 export type GearCategoryFilter = GearCategory | "All";
@@ -22,13 +19,6 @@ const initialState: GearSelectState = {
   open: false,
   category: "All",
 };
-
-export const createGear = createAction(
-  "entities/createGear",
-  (position: GearPosition, state: GearState) => ({
-    payload: { position, gear: { ...state, id: nanoid() } },
-  })
-);
 
 const hide = (state: GearSelectState) => {
   state.open = false;
@@ -56,5 +46,5 @@ export const gearSelectSlice = createSlice({
     hide,
   },
 
-  extraReducers: (builder) => builder.addCase(createGear, hide),
+  extraReducers: (builder) => builder.addCase(equip, hide),
 });

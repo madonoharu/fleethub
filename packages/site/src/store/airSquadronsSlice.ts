@@ -1,7 +1,6 @@
 import { createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { airSquadronsAdapter } from "./adapters";
-import { isEntitiesAction, swapGearPosition, sweep } from "./entities";
-import { createGear } from "./gearSelectSlice";
+import { equip, isEntitiesAction, swapGearPosition, sweep } from "./entities";
 import { GearPosition } from "./gearsSlice";
 import { AirSquadronEntity } from "./schema";
 
@@ -46,9 +45,10 @@ export const airSquadronsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
-      .addCase(createGear, (state, { payload }) => {
-        setGearId(state, payload.position, payload.gear.id);
+      .addCase(equip, (state, { payload }) => {
+        if (payload.tag === "airSquadron") {
+          airSquadronsAdapter.updateOne(state, payload);
+        }
       })
       .addCase(swapGearPosition, (state, { payload }) => {
         const { drag, drop } = payload;
