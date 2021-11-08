@@ -9,7 +9,7 @@ import { useFhCore, useSnackbar } from "../../../hooks";
 import {
   appSlice,
   createPlan,
-  importEntities,
+  importFile,
   parseUrl,
   selectAppState,
 } from "../../../store";
@@ -63,7 +63,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
       const parsed = await parseUrl(masterData, url);
 
       if (parsed) {
-        dispatch(importEntities({ ...parsed, to }));
+        dispatch(importFile({ ...parsed, to }));
         onClose?.();
       } else {
         Snackbar.show({ message: "失敗しました", severity: "error" });

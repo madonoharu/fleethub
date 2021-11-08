@@ -20,9 +20,7 @@ import StarIcon from "@mui/icons-material/Star";
 import TwitterIcon from "@mui/icons-material/Twitter";
 
 import { KctoolsIcon } from "../../atoms";
-import withIconButton from "./withIconButton";
-
-export { withIconButton };
+import { withIconButton } from "./withIconButton";
 
 export const AddButton = withIconButton(AddIcon);
 export const IncreaseButton = AddButton;
@@ -51,3 +49,5 @@ export const KctoolsButton = withIconButton(KctoolsIcon);
 KctoolsButton.defaultProps = {
   title: "制空権シミュレータで開く",
 };
+
+export * from "./withIconButton";

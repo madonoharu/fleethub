@@ -18,7 +18,7 @@ export interface WithIconButtonProps
   tooltipProps?: Omit<TooltipProps, "title">;
 }
 
-const withIconButton = (WrappedIcon: React.FC) => {
+export const withIconButton = (WrappedIcon: React.FC) => {
   const WithIconButton: React.FC<WithIconButtonProps> = ({
     title,
     label,
@@ -54,5 +54,3 @@ const withIconButton = (WrappedIcon: React.FC) => {
 
   return styled(WithIconButton)``;
 };
-
-export default withIconButton;

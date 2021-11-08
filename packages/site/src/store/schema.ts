@@ -1,6 +1,7 @@
 import {
   AirSquadronKey,
   AIR_SQUADRON_KEYS,
+  Dict,
   FhEntity,
   FleetKey,
   FLEET_KEYS,
@@ -84,6 +85,30 @@ export type PlanFileEntity = FileEntityBase<
 export type FileEntity = FolderEntity | PlanFileEntity;
 export type FileType = FileEntity["type"];
 
+export type PresetEntity = {
+  id: string;
+  name: string;
+} & Dict<GearKey, string>;
+
+export type EntityTypeMap = {
+  gears: GearEntity;
+  ships: ShipEntity;
+  fleets: FleetEntity;
+  airSquadrons: AirSquadronEntity;
+  orgs: OrgEntity;
+  steps: StepEntity;
+  files: FileEntity;
+  presets: PresetEntity;
+};
+
+export type NormalizedEntities = {
+  [K in keyof EntityTypeMap]?: Record<string, EntityTypeMap[K]> | undefined;
+};
+
+export type NormalizedDictionaries = {
+  [K in keyof EntityTypeMap]?: Dictionary<EntityTypeMap[K]> | undefined;
+};
+
 const gear = new schema.Entity<GearEntity>("gears");
 
 const ship = new schema.Entity<ShipEntity>(
@@ -134,25 +159,6 @@ const setIdToAirSquadron = (p: AirSquadronState) =>
 const setIdToOrg = (p: OrgState) => {
   setIdBy(p, FLEET_KEYS, setIdToFleet);
   setIdBy(p, AIR_SQUADRON_KEYS, setIdToAirSquadron);
-};
-
-export type NormalizedEntities = {
-  gears?: Record<string, GearEntity> | undefined;
-  ships?: Record<string, ShipEntity> | undefined;
-  fleets?: Record<string, FleetEntity> | undefined;
-  airSquadrons?: Record<string, AirSquadronEntity> | undefined;
-  orgs?: Record<string, OrgEntity> | undefined;
-  steps?: Record<string, StepEntity> | undefined;
-  files?: Record<string, FileEntity> | undefined;
-};
-
-export type NormalizedDictionaries = {
-  gears?: Dictionary<GearEntity> | undefined;
-  ships?: Dictionary<ShipEntity> | undefined;
-  fleets?: Dictionary<FleetEntity> | undefined;
-  airSquadrons?: Dictionary<AirSquadronEntity> | undefined;
-  orgs?: Dictionary<OrgEntity> | undefined;
-  files?: Dictionary<FileEntity> | undefined;
 };
 
 export const normalizeOrgState = (

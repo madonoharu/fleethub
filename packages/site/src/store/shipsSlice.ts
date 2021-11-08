@@ -7,8 +7,8 @@ import {
   isEntitiesAction,
   swapGearPosition,
   sweep,
+  equip,
 } from "./entities";
-import { createGear } from "./gearSelectSlice";
 import { GearPosition } from "./gearsSlice";
 import { exclude } from "./matchers";
 import { ShipEntity } from "./schema";
@@ -52,8 +52,10 @@ export const shipsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createGear, (state, { payload }) => {
-        setGearId(state, payload.position, payload.gear.id);
+      .addCase(equip, (state, { payload }) => {
+        if (payload.tag === "ship") {
+          shipsAdapter.updateOne(state, payload);
+        }
       })
       .addCase(swapGearPosition, (state, { payload }) => {
         const { drag, drop } = payload;

@@ -7,7 +7,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { ActionCreators } from "redux-undo";
 
 import { createStore } from "./createStore";
-import { sweepEntities, parseUrl, importEntities } from "./entities";
+import { sweepEntities, parseUrl, importFile } from "./entities";
 
 type StoreProviderProps = {
   masterData: MasterData;
@@ -36,7 +36,7 @@ const StoreProvider: React.FC<StoreProviderProps> = ({
     batch(() => {
       store.dispatch(sweepEntities(true));
       if (parsed) {
-        store.dispatch(importEntities({ ...parsed, to: "temp" }));
+        store.dispatch(importFile({ ...parsed, to: "temp" }));
       }
       store.dispatch(ActionCreators.clearHistory());
     });
