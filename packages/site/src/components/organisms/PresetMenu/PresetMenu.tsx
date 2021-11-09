@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { GEAR_KEYS, nonNullable } from "@fh/utils";
-import { Button, DialogActions, Divider } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import { AppThunk, nanoid } from "@reduxjs/toolkit";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useFhCore, useShip } from "../../../hooks";
@@ -20,6 +20,7 @@ import {
   ShipEntity,
   shipsSelectors,
 } from "../../../store";
+import { Checkbox, Flexbox } from "../../atoms";
 import PresetList from "./PresetList";
 
 const addPresetByPosition =
@@ -73,6 +74,7 @@ type PresetMenuProps = {
 
 const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
   const { core, module } = useFhCore();
+  const [allVisible, setAllVisible] = useState(false);
   const presets = useSelector(selectPresets);
   const dispatch = useDispatch();
 
@@ -143,13 +145,28 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
 
   return (
     <>
-      <PresetList presets={presets} onEquip={handleEquip} canEquip={canEquip} />
-      <Divider sx={{ mt: 1 }} />
-      <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleRegister}>
+      <Flexbox>
+        <Button
+          sx={{ mr: "auto" }}
+          variant="contained"
+          color="primary"
+          onClick={handleRegister}
+        >
           現在の装備をプリセットに登録
         </Button>
-      </DialogActions>
+        <Checkbox
+          label="装備不可プリセットも表示する"
+          checked={allVisible}
+          onChange={setAllVisible}
+        />
+      </Flexbox>
+      <Divider sx={{ my: 1 }} />
+      <PresetList
+        presets={presets}
+        onEquip={handleEquip}
+        canEquip={canEquip}
+        allVisible={allVisible}
+      />
     </>
   );
 };
