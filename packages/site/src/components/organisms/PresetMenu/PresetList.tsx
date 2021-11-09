@@ -16,6 +16,7 @@ const StyledButton = styled(Button)`
 type PresetListItemProps = {
   preset: PresetState;
   selected?: boolean;
+  equippable?: boolean;
   onSelect: () => void;
   onEquip: (preset: PresetState) => void;
 };
@@ -23,6 +24,7 @@ type PresetListItemProps = {
 const PresetListItem: React.FCX<PresetListItemProps> = ({
   preset,
   selected,
+  equippable,
   onSelect,
   onEquip,
 }) => {
@@ -30,17 +32,19 @@ const PresetListItem: React.FCX<PresetListItemProps> = ({
     onEquip(preset);
   };
 
+  const color = equippable === false ? "error" : "primary";
+
   return (
     <Flexbox gap={1}>
       <StyledButton
-        variant={selected ? "outlined" : "outlined"}
-        color={selected ? "primary" : "inherit"}
+        variant={selected ? "contained" : "outlined"}
+        color={selected ? color : "inherit"}
         onClick={onSelect}
       >
         {preset.name || ""}
       </StyledButton>
 
-      <Button variant="contained" color="primary" onClick={handleEquip}>
+      <Button variant="contained" color={color} onClick={handleEquip}>
         <CheckIcon />
       </Button>
     </Flexbox>
@@ -50,25 +54,33 @@ const PresetListItem: React.FCX<PresetListItemProps> = ({
 type PresetListProps = {
   presets: PresetState[];
   onEquip: (preset: PresetState) => void;
+  canEquip?: (preset: PresetState) => boolean;
+  allVisible?: boolean;
 };
 
 const PresetList: React.FCX<PresetListProps> = ({
   className,
   presets,
   onEquip,
+  canEquip,
+  allVisible,
 }) => {
   const [index, setIndex] = React.useState(0);
 
-  const current = presets.at(index);
+  const equippablePresets = canEquip ? presets.filter(canEquip) : presets;
+  const visiblePresets = allVisible ? presets : equippablePresets;
+
+  const current = visiblePresets.at(index);
 
   return (
     <div className={className}>
       <Stack overflow="scroll" height={400} gap={1}>
-        {presets.map((item, i) => (
+        {visiblePresets.map((item, i) => (
           <PresetListItem
             key={item.id}
             preset={item}
             selected={index === i}
+            equippable={equippablePresets.includes(item)}
             onSelect={() => setIndex(i)}
             onEquip={onEquip}
           />

@@ -6,6 +6,7 @@ import {
   isAnyOf,
   nanoid,
 } from "@reduxjs/toolkit";
+import equal from "fast-deep-equal";
 import {
   AttackPowerModifiers,
   MasterData,
@@ -411,9 +412,7 @@ export type PresetState = Omit<PresetEntity, GearKey> &
   Dict<GearKey, GearEntity>;
 
 export const selectPresetState = createCachedSelector(
-  (root: DefaultRootState) => root,
-  (root: DefaultRootState, id: string) => id,
-  (root, id) => {
+  (root: DefaultRootState, id: string) => {
     const entity = presetsSelectors.selectById(root, id);
 
     if (!entity) {
@@ -435,9 +434,14 @@ export const selectPresetState = createCachedSelector(
     });
 
     return result;
+  },
+  (result) => {
+    console.log("selectPresetState");
+    return result;
   }
 )({
   keySelector: (root, id) => id,
+  selectorCreator: createShallowEqualSelector,
 });
 
 export const selectPresets = createShallowEqualSelector(
@@ -447,75 +451,6 @@ export const selectPresets = createShallowEqualSelector(
   },
   (presets) => presets
 );
-
-export const equipByPreset =
-  (presetId: string): AppThunk =>
-  (dispatch, getState) => {
-    const root = getState();
-    const presetState = selectPresetState(root, presetId);
-    const gearSelectState = root.present.gearSelect;
-    const position = gearSelectState.position;
-
-    if (!presetState || !position || !gearSelectState.create) {
-      return;
-    }
-
-    const changes: EquipPayload["changes"] = {};
-
-    const gears = GEAR_KEYS.map((key) => {
-      const gear = presetState[key];
-      const newGear = gear && { ...gear, id: nanoid() };
-      changes[key] = newGear?.id;
-      return newGear;
-    }).filter(nonNullable);
-
-    const payload: EquipPayload = {
-      tag: position.tag,
-      id: position.id,
-      changes,
-      entities: { gears },
-    };
-
-    dispatch(equip(payload));
-  };
-
-export const addPresetByShip =
-  (shipEntityId: string, name: string): AppThunk =>
-  (dispatch, getState) => {
-    const root = getState();
-
-    const shipEntity = shipsSelectors.selectById(root, shipEntityId);
-
-    if (!shipEntity) {
-      return;
-    }
-
-    const preset: PresetEntity = {
-      id: nanoid(),
-      name,
-    };
-
-    const gears = GEAR_KEYS.map((key) => {
-      const gearEntityId = shipEntity[key];
-      const gear =
-        gearEntityId && gearsSelectors.selectById(root, gearEntityId);
-
-      if (gear) {
-        const id = nanoid();
-        preset[key] = id;
-        return { ...gear, id };
-      } else {
-        return;
-      }
-    }).filter(nonNullable);
-
-    const entities = {
-      presets: [preset],
-      gears,
-    };
-
-    dispatch(addEntities({ entities }));
-  };
 
 export const isEntitiesAction = isAnyOf(
   createShip,

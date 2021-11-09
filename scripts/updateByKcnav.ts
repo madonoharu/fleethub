@@ -3,7 +3,6 @@ import "dotenv/config";
 import { storage, getGoogleSpreadsheet } from "@fh/admin/src";
 import { updateRows } from "@fh/admin/src/utils";
 import { nonNullable } from "@fh/utils/src";
-import { SaveOptions } from "@google-cloud/storage";
 import Signal from "signale";
 
 import {
@@ -13,12 +12,6 @@ import {
   KcnavEnemyShip,
   KcnavMap,
 } from "./maps";
-
-const SAVE_OPTIONS: SaveOptions = {
-  metadata: {
-    cacheControl: "public, max-age=60",
-  },
-};
 
 const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
   const record: Record<number, KcnavEnemyShip> = {};
@@ -97,7 +90,11 @@ const updateShips = async (maps: KcnavMap[]) => {
 const updateMaps = async (kcnavMaps: KcnavMap[]) => {
   const promises = kcnavMaps.map((kcnavMap) => {
     const map = formatKcnavMap(kcnavMap);
-    return storage.updateJson(`maps/${map.id}.json`, () => map, SAVE_OPTIONS);
+
+    return storage.updateJson(`maps/${map.id}.json`, () => map, {
+      public: true,
+      immutable: true,
+    });
   });
 
   await Promise.all(promises);
@@ -107,8 +104,6 @@ const HOT_MAPS: number[] = [521];
 
 const updateByKcnav = async () => {
   const ids = await getAllMapIds();
-  await storage.writeJson(`maps/all.json`, ids, SAVE_OPTIONS);
-
   const kcnavMaps: KcnavMap[] = [];
 
   for (const id of ids) {
@@ -123,6 +118,21 @@ const updateByKcnav = async () => {
   if (kcnavMaps.length > 0) {
     await Promise.all([updateMaps(kcnavMaps), updateShips(kcnavMaps)]);
   }
+
+  const entries = await Promise.all(
+    ids.map(async (id) => {
+      const metadata = await storage.getMetadata(`maps/${id}.json`);
+      const generation = metadata["generation"] as string;
+      return [id, generation] as const;
+    })
+  );
+
+  await storage.writeJson(`maps/all.json`, Object.fromEntries(entries), {
+    public: true,
+    metadata: {
+      cacheControl: "public, max-age=60",
+    },
+  });
 };
 
 updateByKcnav().catch((err) => console.log(err));
