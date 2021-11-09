@@ -186,8 +186,6 @@ const styles = {
   swappable,
 };
 
-const theme = { ...muiTheme, colors, styles };
+export const theme = { ...muiTheme, colors, styles };
 
 export type Theme = typeof theme;
-
-export default theme;
