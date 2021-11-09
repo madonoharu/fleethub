@@ -55,7 +55,7 @@ type PresetListProps = {
   presets: PresetState[];
   onEquip: (preset: PresetState) => void;
   canEquip?: (preset: PresetState) => boolean;
-  all?: boolean;
+  allVisible?: boolean;
 };
 
 const PresetList: React.FCX<PresetListProps> = ({
@@ -63,12 +63,12 @@ const PresetList: React.FCX<PresetListProps> = ({
   presets,
   onEquip,
   canEquip,
-  all,
+  allVisible,
 }) => {
   const [index, setIndex] = React.useState(0);
 
   const equippablePresets = canEquip ? presets.filter(canEquip) : presets;
-  const visiblePresets = all ? presets : equippablePresets;
+  const visiblePresets = allVisible ? presets : equippablePresets;
 
   const current = visiblePresets.at(index);
 
