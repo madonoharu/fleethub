@@ -1,7 +1,7 @@
 import { FhMap } from "@fh/utils";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref } from "firebase/storage";
-import { MasterData, OrgState } from "fleethub-core";
+import { MasterData } from "fleethub-core";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",
@@ -14,17 +14,26 @@ const firebaseConfig = {
   measurementId: "G-9F914T0225",
 };
 
+export const GCS_PREFIX_URL =
+  "https://storage.googleapis.com/kcfleethub.appspot.com";
+
 export const firebaseApp = initializeApp(firebaseConfig);
 
 export const fetchMasterData = async (): Promise<MasterData> =>
-  fetch(
-    `https://storage.googleapis.com/kcfleethub.appspot.com/data/master_data.json`
-  ).then((res) => res.json()) as Promise<MasterData>;
+  fetch(`${GCS_PREFIX_URL}/data/master_data.json`).then((res) =>
+    res.json()
+  ) as Promise<MasterData>;
 
 export const fetchMap = (id: number) =>
-  fetch(
-    `https://storage.googleapis.com/kcfleethub.appspot.com/maps/${id}.json`
-  ).then((res) => res.json()) as Promise<FhMap>;
+  fetch(`${GCS_PREFIX_URL}/maps/${id}.json`).then((res) =>
+    res.json()
+  ) as Promise<FhMap>;
+
+export const publicFileExists = (id: string) => {
+  return fetch(`${GCS_PREFIX_URL}/public/${id}.json`, { method: "HEAD" }).then(
+    (res) => res.status === 200
+  );
+};
 
 const storage = getStorage();
 export const publicStorageRef = ref(storage, "public");
@@ -57,17 +66,3 @@ export const shorten = async (url: string, domain: "fleethub") => {
     | { error: { code: number } };
   return json;
 };
-
-type FhFolder = {
-  id: string;
-  type: "folder";
-  children: FhFile[];
-};
-
-type FhPlanFile = {
-  id: string;
-  type: "plan";
-  data: OrgState;
-};
-
-type FhFile = FhPlanFile | FhFolder;
