@@ -97,7 +97,10 @@ const updateShips = async (maps: KcnavMap[]) => {
 const updateMaps = async (kcnavMaps: KcnavMap[]) => {
   const promises = kcnavMaps.map((kcnavMap) => {
     const map = formatKcnavMap(kcnavMap);
-    return storage.updateJson(`maps/${map.id}.json`, () => map, SAVE_OPTIONS);
+    return storage.updateJson(`maps/${map.id}.json`, () => map, {
+      public: true,
+      immutable: true,
+    });
   });
 
   await Promise.all(promises);
@@ -107,6 +110,7 @@ const HOT_MAPS: number[] = [521];
 
 const updateByKcnav = async () => {
   const ids = await getAllMapIds();
+
   await storage.writeJson(`maps/all.json`, ids, SAVE_OPTIONS);
 
   const kcnavMaps: KcnavMap[] = [];

@@ -8,6 +8,8 @@ import { getApp } from "./credentials";
 
 export interface SaveOptions extends GcsSaveOptions {
   brotli?: boolean | undefined;
+  immutable?: boolean | undefined;
+  metadata?: Record<string, string>;
 }
 
 const MASTER_DATA_PATH = "data/master_data.json";
@@ -30,14 +32,24 @@ export const exists = (path: string): Promise<boolean> =>
     .exists()
     .then((res) => res[0]);
 
-export const createBrotliSaveOptions = (options?: SaveOptions) => ({
-  ...options,
-  gzip: false,
-  metadata: {
-    ...options?.metadata,
-    contentEncoding: "br",
-  },
-});
+const createGcsSaveOptions = (options?: SaveOptions): GcsSaveOptions => {
+  const result: SaveOptions = { ...options };
+
+  if (!result.metadata) {
+    result.metadata = {};
+  }
+
+  if (result.immutable) {
+    result.metadata.cacheControl = "public, immutable, max-age=365000000";
+  }
+
+  if (result.brotli) {
+    result.gzip = false;
+    result.metadata.contentEncoding = "br";
+  }
+
+  return result;
+};
 
 export const write = async (
   path: string,
@@ -47,11 +59,10 @@ export const write = async (
   const file = getBucket().file(path);
 
   if (options?.brotli) {
-    options = createBrotliSaveOptions(options);
     data = zlib.brotliCompressSync(data);
   }
 
-  await file.save(data, options);
+  await file.save(data, createGcsSaveOptions(options));
 };
 
 export const writeJson = async <
