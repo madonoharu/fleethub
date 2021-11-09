@@ -1,15 +1,16 @@
-import { promisify } from "util";
 import zlib from "zlib";
-import { SaveOptions } from "@google-cloud/storage";
+import { SaveOptions as GcsSaveOptions } from "@google-cloud/storage";
 import { MasterData } from "fleethub-core";
 import got from "got";
 import isEqual from "lodash/isEqual";
 
 import { getApp } from "./credentials";
 
-const MASTER_DATA_PATH = "data/master_data.json";
+export interface SaveOptions extends GcsSaveOptions {
+  brotli?: boolean | undefined;
+}
 
-const brotliCompress = promisify(zlib.brotliCompress);
+const MASTER_DATA_PATH = "data/master_data.json";
 
 export const getBucket = () => getApp().storage().bucket();
 
@@ -29,12 +30,27 @@ export const exists = (path: string): Promise<boolean> =>
     .exists()
     .then((res) => res[0]);
 
+export const createBrotliSaveOptions = (options?: SaveOptions) => ({
+  ...options,
+  gzip: false,
+  metadata: {
+    ...options?.metadata,
+    contentEncoding: "br",
+  },
+});
+
 export const write = async (
   path: string,
   data: string | Buffer,
   options?: SaveOptions
 ) => {
   const file = getBucket().file(path);
+
+  if (options?.brotli) {
+    options = createBrotliSaveOptions(options);
+    data = zlib.brotliCompressSync(data);
+  }
+
   await file.save(data, options);
 };
 
@@ -46,17 +62,10 @@ export const writeJson = async <
   data: T,
   options?: SaveOptions
 ): Promise<T> => {
-  const str = JSON.stringify(data);
-  const compressed = await brotliCompress(str);
-
-  await write(path, compressed, {
-    ...options,
-    gzip: false,
+  await write(path, JSON.stringify(data), {
     contentType: "application/json",
-    metadata: {
-      ...options?.metadata,
-      contentEncoding: "br",
-    },
+    brotli: true,
+    ...options,
   });
 
   return data;
