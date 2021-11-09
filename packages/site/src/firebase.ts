@@ -1,4 +1,4 @@
-import { FhMap } from "@fh/utils";
+import { Dict, FhMap } from "@fh/utils";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref } from "firebase/storage";
 import { MasterData } from "fleethub-core";
@@ -24,10 +24,23 @@ export const fetchMasterData = async (): Promise<MasterData> =>
     res.json()
   ) as Promise<MasterData>;
 
-export const fetchMap = (id: number) =>
-  fetch(`${GCS_PREFIX_URL}/maps/${id}.json`).then((res) =>
+export type MapVersion = Dict<string, string>;
+
+export const fetchMapVersion = (): Promise<MapVersion> => {
+  return fetch(`${GCS_PREFIX_URL}/maps/all.json`).then((res) =>
     res.json()
+  ) as Promise<MapVersion>;
+};
+
+export const fetchMap = async (id: number) => {
+  const version = await fetchMapVersion();
+  const generation = version[id] || "";
+  const params = new URLSearchParams({ generation });
+
+  return fetch(`${GCS_PREFIX_URL}/maps/${id}.json?${params.toString()}`).then(
+    (res) => res.json()
   ) as Promise<FhMap>;
+};
 
 export const publicFileExists = (id: string) => {
   return fetch(`${GCS_PREFIX_URL}/public/${id}.json`, { method: "HEAD" }).then(

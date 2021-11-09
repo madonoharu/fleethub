@@ -32,6 +32,13 @@ export const exists = (path: string): Promise<boolean> =>
     .exists()
     .then((res) => res[0]);
 
+export const getMetadata = async (
+  path: string
+): Promise<Record<string, unknown>> => {
+  const res = await getBucket().file(path).getMetadata();
+  return res[0] as Record<string, unknown>;
+};
+
 const createGcsSaveOptions = (options?: SaveOptions): GcsSaveOptions => {
   const result: SaveOptions = { ...options };
 

@@ -6,6 +6,7 @@ import { Button, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import React from "react";
+import { fetchMapVersion, MapVersion } from "../../../firebase";
 
 import { useModal } from "../../../hooks";
 import { Divider } from "../../atoms";
@@ -38,13 +39,14 @@ const AreaList: React.FCX<AreaListProps> = ({ className, areas, onChange }) => {
 };
 
 type AreaMenuProps = {
-  all: number[];
+  all: MapVersion;
   onChange?: (id: number) => void;
 };
 
 const AreaMenu: React.FCX<AreaMenuProps> = ({ className, all, onChange }) => {
-  const normalAreas = all.filter((id) => id < 100);
-  const eventAreas = all.filter((id) => id >= 100);
+  const ids = Object.keys(all).map((id) => Number(id));
+  const normalAreas = ids.filter((id) => id < 100);
+  const eventAreas = ids.filter((id) => id >= 100);
 
   return (
     <Stack
@@ -60,16 +62,13 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, all, onChange }) => {
   );
 };
 
-const fetchAll = () =>
-  fetch(
-    "https://storage.googleapis.com/kcfleethub.appspot.com/maps/all.json"
-  ).then((res) => res.json()) as Promise<number[]>;
-
 const AreaMenuAsync = dynamic(async () => {
-  const all = await fetchAll();
+  const all = await fetchMapVersion();
+
   const component: React.FCX<Omit<AreaMenuProps, "all">> = (props) => (
     <AreaMenu all={all} {...props} />
   );
+
   return component;
 });
 
