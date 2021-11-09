@@ -13,13 +13,9 @@ const publish: NextApiHandler = async (req, res) => {
 
   const { hash, data } = body as { hash: string; data: object };
 
-  const cacheControl = "public, immutable, max-age=365000000";
-
   await storage.writeJson(`public/${hash}.json`, data, {
     public: true,
-    metadata: {
-      cacheControl,
-    },
+    immutable: true,
   });
 
   res.status(StatusCodes.OK).end();
