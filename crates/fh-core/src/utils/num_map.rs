@@ -225,10 +225,6 @@ where
         HashMap::<K, V>::name()
     }
 
-    fn inline(indent: usize) -> String {
-        HashMap::<K, V>::inline(indent)
-    }
-
     fn dependencies() -> Vec<(TypeId, String)> {
         HashMap::<K, V>::dependencies()
     }
