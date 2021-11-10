@@ -1065,8 +1065,8 @@ impl Ship {
         format!("{:X}", self.xxh3)
     }
 
-    pub fn state(&self) -> JsValue {
-        JsValue::from_serde(&self.state).unwrap()
+    pub fn state(&self) -> ShipState {
+        self.state.clone()
     }
 
     #[wasm_bindgen(getter)]
