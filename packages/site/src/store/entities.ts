@@ -6,7 +6,6 @@ import {
   isAnyOf,
   nanoid,
 } from "@reduxjs/toolkit";
-import equal from "fast-deep-equal";
 import {
   AttackPowerModifiers,
   MasterData,
