@@ -47,17 +47,21 @@ impl Org {
     }
 
     pub fn get_sortied_fleet_by_key(&self, key: &str) -> SortiedFleet {
-        let visible_escort = self.is_combined() && matches!(key, "f1" | "f2");
+        let enable_escort = self.is_combined() && matches!(key, "f1" | "f2");
 
-        let main = if visible_escort {
+        let main = if enable_escort {
             &self.f1
         } else {
             self.get_fleet_by_key(key)
         };
 
-        let escort = visible_escort.then(|| &self.f2);
+        let escort = enable_escort.then(|| &self.f2);
 
-        SortiedFleet { main, escort }
+        SortiedFleet {
+            org_type: self.org_type,
+            main,
+            escort,
+        }
     }
 
     pub fn get_fleet_by_role(&self, role: Role) -> &Fleet {
@@ -204,30 +208,20 @@ impl Org {
 
     /// 艦隊対空値
     pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
-        let total = self
-            .get_sortied_fleet_by_key("f1")
-            .ships()
-            .map(|(_, _, ship)| ship.fleet_anti_air())
-            .sum::<i32>() as f64;
-
-        let post_floor = (total * formation_mod).floor() * 2.;
-
-        if self.side().is_player() {
-            post_floor / 1.3
-        } else {
-            post_floor
-        }
+        self.get_sortied_fleet_by_key("f1")
+            .fleet_anti_air(formation_mod)
     }
 
     /// 制空値
     pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
-        let main = self.f1.fighter_power(anti_lbas)?;
+        self.get_sortied_fleet_by_key("f1")
+            .fighter_power(anti_combined, anti_lbas)
+    }
 
-        if self.org_type.is_single() || !anti_combined {
-            Some(main)
-        } else {
-            Some(main + self.f2.fighter_power(anti_lbas)?)
-        }
+    /// マップ索敵
+    pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
+        self.get_sortied_fleet_by_key("f1")
+            .elos(self.hq_level as u8, node_divaricated_factor)
     }
 
     /// 防空時の基地制空値
@@ -283,12 +277,6 @@ impl Org {
             .into_iter()
             .map(|(_, _, ship)| ship.transport_point())
             .sum()
-    }
-
-    /// マップ索敵
-    pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
-        self.get_sortied_fleet_by_key("f1")
-            .elos(self.hq_level as u8, node_divaricated_factor)
     }
 
     pub fn create_warfare_ship_environment(
