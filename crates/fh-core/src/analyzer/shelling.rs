@@ -11,6 +11,7 @@ use crate::{
 #[derive(Debug, Default, Serialize, TS)]
 pub struct DayCutinRateInfo {
     pub observation_term: Option<f64>,
+    #[ts(type = "Array<[DayCutin | null, number | null]>")]
     pub rates: Vec<(Option<DayCutin>, Option<f64>)>,
     pub total_cutin_rate: Option<f64>,
 }
