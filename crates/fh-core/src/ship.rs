@@ -963,7 +963,8 @@ impl Ship {
             return set;
         }
 
-        let torpedo_count = self.gears.count_type(GearType::Torpedo);
+        let torpedo_count = self.gears.count_type(GearType::Torpedo)
+            + self.gears.count_type(GearType::SubmarineTorpedo);
         let main_gun_count = self.gears.count_attr(GearAttr::MainGun);
         let sec_gun_count = self.gears.count_type(GearType::SecondaryGun);
 
@@ -995,7 +996,9 @@ impl Ship {
         let late_model_bow_torpedo_count = self.gears.count_by(|gear| {
             matches!(
                 gear.gear_id,
-                gear_id!("後期型艦首魚雷(6門)") | gear_id!("熟練聴音員+後期型艦首魚雷(6門)")
+                gear_id!("後期型艦首魚雷(6門)")
+                    | gear_id!("熟練聴音員+後期型艦首魚雷(6門)")
+                    | gear_id!("後期型53cm艦首魚雷(8門)")
             )
         });
         let has_submarine_radar = self.gears.has_type(GearType::SubmarineEquipment);
