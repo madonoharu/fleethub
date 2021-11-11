@@ -24,16 +24,16 @@ const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
 }) => {
   const list: TabsProps["list"] = [
     {
-      label: "弾着戦爆発動率",
+      label: "昼戦",
       panel: <DayCutinRateTable org={org} fleetKey={fleetKey} />,
+    },
+    {
+      label: "夜戦",
+      panel: <NightCutinScreen org={org} fleetKey={fleetKey} />,
     },
     {
       label: "触接率",
       panel: <ContactChancePanel org={org} fleetKey={fleetKey} />,
-    },
-    {
-      label: "夜戦CI率",
-      panel: <NightCutinScreen org={org} fleetKey={fleetKey} />,
     },
     { label: "対空", panel: <AntiAirScreen org={org} fleetKey={fleetKey} /> },
     { label: "その他", panel: <MiscScreen org={org} fleetKey={fleetKey} /> },
