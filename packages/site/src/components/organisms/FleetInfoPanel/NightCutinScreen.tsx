@@ -17,6 +17,7 @@ import AttackChip from "../AttackChip";
 import NightSituationForm from "../NightSituationForm";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
+import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
 import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 const StyledLabeledValue = styled(LabeledValue)`
@@ -134,6 +135,8 @@ const NightCutinPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
       </Flexbox>
 
       <NightCutinTable info={info} />
+
+      <FleetCutinAnalysisTable org={org} fleetKey={fleetKey} type="night" />
     </Stack>
   );
 };

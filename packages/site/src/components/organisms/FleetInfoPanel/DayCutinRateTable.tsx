@@ -16,7 +16,7 @@ import { LabeledValue } from "../../atoms";
 import AttackChip from "../AttackChip";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
-import FleetCutinInfoTable from "./FleetCutinAnalysisTable";
+import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
 
 const LeftContainer = styled.div`
   > * {
@@ -120,7 +120,7 @@ const DayCutinRateTable: React.FCX<Props> = ({ className, org, fleetKey }) => {
       {info.escort && (
         <FleetDayAttackRateTable label={t("Escort")} info={info.escort} />
       )}
-      <FleetCutinInfoTable org={org} fleetKey={fleetKey} />
+      <FleetCutinAnalysisTable org={org} fleetKey={fleetKey} type="shelling" />
     </div>
   );
 };
