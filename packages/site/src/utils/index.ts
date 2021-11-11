@@ -1,3 +1,4 @@
+import { round } from "@fh/utils";
 import { shallowEqual, deepEqual } from "fast-equals";
 import { Draft } from "immer";
 import { createSelectorCreator, defaultMemoize } from "reselect";
@@ -16,7 +17,7 @@ export const numstr = (
 ): string => {
   if (v === null || v === undefined) return "";
   if (Number.isInteger(v)) return v.toString();
-  return v.toFixed(fractionDigits);
+  return round(v, fractionDigits).toString();
 };
 
 export const toPercent = (v: number | null | undefined, fractionDigits = 1) => {

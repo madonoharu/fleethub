@@ -15,7 +15,10 @@ pub mod utils;
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
-use analyzer::{OrgAnalyzer, WarfareAnalyzer, WarfareAnalyzerContext, WarfareInfo};
+use analyzer::{
+    FleetCutinAnalysis, FleetCutinAnalyzer, OrgAnalyzer, WarfareAnalyzer, WarfareAnalyzerContext,
+    WarfareInfo,
+};
 use attack::NightSituation;
 use factory::Factory;
 use fleet::Fleet;
@@ -23,7 +26,8 @@ use gear::Gear;
 use org::Org;
 use ship::Ship;
 use types::{
-    AirSquadronState, EBonusFn, FleetState, Formation, GearState, MasterData, OrgState, ShipState,
+    AirSquadronState, EBonusFn, Engagement, FleetState, Formation, GearState, MasterData, OrgState,
+    ShipState,
 };
 
 #[wasm_bindgen(typescript_custom_section)]
@@ -153,5 +157,15 @@ impl FhCore {
     ) -> WarfareInfo {
         let analyzer = WarfareAnalyzer::new(&self.factory.master_data, &params, attacker, target);
         analyzer.analyze()
+    }
+
+    pub fn analyze_fleet_cutin(
+        &self,
+        org: &Org,
+        key: &str,
+        engagement: Engagement,
+    ) -> FleetCutinAnalysis {
+        let sf = org.get_sortied_fleet_by_key(key);
+        FleetCutinAnalyzer::new(&self.factory.master_data, sf, engagement).analyze()
     }
 }

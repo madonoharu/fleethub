@@ -140,13 +140,17 @@ impl<'a> WarfareAnalyzer<'a> {
                     .rates
                     .into_iter()
                     .map(|(cutin, rate)| {
-                        let shelling_ctx = ShellingAttackContext::new(
+                        let sp_def = cutin
+                            .and_then(|cutin| self.master_data.constants.get_day_cutin_def(cutin))
+                            .map(|def| def.into());
+
+                        let attack_ctx = ShellingAttackContext::new(
                             self.master_data,
                             &self.warfare_context,
                             t,
-                            cutin,
+                            sp_def,
                         );
-                        let stats = shelling_ctx
+                        let stats = attack_ctx
                             .attack_params(self.attacker, self.target)
                             .into_stats();
 
@@ -189,16 +193,20 @@ impl<'a> WarfareAnalyzer<'a> {
                     .rates
                     .into_iter()
                     .map(|(cutin, rate)| {
-                        let night_ctx = NightAttackContext::new(
+                        let sp_def = cutin
+                            .and_then(|cutin| self.master_data.constants.get_night_cutin_def(cutin))
+                            .map(|def| def.into());
+
+                        let attack_ctx = NightAttackContext::new(
                             self.master_data,
                             &self.warfare_context,
                             &self.ctx.attacker_env.night_situation,
                             &self.ctx.target_env.night_situation,
                             attack_type,
-                            cutin,
+                            sp_def,
                         );
 
-                        let stats = night_ctx
+                        let stats = attack_ctx
                             .attack_params(self.attacker, self.target)
                             .into_stats();
 
