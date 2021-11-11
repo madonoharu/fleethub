@@ -4,7 +4,7 @@ use ts_rs::TS;
 use crate::{
     attack::{AttackPowerModifiers, AttackPowerParams, HitRateParams},
     ship::Ship,
-    types::{AirState, DayCutin, Engagement, MasterData},
+    types::{AirState, Engagement, MasterData, ShellingSpecialAttack, SpecialAttackDef},
 };
 
 use super::{
@@ -50,10 +50,7 @@ pub struct ShellingAttackContext<'a> {
     pub formation_accuracy_mod: f64,
     pub target_formation_evasion_mod: f64,
 
-    pub cutin: Option<DayCutin>,
-    pub cutin_power_mod: f64,
-    pub cutin_accuracy_mod: f64,
-    pub hits: f64,
+    pub special_attack_def: Option<SpecialAttackDef<ShellingSpecialAttack>>,
 }
 
 const IS_DAY: bool = true;
@@ -63,7 +60,7 @@ impl<'a> ShellingAttackContext<'a> {
         master_data: &MasterData,
         warfare_context: &'a WarfareContext,
         attack_type: ShellingAttackType,
-        cutin: Option<DayCutin>,
+        special_attack_def: Option<SpecialAttackDef<ShellingSpecialAttack>>,
     ) -> Self {
         let attacker_env = &warfare_context.attacker_env;
         let target_env = &warfare_context.target_env;
@@ -86,10 +83,10 @@ impl<'a> ShellingAttackContext<'a> {
             .and_then(|def| def.shelling.evasion_mod)
             .unwrap_or(1.0);
 
-        let cutin_def = cutin.and_then(|cutin| master_data.constants.get_day_cutin_def(cutin));
-        let cutin_power_mod = cutin_def.and_then(|def| def.power_mod).unwrap_or(1.0);
-        let cutin_accuracy_mod = cutin_def.and_then(|def| def.accuracy_mod).unwrap_or(1.0);
-        let hits = cutin_def.map_or(1.0, |def| def.hits as f64);
+        // let cutin_def = cutin.and_then(|cutin| master_data.constants.get_day_cutin_def(cutin));
+        // let cutin_power_mod = cutin_def.and_then(|def| def.power_mod).unwrap_or(1.0);
+        // let cutin_accuracy_mod = cutin_def.and_then(|def| def.accuracy_mod).unwrap_or(1.0);
+        // let hits = cutin_def.map_or(1.0, |def| def.hits as f64);
 
         Self {
             attack_type,
@@ -101,10 +98,7 @@ impl<'a> ShellingAttackContext<'a> {
             formation_power_mod,
             formation_accuracy_mod,
             target_formation_evasion_mod,
-            cutin,
-            cutin_power_mod,
-            cutin_accuracy_mod,
-            hits,
+            special_attack_def,
         }
     }
 
@@ -125,10 +119,17 @@ impl<'a> ShellingAttackContext<'a> {
 
         if self.attack_type == ShellingAttackType::Carrier {
             let anti_inst = target.is_installation();
+            let day_cutin = ctx
+                .special_attack_def
+                .as_ref()
+                .and_then(|def| match def.kind {
+                    ShellingSpecialAttack::DayCutin(cutin) => Some(cutin),
+                    _ => None,
+                });
 
             carrier_power = Some(attacker.carrier_power(anti_inst) as f64);
             carrier_power_ebonus = attacker.ebonuses.carrier_power as f64;
-            proficiency_mods = Some(attacker.proficiency_modifiers(ctx.cutin));
+            proficiency_mods = Some(attacker.proficiency_modifiers(day_cutin));
 
             carrier_shelling_power_ibonus = attacker
                 .gears
@@ -148,7 +149,10 @@ impl<'a> ShellingAttackContext<'a> {
 
             let formation_mod = ctx.formation_power_mod;
             let engagement_mod = ctx.engagement.modifier();
-            let cutin_mod = ctx.cutin_power_mod;
+            let cutin_mod = ctx
+                .special_attack_def
+                .as_ref()
+                .map_or(1.0, |def| def.power_mod);
 
             let proficiency_critical_mod = proficiency_mods
                 .as_ref()
@@ -199,7 +203,10 @@ impl<'a> ShellingAttackContext<'a> {
             let morale_mod = attacker.morale_state().common_accuracy_mod();
             let formation_mod = ctx.formation_accuracy_mod;
             let ap_shell_mod = ap_shell_mods.map(|mods| mods.1).unwrap_or(1.0);
-            let cutin_mod = ctx.cutin_accuracy_mod;
+            let cutin_mod = ctx
+                .special_attack_def
+                .as_ref()
+                .map_or(1.0, |def| def.accuracy_mod);
 
             // 乗算前に切り捨て
             let premultiplication =
@@ -240,8 +247,8 @@ impl<'a> ShellingAttackContext<'a> {
             attack_power_params: calc_attack_power_params(),
             hit_rate_params: calc_hit_rate_params(),
             defense_params: defense_params,
-            is_cutin: ctx.cutin.is_some(),
-            hits: ctx.hits,
+            is_cutin: ctx.special_attack_def.is_some(),
+            hits: ctx.special_attack_def.as_ref().map_or(1.0, |def| def.hits),
         }
     }
 }

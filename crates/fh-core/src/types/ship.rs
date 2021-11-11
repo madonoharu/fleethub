@@ -97,6 +97,10 @@ impl ShipType {
         self.category() == ShipCategory::Submarine
     }
 
+    pub fn is_battleship(&self) -> bool {
+        self.category() == ShipCategory::Battleship
+    }
+
     pub fn transport_point(&self) -> i32 {
         use ShipType::*;
         match self {

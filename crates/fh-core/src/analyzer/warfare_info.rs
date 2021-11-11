@@ -81,52 +81,13 @@ impl WarfareAnalyzerContext {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, FhAbi)]
+#[derive(Debug, Serialize, Deserialize, TS, FhAbi)]
 pub struct WarfareInfo {
-    day: Option<DayBattleAttackInfo>,
-    closing_torpedo: Option<TorpedoAttackInfo>,
-    night: Option<NightBattleAttackInfo>,
+    day: Option<AttackInfo<DayBattleAttackType, Option<DayCutin>>>,
+    closing_torpedo: Option<AttackInfo<(), ()>>,
+    night: Option<AttackInfo<NightBattleAttackType, Option<NightCutin>>>,
     shelling_support: Option<AttackInfo<(), ()>>,
     opening_asw: Option<AttackInfo<(), ()>>,
-}
-
-// ts_rsがうまく動かないので自前実装
-impl TS for WarfareInfo {
-    fn name() -> String {
-        "WarfareInfo".to_string()
-    }
-
-    fn decl() -> String {
-        format!(
-            "interface {} {{
-                day: {} | null;
-                closing_torpedo: {} | null;
-                night: {} | null;
-                shelling_support: {} | null;
-                opening_asw: {} | null;
-            }}",
-            Self::name(),
-            DayBattleAttackInfo::name_with_type_args(vec![
-                DayBattleAttackType::name(),
-                Option::<DayCutin>::name()
-            ]),
-            TorpedoAttackInfo::name_with_type_args(vec![<()>::name(), <()>::name()]),
-            NightBattleAttackInfo::name_with_type_args(vec![
-                NightBattleAttackType::name(),
-                Option::<NightCutin>::name()
-            ]),
-            AttackInfo::<(), ()>::name_with_type_args(vec![<()>::name(), <()>::name()]),
-            AttackInfo::<(), ()>::name_with_type_args(vec![<()>::name(), <()>::name()]),
-        )
-    }
-
-    fn dependencies() -> Vec<(std::any::TypeId, String)> {
-        panic!("Unnecessary")
-    }
-
-    fn transparent() -> bool {
-        true
-    }
 }
 
 pub struct WarfareAnalyzer<'a> {
@@ -179,13 +140,17 @@ impl<'a> WarfareAnalyzer<'a> {
                     .rates
                     .into_iter()
                     .map(|(cutin, rate)| {
-                        let shelling_ctx = ShellingAttackContext::new(
+                        let sp_def = cutin
+                            .and_then(|cutin| self.master_data.constants.get_day_cutin_def(cutin))
+                            .map(|def| def.into());
+
+                        let attack_ctx = ShellingAttackContext::new(
                             self.master_data,
                             &self.warfare_context,
                             t,
-                            cutin,
+                            sp_def,
                         );
-                        let stats = shelling_ctx
+                        let stats = attack_ctx
                             .attack_params(self.attacker, self.target)
                             .into_stats();
 
@@ -228,16 +193,20 @@ impl<'a> WarfareAnalyzer<'a> {
                     .rates
                     .into_iter()
                     .map(|(cutin, rate)| {
-                        let night_ctx = NightAttackContext::new(
+                        let sp_def = cutin
+                            .and_then(|cutin| self.master_data.constants.get_night_cutin_def(cutin))
+                            .map(|def| def.into());
+
+                        let attack_ctx = NightAttackContext::new(
                             self.master_data,
                             &self.warfare_context,
                             &self.ctx.attacker_env.night_situation,
                             &self.ctx.target_env.night_situation,
                             attack_type,
-                            cutin,
+                            sp_def,
                         );
 
-                        let stats = night_ctx
+                        let stats = attack_ctx
                             .attack_params(self.attacker, self.target)
                             .into_stats();
 

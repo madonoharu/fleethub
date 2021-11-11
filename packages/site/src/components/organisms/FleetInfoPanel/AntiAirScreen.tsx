@@ -77,7 +77,7 @@ const AntiAirPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
 
         <FormationSelect
           variant="outlined"
-          label="陣形"
+          label={t("Formation")}
           combined={org.is_combined()}
           value={formation}
           onChange={setFormation}

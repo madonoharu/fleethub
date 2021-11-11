@@ -107,10 +107,6 @@ where
         Vec::<T>::name()
     }
 
-    fn inline(indent: usize) -> String {
-        Vec::<T>::inline(indent)
-    }
-
     fn dependencies() -> Vec<(std::any::TypeId, String)> {
         Vec::<T>::dependencies()
     }
