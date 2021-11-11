@@ -40,10 +40,13 @@ fn main() {
         types::NormalFormationDef,
         types::FormationDef,
         types::DayCutin,
-        types::DayCutinDef,
+        types::NightAttackType,
         types::NightCutin,
-        types::NightCutinDef,
+        types::NightSpecialAttack,
+        types::FleetCutin,
         types::AntiAirCutinDef,
+        types::NightCutinDef,
+        types::DayCutinDef,
         types::ContactRank,
         types::Side,
         types::Role,
@@ -69,6 +72,7 @@ fn main() {
         types::MasterEquippable,
         types::MasterConstants,
         types::MasterData,
+
         attack::AttackPowerModifiers,
         attack::AttackPowerParams,
         attack::AttackPower,
@@ -78,7 +82,6 @@ fn main() {
         attack::WarfareContext,
         attack::NightSituation,
         attack::ShellingAttackType,
-        attack::NightAttackType,
         attack::AswAttackType,
         attack::DayBattleAttackType,
         attack::NightBattleAttackType,
@@ -101,7 +104,10 @@ fn main() {
         analyzer::DamageInfo,
         analyzer::WarfareAnalyzerShipEnvironment,
         analyzer::WarfareAnalyzerContext,
-        analyzer::WarfareInfo
+        analyzer::WarfareInfo,
+        analyzer::FleetCutinInfoItem,
+        analyzer::FleetCutinInfo,
+        analyzer::FleetCutinAnalysis,
     );
 
     let buffer =

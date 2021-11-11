@@ -1,7 +1,8 @@
 use crate::{
+    attack::WarfareShipEnvironment,
     fleet::{Fleet, ShipArray},
     ship::Ship,
-    types::{OrgType, Role},
+    types::{Formation, OrgType, Role},
 };
 
 pub struct SortiedFleetShips<'a> {
@@ -44,7 +45,11 @@ pub struct SortiedFleet<'a> {
 
 impl<'a> SortiedFleet<'a> {
     pub fn is_combined(&self) -> bool {
-        self.org_type.is_combined()
+        self.escort.is_some()
+    }
+
+    pub fn night_fleet(&self) -> &'a Fleet {
+        self.escort.unwrap_or(self.main)
     }
 
     pub fn ships(&self) -> SortiedFleetShips<'a> {
@@ -52,6 +57,31 @@ impl<'a> SortiedFleet<'a> {
             count: 0,
             main_ships: &self.main.ships,
             escort_ships: self.escort.map(|f| &f.ships),
+        }
+    }
+
+    pub fn create_warfare_ship_environment(
+        &self,
+        ship: &Ship,
+        formation: Formation,
+    ) -> WarfareShipEnvironment {
+        let (role, ship_index) = self
+            .ships()
+            .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
+            .unwrap_or_default();
+
+        let fleet = match role {
+            Role::Main => self.main,
+            Role::Escort => self.escort.unwrap_or_else(|| unreachable!()),
+        };
+
+        WarfareShipEnvironment {
+            org_type: self.org_type,
+            fleet_len: fleet.len,
+            ship_index,
+            role,
+            formation,
+            fleet_los_mod: fleet.fleet_los_mod(),
         }
     }
 
@@ -75,7 +105,7 @@ impl<'a> SortiedFleet<'a> {
     pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
         let main_fp = self.main.fighter_power(anti_lbas)?;
 
-        if !self.is_combined() || !anti_combined {
+        if !anti_combined {
             Some(main_fp)
         } else {
             let escort_fp = self.escort?.fighter_power(anti_lbas)?;
@@ -87,15 +117,11 @@ impl<'a> SortiedFleet<'a> {
     pub fn elos(&self, hq_level: u8, node_divaricated_factor: u8) -> Option<f64> {
         let main_elos = self.main.elos(hq_level, node_divaricated_factor)?;
 
-        if !self.is_combined() {
-            return Some(main_elos);
-        }
-
         if let Some(escort) = self.escort {
             let escort_elos = escort.elos(hq_level, node_divaricated_factor)?;
             Some(main_elos + escort_elos)
         } else {
-            None
+            Some(main_elos)
         }
     }
 }

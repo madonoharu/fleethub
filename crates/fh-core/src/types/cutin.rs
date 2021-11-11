@@ -1,6 +1,7 @@
-use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
+
+use super::{night::NightCutin, DayCutin, NightSpecialAttack, ShellingSpecialAttack};
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 pub struct AntiAirCutinDef {
@@ -22,36 +23,6 @@ impl AntiAirCutinDef {
     }
 }
 
-#[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, TS)]
-pub enum DayCutin {
-    /// 主主
-    MainMain,
-    /// 主徹
-    MainAp,
-    /// 主電
-    MainRader,
-    /// 主副
-    MainSec,
-    /// 連撃
-    DoubleAttack,
-    /// 戦爆連合 戦爆攻
-    FBA,
-    /// 戦爆連合 爆爆攻
-    BBA,
-    /// 戦爆連合 爆攻
-    BA,
-    /// 瑞雲立体攻撃
-    Zuiun,
-    /// 海空立体攻撃
-    AirSea,
-}
-
-impl Default for DayCutin {
-    fn default() -> Self {
-        Self::MainMain
-    }
-}
-
 #[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct DayCutinDef {
     pub tag: DayCutin,
@@ -59,49 +30,6 @@ pub struct DayCutinDef {
     pub chance_denom: Option<u8>,
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
-}
-
-#[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, TS)]
-pub enum NightCutin {
-    /// 連撃
-    DoubleAttack,
-    /// 魚魚主
-    TorpTorpMain,
-    /// 魚魚魚
-    TorpTorpTorp,
-    /// 主主副
-    MainMainSec,
-    /// 主主主
-    MainMainMain,
-
-    /// 主魚電
-    MainTorpRadar,
-    /// 魚見電
-    TorpLookoutRadar,
-    /// 魚水魚
-    TorpTsloTorp,
-    /// 魚見ド
-    TorpTsloDrum,
-
-    /// 潜水魚魚
-    SubTorpTorp,
-    /// 潜水電探
-    SubRadarTorp,
-
-    /// 夜襲1.25
-    Cvci1_25,
-    /// 夜襲1.20
-    Cvci1_20,
-    /// 夜襲1.18
-    Cvci1_18,
-    /// 光電管彗星夜襲
-    Photobomber,
-}
-
-impl Default for NightCutin {
-    fn default() -> Self {
-        Self::TorpTorpTorp
-    }
 }
 
 pub struct CutinModifiers {
@@ -143,5 +71,35 @@ impl NightCutinDef {
         };
 
         Some(rate)
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct SpecialAttackDef<T> {
+    pub kind: T,
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub hits: f64,
+}
+
+impl From<&DayCutinDef> for SpecialAttackDef<ShellingSpecialAttack> {
+    fn from(def: &DayCutinDef) -> Self {
+        Self {
+            kind: ShellingSpecialAttack::DayCutin(def.tag),
+            power_mod: def.power_mod.unwrap_or(1.0),
+            accuracy_mod: def.accuracy_mod.unwrap_or(1.0),
+            hits: def.hits.into(),
+        }
+    }
+}
+
+impl From<&NightCutinDef> for SpecialAttackDef<NightSpecialAttack> {
+    fn from(def: &NightCutinDef) -> Self {
+        Self {
+            kind: NightSpecialAttack::NightCutin(def.tag),
+            power_mod: def.power_mod.unwrap_or(1.0),
+            accuracy_mod: def.accuracy_mod.unwrap_or(1.0),
+            hits: def.hits,
+        }
     }
 }

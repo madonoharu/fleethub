@@ -5,7 +5,9 @@ use ts_rs::TS;
 use crate::{
     attack::{fit_gun_bonus::fit_gun_bonus, DefenseParams},
     ship::Ship,
-    types::{ContactRank, MasterData, NightCutin, ShipType},
+    types::{
+        ContactRank, MasterData, NightAttackType, NightSpecialAttack, ShipType, SpecialAttackDef,
+    },
 };
 
 use super::{
@@ -16,18 +18,11 @@ use super::{
 const NIGHT_POWER_CAP: f64 = 360.0;
 const NIGHT_ACCURACY_CONSTANT: f64 = 69.0;
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, TS, FhAbi)]
 pub struct NightSituation {
     pub night_contact_rank: Option<ContactRank>,
     pub starshell: bool,
     pub searchlight: bool,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
-pub enum NightAttackType {
-    Normal,
-    ArkRoyal,
-    Carrier,
 }
 
 pub struct NightAttackContext<'a> {
@@ -43,10 +38,7 @@ pub struct NightAttackContext<'a> {
     pub formation_accuracy_mod: f64,
     pub formation_evasion_mod: f64,
 
-    pub cutin: Option<NightCutin>,
-    pub cutin_power_mod: f64,
-    pub cutin_accuracy_mod: f64,
-    pub hits: f64,
+    pub special_attack_def: Option<SpecialAttackDef<NightSpecialAttack>>,
 }
 
 impl<'a> NightAttackContext<'a> {
@@ -56,7 +48,7 @@ impl<'a> NightAttackContext<'a> {
         attacker_situation: &'a NightSituation,
         target_situation: &'a NightSituation,
         attack_type: NightAttackType,
-        cutin: Option<NightCutin>,
+        special_attack_def: Option<SpecialAttackDef<NightSpecialAttack>>,
     ) -> Self {
         let attacker_env = &warfare_context.attacker_env;
         let target_env = &warfare_context.target_env;
@@ -73,8 +65,6 @@ impl<'a> NightAttackContext<'a> {
             .map(|def| def.night.to_modifiers())
             .unwrap_or_default();
 
-        let cutin_def = cutin.and_then(|cutin| master_data.constants.get_night_cutin_def(cutin));
-
         Self {
             attacker_env,
             target_env,
@@ -87,10 +77,7 @@ impl<'a> NightAttackContext<'a> {
             formation_accuracy_mod: attacker_formation_mods.accuracy_mod,
             formation_evasion_mod: target_formation_mods.evasion_mod,
 
-            cutin,
-            cutin_power_mod: cutin_def.and_then(|def| def.power_mod).unwrap_or(1.0),
-            cutin_accuracy_mod: cutin_def.and_then(|def| def.accuracy_mod).unwrap_or(1.0),
-            hits: cutin_def.map_or(1.0, |def| def.hits),
+            special_attack_def,
         }
     }
 
@@ -164,8 +151,8 @@ impl<'a> NightAttackContext<'a> {
             attack_power_params,
             hit_rate_params,
             defense_params,
-            is_cutin: ctx.cutin.is_some(),
-            hits: ctx.hits,
+            is_cutin: ctx.special_attack_def.is_some(),
+            hits: ctx.special_attack_def.as_ref().map_or(1.0, |def| def.hits),
         }
     }
 }
@@ -181,20 +168,19 @@ fn calc_attack_power_params(
 
     let damage_mod = attacker.damage_state().common_power_mod();
     let formation_mod = ctx.formation_power_mod;
-    let cutin_mod = ctx.cutin_power_mod;
+    let cutin_mod = ctx
+        .special_attack_def
+        .as_ref()
+        .map_or(1.0, |def| def.power_mod);
     let cruiser_fit_bonus = attacker.cruiser_fit_bonus();
 
     let remaining_ammo_mod = attacker.remaining_ammo_mod();
 
     // 主魚電 | 魚見電 のみでD型補正
     let model_d_small_gun_mod = if ctx
-        .cutin
-        .map(|cutin| {
-            matches!(
-                cutin,
-                NightCutin::MainTorpRadar | NightCutin::TorpLookoutRadar
-            )
-        })
+        .special_attack_def
+        .as_ref()
+        .map(|def| def.kind.has_model_d_small_gun_mod())
         .unwrap_or_default()
     {
         attacker.model_d_small_gun_mod()
@@ -262,7 +248,10 @@ fn calc_accuracy_term(ctx: &NightAttackContext, attacker: &Ship) -> Option<f64> 
 
     let formation_mod = ctx.formation_accuracy_mod;
     let morale_mod = attacker.morale_state().common_accuracy_mod();
-    let cutin_mod = ctx.cutin_accuracy_mod;
+    let cutin_mod = ctx
+        .special_attack_def
+        .as_ref()
+        .map_or(1.0, |def| def.accuracy_mod);
     let fit_gun_bonus = fit_gun_bonus(attacker, true);
 
     // 乗算前に切り捨て

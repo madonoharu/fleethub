@@ -4,7 +4,7 @@ use strum::{AsRefStr, EnumString};
 use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
-use super::{CombinedFormation, Formation, SingleFormation};
+use super::Formation;
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
 pub struct GearState {
@@ -209,9 +209,9 @@ impl OrgType {
 
     pub fn default_formation(&self) -> Formation {
         if self.is_combined() {
-            Formation::Combined(CombinedFormation::default())
+            Formation::Combined(Default::default())
         } else {
-            Formation::Single(SingleFormation::default())
+            Formation::Single(Default::default())
         }
     }
 

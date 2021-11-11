@@ -3,10 +3,10 @@ use ts_rs::TS;
 
 use crate::{
     ship::Ship,
-    types::{DamageState, GearAttr, ShipClass},
+    types::{DamageState, GearAttr, NightAttackType, ShipClass},
 };
 
-use super::{AswAttackType, NightAttackType, ShellingAttackType};
+use super::{AswAttackType, ShellingAttackType};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
 #[serde(tag = "t", content = "c")]
