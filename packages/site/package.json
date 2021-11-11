@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
@@ -22,7 +22,7 @@
     "@visx/legend": "^2.2.2",
     "@visx/network": "^2.1.2",
     "@visx/responsive": "^2.1.2",
-    "@visx/shape": "^2.2.2",
+    "@visx/shape": "^2.4.0",
     "@visx/tooltip": "^2.2.2",
     "clsx": "^1.1.1",
     "constate": "^3.3.0",
