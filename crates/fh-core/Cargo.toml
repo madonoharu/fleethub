@@ -1,6 +1,6 @@
 [package]
 name = "fh-core"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
