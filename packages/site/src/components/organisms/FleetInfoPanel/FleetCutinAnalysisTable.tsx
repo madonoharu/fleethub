@@ -53,20 +53,22 @@ const FleetCutinInfoTable: React.FCX<FleetCutinInfoTableProps> = ({
 type FleetCutinAnalysisTableProps = {
   org: Org;
   fleetKey: FleetKey;
+  type: "shelling" | "night";
 };
 
 const FleetCutinAnalysisTable: React.FCX<FleetCutinAnalysisTableProps> = ({
   className,
   org,
   fleetKey,
+  type,
 }) => {
   const { t } = useTranslation("common");
   const { core } = useFhCore();
   const [engagement, setEngagement] = useState<Engagement>("Parallel");
 
-  const result = core.analyze_fleet_cutin(org, fleetKey, engagement);
+  const data = core.analyze_fleet_cutin(org, fleetKey, engagement)[type];
 
-  if (!result.shelling.length) {
+  if (!data.length) {
     return <Typography>艦隊特殊攻撃不可</Typography>;
   }
 
@@ -80,7 +82,7 @@ const FleetCutinAnalysisTable: React.FCX<FleetCutinAnalysisTableProps> = ({
         value={engagement}
         onChange={setEngagement}
       />
-      <FleetCutinInfoTable data={result.shelling} />
+      <FleetCutinInfoTable data={data} />
     </div>
   );
 };
