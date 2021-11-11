@@ -42,7 +42,7 @@ getrandom = { version = "0.2.3", features = ["js"] }
 xxhash-rust = { version = "0.8.2", features = ["xxh3"] }
 enumset = "1.0.7"
 anyhow = "1.0.44"
-ts-rs = { version = "4.0.0", features = ["serde-compat"] }
+ts-rs = { version = "5.1.1", features = ["serde-compat"] }
 fh-macro = { path = "../fh-macro" }
 
 [dependencies.web-sys]

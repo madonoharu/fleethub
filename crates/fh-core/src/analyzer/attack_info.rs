@@ -75,9 +75,7 @@ where
 {
     pub attack_type: AttackType,
     pub items: Vec<AttackInfoItem<Cutin>>,
-    // ts_rsがうまく動かないので`Option<NumMap<DamageState, f64>>`を断念
-    pub damage_state_map: NumMap<DamageState, f64>,
-    pub damage_state_map_is_empty: bool,
+    pub damage_state_map: Option<NumMap<DamageState, f64>>,
 }
 
 impl<AttackType, Cutin> AttackInfo<AttackType, Cutin>
@@ -92,16 +90,12 @@ where
                 let rate = item.rate?;
                 Some(item.stats.damage.as_ref()?.damage_state_map.clone() * rate)
             })
-            .sum::<Option<NumMap<DamageState, f64>>>()
-            .unwrap_or_else(|| NumMap::new());
-
-        let damage_state_map_is_empty = damage_state_map.is_empty();
+            .sum::<Option<NumMap<DamageState, f64>>>();
 
         Self {
             attack_type,
             items,
             damage_state_map,
-            damage_state_map_is_empty,
         }
     }
 }
