@@ -2,10 +2,12 @@ use std::str::FromStr;
 
 use fh_macro::FhAbi;
 use serde::{Deserialize, Serialize};
-use strum::AsRefStr;
+use strum::{AsRefStr, EnumIter, IntoEnumIterator};
 use ts_rs::TS;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, Serialize, Deserialize, TS)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, TS,
+)]
 pub enum SingleFormation {
     /// 単縦陣
     LineAhead,
@@ -27,7 +29,9 @@ impl Default for SingleFormation {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, Serialize, Deserialize, TS)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, TS,
+)]
 pub enum CombinedFormation {
     /// 第一警戒航行序列
     Cruising1,
@@ -60,17 +64,27 @@ impl Formation {
     /// - 単横 → 梯形
     /// - 梯形 → 単縦
     pub fn is_ineffective(&self, other: Self) -> bool {
+        use SingleFormation::*;
+
         match (*self, other) {
             (Self::Single(a), Self::Single(b)) => {
                 matches!(
                     (a, b),
-                    (SingleFormation::DoubleLine, SingleFormation::LineAbreast)
-                        | (SingleFormation::LineAbreast, SingleFormation::Echelon)
-                        | (SingleFormation::Echelon, SingleFormation::LineAhead)
+                    (DoubleLine, LineAbreast) | (LineAbreast, Echelon) | (Echelon, LineAhead)
                 )
             }
             _ => false,
         }
+    }
+
+    pub fn is_combined(&self) -> bool {
+        matches!(self, Self::Combined(_))
+    }
+
+    pub fn iter() -> impl Iterator<Item = Self> {
+        SingleFormation::iter()
+            .map(Self::Single)
+            .chain(CombinedFormation::iter().map(Self::Combined))
     }
 }
 
@@ -95,6 +109,18 @@ impl FromStr for Formation {
 impl Default for Formation {
     fn default() -> Self {
         Self::Single(Default::default())
+    }
+}
+
+impl From<SingleFormation> for Formation {
+    fn from(inner: SingleFormation) -> Self {
+        Self::Single(inner)
+    }
+}
+
+impl From<CombinedFormation> for Formation {
+    fn from(inner: CombinedFormation) -> Self {
+        Self::Combined(inner)
     }
 }
 

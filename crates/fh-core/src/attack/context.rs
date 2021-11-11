@@ -6,7 +6,7 @@ use crate::types::{AirState, Engagement, Formation, OrgType, Role};
 
 use super::AttackPowerModifiers;
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, TS, FhAbi)]
 pub struct WarfareShipEnvironment {
     pub org_type: OrgType,
     pub role: Role,
