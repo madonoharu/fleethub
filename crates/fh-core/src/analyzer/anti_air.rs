@@ -220,10 +220,10 @@ impl<'a> AntiAirAnalyzer<'a> {
         let side = org.side();
         let anti_air_cutin = None;
 
-        let sf = org.get_sortied_fleet_by_key(key);
-        let is_combined = sf.is_combined();
+        let comp = org.get_comp_by_key(key);
+        let is_combined = comp.is_combined();
 
-        let ships = sf
+        let ships = comp
             .ships()
             .map(|(role, _, ship)| {
                 let combined_fleet_mod = if !is_combined {

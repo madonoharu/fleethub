@@ -1,12 +1,12 @@
 pub mod air_squadron;
 pub mod analyzer;
+pub mod comp;
 pub mod factory;
 pub mod fleet;
 pub mod gear;
 pub mod gear_array;
 pub mod org;
 pub mod ship;
-pub mod sortied_fleet;
 
 pub mod attack;
 pub mod types;
@@ -165,7 +165,7 @@ impl FhCore {
         key: &str,
         engagement: Engagement,
     ) -> FleetCutinAnalysis {
-        let sf = org.get_sortied_fleet_by_key(key);
-        FleetCutinAnalyzer::new(&self.factory.master_data, sf, engagement).analyze()
+        let comp = org.get_comp_by_key(key);
+        FleetCutinAnalyzer::new(&self.factory.master_data, comp, engagement).analyze()
     }
 }
