@@ -1,7 +1,4 @@
-import {
-  GoogleSpreadsheetRow,
-  GoogleSpreadsheetWorksheet,
-} from "google-spreadsheet";
+import { GoogleSpreadsheetWorksheet } from "google-spreadsheet";
 import got from "got";
 import { Start2 } from "kc-tools";
 import get from "lodash/get";
@@ -94,14 +91,12 @@ export const writeRows = async (
   await sheet.saveUpdatedCells();
 };
 
-export const updateRows = async <T extends object[]>(
+export const updateRows = async (
   sheet: GoogleSpreadsheetWorksheet,
-  cb: (rows: GoogleSpreadsheetRow[], sheet: GoogleSpreadsheetWorksheet) => T
-): Promise<T> => {
-  const rows = await sheet.getRows();
-  const next = cb(rows, sheet);
-
-  if (equalRows(sheet.headerValues, rows, next as Row[])) {
+  current: Row[],
+  next: object[]
+) => {
+  if (equalRows(sheet.headerValues, current, next as Row[])) {
     console.log(`skip ${sheet.a1SheetName}`);
   } else {
     await writeRows(sheet, next as Row[]);

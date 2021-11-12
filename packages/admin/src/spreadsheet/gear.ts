@@ -1,13 +1,10 @@
-import { nonNullable } from "@fh/utils";
+import { mapValues, nonNullable } from "@fh/utils";
 import { MasterAttrRule, MasterGear, MasterIBonuses } from "fleethub-core";
-import {
-  GoogleSpreadsheet,
-  GoogleSpreadsheetRow,
-  GoogleSpreadsheetWorksheet,
-} from "google-spreadsheet";
+import { GoogleSpreadsheetRow } from "google-spreadsheet";
 import { Start2 } from "kc-tools";
 
-import { deleteFalsyValues, updateRows } from "../utils";
+import { deleteFalsyValues } from "../utils";
+import { MasterDataSpreadsheet } from "./sheet";
 
 const createGears = (
   rows: GoogleSpreadsheetRow[],
@@ -90,12 +87,7 @@ const makeReplaceGearExpr = (start2: Start2, gear_attrs: MasterAttrRule[]) => {
       .replace(/\s{2,}/g, " ");
 };
 
-const readGearAttrs = async (
-  sheet: GoogleSpreadsheetWorksheet,
-  start2: Start2
-) => {
-  const rows = await sheet.getRows();
-
+const createGearAttrs = (rows: GoogleSpreadsheetRow[], start2: Start2) => {
   const gear_attrs: MasterAttrRule[] = [];
   const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
@@ -107,35 +99,14 @@ const readGearAttrs = async (
   return gear_attrs;
 };
 
-const readIBonuses = async (
-  doc: GoogleSpreadsheet,
+const createMasterIBonuses = (
+  map: Record<keyof MasterIBonuses, GoogleSpreadsheetRow[]>,
   start2: Start2,
   gear_attrs: MasterAttrRule[]
-): Promise<MasterIBonuses> => {
-  const sheets: Record<keyof MasterIBonuses, GoogleSpreadsheetWorksheet> = {
-    shelling_power: doc.sheetsByTitle["改修砲撃攻撃力"],
-    shelling_accuracy: doc.sheetsByTitle["改修砲撃命中"],
-    carrier_shelling_power: doc.sheetsByTitle["改修空母砲撃攻撃力"],
-    torpedo_power: doc.sheetsByTitle["改修雷撃攻撃力"],
-    torpedo_accuracy: doc.sheetsByTitle["改修雷撃命中"],
-    torpedo_evasion: doc.sheetsByTitle["改修雷撃回避"],
-    night_power: doc.sheetsByTitle["改修夜戦攻撃力"],
-    night_accuracy: doc.sheetsByTitle["改修夜戦命中"],
-    asw_power: doc.sheetsByTitle["改修対潜攻撃力"],
-    asw_accuracy: doc.sheetsByTitle["改修対潜命中"],
-    defense_power: doc.sheetsByTitle["改修防御力"],
-    contact_selection: doc.sheetsByTitle["改修触接選択率"],
-    fighter_power: doc.sheetsByTitle["改修制空"],
-    adjusted_anti_air: doc.sheetsByTitle["改修加重対空"],
-    fleet_anti_air: doc.sheetsByTitle["改修艦隊対空"],
-    elos: doc.sheetsByTitle["改修マップ索敵"],
-  };
-
+): MasterIBonuses => {
   const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
-  const promises = Object.entries(sheets).map(async ([key, sheet]) => {
-    const rows = await sheet.getRows();
-
+  return mapValues(map, (rows) => {
     const rules = rows
       .map(({ expr, formula }) => {
         if (!expr || !formula) return undefined;
@@ -143,37 +114,49 @@ const readIBonuses = async (
       })
       .filter(nonNullable);
 
-    return [key, rules];
+    return rules;
   });
-
-  const entries = await Promise.all(promises);
-  return Object.fromEntries(entries) as MasterIBonuses;
 };
 
-export const updateGearData = async (
-  doc: GoogleSpreadsheet,
+export const createGearData = (
+  mdSheet: MasterDataSpreadsheet,
   start2: Start2
 ) => {
-  const sheets = {
-    gears: doc.sheetsByTitle["装備"],
-    gear_types: doc.sheetsByTitle["装備種"],
-    gear_attrs: doc.sheetsByTitle["装備属性"],
-  };
+  const sheets = mdSheet.pickSheets(["gears", "gear_types", "gear_attrs"]);
 
-  const [gears, gear_types] = await Promise.all([
-    updateRows(sheets.gears, (rows) => createGears(rows, start2)),
-    updateRows(sheets.gear_types, (rows) => createGearTypes(rows, start2)),
+  const ibonusesSheets = mdSheet.pickSheets([
+    "shelling_power",
+    "shelling_accuracy",
+    "carrier_shelling_power",
+    "torpedo_power",
+    "torpedo_accuracy",
+    "torpedo_evasion",
+    "night_power",
+    "night_accuracy",
+    "asw_power",
+    "asw_accuracy",
+    "defense_power",
+    "contact_selection",
+    "fighter_power",
+    "adjusted_anti_air",
+    "fleet_anti_air",
+    "elos",
   ]);
 
-  const gear_attrs = await readGearAttrs(sheets.gear_attrs, start2);
-  const ibonuses = await readIBonuses(doc, start2, gear_attrs);
+  const gears = createGears(sheets.gears.rows, start2);
+  const gear_types = createGearTypes(sheets.gear_types.rows, start2);
+  const gear_attrs = createGearAttrs(sheets.gear_attrs.rows, start2);
 
-  const data = {
+  const ibonuses = createMasterIBonuses(
+    mapValues(ibonusesSheets, (sheet) => sheet.rows),
+    start2,
+    gear_attrs
+  );
+
+  return {
     gears,
     gear_types,
     gear_attrs,
     ibonuses,
   };
-
-  return data;
 };

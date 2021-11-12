@@ -154,7 +154,11 @@ fn can_do_nelson_touch(fleet: &Fleet, formation: Formation) -> Option<()> {
     let third = fleet.ships.get(2)?;
     let fifth = fleet.ships.get(4)?;
 
-    if !third.ship_type.is_aircraft_carrier() && !fifth.ship_type.is_aircraft_carrier() {
+    if !third.ship_type.is_submarine()
+        && !third.ship_type.is_aircraft_carrier()
+        && !fifth.ship_type.is_submarine()
+        && !fifth.ship_type.is_aircraft_carrier()
+    {
         Some(())
     } else {
         None
