@@ -148,7 +148,7 @@ impl<'a> OrgShellingAnalyzer<'a> {
     pub fn analyze_org(&self, org: &Org, key: &str) -> OrgDayCutinRateInfo {
         let day_cutin_defs = &self.master_constants.day_cutins;
 
-        let main_and_escort = org.get_sortied_fleet_by_key(key);
+        let main_and_escort = org.get_comp_by_key(key);
 
         OrgDayCutinRateInfo {
             main: FleetDayCutinRateInfo::new(day_cutin_defs, main_and_escort.main, Role::Main),

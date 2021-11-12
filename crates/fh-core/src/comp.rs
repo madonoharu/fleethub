@@ -5,13 +5,13 @@ use crate::{
     types::{Formation, OrgType, Role},
 };
 
-pub struct SortiedFleetShips<'a> {
+pub struct CompShips<'a> {
     count: usize,
     main_ships: &'a ShipArray,
     escort_ships: Option<&'a ShipArray>,
 }
 
-impl<'a> Iterator for SortiedFleetShips<'a> {
+impl<'a> Iterator for CompShips<'a> {
     type Item = (Role, usize, &'a Ship);
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -37,13 +37,13 @@ impl<'a> Iterator for SortiedFleetShips<'a> {
         }
     }
 }
-pub struct SortiedFleet<'a> {
+pub struct Comp<'a> {
     pub org_type: OrgType,
     pub main: &'a Fleet,
     pub escort: Option<&'a Fleet>,
 }
 
-impl<'a> SortiedFleet<'a> {
+impl<'a> Comp<'a> {
     pub fn is_combined(&self) -> bool {
         self.escort.is_some()
     }
@@ -52,8 +52,8 @@ impl<'a> SortiedFleet<'a> {
         self.escort.unwrap_or(self.main)
     }
 
-    pub fn ships(&self) -> SortiedFleetShips<'a> {
-        SortiedFleetShips {
+    pub fn ships(&self) -> CompShips<'a> {
+        CompShips {
             count: 0,
             main_ships: &self.main.ships,
             escort_ships: self.escort.map(|f| &f.ships),

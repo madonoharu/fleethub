@@ -7,9 +7,9 @@ use crate::{
         get_fleet_cutin, get_fleet_cutin_mod, NightAttackContext, NightSituation,
         ShellingAttackContext, ShellingAttackType, WarfareContext, WarfareShipEnvironment,
     },
+    comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    sortied_fleet::SortiedFleet,
     types::{
         AirState, Engagement, FleetCutin, Formation, MasterData, NightAttackType,
         NightSpecialAttack, ShellingSpecialAttack, SpecialAttackDef,
@@ -41,7 +41,7 @@ pub struct FleetCutinAnalysis {
 
 pub struct FleetCutinAnalyzer<'a> {
     master_data: &'a MasterData,
-    sf: SortiedFleet<'a>,
+    comp: Comp<'a>,
     engagement: Engagement,
     air_state: AirState,
     target: Ship,
@@ -51,10 +51,10 @@ pub struct FleetCutinAnalyzer<'a> {
 }
 
 impl<'a> FleetCutinAnalyzer<'a> {
-    pub fn new(master_data: &'a MasterData, sf: SortiedFleet<'a>, engagement: Engagement) -> Self {
+    pub fn new(master_data: &'a MasterData, comp: Comp<'a>, engagement: Engagement) -> Self {
         Self {
             master_data,
-            sf,
+            comp,
             engagement,
             air_state: Default::default(),
             target: Default::default(),
@@ -66,9 +66,9 @@ impl<'a> FleetCutinAnalyzer<'a> {
 
     fn get_fleet(&self, is_night: bool) -> &Fleet {
         if is_night {
-            self.sf.night_fleet()
+            self.comp.night_fleet()
         } else {
-            &self.sf.main
+            &self.comp.main
         }
     }
 
@@ -78,7 +78,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
         formation: Formation,
         engagement: Engagement,
     ) -> WarfareContext {
-        let attacker_env = self.sf.create_warfare_ship_environment(ship, formation);
+        let attacker_env = self.comp.create_warfare_ship_environment(ship, formation);
 
         let target_env = self.target_env.clone();
         let external_power_mods = Default::default();
