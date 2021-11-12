@@ -185,6 +185,8 @@ export enum GearAttr {
   AntiSubWeapon,
   /// 対潜航空機
   AntiSubAircraft,
+  /// 後期型艦首魚雷
+  LateModelBowTorpedo,
   /// 水上機
   Seaplane,
   /// 艦上機

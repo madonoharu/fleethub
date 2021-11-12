@@ -29,3 +29,13 @@ export const pick = <T, K extends keyof T>(
 
 export const cloneJson = <T>(json: T): T =>
   JSON.parse(JSON.stringify(json)) as T;
+
+export async function promiseAllValues<K extends string, V>(
+  obj: Record<K, Promise<V>>
+): Promise<Record<K, V>> {
+  const promises = Object.entries<Promise<V>>(obj).map(([k, p]) =>
+    p.then((v) => [k, v] as const)
+  );
+
+  return Object.fromEntries(await Promise.all(promises)) as Record<K, V>;
+}

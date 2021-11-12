@@ -1,7 +1,6 @@
 import "dotenv/config";
 
-import { storage, getGoogleSpreadsheet } from "@fh/admin/src";
-import { updateRows } from "@fh/admin/src/utils";
+import { storage, Sheet } from "@fh/admin/src";
 import { nonNullable } from "@fh/utils/src";
 import Signal from "signale";
 
@@ -24,7 +23,11 @@ const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
 };
 
 const updateShips = async (maps: KcnavMap[]) => {
-  const md = await storage.readJson("data/master_data.json");
+  const [md, sheet] = await Promise.all([
+    storage.readJson("data/master_data.json"),
+    Sheet.readByKey("ships"),
+  ]);
+
   const masterShips = md.ships;
 
   const findMasterShip = (id: number) =>
@@ -79,11 +82,9 @@ const updateShips = async (maps: KcnavMap[]) => {
     }
   });
 
-  const spreadsheet = await getGoogleSpreadsheet();
-
   await Promise.all([
-    storage.mergeMasterData({ ships: masterShips }),
-    updateRows(spreadsheet.sheetsByTitle["艦娘"], () => masterShips),
+    storage.mergeMasterData(md, { ships: masterShips }),
+    sheet.write(masterShips),
   ]);
 };
 

@@ -5,15 +5,11 @@ import {
   MasterVariantDef,
   SpeedGroup,
 } from "fleethub-core";
-import {
-  GoogleSpreadsheet,
-  GoogleSpreadsheetRow,
-  GoogleSpreadsheetWorksheet,
-} from "google-spreadsheet";
+import { GoogleSpreadsheetRow } from "google-spreadsheet";
 import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
 import set from "lodash/set";
 
-import { updateRows } from "../utils";
+import { MasterDataSpreadsheet } from "./sheet";
 
 const SUFFIXES = [
   "甲",
@@ -148,7 +144,7 @@ const getConvertibleShips = (ships: MasterShip[]) => {
   return ships.filter(isConvertible);
 };
 
-export const createShips = (
+const createShips = (
   headerValues: string[],
   rows: GoogleSpreadsheetRow[],
   start2: Start2
@@ -248,8 +244,8 @@ export const createShips = (
   return ships;
 };
 
-const createShipTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
-  start2.api_mst_stype.map((mst) => {
+const createShipTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) => {
+  return start2.api_mst_stype.map((mst) => {
     const row = rows.find((row) => row.id == mst.api_id);
     return {
       id: mst.api_id,
@@ -257,21 +253,21 @@ const createShipTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
       tag: row?.tag as string | null,
     };
   });
+};
 
-const createShipClasses = (rows: GoogleSpreadsheetRow[]) =>
-  rows.map((row) => ({
+const createShipClasses = (rows: GoogleSpreadsheetRow[]) => {
+  return rows.map((row) => ({
     id: Number(row.id),
     tag: row.tag as string,
     name: row.name as string,
   }));
+};
 
-const readShipAttrs = async (
-  sheet: GoogleSpreadsheetWorksheet,
+const createShipAttrs = (
+  rows: GoogleSpreadsheetRow[],
   start2: Start2,
   ship_classes: MasterVariantDef[]
-): Promise<MasterAttrRule[]> => {
-  const rows = await sheet.getRows();
-
+) => {
   const attrs: MasterAttrRule[] = [];
 
   const replaceShipType = (str: string) =>
@@ -326,31 +322,34 @@ const readShipAttrs = async (
   return attrs;
 };
 
-export const updateShipData = async (
-  doc: GoogleSpreadsheet,
+export const createShipData = (
+  mdSheet: MasterDataSpreadsheet,
   start2: Start2
 ) => {
-  const shipsSheet = doc.sheetsByTitle["艦娘"];
-  const shipTypesSheet = doc.sheetsByTitle["艦種"];
-  const shipClassesSheet = doc.sheetsByTitle["艦級"];
-  const shipAttrsSheet = doc.sheetsByTitle["艦娘属性"];
-
-  const [ships, ship_types, ship_classes] = await Promise.all([
-    updateRows(shipsSheet, (rows, sheet) =>
-      createShips(sheet.headerValues, rows, start2)
-    ),
-    updateRows(shipTypesSheet, (rows) => createShipTypes(rows, start2)),
-    updateRows(shipClassesSheet, createShipClasses),
+  const sheets = mdSheet.pickSheets([
+    "ships",
+    "ship_types",
+    "ship_classes",
+    "ship_attars",
   ]);
 
-  const ship_attrs = await readShipAttrs(shipAttrsSheet, start2, ship_classes);
+  const ships = createShips(
+    sheets.ships.inner.headerValues,
+    sheets.ships.rows,
+    start2
+  );
+  const ship_types = createShipTypes(sheets.ship_types.rows, start2);
+  const ship_classes = createShipClasses(sheets.ship_classes.rows);
+  const ship_attrs = createShipAttrs(
+    sheets.ship_attars.rows,
+    start2,
+    ship_classes
+  );
 
-  const data = {
+  return {
     ships,
     ship_types,
     ship_classes,
     ship_attrs,
   };
-
-  return data;
 };

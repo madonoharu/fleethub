@@ -3,12 +3,12 @@ import {
   DayCutinDef,
   Formation,
   FormationDef,
-  MasterConstants,
   NightCutinDef,
   NormalFormationDef,
 } from "fleethub-core";
-import { GoogleSpreadsheet } from "google-spreadsheet";
 import set from "lodash/set";
+
+import { MasterDataSpreadsheet, Sheet } from "./sheet";
 
 const maybeNumber = (val: unknown): number | null => {
   if (val === "") return null;
@@ -16,12 +16,9 @@ const maybeNumber = (val: unknown): number | null => {
   return Number.isNaN(num) ? null : num;
 };
 
-export const getAntiAirCutins = async (
-  doc: GoogleSpreadsheet
-): Promise<AntiAirCutinDef[]> => {
-  const sheet = doc.sheetsByTitle["対空CI"];
-  const rows = await sheet.getRows();
-  const { headerValues } = sheet;
+const getAntiAirCutins = (sheet: Sheet): AntiAirCutinDef[] => {
+  const rows = sheet.rows;
+  const headerValues = sheet.headerValues();
 
   return rows.map((row) => {
     const def = {} as AntiAirCutinDef;
@@ -39,12 +36,9 @@ export const getAntiAirCutins = async (
   });
 };
 
-export const getFormations = async (
-  doc: GoogleSpreadsheet
-): Promise<FormationDef[]> => {
-  const sheet = doc.sheetsByTitle["陣形"];
-  const rows = await sheet.getRows();
-  const { headerValues } = sheet;
+const getFormations = (sheet: Sheet) => {
+  const rows = sheet.rows;
+  const headerValues = sheet.headerValues();
 
   const normalDefs = rows.map((row) => {
     const def = {} as Omit<NormalFormationDef, "tag"> & { tag: string };
@@ -74,12 +68,9 @@ export const getFormations = async (
   return Object.values(rec);
 };
 
-export const getDayCutins = async (
-  doc: GoogleSpreadsheet
-): Promise<DayCutinDef[]> => {
-  const sheet = doc.sheetsByTitle["昼戦CI"];
-  const rows = await sheet.getRows();
-  const { headerValues } = sheet;
+const getDayCutins = (sheet: Sheet) => {
+  const rows = sheet.rows;
+  const headerValues = sheet.headerValues();
 
   return rows.map((row) => {
     const def = {} as DayCutinDef;
@@ -97,12 +88,9 @@ export const getDayCutins = async (
   });
 };
 
-export const getNaightCutins = async (
-  doc: GoogleSpreadsheet
-): Promise<NightCutinDef[]> => {
-  const sheet = doc.sheetsByTitle["夜戦CI"];
-  const rows = await sheet.getRows();
-  const { headerValues } = sheet;
+const getNaightCutins = (sheet: Sheet) => {
+  const rows = sheet.rows;
+  const headerValues = sheet.headerValues();
 
   return rows.map((row) => {
     const def = {} as NightCutinDef;
@@ -120,21 +108,18 @@ export const getNaightCutins = async (
   });
 };
 
-export const getConstants = async (
-  doc: GoogleSpreadsheet
-): Promise<MasterConstants> => {
-  const [anti_air_cutins, day_cutins, night_cutins, formations] =
-    await Promise.all([
-      getAntiAirCutins(doc),
-      getDayCutins(doc),
-      getNaightCutins(doc),
-      getFormations(doc),
-    ]);
+export const createConstants = (mdSheet: MasterDataSpreadsheet) => {
+  const sheets = mdSheet.pickSheets([
+    "anti_air_cutins",
+    "day_cutins",
+    "night_cutins",
+    "formations",
+  ]);
 
   return {
-    anti_air_cutins,
-    day_cutins,
-    night_cutins,
-    formations,
+    anti_air_cutins: getAntiAirCutins(sheets.anti_air_cutins),
+    day_cutins: getDayCutins(sheets.day_cutins),
+    night_cutins: getNaightCutins(sheets.night_cutins),
+    formations: getFormations(sheets.formations),
   };
 };

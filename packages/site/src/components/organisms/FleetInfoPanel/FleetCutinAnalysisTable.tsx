@@ -5,6 +5,7 @@ import { Org, FleetCutinInfo, Engagement } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { useFhCore } from "../../../hooks";
+import { numstr } from "../../../utils";
 
 import { createAttackTableColumns } from "../AttackTable/AttackTable";
 import EngagementSelect from "../EngagementSelect";
@@ -39,7 +40,7 @@ const FleetCutinInfoTable: React.FCX<FleetCutinInfoTableProps> = ({
               },
               {
                 label: t("Modifier"),
-                getValue: (item) => item.fleet_cutin_mod,
+                getValue: (item) => numstr(item.fleet_cutin_mod),
               },
               ...baseColumns,
             ]}
