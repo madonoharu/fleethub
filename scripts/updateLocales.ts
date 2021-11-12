@@ -11,6 +11,7 @@ import {
   MasterData,
   NightCutin,
   OrgType,
+  FleetCutin,
 } from "fleethub-core";
 import fs from "fs-extra";
 import got from "got";
@@ -81,6 +82,7 @@ const fhCommonJa = {
   Searchlight: "$t(gear_types:29)",
   Starshell: "$t(gear_types:33)",
 
+  Modifier: "補正",
   AttackPower: "攻撃力",
   BasicAttackPower: "基本攻撃力",
   ApShellModifier: "徹甲弾補正",
@@ -135,6 +137,7 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
+    Modifier: "Modifier",
     AttackPower: "Attack Power",
     BasicAttackPower: "Basic Attack Power",
     ApShellModifier: "AP Shell modifier",
@@ -183,6 +186,7 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
+    Modifier: "보정",
     AttackPower: "공격력",
     BasicAttackPower: "기본 공격력",
     ApShellModifier: "철갑탄 보정",
@@ -231,6 +235,7 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
+    Modifier: "补正",
     AttackPower: "攻击力",
     BasicAttackPower: "基本攻击力",
     ApShellModifier: "彻甲弹补正",
@@ -279,6 +284,7 @@ const fhCommon: Record<
     Searchlight: "$t(gear_types:29)",
     Starshell: "$t(gear_types:33)",
 
+    Modifier: "補正",
     AttackPower: "攻擊力",
     BasicAttackPower: "基本攻擊力",
     ApShellModifier: "徹甲彈補正",
@@ -494,6 +500,13 @@ class LocaleUpdater {
       SubTorpTorp: kc3Terms["CutinLateTorpTorp"],
     };
 
+    const fleetCutinDictionary: Record<FleetCutin, string> = {
+      NelsonTouch: getDayCutin(20),
+      NagatoCutin: getDayCutin(21),
+      ColoradoCutin: getDayCutin(23),
+      KongouCutin: getNightCutin(24),
+    };
+
     const airSquadronModeDictionary: Record<AirSquadronMode, string> = {
       Sortie: kc3Terms["LandBaseActionSortie"],
       AirDefense: kc3Terms["LandBaseActionDefend"],
@@ -614,6 +627,7 @@ class LocaleUpdater {
       ...formationDictionary,
       ...dayCutinDictionary,
       ...nightCutinDictionary,
+      ...fleetCutinDictionary,
       ...airSquadronModeDictionary,
       ...worldNames,
       ...nodeTypes,
