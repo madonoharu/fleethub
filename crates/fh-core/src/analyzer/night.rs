@@ -6,7 +6,7 @@ use crate::{
     fleet::Fleet,
     gear_id,
     ship::Ship,
-    types::{ContactRank, DamageState, GearAttr, MasterConstants, NightCutin, NightCutinDef},
+    types::{BattleConfig, ContactRank, DamageState, GearAttr, NightCutin, NightCutinDef},
 };
 
 #[derive(Debug)]
@@ -131,19 +131,16 @@ pub struct FleetNightCutinRateInfo {
 }
 
 pub struct NightCutinRateAnalyzer<'a> {
-    constants: &'a MasterConstants,
+    config: &'a BattleConfig,
 }
 
 impl<'a> NightCutinRateAnalyzer<'a> {
-    pub fn new(constants: &'a MasterConstants) -> Self {
-        Self { constants }
+    pub fn new(config: &'a BattleConfig) -> Self {
+        Self { config }
     }
 
     fn get_cutin_def(&self, cutin: NightCutin) -> Option<&NightCutinDef> {
-        self.constants
-            .night_cutins
-            .iter()
-            .find(|def| def.tag == cutin)
+        self.config.night_cutin.iter().find(|def| def.tag == cutin)
     }
 
     fn analyze_cutin_rates_with_damage_state(

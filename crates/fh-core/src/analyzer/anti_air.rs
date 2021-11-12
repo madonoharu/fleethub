@@ -5,7 +5,7 @@ use crate::{
     gear_id,
     org::Org,
     ship::Ship,
-    types::{AntiAirCutinDef, Formation, MasterConstants, ShipClass, ShipType, Side},
+    types::{AntiAirCutinDef, BattleConfig, Formation, ShipClass, ShipType, Side},
 };
 
 struct ShipAntiAir<'a> {
@@ -115,19 +115,16 @@ impl<'a> ShipAntiAir<'a> {
 }
 
 pub struct AntiAirAnalyzer<'a> {
-    master_constants: &'a MasterConstants,
+    config: &'a BattleConfig,
 }
 
 impl<'a> AntiAirAnalyzer<'a> {
-    pub fn new(master_constants: &'a MasterConstants) -> Self {
-        Self { master_constants }
+    pub fn new(config: &'a BattleConfig) -> Self {
+        Self { config }
     }
 
     fn find_aaci(&self, id: u8) -> Option<&AntiAirCutinDef> {
-        self.master_constants
-            .anti_air_cutins
-            .iter()
-            .find(|def| def.id == id)
+        self.config.anti_air_cutin.iter().find(|def| def.id == id)
     }
 
     pub fn ship_anti_air_cutin_chance(&self, ship: &Ship) -> Vec<(u8, f64)> {
@@ -212,9 +209,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
     ) -> OrgAntiAirInfo {
-        let formation_mod = self
-            .master_constants
-            .get_formation_fleet_anti_air_mod(formation);
+        let formation_mod = self.config.get_formation_fleet_anti_air_mod(formation);
 
         let fleet_anti_air = org.fleet_anti_air(formation_mod);
         let side = org.side();

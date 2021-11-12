@@ -6,7 +6,7 @@ use crate::{
     attack::{fit_gun_bonus::fit_gun_bonus, DefenseParams},
     ship::Ship,
     types::{
-        ContactRank, MasterData, NightAttackType, NightSpecialAttack, ShipType, SpecialAttackDef,
+        BattleConfig, ContactRank, NightAttackType, NightSpecialAttack, ShipType, SpecialAttackDef,
     },
 };
 
@@ -43,7 +43,7 @@ pub struct NightAttackContext<'a> {
 
 impl<'a> NightAttackContext<'a> {
     pub fn new(
-        master_data: &MasterData,
+        config: &BattleConfig,
         warfare_context: &'a WarfareContext,
         attacker_situation: &'a NightSituation,
         target_situation: &'a NightSituation,
@@ -53,15 +53,13 @@ impl<'a> NightAttackContext<'a> {
         let attacker_env = &warfare_context.attacker_env;
         let target_env = &warfare_context.target_env;
 
-        let attacker_formation_mods = master_data
-            .constants
-            .get_formation_def(attacker_env)
+        let attacker_formation_mods = config
+            .get_formation_def_by_env(attacker_env)
             .map(|def| def.night.to_modifiers())
             .unwrap_or_default();
 
-        let target_formation_mods = master_data
-            .constants
-            .get_formation_def(target_env)
+        let target_formation_mods = config
+            .get_formation_def_by_env(target_env)
             .map(|def| def.night.to_modifiers())
             .unwrap_or_default();
 

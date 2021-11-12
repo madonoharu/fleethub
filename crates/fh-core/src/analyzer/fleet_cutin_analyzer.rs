@@ -11,7 +11,7 @@ use crate::{
     fleet::Fleet,
     ship::Ship,
     types::{
-        AirState, Engagement, FleetCutin, Formation, MasterData, NightAttackType,
+        AirState, BattleConfig, Engagement, FleetCutin, Formation, NightAttackType,
         NightSpecialAttack, ShellingSpecialAttack, SpecialAttackDef,
     },
 };
@@ -40,7 +40,7 @@ pub struct FleetCutinAnalysis {
 }
 
 pub struct FleetCutinAnalyzer<'a> {
-    master_data: &'a MasterData,
+    config: &'a BattleConfig,
     comp: Comp<'a>,
     engagement: Engagement,
     air_state: AirState,
@@ -51,9 +51,9 @@ pub struct FleetCutinAnalyzer<'a> {
 }
 
 impl<'a> FleetCutinAnalyzer<'a> {
-    pub fn new(master_data: &'a MasterData, comp: Comp<'a>, engagement: Engagement) -> Self {
+    pub fn new(config: &'a BattleConfig, comp: Comp<'a>, engagement: Engagement) -> Self {
         Self {
-            master_data,
+            config,
             comp,
             engagement,
             air_state: Default::default(),
@@ -124,7 +124,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
                 };
 
                 let attack_ctx = ShellingAttackContext::new(
-                    self.master_data,
+                    self.config,
                     &warfare_context,
                     ShellingAttackType::Normal,
                     Some(sp_def),
@@ -178,7 +178,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
                 };
 
                 let attack_ctx = NightAttackContext::new(
-                    self.master_data,
+                    self.config,
                     &warfare_context,
                     &self.attacker_night_situation,
                     &self.target_night_situation,

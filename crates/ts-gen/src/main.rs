@@ -37,8 +37,8 @@ fn main() {
         types::Engagement,
         types::Formation,
         types::FormationWarfareDef,
-        types::NormalFormationDef,
         types::FormationDef,
+        types::NestedFormationDef,
         types::DayCutin,
         types::NightAttackType,
         types::NightCutin,
@@ -59,6 +59,8 @@ fn main() {
         types::OrgState,
         types::SpeedGroup,
         types::GearTypes,
+        types::BattleConfig,
+
         types::MasterGear,
         types::MasterVariantDef,
         types::MasterAttrRule,
@@ -70,7 +72,6 @@ fn main() {
         types::MstEquipShip,
         types::MstEquipExslotShip,
         types::MasterEquippable,
-        types::MasterConstants,
         types::MasterData,
 
         attack::AttackPowerModifiers,
