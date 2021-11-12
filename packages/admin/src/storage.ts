@@ -1,8 +1,8 @@
 import zlib from "zlib";
 import { SaveOptions as GcsSaveOptions } from "@google-cloud/storage";
+import equal from "fast-deep-equal";
 import { MasterData } from "fleethub-core";
 import got from "got";
-import isEqual from "lodash/isEqual";
 
 import { getApp } from "./credentials";
 
@@ -104,7 +104,7 @@ export const updateJson = async <
 
   const next = updater(current);
 
-  if (!isEqual(current, next)) {
+  if (!equal(current, next)) {
     console.log(`update: ${path}`);
     await writeJson<P, T>(path, next, options);
   }
@@ -112,13 +112,15 @@ export const updateJson = async <
   return next;
 };
 
-export const mergeMasterData = async (
-  input: Partial<MasterData>
-): Promise<MasterData> => {
-  const current = await readJson(MASTER_DATA_PATH);
-  const next: MasterData = { ...current, ...input };
+export const readMasterData = () => readJson(MASTER_DATA_PATH);
 
-  if (isEqual(current, next)) {
+export const mergeMasterData = async (
+  target: MasterData,
+  source: Partial<MasterData>
+): Promise<MasterData> => {
+  const next: MasterData = { ...target, ...source };
+
+  if (equal(target, next)) {
     return next;
   }
 
@@ -126,6 +128,7 @@ export const mergeMasterData = async (
 
   const cacheControl = "public, max-age=60";
   await writeJson(MASTER_DATA_PATH, next, {
+    public: true,
     metadata: { cacheControl },
   });
 
