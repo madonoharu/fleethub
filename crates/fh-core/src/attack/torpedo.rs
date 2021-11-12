@@ -1,6 +1,6 @@
 use crate::{
     ship::Ship,
-    types::{AirState, Engagement, MasterData},
+    types::{AirState, BattleConfig, Engagement},
 };
 
 use super::{
@@ -25,12 +25,12 @@ pub struct TorpedoAttackContext<'a> {
 }
 
 impl<'a> TorpedoAttackContext<'a> {
-    pub fn new(master_data: &MasterData, warfare_context: &'a WarfareContext) -> Self {
+    pub fn new(config: &BattleConfig, warfare_context: &'a WarfareContext) -> Self {
         let attacker_env = &warfare_context.attacker_env;
         let target_env = &warfare_context.target_env;
 
-        let attacker_formation_def = master_data.constants.get_formation_def(attacker_env);
-        let target_formation_def = master_data.constants.get_formation_def(target_env);
+        let attacker_formation_def = config.get_formation_def_by_env(attacker_env);
+        let target_formation_def = config.get_formation_def_by_env(target_env);
 
         let formation_power_mod = attacker_formation_def
             .and_then(|def| def.torpedo.power_mod)

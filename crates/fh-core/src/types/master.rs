@@ -8,18 +8,14 @@ use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    attack::WarfareShipEnvironment,
     gear::IBonuses,
     gear_id,
     ship::ShipEquippable,
-    types::{
-        AntiAirCutinDef, DayCutinDef, FormationDef, GearAttr, GearState, GearType, NightCutinDef,
-        ShipAttr, SpeedGroup,
-    },
+    types::{GearAttr, GearState, GearType, ShipAttr, SpeedGroup},
     utils::MyArrayVec,
 };
 
-use super::{DayCutin, Formation, NightCutin, NormalFormationDef};
+use super::BattleConfig;
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct GearTypes(u8, u8, u8, u8, u8);
@@ -435,43 +431,6 @@ pub struct MasterEquippable {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, TS)]
-pub struct MasterConstants {
-    pub formations: Vec<FormationDef>,
-    pub anti_air_cutins: Vec<AntiAirCutinDef>,
-    pub day_cutins: Vec<DayCutinDef>,
-    pub night_cutins: Vec<NightCutinDef>,
-}
-
-impl MasterConstants {
-    pub fn get_formation_def(&self, env: &WarfareShipEnvironment) -> Option<&NormalFormationDef> {
-        let def = self
-            .formations
-            .iter()
-            .find(|def| env.formation == def.tag())?;
-
-        Some(def.get_normal_def(env.ship_index, env.fleet_len))
-    }
-
-    pub fn get_formation_fleet_anti_air_mod(&self, formation: Formation) -> f64 {
-        let found = self.formations.iter().find(|def| formation == def.tag());
-
-        if let Some(def) = found {
-            def.get_normal_def(0, 6).fleet_anti_air_mod
-        } else {
-            1.0
-        }
-    }
-
-    pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {
-        self.day_cutins.iter().find(|def| def.tag == cutin)
-    }
-
-    pub fn get_night_cutin_def(&self, cutin: NightCutin) -> Option<&NightCutinDef> {
-        self.night_cutins.iter().find(|def| def.tag == cutin)
-    }
-}
-
-#[derive(Debug, Default, Clone, Deserialize, TS)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
     pub gear_attrs: Vec<MasterAttrRule>,
@@ -480,7 +439,7 @@ pub struct MasterData {
     pub ship_banners: HashMap<String, String>,
     pub equippable: MasterEquippable,
     pub ibonuses: MasterIBonuses,
-    pub constants: MasterConstants,
+    pub constants: BattleConfig,
 }
 
 fn compile_attr_rules<T>(

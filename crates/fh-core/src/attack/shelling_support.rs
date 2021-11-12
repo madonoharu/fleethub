@@ -1,5 +1,5 @@
 use crate::{
-    types::{Engagement, MasterData},
+    types::{BattleConfig, Engagement},
     Ship,
 };
 
@@ -27,15 +27,15 @@ pub struct ShellingSupportAttackContext<'a> {
 
 impl<'a> ShellingSupportAttackContext<'a> {
     pub fn new(
-        master_data: &MasterData,
+        config: &BattleConfig,
         warfare_context: &'a WarfareContext,
         attack_type: ShellingAttackType,
     ) -> Self {
         let attacker_env = &warfare_context.attacker_env;
         let target_env = &warfare_context.target_env;
 
-        let attacker_formation_def = master_data.constants.get_formation_def(attacker_env);
-        let target_formation_def = master_data.constants.get_formation_def(target_env);
+        let attacker_formation_def = config.get_formation_def_by_env(attacker_env);
+        let target_formation_def = config.get_formation_def_by_env(target_env);
 
         let formation_power_mod = attacker_formation_def
             .and_then(|def| def.shelling_support.power_mod)
