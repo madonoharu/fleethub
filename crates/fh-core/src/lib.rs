@@ -178,7 +178,7 @@ impl FhCore {
         enemy: &mut Org,
         params: ShellingSupportSimulatorParams,
         times: usize,
-    ) -> SimulatorResult {
+    ) -> Result<SimulatorResult, JsValue> {
         use simulator::ShellingSupportSimulator;
         let mut rng = rand::thread_rng();
         let config = &self.factory.master_data.config;
@@ -188,5 +188,6 @@ impl FhCore {
             ShellingSupportSimulator::new(&mut rng, config, player, &mut enemy_comp, params);
 
         sim.run(times)
+            .map_err(|err| JsValue::from(&err.to_string()))
     }
 }

@@ -28,6 +28,8 @@ pub struct ShipEquippable {
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Ship {
+    #[wasm_bindgen(getter_with_clone)]
+    pub id: String,
     pub(crate) xxh3: u64,
 
     #[wasm_bindgen(readonly)]
@@ -253,6 +255,7 @@ impl Ship {
             .collect();
 
         let mut ship = Ship {
+            id: state.id.clone().unwrap_or_default(),
             xxh3,
 
             ship_id: state.ship_id,
@@ -1064,13 +1067,8 @@ impl Ship {
         Default::default()
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn id(&self) -> String {
-        self.state.id.clone().unwrap_or_default()
-    }
-
     pub fn eq_id(&self, id: &str) -> bool {
-        matches!(self.state.id.as_ref(), Some(state_id) if state_id == id)
+        self.id.eq(id)
     }
 
     #[wasm_bindgen(getter)]

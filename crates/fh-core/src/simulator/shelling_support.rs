@@ -1,3 +1,4 @@
+use anyhow::Result;
 use fh_macro::FhAbi;
 use rand::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -49,19 +50,35 @@ impl Comp {
             .as_mut()
             .and_then(|f| f.choose_target(rng, attacker));
 
-        if let Some(m) = m {
-            let (t, i) = if m.1 == 0 && rng.gen_bool(protection_rate) {
-                self.main.choose_target(rng, attacker)?
-            } else {
-                m
-            };
+        match (m, e) {
+            (Some(m), Some(e)) => {
+                if rng.gen_bool(0.5) {
+                    let (t, i) = e;
+                    let ship = self.escort.as_mut()?.ships.get_mut(i)?;
+                    Some((t, i, ship))
+                } else {
+                    let (t, i) = if m.1 == 0 && rng.gen_bool(protection_rate) {
+                        self.main.choose_target(rng, attacker)?
+                    } else {
+                        m
+                    };
 
-            let ship = self.main.ships.get_mut(i)?;
-            Some((t, i, ship))
-        } else {
-            let (t, i) = e?;
-            let ship = self.escort.as_mut()?.ships.get_mut(i)?;
-            Some((t, i, ship))
+                    let ship = self.main.ships.get_mut(i)?;
+                    Some((t, i, ship))
+                }
+            }
+
+            (Some((t, i)), None) => {
+                let ship = self.main.ships.get_mut(i)?;
+                Some((t, i, ship))
+            }
+
+            (None, Some((t, i))) => {
+                let ship = self.escort.as_mut()?.ships.get_mut(i)?;
+                Some((t, i, ship))
+            }
+
+            _ => None,
         }
     }
 }
@@ -92,15 +109,20 @@ impl<'a, R> ShellingSupportBattle<'a, R>
 where
     R: Rng + ?Sized,
 {
-    fn attack(&mut self, attacker: &Ship) -> Option<()> {
+    fn attack(&mut self, attacker: &Ship) -> Result<()> {
         let protection_rate = self
             .target_formation_def
             .protection_rate
             .unwrap_or_default();
 
-        let (attack_type, _, target) =
-            self.target_comp
-                .choose_target(self.rng, attacker, protection_rate)?;
+        let chosen = self
+            .target_comp
+            .choose_target(self.rng, attacker, protection_rate);
+
+        let (attack_type, _, target) = match chosen {
+            Some(v) => v,
+            None => return Ok(()),
+        };
 
         let target_side = Side::Enemy;
         let armor_penetration = 0.0;
@@ -119,16 +141,17 @@ where
         .into_attack_params()
         .into_attack();
 
-        let damage_value = attack.gen_damage_value(self.rng);
+        let damage_value = attack.gen_damage_value(self.rng)?;
         target.take_damage(damage_value);
 
-        Some(())
+        Ok(())
     }
 
-    fn run(&mut self) {
-        self.attacker_fleet.ships.values().for_each(|attacker| {
-            self.attack(attacker);
-        });
+    fn run(&mut self) -> Result<()> {
+        self.attacker_fleet
+            .ships
+            .values()
+            .try_for_each(|attacker| self.attack(attacker))
     }
 }
 
@@ -174,15 +197,16 @@ where
         }
     }
 
-    pub fn run(&mut self, times: usize) -> SimulatorResult {
+    pub fn run(&mut self, times: usize) -> Result<SimulatorResult> {
         let mut logger = BattleLogger::new(times);
 
-        (0..times).for_each(|_| {
-            self.battle.run();
-            logger.write(&self.battle.target_comp.main);
-            self.battle.target_comp.main.reset_battle_state();
-        });
+        (0..times).try_for_each(|_| -> Result<()> {
+            self.battle.run()?;
+            logger.write(&self.battle.target_comp);
+            self.battle.target_comp.reset_battle_state();
+            Ok(())
+        })?;
 
-        logger.into_simulator_result()
+        Ok(logger.into_simulator_result())
     }
 }

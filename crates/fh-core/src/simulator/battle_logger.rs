@@ -6,13 +6,13 @@ use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::{fleet::Fleet, types::DamageState};
+use crate::{comp::Comp, types::DamageState};
 
 #[derive(Debug, Default)]
 pub struct BattleLogger {
     times: usize,
     sunk_counter: Counter<usize>,
-    damage_map: HashMap<u16, Counter<DamageState>>,
+    damage_map: HashMap<String, Counter<DamageState>>,
 }
 
 impl BattleLogger {
@@ -23,15 +23,20 @@ impl BattleLogger {
         }
     }
 
-    pub fn write(&mut self, fleet: &Fleet) {
-        let sunk_count = fleet
-            .ships
-            .values()
-            .filter(|ship| {
-                let ds_counter = self
-                    .damage_map
-                    .entry(ship.ship_id)
-                    .or_insert_with(Counter::new);
+    pub fn write(&mut self, comp: &Comp) {
+        let sunk_count = comp
+            .ships()
+            .filter(|(_, _, ship)| {
+                let ds_counter = match self.damage_map.get_mut(&ship.id) {
+                    Some(c) => c,
+                    None => {
+                        assert!(!ship.id.is_empty(), "Ship id is empty!");
+
+                        self.damage_map
+                            .entry(ship.id.clone())
+                            .or_insert_with(Counter::new)
+                    }
+                };
 
                 let ds = ship.damage_state();
                 ds_counter[&ds] += 1;
@@ -48,7 +53,7 @@ impl BattleLogger {
         let items = self
             .damage_map
             .into_iter()
-            .map(|(ship_id, counter)| {
+            .map(|(id, counter)| {
                 let damage_state_map = counter
                     .into_map()
                     .into_iter()
@@ -56,7 +61,7 @@ impl BattleLogger {
                     .collect::<HashMap<_, _>>();
 
                 SimulatorResultItem {
-                    ship_id,
+                    id,
                     damage_state_map,
                 }
             })
@@ -80,7 +85,7 @@ impl BattleLogger {
 
 #[derive(Debug, Clone, Serialize, Deserialize, FhAbi, TS)]
 pub struct SimulatorResultItem {
-    pub ship_id: u16,
+    pub id: String,
     pub damage_state_map: HashMap<DamageState, f64>,
 }
 

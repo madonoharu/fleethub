@@ -96,13 +96,16 @@ impl Org {
     }
 
     pub fn get_ship_entity_id(&self, role: Role, key: &str) -> Option<String> {
-        self.get_ship(role, key).map(|ship| ship.id())
+        self.get_fleet_by_role(role)
+            .ships
+            .get_by_ship_key(key)
+            .map(|ship| ship.id.clone())
     }
 
     pub fn air_squadron_ids(&self) -> Vec<JsString> {
         [&self.a1.id, &self.a2.id, &self.a3.id]
             .iter()
-            .map(|&id| JsString::from(id.clone()))
+            .map(|&id| id.clone().into())
             .collect()
     }
 
