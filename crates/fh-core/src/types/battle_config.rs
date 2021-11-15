@@ -81,7 +81,8 @@ impl NestedFormationDef {
                 top_half,
                 bottom_half,
             } => {
-                if ship_index < fleet_len / 2 {
+                let is_top_half = ship_index < fleet_len / 2;
+                if is_top_half {
                     top_half
                 } else {
                     bottom_half
@@ -106,7 +107,6 @@ impl AntiAirCutinDef {
     }
 
     pub fn is_sequential(&self) -> bool {
-        crate::log!("{} {:?}", self.id, self.sequential);
         self.sequential.unwrap_or_default()
     }
 }
@@ -206,23 +206,20 @@ impl BattleConfig {
         formation: Formation,
         fleet_len: usize,
         ship_index: usize,
-    ) -> Option<&FormationDef> {
-        let nfd = self.formation.iter().find(|nfd| formation == nfd.tag())?;
-        Some(nfd.get_def(fleet_len, ship_index))
+    ) -> &FormationDef {
+        self.formation
+            .iter()
+            .find(|nfd| formation == nfd.tag())
+            .map(|nfd| nfd.get_def(fleet_len, ship_index))
+            .unwrap_or_else(|| unreachable!())
     }
 
-    pub fn get_formation_def_by_env(&self, env: &WarfareShipEnvironment) -> Option<&FormationDef> {
+    pub fn get_formation_def_by_env(&self, env: &WarfareShipEnvironment) -> &FormationDef {
         self.get_formation_def(env.formation, env.fleet_len, env.ship_index)
     }
 
     pub fn get_formation_fleet_anti_air_mod(&self, formation: Formation) -> f64 {
-        let found = self.formation.iter().find(|nfd| formation == nfd.tag());
-
-        if let Some(nfd) = found {
-            nfd.get_def(0, 6).fleet_anti_air_mod
-        } else {
-            1.0
-        }
+        self.get_formation_def(formation, 0, 6).fleet_anti_air_mod
     }
 
     pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {

@@ -1,6 +1,7 @@
 mod array;
-pub mod console;
+mod console;
 mod num_map;
+mod probability;
 mod random_range;
 mod to_distribution;
 mod xxh3;

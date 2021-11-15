@@ -9,9 +9,11 @@ pub mod org;
 pub mod ship;
 
 pub mod attack;
+pub mod simulator;
 pub mod types;
 pub mod utils;
 
+use simulator::{ShellingSupportSimulatorParams, SimulatorResult};
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
@@ -99,7 +101,7 @@ impl FhCore {
     }
 
     fn org_analyzer(&self) -> OrgAnalyzer {
-        OrgAnalyzer::new(&self.factory.master_data.constants)
+        OrgAnalyzer::new(&self.factory.master_data.config)
     }
 
     pub fn analyze_anti_air(
@@ -155,7 +157,8 @@ impl FhCore {
         attacker: &Ship,
         target: &Ship,
     ) -> WarfareInfo {
-        let analyzer = WarfareAnalyzer::new(&self.factory.master_data, &params, attacker, target);
+        let analyzer =
+            WarfareAnalyzer::new(&self.factory.master_data.config, &params, attacker, target);
         analyzer.analyze()
     }
 
@@ -165,7 +168,25 @@ impl FhCore {
         key: &str,
         engagement: Engagement,
     ) -> FleetCutinAnalysis {
-        let comp = org.get_comp_by_key(key);
-        FleetCutinAnalyzer::new(&self.factory.master_data, comp, engagement).analyze()
+        let comp = org.create_comp_by_key(key);
+        FleetCutinAnalyzer::new(&self.factory.master_data.config, comp, engagement).analyze()
+    }
+
+    pub fn simulate_shelling_support(
+        &self,
+        player: &mut Fleet,
+        enemy: &mut Org,
+        params: ShellingSupportSimulatorParams,
+        times: usize,
+    ) -> SimulatorResult {
+        use simulator::ShellingSupportSimulator;
+        let mut rng = rand::thread_rng();
+        let config = &self.factory.master_data.config;
+        let mut enemy_comp = enemy.create_comp_by_key("f1");
+
+        let mut sim =
+            ShellingSupportSimulator::new(&mut rng, config, player, &mut enemy_comp, params);
+
+        sim.run(times)
     }
 }

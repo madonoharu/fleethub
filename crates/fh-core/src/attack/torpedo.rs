@@ -32,15 +32,9 @@ impl<'a> TorpedoAttackContext<'a> {
         let attacker_formation_def = config.get_formation_def_by_env(attacker_env);
         let target_formation_def = config.get_formation_def_by_env(target_env);
 
-        let formation_power_mod = attacker_formation_def
-            .and_then(|def| def.torpedo.power_mod)
-            .unwrap_or(1.0);
-        let formation_accuracy_mod = attacker_formation_def
-            .and_then(|def| def.torpedo.accuracy_mod)
-            .unwrap_or(1.0);
-        let target_formation_evasion_mod = target_formation_def
-            .and_then(|def| def.torpedo.evasion_mod)
-            .unwrap_or(1.0);
+        let formation_power_mod = attacker_formation_def.torpedo.power_mod.unwrap_or(1.0);
+        let formation_accuracy_mod = attacker_formation_def.torpedo.accuracy_mod.unwrap_or(1.0);
+        let target_formation_evasion_mod = target_formation_def.torpedo.evasion_mod.unwrap_or(1.0);
 
         Self {
             attacker_env,
@@ -133,7 +127,11 @@ impl<'a> TorpedoAttackContext<'a> {
         AttackParams {
             attack_power_params,
             hit_rate_params: calc_hit_rate_params(),
-            defense_params: DefenseParams::from_target(self.target_env, target, armor_penetration),
+            defense_params: DefenseParams::from_target(
+                target,
+                self.target_env.org_type.side(),
+                armor_penetration,
+            ),
             hits: 1.0,
             is_cutin: false,
         }

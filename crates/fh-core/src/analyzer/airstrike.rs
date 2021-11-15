@@ -90,7 +90,7 @@ fn analyze_ships_contact_chance(ships: Vec<&Ship>) -> Option<Vec<AirstrikeContac
 }
 
 pub fn analyze_org_contact_chance(org: &Org, key: &str) -> OrgContactChanceInfo {
-    let comp = org.get_comp_by_key(key);
+    let comp = org.create_comp_by_key(key);
 
     let single = analyze_ships_contact_chance(comp.main.ships.values().collect());
 

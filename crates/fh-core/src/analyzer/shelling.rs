@@ -11,7 +11,6 @@ use crate::{
 #[derive(Debug, Default, Serialize, TS)]
 pub struct DayCutinRateInfo {
     pub observation_term: Option<f64>,
-    #[ts(type = "Array<[DayCutin | null, number | null]>")]
     pub rates: Vec<(Option<DayCutin>, Option<f64>)>,
     pub total_cutin_rate: Option<f64>,
 }
@@ -148,12 +147,13 @@ impl<'a> OrgShellingAnalyzer<'a> {
     pub fn analyze_org(&self, org: &Org, key: &str) -> OrgDayCutinRateInfo {
         let day_cutin_defs = &self.config.day_cutin;
 
-        let main_and_escort = org.get_comp_by_key(key);
+        let comp = org.create_comp_by_key(key);
 
         OrgDayCutinRateInfo {
-            main: FleetDayCutinRateInfo::new(day_cutin_defs, main_and_escort.main, Role::Main),
-            escort: main_and_escort
+            main: FleetDayCutinRateInfo::new(day_cutin_defs, &comp.main, Role::Main),
+            escort: comp
                 .escort
+                .as_ref()
                 .map(|fleet| FleetDayCutinRateInfo::new(day_cutin_defs, fleet, Role::Escort)),
         }
     }

@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
@@ -212,6 +214,14 @@ impl PartialEq for Ship {
 
     fn ne(&self, other: &Self) -> bool {
         !self.eq(other)
+    }
+}
+
+impl Eq for Ship {}
+
+impl Hash for Ship {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.xxh3.hash(state);
     }
 }
 
@@ -1882,6 +1892,10 @@ impl Ship {
         let ebonus = self.ebonuses.effective_los as f64;
 
         Some((naked_los + ebonus).sqrt() + total * (node_divaricated_factor as f64) - 2.0)
+    }
+
+    pub fn take_damage(&mut self, value: u16) {
+        self.current_hp = self.current_hp.saturating_sub(value);
     }
 }
 

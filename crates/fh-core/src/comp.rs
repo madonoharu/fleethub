@@ -37,26 +37,26 @@ impl<'a> Iterator for CompShips<'a> {
         }
     }
 }
-pub struct Comp<'a> {
+pub struct Comp {
     pub org_type: OrgType,
-    pub main: &'a Fleet,
-    pub escort: Option<&'a Fleet>,
+    pub main: Fleet,
+    pub escort: Option<Fleet>,
 }
 
-impl<'a> Comp<'a> {
+impl Comp {
     pub fn is_combined(&self) -> bool {
         self.escort.is_some()
     }
 
-    pub fn night_fleet(&self) -> &'a Fleet {
-        self.escort.unwrap_or(self.main)
+    pub fn night_fleet(&self) -> &Fleet {
+        self.escort.as_ref().unwrap_or_else(|| &self.main)
     }
 
-    pub fn ships(&self) -> CompShips<'a> {
+    pub fn ships(&self) -> CompShips {
         CompShips {
             count: 0,
             main_ships: &self.main.ships,
-            escort_ships: self.escort.map(|f| &f.ships),
+            escort_ships: self.escort.as_ref().map(|f| &f.ships),
         }
     }
 
@@ -71,8 +71,8 @@ impl<'a> Comp<'a> {
             .unwrap_or_default();
 
         let fleet = match role {
-            Role::Main => self.main,
-            Role::Escort => self.escort.unwrap_or_else(|| unreachable!()),
+            Role::Main => &self.main,
+            Role::Escort => self.escort.as_ref().unwrap_or_else(|| unreachable!()),
         };
 
         WarfareShipEnvironment {
@@ -108,7 +108,7 @@ impl<'a> Comp<'a> {
         if !anti_combined {
             Some(main_fp)
         } else {
-            let escort_fp = self.escort?.fighter_power(anti_lbas)?;
+            let escort_fp = self.escort.as_ref()?.fighter_power(anti_lbas)?;
             Some(main_fp + escort_fp)
         }
     }
@@ -117,11 +117,18 @@ impl<'a> Comp<'a> {
     pub fn elos(&self, hq_level: u8, node_divaricated_factor: u8) -> Option<f64> {
         let main_elos = self.main.elos(hq_level, node_divaricated_factor)?;
 
-        if let Some(escort) = self.escort {
+        if let Some(escort) = self.escort.as_ref() {
             let escort_elos = escort.elos(hq_level, node_divaricated_factor)?;
             Some(main_elos + escort_elos)
         } else {
             Some(main_elos)
         }
+    }
+
+    /// 輸送物資量(TP)
+    pub fn transport_point(&self) -> i32 {
+        self.ships()
+            .map(|(_, _, ship)| ship.transport_point())
+            .sum()
     }
 }

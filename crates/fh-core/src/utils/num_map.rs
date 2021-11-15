@@ -1,5 +1,4 @@
 use std::{
-    any::TypeId,
     collections::{hash_map, HashMap},
     hash::Hash,
     iter::{FromIterator, Sum},
@@ -9,7 +8,7 @@ use std::{
 use counter::Counter;
 use num_traits::Zero;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use ts_rs::{Dependency, TS};
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct NumMap<K, V>
@@ -225,7 +224,7 @@ where
         HashMap::<K, V>::name()
     }
 
-    fn dependencies() -> Vec<(TypeId, String)> {
+    fn dependencies() -> Vec<Dependency> {
         HashMap::<K, V>::dependencies()
     }
 

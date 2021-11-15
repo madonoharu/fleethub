@@ -74,20 +74,14 @@ impl<'a> AswAttackContext<'a> {
         let attacker_formation_def = config.get_formation_def_by_env(attacker_env);
         let target_formation_def = config.get_formation_def_by_env(target_env);
 
-        let formation_power_mod = attacker_formation_def
-            .and_then(|def| def.asw.power_mod)
-            .unwrap_or(1.0);
+        let formation_power_mod = attacker_formation_def.asw.power_mod.unwrap_or(1.0);
         let formation_accuracy_mod = if attacker_env.formation.is_ineffective(target_env.formation)
         {
             1.0
         } else {
-            attacker_formation_def
-                .and_then(|def| def.asw.accuracy_mod)
-                .unwrap_or(1.0)
+            attacker_formation_def.asw.accuracy_mod.unwrap_or(1.0)
         };
-        let formation_evasion_mod = target_formation_def
-            .and_then(|def| def.asw.evasion_mod)
-            .unwrap_or(1.0);
+        let formation_evasion_mod = target_formation_def.asw.evasion_mod.unwrap_or(1.0);
 
         Self {
             attack_type,
@@ -218,7 +212,8 @@ impl<'a> AswAttackContext<'a> {
 
         let attack_power_params = calc_attack_power_params();
         let hit_rate_params = calc_hit_rate_params();
-        let defense_params = DefenseParams::from_target(self.target_env, target, armor_penetration);
+        let defense_params =
+            DefenseParams::from_target(target, self.target_env.org_type.side(), armor_penetration);
 
         AttackParams {
             attack_power_params,

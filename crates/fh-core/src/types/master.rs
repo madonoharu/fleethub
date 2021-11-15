@@ -439,7 +439,7 @@ pub struct MasterData {
     pub ship_banners: HashMap<String, String>,
     pub equippable: MasterEquippable,
     pub ibonuses: MasterIBonuses,
-    pub constants: BattleConfig,
+    pub config: BattleConfig,
 }
 
 fn compile_attr_rules<T>(
