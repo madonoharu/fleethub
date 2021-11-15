@@ -113,7 +113,6 @@ impl Fleet {
 #[derive(Debug, Default, Serialize, TS)]
 pub struct NightCutinRateInfo {
     pub cutin_term: Option<f64>,
-    #[ts(type = "Array<[NightCutin | null, number | null]>")]
     pub rates: Vec<(Option<NightCutin>, Option<f64>)>,
 }
 

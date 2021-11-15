@@ -55,13 +55,13 @@ impl<'a> NightAttackContext<'a> {
 
         let attacker_formation_mods = config
             .get_formation_def_by_env(attacker_env)
-            .map(|def| def.night.to_modifiers())
-            .unwrap_or_default();
+            .night
+            .to_modifiers();
 
         let target_formation_mods = config
             .get_formation_def_by_env(target_env)
-            .map(|def| def.night.to_modifiers())
-            .unwrap_or_default();
+            .night
+            .to_modifiers();
 
         Self {
             attacker_env,
@@ -143,7 +143,8 @@ impl<'a> NightAttackContext<'a> {
         let armor_penetration = attack_power_params
             .as_ref()
             .map_or(0.0, |p| p.armor_penetration);
-        let defense_params = DefenseParams::from_target(&ctx.target_env, target, armor_penetration);
+        let defense_params =
+            DefenseParams::from_target(target, ctx.target_env.org_type.side(), armor_penetration);
 
         AttackParams {
             attack_power_params,

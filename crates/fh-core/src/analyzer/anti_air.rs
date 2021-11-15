@@ -215,7 +215,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         let side = org.side();
         let anti_air_cutin = None;
 
-        let comp = org.get_comp_by_key(key);
+        let comp = org.create_comp_by_key(key);
         let is_combined = comp.is_combined();
 
         let ships = comp

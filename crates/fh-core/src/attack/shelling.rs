@@ -68,20 +68,14 @@ impl<'a> ShellingAttackContext<'a> {
         let attacker_formation_def = config.get_formation_def_by_env(attacker_env);
         let target_formation_def = config.get_formation_def_by_env(target_env);
 
-        let formation_power_mod = attacker_formation_def
-            .and_then(|def| def.shelling.power_mod)
-            .unwrap_or(1.0);
+        let formation_power_mod = attacker_formation_def.shelling.power_mod.unwrap_or(1.0);
         let formation_accuracy_mod = if attacker_env.formation.is_ineffective(target_env.formation)
         {
             1.0
         } else {
-            attacker_formation_def
-                .and_then(|def| def.shelling.accuracy_mod)
-                .unwrap_or(1.0)
+            attacker_formation_def.shelling.accuracy_mod.unwrap_or(1.0)
         };
-        let target_formation_evasion_mod = target_formation_def
-            .and_then(|def| def.shelling.evasion_mod)
-            .unwrap_or(1.0);
+        let target_formation_evasion_mod = target_formation_def.shelling.evasion_mod.unwrap_or(1.0);
 
         // let cutin_def = cutin.and_then(|cutin| master_data.constants.get_day_cutin_def(cutin));
         // let cutin_power_mod = cutin_def.and_then(|def| def.power_mod).unwrap_or(1.0);
@@ -241,7 +235,8 @@ impl<'a> ShellingAttackContext<'a> {
         };
 
         let armor_penetration = 0.0;
-        let defense_params = DefenseParams::from_target(&ctx.target_env, target, armor_penetration);
+        let defense_params =
+            DefenseParams::from_target(target, ctx.target_env.org_type.side(), armor_penetration);
 
         AttackParams {
             attack_power_params: calc_attack_power_params(),

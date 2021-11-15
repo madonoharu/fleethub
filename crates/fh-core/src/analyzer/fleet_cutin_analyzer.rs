@@ -41,7 +41,7 @@ pub struct FleetCutinAnalysis {
 
 pub struct FleetCutinAnalyzer<'a> {
     config: &'a BattleConfig,
-    comp: Comp<'a>,
+    comp: Comp,
     engagement: Engagement,
     air_state: AirState,
     target: Ship,
@@ -51,7 +51,7 @@ pub struct FleetCutinAnalyzer<'a> {
 }
 
 impl<'a> FleetCutinAnalyzer<'a> {
-    pub fn new(config: &'a BattleConfig, comp: Comp<'a>, engagement: Engagement) -> Self {
+    pub fn new(config: &'a BattleConfig, comp: Comp, engagement: Engagement) -> Self {
         Self {
             config,
             comp,

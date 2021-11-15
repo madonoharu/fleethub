@@ -8,7 +8,7 @@ use std::{
 
 use arrayvec::ArrayVec;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use ts_rs::{Dependency, TS};
 
 #[derive(Debug, Clone, Default)]
 pub struct OptionalArray<T: Debug + Default + Clone, const N: usize>(pub ArrayVec<Option<T>, N>);
@@ -39,8 +39,19 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
             .filter_map(|(index, item)| item.as_ref().map(|value| (index, value)))
     }
 
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = (usize, &mut T)> {
+        self.0
+            .iter_mut()
+            .enumerate()
+            .filter_map(|(index, item)| item.as_mut().map(|value| (index, value)))
+    }
+
     pub fn values(&self) -> impl Iterator<Item = &T> {
         self.0.iter().filter_map(|item| item.as_ref())
+    }
+
+    pub fn values_mut(&mut self) -> impl Iterator<Item = &mut T> {
+        self.0.iter_mut().filter_map(|item| item.as_mut())
     }
 
     pub fn push(&mut self, value: T) {
@@ -49,6 +60,10 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
 
     pub fn get(&self, index: usize) -> Option<&T> {
         self.0.get(index)?.as_ref()
+    }
+
+    pub fn get_mut(&mut self, index: usize) -> Option<&mut T> {
+        self.0.get_mut(index)?.as_mut()
     }
 
     pub fn sum_by<U: Sum, F: FnMut(&T) -> U>(&self, cb: F) -> U {
@@ -107,7 +122,7 @@ where
         Vec::<T>::name()
     }
 
-    fn dependencies() -> Vec<(std::any::TypeId, String)> {
+    fn dependencies() -> Vec<Dependency> {
         Vec::<T>::dependencies()
     }
 

@@ -209,4 +209,10 @@ impl Fleet {
             }
         }
     }
+
+    pub fn reset_battle_state(&mut self) {
+        self.ships.values_mut().for_each(|ship| {
+            ship.current_hp = ship.max_hp().unwrap_or_default();
+        });
+    }
 }

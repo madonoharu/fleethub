@@ -24,6 +24,7 @@ import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
 import OrgShipSelect from "./OrgShipSelect";
+import SimulatorResultTable from "./SimulatorResultTable";
 import WarfareDetails from "./WarfareDetails";
 
 type StepDetailsProps = {
@@ -51,7 +52,6 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
   );
 
   if (!playerOrg || !enemyOrg) return null;
-
   const config = step.config || initalStepConfig;
 
   const bind =
@@ -61,9 +61,11 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         set(draft, path, value);
       });
 
+      console.log(next);
+
       dispatch(
         stepsSlices.actions.update({
-          id: plan.id,
+          id: step.id,
           changes: { config: next },
         })
       );
@@ -178,6 +180,14 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
           playerShip={playerShip}
           enemyOrg={enemyOrg}
           enemyShip={enemyShip}
+          config={config}
+        />
+      )}
+
+      {playerOrg && enemyOrg && (
+        <SimulatorResultTable
+          player={playerOrg}
+          enemy={enemyOrg}
           config={config}
         />
       )}
