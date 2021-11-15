@@ -1,3 +1,4 @@
+use anyhow::{Context, Result};
 use rand::Rng;
 
 use super::{AttackPower, AttackPowerParams, Damage, DefenseParams, HitRate, HitRateParams};
@@ -11,18 +12,16 @@ pub struct Attack {
 }
 
 impl Attack {
-    pub fn gen_damage_value<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
+    pub fn gen_damage_value<R: Rng + ?Sized>(&self, rng: &mut R) -> Result<u16> {
         let attack_power = self
             .attack_power
-            .as_ref()
-            .expect("attack_powerが不明です")
-            .clone();
+            .clone()
+            .context("attack_powerが不明です")?;
         let defense_params = self
             .defense_params
-            .as_ref()
-            .expect("defense_paramsが不明です")
-            .clone();
-        let hit_rate = self.hit_rate.as_ref().expect("hit_rateが不明です");
+            .clone()
+            .context("defense_paramsが不明です")?;
+        let hit_rate = self.hit_rate.as_ref().context("hit_rateが不明です")?;
 
         let hit_type = hit_rate.gen(rng);
 
@@ -33,7 +32,7 @@ impl Attack {
             is_cutin: self.is_cutin,
         };
 
-        damage.gen(rng)
+        Ok(damage.gen(rng))
     }
 }
 

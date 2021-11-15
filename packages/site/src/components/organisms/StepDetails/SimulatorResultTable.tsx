@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { FleetKey } from "@fh/utils";
-import { Org } from "fleethub-core";
+import { Org, SimulatorResult } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -25,19 +25,30 @@ const SimulatorResultTable: React.FCX<Props> = ({ player, enemy, config }) => {
   const pf = player.clone_fleet("f1");
   const times = 10000;
   const timeLabel = `simulate: ${times}`;
-  console.time(timeLabel);
-  const simResult = core.simulate_shelling_support(
-    pf,
-    enemy,
-    {
-      engagement: config.engagement,
-      attacker_formation: config.player.formation,
-      target_formation: config.enemy.formation,
-      external_power_mods: config.player.external_power_mods,
-    },
-    times
-  );
-  console.timeEnd(timeLabel);
+
+  let simResult: SimulatorResult | undefined;
+
+  try {
+    console.time(timeLabel);
+    simResult = core.simulate_shelling_support(
+      pf,
+      enemy,
+      {
+        engagement: config.engagement,
+        attacker_formation: config.player.formation,
+        target_formation: config.enemy.formation,
+        external_power_mods: config.player.external_power_mods,
+      },
+      times
+    );
+    console.timeEnd(timeLabel);
+  } catch (err) {
+    console.error(err);
+  }
+
+  if (!simResult) {
+    return null;
+  }
 
   return (
     <div>
@@ -50,11 +61,11 @@ const SimulatorResultTable: React.FCX<Props> = ({ player, enemy, config }) => {
             getValue: ([n]) => n,
           },
           {
-            label: "確率",
+            label: t("Rate"),
             getValue: (item) => toPercent(item[1]),
           },
           {
-            label: "Cumulative",
+            label: t("Cumulative"),
             getValue: (item) => toPercent(item[2]),
           },
         ]}
@@ -63,11 +74,14 @@ const SimulatorResultTable: React.FCX<Props> = ({ player, enemy, config }) => {
         data={simResult.items}
         columns={[
           {
-            label: "ship",
-            getValue: (item) => <ShipBanner shipId={item.ship_id} />,
+            label: t("Ship"),
+            getValue: (item) => {
+              const ship = enemy.get_ship_by_id(item.id);
+              return <ShipBanner shipId={ship?.ship_id || 0} />;
+            },
           },
           {
-            label: "map",
+            label: t("Distribution"),
             getValue: (item) => (
               <DamageStateMapBarChart data={item.damage_state_map} />
             ),

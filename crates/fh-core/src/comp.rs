@@ -60,6 +60,11 @@ impl Comp {
         }
     }
 
+    pub fn reset_battle_state(&mut self) {
+        self.main.reset_battle_state();
+        self.escort.as_mut().map(|f| f.reset_battle_state());
+    }
+
     pub fn create_warfare_ship_environment(
         &self,
         ship: &Ship,
