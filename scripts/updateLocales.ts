@@ -738,7 +738,7 @@ class LocaleUpdater {
 }
 
 const updateLocales = async () => {
-  const md: MasterData = await storage.readJson("data/master_data.json");
+  const md: MasterData = await storage.readMasterData();
   const promises = languages.map((lang) =>
     new LocaleUpdater(md, lang).update()
   );
