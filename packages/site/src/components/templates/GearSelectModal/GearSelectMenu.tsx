@@ -14,7 +14,7 @@ import { Tabs, TabsProps } from "../../molecules";
 import GearList from "../GearList";
 import GearSearchMenu from "./GearSearchMenu";
 
-const GearSelectMenu: React.FCX = () => {
+const GearSelectMenu: React.FCX = ({ className }) => {
   const { module, core, masterData } = useFhCore();
 
   const gears = useMemo(
@@ -81,11 +81,7 @@ const GearSelectMenu: React.FCX = () => {
     },
   ];
 
-  return (
-    <div>
-      <Tabs sx={{ mb: 1 }} size="small" list={list} />
-    </div>
-  );
+  return <Tabs className={className} size="small" list={list} />;
 };
 
 export default GearSelectMenu;

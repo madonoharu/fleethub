@@ -17,7 +17,7 @@ macro_rules! gen_types {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let path = std::path::Path::new(&args[2]);
-    let fmt_config = ts_rs::export::FmtCfg::new().deno().build();
+
     use fh_core::*;
 
     let buffer = gen_types!(
@@ -37,8 +37,8 @@ fn main() {
         types::Engagement,
         types::Formation,
         types::FormationWarfareDef,
-        types::NormalFormationDef,
         types::FormationDef,
+        types::NestedFormationDef,
         types::DayCutin,
         types::NightAttackType,
         types::NightCutin,
@@ -59,6 +59,8 @@ fn main() {
         types::OrgState,
         types::SpeedGroup,
         types::GearTypes,
+        types::BattleConfig,
+
         types::MasterGear,
         types::MasterVariantDef,
         types::MasterAttrRule,
@@ -70,7 +72,6 @@ fn main() {
         types::MstEquipShip,
         types::MstEquipExslotShip,
         types::MasterEquippable,
-        types::MasterConstants,
         types::MasterData,
 
         attack::AttackPowerModifiers,
@@ -108,10 +109,17 @@ fn main() {
         analyzer::FleetCutinInfoItem,
         analyzer::FleetCutinInfo,
         analyzer::FleetCutinAnalysis,
+
+        simulator::ShellingSupportSimulatorParams,
+        simulator::SimulatorResultItem,
+        simulator::SimulatorResult,
     );
 
-    let buffer =
-        ts_rs::export::fmt_ts(path, &buffer, &fmt_config).expect("could not format output");
+    let config = dprint_plugin_typescript::configuration::ConfigurationBuilder::new()
+        .indent_width(2)
+        .line_width(80)
+        .build();
+    let buffer = dprint_plugin_typescript::format_text(path, &buffer, &config).unwrap();
 
     std::fs::write(path, buffer).expect("could not write file");
 }

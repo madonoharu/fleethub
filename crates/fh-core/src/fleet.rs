@@ -44,14 +44,14 @@ impl Fleet {
 
     pub fn ship_keys(&self) -> Vec<JsString> {
         (0..self.len)
-            .map(|i| JsString::from(format!("s{}", i + 1)))
+            .map(|i| format!("s{}", i + 1).into())
             .collect()
     }
 
     pub fn ship_ids(&self) -> Vec<JsString> {
         self.ships
             .values()
-            .map(|ship| JsString::from(ship.id()))
+            .map(|ship| ship.id.clone().into())
             .collect()
     }
 
@@ -208,5 +208,11 @@ impl Fleet {
                 panic!("{}: Not Implemented", key)
             }
         }
+    }
+
+    pub fn reset_battle_state(&mut self) {
+        self.ships.values_mut().for_each(|ship| {
+            ship.current_hp = ship.max_hp().unwrap_or_default();
+        });
     }
 }
