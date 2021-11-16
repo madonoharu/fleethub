@@ -1,7 +1,7 @@
 use crate::{
     attack::NightSituation,
     org::Org,
-    types::{Formation, MasterConstants},
+    types::{BattleConfig, Formation},
 };
 
 use super::{
@@ -10,12 +10,12 @@ use super::{
 };
 
 pub struct OrgAnalyzer<'a> {
-    master_constants: &'a MasterConstants,
+    config: &'a BattleConfig,
 }
 
 impl<'a> OrgAnalyzer<'a> {
-    pub fn new(master_constants: &'a MasterConstants) -> Self {
-        Self { master_constants }
+    pub fn new(config: &'a BattleConfig) -> Self {
+        Self { config }
     }
 
     pub fn analyze_contact_chance(&self, org: &Org, key: &str) -> OrgContactChanceInfo {
@@ -30,7 +30,7 @@ impl<'a> OrgAnalyzer<'a> {
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
     ) -> OrgAntiAirInfo {
-        AntiAirAnalyzer::new(&self.master_constants).analyze_org(
+        AntiAirAnalyzer::new(&self.config).analyze_org(
             org,
             key,
             formation,
@@ -40,7 +40,7 @@ impl<'a> OrgAnalyzer<'a> {
     }
 
     pub fn analyze_day_cutin(&self, org: &Org, key: &str) -> OrgDayCutinRateInfo {
-        OrgShellingAnalyzer::new(&self.master_constants).analyze_org(org, key)
+        OrgShellingAnalyzer::new(&self.config).analyze_org(org, key)
     }
 
     pub fn analyze_night_cutin(
@@ -51,7 +51,7 @@ impl<'a> OrgAnalyzer<'a> {
         defender_situation: NightSituation,
     ) -> FleetNightCutinRateInfo {
         let fleet = org.get_fleet_by_key(key);
-        NightCutinRateAnalyzer::new(&self.master_constants).analyze_fleet(
+        NightCutinRateAnalyzer::new(&self.config).analyze_fleet(
             fleet,
             &attacker_situation,
             &defender_situation,

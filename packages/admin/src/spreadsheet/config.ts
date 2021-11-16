@@ -4,7 +4,8 @@ import {
   Formation,
   FormationDef,
   NightCutinDef,
-  NormalFormationDef,
+  NestedFormationDef,
+  BattleConfig,
 } from "fleethub-core";
 import set from "lodash/set";
 
@@ -16,7 +17,7 @@ const maybeNumber = (val: unknown): number | null => {
   return Number.isNaN(num) ? null : num;
 };
 
-const getAntiAirCutins = (sheet: Sheet): AntiAirCutinDef[] => {
+const getAntiAirCutinDefs = (sheet: Sheet): AntiAirCutinDef[] => {
   const rows = sheet.rows;
   const headerValues = sheet.headerValues();
 
@@ -36,12 +37,14 @@ const getAntiAirCutins = (sheet: Sheet): AntiAirCutinDef[] => {
   });
 };
 
-const getFormations = (sheet: Sheet) => {
+const getFormationDefs = (sheet: Sheet) => {
+  const rec: Record<string, FormationDef> = {};
   const rows = sheet.rows;
   const headerValues = sheet.headerValues();
 
-  const normalDefs = rows.map((row) => {
-    const def = {} as Omit<NormalFormationDef, "tag"> & { tag: string };
+  rows.forEach((row) => {
+    const def = {} as Omit<NestedFormationDef, "tag"> & { tag: string };
+    const tag = row.tag as string;
 
     headerValues.forEach((h) => {
       const value = row[h];
@@ -53,22 +56,14 @@ const getFormations = (sheet: Sheet) => {
       }
     });
 
-    return def;
-  });
-
-  const rec: Record<string, FormationDef> = {};
-
-  normalDefs.forEach((def) => {
-    const { tag } = def;
-    set(rec, tag, def);
-
     def.tag = tag.replace(/\.(top_half|bottom_half)/, "") as Formation;
+    set(rec, tag, def);
   });
 
   return Object.values(rec);
 };
 
-const getDayCutins = (sheet: Sheet) => {
+const getDayCutinDefs = (sheet: Sheet) => {
   const rows = sheet.rows;
   const headerValues = sheet.headerValues();
 
@@ -88,7 +83,7 @@ const getDayCutins = (sheet: Sheet) => {
   });
 };
 
-const getNaightCutins = (sheet: Sheet) => {
+const getNaightCutinDefs = (sheet: Sheet) => {
   const rows = sheet.rows;
   const headerValues = sheet.headerValues();
 
@@ -108,18 +103,18 @@ const getNaightCutins = (sheet: Sheet) => {
   });
 };
 
-export const createConstants = (mdSheet: MasterDataSpreadsheet) => {
+export const createConfig = (mdSheet: MasterDataSpreadsheet): BattleConfig => {
   const sheets = mdSheet.pickSheets([
-    "anti_air_cutins",
-    "day_cutins",
-    "night_cutins",
-    "formations",
+    "anti_air_cutin",
+    "day_cutin",
+    "night_cutin",
+    "formation",
   ]);
 
   return {
-    anti_air_cutins: getAntiAirCutins(sheets.anti_air_cutins),
-    day_cutins: getDayCutins(sheets.day_cutins),
-    night_cutins: getNaightCutins(sheets.night_cutins),
-    formations: getFormations(sheets.formations),
+    anti_air_cutin: getAntiAirCutinDefs(sheets.anti_air_cutin),
+    day_cutin: getDayCutinDefs(sheets.day_cutin),
+    night_cutin: getNaightCutinDefs(sheets.night_cutin),
+    formation: getFormationDefs(sheets.formation),
   };
 };

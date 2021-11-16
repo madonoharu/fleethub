@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
@@ -26,6 +28,8 @@ pub struct ShipEquippable {
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Ship {
+    #[wasm_bindgen(getter_with_clone)]
+    pub id: String,
     pub(crate) xxh3: u64,
 
     #[wasm_bindgen(readonly)]
@@ -215,6 +219,14 @@ impl PartialEq for Ship {
     }
 }
 
+impl Eq for Ship {}
+
+impl Hash for Ship {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.xxh3.hash(state);
+    }
+}
+
 impl Ship {
     pub fn new(
         state: ShipState,
@@ -243,6 +255,7 @@ impl Ship {
             .collect();
 
         let mut ship = Ship {
+            id: state.id.clone().unwrap_or_default(),
             xxh3,
 
             ship_id: state.ship_id,
@@ -1054,13 +1067,8 @@ impl Ship {
         Default::default()
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn id(&self) -> String {
-        self.state.id.clone().unwrap_or_default()
-    }
-
     pub fn eq_id(&self, id: &str) -> bool {
-        matches!(self.state.id.as_ref(), Some(state_id) if state_id == id)
+        self.id.eq(id)
     }
 
     #[wasm_bindgen(getter)]
@@ -1882,6 +1890,10 @@ impl Ship {
         let ebonus = self.ebonuses.effective_los as f64;
 
         Some((naked_los + ebonus).sqrt() + total * (node_divaricated_factor as f64) - 2.0)
+    }
+
+    pub fn take_damage(&mut self, value: u16) {
+        self.current_hp = self.current_hp.saturating_sub(value);
     }
 }
 

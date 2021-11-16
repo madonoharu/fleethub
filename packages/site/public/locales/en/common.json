@@ -210,5 +210,11 @@
   "HitRate": "Hit Rate",
   "AccuracyTerm": "Accuracy Term",
   "EvasionTerm": "Evasion Term",
-  "ScratchDamage": "Scratch"
+  "HitPercentageBonus": "Hit Rate Bonus",
+  "CriticalPercentageBonus": "Critical Rate Bonus",
+  "CriticalRateConstant": "Critical Constant",
+  "ScratchDamage": "Scratch",
+  "Individual": "Individual",
+  "Cumulative": "Cumulative",
+  "Distribution": "Distribution"
 }

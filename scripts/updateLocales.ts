@@ -91,7 +91,14 @@ const fhCommonJa = {
   HitRate: "命中率",
   AccuracyTerm: "命中項",
   EvasionTerm: "回避項",
+  HitPercentageBonus: "命中率補正",
+  CriticalPercentageBonus: "クリティカル率補正",
+  CriticalRateConstant: "クリティカル定数",
   ScratchDamage: "割合",
+
+  Individual: "個別",
+  Cumulative: "累積",
+  Distribution: "分布",
 };
 
 const fhCommon: Record<
@@ -146,7 +153,14 @@ const fhCommon: Record<
     HitRate: "Hit Rate",
     AccuracyTerm: "Accuracy Term",
     EvasionTerm: "Evasion Term",
+    HitPercentageBonus: "Hit Rate Bonus",
+    CriticalPercentageBonus: "Critical Rate Bonus",
+    CriticalRateConstant: "Critical Constant",
     ScratchDamage: "Scratch",
+
+    Individual: "Individual",
+    Cumulative: "Cumulative",
+    Distribution: "Distribution",
   },
   ko: {
     Equipment: "장비",
@@ -195,7 +209,14 @@ const fhCommon: Record<
     HitRate: "명중률",
     AccuracyTerm: "정확율",
     EvasionTerm: "회피율",
+    HitPercentageBonus: "명중률 보정",
+    CriticalPercentageBonus: "크리티컬률 보정",
+    CriticalRateConstant: "크리티컬 상수",
     ScratchDamage: "지근탄",
+
+    Individual: "개별",
+    Cumulative: "누적",
+    Distribution: "분포",
   },
   "zh-CN": {
     Equipment: "装备",
@@ -244,7 +265,14 @@ const fhCommon: Record<
     HitRate: "命中率",
     AccuracyTerm: "命中值",
     EvasionTerm: "回避值",
+    HitPercentageBonus: "命中率补正",
+    CriticalPercentageBonus: "爆击率补正",
+    CriticalRateConstant: "爆击常数",
     ScratchDamage: "擦弹",
+
+    Individual: "单独",
+    Cumulative: "累积",
+    Distribution: "分布",
   },
   "zh-TW": {
     Equipment: "裝備",
@@ -293,7 +321,14 @@ const fhCommon: Record<
     HitRate: "命中率",
     AccuracyTerm: "命中值",
     EvasionTerm: "迴避值",
+    HitPercentageBonus: "命中率補正",
+    CriticalPercentageBonus: "爆擊率補正",
+    CriticalRateConstant: "爆擊常數",
     ScratchDamage: "擦彈",
+
+    Individual: "單獨",
+    Cumulative: "累積",
+    Distribution: "分佈",
   },
 };
 
@@ -738,7 +773,7 @@ class LocaleUpdater {
 }
 
 const updateLocales = async () => {
-  const md: MasterData = await storage.readJson("data/master_data.json");
+  const md: MasterData = await storage.readMasterData();
   const promises = languages.map((lang) =>
     new LocaleUpdater(md, lang).update()
   );

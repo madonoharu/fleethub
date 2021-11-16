@@ -1,17 +1,19 @@
 pub mod air_squadron;
 pub mod analyzer;
+pub mod comp;
 pub mod factory;
 pub mod fleet;
 pub mod gear;
 pub mod gear_array;
 pub mod org;
 pub mod ship;
-pub mod sortied_fleet;
 
 pub mod attack;
+pub mod simulator;
 pub mod types;
 pub mod utils;
 
+use simulator::{ShellingSupportSimulatorParams, SimulatorResult};
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
@@ -99,7 +101,7 @@ impl FhCore {
     }
 
     fn org_analyzer(&self) -> OrgAnalyzer {
-        OrgAnalyzer::new(&self.factory.master_data.constants)
+        OrgAnalyzer::new(&self.factory.master_data.config)
     }
 
     pub fn analyze_anti_air(
@@ -155,7 +157,8 @@ impl FhCore {
         attacker: &Ship,
         target: &Ship,
     ) -> WarfareInfo {
-        let analyzer = WarfareAnalyzer::new(&self.factory.master_data, &params, attacker, target);
+        let analyzer =
+            WarfareAnalyzer::new(&self.factory.master_data.config, &params, attacker, target);
         analyzer.analyze()
     }
 
@@ -165,7 +168,26 @@ impl FhCore {
         key: &str,
         engagement: Engagement,
     ) -> FleetCutinAnalysis {
-        let sf = org.get_sortied_fleet_by_key(key);
-        FleetCutinAnalyzer::new(&self.factory.master_data, sf, engagement).analyze()
+        let comp = org.create_comp_by_key(key);
+        FleetCutinAnalyzer::new(&self.factory.master_data.config, comp, engagement).analyze()
+    }
+
+    pub fn simulate_shelling_support(
+        &self,
+        player: &mut Fleet,
+        enemy: &mut Org,
+        params: ShellingSupportSimulatorParams,
+        times: usize,
+    ) -> Result<SimulatorResult, JsValue> {
+        use simulator::ShellingSupportSimulator;
+        let mut rng = rand::thread_rng();
+        let config = &self.factory.master_data.config;
+        let mut enemy_comp = enemy.create_comp_by_key("f1");
+
+        let mut sim =
+            ShellingSupportSimulator::new(&mut rng, config, player, &mut enemy_comp, params);
+
+        sim.run(times)
+            .map_err(|err| JsValue::from(&err.to_string()))
     }
 }

@@ -49,8 +49,4 @@ const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
 export default styled(FleetInfoPanel)`
   padding: 8px;
   min-height: 480px;
-
-  > .MuiTabs-root {
-    margin-bottom: 8px;
-  }
 `;

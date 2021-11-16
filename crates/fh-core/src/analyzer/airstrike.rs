@@ -90,14 +90,14 @@ fn analyze_ships_contact_chance(ships: Vec<&Ship>) -> Option<Vec<AirstrikeContac
 }
 
 pub fn analyze_org_contact_chance(org: &Org, key: &str) -> OrgContactChanceInfo {
-    let sf = org.get_sortied_fleet_by_key(key);
+    let comp = org.create_comp_by_key(key);
 
-    let single = analyze_ships_contact_chance(sf.main.ships.values().collect());
+    let single = analyze_ships_contact_chance(comp.main.ships.values().collect());
 
-    let combined = sf
+    let combined = comp
         .is_combined()
         .then(|| {
-            let combined_ships = sf.ships().map(|(_, _, s)| s).collect();
+            let combined_ships = comp.ships().map(|(_, _, s)| s).collect();
             analyze_ships_contact_chance(combined_ships)
         })
         .flatten();
