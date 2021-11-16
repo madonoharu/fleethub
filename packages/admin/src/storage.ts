@@ -12,13 +12,15 @@ export interface SaveOptions extends GcsSaveOptions {
   metadata?: Record<string, string>;
 }
 
-const MASTER_DATA_PATH = "data/master_data.json";
+export const GCS_PREFIX_URL =
+  "https://storage.googleapis.com/kcfleethub.appspot.com";
+export const MASTER_DATA_PATH = "data/master_data.json";
 
 export const getBucket = () => getApp().storage().bucket();
 
 export const readJson = <
   P extends string,
-  T extends P extends "data/master_data.json" ? MasterData : unknown
+  T extends P extends typeof MASTER_DATA_PATH ? MasterData : unknown
 >(
   path: P
 ) =>
@@ -126,10 +128,11 @@ export const mergeMasterData = async (
 
   console.log(`update: ${MASTER_DATA_PATH}`);
 
-  const cacheControl = "public, max-age=60";
   await writeJson(MASTER_DATA_PATH, next, {
     public: true,
-    metadata: { cacheControl },
+    metadata: {
+      cacheControl: "public, max-age=60",
+    },
   });
 
   return next;

@@ -8,7 +8,7 @@ import {
 import { Start2 } from "kc-tools";
 import { getServiceAccount } from "../credentials";
 import { updateRows } from "../utils";
-import { createConstants } from "./constants";
+import { createConfig } from "./config";
 import { createGearData } from "./gear";
 import { createShipData } from "./ship";
 
@@ -57,10 +57,10 @@ const sheetTitleMap = {
   elos: "改修マップ索敵",
 
   //設定
-  anti_air_cutins: "対空CI",
-  day_cutins: "昼戦CI",
-  night_cutins: "夜戦CI",
-  formations: "陣形",
+  anti_air_cutin: "対空CI",
+  day_cutin: "昼戦CI",
+  night_cutin: "夜戦CI",
+  formation: "陣形",
 };
 
 export type SheetRecord = Record<keyof typeof sheetTitleMap, Sheet>;
@@ -131,13 +131,13 @@ export class MasterDataSpreadsheet {
     const shipData = createShipData(this, start2);
     const gearData = createGearData(this, start2);
     const equippable = createEquippable(start2);
-    const constants = createConstants(this);
+    const config = createConfig(this);
 
     return {
       ...shipData,
       ...gearData,
       equippable,
-      constants,
+      config,
     };
   }
 

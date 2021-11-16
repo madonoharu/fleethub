@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
+import { Tooltip, Button, ButtonGroup, ButtonProps } from "@mui/material";
+import { styled } from "@mui/system";
 import { NightSituation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -17,45 +18,56 @@ const NightSituationForm: React.FCX<NightSituationFormProps> = ({
   style,
   value,
   onChange,
-  color,
+  color = "primary",
 }) => {
   const { t } = useTranslation("common");
 
-  const state = Object.entries(value)
-    .filter((e) => Boolean(e[1]))
-    .map((e) => e[0]);
+  const handleClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+    const key = event.currentTarget.value as keyof NightSituation;
+    if (key === "night_contact_rank") {
+      onChange?.({ ...value, [key]: value[key] ? null : "Rank1" });
+    } else {
+      onChange?.({ ...value, [key]: !value[key] });
+    }
+  };
+
+  const bind = (key: keyof NightSituation): ButtonProps => ({
+    color,
+    variant: value[key] ? "contained" : "outlined",
+    value: key,
+    onClick: handleClick,
+  });
 
   return (
     <Tooltip title="夜戦設定" placement="top-start">
-      <ToggleButtonGroup
+      <ButtonGroup
         className={className}
         style={style}
         size="small"
         color={color}
-        value={state}
-        onChange={(event, newState: string[]) => {
-          onChange?.({
-            night_contact_rank: newState.includes("night_contact_rank")
-              ? "Rank1"
-              : null,
-            searchlight: newState.includes("searchlight"),
-            starshell: newState.includes("starshell"),
-          });
-        }}
       >
-        <ToggleButton value="night_contact_rank">
+        <Button {...bind("night_contact_rank")}>
           <GearIcon iconId={10} />
-        </ToggleButton>
+        </Button>
 
-        <ToggleButton title={t("Starshell")} value="starshell">
+        <Button title={t("Starshell")} {...bind("starshell")}>
           <GearIcon iconId={27} />
-        </ToggleButton>
-        <ToggleButton title={t("Searchlight")} value="searchlight">
+        </Button>
+        <Button title={t("Searchlight")} {...bind("searchlight")}>
           <GearIcon iconId={24} />
-        </ToggleButton>
-      </ToggleButtonGroup>
+        </Button>
+      </ButtonGroup>
     </Tooltip>
   );
 };
 
-export default NightSituationForm;
+export default styled(NightSituationForm)`
+  img {
+    filter: saturate(1.6) contrast(1.6);
+  }
+  .MuiButton-contained {
+    img {
+      filter: saturate(1.6) contrast(1.6) drop-shadow(0 0 0 white);
+    }
+  }
+`;

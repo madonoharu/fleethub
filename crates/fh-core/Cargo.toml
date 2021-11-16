@@ -1,6 +1,6 @@
 [package]
 name = "fh-core"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
@@ -14,7 +14,7 @@ default = ["console_error_panic_hook"]
 wasm-bindgen = { version = "=0.2.76", features = ["serde-serialize"] }
 js-sys = "=0.3.53"
 serde = { version = "1.0.130", features = ["derive"] }
-serde_json = "1.0.68"
+serde_json = "1.0.70"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -33,17 +33,18 @@ num-traits = "0.2.14"
 num-derive = "0.3.3"
 num_enum = "0.5.4"
 fasteval = "0.2.4"
-paste = "1.0.5"
+paste = "1.0.6"
 arrayvec = { version = "0.7.2", features = ["serde"] }
 counter = "0.5.2"
 rand = "0.8.4"
 rand_xoshiro = "0.6.0"
 getrandom = { version = "0.2.3", features = ["js"] }
 xxhash-rust = { version = "0.8.2", features = ["xxh3"] }
-enumset = "1.0.7"
-anyhow = "1.0.44"
-ts-rs = { version = "5.1.1", features = ["serde-compat"] }
+enumset = "1.0.8"
+anyhow = "1.0.45"
+ts-rs = "6.0.0"
 fh-macro = { path = "../fh-macro" }
+itertools = "*"
 
 [dependencies.web-sys]
 version = "=0.3.53"
@@ -53,7 +54,3 @@ features = [
 
 [dev-dependencies]
 wasm-bindgen-test = "=0.3.26"
-
-[profile.release]
-# Tell `rustc` to optimize for small code size.
-opt-level = "s"

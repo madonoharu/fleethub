@@ -5,13 +5,13 @@ use crate::{
     types::{Formation, OrgType, Role},
 };
 
-pub struct SortiedFleetShips<'a> {
+pub struct CompShips<'a> {
     count: usize,
     main_ships: &'a ShipArray,
     escort_ships: Option<&'a ShipArray>,
 }
 
-impl<'a> Iterator for SortiedFleetShips<'a> {
+impl<'a> Iterator for CompShips<'a> {
     type Item = (Role, usize, &'a Ship);
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -37,27 +37,32 @@ impl<'a> Iterator for SortiedFleetShips<'a> {
         }
     }
 }
-pub struct SortiedFleet<'a> {
+pub struct Comp {
     pub org_type: OrgType,
-    pub main: &'a Fleet,
-    pub escort: Option<&'a Fleet>,
+    pub main: Fleet,
+    pub escort: Option<Fleet>,
 }
 
-impl<'a> SortiedFleet<'a> {
+impl Comp {
     pub fn is_combined(&self) -> bool {
         self.escort.is_some()
     }
 
-    pub fn night_fleet(&self) -> &'a Fleet {
-        self.escort.unwrap_or(self.main)
+    pub fn night_fleet(&self) -> &Fleet {
+        self.escort.as_ref().unwrap_or_else(|| &self.main)
     }
 
-    pub fn ships(&self) -> SortiedFleetShips<'a> {
-        SortiedFleetShips {
+    pub fn ships(&self) -> CompShips {
+        CompShips {
             count: 0,
             main_ships: &self.main.ships,
-            escort_ships: self.escort.map(|f| &f.ships),
+            escort_ships: self.escort.as_ref().map(|f| &f.ships),
         }
+    }
+
+    pub fn reset_battle_state(&mut self) {
+        self.main.reset_battle_state();
+        self.escort.as_mut().map(|f| f.reset_battle_state());
     }
 
     pub fn create_warfare_ship_environment(
@@ -71,8 +76,8 @@ impl<'a> SortiedFleet<'a> {
             .unwrap_or_default();
 
         let fleet = match role {
-            Role::Main => self.main,
-            Role::Escort => self.escort.unwrap_or_else(|| unreachable!()),
+            Role::Main => &self.main,
+            Role::Escort => self.escort.as_ref().unwrap_or_else(|| unreachable!()),
         };
 
         WarfareShipEnvironment {
@@ -108,7 +113,7 @@ impl<'a> SortiedFleet<'a> {
         if !anti_combined {
             Some(main_fp)
         } else {
-            let escort_fp = self.escort?.fighter_power(anti_lbas)?;
+            let escort_fp = self.escort.as_ref()?.fighter_power(anti_lbas)?;
             Some(main_fp + escort_fp)
         }
     }
@@ -117,11 +122,18 @@ impl<'a> SortiedFleet<'a> {
     pub fn elos(&self, hq_level: u8, node_divaricated_factor: u8) -> Option<f64> {
         let main_elos = self.main.elos(hq_level, node_divaricated_factor)?;
 
-        if let Some(escort) = self.escort {
+        if let Some(escort) = self.escort.as_ref() {
             let escort_elos = escort.elos(hq_level, node_divaricated_factor)?;
             Some(main_elos + escort_elos)
         } else {
             Some(main_elos)
         }
+    }
+
+    /// 輸送物資量(TP)
+    pub fn transport_point(&self) -> i32 {
+        self.ships()
+            .map(|(_, _, ship)| ship.transport_point())
+            .sum()
     }
 }

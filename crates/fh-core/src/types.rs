@@ -1,7 +1,7 @@
 mod air_state;
+mod battle_config;
 mod const_id;
 mod contact_rank;
-mod cutin;
 mod ebonus;
 mod engagement;
 mod fleet_cutin;
@@ -14,9 +14,9 @@ mod ship;
 mod state;
 
 pub use air_state::*;
+pub use battle_config::*;
 pub use const_id::*;
 pub use contact_rank::*;
-pub use cutin::*;
 pub use ebonus::*;
 pub use engagement::*;
 pub use engagement::*;
