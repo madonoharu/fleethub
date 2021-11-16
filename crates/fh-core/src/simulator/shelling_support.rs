@@ -96,7 +96,6 @@ where
     R: Rng + ?Sized,
 {
     rng: &'a mut R,
-    config: &'a BattleConfig,
     attacker_fleet: &'a Fleet,
     target_comp: &'a mut Comp,
     engagement: Engagement,
@@ -186,7 +185,6 @@ where
         Self {
             battle: ShellingSupportBattle {
                 rng,
-                config,
                 attacker_fleet,
                 target_comp,
                 engagement,
@@ -207,6 +205,6 @@ where
             Ok(())
         })?;
 
-        Ok(logger.into_simulator_result())
+        Ok(logger.create_result(self.battle.target_comp))
     }
 }

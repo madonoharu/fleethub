@@ -6,7 +6,8 @@ use crate::{
     attack::{fit_gun_bonus::fit_gun_bonus, DefenseParams},
     ship::Ship,
     types::{
-        BattleConfig, ContactRank, NightAttackType, NightSpecialAttack, ShipType, SpecialAttackDef,
+        BattleConfig, ContactRank, GearType, NightAttackType, NightSpecialAttack, ShipType,
+        SpecialAttackDef,
     },
 };
 
@@ -92,14 +93,6 @@ impl<'a> NightAttackContext<'a> {
             7.0
         } else {
             0.0
-        }
-    }
-
-    fn searchlight_evasion_mod(&self) -> f64 {
-        if self.target_situation.starshell {
-            0.2
-        } else {
-            1.0
         }
     }
 
@@ -277,7 +270,13 @@ fn calc_evasion_term(ctx: &NightAttackContext, target: &Ship) -> Option<f64> {
         0.0
     };
 
-    let searchlight_evasion_mod = ctx.searchlight_evasion_mod();
+    // todo!
+    let searchlight_evasion_mod =
+        if target.gears.has_type(GearType::Searchlight) && ctx.target_situation.searchlight {
+            0.2
+        } else {
+            1.0
+        };
 
     target.evasion_term(formation_mod, ship_type_additive, searchlight_evasion_mod)
 }

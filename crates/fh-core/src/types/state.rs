@@ -253,7 +253,20 @@ pub fn org_type_side(org_type: OrgType) -> Side {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, EnumString, AsRefStr, Serialize, Deserialize, TS, FhAbi,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+    EnumString,
+    AsRefStr,
+    Serialize,
+    Deserialize,
+    TS,
+    FhAbi,
 )]
 pub enum Role {
     Main,
