@@ -1,6 +1,6 @@
 {
   "name": "@fh/admin",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "license": "UNLICENSED",
   "main": "cjs/index.js",
   "scripts": {
@@ -12,8 +12,10 @@
     "cloudinary": "^1.27.1",
     "fast-deep-equal": "^3.1.3",
     "firebase-admin": "^10.0.0",
-    "fleethub-core": "npm:latest",
     "google-spreadsheet": "^3.2.0",
     "got": "^11.8.2"
+  },
+  "optionalDependencies": {
+    "fleethub-core": "*"
   }
 }

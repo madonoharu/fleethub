@@ -7,7 +7,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "rust-analyzer.diagnostics.disabled": ["missing-unsafe"],
-  "rust-analyzer.lruCapacity": 64,
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "rust-analyzer.experimental.procAttrMacros": false
 }
