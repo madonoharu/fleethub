@@ -17,7 +17,7 @@ import {
   stepsSlices,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { NumberInput } from "../../molecules";
+import { NumberInput, Tabs } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
@@ -174,23 +174,33 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         )}
       </Flexbox>
 
-      {playerShip && enemyShip && playerOrg && enemyOrg && (
-        <WarfareDetails
-          playerOrg={playerOrg}
-          playerShip={playerShip}
-          enemyOrg={enemyOrg}
-          enemyShip={enemyShip}
-          config={config}
-        />
-      )}
-
-      {playerOrg && enemyOrg && (
-        <SimulatorResultTable
-          player={playerOrg}
-          enemy={enemyOrg}
-          config={config}
-        />
-      )}
+      <Tabs
+        list={[
+          {
+            label: t("Details"),
+            panel: playerShip && enemyShip && (
+              <WarfareDetails
+                playerOrg={playerOrg}
+                playerShip={playerShip}
+                enemyOrg={enemyOrg}
+                enemyShip={enemyShip}
+                config={config}
+              />
+            ),
+          },
+          {
+            label: "砲撃支援シミュレータ",
+            panel: (
+              <SimulatorResultTable
+                player={playerOrg}
+                enemy={enemyOrg}
+                config={config}
+                times={10000}
+              />
+            ),
+          },
+        ]}
+      />
     </div>
   );
 };
