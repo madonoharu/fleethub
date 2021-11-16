@@ -6,7 +6,10 @@ use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::{comp::Comp, types::DamageState};
+use crate::{
+    comp::Comp,
+    types::{DamageState, Role},
+};
 
 #[derive(Debug, Default)]
 pub struct BattleLogger {
@@ -47,7 +50,7 @@ impl BattleLogger {
         self.sunk_counter[&sunk_count] += 1;
     }
 
-    pub fn into_simulator_result(self) -> SimulatorResult {
+    pub fn create_result(self, comp: &Comp) -> SimulatorResult {
         let times_f64 = self.times as f64;
 
         let items = self
@@ -60,9 +63,24 @@ impl BattleLogger {
                     .map(|(ds, count)| (ds, count as f64 / times_f64))
                     .collect::<HashMap<_, _>>();
 
+                let (role, index, _) = comp
+                    .ships()
+                    .find(|(_, _, ship)| ship.id == id)
+                    .unwrap_or_else(|| unreachable!());
+
                 SimulatorResultItem {
                     id,
+                    role,
+                    index,
                     damage_state_map,
+                }
+            })
+            .sorted_by(|a, b| {
+                let ord = a.role.cmp(&b.role);
+                if ord.is_eq() {
+                    a.index.cmp(&b.index)
+                } else {
+                    ord
                 }
             })
             .collect::<Vec<_>>();
@@ -86,6 +104,8 @@ impl BattleLogger {
 #[derive(Debug, Clone, Serialize, Deserialize, FhAbi, TS)]
 pub struct SimulatorResultItem {
     pub id: String,
+    pub role: Role,
+    pub index: usize,
     pub damage_state_map: HashMap<DamageState, f64>,
 }
 
