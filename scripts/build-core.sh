@@ -12,3 +12,7 @@ wasm-pack build crates/fh-core -d "$(realpath $NODE_DIR)" -t nodejs
 cargo run ts-gen $PREFIX/bindings.d.ts
 
 rm -rf {$PKG_DIR,$NODE_DIR}/{package.json,README.md,.gitignore}
+
+VERSION=$(cargo metadata --format-version=1 --no-deps | jq '.packages[] | select(.name == "fh-core") | .version')
+cat $PREFIX/package.json | jq ".version |= ${VERSION}" > $PREFIX/package.json.tmp
+mv $PREFIX/package.json.tmp $PREFIX/package.json
