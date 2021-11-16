@@ -6,7 +6,8 @@ use crate::{
     attack::{fit_gun_bonus::fit_gun_bonus, DefenseParams},
     ship::Ship,
     types::{
-        ContactRank, MasterData, NightAttackType, NightSpecialAttack, ShipType, SpecialAttackDef,
+        BattleConfig, ContactRank, GearType, NightAttackType, NightSpecialAttack, ShipType,
+        SpecialAttackDef,
     },
 };
 
@@ -43,7 +44,7 @@ pub struct NightAttackContext<'a> {
 
 impl<'a> NightAttackContext<'a> {
     pub fn new(
-        master_data: &MasterData,
+        config: &BattleConfig,
         warfare_context: &'a WarfareContext,
         attacker_situation: &'a NightSituation,
         target_situation: &'a NightSituation,
@@ -53,17 +54,15 @@ impl<'a> NightAttackContext<'a> {
         let attacker_env = &warfare_context.attacker_env;
         let target_env = &warfare_context.target_env;
 
-        let attacker_formation_mods = master_data
-            .constants
-            .get_formation_def(attacker_env)
-            .map(|def| def.night.to_modifiers())
-            .unwrap_or_default();
+        let attacker_formation_mods = config
+            .get_formation_def_by_env(attacker_env)
+            .night
+            .to_modifiers();
 
-        let target_formation_mods = master_data
-            .constants
-            .get_formation_def(target_env)
-            .map(|def| def.night.to_modifiers())
-            .unwrap_or_default();
+        let target_formation_mods = config
+            .get_formation_def_by_env(target_env)
+            .night
+            .to_modifiers();
 
         Self {
             attacker_env,
@@ -94,14 +93,6 @@ impl<'a> NightAttackContext<'a> {
             7.0
         } else {
             0.0
-        }
-    }
-
-    fn searchlight_evasion_mod(&self) -> f64 {
-        if self.target_situation.starshell {
-            0.2
-        } else {
-            1.0
         }
     }
 
@@ -145,7 +136,8 @@ impl<'a> NightAttackContext<'a> {
         let armor_penetration = attack_power_params
             .as_ref()
             .map_or(0.0, |p| p.armor_penetration);
-        let defense_params = DefenseParams::from_target(&ctx.target_env, target, armor_penetration);
+        let defense_params =
+            DefenseParams::from_target(target, ctx.target_env.org_type.side(), armor_penetration);
 
         AttackParams {
             attack_power_params,
@@ -278,7 +270,13 @@ fn calc_evasion_term(ctx: &NightAttackContext, target: &Ship) -> Option<f64> {
         0.0
     };
 
-    let searchlight_evasion_mod = ctx.searchlight_evasion_mod();
+    // todo!
+    let searchlight_evasion_mod =
+        if target.gears.has_type(GearType::Searchlight) && ctx.target_situation.searchlight {
+            0.2
+        } else {
+            1.0
+        };
 
     target.evasion_term(formation_mod, ship_type_additive, searchlight_evasion_mod)
 }

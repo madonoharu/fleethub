@@ -24,7 +24,7 @@ const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
 
 const updateShips = async (maps: KcnavMap[]) => {
   const [md, sheet] = await Promise.all([
-    storage.readJson("data/master_data.json"),
+    storage.readMasterData(),
     Sheet.readByKey("ships"),
   ]);
 

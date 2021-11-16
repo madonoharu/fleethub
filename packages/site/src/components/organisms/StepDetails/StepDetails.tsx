@@ -17,13 +17,14 @@ import {
   stepsSlices,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { NumberInput } from "../../molecules";
+import { NumberInput, Tabs } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
 import OrgShipSelect from "./OrgShipSelect";
+import SimulatorResultTable from "./SimulatorResultTable";
 import WarfareDetails from "./WarfareDetails";
 
 type StepDetailsProps = {
@@ -51,7 +52,6 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
   );
 
   if (!playerOrg || !enemyOrg) return null;
-
   const config = step.config || initalStepConfig;
 
   const bind =
@@ -61,9 +61,11 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         set(draft, path, value);
       });
 
+      console.log(next);
+
       dispatch(
         stepsSlices.actions.update({
-          id: plan.id,
+          id: step.id,
           changes: { config: next },
         })
       );
@@ -172,15 +174,33 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         )}
       </Flexbox>
 
-      {playerShip && enemyShip && playerOrg && enemyOrg && (
-        <WarfareDetails
-          playerOrg={playerOrg}
-          playerShip={playerShip}
-          enemyOrg={enemyOrg}
-          enemyShip={enemyShip}
-          config={config}
-        />
-      )}
+      <Tabs
+        list={[
+          {
+            label: t("Details"),
+            panel: playerShip && enemyShip && (
+              <WarfareDetails
+                playerOrg={playerOrg}
+                playerShip={playerShip}
+                enemyOrg={enemyOrg}
+                enemyShip={enemyShip}
+                config={config}
+              />
+            ),
+          },
+          {
+            label: "砲撃支援シミュレータ",
+            panel: (
+              <SimulatorResultTable
+                player={playerOrg}
+                enemy={enemyOrg}
+                config={config}
+                times={10000}
+              />
+            ),
+          },
+        ]}
+      />
     </div>
   );
 };

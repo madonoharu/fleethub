@@ -4,11 +4,11 @@ use rand::prelude::*;
 
 use crate::{
     ship::Ship,
-    types::MoraleState,
+    types::{MoraleState, Side},
     utils::{NumMap, RandomRange, RandomRangeToDistribution, ToDistribution},
 };
 
-use super::{AttackPower, HitType, WarfareShipEnvironment};
+use super::{AttackPower, HitType};
 
 #[derive(Debug, Hash, Clone, PartialEq, Eq)]
 enum DamageType {
@@ -113,15 +113,9 @@ pub struct DefenseParams {
 }
 
 impl DefenseParams {
-    pub fn from_target(
-        target_env: &WarfareShipEnvironment,
-        target: &Ship,
-        armor_penetration: f64,
-    ) -> Option<Self> {
-        let overkill_protection =
-            target_env.org_type.is_player() && target.morale_state() != MoraleState::Red;
-
-        let sinkable = target_env.org_type.is_enemy();
+    pub fn from_target(target: &Ship, side: Side, armor_penetration: f64) -> Option<Self> {
+        let overkill_protection = side.is_player() && target.morale_state() != MoraleState::Red;
+        let sinkable = side.is_enemy();
 
         Some(Self {
             basic_defense_power: target.basic_defense_power(armor_penetration)?,
@@ -217,7 +211,7 @@ impl Damage {
         }
     }
 
-    pub fn choose<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
+    pub fn gen<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
         let defense_power = self.defense_params.defense_power_range().choose(rng);
         let damage_type = self.calc_damage_type(defense_power);
 

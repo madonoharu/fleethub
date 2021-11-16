@@ -215,5 +215,11 @@
   "HitRate": "命中率",
   "AccuracyTerm": "命中項",
   "EvasionTerm": "回避項",
-  "ScratchDamage": "割合"
+  "HitPercentageBonus": "命中率補正",
+  "CriticalPercentageBonus": "クリティカル率補正",
+  "CriticalRateConstant": "クリティカル定数",
+  "ScratchDamage": "割合",
+  "Individual": "個別",
+  "Cumulative": "累積",
+  "Distribution": "分布"
 }

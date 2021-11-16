@@ -4,9 +4,9 @@ use wasm_bindgen::prelude::*;
 use crate::{
     air_squadron::AirSquadron,
     attack::WarfareShipEnvironment,
+    comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    sortied_fleet::SortiedFleet,
     types::{Formation, GearAttr, OrgType, Role, Side},
 };
 
@@ -46,7 +46,7 @@ impl Org {
         self.org_type.side()
     }
 
-    pub fn get_sortied_fleet_by_key(&self, key: &str) -> SortiedFleet {
+    pub fn create_comp_by_key(&self, key: &str) -> Comp {
         let enable_escort = self.is_combined() && matches!(key, "f1" | "f2");
 
         let main = if enable_escort {
@@ -57,10 +57,10 @@ impl Org {
 
         let escort = enable_escort.then(|| &self.f2);
 
-        SortiedFleet {
+        Comp {
             org_type: self.org_type,
-            main,
-            escort,
+            main: main.clone(),
+            escort: escort.cloned(),
         }
     }
 
@@ -78,7 +78,6 @@ impl Org {
             "f3" => &self.f3,
             "f4" => &self.f4,
             _ => {
-                crate::error!(r#"get_fleet() argument must be "f1", "f2", "f3" or "f4""#);
                 panic!(r#"get_fleet() argument must be "f1", "f2", "f3" or "f4""#);
             }
         }
@@ -97,13 +96,16 @@ impl Org {
     }
 
     pub fn get_ship_entity_id(&self, role: Role, key: &str) -> Option<String> {
-        self.get_ship(role, key).map(|ship| ship.id())
+        self.get_fleet_by_role(role)
+            .ships
+            .get_by_ship_key(key)
+            .map(|ship| ship.id.clone())
     }
 
     pub fn air_squadron_ids(&self) -> Vec<JsString> {
         [&self.a1.id, &self.a2.id, &self.a3.id]
             .iter()
-            .map(|&id| JsString::from(id.clone()))
+            .map(|&id| id.clone().into())
             .collect()
     }
 
@@ -208,19 +210,18 @@ impl Org {
 
     /// 艦隊対空値
     pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
-        self.get_sortied_fleet_by_key("f1")
-            .fleet_anti_air(formation_mod)
+        self.create_comp_by_key("f1").fleet_anti_air(formation_mod)
     }
 
     /// 制空値
     pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
-        self.get_sortied_fleet_by_key("f1")
+        self.create_comp_by_key("f1")
             .fighter_power(anti_combined, anti_lbas)
     }
 
     /// マップ索敵
     pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
-        self.get_sortied_fleet_by_key("f1")
+        self.create_comp_by_key("f1")
             .elos(self.hq_level as u8, node_divaricated_factor)
     }
 
@@ -272,11 +273,7 @@ impl Org {
 
     /// 輸送物資量(TP)
     pub fn transport_point(&self, key: &str) -> i32 {
-        self.get_sortied_fleet_by_key(key)
-            .ships()
-            .into_iter()
-            .map(|(_, _, ship)| ship.transport_point())
-            .sum()
+        self.create_comp_by_key(key).transport_point()
     }
 
     pub fn create_warfare_ship_environment(
@@ -285,7 +282,7 @@ impl Org {
         formation: Formation,
     ) -> WarfareShipEnvironment {
         let (role, ship_index) = self
-            .get_sortied_fleet_by_key("f1")
+            .create_comp_by_key("f1")
             .ships()
             .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
             .or_else(|| {

@@ -1,3 +1,4 @@
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -23,6 +24,20 @@ pub struct HitRate {
     pub total: f64,
     pub normal: f64,
     pub critical: f64,
+}
+
+impl HitRate {
+    pub fn gen<R: Rng + ?Sized>(&self, rng: &mut R) -> HitType {
+        let x = rng.gen_range(0.0..1.0);
+
+        if x < self.critical {
+            HitType::Critical
+        } else if x < self.total {
+            HitType::Normal
+        } else {
+            HitType::Miss
+        }
+    }
 }
 
 impl HitRateParams {

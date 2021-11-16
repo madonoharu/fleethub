@@ -1,17 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import {
   Tab as MuiTab,
   TabProps as MuiTabProps,
   Tabs as MuiTabs,
   TabsProps as MuiTabsProps,
 } from "@mui/material";
+import { styled, css } from "@mui/system";
 import React from "react";
-
-const StyledMuiTab = styled(MuiTab)`
-  min-width: auto;
-`;
 
 const smallStyle = css`
   .MuiTabs-root {
@@ -65,7 +60,7 @@ const Tabs: React.FC<TabsProps> = ({
     <div className={className} css={size === "small" && smallStyle}>
       <MuiTabs value={current} onChange={handleChange} {...rest}>
         {list.map(({ panel: _, ...tabProps }, index) => (
-          <StyledMuiTab key={index} {...tabProps} />
+          <MuiTab key={index} {...tabProps} />
         ))}
       </MuiTabs>
 
@@ -74,4 +69,11 @@ const Tabs: React.FC<TabsProps> = ({
   );
 };
 
-export default Tabs;
+export default styled(Tabs)`
+  > .MuiTabs-root {
+    margin-bottom: 8px;
+    .MuiTab-root {
+      min-width: auto;
+    }
+  }
+`;
