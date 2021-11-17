@@ -305,14 +305,6 @@ impl Ship {
         }
     }
 
-    pub fn damage_state(&self) -> DamageState {
-        DamageState::new(self.max_hp().unwrap_or_default(), self.current_hp)
-    }
-
-    pub fn morale_state(&self) -> MoraleState {
-        MoraleState::new(self.morale)
-    }
-
     pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (usize, &Gear, Option<u8>)> {
         self.gears.iter().map(move |(index, gear)| {
             let slot_size = if index == GearArray::EXSLOT_INDEX {
@@ -1124,14 +1116,12 @@ impl Ship {
         self.master.useful.unwrap_or_default()
     }
 
-    #[wasm_bindgen(js_name = damage_state)]
-    pub fn js_damage_state(&self) -> String {
-        self.damage_state().to_string()
+    pub fn damage_state(&self) -> DamageState {
+        DamageState::new(self.max_hp().unwrap_or_default(), self.current_hp)
     }
 
-    #[wasm_bindgen(js_name = morale_state)]
-    pub fn js_morale_state(&self) -> String {
-        self.morale_state().to_string()
+    pub fn morale_state(&self) -> MoraleState {
+        MoraleState::new(self.morale)
     }
 
     pub fn category(&self) -> ShipCategory {
@@ -1159,6 +1149,23 @@ impl Ship {
 
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
         self.gears.get_by_gear_key(key).cloned()
+    }
+
+    pub fn get_damage_bound(&self, state: DamageState) -> Option<u16> {
+        let max_hp = self.max_hp()?;
+        Some(state.bound(max_hp))
+    }
+
+    pub fn get_remaining_fuel(&self, rate: f64, ceil: bool) -> u16 {
+        let v_f64 = self.max_fuel() as f64 * rate;
+        let v = if ceil { v_f64.ceil() } else { v_f64.floor() } as u16;
+        self.fuel.saturating_sub(v)
+    }
+
+    pub fn get_remaining_ammo(&self, rate: f64, ceil: bool) -> u16 {
+        let v_f64 = self.max_ammo() as f64 * rate;
+        let v = if ceil { v_f64.ceil() } else { v_f64.floor() } as u16;
+        self.ammo.saturating_sub(v)
     }
 
     pub fn has_unknown_stat(&self, key: &str) -> bool {

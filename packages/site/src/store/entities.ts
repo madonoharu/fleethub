@@ -435,7 +435,6 @@ export const selectPresetState = createCachedSelector(
     return result;
   },
   (result) => {
-    console.log("selectPresetState");
     return result;
   }
 )({

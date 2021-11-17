@@ -61,8 +61,6 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         set(draft, path, value);
       });
 
-      console.log(next);
-
       dispatch(
         stepsSlices.actions.update({
           id: step.id,
