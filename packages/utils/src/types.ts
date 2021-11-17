@@ -17,6 +17,9 @@ export type FleetKey = typeof FLEET_KEYS[number];
 
 export const GEAR_EXP_TABLE = [0, 10, 25, 40, 55, 70, 85, 100, 120];
 
+export const DAMAGE_STATES = ["Normal", "Shouha", "Chuuha", "Taiha"] as const;
+export const MORALE_STATES = ["Sparkle", "Normal", "Orange", "Red"] as const;
+
 export type FhEntity<T extends object, K extends keyof T> = {
   id: string;
 } & Omit<T, K> &

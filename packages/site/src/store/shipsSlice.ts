@@ -31,6 +31,7 @@ export const shipsSlice = createSlice({
   initialState: shipsAdapter.getInitialState(),
   reducers: {
     update: shipsAdapter.updateOne,
+    updateMany: shipsAdapter.updateMany,
     remove: shipsAdapter.removeOne,
     resetSlotSize: (state, { payload }: PayloadAction<string[]>) => {
       const changes = {
