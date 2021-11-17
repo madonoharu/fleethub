@@ -17,7 +17,7 @@ import LevelButton from "./LevelButton";
 
 type ShipHeaderProps = {
   ship: Ship;
-  disableHeaderAction?: boolean;
+  disableDetails?: boolean;
   onUpdate?: (changes: Partial<ShipEntity>) => void;
   onEditClick?: () => void;
   onDetailClick?: () => void;
@@ -29,7 +29,7 @@ type ShipHeaderProps = {
 const ShipHeader: React.FCX<ShipHeaderProps> = ({
   className,
   ship,
-  disableHeaderAction,
+  disableDetails,
   onUpdate,
   onEditClick,
   onDetailClick,
@@ -51,34 +51,44 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         {t(`ships:${ship_id}`, name)}
       </Typography>
 
-      {!disableHeaderAction && (
-        <>
-          <EditButton
-            title={t("common:EditMiscStats")}
-            size="tiny"
-            onClick={onEditClick}
-          />
-          <InfoButton
-            title={t("common:Details")}
-            size="tiny"
-            onClick={onDetailClick}
-          />
-          <UpdateButton
-            title={t("common:Change")}
-            size="tiny"
-            onClick={onReselect}
-          />
-          <BusinessCenterButton
-            title={t("common:Preset")}
-            size="tiny"
-            onClick={onPreset}
-          />
-          <ClearButton
-            title={t("common:Remove")}
-            size="tiny"
-            onClick={onRemove}
-          />
-        </>
+      {!disableDetails && (
+        <InfoButton
+          title={t("common:Details")}
+          size="tiny"
+          onClick={onDetailClick}
+        />
+      )}
+
+      <EditButton
+        title={t("common:EditMiscStats")}
+        size="tiny"
+        onClick={onEditClick}
+      />
+      {!disableDetails && (
+        <InfoButton
+          title={t("common:Details")}
+          size="tiny"
+          onClick={onDetailClick}
+        />
+      )}
+      {!disableDetails && (
+        <UpdateButton
+          title={t("common:Change")}
+          size="tiny"
+          onClick={onReselect}
+        />
+      )}
+      <BusinessCenterButton
+        title={t("common:Preset")}
+        size="tiny"
+        onClick={onPreset}
+      />
+      {!disableDetails && (
+        <ClearButton
+          title={t("common:Remove")}
+          size="tiny"
+          onClick={onRemove}
+        />
       )}
     </div>
   );

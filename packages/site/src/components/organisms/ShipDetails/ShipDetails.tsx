@@ -127,7 +127,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
           },
         }}
       >
-        <ShipCard ship={ship} org={org} visibleMiscStats disableHeaderAction />
+        <ShipCard ship={ship} org={org} visibleMiscStats disableDetails />
         <AttackPowerAnalyzer core={core} state={state} ship={ship} />
       </Flexbox>
 
