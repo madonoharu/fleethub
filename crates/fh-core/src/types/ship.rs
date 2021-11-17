@@ -401,7 +401,19 @@ impl Default for SpeedGroup {
 }
 
 #[derive(
-    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS,
+    Debug,
+    Display,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+    Serialize,
+    Deserialize,
+    FhAbi,
+    TS,
 )]
 pub enum DamageState {
     /// 小破未満
@@ -424,18 +436,26 @@ impl Default for DamageState {
 
 impl DamageState {
     pub fn new(max_hp: u16, current_hp: u16) -> Self {
-        let value = current_hp * 4;
-
-        if value == 0 {
+        if current_hp == 0 {
             Self::Sunk
-        } else if value <= max_hp {
+        } else if current_hp <= Self::Taiha.bound(max_hp) {
             Self::Taiha
-        } else if value <= max_hp * 2 {
+        } else if current_hp <= Self::Chuuha.bound(max_hp) {
             Self::Chuuha
-        } else if value <= max_hp * 3 {
+        } else if current_hp <= Self::Shouha.bound(max_hp) {
             Self::Shouha
         } else {
             Self::Normal
+        }
+    }
+
+    pub fn bound(self, max_hp: u16) -> u16 {
+        match self {
+            Self::Normal => max_hp,
+            Self::Shouha => (max_hp * 3) / 4,
+            Self::Chuuha => max_hp / 2,
+            Self::Taiha => max_hp / 4,
+            Self::Sunk => 0,
         }
     }
 
@@ -458,7 +478,7 @@ impl DamageState {
 }
 
 #[derive(
-    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS,
+    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, FhAbi, TS,
 )]
 pub enum MoraleState {
     Sparkle,

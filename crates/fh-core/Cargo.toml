@@ -1,6 +1,6 @@
 [package]
 name = "fh-core"
-version = "0.3.0"
+version = "0.3.3"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
@@ -45,6 +45,7 @@ anyhow = "1.0.45"
 ts-rs = "6.0.0"
 fh-macro = { path = "../fh-macro" }
 itertools = "*"
+enum-map = "2.0.0-1"
 
 [dependencies.web-sys]
 version = "=0.3.53"
@@ -54,3 +55,8 @@ features = [
 
 [dev-dependencies]
 wasm-bindgen-test = "=0.3.26"
+criterion = "0.3.5"
+
+[[bench]]
+name = "bench"
+harness = false

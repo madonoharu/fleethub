@@ -1,7 +1,13 @@
 use js_sys::JsString;
 use wasm_bindgen::prelude::*;
 
-use crate::{gear_id, ship::Ship, ship_id, types::GearType, utils::OptionalArray};
+use crate::{
+    gear_id,
+    ship::Ship,
+    ship_id,
+    types::{DamageState, GearType},
+    utils::OptionalArray,
+};
 
 pub type ShipArray = OptionalArray<Ship, 7>;
 
@@ -71,6 +77,21 @@ impl Fleet {
             .filter(|gear| gear.has_proficiency())
             .map(|gear| JsString::from(gear.id.clone()))
             .collect::<Vec<_>>()
+    }
+
+    pub fn get_damage_bound(&self, id: String, state: DamageState) -> Option<u16> {
+        let ship = self.ships.values().find(|ship| ship.id == id)?;
+        ship.get_damage_bound(state)
+    }
+
+    pub fn get_remaining_fuel(&self, id: String, rate: f64, ceil: bool) -> Option<u16> {
+        let ship = self.ships.values().find(|ship| ship.id == id)?;
+        Some(ship.get_remaining_fuel(rate, ceil))
+    }
+
+    pub fn get_remaining_ammo(&self, id: String, rate: f64, ceil: bool) -> Option<u16> {
+        let ship = self.ships.values().find(|ship| ship.id == id)?;
+        Some(ship.get_remaining_ammo(rate, ceil))
     }
 
     pub fn count_ships(&self) -> usize {
