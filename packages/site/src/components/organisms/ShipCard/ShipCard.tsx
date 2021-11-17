@@ -2,7 +2,7 @@
 import styled from "@emotion/styled";
 import { GearKey, SlotSizeKey } from "@fh/utils";
 import { Tooltip, Paper, IconButton, Button } from "@mui/material";
-import { DamageState, MoraleState, Org, Ship } from "fleethub-core";
+import { Org, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -58,7 +58,7 @@ type ShipCardProps = {
   ship: Ship;
   org?: Org;
   visibleMiscStats?: boolean;
-  disableHeaderAction?: boolean;
+  disableDetails?: boolean;
 };
 
 const ShipCard: React.FCX<ShipCardProps> = ({
@@ -66,7 +66,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
   ship,
   org,
   visibleMiscStats,
-  disableHeaderAction,
+  disableDetails,
 }) => {
   const { id } = ship;
   const { t } = useTranslation("common");
@@ -75,8 +75,8 @@ const ShipCard: React.FCX<ShipCardProps> = ({
   const DetailModal = useModal();
   const PresetModal = useModal();
 
-  const damageState = ship.damage_state() as DamageState;
-  const moraleState = ship.morale_state() as MoraleState;
+  const damageState = ship.damage_state();
+  const moraleState = ship.morale_state();
   const { ammo, max_ammo, fuel, max_fuel } = ship;
 
   const visibleDamageState = visibleMiscStats || damageState !== "Normal";
@@ -97,7 +97,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
         onReselect={actions.reselect}
         onPreset={PresetModal.show}
         onRemove={actions.remove}
-        disableHeaderAction={disableHeaderAction}
+        disableDetails={disableDetails}
       />
       <Column>
         <StyledShipBanner shipId={ship.ship_id} size="medium" />

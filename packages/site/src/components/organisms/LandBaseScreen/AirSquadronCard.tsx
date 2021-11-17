@@ -54,7 +54,7 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
           <Typography variant="subtitle2">{label}</Typography>
           <BusinessCenterButton
             sx={{ ml: "auto" }}
-            title={t("Preset")}
+            title={t("Presets")}
             onClick={PresetModal.show}
           />
           <SelectedMenu
