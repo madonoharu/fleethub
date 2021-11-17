@@ -111,8 +111,8 @@ const LandBaseScreen: React.FCX<LandBaseScreenProps> = ({ className, org }) => {
 
       <BatchOperationsModal>
         <BatchOperations
-          onStarsClick={handleStarsClick}
-          onExpClick={handleExpClick}
+          onStarsSelect={handleStarsClick}
+          onExpSelect={handleExpClick}
           onSlotSizeReset={handleSlotSizeReset}
         />
       </BatchOperationsModal>

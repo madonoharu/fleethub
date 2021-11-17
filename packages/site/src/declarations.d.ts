@@ -22,6 +22,14 @@ declare module "@emotion/react" {
   export interface Theme extends MyTheme {}
 }
 
+declare module "@mui/system/createTheme" {
+  type Colors = typeof import("./styles/colors")["colors"];
+
+  interface Theme {
+    colors: Colors;
+  }
+}
+
 declare module "react-i18next" {
   interface Resources {
     common: Record<string, string>;

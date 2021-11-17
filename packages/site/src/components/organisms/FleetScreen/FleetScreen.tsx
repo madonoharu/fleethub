@@ -1,14 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import { Typography } from "@mui/material";
-import { Fleet } from "fleethub-core";
+import { Update } from "@reduxjs/toolkit";
+import { DamageState, Fleet, MoraleState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
 import { useModal } from "../../../hooks";
-import { fleetsSlice, gearsSlice, shipsSlice } from "../../../store";
+import {
+  fleetsSlice,
+  gearsSlice,
+  ShipEntity,
+  shipsSlice,
+} from "../../../store";
 import { Flexbox } from "../../atoms";
-import { DeleteButton, BuildButton, SelectedMenu } from "../../molecules";
+import {
+  DeleteButton,
+  BuildButton,
+  SelectedMenu,
+  ConsumptionRate,
+} from "../../molecules";
 import BatchOperations from "../BatchOperations";
 import FleetShipList from "./FleetShipList";
 
@@ -47,6 +58,75 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
     dispatch(gearsSlice.actions.updateMany(payload));
   };
 
+  const handleMoraleChange = (state: MoraleState) => {
+    const ids = fleet.ship_ids();
+
+    let morale: number;
+    if (state === "Sparkle") {
+      morale = 85;
+    } else if (state === "Normal") {
+      morale = 49;
+    } else if (state === "Orange") {
+      morale = 29;
+    } else {
+      morale = 0;
+    }
+
+    dispatch(
+      shipsSlice.actions.updateMany(
+        ids.map((id) => ({
+          id,
+          changes: { morale },
+        }))
+      )
+    );
+  };
+
+  const handleCurrentHpChange = (state: DamageState) => {
+    const ids = fleet.ship_ids();
+
+    const payload: Update<ShipEntity>[] = ids.map((id) => {
+      const current_hp =
+        state == "Normal" ? undefined : fleet.get_damage_bound(id, state);
+      return {
+        id,
+        changes: {
+          current_hp,
+        },
+      };
+    });
+
+    dispatch(shipsSlice.actions.updateMany(payload));
+  };
+
+  const handleConsumptionRateSelect = (value: ConsumptionRate) => {
+    const ids = fleet.ship_ids();
+
+    const payload: Update<ShipEntity>[] = ids.map((id) => {
+      const fuel = fleet.get_remaining_fuel(id, value.fuel, false);
+      const ammo = fleet.get_remaining_ammo(
+        id,
+        value.ammo,
+        value.ammoCeil || false
+      );
+
+      return { id, changes: { fuel, ammo } };
+    });
+
+    dispatch(shipsSlice.actions.updateMany(payload));
+  };
+
+  const handleConsumptionReset = () => {
+    const ids = fleet.ship_ids();
+
+    const payload: Update<ShipEntity>[] = ids.map((id) => ({
+      id,
+      changes: { fuel: undefined, ammo: undefined },
+    }));
+
+    dispatch(shipsSlice.actions.updateMany(payload));
+  };
+
   const handleSlotSizeReset = () => {
     const ids = fleet.ship_ids();
     dispatch(shipsSlice.actions.resetSlotSize(ids));
@@ -80,8 +160,12 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
 
       <BatchOperationsModal>
         <BatchOperations
-          onStarsClick={handleStarsClick}
-          onExpClick={handleExpClick}
+          onStarsSelect={handleStarsClick}
+          onExpSelect={handleExpClick}
+          onMoraleStateSelect={handleMoraleChange}
+          onDamageStateSelect={handleCurrentHpChange}
+          onConsumptionRateSelect={handleConsumptionRateSelect}
+          onConsumptionReset={handleConsumptionReset}
           onSlotSizeReset={handleSlotSizeReset}
         />
       </BatchOperationsModal>
