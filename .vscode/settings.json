@@ -8,5 +8,6 @@
     "source.fixAll.eslint": true
   },
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "rust-analyzer.experimental.procAttrMacros": false
+  "rust-analyzer.experimental.procAttrMacros": false,
+  "rust-analyzer.diagnostics.disabled": ["missing-unsafe"]
 }
