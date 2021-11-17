@@ -16,6 +16,6 @@
     "got": "^11.8.2"
   },
   "optionalDependencies": {
-    "fleethub-core": "*"
+    "fleethub-core": "npm:latest"
   }
 }
