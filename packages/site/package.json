@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
@@ -59,7 +59,6 @@
     "@types/react": "^17.0.35",
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.20",
-    "next-transpile-modules": "^9.0.0",
-    "webpack-bundle-analyzer": "^4.5.0"
+    "next-transpile-modules": "^9.0.0"
   }
 }

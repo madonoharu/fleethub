@@ -1,12 +1,22 @@
 use criterion::{criterion_group, criterion_main, Criterion};
+use fh_core::{ship::Ship, types::ShipState};
 
 fn bm1(c: &mut Criterion) {
-    c.bench_function("My Answer", |b| b.iter(|| 10 / 3));
+    let ship = Ship::default();
+    c.bench_function("clone", |b| {
+        b.iter(|| {
+            let _ = ship.clone();
+        })
+    });
 }
 
 fn bm2(c: &mut Criterion) {
-    c.bench_function("Comp Answer", |b| {
-        b.iter(|| ((10 as f64) / (3 as f64)) as u16)
+    let state = ShipState::default();
+
+    c.bench_function("JsValue", |b| {
+        b.iter(|| {
+            let _ = serde_json::to_string(&state);
+        })
     });
 }
 

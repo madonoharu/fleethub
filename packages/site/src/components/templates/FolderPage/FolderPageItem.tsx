@@ -7,7 +7,7 @@ import React from "react";
 import { useFile, useModal, useOrg } from "../../../hooks";
 import { FileEntity, FolderEntity, PlanFileEntity } from "../../../store";
 import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
-import { CopyButton, MoreVertButton, DeleteButton } from "../../molecules";
+import { FileCopyButton, MoreVertButton, DeleteButton } from "../../molecules";
 import { DraggableFile, FileMenu, ShipBannerGroup } from "../../organisms";
 import FileItemPrimary from "./FileItemPrimary";
 
@@ -83,7 +83,7 @@ const FolderPageItem: React.FCX<FolderPageItemProps> = ({
       <ListItemButton className={className} divider onClick={onOpen}>
         {renderFile(file)}
         <FileAction onClick={(e) => e.stopPropagation()}>
-          <CopyButton title={t("Copy")} onClick={onCopy} />
+          <FileCopyButton title={t("Copy")} onClick={onCopy} />
           <DeleteButton title={t("Remove")} onClick={onRemove} />
           <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
         </FileAction>

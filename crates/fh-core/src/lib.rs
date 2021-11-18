@@ -13,6 +13,7 @@ pub mod simulator;
 pub mod types;
 pub mod utils;
 
+use comp::Comp;
 use simulator::{ShellingSupportSimulatorParams, SimulatorResult};
 use wasm_bindgen::prelude::*;
 
@@ -174,18 +175,16 @@ impl FhCore {
 
     pub fn simulate_shelling_support(
         &self,
-        player: &mut Fleet,
-        enemy: &mut Org,
+        player: &mut Comp,
+        enemy: &mut Comp,
         params: ShellingSupportSimulatorParams,
         times: usize,
     ) -> Result<SimulatorResult, JsValue> {
         use simulator::ShellingSupportSimulator;
         let mut rng = rand::thread_rng();
         let config = &self.factory.master_data.config;
-        let mut enemy_comp = enemy.create_comp_by_key("f1");
 
-        let mut sim =
-            ShellingSupportSimulator::new(&mut rng, config, player, &mut enemy_comp, params);
+        let mut sim = ShellingSupportSimulator::new(&mut rng, config, player, enemy, params);
 
         sim.run(times)
             .map_err(|err| JsValue::from(&err.to_string()))
