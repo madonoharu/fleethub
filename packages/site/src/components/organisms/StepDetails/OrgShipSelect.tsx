@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { ShipKey } from "@fh/utils";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
+import { styled } from "@mui/system";
 import { Org, Role } from "fleethub-core";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -12,7 +11,7 @@ import { ShipPosition, shipSelectSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
 import ShipBanner from "../ShipBanner";
 
-const Column = styled.div`
+const Column = styled("div")`
   width: 128px;
   display: flex;
   flex-direction: column;
@@ -20,14 +19,12 @@ const Column = styled.div`
 
 type OrgShipSelectProps = {
   org: Org;
-  enemy?: boolean | undefined;
   value?: string | undefined;
   onSelect?: (id: string) => void;
 };
 
 const OrgShipSelect: React.FCX<OrgShipSelectProps> = ({
   className,
-  enemy,
   style,
   org,
   value,
@@ -35,8 +32,9 @@ const OrgShipSelect: React.FCX<OrgShipSelectProps> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const color = enemy ? "secondary" : "primary";
+  const isEnemy = org.is_enemy();
   const isCombined = org.is_combined();
+  const color = isEnemy ? "secondary" : "primary";
 
   const renderShips = (role: Role) =>
     org.sortie_ship_keys(role)?.map((key) => {
@@ -70,6 +68,7 @@ const OrgShipSelect: React.FCX<OrgShipSelectProps> = ({
       return (
         <Button
           key={key}
+          className={`Role${role}`}
           variant={selected ? "contained" : "outlined"}
           color={color}
           onClick={() => onSelect?.(ship.id)}
@@ -80,20 +79,19 @@ const OrgShipSelect: React.FCX<OrgShipSelectProps> = ({
     });
 
   return (
-    <Flexbox className={className} style={style} alignItems="flex-start">
+    <Flexbox
+      className={className}
+      style={style}
+      alignItems="flex-start"
+      flexDirection={isEnemy ? "row-reverse" : "row"}
+      justifyContent={isEnemy ? "flex-end" : "flex-start"}
+    >
       <Column>{renderShips("Main")}</Column>
       {isCombined && <Column>{renderShips("Escort")}</Column>}
     </Flexbox>
   );
 };
 
-export default styled(OrgShipSelect)(({ enemy }) => [
-  css`
-    min-height: ${36 * 6}px;
-  `,
-  enemy &&
-    css`
-      flex-direction: row-reverse;
-      justify-content: flex-end;
-    `,
-]);
+export default styled(OrgShipSelect)`
+  min-height: ${36 * 6}px;
+`;

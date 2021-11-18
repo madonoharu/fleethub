@@ -64,6 +64,11 @@ const fhCommonJa = {
   Night: "夜戦",
   Support: "支援",
 
+  Main: "主力",
+  Escort: "護衛",
+  RouteSup: "支援",
+  BossSup: "支援",
+
   AirState: "制空状態",
   DamageState: "損傷",
   Normal: "通常",
@@ -127,6 +132,11 @@ const fhCommon: Record<
     Night: "Night Battle",
     Support: "Support",
 
+    Main: "Main",
+    Escort: "Escort",
+    RouteSup: "Sup",
+    BossSup: "Sup",
+
     AirState: "Air State",
     DamageState: "Damage",
     Normal: "Normal",
@@ -183,6 +193,11 @@ const fhCommon: Record<
     Day: "주간전",
     Night: "야간전",
     Support: "지원",
+
+    Main: "주력",
+    Escort: "호위",
+    RouteSup: "지원",
+    BossSup: "지원",
 
     AirState: "제공상태",
     DamageState: "손상",
@@ -241,6 +256,11 @@ const fhCommon: Record<
     Night: "夜战",
     Support: "支援",
 
+    Main: "主力",
+    Escort: "护卫",
+    RouteSup: "支援",
+    BossSup: "支援",
+
     AirState: "制空状态",
     DamageState: "损伤",
     Normal: "通常",
@@ -297,6 +317,11 @@ const fhCommon: Record<
     Day: "晝戰",
     Night: "夜戰",
     Support: "支援",
+
+    Main: "主力",
+    Escort: "護衛",
+    RouteSup: "支援",
+    BossSup: "支援",
 
     AirState: "制空狀態",
     DamageState: "損傷",
@@ -598,8 +623,6 @@ class LocaleUpdater {
       Fleet: kcnav["termFleet"],
       Lbas: kc3Terms["LodgerLbas"],
       Composition: kcnav["ribbonCompsTabName"],
-      Main: kcnav["termMain"],
-      Escort: kcnav["termEscort"],
       ShipClass: kcnav["termClass"],
       Difficulty: kcnav["termDifficulty"],
       Details: kcnav["termDetails"],
