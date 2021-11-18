@@ -5,7 +5,7 @@ import React from "react";
 import { FileEntity } from "../../../store";
 import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
 import {
-  CopyButton,
+  FileCopyButton,
   DeleteButton,
   SaveButton,
   TextField,
@@ -44,7 +44,7 @@ const FileForm: React.FCX<FileFormProps> = ({
           value={file.name}
           onChange={onNameChange}
         />
-        <CopyButton title={t("Copy")} onClick={onCopy} />
+        <FileCopyButton title={t("Copy")} onClick={onCopy} />
         <DeleteButton title={t("Remove")} onClick={onRemove} />
 
         {isTemp && <SaveButton title={t("Save")} onClick={onSave} />}

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import RedoIcon from "@mui/icons-material/Redo";
 import UndoIcon from "@mui/icons-material/Undo";
@@ -15,6 +16,7 @@ import {
   shipSelectSlice,
   gearSelectSlice,
   mapSelectSlice,
+  appSlice,
 } from "../../../store";
 import { ImportButton, withIconButton } from "../../molecules";
 import { ImportMenu } from "../../organisms";
@@ -22,6 +24,7 @@ import LanguageSelect from "./LanguageSelect";
 
 const UndoButton = withIconButton(UndoIcon);
 const RedoButton = withIconButton(RedoIcon);
+const HomeButton = withIconButton(HomeIcon);
 
 const useUndo = () => {
   const dispatch = useDispatch();
@@ -58,6 +61,10 @@ const AppBar: React.FCX<Props> = ({
 
   const ImprotMenuModal = useModal();
 
+  const handleHomeClick = () => {
+    dispatch(appSlice.actions.openFile(""));
+  };
+
   const handleShipSelectOpen = () => {
     dispatch(shipSelectSlice.actions.show());
   };
@@ -83,6 +90,7 @@ const AppBar: React.FCX<Props> = ({
         {t("Composition")}
       </Button>
 
+      <HomeButton size="small" title="Home" onClick={handleHomeClick} />
       <ImportButton
         size="small"
         title="デッキビルダー形式などから編成を読み込む"

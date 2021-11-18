@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use fh_macro::FhAbi;
 use rand::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -96,7 +96,7 @@ where
     R: Rng + ?Sized,
 {
     rng: &'a mut R,
-    attacker_fleet: &'a Fleet,
+    attacker_comp: &'a Comp,
     target_comp: &'a mut Comp,
     engagement: Engagement,
     attacker_formation_def: &'a FormationDef,
@@ -147,7 +147,10 @@ where
     }
 
     fn run(&mut self) -> Result<()> {
-        self.attacker_fleet
+        self.attacker_comp
+            .route_sup
+            .as_ref()
+            .context("route_sup is None")?
             .ships
             .values()
             .try_for_each(|attacker| self.attack(attacker))
@@ -168,7 +171,7 @@ where
     pub fn new(
         rng: &'a mut R,
         config: &'a BattleConfig,
-        attacker_fleet: &'a Fleet,
+        attacker_comp: &'a mut Comp,
         target_comp: &'a mut Comp,
         params: ShellingSupportSimulatorParams,
     ) -> Self {
@@ -185,7 +188,7 @@ where
         Self {
             battle: ShellingSupportBattle {
                 rng,
-                attacker_fleet,
+                attacker_comp,
                 target_comp,
                 engagement,
                 attacker_formation_def,

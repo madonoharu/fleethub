@@ -5,14 +5,14 @@ use crate::{
     gear_id,
     ship::Ship,
     ship_id,
-    types::{DamageState, GearType},
+    types::{DamageState, FleetMeta, GearType},
     utils::OptionalArray,
 };
 
 pub type ShipArray = OptionalArray<Ship, 7>;
 
 impl ShipArray {
-    pub fn get_by_ship_key(&self, key: &str) -> Option<&Ship> {
+    pub fn get_by_key(&self, key: &str) -> Option<&Ship> {
         match key {
             "s1" => self.get(0),
             "s2" => self.get(1),
@@ -46,6 +46,22 @@ impl Fleet {
     #[wasm_bindgen(getter)]
     pub fn xxh3(&self) -> String {
         format!("{:X}", self.xxh3)
+    }
+
+    pub fn meta(&self) -> FleetMeta {
+        let ships = (0..self.len)
+            .map(|i| {
+                let key = format!("s{}", i + 1);
+                let meta = self.ships.get(i).map(|s| s.meta());
+                (key, meta)
+            })
+            .collect();
+
+        FleetMeta {
+            id: self.id.clone(),
+            len: self.len,
+            ships,
+        }
     }
 
     pub fn ship_keys(&self) -> Vec<JsString> {
@@ -99,7 +115,7 @@ impl Fleet {
     }
 
     pub fn get_ship(&self, key: &str) -> Option<Ship> {
-        self.ships.get_by_ship_key(key).cloned()
+        self.ships.get_by_key(key).cloned()
     }
 
     #[wasm_bindgen(getter)]

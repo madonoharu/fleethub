@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import styled from "@emotion/styled";
 import { Path, PathValue } from "@fh/utils";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import { produce } from "immer";
 import set from "lodash/set";
 import { useTranslation } from "next-i18next";
@@ -23,9 +23,15 @@ import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
-import OrgShipSelect from "./OrgShipSelect";
+import CompShipList from "./CompShipList";
 import SimulatorResultTable from "./SimulatorResultTable";
 import WarfareDetails from "./WarfareDetails";
+
+const GridContainer = styled("div")`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+`;
 
 type StepDetailsProps = {
   plan: PlanFileEntity;
@@ -69,6 +75,9 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
       );
     };
 
+  const playerComp = playerOrg.create_comp_by_key("f1");
+  const enemyComp = enemyOrg.create_comp_by_key("f1");
+
   const playerShip = playerShipId
     ? playerOrg.get_ship_by_id(playerShipId)
     : undefined;
@@ -78,91 +87,63 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
 
   return (
     <div className={className} style={style}>
-      <Flexbox
-        justifyContent="space-between"
-        alignItems="flex-start"
-        css={{ maxWidth: 720 }}
-      ></Flexbox>
-
-      <Flexbox
-        gap={1}
-        css={{
-          "> *": {
-            width: "50%",
-          },
-        }}
-      >
-        <Stack gap={1}>
-          <OrgShipSelect
-            org={playerOrg}
-            value={playerShipId}
-            onSelect={setPlayerShipId}
-          />
-          <Flexbox gap={1}>
-            <FormationSelect
-              color="primary"
-              label={t("Formation")}
-              combined={playerOrg.is_combined()}
-              value={config.player.formation}
-              onChange={bind("player.formation")}
-            />
-            <AirStateSelect
-              label={t("AirState")}
-              value={config.air_state}
-              onChange={bind("air_state")}
-            />
-            <EngagementSelect
-              label={t("Engagement")}
-              value={config.engagement}
-              onChange={bind("engagement")}
-            />
-            <NumberInput
-              label="a11"
-              min={0}
-              step={0.1}
-              sx={{ width: 80 }}
-              value={config.player.external_power_mods.a11}
-              onChange={bind("player.external_power_mods.a11")}
-            />
-          </Flexbox>
-          <NightSituationForm
-            color="primary"
-            value={config.player.night_situation}
-            onChange={bind("player.night_situation")}
-          />
-        </Stack>
-
-        <Stack gap={1}>
-          <OrgShipSelect
-            enemy
-            org={enemyOrg}
-            value={enemyShipId}
-            onSelect={setEnemyShipId}
-          />
+      <Typography variant="subtitle1">{step.name}</Typography>
+      <GridContainer>
+        <CompShipList
+          comp={playerComp}
+          selectedShip={playerShipId}
+          onShipSelect={setPlayerShipId}
+        />
+        <CompShipList
+          comp={enemyComp}
+          selectedShip={enemyShipId}
+          onShipSelect={setEnemyShipId}
+        />
+        <Flexbox gap={1}>
           <FormationSelect
-            css={{ display: "block" }}
+            color="primary"
             label={t("Formation")}
-            color="secondary"
-            combined={enemyOrg.is_combined()}
-            value={config.enemy.formation}
-            onChange={bind("enemy.formation")}
+            combined={playerOrg.is_combined()}
+            value={config.player.formation}
+            onChange={bind("player.formation")}
           />
-          <NightSituationForm
-            color="secondary"
-            value={config.enemy.night_situation}
-            onChange={bind("enemy.night_situation")}
+          <AirStateSelect
+            label={t("AirState")}
+            value={config.air_state}
+            onChange={bind("air_state")}
           />
-        </Stack>
-      </Flexbox>
-
-      <Flexbox
-        gap={1}
-        css={{
-          "> *": {
-            width: "50%",
-          },
-        }}
-      >
+          <EngagementSelect
+            label={t("Engagement")}
+            value={config.engagement}
+            onChange={bind("engagement")}
+          />
+          <NumberInput
+            label="a11"
+            min={0}
+            step={0.1}
+            sx={{ width: 80 }}
+            value={config.player.external_power_mods.a11}
+            onChange={bind("player.external_power_mods.a11")}
+          />
+        </Flexbox>
+        <FormationSelect
+          css={{ width: "fit-content" }}
+          label={t("Formation")}
+          color="secondary"
+          combined={enemyOrg.is_combined()}
+          value={config.enemy.formation}
+          onChange={bind("enemy.formation")}
+        />
+        <NightSituationForm
+          color="primary"
+          value={config.player.night_situation}
+          onChange={bind("player.night_situation")}
+        />
+        <NightSituationForm
+          color="secondary"
+          value={config.enemy.night_situation}
+          onChange={bind("enemy.night_situation")}
+        />
         {playerShip && (
           <ShipCard ship={playerShip} org={playerOrg} visibleMiscStats />
         )}
@@ -170,7 +151,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         {enemyShip && (
           <ShipCard ship={enemyShip} org={enemyOrg} visibleMiscStats />
         )}
-      </Flexbox>
+      </GridContainer>
 
       <Tabs
         list={[
@@ -190,8 +171,8 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
             label: "砲撃支援シミュレータ",
             panel: (
               <SimulatorResultTable
-                player={playerOrg}
-                enemy={enemyOrg}
+                player={playerComp}
+                enemy={enemyComp}
                 config={config}
                 times={10000}
               />
@@ -204,7 +185,5 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
 };
 
 export default styled(StepDetails)`
-  > * {
-    margin-top: 8px;
-  }
+  margin-bottom: 400px;
 `;

@@ -12,8 +12,8 @@ use crate::{
     gear_id, ship_id,
     types::{
         AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
-        NightCutin, ShipAttr, ShipCategory, ShipClass, ShipState, ShipType, SlotSizeArray,
-        SpecialEnemyType,
+        NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
+        SlotSizeArray, SpecialEnemyType,
     },
     utils::xxh3,
 };
@@ -1070,6 +1070,13 @@ impl Ship {
 
     pub fn state(&self) -> ShipState {
         self.state.clone()
+    }
+
+    pub fn meta(&self) -> ShipMeta {
+        ShipMeta {
+            id: self.id.clone(),
+            ship_id: self.ship_id,
+        }
     }
 
     #[wasm_bindgen(getter)]

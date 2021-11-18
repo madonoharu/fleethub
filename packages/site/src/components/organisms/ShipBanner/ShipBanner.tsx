@@ -41,6 +41,7 @@ const ShipBanner: React.FCX<Props> = ({
         width={width}
         height={height}
         src={`ships/${publicId}.png`}
+        priority={true}
       />
     </div>
   );
