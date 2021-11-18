@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
+import { uppercase, FleetKey, FLEET_KEYS } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { Org, OrgType } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Flexbox, PlanIcon } from "../../atoms";
-import { NumberInput, TextField } from "../../molecules";
+import { NumberInput, TextField, Select } from "../../molecules";
 import { ElosLabel, OrgTypeSelect } from "../../organisms";
 import PlanAction, { PlanActionProps } from "./PlanAction";
 
@@ -21,6 +22,7 @@ type PlanScreenHeaderProps = PlanActionProps & {
   onNameChange?: (value: string) => void;
   onHqLevelChange?: (value: number) => void;
   onOrgTypeChange?: (org_type: OrgType) => void;
+  onRouteSupChange?: (key: FleetKey) => void;
 };
 
 const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
@@ -32,6 +34,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
   onNameChange,
   onHqLevelChange,
   onOrgTypeChange,
+  onRouteSupChange,
 }) => {
   const { t } = useTranslation("common");
 
@@ -58,7 +61,13 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
           onChange={onHqLevelChange}
         />
         <OrgTypeSelect onChange={onOrgTypeChange} value={org.org_type} />
-
+        <Select
+          startLabel="支援"
+          options={FLEET_KEYS}
+          value={org.route_sup as FleetKey}
+          getOptionLabel={uppercase}
+          onChange={onRouteSupChange}
+        />
         <PlanAction file={file} org={org} isTemp={isTemp} actions={actions} />
       </Flexbox>
 
