@@ -1,15 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoIcon from "@mui/icons-material/Info";
-import {
-  Typography,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Paper,
-  Button,
-} from "@mui/material";
+import { Typography, Paper, Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -22,7 +14,7 @@ import {
   stepsSlices,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { ClearButton, DeleteButton, NodeLable } from "../../molecules";
+import { DeleteButton, NodeLable } from "../../molecules";
 import { ShipBannerGroup } from "../../organisms";
 import StepDetails from "../StepDetails";
 import Swappable from "../Swappable";
@@ -74,7 +66,8 @@ const StepListItem: React.FCX<StepListItemProps> = ({
             <Button
               sx={{ ml: "auto" }}
               startIcon={<InfoIcon />}
-              variant="outlined"
+              variant="contained"
+              color="primary"
               onClick={StepDetailsModal.show}
             >
               {t("Details")}
