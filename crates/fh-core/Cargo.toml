@@ -1,6 +1,6 @@
 [package]
 name = "fh-core"
-version = "0.3.3"
+version = "0.3.4"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
@@ -42,7 +42,7 @@ getrandom = { version = "0.2.3", features = ["js"] }
 xxhash-rust = { version = "0.8.2", features = ["xxh3"] }
 enumset = "1.0.8"
 anyhow = "1.0.45"
-ts-rs = "6.0.0"
+ts-rs = "6.0.5"
 fh-macro = { path = "../fh-macro" }
 itertools = "*"
 enum-map = "2.0.0-1"

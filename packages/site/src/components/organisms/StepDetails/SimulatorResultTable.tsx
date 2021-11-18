@@ -2,7 +2,7 @@
 import { round } from "@fh/utils";
 import { Paper, TableContainer, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { Org, SimulatorResult } from "fleethub-core";
+import { Comp, SimulatorResult } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -14,8 +14,8 @@ import ShipBanner from "../ShipBanner";
 import Table from "../Table";
 
 type Props = {
-  player: Org;
-  enemy: Org;
+  player: Comp;
+  enemy: Comp;
   times: number;
   config: StepConfig;
 };
@@ -30,15 +30,13 @@ const SimulatorResultTable: React.FCX<Props> = ({
   const { t } = useTranslation("common");
   const { core } = useFhCore();
 
-  const pf = player.clone_fleet("f1");
-
   let simResult: SimulatorResult | undefined;
   let executionTime: React.ReactNode = null;
 
   try {
     const startTime = performance.now();
     simResult = core.simulate_shelling_support(
-      pf,
+      player,
       enemy,
       {
         engagement: config.engagement,
@@ -103,7 +101,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
             {
               label: t("Ship"),
               getValue: (item) => {
-                const ship = enemy.get_ship_by_id(item.id);
+                const ship = enemy.get_ship_by_eid_with_clone(item.id);
                 return <ShipBanner shipId={ship?.ship_id || 0} />;
               },
             },
