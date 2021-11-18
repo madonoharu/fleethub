@@ -737,7 +737,7 @@ __metadata:
     firebase-admin: ^10.0.0
     fleethub-core: "npm:latest"
     google-spreadsheet: ^3.2.0
-    got: ^11.8.2
+    got: ^11.8.3
   dependenciesMeta:
     fleethub-core:
       optional: true
@@ -4079,7 +4079,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cacheable-request@npm:^7.0.1":
+"cacheable-request@npm:^7.0.2":
   version: 7.0.2
   resolution: "cacheable-request@npm:7.0.2"
   dependencies:
@@ -6418,9 +6418,9 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 0.3.3
-  resolution: "fleethub-core@npm:0.3.3"
-  checksum: 987bc6f1a8ff15dec15e4d0c2d53f363bddaa1f616faed43738f89d86cf93f334c4d211f5fd9b22b195f95ee7a81f25bf6f756a2c666b836391321843a755b8d
+  version: 0.3.4
+  resolution: "fleethub-core@npm:0.3.4"
+  checksum: fc7cc1dc106ba0e3625aa9859374b73bc911cc737e50a9c478d74d7296106a0591454ef23a0b8af52f3380a2026a79eae80477624eb1bde82bb802bec5942343
   languageName: node
   linkType: hard
 
@@ -6456,7 +6456,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.3.0
     fleethub-core: "npm:latest"
     fs-extra: ^10.0.0
-    got: ^11.8.2
+    got: ^11.8.3
     husky: ^7.0.4
     identity-obj-proxy: ^3.0.0
     jest: ^27.3.1
@@ -6464,7 +6464,7 @@ __metadata:
     lint-staged: ^12.0.2
     prettier: ^2.4.1
     signale: ^1.4.0
-    typescript: ^4.4.4
+    typescript: ^4.5.2
   languageName: unknown
   linkType: soft
 
@@ -6885,22 +6885,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:^11.8.2":
-  version: 11.8.2
-  resolution: "got@npm:11.8.2"
+"got@npm:^11.8.3":
+  version: 11.8.3
+  resolution: "got@npm:11.8.3"
   dependencies:
     "@sindresorhus/is": ^4.0.0
     "@szmarczak/http-timer": ^4.0.5
     "@types/cacheable-request": ^6.0.1
     "@types/responselike": ^1.0.0
     cacheable-lookup: ^5.0.3
-    cacheable-request: ^7.0.1
+    cacheable-request: ^7.0.2
     decompress-response: ^6.0.0
     http2-wrapper: ^1.0.0-beta.5.2
     lowercase-keys: ^2.0.0
     p-cancelable: ^2.0.0
     responselike: ^2.0.0
-  checksum: 41ad7bf74f7ec18bca81997ea0a6c8b6b75405cc3ba76d49c5d9d4658cad200d5a9fa7b0a13058458d0df6bed217baabd122d5d351c6bc6996514a5e428744bb
+  checksum: 3b6db107d9765470b18e4cb22f7c7400381be7425b9be5823f0168d6c21b5d6b28b023c0b3ee208f73f6638c3ce251948ca9b54a1e8f936d3691139ac202d01b
   languageName: node
   linkType: hard
 
@@ -12603,23 +12603,23 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-typescript@^4.4.4:
-  version: 4.4.4
-  resolution: "typescript@npm:4.4.4"
+typescript@^4.5.2:
+  version: 4.5.2
+  resolution: "typescript@npm:4.5.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 89ecb8436bb48ef5594d49289f5f89103071716b6e4844278f4fb3362856e31203e187a9c76d205c3f0b674d221a058fd28310dbcbcf5d95e9a57229bb5203f1
+  checksum: 74f9ce65d532bdf5d0214b3f60cf37992180023388c87a11ee6f838a803067ef0b63c600fa501b0deb07f989257dce1e244c9635ed79feca40bbccf6e0aa1ebc
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.4.4#~builtin<compat/typescript>":
-  version: 4.4.4
-  resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=32657b"
+"typescript@patch:typescript@^4.5.2#~builtin<compat/typescript>":
+  version: 4.5.2
+  resolution: "typescript@patch:typescript@npm%3A4.5.2#~builtin<compat/typescript>::version=4.5.2&hash=32657b"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: c97c33903f1eb4f9e178649befdfc859d93157db1eccd1e521e84976ec6861db53412d8018e5e4c5d09268771c65498d42caa64bd881878346c3644f6b7cd202
+  checksum: 02cf0f190f0cb6d216558d8db9c3a968feeab4965c340a351e5e6e84a42a3946e5e200a9538b6e427af9d17e4f713254dd0707d5fd6f238ce93f0aee1986ab57
   languageName: node
   linkType: hard
 
