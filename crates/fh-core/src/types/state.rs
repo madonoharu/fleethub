@@ -314,4 +314,8 @@ pub struct OrgState {
     pub hq_level: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub org_type: Option<OrgType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub route_sup: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boss_sup: Option<String>,
 }

@@ -39,29 +39,15 @@ pub struct Org {
     pub hq_level: i32,
     #[wasm_bindgen(readonly)]
     pub org_type: OrgType,
+    #[wasm_bindgen(getter_with_clone)]
+    pub route_sup: String,
+    #[wasm_bindgen(getter_with_clone)]
+    pub boss_sup: String,
 }
 
 impl Org {
     pub fn side(&self) -> Side {
         self.org_type.side()
-    }
-
-    pub fn create_comp_by_key(&self, key: &str) -> Comp {
-        let enable_escort = self.is_combined() && matches!(key, "f1" | "f2");
-
-        let main = if enable_escort {
-            &self.f1
-        } else {
-            self.get_fleet_by_key(key)
-        };
-
-        let escort = enable_escort.then(|| &self.f2);
-
-        Comp {
-            org_type: self.org_type,
-            main: main.clone(),
-            escort: escort.cloned(),
-        }
     }
 
     pub fn get_fleet_by_role(&self, role: Role) -> &Fleet {
@@ -98,7 +84,7 @@ impl Org {
     pub fn get_ship_entity_id(&self, role: Role, key: &str) -> Option<String> {
         self.get_fleet_by_role(role)
             .ships
-            .get_by_ship_key(key)
+            .get_by_key(key)
             .map(|ship| ship.id.clone())
     }
 
@@ -153,6 +139,36 @@ impl Org {
 
     pub fn get_fleet_id_by_role(&self, role: Role) -> String {
         self.get_fleet_by_role(role).id.clone()
+    }
+
+    pub fn create_comp_by_key(&self, key: &str) -> Comp {
+        let org_type = self.org_type;
+        let enable_escort = org_type.is_combined() && matches!(key, "f1" | "f2");
+
+        let main = if enable_escort {
+            &self.f1
+        } else {
+            self.get_fleet_by_key(key)
+        }
+        .clone();
+
+        let escort = enable_escort.then(|| self.f2.clone());
+
+        let route_sup = org_type
+            .is_player()
+            .then(|| self.get_fleet_by_key(&self.route_sup).clone());
+
+        let boss_sup = org_type
+            .is_player()
+            .then(|| self.get_fleet_by_key(&self.boss_sup).clone());
+
+        Comp {
+            org_type,
+            main,
+            escort,
+            route_sup,
+            boss_sup,
+        }
     }
 
     pub fn get_air_squadron(&self, key: &str) -> Result<AirSquadron, JsValue> {
