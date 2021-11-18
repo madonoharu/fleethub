@@ -51,14 +51,6 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         {t(`ships:${ship_id}`, name)}
       </Typography>
 
-      {!disableDetails && (
-        <InfoButton
-          title={t("common:Details")}
-          size="tiny"
-          onClick={onDetailClick}
-        />
-      )}
-
       <EditButton
         title={t("common:EditMiscStats")}
         size="tiny"
@@ -79,7 +71,7 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         />
       )}
       <BusinessCenterButton
-        title={t("common:Preset")}
+        title={t("common:Presets")}
         size="tiny"
         onClick={onPreset}
       />

@@ -1,8 +1,10 @@
+use wasm_bindgen::prelude::*;
+
 use crate::{
     attack::WarfareShipEnvironment,
     fleet::{Fleet, ShipArray},
     ship::Ship,
-    types::{Formation, OrgType, Role},
+    types::{CompMeta, FleetType, Formation, OrgType, Role},
 };
 
 pub struct CompShips<'a> {
@@ -37,17 +39,21 @@ impl<'a> Iterator for CompShips<'a> {
         }
     }
 }
+
+#[wasm_bindgen]
 pub struct Comp {
     pub org_type: OrgType,
+    #[wasm_bindgen(getter_with_clone)]
     pub main: Fleet,
+    #[wasm_bindgen(getter_with_clone)]
     pub escort: Option<Fleet>,
+    #[wasm_bindgen(getter_with_clone)]
+    pub route_sup: Option<Fleet>,
+    #[wasm_bindgen(getter_with_clone)]
+    pub boss_sup: Option<Fleet>,
 }
 
 impl Comp {
-    pub fn is_combined(&self) -> bool {
-        self.escort.is_some()
-    }
-
     pub fn night_fleet(&self) -> &Fleet {
         self.escort.as_ref().unwrap_or_else(|| &self.main)
     }
@@ -135,5 +141,65 @@ impl Comp {
         self.ships()
             .map(|(_, _, ship)| ship.transport_point())
             .sum()
+    }
+}
+
+#[wasm_bindgen]
+impl Comp {
+    pub fn is_combined(&self) -> bool {
+        self.escort.is_some()
+    }
+
+    pub fn is_enemy(&self) -> bool {
+        self.org_type.is_enemy()
+    }
+
+    pub fn meta(&self) -> CompMeta {
+        let fleets = [FleetType::Main, FleetType::Escort, FleetType::RouteSup]
+            .into_iter()
+            .filter_map(|ft| {
+                let fleet = self.get_fleet(ft)?;
+                Some((ft, fleet.meta()))
+            })
+            .collect();
+
+        CompMeta { fleets }
+    }
+
+    fn get_fleet(&self, ft: FleetType) -> Option<&Fleet> {
+        Some(match ft {
+            FleetType::Main => &self.main,
+            FleetType::Escort => self.escort.as_ref()?,
+            FleetType::RouteSup => self.route_sup.as_ref()?,
+            _ => return None,
+        })
+    }
+
+    pub fn get_fleet_id(&self, ft: FleetType) -> Option<String> {
+        self.get_fleet(ft).map(|f| f.id.clone())
+    }
+
+    pub fn get_ship_with_clone(&self, ft: FleetType, key: &str) -> Option<Ship> {
+        Some(self.get_fleet(ft)?.ships.get_by_key(key)?.clone())
+    }
+
+    pub fn get_ship_entity_id(&self, ft: FleetType, key: &str) -> Option<String> {
+        Some(self.get_fleet(ft)?.ships.get_by_key(key)?.id.clone())
+    }
+
+    pub fn get_ship_by_eid_with_clone(&self, id: String) -> Option<Ship> {
+        self.ships()
+            .find_map(|(_, _, ship)| (ship.id == id).then(|| ship))
+            .cloned()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::comp::Comp;
+
+    #[test]
+    fn test() {
+        println!("{}", std::mem::size_of::<Box<Comp>>());
     }
 }
