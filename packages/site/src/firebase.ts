@@ -1,4 +1,5 @@
 import { Dict, FhMap } from "@fh/utils";
+import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref } from "firebase/storage";
 import { MasterData } from "fleethub-core";
@@ -14,11 +15,15 @@ const firebaseConfig = {
   measurementId: "G-9F914T0225",
 };
 
+export const firebaseApp = initializeApp(firebaseConfig);
+
+if (process.browser) {
+  getAnalytics();
+}
+
 export const GCS_PREFIX_URL =
   "https://storage.googleapis.com/kcfleethub.appspot.com";
 export const MASTER_DATA_PATH = "data/master_data.json";
-
-export const firebaseApp = initializeApp(firebaseConfig);
 
 export const fetchMasterData = async (): Promise<MasterData> =>
   fetch(`${GCS_PREFIX_URL}/${MASTER_DATA_PATH}`).then((res) =>
