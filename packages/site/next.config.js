@@ -20,18 +20,15 @@ class WasmChunksFixPlugin {
   }
 }
 
-/**
- * @type import("next").NextConfig
- */
+/** @type {import("next").NextConfig} */
 const config = {
   env: {
     VERSION: require("./package.json").version,
   },
   i18n,
-  localePath: "./public/locales",
 
-  // https://github.com/vercel/next.js/issues/30425
   experimental: {
+    // https://github.com/vercel/next.js/issues/30425
     esmExternals: false,
   },
 
