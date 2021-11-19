@@ -16,6 +16,7 @@ const StyledCloseButton = styled(CloseButton)`
 `;
 
 const ScrollContainer = styled.div`
+  padding-left: 2px;
   overflow-y: scroll;
 `;
 
