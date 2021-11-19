@@ -24,7 +24,7 @@ const StoreProvider: React.FC<StoreProviderProps> = ({
     if (!process.browser) return undefined;
 
     const url = new URL(location.href);
-    window.history.replaceState(null, "", location.origin);
+    window.history.replaceState(null, "", location.pathname);
     return url;
   }, []);
 
