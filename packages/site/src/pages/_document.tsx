@@ -10,12 +10,15 @@ export default class MyDocument extends Document {
     return (
       <Html lang="ja">
         <Head>
+          <meta
+            name="description"
+            content="作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。"
+          />
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:creator" content="@MadonoHaru" />
+          <link rel="icon" href="/favicon.ico" />
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-          />
         </Head>
         <body>
           <Main />

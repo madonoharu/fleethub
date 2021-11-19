@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Button, Stack } from "@mui/material";
-import { OrgType, WarfareAnalyzerShipEnvironment } from "fleethub-core";
+import { OrgType, Role, WarfareAnalyzerShipEnvironment } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useFhCore } from "../../../hooks";
@@ -59,7 +59,7 @@ const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
           onChange={handleOrgTypeChange}
         />
 
-        <Select
+        <Select<Role>
           color={color}
           options={["Main", "Escort"]}
           value={value.role}
