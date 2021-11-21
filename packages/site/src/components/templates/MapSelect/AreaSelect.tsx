@@ -4,11 +4,9 @@ import { uniq } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
-import dynamic from "next/dynamic";
-import React from "react";
-import { fetchMapVersion, MapVersion } from "../../../firebase";
+import React, { useContext } from "react";
 
-import { useModal } from "../../../hooks";
+import { GenerationMapContext, useModal } from "../../../hooks";
 import { Divider } from "../../atoms";
 
 type AreaListProps = {
@@ -39,12 +37,19 @@ const AreaList: React.FCX<AreaListProps> = ({ className, areas, onChange }) => {
 };
 
 type AreaMenuProps = {
-  all: MapVersion;
   onChange?: (id: number) => void;
 };
 
-const AreaMenu: React.FCX<AreaMenuProps> = ({ className, all, onChange }) => {
-  const ids = Object.keys(all).map((id) => Number(id));
+const AreaMenu: React.FCX<AreaMenuProps> = ({ className, onChange }) => {
+  const generationMap = useContext(GenerationMapContext);
+
+  const ids = Object.keys(generationMap)
+    .map((key) => {
+      const str = key.replace(/maps\/(\d+)\.json/, (_, id: string) => id);
+      return Number(str);
+    })
+    .filter((id) => !Number.isNaN(id));
+
   const normalAreas = ids.filter((id) => id < 100);
   const eventAreas = ids.filter((id) => id >= 100);
 
@@ -61,16 +66,6 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, all, onChange }) => {
     </Stack>
   );
 };
-
-const AreaMenuAsync = dynamic(async () => {
-  const all = await fetchMapVersion();
-
-  const component: React.FCX<Omit<AreaMenuProps, "all">> = (props) => (
-    <AreaMenu all={all} {...props} />
-  );
-
-  return component;
-});
 
 const StyledButton = styled(Button)`
   height: 40px;
@@ -104,7 +99,7 @@ const AreaSelect: React.FCX<AreaSelectProps> = ({ value, onChange }) => {
         海域 {value}
       </StyledButton>
       <Modal sx={{ m: 1 }}>
-        <AreaMenuAsync onChange={handleChange} />
+        <AreaMenu onChange={handleChange} />
       </Modal>
     </>
   );
