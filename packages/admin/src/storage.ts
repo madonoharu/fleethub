@@ -1,6 +1,6 @@
 import zlib from "zlib";
 import { SaveOptions as GcsSaveOptions } from "@google-cloud/storage";
-import equal from "fast-deep-equal";
+import { dequal } from "dequal";
 import { MasterData } from "fleethub-core";
 import got from "got";
 
@@ -12,8 +12,8 @@ export interface SaveOptions extends GcsSaveOptions {
   metadata?: Record<string, string>;
 }
 
-export const GCS_PREFIX_URL =
-  "https://storage.googleapis.com/kcfleethub.appspot.com";
+export const BUCKET_NAME = "kcfleethub.appspot.com";
+export const GCS_PREFIX_URL = `https://storage.googleapis.com/${BUCKET_NAME}`;
 export const MASTER_DATA_PATH = "data/master_data.json";
 
 export const getBucket = () => getApp().storage().bucket();
@@ -34,11 +34,13 @@ export const exists = (path: string): Promise<boolean> =>
     .exists()
     .then((res) => res[0]);
 
-export const getMetadata = async (
-  path: string
-): Promise<Record<string, unknown>> => {
+export type Metadata = {
+  generation: string;
+};
+
+export const getMetadata = async (path: string): Promise<Metadata> => {
   const res = await getBucket().file(path).getMetadata();
-  return res[0] as Record<string, unknown>;
+  return res[0] as Metadata;
 };
 
 const createGcsSaveOptions = (options?: SaveOptions): GcsSaveOptions => {
@@ -106,7 +108,7 @@ export const updateJson = async <
 
   const next = updater(current);
 
-  if (!equal(current, next)) {
+  if (!dequal(current, next)) {
     console.log(`update: ${path}`);
     await writeJson<P, T>(path, next, options);
   }
@@ -122,7 +124,7 @@ export const mergeMasterData = async (
 ): Promise<MasterData> => {
   const next: MasterData = { ...target, ...source };
 
-  if (equal(target, next)) {
+  if (dequal(target, next)) {
     return next;
   }
 
@@ -136,4 +138,28 @@ export const mergeMasterData = async (
   });
 
   return next;
+};
+
+export const fetchGenerationMap = async (): Promise<Record<string, string>> => {
+  const api = got.extend({
+    prefixUrl: `https://storage.googleapis.com/storage/v1/b/${BUCKET_NAME}/o`,
+  });
+
+  type ListResponse = {
+    items: { name: string; generation: string }[];
+  };
+
+  const res1 = await api({
+    searchParams: { prefix: "maps" },
+  }).json<ListResponse>();
+
+  const res2 = await api({
+    searchParams: { prefix: "data" },
+  }).json<ListResponse>();
+
+  const result = Object.fromEntries(
+    res1.items.concat(res2.items).map((item) => [item.name, item.generation])
+  );
+
+  return result;
 };
