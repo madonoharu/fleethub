@@ -2,9 +2,15 @@ import { FhCore, MasterData } from "fleethub-core";
 import { createContext, useContext } from "react";
 
 export type FhCoreState = {
-  module: typeof import("fleethub-core");
-  masterData: MasterData;
+  module: Pick<
+    typeof import("fleethub-core"),
+    | "air_squadron_can_equip"
+    | "org_type_is_single"
+    | "org_type_default_formation"
+    | "org_type_is_player"
+  >;
   core: FhCore;
+  masterData: MasterData;
 };
 
 export const FhCoreContext = createContext<FhCoreState | null>(null);

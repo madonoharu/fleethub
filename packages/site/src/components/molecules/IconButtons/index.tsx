@@ -23,22 +23,23 @@ import { KctoolsIcon } from "../../atoms";
 import { withIconButton } from "./withIconButton";
 
 export const AddButton = withIconButton(AddIcon);
-export const CopyButton = withIconButton(FileCopyIcon);
-export const CloseButton = withIconButton(CloseIcon);
-export const ClearButton = withIconButton(ClearIcon);
-export const MoreVertButton = withIconButton(MoreVertIcon);
-export const DeleteButton = withIconButton(DeleteIcon);
-export const UpdateButton = withIconButton(CachedIcon);
-export const LinkButton = withIconButton(LinkIcon);
-export const ShareButton = withIconButton(ShareIcon);
-export const SaveButton = withIconButton(SaveIcon);
-export const InfoButton = withIconButton(InfoIcon);
-export const EditButton = withIconButton(EditIcon);
-export const OpenInNewButton = withIconButton(OpenInNewIcon);
-export const ImportButton = withIconButton(SaveAltIcon);
-export const StarButton = withIconButton(StarIcon);
 export const BuildButton = withIconButton(BuildIcon);
 export const BusinessCenterButton = withIconButton(BusinessCenterIcon);
+export const ClearButton = withIconButton(ClearIcon);
+export const CloseButton = withIconButton(CloseIcon);
+export const DeleteButton = withIconButton(DeleteIcon);
+export const EditButton = withIconButton(EditIcon);
+export const FileCopyButton = withIconButton(FileCopyIcon);
+export const InfoButton = withIconButton(InfoIcon);
+export const LinkButton = withIconButton(LinkIcon);
+export const MoreVertButton = withIconButton(MoreVertIcon);
+export const OpenInNewButton = withIconButton(OpenInNewIcon);
+export const SaveButton = withIconButton(SaveIcon);
+export const ShareButton = withIconButton(ShareIcon);
+export const StarButton = withIconButton(StarIcon);
+
+export const ImportButton = withIconButton(SaveAltIcon);
+export const UpdateButton = withIconButton(CachedIcon);
 
 export const TweetButton = styled(withIconButton(TwitterIcon))`
   color: #3ba9ee;

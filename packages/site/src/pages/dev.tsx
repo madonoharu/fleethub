@@ -8,14 +8,7 @@ import React from "react";
 const Dev: NextComponentType<NextPageContext> = () => (
   <div>
     <Head>
-      <title>作戦室</title>
-      <meta
-        name="description"
-        content="作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。"
-      />
-      <meta name="twitter:card" content="summary" />
-      <meta name="twitter:creator" content="@MadonoHaru" />
-      <link rel="icon" href="/favicon.ico" />
+      <title>dev</title>
     </Head>
 
     <Container sx={{ mt: 5 }}>

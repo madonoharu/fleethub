@@ -1,76 +1,113 @@
 /** @jsxImportSource @emotion/react */
+import { storage } from "@fh/admin";
 import { createEquipmentBonuses } from "equipment-bonus";
+import {
+  air_squadron_can_equip,
+  org_type_is_single,
+  org_type_default_formation,
+  org_type_is_player,
+  FhCore,
+  MasterData,
+} from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { AppContent } from "../components/templates";
-import { fetchMasterData } from "../firebase";
-import { FhCoreContext } from "../hooks";
+import AppContent from "../components/templates/AppContent";
+import { GCS_PREFIX_URL, MASTER_DATA_PATH } from "../firebase";
+import { FhCoreContext, GenerationMapContext, useGcs } from "../hooks";
 import { StoreProvider } from "../store";
 
-const loader = async () => {
-  const [module, masterData] = await Promise.all([
-    import("fleethub-core"),
-    fetchMasterData(),
-  ]);
-
-  const App: React.FC = () => {
-    const core = new module.FhCore(masterData, createEquipmentBonuses);
-
-    if (process.env.NODE_ENV === "development") {
-      module.set_panic_hook();
-    }
-
-    return (
-      <FhCoreContext.Provider value={{ masterData, module, core }}>
-        <StoreProvider masterData={masterData}>
-          <AppContent />
-        </StoreProvider>
-      </FhCoreContext.Provider>
-    );
-  };
-
-  return App;
+type Props = {
+  generationMap: Record<string, string>;
 };
 
-const App = dynamic(loader);
+const Loder: React.FC = ({ children }) => {
+  const { data: masterData } = useGcs<MasterData>(MASTER_DATA_PATH);
 
-const Index: NextComponentType<NextPageContext, unknown> = () => {
+  if (!masterData) {
+    return null;
+  }
+
+  const core = new FhCore(masterData, createEquipmentBonuses);
+
+  const value = {
+    module: {
+      air_squadron_can_equip,
+      org_type_is_single,
+      org_type_default_formation,
+      org_type_is_player,
+    },
+    core,
+    masterData,
+  };
+
+  return (
+    <FhCoreContext.Provider value={value}>
+      <StoreProvider masterData={value.masterData}>{children}</StoreProvider>
+    </FhCoreContext.Provider>
+  );
+};
+
+const Index: NextComponentType<NextPageContext, unknown, Props> = ({
+  generationMap,
+}) => {
+  const preloadLinks = [MASTER_DATA_PATH, "data/ship_banners.json"].map(
+    (path) => {
+      const gen = generationMap[path];
+
+      return (
+        gen && (
+          <link
+            key={path}
+            rel="preload"
+            href={`${GCS_PREFIX_URL}/${path}?generation=${gen}`}
+            as="fetch"
+            crossOrigin="anonymous"
+          />
+        )
+      );
+    }
+  );
+
   return (
     <div>
       <Head>
         <title>作戦室</title>
-        <meta
-          name="description"
-          content="作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。"
-        />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:creator" content="@MadonoHaru" />
-        <link rel="icon" href="/favicon.ico" />
+        {preloadLinks}
       </Head>
 
-      <DndProvider backend={HTML5Backend}>
-        <App />
-      </DndProvider>
+      <GenerationMapContext.Provider value={generationMap}>
+        <Loder>
+          <DndProvider backend={HTML5Backend}>
+            <AppContent />
+          </DndProvider>
+        </Loder>
+      </GenerationMapContext.Provider>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale = "" }) => {
+export const getStaticProps: GetStaticProps<Props> = async ({
+  locale = "",
+}) => {
+  const generationMap = await storage.fetchGenerationMap();
+
+  const ssrConfig = await serverSideTranslations(locale, [
+    "common",
+    "gears",
+    "gear_types",
+    "ships",
+    "ctype",
+  ]);
+
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        "common",
-        "gears",
-        "gear_types",
-        "ships",
-        "ctype",
-      ])),
+      ...ssrConfig,
+      generationMap,
     },
   };
 };
