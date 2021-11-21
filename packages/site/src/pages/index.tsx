@@ -105,6 +105,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({
   ]);
 
   return {
+    revalidate: 60,
     props: {
       ...ssrConfig,
       generationMap,
