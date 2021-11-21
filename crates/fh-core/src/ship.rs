@@ -998,14 +998,7 @@ impl Ship {
             }
         }
 
-        let late_model_bow_torpedo_count = self.gears.count_by(|gear| {
-            matches!(
-                gear.gear_id,
-                gear_id!("後期型艦首魚雷(6門)")
-                    | gear_id!("熟練聴音員+後期型艦首魚雷(6門)")
-                    | gear_id!("後期型53cm艦首魚雷(8門)")
-            )
-        });
+        let late_model_bow_torpedo_count = self.gears.count_attr(GearAttr::LateModelBowTorpedo);
         let has_submarine_radar = self.gears.has_type(GearType::SubmarineEquipment);
 
         if late_model_bow_torpedo_count >= 1 && has_submarine_radar {
