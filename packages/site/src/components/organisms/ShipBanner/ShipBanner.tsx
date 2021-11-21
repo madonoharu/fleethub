@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import { Dict } from "@fh/utils";
 import BrokenImage from "@mui/icons-material/BrokenImage";
 import Image from "next/image";
 import React from "react";
 
-import { useFhCore } from "../../../hooks";
+import { useGcs } from "../../../hooks";
 import { cloudinaryLoader } from "../../../utils";
 
 type Props = {
@@ -22,12 +23,17 @@ const ShipBanner: React.FCX<Props> = ({
   shipId,
   size = "small",
 }) => {
-  const { masterData } = useFhCore();
-  const publicId = masterData.ship_banners[shipId] || "";
+  const { data } = useGcs<Dict<string, string>>("data/ship_banners.json");
 
   const scale = SIZES[size];
   const width = scale * 32;
   const height = scale * 8;
+
+  if (!data) {
+    return <div className={className} css={{ width, height }} />;
+  }
+
+  const publicId = data[shipId] || "";
 
   if (!publicId) {
     return <BrokenImage className={className} style={{ width, height }} />;

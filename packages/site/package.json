@@ -27,9 +27,9 @@
     "clsx": "^1.1.1",
     "constate": "^3.3.0",
     "copy-to-clipboard": "^3.3.1",
-    "equipment-bonus": "^7.0.9",
+    "equipment-bonus": "^7.0.10",
     "fast-json-stable-stringify": "^2.1.0",
-    "firebase": "^9.4.1",
+    "firebase": "^9.5.0",
     "fleethub-core": "npm:latest",
     "gkcoi": "^1.2.4",
     "http-status-codes": "^2.1.4",
@@ -52,6 +52,7 @@
     "redux-state-sync": "^3.1.2",
     "redux-undo": "^1.0.1",
     "sharp": "^0.29.3",
+    "swr": "^1.0.1",
     "use-immer": "^0.6.0"
   },
   "devDependencies": {

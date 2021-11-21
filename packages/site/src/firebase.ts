@@ -2,7 +2,6 @@ import { Dict, FhMap } from "@fh/utils";
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref } from "firebase/storage";
-import { MasterData } from "fleethub-core";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",
@@ -24,29 +23,7 @@ if (process.browser) {
 export const GCS_PREFIX_URL =
   "https://storage.googleapis.com/kcfleethub.appspot.com";
 export const MASTER_DATA_PATH = "data/master_data.json";
-
-export const fetchMasterData = async (): Promise<MasterData> =>
-  fetch(`${GCS_PREFIX_URL}/${MASTER_DATA_PATH}`).then((res) =>
-    res.json()
-  ) as Promise<MasterData>;
-
-export type MapVersion = Dict<string, string>;
-
-export const fetchMapVersion = (): Promise<MapVersion> => {
-  return fetch(`${GCS_PREFIX_URL}/maps/all.json`).then((res) =>
-    res.json()
-  ) as Promise<MapVersion>;
-};
-
-export const fetchMap = async (id: number) => {
-  const version = await fetchMapVersion();
-  const generation = version[id] || "";
-  const params = new URLSearchParams({ generation });
-
-  return fetch(`${GCS_PREFIX_URL}/maps/${id}.json?${params.toString()}`).then(
-    (res) => res.json()
-  ) as Promise<FhMap>;
-};
+export const SHIP_BANNERS_PATH = "data/ship_banners.json";
 
 export const publicFileExists = (id: string) => {
   return fetch(`${GCS_PREFIX_URL}/public/${id}.json`, { method: "HEAD" }).then(
