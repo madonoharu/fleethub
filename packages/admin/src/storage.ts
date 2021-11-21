@@ -132,9 +132,7 @@ export const mergeMasterData = async (
 
   await writeJson(MASTER_DATA_PATH, next, {
     public: true,
-    metadata: {
-      cacheControl: "public, max-age=60",
-    },
+    immutable: true,
   });
 
   return next;
