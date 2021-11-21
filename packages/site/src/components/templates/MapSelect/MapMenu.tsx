@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { MapEnemyFleet, MapNode, MapNodeType } from "@fh/utils";
+import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fh/utils";
 import { Formation, OrgState } from "fleethub-core";
 import React from "react";
-import { useAsync } from "react-async-hook";
 
-import { fetchMap } from "../../../firebase";
-import { useFhCore } from "../../../hooks";
+import { useFhCore, useGcs } from "../../../hooks";
 import { MapSelectState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { NauticalChart } from "../../organisms";
@@ -34,10 +32,9 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
 
   const { masterData } = useFhCore();
 
-  const asyncMap = useAsync(fetchMap, [mapId]);
-  const map = asyncMap.result;
+  const { data } = useGcs<FhMap>(`maps/${mapId}.json`);
 
-  const node = map?.nodes.find((node) => {
+  const node = data?.nodes.find((node) => {
     if (point) {
       return node.point === point;
     } else {
@@ -84,7 +81,7 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
       </Flexbox>
 
       <div css={{ width: 640 }}>
-        {map && <NauticalChart map={map} onClick={handleNodeClick} />}
+        {data && <NauticalChart map={data} onClick={handleNodeClick} />}
         {node && (
           <EnemyCompList
             node={node}
