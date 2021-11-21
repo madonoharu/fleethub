@@ -29,12 +29,12 @@ export const updateMasterDataBySpreadsheet = async () => {
 };
 
 export const updateImages = async () => {
-  const [start2, current] = await Promise.all([
-    fetchStart2(),
-    storage.readMasterData(),
-  ]);
+  const start2 = await fetchStart2();
   const ship_banners = await updateCloudinary(start2);
-  await storage.mergeMasterData(current, { ship_banners });
+  await storage.writeJson("data/ship_banners.json", ship_banners, {
+    public: true,
+    immutable: true,
+  });
 };
 
 export { isProjectMember } from "./auth";
