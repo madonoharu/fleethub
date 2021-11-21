@@ -16,20 +16,6 @@ sans-serif,
 "Noto Sans Emoji"
 `;
 
-// const fontFamily = `
-// -apple-system,
-// BlinkMacSystemFont,
-// "Segoe UI",
-// Roboto,
-// "Hiragino Sans",
-// "Noto Sans CJK JP",
-// sans-serif,
-// "Apple Color Emoji",
-// "Segoe UI Emoji",
-// "Segoe UI Symbol",
-// "Noto Sans Emoji"
-// `;
-
 const muiTheme = createTheme({
   typography: {
     fontFamily,

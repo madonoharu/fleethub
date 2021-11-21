@@ -17,17 +17,18 @@ const getLanguageName = (lang: string) =>
   languageNameMap[lang as keyof typeof languageNameMap] || "";
 
 const LanguageSelect: React.FCX = ({ className }) => {
-  const { replace, locales, locale } = useRouter();
-  const handleChange = React.useCallback(
-    (lng: string) => replace("/", undefined, { locale: lng }),
-    [replace]
-  );
+  const router = useRouter();
+
+  const handleChange = async (lng: string) => {
+    await router.replace(router.asPath, undefined, { locale: lng });
+  };
+
   return (
     <SelectedMenu
       className={className}
       startIcon={<TranslateIcon fontSize="small" />}
-      options={locales || []}
-      value={locale || ""}
+      options={router.locales || []}
+      value={router.locale || ""}
       onChange={handleChange}
       getOptionLabel={getLanguageName}
     />

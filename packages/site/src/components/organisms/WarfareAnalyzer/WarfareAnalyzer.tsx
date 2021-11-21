@@ -68,7 +68,7 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
 
   return (
     <Paper className={className} style={style}>
-      <Typography alignItems="center" display="flex">
+      <Typography alignItems="center" display="flex" gap={1}>
         <Typography variant="inherit" component="span" color={attackerColor}>
           {attacker.name}
         </Typography>

@@ -1,4 +1,4 @@
-use std::{collections::HashMap, str::FromStr};
+use std::str::FromStr;
 
 use anyhow::Result;
 use enumset::EnumSet;
@@ -436,7 +436,6 @@ pub struct MasterData {
     pub gear_attrs: Vec<MasterAttrRule>,
     pub ships: Vec<MasterShip>,
     pub ship_attrs: Vec<MasterAttrRule>,
-    pub ship_banners: HashMap<String, String>,
     pub equippable: MasterEquippable,
     pub ibonuses: MasterIBonuses,
     pub config: BattleConfig,

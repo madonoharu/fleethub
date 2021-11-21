@@ -1,36 +1,51 @@
 /** @jsxImportSource @emotion/react */
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import { Button, Container, Divider, Typography, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useModal } from "../../../hooks";
 import { createPlan } from "../../../store";
+import { Flexbox } from "../../atoms";
+import { ImportMenu } from "../../organisms";
 
 const WelcomePage: React.FCX = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
+  const ImprotMenuModal = useModal();
   const handleCreatePlan = () => {
     dispatch(createPlan({}));
   };
 
   return (
     <Container maxWidth="md" sx={{ pt: 5 }}>
-      <Typography variant="h4">作戦室 v{process.env.VERSION}</Typography>
-      <Typography mt={2}>
-        作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。
-      </Typography>
-
-      <Button
-        startIcon={<NoteAddIcon />}
-        variant="contained"
-        color="primary"
-        onClick={handleCreatePlan}
-      >
-        {t("CreateComposition")}
-      </Button>
-
       <Stack gap={1}>
+        <div>
+          <Typography variant="h4">作戦室 v{process.env.VERSION}</Typography>
+          <Typography mt={2}>
+            作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。
+          </Typography>
+        </div>
+        <Flexbox gap={1}>
+          <Button
+            startIcon={<NoteAddIcon />}
+            variant="contained"
+            color="primary"
+            onClick={handleCreatePlan}
+          >
+            {t("CreateComposition")}
+          </Button>
+          <Button
+            startIcon={<SaveAltIcon />}
+            variant="contained"
+            color="primary"
+            onClick={ImprotMenuModal.show}
+          >
+            {t("デッキビルダー形式などから編成を読み込む")}
+          </Button>
+        </Flexbox>
+
         <Typography variant="h5" mt={4}>
           Tips
         </Typography>
@@ -65,6 +80,10 @@ const WelcomePage: React.FCX = () => {
           当サイトで使用されている画像の知的財産権は、その権利者様に帰属します。権利者様からの削除依頼には速やかに対処いたします。
         </Typography>
       </Stack>
+
+      <ImprotMenuModal>
+        <ImportMenu onClose={ImprotMenuModal.hide} />
+      </ImprotMenuModal>
     </Container>
   );
 };
