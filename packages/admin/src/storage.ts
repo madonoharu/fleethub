@@ -1,6 +1,6 @@
 import zlib from "zlib";
 import { SaveOptions as GcsSaveOptions } from "@google-cloud/storage";
-import equal from "fast-deep-equal";
+import { dequal } from "dequal";
 import { MasterData } from "fleethub-core";
 import got from "got";
 
@@ -108,7 +108,7 @@ export const updateJson = async <
 
   const next = updater(current);
 
-  if (!equal(current, next)) {
+  if (!dequal(current, next)) {
     console.log(`update: ${path}`);
     await writeJson<P, T>(path, next, options);
   }
@@ -124,7 +124,7 @@ export const mergeMasterData = async (
 ): Promise<MasterData> => {
   const next: MasterData = { ...target, ...source };
 
-  if (equal(target, next)) {
+  if (dequal(target, next)) {
     return next;
   }
 
