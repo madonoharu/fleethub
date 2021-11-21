@@ -61,7 +61,7 @@ export const equalRows = (keys: string[], rows1: Row[], rows2: Row[]) => {
   });
 };
 
-export const writeRows = async (
+const writeRows = async (
   sheet: GoogleSpreadsheetWorksheet,
   rows: Record<string, unknown>[]
 ) => {
@@ -93,14 +93,67 @@ export const writeRows = async (
 
 export const updateRows = async (
   sheet: GoogleSpreadsheetWorksheet,
-  current: Row[],
-  next: object[]
+  currentRows: Row[],
+  nextRows: object[]
 ) => {
-  if (equalRows(sheet.headerValues, current, next as Row[])) {
+  if (equalRows(sheet.headerValues, currentRows, nextRows as Row[])) {
     console.log(`skip ${sheet.a1SheetName}`);
   } else {
-    await writeRows(sheet, next as Row[]);
+    await writeRows(sheet, nextRows as Row[]);
   }
 
-  return next;
+  return nextRows;
 };
+
+// export const updateRows = async (
+//   sheet: GoogleSpreadsheetWorksheet,
+//   currentRows: Row[],
+//   nextRows: object[]
+// ) => {
+//   if (equalRows(sheet.headerValues, currentRows, nextRows as Row[])) {
+//     console.log(`skip ${sheet.a1SheetName}`);
+//     return nextRows;
+//   }
+
+//   const rowCount = currentRows.length + 1;
+//   if (sheet.gridProperties.rowCount !== rowCount) {
+//     await sheet.resize({ ...sheet.gridProperties, rowCount });
+//   }
+
+//   const updateCells: {
+//     rowIndex: number;
+//     columnIndex: number;
+//     value: string;
+//   }[] = [];
+
+//   nextRows.forEach((nextRow, i) => {
+//     const rowIndex = i + 1;
+//     const currentRow = currentRows[i];
+
+//     sheet.headerValues.forEach((key, columnIndex) => {
+//       const currentCellValue = get(currentRow, key);
+//       const nextCellValue = toCellValue(get(nextRow, key));
+
+//       if (equalCellValue(currentCellValue, nextCellValue)) {
+//         return;
+//       }
+
+//       updateCells.push({
+//         rowIndex,
+//         columnIndex,
+//         value: String(nextCellValue),
+//       });
+//     });
+//   });
+
+//   await sheet.loadCells(
+//     updateCells.map((cell) => ({
+//       startRowIndex: cell.rowIndex,
+//       startColumnIndex: cell.columnIndex,
+//       endRowIndex: cell.rowIndex,
+//       endColumnIndex: cell.columnIndex,
+//     }))
+//   );
+
+//   return nextRows;
+// };
