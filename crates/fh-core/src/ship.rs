@@ -9,7 +9,7 @@ use crate::{
     attack::{AswAttackType, ProficiencyModifiers},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
-    gear_id, ship_id,
+    gear_id, matches_gear_id, ship_id,
     types::{
         AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
         NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
@@ -1281,6 +1281,15 @@ impl Ship {
         }
 
         if key == "gx" {
+            if self.ship_type.is_submarine()
+                && matches_gear_id!(
+                    gear.gear_id,
+                    "潜水艦後部魚雷発射管4門(初期型)" | "潜水艦後部魚雷発射管4門(後期型)"
+                )
+            {
+                return true;
+            }
+
             return self
                 .equippable
                 .exslot_types
