@@ -119,21 +119,6 @@ const updateByKcnav = async () => {
   if (kcnavMaps.length > 0) {
     await Promise.all([updateMaps(kcnavMaps), updateShips(kcnavMaps)]);
   }
-
-  const entries = await Promise.all(
-    ids.map(async (id) => {
-      const metadata = await storage.getMetadata(`maps/${id}.json`);
-      const generation = metadata["generation"] as string;
-      return [id, generation] as const;
-    })
-  );
-
-  await storage.writeJson(`maps/all.json`, Object.fromEntries(entries), {
-    public: true,
-    metadata: {
-      cacheControl: "public, max-age=60",
-    },
-  });
 };
 
 updateByKcnav().catch((err) => console.log(err));
