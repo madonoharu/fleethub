@@ -98,6 +98,12 @@ impl EBonusFnGearInput {
 }
 
 fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
+    let base = match ship.speed {
+        5 => BaseSpeed::Slow,
+        10 => BaseSpeed::Fast,
+        _ => return 0,
+    };
+
     let speed_group = ship.speed_group.unwrap_or_default();
     let new_model_boiler_count = gears.count(gear_id!("新型高温高圧缶"));
 
@@ -115,51 +121,88 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
     }
 
     let enhanced_boiler_count = gears.count(gear_id!("強化型艦本式缶"));
+
+    let synergy = get_speed_synergy(
+        base,
+        speed_group,
+        enhanced_boiler_count,
+        new_model_boiler_count,
+    );
+
+    let turbine_bonus = if synergy == 0 && ship.has_attr(ShipAttr::TurbineSpeedBonus) {
+        5
+    } else {
+        0
+    };
+
+    sentaka_type_mod + turbine_bonus + synergy
+}
+
+#[derive(Debug)]
+enum BaseSpeed {
+    Slow,
+    Fast,
+}
+
+fn get_speed_synergy(
+    base: BaseSpeed,
+    group: SpeedGroup,
+    enhanced_boiler_count: usize,
+    new_model_boiler_count: usize,
+) -> u8 {
     let total_boiler_count = enhanced_boiler_count + new_model_boiler_count;
 
-    let synergy = match speed_group {
-        SpeedGroup::A => {
+    match (base, group) {
+        (BaseSpeed::Fast, SpeedGroup::A) => {
             if new_model_boiler_count >= 1 || total_boiler_count >= 2 {
                 10
+            } else if total_boiler_count >= 1 {
+                5
             } else {
                 0
             }
         }
-        SpeedGroup::B1 => {
-            if new_model_boiler_count == 0 {
+        (BaseSpeed::Slow, SpeedGroup::A) => {
+            if new_model_boiler_count >= 1 {
+                if total_boiler_count >= 3 {
+                    15
+                } else if total_boiler_count >= 2 {
+                    10
+                } else {
+                    5
+                }
+            } else if total_boiler_count >= 1 {
+                5
+            } else {
                 0
-            } else if total_boiler_count >= 3 {
-                15
-            } else if total_boiler_count >= 2 {
+            }
+        }
+        (_, SpeedGroup::B1) => {
+            if new_model_boiler_count >= 1 && total_boiler_count >= 2 {
                 10
+            } else if total_boiler_count >= 1 {
+                5
             } else {
                 0
             }
         }
-        SpeedGroup::B2 => {
+        (_, SpeedGroup::B2) => {
             if new_model_boiler_count >= 2 || total_boiler_count >= 3 {
                 10
+            } else if total_boiler_count >= 1 {
+                5
             } else {
                 0
             }
         }
-        SpeedGroup::C => {
+        (_, SpeedGroup::C) => {
             if total_boiler_count >= 1 {
                 5
             } else {
                 0
             }
         }
-    };
-
-    let turbine_bonus =
-        if synergy == 0 && total_boiler_count >= 1 || ship.has_attr(ShipAttr::TurbineSpeedBonus) {
-            5
-        } else {
-            0
-        };
-
-    sentaka_type_mod + turbine_bonus + synergy
+    }
 }
 
 pub struct EBonusFn(js_sys::Function);
@@ -222,5 +265,77 @@ impl EBonusFn {
         base.speed = get_speed_bonus(ship, gears);
 
         base
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_speed_synergy() {
+        use BaseSpeed::*;
+        use SpeedGroup::*;
+        get_speed_synergy(BaseSpeed::Slow, SpeedGroup::A, 0, 0);
+
+        macro_rules! speed_value {
+            (低速) => {
+                5
+            };
+            (高速) => {
+                10
+            };
+            (高速P) => {
+                15
+            };
+            (最速) => {
+                20
+            };
+        }
+
+        macro_rules! test_item {
+            ($base: ident, $group: ident, $ebc: expr, $nmbc: expr, $expected: ident) => {
+                let synergy = get_speed_synergy($base, $group, $ebc, $nmbc);
+                let base_value = match $base {
+                    Fast => 10,
+                    Slow => 5,
+                };
+                let expected_value = speed_value!($expected) - base_value;
+
+                assert_eq!(
+                    synergy,
+                    expected_value,
+                    "{:?}",
+                    ($nmbc, $ebc, $base, $group)
+                )
+            };
+        }
+
+        macro_rules! test_table {
+            ($nmbc: expr, $ebc: expr, $fa: ident, $fb1: ident, $fb2: ident, $fc: ident, $sa: ident, $sb: ident, $sc: ident) => {
+                test_item!(Fast, A, $ebc, $nmbc, $fa);
+                test_item!(Fast, B1, $ebc, $nmbc, $fb1);
+                test_item!(Fast, B2, $ebc, $nmbc, $fb2);
+                test_item!(Fast, C, $ebc, $nmbc, $fc);
+                test_item!(Slow, A, $ebc, $nmbc, $sa);
+                test_item!(Slow, B2, $ebc, $nmbc, $sb);
+                test_item!(Slow, C, $ebc, $nmbc, $sc);
+            };
+        }
+
+        test_table!(0, 1, 高速P, 高速P, 高速P, 高速P, 高速, 高速, 高速);
+        test_table!(0, 2, 最速, 高速P, 高速P, 高速P, 高速, 高速, 高速);
+        test_table!(0, 3, 最速, 高速P, 最速, 高速P, 高速, 高速P, 高速);
+        test_table!(0, 4, 最速, 高速P, 最速, 高速P, 高速, 高速P, 高速);
+        test_table!(1, 0, 最速, 高速P, 高速P, 高速P, 高速, 高速, 高速);
+        test_table!(1, 1, 最速, 最速, 高速P, 高速P, 高速P, 高速, 高速);
+        test_table!(1, 2, 最速, 最速, 最速, 高速P, 最速, 高速P, 高速);
+        test_table!(1, 3, 最速, 最速, 最速, 高速P, 最速, 高速P, 高速);
+        test_table!(2, 0, 最速, 最速, 最速, 高速P, 高速P, 高速P, 高速);
+        test_table!(2, 1, 最速, 最速, 最速, 高速P, 最速, 高速P, 高速);
+        test_table!(2, 2, 最速, 最速, 最速, 高速P, 最速, 高速P, 高速);
+        test_table!(3, 0, 最速, 最速, 最速, 高速P, 最速, 高速P, 高速);
+        test_table!(3, 1, 最速, 最速, 最速, 高速P, 最速, 高速P, 高速);
+        test_table!(4, 0, 最速, 最速, 最速, 高速P, 最速, 高速P, 高速);
     }
 }
