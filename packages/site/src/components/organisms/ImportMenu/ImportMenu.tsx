@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
-import React from "react";
+import { MasterData } from "fleethub-core";
+import React, { useRef } from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,6 +12,7 @@ import {
   createPlan,
   importFile,
   parseUrl,
+  PublicFile,
   selectAppState,
 } from "../../../store";
 import { createOrgStateByDeck, Deck } from "../../../utils";
@@ -21,13 +23,53 @@ const StyledDivider = styled(Divider)`
   margin-top: 8px;
 `;
 
+type UrlFormProps = {
+  masterData: MasterData;
+  onSuccess: (file: PublicFile) => void;
+  onError: () => void;
+};
+
+const UrlForm: React.FCX<UrlFormProps> = ({
+  masterData,
+  onSuccess,
+  onError,
+}) => {
+  const ref = useRef<HTMLInputElement>(null);
+
+  const asyncParse = useAsyncCallback(
+    async () => {
+      const str = ref.current?.value || "";
+      const data = await parseUrl(masterData, new URL(str));
+
+      if (!data) {
+        throw new Error("data is undefined");
+      }
+
+      return data;
+    },
+    {
+      onSuccess,
+      onError,
+    }
+  );
+
+  return (
+    <Flexbox gap={1}>
+      <TextField ref={ref} variant="outlined" />
+      <ImportButton
+        onClick={asyncParse.execute}
+        disabled={asyncParse.loading}
+      />
+    </Flexbox>
+  );
+};
+
 type Props = {
   onClose?: () => void;
 };
 
 const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   const [deckStr, setDeckStr] = React.useState("");
-  const [urlStr, setUrlStr] = React.useState("");
   const { masterData } = useFhCore();
 
   const Snackbar = useSnackbar();
@@ -57,24 +99,6 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
     }
   };
 
-  const asyncOnUrlImport = useAsyncCallback(
-    async () => {
-      const url = new URL(urlStr);
-      const parsed = await parseUrl(masterData, url);
-
-      if (parsed) {
-        dispatch(importFile({ ...parsed, to }));
-        onClose?.();
-      } else {
-        Snackbar.show({ message: "失敗しました", severity: "error" });
-      }
-    },
-    {
-      onError: () =>
-        Snackbar.show({ message: "失敗しました", severity: "error" }),
-    }
-  );
-
   return (
     <div className={className}>
       <Flexbox>
@@ -94,13 +118,16 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
       </Flexbox>
 
       <StyledDivider label="共有URLから" />
-      <Flexbox gap={1}>
-        <TextField variant="outlined" value={urlStr} onChange={setUrlStr} />
-        <ImportButton
-          onClick={asyncOnUrlImport.execute}
-          disabled={asyncOnUrlImport.loading}
-        />
-      </Flexbox>
+      <UrlForm
+        masterData={masterData}
+        onSuccess={(file) => {
+          dispatch(importFile({ ...file, to }));
+          onClose?.();
+        }}
+        onError={() => {
+          Snackbar.show({ message: "失敗しました", severity: "error" });
+        }}
+      />
 
       <Snackbar />
     </div>
