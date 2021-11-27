@@ -5,7 +5,7 @@ import { GCS_PREFIX_URL, publicFileExists } from "../firebase";
 import { PublicFile } from "../store";
 
 const origin = process.browser ? window.location.origin : "";
-const PUBLIC_ID_KEY = "publicId";
+const PUBLIC_ID_KEY = "p";
 
 export const publishFileData = async (data: PublicFile) => {
   const publicId = murmurhash(stringify(data));
