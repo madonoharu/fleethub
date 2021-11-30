@@ -27,6 +27,8 @@ const config = {
   },
   i18n,
 
+  reactStrictMode: true,
+
   experimental: {
     // https://github.com/vercel/next.js/issues/30425
     esmExternals: false,
