@@ -292,6 +292,7 @@
   "295": "Kinugasa Kai",
   "296": "Chitose-Kou Kai Ni",
   "297": "Chiyoda-Kou Kai Ni",
+  "299": "Scamp",
   "300": "Hatsukaze Kai",
   "301": "Akigumo Kai",
   "302": "Yuugumo Kai",
@@ -664,6 +665,8 @@
   "711": "Honolulu Kai",
   "712": "Kaiboukan No.30 Kai",
   "713": "Victorious Kai",
+  "714": "Shounan Kai",
+  "715": "Scamp Kai",
   "877": "Conte di Cavour",
   "878": "Conte di Cavour Kai",
   "879": "Conte di Cavour Nuovo",
@@ -673,6 +676,7 @@
   "887": "I-203 Kai",
   "888": "Ryuuhou Kai Ni",
   "893": "Janus Kai",
+  "895": "Shounan",
   "1496": "Colorado Kai",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
@@ -1214,5 +1218,12 @@
   "2045": "$t(2044)",
   "2046": "$t(2044)",
   "2047": "$t(1556)",
-  "2048": "$t(1556)"
+  "2048": "$t(1556)",
+  "2049": "$t(1736)",
+  "2053": "Submarine Shark Water Demon",
+  "2054": "$t(2053)",
+  "2055": "$t(2053)",
+  "2056": "Submarine Shark Water Demon (Damaged)",
+  "2057": "$t(2056)",
+  "2058": "$t(2056)"
 }
