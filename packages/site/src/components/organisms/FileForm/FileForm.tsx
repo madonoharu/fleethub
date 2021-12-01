@@ -51,9 +51,10 @@ const FileForm: React.FCX<FileFormProps> = ({
       </Flexbox>
 
       <TextField
-        label="説明"
+        label={t("Description")}
         variant="outlined"
         fullWidth
+        maxRows={6}
         value={file.description}
         onChange={onDescriptionChange}
         multiline
