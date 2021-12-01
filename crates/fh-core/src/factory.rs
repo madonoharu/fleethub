@@ -217,8 +217,8 @@ impl Factory {
 
             hq_level: hq_level.unwrap_or(120),
             org_type,
-            route_sup: route_sup.unwrap_or_else(|| "f1".to_string()),
-            boss_sup: boss_sup.unwrap_or_else(|| "f1".to_string()),
+            route_sup,
+            boss_sup,
         })
     }
 
