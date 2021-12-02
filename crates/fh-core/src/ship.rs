@@ -32,23 +32,15 @@ pub struct Ship {
     pub id: String,
     pub(crate) xxh3: u64,
 
-    #[wasm_bindgen(readonly)]
-    pub ship_id: u16,
-    #[wasm_bindgen(readonly)]
-    pub level: u16,
-    #[wasm_bindgen(readonly)]
-    pub current_hp: u16,
-    #[wasm_bindgen(readonly)]
-    pub morale: u8,
-    #[wasm_bindgen(readonly)]
-    pub ammo: u16,
-    #[wasm_bindgen(readonly)]
-    pub fuel: u16,
+        pub ship_id: u16,
+        pub level: u16,
+        pub current_hp: u16,
+        pub morale: u8,
+        pub ammo: u16,
+        pub fuel: u16,
 
-    #[wasm_bindgen(readonly)]
-    pub ship_type: ShipType,
-    #[wasm_bindgen(readonly)]
-    pub ship_class: ShipClass,
+        pub ship_type: ShipType,
+        pub ship_class: ShipClass,
 
     #[wasm_bindgen(skip)]
     pub slots: SlotSizeArray,
