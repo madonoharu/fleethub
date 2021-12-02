@@ -294,11 +294,10 @@ impl Damage {
 #[cfg(test)]
 mod test {
     use super::*;
-    use rand_xoshiro::Xoshiro256PlusPlus;
 
     #[test]
     fn test_scratch_damage() {
-        let mut rng = Xoshiro256PlusPlus::seed_from_u64(0);
+        let mut rng = SmallRng::seed_from_u64(0);
 
         let hp0_damage = ScratchDamageRange { current_hp: 0 };
 
@@ -319,12 +318,12 @@ mod test {
         );
 
         assert_eq!(hp100_damage.choose(&mut rng), 9);
-        assert_eq!(hp100_damage.choose(&mut rng), 6);
+        assert_eq!(hp100_damage.choose(&mut rng), 13);
     }
 
     #[test]
     fn test_overkill_protection_damage() {
-        let mut rng = Xoshiro256PlusPlus::seed_from_u64(0);
+        let mut rng = SmallRng::seed_from_u64(0);
 
         let hp0_damage = OverkillProtectionDamageRange { current_hp: 0 };
 
@@ -344,7 +343,6 @@ mod test {
             ]
         );
 
-        assert_eq!(hp100_damage.choose(&mut rng), 59);
-        assert_eq!(hp100_damage.choose(&mut rng), 61);
+        assert_eq!(hp100_damage.choose(&mut rng), 63);
     }
 }

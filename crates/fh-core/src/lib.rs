@@ -162,10 +162,11 @@ impl FhCore {
         params: ShellingSupportSimulatorParams,
         times: usize,
     ) -> Result<SimulatorResult, JsValue> {
+        use rand::prelude::*;
         use simulator::ShellingSupportSimulator;
-        let mut rng = rand::thread_rng();
-        let config = &self.factory.master_data.config;
 
+        let mut rng = SmallRng::from_entropy();
+        let config = &self.factory.master_data.config;
         let mut sim = ShellingSupportSimulator::new(&mut rng, config, player, enemy, params);
 
         sim.run(times)
