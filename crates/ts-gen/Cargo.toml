@@ -1,9 +1,9 @@
 [package]
 name = "ts-gen"
-version = "0.3.4"
+version = "0.5.0"
 edition = "2021"
 
 [dependencies]
 fh-core = { path = "../fh-core" }
-ts-rs = "6.0.5"
-dprint-plugin-typescript = "*"
+ts-rs = "6.1.0"
+dprint-plugin-typescript = "0.59.2"

@@ -1,6 +1,6 @@
 [package]
 name = "fh-core"
-version = "0.4.4"
+version = "0.5.0"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
@@ -11,10 +11,10 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-wasm-bindgen = { version = "=0.2.76", features = ["serde-serialize"] }
-js-sys = "=0.3.53"
+wasm-bindgen = { version = "0.2.78", features = ["serde-serialize"] }
+js-sys = "0.3.55"
 serde = { version = "1.0.130", features = ["derive"] }
-serde_json = "1.0.71"
+serde_json = "1.0.72"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -41,20 +41,20 @@ rand_xoshiro = "0.6.0"
 getrandom = { version = "0.2.3", features = ["js"] }
 xxhash-rust = { version = "0.8.2", features = ["xxh3"] }
 enumset = "1.0.8"
-anyhow = "1.0.45"
-ts-rs = "6.0.5"
+anyhow = "1.0.51"
+ts-rs = "6.1.0"
 fh-macro = { path = "../fh-macro" }
-itertools = "*"
+itertools = "0.10.1"
 enum-map = "2.0.0-1"
 
 [dependencies.web-sys]
-version = "=0.3.53"
+version = "0.3.55"
 features = [
   "console"
 ]
 
 [dev-dependencies]
-wasm-bindgen-test = "=0.3.26"
+wasm-bindgen-test = "0.3.28"
 criterion = "0.3.5"
 
 [[bench]]
