@@ -1,8 +1,10 @@
+use fh_macro::FhAbi;
 use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
     attack::NightSituation,
+    comp::Comp,
     fleet::Fleet,
     gear_id,
     ship::Ship,
@@ -123,10 +125,22 @@ pub struct ShipNightCutinRateInfo {
     chuuha: NightCutinRateInfo,
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, FhAbi, TS)]
+#[fh_abi(skip_from_abi)]
 pub struct FleetNightCutinRateInfo {
     night_contact_chance: NightContactChance,
     ships: Vec<ShipNightCutinRateInfo>,
+}
+
+impl FleetNightCutinRateInfo {
+    pub fn new(
+        comp: &Comp,
+        config: &BattleConfig,
+        attacker_situation: &NightSituation,
+        target_situation: &NightSituation,
+    ) -> Self {
+        NightCutinRateAnalyzer::new(config).analyze(comp, attacker_situation, target_situation)
+    }
 }
 
 pub struct NightCutinRateAnalyzer<'a> {
@@ -238,12 +252,14 @@ impl<'a> NightCutinRateAnalyzer<'a> {
         }
     }
 
-    pub fn analyze_fleet(
+    pub fn analyze(
         &self,
-        fleet: &Fleet,
+        comp: &Comp,
         attacker_situation: &NightSituation,
         target_situation: &NightSituation,
     ) -> FleetNightCutinRateInfo {
+        let fleet = comp.night_fleet();
+
         let night_contact_chance = fleet.night_contact_chance();
 
         let ships = fleet

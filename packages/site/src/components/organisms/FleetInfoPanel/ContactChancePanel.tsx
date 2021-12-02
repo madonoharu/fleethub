@@ -1,14 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
-import { AirstrikeContactChance, OrgContactChanceInfo } from "fleethub-core";
+import { AirstrikeContactChance, Comp } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import Table from "../Table";
-import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 type ContactChanceTableProps = {
   data: AirstrikeContactChance[];
@@ -64,16 +63,9 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
   );
 };
 
-const ContactChancePanel: React.FCX<FleetInfoPanelProps> = ({
-  className,
-  org,
-  fleetKey,
-}) => {
+const ContactChancePanel: React.FCX<{ comp: Comp }> = ({ className, comp }) => {
   const { core } = useFhCore();
-  const info = core.analyze_contact_chance(
-    org,
-    fleetKey
-  ) as OrgContactChanceInfo;
+  const info = core.analyze_contact_chance(comp);
 
   return (
     <div className={className}>
