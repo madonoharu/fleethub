@@ -95,53 +95,6 @@ impl Comp {
             fleet_los_mod: fleet.fleet_los_mod(),
         }
     }
-
-    /// 艦隊対空値
-    pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
-        let total = self
-            .ships()
-            .map(|(_, _, ship)| ship.fleet_anti_air())
-            .sum::<i32>() as f64;
-
-        let post_floor = (total * formation_mod).floor() * 2.;
-
-        if self.org_type.side().is_player() {
-            post_floor / 1.3
-        } else {
-            post_floor
-        }
-    }
-
-    /// 制空値
-    pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
-        let main_fp = self.main.fighter_power(anti_lbas)?;
-
-        if !anti_combined {
-            Some(main_fp)
-        } else {
-            let escort_fp = self.escort.as_ref()?.fighter_power(anti_lbas)?;
-            Some(main_fp + escort_fp)
-        }
-    }
-
-    /// マップ索敵
-    pub fn elos(&self, hq_level: u8, node_divaricated_factor: u8) -> Option<f64> {
-        let main_elos = self.main.elos(hq_level, node_divaricated_factor)?;
-
-        if let Some(escort) = self.escort.as_ref() {
-            let escort_elos = escort.elos(hq_level, node_divaricated_factor)?;
-            Some(main_elos + escort_elos)
-        } else {
-            Some(main_elos)
-        }
-    }
-
-    /// 輸送物資量(TP)
-    pub fn transport_point(&self) -> i32 {
-        self.ships()
-            .map(|(_, _, ship)| ship.transport_point())
-            .sum()
-    }
 }
 
 #[wasm_bindgen]
@@ -191,6 +144,57 @@ impl Comp {
         self.ships()
             .find_map(|(_, _, ship)| (ship.id == id).then(|| ship))
             .cloned()
+    }
+
+    pub fn default_formation(&self) -> Formation {
+        self.org_type.default_formation()
+    }
+
+    /// 艦隊対空値
+    pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
+        let total = self
+            .ships()
+            .map(|(_, _, ship)| ship.fleet_anti_air())
+            .sum::<i32>() as f64;
+
+        let post_floor = (total * formation_mod).floor() * 2.;
+
+        if self.org_type.side().is_player() {
+            post_floor / 1.3
+        } else {
+            post_floor
+        }
+    }
+
+    /// 制空値
+    pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
+        let main_fp = self.main.fighter_power(anti_lbas)?;
+
+        if !anti_combined {
+            Some(main_fp)
+        } else {
+            let escort_fp = self.escort.as_ref()?.fighter_power(anti_lbas)?;
+            Some(main_fp + escort_fp)
+        }
+    }
+
+    /// マップ索敵
+    pub fn elos(&self, hq_level: u8, node_divaricated_factor: u8) -> Option<f64> {
+        let main_elos = self.main.elos(hq_level, node_divaricated_factor)?;
+
+        if let Some(escort) = self.escort.as_ref() {
+            let escort_elos = escort.elos(hq_level, node_divaricated_factor)?;
+            Some(main_elos + escort_elos)
+        } else {
+            Some(main_elos)
+        }
+    }
+
+    /// 輸送物資量(TP)
+    pub fn transport_point(&self) -> i32 {
+        self.ships()
+            .map(|(_, _, ship)| ship.transport_point())
+            .sum()
     }
 }
 

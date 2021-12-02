@@ -22,21 +22,24 @@ const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
   org,
   fleetKey,
 }) => {
+  const comp = org.create_comp_by_key(fleetKey);
+  const fleet = org.clone_fleet(fleetKey);
+
   const list: TabsProps["list"] = [
     {
       label: "昼戦",
-      panel: <DayCutinRateTable org={org} fleetKey={fleetKey} />,
+      panel: <DayCutinRateTable comp={comp} />,
     },
     {
       label: "夜戦",
-      panel: <NightCutinScreen org={org} fleetKey={fleetKey} />,
+      panel: <NightCutinScreen comp={comp} />,
     },
     {
       label: "触接率",
-      panel: <ContactChancePanel org={org} fleetKey={fleetKey} />,
+      panel: <ContactChancePanel comp={comp} />,
     },
-    { label: "対空", panel: <AntiAirScreen org={org} fleetKey={fleetKey} /> },
-    { label: "その他", panel: <MiscScreen org={org} fleetKey={fleetKey} /> },
+    { label: "対空", panel: <AntiAirScreen comp={comp} /> },
+    { label: "その他", panel: <MiscScreen comp={comp} fleet={fleet} /> },
   ];
 
   return (
