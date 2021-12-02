@@ -35,9 +35,7 @@ pub struct Org {
     #[wasm_bindgen(skip)]
     pub a3: AirSquadron,
 
-    #[wasm_bindgen(readonly)]
     pub hq_level: i32,
-    #[wasm_bindgen(readonly)]
     pub org_type: OrgType,
     #[wasm_bindgen(getter_with_clone)]
     pub route_sup: Option<String>,
