@@ -36,8 +36,7 @@ fasteval = "0.2.4"
 paste = "1.0.6"
 arrayvec = { version = "0.7.2", features = ["serde"] }
 counter = "0.5.2"
-rand = "0.8.4"
-rand_xoshiro = "0.6.0"
+rand = { version = "0.8.4", features = ["small_rng"] }
 getrandom = { version = "0.2.3", features = ["js"] }
 xxhash-rust = { version = "0.8.2", features = ["xxh3"] }
 enumset = "1.0.8"
