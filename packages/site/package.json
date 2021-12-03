@@ -1,10 +1,11 @@
 {
   "name": "@fh/site",
-  "version": "0.4.5",
+  "version": "0.5.0",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
   "scripts": {
+    "analyze": "ANALYZE=true yarn build",
     "build": "next build",
     "dev": "next dev",
     "start": "next start"
@@ -29,14 +30,14 @@
     "copy-to-clipboard": "^3.3.1",
     "equipment-bonus": "^7.0.10",
     "fast-json-stable-stringify": "^2.1.0",
-    "firebase": "^9.5.0",
+    "firebase": "^9.6.0",
     "fleethub-core": "npm:latest",
     "gkcoi": "^1.2.4",
     "http-status-codes": "^2.1.4",
     "literal-case": "^1.0.0",
     "localforage": "^1.10.0",
     "lz-string-uri-fix": "^1.4.5",
-    "next": "^12.0.4",
+    "next": "^12.0.5-canary.14",
     "next-i18next": "^9.2.0",
     "normalizr": "^3.6.1",
     "re-reselect": "^4.0.0",
@@ -45,7 +46,6 @@
     "react-dnd": "^14.0.4",
     "react-dnd-html5-backend": "^14.0.2",
     "react-dom": "^17.0.2",
-    "react-markdown": "^7.1.1",
     "react-redux": "^7.2.6",
     "react-twitter-widgets": "^1.10.0",
     "recharts": "2.1.6",
@@ -53,7 +53,7 @@
     "redux-state-sync": "^3.1.2",
     "redux-undo": "^1.0.1",
     "sharp": "^0.29.3",
-    "swr": "^1.0.1",
+    "swr": "^1.1.0",
     "use-immer": "^0.6.0"
   },
   "devDependencies": {
@@ -61,7 +61,6 @@
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
-    "@types/react-redux": "^7.1.20",
     "next-transpile-modules": "^9.0.0"
   }
 }
