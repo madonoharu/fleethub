@@ -222,7 +222,7 @@ impl Factory {
         })
     }
 
-    pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
+    pub fn create_ship_state_by_id(&self, ship_id: u16) -> Option<ShipState> {
         let master_ship = self
             .master_data
             .ships
@@ -248,6 +248,10 @@ impl Factory {
             }
         };
 
-        self.create_ship(Some(state))
+        Some(state)
+    }
+
+    pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
+        self.create_ship(self.create_ship_state_by_id(ship_id))
     }
 }

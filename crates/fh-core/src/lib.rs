@@ -93,15 +93,6 @@ impl FhCore {
         Ship::default()
     }
 
-    pub fn get_gear_ids(&self) -> Vec<u16> {
-        self.factory
-            .master_data
-            .gears
-            .iter()
-            .map(|g| g.gear_id)
-            .collect()
-    }
-
     pub fn analyze_anti_air(
         &self,
         comp: &Comp,

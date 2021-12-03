@@ -9,7 +9,7 @@ use crate::{
     attack::{AswAttackType, ProficiencyModifiers},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
-    gear_id, matches_gear_id, ship_id,
+    gear_id, matches_gear_id, matches_ship_id, ship_id,
     types::{
         AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
         NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
@@ -30,17 +30,18 @@ pub struct ShipEquippable {
 pub struct Ship {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    pub(crate) xxh3: u64,
+    #[wasm_bindgen(skip)]
+    pub xxh3: u64,
 
-        pub ship_id: u16,
-        pub level: u16,
-        pub current_hp: u16,
-        pub morale: u8,
-        pub ammo: u16,
-        pub fuel: u16,
+    pub ship_id: u16,
+    pub level: u16,
+    pub current_hp: u16,
+    pub morale: u8,
+    pub ammo: u16,
+    pub fuel: u16,
 
-        pub ship_type: ShipType,
-        pub ship_class: ShipClass,
+    pub ship_type: ShipType,
+    pub ship_class: ShipClass,
 
     #[wasm_bindgen(skip)]
     pub slots: SlotSizeArray,
@@ -687,16 +688,20 @@ impl Ship {
             ..
         } = self;
 
-        if matches!(
+        if matches_ship_id!(
             ship_id,
-            ship_id!("五十鈴改二")
-                | ship_id!("龍田改二")
-                | ship_id!("夕張改二丁")
-                | ship_id!("Samuel B.Roberts改")
+            "五十鈴改二" | "龍田改二" | "夕張改二丁" | "Samuel B.Roberts改"
         ) || ship_class == ShipClass::FletcherClass
             || (ship_class == ShipClass::JClass && self.remodel_rank() >= 2)
         {
             return true;
+        }
+
+        if ship_id == ship_id!("日向改二") {
+            return self
+                .gears
+                .has_by(|gear| matches_gear_id!(gear.gear_id, "S-51J" | "S-51J改"))
+                || self.gears.count_type(GearType::Rotorcraft) >= 2;
         }
 
         let has_sonar =
@@ -707,13 +712,6 @@ impl Ship {
             return true;
         }
 
-        if ship_id == ship_id!("日向改二") {
-            return self
-                .gears
-                .has_by(|gear| matches!(gear.gear_id, gear_id!("S-51J") | gear_id!("S-51J改")))
-                || self.gears.count_type(GearType::Rotorcraft) >= 2;
-        }
-
         let is_taiyou_class_kai_after = (ship_class == ShipClass::TaiyouClass
             && self.remodel_rank() >= 3)
             || ship_id == ship_id!("神鷹改");
@@ -721,9 +719,6 @@ impl Ship {
         if ship_id == ship_id!("加賀改二護") || is_taiyou_class_kai_after {
             return self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiSubAircraft));
         }
-
-        let naked_asw = self.naked_asw().unwrap_or_default() as i32;
-        let equipment_asw = self.gears.sum_by(|gear| gear.asw) as i32;
 
         let threshold = match ship_type {
             ShipType::CVL => {
@@ -741,16 +736,18 @@ impl Ship {
                     return false;
                 }
 
-                if has_sonar {
+                if has_sonar && !matches_ship_id!(ship_id, "鈴谷航改二" | "熊野航改二") {
                     50
                 } else {
                     65
                 }
             }
             ShipType::DE => {
+                let equip_asw = self.gears.sum_by(|gear| gear.asw);
+
                 if has_sonar {
                     60
-                } else if equipment_asw >= 4 {
+                } else if equip_asw >= 4 {
                     75
                 } else {
                     return false;
@@ -761,7 +758,7 @@ impl Ship {
             }
         };
 
-        threshold <= naked_asw + equipment_asw
+        threshold <= asw
     }
 
     pub fn asw_synergy_mod(&self) -> f64 {

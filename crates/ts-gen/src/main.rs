@@ -116,6 +116,8 @@ fn main() {
         simulator::ShellingSupportSimulatorParams,
         simulator::SimulatorResultItem,
         simulator::SimulatorResult,
+
+        types::ShipKey,
     );
 
     let config = dprint_plugin_typescript::configuration::ConfigurationBuilder::new()
