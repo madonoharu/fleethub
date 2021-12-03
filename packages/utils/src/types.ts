@@ -46,7 +46,7 @@ export enum MapNodeType {
   Selector = 91,
 }
 
-export type MapEnemyFleet = {
+export type MapEnemyComp = {
   main: number[];
   escort?: number[];
   formations: number[];
@@ -61,7 +61,7 @@ export type MapNode = {
   y: number;
   type: number;
   d?: number[];
-  enemies?: MapEnemyFleet[];
+  enemies?: MapEnemyComp[];
 };
 
 export type MapLink = [string, string];
