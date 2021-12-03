@@ -13,7 +13,6 @@ pub struct AirSquadron {
     pub xxh3: u64,
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    #[wasm_bindgen(readonly)]
     pub mode: AirSquadronMode,
     #[wasm_bindgen(skip)]
     pub gears: GearArray,

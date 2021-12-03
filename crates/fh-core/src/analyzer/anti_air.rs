@@ -1,9 +1,10 @@
+use fh_macro::FhAbi;
 use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
+    comp::Comp,
     gear_id,
-    org::Org,
     ship::Ship,
     types::{AntiAirCutinDef, BattleConfig, Formation, ShipClass, ShipType, Side},
 };
@@ -201,21 +202,19 @@ impl<'a> AntiAirAnalyzer<'a> {
         }
     }
 
-    pub fn analyze_org(
+    pub fn analyze(
         &self,
-        org: &Org,
-        key: &str,
+        comp: &Comp,
         formation: Formation,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
-    ) -> OrgAntiAirInfo {
+    ) -> CompAntiAirInfo {
         let formation_mod = self.config.get_formation_fleet_anti_air_mod(formation);
 
-        let fleet_anti_air = org.fleet_anti_air(formation_mod);
-        let side = org.side();
+        let fleet_anti_air = comp.fleet_anti_air(formation_mod);
+        let side = comp.org_type.side();
         let anti_air_cutin = None;
 
-        let comp = org.create_comp_by_key(key);
         let is_combined = comp.is_combined();
 
         let ships = comp
@@ -270,7 +269,7 @@ impl<'a> AntiAirAnalyzer<'a> {
             })
             .collect::<Vec<_>>();
 
-        OrgAntiAirInfo {
+        CompAntiAirInfo {
             fleet_anti_air,
             ships,
             anti_air_cutin_chance,
@@ -289,9 +288,27 @@ pub struct ShipAntiAirInfo {
     anti_air_propellant_barrage_chance: Option<f64>,
 }
 
-#[derive(Debug, Serialize, TS)]
-pub struct OrgAntiAirInfo {
+#[derive(Debug, Serialize, FhAbi, TS)]
+#[fh_abi(skip_from_abi)]
+pub struct CompAntiAirInfo {
     fleet_anti_air: f64,
     ships: Vec<ShipAntiAirInfo>,
     anti_air_cutin_chance: Vec<(u8, f64)>,
+}
+
+impl CompAntiAirInfo {
+    pub fn new(
+        comp: &Comp,
+        config: &BattleConfig,
+        formation: Formation,
+        adjusted_anti_air_resist: Option<f64>,
+        fleet_anti_air_resist: Option<f64>,
+    ) -> Self {
+        AntiAirAnalyzer::new(config).analyze(
+            comp,
+            formation,
+            adjusted_anti_air_resist,
+            fleet_anti_air_resist,
+        )
+    }
 }

@@ -93,16 +93,15 @@ fn main() {
         analyzer::DayCutinRateInfo,
         analyzer::ShipDayCutinRateInfo,
         analyzer::FleetDayCutinRateInfo,
-        analyzer::OrgDayCutinRateInfo,
+        analyzer::CompDayCutinRateInfo,
         analyzer::ShipAntiAirInfo,
-        analyzer::OrgAntiAirInfo,
+        analyzer::CompAntiAirInfo,
         analyzer::NightCutinRateInfo,
         analyzer::ShipNightCutinRateInfo,
         analyzer::NightContactChance,
         analyzer::FleetNightCutinRateInfo,
         analyzer::AirstrikeContactChance,
-        analyzer::OrgContactChanceInfo,
-        analyzer::OrgAirstrikeInfo,
+        analyzer::CompContactChanceInfo,
         analyzer::AttackStats,
         analyzer::AttackInfoItem<()>,
         analyzer::AttackInfo<(),()>,
@@ -117,6 +116,8 @@ fn main() {
         simulator::ShellingSupportSimulatorParams,
         simulator::SimulatorResultItem,
         simulator::SimulatorResult,
+
+        types::ShipKey,
     );
 
     let config = dprint_plugin_typescript::configuration::ConfigurationBuilder::new()

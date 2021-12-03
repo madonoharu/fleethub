@@ -67,13 +67,9 @@ pub struct Gear {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
 
-    #[wasm_bindgen(readonly)]
     pub gear_id: u16,
-    #[wasm_bindgen(readonly)]
     pub stars: u8,
-    #[wasm_bindgen(readonly)]
     pub exp: u8,
-    #[wasm_bindgen(readonly)]
     pub default_exp: u8,
 
     #[wasm_bindgen(getter_with_clone)]
@@ -84,46 +80,27 @@ pub struct Gear {
     pub attrs: EnumSet<GearAttr>,
     #[wasm_bindgen(skip)]
     pub ibonuses: IBonuses,
-    #[wasm_bindgen(readonly)]
     pub gear_type: GearType,
     #[wasm_bindgen(skip)]
     pub special_type: GearType,
 
-    #[wasm_bindgen(readonly)]
     pub max_hp: i16,
-    #[wasm_bindgen(readonly)]
     pub firepower: i16,
-    #[wasm_bindgen(readonly)]
     pub armor: i16,
-    #[wasm_bindgen(readonly)]
     pub torpedo: i16,
-    #[wasm_bindgen(readonly)]
     pub anti_air: i16,
-    #[wasm_bindgen(readonly)]
     pub speed: i16,
-    #[wasm_bindgen(readonly)]
     pub bombing: i16,
-    #[wasm_bindgen(readonly)]
     pub asw: i16,
-    #[wasm_bindgen(readonly)]
     pub los: i16,
-    #[wasm_bindgen(readonly)]
     pub luck: i16,
-    #[wasm_bindgen(readonly)]
     pub accuracy: i16,
-    #[wasm_bindgen(readonly)]
     pub evasion: i16,
-    #[wasm_bindgen(readonly)]
     pub range: u8,
-    #[wasm_bindgen(readonly)]
     pub radius: u8,
-    #[wasm_bindgen(readonly)]
     pub cost: u8,
-    #[wasm_bindgen(readonly)]
     pub improvable: bool,
-    #[wasm_bindgen(readonly)]
     pub adjusted_anti_air_resistance: f64,
-    #[wasm_bindgen(readonly)]
     pub fleet_anti_air_resistance: f64,
 }
 
