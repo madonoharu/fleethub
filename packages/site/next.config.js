@@ -1,4 +1,7 @@
 const { i18n } = require("./next-i18next.config");
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
 
 // https://github.com/vercel/next.js/issues/29362#issuecomment-971377869
 class WasmChunksFixPlugin {
@@ -27,6 +30,8 @@ const config = {
   },
   i18n,
 
+  reactStrictMode: true,
+
   experimental: {
     // https://github.com/vercel/next.js/issues/30425
     esmExternals: false,
@@ -39,6 +44,13 @@ const config = {
       config.output.webassemblyModuleFilename = "chunks/[id].wasm";
       config.plugins.push(new WasmChunksFixPlugin());
     }
+
+    // https://github.com/rust-random/getrandom/issues/224#issuecomment-944329336
+    config.ignoreWarnings = [
+      (warning) =>
+        warning.message ===
+        "Critical dependency: the request of a dependency is an expression",
+    ];
 
     return config;
   },
@@ -59,4 +71,4 @@ const config = {
   },
 };
 
-module.exports = config;
+module.exports = withBundleAnalyzer(config);

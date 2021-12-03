@@ -1,8 +1,9 @@
+use fh_macro::FhAbi;
 use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
-    org::Org,
+    comp::Comp,
     ship::Ship,
     types::{AirState, ContactRank, GearAttr},
 };
@@ -17,15 +18,11 @@ pub struct AirstrikeContactChance {
     total: f64,
 }
 
-#[derive(Debug, Clone, Serialize, TS)]
-pub struct OrgContactChanceInfo {
+#[derive(Debug, Clone, Serialize, FhAbi, TS)]
+#[fh_abi(skip_from_abi)]
+pub struct CompContactChanceInfo {
     single: Option<Vec<AirstrikeContactChance>>,
     combined: Option<Vec<AirstrikeContactChance>>,
-}
-
-#[derive(Debug, Clone, Serialize, TS)]
-pub struct OrgAirstrikeInfo {
-    contact_chance: OrgContactChanceInfo,
 }
 
 fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<AirstrikeContactChance> {
@@ -89,18 +86,18 @@ fn analyze_ships_contact_chance(ships: Vec<&Ship>) -> Option<Vec<AirstrikeContac
     Some(vec![air_supremacy, air_superiority, air_denial])
 }
 
-pub fn analyze_org_contact_chance(org: &Org, key: &str) -> OrgContactChanceInfo {
-    let comp = org.create_comp_by_key(key);
+impl CompContactChanceInfo {
+    pub fn new(comp: &Comp) -> Self {
+        let single = analyze_ships_contact_chance(comp.main.ships.values().collect());
 
-    let single = analyze_ships_contact_chance(comp.main.ships.values().collect());
+        let combined = comp
+            .is_combined()
+            .then(|| {
+                let combined_ships = comp.ships().map(|(_, _, s)| s).collect();
+                analyze_ships_contact_chance(combined_ships)
+            })
+            .flatten();
 
-    let combined = comp
-        .is_combined()
-        .then(|| {
-            let combined_ships = comp.ships().map(|(_, _, s)| s).collect();
-            analyze_ships_contact_chance(combined_ships)
-        })
-        .flatten();
-
-    OrgContactChanceInfo { single, combined }
+        Self { single, combined }
+    }
 }

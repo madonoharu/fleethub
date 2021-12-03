@@ -35,14 +35,12 @@ pub struct Org {
     #[wasm_bindgen(skip)]
     pub a3: AirSquadron,
 
-    #[wasm_bindgen(readonly)]
     pub hq_level: i32,
-    #[wasm_bindgen(readonly)]
     pub org_type: OrgType,
     #[wasm_bindgen(getter_with_clone)]
-    pub route_sup: String,
+    pub route_sup: Option<String>,
     #[wasm_bindgen(getter_with_clone)]
-    pub boss_sup: String,
+    pub boss_sup: Option<String>,
 }
 
 impl Org {
@@ -154,13 +152,21 @@ impl Org {
 
         let escort = enable_escort.then(|| self.f2.clone());
 
-        let route_sup = org_type
-            .is_player()
-            .then(|| self.get_fleet_by_key(&self.route_sup).clone());
+        let (route_sup, boss_sup) = if org_type.is_player() {
+            let route_sup = self
+                .route_sup
+                .as_ref()
+                .map(|key| self.get_fleet_by_key(key).clone());
 
-        let boss_sup = org_type
-            .is_player()
-            .then(|| self.get_fleet_by_key(&self.boss_sup).clone());
+            let boss_sup = self
+                .boss_sup
+                .as_ref()
+                .map(|key| self.get_fleet_by_key(key).clone());
+
+            (route_sup, boss_sup)
+        } else {
+            (None, None)
+        };
 
         Comp {
             org_type,

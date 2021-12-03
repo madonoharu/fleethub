@@ -19,7 +19,8 @@ use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
 use analyzer::{
-    FleetCutinAnalysis, FleetCutinAnalyzer, OrgAnalyzer, WarfareAnalyzer, WarfareAnalyzerContext,
+    CompAntiAirInfo, CompContactChanceInfo, CompDayCutinRateInfo, FleetCutinAnalysis,
+    FleetCutinAnalyzer, FleetNightCutinRateInfo, WarfareAnalyzer, WarfareAnalyzerContext,
     WarfareInfo,
 };
 use attack::NightSituation;
@@ -92,64 +93,42 @@ impl FhCore {
         Ship::default()
     }
 
-    pub fn get_gear_ids(&self) -> Vec<u16> {
-        self.factory
-            .master_data
-            .gears
-            .iter()
-            .map(|g| g.gear_id)
-            .collect()
-    }
-
-    fn org_analyzer(&self) -> OrgAnalyzer {
-        OrgAnalyzer::new(&self.factory.master_data.config)
-    }
-
     pub fn analyze_anti_air(
         &self,
-        org: &Org,
-        key: &str,
+        comp: &Comp,
         formation: Formation,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
-    ) -> JsValue {
-        let result = self.org_analyzer().analyze_anti_air(
-            org,
-            key,
+    ) -> CompAntiAirInfo {
+        CompAntiAirInfo::new(
+            comp,
+            &self.factory.master_data.config,
             formation,
             adjusted_anti_air_resist,
             fleet_anti_air_resist,
-        );
-
-        JsValue::from_serde(&result).unwrap()
+        )
     }
 
-    pub fn analyze_day_cutin(&self, org: &Org, key: &str) -> JsValue {
-        let result = self.org_analyzer().analyze_day_cutin(org, key);
-
-        JsValue::from_serde(&result).unwrap()
+    pub fn analyze_day_cutin(&self, comp: &Comp) -> CompDayCutinRateInfo {
+        CompDayCutinRateInfo::new(comp, &self.factory.master_data.config)
     }
 
     pub fn analyze_night_cutin(
         &self,
-        org: &Org,
-        key: &str,
+        comp: &Comp,
         attacker_situation: NightSituation,
-        defender_situation: NightSituation,
-    ) -> JsValue {
-        let result = self.org_analyzer().analyze_night_cutin(
-            org,
-            key,
-            attacker_situation,
-            defender_situation,
-        );
-
-        JsValue::from_serde(&result).unwrap()
+        target_situation: NightSituation,
+    ) -> FleetNightCutinRateInfo {
+        FleetNightCutinRateInfo::new(
+            comp,
+            &self.factory.master_data.config,
+            &attacker_situation,
+            &target_situation,
+        )
     }
 
-    pub fn analyze_contact_chance(&self, org: &Org, key: &str) -> JsValue {
-        let result = self.org_analyzer().analyze_contact_chance(org, key);
-        JsValue::from_serde(&result).unwrap()
+    pub fn analyze_contact_chance(&self, comp: &Comp) -> CompContactChanceInfo {
+        CompContactChanceInfo::new(comp)
     }
 
     pub fn analyze_warfare(
@@ -163,13 +142,7 @@ impl FhCore {
         analyzer.analyze()
     }
 
-    pub fn analyze_fleet_cutin(
-        &self,
-        org: &Org,
-        key: &str,
-        engagement: Engagement,
-    ) -> FleetCutinAnalysis {
-        let comp = org.create_comp_by_key(key);
+    pub fn analyze_fleet_cutin(&self, comp: &Comp, engagement: Engagement) -> FleetCutinAnalysis {
         FleetCutinAnalyzer::new(&self.factory.master_data.config, comp, engagement).analyze()
     }
 
@@ -180,10 +153,11 @@ impl FhCore {
         params: ShellingSupportSimulatorParams,
         times: usize,
     ) -> Result<SimulatorResult, JsValue> {
+        use rand::prelude::*;
         use simulator::ShellingSupportSimulator;
-        let mut rng = rand::thread_rng();
-        let config = &self.factory.master_data.config;
 
+        let mut rng = SmallRng::from_entropy();
+        let config = &self.factory.master_data.config;
         let mut sim = ShellingSupportSimulator::new(&mut rng, config, player, enemy, params);
 
         sim.run(times)

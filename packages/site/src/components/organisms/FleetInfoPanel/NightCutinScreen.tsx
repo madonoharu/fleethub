@@ -5,6 +5,7 @@ import {
   NightCutinRateInfo,
   FleetNightCutinRateInfo,
   NightSituation,
+  Comp,
 } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -18,7 +19,6 @@ import NightSituationForm from "../NightSituationForm";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
-import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 const StyledLabeledValue = styled(LabeledValue)`
   margin-top: 4px;
@@ -97,7 +97,7 @@ const initalNightSituation: NightSituation = {
   starshell: false,
 };
 
-const NightCutinPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
+const NightCutinPanel: React.FC<{ comp: Comp }> = ({ comp }) => {
   const { core } = useFhCore();
   const { t } = useTranslation("common");
 
@@ -105,12 +105,7 @@ const NightCutinPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
     useImmer<NightSituation>(initalNightSituation);
   const [target, updateTarget] = useImmer<NightSituation>(initalNightSituation);
 
-  const info: FleetNightCutinRateInfo = core.analyze_night_cutin(
-    org,
-    fleetKey,
-    attacker,
-    target
-  );
+  const info = core.analyze_night_cutin(comp, attacker, target);
 
   return (
     <Stack gap={1}>
@@ -136,7 +131,7 @@ const NightCutinPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
 
       <NightCutinTable info={info} />
 
-      <FleetCutinAnalysisTable org={org} fleetKey={fleetKey} type="night" />
+      <FleetCutinAnalysisTable comp={comp} type="night" />
     </Stack>
   );
 };

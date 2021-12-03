@@ -5,7 +5,6 @@ mod attack_info;
 mod damage;
 mod fleet_cutin_analyzer;
 mod night;
-mod org_analyzer;
 mod shelling;
 mod warfare_info;
 
@@ -16,6 +15,5 @@ pub use attack_info::*;
 pub use damage::*;
 pub use fleet_cutin_analyzer::*;
 pub use night::*;
-pub use org_analyzer::*;
 pub use shelling::*;
 pub use warfare_info::*;

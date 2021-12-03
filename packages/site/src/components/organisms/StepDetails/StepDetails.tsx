@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Path, PathValue } from "@fh/utils";
-import { Stack, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { produce } from "immer";
 import set from "lodash/set";

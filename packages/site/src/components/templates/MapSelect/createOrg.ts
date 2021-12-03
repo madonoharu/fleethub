@@ -1,4 +1,4 @@
-import { MapEnemyFleet } from "@fh/utils";
+import { MapEnemyComp } from "@fh/utils";
 import { FleetState, MasterData, OrgState, ShipState } from "fleethub-core";
 
 const createShip = (md: MasterData, ship_id: number): ShipState => {
@@ -25,7 +25,7 @@ const createFleet = (md: MasterData, shipIds: number[]): FleetState => {
   return fleet;
 };
 
-export const createOrg = (md: MasterData, enemy: MapEnemyFleet): OrgState => {
+export const createOrg = (md: MasterData, enemy: MapEnemyComp): OrgState => {
   const { main, escort } = enemy;
 
   return {
