@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { MapEnemyFleet, MapNode, nonNullable } from "@fh/utils";
+import { MapEnemyComp, MapNode, nonNullable } from "@fh/utils";
 import { Button, Paper, Stack } from "@mui/material";
 import { Formation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { Flexbox } from "../../atoms";
 
+import { Flexbox } from "../../atoms";
 import { NodeLable } from "../../molecules";
 import { ShipBannerGroup } from "../../organisms";
 import EnemyFighterPower from "./EnemyFighterPower";
@@ -26,9 +26,9 @@ const FORMATION_MAP: Record<number, Formation | undefined> = {
 const toFormation = (id: number) => FORMATION_MAP[id];
 
 type EnemyCompListItem = {
-  enemy: MapEnemyFleet;
+  enemy: MapEnemyComp;
   lbas?: boolean;
-  onSelect?: (enemy: MapEnemyFleet, formation: Formation) => void;
+  onSelect?: (enemy: MapEnemyComp, formation: Formation) => void;
 };
 
 const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
@@ -70,7 +70,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
 type EnemyCompListProps = {
   node: MapNode;
   difficulty?: number;
-  onSelect?: (enemy: MapEnemyFleet, formation: Formation) => void;
+  onSelect?: (enemy: MapEnemyComp, formation: Formation) => void;
 };
 
 const EnemyCompList: React.FCX<EnemyCompListProps> = ({
