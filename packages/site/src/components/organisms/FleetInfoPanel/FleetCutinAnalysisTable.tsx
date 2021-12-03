@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { FleetKey } from "@fh/utils";
 import { Typography, Stack } from "@mui/material";
-import { Org, FleetCutinInfo, Engagement } from "fleethub-core";
+import { FleetCutinInfo, Engagement, Comp } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
+
 import { useFhCore } from "../../../hooks";
 import { numstr } from "../../../utils";
-
 import { createAttackTableColumns } from "../AttackTable/AttackTable";
 import EngagementSelect from "../EngagementSelect";
 import ShipNameplate from "../ShipNameplate";
@@ -52,22 +51,20 @@ const FleetCutinInfoTable: React.FCX<FleetCutinInfoTableProps> = ({
 };
 
 type FleetCutinAnalysisTableProps = {
-  org: Org;
-  fleetKey: FleetKey;
+  comp: Comp;
   type: "shelling" | "night";
 };
 
 const FleetCutinAnalysisTable: React.FCX<FleetCutinAnalysisTableProps> = ({
   className,
-  org,
-  fleetKey,
+  comp,
   type,
 }) => {
   const { t } = useTranslation("common");
   const { core } = useFhCore();
   const [engagement, setEngagement] = useState<Engagement>("Parallel");
 
-  const data = core.analyze_fleet_cutin(org, fleetKey, engagement)[type];
+  const data = core.analyze_fleet_cutin(comp, engagement)[type];
 
   if (!data.length) {
     return <Typography>艦隊特殊攻撃不可</Typography>;

@@ -1,19 +1,27 @@
 /** @jsxImportSource @emotion/react */
-import { FleetKey } from "@fh/utils";
+import { floor } from "@fh/utils";
 import { Divider, Stack } from "@mui/material";
-import { Org } from "fleethub-core";
+import { Comp, Fleet } from "fleethub-core";
 import React from "react";
 import { toPercent } from "../../../utils";
 import { LabeledValue } from "../../atoms";
 
-type Prosp = {
-  org: Org;
-  fleetKey: FleetKey;
+const displayWithFloor = (
+  v: number | null | undefined,
+  fractionDigits = 3
+): string => {
+  if (v === null || v === undefined) return "";
+  if (Number.isInteger(v)) return v.toString();
+  return floor(v, fractionDigits).toString();
 };
 
-const MiscScreen: React.FC<Prosp> = ({ org, fleetKey }) => {
-  const fleet = org.clone_fleet(fleetKey);
-  const tp = org.transport_point(fleetKey);
+type Prosp = {
+  fleet: Fleet;
+  comp: Comp;
+};
+
+const MiscScreen: React.FC<Prosp> = ({ fleet, comp }) => {
+  const tp = comp.transport_point();
 
   return (
     <Stack width="fit-content" ml={5} divider={<Divider />}>
@@ -26,7 +34,7 @@ const MiscScreen: React.FC<Prosp> = ({ org, fleetKey }) => {
       <LabeledValue
         variant="body1"
         label="航空索敵スコア"
-        value={fleet.aviation_detection_score()?.toFixed(2) ?? "?"}
+        value={displayWithFloor(fleet.aviation_detection_score(), 2) || "?"}
       />
       <LabeledValue
         variant="body1"

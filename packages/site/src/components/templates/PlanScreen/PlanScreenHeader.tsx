@@ -11,6 +11,8 @@ import { NumberInput, TextField, Select } from "../../molecules";
 import { ElosLabel, OrgTypeSelect } from "../../organisms";
 import PlanAction, { PlanActionProps } from "./PlanAction";
 
+const SUP_OPTIONS = [undefined, ...FLEET_KEYS];
+
 const LevelInput = styled(NumberInput)`
   input {
     width: 26px;
@@ -22,7 +24,7 @@ type PlanScreenHeaderProps = PlanActionProps & {
   onNameChange?: (value: string) => void;
   onHqLevelChange?: (value: number) => void;
   onOrgTypeChange?: (org_type: OrgType) => void;
-  onRouteSupChange?: (key: FleetKey) => void;
+  onRouteSupChange?: (key: Org["route_sup"]) => void;
 };
 
 const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
@@ -62,10 +64,10 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
         />
         <OrgTypeSelect onChange={onOrgTypeChange} value={org.org_type} />
         <Select
-          startLabel="支援"
-          options={FLEET_KEYS}
-          value={org.route_sup as FleetKey}
-          getOptionLabel={uppercase}
+          label={t("RouteSup")}
+          options={SUP_OPTIONS}
+          value={org.route_sup as FleetKey | undefined}
+          getOptionLabel={(key) => (key ? uppercase(key) : t("None"))}
           onChange={onRouteSupChange}
         />
         <PlanAction file={file} org={org} isTemp={isTemp} actions={actions} />

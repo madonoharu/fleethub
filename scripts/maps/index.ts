@@ -1,6 +1,6 @@
 import {
   FhMap,
-  MapEnemyFleet,
+  MapEnemyComp,
   MapLink,
   MapNode,
   MapNodeType,
@@ -28,14 +28,14 @@ const formatFp = (
   ];
 };
 
-const formatEnemyFleet = ({
+const formatEnemyComp = ({
   mainFleet,
   escortFleet,
   formation,
   diff,
   airpower,
   lbasAirpower,
-}: KcnavEnemyFleet): MapEnemyFleet => {
+}: KcnavEnemyFleet): MapEnemyComp => {
   const main = mainFleet.map(formatEnemyShip);
   const escort = escortFleet.length
     ? escortFleet.map(formatEnemyShip)
@@ -54,11 +54,11 @@ const formatEnemyFleet = ({
 };
 
 const formatKcnavEnemies = (kcnavEnemies: KcnavEnemyFleet[]) => {
-  const enemies: MapEnemyFleet[] = [];
+  const enemies: MapEnemyComp[] = [];
 
   kcnavEnemies.forEach((kcnavFleet) => {
     const { formation } = kcnavFleet;
-    const formatted = formatEnemyFleet(kcnavFleet);
+    const formatted = formatEnemyComp(kcnavFleet);
     const found = enemies.find(
       ({ main, escort, diff }) =>
         isEqual(formatted.main, main) &&

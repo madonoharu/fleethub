@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import styled from "@emotion/styled";
-import { FleetKey } from "@fh/utils";
 import { Paper } from "@mui/material";
-import { Org } from "fleethub-core";
+import { styled } from "@mui/system";
+import { Comp, Fleet } from "fleethub-core";
 import React from "react";
 
 import { Tabs, TabsProps } from "../../molecules";
@@ -13,30 +12,30 @@ import MiscScreen from "./MiscScreen";
 import NightCutinScreen from "./NightCutinScreen";
 
 export type FleetInfoPanelProps = {
-  org: Org;
-  fleetKey: FleetKey;
+  comp: Comp;
+  fleet: Fleet;
 };
 
 const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
   className,
-  org,
-  fleetKey,
+  comp,
+  fleet,
 }) => {
   const list: TabsProps["list"] = [
     {
       label: "昼戦",
-      panel: <DayCutinRateTable org={org} fleetKey={fleetKey} />,
+      panel: <DayCutinRateTable comp={comp} />,
     },
     {
       label: "夜戦",
-      panel: <NightCutinScreen org={org} fleetKey={fleetKey} />,
+      panel: <NightCutinScreen comp={comp} />,
     },
     {
       label: "触接率",
-      panel: <ContactChancePanel org={org} fleetKey={fleetKey} />,
+      panel: <ContactChancePanel comp={comp} />,
     },
-    { label: "対空", panel: <AntiAirScreen org={org} fleetKey={fleetKey} /> },
-    { label: "その他", panel: <MiscScreen org={org} fleetKey={fleetKey} /> },
+    { label: "対空", panel: <AntiAirScreen comp={comp} /> },
+    { label: "その他", panel: <MiscScreen comp={comp} fleet={fleet} /> },
   ];
 
   return (

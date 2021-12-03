@@ -71,7 +71,6 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use rand_xoshiro::Xoshiro256PlusPlus;
 
     struct TestStruct {
         base: i32,
@@ -89,11 +88,9 @@ mod test {
 
     #[test]
     fn test_random_range() {
-        use rand::prelude::*;
-
         let obj = TestStruct { base: 4 };
-        let mut rng = Xoshiro256PlusPlus::seed_from_u64(0);
+        let mut rng = SmallRng::seed_from_u64(0);
         assert_eq!(obj.to_vec(), vec![1, 2, 3, 4]);
-        assert_eq!(obj.choose(&mut rng), 2);
+        assert_eq!(obj.choose(&mut rng), 3);
     }
 }

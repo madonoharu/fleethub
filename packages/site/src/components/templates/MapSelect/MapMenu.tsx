@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { FhMap, MapEnemyFleet, MapNode, MapNodeType } from "@fh/utils";
+import { FhMap, MapEnemyComp, MapNode, MapNodeType } from "@fh/utils";
 import { Formation, OrgState } from "fleethub-core";
 import React from "react";
 
@@ -54,7 +54,7 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
     update({ point: node.point });
   };
 
-  const handleEnemySelect = (enemy: MapEnemyFleet, formation: Formation) => {
+  const handleEnemySelect = (enemy: MapEnemyComp, formation: Formation) => {
     if (!node) return;
     const { point, type, d } = node;
 

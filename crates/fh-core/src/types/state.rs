@@ -1,6 +1,9 @@
+use std::collections::HashMap;
+
 use fh_macro::FhAbi;
+use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, EnumString};
+use strum::{AsRefStr, EnumIter, EnumString, IntoEnumIterator};
 use ts_rs::TS;
 use wasm_bindgen::prelude::*;
 
@@ -318,4 +321,44 @@ pub struct OrgState {
     pub route_sup: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boss_sup: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, TS, FhAbi)]
+#[serde(rename_all = "lowercase")]
+pub enum ShipKey {
+    S1,
+    S2,
+    S3,
+    S4,
+    S5,
+    S6,
+    S7,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, FhAbi)]
+#[serde(transparent)]
+pub struct ShipStateMap {
+    map: HashMap<ShipKey, ShipState>,
+}
+
+impl TS for ShipStateMap {
+    const EXPORT_TO: Option<&'static str> = None;
+
+    fn name() -> String {
+        "ShipStateMap".to_string()
+    }
+
+    fn dependencies() -> Vec<ts_rs::Dependency> {
+        std::collections::HashMap::<ShipKey, ShipState>::dependencies()
+    }
+
+    fn transparent() -> bool {
+        true
+    }
+
+    fn inline_flattened() -> String {
+        ShipKey::iter()
+            .map(|key| format!("{:?}?: ShipState,", key))
+            .join("")
+    }
 }

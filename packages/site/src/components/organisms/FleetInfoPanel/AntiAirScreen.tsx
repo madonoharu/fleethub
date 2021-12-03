@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import { Formation, OrgAntiAirInfo } from "fleethub-core";
+import { Comp, Formation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -12,7 +12,6 @@ import FormationSelect from "../FormationSelect";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart";
-import { FleetInfoPanelProps } from "./FleetInfoPanel";
 
 type CutinChanceCellProps = {
   rates: [number, number][];
@@ -53,22 +52,21 @@ const StyledNumberInput = styled(NumberInput)`
   width: 120px;
 `;
 
-const AntiAirPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
+const AntiAirPanel: React.FC<{ comp: Comp }> = ({ comp }) => {
   const { t } = useTranslation("common");
   const { core } = useFhCore();
   const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1);
   const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1);
   const [formation, setFormation] = React.useState<Formation>(
-    org.default_formation()
+    comp.default_formation()
   );
 
   const info = core.analyze_anti_air(
-    org,
-    fleetKey,
+    comp,
     formation,
     adjustedAntiAirResist,
     fleetAntiAirResist
-  ) as OrgAntiAirInfo;
+  );
 
   return (
     <div>
@@ -78,7 +76,7 @@ const AntiAirPanel: React.FC<FleetInfoPanelProps> = ({ org, fleetKey }) => {
         <FormationSelect
           variant="outlined"
           label={t("Formation")}
-          combined={org.is_combined()}
+          combined={comp.is_combined()}
           value={formation}
           onChange={setFormation}
         />

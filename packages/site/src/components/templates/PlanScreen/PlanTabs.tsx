@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import { FLEET_KEYS, nonNullable } from "@fh/utils";
+import { FleetKey, FLEET_KEYS, nonNullable } from "@fh/utils";
 import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -13,8 +13,19 @@ import {
   GkcoiScreen,
   StepList,
   Swappable,
+  FleetScreen,
 } from "../../organisms";
-import PlanFleetPanel from "./PlanFleetPanel";
+
+const FleetTabPanel: React.FCX<{ org: Org; fleetKey: FleetKey }> = ({
+  className,
+  org,
+  fleetKey,
+}) => {
+  const comp = org.create_comp_by_key(fleetKey);
+  const fleet = org.clone_fleet(fleetKey);
+
+  return <FleetScreen className={className} comp={comp} fleet={fleet} />;
+};
 
 const StyledSwappable = styled(Swappable)`
   display: flex;
@@ -52,7 +63,7 @@ const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
         {key.toUpperCase()}
       </StyledSwappable>
     ),
-    panel: <PlanFleetPanel org={org} fleetKey={key} />,
+    panel: <FleetTabPanel org={org} fleetKey={key} />,
   }));
 
   const list = [
