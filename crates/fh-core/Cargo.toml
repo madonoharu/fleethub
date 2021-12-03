@@ -11,6 +11,8 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
+fh-macro = { path = "../fh-macro" }
+
 wasm-bindgen = { version = "0.2.78", features = ["serde-serialize"] }
 js-sys = "0.3.55"
 serde = { version = "1.0.130", features = ["derive"] }
@@ -42,9 +44,7 @@ xxhash-rust = { version = "0.8.2", features = ["xxh3"] }
 enumset = "1.0.8"
 anyhow = "1.0.51"
 ts-rs = "6.1.0"
-fh-macro = { path = "../fh-macro" }
 itertools = "0.10.1"
-enum-map = "2.0.0-1"
 
 [dependencies.web-sys]
 version = "0.3.55"
