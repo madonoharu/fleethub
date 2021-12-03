@@ -1,9 +1,10 @@
+use fh_macro::FhAbi;
 use serde::Serialize;
 use ts_rs::TS;
 
 use crate::{
+    comp::Comp,
     fleet::Fleet,
-    org::Org,
     ship::Ship,
     types::{AirState, BattleConfig, DayCutin, DayCutinDef, Role},
 };
@@ -129,27 +130,18 @@ impl FleetDayCutinRateInfo {
     }
 }
 
-#[derive(Debug, Default, Serialize, TS)]
-pub struct OrgDayCutinRateInfo {
+#[derive(Debug, Default, Serialize, FhAbi, TS)]
+#[fh_abi(skip_from_abi)]
+pub struct CompDayCutinRateInfo {
     main: FleetDayCutinRateInfo,
     escort: Option<FleetDayCutinRateInfo>,
 }
 
-pub struct OrgShellingAnalyzer<'a> {
-    config: &'a BattleConfig,
-}
+impl CompDayCutinRateInfo {
+    pub fn new(comp: &Comp, config: &BattleConfig) -> Self {
+        let day_cutin_defs = &config.day_cutin;
 
-impl<'a> OrgShellingAnalyzer<'a> {
-    pub fn new(config: &'a BattleConfig) -> Self {
-        Self { config }
-    }
-
-    pub fn analyze_org(&self, org: &Org, key: &str) -> OrgDayCutinRateInfo {
-        let day_cutin_defs = &self.config.day_cutin;
-
-        let comp = org.create_comp_by_key(key);
-
-        OrgDayCutinRateInfo {
+        Self {
             main: FleetDayCutinRateInfo::new(day_cutin_defs, &comp.main, Role::Main),
             escort: comp
                 .escort

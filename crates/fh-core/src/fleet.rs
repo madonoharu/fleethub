@@ -34,7 +34,6 @@ pub struct Fleet {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
 
-    #[wasm_bindgen(readonly)]
     pub len: usize,
 
     #[wasm_bindgen(skip)]

@@ -46,3 +46,18 @@ fn test_struct() {
     test_json!(S, {"a": 1}, S {a:1});
     test_json!(S, {"a": 2}, S {a:2});
 }
+
+#[wasm_bindgen_test]
+fn test_attr() {
+    #[derive(Debug, PartialEq, Deserialize, FhAbi)]
+    #[fh_abi(skip_into_abi)]
+    struct A {
+        a: i32,
+    }
+
+    #[derive(Debug, PartialEq, Serialize, FhAbi)]
+    #[fh_abi(skip_from_abi)]
+    struct B {
+        a: i32,
+    }
+}

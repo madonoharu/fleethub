@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Typography } from "@mui/material";
 import { Update } from "@reduxjs/toolkit";
-import { DamageState, Fleet, MoraleState } from "fleethub-core";
+import { Comp, DamageState, Fleet, MoraleState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
@@ -21,15 +21,21 @@ import {
   ConsumptionRate,
 } from "../../molecules";
 import BatchOperations from "../BatchOperations";
+import FleetInfoPanel from "../FleetInfoPanel";
 import FleetShipList from "./FleetShipList";
 
 const FLEET_LENS = [1, 2, 3, 4, 5, 6, 7];
 
 type FleetScreenProps = {
+  comp: Comp;
   fleet: Fleet;
 };
 
-const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
+const FleetScreen: React.FCX<FleetScreenProps> = ({
+  className,
+  comp,
+  fleet,
+}) => {
   const dispatch = useDispatch();
   const BatchOperationsModal = useModal();
   const { t } = useTranslation("common");
@@ -157,6 +163,8 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({ className, fleet }) => {
       </Flexbox>
 
       <FleetShipList fleet={fleet} />
+
+      <FleetInfoPanel sx={{ mt: 1 }} comp={comp} fleet={fleet} />
 
       <BatchOperationsModal>
         <BatchOperations

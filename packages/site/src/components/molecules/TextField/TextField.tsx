@@ -31,7 +31,9 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "Enter") inputRef.current?.blur();
+      if (event.key === "Enter" && !rest.multiline) {
+        inputRef.current?.blur();
+      }
     };
 
     const handleClear = () => {
