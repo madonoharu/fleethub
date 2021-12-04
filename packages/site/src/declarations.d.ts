@@ -27,6 +27,7 @@ declare module "@mui/system/createTheme" {
 
   interface Theme {
     colors: Colors;
+    styles: import("./styles").ThemeStyles;
   }
 }
 

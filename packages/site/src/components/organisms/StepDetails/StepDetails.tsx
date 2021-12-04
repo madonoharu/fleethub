@@ -19,11 +19,11 @@ import {
 import { Flexbox } from "../../atoms";
 import { NumberInput, Tabs } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
+import CompShipList from "../CompShipList";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
-import CompShipList from "./CompShipList";
 import SimulatorResultTable from "./SimulatorResultTable";
 import WarfareDetails from "./WarfareDetails";
 

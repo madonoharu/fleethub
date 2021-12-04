@@ -175,3 +175,4 @@ const styles = {
 export const theme = { ...muiTheme, colors, styles };
 
 export type Theme = typeof theme;
+export type ThemeStyles = typeof styles;

@@ -394,9 +394,12 @@ export const swapGearPosition = createAction<
   SwapEvent<{ id?: string | undefined; position: GearPosition }>
 >("entities/swapGearPosition");
 
-export const swapShipPosition = createAction<
-  SwapEvent<{ id?: string | undefined; position: ShipPosition }>
->("entities/swapShipPosition");
+export type SwapShipPayload = SwapEvent<{
+  id?: string | undefined;
+  position: ShipPosition;
+}>;
+
+export const swapShip = createAction<SwapShipPayload>("entities/swapShip");
 
 export type EquipPayload = {
   tag: GearPosition["tag"];

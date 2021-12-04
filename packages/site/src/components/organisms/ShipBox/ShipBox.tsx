@@ -8,11 +8,7 @@ import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
 import { useOrgContext } from "../../../hooks";
-import {
-  ShipPosition,
-  shipSelectSlice,
-  swapShipPosition,
-} from "../../../store";
+import { ShipPosition, shipSelectSlice, swapShip } from "../../../store";
 import ShipCard from "../ShipCard";
 import Swappable from "../Swappable";
 
@@ -33,8 +29,8 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
     dispatch(shipSelectSlice.actions.create({ position, id }));
   };
 
-  const handleSwap = (event: Parameters<typeof swapShipPosition>[0]) => {
-    dispatch(swapShipPosition(event));
+  const handleSwap = (event: Parameters<typeof swapShip>[0]) => {
+    dispatch(swapShip(event));
   };
 
   const element = !ship ? (
