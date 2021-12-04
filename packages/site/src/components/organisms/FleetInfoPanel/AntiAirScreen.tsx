@@ -7,11 +7,12 @@ import React from "react";
 import { useCompContext } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
-import { NumberInput, Select } from "../../molecules";
+import { NumberInput } from "../../molecules";
 import FormationSelect from "../FormationSelect";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart";
+import AntiAirCutinSelect from "./AntiAirCutinSelect";
 
 type CutinChanceCellProps = {
   rates: [number, number][];
@@ -33,6 +34,7 @@ const CutinChanceCell: React.FCX<CutinChanceCellProps> = ({
 const Container = styled(Flexbox)`
   align-items: flex-end;
   margin-bottom: 8px;
+  gap: 8px;
 
   > div:first-of-type {
     margin-right: auto;
@@ -60,7 +62,8 @@ const AntiAirPanel: React.FCX = ({ className }) => {
     comp,
     state.formation,
     state.adjustedAntiAirResist,
-    state.fleetAntiAirResist
+    state.fleetAntiAirResist,
+    state.anti_air_cutin
   );
 
   return (
@@ -76,14 +79,10 @@ const AntiAirPanel: React.FCX = ({ className }) => {
           onChange={bind("formation")}
         />
 
-        <Select
-          css={{ width: 120 }}
-          variant="outlined"
-          label="対空CI"
-          options={info.anti_air_cutin_chance.map(([id]) => id)}
+        <AntiAirCutinSelect
           value={state.anti_air_cutin}
           onChange={bind("anti_air_cutin")}
-          getOptionLabel={(id) => `${id || "無し"}`}
+          visibleIds={info.anti_air_cutin_chance.map(([id]) => id)}
         />
 
         <StyledNumberInput

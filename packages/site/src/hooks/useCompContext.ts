@@ -13,7 +13,7 @@ type FleetInfoState = {
   formation: Formation;
   adjustedAntiAirResist: number;
   fleetAntiAirResist: number;
-  anti_air_cutin: number;
+  anti_air_cutin: number | null;
 
   attackerNightSituation: NightSituation;
   targetNightSituation: NightSituation;
@@ -31,7 +31,7 @@ const useComp = ({ comp }: Props) => {
     formation: comp.default_formation(),
     adjustedAntiAirResist: 1,
     fleetAntiAirResist: 1,
-    anti_air_cutin: 0,
+    anti_air_cutin: null,
 
     attackerNightSituation: initalNightSituation,
     targetNightSituation: initalNightSituation,
