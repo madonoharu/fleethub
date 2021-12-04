@@ -1,4 +1,4 @@
-import { FhCore, MasterData } from "fleethub-core";
+import { FhCore, MasterData, Analyzer } from "fleethub-core";
 import { createContext, useContext } from "react";
 
 export type FhCoreState = {
@@ -10,6 +10,7 @@ export type FhCoreState = {
     | "org_type_is_player"
   >;
   core: FhCore;
+  analyzer: Analyzer;
   masterData: MasterData;
 };
 

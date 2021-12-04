@@ -1,5 +1,8 @@
+use seq_macro::seq;
+
 use crate::{
     air_squadron::AirSquadron,
+    comp::Comp,
     fleet::{Fleet, ShipArray},
     gear::Gear,
     gear_array::GearArray,
@@ -253,5 +256,43 @@ impl Factory {
 
     pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
         self.create_ship(self.create_ship_state_by_id(ship_id))
+    }
+
+    pub fn create_fleet_by_ids(&self, ids: Vec<u16>) -> Fleet {
+        let create_ship_state = |index: usize| {
+            ids.get(index)
+                .and_then(|ship_id| self.create_ship_state_by_id(*ship_id))
+        };
+
+        let state = seq!(N in 1..=7 {
+            FleetState {
+                id: None,
+                len: Some(ids.len()),
+                #(
+                    s #N: create_ship_state(N - 1),
+                )*
+            }
+        });
+
+        self.create_fleet(Some(state))
+    }
+
+    pub fn create_comp_by_map_enemy(&self, main: Vec<u16>, escort: Option<Vec<u16>>) -> Comp {
+        let main_fleet = self.create_fleet_by_ids(main);
+        let escort_fleet = escort.map(|vec| self.create_fleet_by_ids(vec));
+
+        let org_type = if escort_fleet.is_some() {
+            OrgType::EnemyCombined
+        } else {
+            OrgType::EnemySingle
+        };
+
+        Comp {
+            org_type,
+            main: main_fleet,
+            escort: escort_fleet,
+            route_sup: None,
+            boss_sup: None,
+        }
     }
 }

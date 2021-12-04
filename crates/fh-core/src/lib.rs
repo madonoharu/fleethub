@@ -20,7 +20,7 @@ use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
 use analyzer::{
-    CompAntiAirInfo, CompContactChanceInfo, CompDayCutinRateInfo, FleetCutinAnalysis,
+    Analyzer, CompAntiAirInfo, CompContactChanceInfo, CompDayCutinRateInfo, FleetCutinAnalysis,
     FleetCutinAnalyzer, FleetNightCutinRateInfo, WarfareAnalyzer, WarfareAnalyzerContext,
     WarfareInfo,
 };
@@ -90,61 +90,16 @@ impl FhCore {
         self.factory.create_ship_by_id(ship_id)
     }
 
+    pub fn create_comp_by_map_enemy(&self, main: Vec<u16>, escort: Option<Vec<u16>>) -> Comp {
+        self.factory.create_comp_by_map_enemy(main, escort)
+    }
+
     pub fn create_default_ship(&self) -> Ship {
         Ship::default()
     }
 
-    pub fn analyze_anti_air(
-        &self,
-        comp: &Comp,
-        formation: Formation,
-        adjusted_anti_air_resist: Option<f64>,
-        fleet_anti_air_resist: Option<f64>,
-    ) -> CompAntiAirInfo {
-        CompAntiAirInfo::new(
-            comp,
-            &self.factory.master_data.config,
-            formation,
-            adjusted_anti_air_resist,
-            fleet_anti_air_resist,
-        )
-    }
-
-    pub fn analyze_day_cutin(&self, comp: &Comp) -> CompDayCutinRateInfo {
-        CompDayCutinRateInfo::new(comp, &self.factory.master_data.config)
-    }
-
-    pub fn analyze_night_cutin(
-        &self,
-        comp: &Comp,
-        attacker_situation: NightSituation,
-        target_situation: NightSituation,
-    ) -> FleetNightCutinRateInfo {
-        FleetNightCutinRateInfo::new(
-            comp,
-            &self.factory.master_data.config,
-            &attacker_situation,
-            &target_situation,
-        )
-    }
-
-    pub fn analyze_contact_chance(&self, comp: &Comp) -> CompContactChanceInfo {
-        CompContactChanceInfo::new(comp)
-    }
-
-    pub fn analyze_warfare(
-        &self,
-        params: WarfareAnalyzerContext,
-        attacker: &Ship,
-        target: &Ship,
-    ) -> WarfareInfo {
-        let analyzer =
-            WarfareAnalyzer::new(&self.factory.master_data.config, &params, attacker, target);
-        analyzer.analyze()
-    }
-
-    pub fn analyze_fleet_cutin(&self, comp: &Comp, engagement: Engagement) -> FleetCutinAnalysis {
-        FleetCutinAnalyzer::new(&self.factory.master_data.config, comp, engagement).analyze()
+    pub fn create_analyzer(&self) -> Analyzer {
+        Analyzer::new(self.factory.master_data.config.clone())
     }
 
     pub fn simulate_shelling_support(
