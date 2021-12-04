@@ -38,6 +38,8 @@ pub struct Org {
     pub hq_level: i32,
     pub org_type: OrgType,
     #[wasm_bindgen(getter_with_clone)]
+    pub sortie: String,
+    #[wasm_bindgen(getter_with_clone)]
     pub route_sup: Option<String>,
     #[wasm_bindgen(getter_with_clone)]
     pub boss_sup: Option<String>,
@@ -137,6 +139,10 @@ impl Org {
 
     pub fn get_fleet_id_by_role(&self, role: Role) -> String {
         self.get_fleet_by_role(role).id.clone()
+    }
+
+    pub fn create_comp(&self) -> Comp {
+        self.create_comp_by_key(&self.sortie)
     }
 
     pub fn create_comp_by_key(&self, key: &str) -> Comp {

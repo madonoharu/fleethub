@@ -176,6 +176,7 @@ impl Factory {
             a3,
             hq_level,
             org_type,
+            sortie,
             route_sup,
             boss_sup,
         } = state;
@@ -220,6 +221,7 @@ impl Factory {
 
             hq_level: hq_level.unwrap_or(120),
             org_type,
+            sortie: sortie.unwrap_or_else(|| "f1".to_string()),
             route_sup,
             boss_sup,
         })
