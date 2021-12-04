@@ -11,7 +11,7 @@ import {
   createShip,
   isEntitiesAction,
   ShipPosition,
-  swapShipPosition,
+  swapShip,
   sweep,
 } from "./entities";
 import { FleetEntity } from "./schema";
@@ -65,7 +65,7 @@ export const fleetsSlice = createSlice({
 
         entity[position.key] = payload.id;
       })
-      .addCase(swapShipPosition, (state, { payload }) => {
+      .addCase(swapShip, (state, { payload }) => {
         const { drag, drop } = payload;
 
         setShipId(state, drag.position, drop.id);
