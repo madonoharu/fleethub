@@ -152,6 +152,7 @@ const darkAcrylic = css`
 
 const swappable = css`
   border-radius: 4px;
+  cursor: grab;
 
   img {
     pointer-events: none;

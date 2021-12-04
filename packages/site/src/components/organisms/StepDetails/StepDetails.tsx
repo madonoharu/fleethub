@@ -75,8 +75,8 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
       );
     };
 
-  const playerComp = playerOrg.create_comp_by_key("f1");
-  const enemyComp = enemyOrg.create_comp_by_key("f1");
+  const playerComp = playerOrg.create_comp();
+  const enemyComp = enemyOrg.create_comp();
 
   const playerShip = playerShipId
     ? playerOrg.get_ship_by_id(playerShipId)
