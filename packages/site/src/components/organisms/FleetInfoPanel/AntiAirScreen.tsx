@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import { Comp, Formation } from "fleethub-core";
+import { round } from "@fh/utils";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFhCore } from "../../../hooks";
+import { useCompContext } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
-import { NumberInput } from "../../molecules";
+import { NumberInput, Select } from "../../molecules";
 import FormationSelect from "../FormationSelect";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
@@ -52,50 +52,48 @@ const StyledNumberInput = styled(NumberInput)`
   width: 120px;
 `;
 
-const AntiAirPanel: React.FC<{ comp: Comp }> = ({ comp }) => {
+const AntiAirPanel: React.FCX = ({ className }) => {
   const { t } = useTranslation("common");
-  const { core } = useFhCore();
-  const [adjustedAntiAirResist, setAdjustedAntiAirResist] = React.useState(1);
-  const [fleetAntiAirResist, setFleetAntiAirResist] = React.useState(1);
-  const [formation, setFormation] = React.useState<Formation>(
-    comp.default_formation()
-  );
+  const { comp, analyzer, state, bind } = useCompContext();
 
-  const info = core.analyze_anti_air(
+  const info = analyzer.analyze_anti_air(
     comp,
-    formation,
-    adjustedAntiAirResist,
-    fleetAntiAirResist
+    state.formation,
+    state.adjustedAntiAirResist,
+    state.fleetAntiAirResist
   );
 
   return (
-    <div>
+    <div className={className}>
       <Container>
-        <LabeledValue label="艦隊対空" value={info.fleet_anti_air.toFixed(4)} />
+        <LabeledValue label="艦隊対空" value={round(info.fleet_anti_air, 4)} />
 
         <FormationSelect
           variant="outlined"
           label={t("Formation")}
           combined={comp.is_combined()}
-          value={formation}
-          onChange={setFormation}
+          value={state.formation}
+          onChange={bind("formation")}
         />
 
-        {/* <Select
+        <Select
           css={{ width: 120 }}
           variant="outlined"
           label="対空CI"
-          {...ciSelectState}
-          getOptionLabel={(ci) => ci?.name || "無し"}
-        /> */}
+          options={info.anti_air_cutin_chance.map(([id]) => id)}
+          value={state.anti_air_cutin}
+          onChange={bind("anti_air_cutin")}
+          getOptionLabel={(id) => `${id || "無し"}`}
+        />
+
         <StyledNumberInput
           variant="outlined"
           label="加重対空補正"
           step={0.1}
           min={0}
           max={1}
-          value={adjustedAntiAirResist}
-          onChange={setAdjustedAntiAirResist}
+          value={state.adjustedAntiAirResist}
+          onChange={bind("adjustedAntiAirResist")}
         />
         <StyledNumberInput
           variant="outlined"
@@ -103,8 +101,8 @@ const AntiAirPanel: React.FC<{ comp: Comp }> = ({ comp }) => {
           step={0.1}
           min={0}
           max={1}
-          value={fleetAntiAirResist}
-          onChange={setFleetAntiAirResist}
+          value={state.fleetAntiAirResist}
+          onChange={bind("fleetAntiAirResist")}
         />
       </Container>
 

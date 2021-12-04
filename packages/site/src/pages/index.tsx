@@ -33,6 +33,7 @@ const Loder: React.FC = ({ children }) => {
   }
 
   const core = new FhCore(masterData, createEquipmentBonuses);
+  const analyzer = core.create_analyzer();
 
   const value = {
     module: {
@@ -42,6 +43,7 @@ const Loder: React.FC = ({ children }) => {
       org_type_is_player,
     },
     core,
+    analyzer,
     masterData,
   };
 
