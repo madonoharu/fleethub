@@ -208,12 +208,13 @@ impl<'a> AntiAirAnalyzer<'a> {
         formation: Formation,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
+        aaci: Option<u8>,
     ) -> CompAntiAirInfo {
         let formation_mod = self.config.get_formation_fleet_anti_air_mod(formation);
 
         let fleet_anti_air = comp.fleet_anti_air(formation_mod);
         let side = comp.org_type.side();
-        let anti_air_cutin = None;
+        let anti_air_cutin = aaci.and_then(|id| self.find_aaci(id));
 
         let is_combined = comp.is_combined();
 
@@ -303,12 +304,14 @@ impl CompAntiAirInfo {
         formation: Formation,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
+        aaci: Option<u8>,
     ) -> Self {
         AntiAirAnalyzer::new(config).analyze(
             comp,
             formation,
             adjusted_anti_air_resist,
             fleet_anti_air_resist,
+            aaci,
         )
     }
 }

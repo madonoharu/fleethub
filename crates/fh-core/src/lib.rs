@@ -19,21 +19,13 @@ use simulator::{ShellingSupportSimulatorParams, SimulatorResult};
 use wasm_bindgen::prelude::*;
 
 use air_squadron::AirSquadron;
-use analyzer::{
-    Analyzer, CompAntiAirInfo, CompContactChanceInfo, CompDayCutinRateInfo, FleetCutinAnalysis,
-    FleetCutinAnalyzer, FleetNightCutinRateInfo, WarfareAnalyzer, WarfareAnalyzerContext,
-    WarfareInfo,
-};
-use attack::NightSituation;
+use analyzer::Analyzer;
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
 use org::Org;
 use ship::Ship;
-use types::{
-    AirSquadronState, EBonusFn, Engagement, FleetState, Formation, GearState, MasterData, OrgState,
-    ShipState,
-};
+use types::{AirSquadronState, EBonusFn, FleetState, GearState, MasterData, OrgState, ShipState};
 
 #[wasm_bindgen(typescript_custom_section)]
 const TS_APPEND_CONTENT: &'static str = r#"

@@ -46,6 +46,7 @@ impl Analyzer {
         formation: Formation,
         adjusted_anti_air_resist: Option<f64>,
         fleet_anti_air_resist: Option<f64>,
+        aaci: Option<u8>,
     ) -> CompAntiAirInfo {
         CompAntiAirInfo::new(
             comp,
@@ -53,6 +54,7 @@ impl Analyzer {
             formation,
             adjusted_anti_air_resist,
             fleet_anti_air_resist,
+            aaci,
         )
     }
 
