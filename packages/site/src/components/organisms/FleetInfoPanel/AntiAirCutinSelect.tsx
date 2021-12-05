@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import styled from "@emotion/styled";
-import { round } from "@fh/utils";
+import { Typography } from "@mui/material";
 import { AntiAirCutinDef } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
@@ -19,6 +18,7 @@ const AntiAirCutinSelect: React.FCX<Props> = ({
   onChange,
   visibleIds,
 }) => {
+  const { t } = useTranslation("common");
   const { masterData } = useFhCore();
   const data = masterData.config.anti_air_cutin;
 
@@ -39,14 +39,26 @@ const AntiAirCutinSelect: React.FCX<Props> = ({
       onChange={(def) => {
         onChange?.(def?.id || null);
       }}
-      getOptionLabel={(def) => {
-        return def
-          ? `${def.id}種 (x${def.multiplier || "?"}+${
-              def.minimum_bonus || "?"
-            })`
-          : "None";
-      }}
       itemFilter={itemFilter}
+      getOptionLabel={(def) => {
+        if (!def) {
+          return t("None");
+        }
+
+        return (
+          <Typography
+            width="100%"
+            align="right"
+            display="grid"
+            gridTemplateColumns="1fr 1fr 30px"
+            gap={1}
+          >
+            <span>{def.id}種</span>
+            <span>x{def.multiplier || "?"}</span>
+            <span>+{def.minimum_bonus || "?"}</span>
+          </Typography>
+        );
+      }}
     />
   );
 };
