@@ -314,7 +314,7 @@ pub struct OrgState {
     pub a3: Option<AirSquadronState>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hq_level: Option<i32>,
+    pub hq_level: Option<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub org_type: Option<OrgType>,
     #[serde(skip_serializing_if = "Option::is_none")]

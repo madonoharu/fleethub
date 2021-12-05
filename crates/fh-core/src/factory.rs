@@ -290,6 +290,7 @@ impl Factory {
         };
 
         Comp {
+            hq_level: 120,
             org_type,
             main: main_fleet,
             escort: escort_fleet,
