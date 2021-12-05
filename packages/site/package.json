@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
@@ -19,6 +19,7 @@
     "@mui/icons-material": "^5.2.0",
     "@mui/lab": "^5.0.0-alpha.58",
     "@mui/material": "^5.2.2",
+    "@mui/system": "^5.2.2",
     "@reduxjs/toolkit": "^1.6.2",
     "@visx/legend": "^2.2.2",
     "@visx/network": "^2.1.2",
@@ -37,8 +38,8 @@
     "literal-case": "^1.0.0",
     "localforage": "^1.10.0",
     "lz-string-uri-fix": "^1.4.5",
-    "next": "^12.0.5-canary.14",
-    "next-i18next": "^9.2.0",
+    "next": "^12.0.7",
+    "next-i18next": "^10.0.1",
     "normalizr": "^3.6.1",
     "re-reselect": "^4.0.0",
     "react": "^17.0.2",
@@ -57,7 +58,7 @@
     "use-immer": "^0.6.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^12.0.4",
+    "@next/bundle-analyzer": "^12.0.7",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
