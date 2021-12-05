@@ -11,7 +11,7 @@ use crate::{
     gear_array::{into_gear_index, into_gear_key, GearArray},
     gear_id, matches_gear_id, matches_ship_id, ship_id,
     types::{
-        AirState, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
+        AirStateRank, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
         NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
         SlotSizeArray, SpecialEnemyType,
     },
@@ -1013,11 +1013,11 @@ impl Ship {
         &self,
         fleet_los_mod: f64,
         is_main_flagship: bool,
-        air_state: AirState,
+        air_state_rank: AirStateRank,
     ) -> Option<f64> {
-        let (as_mod1, as_mod2, as_mod3) = match air_state {
-            AirState::AirSupremacy => (0.7, 1.6, 10.0),
-            AirState::AirSuperiority => (0.6, 1.2, 0.0),
+        let (as_mod1, as_mod2, as_mod3) = match air_state_rank {
+            AirStateRank::Rank3 => (0.7, 1.6, 10.0),
+            AirStateRank::Rank2 => (0.6, 1.2, 0.0),
             _ => return Some(0.0),
         };
 

@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import { Comp, DayCutinRateInfo, FleetDayCutinRateInfo } from "fleethub-core";
+import { DayCutinRateInfo, FleetDayCutinRateInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFhCore } from "../../../hooks";
+import { useCompContext } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { LabeledValue } from "../../atoms";
 import AttackChip from "../AttackChip";
@@ -97,15 +97,11 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({
   );
 };
 
-type Props = {
-  comp: Comp;
-};
-
-const DayCutinRateTable: React.FCX<Props> = ({ className, comp }) => {
+const DayCutinRateTable: React.FCX = ({ className }) => {
   const { t } = useTranslation("common");
-  const { core } = useFhCore();
+  const { comp, analyzer } = useCompContext();
 
-  const info = core.analyze_day_cutin(comp);
+  const info = analyzer.analyze_day_cutin(comp);
 
   return (
     <div className={className}>
@@ -113,7 +109,7 @@ const DayCutinRateTable: React.FCX<Props> = ({ className, comp }) => {
       {info.escort && (
         <FleetDayAttackRateTable label={t("Escort")} info={info.escort} />
       )}
-      <FleetCutinAnalysisTable comp={comp} type="shelling" />
+      <FleetCutinAnalysisTable type="shelling" />
     </div>
   );
 };

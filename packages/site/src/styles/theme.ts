@@ -152,6 +152,7 @@ const darkAcrylic = css`
 
 const swappable = css`
   border-radius: 4px;
+  cursor: grab;
 
   img {
     pointer-events: none;
@@ -175,3 +176,4 @@ const styles = {
 export const theme = { ...muiTheme, colors, styles };
 
 export type Theme = typeof theme;
+export type ThemeStyles = typeof styles;

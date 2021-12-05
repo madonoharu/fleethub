@@ -35,8 +35,10 @@ pub struct Org {
     #[wasm_bindgen(skip)]
     pub a3: AirSquadron,
 
-    pub hq_level: i32,
+    pub hq_level: u8,
     pub org_type: OrgType,
+    #[wasm_bindgen(getter_with_clone)]
+    pub sortie: String,
     #[wasm_bindgen(getter_with_clone)]
     pub route_sup: Option<String>,
     #[wasm_bindgen(getter_with_clone)]
@@ -93,18 +95,6 @@ impl Org {
             .collect()
     }
 
-    pub fn ship_keys(&self, role: Role) -> Vec<JsString> {
-        self.get_fleet_by_role(role).ship_keys()
-    }
-
-    pub fn sortie_ship_keys(&self, role: Role) -> Option<Vec<JsString>> {
-        if self.is_single() && role.is_escort() {
-            return None;
-        }
-
-        Some(self.get_fleet_by_role(role).ship_keys())
-    }
-
     pub fn fleet_los_mod(&self, role: Role) -> Option<f64> {
         self.get_fleet_by_role(role).fleet_los_mod()
     }
@@ -139,6 +129,10 @@ impl Org {
         self.get_fleet_by_role(role).id.clone()
     }
 
+    pub fn create_comp(&self) -> Comp {
+        self.create_comp_by_key(&self.sortie)
+    }
+
     pub fn create_comp_by_key(&self, key: &str) -> Comp {
         let org_type = self.org_type;
         let enable_escort = org_type.is_combined() && matches!(key, "f1" | "f2");
@@ -169,6 +163,7 @@ impl Org {
         };
 
         Comp {
+            hq_level: self.hq_level,
             org_type,
             main,
             escort,
@@ -226,27 +221,6 @@ impl Org {
         self.org_type.is_combined()
     }
 
-    pub fn default_formation(&self) -> Formation {
-        self.org_type.default_formation()
-    }
-
-    /// 艦隊対空値
-    pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
-        self.create_comp_by_key("f1").fleet_anti_air(formation_mod)
-    }
-
-    /// 制空値
-    pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
-        self.create_comp_by_key("f1")
-            .fighter_power(anti_combined, anti_lbas)
-    }
-
-    /// マップ索敵
-    pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
-        self.create_comp_by_key("f1")
-            .elos(self.hq_level as u8, node_divaricated_factor)
-    }
-
     /// 防空時の基地制空値
     pub fn interception_power(&self) -> i32 {
         let as_vec = [&self.a1, &self.a2, &self.a3]
@@ -291,11 +265,6 @@ impl Org {
             .sum::<i32>();
 
         (interception_power as f64 * modifier).floor() as i32
-    }
-
-    /// 輸送物資量(TP)
-    pub fn transport_point(&self, key: &str) -> i32 {
-        self.create_comp_by_key(key).transport_point()
     }
 
     pub fn create_warfare_ship_environment(

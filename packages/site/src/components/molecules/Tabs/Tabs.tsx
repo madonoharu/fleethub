@@ -27,7 +27,7 @@ export type TabItem = {
 type TabsPropsBase = {
   value?: number;
   onChange?: (value: number) => void;
-  list: TabItem[];
+  list: (TabItem | null | undefined | false)[];
   size?: "small";
 };
 
@@ -59,12 +59,18 @@ const Tabs: React.FC<TabsProps> = ({
   return (
     <div className={className} css={size === "small" && smallStyle}>
       <MuiTabs value={current} onChange={handleChange} {...rest}>
-        {list.map(({ panel: _, ...tabProps }, index) => (
-          <MuiTab key={index} {...tabProps} />
-        ))}
+        {list.map((item, index) => {
+          if (!item) {
+            return null;
+          }
+
+          const { panel: _, ...tabProps } = item;
+
+          return <MuiTab key={index} {...tabProps} />;
+        })}
       </MuiTabs>
 
-      {item?.panel}
+      {item ? item.panel : null}
     </div>
   );
 };

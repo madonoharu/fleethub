@@ -70,6 +70,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
 }) => {
   const { id } = ship;
   const { t } = useTranslation("common");
+
   const actions = useShipActions(id);
   const EditModal = useModal();
   const DetailModal = useModal();
@@ -87,6 +88,8 @@ const ShipCard: React.FCX<ShipCardProps> = ({
   const visibleAmmo = visibleMiscStats || ammoRate < 1;
   const visibleFuel = visibleMiscStats || fuelRate < 1;
 
+  const readonly = id === "";
+
   return (
     <Paper className={className}>
       <ShipCardHeader
@@ -97,6 +100,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
         onReselect={actions.reselect}
         onPreset={PresetModal.show}
         onRemove={actions.remove}
+        readonly={readonly}
         disableDetails={disableDetails}
       />
       <Column>

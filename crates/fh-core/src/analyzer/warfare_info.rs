@@ -124,6 +124,10 @@ impl<'a> WarfareAnalyzer<'a> {
 
     fn analyze_day_battle_attack(&self) -> Option<DayBattleAttackInfo> {
         let attack_type = get_day_battle_attack_type(self.attacker, self.target)?;
+        let air_state_rank = self
+            .ctx
+            .air_state
+            .rank(self.ctx.attacker_env.org_type.side());
 
         let items = match attack_type {
             DayBattleAttackType::Shelling(t) => {
@@ -132,7 +136,7 @@ impl<'a> WarfareAnalyzer<'a> {
                     self.attacker,
                     self.ctx.attacker_env.fleet_los_mod,
                     self.ctx.attacker_env.is_main_flagship(),
-                    self.ctx.air_state,
+                    air_state_rank,
                 );
 
                 let items = day_cutin_rate_info
