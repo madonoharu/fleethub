@@ -11,6 +11,7 @@ use super::{
 
 const SHELLING_SUPPORT_POWER_CAP: f64 = 170.0;
 const SHELLING_SUPPORT_CRITICAL_RATE_CONSTANT: f64 = 1.0;
+const SHELLING_SUPPORT_ACCURACY_CONSTANT: f64 = 64.0;
 
 pub struct ShellingSupportAttackParams<'a> {
     pub attacker: &'a Ship,
@@ -112,7 +113,8 @@ impl<'a> ShellingSupportAttackParams<'a> {
             let formation_mod = attacker_formation_accuracy_mod;
 
             // 乗算前に切り捨て
-            let premultiplication = (basic_accuracy_term + ship_accuracy).floor();
+            let premultiplication =
+                (SHELLING_SUPPORT_ACCURACY_CONSTANT + basic_accuracy_term + ship_accuracy).floor();
 
             let result = (premultiplication * formation_mod * morale_mod).floor();
 
