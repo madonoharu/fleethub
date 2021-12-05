@@ -465,7 +465,7 @@ where
         .filter_map(|result| match result {
             Ok(v) => Some(v),
             Err(err) => {
-                crate::error!("{:#?}", err);
+                crate::console::error!("{:#?}", err);
                 None
             }
         })

@@ -19,11 +19,11 @@ import {
 import { Flexbox } from "../../atoms";
 import { NumberInput, Tabs } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
+import CompShipList from "../CompShipList";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
-import CompShipList from "./CompShipList";
 import SimulatorResultTable from "./SimulatorResultTable";
 import WarfareDetails from "./WarfareDetails";
 
@@ -75,8 +75,8 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
       );
     };
 
-  const playerComp = playerOrg.create_comp_by_key("f1");
-  const enemyComp = enemyOrg.create_comp_by_key("f1");
+  const playerComp = playerOrg.create_comp();
+  const enemyComp = enemyOrg.create_comp();
 
   const playerShip = playerShipId
     ? playerOrg.get_ship_by_id(playerShipId)

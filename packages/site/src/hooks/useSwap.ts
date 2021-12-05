@@ -1,4 +1,5 @@
 import { useForkRef } from "@mui/material";
+import { dequal } from "dequal";
 import React from "react";
 
 import { useDrag } from "./useDrag";
@@ -33,7 +34,7 @@ export const useSwap = <T extends Record<string, unknown>>({
     drop: (dragItem: typeof item) => {
       onSwap({ drag: dragItem, drop: item });
     },
-    canDrop: (dragItem) => dragItem !== item,
+    canDrop: (dragItem) => !dequal(dragItem, item),
   });
 
   const ref = useForkRef(dragRef, dropRef);

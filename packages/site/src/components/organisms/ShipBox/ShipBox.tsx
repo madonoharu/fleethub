@@ -8,11 +8,7 @@ import React from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
 import { useOrgContext } from "../../../hooks";
-import {
-  ShipPosition,
-  shipSelectSlice,
-  swapShipPosition,
-} from "../../../store";
+import { ShipPosition, shipSelectSlice, swapShip } from "../../../store";
 import ShipCard from "../ShipCard";
 import Swappable from "../Swappable";
 
@@ -29,20 +25,18 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
 
   const id = ship?.id || "";
 
-  const handleShipChange = () => {
-    dispatch(shipSelectSlice.actions.create({ position, id }));
+  const handleAdd = () => {
+    if (id || (position?.tag === "fleet" && position.id)) {
+      dispatch(shipSelectSlice.actions.create({ position, id }));
+    }
   };
 
-  const handleSwap = (event: Parameters<typeof swapShipPosition>[0]) => {
-    dispatch(swapShipPosition(event));
+  const handleSwap = (event: Parameters<typeof swapShip>[0]) => {
+    dispatch(swapShip(event));
   };
 
   const element = !ship ? (
-    <Button
-      variant="outlined"
-      startIcon={<AddIcon />}
-      onClick={handleShipChange}
-    >
+    <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAdd}>
       {t("Ship")}
     </Button>
   ) : (
@@ -59,7 +53,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
       type="ship"
       item={{ id, position }}
       onSwap={handleSwap}
-      canDrag={Boolean(ship)}
+      canDrag={ship && ship.id !== ""}
       dragLayer={<div />}
     >
       {element}

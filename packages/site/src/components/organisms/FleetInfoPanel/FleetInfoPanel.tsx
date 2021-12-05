@@ -3,6 +3,7 @@ import { Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import { Comp, Fleet } from "fleethub-core";
 import React from "react";
+import { CompProvider } from "../../../hooks";
 
 import { Tabs, TabsProps } from "../../molecules";
 import AntiAirScreen from "./AntiAirScreen";
@@ -24,24 +25,26 @@ const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
   const list: TabsProps["list"] = [
     {
       label: "昼戦",
-      panel: <DayCutinRateTable comp={comp} />,
+      panel: <DayCutinRateTable />,
     },
     {
       label: "夜戦",
-      panel: <NightCutinScreen comp={comp} />,
+      panel: <NightCutinScreen />,
     },
     {
       label: "触接率",
-      panel: <ContactChancePanel comp={comp} />,
+      panel: <ContactChancePanel />,
     },
-    { label: "対空", panel: <AntiAirScreen comp={comp} /> },
+    { label: "対空", panel: <AntiAirScreen /> },
     { label: "その他", panel: <MiscScreen comp={comp} fleet={fleet} /> },
   ];
 
   return (
-    <Paper>
-      <Tabs className={className} list={list} />
-    </Paper>
+    <CompProvider comp={comp}>
+      <Paper className={className}>
+        <Tabs size="small" list={list} />
+      </Paper>
+    </CompProvider>
   );
 };
 

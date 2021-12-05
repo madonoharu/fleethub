@@ -1,17 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Typography, Stack } from "@mui/material";
-import {
-  NightCutinRateInfo,
-  FleetNightCutinRateInfo,
-  NightSituation,
-  Comp,
-} from "fleethub-core";
+import { NightCutinRateInfo, FleetNightCutinRateInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { useImmer } from "use-immer";
 
-import { useFhCore } from "../../../hooks";
+import { useCompContext } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { LabeledValue, Flexbox } from "../../atoms";
 import AttackChip from "../AttackChip";
@@ -91,24 +85,21 @@ const NightCutinTable: React.FCX<Props> = ({ className, info }) => {
   );
 };
 
-const initalNightSituation: NightSituation = {
-  night_contact_rank: null,
-  searchlight: false,
-  starshell: false,
-};
-
-const NightCutinPanel: React.FC<{ comp: Comp }> = ({ comp }) => {
-  const { core } = useFhCore();
+const NightCutinPanel: React.FCX = ({ className }) => {
   const { t } = useTranslation("common");
+  const { comp, analyzer, state, bind } = useCompContext();
 
-  const [attacker, updateAttacker] =
-    useImmer<NightSituation>(initalNightSituation);
-  const [target, updateTarget] = useImmer<NightSituation>(initalNightSituation);
+  const info = analyzer.analyze_night_cutin(
+    comp,
+    state.attackerNightSituation,
+    state.targetNightSituation
+  );
 
-  const info = core.analyze_night_cutin(comp, attacker, target);
+  const attackerColor = comp.is_enemy() ? "secondary" : "primary";
+  const targetColor = comp.is_enemy() ? "primary" : "secondary";
 
   return (
-    <Stack gap={1}>
+    <Stack className={className} gap={1}>
       <Flexbox gap={1}>
         <Typography>
           夜間触接率 {toPercent(info.night_contact_chance.total)}
@@ -116,22 +107,22 @@ const NightCutinPanel: React.FC<{ comp: Comp }> = ({ comp }) => {
 
         <Typography ml={5}>{t("攻撃側")}</Typography>
         <NightSituationForm
-          value={attacker}
-          onChange={updateAttacker}
-          color="primary"
+          value={state.attackerNightSituation}
+          onChange={bind("attackerNightSituation")}
+          color={attackerColor}
         />
 
         <Typography ml={5}>{t("相手側")}</Typography>
         <NightSituationForm
-          value={target}
-          onChange={updateTarget}
-          color="secondary"
+          value={state.targetNightSituation}
+          onChange={bind("targetNightSituation")}
+          color={targetColor}
         />
       </Flexbox>
 
       <NightCutinTable info={info} />
 
-      <FleetCutinAnalysisTable comp={comp} type="night" />
+      <FleetCutinAnalysisTable type="night" />
     </Stack>
   );
 };

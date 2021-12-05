@@ -4,7 +4,7 @@ use crate::{
     attack::WarfareShipEnvironment,
     fleet::{Fleet, ShipArray},
     ship::Ship,
-    types::{CompMeta, FleetType, Formation, OrgType, Role},
+    types::{CompMeta, FleetType, Formation, OrgType, Role, Side},
 };
 
 pub struct CompShips<'a> {
@@ -43,6 +43,7 @@ impl<'a> Iterator for CompShips<'a> {
 #[wasm_bindgen]
 pub struct Comp {
     pub org_type: OrgType,
+    pub hq_level: u8,
     #[wasm_bindgen(getter_with_clone)]
     pub main: Fleet,
     #[wasm_bindgen(getter_with_clone)]
@@ -99,6 +100,10 @@ impl Comp {
 
 #[wasm_bindgen]
 impl Comp {
+    pub fn side(&self) -> Side {
+        self.org_type.side()
+    }
+
     pub fn is_combined(&self) -> bool {
         self.escort.is_some()
     }
@@ -179,7 +184,8 @@ impl Comp {
     }
 
     /// マップ索敵
-    pub fn elos(&self, hq_level: u8, node_divaricated_factor: u8) -> Option<f64> {
+    pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
+        let hq_level = self.hq_level;
         let main_elos = self.main.elos(hq_level, node_divaricated_factor)?;
 
         if let Some(escort) = self.escort.as_ref() {

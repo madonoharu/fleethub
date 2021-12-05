@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { MapEnemyComp, MapNode, nonNullable } from "@fh/utils";
 import { Button, Paper, Stack } from "@mui/material";
+import { css } from "@mui/system";
 import { Formation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useModal } from "../../../hooks";
 import { Flexbox } from "../../atoms";
-import { NodeLable } from "../../molecules";
-import { ShipBannerGroup } from "../../organisms";
+import { InfoButton, NodeLable } from "../../molecules";
+import { EnemyCompScreen, ShipBannerGroup } from "../../organisms";
 import EnemyFighterPower from "./EnemyFighterPower";
 
 const FORMATION_MAP: Record<number, Formation | undefined> = {
@@ -39,14 +41,36 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
 }) => {
   const { t } = useTranslation("common");
 
+  const Modal = useModal();
+
   return (
     <Paper className={className} sx={{ p: 1 }}>
-      <div>
+      <div
+        css={css`
+          display: grid;
+          grid-template-columns: 1fr auto;
+        `}
+      >
         <EnemyFighterPower label={t("FighterPower")} fp={enemy.fp} />
-        {lbas ? <EnemyFighterPower label="基地戦" fp={enemy.lbasFp} /> : null}
-
-        <ShipBannerGroup main={enemy.main} escort={enemy.escort} />
+        {lbas ? (
+          <EnemyFighterPower
+            css={{ gridColumn: "1", gridRow: "2" }}
+            label="基地戦"
+            fp={enemy.lbasFp}
+          />
+        ) : null}
+        <InfoButton
+          css={{ gridColumn: "2", gridRow: "1 / span 2" }}
+          title={t("Details")}
+          onClick={Modal.show}
+        />
       </div>
+
+      <ShipBannerGroup main={enemy.main} escort={enemy.escort} />
+
+      <Modal full>
+        <EnemyCompScreen enemy={enemy} />
+      </Modal>
 
       <Flexbox gap={1}>
         {enemy.formations

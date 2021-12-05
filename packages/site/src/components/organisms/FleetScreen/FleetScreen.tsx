@@ -21,6 +21,7 @@ import {
   ConsumptionRate,
 } from "../../molecules";
 import BatchOperations from "../BatchOperations";
+import ElosLabel from "../ElosLabel";
 import FleetInfoPanel from "../FleetInfoPanel";
 import FleetShipList from "./FleetShipList";
 
@@ -138,13 +139,28 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
     dispatch(shipsSlice.actions.resetSlotSize(ids));
   };
 
+  const singleFp = comp.fighter_power(false, false);
+
+  let fpText: string;
+  if (comp.is_combined()) {
+    const antiCombinedFp = `${comp.fighter_power(true, false) ?? "?"}`;
+
+    fpText = `${t("FighterPower")} ${t("Combined")} ${antiCombinedFp}
+    ${t("Main")} ${singleFp ?? "?"}`;
+  } else {
+    fpText = `${t("FighterPower")} ${singleFp ?? "?"}`;
+  }
+
   return (
     <div className={className}>
       <Flexbox gap={1} mb={0.5}>
-        <Typography variant="body2" ml="auto">
-          {t("FighterPower")} {fleet.fighter_power(false)}
-        </Typography>
+        <Typography variant="body2">{fpText}</Typography>
+        {[1, 2, 3, 4].map((factor) => (
+          <ElosLabel key={factor} factor={factor} elos={comp.elos(factor)} />
+        ))}
+
         <SelectedMenu
+          sx={{ ml: "auto" }}
           label="艦数"
           options={FLEET_LENS}
           value={fleet.len}

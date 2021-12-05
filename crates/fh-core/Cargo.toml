@@ -1,6 +1,6 @@
 [package]
 name = "fh-core"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
@@ -45,6 +45,8 @@ enumset = "1.0.8"
 anyhow = "1.0.51"
 ts-rs = "6.1.0"
 itertools = "0.10.1"
+enum-map = "2.0.0-1"
+seq-macro = "0.2.2"
 
 [dependencies.web-sys]
 version = "0.3.55"
