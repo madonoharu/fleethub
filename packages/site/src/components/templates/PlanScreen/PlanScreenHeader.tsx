@@ -1,13 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import { Typography } from "@mui/material";
 import { Org, OrgType } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Flexbox, PlanIcon } from "../../atoms";
 import { NumberInput, TextField } from "../../molecules";
-import { ElosLabel, OrgTypeSelect } from "../../organisms";
+import { OrgTypeSelect } from "../../organisms";
 import PlanAction, { PlanActionProps } from "./PlanAction";
 
 const LevelInput = styled(NumberInput)`
@@ -35,12 +34,6 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
 }) => {
   const { t } = useTranslation("common");
 
-  const antiSingleFp = `${org.fighter_power(false, false) ?? "?"}`;
-  const antiCombinedFp = `${org.fighter_power(true, false) ?? "?"}`;
-  const fpText = org.is_combined()
-    ? `連合 ${antiCombinedFp} 第一 ${antiSingleFp}`
-    : antiSingleFp;
-
   return (
     <div className={className}>
       <Flexbox gap={1}>
@@ -59,15 +52,6 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
         />
         <OrgTypeSelect onChange={onOrgTypeChange} value={org.org_type} />
         <PlanAction file={file} org={org} isTemp={isTemp} actions={actions} />
-      </Flexbox>
-
-      <Flexbox gap={1} mt={1}>
-        <Typography variant="body2" mr={1}>
-          {t("FighterPower")} {fpText}
-        </Typography>
-        {[1, 2, 3, 4].map((factor) => (
-          <ElosLabel key={factor} factor={factor} elos={org.elos(factor)} />
-        ))}
       </Flexbox>
     </div>
   );
