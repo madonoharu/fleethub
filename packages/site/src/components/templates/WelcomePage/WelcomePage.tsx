@@ -6,7 +6,8 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../../hooks";
-import { createPlan } from "../../../store";
+import { createPlan, importFile, transferJorData } from "../../../store";
+import { JorData } from "../../../utils";
 import { Flexbox } from "../../atoms";
 import { ImportMenu } from "../../organisms";
 
@@ -14,8 +15,26 @@ const WelcomePage: React.FCX = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const ImprotMenuModal = useModal();
+
   const handleCreatePlan = () => {
     dispatch(createPlan({}));
+  };
+
+  const handleTransfer = () => {
+    window.addEventListener(
+      "message",
+      (ev) => {
+        if (ev.origin === "https://kcjervis.github.io") {
+          const data: JorData = ev.data;
+          dispatch(importFile(transferJorData(data)));
+        }
+      },
+      {
+        once: true,
+      }
+    );
+
+    window.open("https://kcjervis.github.io/jervis/#/transfer");
   };
 
   return (
@@ -43,6 +62,14 @@ const WelcomePage: React.FCX = () => {
             onClick={ImprotMenuModal.show}
           >
             {t("デッキビルダー形式などから編成を読み込む")}
+          </Button>
+          <Button
+            startIcon={<SaveAltIcon />}
+            variant="contained"
+            color="primary"
+            onClick={handleTransfer}
+          >
+            {t("Jervis ORからデータを引き継ぐ")}
           </Button>
         </Flexbox>
 
