@@ -26,6 +26,8 @@ import {
 import cloneDeep from "lodash/cloneDeep";
 import { normalize, schema, NormalizedSchema, denormalize } from "normalizr";
 import { DefaultRootState } from "react-redux";
+
+import { createOrgStateByJor, JorData } from "../utils";
 import {
   airSquadronsSelectors,
   fleetsSelectors,
@@ -33,6 +35,7 @@ import {
   orgsSelectors,
   shipsSelectors,
 } from "./adapters";
+import { mergeNormalizedEntities } from "./entityHelpers";
 
 export type GearEntity = { id: string } & GearState;
 export type ShipEntity = FhEntity<ShipState, GearKey>;
@@ -227,4 +230,46 @@ export const denormalizeOrgs = (
   return (
     denormalize(orgs, [org], entities) as (OrgState | undefined)[]
   ).filter(nonNullable);
+};
+
+export const transferJorData = (data: JorData) => {
+  const children: string[] = [];
+  const entities: NormalizedEntities = {};
+
+  data.operations.forEach((o) => {
+    const org = createOrgStateByJor(o);
+    const normalized = normalizeOrgState(org);
+
+    const fileId = nanoid();
+
+    normalized.entities.files = {
+      [fileId]: {
+        id: fileId,
+        org: normalized.result,
+        type: "plan",
+        name: o.name || "",
+        description: o.description || "",
+        steps: [],
+      },
+    };
+
+    children.push(fileId);
+    mergeNormalizedEntities(entities, normalized.entities);
+  });
+
+  const folderId = nanoid();
+
+  mergeNormalizedEntities(entities, {
+    files: {
+      [folderId]: {
+        id: folderId,
+        type: "folder",
+        children,
+        name: "Jervis OR",
+        description: "",
+      },
+    },
+  });
+
+  return { fileId: folderId, entities, to: "temp" };
 };
