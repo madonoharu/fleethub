@@ -52,11 +52,13 @@ const GearBox: React.FCX<Props> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const handleAdd = () => {
-    dispatch(gearSelectSlice.actions.create({ id: gear?.id, position }));
-  };
-
   const id = gear?.id;
+
+  const handleAdd = () => {
+    if (id || position?.id) {
+      dispatch(gearSelectSlice.actions.create({ id, position }));
+    }
+  };
 
   const actions = useGearActions(id);
 
