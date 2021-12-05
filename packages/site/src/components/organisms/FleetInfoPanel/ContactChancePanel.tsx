@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
-import { AirstrikeContactChance, Comp } from "fleethub-core";
+import { AirstrikeContactChance } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFhCore } from "../../../hooks";
+import { useCompContext } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import Table from "../Table";
 
@@ -63,9 +63,9 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
   );
 };
 
-const ContactChancePanel: React.FCX<{ comp: Comp }> = ({ className, comp }) => {
-  const { core } = useFhCore();
-  const info = core.analyze_contact_chance(comp);
+const ContactChancePanel: React.FCX = ({ className }) => {
+  const { comp, analyzer } = useCompContext();
+  const info = analyzer.analyze_contact_chance(comp);
 
   return (
     <div className={className}>

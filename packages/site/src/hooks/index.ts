@@ -29,3 +29,4 @@ export * from "./useTimeout";
 export * from "./useOrg";
 export * from "./useOrgContext";
 export * from "./useGcs";
+export * from "./useCompContext";

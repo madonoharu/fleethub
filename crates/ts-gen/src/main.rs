@@ -34,6 +34,7 @@ fn main() {
         types::SingleFormation,
         types::CombinedFormation,
         types::AirState,
+        types::AirStateRank,
         types::Engagement,
         types::Formation,
         types::FormationWarfareDef,

@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { ShipKey, SHIP_KEYS } from "@fh/utils";
-import AddIcon from "@mui/icons-material/Add";
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { styled, css } from "@mui/system";
 import clsx from "clsx";
 import { Comp, FleetType, FleetMeta, ShipMeta } from "fleethub-core";
@@ -9,8 +8,8 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-import { ShipPosition, shipSelectSlice } from "../../../store";
-import ShipBanner from "../ShipBanner";
+import { ShipPosition, swapShip, SwapShipPayload } from "../../../store";
+import CompShipButton from "./CompShipButton";
 
 type CompShipListProps = {
   comp: Comp;
@@ -37,6 +36,10 @@ const CompShipList: React.FCX<CompShipListProps> = ({
     onShipSelect(event.currentTarget.value);
   };
 
+  const handleSwap = (payload: SwapShipPayload) => {
+    dispatch(swapShip(payload));
+  };
+
   const renderShip = (
     ft: FleetType,
     fleetMeta: FleetMeta,
@@ -44,45 +47,24 @@ const CompShipList: React.FCX<CompShipListProps> = ({
     ship: ShipMeta | null
   ) => {
     const className = clsx(ft, key);
-
-    if (!ship) {
-      const handleClick = () => {
-        const position: ShipPosition = {
-          tag: "fleet",
-          id: fleetMeta.id,
-          key: key,
-        };
-
-        dispatch(shipSelectSlice.actions.create({ position }));
-      };
-
-      return (
-        <Button
-          key={className}
-          className={className}
-          variant="outlined"
-          color={color}
-          onClick={handleClick}
-        >
-          <AddIcon />
-        </Button>
-      );
-    }
-
-    const id = ship.id;
-    const selected = id == selectedShip;
+    const position: ShipPosition = {
+      tag: "fleet",
+      id: fleetMeta.id,
+      key: key,
+    };
+    const selected = ship?.id == selectedShip;
 
     return (
-      <Button
-        key={id}
+      <CompShipButton
+        key={className}
         className={className}
-        variant={selected ? "contained" : "outlined"}
+        position={position}
+        meta={ship}
         color={color}
-        value={id}
-        onClick={handleShipSelect}
-      >
-        <ShipBanner shipId={ship.ship_id} />
-      </Button>
+        selected={selected}
+        onSelect={handleShipSelect}
+        onSwap={handleSwap}
+      />
     );
   };
 

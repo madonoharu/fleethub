@@ -17,6 +17,7 @@ import LevelButton from "./LevelButton";
 
 type ShipHeaderProps = {
   ship: Ship;
+  readonly?: boolean;
   disableDetails?: boolean;
   onUpdate?: (changes: Partial<ShipEntity>) => void;
   onEditClick?: () => void;
@@ -29,6 +30,7 @@ type ShipHeaderProps = {
 const ShipHeader: React.FCX<ShipHeaderProps> = ({
   className,
   ship,
+  readonly,
   disableDetails,
   onUpdate,
   onEditClick,
@@ -39,6 +41,10 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
 }) => {
   const { t } = useTranslation(["ships", "common"]);
   const { ship_id, name } = ship;
+
+  if (readonly) {
+    disableDetails = true;
+  }
 
   return (
     <div className={className}>
@@ -51,11 +57,13 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         {t(`ships:${ship_id}`, name)}
       </Typography>
 
-      <EditButton
-        title={t("common:EditMiscStats")}
-        size="tiny"
-        onClick={onEditClick}
-      />
+      {!readonly && (
+        <EditButton
+          title={t("common:EditMiscStats")}
+          size="tiny"
+          onClick={onEditClick}
+        />
+      )}
       {!disableDetails && (
         <InfoButton
           title={t("common:Details")}
@@ -70,11 +78,13 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
           onClick={onReselect}
         />
       )}
-      <BusinessCenterButton
-        title={t("common:Presets")}
-        size="tiny"
-        onClick={onPreset}
-      />
+      {!readonly && (
+        <BusinessCenterButton
+          title={t("common:Presets")}
+          size="tiny"
+          onClick={onPreset}
+        />
+      )}
       {!disableDetails && (
         <ClearButton
           title={t("common:Remove")}

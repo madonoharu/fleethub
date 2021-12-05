@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { Typography, Stack } from "@mui/material";
-import { FleetCutinInfo, Engagement, Comp } from "fleethub-core";
+import { FleetCutinInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";
-import React, { useState } from "react";
+import React from "react";
 
-import { useFhCore } from "../../../hooks";
+import { useCompContext } from "../../../hooks";
 import { numstr } from "../../../utils";
 import { createAttackTableColumns } from "../AttackTable/AttackTable";
 import EngagementSelect from "../EngagementSelect";
@@ -51,20 +51,17 @@ const FleetCutinInfoTable: React.FCX<FleetCutinInfoTableProps> = ({
 };
 
 type FleetCutinAnalysisTableProps = {
-  comp: Comp;
   type: "shelling" | "night";
 };
 
 const FleetCutinAnalysisTable: React.FCX<FleetCutinAnalysisTableProps> = ({
   className,
-  comp,
   type,
 }) => {
   const { t } = useTranslation("common");
-  const { core } = useFhCore();
-  const [engagement, setEngagement] = useState<Engagement>("Parallel");
+  const { comp, analyzer, state, bind } = useCompContext();
 
-  const data = core.analyze_fleet_cutin(comp, engagement)[type];
+  const data = analyzer.analyze_fleet_cutin(comp, state.engagement)[type];
 
   if (!data.length) {
     return <Typography>艦隊特殊攻撃不可</Typography>;
@@ -77,8 +74,8 @@ const FleetCutinAnalysisTable: React.FCX<FleetCutinAnalysisTableProps> = ({
         InputProps={{
           sx: { ml: "auto" },
         }}
-        value={engagement}
-        onChange={setEngagement}
+        value={state.engagement}
+        onChange={bind("engagement")}
       />
       <FleetCutinInfoTable data={data} />
     </div>
