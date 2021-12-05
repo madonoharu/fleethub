@@ -63,7 +63,7 @@ const AntiAirPanel: React.FCX = ({ className }) => {
     state.formation,
     state.adjustedAntiAirResist,
     state.fleetAntiAirResist,
-    state.anti_air_cutin
+    state.anti_air_cutin || undefined
   );
 
   return (

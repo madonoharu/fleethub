@@ -25,8 +25,10 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
 
   const id = ship?.id || "";
 
-  const handleShipChange = () => {
-    dispatch(shipSelectSlice.actions.create({ position, id }));
+  const handleAdd = () => {
+    if (id || (position?.tag === "fleet" && position.id)) {
+      dispatch(shipSelectSlice.actions.create({ position, id }));
+    }
   };
 
   const handleSwap = (event: Parameters<typeof swapShip>[0]) => {
@@ -34,11 +36,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
   };
 
   const element = !ship ? (
-    <Button
-      variant="outlined"
-      startIcon={<AddIcon />}
-      onClick={handleShipChange}
-    >
+    <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAdd}>
       {t("Ship")}
     </Button>
   ) : (
@@ -55,7 +53,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
       type="ship"
       item={{ id, position }}
       onSwap={handleSwap}
-      canDrag={Boolean(ship)}
+      canDrag={ship && ship.id !== ""}
       dragLayer={<div />}
     >
       {element}
