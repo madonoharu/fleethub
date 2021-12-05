@@ -164,7 +164,7 @@ const createAirSquadron = (input: JorAirSquadronState): AirSquadronState => {
   };
 };
 
-const createOrg = (input: JorOrgState): OrgState => {
+export const createOrgStateByJor = (input: JorOrgState): OrgState => {
   const result: OrgState = {
     hq_level: input.hqLevel,
   };
@@ -196,6 +196,10 @@ const createOrg = (input: JorOrgState): OrgState => {
   return result;
 };
 
+export type JorData = {
+  operations: JorOrgState[];
+};
+
 export const importFromJor = async (
   input: URL
 ): Promise<
@@ -225,7 +229,7 @@ export const importFromJor = async (
 
   if (!jorState) return;
 
-  const org = createOrg(jorState);
+  const org = createOrgStateByJor(jorState);
 
   return {
     name: jorState.name,
