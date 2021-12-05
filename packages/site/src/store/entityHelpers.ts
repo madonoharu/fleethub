@@ -87,22 +87,20 @@ const filterEntities = <T>(
 //   return result;
 // };
 
-const mergeNormalizedEntities = (
-  a: NormalizedEntities,
-  b: NormalizedEntities
-) => {
-  const result: NormalizedEntities = {};
-  const keys = uniq([
-    ...Object.keys(a),
-    ...Object.keys(b),
-  ]) as (keyof NormalizedEntities)[];
+export const mergeNormalizedEntities = (
+  target: NormalizedEntities,
+  ...rest: NormalizedEntities[]
+): NormalizedEntities => {
+  const keys = uniq(
+    rest.flatMap((e) => Object.keys(e))
+  ) as (keyof NormalizedEntities)[];
 
-  keys.forEach(<K extends keyof NormalizedEntities>(key: K) => {
-    a[key] ||= {};
-    Object.assign(a[key], b[key]);
+  keys.forEach((key) => {
+    target[key] ||= {};
+    Object.assign(target[key] as object, ...rest.map((e) => e[key]));
   });
 
-  return result;
+  return target;
 };
 
 const getReferencedFiles = (state: FilesState, id: string): FileEntity[] => {
