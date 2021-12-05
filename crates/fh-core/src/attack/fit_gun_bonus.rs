@@ -152,6 +152,11 @@ fn seaplane_tender_bonus(ship: &Ship) -> f64 {
 
 /// 戦艦フィット補正
 fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
+    // todo!
+    if is_night {
+        return 0.0;
+    }
+
     let mut r = 0.0;
     let gears = &ship.gears;
     let ship_id = ship.ship_id;

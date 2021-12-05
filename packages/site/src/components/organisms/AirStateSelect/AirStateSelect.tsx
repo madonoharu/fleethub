@@ -9,8 +9,8 @@ const AIR_STATES: AirState[] = [
   "AirSupremacy",
   "AirSuperiority",
   "AirParity",
-  "AirIncapability",
   "AirDenial",
+  "AirIncapability",
 ];
 type Props = SelectInputProps & {
   value: AirState;

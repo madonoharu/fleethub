@@ -26,7 +26,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   ship,
 }) => {
   const { t } = useTranslation("common");
-  const { core } = useFhCore();
+  const { core, analyzer } = useFhCore();
   const dummyEnemySelectState = useDummyEnemySelectState();
 
   const submarine = useMemo(() => core.create_ship_by_id(1530), [core]);
@@ -38,7 +38,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
     air_state: state.air_state,
   };
 
-  const info = core.analyze_warfare(
+  const info = analyzer.analyze_warfare(
     ctx,
     ship,
     dummyEnemySelectState.value.ship
@@ -49,7 +49,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   const night = info?.night;
   const shelling_support = info.shelling_support;
 
-  const aswInfo = submarine && core.analyze_warfare(ctx, ship, submarine);
+  const aswInfo = submarine && analyzer.analyze_warfare(ctx, ship, submarine);
   const asw = aswInfo?.day;
   const openingAsw = aswInfo?.opening_asw;
 

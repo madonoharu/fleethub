@@ -30,10 +30,10 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
   attacker,
   target,
 }) => {
-  const { core } = useFhCore();
   const { t } = useTranslation("common");
+  const { analyzer } = useFhCore();
 
-  const info = core.analyze_warfare(ctx, attacker, target);
+  const info = analyzer.analyze_warfare(ctx, attacker, target);
   const day = info?.day;
   const closing_torpedo = info?.closing_torpedo;
   const night = info?.night;

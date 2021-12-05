@@ -5,7 +5,10 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     gear_id,
-    types::{ContactRank, GearAttr, GearCategory, GearState, GearType, GearTypes, MasterGear},
+    types::{
+        AirStateRank, ContactRank, GearAttr, GearCategory, GearState, GearType, GearTypes,
+        MasterGear,
+    },
     utils::xxh3,
 };
 
@@ -366,11 +369,11 @@ impl Gear {
         self.has_attr(GearAttr::Recon) || self.gear_type == GearType::CbTorpedoBomber
     }
 
-    pub fn contact_selection_rate(&self, air_state_modifier: f64) -> f64 {
+    pub fn contact_selection_rate(&self, rank: AirStateRank) -> f64 {
         let los = self.los as f64;
         let ibonus = self.ibonuses.contact_selection;
 
-        let value = (los + ibonus).ceil() / (20.0 - 2.0 * air_state_modifier);
+        let value = (los + ibonus).ceil() / (20.0 - 2.0 * rank.as_f64());
         value.min(1.0)
     }
 

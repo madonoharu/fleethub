@@ -27,3 +27,4 @@ export { default as StepList } from "./StepList";
 export { default as ElosLabel } from "./ElosLabel";
 export { default as Swappable } from "./Swappable";
 export { default as OrgTypeSelect } from "./OrgTypeSelect";
+export { default as EnemyCompScreen } from "./EnemyCompScreen";

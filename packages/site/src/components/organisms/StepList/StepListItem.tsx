@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import styled from "@emotion/styled";
 import InfoIcon from "@mui/icons-material/Info";
 import { Typography, Paper, Button } from "@mui/material";
+import { styled } from "@mui/system";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";

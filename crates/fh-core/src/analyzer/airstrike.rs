@@ -5,7 +5,7 @@ use ts_rs::TS;
 use crate::{
     comp::Comp,
     ship::Ship,
-    types::{AirState, ContactRank, GearAttr},
+    types::{AirState, ContactRank, GearAttr, Side},
 };
 
 #[derive(Debug, Clone, Serialize, TS)]
@@ -25,7 +25,13 @@ pub struct CompContactChanceInfo {
     combined: Option<Vec<AirstrikeContactChance>>,
 }
 
-fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<AirstrikeContactChance> {
+fn ships_contact_chance(
+    side: Side,
+    air_state: AirState,
+    ships: &Vec<&Ship>,
+) -> Option<AirstrikeContactChance> {
+    let air_state_rank = air_state.rank(side);
+
     let total_trigger_factor = ships
         .iter()
         .map(|ship| ship.gears_with_slot_size())
@@ -35,7 +41,7 @@ fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<Airst
         .sum::<Option<f64>>()?;
 
     let trigger_rate =
-        ((total_trigger_factor + 1.0) / (70.0 - 15.0 * air_state.contact_mod())).min(1.0);
+        ((total_trigger_factor + 1.0) / (70.0 - 15.0 * air_state_rank.as_f64())).min(1.0);
 
     let at_least_one = |rank: ContactRank| -> Option<f64> {
         let rate = 1.0
@@ -48,7 +54,7 @@ fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<Airst
                 })
                 .map(|(_, gear, slot_size)| {
                     let rate = if slot_size? > 0 {
-                        gear.contact_selection_rate(air_state.contact_mod())
+                        gear.contact_selection_rate(air_state_rank)
                     } else {
                         0.0
                     };
@@ -78,23 +84,38 @@ fn ships_contact_chance(ships: &Vec<&Ship>, air_state: AirState) -> Option<Airst
     })
 }
 
-fn analyze_ships_contact_chance(ships: Vec<&Ship>) -> Option<Vec<AirstrikeContactChance>> {
-    let air_supremacy = ships_contact_chance(&ships, AirState::AirSupremacy)?;
-    let air_superiority = ships_contact_chance(&ships, AirState::AirSuperiority)?;
-    let air_denial = ships_contact_chance(&ships, AirState::AirDenial)?;
-
-    Some(vec![air_supremacy, air_superiority, air_denial])
+fn analyze_ships_contact_chance(
+    side: Side,
+    ships: Vec<&Ship>,
+) -> Option<Vec<AirstrikeContactChance>> {
+    if side.is_player() {
+        [
+            AirState::AirSupremacy,
+            AirState::AirSuperiority,
+            AirState::AirDenial,
+        ]
+    } else {
+        [
+            AirState::AirIncapability,
+            AirState::AirDenial,
+            AirState::AirSuperiority,
+        ]
+    }
+    .into_iter()
+    .map(|air_state| ships_contact_chance(side, air_state, &ships))
+    .collect()
 }
 
 impl CompContactChanceInfo {
     pub fn new(comp: &Comp) -> Self {
-        let single = analyze_ships_contact_chance(comp.main.ships.values().collect());
+        let side = comp.side();
+        let single = analyze_ships_contact_chance(side, comp.main.ships.values().collect());
 
         let combined = comp
             .is_combined()
             .then(|| {
                 let combined_ships = comp.ships().map(|(_, _, s)| s).collect();
-                analyze_ships_contact_chance(combined_ships)
+                analyze_ships_contact_chance(side, combined_ships)
             })
             .flatten();
 
