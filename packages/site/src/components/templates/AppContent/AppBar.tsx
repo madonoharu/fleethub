@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
+import FolderIcon from "@mui/icons-material/Folder";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import HomeIcon from "@mui/icons-material/Home";
-import MenuIcon from "@mui/icons-material/Menu";
 import RedoIcon from "@mui/icons-material/Redo";
 import UndoIcon from "@mui/icons-material/Undo";
 import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@mui/material";
@@ -25,6 +26,8 @@ import LanguageSelect from "./LanguageSelect";
 const UndoButton = withIconButton(UndoIcon);
 const RedoButton = withIconButton(RedoIcon);
 const HomeButton = withIconButton(HomeIcon);
+const FolderOpenButton = withIconButton(FolderOpenIcon);
+const FolderButton = withIconButton(FolderIcon);
 
 const useUndo = () => {
   const dispatch = useDispatch();
@@ -83,12 +86,15 @@ const AppBar: React.FCX<Props> = ({
 
   return (
     <MuiAppBar className={className} position="sticky">
-      <Button
-        onClick={handleExplorerOpen}
-        startIcon={<MenuIcon color={explorerOpen ? "primary" : "action"} />}
-      >
-        {t("Composition")}
-      </Button>
+      {explorerOpen ? (
+        <FolderOpenButton
+          size="small"
+          title="List"
+          onClick={handleExplorerOpen}
+        />
+      ) : (
+        <FolderButton size="small" title="List" onClick={handleExplorerOpen} />
+      )}
 
       <HomeButton size="small" title="Home" onClick={handleHomeClick} />
       <ImportButton
