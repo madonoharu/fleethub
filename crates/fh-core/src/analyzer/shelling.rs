@@ -6,7 +6,7 @@ use crate::{
     comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    types::{AirState, BattleConfig, DayCutin, DayCutinDef, Role},
+    types::{AirStateRank, BattleConfig, DayCutin, DayCutinDef, Role},
 };
 
 #[derive(Debug, Default, Serialize, TS)]
@@ -22,10 +22,10 @@ impl DayCutinRateInfo {
         ship: &Ship,
         fleet_los_mod: Option<f64>,
         is_main_flagship: bool,
-        air_state: AirState,
+        air_state_rank: AirStateRank,
     ) -> Self {
-        let observation_term =
-            fleet_los_mod.and_then(|v| ship.calc_observation_term(v, is_main_flagship, air_state));
+        let observation_term = fleet_los_mod
+            .and_then(|v| ship.calc_observation_term(v, is_main_flagship, air_state_rank));
 
         let mut total_cutin_rate = Some(0.0);
 
@@ -86,14 +86,14 @@ impl ShipDayCutinRateInfo {
                 ship,
                 fleet_los_mod,
                 is_main_flagship,
-                AirState::AirSupremacy,
+                AirStateRank::Rank3,
             ),
             air_superiority: DayCutinRateInfo::new(
                 day_cutin_defs,
                 ship,
                 fleet_los_mod,
                 is_main_flagship,
-                AirState::AirSuperiority,
+                AirStateRank::Rank2,
             ),
         }
     }
