@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createShip, ShipPosition } from "./entities";
+
+import { entitiesSlice, ShipPosition } from "./entities/entitiesSlice";
 
 export type ShipSelectState = {
   open: boolean;
@@ -35,5 +36,6 @@ export const shipSelectSlice = createSlice({
     hide,
   },
 
-  extraReducers: (builder) => builder.addCase(createShip, hide),
+  extraReducers: (builder) =>
+    builder.addCase(entitiesSlice.actions.createShip, hide),
 });

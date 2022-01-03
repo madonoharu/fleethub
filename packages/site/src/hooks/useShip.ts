@@ -1,20 +1,16 @@
 import { Ship } from "fleethub-core";
 import { useMemo } from "react";
-import { DefaultRootState, useDispatch, useSelector } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
-  createShip,
-  denormalizeShip,
-  gearsSelectors,
-  NormalizedDictionaries,
-  NormalizedEntities,
+  entitiesSlice,
+  selectShipState,
   ShipEntity,
   ShipPosition,
   shipSelectSlice,
-  shipsSelectors,
   shipsSlice,
 } from "../store";
+
 import { useFhCore } from "./useFhCore";
 
 export const useShipActions = (id?: string) => {
@@ -22,7 +18,12 @@ export const useShipActions = (id?: string) => {
 
   return useMemo(() => {
     const add = (ship: Ship, position?: ShipPosition) => {
-      dispatch(createShip({ ship, position }));
+      dispatch(
+        entitiesSlice.actions.createShip({
+          input: ship.state(),
+          position,
+        })
+      );
     };
 
     const update = (changes: Partial<ShipEntity>) => {
@@ -39,17 +40,14 @@ export const useShipActions = (id?: string) => {
       id && dispatch(shipsSlice.actions.remove(id));
     };
 
-    return { add, update, reselect, remove };
+    return {
+      add,
+      update,
+      reselect,
+      remove,
+    };
   }, [dispatch, id]);
 };
-
-const selectShipAllEntities = createStructuredSelector<
-  DefaultRootState,
-  Required<Pick<NormalizedDictionaries, "ships" | "gears">>
->({
-  ships: shipsSelectors.selectEntities,
-  gears: gearsSelectors.selectEntities,
-});
 
 export const useShip = (id?: string) => {
   const { core } = useFhCore();
@@ -57,10 +55,8 @@ export const useShip = (id?: string) => {
   const ship = useSelector(
     (root) => {
       if (!id) return;
-
-      const entities = selectShipAllEntities(root);
-      const state = denormalizeShip(entities as NormalizedEntities, id);
-
+      const state = selectShipState(root, id);
+      console.log(state);
       return state && core.create_ship(state);
     },
     (a, b) => a?.xxh3 === b?.xxh3

@@ -7,7 +7,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { ActionCreators } from "redux-undo";
 
 import { createStore } from "./createStore";
-import { sweepEntities, parseUrl, importFile } from "./entities";
+import { entitiesSlice } from "./entities/entitiesSlice";
+import { parseUrl } from "./parseUrl";
 
 type StoreProviderProps = {
   masterData: MasterData;
@@ -24,20 +25,23 @@ const StoreProvider: React.FC<StoreProviderProps> = ({
     if (!process.browser) return undefined;
 
     const url = new URL(location.href);
-    window.history.replaceState(null, "", location.pathname);
+    // window.history.replaceState(null, "", location.pathname);
     return url;
   }, []);
 
   const handleBeforeLift = async () => {
     if (!process.browser) return;
 
+    console.log(url?.search);
     const parsed = url && (await parseUrl(masterData, url));
 
     batch(() => {
-      store.dispatch(sweepEntities(true));
+      store.dispatch(entitiesSlice.actions.sweep());
+
       if (parsed) {
-        store.dispatch(importFile({ ...parsed, to: "temp" }));
+        store.dispatch(entitiesSlice.actions.import(parsed));
       }
+
       store.dispatch(ActionCreators.clearHistory());
     });
   };

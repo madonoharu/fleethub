@@ -3,8 +3,10 @@ import styled from "@emotion/styled";
 import CheckIcon from "@mui/icons-material/Check";
 import { Button, Stack } from "@mui/material";
 import React from "react";
-import { PresetState } from "../../../store";
+
+import { Preset } from "../../../store";
 import { Flexbox } from "../../atoms";
+
 import PresetCard from "./PresetCard";
 
 const StyledButton = styled(Button)`
@@ -14,11 +16,11 @@ const StyledButton = styled(Button)`
 `;
 
 type PresetListItemProps = {
-  preset: PresetState;
+  preset: Preset;
   selected?: boolean;
   equippable?: boolean;
   onSelect: () => void;
-  onEquip: (preset: PresetState) => void;
+  onEquip: (preset: Preset) => void;
 };
 
 const PresetListItem: React.FCX<PresetListItemProps> = ({
@@ -52,9 +54,9 @@ const PresetListItem: React.FCX<PresetListItemProps> = ({
 };
 
 type PresetListProps = {
-  presets: PresetState[];
-  onEquip: (preset: PresetState) => void;
-  canEquip?: (preset: PresetState) => boolean;
+  presets: Preset[];
+  onEquip: (preset: Preset) => void;
+  canEquip?: (preset: Preset) => boolean;
   allVisible?: boolean;
 };
 

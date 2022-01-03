@@ -8,10 +8,11 @@ import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useFhCore, useShip } from "../../../hooks";
-import { equip } from "../../../store";
+import { entitiesSlice } from "../../../store";
 import { makeGetNextEbonuses } from "../../../utils";
 import { Tabs, TabsProps } from "../../molecules";
 import GearList from "../GearList";
+
 import GearSearchMenu from "./GearSearchMenu";
 
 const GearSelectMenu: React.FCX = ({ className }) => {
@@ -35,7 +36,7 @@ const GearSelectMenu: React.FCX = ({ className }) => {
 
   let canEquip: ((gear: Gear) => boolean) | undefined;
 
-  if (position?.tag === "airSquadron") {
+  if (position?.tag === "airSquadrons") {
     canEquip = module.air_squadron_can_equip;
   } else if (ship) {
     canEquip = (gear) => ship.can_equip(gear, position?.key || "g1");
@@ -45,16 +46,15 @@ const GearSelectMenu: React.FCX = ({ className }) => {
   const handleSelect = (gear: Gear) => {
     if (!create || !position) return;
 
-    const newGear = {
+    const input = {
       gear_id: gear.gear_id,
       id: nanoid(),
     };
 
     dispatch(
-      equip({
-        ...position,
-        changes: { [position.key]: newGear.id },
-        entities: { gears: [newGear] },
+      entitiesSlice.actions.createGear({
+        input,
+        position,
       })
     );
   };

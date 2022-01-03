@@ -1,12 +1,8 @@
-import {
-  AppThunk,
-  createSlice,
-  isAnyOf,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { AppThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 import { GkcoiTheme } from "../utils";
 
-import { createPlan, importFile } from "./entities";
+import { entitiesSlice } from "./entities/entitiesSlice";
 
 type AppState = {
   fileId?: string;
@@ -41,18 +37,19 @@ export const appSlice = createSlice({
   },
 
   extraReducers: (bapplder) => {
-    bapplder.addMatcher(
-      isAnyOf(createPlan, importFile),
-      (state, { payload }) => {
-        state.fileId = payload.fileId;
-      }
-    );
+    bapplder
+      .addCase(entitiesSlice.actions.createPlan, (state, { payload }) => {
+        state.fileId = payload.input.id;
+      })
+      .addCase(entitiesSlice.actions.import, (state, { payload }) => {
+        state.fileId = payload.result;
+      });
   },
 });
 
 export const openDefaultFile = (): AppThunk => (dispatch, getState) => {
   const root = getState();
-  const rootIds = root.present.files.rootIds;
+  const rootIds = root.present.entities.files.rootIds;
 
   if (rootIds.length) {
     dispatch(appSlice.actions.openFile(rootIds[rootIds.length - 1]));

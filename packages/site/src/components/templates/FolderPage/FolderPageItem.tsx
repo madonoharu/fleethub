@@ -5,13 +5,14 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFile, useModal, useOrg } from "../../../hooks";
-import { FileEntity, FolderEntity, PlanFileEntity } from "../../../store";
+import { FileEntity, FolderEntity, PlanEntity } from "../../../store";
 import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
 import { FileCopyButton, MoreVertButton, DeleteButton } from "../../molecules";
 import { DraggableFile, FileMenu, ShipBannerGroup } from "../../organisms";
+
 import FileItemPrimary from "./FileItemPrimary";
 
-const PlanItem: React.FC<{ file: PlanFileEntity }> = ({ file }) => {
+const PlanItem: React.FC<{ file: PlanEntity }> = ({ file }) => {
   const { org } = useOrg(file.org);
 
   if (!org) return null;

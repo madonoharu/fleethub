@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createStep } from "./entities";
+
+import { entitiesSlice } from "./entities/entitiesSlice";
 
 export type MapSelectState = {
   open: boolean;
@@ -46,7 +47,7 @@ export const mapSelectSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(createStep, (state) => {
+    builder.addCase(entitiesSlice.actions.addPlanEnemy, (state) => {
       if (!state.multiple) {
         return hide(state);
       }

@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-import { PlanFileEntity, orgsSlice } from "../../../store";
+import { PlanEntity, orgsSlice } from "../../../store";
 import { Tabs, TabsProps } from "../../molecules";
 import {
   LandBaseScreen,
@@ -38,7 +38,7 @@ const StyledSwappable = styled(Swappable)`
 
 type PlanTabsProps = {
   org: Org;
-  file?: PlanFileEntity;
+  file?: PlanEntity;
 };
 
 const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {

@@ -9,7 +9,7 @@
   "dependencies": {
     "@fh/utils": "workspace:packages/utils",
     "@google-cloud/asset": "^3.22.0",
-    "cloudinary": "^1.27.1",
+    "cloudinary": "^1.28.0",
     "dequal": "^2.0.2",
     "firebase-admin": "^10.0.1",
     "google-spreadsheet": "^3.2.0",

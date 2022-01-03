@@ -7,6 +7,7 @@ import { useFile, useModal } from "../../../hooks";
 import { FolderEntity } from "../../../store";
 import { MoreVertButton, OpenInNewButton, DeleteButton } from "../../molecules";
 import FileMenu from "../../organisms/FileMenu";
+
 import FileLabel from "./FileLabel";
 
 type Props = {
