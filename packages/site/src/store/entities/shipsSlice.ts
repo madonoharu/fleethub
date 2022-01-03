@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { ormAdapters, getSliceName } from "./base";
+import { ormAdapters, getSliceName, resetSlotSize } from "./base";
 
 const key = "ships";
 const adapter = ormAdapters[key];
@@ -13,22 +13,6 @@ export const shipsSlice = createSlice({
     update: adapter.updateOne,
     updateMany: adapter.updateMany,
     remove: adapter.removeOne,
-    resetSlotSize: (state, { payload }: PayloadAction<string[]>) => {
-      const changes = {
-        ss1: undefined,
-        ss2: undefined,
-        ss3: undefined,
-        ss4: undefined,
-        ss5: undefined,
-      };
-
-      adapter.updateMany(
-        state,
-        payload.map((id) => ({
-          id,
-          changes,
-        }))
-      );
-    },
+    resetSlotSize,
   },
 });
