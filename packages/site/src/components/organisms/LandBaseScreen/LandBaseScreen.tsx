@@ -9,15 +9,16 @@ import { useDispatch } from "react-redux";
 
 import { SwapEvent, useModal } from "../../../hooks";
 import {
-  AirSquadronPosition,
   airSquadronsSlice,
   gearsSlice,
   orgsSlice,
+  AirSquadronPosition,
 } from "../../../store";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { BuildButton, DeleteButton } from "../../molecules";
 import BatchOperations from "../BatchOperations";
 import Swappable from "../Swappable";
+
 import AirSquadronCard from "./AirSquadronCard";
 
 const GridContainer = styled.div`

@@ -1,13 +1,22 @@
 import { AirSquadronKey, FleetKey } from "@fh/utils";
 import { createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { SwapEvent } from "../hooks";
 
-import { orgsAdapter } from "./adapters";
-import { isEntitiesAction, sweep } from "./entities";
-import { OrgEntity } from "./schema";
+import { getSliceName, ormAdapters } from "./base";
+import { SwapPayload } from "./entitiesSlice";
+import { OrgEntity } from "./schemata";
 
-export type FleetPosition = { org: string; key: FleetKey };
-export type AirSquadronPosition = { org: string; key: AirSquadronKey };
+const key = "orgs";
+const adapter = ormAdapters[key];
+const sliceName = getSliceName(key);
+
+export type FleetPosition = {
+  org: string;
+  key: FleetKey;
+};
+export type AirSquadronPosition = {
+  org: string;
+  key: AirSquadronKey;
+};
 
 const setChildId = (
   state: EntityState<OrgEntity>,
@@ -23,7 +32,7 @@ const setChildId = (
 
 const swapPosition = (
   state: EntityState<OrgEntity>,
-  payload: SwapEvent<FleetPosition | AirSquadronPosition>
+  payload: SwapPayload<FleetPosition | AirSquadronPosition>
 ) => {
   const { drag, drop } = payload;
   const dragId = state.entities[drag.org]?.[drag.key];
@@ -33,8 +42,8 @@ const swapPosition = (
 };
 
 export const orgsSlice = createSlice({
-  name: "entities/orgs",
-  initialState: orgsAdapter.getInitialState(),
+  name: sliceName,
+  initialState: adapter.getInitialState(),
   reducers: {
     set: (state, { payload }: PayloadAction<OrgEntity>) => {
       state.entities[payload.id] = payload;
@@ -42,30 +51,18 @@ export const orgsSlice = createSlice({
 
     swapFleet: (
       state,
-      { payload }: PayloadAction<SwapEvent<FleetPosition>>
+      { payload }: PayloadAction<SwapPayload<FleetPosition>>
     ) => {
       swapPosition(state, payload);
     },
 
     swapAirSquadron: (
       state,
-      { payload }: PayloadAction<SwapEvent<AirSquadronPosition>>
+      { payload }: PayloadAction<SwapPayload<AirSquadronPosition>>
     ) => {
       swapPosition(state, payload);
     },
 
-    update: orgsAdapter.updateOne,
-  },
-
-  extraReducers: (builder) => {
-    builder
-      .addCase(sweep, (state, { payload }) => {
-        orgsAdapter.removeMany(state, payload.orgs);
-      })
-      .addMatcher(isEntitiesAction, (state, { payload }) => {
-        if (payload.entities.orgs) {
-          orgsAdapter.addMany(state, payload.entities.orgs);
-        }
-      });
+    update: adapter.updateOne,
   },
 });

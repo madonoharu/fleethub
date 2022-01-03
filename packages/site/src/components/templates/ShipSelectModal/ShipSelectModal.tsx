@@ -1,11 +1,28 @@
 /** @jsxImportSource @emotion/react */
+import { AppThunk } from "@reduxjs/toolkit";
 import { Ship } from "fleethub-core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { selectShip, shipSelectSlice } from "../../../store";
+import { entitiesSlice, shipSelectSlice } from "../../../store";
 import { Dialog } from "../../organisms";
 import ShipList from "../ShipList";
+
+const selectShip =
+  (ship: Ship, id?: string): AppThunk =>
+  (dispatch, getState) => {
+    const root = getState();
+    const shipSelectState = root.present.shipSelect;
+
+    dispatch(
+      entitiesSlice.actions.createShip({
+        input: ship.state(),
+        position: shipSelectState.position,
+        id: id || shipSelectState.id,
+        reselect: shipSelectState.reselect,
+      })
+    );
+  };
 
 const ShipSelectModal: React.FCX = () => {
   const dispatch = useDispatch();

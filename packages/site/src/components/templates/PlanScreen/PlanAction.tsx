@@ -5,7 +5,7 @@ import { Org } from "fleethub-core";
 import React from "react";
 
 import { useAsyncOnPublish, useFile, useModal } from "../../../hooks";
-import { PlanFileEntity } from "../../../store";
+import { PlanEntity } from "../../../store";
 import { openKctools } from "../../../utils";
 import { Flexbox } from "../../atoms";
 import {
@@ -17,7 +17,7 @@ import {
 import { FileMenu } from "../../organisms";
 
 export type PlanActionProps = {
-  file: PlanFileEntity;
+  file: PlanEntity;
   org: Org;
   isTemp: boolean;
   actions: ReturnType<typeof useFile>["actions"];

@@ -10,17 +10,18 @@ import { useOrg } from "../../../hooks";
 import {
   filesSlice,
   mapSelectSlice,
-  PlanFileEntity,
   stepsSelectors,
+  PlanEntity,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton, Select } from "../../molecules";
+
 import StepListItem from "./StepListItem";
 
 const SUP_OPTIONS = [undefined, ...FLEET_KEYS];
 
 type StepListProps = {
-  file: PlanFileEntity;
+  file: PlanEntity;
 };
 
 const StepList: React.FCX<StepListProps> = ({ className, file }) => {
@@ -29,7 +30,7 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
 
   const { org, actions } = useOrg(file.org);
 
-  const update = (changes: Partial<PlanFileEntity>) => {
+  const update = (changes: Partial<PlanEntity>) => {
     dispatch(filesSlice.actions.update({ id: file.id, changes }));
   };
 

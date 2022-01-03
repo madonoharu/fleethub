@@ -6,8 +6,8 @@ import { AirSquadron, AirSquadronMode } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 import { shallowEqual, useDispatch } from "react-redux";
-import { useModal } from "../../../hooks";
 
+import { useModal } from "../../../hooks";
 import { AirSquadronEntity, airSquadronsSlice } from "../../../store";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { BusinessCenterButton, SelectedMenu } from "../../molecules";
@@ -92,7 +92,7 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
               gear={gear}
               slotSize={ss}
               maxSlotSize={max}
-              position={{ tag: "airSquadron", id, key }}
+              position={{ tag: "airSquadrons", id, key }}
               equippable={gear && airSquadron.can_equip(gear)}
               onSlotSizeChange={(value) => {
                 actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
@@ -102,7 +102,7 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
         })}
 
         <PresetModal>
-          <PresetMenu position={{ tag: "airSquadron", id }} />
+          <PresetMenu position={{ tag: "airSquadrons", id }} />
         </PresetModal>
       </Paper>
     );

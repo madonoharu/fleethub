@@ -5,9 +5,9 @@ import { Button, Container, Divider, Typography, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
+
 import { useModal } from "../../../hooks";
-import { createPlan, importFile, transferJorData } from "../../../store";
-import { JorData } from "../../../utils";
+import { entitiesSlice, transferJorData, JorData } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { ImportMenu } from "../../organisms";
 
@@ -17,7 +17,7 @@ const WelcomePage: React.FCX = () => {
   const ImprotMenuModal = useModal();
 
   const handleCreatePlan = () => {
-    dispatch(createPlan({}));
+    dispatch(entitiesSlice.actions.createPlan());
   };
 
   const handleTransfer = () => {
@@ -26,7 +26,8 @@ const WelcomePage: React.FCX = () => {
       (ev) => {
         if (ev.origin === "https://kcjervis.github.io") {
           const data: JorData = ev.data;
-          dispatch(importFile(transferJorData(data)));
+          const payload = transferJorData(data);
+          dispatch(entitiesSlice.actions.import(payload));
         }
       },
       {

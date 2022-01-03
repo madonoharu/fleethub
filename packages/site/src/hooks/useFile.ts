@@ -9,14 +9,12 @@ import {
 
 import {
   appSlice,
-  cloneFile,
-  createPlan,
+  entitiesSlice,
   FileEntity,
-  filesSelectors,
-  filesSlice,
   isFolder,
-  selectTempIds,
+  filesSelectors,
 } from "../store";
+import { filesSlice as filesSlice2 } from "../store/entities/filesSlice";
 
 const getParents = (files: FileEntity[], id: string): FileEntity[] => {
   const parent = files.find(
@@ -37,28 +35,20 @@ const makeSelectParents = () =>
 
 export const useIsTemp = (id: string) =>
   useSelector((root) => {
-    const tempIds = selectTempIds(root);
+    const tempIds = root.present.entities.files.tempIds;
     return tempIds.includes(id);
   });
 
-export const useFile = (id: string) => {
-  const file = useSelector((root) => filesSelectors.selectById(root, id));
-
-  const isTemp = useIsTemp(id);
-
-  const selectParents = useMemo(makeSelectParents, []);
-  const parents = useSelector(
-    (state) => selectParents(state, id),
-    shallowEqual
-  );
-
+export function useFileActions(id: string) {
   const dispatch = useDispatch();
 
   const actions = useMemo(() => {
+    const filesSlice = filesSlice2;
+
     const open = () => dispatch(appSlice.actions.openFile(id));
     const update = (changes: Partial<FileEntity>) =>
       dispatch(filesSlice.actions.update({ id, changes }));
-    const copy = () => dispatch(cloneFile(id));
+    const copy = () => dispatch(entitiesSlice.actions.cloneFile(id));
     const remove = () => dispatch(filesSlice.actions.remove(id));
     const save = () => dispatch(filesSlice.actions.move(id));
 
@@ -77,20 +67,46 @@ export const useFile = (id: string) => {
       copy,
       remove,
       save,
-      createPlan: () => dispatch(createPlan({ to: id })),
+      createPlan: () =>
+        dispatch(entitiesSlice.actions.createPlan(undefined, id)),
       createFolder,
       setName,
       setDescription,
     };
   }, [dispatch, id]);
 
-  const canDrop = (dragFile: FileEntity) => {
-    if (dragFile === file) return false;
+  return actions;
+}
 
-    if (isFolder(file) && file.children.includes(dragFile.id)) return false;
+export function useFileCanDrop(id: string) {
+  const entity = useSelector(
+    (root) => root.present.entities.files.entities[id]
+  );
+
+  const selectParents = useMemo(makeSelectParents, []);
+  const parents = useSelector(
+    (state) => selectParents(state, id),
+    shallowEqual
+  );
+
+  const canDrop = (dragFile: FileEntity) => {
+    if (dragFile === entity) return false;
+
+    if (isFolder(entity) && entity.children.includes(dragFile.id)) return false;
 
     return !parents.includes(dragFile);
   };
+
+  return { parents, canDrop };
+}
+
+export const useFile = (id: string) => {
+  const file = useSelector((root) => filesSelectors.selectById(root, id));
+
+  const isTemp = useIsTemp(id);
+
+  const actions = useFileActions(id);
+  const { canDrop, parents } = useFileCanDrop(id);
 
   return { file, isTemp, actions, parents, canDrop };
 };
