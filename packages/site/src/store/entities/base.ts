@@ -1,3 +1,5 @@
+import { SlotSizeKey, SLOT_SIZE_KEYS } from "@fh/utils";
+import { EntityState, PayloadAction } from "@reduxjs/toolkit";
 import { AttackPowerModifiers, NightSituation } from "fleethub-core";
 
 import { createOrmAdapters } from "./createOrmAdapters";
@@ -52,3 +54,18 @@ export const initalStepConfig: StepConfig = {
     external_power_mods: initalAttackPowerModifiers,
   },
 };
+
+export function resetSlotSize(
+  state: EntityState<Partial<Record<SlotSizeKey, number>>>,
+  { payload }: PayloadAction<string[]>
+) {
+  payload
+    .map((id) => state.entities[id])
+    .forEach((entity) => {
+      if (entity) {
+        SLOT_SIZE_KEYS.forEach((key) => {
+          delete entity[key];
+        });
+      }
+    });
+}
