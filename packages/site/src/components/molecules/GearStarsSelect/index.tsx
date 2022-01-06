@@ -6,6 +6,7 @@ import React from "react";
 
 import { usePopover } from "../../../hooks";
 import { StarsLabel } from "../../atoms";
+
 import Buttons from "./Buttons";
 
 type GearStarsSelectProps = {

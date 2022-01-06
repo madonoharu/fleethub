@@ -2,6 +2,7 @@
 import { OrgType } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
+
 import { Select, SelectInputProps } from "../../molecules";
 
 const ORG_TYPES: OrgType[] = [

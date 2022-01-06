@@ -6,6 +6,7 @@ import React from "react";
 
 import { Divider } from "../../atoms";
 import { SearchInput } from "../../organisms";
+
 import FilterBar from "./FilterBar";
 import ShipButton from "./ShipButton";
 import ShipSearchResult from "./ShipSearchResult";

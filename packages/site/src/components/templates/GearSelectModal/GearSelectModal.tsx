@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { gearSelectSlice } from "../../../store";
 import { Dialog } from "../../organisms";
+
 import GearSelectMenu from "./GearSelectMenu";
 
 const GearSelectModal: React.FCX = () => {

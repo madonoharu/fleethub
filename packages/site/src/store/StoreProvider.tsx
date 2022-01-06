@@ -25,14 +25,13 @@ const StoreProvider: React.FC<StoreProviderProps> = ({
     if (!process.browser) return undefined;
 
     const url = new URL(location.href);
-    // window.history.replaceState(null, "", location.pathname);
+    window.history.replaceState(null, "", location.pathname);
     return url;
   }, []);
 
   const handleBeforeLift = async () => {
     if (!process.browser) return;
 
-    console.log(url?.search);
     const parsed = url && (await parseUrl(masterData, url));
 
     batch(() => {

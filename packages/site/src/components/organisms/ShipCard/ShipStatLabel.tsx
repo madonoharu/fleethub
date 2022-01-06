@@ -10,6 +10,7 @@ import { ShipEntity } from "../../../store";
 import { withSign, getRangeLabel, getSpeedLabel } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { NumberInput, StatIcon } from "../../molecules";
+
 import { ShipStatKey } from "./ShipStats";
 
 const maybeNumber = (v: number | undefined) => v ?? "?";
