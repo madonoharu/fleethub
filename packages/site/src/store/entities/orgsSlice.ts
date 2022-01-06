@@ -45,10 +45,6 @@ export const orgsSlice = createSlice({
   name: sliceName,
   initialState: adapter.getInitialState(),
   reducers: {
-    set: (state, { payload }: PayloadAction<OrgEntity>) => {
-      state.entities[payload.id] = payload;
-    },
-
     swapFleet: (
       state,
       { payload }: PayloadAction<SwapPayload<FleetPosition>>

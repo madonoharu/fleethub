@@ -18,7 +18,6 @@ export const useOrg = (id: string) => {
   const { core } = useFhCore();
   const dispatch = useDispatch();
   const state = useOrgState(id);
-
   const org = useMemo(() => state && core.create_org(state), [core, state]);
 
   const actions = useMemo(() => {

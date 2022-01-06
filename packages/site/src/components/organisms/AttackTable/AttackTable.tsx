@@ -15,6 +15,7 @@ import { Flexbox } from "../../atoms";
 import { InfoButton } from "../../molecules";
 import AttackChip from "../AttackChip";
 import Table, { ColumnProps } from "../Table";
+
 import AttackPowerDetails from "./AttackPowerDetails";
 import DamageRange from "./DamageRange";
 import DamageStateMapBarChart from "./DamageStateMapBarChart";

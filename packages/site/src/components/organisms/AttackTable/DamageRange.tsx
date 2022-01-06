@@ -2,6 +2,7 @@
 import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
+
 import { toPercent } from "../../../utils";
 
 type DamageRangeProps = {

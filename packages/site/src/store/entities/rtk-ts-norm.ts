@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { nonNullable } from "@fh/utils";
 import { createCachedSelector, LruMapCache } from "re-reselect";
+import { shallowEqual } from "react-redux";
 import { createSelectorCreator, defaultMemoize } from "reselect";
 import {
   isObject,
@@ -186,33 +187,6 @@ export function cloneAffectedEntities<T>(
   };
 }
 
-function matchEntities(
-  keys: string[],
-  prev: Entities,
-  next: Entities
-): boolean {
-  if (prev === next) {
-    return true;
-  }
-
-  return keys.every((key) => {
-    const prevDict = prev[key];
-    const nextDict = next[key];
-
-    if (prevDict === nextDict) {
-      return true;
-    }
-
-    if (!prevDict || !nextDict) {
-      return false;
-    }
-
-    return Object.entries(nextDict).every(
-      ([id, entity]) => prevDict[id] === entity
-    );
-  });
-}
-
 type SchemaInputType<S extends AnySchema> = S extends Schema<infer T>
   ? T
   : never;
@@ -260,12 +234,16 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
     [_, prevEntities]: Args,
     [nextInput, nextEntities]: Args
   ) => {
-    if (matchEntities(keys, prevEntities, nextEntities)) {
+    if (
+      prevEntities === nextEntities ||
+      keys.every((key) => shallowEqual(prevEntities[key], nextEntities[key]))
+    ) {
       return true;
     }
 
     const affected = getAffectedEntities(nextInput, schema, nextEntities);
-    return matchEntities(keys, prevEntities, affected);
+
+    return keys.every((key) => shallowEqual(prevEntities[key], affected[key]));
   };
 
   const selectorCreator = createSelectorCreator(defaultMemoize, equalityCheck);

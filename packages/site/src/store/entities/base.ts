@@ -7,7 +7,7 @@ import { schemata, StepConfig } from "./schemata";
 
 export const ormAdapters = createOrmAdapters(...schemata);
 
-export const ENTITIES_SLICE_NAME = "orm";
+export const ENTITIES_SLICE_NAME = "entities";
 
 export function getSliceName<K extends string>(
   key: K

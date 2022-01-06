@@ -2,6 +2,7 @@
 import styled from "@emotion/styled";
 import { Ship } from "fleethub-core";
 import React from "react";
+
 import { ShipEntity } from "../../../store";
 
 import ShipStatLabel from "./ShipStatLabel";

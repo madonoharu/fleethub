@@ -23,6 +23,7 @@ import {
 import BatchOperations from "../BatchOperations";
 import ElosLabel from "../ElosLabel";
 import FleetInfoPanel from "../FleetInfoPanel";
+
 import FleetShipList from "./FleetShipList";
 
 const FLEET_LENS = [1, 2, 3, 4, 5, 6, 7];

@@ -56,7 +56,6 @@ export const useShip = (id?: string) => {
     (root) => {
       if (!id) return;
       const state = selectShipState(root, id);
-      console.log(state);
       return state && core.create_ship(state);
     },
     (a, b) => a?.xxh3 === b?.xxh3
