@@ -1,1 +1,1 @@
-export { getGoogleSpreadsheet, MasterDataSpreadsheet, Sheet } from "./sheet";
+export { MasterDataSpreadsheet, Sheet } from "./sheet";
