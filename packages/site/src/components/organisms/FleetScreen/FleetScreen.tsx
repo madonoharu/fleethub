@@ -146,8 +146,8 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
   if (comp.is_combined()) {
     const antiCombinedFp = `${comp.fighter_power(true, false) ?? "?"}`;
 
-    fpText = `${t("FighterPower")} ${t("Combined")} ${antiCombinedFp}
-    ${t("Main")} ${singleFp ?? "?"}`;
+    fpText = `${t("FighterPower")} ${t("CombinedFleet")} ${antiCombinedFp}
+    ${t("SingleFleet")} ${singleFp ?? "?"}`;
   } else {
     fpText = `${t("FighterPower")} ${singleFp ?? "?"}`;
   }
