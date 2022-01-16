@@ -26,7 +26,7 @@
   "ShipClass": "艦種",
   "Difficulty": "難易度",
   "Details": "詳細",
-  "Map": "マップ",
+  "Map": "海域",
   "Enemies": "敵編成",
   "LbasDistance": "戦闘行動半径",
   "ElosNodeFactor": "分岐点係数",
