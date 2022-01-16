@@ -38,8 +38,8 @@ const HitRateDetails: React.FCX<HitRateDetailsProps> = ({
         value={numstr(params?.evasion_term) || "-"}
       />
       <LabeledValue
-        label={t("MoraleState")}
-        value={numstr(params?.morale_mod) || "-"}
+        label={t("TargetMoraleModifier")}
+        value={numstr(params?.target_morale_mod) || "-"}
       />
       <LabeledValue
         label={t("HitPercentageBonus")}

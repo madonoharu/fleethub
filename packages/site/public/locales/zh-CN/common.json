@@ -224,6 +224,7 @@
   "HitPercentageBonus": "命中率补正",
   "CriticalPercentageBonus": "爆击率补正",
   "CriticalRateConstant": "爆击常数",
+  "TargetMoraleModifier": "对方疲劳补正",
   "ScratchDamage": "擦弹",
   "Individual": "单独",
   "Cumulative": "累积",

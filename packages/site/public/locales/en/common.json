@@ -219,6 +219,7 @@
   "HitPercentageBonus": "Hit Rate Bonus",
   "CriticalPercentageBonus": "Critical Rate Bonus",
   "CriticalRateConstant": "Critical Constant",
+  "TargetMoraleModifier": "Target's morale modifier",
   "ScratchDamage": "Scratch",
   "Individual": "Individual",
   "Cumulative": "Cumulative",
