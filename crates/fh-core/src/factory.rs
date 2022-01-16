@@ -271,7 +271,7 @@ impl Factory {
                 id: None,
                 len: Some(ids.len()),
                 #(
-                    s #N: create_ship_state(N - 1),
+                    s ~N: create_ship_state(N - 1),
                 )*
             }
         });
