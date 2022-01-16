@@ -8,7 +8,9 @@ use crate::{
     fleet::Fleet,
     gear_id,
     ship::Ship,
-    types::{BattleConfig, ContactRank, DamageState, GearAttr, NightCutin, NightCutinDef},
+    types::{
+        BattleConfig, ContactRank, DamageState, GearAttr, GearType, NightCutin, NightCutinDef,
+    },
 };
 
 #[derive(Debug)]
@@ -38,9 +40,12 @@ fn night_cutin_term(ship: &Ship, params: NightCutinTermParams) -> Option<f64> {
         value += 18.0
     }
 
-    if ship.gears.has(gear_id!("水雷戦隊 熟練見張員")) {
+    // https://twitter.com/Divinity__123/status/1479343022974324739
+    if ship.gears.has(gear_id!("水雷戦隊 熟練見張員"))
+        && (ship.ship_type.is_destroyer() || ship.ship_type.is_light_cruiser())
+    {
         value += 9.0
-    } else if ship.gears.has(gear_id!("熟練見張員")) {
+    } else if ship.gears.has_type(GearType::ShipPersonnel) {
         value += 5.0
     }
 
