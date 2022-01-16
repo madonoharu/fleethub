@@ -1147,13 +1147,21 @@ impl Ship {
 
     pub fn get_remaining_fuel(&self, rate: f64, ceil: bool) -> u16 {
         let v_f64 = self.max_fuel() as f64 * rate;
-        let v = if ceil { v_f64.ceil() } else { v_f64.floor() } as u16;
+        let v = if ceil || v_f64 < 1.0 {
+            v_f64.ceil()
+        } else {
+            v_f64.floor()
+        } as u16;
         self.fuel.saturating_sub(v)
     }
 
     pub fn get_remaining_ammo(&self, rate: f64, ceil: bool) -> u16 {
         let v_f64 = self.max_ammo() as f64 * rate;
-        let v = if ceil { v_f64.ceil() } else { v_f64.floor() } as u16;
+        let v = if ceil || v_f64 < 1.0 {
+            v_f64.ceil()
+        } else {
+            v_f64.floor()
+        } as u16;
         self.ammo.saturating_sub(v)
     }
 
