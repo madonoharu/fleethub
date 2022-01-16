@@ -89,6 +89,14 @@ impl ShipType {
         }
     }
 
+    pub fn is_destroyer(&self) -> bool {
+        self.category() == ShipCategory::Destroyer
+    }
+
+    pub fn is_light_cruiser(&self) -> bool {
+        self.category() == ShipCategory::LightCruiser
+    }
+
     pub fn is_aircraft_carrier(&self) -> bool {
         self.category() == ShipCategory::AircraftCarrier
     }
