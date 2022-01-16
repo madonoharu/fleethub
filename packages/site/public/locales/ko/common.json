@@ -223,6 +223,7 @@
   "HitPercentageBonus": "명중률 보정",
   "CriticalPercentageBonus": "크리티컬률 보정",
   "CriticalRateConstant": "크리티컬 상수",
+  "TargetMoraleModifier": "회피측 피로 보정",
   "ScratchDamage": "지근탄",
   "Individual": "개별",
   "Cumulative": "누적",
