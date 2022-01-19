@@ -130,7 +130,7 @@ impl<'a> ShellingSupportAttackParams<'a> {
             Some(HitRateParams {
                 accuracy_term,
                 evasion_term,
-                morale_mod: target.morale_state().hit_rate_mod(),
+                target_morale_mod: target.morale_state().hit_rate_mod(),
                 critical_rate_constant: SHELLING_SUPPORT_CRITICAL_RATE_CONSTANT,
                 critical_percentage_bonus: 0.0,
                 hit_percentage_bonus: 0.0,

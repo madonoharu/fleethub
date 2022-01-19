@@ -1,19 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
-import { Typography } from "@mui/material";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
+import { Stack, Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { ShipEntity } from "../../../store";
+import { numstr } from "../../../utils";
+import { LabeledValue } from "../../atoms";
 import {
   EditButton,
   ClearButton,
   InfoButton,
   UpdateButton,
   BusinessCenterButton,
+  withIconButton,
 } from "../../molecules";
+
 import LevelButton from "./LevelButton";
+
+const AnalyticsButton = withIconButton(AnalyticsIcon);
 
 type ShipHeaderProps = {
   ship: Ship;
@@ -57,6 +64,25 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         {t(`ships:${ship_id}`, name)}
       </Typography>
 
+      <AnalyticsButton
+        title={
+          <Stack>
+            <LabeledValue
+              label="基礎命中項"
+              value={numstr(ship.basic_evasion_term(), 2)}
+            />
+            <LabeledValue
+              label="単縦回避項"
+              value={numstr(ship.evasion_term(1, 0, 1))}
+            />
+            <LabeledValue
+              label="艦隊索敵因子"
+              value={numstr(ship.fleet_los_factor())}
+            />
+          </Stack>
+        }
+        size="tiny"
+      />
       {!readonly && (
         <EditButton
           title={t("common:EditMiscStats")}

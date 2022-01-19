@@ -5,13 +5,13 @@ import React from "react";
 import { useDispatch } from "react-redux";
 
 import { useFhCore } from "../../../hooks";
-import { presetsSlice, PresetState } from "../../../store";
+import { presetsSlice, Preset } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton, TextField } from "../../molecules";
 import { GearBox } from "../../organisms";
 
 type PresetCardProps = {
-  preset: PresetState;
+  preset: Preset;
 };
 
 const PresetCard: React.FCX<PresetCardProps> = ({ preset }) => {
@@ -47,7 +47,14 @@ const PresetCard: React.FCX<PresetCardProps> = ({ preset }) => {
           return (
             <Flexbox key={key}>
               <Typography width={16}>{key.replace("g", "")}</Typography>
-              <GearBox position={{ tag: "preset", id, key }} gear={gear} />
+              <GearBox
+                position={{
+                  tag: "presets",
+                  id,
+                  key,
+                }}
+                gear={gear}
+              />
             </Flexbox>
           );
         })}

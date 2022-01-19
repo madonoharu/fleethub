@@ -9,24 +9,27 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   appSlice,
-  createPlan,
   FileEntity,
   filesSlice,
   isFolder,
-  selectFilesState,
+  entitiesSlice,
 } from "../../../store";
 import { FileDropZone } from "../../organisms";
+
 import ExplorerHeader from "./ExplorerHeader";
 import FolderLabel from "./FolderLabel";
-import PlanFileLabel from "./PlanFileLabel";
+import PlanLabel from "./PlanLabel";
 
 const TransitionProps = { timeout: 150 };
 
 const Explorer: React.FCX = ({ className }) => {
   const dispatch = useDispatch();
-  const { rootIds, tempIds, entities } = useSelector(selectFilesState);
 
-  const [expanded, setExpanded] = React.useState<string[]>(["root"]);
+  const { rootIds, tempIds, entities } = useSelector(
+    (root) => root.present.entities.files
+  );
+
+  const [expanded, setExpanded] = React.useState<string[]>(["root", "temp"]);
   const [selected, setSelected] = React.useState<string>("");
 
   const toggleExplorerOpen = () =>
@@ -41,7 +44,7 @@ const Explorer: React.FCX = ({ className }) => {
   };
 
   const handlePlanCreate = () => {
-    dispatch(createPlan({}));
+    dispatch(entitiesSlice.actions.createPlan());
   };
 
   const handleFolderCreate = () => {
@@ -59,7 +62,7 @@ const Explorer: React.FCX = ({ className }) => {
     let label: React.ReactNode;
 
     if (file.type === "plan") {
-      label = <PlanFileLabel file={file} />;
+      label = <PlanLabel file={file} />;
     } else if (file.type === "folder") {
       label = <FolderLabel file={file} />;
     }

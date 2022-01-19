@@ -1,11 +1,8 @@
-import { nonNullable } from "@fh/utils";
 import { Ship, ShipCategory } from "fleethub-core";
 import { TFunction, useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useImmer } from "use-immer";
-
-import { useFhCore } from "../../../hooks";
 
 type FilterFn = (ship: Ship) => boolean;
 
@@ -59,9 +56,7 @@ const searchShip = (t: TFunction, ships: Ship[], searchValue: string) => {
   });
 };
 
-export const useShipListState = () => {
-  const { masterData, core } = useFhCore();
-
+export const useShipListState = (ships: Ship[]) => {
   const { t } = useTranslation("ships");
 
   const abyssal = useSelector((root) => root.present.shipSelect.abyssal);
@@ -74,26 +69,18 @@ export const useShipListState = () => {
 
   const [searchValue, setSearchValue] = useState("");
 
-  const masterShips = React.useMemo(() => {
-    return masterData.ships
-      .map((ship) => core.create_ship_by_id(ship.ship_id))
-      .filter(nonNullable);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [masterData]);
-
   const visibleShips = React.useMemo(() => {
     if (searchValue) {
-      return searchShip(t, masterShips, searchValue);
+      return searchShip(t, ships, searchValue);
     }
 
     const filterFn = createFilterFn(state);
-    return masterShips.filter(filterFn).sort(sortIdComparer);
-  }, [searchValue, t, state, masterShips]);
+    return ships.filter(filterFn).sort(sortIdComparer);
+  }, [searchValue, t, state, ships]);
 
   return {
     state,
     update,
-    masterShips,
     visibleShips,
     searchValue,
     setSearchValue,

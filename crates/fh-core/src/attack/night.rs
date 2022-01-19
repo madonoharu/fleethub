@@ -303,7 +303,7 @@ fn calc_hit_rate_params(
     Some(HitRateParams {
         accuracy_term,
         evasion_term,
-        morale_mod: target.morale_state().hit_rate_mod(),
+        target_morale_mod: target.morale_state().hit_rate_mod(),
         critical_rate_constant: ctx.critical_rate_constant(),
         hit_percentage_bonus,
         critical_percentage_bonus,

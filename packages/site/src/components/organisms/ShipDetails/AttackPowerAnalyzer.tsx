@@ -11,6 +11,7 @@ import { ShipDetailsState } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { TabItem, Tabs, SelectedMenu } from "../../molecules";
 import AttackTable from "../AttackTable";
+
 import { useDummyEnemySelectState } from "./useDummyEnemySelectState";
 
 type AttackPowerAnalyzerProps = {

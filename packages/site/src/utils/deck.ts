@@ -268,24 +268,3 @@ export const createDeck = (org?: Org): Deck => {
 
   return deck;
 };
-
-export const parsePredeck = (
-  masterData: MasterData,
-  url: URL
-): OrgState | undefined => {
-  const predeck = url.searchParams.get("predeck");
-
-  if (!predeck) return;
-
-  try {
-    const parsed = JSON.parse(predeck);
-
-    if (typeof parsed === "object" && parsed) {
-      return createOrgStateByDeck(masterData, parsed as Deck);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-
-  return;
-};

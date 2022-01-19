@@ -6,14 +6,16 @@ import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 
 import {
+  entitiesSlice,
   GearEntity,
   GearPosition,
   gearSelectSlice,
   gearsSlice,
-  swapGearPosition,
+  SwapGearPayload,
 } from "../../../store";
 import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
+
 import AddGearButton from "./AddGearButton";
 
 type Props = {
@@ -35,8 +37,8 @@ const useGearActions = (id?: string) => {
       id && dispatch(gearsSlice.actions.remove(id));
     };
 
-    const swap = (event: Parameters<typeof swapGearPosition>[0]) => {
-      dispatch(swapGearPosition(event));
+    const swap = (payload: SwapGearPayload) => {
+      dispatch(entitiesSlice.actions.swapGear(payload));
     };
 
     return { update, remove, swap };

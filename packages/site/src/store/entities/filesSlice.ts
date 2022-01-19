@@ -1,12 +1,14 @@
 import { nonNullable } from "@fh/utils";
-import { createSlice, isAnyOf, nanoid, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 
-import { filesAdapter } from "./adapters";
-import { sweep, addFile, createPlan, importFile, createStep } from "./entities";
-import { isFolder, isPlanFile } from "./entityHelpers";
-import { FileEntity, FolderEntity } from "./schema";
+import { ormAdapters, getSliceName } from "./base";
+import { FileEntity } from "./schemata";
 
-const initialState = filesAdapter.getInitialState<{
+const key = "files";
+const adapter = ormAdapters[key];
+const sliceName = getSliceName(key);
+
+const initialState = adapter.getInitialState<{
   rootIds: string[];
   tempIds: string[];
 }>({
@@ -16,7 +18,19 @@ const initialState = filesAdapter.getInitialState<{
 
 export type FilesState = typeof initialState;
 
-const findFolderChildren = (state: FilesState, id: string): string[] => {
+export function isFolder(
+  entity: FileEntity | undefined
+): entity is FileEntity & { type: "folder" } {
+  return entity?.type === "folder";
+}
+
+export function isPlan(
+  entity: FileEntity | undefined
+): entity is FileEntity & { type: "plan" } {
+  return entity?.type === "plan";
+}
+
+function getFolderChildren(state: FilesState, id: string): string[] {
   if (id === "temp") {
     return state.tempIds;
   }
@@ -38,7 +52,7 @@ const findFolderChildren = (state: FilesState, id: string): string[] => {
     .find((dir) => dir.children.includes(file.id));
 
   return parent ? parent.children : state.rootIds;
-};
+}
 
 const getTopFiles = (files: FileEntity[]) => {
   const allChildren = files
@@ -49,11 +63,11 @@ const getTopFiles = (files: FileEntity[]) => {
 };
 
 const addFiles = (state: FilesState, files: FileEntity[], to = "") => {
-  filesAdapter.addMany(state, files);
+  adapter.addMany(state, files);
 
   const topFileIds = getTopFiles(files).map((file) => file.id);
 
-  const children = findFolderChildren(state, to);
+  const children = getFolderChildren(state, to);
   children.push(...topFileIds);
 };
 
@@ -77,8 +91,8 @@ const unlink = (state: FilesState, ids: string[]) => {
     });
 };
 
-const insert = (state: FilesState, id: string, to = "") => {
-  const children = findFolderChildren(state, to);
+export const insert = (state: FilesState, id: string, to = "") => {
+  const children = getFolderChildren(state, to);
   const index = children.indexOf(to);
 
   if (index === -1) {
@@ -89,13 +103,13 @@ const insert = (state: FilesState, id: string, to = "") => {
 };
 
 export const filesSlice = createSlice({
-  name: "entities/files",
+  name: sliceName,
 
   initialState,
 
   reducers: {
     removeSteps: (state, { payload }: PayloadAction<string>) => {
-      filesAdapter.updateOne(state, {
+      adapter.updateOne(state, {
         id: payload,
         changes: { steps: [] },
       });
@@ -106,7 +120,7 @@ export const filesSlice = createSlice({
         Object.values(state.entities).filter((file) => file?.type === "folder")
           .length + 1;
 
-      const newFolder: FolderEntity = {
+      const newFolder: FileEntity = {
         id: nanoid(),
         type: "folder",
         name: `Folder${count}`,
@@ -117,7 +131,7 @@ export const filesSlice = createSlice({
       addFiles(state, [newFolder], payload);
     },
 
-    update: filesAdapter.updateOne,
+    update: adapter.updateOne,
 
     move: {
       reducer: (
@@ -133,40 +147,8 @@ export const filesSlice = createSlice({
     },
 
     remove: (state, { payload }: PayloadAction<string>) => {
-      filesAdapter.removeOne(state, payload);
+      adapter.removeOne(state, payload);
       unlink(state, [payload]);
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(sweep, (state, { payload }) => {
-        filesAdapter.removeMany(state, payload.files);
-        unlink(state, payload.files);
-      })
-      .addCase(createStep, (state, { payload }) => {
-        const file = state.entities[payload.fileId];
-
-        if (isPlanFile(file)) {
-          (file.steps ||= []).push(payload.stepId);
-        }
-      })
-      .addMatcher(isAnyOf(createPlan, addFile, importFile), (state, action) => {
-        const { entities, fileId, to } = action.payload;
-
-        if (!entities.files) return;
-
-        insert(state, fileId, to);
-        filesAdapter.addMany(state, entities.files);
-
-        if (action.type === createPlan.type) {
-          const mainFile = state.entities[fileId];
-          if (mainFile && mainFile.name === "") {
-            const count = Object.values(state.entities).filter(
-              isPlanFile
-            ).length;
-            mainFile.name = `${count}`;
-          }
-        }
-      });
   },
 });

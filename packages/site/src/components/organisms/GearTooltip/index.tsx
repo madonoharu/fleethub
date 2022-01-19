@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import GearNameplate from "../GearNameplate";
+
 import GearStatList from "./GearStatList";
 
 type ContentProps = {

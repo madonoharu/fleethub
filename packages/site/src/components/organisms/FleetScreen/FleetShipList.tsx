@@ -18,7 +18,11 @@ const FleetShipList: React.FCX<FleetShipListProps> = React.memo(
           <ShipBox
             key={key}
             ship={fleet.get_ship(key)}
-            position={{ tag: "fleet", id: fleet.id, key }}
+            position={{
+              tag: "fleets",
+              id: fleet.id,
+              key,
+            }}
           />
         ))}
       </div>
