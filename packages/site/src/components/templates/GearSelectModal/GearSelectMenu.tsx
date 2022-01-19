@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { nonNullable } from "@fh/utils";
 import ListIcon from "@mui/icons-material/List";
 import SearchIcon from "@mui/icons-material/Search";
 import { nanoid } from "@reduxjs/toolkit";
 import { Gear } from "fleethub-core";
-import React, { useMemo } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useFhCore, useShip } from "../../../hooks";
@@ -15,17 +14,12 @@ import GearList from "../GearList";
 
 import GearSearchMenu from "./GearSearchMenu";
 
-const GearSelectMenu: React.FCX = ({ className }) => {
-  const { module, core, masterData } = useFhCore();
+type Props = {
+  gears: Gear[];
+};
 
-  const gears = useMemo(
-    () =>
-      masterData.gears
-        .map((mg) => core.create_gear({ gear_id: mg.gear_id }))
-        .filter(nonNullable),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+const GearSelectMenu: React.FCX<Props> = ({ className, gears }) => {
+  const { module } = useFhCore();
 
   const dispatch = useDispatch();
   const create = useSelector((root) => root.present.gearSelect.create);

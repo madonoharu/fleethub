@@ -64,7 +64,11 @@ impl Factory {
 
         let equippable = self.master_data.create_ship_equippable(&master_ship);
 
-        let ebonuses: EBonuses = self.ebonus_fn.call(&master_ship, &gears);
+        let ebonuses: EBonuses = if gears.has_by(|gear| !gear.is_abyssal()) {
+            self.ebonus_fn.call(&master_ship, &gears)
+        } else {
+            Default::default()
+        };
 
         let ship = Ship::new(state, master_ship, equippable, gears, ebonuses);
 

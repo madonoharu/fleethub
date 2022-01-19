@@ -8,6 +8,7 @@ import { useGcs } from "../../../hooks";
 import { cloudinaryLoader } from "../../../utils";
 
 type Props = {
+  className?: string;
   shipId: number;
   size?: "small" | "medium" | "large";
 };
@@ -18,29 +19,21 @@ const SIZES = {
   large: 5,
 };
 
-const ShipBanner: React.FCX<Props> = ({
-  className,
-  shipId,
-  size = "small",
-}) => {
+const ShipBanner = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
+  const { className, shipId, size = "small" } = props;
+
   const { data } = useGcs<Dict<string, string>>("data/ship_banners.json");
+
+  const publicId = data?.[shipId] || "";
 
   const scale = SIZES[size];
   const width = scale * 32;
   const height = scale * 8;
 
-  if (!data) {
-    return <div className={className} css={{ width, height }} />;
-  }
+  let inner: React.ReactNode;
 
-  const publicId = data[shipId] || "";
-
-  if (!publicId) {
-    return <BrokenImage className={className} style={{ width, height }} />;
-  }
-
-  return (
-    <div className={className} css={{ width, height }}>
+  if (publicId) {
+    inner = (
       <Image
         layout="fixed"
         loader={cloudinaryLoader}
@@ -49,8 +42,20 @@ const ShipBanner: React.FCX<Props> = ({
         src={`ships/${publicId}.png`}
         priority={true}
       />
+    );
+  } else {
+    inner = <BrokenImage className={className} />;
+  }
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      css={{ width, height, textAlign: "center" }}
+    >
+      {inner}
     </div>
   );
-};
+});
 
 export default ShipBanner;

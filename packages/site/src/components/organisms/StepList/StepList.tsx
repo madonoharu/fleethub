@@ -76,7 +76,7 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
       mapSelectSlice.actions.show({
         createStep: true,
         position: file.id,
-        multiple: false,
+        multiple: true,
       })
     );
   };
