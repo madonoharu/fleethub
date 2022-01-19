@@ -5,6 +5,7 @@ import { Fab, Tooltip } from "@mui/material";
 import React from "react";
 
 import { useModal } from "../../../hooks";
+
 import CanvasModalContainer from "./CanvasModalContainer";
 
 const CanvasContainer = styled.div`

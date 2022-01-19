@@ -424,6 +424,10 @@ impl Gear {
         multiplier * (self.los as f64 + self.ibonuses.elos)
     }
 
+    pub fn is_abyssal(&self) -> bool {
+        self.has_attr(GearAttr::Abyssal)
+    }
+
     pub fn is_abyssal_cuttlefish_torpedo(&self) -> bool {
         self.gear_id == gear_id!("深海烏賊魚雷")
     }

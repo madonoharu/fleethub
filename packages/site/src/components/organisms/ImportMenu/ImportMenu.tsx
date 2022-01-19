@@ -9,13 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFhCore, useSnackbar } from "../../../hooks";
 import {
   appSlice,
-  createPlan,
-  importFile,
+  parseDeckStr,
   parseUrl,
-  PublicFile,
+  entitiesSlice,
   selectAppState,
+  PublicFile,
 } from "../../../store";
-import { createOrgStateByDeck, Deck } from "../../../utils";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
 import { ImportButton, TextField } from "../../molecules";
 
@@ -87,10 +86,8 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
   const handleDeckImport = () => {
     try {
-      const deck: Deck = JSON.parse(deckStr);
-      const OrgState = createOrgStateByDeck(masterData, deck);
-
-      dispatch(createPlan({ org: OrgState, to }));
+      const parsed = parseDeckStr(masterData, deckStr);
+      dispatch(entitiesSlice.actions.import({ ...parsed, to }));
 
       onClose?.();
     } catch (error) {
@@ -121,7 +118,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
       <UrlForm
         masterData={masterData}
         onSuccess={(file) => {
-          dispatch(importFile({ ...file, to }));
+          dispatch(entitiesSlice.actions.import({ ...file, to }));
           onClose?.();
         }}
         onError={() => {

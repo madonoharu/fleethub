@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GearCategory } from "fleethub-core";
 
-import { equip } from "./entities";
-import { GearPosition } from "./gearsSlice";
+import { entitiesSlice, GearPosition } from "./entities/entitiesSlice";
 
 export type GearCategoryFilter = GearCategory | "All";
 
@@ -46,5 +45,6 @@ export const gearSelectSlice = createSlice({
     hide,
   },
 
-  extraReducers: (builder) => builder.addCase(equip, hide),
+  extraReducers: (builder) =>
+    builder.addCase(entitiesSlice.actions.createGear, hide),
 });

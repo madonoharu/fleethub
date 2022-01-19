@@ -4,8 +4,8 @@ import { Tooltip, TooltipProps, Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { getRangeLabel, getSpeedLabel } from "../../../utils";
 
+import { getRangeLabel, getSpeedLabel } from "../../../utils";
 import GearNameplate from "../GearNameplate";
 
 const SHIP_STAT_KEYS = [

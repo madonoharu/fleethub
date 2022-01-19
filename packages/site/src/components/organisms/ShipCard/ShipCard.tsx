@@ -19,6 +19,7 @@ import GearSlot from "../GearSlot";
 import PresetMenu from "../PresetMenu";
 import ShipBanner from "../ShipBanner";
 import ShipDetails from "../ShipDetails";
+
 import ShipCardHeader from "./ShipCardHeader";
 import ShipMiscEditForm from "./ShipMiscEditForm";
 import ShipStats from "./ShipStats";
@@ -116,7 +117,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
               <GearSlot
                 key={key}
                 gear={gear}
-                position={{ tag: "ship", id, key }}
+                position={{ tag: "ships", id, key }}
                 slotSize={ship.get_slot_size(i)}
                 maxSlotSize={ship.get_max_slot_size(i)}
                 equippable={gear && ship.can_equip(gear, key)}
@@ -173,7 +174,13 @@ const ShipCard: React.FCX<ShipCardProps> = ({
       </DetailModal>
 
       <PresetModal>
-        <PresetMenu position={{ tag: "ship", id }} onEquip={PresetModal.hide} />
+        <PresetMenu
+          position={{
+            tag: "ships",
+            id,
+          }}
+          onEquip={PresetModal.hide}
+        />
       </PresetModal>
     </Paper>
   );

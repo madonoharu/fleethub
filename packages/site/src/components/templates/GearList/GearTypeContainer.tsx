@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Divider } from "../../atoms";
+
 import GearButton from "./GearButton";
 
 const Grid = styled.div`

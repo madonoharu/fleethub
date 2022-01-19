@@ -5,6 +5,7 @@ import React from "react";
 
 import { GearPosition } from "../../../store";
 import GearBox from "../GearBox";
+
 import SlotSizeButton from "./SlotSizeButton";
 
 type Props = {

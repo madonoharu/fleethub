@@ -3,7 +3,8 @@ import "dotenv/config";
 import child_process from "child_process";
 import path from "path";
 import { promisify } from "util";
-import { getGoogleSpreadsheet, fetchStart2 } from "@fh/admin/src";
+
+import { MasterDataSpreadsheet, fetchStart2 } from "@fh/admin/src";
 import { Dict, mapValues, uniqBy } from "@fh/utils/src";
 import fs from "fs-extra";
 import { Start2 } from "kc-tools";
@@ -137,17 +138,17 @@ const createEnumItem = (row: Dict<string, unknown>): EnumItem => {
 };
 
 const main = async () => {
-  const [doc, start2] = await Promise.all([
-    getGoogleSpreadsheet(),
+  const [spreadsheet, start2] = await Promise.all([
+    MasterDataSpreadsheet.init(),
     fetchStart2(),
   ]);
 
   const sheets = {
-    GearType: await doc.sheetsByTitle["装備種"].getRows(),
-    GearAttr: await doc.sheetsByTitle["装備属性"].getRows(),
-    ShipType: await doc.sheetsByTitle["艦種"].getRows(),
-    ShipClass: await doc.sheetsByTitle["艦級"].getRows(),
-    ShipAttr: await doc.sheetsByTitle["艦娘属性"].getRows(),
+    GearType: spreadsheet.sheets.gear_types.rows,
+    GearAttr: spreadsheet.sheets.gear_attrs.rows,
+    ShipType: spreadsheet.sheets.ship_types.rows,
+    ShipClass: spreadsheet.sheets.ship_classes.rows,
+    ShipAttr: spreadsheet.sheets.ship_attars.rows,
   };
 
   const data = mapValues(sheets, (rows) => rows.map(createEnumItem));

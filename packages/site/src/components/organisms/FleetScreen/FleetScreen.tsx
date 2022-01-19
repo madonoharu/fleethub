@@ -23,6 +23,7 @@ import {
 import BatchOperations from "../BatchOperations";
 import ElosLabel from "../ElosLabel";
 import FleetInfoPanel from "../FleetInfoPanel";
+
 import FleetShipList from "./FleetShipList";
 
 const FLEET_LENS = [1, 2, 3, 4, 5, 6, 7];
@@ -145,8 +146,8 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
   if (comp.is_combined()) {
     const antiCombinedFp = `${comp.fighter_power(true, false) ?? "?"}`;
 
-    fpText = `${t("FighterPower")} ${t("Combined")} ${antiCombinedFp}
-    ${t("Main")} ${singleFp ?? "?"}`;
+    fpText = `${t("FighterPower")} ${t("CombinedFleet")} ${antiCombinedFp}
+    ${t("SingleFleet")} ${singleFp ?? "?"}`;
   } else {
     fpText = `${t("FighterPower")} ${singleFp ?? "?"}`;
   }

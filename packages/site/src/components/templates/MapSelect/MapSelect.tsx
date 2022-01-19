@@ -3,8 +3,10 @@ import { styled } from "@mui/system";
 import dynamic from "next/dynamic";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createStep, mapSelectSlice, MapSelectState } from "../../../store";
+
+import { entitiesSlice, mapSelectSlice, MapSelectState } from "../../../store";
 import { Dialog } from "../../organisms";
+
 import { MapEnemySelectEvent } from "./MapMenu";
 
 const StyledDialog = styled(Dialog)`
@@ -32,7 +34,12 @@ const MapSelect: React.FCX = ({ className }) => {
       return;
     }
 
-    dispatch(createStep(state.position, event));
+    dispatch(
+      entitiesSlice.actions.addPlanEnemy({
+        file: state.position,
+        ...event,
+      })
+    );
   };
 
   return (

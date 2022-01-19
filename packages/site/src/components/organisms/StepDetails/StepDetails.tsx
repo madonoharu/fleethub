@@ -11,10 +11,10 @@ import { useDispatch } from "react-redux";
 import { useOrg } from "../../../hooks";
 import {
   initalStepConfig,
-  PlanFileEntity,
+  PlanEntity,
   StepEntity,
   StepConfig,
-  stepsSlices,
+  stepsSlice,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { NumberInput, Tabs } from "../../molecules";
@@ -24,6 +24,7 @@ import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
+
 import SimulatorResultTable from "./SimulatorResultTable";
 import WarfareDetails from "./WarfareDetails";
 
@@ -34,7 +35,7 @@ const GridContainer = styled("div")`
 `;
 
 type StepDetailsProps = {
-  plan: PlanFileEntity;
+  plan: PlanEntity;
   step: StepEntity;
 };
 
@@ -68,7 +69,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
       });
 
       dispatch(
-        stepsSlices.actions.update({
+        stepsSlice.actions.update({
           id: step.id,
           changes: { config: next },
         })

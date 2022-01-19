@@ -6,7 +6,7 @@ import { Button, Link } from "@mui/material";
 import React from "react";
 
 import { useAsyncOnPublish, useOrg } from "../../../hooks";
-import { PlanFileEntity } from "../../../store";
+import { PlanEntity } from "../../../store";
 import { createDeck, openDeckbuilder, openKctools } from "../../../utils";
 import { Divider, KctoolsIcon } from "../../atoms";
 import { CopyTextButton, TextField } from "../../molecules";
@@ -21,7 +21,7 @@ const StyledButton = styled(Button)`
 `;
 
 type Props = {
-  file: PlanFileEntity;
+  file: PlanEntity;
 };
 
 const PlanMenu: React.FCX<Props> = ({ className, file }) => {

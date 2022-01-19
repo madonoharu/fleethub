@@ -10,6 +10,7 @@ import { LabeledValue } from "../../atoms";
 import AttackChip from "../AttackChip";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
+
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
 
 const LeftContainer = styled.div`

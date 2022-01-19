@@ -1,8 +1,4 @@
-import {
-  log,
-  updateMasterDataBySpreadsheet,
-  updateImages,
-} from "@fh/admin/src";
+import { updateMasterDataBySpreadsheet, updateImages } from "@fh/admin/src";
 
 type ClientPayload = {
   type: string;
@@ -23,29 +19,15 @@ const getClientPayload = (): ClientPayload => {
   return payload;
 };
 
-const getErrorMessage = (error: unknown) => {
-  if (error instanceof Error) return error.message;
-  if (typeof error === "string") return error;
-  return "Unknown error";
-};
-
 const main = async () => {
   const type = getClientPayload()?.type;
 
-  try {
-    await log(`${type}: Start`);
+  if (type === "update_data") {
+    await updateMasterDataBySpreadsheet();
+  }
 
-    if (type === "update_data") {
-      await updateMasterDataBySpreadsheet();
-    }
-
-    if (type === "update_images") {
-      await updateImages();
-    }
-
-    await log(`${type}: Success`);
-  } catch (error) {
-    await log(getErrorMessage(error));
+  if (type === "update_images") {
+    await updateImages();
   }
 };
 

@@ -13,7 +13,7 @@ pub enum HitType {
 pub struct HitRateParams {
     pub accuracy_term: f64,
     pub evasion_term: f64,
-    pub morale_mod: f64,
+    pub target_morale_mod: f64,
     pub critical_rate_constant: f64,
     pub critical_percentage_bonus: f64,
     pub hit_percentage_bonus: f64,
@@ -42,7 +42,7 @@ impl HitRate {
 
 impl HitRateParams {
     fn calc_basis(&self) -> f64 {
-        let value = (self.accuracy_term - self.evasion_term) * self.morale_mod;
+        let value = (self.accuracy_term - self.evasion_term) * self.target_morale_mod;
         value.clamp(10.0, 96.0)
     }
 
@@ -78,7 +78,7 @@ mod test {
         let min = HitRateParams {
             accuracy_term: 0.0,
             evasion_term: 0.0,
-            morale_mod: 1.0,
+            target_morale_mod: 1.0,
             critical_rate_constant: 1.0,
             critical_percentage_bonus: 0.0,
             hit_percentage_bonus: 0.0,
@@ -97,7 +97,7 @@ mod test {
         let hit_rate = HitRateParams {
             accuracy_term: 60.0,
             evasion_term: 10.0,
-            morale_mod: 1.2,
+            target_morale_mod: 1.2,
             critical_rate_constant: 1.3,
             critical_percentage_bonus: 12.0,
             hit_percentage_bonus: 9.0,
