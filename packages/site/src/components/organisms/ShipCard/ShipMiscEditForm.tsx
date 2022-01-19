@@ -4,6 +4,7 @@ import { DAMAGE_STATES, MORALE_STATES } from "@fh/utils";
 import { DamageState, MoraleState, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
+
 import { ShipEntity } from "../../../store";
 import {
   DamageStateIcon,
@@ -12,6 +13,7 @@ import {
   MoraleStateIcon,
 } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
+
 import FuelAmmoForm from "./FuelAmmoForm";
 
 const StyledNumberInput = styled(NumberInput)`

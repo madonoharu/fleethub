@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { AttackPowerParams, AttackPower } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
+
 import { numstr } from "../../../utils";
 import { LabeledValue } from "../../atoms";
 

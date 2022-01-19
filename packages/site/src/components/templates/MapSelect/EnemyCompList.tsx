@@ -10,6 +10,7 @@ import { useModal } from "../../../hooks";
 import { Flexbox } from "../../atoms";
 import { InfoButton, NodeLable } from "../../molecules";
 import { EnemyCompScreen, ShipBannerGroup } from "../../organisms";
+
 import EnemyFighterPower from "./EnemyFighterPower";
 
 const FORMATION_MAP: Record<number, Formation | undefined> = {

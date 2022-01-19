@@ -1,71 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { GEAR_KEYS, nonNullable } from "@fh/utils";
 import { Button, Divider } from "@mui/material";
-import { AppThunk, nanoid } from "@reduxjs/toolkit";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 import { useFhCore, useShip } from "../../../hooks";
 import {
-  addEntities,
-  AirSquadronEntity,
-  airSquadronsSelectors,
-  equip,
-  EquipPayload,
+  entitiesSlice,
   GearPosition,
-  gearsSelectors,
-  PresetEntity,
-  PresetState,
-  selectPresets,
-  ShipEntity,
-  shipsSelectors,
+  Preset,
+  selectPreset,
 } from "../../../store";
 import { Checkbox, Flexbox } from "../../atoms";
+
 import PresetList from "./PresetList";
-
-const addPresetByPosition =
-  (position: Omit<GearPosition, "key">, name: string): AppThunk =>
-  (dispatch, getState) => {
-    const root = getState();
-
-    let source: ShipEntity | AirSquadronEntity | undefined;
-
-    if (position.tag === "ship") {
-      source = shipsSelectors.selectById(root, position.id);
-    } else if (position.tag === "airSquadron") {
-      source = airSquadronsSelectors.selectById(root, position.id);
-    }
-
-    if (!source) {
-      return;
-    }
-
-    const preset: PresetEntity = {
-      id: nanoid(),
-      name,
-    };
-
-    const gears = GEAR_KEYS.map((key) => {
-      const gearEntityId = source?.[key];
-      const gear =
-        gearEntityId && gearsSelectors.selectById(root, gearEntityId);
-
-      if (gear) {
-        const id = nanoid();
-        preset[key] = id;
-        return { ...gear, id };
-      } else {
-        return;
-      }
-    }).filter(nonNullable);
-
-    const entities = {
-      presets: [preset],
-      gears,
-    };
-
-    dispatch(addEntities({ entities }));
-  };
 
 type PresetMenuProps = {
   position?: Omit<GearPosition, "key">;
@@ -75,16 +23,21 @@ type PresetMenuProps = {
 const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
   const { core, module } = useFhCore();
   const [allVisible, setAllVisible] = useState(false);
-  const presets = useSelector(selectPresets);
+
+  const presets = useSelector((root) => {
+    const ids = root.present.entities.presets.ids as string[];
+    return ids.map((id) => selectPreset(root, id)).filter(nonNullable);
+  }, shallowEqual);
+
   const dispatch = useDispatch();
 
   const tag = position?.tag;
-  const shipEntityId = position?.tag === "ship" ? position?.id : "";
+  const shipEntityId = position?.tag === "ships" ? position?.id : "";
   const ship = useShip(shipEntityId);
 
-  let canEquip: ((preset: PresetState) => boolean) | undefined;
+  let canEquip: ((preset: Preset) => boolean) | undefined;
 
-  if (tag === "ship") {
+  if (tag === "ships") {
     canEquip = (preset) => {
       return GEAR_KEYS.every((key) => {
         const gearState = preset[key];
@@ -93,7 +46,7 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
         return !gear || ship?.can_equip(gear, key);
       });
     };
-  } else if (tag === "airSquadron") {
+  } else if (tag === "airSquadrons") {
     canEquip = (preset) => {
       if (preset.g5 || preset.gx) {
         return false;
@@ -110,36 +63,31 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
   const handleRegister = () => {
     let name = ship?.name || "";
 
-    if (position?.tag === "airSquadron") {
+    if (position?.tag === "airSquadrons") {
       name = "基地";
     }
 
     if (position) {
-      dispatch(addPresetByPosition(position, name));
+      dispatch(
+        entitiesSlice.actions.createPreset({
+          name,
+          position,
+        })
+      );
     }
   };
 
-  const handleEquip = (preset: PresetState) => {
+  const handleEquip = (preset: Preset) => {
     if (!position) {
       return;
     }
 
-    const changes: EquipPayload["changes"] = {};
-
-    const gears = GEAR_KEYS.map((key) => {
-      const gear = preset[key];
-      const newGear = gear && { ...gear, id: nanoid() };
-      changes[key] = newGear?.id;
-      return newGear;
-    }).filter(nonNullable);
-
-    const payload: EquipPayload = {
-      ...position,
-      changes,
-      entities: { gears },
-    };
-
-    dispatch(equip(payload));
+    dispatch(
+      entitiesSlice.actions.createGearsByPreset({
+        preset: preset.id,
+        position,
+      })
+    );
     onEquip?.();
   };
 

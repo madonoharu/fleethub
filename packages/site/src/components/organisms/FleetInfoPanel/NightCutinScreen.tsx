@@ -12,6 +12,7 @@ import AttackChip from "../AttackChip";
 import NightSituationForm from "../NightSituationForm";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
+
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
 
 const StyledLabeledValue = styled(LabeledValue)`

@@ -1,8 +1,6 @@
 import { AlertColor } from "@mui/material";
 import { createSlice, isRejected, PayloadAction } from "@reduxjs/toolkit";
 
-import { publishFile } from "./entities";
-
 type AlertState = {
   severity: AlertColor;
   message: string;
@@ -30,29 +28,11 @@ export const navSlice = createSlice({
   },
 
   extraReducers: (bapplder) => {
-    bapplder
-      .addCase(publishFile.fulfilled, (state, { payload }) => {
-        state.alert = {
-          severity: "success",
-          message: "共有URLをコピーしました",
-        };
-
-        state.shareUrl = payload;
-      })
-      .addMatcher(isRejected, (state, { error }) => {
-        state.alert = {
-          severity: "error",
-          message: error.code || error.message || error.code || "unknown error",
-        };
-      })
-      .addMatcher(
-        (action) =>
-          typeof action.type === "string" &&
-          !action.type.startsWith(publishFile.typePrefix) &&
-          action.type.startsWith("entities"),
-        (state) => {
-          delete state.shareUrl;
-        }
-      );
+    bapplder.addMatcher(isRejected, (state, { error }) => {
+      state.alert = {
+        severity: "error",
+        message: error.code || error.message || error.code || "unknown error",
+      };
+    });
   },
 });

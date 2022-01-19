@@ -3,20 +3,23 @@ import styled from "@emotion/styled";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFile, useModal } from "../../../hooks";
-import { PlanFileEntity } from "../../../store";
+import { useFileActions, useFileCanDrop, useModal } from "../../../hooks";
+import { PlanEntity } from "../../../store";
 import { FileCopyButton, MoreVertButton, DeleteButton } from "../../molecules";
 import { FileMenu } from "../../organisms";
+
 import FileLabel from "./FileLabel";
 
 type Props = {
-  file: PlanFileEntity;
+  file: PlanEntity;
 };
 
-const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
-  const { actions, canDrop } = useFile(file.id);
+const PlanLabel: React.FCX<Props> = ({ className, file }) => {
   const { t } = useTranslation("common");
   const MenuModal = useModal();
+
+  const actions = useFileActions(file.id);
+  const { canDrop } = useFileCanDrop(file.id);
 
   return (
     <>
@@ -55,6 +58,6 @@ const PlanFileLabel: React.FCX<Props> = ({ className, file }) => {
   );
 };
 
-export default styled(PlanFileLabel)`
+export default styled(PlanLabel)`
   position: relative;
 `;

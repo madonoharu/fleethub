@@ -1,13 +1,40 @@
 /** @jsxImportSource @emotion/react */
+import { nonNullable } from "@fh/utils";
+import { AppThunk } from "@reduxjs/toolkit";
 import { Ship } from "fleethub-core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { selectShip, shipSelectSlice } from "../../../store";
+import { useFhCore } from "../../../hooks";
+import { entitiesSlice, shipSelectSlice } from "../../../store";
 import { Dialog } from "../../organisms";
 import ShipList from "../ShipList";
 
+const selectShip =
+  (ship: Ship, id?: string): AppThunk =>
+  (dispatch, getState) => {
+    const root = getState();
+    const shipSelectState = root.present.shipSelect;
+
+    dispatch(
+      entitiesSlice.actions.createShip({
+        input: ship.state(),
+        position: shipSelectState.position,
+        id: id || shipSelectState.id,
+        reselect: shipSelectState.reselect,
+      })
+    );
+  };
+
 const ShipSelectModal: React.FCX = () => {
+  const { masterData, core } = useFhCore();
+  const ships = React.useMemo(() => {
+    return masterData.ships
+      .map((ship) => core.create_ship_by_id(ship.ship_id))
+      .filter(nonNullable);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [masterData]);
+
   const dispatch = useDispatch();
   const open = useSelector((root) => root.present.shipSelect.open);
   const create = useSelector((root) => root.present.shipSelect.create);
@@ -25,7 +52,7 @@ const ShipSelectModal: React.FCX = () => {
   return (
     <>
       <Dialog open={open} full onClose={handleClose}>
-        {open && <ShipList onSelect={handleSelect} />}
+        {open && <ShipList ships={ships} onSelect={handleSelect} />}
       </Dialog>
     </>
   );

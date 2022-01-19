@@ -46,16 +46,15 @@ pub struct FhCore {
 impl FhCore {
     #[wasm_bindgen(constructor)]
     pub fn new(js_master: JsValue, js_fn: js_sys::Function) -> Result<FhCore, JsValue> {
-        let result = MasterData::new(js_master);
+        let master_data =
+            MasterData::new(js_master).map_err(|err| JsValue::from(err.to_string()))?;
 
-        result
-            .map(|master_data| Self {
-                factory: Factory {
-                    master_data,
-                    ebonus_fn: EBonusFn::new(js_fn),
-                },
-            })
-            .map_err(|err| JsValue::from(err.to_string()))
+        let factory = Factory {
+            master_data,
+            ebonus_fn: EBonusFn::new(js_fn),
+        };
+
+        Ok(Self { factory })
     }
 
     pub fn create_gear(&self, input: Option<GearState>) -> Option<Gear> {

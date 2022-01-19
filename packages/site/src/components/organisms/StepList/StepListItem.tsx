@@ -9,9 +9,9 @@ import { useDispatch } from "react-redux";
 import { useModal, useOrg } from "../../../hooks";
 import {
   initalStepConfig,
-  PlanFileEntity,
+  PlanEntity,
   StepEntity,
-  stepsSlices,
+  stepsSlice,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton, NodeLable } from "../../molecules";
@@ -20,7 +20,7 @@ import StepDetails from "../StepDetails";
 import Swappable from "../Swappable";
 
 type StepListItemProps = {
-  plan: PlanFileEntity;
+  plan: PlanEntity;
   step: StepEntity;
   index: number;
   onRemove?: () => void;
@@ -46,7 +46,7 @@ const StepListItem: React.FCX<StepListItemProps> = ({
   const config = step.config || initalStepConfig;
 
   const handleRemove = () => {
-    dispatch(stepsSlices.actions.remove(step.id));
+    dispatch(stepsSlice.actions.remove(step.id));
   };
 
   return (

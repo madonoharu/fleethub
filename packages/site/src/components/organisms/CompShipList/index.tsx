@@ -8,7 +8,8 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-import { ShipPosition, swapShip, SwapShipPayload } from "../../../store";
+import { entitiesSlice, ShipPosition, SwapShipPayload } from "../../../store";
+
 import CompShipButton from "./CompShipButton";
 
 type CompShipListProps = {
@@ -37,7 +38,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
   };
 
   const handleSwap = (payload: SwapShipPayload) => {
-    dispatch(swapShip(payload));
+    dispatch(entitiesSlice.actions.swapShip(payload));
   };
 
   const renderShip = (
@@ -48,7 +49,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
   ) => {
     const className = clsx(ft, key);
     const position: ShipPosition = {
-      tag: "fleet",
+      tag: "fleets",
       id: fleetMeta.id,
       key: key,
     };

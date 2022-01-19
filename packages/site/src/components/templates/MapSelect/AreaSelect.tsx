@@ -81,6 +81,7 @@ type AreaSelectProps = {
 };
 
 const AreaSelect: React.FCX<AreaSelectProps> = ({ value, onChange }) => {
+  const { t } = useTranslation("common");
   const Modal = useModal();
 
   const handleChange = (value: number) => {
@@ -96,7 +97,7 @@ const AreaSelect: React.FCX<AreaSelectProps> = ({ value, onChange }) => {
         color="primary"
         endIcon={<ArrowDropDownIcon />}
       >
-        海域 {value}
+        {t("Map")} {Math.floor(value / 10)}-{value % 10}
       </StyledButton>
       <Modal sx={{ m: 1 }}>
         <AreaMenu onChange={handleChange} />

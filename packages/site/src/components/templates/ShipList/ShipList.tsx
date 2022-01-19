@@ -6,6 +6,7 @@ import React from "react";
 
 import { Divider } from "../../atoms";
 import { SearchInput } from "../../organisms";
+
 import FilterBar from "./FilterBar";
 import ShipButton from "./ShipButton";
 import ShipSearchResult from "./ShipSearchResult";
@@ -20,13 +21,14 @@ const getCtypeEntries = (ships: Ship[]): Array<[number, Ship[]]> => {
 };
 
 type Props = {
+  ships: Ship[];
   abyssal?: boolean;
   onSelect?: (ship: Ship) => void;
 };
 
-const ShipList: React.FC<Props> = ({ onSelect }) => {
+const ShipList: React.FC<Props> = ({ ships, onSelect }) => {
   const { state, update, visibleShips, searchValue, setSearchValue } =
-    useShipListState();
+    useShipListState(ships);
 
   const { t } = useTranslation("ctype");
 
