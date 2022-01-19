@@ -29,7 +29,7 @@ const Explorer: React.FCX = ({ className }) => {
     (root) => root.present.entities.files
   );
 
-  const [expanded, setExpanded] = React.useState<string[]>(["root"]);
+  const [expanded, setExpanded] = React.useState<string[]>(["root", "temp"]);
   const [selected, setSelected] = React.useState<string>("");
 
   const toggleExplorerOpen = () =>

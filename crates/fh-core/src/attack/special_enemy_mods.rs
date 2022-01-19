@@ -184,7 +184,11 @@ pub fn special_enemy_modifiers(
     let africa_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
     let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
     let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
+    let honi_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
+
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
+
+    let toku_daihatsu_tank_count = shikon_count + honi_count;
 
     // 改修補正
     let landing_craft_stars = gears.sum_by(|gear| {
@@ -223,11 +227,7 @@ pub fn special_enemy_modifiers(
     mods.apply_a13(tank_ibonus);
 
     // 陸上共通 b13
-    apply_mod!(
-        b13,
-        shikon_count + m4a1dd_count > 0,
-        (shikon_count + m4a1dd_count) as f64 * 25.0
-    );
+    apply_mod!(b13, m4a1dd_count > 0, m4a1dd_count as f64 * 25.0);
 
     // 陸上共通 a13_2
     apply_mod!(a13_2, gears.has(gear_id!("M4A1 DD")), 1.4);
@@ -253,6 +253,12 @@ pub fn special_enemy_modifiers(
         matches!(attacker.ship_type, ShipType::SS | ShipType::SSV),
         30.0
     );
+
+    // 特大発戦車補正
+    if toku_daihatsu_tank_count > 0 {
+        mods.apply_a13(1.8);
+        mods.apply_b13(25.0)
+    }
 
     // 陸上共通 支援上陸用舟艇シナジー
     let calc_landing_craft_synergy_bonuses = || {
@@ -325,7 +331,6 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, toku_daihatsu_count, [1.15]);
             apply_mod!(a13, t89_tank_count, [1.5, 1.5 * 1.4]);
             apply_mod!(a13, africa_count, [1.5]); //2積み検証待ち
-            apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [2.0]);
             apply_mod!(a13, t2_tank_count, [2.4, 2.4 * 1.35]);
 
@@ -346,7 +351,6 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, toku_daihatsu_count, [1.15]);
             apply_mod!(a13, t89_tank_count, [1.2, 1.2 * 1.4]);
             // apply_mod!(a13, africa_count, [1.2]); //検証待ち
-            apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [1.8]);
             apply_mod!(a13, t2_tank_count, [2.4, 2.4 * 1.35]);
 
@@ -366,7 +370,6 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, toku_daihatsu_count, [1.2]);
             apply_mod!(a13, t89_tank_count, [1.6, 1.6 * 1.5]);
             // apply_mod!(a13, africa_count, [1.6]); //検証待ち
-            apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [2.0]);
             apply_mod!(a13, t2_tank_count, [2.8]);
         }
@@ -380,7 +383,6 @@ pub fn special_enemy_modifiers(
             apply_mod!(a13, toku_daihatsu_count, [1.15]);
             apply_mod!(a13, t89_tank_count, [1.5, 1.5 * 1.3]);
             apply_mod!(a13, africa_count, [1.5]); //2積み検証待ち
-            apply_mod!(a13, shikon_count, [1.8]);
             apply_mod!(a13, m4a1dd_count, [1.1]);
             apply_mod!(a13, t2_tank_count, [1.5, 1.5 * 1.2]);
 

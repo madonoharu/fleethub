@@ -21,13 +21,14 @@ const getCtypeEntries = (ships: Ship[]): Array<[number, Ship[]]> => {
 };
 
 type Props = {
+  ships: Ship[];
   abyssal?: boolean;
   onSelect?: (ship: Ship) => void;
 };
 
-const ShipList: React.FC<Props> = ({ onSelect }) => {
+const ShipList: React.FC<Props> = ({ ships, onSelect }) => {
   const { state, update, visibleShips, searchValue, setSearchValue } =
-    useShipListState();
+    useShipListState(ships);
 
   const { t } = useTranslation("ctype");
 

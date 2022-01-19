@@ -198,21 +198,24 @@ export const entitiesSlice = createSlice({
           const next = entities.ships[result];
 
           if (current && next) {
-            entities.ships[result] = {
+            state.ships.entities[result] = {
               id: next.id,
               ship_id: next.ship_id,
               ...pick(current, GEAR_KEYS),
             };
           }
+        } else {
+          addEntities(state, entities);
         }
-
-        addEntities(state, entities);
 
         if (position) {
           setShipPosition(state, position, result);
         }
       },
       prepare: (payload: CreateShipPayload) => {
+        payload.id ||= nanoid();
+        payload.input.id = payload.id;
+
         return {
           payload,
         };
