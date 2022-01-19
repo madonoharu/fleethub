@@ -11041,11 +11041,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"ts-norm@portal:/home/hal/dev/ts-norm::locator=fleethub%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "ts-norm@portal:/home/hal/dev/ts-norm::locator=fleethub%40workspace%3A."
+"ts-norm@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "ts-norm@npm:0.3.0"
+  checksum: b8e35108743011f8d0814e3e5e2982ca740e94e7d8c5ba787bd8c6253370ef069621ddcb6eacac03cfc9c33f70a0982a0adcf9125f5eaac52cee9a6872336e93
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "tsconfig-paths@npm:^3.12.0":
   version: 3.12.0

@@ -1,6 +1,6 @@
 {
   "name": "fleethub",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
@@ -67,8 +67,5 @@
   "engines": {
     "npm": "Please use yarn"
   },
-  "packageManager": "yarn@3.0.2",
-  "resolutions": {
-    "ts-norm": "portal:/home/hal/dev/ts-norm"
-  }
+  "packageManager": "yarn@3.0.2"
 }
