@@ -5,8 +5,8 @@ import { styled } from "@mui/system";
 import { ShipMeta } from "fleethub-core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useSwap } from "../../../hooks";
 
+import { useSwap } from "../../../hooks";
 import { ShipPosition, shipSelectSlice, SwapShipPayload } from "../../../store";
 import ShipBanner from "../ShipBanner";
 

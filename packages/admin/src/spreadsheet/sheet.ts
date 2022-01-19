@@ -1,13 +1,16 @@
-import { mapValues, pick, promiseAllValues } from "@fh/utils";
+import { mapValues, nonNullable, pick, promiseAllValues } from "@fh/utils";
 import { MasterData, MasterEquippable } from "fleethub-core";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetRow,
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
+import { Auth, google, sheets_v4 } from "googleapis";
 import { Start2 } from "kc-tools";
+
 import { getServiceAccount } from "../credentials";
-import { updateRows } from "../utils";
+import { createUpdateRowsRequests } from "../utils";
+
 import { createConfig } from "./config";
 import { createGearData } from "./gear";
 import { createShipData } from "./ship";
@@ -66,21 +69,36 @@ const sheetTitleMap = {
 export type SheetRecord = Record<keyof typeof sheetTitleMap, Sheet>;
 
 const SHEET_ID = "1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA";
-const doc = new GoogleSpreadsheet(SHEET_ID);
 
-let initialized = false;
+type AuthClient =
+  | Auth.Compute
+  | Auth.JWT
+  | Auth.UserRefreshClient
+  | Auth.BaseExternalAccountClient
+  | Auth.Impersonated;
 
-export const getGoogleSpreadsheet = async () => {
-  if (initialized) return doc;
+let auth: AuthClient;
 
-  const serviceAccount = getServiceAccount();
-  await doc.useServiceAccountAuth(serviceAccount);
-  await doc.loadInfo();
+async function getAuth(): Promise<AuthClient> {
+  if (auth) {
+    return auth;
+  }
 
-  initialized = true;
+  auth = await google.auth.getClient({
+    credentials: getServiceAccount(),
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  });
+
+  return auth;
+}
+
+async function getGoogleSpreadsheet() {
+  const doc = new GoogleSpreadsheet(SHEET_ID);
+  const auth = await getAuth();
+  doc.useOAuth2Client(auth);
 
   return doc;
-};
+}
 
 export class Sheet {
   static async read(inner: GoogleSpreadsheetWorksheet) {
@@ -103,22 +121,61 @@ export class Sheet {
     return this.inner.headerValues;
   }
 
+  createUpdateRowsRequests(data: object[]) {
+    const { sheetId, headerValues } = this.inner;
+
+    return createUpdateRowsRequests(
+      Number(sheetId),
+      headerValues,
+      this.rows,
+      data
+    );
+  }
+
   async write(data: object[]) {
-    return updateRows(this.inner, this.rows, data);
+    const requests = this.createUpdateRowsRequests(data);
+
+    if (!requests.length) {
+      return;
+    }
+
+    const auth = await getAuth();
+
+    const client = google.sheets({
+      version: "v4",
+      auth,
+    }).spreadsheets;
+
+    await client.batchUpdate({
+      spreadsheetId: SHEET_ID,
+      requestBody: {
+        requests,
+      },
+    });
   }
 }
 
 export class MasterDataSpreadsheet {
-  static async read() {
+  static async init() {
+    const auth = await getAuth();
+
+    const client = google.sheets({
+      version: "v4",
+      auth,
+    }).spreadsheets;
+
     const doc = await getGoogleSpreadsheet();
+    await doc.loadInfo();
+
     const sheets = await promiseAllValues(
       mapValues(sheetTitleMap, (title) => Sheet.read(doc.sheetsByTitle[title]))
     );
 
-    return new MasterDataSpreadsheet(doc, sheets);
+    return new MasterDataSpreadsheet(client, doc, sheets);
   }
 
   private constructor(
+    public client: sheets_v4.Resource$Spreadsheets,
     public doc: GoogleSpreadsheet,
     public sheets: SheetRecord
   ) {}
@@ -142,13 +199,24 @@ export class MasterDataSpreadsheet {
   }
 
   async writeMasterData(md: Partial<MasterData>) {
-    const sheets = this.pickSheets(["ships", "gears" /** "gear_types" */]);
+    const keys = ["ships", "gears"] as const;
 
-    const promises = mapValues(sheets, (sheet, key) => {
-      const data = md[key];
-      return data && sheet.write(data);
-    });
+    const requests = keys
+      .flatMap((key) => {
+        const sheet = this.sheets[key];
+        const data = md[key];
 
-    await Promise.all(Object.values(promises));
+        return data && sheet.createUpdateRowsRequests(data);
+      })
+      .filter(nonNullable);
+
+    if (requests.length) {
+      await this.client.batchUpdate({
+        spreadsheetId: this.doc.spreadsheetId,
+        requestBody: {
+          requests,
+        },
+      });
+    }
   }
 }

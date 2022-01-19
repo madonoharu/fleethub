@@ -4,21 +4,14 @@ import { persistReducer, WebStorage } from "redux-persist";
 import { ThunkAction } from "redux-thunk";
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo";
 
-import { airSquadronsSlice } from "./airSquadronsSlice";
 import { appSlice } from "./appSlice";
-import { filesSlice } from "./filesSlice";
-import { fleetsSlice } from "./fleetsSlice";
+import { entitiesSlice } from "./entities";
 import { gearSelectSlice } from "./gearSelectSlice";
-import { gearsSlice } from "./gearsSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
 import { mapSelectSlice } from "./mapSelectSlice";
 import { navSlice } from "./navSlice";
-import { orgsSlice } from "./orgsSlice";
-import { presetsSlice } from "./presetsSlice";
 import { shipDetailsSlice } from "./shipDetailsSlice";
 import { shipSelectSlice } from "./shipSelectSlice";
-import { shipsSlice } from "./shipsSlice";
-import { stepsSlices } from "./stepsSlice";
 import undoableOptions from "./undoableOptions";
 
 const noopStorage: WebStorage = {
@@ -33,21 +26,14 @@ const combinedReducer = combineReducers({
   app: appSlice.reducer,
   nav: navSlice.reducer,
 
-  gears: gearsSlice.reducer,
-  ships: shipsSlice.reducer,
-  airSquadrons: airSquadronsSlice.reducer,
-  fleets: fleetsSlice.reducer,
-  orgs: orgsSlice.reducer,
-  steps: stepsSlices.reducer,
-  files: filesSlice.reducer,
-  presets: presetsSlice.reducer,
-
   shipSelect: shipSelectSlice.reducer,
   gearSelect: gearSelectSlice.reducer,
   mapSelect: mapSelectSlice.reducer,
 
   gkcoi: gkcoiSlice.reducer,
   shipDetails: shipDetailsSlice.reducer,
+
+  entities: entitiesSlice.reducer,
 });
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {

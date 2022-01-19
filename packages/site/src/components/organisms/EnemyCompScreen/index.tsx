@@ -2,8 +2,8 @@
 import { MapEnemyComp, uncapitalize } from "@fh/utils";
 import { Comp, Role } from "fleethub-core";
 import { useTranslation } from "next-i18next";
-
 import React, { useMemo } from "react";
+
 import { useFhCore } from "../../../hooks";
 import { Tabs, TabsProps } from "../../molecules";
 import FleetScreen from "../FleetScreen";

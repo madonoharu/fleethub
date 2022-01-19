@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import React from "react";
-import { GearCategoryFilter } from "../../../store";
 
+import { GearCategoryFilter } from "../../../store";
 import { Flexbox, Checkbox } from "../../atoms";
 import { SelectButtons } from "../../molecules";
+
 import FilterIcon from "./FilterIcon";
 
 const getFilterIcon = (key: string) => <FilterIcon icon={key} />;

@@ -3,8 +3,8 @@ import { Button, Stack } from "@mui/material";
 import { OrgType, Role, WarfareAnalyzerShipEnvironment } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useFhCore } from "../../../hooks";
 
+import { useFhCore } from "../../../hooks";
 import { Divider, Flexbox } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
 import AttackPowerModifiersForm from "../AttackPowerModifiersForm";

@@ -4,10 +4,11 @@ import {
   AirState,
   Engagement,
 } from "fleethub-core";
+
 import {
-  createShip,
   initalNightSituation,
   initalAttackPowerModifiers,
+  entitiesSlice,
 } from "./entities";
 
 export type ShipDetailsState = {
@@ -48,11 +49,10 @@ export const shipDetailsSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(createShip, (state, { payload }) => {
-      const { position } = payload;
-      if (position?.tag !== "shipDetails") return;
-
-      state.enemies.push(payload.id);
+    builder.addCase(entitiesSlice.actions.createShip, (state, { payload }) => {
+      if (payload.position?.tag === "shipDetails" && payload.id) {
+        state.enemies.push(payload.id);
+      }
     });
   },
 });
