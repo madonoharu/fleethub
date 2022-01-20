@@ -18,7 +18,14 @@ import { gearsSlice } from "./gearsSlice";
 import { orgsSlice } from "./orgsSlice";
 import { presetsSlice } from "./presetsSlice";
 import { cloneAffectedEntities, getAffectedEntities } from "./rtk-ts-norm";
-import { Plan, PresetEntity, schemaKeys, schemata, Step } from "./schemata";
+import {
+  Plan,
+  PresetEntity,
+  schemaKeys,
+  schemata,
+  Step,
+  FileEntity,
+} from "./schemata";
 import { shipsSlice } from "./shipsSlice";
 import { stepsSlice } from "./stepsSlice";
 
@@ -151,6 +158,11 @@ function createGear(state: State, payload: CreateGearPayload): void {
   setGearPosition(state, position, result);
 }
 
+function getPlanDefaultName(state: State): string {
+  const count = Object.values(state.files.entities).filter(isPlan).length;
+  return `File ${count}`;
+}
+
 export const entitiesSlice = createSlice({
   name: ENTITIES_SLICE_NAME,
   initialState,
@@ -268,12 +280,8 @@ export const entitiesSlice = createSlice({
       reducer: (state, { payload }: PayloadAction<{ input: Plan }>) => {
         const { input } = payload;
 
-        if (input.name === "") {
-          const count = Object.values(state.files.entities).filter(
-            (f) => f?.type === "plan"
-          ).length;
-
-          input.name = `${count}`;
+        if (!input.name) {
+          input.name = getPlanDefaultName(state);
         }
 
         const { result, entities } = normalize(input, schemata.file);
@@ -377,6 +385,14 @@ export const entitiesSlice = createSlice({
     },
 
     import: (state, { payload }: PayloadAction<ImportPayload>) => {
+      const entity = payload.entities["files"]?.[payload.result] as
+        | FileEntity
+        | undefined;
+
+      if (isPlan(entity) && !entity.name) {
+        entity.name = getPlanDefaultName(state);
+      }
+
       addEntities(state, payload.entities);
       insert(state.files, payload.result, payload.to);
     },
