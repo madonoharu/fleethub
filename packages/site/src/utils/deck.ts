@@ -170,17 +170,12 @@ export const createOrgStateByDeck = (
 
   FLEET_KEYS.forEach((key) => {
     const f = deck[key];
-    if (f) {
-      org[key] = createFleetState(master, f);
-    }
+    org[key] = f ? createFleetState(master, f) : {};
   });
 
   AIR_SQUADRON_KEYS.forEach((key) => {
-    const as = deck[key];
-    if (as) {
-      const gears = as.items && createGearStateDict(as.items);
-      org[key] = gears;
-    }
+    const items = deck[key]?.items;
+    org[key] = items ? createGearStateDict(items) : {};
   });
 
   return org;
