@@ -78,7 +78,6 @@ export async function parseUrl(
   if (publicId) {
     const res = await readPublicFile(publicId);
 
-    console.log(res);
     const cloned = cloneAffectedEntities(
       res.result,
       schemata.file,
