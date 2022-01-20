@@ -123,7 +123,7 @@ export const filesSlice = createSlice({
       const newFolder: FileEntity = {
         id: nanoid(),
         type: "folder",
-        name: `Folder${count}`,
+        name: `Folder ${count}`,
         description: "",
         children: [],
       };
