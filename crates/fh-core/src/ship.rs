@@ -1630,6 +1630,9 @@ impl Ship {
         let atlanta_gun_count =
             gears.count(gear_id!("5inch連装両用砲(集中配備)")) + gfcs_5inch_count;
         if ship_class == ShipClass::AtlantaClass && atlanta_gun_count >= 2 {
+            if gfcs_5inch_count >= 2 {
+                vec.push(38)
+            }
             if gfcs_5inch_count >= 1 {
                 vec.push(39)
             }

@@ -181,16 +181,12 @@ export const createOrgStateByJor = (input: JorOrgState): OrgState => {
 
   FLEET_KEYS.forEach((key, i) => {
     const item = input.fleets.at(i);
-    if (item) {
-      result[key] = createFleet(item);
-    }
+    result[key] = item ? createFleet(item) : {};
   });
 
   AIR_SQUADRON_KEYS.forEach((key, i) => {
     const item = input.landBase.at(i);
-    if (item) {
-      result[key] = createAirSquadron(item);
-    }
+    result[key] = item ? createAirSquadron(item) : {};
   });
 
   return result;
