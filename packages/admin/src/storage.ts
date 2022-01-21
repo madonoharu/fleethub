@@ -119,10 +119,17 @@ export const updateJson = async <
 
 export const readMasterData = () => readJson(MASTER_DATA_PATH);
 
-export const mergeMasterData = async (
+export async function writeMasterData(data: MasterData): Promise<void> {
+  await writeJson(MASTER_DATA_PATH, data, {
+    public: true,
+    immutable: true,
+  });
+}
+
+export async function mergeMasterData(
   target: MasterData,
   source: Partial<MasterData>
-): Promise<MasterData> => {
+): Promise<MasterData> {
   const next: MasterData = { ...target, ...source };
 
   if (dequal(target, next)) {
@@ -131,13 +138,10 @@ export const mergeMasterData = async (
 
   console.log(`update: ${MASTER_DATA_PATH}`);
 
-  await writeJson(MASTER_DATA_PATH, next, {
-    public: true,
-    immutable: true,
-  });
+  await writeMasterData(next);
 
   return next;
-};
+}
 
 export const fetchGenerationMap = async (): Promise<Record<string, string>> => {
   const api = got.extend({

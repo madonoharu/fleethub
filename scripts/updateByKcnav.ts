@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { storage, Sheet } from "@fh/admin/src";
+import { storage, MasterDataSpreadsheet } from "@fh/admin/src";
 import { nonNullable } from "@fh/utils/src";
 import Signal from "signale";
 
@@ -11,6 +11,8 @@ import {
   KcnavEnemyShip,
   KcnavMap,
 } from "./maps";
+
+const spreadsheet = new MasterDataSpreadsheet();
 
 const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
   const record: Record<number, KcnavEnemyShip> = {};
@@ -23,9 +25,9 @@ const uniqByShipId = (ships: KcnavEnemyShip[]): KcnavEnemyShip[] => {
 };
 
 const updateShips = async (maps: KcnavMap[]) => {
-  const [md, sheet] = await Promise.all([
+  const [md, table] = await Promise.all([
     storage.readMasterData(),
-    Sheet.readByKey("ships"),
+    spreadsheet.readTable("ships"),
   ]);
 
   const masterShips = md.ships;
@@ -84,7 +86,7 @@ const updateShips = async (maps: KcnavMap[]) => {
 
   await Promise.all([
     storage.mergeMasterData(md, { ships: masterShips }),
-    sheet.write(masterShips),
+    spreadsheet.updateTable(table, masterShips),
   ]);
 };
 
