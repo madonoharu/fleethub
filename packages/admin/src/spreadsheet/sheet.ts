@@ -1,222 +1,140 @@
-import { mapValues, nonNullable, pick, promiseAllValues } from "@fh/utils";
-import { MasterData, MasterEquippable } from "fleethub-core";
-import {
-  GoogleSpreadsheet,
-  GoogleSpreadsheetRow,
-  GoogleSpreadsheetWorksheet,
-} from "google-spreadsheet";
-import { Auth, google, sheets_v4 } from "googleapis";
-import { Start2 } from "kc-tools";
+import { MasterData } from "fleethub-core";
+import { google } from "googleapis";
 
 import { getServiceAccount } from "../credentials";
-import { createUpdateRowsRequests } from "../utils";
 
-import { createConfig } from "./config";
-import { createGearData } from "./gear";
-import { createShipData } from "./ship";
+import { SpreadsheetClient } from "./client";
+import { createUpdateRowsRequests, SpreadsheetTable } from "./utils";
 
-const createEquippable = (start2: Start2): MasterEquippable => {
-  const equip_exslot = start2.api_mst_equip_exslot;
-  const equip_ship = start2.api_mst_equip_ship;
-  const equip_exslot_ship = start2.api_mst_equip_exslot_ship;
+const SHEET_DATA = [
+  { sheetId: 2088927150, key: "ships" },
+  { sheetId: 934954887, key: "ship_types" },
+  { sheetId: 363641447, key: "ship_classes" },
+  { sheetId: 1341468138, key: "ship_attrs" },
+  { sheetId: 1972078575, key: "gears" },
+  { sheetId: 1687646863, key: "gear_types" },
+  { sheetId: 1192109753, key: "gear_attrs" },
+  { sheetId: 347061403, key: "shelling_power" },
+  { sheetId: 1341171814, key: "carrier_shelling_power" },
+  { sheetId: 593793628, key: "shelling_accuracy" },
+  { sheetId: 950662376, key: "torpedo_power" },
+  { sheetId: 883691242, key: "torpedo_accuracy" },
+  { sheetId: 1671132346, key: "torpedo_evasion" },
+  { sheetId: 829203398, key: "night_power" },
+  { sheetId: 46966362, key: "night_accuracy" },
+  { sheetId: 1989582365, key: "asw_power" },
+  { sheetId: 1473639382, key: "asw_accuracy" },
+  { sheetId: 667921219, key: "defense_power" },
+  { sheetId: 1845135187, key: "contact_selection" },
+  { sheetId: 139440268, key: "fighter_power" },
+  { sheetId: 1148954527, key: "adjusted_anti_air" },
+  { sheetId: 7973442, key: "fleet_anti_air" },
+  { sheetId: 195030457, key: "elos" },
+  { sheetId: 1827664524, key: "anti_air_cutin" },
+  { sheetId: 370851605, key: "day_cutin" },
+  { sheetId: 1863042385, key: "night_cutin" },
+  { sheetId: 1930975556, key: "formation" },
+] as const;
 
-  const equip_stype = start2.api_mst_stype.map((stype) => {
-    const id = stype.api_id;
-    const equip_type = Object.entries(stype.api_equip_type)
-      .filter(([, equippable]) => equippable === 1)
-      .map(([gtype]) => Number(gtype));
+export type SheetKey = typeof SHEET_DATA[number]["key"];
 
-    return { id, equip_type };
-  });
+const SPREADSHEET_ID = "1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA";
 
-  return { equip_stype, equip_exslot, equip_ship, equip_exslot_ship };
-};
+function getSheetId(key: SheetKey): number {
+  const found = SHEET_DATA.find((sheet) => sheet.key === key);
 
-const sheetTitleMap = {
-  ships: "艦娘",
-  ship_types: "艦種",
-  ship_classes: "艦級",
-  ship_attars: "艦娘属性",
-  gears: "装備",
-  gear_types: "装備種",
-  gear_attrs: "装備属性",
-
-  // 改修
-  shelling_power: "改修砲撃攻撃力",
-  shelling_accuracy: "改修砲撃命中",
-  carrier_shelling_power: "改修空母砲撃攻撃力",
-  torpedo_power: "改修雷撃攻撃力",
-  torpedo_accuracy: "改修雷撃命中",
-  torpedo_evasion: "改修雷撃回避",
-  night_power: "改修夜戦攻撃力",
-  night_accuracy: "改修夜戦命中",
-  asw_power: "改修対潜攻撃力",
-  asw_accuracy: "改修対潜命中",
-  defense_power: "改修防御力",
-  contact_selection: "改修触接選択率",
-  fighter_power: "改修制空",
-  adjusted_anti_air: "改修加重対空",
-  fleet_anti_air: "改修艦隊対空",
-  elos: "改修マップ索敵",
-
-  //設定
-  anti_air_cutin: "対空CI",
-  day_cutin: "昼戦CI",
-  night_cutin: "夜戦CI",
-  formation: "陣形",
-};
-
-export type SheetRecord = Record<keyof typeof sheetTitleMap, Sheet>;
-
-const SHEET_ID = "1IQRy3OyMToqqkopCkQY9zoWW-Snf7OjdrALqwciyyRA";
-
-type AuthClient =
-  | Auth.Compute
-  | Auth.JWT
-  | Auth.UserRefreshClient
-  | Auth.BaseExternalAccountClient
-  | Auth.Impersonated;
-
-let auth: AuthClient;
-
-async function getAuth(): Promise<AuthClient> {
-  if (auth) {
-    return auth;
+  if (!found) {
+    throw new Error(`Sheet is not found: key ${key}`);
   }
 
-  auth = await google.auth.getClient({
-    credentials: getServiceAccount(),
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-
-  return auth;
+  return found.sheetId;
 }
 
-async function getGoogleSpreadsheet() {
-  const doc = new GoogleSpreadsheet(SHEET_ID);
-  const auth = await getAuth();
-  doc.useOAuth2Client(auth);
+function getKey(sheetId: number): string {
+  const found = SHEET_DATA.find((sheet) => sheet.sheetId === sheetId);
 
-  return doc;
-}
-
-export class Sheet {
-  static async read(inner: GoogleSpreadsheetWorksheet) {
-    const rows = await inner.getRows();
-    return new Sheet(inner, rows);
+  if (!found) {
+    throw new Error(`Sheet is not found: sheetId ${sheetId}`);
   }
 
-  static async readByKey(key: keyof SheetRecord) {
-    const doc = await getGoogleSpreadsheet();
-    const title = sheetTitleMap[key];
-    return Sheet.read(doc.sheetsByTitle[title]);
-  }
-
-  constructor(
-    public inner: GoogleSpreadsheetWorksheet,
-    public rows: GoogleSpreadsheetRow[]
-  ) {}
-
-  headerValues() {
-    return this.inner.headerValues;
-  }
-
-  createUpdateRowsRequests(data: object[]) {
-    const { sheetId, headerValues } = this.inner;
-
-    return createUpdateRowsRequests(
-      Number(sheetId),
-      headerValues,
-      this.rows,
-      data
-    );
-  }
-
-  async write(data: object[]) {
-    const requests = this.createUpdateRowsRequests(data);
-
-    if (!requests.length) {
-      return;
-    }
-
-    const auth = await getAuth();
-
-    const client = google.sheets({
-      version: "v4",
-      auth,
-    }).spreadsheets;
-
-    await client.batchUpdate({
-      spreadsheetId: SHEET_ID,
-      requestBody: {
-        requests,
-      },
-    });
-  }
+  return found.key;
 }
 
 export class MasterDataSpreadsheet {
-  static async init() {
-    const auth = await getAuth();
+  public client: SpreadsheetClient;
 
-    const client = google.sheets({
-      version: "v4",
-      auth,
-    }).spreadsheets;
+  constructor() {
+    const auth = new google.auth.GoogleAuth({
+      credentials: getServiceAccount(),
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
 
-    const doc = await getGoogleSpreadsheet();
-    await doc.loadInfo();
-
-    const sheets = await promiseAllValues(
-      mapValues(sheetTitleMap, (title) => Sheet.read(doc.sheetsByTitle[title]))
-    );
-
-    return new MasterDataSpreadsheet(client, doc, sheets);
+    this.client = new SpreadsheetClient(SPREADSHEET_ID, auth);
   }
 
-  private constructor(
-    public client: sheets_v4.Resource$Spreadsheets,
-    public doc: GoogleSpreadsheet,
-    public sheets: SheetRecord
-  ) {}
-
-  pickSheets<K extends keyof SheetRecord>(keys: K[]) {
-    return pick(this.sheets, keys);
+  async readTable(key: SheetKey): Promise<SpreadsheetTable> {
+    const tables = await this.client.readTables([getSheetId(key)]);
+    return tables[0];
   }
 
-  createMasterData(start2: Start2): Partial<MasterData> {
-    const shipData = createShipData(this, start2);
-    const gearData = createGearData(this, start2);
-    const equippable = createEquippable(start2);
-    const config = createConfig(this);
+  async readTables(): Promise<Record<SheetKey, SpreadsheetTable>>;
+  async readTables<K extends SheetKey>(
+    keys: K[]
+  ): Promise<Record<K, SpreadsheetTable>>;
+  async readTables(
+    arg?: SheetKey[]
+  ): Promise<Record<SheetKey, SpreadsheetTable>> {
+    let keys: SheetKey[];
 
-    return {
-      ...shipData,
-      ...gearData,
-      equippable,
-      config,
-    };
+    if (arg) {
+      keys = arg;
+    } else {
+      keys = SHEET_DATA.map((sheet) => sheet.key);
+    }
+
+    const sheetIds = keys.map(getSheetId);
+    const tables = await this.client.readTables(sheetIds);
+    const entries = tables.map((table) => {
+      const key = getKey(table.sheetId);
+      return [key, table];
+    });
+
+    return Object.fromEntries(entries) as Record<SheetKey, SpreadsheetTable>;
   }
 
-  async writeMasterData(md: Partial<MasterData>) {
-    const keys = ["ships", "gears"] as const;
-
-    const requests = keys
-      .flatMap((key) => {
-        const sheet = this.sheets[key];
-        const data = md[key];
-
-        return data && sheet.createUpdateRowsRequests(data);
-      })
-      .filter(nonNullable);
+  async updateTable(table: SpreadsheetTable, data: object[]): Promise<void> {
+    const requests = createUpdateRowsRequests(table, data);
 
     if (requests.length) {
       await this.client.batchUpdate({
-        spreadsheetId: this.doc.spreadsheetId,
-        requestBody: {
-          requests,
-        },
+        requests,
       });
+    } else {
+      console.log("requests.length is 0");
+    }
+  }
+
+  async writeMasterData(
+    tables: Record<"ships" | "gears", SpreadsheetTable>,
+    md: MasterData
+  ) {
+    const keys = ["ships", "gears"] as const;
+
+    const requests = keys.flatMap((key) => {
+      const data = md[key];
+      const table = tables[key];
+
+      const requests = createUpdateRowsRequests(table, data);
+
+      return requests;
+    });
+
+    if (requests.length) {
+      await this.client.batchUpdate({
+        requests,
+      });
+    } else {
+      console.log("skip writeMasterData");
     }
   }
 }

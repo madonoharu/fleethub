@@ -1,21 +1,35 @@
+import { dequal } from "dequal";
+import got from "got";
+import { Start2 } from "kc-tools";
+
 import { verifyGasIdToken } from "./auth";
 import { updateCloudinary } from "./cloudinary";
-import { MasterDataSpreadsheet } from "./spreadsheet";
+import { createMasterData, MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
-import { fetchStart2 } from "./utils";
+
+export function fetchStart2(): Promise<Start2> {
+  return got
+    .get(
+      "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json"
+    )
+    .json();
+}
 
 export async function updateMasterDataBySpreadsheet(): Promise<void> {
-  const [mdSheet, start2, currentMd] = await Promise.all([
-    MasterDataSpreadsheet.init(),
+  const spreadsheet = new MasterDataSpreadsheet();
+
+  const [tables, start2, currentMd] = await Promise.all([
+    spreadsheet.readTables(),
     fetchStart2(),
     storage.readMasterData(),
   ]);
 
-  const nextMd = mdSheet.createMasterData(start2);
-
+  const nextMd = createMasterData(tables, start2);
+  const updatesStorage = dequal(currentMd, nextMd);
+  console.log(updatesStorage);
   await Promise.all([
-    storage.mergeMasterData(currentMd, nextMd),
-    mdSheet.writeMasterData(nextMd),
+    updatesStorage && storage.writeMasterData(nextMd),
+    spreadsheet.writeMasterData(tables, nextMd),
   ]);
 }
 
@@ -29,6 +43,6 @@ export async function updateImages(): Promise<void> {
 }
 
 export { isProjectMember } from "./auth";
-export { verifyGasIdToken, fetchStart2, storage };
+export { verifyGasIdToken, storage };
 export * from "./spreadsheet";
 export * from "./credentials";

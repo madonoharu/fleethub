@@ -6,54 +6,40 @@ import {
   NightCutinDef,
   NestedFormationDef,
   BattleConfig,
+  MasterData,
 } from "fleethub-core";
 import set from "lodash/set";
 
-import { MasterDataSpreadsheet, Sheet } from "./sheet";
+import { SpreadsheetTable } from "./utils";
 
-const maybeNumber = (val: unknown): number | null => {
-  if (val === "") return null;
-  const num = Number(val);
-  return Number.isNaN(num) ? null : num;
-};
-
-const getAntiAirCutinDefs = (sheet: Sheet): AntiAirCutinDef[] => {
-  const rows = sheet.rows;
-  const headerValues = sheet.headerValues();
+function getAntiAirCutinDefs(table: SpreadsheetTable): AntiAirCutinDef[] {
+  const { headerValues, rows } = table;
 
   return rows.map((row) => {
     const def = {} as AntiAirCutinDef;
 
     headerValues.forEach((h) => {
-      const value = row[h];
-      if (h === "sequential") {
-        set(def, h, value === "TRUE");
-      } else {
-        set(def, h, maybeNumber(value));
-      }
+      const cellValue = row[h];
+      const value = cellValue === undefined ? null : cellValue;
+      set(def, h, value);
     });
 
     return def;
   });
-};
+}
 
-const getFormationDefs = (sheet: Sheet) => {
+function getFormationDefs(table: SpreadsheetTable): FormationDef[] {
+  const { headerValues, rows } = table;
   const rec: Record<string, FormationDef> = {};
-  const rows = sheet.rows;
-  const headerValues = sheet.headerValues();
 
   rows.forEach((row) => {
     const def = {} as Omit<NestedFormationDef, "tag"> & { tag: string };
     const tag = row.tag as string;
 
     headerValues.forEach((h) => {
-      const value = row[h];
-
-      if (h === "tag") {
-        set(def, h, value);
-      } else {
-        set(def, h, maybeNumber(value));
-      }
+      const cellValue = row[h];
+      const value = cellValue === undefined ? null : cellValue;
+      set(def, h, value);
     });
 
     def.tag = tag.replace(/\.(top_half|bottom_half)/, "") as Formation;
@@ -61,60 +47,47 @@ const getFormationDefs = (sheet: Sheet) => {
   });
 
   return Object.values(rec);
-};
+}
 
-const getDayCutinDefs = (sheet: Sheet) => {
-  const rows = sheet.rows;
-  const headerValues = sheet.headerValues();
+function getDayCutinDefs(table: SpreadsheetTable): DayCutinDef[] {
+  const { headerValues, rows } = table;
 
   return rows.map((row) => {
     const def = {} as DayCutinDef;
-    headerValues.forEach((h) => {
-      const value = row[h];
 
-      if (h === "tag" || h === "name") {
-        set(def, h, value);
-      } else {
-        set(def, h, maybeNumber(value));
-      }
+    headerValues.forEach((h) => {
+      const cellValue = row[h];
+      const value = cellValue === undefined ? null : cellValue;
+      set(def, h, value);
     });
 
     return def;
   });
-};
+}
 
-const getNaightCutinDefs = (sheet: Sheet) => {
-  const rows = sheet.rows;
-  const headerValues = sheet.headerValues();
+function getNaightCutinDefs(table: SpreadsheetTable): NightCutinDef[] {
+  const { headerValues, rows } = table;
 
   return rows.map((row) => {
     const def = {} as NightCutinDef;
-    headerValues.forEach((h) => {
-      const value = row[h];
 
-      if (h === "tag" || h === "name") {
-        set(def, h, value);
-      } else {
-        set(def, h, maybeNumber(value));
-      }
+    headerValues.forEach((h) => {
+      const cellValue = row[h];
+      const value = cellValue === undefined ? null : cellValue;
+      set(def, h, value);
     });
 
     return def;
   });
-};
+}
 
-export const createConfig = (mdSheet: MasterDataSpreadsheet): BattleConfig => {
-  const sheets = mdSheet.pickSheets([
-    "anti_air_cutin",
-    "day_cutin",
-    "night_cutin",
-    "formation",
-  ]);
-
+export function createConfig(
+  tables: Record<keyof MasterData["config"], SpreadsheetTable>
+): BattleConfig {
   return {
-    anti_air_cutin: getAntiAirCutinDefs(sheets.anti_air_cutin),
-    day_cutin: getDayCutinDefs(sheets.day_cutin),
-    night_cutin: getNaightCutinDefs(sheets.night_cutin),
-    formation: getFormationDefs(sheets.formation),
+    anti_air_cutin: getAntiAirCutinDefs(tables.anti_air_cutin),
+    day_cutin: getDayCutinDefs(tables.day_cutin),
+    night_cutin: getNaightCutinDefs(tables.night_cutin),
+    formation: getFormationDefs(tables.formation),
   };
-};
+}

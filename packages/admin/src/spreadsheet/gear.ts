@@ -1,16 +1,21 @@
-import { mapValues, nonNullable } from "@fh/utils";
-import { MasterAttrRule, MasterGear, MasterIBonuses } from "fleethub-core";
-import { GoogleSpreadsheetRow } from "google-spreadsheet";
+import { nonNullable } from "@fh/utils";
+import {
+  MasterAttrRule,
+  MasterData,
+  MasterGear,
+  MasterIBonuses,
+} from "fleethub-core";
 import { Start2 } from "kc-tools";
 
-import { deleteFalsyValues } from "../utils";
+import {
+  deleteFalsyValues,
+  cellValueToString,
+  SpreadsheetTable,
+} from "./utils";
 
-import { MasterDataSpreadsheet } from "./sheet";
+function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
+  const { rows } = table;
 
-const createGears = (
-  rows: GoogleSpreadsheetRow[],
-  start2: Start2
-): MasterGear[] => {
   const gears = start2.api_mst_slotitem.map((mst) => {
     const row = rows.find((row) => Number(row.gear_id) === mst.api_id);
 
@@ -34,7 +39,7 @@ const createGears = (
       radius: mst.api_distance || 0,
       cost: mst.api_cost || 0,
 
-      improvable: row?.improvable === "TRUE",
+      improvable: Boolean(row?.improvable),
       special_type: Number(row?.special_type),
       adjusted_anti_air_resistance: Number(row?.adjusted_anti_air_resistance),
       fleet_anti_air_resistance: Number(row?.fleet_anti_air_resistance),
@@ -46,16 +51,12 @@ const createGears = (
   });
 
   return gears;
-};
+}
 
-const createGearTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) =>
-  start2.api_mst_slotitem_equiptype.map((mst) => ({
-    id: mst.api_id,
-    name: mst.api_name,
-    tag: rows.find((row) => Number(row.id) === mst.api_id)?.tag || "",
-  }));
-
-const makeReplaceGearExpr = (start2: Start2, gear_attrs: MasterAttrRule[]) => {
+function makeReplaceGearExpr(
+  start2: Start2,
+  gear_attrs: MasterAttrRule[]
+): (str: string) => string {
   const replaceType = (str: string) =>
     start2.api_mst_slotitem_equiptype.reduce(
       (current, type) =>
@@ -86,78 +87,91 @@ const makeReplaceGearExpr = (start2: Start2, gear_attrs: MasterAttrRule[]) => {
       .replace(/\bname/g, "gear_id")
       .replace(/\n/g, " ")
       .replace(/\s{2,}/g, " ");
-};
+}
 
-const createGearAttrs = (rows: GoogleSpreadsheetRow[], start2: Start2) => {
+function createGearAttrs(
+  table: SpreadsheetTable,
+  start2: Start2
+): MasterAttrRule[] {
   const gear_attrs: MasterAttrRule[] = [];
   const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
-  rows.forEach((row) => {
+  table.rows.forEach((row) => {
     const expr = replaceExpr(row.expr as string);
-    gear_attrs.push({ tag: row.tag, name: row.name, expr });
+
+    gear_attrs.push({
+      tag: cellValueToString(row.tag),
+      name: cellValueToString(row.name),
+      expr,
+    });
   });
 
   return gear_attrs;
-};
+}
 
-const createMasterIBonuses = (
-  map: Record<keyof MasterIBonuses, GoogleSpreadsheetRow[]>,
+const IBONUS_KEYS: (keyof MasterIBonuses)[] = [
+  "shelling_power",
+  "shelling_accuracy",
+  "carrier_shelling_power",
+  "torpedo_power",
+  "torpedo_accuracy",
+  "torpedo_evasion",
+  "night_power",
+  "night_accuracy",
+  "asw_power",
+  "asw_accuracy",
+  "defense_power",
+  "contact_selection",
+  "fighter_power",
+  "adjusted_anti_air",
+  "fleet_anti_air",
+  "elos",
+];
+
+function createMasterIBonuses(
+  tables: Record<keyof MasterIBonuses, SpreadsheetTable>,
   start2: Start2,
   gear_attrs: MasterAttrRule[]
-): MasterIBonuses => {
+): MasterIBonuses {
   const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
-  return mapValues(map, (rows) => {
-    const rules = rows
+  const result = {} as MasterIBonuses;
+
+  IBONUS_KEYS.forEach((key) => {
+    const table = tables[key];
+
+    const rules = table.rows
       .map(({ expr, formula }) => {
-        if (!expr || !formula) return undefined;
-        return { expr: replaceExpr(expr as string), formula };
+        if (!expr || !formula) {
+          return undefined;
+        }
+        return {
+          expr: replaceExpr(cellValueToString(expr)),
+          formula: cellValueToString(formula),
+        };
       })
       .filter(nonNullable);
 
-    return rules;
+    result[key] = rules;
   });
-};
 
-export const createGearData = (
-  mdSheet: MasterDataSpreadsheet,
+  return result;
+}
+
+export function createGearData(
+  tables: Record<
+    "gears" | "gear_attrs" | keyof MasterIBonuses,
+    SpreadsheetTable
+  >,
   start2: Start2
-) => {
-  const sheets = mdSheet.pickSheets(["gears", "gear_types", "gear_attrs"]);
-
-  const ibonusesSheets = mdSheet.pickSheets([
-    "shelling_power",
-    "shelling_accuracy",
-    "carrier_shelling_power",
-    "torpedo_power",
-    "torpedo_accuracy",
-    "torpedo_evasion",
-    "night_power",
-    "night_accuracy",
-    "asw_power",
-    "asw_accuracy",
-    "defense_power",
-    "contact_selection",
-    "fighter_power",
-    "adjusted_anti_air",
-    "fleet_anti_air",
-    "elos",
-  ]);
-
-  const gears = createGears(sheets.gears.rows, start2);
-  const gear_types = createGearTypes(sheets.gear_types.rows, start2);
-  const gear_attrs = createGearAttrs(sheets.gear_attrs.rows, start2);
-
-  const ibonuses = createMasterIBonuses(
-    mapValues(ibonusesSheets, (sheet) => sheet.rows),
-    start2,
-    gear_attrs
-  );
+): Pick<MasterData, "gears" | "gear_attrs" | "ibonuses"> {
+  const gears = createGears(tables.gears, start2);
+  const gear_attrs = createGearAttrs(tables.gear_attrs, start2);
+  const ibonuses = createMasterIBonuses(tables, start2, gear_attrs);
 
   return {
     gears,
-    gear_types,
     gear_attrs,
     ibonuses,
   };
-};
+}
