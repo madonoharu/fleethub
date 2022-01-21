@@ -1,14 +1,43 @@
 import { sheets_v4 } from "googleapis";
-import got from "got";
-import { Start2 } from "kc-tools";
 import get from "lodash/get";
 
-export function fetchStart2(): Promise<Start2> {
-  return got
-    .get(
-      "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json"
-    )
-    .json();
+export type CellValue = string | number | boolean | undefined;
+export type SpreadsheetRow = Record<string, CellValue>;
+
+export type SpreadsheetTable = {
+  sheetId: number;
+  headerValues: string[];
+  rows: SpreadsheetRow[];
+};
+
+type Requests = NonNullable<
+  sheets_v4.Schema$BatchUpdateSpreadsheetRequest["requests"]
+>;
+
+export function intoCellValue(input: unknown): CellValue {
+  if (input === "" || input === undefined || input === null) {
+    return undefined;
+  }
+
+  switch (typeof input) {
+    case "number":
+    case "string":
+    case "boolean":
+      return input;
+  }
+
+  return String(input);
+}
+
+export function cellValueToString(cellValue: CellValue): string {
+  switch (typeof cellValue) {
+    case "boolean":
+      return cellValue ? "TRUE" : "FALSE";
+    case "undefined":
+      return "";
+  }
+
+  return String(cellValue);
 }
 
 export function deleteFalsyValues(obj: object): void {
@@ -19,71 +48,24 @@ export function deleteFalsyValues(obj: object): void {
   });
 }
 
-export function columnToLetter(column: number): string {
-  let temp;
-  let letter = "";
-  let col = column;
-  while (col > 0) {
-    temp = (col - 1) % 26;
-    letter = String.fromCharCode(temp + 65) + letter;
-    col = (col - temp - 1) / 26;
-  }
-  return letter;
-}
+function toEnteredValue(value: unknown): sheets_v4.Schema$ExtendedValue {
+  const cellValue = intoCellValue(value);
 
-function toCellValue(value: unknown): sheets_v4.Schema$ExtendedValue {
-  switch (value) {
-    case null:
-    case undefined:
-    case "":
-      return { stringValue: "" };
-    case "TRUE":
-      return { boolValue: true };
-    case "FALSE":
-      return { boolValue: false };
-  }
-
-  const num = Number(value);
-  if (!Number.isNaN(num)) {
-    return { numberValue: num };
-  }
-
-  switch (typeof value) {
-    case "object":
-      return { stringValue: JSON.stringify(value) };
+  switch (typeof cellValue) {
+    case "string":
+      return { stringValue: cellValue };
     case "boolean":
-      return { boolValue: value };
+      return { boolValue: cellValue };
     case "number":
-      return { numberValue: value };
-    default:
-      return { stringValue: String(value) };
+      return { numberValue: cellValue };
+    case "undefined":
+      return { stringValue: "" };
   }
-}
-
-function toCellString(value: unknown): string {
-  if (value === null || value === undefined) {
-    return "";
-  }
-
-  switch (typeof value) {
-    case "object":
-      return JSON.stringify(value);
-    case "boolean":
-      return value === true ? "TRUE" : "FALSE";
-  }
-
-  return String(value);
 }
 
 function equalCellValue(v1: unknown, v2: unknown): boolean {
-  const s1 = toCellString(v1);
-  const s2 = toCellString(v2);
-  return s1 === s2 || (s1 || "FALSE") === (s2 || "FALSE");
+  return intoCellValue(v1) === intoCellValue(v2);
 }
-
-type Requests = NonNullable<
-  sheets_v4.Schema$BatchUpdateSpreadsheetRequest["requests"]
->;
 
 function createAppendRowsRequests(
   sheetId: number,
@@ -99,7 +81,7 @@ function createAppendRowsRequests(
       const value = get(row, key);
 
       return {
-        userEnteredValue: toCellValue(value),
+        userEnteredValue: toEnteredValue(value),
       };
     });
 
@@ -152,7 +134,7 @@ function createUpdateCellRequests(
           {
             values: [
               {
-                userEnteredValue: toCellValue(value),
+                userEnteredValue: toEnteredValue(value),
               },
             ],
           },
@@ -163,11 +145,10 @@ function createUpdateCellRequests(
 }
 
 export function createUpdateRowsRequests(
-  sheetId: number,
-  headerValues: string[],
-  currentRows: object[],
-  nextRows: object[]
+  table: SpreadsheetTable,
+  data: object[]
 ): Requests {
+  const { sheetId, headerValues, rows: currentRows } = table;
   const idAttribute = headerValues[0];
 
   const getId = (row: object) => Number(get(row, idAttribute));
@@ -179,7 +160,7 @@ export function createUpdateRowsRequests(
   const updateCellRequests = currentRows.flatMap((currentRow, index) => {
     const rowIndex = index + 1;
     const id = getId(currentRow);
-    const nextRow = getRowById(nextRows, id);
+    const nextRow = getRowById(data, id);
 
     if (!nextRow) {
       return [];
@@ -203,7 +184,7 @@ export function createUpdateRowsRequests(
   });
 
   const currentIds = currentRows.map(getId);
-  const newRows: object[] = nextRows.filter((next) => {
+  const newRows = data.filter((next) => {
     const id = getId(next);
     return !currentIds.includes(id);
   });

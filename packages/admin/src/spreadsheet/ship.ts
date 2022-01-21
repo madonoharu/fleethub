@@ -1,15 +1,15 @@
 import { ShipClass, ShipType } from "@fh/utils";
 import {
   MasterAttrRule,
+  MasterData,
   MasterShip,
   MasterVariantDef,
   SpeedGroup,
 } from "fleethub-core";
-import { GoogleSpreadsheetRow } from "google-spreadsheet";
 import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
 import set from "lodash/set";
 
-import { MasterDataSpreadsheet } from "./sheet";
+import { cellValueToString, SpreadsheetTable } from "./utils";
 
 const SUFFIXES = [
   "甲",
@@ -144,11 +144,9 @@ const getConvertibleShips = (ships: MasterShip[]) => {
   return ships.filter(isConvertible);
 };
 
-const createShips = (
-  headerValues: string[],
-  rows: GoogleSpreadsheetRow[],
-  start2: Start2
-) => {
+function createShips(table: SpreadsheetTable, start2: Start2): MasterShip[] {
+  const { headerValues, rows } = table;
+
   const createShip = (mst: MstShip): MasterShip => {
     const row = rows.find((row) => Number(row.ship_id) === mst.api_id);
 
@@ -177,19 +175,9 @@ const createShips = (
 
     if (row) {
       headerValues.forEach((h) => {
-        const value: unknown = row[h];
-
-        if (value === "" || value === undefined) return;
-
-        if (h === "name" || h === "yomi" || h === "speed_group") {
-          set(base, h, String(value));
-        } else if (value === "TRUE") {
-          set(base, h, true);
-        } else if (value !== "FALSE") {
-          if (Number.isNaN(Number(value))) {
-            console.log(h, value);
-          }
-          set(base, h, Number(value));
+        const value = row[h];
+        if (value !== "" && value !== undefined && value !== false) {
+          set(base, h, value);
         }
       });
     }
@@ -242,29 +230,18 @@ const createShips = (
   });
 
   return ships;
-};
+}
 
-const createShipTypes = (rows: GoogleSpreadsheetRow[], start2: Start2) => {
-  return start2.api_mst_stype.map((mst) => {
-    const row = rows.find((row) => row.id == mst.api_id);
-    return {
-      id: mst.api_id,
-      name: mst.api_name,
-      tag: row?.tag as string | null,
-    };
-  });
-};
-
-const createShipClasses = (rows: GoogleSpreadsheetRow[]) => {
-  return rows.map((row) => ({
+function createShipClasses(table: SpreadsheetTable): MasterVariantDef[] {
+  return table.rows.map((row) => ({
     id: Number(row.id),
-    tag: row.tag as string,
-    name: row.name as string,
+    tag: cellValueToString(row.tag),
+    name: cellValueToString(row.name),
   }));
-};
+}
 
 const createShipAttrs = (
-  rows: GoogleSpreadsheetRow[],
+  table: SpreadsheetTable,
   start2: Start2,
   ship_classes: MasterVariantDef[]
 ) => {
@@ -310,11 +287,12 @@ const createShipAttrs = (
       .replace(/\n/g, " ")
       .replace(/\s{2,}/g, " ");
 
-  rows.forEach((row) => {
-    const expr = replaceExpr(row.expr as string);
+  table.rows.forEach((row) => {
+    const expr = replaceExpr(cellValueToString(row.expr));
+
     attrs.push({
-      tag: row.tag as string,
-      name: row.name as string,
+      tag: cellValueToString(row.tag),
+      name: cellValueToString(row.name),
       expr,
     });
   });
@@ -322,34 +300,16 @@ const createShipAttrs = (
   return attrs;
 };
 
-export const createShipData = (
-  mdSheet: MasterDataSpreadsheet,
-  start2: Start2
-) => {
-  const sheets = mdSheet.pickSheets([
-    "ships",
-    "ship_types",
-    "ship_classes",
-    "ship_attars",
-  ]);
-
-  const ships = createShips(
-    sheets.ships.inner.headerValues,
-    sheets.ships.rows,
-    start2
-  );
-  const ship_types = createShipTypes(sheets.ship_types.rows, start2);
-  const ship_classes = createShipClasses(sheets.ship_classes.rows);
-  const ship_attrs = createShipAttrs(
-    sheets.ship_attars.rows,
-    start2,
-    ship_classes
-  );
+export function createShipData(
+  start2: Start2,
+  tables: Record<"ships" | "ship_classes" | "ship_attrs", SpreadsheetTable>
+): Pick<MasterData, "ships" | "ship_attrs"> {
+  const ships = createShips(tables.ships, start2);
+  const ship_classes = createShipClasses(tables.ship_classes);
+  const ship_attrs = createShipAttrs(tables.ship_attrs, start2, ship_classes);
 
   return {
     ships,
-    ship_types,
-    ship_classes,
     ship_attrs,
   };
-};
+}
