@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-import { ServiceAccountCredentials } from "google-spreadsheet";
+import { CredentialBody } from "google-auth-library";
 
 export const getServiceAccount = () => {
   const {
@@ -14,7 +14,7 @@ export const getServiceAccount = () => {
     project_id: "kcfleethub",
     client_email,
     private_key: private_key.replace(/\\n/g, "\n"),
-  } as ServiceAccountCredentials & admin.ServiceAccount;
+  } as CredentialBody & admin.ServiceAccount;
 };
 
 export const getApp = () => {
