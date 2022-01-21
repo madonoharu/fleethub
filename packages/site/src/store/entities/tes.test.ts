@@ -1,6 +1,8 @@
 import { entitiesSlice } from "./entitiesSlice";
 import { schemata } from "./schemata";
 
+// https://github.com/vercel/next.js/issues/32539
+
 let count = 0;
 const genId = () => `${count++}`;
 
@@ -12,6 +14,7 @@ it("entitiesSlice", () => {
   const initialState = entitiesSlice.getInitialState();
 
   const action = entitiesSlice.actions.createShip({
+    id: genId(),
     input: {
       ship_id: 1,
       g1: { gear_id: 2 },
