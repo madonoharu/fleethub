@@ -4,6 +4,7 @@
     "noEmit": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
     "resolveJsonModule": true,
     "incremental": true
   },

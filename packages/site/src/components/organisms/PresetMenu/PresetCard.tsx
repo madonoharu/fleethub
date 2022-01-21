@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { GEAR_KEYS } from "@fh/utils";
 import { Stack, Typography, Paper } from "@mui/material";
 import React from "react";

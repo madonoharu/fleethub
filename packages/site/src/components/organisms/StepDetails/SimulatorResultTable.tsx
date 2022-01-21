@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { round } from "@fh/utils";
 import { Paper, TableContainer, Typography } from "@mui/material";
 import { styled } from "@mui/system";

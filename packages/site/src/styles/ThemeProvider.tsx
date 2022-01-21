@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css, Global } from "@emotion/react";
 import { CssBaseline, ThemeProvider as MuiThemeProvider } from "@mui/material";
 import React from "react";

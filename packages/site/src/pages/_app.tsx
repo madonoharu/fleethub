@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { NextComponentType } from "next";
 import { appWithTranslation } from "next-i18next";
