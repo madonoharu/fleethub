@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import ListIcon from "@mui/icons-material/List";
 import SearchIcon from "@mui/icons-material/Search";
 import { nanoid } from "@reduxjs/toolkit";

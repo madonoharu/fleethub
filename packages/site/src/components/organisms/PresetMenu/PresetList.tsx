@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import CheckIcon from "@mui/icons-material/Check";
 import { Button, Stack } from "@mui/material";

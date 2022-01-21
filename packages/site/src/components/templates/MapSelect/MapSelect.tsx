@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { styled } from "@mui/system";
 import dynamic from "next/dynamic";
 import React from "react";

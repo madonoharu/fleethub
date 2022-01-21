@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { Stack, Typography } from "@mui/material";

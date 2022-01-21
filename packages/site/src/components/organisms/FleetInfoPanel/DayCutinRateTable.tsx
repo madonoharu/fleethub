@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { DayCutinRateInfo, FleetDayCutinRateInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";

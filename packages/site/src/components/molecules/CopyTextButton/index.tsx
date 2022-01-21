@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Assignment from "@mui/icons-material/Assignment";
 import copy from "copy-to-clipboard";
 import { useTranslation } from "next-i18next";

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Tooltip, Button, ButtonGroup, ButtonProps } from "@mui/material";
 import { styled } from "@mui/system";
 import { NightSituation } from "fleethub-core";

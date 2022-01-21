@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Typography, Stack } from "@mui/material";
 import { FleetCutinInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";
