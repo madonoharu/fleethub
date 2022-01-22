@@ -18,7 +18,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let path = std::path::Path::new(&args[2]);
 
-    use fh_core::*;
+    use fleethub_core::*;
 
     let buffer = gen_types!(
         types::GearType,
