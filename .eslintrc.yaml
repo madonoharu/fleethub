@@ -46,6 +46,8 @@ rules:
         order: asc
       newlines-between: always
 
+  import/no-unresolved: off
+
 ignorePatterns:
   - "**/dist/*"
   - "**/lib/*"
