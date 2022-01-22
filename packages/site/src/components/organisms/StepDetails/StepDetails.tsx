@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Path, PathValue } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/system";

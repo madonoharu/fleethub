@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { floor } from "@fh/utils";
 import { Divider, Stack } from "@mui/material";
 import { Comp, Fleet } from "fleethub-core";

@@ -26,7 +26,7 @@ export async function updateMasterDataBySpreadsheet(): Promise<void> {
 
   const nextMd = createMasterData(tables, start2);
   const updatesStorage = dequal(currentMd, nextMd);
-  console.log(updatesStorage);
+
   await Promise.all([
     updatesStorage && storage.writeMasterData(nextMd),
     spreadsheet.writeMasterData(tables, nextMd),

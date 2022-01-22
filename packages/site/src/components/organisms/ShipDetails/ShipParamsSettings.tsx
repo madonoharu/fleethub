@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button, Stack } from "@mui/material";
 import { OrgType, Role, WarfareAnalyzerShipEnvironment } from "fleethub-core";
 import React from "react";

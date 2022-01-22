@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { nonNullable } from "@fh/utils";
 import { AppThunk } from "@reduxjs/toolkit";
 import { Ship } from "fleethub-core";

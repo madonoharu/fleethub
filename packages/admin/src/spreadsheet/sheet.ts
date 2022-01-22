@@ -109,8 +109,6 @@ export class MasterDataSpreadsheet {
       await this.client.batchUpdate({
         requests,
       });
-    } else {
-      console.log("requests.length is 0");
     }
   }
 
@@ -133,8 +131,6 @@ export class MasterDataSpreadsheet {
       await this.client.batchUpdate({
         requests,
       });
-    } else {
-      console.log("skip writeMasterData");
     }
   }
 }

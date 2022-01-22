@@ -9,9 +9,11 @@ import { Dict, mapValues, uniqBy } from "@fh/utils/src";
 import fs from "fs-extra";
 import { Start2 } from "kc-tools";
 
-const RS_GEAR_PATH = path.resolve("crates/fh-core/src/types/gear.rs");
-const RS_SHIP_PATH = path.resolve("crates/fh-core/src/types/ship.rs");
-const RS_CONST_ID_PATH = path.resolve("crates/fh-core/src/types/const_id.rs");
+const RS_GEAR_PATH = path.resolve("crates/fleethub-core/src/types/gear.rs");
+const RS_SHIP_PATH = path.resolve("crates/fleethub-core/src/types/ship.rs");
+const RS_CONST_ID_PATH = path.resolve(
+  "crates/fleethub-core/src/types/const_id.rs"
+);
 
 const TS_PATH = path.resolve("packages/utils/src/constants.ts");
 
@@ -138,44 +140,43 @@ const createEnumItem = (row: Dict<string, unknown>): EnumItem => {
 };
 
 const main = async () => {
-  const [spreadsheet, start2] = await Promise.all([
-    MasterDataSpreadsheet.init(),
+  const spreadsheet = new MasterDataSpreadsheet();
+  const [tables, start2] = await Promise.all([
+    spreadsheet.readTables([
+      "gear_types",
+      "gear_attrs",
+      "ship_types",
+      "ship_classes",
+      "ship_attrs",
+    ]),
     fetchStart2(),
   ]);
 
-  const sheets = {
-    GearType: spreadsheet.sheets.gear_types.rows,
-    GearAttr: spreadsheet.sheets.gear_attrs.rows,
-    ShipType: spreadsheet.sheets.ship_types.rows,
-    ShipClass: spreadsheet.sheets.ship_classes.rows,
-    ShipAttr: spreadsheet.sheets.ship_attars.rows,
-  };
-
-  const data = mapValues(sheets, (rows) => rows.map(createEnumItem));
+  const data = mapValues(tables, (table) => table.rows.map(createEnumItem));
 
   const configs: Record<EnumName, EnumConfig> = {
     GearType: {
       name: "GearType",
-      items: data.GearType,
+      items: data.gear_types,
       unknown: true,
     },
     GearAttr: {
       name: "GearAttr",
-      items: data.GearAttr,
+      items: data.gear_attrs,
     },
     ShipType: {
       name: "ShipType",
-      items: data.ShipType,
+      items: data.ship_types,
       unknown: true,
     },
     ShipClass: {
       name: "ShipClass",
-      items: data.ShipClass,
+      items: data.ship_classes,
       unknown: true,
     },
     ShipAttr: {
       name: "ShipAttr",
-      items: data.ShipAttr,
+      items: data.ship_attrs,
     },
   };
 

@@ -4,6 +4,6 @@ version = "0.7.0"
 edition = "2021"
 
 [dependencies]
-fh-core = { path = "../fh-core" }
+fleethub-core = { path = "../fleethub-core" }
 ts-rs = "6.1.0"
 dprint-plugin-typescript = "0.62.0"

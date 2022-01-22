@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { MasterData } from "fleethub-core";
 import React, { useMemo } from "react";
 import { batch, Provider as ReduxProvider } from "react-redux";

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Button, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";

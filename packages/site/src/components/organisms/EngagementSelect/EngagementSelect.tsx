@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Engagement } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";

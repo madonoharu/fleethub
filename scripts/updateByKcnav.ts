@@ -103,7 +103,7 @@ const updateMaps = async (kcnavMaps: KcnavMap[]) => {
   await Promise.all(promises);
 };
 
-const HOT_MAPS: number[] = [521];
+const HOT_MAPS: number[] = [];
 
 const updateByKcnav = async () => {
   const ids = await getAllMapIds();
@@ -114,7 +114,7 @@ const updateByKcnav = async () => {
       continue;
     }
 
-    const map = await getKcnavMap(id);
+    const map = await getKcnavMap(id, false);
     kcnavMaps.push(map);
   }
 
