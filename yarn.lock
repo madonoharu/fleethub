@@ -5893,15 +5893,15 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 0.7.3
-  resolution: "fleethub-core@npm:0.7.3"
-  checksum: 30f12ec6a279882bed4074f88299f37beba0fb88c7980c85ed1fb62e0ff2721d838f875318e013107ca9cbf54024d51991fccd4ca2edb768e05c34c807d5044d
+  version: 0.8.0
+  resolution: "fleethub-core@npm:0.8.0"
+  checksum: 1435fd53532be0a8a0e6c4449325c39401dec64a7245e58cc41b936684bcde351262cf8d27fbafe22538d62614897bd6e54456385370e0739b63180ce25a3ab1
   languageName: node
   linkType: hard
 
-"fleethub-core@workspace:packages/fleethub-core":
+"fleethub-core@workspace:crates/fleethub-core":
   version: 0.0.0-use.local
-  resolution: "fleethub-core@workspace:packages/fleethub-core"
+  resolution: "fleethub-core@workspace:crates/fleethub-core"
   languageName: unknown
   linkType: soft
 
