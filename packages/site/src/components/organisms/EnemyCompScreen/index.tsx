@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { MapEnemyComp, uncapitalize } from "@fh/utils";
 import { Comp, Role } from "fleethub-core";
 import { useTranslation } from "next-i18next";

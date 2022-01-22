@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import {
   Tab as MuiTab,
   TabProps as MuiTabProps,

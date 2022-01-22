@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { FhMap, MapEnemyComp, MapNode, MapNodeType } from "@fh/utils";
 import { Formation, OrgState } from "fleethub-core";
 import React from "react";

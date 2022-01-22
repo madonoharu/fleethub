@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import {

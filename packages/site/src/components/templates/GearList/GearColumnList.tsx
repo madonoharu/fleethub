@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { Gear, GearType } from "fleethub-core";

@@ -9,5 +9,5 @@
     "allowJs": false
   },
   "extends": "./tsconfig.base.json",
-  "include": ["packages", "scripts"]
+  "include": ["packages", "scripts", "crates"]
 }

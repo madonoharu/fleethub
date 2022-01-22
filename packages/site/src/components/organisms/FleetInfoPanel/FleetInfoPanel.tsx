@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import { Comp, Fleet } from "fleethub-core";

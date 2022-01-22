@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Typography } from "@mui/material";
 import { Update } from "@reduxjs/toolkit";
 import { Comp, DamageState, Fleet, MoraleState } from "fleethub-core";

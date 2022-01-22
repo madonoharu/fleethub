@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { GEAR_EXP_TABLE } from "@fh/utils";
 import { Typography } from "@mui/material";

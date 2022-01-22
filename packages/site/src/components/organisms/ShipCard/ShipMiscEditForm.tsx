@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { DAMAGE_STATES, MORALE_STATES } from "@fh/utils";
 import { DamageState, MoraleState, Ship } from "fleethub-core";
