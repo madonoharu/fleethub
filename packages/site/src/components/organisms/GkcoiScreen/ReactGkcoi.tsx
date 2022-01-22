@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import murmurhash from "@emotion/hash";
 import styled from "@emotion/styled";
 import { Alert, CircularProgress } from "@mui/material";

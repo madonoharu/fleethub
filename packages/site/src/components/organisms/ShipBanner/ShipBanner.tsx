@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Dict } from "@fh/utils";
 import BrokenImage from "@mui/icons-material/BrokenImage";
 import Image from "next/image";

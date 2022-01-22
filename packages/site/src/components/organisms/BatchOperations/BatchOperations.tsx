@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { DAMAGE_STATES, GEAR_EXP_TABLE, MORALE_STATES, range } from "@fh/utils";
 import { Button, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/system";

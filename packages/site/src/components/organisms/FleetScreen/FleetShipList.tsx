@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { ShipKey } from "@fh/utils";
 import { Fleet } from "fleethub-core";

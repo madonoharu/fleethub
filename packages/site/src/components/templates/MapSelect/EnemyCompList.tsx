@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { MapEnemyComp, MapNode, nonNullable } from "@fh/utils";
 import { Button, Paper, Stack } from "@mui/material";
 import { css } from "@mui/system";

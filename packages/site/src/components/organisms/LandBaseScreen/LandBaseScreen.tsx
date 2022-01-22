@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { AIR_SQUADRON_KEYS } from "@fh/utils";
 import { Paper, Stack } from "@mui/material";

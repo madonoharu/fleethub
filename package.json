@@ -1,11 +1,12 @@
 {
   "name": "fleethub",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "private": true,
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "crates/fleethub-core"
   ],
   "scripts": {
     "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn build:site",
@@ -18,9 +19,9 @@
     "postinstall": "husky install && yarn build:utils && yarn build:admin",
     "lint": "eslint --cache packages && yarn tscheck",
     "site": "yarn workspace @fh/site",
-    "start": "yarn workspace @fh/core start",
+    "start": "yarn workspace @fh/site start",
     "test": "jest",
-    "test:fh-macro": "wasm-pack test --node crates/fh-macro",
+    "test:fleethub-macro": "wasm-pack test --node crates/fleethub-macro",
     "ts": "node -r esbuild-register",
     "tscheck": "tsc --noEmit",
     "update:constants": "yarn ts scripts/updateConstants",

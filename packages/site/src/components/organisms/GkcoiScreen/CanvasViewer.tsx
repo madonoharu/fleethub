@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { Fab, Tooltip } from "@mui/material";

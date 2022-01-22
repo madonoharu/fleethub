@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { nonNullable } from "@fh/utils";
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";

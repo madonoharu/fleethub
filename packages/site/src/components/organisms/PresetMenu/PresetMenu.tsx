@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { GEAR_KEYS, nonNullable } from "@fh/utils";
 import { Button, Divider } from "@mui/material";
 import React, { useState } from "react";

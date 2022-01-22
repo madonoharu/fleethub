@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { storage } from "@fh/admin";
 import { createEquipmentBonuses } from "equipment-bonus";
 import {

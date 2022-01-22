@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { AirState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";

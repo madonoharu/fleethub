@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { groupBy } from "@fh/utils";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";

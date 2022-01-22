@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button, Container } from "@mui/material";
 import localforage from "localforage";
 import type { NextComponentType, NextPageContext } from "next";
