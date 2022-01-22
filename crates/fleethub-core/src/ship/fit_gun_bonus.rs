@@ -1,9 +1,9 @@
 use crate::{
-    gear_id,
-    ship::Ship,
-    ship_id,
+    gear_id, ship_id,
     types::{ShipAttr, ShipClass, ShipType},
 };
+
+use super::Ship;
 
 /// 駆逐フィット補正
 fn destroyer_bonus(ship: &Ship) -> f64 {
