@@ -9,10 +9,9 @@ use crate::{
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct AirSquadron {
-    #[wasm_bindgen(skip)]
-    pub xxh3: u64,
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
+    pub xxh3: u64,
     pub mode: AirSquadronMode,
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
@@ -29,11 +28,6 @@ pub fn air_squadron_can_equip(gear: &Gear) -> bool {
 
 #[wasm_bindgen]
 impl AirSquadron {
-    #[wasm_bindgen(getter)]
-    pub fn xxh3(&self) -> String {
-        format!("{:X}", self.xxh3)
-    }
-
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
         self.gears.get_by_gear_key(key).cloned()
     }
