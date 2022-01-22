@@ -65,10 +65,9 @@ pub struct IBonuses {
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Gear {
-    pub(crate) xxh3: u64,
-
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
+    pub xxh3: u64,
 
     pub gear_id: u16,
     pub stars: u8,
@@ -164,11 +163,6 @@ impl Gear {
 impl Gear {
     pub fn default() -> Self {
         Default::default()
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn xxh3(&self) -> String {
-        format!("{:X}", self.xxh3)
     }
 
     #[wasm_bindgen(getter)]

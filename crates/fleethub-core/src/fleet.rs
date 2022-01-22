@@ -29,10 +29,9 @@ impl ShipArray {
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Fleet {
-    pub(crate) xxh3: u64,
-
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
+    pub xxh3: u64,
 
     pub len: usize,
 
@@ -42,11 +41,6 @@ pub struct Fleet {
 
 #[wasm_bindgen]
 impl Fleet {
-    #[wasm_bindgen(getter)]
-    pub fn xxh3(&self) -> String {
-        format!("{:X}", self.xxh3)
-    }
-
     pub fn meta(&self) -> FleetMeta {
         let ships = (0..self.len)
             .map(|i| {

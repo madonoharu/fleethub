@@ -35,7 +35,6 @@ pub struct ShipEquippable {
 pub struct Ship {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    #[wasm_bindgen(skip)]
     pub xxh3: u64,
 
     pub ship_id: u16,
@@ -855,11 +854,6 @@ impl Ship {
 
     pub fn eq_id(&self, id: &str) -> bool {
         self.id.eq(id)
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn xxh3(&self) -> String {
-        format!("{:X}", self.xxh3)
     }
 
     pub fn state(&self) -> ShipState {

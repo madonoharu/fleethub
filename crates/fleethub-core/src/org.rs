@@ -13,11 +13,9 @@ use crate::{
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
 pub struct Org {
-    #[wasm_bindgen(skip)]
-    pub xxh3: u64,
-
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
+    pub xxh3: u64,
 
     #[wasm_bindgen(skip)]
     pub f1: Fleet,
@@ -72,11 +70,6 @@ impl Org {
 
 #[wasm_bindgen]
 impl Org {
-    #[wasm_bindgen(getter)]
-    pub fn xxh3(&self) -> String {
-        format!("{:X}", self.xxh3)
-    }
-
     pub fn fleet_len(&self, role: Role) -> usize {
         self.get_fleet_by_role(role).len
     }
