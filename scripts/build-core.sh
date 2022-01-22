@@ -6,9 +6,10 @@ BUILD_PATH=crates/fleethub-core
 
 export WASM_BINDGEN_WEAKREF=1
 wasm-pack build $BUILD_PATH
+wasm-pack build $BUILD_PATH -t nodejs -d node
 cargo run ts-gen $BUILD_PATH/bindings.d.ts
 
-rm -rf $BUILD_PATH/pkg/{package.json,README.md,.gitignore}
+rm -rf $BUILD_PATH/{pkg,node}/{package.json,README.md,.gitignore}
 
 VERSION=$(cargo metadata --format-version=1 --no-deps | jq '.packages[] | select(.name == "fleethub-core") | .version')
 cat $BUILD_PATH/package.json | jq ".version |= ${VERSION}" > $BUILD_PATH/package.json.tmp
