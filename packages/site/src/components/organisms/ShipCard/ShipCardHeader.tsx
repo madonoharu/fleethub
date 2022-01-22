@@ -67,6 +67,14 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         title={
           <Stack>
             <LabeledValue
+              label="昼戦フィット補正"
+              value={numstr(ship.fit_gun_bonus(false))}
+            />
+            <LabeledValue
+              label="夜戦フィット補正"
+              value={numstr(ship.fit_gun_bonus(true))}
+            />
+            <LabeledValue
               label="基礎命中項"
               value={numstr(ship.basic_evasion_term(), 2)}
             />
