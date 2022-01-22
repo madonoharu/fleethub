@@ -5877,9 +5877,9 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 0.8.0
-  resolution: "fleethub-core@npm:0.8.0"
-  checksum: 1435fd53532be0a8a0e6c4449325c39401dec64a7245e58cc41b936684bcde351262cf8d27fbafe22538d62614897bd6e54456385370e0739b63180ce25a3ab1
+  version: 0.8.1
+  resolution: "fleethub-core@npm:0.8.1"
+  checksum: ad7b48a70000146d6331c008ca231c0addcef23d9270632d7f554f54220fd49978f65f81484c223595a5db7b13b058659952c19e5a09933e0e2a653e2bc07f9f
   languageName: node
   linkType: hard
 

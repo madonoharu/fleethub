@@ -1,12 +1,17 @@
 {
   "name": "fleethub-core",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "license": "UNLICENSED",
   "sideEffects": false,
-  "exports": "./pkg/fleethub_core.js",
+  "exports": {
+    "import": "./pkg/fleethub_core.js",
+    "node": "./node/fleethub_core.js"
+  },
+  "main": "./node/fleethub_core.js",
   "types": "pkg/fleethub_core.d.ts",
   "files": [
     "pkg",
+    "node",
     "bindings.d.ts"
   ],
   "collaborators": [
