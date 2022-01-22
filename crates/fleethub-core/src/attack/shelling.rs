@@ -8,8 +8,8 @@ use crate::{
 };
 
 use super::{
-    fit_gun_bonus, fleet_factor, special_enemy_mods::special_enemy_modifiers, AttackParams,
-    DefenseParams, WarfareContext, WarfareShipEnvironment,
+    fleet_factor, special_enemy_mods::special_enemy_modifiers, AttackParams, DefenseParams,
+    WarfareContext, WarfareShipEnvironment,
 };
 
 const SHELLING_POWER_CAP: f64 = 220.0;
@@ -193,7 +193,7 @@ impl<'a> ShellingAttackContext<'a> {
             let ibonus = attacker
                 .gears
                 .sum_by(|gear| gear.ibonuses.shelling_accuracy);
-            let fit_gun_bonus = fit_gun_bonus::fit_gun_bonus(attacker, !IS_DAY);
+            let fit_gun_bonus = attacker.fit_gun_bonus(!IS_DAY);
             let morale_mod = attacker.morale_state().common_accuracy_mod();
             let formation_mod = ctx.formation_accuracy_mod;
             let ap_shell_mod = ap_shell_mods.map(|mods| mods.1).unwrap_or(1.0);

@@ -1,3 +1,5 @@
+mod fit_gun_bonus;
+
 use std::hash::Hash;
 
 use enumset::EnumSet;
@@ -1541,6 +1543,10 @@ impl Ship {
         } else {
             0.0
         }
+    }
+
+    pub fn fit_gun_bonus(&self, is_night: bool) -> f64 {
+        fit_gun_bonus::fit_gun_bonus(self, is_night)
     }
 
     pub fn basic_accuracy_term(&self) -> Option<f64> {
