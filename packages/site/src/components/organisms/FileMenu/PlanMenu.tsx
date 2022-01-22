@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import LinkIcon from "@mui/icons-material/Link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";

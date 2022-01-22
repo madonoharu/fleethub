@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Typography, Stack } from "@mui/material";
 import { NightCutinRateInfo, FleetNightCutinRateInfo } from "fleethub-core";

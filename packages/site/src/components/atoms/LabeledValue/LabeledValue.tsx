@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Typography, StyledComponentProps } from "@mui/material";
 import { Variant } from "@mui/material/styles/createTypography";

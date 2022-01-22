@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import { Link } from "@mui/material";
 import React from "react";

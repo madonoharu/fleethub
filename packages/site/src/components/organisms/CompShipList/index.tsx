@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { ShipKey, SHIP_KEYS } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { styled, css } from "@mui/system";

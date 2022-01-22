@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { Button } from "@mui/material";

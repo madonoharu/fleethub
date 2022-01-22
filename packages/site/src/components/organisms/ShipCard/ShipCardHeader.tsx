@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import styled from "@emotion/styled";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { Stack, Typography } from "@mui/material";
@@ -67,6 +66,14 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
       <AnalyticsButton
         title={
           <Stack>
+            <LabeledValue
+              label="昼戦フィット補正"
+              value={numstr(ship.fit_gun_bonus(false))}
+            />
+            <LabeledValue
+              label="夜戦フィット補正"
+              value={numstr(ship.fit_gun_bonus(true))}
+            />
             <LabeledValue
               label="基礎命中項"
               value={numstr(ship.basic_evasion_term(), 2)}

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import InfoIcon from "@mui/icons-material/Info";
 import { Typography, Paper, Button } from "@mui/material";
 import { styled } from "@mui/system";

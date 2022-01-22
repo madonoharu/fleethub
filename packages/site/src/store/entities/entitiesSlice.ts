@@ -160,7 +160,7 @@ function createGear(state: State, payload: CreateGearPayload): void {
 
 function getPlanDefaultName(state: State): string {
   const count = Object.values(state.files.entities).filter(isPlan).length;
-  return `File ${count}`;
+  return `File ${count + 1}`;
 }
 
 export const entitiesSlice = createSlice({

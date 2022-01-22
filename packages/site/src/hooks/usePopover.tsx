@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import {
   Popover as MuiPopover,
   PopoverProps as MuiPopoverProps,

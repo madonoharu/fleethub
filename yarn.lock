@@ -937,7 +937,7 @@ __metadata:
     "@google-cloud/asset": ^3.22.0
     cloudinary: ^1.28.1
     dequal: ^2.0.2
-    firebase-admin: ^10.0.1
+    firebase-admin: ^10.0.2
     fleethub-core: "npm:latest"
     googleapis: ^92.0.0
     got: 11.8.3
@@ -1096,13 +1096,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app-types@npm:0.6.3":
-  version: 0.6.3
-  resolution: "@firebase/app-types@npm:0.6.3"
-  checksum: f4523ee29ef667a68110a97275dcba43b3275264055887baca49c7f726aa5a9006f6e31ab47a24472b4a0864b8018ddf48424081a85a7558431d399ae8c3cfb1
-  languageName: node
-  linkType: hard
-
 "@firebase/app-types@npm:0.7.0":
   version: 0.7.0
   resolution: "@firebase/app-types@npm:0.7.0"
@@ -1237,22 +1230,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/database-types@npm:0.9.4":
+"@firebase/database-types@npm:0.9.4, @firebase/database-types@npm:^0.9.3":
   version: 0.9.4
   resolution: "@firebase/database-types@npm:0.9.4"
   dependencies:
     "@firebase/app-types": 0.7.0
     "@firebase/util": 1.4.3
   checksum: f305c5cc648b04faa3a98ad18bbabe86d0858af5dd4e3aad1ac2bacff67d30aca9b47b057b8a365eda57bd5059fe38b65b289f1f8337a2b783655fff3110ce0b
-  languageName: node
-  linkType: hard
-
-"@firebase/database-types@npm:^0.7.2":
-  version: 0.7.3
-  resolution: "@firebase/database-types@npm:0.7.3"
-  dependencies:
-    "@firebase/app-types": 0.6.3
-  checksum: 7340af47b47d997875e558fa677ea2a034fb7e687307dd04d490c869e4e8c580f2b807662e0975b8177f72e424bb6076dda00291839d69ccc14fd89755932056
   languageName: node
   linkType: hard
 
@@ -5819,25 +5803,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase-admin@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "firebase-admin@npm:10.0.1"
+"firebase-admin@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "firebase-admin@npm:10.0.2"
   dependencies:
     "@firebase/database-compat": ^0.1.1
-    "@firebase/database-types": ^0.7.2
+    "@firebase/database-types": ^0.9.3
     "@google-cloud/firestore": ^4.5.0
     "@google-cloud/storage": ^5.3.0
     "@types/node": ">=12.12.47"
     dicer: ^0.3.0
     jsonwebtoken: ^8.5.1
     jwks-rsa: ^2.0.2
-    node-forge: ^0.10.0
+    node-forge: ^1.0.0
   dependenciesMeta:
     "@google-cloud/firestore":
       optional: true
     "@google-cloud/storage":
       optional: true
-  checksum: c623902e8ae47a36d6bf14b3be30c36e34439646510cf268e1b9f03594e205fc726133f8b4b7fd5ecfc753af5f7d249d5d47b958e5833e307becd615d2da812a
+  checksum: c08fe506a50e3fbf889a0be42233842c2c0c4184fc3ca9eab4c05131735f82d4433447bc100dc5f52dd2f36efde70d4085d922dc30240e260711c65ca4287d2b
   languageName: node
   linkType: hard
 
@@ -5893,15 +5877,15 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 0.7.3
-  resolution: "fleethub-core@npm:0.7.3"
-  checksum: 30f12ec6a279882bed4074f88299f37beba0fb88c7980c85ed1fb62e0ff2721d838f875318e013107ca9cbf54024d51991fccd4ca2edb768e05c34c807d5044d
+  version: 0.8.0
+  resolution: "fleethub-core@npm:0.8.0"
+  checksum: 1435fd53532be0a8a0e6c4449325c39401dec64a7245e58cc41b936684bcde351262cf8d27fbafe22538d62614897bd6e54456385370e0739b63180ce25a3ab1
   languageName: node
   linkType: hard
 
-"fleethub-core@workspace:packages/fleethub-core":
+"fleethub-core@workspace:crates/fleethub-core":
   version: 0.0.0-use.local
-  resolution: "fleethub-core@workspace:packages/fleethub-core"
+  resolution: "fleethub-core@workspace:crates/fleethub-core"
   languageName: unknown
   linkType: soft
 
@@ -8707,6 +8691,13 @@ fsevents@^2.3.2:
   version: 0.10.0
   resolution: "node-forge@npm:0.10.0"
   checksum: 5aa6dc9922e424a20ef101d2f517418e2bc9cfc0255dd22e0701c0fad1568445f510ee67f6f3fcdf085812c4ca1b847b8ba45683b34776828e41f5c1794e42e1
+  languageName: node
+  linkType: hard
+
+"node-forge@npm:^1.0.0":
+  version: 1.2.1
+  resolution: "node-forge@npm:1.2.1"
+  checksum: af4f88c3f69362359f35f6a9e231b35c96d906eeb6e976fb92742afe7fcdd76439dc22b41ce3755389d171f6320756ec7505bdfa7b252466c091b8c519a22674
   languageName: node
   linkType: hard
 

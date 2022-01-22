@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { GEAR_KEYS } from "@fh/utils";
 import { Tooltip, TooltipProps, Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
