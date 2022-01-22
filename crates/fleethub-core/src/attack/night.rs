@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
-    attack::{fit_gun_bonus::fit_gun_bonus, DefenseParams},
+    attack::DefenseParams,
     ship::Ship,
     types::{
         BattleConfig, ContactRank, GearType, NightAttackType, NightSpecialAttack, ShipType,
@@ -244,7 +244,7 @@ fn calc_accuracy_term(ctx: &NightAttackContext, attacker: &Ship) -> Option<f64> 
         .special_attack_def
         .as_ref()
         .map_or(1.0, |def| def.accuracy_mod);
-    let fit_gun_bonus = fit_gun_bonus(attacker, true);
+    let fit_gun_bonus = attacker.fit_gun_bonus(true);
 
     // 乗算前に切り捨て
     let premultiplication = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod

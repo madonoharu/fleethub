@@ -4,7 +4,6 @@ mod attack_power;
 mod attack_type;
 mod context;
 mod damage;
-mod fit_gun_bonus;
 mod fleet_cutin;
 mod fleet_factor;
 mod hit;

@@ -382,7 +382,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
     r
 }
 
-/// 砲撃戦フィット補正
+/// フィット砲補正
 pub fn fit_gun_bonus(ship: &Ship, is_night: bool) -> f64 {
     match ship.ship_type {
         ShipType::DD => destroyer_bonus(ship),
