@@ -5,7 +5,8 @@
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "crates/fleethub-core"
   ],
   "scripts": {
     "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn build:site",

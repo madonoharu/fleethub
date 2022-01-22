@@ -51,6 +51,5 @@ ignorePatterns:
   - "**/lib/*"
   - "**/esm/*"
   - "**/cjs/*"
-  - "**/fleethub-core/pkg/*"
-  - "**/fleethub-core/node/*"
+  - "**/pkg/*"
   - "**/*.config.js"
