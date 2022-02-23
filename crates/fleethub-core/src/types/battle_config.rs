@@ -222,6 +222,10 @@ impl BattleConfig {
         self.get_formation_def(formation, 0, 6).fleet_anti_air_mod
     }
 
+    pub fn get_anti_air_cutin_def(&self, id: u8) -> Option<&AntiAirCutinDef> {
+        self.anti_air_cutin.iter().find(|def| def.id == id)
+    }
+
     pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {
         self.day_cutin.iter().find(|def| def.tag == cutin)
     }

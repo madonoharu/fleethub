@@ -122,8 +122,8 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
             min={0}
             step={0.1}
             sx={{ width: 80 }}
-            value={config.player.external_power_mods.a11}
-            onChange={bind("player.external_power_mods.a11")}
+            value={config.player.custom_mods.postcap_mod.a}
+            onChange={bind("player.custom_mods.postcap_mod.a")}
           />
         </Flexbox>
         <FormationSelect

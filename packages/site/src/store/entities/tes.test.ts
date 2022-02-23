@@ -1,20 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { entitiesSlice } from "./entitiesSlice";
-import { schemata } from "./schemata";
 
-// https://github.com/vercel/next.js/issues/32539
+jest.mock("@reduxjs/toolkit", () => {
+  const originalModule = jest.requireActual("@reduxjs/toolkit");
 
-let count = 0;
-const genId = () => `${count++}`;
+  let count = 0;
+  const nanoid = () => `${count++}`;
 
-schemata.forEach((schema) => {
-  schema.generateId = genId;
+  return {
+    __esModule: true,
+    ...originalModule,
+    nanoid,
+  };
 });
 
 it("entitiesSlice", () => {
   const initialState = entitiesSlice.getInitialState();
 
   const action = entitiesSlice.actions.createShip({
-    id: genId(),
     input: {
       ship_id: 1,
       g1: { gear_id: 2 },

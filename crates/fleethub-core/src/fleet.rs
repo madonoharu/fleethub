@@ -120,10 +120,10 @@ impl Fleet {
             .map(|base| (base.sqrt() + 0.1 * base).floor())
     }
 
-    pub fn fighter_power(&self, anti_lbas: bool) -> Option<i32> {
+    pub fn fighter_power(&self, recon_participates: bool) -> Option<i32> {
         self.ships
             .values()
-            .map(|ship| ship.fighter_power(anti_lbas))
+            .map(|ship| ship.fighter_power(recon_participates))
             .sum()
     }
 

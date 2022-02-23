@@ -5,7 +5,7 @@ use ts_rs::TS;
 use crate::{
     attack::{
         get_day_battle_attack_type, get_night_battle_attack_type, get_oasw_attack_type,
-        AswAttackContext, AswAttackType, AswTime, AttackPowerModifiers, DayBattleAttackType,
+        AswAttackContext, AswAttackType, AswTime, CustomModifiers, DayBattleAttackType,
         NightAttackContext, NightBattleAttackType, NightSituation, ShellingAttackContext,
         ShellingSupportAttackContext, TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
     },
@@ -28,7 +28,7 @@ pub struct WarfareAnalyzerShipEnvironment {
     pub formation: Formation,
     pub fleet_los_mod: Option<f64>,
     pub night_situation: NightSituation,
-    pub external_power_mods: AttackPowerModifiers,
+    pub custom_mods: CustomModifiers,
 }
 
 impl WarfareAnalyzerShipEnvironment {
@@ -76,7 +76,7 @@ impl WarfareAnalyzerContext {
             target_env: self.target_env.as_warfare_ship_environment(),
             engagement: self.engagement,
             air_state: self.air_state,
-            external_power_mods: self.attacker_env.external_power_mods.clone(),
+            custom_mods: self.attacker_env.custom_mods.clone(),
         }
     }
 }

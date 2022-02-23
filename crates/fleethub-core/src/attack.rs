@@ -1,3 +1,4 @@
+mod airstrike;
 mod asw;
 mod attack;
 mod attack_power;
@@ -13,6 +14,7 @@ mod shelling_support;
 mod special_enemy_mods;
 mod torpedo;
 
+pub use airstrike::*;
 pub use asw::*;
 pub use attack::*;
 pub use attack_power::*;

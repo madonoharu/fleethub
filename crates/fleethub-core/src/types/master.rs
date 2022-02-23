@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use anyhow::Result;
+use arrayvec::ArrayVec;
 use enumset::EnumSet;
 use fasteval::{bool_to_f64, Compiler, Evaler, Instruction, Slab};
 use serde::{Deserialize, Serialize};
@@ -12,7 +13,6 @@ use crate::{
     gear_id,
     ship::ShipEquippable,
     types::{GearAttr, GearState, GearType, ShipAttr, SpeedGroup},
-    utils::MyArrayVec,
 };
 
 use super::BattleConfig;
@@ -46,7 +46,7 @@ impl GearTypes {
 }
 
 const SLOT_SIZE_ARRAY_CAPACITY: usize = 5;
-pub type SlotSizeArray = MyArrayVec<Option<u8>, SLOT_SIZE_ARRAY_CAPACITY>;
+pub type SlotSizeArray = ArrayVec<Option<u8>, SLOT_SIZE_ARRAY_CAPACITY>;
 
 trait EvalerStruct {
     fn ns(&self, key: &str, args: Vec<f64>) -> Option<f64>;
@@ -353,8 +353,10 @@ pub struct MasterShip {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_level: Option<u16>,
     pub slotnum: usize,
+    #[ts(type = "Array<number | null>")]
     pub slots: SlotSizeArray,
-    pub stock: MyArrayVec<GearState, 5>,
+    #[ts(type = "Array<GearState>")]
+    pub stock: ArrayVec<GearState, 5>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub speed_group: Option<SpeedGroup>,
     #[serde(skip_serializing_if = "Option::is_none")]

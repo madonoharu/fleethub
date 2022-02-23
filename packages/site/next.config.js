@@ -46,13 +46,6 @@ const config = {
       config.plugins.push(new WasmChunksFixPlugin());
     }
 
-    // https://github.com/rust-random/getrandom/issues/224#issuecomment-944329336
-    config.ignoreWarnings = [
-      (warning) =>
-        warning.message ===
-        "Critical dependency: the request of a dependency is an expression",
-    ];
-
     return config;
   },
 

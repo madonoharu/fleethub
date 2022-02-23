@@ -6,7 +6,7 @@ use ts_rs::TS;
 
 use crate::{
     attack::{
-        get_day_battle_attack_type, AttackPowerModifiers, DayBattleAttackType, DefenseParams,
+        get_day_battle_attack_type, CustomModifiers, DayBattleAttackType, DefenseParams,
         ShellingAttackType, ShellingSupportAttackParams,
     },
     comp::Comp,
@@ -88,7 +88,7 @@ pub struct ShellingSupportSimulatorParams {
     attacker_formation: Formation,
     target_formation: Formation,
     engagement: Engagement,
-    external_power_mods: AttackPowerModifiers,
+    custom_mods: CustomModifiers,
 }
 
 struct ShellingSupportBattle<'a, R>
@@ -101,7 +101,7 @@ where
     engagement: Engagement,
     attacker_formation_def: &'a FormationDef,
     target_formation_def: &'a FormationDef,
-    external_power_mods: AttackPowerModifiers,
+    custom_mods: CustomModifiers,
 }
 
 impl<'a, R> ShellingSupportBattle<'a, R>
@@ -134,7 +134,7 @@ where
             attacker_formation_def: &self.attacker_formation_def,
             target_formation_def: &self.target_formation_def,
             engagement: self.engagement,
-            external_power_mods: self.external_power_mods.clone(),
+            custom_mods: self.custom_mods.clone(),
             defense_params,
         }
         .into_attack_params()
@@ -179,7 +179,7 @@ where
             attacker_formation,
             target_formation,
             engagement,
-            external_power_mods,
+            custom_mods,
         } = params;
 
         let attacker_formation_def = config.get_formation_def(attacker_formation, 6, 0);
@@ -193,7 +193,7 @@ where
                 engagement,
                 attacker_formation_def,
                 target_formation_def,
-                external_power_mods,
+                custom_mods,
             },
         }
     }

@@ -5,8 +5,8 @@ use crate::{
 
 use super::{
     special_enemy_mods::shelling_support_special_enemy_modifiers, AttackParams,
-    AttackPowerModifiers, AttackPowerParams, DefenseParams, HitRateParams, ShellingAttackType,
-    WarfareContext,
+    AttackPowerModifier, AttackPowerParams, CustomModifiers, DefenseParams, HitRateParams,
+    ShellingAttackType, WarfareContext,
 };
 
 const SHELLING_SUPPORT_POWER_CAP: f64 = 170.0;
@@ -20,7 +20,7 @@ pub struct ShellingSupportAttackParams<'a> {
     pub engagement: Engagement,
     pub attacker_formation_def: &'a FormationDef,
     pub target_formation_def: &'a FormationDef,
-    pub external_power_mods: AttackPowerModifiers,
+    pub custom_mods: CustomModifiers,
     pub defense_params: Option<DefenseParams>,
 }
 
@@ -33,7 +33,7 @@ impl<'a> ShellingSupportAttackParams<'a> {
             engagement,
             attacker_formation_def,
             target_formation_def,
-            external_power_mods,
+            custom_mods,
             defense_params,
         } = self;
 
@@ -84,23 +84,21 @@ impl<'a> ShellingSupportAttackParams<'a> {
             let a14 = formation_mod * engagement_mod * damage_mod;
             let b14 = carrier_power_ebonus;
 
-            let mods_base = AttackPowerModifiers {
-                a14,
-                b14,
-                ..Default::default()
-            };
-
-            let mods = mods_base + special_enemy_mods + external_power_mods;
+            let precap_mod = AttackPowerModifier::new(a14, b14);
+            let postcap_mod = Default::default();
 
             let params = AttackPowerParams {
                 basic,
                 cap: SHELLING_SUPPORT_POWER_CAP,
-                mods,
+                precap_mod,
+                postcap_mod,
                 ap_shell_mod: None,
                 carrier_power,
                 proficiency_critical_mod: None,
                 remaining_ammo_mod,
                 armor_penetration: 0.0,
+                special_enemy_mods,
+                custom_mods,
             };
 
             Some(params)
@@ -164,7 +162,7 @@ impl<'a> ShellingSupportAttackContext<'a> {
         let attacker_formation_def = self.config.get_formation_def_by_env(attacker_env);
         let target_formation_def = self.config.get_formation_def_by_env(target_env);
 
-        let external_power_mods = self.warfare_context.external_power_mods.clone();
+        let custom_mods = self.warfare_context.custom_mods.clone();
 
         let armor_penetration = 0.0;
         let defense_params =
@@ -177,7 +175,7 @@ impl<'a> ShellingSupportAttackContext<'a> {
             engagement: self.warfare_context.engagement,
             attacker_formation_def,
             target_formation_def,
-            external_power_mods,
+            custom_mods,
             defense_params,
         }
     }

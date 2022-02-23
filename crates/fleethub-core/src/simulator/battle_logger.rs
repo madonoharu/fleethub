@@ -29,7 +29,7 @@ impl BattleLogger {
     pub fn write(&mut self, comp: &Comp) {
         let sunk_count = comp
             .ships()
-            .filter(|(_, _, ship)| {
+            .filter(|ship| {
                 let ds_counter = match self.damage_map.get_mut(&ship.id) {
                     Some(c) => c,
                     None => {
@@ -63,15 +63,15 @@ impl BattleLogger {
                     .map(|(ds, count)| (ds, count as f64 / times_f64))
                     .collect::<HashMap<_, _>>();
 
-                let (role, index, _) = comp
-                    .ships()
-                    .find(|(_, _, ship)| ship.id == id)
+                let entry = comp
+                    .members()
+                    .find(|member| member.ship.id == id)
                     .unwrap_or_else(|| unreachable!());
 
                 SimulatorResultItem {
                     id,
-                    role,
-                    index,
+                    role: entry.role,
+                    index: entry.index,
                     damage_state_map,
                 }
             })
