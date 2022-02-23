@@ -76,7 +76,7 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
             />
             <LabeledValue
               label="基礎命中項"
-              value={numstr(ship.basic_evasion_term(), 2)}
+              value={numstr(ship.basic_accuracy_term(), 2)}
             />
             <LabeledValue
               label="単縦回避項"
