@@ -1,16 +1,31 @@
 import styled from "@emotion/styled";
-import { AttackPowerParams, AttackPower } from "fleethub-core";
+import {
+  AttackPowerParams,
+  AttackPower,
+  AttackPowerModifier,
+} from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { numstr } from "../../../utils";
-import { LabeledValue } from "../../atoms";
+import { LabeledValue, Divider } from "../../atoms";
 
-const ModifiersGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-`;
+function hasMod(mod: AttackPowerModifier): boolean {
+  return mod.a != 1 || mod.b != 0;
+}
+
+const AttackPowerModifierLabel: React.FC<{
+  label: string;
+  mod: AttackPowerModifier;
+}> = ({ label, mod }) => {
+  if (!hasMod(mod)) {
+    return null;
+  }
+
+  const text = `x${numstr(mod.a)} +${numstr(mod.b)}`;
+
+  return <LabeledValue label={label} value={text} />;
+};
 
 type AttackPowerDetailsProps = {
   power: AttackPower;
@@ -23,6 +38,11 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
   params,
 }) => {
   const { t } = useTranslation("common");
+
+  const { special_enemy_mods, custom_mods } = params;
+
+  const hasSpecial = Object.values(special_enemy_mods).some(hasMod);
+  const hasCustom = Object.values(custom_mods).some(hasMod);
 
   return (
     <div className={className}>
@@ -69,19 +89,38 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
           value={numstr(params.remaining_ammo_mod) || "-"}
         />
       )}
-      <ModifiersGrid>
-        {Object.entries(params.mods)
-          .filter(([key, value]) =>
-            key.startsWith("a") ? value !== 1 : value !== 0
-          )
-          .map(([key, value]) => (
-            <LabeledValue
-              key={key}
-              label={key}
-              value={numstr(value as number) || "-"}
-            />
+
+      <AttackPowerModifierLabel
+        label={t("precap_mod")}
+        mod={params.precap_mod}
+      />
+      <AttackPowerModifierLabel
+        label={t("postcap_mod")}
+        mod={params.postcap_mod}
+      />
+
+      {hasSpecial && (
+        <>
+          <Divider label={t("special_enemy_mods")} />
+          {Object.entries(special_enemy_mods).map(([key, mod]) => (
+            <AttackPowerModifierLabel key={key} label={t(key)} mod={mod} />
           ))}
-      </ModifiersGrid>
+        </>
+      )}
+
+      {hasCustom && (
+        <>
+          <Divider label={t("custom_mods")} />
+          <AttackPowerModifierLabel
+            label={t("precap_mod")}
+            mod={custom_mods.precap_mod}
+          />
+          <AttackPowerModifierLabel
+            label={t("postcap_mod")}
+            mod={custom_mods.postcap_mod}
+          />
+        </>
+      )}
     </div>
   );
 };

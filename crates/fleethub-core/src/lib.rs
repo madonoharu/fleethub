@@ -2,11 +2,15 @@ pub mod air_squadron;
 pub mod analyzer;
 pub mod comp;
 pub mod console;
+pub mod error;
+pub mod estimation;
 pub mod factory;
 pub mod fleet;
 pub mod gear;
 pub mod gear_array;
+pub mod member;
 pub mod org;
+pub mod plane;
 pub mod ship;
 
 pub mod attack;

@@ -7,7 +7,7 @@ import {
 
 import {
   initalNightSituation,
-  initalAttackPowerModifiers,
+  initalCustomModifiers,
   entitiesSlice,
 } from "./entities";
 
@@ -27,7 +27,7 @@ const initialShipEnv: WarfareAnalyzerShipEnvironment = {
   formation: "LineAhead",
   fleet_los_mod: 0,
   night_situation: initalNightSituation,
-  external_power_mods: initalAttackPowerModifiers,
+  custom_mods: initalCustomModifiers,
 };
 
 const initialState: ShipDetailsState = {

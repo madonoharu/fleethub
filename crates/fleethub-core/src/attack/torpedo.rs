@@ -4,8 +4,8 @@ use crate::{
 };
 
 use super::{
-    fleet_factor, AttackParams, AttackPowerModifiers, AttackPowerParams, DefenseParams,
-    HitRateParams, WarfareContext, WarfareShipEnvironment,
+    fleet_factor, AttackParams, AttackPowerModifier, AttackPowerParams, CustomModifiers,
+    DefenseParams, HitRateParams, WarfareContext, WarfareShipEnvironment,
 };
 
 const TORPEDO_POWER_CAP: f64 = 180.0;
@@ -15,7 +15,7 @@ const TORPEDO_CRITICAL_RATE_CONSTANT: f64 = 1.5;
 pub struct TorpedoAttackContext<'a> {
     pub attacker_env: &'a WarfareShipEnvironment,
     pub target_env: &'a WarfareShipEnvironment,
-    pub external_power_mods: &'a AttackPowerModifiers,
+    pub custom_mods: &'a CustomModifiers,
     pub engagement: Engagement,
     pub air_state: AirState,
 
@@ -39,7 +39,7 @@ impl<'a> TorpedoAttackContext<'a> {
         Self {
             attacker_env,
             target_env,
-            external_power_mods: &warfare_context.external_power_mods,
+            custom_mods: &warfare_context.custom_mods,
             air_state: warfare_context.air_state,
             engagement: warfare_context.engagement,
             formation_power_mod,
@@ -59,21 +59,21 @@ impl<'a> TorpedoAttackContext<'a> {
 
         let a14 = self.formation_power_mod * self.engagement.modifier();
 
-        let mods = {
-            let mut base = self.external_power_mods.clone();
-            base.apply_a14(a14);
-            base
-        };
+        let precap_mod = AttackPowerModifier::new(a14, 0.0);
+        let postcap_mod = Default::default();
 
         Some(AttackPowerParams {
             basic,
             cap: TORPEDO_POWER_CAP,
-            mods,
+            precap_mod,
+            postcap_mod,
             remaining_ammo_mod: attacker.remaining_ammo_mod(),
             ap_shell_mod: None,
             carrier_power: None,
             proficiency_critical_mod: None,
             armor_penetration: 0.0,
+            special_enemy_mods: Default::default(),
+            custom_mods: self.custom_mods.clone(),
         })
     }
 

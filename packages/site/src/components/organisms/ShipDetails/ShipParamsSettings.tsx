@@ -133,8 +133,8 @@ const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
 
       <Divider label="特攻" />
       <AttackPowerModifiersForm
-        value={value.external_power_mods}
-        onChange={bind("external_power_mods")}
+        value={value.custom_mods}
+        onChange={bind("custom_mods")}
       />
     </Stack>
   );

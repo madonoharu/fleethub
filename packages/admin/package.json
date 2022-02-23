@@ -8,11 +8,11 @@
   },
   "dependencies": {
     "@fh/utils": "workspace:packages/utils",
-    "@google-cloud/asset": "^3.22.0",
+    "@google-cloud/asset": "^3.23.1",
     "cloudinary": "^1.28.1",
     "dequal": "^2.0.2",
     "firebase-admin": "^10.0.2",
-    "googleapis": "^92.0.0",
+    "googleapis": "^95.0.0",
     "got": "11.8.3"
   },
   "optionalDependencies": {

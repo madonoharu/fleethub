@@ -14,7 +14,9 @@ use crate::{
     attack::{AswAttackType, ProficiencyModifiers},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
-    gear_id, matches_gear_id, matches_ship_id, ship_id,
+    gear_id, matches_gear_id, matches_ship_id,
+    plane::{Plane, PlaneImpl, PlaneMut},
+    ship_id,
     types::{
         AirStateRank, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
         NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
@@ -280,6 +282,40 @@ impl Ship {
         ship
     }
 
+    pub fn planes(&self) -> impl Iterator<Item = Plane> {
+        self.gears
+            .0
+            .iter()
+            .zip(self.slots.iter())
+            .enumerate()
+            .filter_map(|(index, (gear, &slot_size))| {
+                let gear = gear.as_ref()?;
+
+                gear.has_proficiency().then(|| Plane {
+                    index,
+                    gear,
+                    slot_size,
+                })
+            })
+    }
+
+    pub fn planes_mut(&mut self) -> impl Iterator<Item = PlaneMut> {
+        self.gears
+            .0
+            .iter_mut()
+            .zip(self.slots.iter_mut())
+            .enumerate()
+            .filter_map(|(index, (gear, slot_size))| {
+                let gear = gear.as_mut()?;
+
+                gear.has_proficiency().then(|| PlaneMut {
+                    index,
+                    gear,
+                    slot_size,
+                })
+            })
+    }
+
     pub fn special_enemy_type(&self) -> SpecialEnemyType {
         if self.has_attr(ShipAttr::Pillbox) {
             SpecialEnemyType::Pillbox
@@ -303,7 +339,7 @@ impl Ship {
     }
 
     pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (usize, &Gear, Option<u8>)> {
-        self.gears.iter().map(move |(index, gear)| {
+        self.gears.iter().map(|(index, gear)| {
             let slot_size = if index == GearArray::EXSLOT_INDEX {
                 Some(0)
             } else {
@@ -1274,20 +1310,10 @@ impl Ship {
         }
     }
 
-    pub fn fighter_power(&self, anti_lbas: bool) -> Option<i32> {
-        self.gears
-            .without_ex()
-            .map(|(i, g)| {
-                let slot_size = self.get_slot_size(i)?;
-
-                if slot_size == 0 || !g.has_proficiency() {
-                    Some(0)
-                } else if !anti_lbas && g.has_attr(GearAttr::Recon) {
-                    Some(0)
-                } else {
-                    Some(g.calc_fighter_power(slot_size))
-                }
-            })
+    pub fn fighter_power(&self, recon_participates: bool) -> Option<i32> {
+        self.planes()
+            .filter(|plane| plane.participates_in_fighter_combat(recon_participates))
+            .map(|plane| plane.fighter_power())
             .sum()
     }
 

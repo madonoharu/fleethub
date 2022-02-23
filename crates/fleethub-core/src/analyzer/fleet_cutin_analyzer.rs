@@ -81,14 +81,14 @@ impl<'a> FleetCutinAnalyzer<'a> {
         let attacker_env = self.comp.create_warfare_ship_environment(ship, formation);
 
         let target_env = self.target_env.clone();
-        let external_power_mods = Default::default();
+        let custom_mods = Default::default();
 
         WarfareContext {
             attacker_env,
             target_env,
             engagement,
             air_state: self.air_state,
-            external_power_mods,
+            custom_mods,
         }
     }
 

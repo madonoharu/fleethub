@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 use crate::{
-    attack::{AttackPowerModifiers, AttackPowerParams, HitRateParams},
+    attack::{AttackPowerModifier, AttackPowerParams, CustomModifiers, HitRateParams},
     ship::Ship,
     types::{AirState, BattleConfig, Engagement, ShellingSpecialAttack, SpecialAttackDef},
 };
@@ -15,6 +15,7 @@ use super::{
 const SHELLING_POWER_CAP: f64 = 220.0;
 const SHELLING_CRITICAL_RATE_CONSTANT: f64 = 1.3;
 
+#[derive(Debug, Clone)]
 pub struct ProficiencyModifiers {
     pub hit_percentage_bonus: f64,
     pub critical_power_mod: f64,
@@ -42,7 +43,7 @@ pub struct ShellingAttackContext<'a> {
 
     pub attacker_env: &'a WarfareShipEnvironment,
     pub target_env: &'a WarfareShipEnvironment,
-    pub external_power_mods: &'a AttackPowerModifiers,
+    pub custom_mods: &'a CustomModifiers,
     pub engagement: Engagement,
     pub air_state: AirState,
 
@@ -86,7 +87,7 @@ impl<'a> ShellingAttackContext<'a> {
             attack_type,
             attacker_env,
             target_env,
-            external_power_mods: &warfare_context.external_power_mods,
+            custom_mods: &warfare_context.custom_mods,
             air_state: warfare_context.air_state,
             engagement: warfare_context.engagement,
             formation_power_mod,
@@ -159,24 +160,23 @@ impl<'a> ShellingAttackContext<'a> {
             let b14 = cruiser_fit_bonus + carrier_power_ebonus;
             let a11 = cutin_mod;
 
-            let mods_base = AttackPowerModifiers {
-                a14,
-                b14,
-                a11,
-                ..Default::default()
-            };
+            let precap_mod = AttackPowerModifier::new(a14, b14);
+            let postcap_mod = AttackPowerModifier::new(a11, 0.0);
 
-            let mods = mods_base + special_enemy_mods + self.external_power_mods.clone();
+            let custom_mods = self.custom_mods.clone();
 
             let params = AttackPowerParams {
                 basic,
                 cap: SHELLING_POWER_CAP,
-                mods,
+                precap_mod,
+                postcap_mod,
                 ap_shell_mod: ap_shell_mods.map(|mods| mods.0),
                 carrier_power,
                 proficiency_critical_mod,
                 remaining_ammo_mod,
                 armor_penetration: 0.0,
+                special_enemy_mods,
+                custom_mods,
             };
 
             Some(params)

@@ -25,6 +25,31 @@ impl Default for AirState {
 }
 
 impl AirState {
+    pub fn new(player: i32, enemy: i32) -> Self {
+        if player >= enemy * 3 {
+            Self::AirSupremacy
+        } else if player * 2 >= enemy * 3 {
+            Self::AirSuperiority
+        } else if player * 3 > enemy * 2 {
+            Self::AirParity
+        } else if player * 3 > enemy {
+            Self::AirDenial
+        } else {
+            Self::AirIncapability
+        }
+    }
+
+    /// 制空定数
+    pub fn constant(self) -> u32 {
+        match self {
+            AirState::AirSupremacy => 1,
+            AirState::AirSuperiority => 3,
+            AirState::AirParity => 5,
+            AirState::AirDenial => 7,
+            AirState::AirIncapability => 10,
+        }
+    }
+
     pub fn contact_mod(self) -> f64 {
         match self {
             AirState::AirSupremacy => 3.0,

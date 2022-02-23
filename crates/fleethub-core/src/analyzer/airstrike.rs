@@ -4,8 +4,8 @@ use ts_rs::TS;
 
 use crate::{
     comp::Comp,
-    ship::Ship,
-    types::{AirState, ContactRank, GearAttr, Side},
+    plane::{Plane, PlaneImpl},
+    types::{AirState, ContactRank, Side},
 };
 
 #[derive(Debug, Clone, Serialize, TS)]
@@ -25,19 +25,17 @@ pub struct CompContactChanceInfo {
     combined: Option<Vec<AirstrikeContactChance>>,
 }
 
-fn ships_contact_chance(
+fn planes_contact_chance(
     side: Side,
     air_state: AirState,
-    ships: &Vec<&Ship>,
+    planes: &Vec<Plane>,
 ) -> Option<AirstrikeContactChance> {
     let air_state_rank = air_state.rank(side);
 
-    let total_trigger_factor = ships
+    let total_trigger_factor = planes
         .iter()
-        .map(|ship| ship.gears_with_slot_size())
-        .flatten()
-        .filter(|(_, gear, _)| gear.has_attr(GearAttr::Recon))
-        .map(|(_, gear, slot_size)| Some(gear.calc_contact_trigger_factor(slot_size?)))
+        .filter(|plane| plane.is_recon())
+        .map(|plane| plane.contact_trigger_factor())
         .sum::<Option<f64>>()?;
 
     let trigger_rate =
@@ -45,16 +43,13 @@ fn ships_contact_chance(
 
     let at_least_one = |rank: ContactRank| -> Option<f64> {
         let rate = 1.0
-            - ships
+            - planes
                 .iter()
-                .map(|ship| ship.gears_with_slot_size())
-                .flatten()
-                .filter(|(_, gear, _)| {
-                    gear.is_contact_selection_plane() && gear.contact_rank() == rank
-                })
-                .map(|(_, gear, slot_size)| {
+                .filter(|plane| plane.is_contact_selection_plane() && plane.contact_rank() == rank)
+                .map(|plane| {
+                    let slot_size = plane.slot_size();
                     let rate = if slot_size? > 0 {
-                        gear.contact_selection_rate(air_state_rank)
+                        plane.contact_selection_rate(air_state_rank)
                     } else {
                         0.0
                     };
@@ -86,7 +81,7 @@ fn ships_contact_chance(
 
 fn analyze_ships_contact_chance(
     side: Side,
-    ships: Vec<&Ship>,
+    planes: &Vec<Plane>,
 ) -> Option<Vec<AirstrikeContactChance>> {
     if side.is_player() {
         [
@@ -102,21 +97,18 @@ fn analyze_ships_contact_chance(
         ]
     }
     .into_iter()
-    .map(|air_state| ships_contact_chance(side, air_state, &ships))
+    .map(|air_state| planes_contact_chance(side, air_state, planes))
     .collect()
 }
 
 impl CompContactChanceInfo {
     pub fn new(comp: &Comp) -> Self {
         let side = comp.side();
-        let single = analyze_ships_contact_chance(side, comp.main.ships.values().collect());
+        let single = analyze_ships_contact_chance(side, &comp.main_planes().collect());
 
         let combined = comp
             .is_combined()
-            .then(|| {
-                let combined_ships = comp.ships().map(|(_, _, s)| s).collect();
-                analyze_ships_contact_chance(side, combined_ships)
-            })
+            .then(|| analyze_ships_contact_chance(side, &comp.main_and_escort_planes().collect()))
             .flatten();
 
         Self { single, combined }

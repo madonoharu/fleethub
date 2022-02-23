@@ -22,7 +22,7 @@ import { schema, EntityType } from "ts-norm";
 
 type StepConfigShipEnv = Pick<
   WarfareAnalyzerShipEnvironment,
-  "formation" | "night_situation" | "external_power_mods"
+  "formation" | "night_situation" | "custom_mods"
 >;
 
 export type StepConfig = {

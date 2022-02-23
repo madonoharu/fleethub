@@ -1,44 +1,15 @@
+use itertools::Itertools;
+use rand::Rng;
 use wasm_bindgen::prelude::*;
 
 use crate::{
     attack::WarfareShipEnvironment,
-    fleet::{Fleet, ShipArray},
+    fleet::Fleet,
+    member::{Member, MemberMut},
+    plane::{Plane, PlaneMut},
     ship::Ship,
-    types::{CompMeta, FleetType, Formation, OrgType, Role, Side},
+    types::{AntiAirCutinDef, BattleConfig, CompMeta, FleetType, Formation, OrgType, Role, Side},
 };
-
-pub struct CompShips<'a> {
-    count: usize,
-    main_ships: &'a ShipArray,
-    escort_ships: Option<&'a ShipArray>,
-}
-
-impl<'a> Iterator for CompShips<'a> {
-    type Item = (Role, usize, &'a Ship);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let count = self.count;
-        self.count += 1;
-
-        let (role, index, ships) = if count < ShipArray::CAPACITY {
-            (Role::Main, count, self.main_ships)
-        } else if count < ShipArray::CAPACITY * 2 {
-            if let Some(escort_ships) = self.escort_ships {
-                (Role::Escort, count - ShipArray::CAPACITY, escort_ships)
-            } else {
-                return None;
-            }
-        } else {
-            return None;
-        };
-
-        if let Some(ship) = ships.get(index) {
-            Some((role, index, ship))
-        } else {
-            self.next()
-        }
-    }
-}
 
 #[wasm_bindgen]
 pub struct Comp {
@@ -59,12 +30,148 @@ impl Comp {
         self.escort.as_ref().unwrap_or_else(|| &self.main)
     }
 
-    pub fn ships(&self) -> CompShips {
-        CompShips {
-            count: 0,
-            main_ships: &self.main.ships,
-            escort_ships: self.escort.as_ref().map(|f| &f.ships),
-        }
+    pub fn members(&self) -> impl Iterator<Item = Member> {
+        self.main
+            .ships
+            .iter()
+            .map(|(index, ship)| Member {
+                org_type: self.org_type,
+                role: Role::Main,
+                index,
+                ship,
+            })
+            .chain(self.escort.iter().flat_map(|fleet| {
+                fleet.ships.iter().map(|(index, ship)| Member {
+                    org_type: self.org_type,
+                    role: Role::Escort,
+                    index,
+                    ship,
+                })
+            }))
+    }
+
+    pub fn members_mut(&mut self) -> impl Iterator<Item = MemberMut> {
+        self.main
+            .ships
+            .iter_mut()
+            .map(|(index, ship)| MemberMut {
+                org_type: self.org_type,
+                role: Role::Main,
+                index,
+                ship,
+            })
+            .chain(
+                self.escort
+                    .iter_mut()
+                    .flat_map(|fleet| fleet.ships.iter_mut())
+                    .map(|(index, ship)| MemberMut {
+                        org_type: self.org_type,
+                        role: Role::Escort,
+                        index,
+                        ship,
+                    }),
+            )
+    }
+
+    pub fn planes(&self, escort_participates: bool) -> impl Iterator<Item = Plane> {
+        let escort_planes = escort_participates
+            .then(|| self.escort.as_ref())
+            .flatten()
+            .into_iter()
+            .flat_map(|fleet| fleet.ships.values());
+
+        self.main
+            .ships
+            .values()
+            .chain(escort_planes)
+            .flat_map(|ship| ship.planes())
+    }
+
+    pub fn planes_mut(&mut self, escort_participates: bool) -> impl Iterator<Item = PlaneMut> {
+        let escort_planes = escort_participates
+            .then(|| self.escort.as_mut())
+            .flatten()
+            .into_iter()
+            .flat_map(|fleet| fleet.ships.values_mut());
+
+        self.main
+            .ships
+            .values_mut()
+            .chain(escort_planes)
+            .flat_map(|ship| ship.planes_mut())
+    }
+
+    pub fn main_planes(&self) -> impl Iterator<Item = Plane> {
+        self.main.ships.values().flat_map(|ship| ship.planes())
+    }
+
+    pub fn main_and_escort_planes(&self) -> impl Iterator<Item = Plane> {
+        self.main
+            .ships
+            .values()
+            .chain(self.escort.iter().flat_map(|fleet| fleet.ships.values()))
+            .flat_map(|ship| ship.planes())
+    }
+
+    pub fn main_planes_mut(&mut self) -> impl Iterator<Item = PlaneMut> {
+        self.main
+            .ships
+            .values_mut()
+            .flat_map(|ship| ship.planes_mut())
+    }
+
+    pub fn main_and_escort_planes_mut(&mut self) -> impl Iterator<Item = PlaneMut> {
+        self.main
+            .ships
+            .values_mut()
+            .chain(
+                self.escort
+                    .iter_mut()
+                    .flat_map(|fleet| fleet.ships.values_mut()),
+            )
+            .flat_map(|ship| ship.planes_mut())
+    }
+
+    pub fn ships(&self) -> impl Iterator<Item = &Ship> {
+        self.members().map(|entry| entry.ship)
+    }
+
+    pub fn ships_mut(&mut self) -> impl Iterator<Item = &mut Ship> {
+        self.main.ships.values_mut().chain(
+            self.escort
+                .iter_mut()
+                .flat_map(|fleet| fleet.ships.values_mut()),
+        )
+    }
+
+    pub fn choose_anti_air_cutin<'a, R: Rng + ?Sized>(
+        &self,
+        rng: &mut R,
+        config: &'a BattleConfig,
+    ) -> Option<&'a AntiAirCutinDef> {
+        self.members()
+            .map(|entry| entry.ship)
+            .filter_map(|ship| {
+                let aaci_vec = ship.get_possible_anti_air_cutin_ids();
+
+                let r = rng.gen_range(0.0..1.0);
+
+                let aaci = aaci_vec
+                    .into_iter()
+                    .filter_map(|id| config.get_anti_air_cutin_def(id))
+                    .find(|aaci| {
+                        let p = aaci.rate().unwrap_or_default();
+                        if aaci.is_sequential() {
+                            rng.gen_bool(p)
+                        } else {
+                            p > r
+                        }
+                    });
+
+                aaci
+            })
+            .sorted_by(|a, b| a.id.cmp(&b.id).reverse())
+            .next()
     }
 
     pub fn reset_battle_state(&mut self) {
@@ -78,8 +185,8 @@ impl Comp {
         formation: Formation,
     ) -> WarfareShipEnvironment {
         let (role, ship_index) = self
-            .ships()
-            .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
+            .members()
+            .find_map(|entry| (entry.ship == ship).then(|| (entry.role, entry.index)))
             .unwrap_or_default();
 
         let fleet = match role {
@@ -146,9 +253,7 @@ impl Comp {
     }
 
     pub fn get_ship_by_eid_with_clone(&self, id: String) -> Option<Ship> {
-        self.ships()
-            .find_map(|(_, _, ship)| (ship.id == id).then(|| ship))
-            .cloned()
+        self.ships().find(|ship| ship.id == id).cloned()
     }
 
     pub fn default_formation(&self) -> Formation {
@@ -157,10 +262,7 @@ impl Comp {
 
     /// 艦隊対空値
     pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
-        let total = self
-            .ships()
-            .map(|(_, _, ship)| ship.fleet_anti_air())
-            .sum::<i32>() as f64;
+        let total = self.ships().map(|ship| ship.fleet_anti_air()).sum::<i32>() as f64;
 
         let post_floor = (total * formation_mod).floor() * 2.;
 
@@ -172,13 +274,17 @@ impl Comp {
     }
 
     /// 制空値
-    pub fn fighter_power(&self, anti_combined: bool, anti_lbas: bool) -> Option<i32> {
-        let main_fp = self.main.fighter_power(anti_lbas)?;
+    pub fn fighter_power(
+        &self,
+        escort_participates: bool,
+        recon_participates: bool,
+    ) -> Option<i32> {
+        let main_fp = self.main.fighter_power(recon_participates)?;
 
-        if !anti_combined {
+        if !escort_participates {
             Some(main_fp)
         } else {
-            let escort_fp = self.escort.as_ref()?.fighter_power(anti_lbas)?;
+            let escort_fp = self.escort.as_ref()?.fighter_power(recon_participates)?;
             Some(main_fp + escort_fp)
         }
     }
@@ -198,18 +304,23 @@ impl Comp {
 
     /// 輸送物資量(TP)
     pub fn transport_point(&self) -> i32 {
-        self.ships()
-            .map(|(_, _, ship)| ship.transport_point())
-            .sum()
+        self.ships().map(|ship| ship.transport_point()).sum()
     }
 }
 
 #[cfg(test)]
 mod test {
-    use crate::comp::Comp;
+    use crate::types::NightCutin;
 
     #[test]
     fn test() {
-        println!("{}", std::mem::size_of::<Box<Comp>>());
+        let mut set = enumset::EnumSet::new();
+        set.insert(NightCutin::Cvci1_18);
+        set.insert(NightCutin::MainMainMain);
+        set.insert(NightCutin::TorpLookoutRadar);
+
+        set.into_iter().for_each(|ci| {
+            println!("{:#?}", ci);
+        })
     }
 }
