@@ -41,7 +41,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
         engagement: config.engagement,
         attacker_formation: config.player.formation,
         target_formation: config.enemy.formation,
-        external_power_mods: config.player.external_power_mods,
+        custom_mods: config.player.custom_mods,
       },
       times
     );

@@ -1,74 +1,90 @@
-use std::ops::Add;
-
-use paste::paste;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-macro_rules! declare_attack_power_modifiers {
-    (($( $an:ident ),* $(,)?) , ($( $bn:ident ),* $(,)?)) => {
-        #[derive(Debug, Clone, Serialize, Deserialize, TS)]
-        pub struct AttackPowerModifiers {
-            $( pub $an: f64, pub $bn: f64 ),*
-        }
-
-        impl Default for AttackPowerModifiers {
-            fn default() -> Self {
-                Self {
-                    $( $an: 1.0, $bn: 0.0 ),*
-                }
-            }
-        }
-
-        impl AttackPowerModifiers {
-            paste! {
-                $(
-                    pub fn [<apply_ $an>](&mut self, v: f64) {
-                        self.$an *= v;
-                    }
-
-                    pub fn [<apply_ $bn>](&mut self, v: f64) {
-                        self.$bn += v;
-                    }
-                )*
-            }
-        }
-
-        impl Add for AttackPowerModifiers {
-            type Output = Self;
-
-            fn add(self, rhs: Self) -> Self::Output {
-                Self {
-                    $(
-                        $an: self.$an * rhs.$an,
-                        $bn: self.$bn + rhs.$bn,
-                    )*
-                }
-            }
-        }
-    };
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+pub struct AttackPowerModifier {
+    pub a: f64,
+    pub b: f64,
 }
 
-declare_attack_power_modifiers!(
-    (a5, a6, a7, a11, a12, a13, a13_2, a14),
-    (b5, b6, b7, b11, b12, b13, b13_2, b14)
-);
+impl Default for AttackPowerModifier {
+    fn default() -> Self {
+        Self { a: 1.0, b: 0.0 }
+    }
+}
 
-impl AttackPowerModifiers {
+impl From<(f64, f64)> for AttackPowerModifier {
+    #[inline]
+    fn from((a, b): (f64, f64)) -> Self {
+        Self { a, b }
+    }
+}
+
+impl AttackPowerModifier {
+    pub fn new(a: f64, b: f64) -> Self {
+        Self { a, b }
+    }
+
+    pub fn set(&mut self, a: f64, b: f64) {
+        self.a = a;
+        self.b = b;
+    }
+
+    pub fn compose(&self, other: &Self) -> Self {
+        Self {
+            a: self.a * other.a,
+            b: self.b + other.b,
+        }
+    }
+
+    pub fn merge(&mut self, a: f64, b: f64) {
+        self.a *= a;
+        self.b += b;
+    }
+
+    #[inline]
+    pub fn apply(&self, v: f64) -> f64 {
+        self.a * v + self.b
+    }
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+pub struct SpecialEnemyModifiers {
+    pub precap_general_mod: AttackPowerModifier,
+    pub stype_mod: AttackPowerModifier,
+    pub landing_craft_synergy_mod: AttackPowerModifier,
+    pub toku_daihatsu_tank_mod: AttackPowerModifier,
+    pub m4a1dd_mod: AttackPowerModifier,
+    pub honi_mod: AttackPowerModifier,
+    pub postcap_general_mod: AttackPowerModifier,
+    pub pt_mod: AttackPowerModifier,
+}
+
+impl SpecialEnemyModifiers {
     pub fn new() -> Self {
         Self::default()
     }
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+pub struct CustomModifiers {
+    pub precap_mod: AttackPowerModifier,
+    pub postcap_mod: AttackPowerModifier,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
 pub struct AttackPowerParams {
     pub basic: f64,
     pub cap: f64,
-    pub mods: AttackPowerModifiers,
+    pub precap_mod: AttackPowerModifier,
+    pub postcap_mod: AttackPowerModifier,
     pub ap_shell_mod: Option<f64>,
     pub carrier_power: Option<f64>,
     pub proficiency_critical_mod: Option<f64>,
     pub armor_penetration: f64,
     pub remaining_ammo_mod: f64,
+    pub special_enemy_mods: SpecialEnemyModifiers,
+    pub custom_mods: CustomModifiers,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
@@ -83,29 +99,51 @@ pub struct AttackPower {
 }
 
 impl AttackPowerParams {
-    fn apply_precap_modifiers(&self, basic: f64) -> f64 {
-        let mods = &self.mods;
+    fn apply_precap_mods(&self, basic: f64) -> f64 {
         let mut precap = basic;
 
-        precap = precap * mods.a12 + mods.b12;
-        precap = precap * mods.a13 + mods.b13;
-        precap = precap * mods.a13_2 + mods.b13_2;
+        let SpecialEnemyModifiers {
+            precap_general_mod,
+            stype_mod,
+            landing_craft_synergy_mod,
+            toku_daihatsu_tank_mod,
+            m4a1dd_mod,
+            honi_mod,
+            ..
+        } = &self.special_enemy_mods;
+
+        precap = stype_mod.apply(precap);
+        precap *= precap_general_mod.a;
+        precap = toku_daihatsu_tank_mod.apply(precap);
+        precap = m4a1dd_mod.apply(precap);
+        precap = honi_mod.apply(precap);
+        precap = landing_craft_synergy_mod.apply(precap);
+        precap += precap_general_mod.b;
 
         if let Some(v) = self.carrier_power {
             precap = ((precap + v) * 1.5).floor() + 25.0
         }
 
-        precap * mods.a14 + mods.b14
+        let precap_mod = self.precap_mod.compose(&self.custom_mods.precap_mod);
+
+        precap_mod.apply(precap)
     }
 
-    fn apply_postcap_modifiers(&self, capped: f64) -> (f64, f64) {
-        let mods = &self.mods;
-        let mut postcap = capped;
+    fn apply_postcap_mods(&self, capped: f64) -> (f64, f64) {
+        let mut postcap = capped.floor();
 
-        postcap = (postcap * mods.a5 + mods.b5).floor();
-        postcap = (postcap * mods.a6 + mods.b6).floor();
-        postcap = (postcap * mods.a7 + mods.b7).floor();
-        postcap = postcap * mods.a11 + mods.b11;
+        let SpecialEnemyModifiers {
+            postcap_general_mod,
+            pt_mod,
+            ..
+        } = &self.special_enemy_mods;
+
+        postcap = postcap_general_mod.apply(postcap).floor();
+        postcap = pt_mod.apply(postcap).floor();
+
+        let postcap_mod = self.postcap_mod.compose(&self.custom_mods.postcap_mod);
+
+        postcap = postcap_mod.apply(postcap);
 
         if let Some(v) = self.ap_shell_mod {
             postcap = (postcap * v).floor()
@@ -119,7 +157,7 @@ impl AttackPowerParams {
 
     pub fn calc(&self) -> AttackPower {
         let cap = self.cap;
-        let precap = self.apply_precap_modifiers(self.basic);
+        let precap = self.apply_precap_mods(self.basic);
 
         let is_capped = precap > cap;
 
@@ -129,7 +167,7 @@ impl AttackPowerParams {
             precap
         };
 
-        let (normal, critical) = self.apply_postcap_modifiers(capped);
+        let (normal, critical) = self.apply_postcap_mods(capped);
 
         AttackPower {
             precap,

@@ -21,11 +21,12 @@ const NodeLable: React.FCX<NodeLableProps> = ({
 }) => {
   const { t } = useTranslation("common");
   const distance = d && `${t("LbasDistance")}: ${d.join("→")}`;
+  const typeName = getNodeTypeStyle(type).name;
 
   return (
     <Typography className={className} style={style} variant="subtitle2">
       <span>{name}</span>
-      <span>{t(getNodeTypeStyle(type).name)}</span>
+      <span>{t(`nodeType.${typeName}`)}</span>
       <span>{distance}</span>
     </Typography>
   );

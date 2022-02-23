@@ -6,6 +6,15 @@ use super::FleetCutin;
 
 #[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, TS)]
 pub enum NightCutin {
+    /// 主魚電
+    MainTorpRadar,
+    /// 魚見電
+    TorpLookoutRadar,
+    /// 魚水魚
+    TorpTsloTorp,
+    /// 魚見ド
+    TorpTsloDrum,
+
     /// 連撃
     DoubleAttack,
     /// 魚魚主
@@ -16,15 +25,6 @@ pub enum NightCutin {
     MainMainSec,
     /// 主主主
     MainMainMain,
-
-    /// 主魚電
-    MainTorpRadar,
-    /// 魚見電
-    TorpLookoutRadar,
-    /// 魚水魚
-    TorpTsloTorp,
-    /// 魚見ド
-    TorpTsloDrum,
 
     /// 潜水魚魚
     SubTorpTorp,

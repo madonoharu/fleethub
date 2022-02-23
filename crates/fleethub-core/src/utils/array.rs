@@ -1,14 +1,6 @@
-use std::{
-    fmt::Debug,
-    iter::{FromIterator, Sum},
-    ops::{Deref, DerefMut, Index},
-    slice::SliceIndex,
-    usize,
-};
+use std::{fmt::Debug, iter::Sum, ops::Index, slice::SliceIndex, usize};
 
 use arrayvec::ArrayVec;
-use serde::{Deserialize, Serialize};
-use ts_rs::{Dependency, TS};
 
 #[derive(Debug, Clone, Default)]
 pub struct OptionalArray<T: Debug + Default + Clone, const N: usize>(pub ArrayVec<Option<T>, N>);
@@ -87,47 +79,6 @@ where
         let mut array = ArrayVec::new();
         array.extend(iter);
         Self(array)
-    }
-}
-
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct MyArrayVec<T, const CAP: usize>(ArrayVec<T, CAP>);
-
-impl<T, const CAP: usize> Deref for MyArrayVec<T, CAP> {
-    type Target = ArrayVec<T, CAP>;
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl<T, const CAP: usize> DerefMut for MyArrayVec<T, CAP> {
-    #[inline]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
-    }
-}
-
-impl<T, const CAP: usize> FromIterator<T> for MyArrayVec<T, CAP> {
-    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        MyArrayVec(ArrayVec::from_iter(iter))
-    }
-}
-
-impl<T, const CAP: usize> TS for MyArrayVec<T, CAP>
-where
-    T: TS,
-{
-    fn name() -> String {
-        Vec::<T>::name()
-    }
-
-    fn dependencies() -> Vec<Dependency> {
-        Vec::<T>::dependencies()
-    }
-
-    fn transparent() -> bool {
-        Vec::<T>::transparent()
     }
 }
 

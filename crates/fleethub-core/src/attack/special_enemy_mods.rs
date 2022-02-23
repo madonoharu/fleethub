@@ -1,19 +1,83 @@
-use paste::paste;
-
 use crate::{
     gear_id,
     ship::Ship,
     types::{GearType, ShipType, SpecialEnemyType},
 };
 
-use super::attack_power::AttackPowerModifiers;
+use super::SpecialEnemyModifiers;
+
+macro_rules! apply_mod_impl {
+    ($name1:expr, a, $v:expr) => {
+        $name1.a *= $v
+    };
+
+    ($name1:expr, b, $v:expr) => {
+        $name1.b += $v
+    };
+}
+
+macro_rules! apply_mod {
+    ($name1:expr, $name2:ident, $e:expr, [ $v1:expr ]) => {
+        if $e >= 1 {
+            apply_mod_impl!($name1, $name2, $v1)
+        }
+    };
+
+    ($name1:expr, $name2:ident, $e:expr, [ $v1:expr, $v2:expr ]) => {
+        match $e {
+            0 => (),
+            1 => apply_mod_impl!($name1, $name2, $v1),
+            2 => apply_mod_impl!($name1, $name2, $v2),
+            _ => apply_mod_impl!($name1, $name2, $v2),
+        }
+    };
+
+    ($name1:expr, $name2:ident, $e:expr, [ $v1:expr, $v2:expr, $v3:expr ]) => {
+        match $e {
+            0 => (),
+            1 => apply_mod_impl!($name1, $name2, $v1),
+            2 => apply_mod_impl!($name1, $name2, $v2),
+            3 => apply_mod_impl!($name1, $name2, $v3),
+            _ => apply_mod_impl!($name1, $name2, $v3),
+        }
+    };
+
+    ($name1:expr, $name2:ident, $e:expr, [ $v1:expr, $v2:expr, $v3:expr, $v4:expr ]) => {
+        match $e {
+            0 => (),
+            1 => apply_mod_impl!($name1, $name2, $v1),
+            2 => apply_mod_impl!($name1, $name2, $v2),
+            3 => apply_mod_impl!($name1, $name2, $v3),
+            4 => apply_mod_impl!($name1, $name2, $v4),
+            _ => apply_mod_impl!($name1, $name2, $v4),
+        }
+    };
+
+    ($name1:expr, $name2:ident, $e:expr, [ $v1:expr, $v2:expr, $v3:expr, $v4:expr, $v5:expr ]) => {
+        match $e {
+            0 => (),
+            1 => apply_mod_impl!($name1, $name2, $v1),
+            2 => apply_mod_impl!($name1, $name2, $v2),
+            3 => apply_mod_impl!($name1, $name2, $v3),
+            4 => apply_mod_impl!($name1, $name2, $v4),
+            5 => apply_mod_impl!($name1, $name2, $v5),
+            _ => apply_mod_impl!($name1, $name2, $v5),
+        }
+    };
+
+    ($name1:expr, $name2:ident, $e:expr, $v:expr) => {
+        if $e {
+            apply_mod_impl!($name1, $name2, $v);
+        }
+    };
+}
 
 /// 砲撃支援特効補正
 pub fn shelling_support_special_enemy_modifiers(
     attacker: &Ship,
     special_enemy_type: SpecialEnemyType,
-) -> AttackPowerModifiers {
-    let mut mods = AttackPowerModifiers::new();
+) -> SpecialEnemyModifiers {
+    let mut mods = SpecialEnemyModifiers::new();
 
     if attacker.gears.has_type(GearType::AntiAirShell) {
         let aa_shell_mod = match special_enemy_type {
@@ -22,7 +86,7 @@ pub fn shelling_support_special_enemy_modifiers(
             _ => 1.0,
         };
 
-        mods.apply_a13(aa_shell_mod);
+        mods.precap_general_mod.a *= aa_shell_mod;
     }
 
     mods
@@ -33,79 +97,14 @@ pub fn special_enemy_modifiers(
     attacker: &Ship,
     special_enemy_type: SpecialEnemyType,
     is_day: bool,
-) -> AttackPowerModifiers {
-    let mut mods = AttackPowerModifiers::default();
+) -> SpecialEnemyModifiers {
+    let mut mods = SpecialEnemyModifiers::new();
 
     if special_enemy_type.is_none() {
         return mods;
     }
 
     let gears = &attacker.gears;
-
-    macro_rules! apply_mod {
-        ($f:ident, $v:expr) => {
-            paste! {
-                mods.[<apply_ $f>]($v)
-            }
-        };
-
-        ($f:ident, $e:expr, [ $v1:expr ]) => {
-            if $e >= 1 {
-                apply_mod!($f, $v1)
-            }
-        };
-
-        ($f:ident, $e:expr, [ $v1:expr, $v2:expr ]) => {
-            match $e {
-                0 => {}
-                1 => apply_mod!($f, $v1),
-                2 => apply_mod!($f, $v2),
-                _ => apply_mod!($f, $v2),
-            }
-        };
-
-        ($f:ident, $e:expr, [ $v1:expr, $v2:expr, $v3:expr ]) => {
-            match $e {
-                0 => {}
-                1 => apply_mod!($f, $v1),
-                2 => apply_mod!($f, $v2),
-                3 => apply_mod!($f, $v3),
-                _ => apply_mod!($f, $v3),
-            }
-        };
-
-        ($f:ident, $e:expr, [ $v1:expr, $v2:expr, $v3:expr, $v4:expr ]) => {
-            match $e {
-                0 => {}
-                1 => apply_mod!($f, $v1),
-                2 => apply_mod!($f, $v2),
-                3 => apply_mod!($f, $v3),
-                4 => apply_mod!($f, $v4),
-                _ => apply_mod!($f, $v4),
-            }
-        };
-
-        ($f:ident, $e:expr, [ $v1:expr, $v2:expr, $v3:expr, $v4:expr, $v5:expr ]) => {
-            match $e {
-                0 => {}
-                1 => apply_mod!($f, $v1),
-                2 => apply_mod!($f, $v2),
-                3 => apply_mod!($f, $v3),
-                4 => apply_mod!($f, $v4),
-                5 => apply_mod!($f, $v5),
-                _ => apply_mod!($f, $v5),
-            }
-        };
-
-        // ($f:ident, $e:expr, [ $( $vn:expr ),* , ]) => {
-        //     apply_mod!($f, $e, [$( $vn ),*])
-        // };
-        ($f:ident, $e:expr, $v:expr) => {
-            if $e {
-                apply_mod!($f, $v);
-            }
-        };
-    }
 
     let has_seaplane = gears.has_by(|gear| {
         matches!(
@@ -131,31 +130,31 @@ pub fn special_enemy_modifiers(
             let aa_gun_count = gears.count_type(GearType::AntiAirGun);
             let lookouts_count = gears.count_type(GearType::ShipPersonnel);
 
-            mods.apply_a6(0.35);
-            mods.apply_b6(15.0);
+            mods.postcap_general_mod.merge(0.35, 15.0);
 
-            apply_mod!(a7, small_gun_count, [1.5, 1.5 * 1.4]);
-            apply_mod!(a7, sec_gun_count, [1.3]);
+            apply_mod!(mods.pt_mod, a, small_gun_count, [1.5, 1.5 * 1.4]);
+            apply_mod!(mods.pt_mod, a, sec_gun_count, [1.3]);
             apply_mod!(
-                a7,
+                mods.pt_mod,
+                a,
                 cb_dive_bomber_count.max(jet_fighter_bomber_count),
                 [1.4, 1.4 * 1.3]
             );
-            apply_mod!(a7, aa_gun_count, [1.2, 1.2 * 1.2]);
-            apply_mod!(a7, lookouts_count, [1.1]);
-            apply_mod!(a7, armored_boat_group_count, [1.2, 1.2 * 1.1]);
+            apply_mod!(mods.pt_mod, a, aa_gun_count, [1.2, 1.2 * 1.2]);
+            apply_mod!(mods.pt_mod, a, lookouts_count, [1.1]);
+            apply_mod!(mods.pt_mod, a, armored_boat_group_count, [1.2, 1.2 * 1.1]);
 
             return mods;
         }
         SpecialEnemyType::BattleshipSummerPrincess => {
-            apply_mod!(a6, has_seaplane, 1.1);
-            apply_mod!(a6, has_ap_shell, 1.2);
+            apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.1);
+            apply_mod!(mods.postcap_general_mod, a, has_ap_shell, 1.2);
 
             return mods;
         }
         SpecialEnemyType::HeavyCruiserSummerPrincess => {
-            apply_mod!(a6, has_seaplane, 1.15);
-            apply_mod!(a6, has_ap_shell, 1.1);
+            apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.15);
+            apply_mod!(mods.postcap_general_mod, a, has_ap_shell, 1.1);
 
             return mods;
         }
@@ -189,6 +188,7 @@ pub fn special_enemy_modifiers(
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
 
     let toku_daihatsu_tank_count = shikon_count + honi_count;
+    let t89_tank_and_honi_count = t89_tank_count + honi_count;
 
     // 改修補正
     let landing_craft_stars = gears.sum_by(|gear| {
@@ -222,42 +222,60 @@ pub fn special_enemy_modifiers(
     let landing_craft_ibonus = 1.0 + landing_craft_stars_average / 50.0;
     let tank_ibonus = 1.0 + tank_stars_average / 30.0;
 
-    // 陸上共通 a13
-    mods.apply_a13(landing_craft_ibonus);
-    mods.apply_a13(tank_ibonus);
+    mods.precap_general_mod.a *= landing_craft_ibonus * tank_ibonus;
 
-    // 陸上共通 b13
-    apply_mod!(b13, m4a1dd_count > 0, m4a1dd_count as f64 * 25.0);
-
-    // 陸上共通 a13_2
-    apply_mod!(a13_2, gears.has(gear_id!("M4A1 DD")), 1.4);
-
-    // 陸上共通 b13_2
-    apply_mod!(b13_2, wg42_count, [75.0, 110.0, 140.0, 160.0, 160.0]);
-    apply_mod!(b13_2, mortar_count, [30.0, 55.0, 75.0, 90.0, 90.0]);
-    apply_mod!(b13_2, mortar_cd_count, [60.0, 110.0, 150.0, 150.0, 150.0]);
     apply_mod!(
-        b13_2,
+        mods.precap_general_mod,
+        b,
+        wg42_count,
+        [75.0, 110.0, 140.0, 160.0, 160.0]
+    );
+    apply_mod!(
+        mods.precap_general_mod,
+        b,
+        mortar_count,
+        [30.0, 55.0, 75.0, 90.0, 90.0]
+    );
+    apply_mod!(
+        mods.precap_general_mod,
+        b,
+        mortar_cd_count,
+        [60.0, 110.0, 150.0, 150.0, 150.0]
+    );
+    apply_mod!(
+        mods.precap_general_mod,
+        b,
         type4_rocket_count,
         [55.0, 115.0, 160.0, 190.0, 190.0]
     );
     apply_mod!(
-        b13_2,
+        mods.precap_general_mod,
+        b,
         type4_rocket_cd_count,
         [80.0, 170.0, 170.0, 170.0, 170.0]
     );
 
-    // 陸上共通 b12
+    // 艦種補正
     apply_mod!(
-        b12,
+        mods.stype_mod,
+        b,
         matches!(attacker.ship_type, ShipType::SS | ShipType::SSV),
         30.0
     );
 
     // 特大発戦車補正
     if toku_daihatsu_tank_count > 0 {
-        mods.apply_a13(1.8);
-        mods.apply_b13(25.0)
+        mods.toku_daihatsu_tank_mod.merge(1.8, 25.0);
+    }
+
+    // M4A1DD
+    if m4a1dd_count > 0 {
+        mods.m4a1dd_mod.merge(1.4, 35.0);
+    }
+
+    // 特大発動艇+一式砲戦車
+    if honi_count > 0 {
+        mods.honi_mod.merge(1.3, 35.0);
     }
 
     // 陸上共通 支援上陸用舟艇シナジー
@@ -295,99 +313,212 @@ pub fn special_enemy_modifiers(
         Some((a13_2, b13_2))
     };
 
-    if let Some((a13_2, b13_2)) = calc_landing_craft_synergy_bonuses() {
-        mods.apply_a13_2(a13_2);
-        mods.apply_b13_2(b13_2);
+    if let Some((a, b)) = calc_landing_craft_synergy_bonuses() {
+        mods.landing_craft_synergy_mod.merge(a, b);
     }
 
     if special_enemy_type == SpecialEnemyType::SupplyDepot {
-        if t89_tank_count > 0 {
-            mods.apply_a6(landing_craft_ibonus.powf(2.0))
-        } else {
-            mods.apply_a6(landing_craft_ibonus)
-        }
-        mods.apply_a6(tank_ibonus);
+        let mut n = 1.0;
 
-        apply_mod!(a6, type4_rocket_group_count, [1.2, 1.2 * 1.4]);
-        apply_mod!(a6, mortar_group_count, [1.15, 1.15 * 1.2]);
-        apply_mod!(a6, landing_craft_count, [1.7]);
-        apply_mod!(a6, toku_daihatsu_count, [1.2]);
-        apply_mod!(a6, t89_tank_count, [1.3, 1.3 * 1.6]);
-        apply_mod!(a6, africa_count, [1.3]); //2積み検証待ち
-        apply_mod!(a6, m4a1dd_count, [1.2]);
-        apply_mod!(a6, t2_tank_count, [1.7, 1.7 * 1.5]);
-        apply_mod!(a6, armored_boat_group_count, [1.5, 1.5 * 1.1]);
+        if t89_tank_and_honi_count > 0 {
+            n += 1.0;
+        }
+        if africa_count > 0 {
+            n += 1.0;
+        }
+
+        mods.postcap_general_mod.a *= landing_craft_ibonus.powf(n);
+
+        apply_mod!(
+            mods.postcap_general_mod,
+            a,
+            type4_rocket_group_count,
+            [1.2, 1.2 * 1.4]
+        );
+        apply_mod!(
+            mods.postcap_general_mod,
+            a,
+            mortar_group_count,
+            [1.15, 1.15 * 1.2]
+        );
+        apply_mod!(mods.postcap_general_mod, a, landing_craft_count, [1.7]);
+        apply_mod!(mods.postcap_general_mod, a, toku_daihatsu_count, [1.2]);
+        apply_mod!(
+            mods.postcap_general_mod,
+            a,
+            t89_tank_and_honi_count,
+            [1.3, 1.3 * 1.6]
+        );
+        apply_mod!(mods.postcap_general_mod, a, africa_count, [1.3]); //2積み検証待ち
+        apply_mod!(mods.postcap_general_mod, a, m4a1dd_count, [1.2]);
+        apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.7, 1.7 * 1.5]);
+        apply_mod!(
+            mods.postcap_general_mod,
+            a,
+            armored_boat_group_count,
+            [1.5, 1.5 * 1.1]
+        );
     }
 
     match special_enemy_type {
         SpecialEnemyType::Pillbox => {
-            apply_mod!(a13, has_ap_shell, 1.85);
-            apply_mod!(a13, wg42_count, [1.6, 1.6 * 1.7]);
-            apply_mod!(a13, type4_rocket_group_count, [1.5, 1.5 * 1.8]);
-            apply_mod!(a13, mortar_group_count, [1.3, 1.3 * 1.5]);
-            apply_mod!(a13, has_seaplane, 1.5);
-            apply_mod!(a13, cb_dive_bomber_count, [1.5, 1.5 * 2.0]);
-            apply_mod!(a13, landing_craft_count, [1.8]);
-            apply_mod!(a13, toku_daihatsu_count, [1.15]);
-            apply_mod!(a13, t89_tank_count, [1.5, 1.5 * 1.4]);
-            apply_mod!(a13, africa_count, [1.5]); //2積み検証待ち
-            apply_mod!(a13, m4a1dd_count, [2.0]);
-            apply_mod!(a13, t2_tank_count, [2.4, 2.4 * 1.35]);
+            apply_mod!(mods.precap_general_mod, a, has_ap_shell, 1.85);
+            apply_mod!(mods.precap_general_mod, a, wg42_count, [1.6, 1.6 * 1.7]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                type4_rocket_group_count,
+                [1.5, 1.5 * 1.8]
+            );
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                mortar_group_count,
+                [1.3, 1.3 * 1.5]
+            );
+            apply_mod!(mods.precap_general_mod, a, has_seaplane, 1.5);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                cb_dive_bomber_count,
+                [1.5, 1.5 * 2.0]
+            );
+            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
+            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t89_tank_and_honi_count,
+                [1.5, 1.5 * 1.4]
+            );
+            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]); //2積み検証待ち
+            apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [2.0]);
+            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
 
             let ship_is_dd_or_cl = matches!(attacker.ship_type, ShipType::DD | ShipType::CL);
-            apply_mod!(a13, ship_is_dd_or_cl, 1.4);
+            apply_mod!(mods.precap_general_mod, a, ship_is_dd_or_cl, 1.4);
 
             if is_day {
-                apply_mod!(a13, armored_boat_group_count, [1.3, 1.3 * 1.2]);
+                apply_mod!(
+                    mods.precap_general_mod,
+                    a,
+                    armored_boat_group_count,
+                    [1.3, 1.3 * 1.2]
+                );
             }
         }
         SpecialEnemyType::IsolatedIsland => {
-            apply_mod!(a13, has_aa_shell, 1.75);
-            apply_mod!(a13, wg42_count, [1.4, 1.4 * 1.5]);
-            apply_mod!(a13, type4_rocket_group_count, [1.3, 1.3 * 1.65]);
-            apply_mod!(a13, mortar_group_count, [1.2, 1.2 * 1.4]);
-            apply_mod!(a13, cb_dive_bomber_count, [1.4, 1.4 * 1.75]);
-            apply_mod!(a13, landing_craft_count, [1.8]);
-            apply_mod!(a13, toku_daihatsu_count, [1.15]);
-            apply_mod!(a13, t89_tank_count, [1.2, 1.2 * 1.4]);
-            // apply_mod!(a13, africa_count, [1.2]); //検証待ち
-            apply_mod!(a13, m4a1dd_count, [1.8]);
-            apply_mod!(a13, t2_tank_count, [2.4, 2.4 * 1.35]);
+            apply_mod!(mods.precap_general_mod, a, has_aa_shell, 1.75);
+            apply_mod!(mods.precap_general_mod, a, wg42_count, [1.4, 1.4 * 1.5]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                type4_rocket_group_count,
+                [1.3, 1.3 * 1.65]
+            );
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                mortar_group_count,
+                [1.2, 1.2 * 1.4]
+            );
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                cb_dive_bomber_count,
+                [1.4, 1.4 * 1.75]
+            );
+            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
+            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t89_tank_and_honi_count,
+                [1.2, 1.2 * 1.4]
+            );
+            // apply_mod!(mods.precap_general_mod,a, africa_count, [1.2]); //検証待ち
+            apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [1.8]);
+            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
 
             if is_day {
-                apply_mod!(a13, armored_boat_group_count, [1.3, 1.3 * 1.1]);
+                apply_mod!(
+                    mods.precap_general_mod,
+                    a,
+                    armored_boat_group_count,
+                    [1.3, 1.3 * 1.1]
+                );
             }
         }
         SpecialEnemyType::HarbourSummerPrincess => {
-            apply_mod!(a13, has_aa_shell, 1.75);
-            apply_mod!(a13, has_ap_shell, 1.3);
-            apply_mod!(a13, wg42_count, [1.4, 1.4 * 1.2]);
-            apply_mod!(a13, type4_rocket_group_count, [1.25, 1.25 * 1.4]);
-            apply_mod!(a13, mortar_group_count, [1.1, 1.1 * 1.15]);
-            apply_mod!(a13, has_seaplane, 1.3);
-            apply_mod!(a13, cb_dive_bomber_count, [1.3, 1.3 * 1.2]);
-            apply_mod!(a13, landing_craft_count, [1.7]);
-            apply_mod!(a13, toku_daihatsu_count, [1.2]);
-            apply_mod!(a13, t89_tank_count, [1.6, 1.6 * 1.5]);
-            // apply_mod!(a13, africa_count, [1.6]); //検証待ち
-            apply_mod!(a13, m4a1dd_count, [2.0]);
-            apply_mod!(a13, t2_tank_count, [2.8]);
+            apply_mod!(mods.precap_general_mod, a, has_aa_shell, 1.75);
+            apply_mod!(mods.precap_general_mod, a, has_ap_shell, 1.3);
+            apply_mod!(mods.precap_general_mod, a, wg42_count, [1.4, 1.4 * 1.2]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                type4_rocket_group_count,
+                [1.25, 1.25 * 1.4]
+            );
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                mortar_group_count,
+                [1.1, 1.1 * 1.15]
+            );
+            apply_mod!(mods.precap_general_mod, a, has_seaplane, 1.3);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                cb_dive_bomber_count,
+                [1.3, 1.3 * 1.2]
+            );
+            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.7]);
+            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.2]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t89_tank_and_honi_count,
+                [1.6, 1.6 * 1.5]
+            );
+            // apply_mod!(mods.precap_general_mod,a, africa_count, [1.6]); //検証待ち
+            apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [2.0]);
+            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.8]);
         }
         SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => {
-            apply_mod!(a13, has_aa_shell, 2.5);
-            apply_mod!(a13, wg42_count, [1.3, 1.3 * 1.4]);
-            apply_mod!(a13, type4_rocket_group_count, [1.25, 1.25 * 1.5]);
-            apply_mod!(a13, mortar_group_count, [1.2, 1.2 * 1.3]);
-            apply_mod!(a13, has_seaplane, 1.2);
-            apply_mod!(a13, landing_craft_count, [1.4]);
-            apply_mod!(a13, toku_daihatsu_count, [1.15]);
-            apply_mod!(a13, t89_tank_count, [1.5, 1.5 * 1.3]);
-            apply_mod!(a13, africa_count, [1.5]); //2積み検証待ち
-            apply_mod!(a13, m4a1dd_count, [1.1]);
-            apply_mod!(a13, t2_tank_count, [1.5, 1.5 * 1.2]);
+            apply_mod!(mods.precap_general_mod, a, has_aa_shell, 2.5);
+            apply_mod!(mods.precap_general_mod, a, wg42_count, [1.3, 1.3 * 1.4]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                type4_rocket_group_count,
+                [1.25, 1.25 * 1.5]
+            );
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                mortar_group_count,
+                [1.2, 1.2 * 1.3]
+            );
+            apply_mod!(mods.precap_general_mod, a, has_seaplane, 1.2);
+            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.4]);
+            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t89_tank_and_honi_count,
+                [1.5, 1.5 * 1.3]
+            );
+            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]); //2積み検証待ち
+            apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [1.1]);
+            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [1.5, 1.5 * 1.2]);
 
             if is_day {
-                apply_mod!(a13, armored_boat_group_count, [1.1, 1.1 * 1.1]);
+                apply_mod!(
+                    mods.precap_general_mod,
+                    a,
+                    armored_boat_group_count,
+                    [1.1, 1.1 * 1.1]
+                );
             }
         }
         _ => (),

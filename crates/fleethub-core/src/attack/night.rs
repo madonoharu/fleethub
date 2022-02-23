@@ -13,7 +13,8 @@ use crate::{
 
 use super::{
     shelling::ProficiencyModifiers, special_enemy_mods::special_enemy_modifiers, AttackParams,
-    AttackPowerModifiers, AttackPowerParams, HitRateParams, WarfareContext, WarfareShipEnvironment,
+    AttackPowerModifier, AttackPowerParams, CustomModifiers, HitRateParams, WarfareContext,
+    WarfareShipEnvironment,
 };
 
 const NIGHT_POWER_CAP: f64 = 360.0;
@@ -31,13 +32,14 @@ pub struct NightAttackContext<'a> {
 
     pub attacker_env: &'a WarfareShipEnvironment,
     pub target_env: &'a WarfareShipEnvironment,
-    pub external_power_mods: &'a AttackPowerModifiers,
     pub attacker_situation: &'a NightSituation,
     pub target_situation: &'a NightSituation,
 
     pub formation_power_mod: f64,
     pub formation_accuracy_mod: f64,
     pub formation_evasion_mod: f64,
+
+    pub custom_mods: &'a CustomModifiers,
 
     pub special_attack_def: Option<SpecialAttackDef<NightSpecialAttack>>,
 }
@@ -67,7 +69,7 @@ impl<'a> NightAttackContext<'a> {
         Self {
             attacker_env,
             target_env,
-            external_power_mods: &warfare_context.external_power_mods,
+            custom_mods: &warfare_context.custom_mods,
             attacker_situation,
             target_situation,
             attack_type,
@@ -183,20 +185,22 @@ fn calc_attack_power_params(
     let a14 = damage_mod * formation_mod * cutin_mod * model_d_small_gun_mod;
     let b14 = cruiser_fit_bonus;
 
-    let mods = {
-        let mut base = special_enemy_modifiers(attacker, target.special_enemy_type(), false);
-        base.apply_a14(a14);
-        base.apply_b14(b14);
-        base + ctx.external_power_mods.clone()
-    };
+    let precap_mod = AttackPowerModifier::new(a14, b14);
+    let postcap_mod = Default::default();
+
+    let special_enemy_mods = special_enemy_modifiers(attacker, target.special_enemy_type(), false);
+    let custom_mods = ctx.custom_mods.clone();
 
     let base = AttackPowerParams {
         cap: NIGHT_POWER_CAP,
-        mods,
+        precap_mod,
+        postcap_mod,
         remaining_ammo_mod,
         proficiency_critical_mod: proficiency_modifiers
             .as_ref()
             .map(|mods| mods.critical_power_mod),
+        special_enemy_mods,
+        custom_mods,
         ..Default::default()
     };
 

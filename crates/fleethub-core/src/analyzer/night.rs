@@ -7,10 +7,9 @@ use crate::{
     comp::Comp,
     fleet::Fleet,
     gear_id,
+    plane::PlaneImpl,
     ship::Ship,
-    types::{
-        BattleConfig, ContactRank, DamageState, GearAttr, GearType, NightCutin, NightCutinDef,
-    },
+    types::{BattleConfig, ContactRank, DamageState, GearType, NightCutin, NightCutinDef},
 };
 
 #[derive(Debug)]
@@ -82,16 +81,16 @@ impl Fleet {
             .ships
             .values()
             .map(|ship| {
-                ship.gears_with_slot_size()
-                    .filter_map(move |(_, gear, slot_size)| {
-                        if slot_size? > 0 && gear.has_attr(GearAttr::NightRecon) {
-                            let rank = gear.contact_rank();
-                            let rate = gear.night_contact_rate(ship.level);
-                            Some((rank, rate))
-                        } else {
-                            None
-                        }
-                    })
+                ship.planes().filter_map(|plane| {
+                    let slot_size = plane.slot_size.clone()?;
+                    if slot_size > 0 && plane.is_night_recon() {
+                        let rank = plane.contact_rank();
+                        let rate = plane.night_contact_rate(ship.level);
+                        Some((rank, rate))
+                    } else {
+                        None
+                    }
+                })
             })
             .flatten()
             .collect::<Vec<_>>();

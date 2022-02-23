@@ -265,28 +265,8 @@ impl Org {
         ship: &Ship,
         formation: Formation,
     ) -> WarfareShipEnvironment {
-        let (role, ship_index) = self
-            .create_comp_by_key("f1")
-            .ships()
-            .find_map(|(role, index, current)| (ship == current).then(|| (role, index)))
-            .or_else(|| {
-                self.f2
-                    .ships
-                    .iter()
-                    .chain(self.f3.ships.iter())
-                    .chain(self.f4.ships.iter())
-                    .find_map(|(index, current)| (ship == current).then(|| (Role::Main, index)))
-            })
-            .unwrap_or_default();
-
-        WarfareShipEnvironment {
-            org_type: self.org_type,
-            fleet_len: self.fleet_len(role),
-            ship_index,
-            role,
-            formation,
-            fleet_los_mod: self.fleet_los_mod(role),
-        }
+        self.create_comp_by_key("f1")
+            .create_warfare_ship_environment(ship, formation)
     }
 }
 

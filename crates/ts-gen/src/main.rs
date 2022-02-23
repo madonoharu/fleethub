@@ -79,7 +79,9 @@ fn main() {
         types::MasterEquippable,
         types::MasterData,
 
-        attack::AttackPowerModifiers,
+        attack::AttackPowerModifier,
+        attack::SpecialEnemyModifiers,
+        attack::CustomModifiers,
         attack::AttackPowerParams,
         attack::AttackPower,
         attack::HitRateParams,

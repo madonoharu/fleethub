@@ -8,7 +8,8 @@ use crate::{
 };
 
 use super::{
-    AttackParams, AttackPowerModifiers, AttackPowerParams, WarfareContext, WarfareShipEnvironment,
+    AttackParams, AttackPowerModifier, AttackPowerParams, CustomModifiers, WarfareContext,
+    WarfareShipEnvironment,
 };
 
 const ASW_POWER_CAP: f64 = 170.0;
@@ -49,11 +50,12 @@ pub struct AswAttackContext<'a> {
 
     pub attacker_env: &'a WarfareShipEnvironment,
     pub target_env: &'a WarfareShipEnvironment,
-    pub external_power_mods: &'a AttackPowerModifiers,
     pub engagement: Engagement,
     pub formation_power_mod: f64,
     pub formation_accuracy_mod: f64,
     pub formation_evasion_mod: f64,
+
+    pub custom_mods: &'a CustomModifiers,
 }
 
 impl<'a> AswAttackContext<'a> {
@@ -66,7 +68,7 @@ impl<'a> AswAttackContext<'a> {
         let WarfareContext {
             attacker_env,
             target_env,
-            external_power_mods,
+            custom_mods,
             engagement,
             ..
         } = ctx;
@@ -89,11 +91,12 @@ impl<'a> AswAttackContext<'a> {
 
             attacker_env,
             target_env,
-            external_power_mods,
             engagement: *engagement,
             formation_power_mod,
             formation_accuracy_mod,
             formation_evasion_mod,
+
+            custom_mods,
         }
     }
 
@@ -139,11 +142,7 @@ impl<'a> AswAttackContext<'a> {
 
             let a14 = damage_mod * formation_mod * engagement_mod * asw_synergy_mod;
 
-            let mods = {
-                let mut base = self.external_power_mods.clone();
-                base.apply_a14(a14);
-                base
-            };
+            let precap_mod = AttackPowerModifier::new(a14, 0.0);
 
             let proficiency_critical_mod = proficiency_mods
                 .as_ref()
@@ -152,12 +151,15 @@ impl<'a> AswAttackContext<'a> {
             Some(AttackPowerParams {
                 basic,
                 cap: ASW_POWER_CAP,
-                mods,
+                precap_mod,
+                postcap_mod: Default::default(),
                 proficiency_critical_mod,
                 armor_penetration,
                 remaining_ammo_mod: attacker.remaining_ammo_mod(),
                 ap_shell_mod: None,
                 carrier_power: None,
+                special_enemy_mods: Default::default(),
+                custom_mods: self.custom_mods.clone(),
             })
         };
 

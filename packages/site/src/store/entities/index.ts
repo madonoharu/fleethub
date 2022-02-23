@@ -9,7 +9,7 @@ export { filesSlice, isPlan, isFolder } from "./filesSlice";
 export { entitiesSlice } from "./entitiesSlice";
 
 export {
-  initalAttackPowerModifiers,
+  initalCustomModifiers,
   initalNightSituation,
   initalStepConfig,
 } from "./base";

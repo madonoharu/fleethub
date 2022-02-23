@@ -4,7 +4,7 @@ use ts_rs::TS;
 
 use crate::types::{AirState, Engagement, Formation, OrgType, Role};
 
-use super::AttackPowerModifiers;
+use super::CustomModifiers;
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, TS, FhAbi)]
 pub struct WarfareShipEnvironment {
@@ -32,5 +32,5 @@ pub struct WarfareContext {
     pub target_env: WarfareShipEnvironment,
     pub engagement: Engagement,
     pub air_state: AirState,
-    pub external_power_mods: AttackPowerModifiers,
+    pub custom_mods: CustomModifiers,
 }
