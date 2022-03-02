@@ -20,7 +20,7 @@ const noopStorage: WebStorage = {
   removeItem: () => Promise.resolve(),
 };
 
-const storage = process.browser ? localforage : noopStorage;
+const storage = typeof window !== "undefined" ? localforage : noopStorage;
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,

@@ -1,5 +1,5 @@
 import { MasterData } from "fleethub-core";
-import React, { useMemo } from "react";
+import React from "react";
 import { batch, Provider as ReduxProvider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -20,17 +20,11 @@ const StoreProvider: React.FC<StoreProviderProps> = ({
   const store = createStore();
   const persistor = persistStore(store);
 
-  const url = useMemo(() => {
-    if (!process.browser) return undefined;
+  const handleBeforeLift = async () => {
+    if (typeof window === "undefined") return;
 
     const url = new URL(location.href);
     window.history.replaceState(null, "", location.pathname);
-    return url;
-  }, []);
-
-  const handleBeforeLift = async () => {
-    if (!process.browser) return;
-
     const parsed = url && (await parseUrl(masterData, url));
 
     batch(() => {

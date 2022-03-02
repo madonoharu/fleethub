@@ -16,9 +16,10 @@ import {
   stepsSlice,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { NumberInput, Tabs } from "../../molecules";
+import { Tabs } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import CompShipList from "../CompShipList";
+import CustomModifiersForm from "../CustomModifiersForm";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
@@ -117,14 +118,6 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
             value={config.engagement}
             onChange={bind("engagement")}
           />
-          <NumberInput
-            label="a11"
-            min={0}
-            step={0.1}
-            sx={{ width: 80 }}
-            value={config.player.custom_mods.postcap_mod.a}
-            onChange={bind("player.custom_mods.postcap_mod.a")}
-          />
         </Flexbox>
         <FormationSelect
           css={{ width: "fit-content" }}
@@ -144,6 +137,15 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
           value={config.enemy.night_situation}
           onChange={bind("enemy.night_situation")}
         />
+        <CustomModifiersForm
+          value={config.player.custom_mods}
+          onChange={bind("player.custom_mods")}
+        />
+        <CustomModifiersForm
+          value={config.enemy.custom_mods}
+          onChange={bind("enemy.custom_mods")}
+        />
+
         {playerShip && (
           <ShipCard ship={playerShip} org={playerOrg} visibleMiscStats />
         )}

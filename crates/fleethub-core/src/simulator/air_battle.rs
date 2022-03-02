@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use rand::prelude::*;
 
 use crate::{
@@ -10,19 +10,42 @@ use crate::{
     types::{AirState, BattleConfig, ContactRank, Formation, Side},
 };
 
+fn try_fighter_combat<R: Rng + ?Sized>(
+    rng: &mut R,
+    player_planes: &mut PlaneVec<PlaneMut>,
+    enemy_planes: &mut PlaneVec<PlaneMut>,
+    recon_participates: bool,
+) -> Result<AirState, CalculationError> {
+    let player_fp = player_planes.fighter_power(recon_participates)?;
+    let enemy_fp = enemy_planes.fighter_power(recon_participates)?;
+    let air_state = AirState::new(player_fp, enemy_fp);
+
+    player_planes
+        .iter_mut()
+        .filter(|plane| plane.participates_in_fighter_combat(recon_participates))
+        .for_each(|plane| plane.suffer_in_fighter_combat(rng, air_state, Side::Player));
+    enemy_planes
+        .iter_mut()
+        .filter(|plane| plane.participates_in_fighter_combat(recon_participates))
+        .for_each(|plane| plane.suffer_in_fighter_combat(rng, air_state, Side::Enemy));
+
+    Ok(air_state)
+}
+
 fn try_air_defence<R: Rng + ?Sized>(
     rng: &mut R,
     config: &BattleConfig,
-    comp: &Comp,
-    planes: &mut PlaneVec<PlaneMut>,
+    attacker_comp: &mut Comp,
+    target_comp: &Comp,
+    escort_participates: bool,
     formation: Formation,
 ) -> Result<(), CalculationError> {
     let formation_mod = config.get_formation_fleet_anti_air_mod(formation);
-    let fleet_anti_air = comp.fleet_anti_air(formation_mod);
+    let fleet_anti_air = target_comp.fleet_anti_air(formation_mod);
 
-    let anti_air_cutin = comp.choose_anti_air_cutin(rng, config);
+    let anti_air_cutin = target_comp.choose_anti_air_cutin(rng, config);
 
-    let member_vec = comp
+    let member_vec = target_comp
         .members()
         .filter(|member| member.remains())
         .collect::<Vec<_>>();
@@ -31,115 +54,38 @@ fn try_air_defence<R: Rng + ?Sized>(
         return Ok(());
     }
 
-    planes.iter_mut().try_for_each(|plane| {
-        let member = member_vec.choose(rng).expect("member_vec.len() > 0");
-
-        member
-            .air_defence(fleet_anti_air, anti_air_cutin)
-            .try_intercept(rng, plane)
-    })
-}
-
-struct AirBattle<'a, R>
-where
-    R: Rng + ?Sized,
-{
-    rng: &'a mut R,
-    config: &'a BattleConfig,
-    player_comp: &'a mut Comp,
-    enemy_comp: &'a mut Comp,
-}
-
-impl<'a, R> AirBattle<'a, R>
-where
-    R: Rng + ?Sized,
-{
-    fn try_fighter_combat(&mut self) -> Result<()> {
-        const RECON_PARTICIPATES: bool = false;
-
-        let player_escort_participates = self.enemy_comp.is_combined();
-        let enemy_escort_participates = self.enemy_comp.is_combined();
-
-        let player_fp = self
-            .player_comp
-            .fighter_power(player_escort_participates, RECON_PARTICIPATES)
-            .context(CalculationError::UnknownValue)?;
-        let enemy_fp = self
-            .enemy_comp
-            .fighter_power(enemy_escort_participates, RECON_PARTICIPATES)
-            .context(CalculationError::UnknownValue)?;
-
-        let air_state = AirState::new(player_fp, enemy_fp);
-
-        let mut player_planes = self
-            .player_comp
-            .planes_mut(player_escort_participates)
-            .collect::<PlaneVec<_>>();
-        let mut enemy_planes = self
-            .enemy_comp
-            .planes_mut(enemy_escort_participates)
-            .collect::<PlaneVec<_>>();
-
-        player_planes
-            .iter_mut()
-            .filter(|plane| plane.participates_in_fighter_combat(RECON_PARTICIPATES))
-            .for_each(|plane| plane.suffer_in_fighter_combat(self.rng, air_state, Side::Player));
-        enemy_planes
-            .iter_mut()
-            .filter(|plane| plane.participates_in_fighter_combat(RECON_PARTICIPATES))
-            .for_each(|plane| plane.suffer_in_fighter_combat(self.rng, air_state, Side::Enemy));
-
-        let player_contact_rank = player_planes.try_contact(self.rng, air_state, Side::Player)?;
-        let enemy_contact_rank = enemy_planes.try_contact(self.rng, air_state, Side::Enemy)?;
-
-        Ok(())
-    }
-
-    fn try_air_defence(
-        &mut self,
-        comp: &Comp,
-        formation: Formation,
-        attack_planes: &mut PlaneVec<PlaneMut>,
-    ) -> Result<(), CalculationError> {
-        let formation_mod = self.config.get_formation_fleet_anti_air_mod(formation);
-        let fleet_anti_air = comp.fleet_anti_air(formation_mod);
-
-        let anti_air_cutin = comp.choose_anti_air_cutin(self.rng, self.config);
-
-        let member_vec = comp
-            .members()
-            .filter(|member| member.remains())
-            .collect::<Vec<_>>();
-
-        if member_vec.is_empty() {
-            return Ok(());
-        }
-
-        attack_planes.iter_mut().try_for_each(|plane| {
-            let member = member_vec.choose(self.rng).expect("member_vec.len() > 0");
+    attacker_comp
+        .planes_mut(escort_participates)
+        .filter(|plane| plane.is_attacker())
+        .try_for_each(|mut plane| {
+            let member = member_vec.choose(rng).expect("member_vec.len() > 0");
 
             member
                 .air_defence(fleet_anti_air, anti_air_cutin)
-                .try_intercept(self.rng, plane)
+                .try_intercept(rng, &mut plane)
         })
+}
+
+fn try_airstrike<R: Rng + ?Sized>(
+    rng: &mut R,
+    attacker_comp: &Comp,
+    target_comp: &mut Comp,
+    escort_participates: bool,
+    contact_rank: Option<ContactRank>,
+) -> anyhow::Result<()> {
+    let mut target_vec = target_comp
+        .members_mut()
+        .filter(|member| member.remains())
+        .collect::<Vec<_>>();
+
+    if target_vec.is_empty() {
+        return Ok(());
     }
 
-    fn try_airstrike(
-        &mut self,
-        attacker_comp: &Comp,
-        target_comp: &mut Comp,
-        contact_rank: Option<ContactRank>,
-    ) -> anyhow::Result<()> {
-        let mut target_vec = target_comp
-            .members_mut()
-            .filter(|member| member.remains())
-            .collect::<Vec<_>>();
-
-        if target_vec.is_empty() {
-            return Ok(());
-        }
-
-        attacker_comp.ships().try_for_each(|attacker| {
+    attacker_comp
+        .members()
+        .filter(|member| member.is_main() || escort_participates)
+        .try_for_each(|attacker| {
             let proficiency_modifiers = attacker.proficiency_modifiers(None);
             let remaining_ammo_mod = attacker.remaining_ammo_mod();
 
@@ -147,12 +93,10 @@ where
                 .planes()
                 .filter(|plane| plane.remains() && plane.is_attacker())
                 .try_for_each(|plane| {
-                    let target = target_vec
-                        .choose_mut(self.rng)
-                        .expect("member_vec.len() > 0");
+                    let target = target_vec.choose_mut(rng).expect("member_vec.len() > 0");
 
                     let value = create_airstrike_params(
-                        self.rng,
+                        rng,
                         plane,
                         &proficiency_modifiers,
                         remaining_ammo_mod,
@@ -160,16 +104,135 @@ where
                         target,
                     )
                     .into_attack()
-                    .gen_damage_value(self.rng)?;
+                    .gen_damage_value(rng)?;
 
                     target.ship.take_damage(value);
 
                     Ok(())
                 })
         })
+}
+
+struct AerialCombat<'a, R>
+where
+    R: Rng + ?Sized,
+{
+    rng: &'a mut R,
+    config: &'a BattleConfig,
+    player_comp: &'a mut Comp,
+    enemy_comp: &'a mut Comp,
+    escort_participates: bool,
+    player_formation: Formation,
+    enemy_formation: Formation,
+}
+
+impl<'a, R> AerialCombat<'a, R>
+where
+    R: Rng + ?Sized,
+{
+    fn try_jet_assault_phase(&mut self) -> Result<()> {
+        const RECON_PARTICIPATES: bool = false;
+        let escort_participates = self.escort_participates;
+
+        let mut player_planes = self
+            .player_comp
+            .planes_mut(escort_participates)
+            .filter(|plane| plane.is_jet_plane())
+            .collect::<PlaneVec<_>>();
+        let mut enemy_planes = self
+            .enemy_comp
+            .planes_mut(escort_participates)
+            .filter(|plane| plane.is_jet_plane())
+            .collect::<PlaneVec<_>>();
+
+        let air_state = try_fighter_combat(
+            self.rng,
+            &mut player_planes,
+            &mut enemy_planes,
+            RECON_PARTICIPATES,
+        )?;
+
+        let player_contact_rank =
+            player_planes.try_contact(self.rng, air_state.rank(Side::Player))?;
+        let enemy_contact_rank = enemy_planes.try_contact(self.rng, air_state.rank(Side::Enemy))?;
+
+        try_airstrike(
+            self.rng,
+            self.player_comp,
+            self.enemy_comp,
+            escort_participates,
+            player_contact_rank,
+        )?;
+
+        try_airstrike(
+            self.rng,
+            self.enemy_comp,
+            self.player_comp,
+            escort_participates,
+            enemy_contact_rank,
+        )?;
+
+        Ok(())
     }
 
-    pub fn try_air_battle(&self) -> anyhow::Result<()> {
-        todo!()
+    fn try_aerial_combat(&mut self) -> Result<AirState> {
+        const RECON_PARTICIPATES: bool = false;
+        let escort_participates = self.escort_participates;
+
+        let mut player_planes = self
+            .player_comp
+            .planes_mut(escort_participates)
+            .collect::<PlaneVec<_>>();
+        let mut enemy_planes = self
+            .enemy_comp
+            .planes_mut(escort_participates)
+            .collect::<PlaneVec<_>>();
+
+        let air_state = try_fighter_combat(
+            self.rng,
+            &mut player_planes,
+            &mut enemy_planes,
+            RECON_PARTICIPATES,
+        )?;
+
+        let player_contact_rank =
+            player_planes.try_contact(self.rng, air_state.rank(Side::Player))?;
+        let enemy_contact_rank = enemy_planes.try_contact(self.rng, air_state.rank(Side::Enemy))?;
+
+        try_air_defence(
+            self.rng,
+            self.config,
+            self.player_comp,
+            self.enemy_comp,
+            escort_participates,
+            self.enemy_formation,
+        )?;
+
+        try_air_defence(
+            self.rng,
+            self.config,
+            self.enemy_comp,
+            self.player_comp,
+            escort_participates,
+            self.player_formation,
+        )?;
+
+        try_airstrike(
+            self.rng,
+            self.player_comp,
+            self.enemy_comp,
+            escort_participates,
+            player_contact_rank,
+        )?;
+
+        try_airstrike(
+            self.rng,
+            self.enemy_comp,
+            self.player_comp,
+            escort_participates,
+            enemy_contact_rank,
+        )?;
+
+        Ok(air_state)
     }
 }

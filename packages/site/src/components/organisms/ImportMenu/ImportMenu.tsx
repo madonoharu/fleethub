@@ -55,7 +55,9 @@ const UrlForm: React.FCX<UrlFormProps> = ({
     <Flexbox gap={1}>
       <TextField ref={ref} variant="outlined" />
       <ImportButton
-        onClick={asyncParse.execute}
+        onClick={() => {
+          void asyncParse.execute();
+        }}
         disabled={asyncParse.loading}
       />
     </Flexbox>

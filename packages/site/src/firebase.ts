@@ -1,6 +1,14 @@
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
-import { getStorage, ref } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  UploadMetadata,
+  uploadString,
+} from "firebase/storage";
+
+import { compress } from "./utils";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",
@@ -15,7 +23,7 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 
-if (process.browser) {
+if (typeof window !== "undefined") {
   getAnalytics();
 }
 
@@ -61,3 +69,20 @@ export const shorten = async (url: string, domain: "fleethub") => {
     | { error: { code: number } };
   return json;
 };
+
+export async function publish(name: string, input: string) {
+  const out = ref(storage, `public/${name}`);
+  const metadata: UploadMetadata = {
+    contentType: "application/json",
+    cacheControl: "public, immutable, max-age=365000000",
+  };
+
+  if (compress.supports) {
+    const data = await compress(input);
+    metadata.contentEncoding = "gzip";
+
+    return await uploadBytes(out, data, metadata);
+  } else {
+    return await uploadString(out, input, undefined, metadata);
+  }
+}
