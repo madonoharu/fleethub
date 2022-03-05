@@ -83,7 +83,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
     dispatch(appSlice.actions.setImportToTemp(value));
   };
 
-  const to = importToTemp ? "temp" : undefined;
+  const to = importToTemp ? "temp" : "root";
 
   const handleDeckImport = () => {
     try {

@@ -31,12 +31,18 @@ export function isPlan(
 }
 
 function getFolderChildren(state: FilesState, id: string): string[] {
+  if (id === "root") {
+    return state.rootIds;
+  }
   if (id === "temp") {
     return state.tempIds;
   }
 
   const file = state.entities[id];
-  if (!file) return state.rootIds;
+
+  if (!file) {
+    return state.rootIds;
+  }
 
   if (isFolder(file)) return file.children;
 
