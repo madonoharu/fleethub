@@ -89,10 +89,12 @@ const WelcomePage: React.FCX = () => {
         <Typography>
           デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
         </Typography>
+
         <Typography variant="h5" mt={4}>
-          連絡先
+          Author
         </Typography>
         <Divider />
+        <Typography>まどの</Typography>
         <Link
           display="flex"
           alignItems="center"
@@ -117,6 +119,21 @@ const WelcomePage: React.FCX = () => {
           <MailIcon />
           madonoharu@gmail.com
         </Typography>
+
+        <Typography variant="h5" mt={4}>
+          Maintainers
+        </Typography>
+        <Divider />
+        <Typography>
+          白(
+          <Link href="https://twitter.com/shiro_sh39">@shiro_sh39</Link>)
+        </Typography>
+        <Typography>
+          ダイコン(
+          <Link href="https://twitter.com/panmodoki10">@panmodoki10</Link>)
+        </Typography>
+        <Typography>ゆーる</Typography>
+
         <Typography variant="h5" mt={4}>
           免責事項
         </Typography>
@@ -124,6 +141,7 @@ const WelcomePage: React.FCX = () => {
         <Typography>
           当サイトに表示される情報は仮説式等を多く使用しているため、その正確性については保障しません。また、当サイトの計算結果によって発生した損害について一切の責任を負いません。
         </Typography>
+
         <Typography variant="h5" mt={4}>
           プライバシーポリシー
         </Typography>
@@ -133,6 +151,7 @@ const WelcomePage: React.FCX = () => {
           Analytics」を使用しています。これにはデータ収集のためにCookieを使用しておりますが、このデータは匿名で収集されており、個人を特定するものではありません。
           詳しくはこちらをご覧ください。
         </Typography>
+
         <Typography variant="h5" mt={4}>
           知的財産権
         </Typography>
