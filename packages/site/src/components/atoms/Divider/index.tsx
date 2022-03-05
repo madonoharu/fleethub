@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
 import { Divider as MuiDivider, DividerProps, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import React from "react";
 
 const StyledDivider = styled(MuiDivider)`
@@ -8,7 +8,7 @@ const StyledDivider = styled(MuiDivider)`
   margin-left: 8px;
 `;
 
-type Props = DividerProps & {
+type Props = Omit<DividerProps, "sx"> & {
   label?: React.ReactNode;
 };
 

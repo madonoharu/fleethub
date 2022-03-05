@@ -195,6 +195,8 @@
   "Individual": "單獨",
   "Cumulative": "累積",
   "Distribution": "分佈",
+  "EnemyType": "敵方類型",
+  "ImageGeneration": "圖像生成",
   "worldName": {
     "1": " ",
     "2": " ",

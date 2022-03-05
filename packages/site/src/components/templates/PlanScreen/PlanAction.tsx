@@ -44,7 +44,9 @@ const PlanAction: React.FCX<PlanActionProps> = ({
         />
         <TweetButton
           title="編成をツイート"
-          onClick={onTweet}
+          onClick={() => {
+            void onTweet();
+          }}
           disabled={asyncOnPublish.loading}
         />
         <KctoolsButton

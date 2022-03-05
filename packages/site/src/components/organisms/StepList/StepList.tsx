@@ -95,14 +95,14 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
         </Button>
         <Select
           css={{ width: 80 }}
-          label="出撃艦隊"
+          label={t("Sortie")}
           options={FLEET_KEYS}
           value={org.sortie}
           onChange={(sortie) => actions.update({ sortie })}
           getOptionLabel={uppercase}
         />
         <Select
-          css={{ width: 80 }}
+          css={{ width: 96 }}
           label={t("RouteSup")}
           options={SUP_OPTIONS}
           value={org.route_sup as FleetKey | undefined}

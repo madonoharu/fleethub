@@ -190,6 +190,8 @@
   "Individual": "Individual",
   "Cumulative": "Cumulative",
   "Distribution": "Distribution",
+  "EnemyType": "Enemy Type",
+  "ImageGeneration": "Image",
   "worldName": {
     "1": " ",
     "2": " ",

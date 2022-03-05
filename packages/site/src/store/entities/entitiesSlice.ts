@@ -394,7 +394,7 @@ export const entitiesSlice = createSlice({
       }
 
       addEntities(state, payload.entities);
-      insert(state.files, payload.result, payload.to);
+      insert(state.files, payload.result, payload.to || "temp");
     },
 
     sweep: (state) => {

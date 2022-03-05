@@ -195,6 +195,8 @@
   "Individual": "单独",
   "Cumulative": "累积",
   "Distribution": "分布",
+  "EnemyType": "敌方类型",
+  "ImageGeneration": "图像生成",
   "worldName": {
     "1": "鎮守府海域 ",
     "2": "南西諸島海域",

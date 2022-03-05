@@ -1,13 +1,6 @@
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import {
-  Button,
-  Container,
-  Divider,
-  Typography,
-  Stack,
-  Alert,
-} from "@mui/material";
+import { Button, Container, Divider, Typography, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -49,11 +42,6 @@ const WelcomePage: React.FCX = () => {
       <Stack gap={1}>
         <div>
           <Typography variant="h4">作戦室 v{process.env.VERSION}</Typography>
-          <Alert severity="error" variant="outlined">
-            デバッグ中です。告知なく破壊的変更、データ削除が実施される可能性があります。
-            トラブル回避のために拡散は控えていただけると助かります。
-          </Alert>
-
           <Typography mt={2}>
             作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。
           </Typography>

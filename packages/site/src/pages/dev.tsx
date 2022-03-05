@@ -14,7 +14,9 @@ const Dev: NextComponentType<NextPageContext> = () => (
       <Button
         size="large"
         variant="outlined"
-        onClick={() => localforage.clear()}
+        onClick={() => {
+          void localforage.clear();
+        }}
       >
         全てのデータを削除する
       </Button>

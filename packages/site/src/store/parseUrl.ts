@@ -17,7 +17,7 @@ import { FileState, schemata } from "./entities/schemata";
 
 async function readJorShortUrl(short: URL) {
   const res: { url?: string } = await fetch(
-    `/api/hello?url=${encodeURIComponent(short.toString())}`
+    `/api/locate?url=${encodeURIComponent(short.toString())}`
   ).then((res) => res.json());
 
   if (typeof res.url !== "string") return;
@@ -75,6 +75,7 @@ export async function parseUrl(
   url: URL
 ): Promise<ImportPayload | undefined> {
   const publicId = getPublicId(url);
+  console.log(publicId);
   if (publicId) {
     const res = await readPublicFile(publicId);
 

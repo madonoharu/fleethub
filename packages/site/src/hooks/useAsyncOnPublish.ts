@@ -20,7 +20,7 @@ export const useAsyncOnPublish = (id: string) => {
     return url;
   });
 
-  const onUrlCopy = () =>
+  const onUrlCopy = () => {
     asyncOnPublish
       .execute()
       .then((url) => {
@@ -39,6 +39,7 @@ export const useAsyncOnPublish = (id: string) => {
         console.error(error);
         Snackbar.show({ message: "失敗しました", severity: "error" });
       });
+  };
 
   const onTweet = () =>
     asyncOnPublish

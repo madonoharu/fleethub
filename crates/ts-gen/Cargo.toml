@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 fleethub-core = { path = "../fleethub-core" }
 ts-rs = "6.1.2"
-dprint-plugin-typescript = "0.64.1"
+dprint-plugin-typescript = "0.64.3"

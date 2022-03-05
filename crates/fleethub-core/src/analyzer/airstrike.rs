@@ -104,13 +104,21 @@ fn analyze_ships_contact_chance(
 impl CompContactChanceInfo {
     pub fn new(comp: &Comp) -> Self {
         let side = comp.side();
-        let single = analyze_ships_contact_chance(side, &comp.main_planes().collect());
+        let single = analyze_ships_contact_chance(side, &comp.planes(false).collect());
 
         let combined = comp
             .is_combined()
-            .then(|| analyze_ships_contact_chance(side, &comp.main_and_escort_planes().collect()))
+            .then(|| analyze_ships_contact_chance(side, &comp.planes(true).collect()))
             .flatten();
 
         Self { single, combined }
+    }
+}
+
+struct AirstrikeInfo {}
+
+impl AirstrikeInfo {
+    pub fn new(comp: &Comp) -> Self {
+        Self {}
     }
 }

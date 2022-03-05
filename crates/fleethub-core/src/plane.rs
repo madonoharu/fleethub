@@ -70,6 +70,13 @@ pub trait PlaneImpl {
         )
     }
 
+    fn is_jet_plane(&self) -> bool {
+        matches!(
+            self.gear_type(),
+            GearType::JetFighter | GearType::JetFighterBomber | GearType::JetTorpedoBomber
+        )
+    }
+
     fn is_contact_selection_plane(&self) -> bool {
         self.is_recon() || self.gear_type() == GearType::CbTorpedoBomber
     }
@@ -261,10 +268,8 @@ impl<T: PlaneImpl> PlaneVec<T> {
     pub fn try_contact<R: Rng + ?Sized>(
         &self,
         rng: &mut R,
-        air_state: AirState,
-        side: Side,
+        air_state_rank: AirStateRank,
     ) -> Result<Option<ContactRank>, CalculationError> {
-        let air_state_rank = air_state.rank(side);
         let trigger_rate = self
             .trigger_rate(air_state_rank)
             .ok_or(CalculationError::UnknownValue)?;

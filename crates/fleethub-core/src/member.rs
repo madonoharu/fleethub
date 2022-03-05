@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use rand::prelude::*;
 
 use crate::{
@@ -22,6 +24,15 @@ pub struct MemberMut<'a> {
     pub ship: &'a mut Ship,
 }
 
+impl<'a> Deref for Member<'a> {
+    type Target = &'a Ship;
+
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        &self.ship
+    }
+}
+
 pub trait MemberImpl {
     fn org_type(&self) -> OrgType;
     fn role(&self) -> Role;
@@ -43,6 +54,10 @@ pub trait MemberImpl {
 
     fn is_combined(&self) -> bool {
         self.org_type().is_combined()
+    }
+
+    fn is_main(&self) -> bool {
+        self.role().is_main()
     }
 
     fn is_escort(&self) -> bool {

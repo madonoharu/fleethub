@@ -18,8 +18,8 @@ const getLanguageName = (lang: string) =>
 const LanguageSelect: React.FCX = ({ className }) => {
   const router = useRouter();
 
-  const handleChange = async (lng: string) => {
-    await router.replace(router.asPath, undefined, { locale: lng });
+  const handleChange = (lng: string) => {
+    void router.replace(router.asPath, undefined, { locale: lng });
   };
 
   return (

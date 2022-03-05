@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useFhCore } from "../../../hooks";
 import { Divider, Flexbox } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
-import AttackPowerModifiersForm from "../AttackPowerModifiersForm";
+import CustomModifiersForm from "../CustomModifiersDialog/CustomModifiersForm";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import OrgTypeSelect from "../OrgTypeSelect";
@@ -131,8 +131,7 @@ const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
         onChange={bind("night_situation")}
       />
 
-      <Divider label="特攻" />
-      <AttackPowerModifiersForm
+      <CustomModifiersForm
         value={value.custom_mods}
         onChange={bind("custom_mods")}
       />

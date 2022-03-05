@@ -1,36 +1,23 @@
 import murmurhash from "@emotion/hash";
 import stringify from "fast-json-stable-stringify";
 
-import { GCS_PREFIX_URL, publicFileExists } from "../firebase";
+import { GCS_PREFIX_URL, publicFileExists, publish } from "../firebase";
 import { PublicFile } from "../store";
 
-const origin = process.browser ? window.location.origin : "";
+const origin = typeof window !== "undefined" ? window.location.origin : "";
 const PUBLIC_ID_KEY = "p";
 
 export const publishFileData = async (data: PublicFile) => {
-  const publicId = murmurhash(stringify(data));
+  const str = stringify(data);
+  const id = murmurhash(str);
   const url = new URL(origin);
-  url.searchParams.set(PUBLIC_ID_KEY, publicId);
+  url.searchParams.set(PUBLIC_ID_KEY, id);
 
-  if (await publicFileExists(publicId)) {
+  if (await publicFileExists(id)) {
     return url.href;
   }
 
-  const res = await fetch(`${origin}/api/publish`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      hash: publicId,
-      data,
-    }),
-  });
-
-  if (!res.ok) {
-    throw new Error(res.statusText);
-  }
+  await publish(`${id}.json`, str);
 
   return url.href;
 };

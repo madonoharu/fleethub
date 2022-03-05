@@ -12,6 +12,7 @@ use crate::{
 };
 
 #[wasm_bindgen]
+#[derive(Debug, Clone)]
 pub struct Comp {
     pub org_type: OrgType,
     pub hq_level: u8,
@@ -98,37 +99,6 @@ impl Comp {
             .ships
             .values_mut()
             .chain(escort_planes)
-            .flat_map(|ship| ship.planes_mut())
-    }
-
-    pub fn main_planes(&self) -> impl Iterator<Item = Plane> {
-        self.main.ships.values().flat_map(|ship| ship.planes())
-    }
-
-    pub fn main_and_escort_planes(&self) -> impl Iterator<Item = Plane> {
-        self.main
-            .ships
-            .values()
-            .chain(self.escort.iter().flat_map(|fleet| fleet.ships.values()))
-            .flat_map(|ship| ship.planes())
-    }
-
-    pub fn main_planes_mut(&mut self) -> impl Iterator<Item = PlaneMut> {
-        self.main
-            .ships
-            .values_mut()
-            .flat_map(|ship| ship.planes_mut())
-    }
-
-    pub fn main_and_escort_planes_mut(&mut self) -> impl Iterator<Item = PlaneMut> {
-        self.main
-            .ships
-            .values_mut()
-            .chain(
-                self.escort
-                    .iter_mut()
-                    .flat_map(|fleet| fleet.ships.values_mut()),
-            )
             .flat_map(|ship| ship.planes_mut())
     }
 
