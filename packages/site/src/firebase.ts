@@ -70,11 +70,16 @@ export const shorten = async (url: string, domain: "fleethub") => {
   return json;
 };
 
-export async function publish(name: string, input: string) {
+export async function publish(
+  name: string,
+  input: string,
+  customMetadata?: Record<string, string>
+) {
   const out = ref(storage, `public/${name}`);
   const metadata: UploadMetadata = {
     contentType: "application/json",
     cacheControl: "public, immutable, max-age=365000000",
+    customMetadata,
   };
 
   if (compress.supports) {

@@ -27,7 +27,7 @@ class WasmChunksFixPlugin {
 /** @type {import("next").NextConfig} */
 const config = {
   env: {
-    VERSION: require("./package.json").version,
+    VERSION: `${require("./package.json").version}-rc`,
   },
   i18n,
 
