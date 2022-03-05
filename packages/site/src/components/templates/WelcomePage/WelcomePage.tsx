@@ -149,7 +149,11 @@ const WelcomePage: React.FCX = () => {
         <Typography>
           当サイトでは、Googleの提供するアクセス解析サービス「Google
           Analytics」を使用しています。これにはデータ収集のためにCookieを使用しておりますが、このデータは匿名で収集されており、個人を特定するものではありません。
-          詳しくはこちらをご覧ください。
+          詳しくは
+          <Link href="https://policies.google.com/technologies/partner-sites">
+            こちら
+          </Link>
+          をご覧ください。
         </Typography>
 
         <Typography variant="h5" mt={4}>
