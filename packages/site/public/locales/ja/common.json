@@ -195,6 +195,8 @@
   "Individual": "個別",
   "Cumulative": "累積",
   "Distribution": "分布",
+  "EnemyType": "敵種別",
+  "ImageGeneration": "画像生成",
   "precap_mod": "キャップ前補正",
   "postcap_mod": "キャップ後補正",
   "special_enemy_mods": "特殊敵補正",

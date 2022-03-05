@@ -1,28 +1,24 @@
-import { Path, PathValue } from "@fh/utils";
 import BuildIcon from "@mui/icons-material/Build";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/system";
 import { AttackPowerModifier, CustomModifiers } from "fleethub-core";
-import { produce } from "immer";
-import set from "lodash/set";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useModal } from "../../../hooks";
-import { Divider } from "../../atoms";
 
-import AttackPowerModifierForm from "./AttackPowerModifierForm";
+import CustomModifiersForm from "./CustomModifiersForm";
 
 function hasMod(mod: AttackPowerModifier): boolean {
   return mod.a != 1 || mod.b != 0;
 }
 
-type CustomModifiersFormProps = {
+type CustomModifiersDialogProps = {
   value: CustomModifiers;
   onChange?: (value: CustomModifiers) => void;
 };
 
-const CustomModifiersForm: React.FCX<CustomModifiersFormProps> = ({
+const CustomModifiersDialog: React.FCX<CustomModifiersDialogProps> = ({
   className,
   style,
   value,
@@ -30,16 +26,6 @@ const CustomModifiersForm: React.FCX<CustomModifiersFormProps> = ({
 }) => {
   const { t } = useTranslation("common");
   const Modal = useModal();
-
-  const bind =
-    <P extends Path<CustomModifiers>>(path: P) =>
-    (input: PathValue<CustomModifiers, P>) => {
-      const next = produce(value, (draft) => {
-        set(draft, path, input);
-      });
-
-      onChange?.(next);
-    };
 
   const renderEntry = (entry: [string, AttackPowerModifier]) => {
     const [key, mod] = entry;
@@ -71,25 +57,13 @@ const CustomModifiersForm: React.FCX<CustomModifiersFormProps> = ({
       </Button>
 
       <Modal>
-        <Stack gap={1} mb={1}>
-          <Typography variant="subtitle1">{t("custom_mods")}</Typography>
-          <Divider label={t("precap_mod")} />
-          <AttackPowerModifierForm
-            value={value.precap_mod}
-            onChange={bind("precap_mod")}
-          />
-          <Divider label={t("postcap_mod")} />
-          <AttackPowerModifierForm
-            value={value.postcap_mod}
-            onChange={bind("postcap_mod")}
-          />
-        </Stack>
+        <CustomModifiersForm value={value} onChange={onChange} />
       </Modal>
     </div>
   );
 };
 
-export default styled(CustomModifiersForm)`
+export default styled(CustomModifiersDialog)`
   display: grid;
   grid-template-columns: max-content auto;
   gap: 8px;

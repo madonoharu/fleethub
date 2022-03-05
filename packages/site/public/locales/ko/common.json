@@ -194,6 +194,8 @@
   "Individual": "개별",
   "Cumulative": "누적",
   "Distribution": "분포",
+  "EnemyType": "적 종류",
+  "ImageGeneration": "이미지 생성",
   "worldName": {
     "1": "진수부해역",
     "2": "남서제도해역",

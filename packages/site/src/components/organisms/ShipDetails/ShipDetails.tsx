@@ -1,18 +1,12 @@
 import styled from "@emotion/styled";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Button,
-  Stack,
-} from "@mui/material";
+import BuildIcon from "@mui/icons-material/Build";
+import { Button, Stack } from "@mui/material";
 import { Org, OrgType, Ship } from "fleethub-core";
 import { produce } from "immer";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCore } from "../../../hooks";
+import { useFhCore, useModal } from "../../../hooks";
 import {
   shipDetailsSlice,
   ShipDetailsState,
@@ -40,6 +34,9 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
 
   const state = useSelector((root) => root.present.shipDetails);
   const dispatch = useDispatch();
+
+  const PlayerShipEnvModal = useModal();
+  const EnemyShipEnvModal = useModal();
 
   const update = (payload: Partial<ShipDetailsState>) => {
     dispatch(shipDetailsSlice.actions.update(payload));
@@ -81,30 +78,6 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
 
   return (
     <Stack className={className} gap={1}>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          自艦隊設定
-        </AccordionSummary>
-        <AccordionDetails>
-          <ShipParamsSettings
-            value={state.player}
-            onChange={(player) => update({ player })}
-          />
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          相手艦設定
-        </AccordionSummary>
-        <AccordionDetails>
-          <ShipParamsSettings
-            value={state.enemy}
-            onChange={(enemy) => update({ enemy })}
-          />
-        </AccordionDetails>
-      </Accordion>
-
       <Flexbox gap={1}>
         <EngagementSelect
           value={state.engagement}
@@ -114,10 +87,39 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
           value={state.air_state}
           onChange={(air_state) => update({ air_state })}
         />
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<BuildIcon />}
+          onClick={PlayerShipEnvModal.show}
+        >
+          自艦隊設定
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<BuildIcon />}
+          onClick={EnemyShipEnvModal.show}
+        >
+          相手艦設定
+        </Button>
         <Button variant="contained" color="primary" onClick={handleEnemySelect}>
           敵を追加して攻撃力を計算する
         </Button>
       </Flexbox>
+
+      <PlayerShipEnvModal>
+        <ShipParamsSettings
+          value={state.player}
+          onChange={(player) => update({ player })}
+        />
+      </PlayerShipEnvModal>
+      <EnemyShipEnvModal>
+        <ShipParamsSettings
+          value={state.enemy}
+          onChange={(enemy) => update({ enemy })}
+        />
+      </EnemyShipEnvModal>
 
       <Flexbox
         gap={1}

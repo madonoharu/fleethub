@@ -19,7 +19,7 @@ import { Flexbox } from "../../atoms";
 import { Tabs } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import CompShipList from "../CompShipList";
-import CustomModifiersForm from "../CustomModifiersForm";
+import CustomModifiersDialog from "../CustomModifiersDialog";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
@@ -137,11 +137,11 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
           value={config.enemy.night_situation}
           onChange={bind("enemy.night_situation")}
         />
-        <CustomModifiersForm
+        <CustomModifiersDialog
           value={config.player.custom_mods}
           onChange={bind("player.custom_mods")}
         />
-        <CustomModifiersForm
+        <CustomModifiersDialog
           value={config.enemy.custom_mods}
           onChange={bind("enemy.custom_mods")}
         />

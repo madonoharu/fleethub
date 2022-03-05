@@ -90,7 +90,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
     <Paper className={className} style={style} sx={{ paddingX: 1 }}>
       <Flexbox>
         <Typography variant="subtitle2">{t("AttackPower")}</Typography>
-        <SelectedMenu label="敵種別" {...dummyEnemySelectState} />
+        <SelectedMenu label={t("EnemyType")} {...dummyEnemySelectState} />
       </Flexbox>
 
       <Tabs list={list} size="small" />

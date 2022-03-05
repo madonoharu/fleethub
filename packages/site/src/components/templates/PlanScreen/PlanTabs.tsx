@@ -69,7 +69,7 @@ const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
     ...fleetTabs,
     { label: t("Lbas"), panel: <LandBaseScreen org={org} /> },
     file && { label: t("Enemies"), panel: <StepList file={file} /> },
-    { label: "画像出力", panel: <GkcoiScreen org={org} /> },
+    { label: t("ImageGeneration"), panel: <GkcoiScreen org={org} /> },
   ].filter(nonNullable);
 
   return <Tabs className={className} list={list} size="small" />;
