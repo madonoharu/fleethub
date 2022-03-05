@@ -328,6 +328,7 @@ pub fn special_enemy_modifiers(
         }
 
         mods.postcap_general_mod.a *= landing_craft_ibonus.powf(n);
+        mods.postcap_general_mod.a *= tank_ibonus;
 
         apply_mod!(
             mods.postcap_general_mod,
