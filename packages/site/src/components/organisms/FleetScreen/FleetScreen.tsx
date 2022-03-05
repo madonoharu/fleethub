@@ -41,12 +41,14 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
   const BatchOperationsModal = useModal();
   const { t } = useTranslation("common");
 
+  const fleetId = fleet.id;
+
   const handleFleetLenChange = (len: number) => {
-    dispatch(fleetsSlice.actions.update({ id: fleet.id, changes: { len } }));
+    dispatch(fleetsSlice.actions.update({ id: fleetId, changes: { len } }));
   };
 
   const handleRemoveShips = () => {
-    dispatch(fleetsSlice.actions.removeShips(fleet.id));
+    dispatch(fleetsSlice.actions.removeShips(fleetId));
   };
 
   const handleStarsClick = (value: number | undefined) => {
@@ -159,23 +161,27 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
           <ElosLabel key={factor} factor={factor} elos={comp.elos(factor)} />
         ))}
 
-        <SelectedMenu
-          sx={{ ml: "auto" }}
-          label="艦数"
-          options={FLEET_LENS}
-          value={fleet.len}
-          onChange={handleFleetLenChange}
-        />
-        <BuildButton
-          title={t("BatchOperation")}
-          size="small"
-          onClick={BatchOperationsModal.show}
-        />
-        <DeleteButton
-          title="この艦隊の艦娘を削除"
-          size="small"
-          onClick={handleRemoveShips}
-        />
+        {fleetId && (
+          <>
+            <SelectedMenu
+              sx={{ ml: "auto" }}
+              label="艦数"
+              options={FLEET_LENS}
+              value={fleet.len}
+              onChange={handleFleetLenChange}
+            />
+            <BuildButton
+              title={t("BatchOperation")}
+              size="small"
+              onClick={BatchOperationsModal.show}
+            />
+            <DeleteButton
+              title="この艦隊の艦娘を削除"
+              size="small"
+              onClick={handleRemoveShips}
+            />
+          </>
+        )}
       </Flexbox>
 
       <FleetShipList fleet={fleet} />

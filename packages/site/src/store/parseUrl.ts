@@ -75,7 +75,6 @@ export async function parseUrl(
   url: URL
 ): Promise<ImportPayload | undefined> {
   const publicId = getPublicId(url);
-  console.log(publicId);
   if (publicId) {
     const res = await readPublicFile(publicId);
 
