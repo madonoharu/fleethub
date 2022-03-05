@@ -1,6 +1,16 @@
+import MailIcon from "@mui/icons-material/Mail";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import { Button, Container, Divider, Typography, Stack } from "@mui/material";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import {
+  Button,
+  Container,
+  Divider,
+  Typography,
+  Stack,
+  Link,
+} from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -72,7 +82,6 @@ const WelcomePage: React.FCX = () => {
             {t("Jervis ORからデータを引き継ぐ")}
           </Button>
         </Flexbox>
-
         <Typography variant="h5" mt={4}>
           Tips
         </Typography>
@@ -80,7 +89,34 @@ const WelcomePage: React.FCX = () => {
         <Typography>
           デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
         </Typography>
-
+        <Typography variant="h5" mt={4}>
+          連絡先
+        </Typography>
+        <Divider />
+        <Link
+          display="flex"
+          alignItems="center"
+          gap={1}
+          color="inherit"
+          href="https://twitter.com/madonoharu"
+        >
+          <TwitterIcon color="primary" />
+          @madonoharu
+        </Link>
+        <Link
+          display="flex"
+          alignItems="center"
+          gap={1}
+          color="inherit"
+          href="https://marshmallow-qa.com/madonoharu"
+        >
+          <QuestionAnswerIcon color="secondary" />
+          マシュマロ(匿名でメッセージを送る)
+        </Link>
+        <Typography display="flex" alignItems="center" gap={1}>
+          <MailIcon />
+          madonoharu@gmail.com
+        </Typography>
         <Typography variant="h5" mt={4}>
           免責事項
         </Typography>
@@ -88,7 +124,6 @@ const WelcomePage: React.FCX = () => {
         <Typography>
           当サイトに表示される情報は仮説式等を多く使用しているため、その正確性については保障しません。また、当サイトの計算結果によって発生した損害について一切の責任を負いません。
         </Typography>
-
         <Typography variant="h5" mt={4}>
           プライバシーポリシー
         </Typography>
@@ -98,7 +133,6 @@ const WelcomePage: React.FCX = () => {
           Analytics」を使用しています。これにはデータ収集のためにCookieを使用しておりますが、このデータは匿名で収集されており、個人を特定するものではありません。
           詳しくはこちらをご覧ください。
         </Typography>
-
         <Typography variant="h5" mt={4}>
           知的財産権
         </Typography>

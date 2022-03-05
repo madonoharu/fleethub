@@ -4,10 +4,10 @@ import type { NextComponentType, NextPageContext } from "next";
 import Head from "next/head";
 import React from "react";
 
-const Dev: NextComponentType<NextPageContext> = () => (
+const Help: NextComponentType<NextPageContext> = () => (
   <div>
     <Head>
-      <title>dev</title>
+      <title>Help</title>
     </Head>
 
     <Container sx={{ mt: 5 }}>
@@ -24,4 +24,4 @@ const Dev: NextComponentType<NextPageContext> = () => (
   </div>
 );
 
-export default Dev;
+export default Help;
