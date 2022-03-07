@@ -1,3 +1,4 @@
+mod air_combat;
 mod air_state;
 mod battle_config;
 mod const_id;
@@ -15,6 +16,7 @@ mod shelling;
 mod ship;
 mod state;
 
+pub use air_combat::*;
 pub use air_state::*;
 pub use battle_config::*;
 pub use const_id::*;

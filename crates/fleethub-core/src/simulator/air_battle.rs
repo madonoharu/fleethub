@@ -7,26 +7,26 @@ use crate::{
     error::CalculationError,
     member::MemberImpl,
     plane::{PlaneImpl, PlaneMut, PlaneVec},
-    types::{AirState, BattleConfig, ContactRank, Formation, Side},
+    types::{AirState, AirWaveType, BattleConfig, ContactRank, Formation, Side},
 };
 
 fn try_fighter_combat<R: Rng + ?Sized>(
     rng: &mut R,
     player_planes: &mut PlaneVec<PlaneMut>,
     enemy_planes: &mut PlaneVec<PlaneMut>,
-    recon_participates: bool,
+    air_type: AirWaveType,
 ) -> Result<AirState, CalculationError> {
-    let player_fp = player_planes.fighter_power(recon_participates)?;
-    let enemy_fp = enemy_planes.fighter_power(recon_participates)?;
+    let player_fp = player_planes.fighter_power(air_type)?;
+    let enemy_fp = enemy_planes.fighter_power(air_type)?;
     let air_state = AirState::new(player_fp, enemy_fp);
 
     player_planes
         .iter_mut()
-        .filter(|plane| plane.participates_in_fighter_combat(recon_participates))
+        .filter(|plane| plane.participates_in_fighter_combat(air_type))
         .for_each(|plane| plane.suffer_in_fighter_combat(rng, air_state, Side::Player));
     enemy_planes
         .iter_mut()
-        .filter(|plane| plane.participates_in_fighter_combat(recon_participates))
+        .filter(|plane| plane.participates_in_fighter_combat(air_type))
         .for_each(|plane| plane.suffer_in_fighter_combat(rng, air_state, Side::Enemy));
 
     Ok(air_state)
@@ -131,7 +131,6 @@ where
     R: Rng + ?Sized,
 {
     fn try_jet_assault_phase(&mut self) -> Result<()> {
-        const RECON_PARTICIPATES: bool = false;
         let escort_participates = self.escort_participates;
 
         let mut player_planes = self
@@ -149,7 +148,7 @@ where
             self.rng,
             &mut player_planes,
             &mut enemy_planes,
-            RECON_PARTICIPATES,
+            AirWaveType::Jet,
         )?;
 
         let player_contact_rank =
@@ -176,7 +175,6 @@ where
     }
 
     fn try_aerial_combat(&mut self) -> Result<AirState> {
-        const RECON_PARTICIPATES: bool = false;
         let escort_participates = self.escort_participates;
 
         let mut player_planes = self
@@ -192,7 +190,7 @@ where
             self.rng,
             &mut player_planes,
             &mut enemy_planes,
-            RECON_PARTICIPATES,
+            AirWaveType::Carrier,
         )?;
 
         let player_contact_rank =

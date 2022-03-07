@@ -18,8 +18,8 @@ use crate::{
     plane::{Plane, PlaneImpl, PlaneMut},
     ship_id,
     types::{
-        AirStateRank, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
-        NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
+        AirStateRank, AirWaveType, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip,
+        MoraleState, NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
         SlotSizeArray, SpecialEnemyType,
     },
     utils::xxh3,
@@ -1310,9 +1310,9 @@ impl Ship {
         }
     }
 
-    pub fn fighter_power(&self, recon_participates: bool) -> Option<i32> {
+    pub fn fighter_power(&self, air_type: AirWaveType) -> Option<i32> {
         self.planes()
-            .filter(|plane| plane.participates_in_fighter_combat(recon_participates))
+            .filter(|plane| plane.participates_in_fighter_combat(air_type))
             .map(|plane| plane.fighter_power())
             .sum()
     }
