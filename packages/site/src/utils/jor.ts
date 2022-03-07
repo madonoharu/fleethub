@@ -107,7 +107,7 @@ const createSlotSizeDict = (input: number[]): Dict<SlotSizeKey, number> => {
   SLOT_SIZE_KEYS.forEach((key, i) => {
     const value = input.at(i);
 
-    if (typeof value === "number") {
+    if (typeof value === "number" && value > 0) {
       result[key] = value;
     }
   });

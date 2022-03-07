@@ -33,6 +33,7 @@ fn main() {
         types::MoraleState,
         types::SingleFormation,
         types::CombinedFormation,
+        types::AirWaveType,
         types::AirState,
         types::AirStateRank,
         types::Engagement,

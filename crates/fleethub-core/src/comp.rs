@@ -8,7 +8,10 @@ use crate::{
     member::{Member, MemberMut},
     plane::{Plane, PlaneMut},
     ship::Ship,
-    types::{AntiAirCutinDef, BattleConfig, CompMeta, FleetType, Formation, OrgType, Role, Side},
+    types::{
+        AirWaveType, AntiAirCutinDef, BattleConfig, CompMeta, FleetType, Formation, OrgType, Role,
+        Side,
+    },
 };
 
 #[wasm_bindgen]
@@ -244,17 +247,13 @@ impl Comp {
     }
 
     /// 制空値
-    pub fn fighter_power(
-        &self,
-        escort_participates: bool,
-        recon_participates: bool,
-    ) -> Option<i32> {
-        let main_fp = self.main.fighter_power(recon_participates)?;
+    pub fn fighter_power(&self, escort_participates: bool, air_type: AirWaveType) -> Option<i32> {
+        let main_fp = self.main.fighter_power(air_type)?;
 
         if !escort_participates {
             Some(main_fp)
         } else {
-            let escort_fp = self.escort.as_ref()?.fighter_power(recon_participates)?;
+            let escort_fp = self.escort.as_ref()?.fighter_power(air_type)?;
             Some(main_fp + escort_fp)
         }
     }
