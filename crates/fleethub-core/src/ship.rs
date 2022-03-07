@@ -712,10 +712,16 @@ impl Ship {
             }
         }
 
-        let is_anti_sub_ship = naked_asw > 0
-            && (matches!(self.ship_type, DE | DD | CL | CLT | CVL | CT | AO)
-                || self.ship_id == ship_id!("加賀改二護")
-                || is_abyssal);
+        if naked_asw == 0 {
+            return None;
+        }
+
+        let is_anti_sub_ship = if self.is_escort_light_carrier() {
+            // 夜戦砲撃を行う護衛空母は対潜攻撃が優先される？
+            self.can_do_normal_night_attack()
+        } else {
+            matches!(self.ship_type, DE | DD | CL | CLT | CT | AO)
+        } || is_abyssal;
 
         is_anti_sub_ship.then(|| AswAttackType::DepthCharge)
     }
