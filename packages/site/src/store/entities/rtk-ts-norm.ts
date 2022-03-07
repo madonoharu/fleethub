@@ -140,8 +140,8 @@ function cloneAffectedEntitiesImpl<T>(
       return input;
     }
 
-    const result = {} as T;
-    const keys = Object.keys(input) as (keyof T)[];
+    const result = { ...input };
+    const keys = Object.keys(schema) as (keyof T)[];
     keys.forEach((key) => {
       const value = input[key];
       const localSchema = schema[key as string];
