@@ -141,11 +141,11 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
     dispatch(shipsSlice.actions.resetSlotSize(ids));
   };
 
-  const singleFp = comp.fighter_power(false, false);
+  const singleFp = comp.fighter_power(false, "Carrier");
 
   let fpText: string;
   if (comp.is_combined()) {
-    const antiCombinedFp = `${comp.fighter_power(true, false) ?? "?"}`;
+    const antiCombinedFp = `${comp.fighter_power(true, "Carrier") ?? "?"}`;
 
     fpText = `${t("FighterPower")} ${t("CombinedFleet")} ${antiCombinedFp}
     ${t("SingleFleet")} ${singleFp ?? "?"}`;

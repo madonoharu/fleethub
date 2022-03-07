@@ -4,7 +4,7 @@ use rand::{distributions::uniform::SampleRange, prelude::*};
 use crate::{
     error::CalculationError,
     gear::Gear,
-    types::{AirState, AirStateRank, ContactRank, GearAttr, GearType, Side},
+    types::{AirState, AirStateRank, AirWaveType, ContactRank, GearAttr, GearType, Side},
 };
 
 pub enum AirstrikeType {
@@ -77,6 +77,16 @@ pub trait PlaneImpl {
         )
     }
 
+    fn is_lb_plane(&self) -> bool {
+        matches!(
+            self.gear_type(),
+            GearType::LbAttacker
+                | GearType::LbFighter
+                | GearType::LbRecon
+                | GearType::LargeLbAircraft
+        )
+    }
+
     fn is_contact_selection_plane(&self) -> bool {
         self.is_recon() || self.gear_type() == GearType::CbTorpedoBomber
     }
@@ -97,13 +107,19 @@ pub trait PlaneImpl {
         }
     }
 
-    fn participates_in_fighter_combat(&self, recon_participates: bool) -> bool {
+    fn participates_in_fighter_combat(&self, air_type: AirWaveType) -> bool {
         if self.slot_size() == Some(0) {
             false
         } else if self.is_fighter() || self.is_attacker() {
             true
         } else {
-            recon_participates && self.is_recon()
+            match air_type {
+                AirWaveType::Jet => self.is_jet_plane(),
+                AirWaveType::LandBase => self.is_fighter() || self.is_attacker() || self.is_recon(),
+                AirWaveType::Carrier => {
+                    !self.is_lb_plane() && (self.is_fighter() || self.is_attacker())
+                }
+            }
         }
     }
 
@@ -244,9 +260,9 @@ impl<T: PlaneImpl> PlaneVec<T> {
         self.vec.iter_mut()
     }
 
-    pub fn fighter_power(&self, recon_participates: bool) -> Result<i32, CalculationError> {
+    pub fn fighter_power(&self, air_type: AirWaveType) -> Result<i32, CalculationError> {
         self.iter()
-            .filter(|p| p.participates_in_fighter_combat(recon_participates))
+            .filter(|p| p.participates_in_fighter_combat(air_type))
             .map(|plane| plane.fighter_power())
             .sum::<Option<i32>>()
             .ok_or(CalculationError::UnknownValue)

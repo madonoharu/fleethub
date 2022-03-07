@@ -18,8 +18,8 @@ use crate::{
     plane::{Plane, PlaneImpl, PlaneMut},
     ship_id,
     types::{
-        AirStateRank, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState,
-        NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
+        AirStateRank, AirWaveType, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip,
+        MoraleState, NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
         SlotSizeArray, SpecialEnemyType,
     },
     utils::xxh3,
@@ -712,10 +712,16 @@ impl Ship {
             }
         }
 
-        let is_anti_sub_ship = naked_asw > 0
-            && (matches!(self.ship_type, DE | DD | CL | CLT | CVL | CT | AO)
-                || self.ship_id == ship_id!("加賀改二護")
-                || is_abyssal);
+        if naked_asw == 0 {
+            return None;
+        }
+
+        let is_anti_sub_ship = if self.is_escort_light_carrier() {
+            // 夜戦砲撃を行う護衛空母は対潜攻撃が優先される？
+            self.can_do_normal_night_attack()
+        } else {
+            matches!(self.ship_type, DE | DD | CL | CLT | CT | AO)
+        } || is_abyssal;
 
         is_anti_sub_ship.then(|| AswAttackType::DepthCharge)
     }
@@ -1310,9 +1316,9 @@ impl Ship {
         }
     }
 
-    pub fn fighter_power(&self, recon_participates: bool) -> Option<i32> {
+    pub fn fighter_power(&self, air_type: AirWaveType) -> Option<i32> {
         self.planes()
-            .filter(|plane| plane.participates_in_fighter_combat(recon_participates))
+            .filter(|plane| plane.participates_in_fighter_combat(air_type))
             .map(|plane| plane.fighter_power())
             .sum()
     }

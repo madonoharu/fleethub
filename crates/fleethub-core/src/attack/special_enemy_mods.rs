@@ -275,7 +275,7 @@ pub fn special_enemy_modifiers(
 
     // 特大発動艇+一式砲戦車
     if honi_count > 0 {
-        mods.honi_mod.merge(1.3, 35.0);
+        mods.honi_mod.merge(1.3, 42.0);
     }
 
     // 陸上共通 支援上陸用舟艇シナジー
