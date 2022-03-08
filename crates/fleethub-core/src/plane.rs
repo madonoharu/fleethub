@@ -110,8 +110,6 @@ pub trait PlaneImpl {
     fn participates_in_fighter_combat(&self, air_type: AirWaveType) -> bool {
         if self.slot_size() == Some(0) {
             false
-        } else if self.is_fighter() || self.is_attacker() {
-            true
         } else {
             match air_type {
                 AirWaveType::Jet => self.is_jet_plane(),
