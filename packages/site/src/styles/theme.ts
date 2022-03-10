@@ -36,7 +36,7 @@ const muiTheme = createTheme({
     MuiLink: {
       defaultProps: {
         target: "_blank",
-        rel: "noopener",
+        rel: "noreferrer",
       },
     },
     MuiTooltip: {

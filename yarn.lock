@@ -365,7 +365,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.13.17, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.13.17, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.17.2
   resolution: "@babel/runtime@npm:7.17.2"
   dependencies:
@@ -542,14 +542,13 @@ __metadata:
   linkType: hard
 
 "@emotion/react@npm:^11.8.1":
-  version: 11.8.1
-  resolution: "@emotion/react@npm:11.8.1"
+  version: 11.8.2
+  resolution: "@emotion/react@npm:11.8.2"
   dependencies:
     "@babel/runtime": ^7.13.10
     "@emotion/babel-plugin": ^11.7.1
     "@emotion/cache": ^11.7.1
     "@emotion/serialize": ^1.0.2
-    "@emotion/sheet": ^1.1.0
     "@emotion/utils": ^1.1.0
     "@emotion/weak-memoize": ^0.2.5
     hoist-non-react-statics: ^3.3.1
@@ -561,7 +560,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: a767c6d7ca9e45dc3c1e873cfa51952db24e0d279944403ceb06be82d15859354e128becf6f7d0f8ff2b5f3460e3c165cd2b16ab1a2446e8e15e134a69e6ea3a
+  checksum: a8733f8375f9798953019872137326f39e5171b3286535fe34a695d63067a2c0f0f154beb6d117361206ef04a584fa4adef0ecc450654b6af4695b1d893d2496
   languageName: node
   linkType: hard
 
@@ -672,7 +671,7 @@ __metadata:
     dequal: ^2.0.2
     firebase-admin: ^10.0.2
     fleethub-core: "npm:latest"
-    googleapis: ^95.0.0
+    googleapis: ^96.0.0
     got: 11.8.3
   dependenciesMeta:
     fleethub-core:
@@ -714,7 +713,6 @@ __metadata:
     http-status-codes: ^2.2.0
     literal-case: ^1.0.0
     localforage: ^1.10.0
-    lz-string-uri-fix: ^1.4.5
     next: ^12.1.0
     next-i18next: ^10.5.0
     next-transpile-modules: ^9.0.0
@@ -2287,9 +2285,9 @@ __metadata:
   linkType: hard
 
 "@types/d3-path@npm:^2":
-  version: 2.0.1
-  resolution: "@types/d3-path@npm:2.0.1"
-  checksum: 2fe04503ec56de47e2b8482e5a55e2eaf2940444f2cea00a5fb740d52d24bddfe13e900e392c1edebf2127b11557db09aeae6f5669f49a35caac4fe1a9d43b84
+  version: 2.0.2
+  resolution: "@types/d3-path@npm:2.0.2"
+  checksum: 2ab49cc87b9d2cb90c189bedf5f0fdc2b1609c3c668664dc76c679054b4bb1bcfaf44e7836e1f7d0b38102cecc269a6c52a353e0ba238c992509cb0e9d6c5c33
   languageName: node
   linkType: hard
 
@@ -2572,13 +2570,13 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:*, @types/react@npm:^17.0.39":
-  version: 17.0.39
-  resolution: "@types/react@npm:17.0.39"
+  version: 17.0.40
+  resolution: "@types/react@npm:17.0.40"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: bf04d3c2894559012710d595553e12b422d3b91cd8f4f7e122d8cb044ba9c2ba17f6e8a4e09581359cc5509ddc59cd8c8fabd6774f3505a40a45393f074d6e6e
+  checksum: 24d1b210b5bf3c7d49f9a7fe5490db02e005a1d989045a2d67528347557dd0bcb0d7bcf96088152697e97521ac4c9506d1357ee48a2b7d4e701c70d838dc7284
   languageName: node
   linkType: hard
 
@@ -3527,9 +3525,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001283, caniuse-lite@npm:^1.0.30001313":
-  version: 1.0.30001313
-  resolution: "caniuse-lite@npm:1.0.30001313"
-  checksum: 49f2dcd1fa493a09a5247dcf3a4da3b9df355131b1fc1fd08b67ae7683c300ed9b9eef6a5424b4ac7e5d1ff0e129d2a0b4adf2a6a5a04ab5c2c0b2c590e935be
+  version: 1.0.30001314
+  resolution: "caniuse-lite@npm:1.0.30001314"
+  checksum: d82e1b8b287b1b2d2ed25c4495fe293276853dd9c77553c722929a6142fc49b3dd5ea21a95f6410d93319434a5bd071c304ea92e93debbcf292a9156cf08b35d
   languageName: node
   linkType: hard
 
@@ -4468,9 +4466,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.76":
-  version: 1.4.76
-  resolution: "electron-to-chromium@npm:1.4.76"
-  checksum: eef4305665e095610f6e913fad1efc73473b7c383f1cfa5e1e005b19c4133006d5492013b38dbcb1e4cdb0e3cd3d0ff94c4c52630fd088464eb2ebd1e210e0eb
+  version: 1.4.80
+  resolution: "electron-to-chromium@npm:1.4.80"
+  checksum: 3dc3d1504b991243759c633b42b0f0a88860d91c23af0b3b5d510f277d2b1fb73de0b25c502f00717f4c67386a3d599f596a6eb9ecdc95414ff8b559636b4f64
   languageName: node
   linkType: hard
 
@@ -5785,8 +5783,8 @@ __metadata:
   linkType: hard
 
 "google-gax@npm:^2.24.1":
-  version: 2.30.0
-  resolution: "google-gax@npm:2.30.0"
+  version: 2.30.1
+  resolution: "google-gax@npm:2.30.1"
   dependencies:
     "@grpc/grpc-js": ~1.5.0
     "@grpc/proto-loader": ^0.6.1
@@ -5803,7 +5801,7 @@ __metadata:
     retry-request: ^4.0.0
   bin:
     compileProtos: build/tools/compileProtos.js
-  checksum: a9b68cefb655d794e99aa6798692a440f99a622bcce3f51456fddcda90feb5e28ff5135371dbb8ba06bfb496e356be7c68e079023f0c5aea690e6f4eee631a0e
+  checksum: 6881dcb8b505e7cb9f9d4bc804e9832036f9e38ac66dde8217bf04c6197fcdb1f83e41c20d9a5a8b2e6f783d52fb73dfa5455e66066ae9465465f2ca7295479d
   languageName: node
   linkType: hard
 
@@ -5832,13 +5830,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"googleapis@npm:^95.0.0":
-  version: 95.0.0
-  resolution: "googleapis@npm:95.0.0"
+"googleapis@npm:^96.0.0":
+  version: 96.0.0
+  resolution: "googleapis@npm:96.0.0"
   dependencies:
     google-auth-library: ^7.0.2
     googleapis-common: ^5.0.2
-  checksum: a304d97fd93a6772bd302ab605d2daee3c57f087b5a3c98774446ac16e98e645b4a4b2214621d99b869b1680c3fa3be87bff7e9b3a50a06446e8938e7787ea08
+  checksum: 77cfaf65ef29310db19a72351a97dccb7bcc3acd2c0f5f8c079f62c66b98295b620b8eed180a1c4da1f3ea74a1a8fbedbb039180adba36af6cadfeb9472f6bcb
   languageName: node
   linkType: hard
 
@@ -6113,11 +6111,11 @@ __metadata:
   linkType: hard
 
 "i18next@npm:^21.6.12":
-  version: 21.6.13
-  resolution: "i18next@npm:21.6.13"
+  version: 21.6.14
+  resolution: "i18next@npm:21.6.14"
   dependencies:
-    "@babel/runtime": ^7.12.0
-  checksum: ede7280351e4bb63cf746b6772996258771c6ea36921fd700ae8d79b6868f85411031fc3c4169f129dad8e21e52b925447fdb19709b205cbbcffcaf23b86cc0b
+    "@babel/runtime": ^7.17.2
+  checksum: bc6e117874d9b69a39d6ad322851d25f75908c7fa977c8771b98ba7b0273aceba96e82326ed0855b8db098b1490c5a0decbe62b4f61dac84fdc677c2fdc52bb8
   languageName: node
   linkType: hard
 
@@ -7345,6 +7343,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kcs@workspace:packages/kcs":
+  version: 0.0.0-use.local
+  resolution: "kcs@workspace:packages/kcs"
+  dependencies:
+    esbuild: ^0.14.25
+    fleethub-core: "npm:latest"
+  languageName: unknown
+  linkType: soft
+
 "keyv@npm:^4.0.0":
   version: 4.1.1
   resolution: "keyv@npm:4.1.1"
@@ -7451,15 +7458,15 @@ __metadata:
   linkType: hard
 
 "listr2@npm:^4.0.1":
-  version: 4.0.4
-  resolution: "listr2@npm:4.0.4"
+  version: 4.0.5
+  resolution: "listr2@npm:4.0.5"
   dependencies:
     cli-truncate: ^2.1.0
     colorette: ^2.0.16
     log-update: ^4.0.0
     p-map: ^4.0.0
     rfdc: ^1.3.0
-    rxjs: ^7.5.4
+    rxjs: ^7.5.5
     through: ^2.3.8
     wrap-ansi: ^7.0.0
   peerDependencies:
@@ -7467,7 +7474,7 @@ __metadata:
   peerDependenciesMeta:
     enquirer:
       optional: true
-  checksum: 1e6e44a3a0337f47d0a1bc90712b0001129d3ca3fae56dc5b834da556b634862a211d8c638528600daf1c1899a3f2366f822ecb03dba5327ff2c017578815e61
+  checksum: 7af31851abe25969ef0581c6db808117e36af15b131401795182427769d9824f451ba9e8aff6ccd25b6a4f6c8796f816292caf08e5f1f9b1775e8e9c313dc6c5
   languageName: node
   linkType: hard
 
@@ -7657,10 +7664,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^7.4.0":
-  version: 7.4.1
-  resolution: "lru-cache@npm:7.4.1"
-  checksum: de6d8aa83b0a304943a1e1ec2a982d9b44ef36963c20bd01950f13dcb3eb482c57bfa15ab49b1baa15c682d6d33a10842bb7b33d8a449845009ffab6a2faec3c
+"lru-cache@npm:^7.4.1":
+  version: 7.4.2
+  resolution: "lru-cache@npm:7.4.2"
+  checksum: 389b3b13b3a0406087b5ff3a913358161aa0b17e55e5a2626c343fa701026ce176483043ed6062ea188edbcd9ffab47a136a0f6e6d9b42b4236c8c49523a6ac5
   languageName: node
   linkType: hard
 
@@ -7684,15 +7691,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lz-string-uri-fix@npm:^1.4.5":
-  version: 1.4.5
-  resolution: "lz-string-uri-fix@npm:1.4.5"
-  bin:
-    lz-string: bin/bin.js
-  checksum: b254d01f863a7f10927b3125d730c2d257b09d4884126b18516ef6ab32fc72612268efc744f8d61b895fb8f48274d1a35a46e5aeacc37ee2fffac6dbcde49570
-  languageName: node
-  linkType: hard
-
 "lzjs@npm:^1.3.0":
   version: 1.3.0
   resolution: "lzjs@npm:1.3.0"
@@ -7712,8 +7710,8 @@ __metadata:
   linkType: hard
 
 "make-fetch-happen@npm:^10.0.3":
-  version: 10.0.4
-  resolution: "make-fetch-happen@npm:10.0.4"
+  version: 10.0.5
+  resolution: "make-fetch-happen@npm:10.0.5"
   dependencies:
     agentkeepalive: ^4.2.1
     cacache: ^15.3.0
@@ -7721,17 +7719,17 @@ __metadata:
     http-proxy-agent: ^5.0.0
     https-proxy-agent: ^5.0.0
     is-lambda: ^1.0.1
-    lru-cache: ^7.4.0
+    lru-cache: ^7.4.1
     minipass: ^3.1.6
     minipass-collect: ^1.0.2
-    minipass-fetch: ^2.0.1
+    minipass-fetch: ^2.0.2
     minipass-flush: ^1.0.5
     minipass-pipeline: ^1.2.4
     negotiator: ^0.6.3
     promise-retry: ^2.0.1
     socks-proxy-agent: ^6.1.1
     ssri: ^8.0.1
-  checksum: 036fcfaec18b69ce6384644275850b0871aff105663aecc0130b5c45fe318542d7e2004cf1f4cd26b7c6842c282f8b37f00da67aa3bae13c13693e405480ac74
+  checksum: 150071e41262bffafccafa764bab0e6a929a46be5abc1dfee414ffb821d052942596f3660ff84b17e4d6c44f51b2d2741f6d02a49e2dad44e06c94c3baf624fa
   languageName: node
   linkType: hard
 
@@ -7853,9 +7851,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass-fetch@npm:^2.0.1":
-  version: 2.0.2
-  resolution: "minipass-fetch@npm:2.0.2"
+"minipass-fetch@npm:^2.0.2":
+  version: 2.0.3
+  resolution: "minipass-fetch@npm:2.0.3"
   dependencies:
     encoding: ^0.1.13
     minipass: ^3.1.6
@@ -7864,7 +7862,7 @@ __metadata:
   dependenciesMeta:
     encoding:
       optional: true
-  checksum: 0613b0a6ef427609707c2b73b69230348fe3c24b33c144622e8e248404534fa1f125b94c324c555cd665ef623abedab0f7891e460b1c9ac6babc3ab2385b3c18
+  checksum: 78a4a509b1e73f5e63b84065969790373b36b04da586744815c7f7f80013f1d786797842cc33cfa517eba0ad2f2142eb0ac808c46738da1c53e0e3aeed81df11
   languageName: node
   linkType: hard
 
@@ -9511,12 +9509,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.4":
-  version: 7.5.4
-  resolution: "rxjs@npm:7.5.4"
+"rxjs@npm:^7.5.5":
+  version: 7.5.5
+  resolution: "rxjs@npm:7.5.5"
   dependencies:
     tslib: ^2.1.0
-  checksum: 6f55f835f2543bc8214900f9e28b6320e6adc95875011fbca63e80a66eb18c9ff7cfdccb23b2180cbb6412762b98ed158c89fd51cb020799d127c66ea38c3c0e
+  checksum: e034f60805210cce756dd2f49664a8108780b117cf5d0e2281506e9e6387f7b4f1532d974a8c8b09314fa7a16dd2f6cff3462072a5789672b5dcb45c4173f3c6
   languageName: node
   linkType: hard
 

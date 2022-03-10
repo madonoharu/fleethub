@@ -102,5 +102,19 @@ export async function parseUrl(
     }
   }
 
+  const org = url.searchParams.get("org");
+  if (org) {
+    const file: FileState = {
+      type: "plan",
+      id: nanoid(),
+      name: "",
+      description: "",
+      org: JSON.parse(org),
+      steps: [],
+    };
+
+    return normalize(file, schemata.file);
+  }
+
   return;
 }
