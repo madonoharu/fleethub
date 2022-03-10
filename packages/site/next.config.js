@@ -29,7 +29,7 @@ class WasmChunksFixPlugin {
 const config = {
   env: {
     KCS_SCRIPT: fs.readFileSync("../kcs/lib/index.js").toString(),
-    VERSION: `${require("./package.json").version}-rc`,
+    VERSION: `${require("./package.json").version}`,
   },
   i18n,
 
