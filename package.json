@@ -17,7 +17,7 @@
     "build:utils": "yarn workspace @fh/utils build",
     "dev": "yarn workspace @fh/site dev",
     "dispatch": "yarn ts scripts/dispatch",
-    "postinstall": "husky install && yarn build:utils && yarn build:admin",
+    "postinstall": "husky install && yarn build:utils && yarn build:admin && yarn build:kcs",
     "lint": "eslint --cache packages && yarn tscheck",
     "site": "yarn workspace @fh/site",
     "start": "yarn workspace @fh/site start",

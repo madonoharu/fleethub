@@ -50,6 +50,7 @@ declare module "*.png" {
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      readonly KCS_SCRIPT: string;
       readonly VERSION: string;
     }
   }

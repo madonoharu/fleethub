@@ -21,12 +21,12 @@ const getPredeckUrl = (base: string, org?: Org | undefined) => {
 
 export const openKctools = (org?: Org | undefined) => {
   const url = getPredeckUrl("https://noro6.github.io/kcTools/", org);
-  window.open(url, "_blank", "noopener");
+  window.open(url, "_blank", "noreferrer");
 };
 
 export const openDeckbuilder = (org?: Org | undefined) => {
   const url = getPredeckUrl("http://kancolle-calc.net/deckbuilder.html", org);
-  window.open(url, "_blank", "noopener");
+  window.open(url, "_blank", "noreferrer");
 };
 
 type TweetOption = {
@@ -38,5 +38,5 @@ export const tweet = ({ text, url }: TweetOption) => {
   const tweetUrl = new URL("https://twitter.com/intent/tweet");
   tweetUrl.searchParams.set("text", text);
   tweetUrl.searchParams.set("url", url);
-  window.open(tweetUrl.href, "_blank", "width=480,height=400,noopener");
+  window.open(tweetUrl.href, "_blank", "width=480,height=400,noreferrer");
 };

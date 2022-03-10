@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
-import { Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import { MasterData } from "fleethub-core";
+import dynamic from "next/dynamic";
 import React, { useRef } from "react";
 import { useAsyncCallback } from "react-async-hook";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +17,8 @@ import {
 } from "../../../store";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
 import { ImportButton, TextField } from "../../molecules";
+
+const KcsScript = dynamic(() => import("./KcsScript"));
 
 const StyledDivider = styled(Divider)`
   margin-top: 8px;
@@ -53,7 +56,7 @@ const UrlForm: React.FCX<UrlFormProps> = ({
 
   return (
     <Flexbox gap={1}>
-      <TextField ref={ref} variant="outlined" />
+      <TextField ref={ref} fullWidth />
       <ImportButton
         onClick={() => {
           void asyncParse.execute();
@@ -111,7 +114,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
       <StyledDivider label="デッキビルダー形式から" />
       <Flexbox gap={1}>
-        <TextField variant="outlined" value={deckStr} onChange={setDeckStr} />
+        <TextField fullWidth value={deckStr} onChange={setDeckStr} />
         <ImportButton onClick={handleDeckImport} />
       </Flexbox>
 
@@ -127,6 +130,15 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
         }}
       />
 
+      <StyledDivider label="編成を直接読み込むJavaScriptコード" />
+      <Typography variant="body2" mb={1}>
+        <Link href="https://noro6.github.io/kcTools/manager">
+          制空権シミュレータの艦娘管理
+        </Link>
+        での反映と同じ手順で編成を直接読み込めます
+      </Typography>
+      <KcsScript />
+
       <Snackbar />
     </div>
   );
@@ -134,4 +146,5 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
 export default styled(ImportMenu)`
   padding: 8px;
+  width: 320px;
 `;
