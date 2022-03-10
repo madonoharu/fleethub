@@ -1,6 +1,6 @@
 {
   "name": "fleethub",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "private": true,
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
@@ -12,11 +12,12 @@
     "build": "yarn up fleethub-core@npm:latest equipment-bonus && yarn build:site",
     "build:admin": "yarn workspace @fh/admin build",
     "build:core": "bash scripts/build-core.sh",
+    "build:kcs": "yarn workspace kcs build",
     "build:site": "yarn workspace @fh/site build",
     "build:utils": "yarn workspace @fh/utils build",
     "dev": "yarn workspace @fh/site dev",
     "dispatch": "yarn ts scripts/dispatch",
-    "postinstall": "husky install && yarn build:utils && yarn build:admin",
+    "postinstall": "husky install && yarn build:utils && yarn build:admin && yarn build:kcs",
     "lint": "eslint --cache packages && yarn tscheck",
     "site": "yarn workspace @fh/site",
     "start": "yarn workspace @fh/site start",
@@ -24,9 +25,9 @@
     "test:fleethub-macro": "wasm-pack test --node crates/fleethub-macro",
     "ts": "node -r esbuild-register",
     "tscheck": "tsc --noEmit",
-    "update:types": "yarn ts scripts/updateTypes",
     "update:locales": "yarn ts scripts/updateLocales",
     "update:storage": "yarn ts scripts/updateStorage",
+    "update:types": "yarn ts scripts/updateTypes",
     "utils": "yarn workspace @fh/utils"
   },
   "lint-staged": {

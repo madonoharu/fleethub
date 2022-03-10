@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { i18n } = require("./next-i18next.config");
 const withTM = require("next-transpile-modules")(["ts-norm"]);
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
@@ -27,7 +28,8 @@ class WasmChunksFixPlugin {
 /** @type {import("next").NextConfig} */
 const config = {
   env: {
-    VERSION: `${require("./package.json").version}-rc`,
+    KCS_SCRIPT: fs.readFileSync("../kcs/lib/index.js").toString(),
+    VERSION: `${require("./package.json").version}`,
   },
   i18n,
 
