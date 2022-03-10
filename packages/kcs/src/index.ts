@@ -162,6 +162,6 @@ declare const temp1: { model: Model };
 
 const org = createOrgState(temp1.model);
 const str = JSON.stringify(org);
-const url = new URL("http://localhost:3000");
+const url = new URL("https://jervis.vercel.app");
 url.searchParams.set("org", str);
 window.open(url, "_blank", "noreferrer");

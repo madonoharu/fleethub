@@ -541,7 +541,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.8.1":
+"@emotion/react@npm:^11.8.2":
   version: 11.8.2
   resolution: "@emotion/react@npm:11.8.2"
   dependencies:
@@ -684,7 +684,7 @@ __metadata:
   resolution: "@fh/site@workspace:packages/site"
   dependencies:
     "@emotion/cache": ^11.7.1
-    "@emotion/react": ^11.8.1
+    "@emotion/react": ^11.8.2
     "@emotion/server": ^11.4.0
     "@emotion/styled": ^11.8.1
     "@fh/utils": "*"
@@ -695,7 +695,7 @@ __metadata:
     "@next/bundle-analyzer": ^12.1.0
     "@reduxjs/toolkit": ^1.8.0
     "@simbathesailor/use-what-changed": ^2.0.0
-    "@types/react": ^17.0.39
+    "@types/react": ^17.0.40
     "@types/react-dom": ^17.0.13
     "@visx/legend": ^2.2.2
     "@visx/network": ^2.1.2
@@ -2569,7 +2569,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17.0.39":
+"@types/react@npm:*, @types/react@npm:^17.0.40":
   version: 17.0.40
   resolution: "@types/react@npm:17.0.40"
   dependencies:
