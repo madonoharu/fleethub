@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.0.6"
+version = "1.1.1"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 
@@ -42,7 +42,7 @@ rand = { version = "0.8.5", features = ["small_rng"] }
 getrandom = { version = "0.2.5", features = ["js"] }
 xxhash-rust = { version = "0.8.3", features = ["xxh3"] }
 enumset = "1.0.8"
-anyhow = "1.0.55"
+anyhow = "1.0.56"
 thiserror = "1.0.30"
 ts-rs = "6.1.2"
 itertools = "0.10.3"

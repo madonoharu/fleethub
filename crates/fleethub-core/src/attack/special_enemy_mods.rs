@@ -330,6 +330,7 @@ pub fn special_enemy_modifiers(
         mods.postcap_general_mod.a *= landing_craft_ibonus.powf(n);
         mods.postcap_general_mod.a *= tank_ibonus;
 
+        apply_mod!(mods.postcap_general_mod, a, wg42_count, [1.25, 1.25 * 1.3]);
         apply_mod!(
             mods.postcap_general_mod,
             a,
@@ -350,9 +351,9 @@ pub fn special_enemy_modifiers(
             t89_tank_and_honi_count,
             [1.3, 1.3 * 1.6]
         );
-        apply_mod!(mods.postcap_general_mod, a, africa_count, [1.3]); //2積み検証待ち
         apply_mod!(mods.postcap_general_mod, a, m4a1dd_count, [1.2]);
         apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.7, 1.7 * 1.5]);
+        apply_mod!(mods.postcap_general_mod, a, africa_count, [1.3]); //2積み検証待ち
         apply_mod!(
             mods.postcap_general_mod,
             a,
