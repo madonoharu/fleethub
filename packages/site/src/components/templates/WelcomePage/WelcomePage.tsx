@@ -87,7 +87,12 @@ const WelcomePage: React.FCX = () => {
         </Typography>
         <Divider />
         <Typography>
-          デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
+          <p>
+            デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
+          </p>
+          <Link href="https://github.com/madonoharu/fleethub/releases">
+            変更履歴
+          </Link>
         </Typography>
 
         <Typography variant="h5" mt={4}>
