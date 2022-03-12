@@ -1,5 +1,5 @@
-import murmurhash from "@emotion/hash";
 import stringify from "fast-json-stable-stringify";
+import { h64 } from "xxhashjs";
 
 import { GCS_PREFIX_URL, publicFileExists, publish } from "../firebase";
 import { PublicFile } from "../store";
@@ -9,15 +9,23 @@ const PUBLIC_ID_KEY = "p";
 
 export const publishFileData = async (data: PublicFile) => {
   const str = stringify(data);
-  const id = murmurhash(str);
-  const url = new URL(origin);
-  url.searchParams.set(PUBLIC_ID_KEY, id);
 
-  if (await publicFileExists(id)) {
+  const buf = Buffer.from(h64(0).update(str).digest().toString(16), "hex");
+
+  const base64url = buf
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+
+  const url = new URL(origin);
+  url.searchParams.set(PUBLIC_ID_KEY, base64url);
+
+  if (await publicFileExists(base64url)) {
     return url.href;
   }
 
-  await publish(`${id}.json`, str);
+  await publish(`${base64url}.json`, str);
 
   return url.href;
 };

@@ -697,6 +697,7 @@ __metadata:
     "@simbathesailor/use-what-changed": ^2.0.0
     "@types/react": ^17.0.40
     "@types/react-dom": ^17.0.13
+    "@types/xxhashjs": ^0.2.2
     "@visx/legend": ^2.2.2
     "@visx/network": ^2.1.2
     "@visx/responsive": ^2.8.0
@@ -733,6 +734,7 @@ __metadata:
     swr: ^1.2.2
     ts-norm: ^0.3.1
     use-immer: ^0.6.0
+    xxhashjs: ^0.2.2
   languageName: unknown
   linkType: soft
 
@@ -1997,9 +1999,9 @@ __metadata:
   linkType: hard
 
 "@popperjs/core@npm:^2.11.2":
-  version: 2.11.2
-  resolution: "@popperjs/core@npm:2.11.2"
-  checksum: 5695bf020eda54636e16a62dc9b5fdd92beaf7b2d19f62fcef049d57c5cff92773562d80cbf760b217c3ec928da310eb24994ab6a00fd39dffa0af9b5dfc01a6
+  version: 2.11.3
+  resolution: "@popperjs/core@npm:2.11.3"
+  checksum: daf6a1288a1c21659f3de9164702fadba869c64c4dd4892569629dccf81682fd8715fafc500296d28793efab6e34ac5e4bc754bedd3a33aaaa9bcb02ab085d4a
   languageName: node
   linkType: hard
 
@@ -2627,6 +2629,15 @@ __metadata:
   version: 2.0.1
   resolution: "@types/stack-utils@npm:2.0.1"
   checksum: 205fdbe3326b7046d7eaf5e494d8084f2659086a266f3f9cf00bccc549c8e36e407f88168ad4383c8b07099957ad669f75f2532ed4bc70be2b037330f7bae019
+  languageName: node
+  linkType: hard
+
+"@types/xxhashjs@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@types/xxhashjs@npm:0.2.2"
+  dependencies:
+    "@types/node": "*"
+  checksum: 2195cd97c32dfb0ab37fd831368ad106c43c4d2450dda441b493875ad476b00ccee5e3a676971cf8a6f7518c23d527a6791b8b005f7e52c9d3b39bc7286f1615
   languageName: node
   linkType: hard
 
@@ -4013,6 +4024,13 @@ __metadata:
   version: 3.0.11
   resolution: "csstype@npm:3.0.11"
   checksum: 95e56abfe9ca219ae065acb4e43f61771a03170eed919127f558dfa168240867aba7629c8d98a201a0dd06d9a5ce82686f0570031c928516c61816adbc7c877f
+  languageName: node
+  linkType: hard
+
+"cuint@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "cuint@npm:0.2.2"
+  checksum: b8127a93a7f16ce120ffcb22108014327c9808b258ee20e7dbb4c6740d7cb0f0c12d18a054eb716b0f2470090666abaae8a082d3cd5ef0e94fa447dd155842c4
   languageName: node
   linkType: hard
 
@@ -10923,6 +10941,15 @@ __metadata:
   dependencies:
     object-keys: ~0.4.0
   checksum: a8b79f31502c163205984eaa2b196051cd2fab0882b49758e30f2f9018255bc6c462e32a090bf3385d1bda04755ad8cc0052a09e049b0038f49eb9b950d9c447
+  languageName: node
+  linkType: hard
+
+"xxhashjs@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "xxhashjs@npm:0.2.2"
+  dependencies:
+    cuint: ^0.2.2
+  checksum: cf6baf05bafe5651dbf108008bafdb1ebe972f65228633f00b56c49d7a1e614a821fe3345c4eb27462994c7c954d982eae05871be6a48146f30803dd87f3c3b6
   languageName: node
   linkType: hard
 
