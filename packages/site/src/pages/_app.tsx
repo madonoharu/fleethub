@@ -6,6 +6,8 @@ import React from "react";
 
 import { createEmotionCache, ThemeProvider } from "../styles";
 
+import "core-js/features/array/at";
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
