@@ -55,7 +55,16 @@ async function readJorShortUrl(short: URL) {
 }
 
 export function parseDeckStr(masterData: MasterData, str: string) {
-  const parsed: Deck = JSON.parse(str);
+  let parsed: Deck;
+
+  try {
+    const url = new URL(str);
+    const predeck = url.searchParams.get("predeck");
+    parsed = JSON.parse(predeck || "");
+  } catch (_) {
+    parsed = JSON.parse(str);
+  }
+
   const org = createOrgStateByDeck(masterData, parsed);
 
   const file: FileState = {
