@@ -97,12 +97,7 @@ function createShip(input: Ship): ShipState {
     result.gx = createGear(ex);
   }
 
-  return {
-    ship_id: mstID,
-    luck_mod: gradeUpLuck,
-    max_hp_mod: gradeUpTaikyu,
-    asw_mod: gradeUpTaisen,
-  };
+  return result;
 }
 
 function createAirSquadron(input: Airunit): AirSquadronState {
