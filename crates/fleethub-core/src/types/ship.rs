@@ -117,7 +117,7 @@ impl ShipType {
             CL => 2,
             CAV => 4,
             BBV => 7,
-            AO => 12,
+            AO => 15,
             LHA => 12,
             AV => 9,
             AS => 7,
