@@ -16,6 +16,7 @@ interface Squadron {
   mst_id: number;
   level: number;
   skill_level: number;
+  count: number;
 }
 
 interface Ship {
@@ -27,6 +28,7 @@ interface Ship {
 
   getSlotitems(): (Slotitem | null)[];
   getSlotitemEx(): Slotitem | null;
+  getSlotitemTousai(index: number): number;
 }
 
 interface ShipMap {
@@ -34,6 +36,7 @@ interface ShipMap {
 }
 
 interface Airunit {
+  airUnitState: number;
   squadrons: Squadron[];
 }
 
@@ -75,10 +78,11 @@ function createGear(input: Slotitem): GearState {
 }
 
 function createShip(input: Ship): ShipState {
-  const { mstID, gradeUpLuck, gradeUpTaikyu, gradeUpTaisen } = input;
+  const { mstID, level, gradeUpLuck, gradeUpTaikyu, gradeUpTaisen } = input;
 
   const result: ShipState = {
     ship_id: mstID,
+    level,
     luck_mod: gradeUpLuck,
     max_hp_mod: gradeUpTaikyu,
     asw_mod: gradeUpTaisen,
@@ -90,6 +94,7 @@ function createShip(input: Ship): ShipState {
   slotitems.forEach((item, index) => {
     if (item) {
       result[`g${index + 1}` as "g1"] = createGear(item);
+      result[`ss${index + 1}` as "ss1"] = input.getSlotitemTousai(index);
     }
   });
 
@@ -97,16 +102,15 @@ function createShip(input: Ship): ShipState {
     result.gx = createGear(ex);
   }
 
-  return {
-    ship_id: mstID,
-    luck_mod: gradeUpLuck,
-    max_hp_mod: gradeUpTaikyu,
-    asw_mod: gradeUpTaisen,
-  };
+  return result;
 }
 
 function createAirSquadron(input: Airunit): AirSquadronState {
   const result: AirSquadronState = {};
+
+  if (input.airUnitState === 2) {
+    result.mode = "AirDefense";
+  }
 
   input.squadrons.forEach((item, index) => {
     if (!item.mst_id) {
@@ -121,6 +125,7 @@ function createAirSquadron(input: Airunit): AirSquadronState {
     setExp(state, item.skill_level);
 
     result[`g${index + 1}` as "g1"] = state;
+    result[`ss${index + 1}` as "ss1"] = item.count;
   });
 
   return result;

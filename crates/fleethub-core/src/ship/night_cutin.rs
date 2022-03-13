@@ -7,7 +7,7 @@ use crate::{
 
 use super::Ship;
 
-pub fn get_possible_night_cutin_set(ship: &Ship) -> EnumSet<NightCutin> {
+pub fn get_possible_night_cutin_set(ship: &Ship, anti_inst: bool) -> EnumSet<NightCutin> {
     let mut set = EnumSet::new();
 
     if ship.is_night_carrier() {
@@ -47,8 +47,12 @@ pub fn get_possible_night_cutin_set(ship: &Ship) -> EnumSet<NightCutin> {
         return set;
     }
 
-    let torpedo_count = ship.gears.count_type(GearType::Torpedo)
-        + ship.gears.count_type(GearType::SubmarineTorpedo);
+    let torpedo_count = if anti_inst {
+        0
+    } else {
+        ship.gears.count_type(GearType::Torpedo) + ship.gears.count_type(GearType::SubmarineTorpedo)
+    };
+
     let main_gun_count = ship.gears.count_attr(GearAttr::MainGun);
     let sec_gun_count = ship.gears.count_type(GearType::SecondaryGun);
 
@@ -77,7 +81,12 @@ pub fn get_possible_night_cutin_set(ship: &Ship) -> EnumSet<NightCutin> {
         }
     }
 
-    let late_model_bow_torpedo_count = ship.gears.count_attr(GearAttr::LateModelBowTorpedo);
+    let late_model_bow_torpedo_count = if anti_inst {
+        0
+    } else {
+        ship.gears.count_attr(GearAttr::LateModelBowTorpedo)
+    };
+
     let has_submarine_radar = ship.gears.has_type(GearType::SubmarineEquipment);
 
     if late_model_bow_torpedo_count >= 1 && has_submarine_radar {

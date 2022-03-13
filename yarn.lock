@@ -3537,9 +3537,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001283, caniuse-lite@npm:^1.0.30001313":
-  version: 1.0.30001314
-  resolution: "caniuse-lite@npm:1.0.30001314"
-  checksum: d82e1b8b287b1b2d2ed25c4495fe293276853dd9c77553c722929a6142fc49b3dd5ea21a95f6410d93319434a5bd071c304ea92e93debbcf292a9156cf08b35d
+  version: 1.0.30001315
+  resolution: "caniuse-lite@npm:1.0.30001315"
+  checksum: 3938596c61e4a5c6e96d1c6aecbde67b31c4c92e55a9d443b8e51e0eac64b6dd848dfac84891f75464f8d25c7e1ed6e9c9640593922b9bd360629fd433fb69e2
   languageName: node
   linkType: hard
 
@@ -5412,9 +5412,9 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.1.1
-  resolution: "fleethub-core@npm:1.1.1"
-  checksum: 8ec0f2f911b06ee24f665a90b98ac44e18feee14d7d6e1265d58fa8925360b712c4dc515c6b8a9e9ba82001121ced2086c67a0ffb0eae98984fc82e92f4ce8ba
+  version: 1.1.4
+  resolution: "fleethub-core@npm:1.1.4"
+  checksum: f5d54c6e729ff63c7de2a52aa0598476d8c0ef27b033ab64ef0e4c1751aa9e8b9888a4533aec71c1dbf6e6f959643ff744d2338865e9b6ea5317211312a9e7e9
   languageName: node
   linkType: hard
 
@@ -7784,14 +7784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mime-db@npm:1.51.0":
-  version: 1.51.0
-  resolution: "mime-db@npm:1.51.0"
-  checksum: 613b1ac9d6e725cc24444600b124a7f1ce6c60b1baa654f39a3e260d0995a6dffc5693190217e271af7e2a5612dae19f2a73f3e316707d797a7391165f7ef423
-  languageName: node
-  linkType: hard
-
-"mime-db@npm:>= 1.43.0 < 2":
+"mime-db@npm:1.52.0, mime-db@npm:>= 1.43.0 < 2":
   version: 1.52.0
   resolution: "mime-db@npm:1.52.0"
   checksum: 0d99a03585f8b39d68182803b12ac601d9c01abfa28ec56204fa330bc9f3d1c5e14beb049bafadb3dbdf646dfb94b87e24d4ec7b31b7279ef906a8ea9b6a513f
@@ -7799,11 +7792,11 @@ __metadata:
   linkType: hard
 
 "mime-types@npm:^2.0.8, mime-types@npm:^2.1.12":
-  version: 2.1.34
-  resolution: "mime-types@npm:2.1.34"
+  version: 2.1.35
+  resolution: "mime-types@npm:2.1.35"
   dependencies:
-    mime-db: 1.51.0
-  checksum: 67013de9e9d6799bde6d669d18785b7e18bcd212e710d3e04a4727f92f67a8ad4e74aee24be28b685adb794944814bde649119b58ee3282ffdbee58f9278d9f3
+    mime-db: 1.52.0
+  checksum: 89a5b7f1def9f3af5dad6496c5ed50191ae4331cc5389d7c521c8ad28d5fdad2d06fd81baf38fed813dc4e46bb55c8145bb0ff406330818c9cf712fb2e9b3836
   languageName: node
   linkType: hard
 
@@ -9017,8 +9010,8 @@ __metadata:
   linkType: hard
 
 "react-i18next@npm:^11.15.5":
-  version: 11.15.6
-  resolution: "react-i18next@npm:11.15.6"
+  version: 11.15.7
+  resolution: "react-i18next@npm:11.15.7"
   dependencies:
     "@babel/runtime": ^7.14.5
     html-escaper: ^2.0.2
@@ -9031,7 +9024,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: ac9b903e411c2f1cdc544119678c6d902058acb6449534cb4bf751bf4caeaca8d935d66a85bd347709e8b010a0cd10b34ac88500ee077dbf7b9024acb512a019
+  checksum: 9898fc0dd6bc68b93402556d50b5e8ac3a027e36f5f5575e706dc7c7f42c2704dc6ab12e07802497473454f735560a2ed1e4a4d4cd6f4eec544b5b47961907e1
   languageName: node
   linkType: hard
 
