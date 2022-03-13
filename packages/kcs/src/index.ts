@@ -75,10 +75,11 @@ function createGear(input: Slotitem): GearState {
 }
 
 function createShip(input: Ship): ShipState {
-  const { mstID, gradeUpLuck, gradeUpTaikyu, gradeUpTaisen } = input;
+  const { mstID, level, gradeUpLuck, gradeUpTaikyu, gradeUpTaisen } = input;
 
   const result: ShipState = {
     ship_id: mstID,
+    level,
     luck_mod: gradeUpLuck,
     max_hp_mod: gradeUpTaikyu,
     asw_mod: gradeUpTaisen,
