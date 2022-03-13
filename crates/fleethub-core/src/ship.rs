@@ -854,12 +854,12 @@ impl Ship {
         total + ship_type_bonus
     }
 
-    pub fn get_possible_day_cutin_set(&self) -> EnumSet<DayCutin> {
-        day_cutin::get_possible_day_cutin_set(self)
+    pub fn get_possible_day_cutin_set(&self, anti_inst: bool) -> EnumSet<DayCutin> {
+        day_cutin::get_possible_day_cutin_set(self, anti_inst)
     }
 
-    pub fn get_possible_night_cutin_set(&self) -> EnumSet<NightCutin> {
-        night_cutin::get_possible_night_cutin_set(self)
+    pub fn get_possible_night_cutin_set(&self, anti_inst: bool) -> EnumSet<NightCutin> {
+        night_cutin::get_possible_night_cutin_set(self, anti_inst)
     }
 
     pub fn calc_observation_term(

@@ -166,6 +166,7 @@ impl<'a> NightCutinRateAnalyzer<'a> {
         is_flagship: bool,
         attacker_situation: &NightSituation,
         target_situation: &NightSituation,
+        anti_inst: bool,
         damage_state: DamageState,
     ) -> NightCutinRateInfo {
         let params = NightCutinTermParams {
@@ -177,7 +178,7 @@ impl<'a> NightCutinRateAnalyzer<'a> {
         let cutin_term = night_cutin_term(ship, params);
 
         let cutins = ship
-            .get_possible_night_cutin_set()
+            .get_possible_night_cutin_set(anti_inst)
             .into_iter()
             .filter_map(|cutin| self.get_cutin_def(cutin));
 
@@ -216,12 +217,14 @@ impl<'a> NightCutinRateAnalyzer<'a> {
         is_flagship: bool,
         attacker_situation: &NightSituation,
         target_situation: &NightSituation,
+        anti_inst: bool,
     ) -> NightCutinRateInfo {
         self.analyze_cutin_rates_with_damage_state(
             ship,
             is_flagship,
             attacker_situation,
             target_situation,
+            anti_inst,
             ship.damage_state(),
         )
     }
@@ -232,12 +235,14 @@ impl<'a> NightCutinRateAnalyzer<'a> {
         is_flagship: bool,
         attacker_situation: &NightSituation,
         target_situation: &NightSituation,
+        anti_inst: bool,
     ) -> ShipNightCutinRateInfo {
         let normal = self.analyze_cutin_rates_with_damage_state(
             ship,
             is_flagship,
             attacker_situation,
             target_situation,
+            anti_inst,
             DamageState::Normal,
         );
 
@@ -246,6 +251,7 @@ impl<'a> NightCutinRateAnalyzer<'a> {
             is_flagship,
             attacker_situation,
             target_situation,
+            anti_inst,
             DamageState::Chuuha,
         );
 
@@ -272,7 +278,13 @@ impl<'a> NightCutinRateAnalyzer<'a> {
             .map(|(index, ship)| {
                 let is_flagship = index == 0;
 
-                self.analyze_ship(ship, is_flagship, attacker_situation, target_situation)
+                self.analyze_ship(
+                    ship,
+                    is_flagship,
+                    attacker_situation,
+                    target_situation,
+                    false,
+                )
             })
             .collect::<Vec<_>>();
 
