@@ -7,7 +7,7 @@ use crate::{
 
 use super::Ship;
 
-pub fn get_possible_day_cutin_set(ship: &Ship) -> EnumSet<DayCutin> {
+pub fn get_possible_day_cutin_set(ship: &Ship, anti_inst: bool) -> EnumSet<DayCutin> {
     let mut set: EnumSet<DayCutin> = EnumSet::new();
 
     if ship.damage_state() >= DamageState::Taiha {
@@ -15,6 +15,10 @@ pub fn get_possible_day_cutin_set(ship: &Ship) -> EnumSet<DayCutin> {
     }
 
     if ship.is_carrier_like() {
+        if anti_inst {
+            return set;
+        }
+
         let cb_bomber_count = ship
             .gears
             .count_by(|g| g.gear_type == GearType::CbDiveBomber);

@@ -124,6 +124,7 @@ impl<'a> WarfareAnalyzer<'a> {
 
     fn analyze_day_battle_attack(&self) -> Option<DayBattleAttackInfo> {
         let attack_type = get_day_battle_attack_type(self.attacker, self.target)?;
+        let anti_inst = self.target.is_installation();
         let air_state_rank = self
             .ctx
             .air_state
@@ -137,6 +138,7 @@ impl<'a> WarfareAnalyzer<'a> {
                     self.ctx.attacker_env.fleet_los_mod,
                     self.ctx.attacker_env.is_main_flagship(),
                     air_state_rank,
+                    anti_inst,
                 );
 
                 let items = day_cutin_rate_info
@@ -181,6 +183,7 @@ impl<'a> WarfareAnalyzer<'a> {
 
     fn analyze_night_battle_attack(&self) -> Option<NightBattleAttackInfo> {
         let attack_type = get_night_battle_attack_type(self.attacker, self.target)?;
+        let anti_inst = self.target.is_installation();
 
         let items = match attack_type {
             NightBattleAttackType::NightAttack(attack_type) => {
@@ -190,6 +193,7 @@ impl<'a> WarfareAnalyzer<'a> {
                         self.ctx.attacker_env.is_flagship(),
                         &self.ctx.attacker_env.night_situation,
                         &self.ctx.target_env.night_situation,
+                        anti_inst,
                     );
 
                 let items = cutin_rate_info
