@@ -4,7 +4,7 @@
     "build": "yarn esbuild src/index.ts --bundle --minify --outfile=lib/index.js"
   },
   "devDependencies": {
-    "esbuild": "^0.14.25",
+    "esbuild": "^0.14.27",
     "fleethub-core": "npm:latest"
   }
 }

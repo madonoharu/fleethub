@@ -721,7 +721,9 @@ impl Ship {
             self.can_do_normal_night_attack()
         } else {
             matches!(self.ship_type, DE | DD | CL | CLT | CT | AO)
-        } || is_abyssal;
+                || self.ship_id == ship_id!("加賀改二護")
+                || is_abyssal
+        };
 
         is_anti_sub_ship.then(|| AswAttackType::DepthCharge)
     }
