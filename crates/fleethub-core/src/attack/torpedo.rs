@@ -57,7 +57,8 @@ impl<'a> TorpedoAttackContext<'a> {
         ) as f64;
         let basic = torpedo + ibonus + fleet_factor;
 
-        let a14 = self.formation_power_mod * self.engagement.modifier();
+        let damage_mod = attacker.damage_state().torpedo_power_mod();
+        let a14 = self.formation_power_mod * self.engagement.modifier() * damage_mod;
 
         let precap_mod = AttackPowerModifier::new(a14, 0.0);
         let postcap_mod = Default::default();
