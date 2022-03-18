@@ -124,11 +124,5 @@ fn main() {
         types::ShipKey,
     );
 
-    let config = dprint_plugin_typescript::configuration::ConfigurationBuilder::new()
-        .indent_width(2)
-        .line_width(80)
-        .build();
-    let buffer = dprint_plugin_typescript::format_text(path, &buffer, &config).unwrap();
-
     std::fs::write(path, buffer).expect("could not write file");
 }
