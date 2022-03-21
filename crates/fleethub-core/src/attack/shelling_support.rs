@@ -106,13 +106,13 @@ impl<'a> ShellingSupportAttackParams<'a> {
 
         let calc_accuracy_term = || -> Option<f64> {
             let basic_accuracy_term = attacker.basic_accuracy_term()?;
-            let ship_accuracy = attacker.accuracy() as f64;
+            let gears_accuracy = attacker.gears.sum_by(|gear| gear.accuracy) as f64;
             let morale_mod = attacker.morale_state().common_accuracy_mod();
             let formation_mod = attacker_formation_accuracy_mod;
 
             // 乗算前に切り捨て
             let premultiplication =
-                (SHELLING_SUPPORT_ACCURACY_CONSTANT + basic_accuracy_term + ship_accuracy).floor();
+                (SHELLING_SUPPORT_ACCURACY_CONSTANT + basic_accuracy_term + gears_accuracy).floor();
 
             let result = (premultiplication * formation_mod * morale_mod).floor();
 
