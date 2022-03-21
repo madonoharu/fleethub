@@ -35,7 +35,7 @@ type StatProps = {
 };
 
 type ShipStatEditorProps = StatProps & {
-  onChange?: (value: number | undefined) => void;
+  onModChange?: (value: number | undefined) => void;
 };
 
 const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
@@ -44,17 +44,23 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
   naked,
   mod,
   ebonus,
-  onChange,
+  onModChange,
 }) => {
   const { t } = useTranslation("common");
 
-  const min = (stat || 0) - (naked || 0);
+  const minStat = (stat || 0) - (naked || 0);
+  const minMod = (mod || 0) - (naked || 0);
 
   const ebonusText = ebonus ? <BonusText>{withSign(ebonus)}</BonusText> : "-";
   const modText = mod ? <ModText>{withSign(mod)}</ModText> : "-";
 
   const handleDefaultClick = () => {
-    onChange?.(undefined);
+    onModChange?.(undefined);
+  };
+
+  const handleStatChange = (value: number) => {
+    const delta = value - (stat || 0);
+    onModChange?.((mod || 0) + delta);
   };
 
   return (
@@ -78,15 +84,26 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
         <LabeledValue label={"強化"} value={modText} />
       </div>
 
-      {onChange && (
-        <Flexbox style={{ marginTop: 8 }}>
+      {onModChange && (
+        <NumberInput
+          css={{ width: 120, marginTop: 8 }}
+          label={"表示"}
+          value={stat || 0}
+          onChange={handleStatChange}
+          max={30000}
+          min={minStat}
+        />
+      )}
+
+      {onModChange && (
+        <Flexbox mt={1}>
           <NumberInput
             css={{ width: 120 }}
-            label={"表示"}
-            value={stat || 0}
-            onChange={onChange}
+            label={"強化"}
+            value={mod || 0}
+            onChange={onModChange}
             max={30000}
-            min={min}
+            min={minMod}
           />
           <Button
             css={{ marginLeft: 8, height: 40 }}
@@ -120,21 +137,15 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
   const Modal = useModal();
   const { t } = useTranslation("common");
 
-  let handleChange: ShipStatEditorProps["onChange"] = undefined;
+  let handleModChange: ShipStatEditorProps["onModChange"] = undefined;
 
   if (
     onUpdate &&
     !(statKey == "speed" || statKey == "range" || statKey == "accuracy")
   ) {
-    handleChange = (value: number | undefined) => {
+    handleModChange = (value: number | undefined) => {
       const key: keyof ShipEntity = `${statKey}_mod`;
-
-      if (stat === undefined || value === undefined) {
-        onUpdate({ [key]: value });
-      } else {
-        const next = (mod || 0) + value - stat;
-        onUpdate({ [key]: next || undefined });
-      }
+      onUpdate({ [key]: value || undefined });
     };
   }
 
@@ -170,7 +181,7 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
       </Tooltip>
 
       <Modal>
-        <ShipStatEditor {...rest} onChange={handleChange} />
+        <ShipStatEditor {...rest} onModChange={handleModChange} />
       </Modal>
     </>
   );
