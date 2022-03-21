@@ -18,7 +18,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
 
     const [str, setStr] = useState(value);
 
-    const inputRef = useRef<HTMLInputElement>();
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
       if (str !== value) setStr(value);
