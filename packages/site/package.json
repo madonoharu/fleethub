@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
@@ -61,8 +61,8 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^12.1.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
-    "@types/react": "^17.0.40",
-    "@types/react-dom": "^17.0.13",
+    "@types/react": "^17.0.41",
+    "@types/react-dom": "^17.0.14",
     "@types/xxhashjs": "^0.2.2",
     "next-transpile-modules": "^9.0.0"
   }

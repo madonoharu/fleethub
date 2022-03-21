@@ -1391,14 +1391,14 @@ impl Ship {
         let luck = self.luck()? as f64;
         let level = self.level as f64;
 
-        Some(2. * level.sqrt() + 1.5 * luck.sqrt())
+        Some(2.0 * level.sqrt() + 1.5 * luck.sqrt())
     }
 
     pub fn basic_evasion_term(&self) -> Option<f64> {
         let evasion = self.evasion()? as f64;
         let luck = self.luck()? as f64;
 
-        Some(evasion + (2. * luck).sqrt())
+        Some(evasion + (2.0 * luck).sqrt())
     }
 
     pub fn evasion_term(
