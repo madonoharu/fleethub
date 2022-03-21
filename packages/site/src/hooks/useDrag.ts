@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { DragSourceHookSpec, useDrag as useDndDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 
@@ -15,8 +15,8 @@ export type DragSpec<DragObject> = DragSourceHookSpec<
 export const useDrag = <DragObject>({
   dragLayer,
   ...dndSpec
-}: DragSpec<DragObject>) => {
-  const ref = useRef<HTMLDivElement>();
+}: DragSpec<DragObject>): React.RefCallback<HTMLDivElement> => {
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const [isDragging, dragRef, preview] = useDndDrag({
     ...dndSpec,
@@ -49,7 +49,7 @@ export const useDrag = <DragObject>({
   }, [isDragging]);
 
   const handleRef = useCallback(
-    (instance: HTMLDivElement) => {
+    (instance: HTMLDivElement | null) => {
       dragRef(instance);
       ref.current = instance;
     },

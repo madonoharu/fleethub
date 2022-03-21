@@ -5,9 +5,9 @@ import { normalize } from "ts-norm";
 import {
   createOrgStateByDeck,
   createOrgStateByJor,
-  Deck,
   getPublicId,
   JorOrgState,
+  MaybeDeck,
   readPublicFile,
 } from "../utils";
 
@@ -55,7 +55,7 @@ async function readJorShortUrl(short: URL) {
 }
 
 export function parseDeckStr(masterData: MasterData, str: string) {
-  let parsed: Deck;
+  let parsed: MaybeDeck;
 
   try {
     const url = new URL(str);
