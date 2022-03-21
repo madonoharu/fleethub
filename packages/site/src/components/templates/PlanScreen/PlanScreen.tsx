@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Container, Paper } from "@mui/material";
+import { Container, Paper, Alert } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -28,7 +28,17 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
     file?.type === "plan" ? file.org : ""
   );
 
-  if (!org || file?.type !== "plan") return null;
+  if (file?.type !== "plan") {
+    return null;
+  }
+
+  if (!org) {
+    return (
+      <Alert variant="outlined" severity="error">
+        編成データが不正です
+      </Alert>
+    );
+  }
 
   return (
     <StyledContainer>

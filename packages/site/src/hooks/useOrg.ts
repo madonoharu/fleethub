@@ -18,7 +18,15 @@ export const useOrg = (id: string) => {
   const { core } = useFhCore();
   const dispatch = useDispatch();
   const state = useOrgState(id);
-  const org = useMemo(() => state && core.create_org(state), [core, state]);
+
+  const org = useMemo(() => {
+    try {
+      return state && core.create_org(state);
+    } catch (err) {
+      console.error(err);
+      return undefined;
+    }
+  }, [core, state]);
 
   const actions = useMemo(() => {
     const update = (changes: Partial<OrgEntity>) => {
