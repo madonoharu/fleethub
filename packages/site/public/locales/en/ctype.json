@@ -112,6 +112,7 @@
   "112": "Illustrious Class",
   "113": "Conte di Cavour Class",
   "114": "Gato Class",
+  "115": "Special 2TL Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -187,7 +188,7 @@
   "1753": "Summer Supply Depot Princess",
   "1755": "European Princess",
   "1767": "Night Strait Princesses",
-  "1773": "Confined Air Defense Princess",
+  "1773": "Entombed Anti-Air Guardian Princess",
   "1783": "Escort Water Princess",
   "1799": "Abyssal Crane Princess",
   "1821": "German Escort Princess",
@@ -221,5 +222,11 @@
   "2041": "European Armored Carrier Princess",
   "2050": "駆逐ナ級IIe(量産型)",
   "2053": "Submarine Shark Water Demon",
-  "2059": "Hi Convoy Princess"
+  "2059": "Hi Convoy Princess",
+  "2063": "Abyssal Plum Princess",
+  "2069": "Yokohama Wharf Princess",
+  "2073": "Abyssal Jade Princess",
+  "2077": "Super Heavy Bomber Airfield Princess",
+  "2080": "Entombed Anti-Air Guardian Winter Princess",
+  "2084": "Supply Depot Princess C"
 }
