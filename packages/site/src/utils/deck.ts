@@ -42,7 +42,7 @@ const DeckItemKeys = ["i1", "i2", "i3", "i4", "i5", "ix"] as const;
 type DeckItemKey = typeof DeckItemKeys[number];
 
 export type MaybeDeckGear = {
-  id: MaybeNumber;
+  id?: MaybeNumber;
   rf?: MaybeNumber;
   mas?: MaybeNumber;
 };
@@ -50,7 +50,7 @@ export type MaybeDeckGear = {
 export type MaybeDeckItems = Dict<DeckItemKey, MaybeDeckGear>;
 
 export type MaybeDeckShip = {
-  id: number | string;
+  id?: MaybeNumber;
   lv?: MaybeNumber;
   luck?: MaybeNumber;
   hp?: MaybeNumber;
@@ -62,7 +62,7 @@ export type MaybeDeckFleet = Dict<ShipKey, MaybeDeckShip>;
 
 export type MaybeDeckAirSquadron = {
   items?: MaybeDeckItems | undefined;
-  mode?: number;
+  mode?: MaybeNumber;
 };
 
 export type MaybeDeck = {
