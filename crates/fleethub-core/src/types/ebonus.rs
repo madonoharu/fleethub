@@ -1,6 +1,6 @@
 use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 use wasm_bindgen::JsValue;
 
 use crate::{
@@ -12,7 +12,8 @@ use crate::{
 
 use super::{GearTypes, MasterShip};
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EBonuses {
     pub firepower: i16,
     pub torpedo: i16,
@@ -33,7 +34,8 @@ pub struct EBonuses {
     pub carrier_power: i16,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EBonusFnShipInput {
     pub ship_id: u16,
     pub ctype: u16,
@@ -52,7 +54,8 @@ impl EBonusFnShipInput {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EBonusFnGearInput {
     pub gear_id: u16,
     pub types: GearTypes,
@@ -241,27 +244,27 @@ impl EBonusFn {
     }
 
     pub fn call(&self, ship: &MasterShip, gears: &GearArray) -> EBonuses {
-        let ebfn_ship = EBonusFnShipInput::new(ship);
-        let ebfn_gears = gears
+        let ship_input = EBonusFnShipInput::new(ship);
+        let gear_inputs = gears
             .values()
             .map(EBonusFnGearInput::new)
             .collect::<Vec<_>>();
 
-        let mut base = self.call_base(&ebfn_ship, &ebfn_gears);
+        let mut base = self.call_base(&ship_input, &gear_inputs);
 
         let sg_radar_los = if gears.has(gear_id!("SG レーダー(初期型)")) {
-            let filtered = ebfn_gears
+            let filtered = gear_inputs
                 .into_iter()
                 .filter(|gear| gear.gear_id == gear_id!("SG レーダー(初期型)"))
                 .collect::<Vec<_>>();
 
-            self.call_base(&ebfn_ship, &filtered).los
+            self.call_base(&ship_input, &filtered).los
         } else {
             0
         };
 
         base.effective_los = base.los - sg_radar_los;
-        base.carrier_power = self.carrier_power(&ebfn_ship, gears);
+        base.carrier_power = self.carrier_power(&ship_input, gears);
         base.speed = get_speed_bonus(ship, gears);
 
         base
@@ -294,8 +297,8 @@ mod test {
         }
 
         macro_rules! test_item {
-            ($base: ident, $group: ident, $ebc: expr, $nmbc: expr, $expected: ident) => {
-                let synergy = get_speed_synergy($base, $group, $ebc, $nmbc);
+            ($base: ident, $group: ident, $e_count: expr, $n_count: expr, $expected: ident) => {
+                let synergy = get_speed_synergy($base, $group, $e_count, $n_count);
                 let base_value = match $base {
                     Fast => 10,
                     Slow => 5,
@@ -306,20 +309,20 @@ mod test {
                     synergy,
                     expected_value,
                     "{:?}",
-                    ($nmbc, $ebc, $base, $group)
+                    ($n_count, $e_count, $base, $group)
                 )
             };
         }
 
         macro_rules! test_table {
-            ($nmbc: expr, $ebc: expr, $fa: ident, $fb1: ident, $fb2: ident, $fc: ident, $sa: ident, $sb: ident, $sc: ident) => {
-                test_item!(Fast, A, $ebc, $nmbc, $fa);
-                test_item!(Fast, B1, $ebc, $nmbc, $fb1);
-                test_item!(Fast, B2, $ebc, $nmbc, $fb2);
-                test_item!(Fast, C, $ebc, $nmbc, $fc);
-                test_item!(Slow, A, $ebc, $nmbc, $sa);
-                test_item!(Slow, B2, $ebc, $nmbc, $sb);
-                test_item!(Slow, C, $ebc, $nmbc, $sc);
+            ($n_count: expr, $e_count: expr, $fa: ident, $fb1: ident, $fb2: ident, $fc: ident, $sa: ident, $sb: ident, $sc: ident) => {
+                test_item!(Fast, A, $e_count, $n_count, $fa);
+                test_item!(Fast, B1, $e_count, $n_count, $fb1);
+                test_item!(Fast, B2, $e_count, $n_count, $fb2);
+                test_item!(Fast, C, $e_count, $n_count, $fc);
+                test_item!(Slow, A, $e_count, $n_count, $sa);
+                test_item!(Slow, B2, $e_count, $n_count, $sb);
+                test_item!(Slow, C, $e_count, $n_count, $sc);
             };
         }
 

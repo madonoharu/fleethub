@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::{AttackPower, Damage, DefenseParams, HitRate, HitType},
@@ -7,7 +7,7 @@ use crate::{
     utils::NumMap,
 };
 
-#[derive(Debug, Serialize, Deserialize, TS)]
+#[derive(Debug, Serialize, Deserialize, Tsify)]
 pub struct DamageInfo {
     pub miss_damage_min: u16,
     pub miss_damage_max: u16,

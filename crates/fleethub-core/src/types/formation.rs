@@ -1,12 +1,11 @@
 use std::str::FromStr;
 
-use fleethub_macro::FhAbi;
 use serde::{Deserialize, Serialize};
 use strum::{AsRefStr, EnumIter, IntoEnumIterator};
-use ts_rs::TS;
+use tsify::Tsify;
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, TS,
+    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, Tsify,
 )]
 pub enum SingleFormation {
     /// 単縦陣
@@ -30,7 +29,7 @@ impl Default for SingleFormation {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, TS,
+    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, Tsify,
 )]
 pub enum CombinedFormation {
     /// 第一警戒航行序列
@@ -49,7 +48,8 @@ impl Default for CombinedFormation {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 #[serde(untagged)]
 pub enum Formation {
     Single(SingleFormation),

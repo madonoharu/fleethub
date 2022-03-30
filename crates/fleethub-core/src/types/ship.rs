@@ -1,11 +1,12 @@
 use enumset::EnumSetType;
-use fleethub_macro::FhAbi;
 use num_derive::{FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumString};
-use ts_rs::TS;
+use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
+
 pub enum ShipCategory {
     Battleship,
     AircraftCarrier,
@@ -17,7 +18,8 @@ pub enum ShipCategory {
     AuxiliaryShip,
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum ShipType {
     Unknown = 0,
     /// 海防艦
@@ -127,7 +129,8 @@ impl ShipType {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum ShipClass {
     Unknown = 0,
     /// 綾波型
@@ -219,7 +222,7 @@ pub enum ShipClass {
     /// 潜特型(伊400型潜水艦)
     I400Class = 44,
     /// 特種船丙型
-    AkitsuMaruClass = 45,
+    HeiClassAmphibiousAssaultShip = 45,
     /// 三式潜航輸送艇
     Type3SubmergenceTransportVehicle = 46,
     /// Bismarck級
@@ -364,7 +367,8 @@ impl Default for ShipClass {
     }
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, EnumString, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, EnumSetType, FromPrimitive, EnumString, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum ShipAttr {
     /// 深海
     Abyssal,
@@ -394,7 +398,7 @@ pub enum ShipAttr {
     HeavyCruiserSummerPrincess,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize, Tsify)]
 pub enum SpeedGroup {
     A,
     B1,
@@ -409,20 +413,9 @@ impl Default for SpeedGroup {
 }
 
 #[derive(
-    Debug,
-    Display,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    Hash,
-    Serialize,
-    Deserialize,
-    FhAbi,
-    TS,
+    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Tsify,
 )]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum DamageState {
     /// 小破未満
     Normal,
@@ -486,8 +479,9 @@ impl DamageState {
 }
 
 #[derive(
-    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, FhAbi, TS,
+    Debug, Display, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Tsify,
 )]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum MoraleState {
     Sparkle,
     Normal,
@@ -544,7 +538,8 @@ impl MoraleState {
 }
 
 /// 特殊敵種別
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum SpecialEnemyType {
     None,
     /// ソフトスキン

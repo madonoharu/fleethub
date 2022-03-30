@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Tsify)]
 pub enum ContactRank {
     Rank1,
     Rank2,

@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
 use counter::Counter;
-use fleethub_macro::FhAbi;
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     comp::Comp,
@@ -101,7 +100,7 @@ impl BattleLogger {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct SimulatorResultItem {
     pub id: String,
     pub role: Role,
@@ -109,7 +108,8 @@ pub struct SimulatorResultItem {
     pub damage_state_map: HashMap<DamageState, f64>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Clone, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct SimulatorResult {
     pub items: Vec<SimulatorResultItem>,
     pub sunk_vec: Vec<(usize, f64, f64)>,

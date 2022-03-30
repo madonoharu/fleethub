@@ -1,11 +1,11 @@
 use enumset::EnumSetType;
-use fleethub_macro::FhAbi;
 use num_derive::{FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 use strum::EnumString;
-use ts_rs::TS;
+use tsify::Tsify;
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearType {
     Unknown = 0,
     /// 小口径主砲
@@ -126,7 +126,8 @@ pub enum GearType {
     CbRecon2 = 94,
 }
 
-#[derive(Debug, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearCategory {
     Fighter,
     Bomber,
@@ -177,7 +178,8 @@ impl Default for GearType {
     }
 }
 
-#[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearAttr {
     /// 深海
     Abyssal,

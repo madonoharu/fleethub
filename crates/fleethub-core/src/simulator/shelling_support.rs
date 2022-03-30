@@ -1,8 +1,7 @@
 use anyhow::{Context, Result};
-use fleethub_macro::FhAbi;
 use rand::prelude::*;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::{
@@ -83,7 +82,8 @@ impl Comp {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct ShellingSupportSimulatorParams {
     attacker_formation: Formation,
     target_formation: Formation,

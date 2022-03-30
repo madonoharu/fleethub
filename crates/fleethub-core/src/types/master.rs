@@ -5,7 +5,7 @@ use arrayvec::ArrayVec;
 use enumset::EnumSet;
 use fasteval::{bool_to_f64, Compiler, Evaler, Instruction, Slab};
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -17,7 +17,7 @@ use crate::{
 
 use super::BattleConfig;
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct GearTypes(u8, u8, u8, u8, u8);
 
 impl GearTypes {
@@ -66,7 +66,7 @@ trait EvalerStruct {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterGear {
     pub gear_id: u16,
     pub name: String,
@@ -223,21 +223,21 @@ impl EvalerStruct for MasterGear {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterVariantDef {
     pub tag: String,
     pub id: i32,
     pub name: String,
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterAttrRule {
     pub tag: String,
     pub name: String,
     pub expr: String,
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterIBonusRule {
     pub expr: String,
     pub formula: String,
@@ -259,7 +259,7 @@ impl MasterIBonusRule {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterIBonuses {
     shelling_power: Vec<MasterIBonusRule>,
     carrier_shelling_power: Vec<MasterIBonusRule>,
@@ -309,7 +309,7 @@ impl MasterIBonuses {
     }
 }
 
-#[derive(Debug, Default, Clone, Copy, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Copy, Deserialize, Tsify)]
 pub struct StatInterval(pub Option<u16>, pub Option<u16>);
 
 impl StatInterval {
@@ -323,7 +323,7 @@ impl StatInterval {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterShip {
     pub ship_id: u16,
     pub name: String,
@@ -353,9 +353,9 @@ pub struct MasterShip {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_level: Option<u16>,
     pub slotnum: usize,
-    #[ts(type = "Array<number | null>")]
+    #[tsify(type = "Array<number | null>")]
     pub slots: SlotSizeArray,
-    #[ts(type = "Array<GearState>")]
+    #[tsify(type = "Array<GearState>")]
     pub stock: ArrayVec<GearState, 5>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub speed_group: Option<SpeedGroup>,
@@ -406,25 +406,25 @@ impl EvalerStruct for MasterShip {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct EquipStype {
     pub id: u8,
     pub equip_type: Vec<u8>,
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MstEquipShip {
     pub api_ship_id: u16,
     pub api_equip_type: Vec<u8>,
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MstEquipExslotShip {
     pub api_slotitem_id: u16,
     pub api_ship_ids: Vec<u16>,
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterEquippable {
     pub equip_stype: Vec<EquipStype>,
     pub equip_exslot: Vec<u8>,
@@ -432,7 +432,7 @@ pub struct MasterEquippable {
     pub equip_exslot_ship: Vec<MstEquipExslotShip>,
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
     pub gear_attrs: Vec<MasterAttrRule>,

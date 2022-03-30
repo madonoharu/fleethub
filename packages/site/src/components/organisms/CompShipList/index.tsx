@@ -1,7 +1,6 @@
 import { ShipKey, SHIP_KEYS } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { styled, css } from "@mui/system";
-import clsx from "clsx";
 import { Comp, FleetType, FleetMeta, ShipMeta } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -46,7 +45,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
     key: ShipKey,
     ship: ShipMeta | null
   ) => {
-    const className = clsx(ft, key);
+    const className = `${ft} ${key}`;
     const position: ShipPosition = {
       tag: "fleets",
       id: fleetMeta.id,
