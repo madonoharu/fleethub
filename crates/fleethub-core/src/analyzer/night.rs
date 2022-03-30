@@ -1,6 +1,5 @@
-use fleethub_macro::FhAbi;
 use serde::Serialize;
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::NightSituation,
@@ -67,7 +66,7 @@ fn night_cutin_term(ship: &Ship, params: NightCutinTermParams) -> Option<f64> {
     Some(value)
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Tsify)]
 pub struct NightContactChance {
     rank1: f64,
     rank2: f64,
@@ -116,21 +115,21 @@ impl Fleet {
     }
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Tsify)]
 pub struct NightCutinRateInfo {
     pub cutin_term: Option<f64>,
     pub rates: Vec<(Option<NightCutin>, Option<f64>)>,
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Tsify)]
 pub struct ShipNightCutinRateInfo {
     ship_id: u16,
     normal: NightCutinRateInfo,
     chuuha: NightCutinRateInfo,
 }
 
-#[derive(Debug, Default, Serialize, FhAbi, TS)]
-#[fh_abi(skip_from_abi)]
+#[derive(Debug, Default, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct FleetNightCutinRateInfo {
     night_contact_chance: NightContactChance,
     ships: Vec<ShipNightCutinRateInfo>,

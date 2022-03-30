@@ -1,9 +1,9 @@
-use fleethub_macro::FhAbi;
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
-use ts_rs::TS;
+use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, EnumIter, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, EnumIter, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum Engagement {
     /// T有利
     GreenT,

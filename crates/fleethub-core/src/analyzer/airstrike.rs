@@ -1,6 +1,5 @@
-use fleethub_macro::FhAbi;
 use serde::Serialize;
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     comp::Comp,
@@ -8,7 +7,7 @@ use crate::{
     types::{AirState, ContactRank, Side},
 };
 
-#[derive(Debug, Clone, Serialize, TS)]
+#[derive(Debug, Clone, Serialize, Tsify)]
 pub struct AirstrikeContactChance {
     air_state: AirState,
     trigger_rate: f64,
@@ -18,8 +17,8 @@ pub struct AirstrikeContactChance {
     total: f64,
 }
 
-#[derive(Debug, Clone, Serialize, FhAbi, TS)]
-#[fh_abi(skip_from_abi)]
+#[derive(Debug, Clone, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct CompContactChanceInfo {
     single: Option<Vec<AirstrikeContactChance>>,
     combined: Option<Vec<AirstrikeContactChance>>,

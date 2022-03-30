@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::attack::WarfareShipEnvironment;
 
@@ -21,7 +21,8 @@ impl Default for FormationWarfareModifiers {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct FormationWarfareDef {
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
@@ -38,7 +39,8 @@ impl FormationWarfareDef {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct FormationDef {
     pub tag: Formation,
     pub protection_rate: Option<f64>,
@@ -50,8 +52,9 @@ pub struct FormationDef {
     pub shelling_support: FormationWarfareDef,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 #[serde(untagged)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum NestedFormationDef {
     Normal(FormationDef),
     Vanguard {
@@ -92,7 +95,8 @@ impl NestedFormationDef {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AntiAirCutinDef {
     pub id: u8,
     pub chance_numer: Option<u8>,
@@ -111,7 +115,8 @@ impl AntiAirCutinDef {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
+#[tsify(from_wasm_abi)]
 pub struct DayCutinDef {
     pub tag: DayCutin,
     pub hits: u8,
@@ -134,7 +139,8 @@ impl Default for CutinModifiers {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
+#[tsify(from_wasm_abi)]
 pub struct NightCutinDef {
     pub tag: NightCutin,
     pub hits: f64,
@@ -142,6 +148,8 @@ pub struct NightCutinDef {
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
 }
+
+impl NightCutin where Self: Serialize {}
 
 impl NightCutinDef {
     pub fn to_modifiers(&self) -> CutinModifiers {
@@ -192,7 +200,8 @@ impl From<&NightCutinDef> for SpecialAttackDef<NightSpecialAttack> {
     }
 }
 
-#[derive(Debug, Default, Clone, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
+#[tsify(from_wasm_abi)]
 pub struct BattleConfig {
     pub formation: Vec<NestedFormationDef>,
     pub anti_air_cutin: Vec<AntiAirCutinDef>,

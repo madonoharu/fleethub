@@ -8,7 +8,6 @@ use std::{
 use counter::Counter;
 use num_traits::Zero;
 use serde::{Deserialize, Serialize};
-use ts_rs::{Dependency, TS};
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct NumMap<K, V>
@@ -212,24 +211,6 @@ where
         D: serde::Deserializer<'de>,
     {
         HashMap::<K, V>::deserialize(deserializer).map(|map| map.into())
-    }
-}
-
-impl<K, V> TS for NumMap<K, V>
-where
-    K: Hash + Eq + TS,
-    V: TS,
-{
-    fn name() -> String {
-        HashMap::<K, V>::name()
-    }
-
-    fn dependencies() -> Vec<Dependency> {
-        HashMap::<K, V>::dependencies()
-    }
-
-    fn transparent() -> bool {
-        true
     }
 }
 

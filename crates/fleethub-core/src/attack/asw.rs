@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::{DefenseParams, HitRateParams},
@@ -16,7 +16,7 @@ const ASW_POWER_CAP: f64 = 170.0;
 const ASW_ACCURACY_CONSTANT: f64 = 80.0;
 const ASW_CRITICAL_RATE_CONSTANT: f64 = 1.1;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
 pub enum AswAttackType {
     DepthCharge,
     Aircraft,

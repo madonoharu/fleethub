@@ -24,7 +24,7 @@ type Props = {
   generationMap: Record<string, string>;
 };
 
-const Loder: React.FC = ({ children }) => {
+const Loader: React.FC = ({ children }) => {
   const { data: masterData } = useGcs<MasterData>(MASTER_DATA_PATH);
 
   if (!masterData) {
@@ -82,11 +82,11 @@ const Index: NextComponentType<NextPageContext, unknown, Props> = ({
       </Head>
 
       <GenerationMapContext.Provider value={generationMap}>
-        <Loder>
+        <Loader>
           <DndProvider backend={HTML5Backend}>
             <AppContent />
           </DndProvider>
-        </Loder>
+        </Loader>
       </GenerationMapContext.Provider>
     </div>
   );

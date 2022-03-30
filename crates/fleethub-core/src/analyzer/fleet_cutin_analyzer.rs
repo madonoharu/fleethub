@@ -1,6 +1,5 @@
-use fleethub_macro::FhAbi;
-use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use serde::Serialize;
+use tsify::Tsify;
 
 use crate::{
     attack::{
@@ -18,7 +17,7 @@ use crate::{
 
 use super::AttackStats;
 
-#[derive(Debug, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Serialize, Tsify)]
 pub struct FleetCutinInfoItem {
     ship_id: u16,
     cutin: FleetCutin,
@@ -26,14 +25,15 @@ pub struct FleetCutinInfoItem {
     stats: AttackStats,
 }
 
-#[derive(Debug, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Serialize, Tsify)]
 pub struct FleetCutinInfo {
     cutin: FleetCutin,
     formation: Formation,
     items: Vec<FleetCutinInfoItem>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct FleetCutinAnalysis {
     shelling: Vec<FleetCutinInfo>,
     night: Vec<FleetCutinInfo>,

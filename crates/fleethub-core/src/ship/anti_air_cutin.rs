@@ -38,19 +38,23 @@ pub fn get_possible_anti_air_cutin_ids(ship: &Ship) -> Vec<u8> {
         }
     }
 
-    let gfcs_5inch_count = gears.count(gear_id!("GFCS Mk.37+5inch連装両用砲(集中配備)"));
-    let atlanta_gun_count = gears.count(gear_id!("5inch連装両用砲(集中配備)")) + gfcs_5inch_count;
-    if ship_class == ShipClass::AtlantaClass && atlanta_gun_count >= 2 {
-        if gfcs_5inch_count >= 2 {
+    if ship_class == ShipClass::AtlantaClass {
+        let mk37_5inch_gfcs_count = gears.count(gear_id!("GFCS Mk.37+5inch連装両用砲(集中配備)"));
+        let mk37_5inch_count = gears.count(gear_id!("5inch連装両用砲(集中配備)"));
+        let atlanta_gun_count = mk37_5inch_gfcs_count + mk37_5inch_count;
+
+        if mk37_5inch_gfcs_count >= 2 {
             vec.push(38)
         }
-        if gfcs_5inch_count >= 1 {
+        if mk37_5inch_gfcs_count >= 1 && mk37_5inch_count >= 1 {
             vec.push(39)
         }
-        if gears.has(gear_id!("GFCS Mk.37")) {
-            vec.push(40)
+        if atlanta_gun_count >= 2 {
+            if gears.has(gear_id!("GFCS Mk.37")) {
+                vec.push(40)
+            }
+            vec.push(41)
         }
-        vec.push(41)
     }
 
     // 秋月型 かつ 高角砲を装備

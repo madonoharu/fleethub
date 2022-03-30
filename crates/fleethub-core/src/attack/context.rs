@@ -1,12 +1,12 @@
-use fleethub_macro::FhAbi;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::types::{AirState, Engagement, Formation, OrgType, Role};
 
 use super::CustomModifiers;
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct WarfareShipEnvironment {
     pub org_type: OrgType,
     pub role: Role,
@@ -26,7 +26,7 @@ impl WarfareShipEnvironment {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct WarfareContext {
     pub attacker_env: WarfareShipEnvironment,
     pub target_env: WarfareShipEnvironment,

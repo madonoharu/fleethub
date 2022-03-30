@@ -1,15 +1,14 @@
 use std::collections::HashMap;
 
-use fleethub_macro::FhAbi;
-use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, EnumIter, EnumString, IntoEnumIterator};
-use ts_rs::TS;
+use strum::{AsRefStr, EnumIter, EnumString};
+use tsify::Tsify;
 use wasm_bindgen::prelude::*;
 
 use super::Formation;
 
-#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct GearState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -21,7 +20,8 @@ pub struct GearState {
     pub stars: Option<u8>,
 }
 
-#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct ShipState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -81,7 +81,8 @@ pub struct ShipState {
     pub ss5: Option<u8>,
 }
 
-#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct FleetState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -104,7 +105,8 @@ pub struct FleetState {
     pub s7: Option<ShipState>,
 }
 
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum AirSquadronMode {
     Sortie,
     AirDefense,
@@ -122,7 +124,8 @@ impl AirSquadronMode {
     }
 }
 
-#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AirSquadronState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -155,7 +158,8 @@ pub struct AirSquadronState {
     pub ss5: Option<u8>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum Side {
     Player,
     Enemy,
@@ -178,8 +182,9 @@ impl Side {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Hash, EnumString, AsRefStr, Serialize, Deserialize, TS, FhAbi,
+    Debug, Clone, Copy, PartialEq, Hash, EnumString, AsRefStr, Serialize, Deserialize, Tsify,
 )]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum OrgType {
     /// 通常艦隊
     Single,
@@ -268,9 +273,9 @@ pub fn org_type_side(org_type: OrgType) -> Side {
     AsRefStr,
     Serialize,
     Deserialize,
-    TS,
-    FhAbi,
+    Tsify,
 )]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum Role {
     Main,
     Escort,
@@ -292,7 +297,8 @@ impl Role {
     }
 }
 
-#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct OrgState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -325,8 +331,9 @@ pub struct OrgState {
     pub boss_sup: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, Tsify)]
 #[serde(rename_all = "lowercase")]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum ShipKey {
     S1,
     S2,
@@ -337,30 +344,9 @@ pub enum ShipKey {
     S7,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, FhAbi)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 #[serde(transparent)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct ShipStateMap {
     map: HashMap<ShipKey, ShipState>,
-}
-
-impl TS for ShipStateMap {
-    const EXPORT_TO: Option<&'static str> = None;
-
-    fn name() -> String {
-        "ShipStateMap".to_string()
-    }
-
-    fn dependencies() -> Vec<ts_rs::Dependency> {
-        std::collections::HashMap::<ShipKey, ShipState>::dependencies()
-    }
-
-    fn transparent() -> bool {
-        true
-    }
-
-    fn inline_flattened() -> String {
-        ShipKey::iter()
-            .map(|key| format!("{:?}?: ShipState,", key))
-            .join("")
-    }
 }

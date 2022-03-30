@@ -65,7 +65,7 @@ function getDayCutinDefs(table: SpreadsheetTable): DayCutinDef[] {
   });
 }
 
-function getNaightCutinDefs(table: SpreadsheetTable): NightCutinDef[] {
+function getNightCutinDefs(table: SpreadsheetTable): NightCutinDef[] {
   const { headerValues, rows } = table;
 
   return rows.map((row) => {
@@ -87,7 +87,7 @@ export function createConfig(
   return {
     anti_air_cutin: getAntiAirCutinDefs(tables.anti_air_cutin),
     day_cutin: getDayCutinDefs(tables.day_cutin),
-    night_cutin: getNaightCutinDefs(tables.night_cutin),
+    night_cutin: getNightCutinDefs(tables.night_cutin),
     formation: getFormationDefs(tables.formation),
   };
 }
