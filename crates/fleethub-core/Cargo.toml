@@ -1,8 +1,10 @@
 [package]
 name = "fleethub-core"
-version = "1.1.6"
+version = "1.2.0"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
+description = "fleethub-core"
+repository = "https://github.com/madonoharu/fleethub"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -11,8 +13,6 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-fleethub-macro = { path = "../fleethub-macro" }
-
 wasm-bindgen = { version = "0.2.79", features = ["serde-serialize"] }
 js-sys = "0.3.56"
 serde = { version = "1.0.136", features = ["derive"] }
@@ -30,34 +30,34 @@ console_error_panic_hook = { version = "0.1.7", optional = true }
 #
 # Unfortunately, `wee_alloc` requires nightly Rust when targeting wasm for now.
 wee_alloc = { version = "0.4.5", optional = true }
-strum = { version = "0.24.0", features = ["derive"] } 
+strum = { version = "0.24.0", features = ["derive"] }
 num-traits = "0.2.14"
 num-derive = "0.3.3"
 num_enum = "0.5.7"
 fasteval = "0.2.4"
-paste = "1.0.6"
+paste = "1.0.7"
 arrayvec = { version = "0.7.2", features = ["serde"] }
 counter = "0.5.3"
 rand = { version = "0.8.5", features = ["small_rng"] }
-getrandom = { version = "0.2.5", features = ["js"] }
+getrandom = { version = "0.2.6", features = ["js"] }
 xxhash-rust = { version = "0.8.4", features = ["xxh3"] }
 enumset = "1.0.8"
 anyhow = "1.0.56"
 thiserror = "1.0.30"
-ts-rs = "6.1.2"
 itertools = "0.10.3"
-enum-map = "2.0.3"
+enum-map = "2.1.0"
 seq-macro = "0.3.0"
+tsify = "0.1.0"
 
 [dependencies.web-sys]
 version = "0.3.56"
-features = [
-  "console"
-]
+features = ["console"]
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.29"
 criterion = "0.3.5"
+reqwest = { version = "0.11.10", features = ["brotli"] }
+tokio = { version = "1", features = ["full"] }
 
 [[bench]]
 name = "bench"

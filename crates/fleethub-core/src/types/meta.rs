@@ -1,25 +1,27 @@
 use std::collections::HashMap;
 
-use fleethub_macro::FhAbi;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use super::FleetType;
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct ShipMeta {
     pub id: String,
     pub ship_id: u16,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct FleetMeta {
     pub id: String,
     pub len: usize,
     pub ships: Vec<(String, Option<ShipMeta>)>,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, FhAbi, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct CompMeta {
     pub fleets: HashMap<FleetType, FleetMeta>,
 }

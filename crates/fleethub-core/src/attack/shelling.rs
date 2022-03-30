@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::{AttackPowerModifier, AttackPowerParams, CustomModifiers, HitRateParams},
@@ -32,7 +32,7 @@ impl Default for ProficiencyModifiers {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
 pub enum ShellingAttackType {
     Normal,
     Carrier,

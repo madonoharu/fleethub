@@ -1,6 +1,5 @@
-use fleethub_macro::FhAbi;
 use serde::Serialize;
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     comp::Comp,
@@ -81,7 +80,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         let ships = comp
             .members()
             .map(|member| {
-                let air_defence = member.air_defence(fleet_anti_air, anti_air_cutin);
+                let air_defence = member.air_defense(fleet_anti_air, anti_air_cutin);
 
                 ShipAntiAirInfo {
                     ship_id: member.ship.ship_id,
@@ -135,7 +134,8 @@ impl<'a> AntiAirAnalyzer<'a> {
     }
 }
 
-#[derive(Debug, Serialize, TS)]
+#[derive(Debug, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct ShipAntiAirInfo {
     ship_id: u16,
     adjusted_anti_air: Option<f64>,
@@ -146,8 +146,8 @@ pub struct ShipAntiAirInfo {
     anti_air_propellant_barrage_chance: Option<f64>,
 }
 
-#[derive(Debug, Serialize, FhAbi, TS)]
-#[fh_abi(skip_from_abi)]
+#[derive(Debug, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct CompAntiAirInfo {
     fleet_anti_air: f64,
     ships: Vec<ShipAntiAirInfo>,

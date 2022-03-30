@@ -1,8 +1,0 @@
-[package]
-name = "ts-gen"
-version = "1.1.5"
-edition = "2021"
-
-[dependencies]
-fleethub-core = { path = "../fleethub-core" }
-ts-rs = "6.1.2"

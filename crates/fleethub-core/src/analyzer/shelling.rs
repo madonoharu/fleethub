@@ -1,6 +1,5 @@
-use fleethub_macro::FhAbi;
 use serde::Serialize;
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     comp::Comp,
@@ -9,7 +8,7 @@ use crate::{
     types::{AirStateRank, BattleConfig, DayCutin, DayCutinDef, Role},
 };
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Tsify)]
 pub struct DayCutinRateInfo {
     pub observation_term: Option<f64>,
     pub rates: Vec<(Option<DayCutin>, Option<f64>)>,
@@ -66,7 +65,7 @@ impl DayCutinRateInfo {
     }
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Tsify)]
 pub struct ShipDayCutinRateInfo {
     ship_id: u16,
     air_supremacy: DayCutinRateInfo,
@@ -108,7 +107,7 @@ impl ShipDayCutinRateInfo {
     }
 }
 
-#[derive(Debug, Default, Serialize, TS)]
+#[derive(Debug, Default, Serialize, Tsify)]
 pub struct FleetDayCutinRateInfo {
     fleet_los_mod: Option<f64>,
     ships: Vec<ShipDayCutinRateInfo>,
@@ -135,8 +134,8 @@ impl FleetDayCutinRateInfo {
     }
 }
 
-#[derive(Debug, Default, Serialize, FhAbi, TS)]
-#[fh_abi(skip_from_abi)]
+#[derive(Debug, Default, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
 pub struct CompDayCutinRateInfo {
     main: FleetDayCutinRateInfo,
     escort: Option<FleetDayCutinRateInfo>,

@@ -1,6 +1,5 @@
-use fleethub_macro::FhAbi;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::DefenseParams,
@@ -20,7 +19,8 @@ use super::{
 const NIGHT_POWER_CAP: f64 = 360.0;
 const NIGHT_ACCURACY_CONSTANT: f64 = 69.0;
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct NightSituation {
     pub night_contact_rank: Option<ContactRank>,
     pub starshell: bool,
@@ -251,13 +251,13 @@ fn calc_accuracy_term(ctx: &NightAttackContext, attacker: &Ship) -> Option<f64> 
     let fit_gun_bonus = attacker.fit_gun_bonus(true);
 
     // 乗算前に切り捨て
-    let premultiplication = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod
+    let pre_multiplication = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod
         + basic_accuracy_term
         + accuracy
         + ibonus)
         .floor();
 
-    let accuracy_term = (premultiplication * formation_mod * morale_mod * cutin_mod
+    let accuracy_term = (pre_multiplication * formation_mod * morale_mod * cutin_mod
         + searchlight_mod
         + fit_gun_bonus)
         .floor();

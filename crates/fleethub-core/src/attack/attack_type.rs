@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     ship::Ship,
@@ -8,15 +8,17 @@ use crate::{
 
 use super::{AswAttackType, ShellingAttackType};
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
 #[serde(tag = "t", content = "c")]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum DayBattleAttackType {
     Shelling(ShellingAttackType),
     Asw(AswAttackType),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
 #[serde(tag = "t", content = "c")]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum NightBattleAttackType {
     NightAttack(NightAttackType),
     Asw(AswAttackType),

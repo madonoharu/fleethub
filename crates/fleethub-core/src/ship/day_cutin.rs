@@ -96,7 +96,7 @@ pub fn get_possible_day_cutin_set(ship: &Ship, anti_inst: bool) -> EnumSet<DayCu
         .gears
         .count_by(|g| g.gear_type == GearType::SecondaryGun);
     let has_ap_shell = ship.gears.has_type(GearType::ApShell);
-    let has_rader = ship.gears.has_attr(GearAttr::Radar);
+    let has_radar = ship.gears.has_attr(GearAttr::Radar);
 
     if main_gun_count >= 2 {
         set.insert(DayCutin::DoubleAttack);
@@ -109,8 +109,8 @@ pub fn get_possible_day_cutin_set(ship: &Ship, anti_inst: bool) -> EnumSet<DayCu
     if secondary_gun_count >= 1 {
         set.insert(DayCutin::MainSec);
 
-        if has_rader {
-            set.insert(DayCutin::MainRader);
+        if has_radar {
+            set.insert(DayCutin::MainRadar);
         }
         if has_ap_shell {
             set.insert(DayCutin::MainAp);

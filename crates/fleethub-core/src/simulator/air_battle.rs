@@ -61,7 +61,7 @@ fn try_air_defence<R: Rng + ?Sized>(
             let member = member_vec.choose(rng).expect("member_vec.len() > 0");
 
             member
-                .air_defence(fleet_anti_air, anti_air_cutin)
+                .air_defense(fleet_anti_air, anti_air_cutin)
                 .try_intercept(rng, &mut plane)
         })
 }

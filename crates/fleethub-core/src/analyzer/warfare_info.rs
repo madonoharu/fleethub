@@ -1,6 +1,5 @@
-use fleethub_macro::FhAbi;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::{
@@ -19,7 +18,7 @@ pub type DayBattleAttackInfo = AttackInfo<DayBattleAttackType, Option<DayCutin>>
 pub type NightBattleAttackInfo = AttackInfo<NightBattleAttackType, Option<NightCutin>>;
 pub type TorpedoAttackInfo = AttackInfo<(), ()>;
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct WarfareAnalyzerShipEnvironment {
     pub org_type: OrgType,
     pub role: Role,
@@ -61,7 +60,8 @@ impl WarfareAnalyzerShipEnvironment {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(from_wasm_abi)]
 pub struct WarfareAnalyzerContext {
     pub attacker_env: WarfareAnalyzerShipEnvironment,
     pub target_env: WarfareAnalyzerShipEnvironment,
@@ -81,7 +81,8 @@ impl WarfareAnalyzerContext {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, TS, FhAbi)]
+#[derive(Debug, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct WarfareInfo {
     day: Option<AttackInfo<DayBattleAttackType, Option<DayCutin>>>,
     closing_torpedo: Option<AttackInfo<(), ()>>,

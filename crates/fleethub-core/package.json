@@ -1,6 +1,6 @@
 {
   "name": "fleethub-core",
-  "version": "1.1.6",
+  "version": "1.2.0",
   "license": "UNLICENSED",
   "sideEffects": false,
   "exports": {
@@ -11,8 +11,7 @@
   "types": "pkg/fleethub_core.d.ts",
   "files": [
     "pkg",
-    "node",
-    "bindings.d.ts"
+    "node"
   ],
   "collaborators": [
     "まどの <madonoharu@gmail.com>"

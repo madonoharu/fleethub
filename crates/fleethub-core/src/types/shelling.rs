@@ -1,17 +1,18 @@
 use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use super::FleetCutin;
 
-#[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, TS)]
+#[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum DayCutin {
     /// 主主
     MainMain,
     /// 主徹
     MainAp,
-    /// 主電
-    MainRader,
+    /// 主電 todo!
+    MainRadar,
     /// 主副
     MainSec,
     /// 連撃
@@ -34,7 +35,8 @@ impl Default for DayCutin {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum ShellingSpecialAttack {
     DayCutin(DayCutin),
     FleetCutin(FleetCutin),

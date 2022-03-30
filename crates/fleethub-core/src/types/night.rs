@@ -1,10 +1,10 @@
 use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use super::FleetCutin;
 
-#[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, TS)]
+#[derive(Debug, Hash, EnumSetType, Serialize, Deserialize, Tsify)]
 pub enum NightCutin {
     /// 主魚電
     MainTorpRadar,
@@ -47,7 +47,7 @@ impl Default for NightCutin {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
 pub enum NightSpecialAttack {
     NightCutin(NightCutin),
     FleetCutin(FleetCutin),
@@ -64,7 +64,7 @@ impl NightSpecialAttack {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
 pub enum NightAttackType {
     Normal,
     ArkRoyal,

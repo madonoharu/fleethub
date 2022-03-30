@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
 use crate::{
     attack::{AttackParams, AttackPower, AttackPowerParams, HitRate, HitRateParams},
@@ -9,7 +9,7 @@ use crate::{
 
 use super::{DamageAnalyzer, DamageInfo};
 
-#[derive(Debug, Serialize, Deserialize, TS)]
+#[derive(Debug, Serialize, Deserialize, Tsify)]
 pub struct AttackStats {
     pub attack_power: Option<AttackPower>,
     pub attack_power_params: Option<AttackPowerParams>,
@@ -57,21 +57,22 @@ impl AttackParams {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, TS)]
+#[derive(Debug, Serialize, Deserialize, Tsify)]
 pub struct AttackInfoItem<Cutin>
 where
-    Cutin: Serialize + TS,
+    Cutin: Serialize,
 {
     pub cutin: Cutin,
     pub rate: Option<f64>,
     pub stats: AttackStats,
 }
 
-#[derive(Debug, Serialize, Deserialize, TS)]
+#[derive(Debug, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AttackInfo<AttackType, Cutin>
 where
-    AttackType: Serialize + TS,
-    Cutin: Serialize + TS,
+    AttackType: Serialize,
+    Cutin: Serialize,
 {
     pub attack_type: AttackType,
     pub items: Vec<AttackInfoItem<Cutin>>,
@@ -80,8 +81,8 @@ where
 
 impl<AttackType, Cutin> AttackInfo<AttackType, Cutin>
 where
-    AttackType: Serialize + TS,
-    Cutin: Serialize + TS,
+    AttackType: Serialize,
+    Cutin: Serialize,
 {
     pub fn new(attack_type: AttackType, items: Vec<AttackInfoItem<Cutin>>) -> Self {
         let damage_state_map = items

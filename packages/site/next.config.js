@@ -28,7 +28,9 @@ class WasmChunksFixPlugin {
 /** @type {import("next").NextConfig} */
 const config = {
   env: {
-    KCS_SCRIPT: fs.readFileSync("../kcs/lib/index.js").toString(),
+    KCS_SCRIPT: fs
+      .readFileSync(require.resolve("../kcs/lib/index.js"))
+      .toString(),
     VERSION: `${require("./package.json").version}`,
   },
   i18n,
@@ -42,6 +44,10 @@ const config = {
 
   webpack: (config, { isServer, dev }) => {
     config.experiments.asyncWebAssembly = true;
+
+    // https://github.com/react-dnd/react-dnd/issues/3416
+    config.resolve.alias["react/jsx-runtime.js"] = "react/jsx-runtime";
+    config.resolve.alias["react/jsx-dev-runtime.js"] = "react/jsx-dev-runtime";
 
     if (!dev && isServer) {
       config.output.webassemblyModuleFilename = "chunks/[id].wasm";

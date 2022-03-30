@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
-use ts_rs::TS;
+use tsify::Tsify;
 
-#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackPowerModifier {
     pub a: f64,
     pub b: f64,
@@ -48,7 +48,7 @@ impl AttackPowerModifier {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct SpecialEnemyModifiers {
     pub precap_general_mod: AttackPowerModifier,
     pub stype_mod: AttackPowerModifier,
@@ -66,13 +66,13 @@ impl SpecialEnemyModifiers {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct CustomModifiers {
     pub precap_mod: AttackPowerModifier,
     pub postcap_mod: AttackPowerModifier,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackPowerParams {
     pub basic: f64,
     pub cap: f64,
@@ -87,7 +87,7 @@ pub struct AttackPowerParams {
     pub custom_mods: CustomModifiers,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, TS)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackPower {
     pub precap: f64,
     pub is_capped: bool,

@@ -85,12 +85,12 @@ pub trait MemberImpl {
         Some(result)
     }
 
-    fn air_defence<'a>(
+    fn air_defense<'a>(
         &'a self,
         fleet_anti_air: f64,
         anti_air_cutin: Option<&'a AntiAirCutinDef>,
-    ) -> ShipAirDefence {
-        ShipAirDefence {
+    ) -> ShipAirDefense {
+        ShipAirDefense {
             ship: self.ship(),
             role: self.role(),
             org_type: self.org_type(),
@@ -138,7 +138,7 @@ impl<'a> MemberImpl for MemberMut<'a> {
     }
 }
 
-pub struct ShipAirDefence<'a> {
+pub struct ShipAirDefense<'a> {
     pub ship: &'a Ship,
     pub org_type: OrgType,
     pub role: Role,
@@ -146,7 +146,7 @@ pub struct ShipAirDefence<'a> {
     pub anti_air_cutin: Option<&'a AntiAirCutinDef>,
 }
 
-impl<'a> ShipAirDefence<'a> {
+impl<'a> ShipAirDefense<'a> {
     pub fn combined_fleet_mod(&self) -> f64 {
         if !self.org_type.is_combined() {
             1.0
