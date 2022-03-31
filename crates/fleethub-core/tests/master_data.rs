@@ -28,7 +28,7 @@ async fn test() -> anyhow::Result<()> {
         }
     };
 
-    let md: MasterData = serde_json::from_slice(&bytes)?;
+    let _: MasterData = serde_json::from_slice(&bytes)?;
 
     Ok(())
 }

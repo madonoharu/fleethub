@@ -19,6 +19,7 @@ mod state;
 pub use air_combat::*;
 pub use air_state::*;
 pub use battle_config::*;
+#[allow(unused_imports)]
 pub use const_id::*;
 pub use contact_rank::*;
 pub use ebonus::*;

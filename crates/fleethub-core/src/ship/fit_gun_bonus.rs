@@ -1,7 +1,4 @@
-use crate::{
-    gear_id, ship_id,
-    types::{ShipAttr, ShipClass, ShipType},
-};
+use crate::types::{ctype, gear_id, ship_id, ShipAttr, ShipType};
 
 use super::Ship;
 
@@ -9,9 +6,9 @@ use super::Ship;
 fn destroyer_bonus(ship: &Ship) -> f64 {
     let mut result = 0.0;
     let gears = &ship.gears;
-    let ship_class = ship.ship_class;
+    let ctype = ship.ctype;
 
-    if ship_class == ShipClass::MutsukiClass {
+    if ctype == ctype!("睦月型") {
         let single_high_angle_mount_count =
             gears.count(gear_id!("12.7cm単装高角砲(後期型)")) as f64;
         result += 5.0 * single_high_angle_mount_count.sqrt();
@@ -24,7 +21,7 @@ fn destroyer_bonus(ship: &Ship) -> f64 {
 fn light_cruiser_bonus(ship: &Ship) -> f64 {
     let mut result = 0.0;
     let gears = &ship.gears;
-    let ship_class = ship.ship_class;
+    let ctype = ship.ctype;
 
     let single_gun_count = gears.count_by(|gear| {
         matches!(
@@ -42,13 +39,13 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
 
     result += 4.0 * single_gun_count.sqrt();
 
-    result += match ship_class {
-        ShipClass::AganoClass => 8.0,
-        ShipClass::OoyodoClass => 5.0,
+    result += match ctype {
+        ctype!("阿賀野型") => 8.0,
+        ctype!("大淀型") => 5.0,
         _ => 3.0,
     } * twin_gun_count1.sqrt();
 
-    if ship_class == ShipClass::AganoClass {
+    if ctype == ctype!("阿賀野型") {
         let twin_gun_count2 = gears.count_by(|gear| {
             matches!(
                 gear.gear_id,
@@ -64,7 +61,7 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
         result += 7.0 * twin_gun_count2.sqrt();
     }
 
-    if ship_class == ShipClass::OoyodoClass {
+    if ctype == ctype!("大淀型") {
         let triple_gun_count = gears.count_by(|gear| {
             matches!(
                 gear.gear_id,
@@ -88,7 +85,7 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
 fn heavy_cruiser_bonus(ship: &Ship, is_night: bool) -> f64 {
     let mut result = 0.0;
     let gears = &ship.gears;
-    let ship_class = ship.ship_class;
+    let ctype = ship.ctype;
 
     if is_night {
         if gears.has(gear_id!("20.3cm連装砲")) || gears.has(gear_id!("20.3cm(2号)連装砲")) {
@@ -98,10 +95,10 @@ fn heavy_cruiser_bonus(ship: &Ship, is_night: bool) -> f64 {
         }
     }
 
-    if ship_class == ShipClass::MogamiClass {
+    if ctype == ctype!("最上型") {
         result += 2.0 * (gears.count(gear_id!("15.5cm三連装砲")) as f64);
         result += 5.0 * (gears.count(gear_id!("15.5cm三連装砲改")) as f64);
-    } else if ship_class == ShipClass::ZaraClass {
+    } else if ctype == ctype!("Zara級") {
         let count = gears.count(gear_id!("203mm/53 連装砲")) as f64;
         result += count.sqrt();
     }
@@ -160,7 +157,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
     let mut r = 0.0;
     let gears = &ship.gears;
     let ship_id = ship.ship_id;
-    let ship_class = ship.ship_class;
+    let ctype = ship.ctype;
     let is_married = ship.level > 99;
     let m = if is_married { 0.6 } else { 1.0 };
 
@@ -238,8 +235,8 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
 
     let count_35_6cm_38cm_twin_38_1cm_30_5cm = count_35_6cm_38cm_twin + count_38_1cm + count_30_5cm;
 
-    match ship_class {
-        ShipClass::GangutClass => {
+    match ctype {
+        ctype!("Гангут級") => {
             r += -18.0 * m * count_46cm_triple.sqrt();
             r += -7.0 * m * count_proto_46cm.sqrt();
             r += -11.0 * m * count_41cm_series.sqrt();
@@ -250,7 +247,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
             r += 7.0 * (count_35_6cm_38cm_twin + count_38_1cm).sqrt();
             r += 10.0 * count_30_5cm.sqrt();
         }
-        ShipClass::KongouClass => {
+        ctype!("金剛型") => {
             r += -10.0 * m * count_46cm_triple_kai.sqrt();
             r += -10.0 * m * count_46cm_triple.sqrt();
             r += -7.0 * m * count_proto_46cm.sqrt();
@@ -264,7 +261,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
             r += -2.0 * m * count_381mm.sqrt();
             r += 7.0 * count_35_6cm_38cm_twin_38_1cm_30_5cm.sqrt();
         }
-        ShipClass::BismarckClass | ShipClass::VittorioVenetoClass => {
+        ctype!("Bismarck級") | ctype!("V.Veneto級") => {
             r += -10.0 * m * count_46cm_triple.sqrt();
             r += -7.0 * m * count_proto_46cm.sqrt();
             r += -5.0 * m * count_41cm_series.sqrt();
@@ -275,7 +272,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
             r += -2.0 * count_38cm_quad.sqrt();
             r += 4.0 * count_35_6cm_38cm_twin_38_1cm_30_5cm.sqrt();
         }
-        ShipClass::IowaClass => {
+        ctype!("Iowa級") => {
             r += -10.0 * m * count_46cm_triple.sqrt();
             r += -7.0 * m * count_proto_46cm.sqrt();
             r += -5.0 * m * count_41cm_series.sqrt();
@@ -297,13 +294,13 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
                 r += -2.0 * count_16inch_mk7_gfcs.sqrt();
             }
         }
-        ShipClass::ColoradoClass => {
+        ctype!("Colorado級") => {
             r += -7.0 * m * count_46cm_triple_kai.sqrt();
             r += -2.0 * m * count_16inch_mk7.sqrt();
             r += 2.0 * count_41cm_series.sqrt();
             r += 1.0 * count_35_6cm_38cm_twin_38_1cm_30_5cm.sqrt();
         }
-        ShipClass::RichelieuClass => {
+        ctype!("Richelieu級") => {
             r += -10.0 * m * count_46cm_triple.sqrt();
             r += -7.0 * m * count_proto_46cm.sqrt();
             r += -5.0 * m * count_41cm_series.sqrt();
@@ -315,7 +312,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
             r += 4.0 * count_38cm_quad.sqrt();
             r += 4.0 * count_35_6cm_38cm_twin_38_1cm_30_5cm.sqrt();
         }
-        ShipClass::QueenElizabethClass => {
+        ctype!("Queen Elizabeth級") => {
             r += -11.0 * count_46cm_triple.sqrt();
             r += -8.0 * count_proto_46cm.sqrt();
             r += 2.0 * count_41cm_series.sqrt();
@@ -326,11 +323,11 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
             r += 6.0 * (count_35_6cm_38cm_twin + count_30_5cm).sqrt();
             r += 8.0 * count_38_1cm.sqrt();
         }
-        ShipClass::NelsonClass => {
+        ctype!("Nelson級") => {
             r += -2.0 * count_46cm_triple.sqrt();
             r += 3.0 * count_41cm_series.sqrt();
         }
-        ShipClass::YamatoClass => {
+        ctype!("大和型") => {
             r += 7.0 * count_46cm_triple_kai.sqrt();
             r += 3.0 * count_46cm_triple.sqrt();
             r += 3.0 * count_proto_46cm.sqrt();
@@ -355,7 +352,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
         r += 2.0 * count_16inch_mk1_twin.sqrt();
         r += 2.0 * count_381mm.sqrt();
         r += 2.0 * count_35_6cm_38cm_twin_38_1cm_30_5cm.sqrt();
-    } else if ship_class == ShipClass::IseClass && ship.has_attr(ShipAttr::Kai2) {
+    } else if ctype == ctype!("伊勢型") && ship.has_attr(ShipAttr::Kai2) {
         r += -7.0 * count_46cm_triple.sqrt();
         r += 4.0 * count_41cm_triple_kai2.sqrt();
         r += 6.0 * count_41cm_twin_kai2.sqrt();
@@ -365,8 +362,8 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
         r += 1.0 * count_381mm.sqrt();
         r += 4.0 * count_35_6cm_38cm_twin_38_1cm_30_5cm.sqrt();
     } else if matches!(
-        ship_class,
-        ShipClass::IseClass | ShipClass::FusouClass | ShipClass::NagatoClass
+        ctype,
+        ctype!("伊勢型") | ctype!("扶桑型") | ctype!("長門型")
     ) {
         r += -4.0 * count_46cm_triple_kai.sqrt();
         r += -7.0 * count_46cm_triple.sqrt();

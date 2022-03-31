@@ -1,9 +1,6 @@
 use enumset::EnumSet;
 
-use crate::{
-    gear_id,
-    types::{DamageState, DayCutin, GearAttr, GearType, ShipAttr, ShipClass},
-};
+use crate::types::{ctype, gear_id, DamageState, DayCutin, GearAttr, GearType, ShipAttr};
 
 use super::Ship;
 
@@ -52,7 +49,7 @@ pub fn get_possible_day_cutin_set(ship: &Ship, anti_inst: bool) -> EnumSet<DayCu
         return set;
     }
 
-    if ship.ship_class == ShipClass::IseClass && ship.has_attr(ShipAttr::Kai2) {
+    if ship.ctype == ctype!("伊勢型") && ship.has_attr(ShipAttr::Kai2) {
         let zuiun_count = ship.count_non_zero_slot_gear_by(|gear| {
             matches!(
                 gear.gear_id,

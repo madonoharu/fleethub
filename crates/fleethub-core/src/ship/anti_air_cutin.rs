@@ -1,18 +1,17 @@
 use crate::{
     gear::Gear,
-    gear_id, ship_id,
-    types::{GearAttr, GearType, ShipAttr, ShipClass, ShipType},
+    types::{ctype, gear_id, ship_id, GearAttr, GearType, ShipAttr, ShipType},
 };
 
 use super::Ship;
 
 pub fn get_possible_anti_air_cutin_ids(ship: &Ship) -> Vec<u8> {
     let ship_id = ship.ship_id;
-    let ship_class = ship.ship_class;
+    let ctype = ship.ctype;
     let gears = &ship.gears;
     let mut vec: Vec<u8> = Vec::with_capacity(10);
 
-    if ship_class == ShipClass::FletcherClass {
+    if ctype == ctype!("Fletcher級") {
         let mk30_kai_count = gears.count(gear_id!("5inch単装砲 Mk.30改"));
         let mk30_count = gears.count(gear_id!("5inch単装砲 Mk.30改")) + mk30_kai_count;
         let mk30_gfcs_count = ship.gears.count(gear_id!("5inch単装砲 Mk.30改+GFCS Mk.37"));
@@ -38,7 +37,7 @@ pub fn get_possible_anti_air_cutin_ids(ship: &Ship) -> Vec<u8> {
         }
     }
 
-    if ship_class == ShipClass::AtlantaClass {
+    if ctype == ctype!("Atlanta級") {
         let mk37_5inch_gfcs_count = gears.count(gear_id!("GFCS Mk.37+5inch連装両用砲(集中配備)"));
         let mk37_5inch_count = gears.count(gear_id!("5inch連装両用砲(集中配備)"));
         let atlanta_gun_count = mk37_5inch_gfcs_count + mk37_5inch_count;
@@ -58,7 +57,7 @@ pub fn get_possible_anti_air_cutin_ids(ship: &Ship) -> Vec<u8> {
     }
 
     // 秋月型 かつ 高角砲を装備
-    if ship_class == ShipClass::AkizukiClass && gears.has_attr(GearAttr::HighAngleMount) {
+    if ctype == ctype!("秋月型") && gears.has_attr(GearAttr::HighAngleMount) {
         // 高角砲を2つ以上装備 かつ 電探を装備
         if gears.count_attr(GearAttr::HighAngleMount) >= 2 && gears.has_attr(GearAttr::Radar) {
             vec.push(1)
@@ -138,7 +137,7 @@ pub fn get_possible_anti_air_cutin_ids(ship: &Ship) -> Vec<u8> {
     }
 
     // 伊勢型航空戦艦 かつ 12cm30連装噴進砲改二を装備 かつ 対空強化弾(三式弾)を装備 かつ 対空電探を装備
-    if ship_class == ShipClass::IseClass
+    if ctype == ctype!("伊勢型")
         && ship.ship_type == ShipType::BBV
         && gears.has(gear_id!("12cm30連装噴進砲改二"))
         && gears.has_type(GearType::AntiAirShell)
@@ -188,7 +187,7 @@ pub fn get_possible_anti_air_cutin_ids(ship: &Ship) -> Vec<u8> {
     }
 
     // (伊勢型航空戦艦|武蔵改|武蔵改二) かつ 12cm30連装噴進砲改二を装備 かつ 対空電探を装備
-    if (ship_class == ShipClass::IseClass && ship.ship_type == ShipType::BBV)
+    if (ctype == ctype!("伊勢型") && ship.ship_type == ShipType::BBV)
         || matches!(ship_id, ship_id!("武蔵改") | ship_id!("武蔵改二"))
     {
         if gears.has(gear_id!("12cm30連装噴進砲改二")) && has_air_radar {
@@ -272,7 +271,7 @@ pub fn get_possible_anti_air_cutin_ids(ship: &Ship) -> Vec<u8> {
     }
 
     if ship.has_attr(ShipAttr::RoyalNavy)
-        || (ship_class == ShipClass::KongouClass && ship.has_attr(ShipAttr::Kai2))
+        || (ctype == ctype!("金剛型") && ship.has_attr(ShipAttr::Kai2))
     {
         let rocket_launchers_count = gears.count(gear_id!("20連装7inch UP Rocket Launchers"));
         let has_rocket_launchers = rocket_launchers_count > 0;

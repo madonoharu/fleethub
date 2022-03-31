@@ -1,9 +1,6 @@
 use enumset::EnumSet;
 
-use crate::{
-    gear_id,
-    types::{GearAttr, GearType, NightCutin, ShipType},
-};
+use crate::types::{gear_id, GearAttr, GearType, NightCutin, ShipType};
 
 use super::Ship;
 

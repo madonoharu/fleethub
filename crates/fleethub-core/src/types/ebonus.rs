@@ -1,4 +1,3 @@
-use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 use wasm_bindgen::JsValue;
@@ -6,8 +5,7 @@ use wasm_bindgen::JsValue;
 use crate::{
     gear::Gear,
     gear_array::GearArray,
-    gear_id,
-    types::{ShipAttr, ShipClass, SpeedGroup},
+    types::{ctype, gear_id, ShipAttr, SpeedGroup},
 };
 
 use super::{GearTypes, MasterShip};
@@ -111,9 +109,7 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
     let new_model_boiler_count = gears.count(gear_id!("新型高温高圧缶"));
 
     // 新型高速潜水艦補正
-    let sentaka_type_mod = if ship.ctype == ShipClass::SentakaType.to_u16().unwrap_or_default()
-        && new_model_boiler_count >= 1
-    {
+    let sentaka_type_mod = if ship.ctype == ctype!("潜高型") && new_model_boiler_count >= 1 {
         5
     } else {
         0
