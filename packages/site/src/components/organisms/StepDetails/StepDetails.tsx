@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 
 import { useOrg } from "../../../hooks";
 import {
-  initalStepConfig,
+  initialStepConfig,
   PlanEntity,
   StepEntity,
   StepConfig,
@@ -59,7 +59,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
   );
 
   if (!playerOrg || !enemyOrg) return null;
-  const config = step.config || initalStepConfig;
+  const config = step.config || initialStepConfig;
 
   const bind =
     <P extends Path<StepConfig>>(path: P) =>
@@ -147,11 +147,11 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         />
 
         {playerShip && (
-          <ShipCard ship={playerShip} org={playerOrg} visibleMiscStats />
+          <ShipCard ship={playerShip} comp={playerComp} visibleMiscStats />
         )}
 
         {enemyShip && (
-          <ShipCard ship={enemyShip} org={enemyOrg} visibleMiscStats />
+          <ShipCard ship={enemyShip} comp={enemyComp} visibleMiscStats />
         )}
       </GridContainer>
 

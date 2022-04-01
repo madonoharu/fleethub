@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 
 import { useModal, useOrg } from "../../../hooks";
 import {
-  initalStepConfig,
+  initialStepConfig,
   PlanEntity,
   StepEntity,
   stepsSlice,
@@ -42,7 +42,7 @@ const StepListItem: React.FCX<StepListItemProps> = ({
 
   const main = org.main_ship_ids();
   const escort = org.escort_ship_ids();
-  const config = step.config || initalStepConfig;
+  const config = step.config || initialStepConfig;
 
   const handleRemove = () => {
     dispatch(stepsSlice.actions.remove(step.id));

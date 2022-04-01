@@ -26,7 +26,7 @@ export const initalCustomModifiers: CustomModifiers = {
   postcap_mod: { a: 1, b: 0 },
 };
 
-export const initalStepConfig: StepConfig = {
+export const initialStepConfig: StepConfig = {
   air_state: "AirSupremacy",
   engagement: "Parallel",
   player: {
