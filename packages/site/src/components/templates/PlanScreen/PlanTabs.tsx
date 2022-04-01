@@ -5,6 +5,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import { useDispatch } from "react-redux";
 
+import { CompContext } from "../../../hooks";
 import { PlanEntity, orgsSlice } from "../../../store";
 import { Tabs, TabsProps } from "../../molecules";
 import {
@@ -23,7 +24,11 @@ const FleetTabPanel: React.FCX<{ org: Org; fleetKey: FleetKey }> = ({
   const comp = org.create_comp_by_key(fleetKey);
   const fleet = org.clone_fleet(fleetKey);
 
-  return <FleetScreen className={className} comp={comp} fleet={fleet} />;
+  return (
+    <CompContext.Provider value={comp}>
+      <FleetScreen className={className} comp={comp} fleet={fleet} />
+    </CompContext.Provider>
+  );
 };
 
 const StyledSwappable = styled(Swappable)`

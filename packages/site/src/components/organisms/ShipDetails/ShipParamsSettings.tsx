@@ -46,7 +46,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
   onChange,
 }) => {
   const { t } = useTranslation("common");
-  const { org_type_is_single, org_type_default_formation } = useFhCore().module;
+  const { org_type_is_single } = useFhCore().module;
 
   const handleOrgTypeChange = (org_type: OrgType) => {
     const changesForm =
@@ -55,9 +55,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
     onChange({
       ...value,
       org_type,
-      formation: changesForm
-        ? org_type_default_formation(org_type)
-        : value.formation,
+      formation: changesForm ? deafultFormation(org_type) : value.formation,
     });
   };
 

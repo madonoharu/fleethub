@@ -3,10 +3,10 @@ import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
-import React from "react";
+import React, { useContext } from "react";
 import { shallowEqual, useDispatch } from "react-redux";
 
-import { useOrgContext } from "../../../hooks";
+import { CompContext } from "../../../hooks";
 import {
   ShipPosition,
   shipSelectSlice,
@@ -25,7 +25,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
   const { t } = useTranslation("common");
 
   const dispatch = useDispatch();
-  const org = useOrgContext();
+  const comp = useContext(CompContext);
 
   const id = ship?.id || "";
 
@@ -49,7 +49,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
       {t("Ship")}
     </Button>
   ) : (
-    <ShipCard ship={ship} org={org} />
+    <ShipCard ship={ship} comp={comp} />
   );
 
   if (!position) {

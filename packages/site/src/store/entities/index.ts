@@ -11,7 +11,7 @@ export { entitiesSlice } from "./entitiesSlice";
 export {
   initalCustomModifiers,
   initalNightSituation,
-  initalStepConfig,
+  initialStepConfig,
 } from "./base";
 export * from "./selectors";
 export * from "./thunkActions";
