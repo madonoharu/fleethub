@@ -1,9 +1,6 @@
 export const atLeastOne = (xs: number[]) =>
   1 - xs.reduce((acc, x) => acc * (1 - x), 1);
 
-export const randint = (upper: number) =>
-  Math.floor(Math.random() * (upper + 1));
-
 function createRound(methodName: "round" | "floor") {
   const func = Math[methodName];
 

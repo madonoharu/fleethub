@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { GearKey, SlotSizeKey } from "@fh/utils";
 import { Tooltip, Paper, IconButton, Button } from "@mui/material";
-import { Org, Ship } from "fleethub-core";
+import { Comp, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -56,7 +56,7 @@ const GearList = styled.div`
 
 type ShipCardProps = {
   ship: Ship;
-  org?: Org;
+  comp?: Comp;
   visibleMiscStats?: boolean;
   disableDetails?: boolean;
 };
@@ -64,7 +64,7 @@ type ShipCardProps = {
 const ShipCard: React.FCX<ShipCardProps> = ({
   className,
   ship,
-  org,
+  comp,
   visibleMiscStats,
   disableDetails,
 }) => {
@@ -169,7 +169,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
       </EditModal>
 
       <DetailModal full>
-        <ShipDetails ship={ship} org={org} />
+        <ShipDetails ship={ship} comp={comp} />
       </DetailModal>
 
       <PresetModal>

@@ -44,10 +44,6 @@ pub struct Org {
 }
 
 impl Org {
-    pub fn side(&self) -> Side {
-        self.org_type.side()
-    }
-
     pub fn get_fleet_by_role(&self, role: Role) -> &Fleet {
         match role {
             Role::Main => &self.f1,
@@ -196,6 +192,10 @@ impl Org {
             .filter(|gear| gear.has_proficiency())
             .map(|gear| JsString::from(gear.id.clone()))
             .collect()
+    }
+
+    pub fn side(&self) -> Side {
+        self.org_type.side()
     }
 
     pub fn is_player(&self) -> bool {

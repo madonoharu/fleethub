@@ -1,12 +1,14 @@
 use std::{fs, path::Path};
 
-use fleethub_core::types::MasterData;
+use fleethub_core::{
+    ship::Ship,
+    types::{MasterData, ShipState},
+};
+use once_cell::sync::Lazy;
 
-#[tokio::test]
-async fn test() -> anyhow::Result<()> {
+async fn init_master_data() -> anyhow::Result<MasterData> {
     let manifest_dir: &str = std::env!("CARGO_MANIFEST_DIR");
     let tmp_dir = format!("{manifest_dir}/tmp");
-
     let md_path = format!("{tmp_dir}/master_data.json");
     let md_path = Path::new(&md_path);
 
@@ -28,7 +30,38 @@ async fn test() -> anyhow::Result<()> {
         }
     };
 
-    let _: MasterData = serde_json::from_slice(&bytes)?;
+    let md: MasterData = serde_json::from_slice(&bytes)?;
+    Ok(md)
+}
 
-    Ok(())
+pub static MASTER_DATA: Lazy<MasterData> = Lazy::new(|| {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(init_master_data()).unwrap()
+});
+
+#[test]
+fn test() {
+    use fleethub_core::{factory::Factory, types::EBonusFn};
+
+    use serde_json::json;
+
+    fn create_ship(json: serde_json::Value) -> Ship {
+        let factory = Factory {
+            master_data: MASTER_DATA.clone(),
+            ebonus_fn: EBonusFn { js: None },
+        };
+
+        let input: ShipState = serde_json::from_value(json).unwrap();
+
+        factory.create_ship(Some(input)).unwrap()
+    }
+
+    macro_rules! ship {
+        ($input:tt) => {
+            create_ship(json!($input))
+        };
+    }
+
+    let s = ship!({ "ship_id": 1 });
+    assert_eq!(s.name(), "睦月");
 }

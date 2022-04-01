@@ -1,5 +1,11 @@
 import { Button, Stack } from "@mui/material";
-import { OrgType, Role, WarfareAnalyzerShipEnvironment } from "fleethub-core";
+import {
+  Formation,
+  OrgType,
+  Role,
+  Side,
+  WarfareAnalyzerShipEnvironment,
+} from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,19 +17,36 @@ import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import OrgTypeSelect from "../OrgTypeSelect";
 
-type ShipStateSettingsProps = {
+export function toSide(type: OrgType): Side {
+  if (type.startsWith("Enemy")) {
+    return "Enemy";
+  } else {
+    return "Player";
+  }
+}
+
+function deafultFormation(type: OrgType): Formation {
+  if (type === "Single" || type === "EnemySingle") {
+    return "LineAhead";
+  } else {
+    return "Cruising4";
+  }
+}
+
+type ShipParamsSettingsProps = {
+  side?: Side;
   value: WarfareAnalyzerShipEnvironment;
   onChange: (changes: WarfareAnalyzerShipEnvironment) => void;
 };
 
-const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
+const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
   className,
+  side,
   value,
   onChange,
 }) => {
   const { t } = useTranslation("common");
-  const { org_type_is_single, org_type_default_formation, org_type_is_player } =
-    useFhCore().module;
+  const { org_type_is_single, org_type_default_formation } = useFhCore().module;
 
   const handleOrgTypeChange = (org_type: OrgType) => {
     const changesForm =
@@ -38,14 +61,15 @@ const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
     });
   };
 
-  const bind =
-    <K extends keyof WarfareAnalyzerShipEnvironment>(key: K) =>
-    (next: WarfareAnalyzerShipEnvironment[K]) =>
+  const bind = <K extends keyof WarfareAnalyzerShipEnvironment>(key: K) => {
+    return (next: WarfareAnalyzerShipEnvironment[K]) => {
       onChange({ ...value, [key]: next });
+    };
+  };
 
   const setShipIndex = (i: number) => bind("ship_index")(i);
 
-  const isPlayer = org_type_is_player(value.org_type);
+  const isPlayer = toSide(value.org_type) === "Player";
   const color = isPlayer ? "primary" : "secondary";
 
   return (
@@ -54,6 +78,7 @@ const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
       <Flexbox gap={1}>
         <OrgTypeSelect
           color={color}
+          side={side}
           value={value.org_type}
           onChange={handleOrgTypeChange}
         />
@@ -139,4 +164,4 @@ const ShipStateSettings: React.FCX<ShipStateSettingsProps> = ({
   );
 };
 
-export default ShipStateSettings;
+export default ShipParamsSettings;

@@ -1,4 +1,4 @@
-import { includes, sumBy, uniq } from "../src";
+import { includes, sumBy, uniq, groupBy } from "../src";
 
 describe("utils/array", () => {
   it("uniq", () => {
@@ -13,5 +13,24 @@ describe("utils/array", () => {
 
   it("includes", () => {
     expect(includes(["a", "b", "c"], "a")).toBe(true);
+  });
+
+  it("groupBy", () => {
+    const result = groupBy(
+      [
+        { name: "foo", value: 1 },
+        { name: "bar", value: 1 },
+        { name: "baz", value: 2 },
+      ],
+      (item) => item.value
+    );
+
+    expect(result).toEqual({
+      1: [
+        { name: "foo", value: 1 },
+        { name: "bar", value: 1 },
+      ],
+      2: [{ name: "baz", value: 2 }],
+    });
   });
 });

@@ -77,29 +77,29 @@ function record<K extends string, V>(keys: readonly K[], value: V) {
   return obj;
 }
 
-const generateId = nanoid;
+const idGenerator = nanoid;
 
 const gear = schema<GearState>().entity(
   "gears",
   {},
   {
-    generateId,
+    idGenerator,
   }
 );
 
 const ship = schema<ShipState>().entity("ships", record(GEAR_KEYS, gear), {
-  generateId,
+  idGenerator,
 });
 
 const fleet = schema<FleetState>().entity("fleets", record(SHIP_KEYS, ship), {
-  generateId,
+  idGenerator,
 });
 
 const airSquadron = schema<AirSquadronState>().entity(
   "airSquadrons",
   record(GEAR_KEYS, gear),
   {
-    generateId,
+    idGenerator,
   }
 );
 
@@ -110,12 +110,12 @@ const org = schema<OrgState>().entity(
     record(AIR_SQUADRON_KEYS, airSquadron)
   ),
   {
-    generateId,
+    idGenerator,
   }
 );
 
 const preset = schema<Preset>().entity("presets", record(GEAR_KEYS, gear), {
-  generateId,
+  idGenerator,
 });
 
 const step = schema<Step>().entity("steps", {
@@ -127,7 +127,7 @@ const file = schema<FileState>()
     "files",
     {},
     {
-      generateId,
+      idGenerator,
     }
   )
   .define((self) => ({

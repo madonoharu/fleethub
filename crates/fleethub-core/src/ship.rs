@@ -5,7 +5,6 @@ mod night_cutin;
 
 use std::hash::Hash;
 
-use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
 use wasm_bindgen::prelude::*;
@@ -17,8 +16,8 @@ use crate::{
     plane::{Plane, PlaneImpl, PlaneMut},
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
-        DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState, NightCutin,
-        ShipAttr, ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
+        DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState, ShipAttr,
+        ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
     },
     utils::xxh3,
 };
@@ -853,14 +852,6 @@ impl Ship {
         total + ship_type_bonus
     }
 
-    pub fn get_possible_day_cutin_set(&self, anti_inst: bool) -> EnumSet<DayCutin> {
-        day_cutin::get_possible_day_cutin_set(self, anti_inst)
-    }
-
-    pub fn get_possible_night_cutin_set(&self, anti_inst: bool) -> EnumSet<NightCutin> {
-        night_cutin::get_possible_night_cutin_set(self, anti_inst)
-    }
-
     pub fn calc_observation_term(
         &self,
         fleet_los_mod: f64,
@@ -1426,10 +1417,6 @@ impl Ship {
             - armor_penetration;
 
         Some(value.max(1.0))
-    }
-
-    pub fn get_possible_anti_air_cutin_ids(&self) -> Vec<u8> {
-        anti_air_cutin::get_possible_anti_air_cutin_ids(self)
     }
 
     pub fn transport_point(&self) -> i32 {

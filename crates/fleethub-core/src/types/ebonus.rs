@@ -204,23 +204,29 @@ fn get_speed_synergy(
     }
 }
 
-pub struct EBonusFn(js_sys::Function);
+pub struct EBonusFn {
+    pub js: Option<js_sys::Function>,
+}
 
 impl EBonusFn {
     pub fn new(js: js_sys::Function) -> Self {
-        Self(js)
+        Self { js: Some(js) }
     }
 
     fn call_base(&self, ship: &EBonusFnShipInput, gears: &Vec<EBonusFnGearInput>) -> EBonuses {
-        self.0
-            .call2(
-                &JsValue::null(),
-                &JsValue::from_serde(ship).unwrap(),
-                &JsValue::from_serde(gears).unwrap(),
-            )
-            .unwrap()
-            .into_serde()
-            .unwrap()
+        self.js
+            .as_ref()
+            .map(|f| {
+                f.call2(
+                    &JsValue::null(),
+                    &JsValue::from_serde(ship).unwrap(),
+                    &JsValue::from_serde(gears).unwrap(),
+                )
+                .unwrap()
+                .into_serde()
+                .unwrap()
+            })
+            .unwrap_or_default()
     }
 
     fn carrier_power(&self, ship: &EBonusFnShipInput, gears: &GearArray) -> i16 {
