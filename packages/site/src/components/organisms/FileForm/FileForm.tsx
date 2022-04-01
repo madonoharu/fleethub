@@ -1,6 +1,7 @@
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useAsyncOnPublish } from "../../../hooks";
 import { FileEntity } from "../../../store";
 import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
 import {
@@ -8,6 +9,7 @@ import {
   DeleteButton,
   SaveButton,
   TextField,
+  LinkButton,
 } from "../../molecules";
 
 type FileFormProps = {
@@ -33,6 +35,8 @@ const FileForm: React.FCX<FileFormProps> = ({
   const { t } = useTranslation("common");
   const icon = file.type === "folder" ? <FolderIcon /> : <PlanIcon />;
 
+  const asyncOnPublish = useAsyncOnPublish(file.id);
+
   return (
     <div className={className}>
       <Flexbox gap={1}>
@@ -42,6 +46,11 @@ const FileForm: React.FCX<FileFormProps> = ({
           startLabel={icon}
           value={file.name}
           onChange={onNameChange}
+        />
+        <LinkButton
+          title={t("Share")}
+          disabled={asyncOnPublish.loading}
+          onClick={asyncOnPublish.onUrlCopy}
         />
         <FileCopyButton title={t("Copy")} onClick={onCopy} />
         <DeleteButton title={t("Remove")} onClick={onRemove} />
@@ -58,6 +67,8 @@ const FileForm: React.FCX<FileFormProps> = ({
         onChange={onDescriptionChange}
         multiline
       />
+
+      <asyncOnPublish.Snackbar />
     </div>
   );
 };
