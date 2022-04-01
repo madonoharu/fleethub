@@ -41,8 +41,8 @@ export const useAsyncOnPublish = (id: string) => {
       });
   };
 
-  const onTweet = () =>
-    asyncOnPublish
+  const onTweet = () => {
+    return asyncOnPublish
       .execute()
       .then((url) => {
         tweet({ url, text: name || "" });
@@ -51,6 +51,17 @@ export const useAsyncOnPublish = (id: string) => {
         console.error(error);
         Snackbar.show({ message: "失敗しました", severity: "error" });
       });
+  };
 
-  return { shareUrl, asyncOnPublish, onUrlCopy, onTweet, Snackbar };
+  const { loading, execute } = asyncOnPublish;
+
+  return {
+    shareUrl,
+    loading,
+    execute,
+    asyncOnPublish,
+    onUrlCopy,
+    onTweet,
+    Snackbar,
+  };
 };

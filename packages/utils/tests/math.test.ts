@@ -1,20 +1,10 @@
-import { atLeastOne, randint, round, floor } from "../src";
+import { atLeastOne, round, floor } from "../src";
 
 describe("utils/math", () => {
   it("atLeastOne", () => {
     expect(atLeastOne([0.1, 0.2, 0.3])).toBe(
       1 - (1 - 0.1) * (1 - 0.2) * (1 - 0.3)
     );
-  });
-
-  it("randint", () => {
-    const randomMock = jest.spyOn(Math, "random");
-
-    randomMock.mockReturnValue(0.9);
-    expect(randint(9)).toBe(9);
-
-    randomMock.mockReturnValue(0.09);
-    expect(randint(9)).toBe(0);
   });
 
   it("round", () => {

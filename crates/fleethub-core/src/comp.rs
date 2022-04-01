@@ -151,31 +151,6 @@ impl Comp {
         self.main.reset_battle_state();
         self.escort.as_mut().map(|f| f.reset_battle_state());
     }
-
-    pub fn create_warfare_ship_environment(
-        &self,
-        ship: &Ship,
-        formation: Formation,
-    ) -> WarfareShipEnvironment {
-        let (role, ship_index) = self
-            .members()
-            .find_map(|entry| (entry.ship == ship).then(|| (entry.role, entry.index)))
-            .unwrap_or_default();
-
-        let fleet = match role {
-            Role::Main => &self.main,
-            Role::Escort => self.escort.as_ref().unwrap_or_else(|| unreachable!()),
-        };
-
-        WarfareShipEnvironment {
-            org_type: self.org_type,
-            fleet_len: fleet.len,
-            ship_index,
-            role,
-            formation,
-            fleet_los_mod: fleet.fleet_los_mod(),
-        }
-    }
 }
 
 #[wasm_bindgen]
@@ -186,6 +161,10 @@ impl Comp {
 
     pub fn is_combined(&self) -> bool {
         self.escort.is_some()
+    }
+
+    pub fn is_player(&self) -> bool {
+        self.org_type.is_player()
     }
 
     pub fn is_enemy(&self) -> bool {
@@ -274,6 +253,31 @@ impl Comp {
     /// 輸送物資量(TP)
     pub fn transport_point(&self) -> i32 {
         self.ships().map(|ship| ship.transport_point()).sum()
+    }
+
+    pub fn create_warfare_ship_environment(
+        &self,
+        ship: &Ship,
+        formation: Formation,
+    ) -> WarfareShipEnvironment {
+        let (role, ship_index) = self
+            .members()
+            .find_map(|entry| (entry.ship == ship).then(|| (entry.role, entry.index)))
+            .unwrap_or_default();
+
+        let fleet = match role {
+            Role::Main => &self.main,
+            Role::Escort => self.escort.as_ref().unwrap_or_else(|| unreachable!()),
+        };
+
+        WarfareShipEnvironment {
+            org_type: self.org_type,
+            fleet_len: fleet.len,
+            ship_index,
+            role,
+            formation,
+            fleet_los_mod: fleet.fleet_los_mod(),
+        }
     }
 }
 

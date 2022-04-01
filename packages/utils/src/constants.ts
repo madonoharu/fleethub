@@ -354,7 +354,7 @@ export enum ShipClass {
   /// 潜特型(伊400型潜水艦)
   I400Class = 44,
   /// 特種船丙型
-  AkitsuMaruClass = 45,
+  HeiClassAmphibiousAssaultShip = 45,
   /// 三式潜航輸送艇
   Type3SubmergenceTransportVehicle = 46,
   /// Bismarck級

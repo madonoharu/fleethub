@@ -5,10 +5,9 @@ use crate::{
     attack::NightSituation,
     comp::Comp,
     fleet::Fleet,
-    gear_id,
     plane::PlaneImpl,
     ship::Ship,
-    types::{BattleConfig, ContactRank, DamageState, GearType, NightCutin, NightCutinDef},
+    types::{gear_id, BattleConfig, ContactRank, DamageState, GearType, NightCutin, NightCutinDef},
 };
 
 #[derive(Debug)]

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import BuildIcon from "@mui/icons-material/Build";
 import { Button, Stack } from "@mui/material";
-import { Org, OrgType, Ship } from "fleethub-core";
+import { Comp, Ship, Side, WarfareShipEnvironment } from "fleethub-core";
 import { produce } from "immer";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,17 +19,40 @@ import ShipCard from "../ShipCard";
 
 import AttackPowerAnalyzer from "./AttackPowerAnalyzer";
 import ShipDetailsEnemyList from "./ShipDetailsEnemyList";
-import ShipParamsSettings from "./ShipParamsSettings";
+import ShipParamsSettings, { toSide } from "./ShipParamsSettings";
 
-const isEnemy = (type: OrgType) =>
-  type === "EnemySingle" || type === "EnemyCombined";
+function mergeStateByEnv(
+  current: ShipDetailsState,
+  env: WarfareShipEnvironment
+): ShipDetailsState {
+  const next = produce(current, (draft) => {
+    const attackerSide = toSide(env.org_type);
+    const targetSide = toSide(draft.enemy.org_type);
+
+    if (attackerSide === targetSide) {
+      if (attackerSide === "Player") {
+        draft.enemy.org_type = "EnemySingle";
+      } else {
+        draft.enemy.org_type = "Single";
+      }
+    }
+
+    Object.assign(draft.player, env);
+  });
+
+  return next;
+}
 
 type ShipDetailsProps = {
   ship: Ship;
-  org?: Org;
+  comp?: Comp;
 };
 
-const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
+const ShipDetails: React.FCX<ShipDetailsProps> = ({
+  className,
+  ship,
+  comp,
+}) => {
   const { core } = useFhCore();
 
   const state = useSelector((root) => root.present.shipDetails);
@@ -51,28 +74,18 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
     );
   };
 
+  const attackerSide: Side = toSide(state.player.org_type);
+  const targetSide: Side = attackerSide === "Player" ? "Enemy" : "Player";
+
   useEffect(() => {
-    if (!org) return;
-    const env = org.create_warfare_ship_environment(
+    if (!comp) return;
+
+    const env = comp.create_warfare_ship_environment(
       ship,
       state.player.formation
     );
 
-    if (!env) return;
-
-    const next = produce(state, (draft) => {
-      if (org.is_enemy() === isEnemy(draft.enemy.org_type)) {
-        if (org.is_player()) {
-          draft.enemy.org_type = "EnemySingle";
-        } else {
-          draft.enemy.org_type = "Single";
-        }
-      }
-
-      Object.assign(draft.player, env);
-    });
-
-    update(next);
+    update(mergeStateByEnv(state, env));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -116,6 +129,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
       </PlayerShipEnvModal>
       <EnemyShipEnvModal>
         <ShipParamsSettings
+          side={targetSide}
           value={state.enemy}
           onChange={(enemy) => update({ enemy })}
         />
@@ -129,7 +143,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, org }) => {
           },
         }}
       >
-        <ShipCard ship={ship} org={org} visibleMiscStats disableDetails />
+        <ShipCard ship={ship} comp={comp} visibleMiscStats disableDetails />
         <AttackPowerAnalyzer core={core} state={state} ship={ship} />
       </Flexbox>
 

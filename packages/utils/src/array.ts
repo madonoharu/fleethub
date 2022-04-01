@@ -1,8 +1,8 @@
-import { Dict } from "./utilityTypes";
+export function uniq<T>(array: T[]): T[] {
+  return [...new Set(array)];
+}
 
-export const uniq = <T>(array: T[]) => [...new Set(array)];
-
-export const uniqBy = <T>(array: T[], iteratee: (value: T) => unknown): T[] => {
+export function uniqBy<T>(array: T[], iteratee: (value: T) => unknown): T[] {
   const state = new Set();
 
   return array.filter((item) => {
@@ -15,27 +15,31 @@ export const uniqBy = <T>(array: T[], iteratee: (value: T) => unknown): T[] => {
     state.add(v);
     return true;
   });
-};
+}
 
-export const sumBy = <T>(array: T[], iteratee: (item: T) => number) =>
-  array.reduce((total, item) => total + iteratee(item), 0);
+export function sumBy<T>(array: T[], iteratee: (item: T) => number) {
+  return array.reduce((total, item) => total + iteratee(item), 0);
+}
 
-export const includes = <T>(array: readonly T[], value: unknown): value is T =>
-  (array as unknown[]).includes(value);
+export function includes<T>(array: readonly T[], value: unknown): value is T {
+  return (array as unknown[]).includes(value);
+}
 
-export const groupBy = <T, K extends string | number | symbol>(
+export function groupBy<T, K extends string | number | symbol>(
   array: T[],
   iteratee: (value: T) => K
-): Dict<K, T[]> => {
-  return array.reduce<Dict<K, T[]>>((result, value) => {
+): Partial<Record<K, T[]>> {
+  const result = {} as Record<K, T[]>;
+
+  array.forEach((value) => {
     const key = iteratee(value);
 
     if (key in result) {
-      result[key]?.push(value);
+      result[key].push(value);
     } else {
       result[key] = [value];
     }
+  });
 
-    return result;
-  }, {});
-};
+  return result;
+}

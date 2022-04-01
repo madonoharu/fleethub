@@ -3,7 +3,7 @@ use tsify::Tsify;
 
 use crate::{
     ship::Ship,
-    types::{DamageState, GearAttr, NightAttackType, ShipClass},
+    types::{ctype, DamageState, GearAttr, NightAttackType},
 };
 
 use super::{AswAttackType, ShellingAttackType};
@@ -66,7 +66,7 @@ pub fn get_night_battle_attack_type(
 
     let night_attack_type = if attacker.is_night_carrier() && attacker.is_healthy_as_carrier() {
         Some(NightAttackType::Carrier)
-    } else if attacker.ship_class == ShipClass::ArkRoyalClass
+    } else if attacker.ctype == ctype!("Ark Royal級")
         && attacker.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::CbSwordfish))
         && attacker.is_healthy_as_carrier()
     {

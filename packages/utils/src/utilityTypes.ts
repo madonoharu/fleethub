@@ -10,7 +10,7 @@ export type Primitive =
   | null
   | undefined;
 
-export type UnkownFn = (...args: unknown[]) => unknown;
+export type UnknownFn = (...args: unknown[]) => unknown;
 
 export type Dict<K extends string | number | symbol, T> = Partial<Record<K, T>>;
 

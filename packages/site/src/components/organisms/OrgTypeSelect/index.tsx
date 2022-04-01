@@ -1,27 +1,49 @@
-import { OrgType } from "fleethub-core";
+import { OrgType, Side } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { Select, SelectInputProps } from "../../molecules";
 
-const ORG_TYPES: OrgType[] = [
+const PLAYER_OPTIONS: OrgType[] = [
   "Single",
   "CarrierTaskForce",
   "SurfaceTaskForce",
   "TransportEscort",
-  "EnemySingle",
-  "EnemyCombined",
 ];
+
+const ENEMY_OPTIONS: OrgType[] = ["EnemySingle", "EnemyCombined"];
+
+const OPTIONS: OrgType[] = [...PLAYER_OPTIONS, ...ENEMY_OPTIONS];
 
 type OrgTypeSelectProps = {
   color?: SelectInputProps["color"];
+  side?: Side;
   value: OrgType;
   onChange?: (value: OrgType) => void;
 };
 
-const OrgTypeSelect: React.FCX<OrgTypeSelectProps> = (props) => {
+const OrgTypeSelect: React.FCX<OrgTypeSelectProps> = ({ side, ...rest }) => {
   const { t } = useTranslation("common");
-  return <Select {...props} options={ORG_TYPES} getOptionLabel={t} />;
+
+  const itemFilter = (item: OrgType) => {
+    if (side === "Player") {
+      return PLAYER_OPTIONS.includes(item);
+    } else if (side === "Enemy") {
+      const isEnemy = item.startsWith("Enemy");
+      return isEnemy;
+    } else {
+      return true;
+    }
+  };
+
+  return (
+    <Select
+      {...rest}
+      options={OPTIONS}
+      getOptionLabel={t}
+      itemFilter={itemFilter}
+    />
+  );
 };
 
 export default OrgTypeSelect;

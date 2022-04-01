@@ -10,9 +10,8 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     gear::IBonuses,
-    gear_id,
     ship::ShipEquippable,
-    types::{GearAttr, GearState, GearType, ShipAttr, SpeedGroup},
+    types::{gear_id, GearAttr, GearState, GearType, ShipAttr, SpeedGroup},
 };
 
 use super::BattleConfig;
