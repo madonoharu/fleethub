@@ -1,7 +1,6 @@
 use crate::{
-    gear_id,
     ship::Ship,
-    types::{GearType, ShipType, SpecialEnemyType},
+    types::{gear_id, GearType, ShipType, SpecialEnemyType},
 };
 
 use super::SpecialEnemyModifiers;

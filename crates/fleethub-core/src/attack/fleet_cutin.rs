@@ -1,18 +1,14 @@
 use crate::{
     fleet::Fleet,
     ship::Ship,
-    ship_id,
     types::{
-        CombinedFormation, DamageState, Engagement, FleetCutin, Formation, GearAttr, GearType,
-        ShipAttr, ShipClass, SingleFormation,
+        ctype, ship_id, CombinedFormation, DamageState, Engagement, FleetCutin, Formation,
+        GearAttr, GearType, ShipAttr, SingleFormation,
     },
 };
 
 fn is_big7(ship: &Ship) -> bool {
-    matches!(
-        ship.ship_class,
-        ShipClass::NagatoClass | ShipClass::NelsonClass
-    )
+    matches!(ship.ctype, ctype!("長門型") | ctype!("Nelson級"))
 }
 
 pub fn get_fleet_cutin_mod(
@@ -41,8 +37,8 @@ pub fn get_fleet_cutin_mod(
             let flagship = fleet.ships.get(0).unwrap_or_else(|| unreachable!());
             let second_ship = fleet.ships.get(1).unwrap_or_else(|| unreachable!());
 
-            let second_ship_mod = match second_ship.ship_class {
-                ShipClass::NagatoClass => {
+            let second_ship_mod = match second_ship.ctype {
+                ctype!("長門型") => {
                     if second_ship.has_attr(ShipAttr::Kai2) {
                         if shots <= 2 {
                             1.2
@@ -57,7 +53,7 @@ pub fn get_fleet_cutin_mod(
                         }
                     }
                 }
-                ShipClass::NelsonClass => {
+                ctype!("Nelson級") => {
                     if flagship.ship_id == ship_id!("長門改二") {
                         if shots <= 2 {
                             1.1
@@ -133,9 +129,7 @@ pub fn get_fleet_cutin_mod(
 fn can_do_nelson_touch(fleet: &Fleet, formation: Formation) -> Option<()> {
     let flagship = fleet.ships.get(0)?;
 
-    if !(flagship.ship_class == ShipClass::NelsonClass
-        && flagship.damage_state() <= DamageState::Shouha)
-    {
+    if !(flagship.ctype == ctype!("Nelson級") && flagship.damage_state() <= DamageState::Shouha) {
         return None;
     }
 
@@ -168,7 +162,7 @@ fn can_do_nelson_touch(fleet: &Fleet, formation: Formation) -> Option<()> {
 fn can_do_nagato_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
     let flagship = fleet.ships.get(0)?;
 
-    if !(flagship.ship_class == ShipClass::NagatoClass
+    if !(flagship.ctype == ctype!("長門型")
         && flagship.has_attr(ShipAttr::Kai2)
         && flagship.damage_state() <= DamageState::Shouha)
     {
@@ -199,8 +193,7 @@ fn can_do_nagato_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
 fn can_do_colorado_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
     let flagship = fleet.ships.get(0)?;
 
-    if !(flagship.ship_class == ShipClass::ColoradoClass
-        && flagship.damage_state() <= DamageState::Shouha)
+    if !(flagship.ctype == ctype!("Colorado級") && flagship.damage_state() <= DamageState::Shouha)
     {
         return None;
     }
@@ -240,7 +233,7 @@ fn can_do_kongou_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
             matches!(
                 second.ship_id,
                 ship_id!("比叡改二丙") | ship_id!("榛名改二")
-            ) || second.ship_class == ShipClass::QueenElizabethClass
+            ) || second.ctype == ctype!("Queen Elizabeth級")
         }
         ship_id!("比叡改二丙") => {
             matches!(

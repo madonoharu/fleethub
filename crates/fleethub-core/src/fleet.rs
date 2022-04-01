@@ -2,10 +2,8 @@ use js_sys::JsString;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    gear_id,
     ship::Ship,
-    ship_id,
-    types::{AirWaveType, DamageState, FleetMeta, GearType},
+    types::{gear_id, ship_id, AirWaveType, DamageState, FleetMeta, GearType},
     utils::OptionalArray,
 };
 
@@ -32,9 +30,7 @@ pub struct Fleet {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
     pub xxh3: u64,
-
     pub len: usize,
-
     #[wasm_bindgen(skip)]
     pub ships: ShipArray,
 }

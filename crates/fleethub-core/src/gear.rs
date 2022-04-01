@@ -4,8 +4,9 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    gear_id,
-    types::{AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypes, MasterGear},
+    types::{
+        gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypes, MasterGear,
+    },
     utils::xxh3,
 };
 

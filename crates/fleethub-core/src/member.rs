@@ -4,10 +4,9 @@ use rand::prelude::*;
 
 use crate::{
     error::CalculationError,
-    gear_id,
     plane::PlaneMut,
     ship::Ship,
-    types::{AntiAirCutinDef, OrgType, Role, ShipClass, ShipType, Side},
+    types::{ctype, gear_id, AntiAirCutinDef, OrgType, Role, ShipType, Side},
 };
 
 pub struct Member<'a> {
@@ -239,7 +238,8 @@ impl<'a> ShipAirDefense<'a> {
         }
 
         let luck = self.ship.luck()? as f64;
-        let ship_class_bonus = if self.ship.ship_class == ShipClass::IseClass {
+
+        let ship_class_bonus = if self.ship.ctype == ctype!("伊勢型") {
             0.25
         } else {
             0.

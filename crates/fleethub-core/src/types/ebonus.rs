@@ -1,4 +1,3 @@
-use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 use wasm_bindgen::JsValue;
@@ -6,8 +5,7 @@ use wasm_bindgen::JsValue;
 use crate::{
     gear::Gear,
     gear_array::GearArray,
-    gear_id,
-    types::{ShipAttr, ShipClass, SpeedGroup},
+    types::{ctype, gear_id, ShipAttr, SpeedGroup},
 };
 
 use super::{GearTypes, MasterShip};
@@ -111,9 +109,7 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
     let new_model_boiler_count = gears.count(gear_id!("新型高温高圧缶"));
 
     // 新型高速潜水艦補正
-    let sentaka_type_mod = if ship.ctype == ShipClass::SentakaType.to_u16().unwrap_or_default()
-        && new_model_boiler_count >= 1
-    {
+    let sentaka_type_mod = if ship.ctype == ctype!("潜高型") && new_model_boiler_count >= 1 {
         5
     } else {
         0
@@ -208,23 +204,29 @@ fn get_speed_synergy(
     }
 }
 
-pub struct EBonusFn(js_sys::Function);
+pub struct EBonusFn {
+    pub js: Option<js_sys::Function>,
+}
 
 impl EBonusFn {
     pub fn new(js: js_sys::Function) -> Self {
-        Self(js)
+        Self { js: Some(js) }
     }
 
     fn call_base(&self, ship: &EBonusFnShipInput, gears: &Vec<EBonusFnGearInput>) -> EBonuses {
-        self.0
-            .call2(
-                &JsValue::null(),
-                &JsValue::from_serde(ship).unwrap(),
-                &JsValue::from_serde(gears).unwrap(),
-            )
-            .unwrap()
-            .into_serde()
-            .unwrap()
+        self.js
+            .as_ref()
+            .map(|f| {
+                f.call2(
+                    &JsValue::null(),
+                    &JsValue::from_serde(ship).unwrap(),
+                    &JsValue::from_serde(gears).unwrap(),
+                )
+                .unwrap()
+                .into_serde()
+                .unwrap()
+            })
+            .unwrap_or_default()
     }
 
     fn carrier_power(&self, ship: &EBonusFnShipInput, gears: &GearArray) -> i16 {

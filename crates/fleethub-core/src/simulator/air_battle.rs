@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_variables)]
+
 use anyhow::Result;
 use rand::prelude::*;
 
@@ -32,7 +34,7 @@ fn try_fighter_combat<R: Rng + ?Sized>(
     Ok(air_state)
 }
 
-fn try_air_defence<R: Rng + ?Sized>(
+fn try_air_defense<R: Rng + ?Sized>(
     rng: &mut R,
     config: &BattleConfig,
     attacker_comp: &mut Comp,
@@ -197,7 +199,7 @@ where
             player_planes.try_contact(self.rng, air_state.rank(Side::Player))?;
         let enemy_contact_rank = enemy_planes.try_contact(self.rng, air_state.rank(Side::Enemy))?;
 
-        try_air_defence(
+        try_air_defense(
             self.rng,
             self.config,
             self.player_comp,
@@ -206,7 +208,7 @@ where
             self.enemy_formation,
         )?;
 
-        try_air_defence(
+        try_air_defense(
             self.rng,
             self.config,
             self.enemy_comp,

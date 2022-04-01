@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
 import ArrowForward from "@mui/icons-material/ArrowForward";
-import { Paper, Typography } from "@mui/material";
+import { Alert, AlertTitle, Paper, Typography } from "@mui/material";
 import { OrgType, Ship, WarfareAnalyzerContext } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -31,6 +31,23 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
 }) => {
   const { t } = useTranslation("common");
   const { analyzer } = useFhCore();
+
+  if (ctx.attacker_env.org_type === ctx.target_env.org_type) {
+    const attackerText = t(ctx.attacker_env.org_type);
+    const targetText = t(ctx.target_env.org_type);
+
+    return (
+      <Alert className={className} style={style} severity="error">
+        <AlertTitle>
+          <Typography alignItems="center" display="flex" gap={1}>
+            {attackerText}
+            <ArrowForward fontSize="inherit" />
+            {targetText} は攻撃できません
+          </Typography>
+        </AlertTitle>
+      </Alert>
+    );
+  }
 
   const info = analyzer.analyze_warfare(ctx, attacker, target);
   const day = info?.day;

@@ -5,7 +5,6 @@ mod night_cutin;
 
 use std::hash::Hash;
 
-use enumset::EnumSet;
 use num_traits::FromPrimitive;
 use paste::paste;
 use wasm_bindgen::prelude::*;
@@ -14,13 +13,11 @@ use crate::{
     attack::{AswAttackType, ProficiencyModifiers},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
-    gear_id, matches_gear_id, matches_ship_id,
     plane::{Plane, PlaneImpl, PlaneMut},
-    ship_id,
     types::{
-        AirStateRank, AirWaveType, DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip,
-        MoraleState, NightCutin, ShipAttr, ShipCategory, ShipClass, ShipMeta, ShipState, ShipType,
-        SlotSizeArray, SpecialEnemyType,
+        ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
+        DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState, ShipAttr,
+        ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
     },
     utils::xxh3,
 };
@@ -47,7 +44,7 @@ pub struct Ship {
     pub fuel: u16,
 
     pub ship_type: ShipType,
-    pub ship_class: ShipClass,
+    pub ctype: u16,
 
     #[wasm_bindgen(skip)]
     pub slots: SlotSizeArray,
@@ -236,8 +233,8 @@ impl Ship {
     ) -> Self {
         let xxh3 = xxh3(&state);
 
-        let ship_class = FromPrimitive::from_u16(master.ctype).unwrap_or_default();
-        let is_nisshin = ship_class == ShipClass::NisshinClass;
+        let ctype = master.ctype;
+        let is_nisshin = ctype == ctype!("日進型");
 
         let slots = [state.ss1, state.ss2, state.ss3, state.ss4, state.ss5]
             .into_iter()
@@ -264,7 +261,7 @@ impl Ship {
             ammo: state.ammo.unwrap_or(master.ammo.unwrap_or_default()),
             fuel: state.fuel.unwrap_or(master.fuel.unwrap_or_default()),
             ship_type: FromPrimitive::from_u8(master.stype).unwrap_or_default(),
-            ship_class,
+            ctype,
 
             slots,
             gears,
@@ -385,16 +382,16 @@ impl Ship {
     pub fn get_ap_shell_modifiers(&self) -> (f64, f64) {
         let has_main = self.gears.has_attr(GearAttr::MainGun);
         let has_ap_shell = self.gears.has_type(GearType::ApShell);
-        let has_rader = self.gears.has_attr(GearAttr::Radar);
+        let has_radar = self.gears.has_attr(GearAttr::Radar);
         let has_secondary = self.gears.has_type(GearType::SecondaryGun);
 
         if !has_ap_shell || !has_main {
             (1.0, 1.0)
-        } else if has_secondary && has_rader {
+        } else if has_secondary && has_radar {
             (1.15, 1.3)
         } else if has_secondary {
             (1.15, 1.2)
-        } else if has_rader {
+        } else if has_radar {
             (1.1, 1.25)
         } else {
             (1.08, 1.1)
@@ -732,15 +729,15 @@ impl Ship {
         let &Self {
             ship_id,
             ship_type,
-            ship_class,
+            ctype,
             ..
         } = self;
 
         if matches_ship_id!(
             ship_id,
             "五十鈴改二" | "龍田改二" | "夕張改二丁" | "Samuel B.Roberts改"
-        ) || ship_class == ShipClass::FletcherClass
-            || (ship_class == ShipClass::JClass && self.remodel_rank() >= 2)
+        ) || ctype == ctype!("Fletcher級")
+            || (ctype == ctype!("J級") && self.remodel_rank() >= 2)
         {
             return true;
         }
@@ -760,8 +757,7 @@ impl Ship {
             return true;
         }
 
-        let is_taiyou_class_kai_after = (ship_class == ShipClass::TaiyouClass
-            && self.remodel_rank() >= 3)
+        let is_taiyou_class_kai_after = (ctype == ctype!("大鷹型") && self.remodel_rank() >= 3)
             || ship_id == ship_id!("神鷹改");
 
         if ship_id == ship_id!("加賀改二護") || is_taiyou_class_kai_after {
@@ -856,14 +852,6 @@ impl Ship {
         total + ship_type_bonus
     }
 
-    pub fn get_possible_day_cutin_set(&self, anti_inst: bool) -> EnumSet<DayCutin> {
-        day_cutin::get_possible_day_cutin_set(self, anti_inst)
-    }
-
-    pub fn get_possible_night_cutin_set(&self, anti_inst: bool) -> EnumSet<NightCutin> {
-        night_cutin::get_possible_night_cutin_set(self, anti_inst)
-    }
-
     pub fn calc_observation_term(
         &self,
         fleet_los_mod: f64,
@@ -919,11 +907,6 @@ impl Ship {
     #[wasm_bindgen(getter)]
     pub fn yomi(&self) -> String {
         self.master.yomi.clone()
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn ctype(&self) -> u16 {
-        self.master.ctype
     }
 
     #[wasm_bindgen(getter)]
@@ -1144,9 +1127,7 @@ impl Ship {
             }
         }
 
-        if self.ship_class == ShipClass::RichelieuClass
-            && gear.gear_type == GearType::SeaplaneBomber
-        {
+        if self.ctype == ctype!("Richelieu級") && gear.gear_type == GearType::SeaplaneBomber {
             return gear.gear_id == gear_id!("Laté 298B");
         }
 
@@ -1162,7 +1143,7 @@ impl Ship {
 
         let is_kai2 = self.has_attr(ShipAttr::Kai2);
 
-        if self.ship_class == ShipClass::AganoClass
+        if self.ctype == ctype!("阿賀野型")
             && is_kai2
             && key == "g4"
             && gear.gear_type == GearType::Torpedo
@@ -1170,11 +1151,11 @@ impl Ship {
             return false;
         }
 
-        if self.ship_class == ShipClass::IseClass && is_kai2 {
+        if self.ctype == ctype!("伊勢型") && is_kai2 {
             return key == "g1" || key == "g2" || !gear.has_attr(GearAttr::MainGun);
         }
 
-        if self.ship_class == ShipClass::YuubariClass && is_kai2 {
+        if self.ctype == ctype!("夕張型") && is_kai2 {
             if key == "g4" {
                 return !(gear.has_attr(GearAttr::MainGun)
                     || gear.gear_type == GearType::Torpedo
@@ -1279,7 +1260,7 @@ impl Ship {
     }
 
     pub fn get_max_slot_size(&self, index: usize) -> Option<u8> {
-        if self.ship_class == ShipClass::NisshinClass {
+        if self.ctype == ctype!("日進型") {
             nisshin_max_slot_size(&self.master, &self.gears, index)
         } else {
             self.master.get_max_slot_size(index)
@@ -1375,7 +1356,7 @@ impl Ship {
             });
 
             (single_gun_count as f64).sqrt() + 2.0 * (twin_gun_count as f64).sqrt()
-        } else if self.ship_class == ShipClass::ZaraClass {
+        } else if self.ctype == ctype!("Zara級") {
             let zara_gun_count = self.gears.count(gear_id!("203mm/53 連装砲"));
             (zara_gun_count as f64).sqrt()
         } else {
@@ -1436,10 +1417,6 @@ impl Ship {
             - armor_penetration;
 
         Some(value.max(1.0))
-    }
-
-    pub fn get_possible_anti_air_cutin_ids(&self) -> Vec<u8> {
-        anti_air_cutin::get_possible_anti_air_cutin_ids(self)
     }
 
     pub fn transport_point(&self) -> i32 {

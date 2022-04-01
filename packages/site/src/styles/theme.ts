@@ -129,6 +129,11 @@ const muiTheme = createTheme({
         transitionDuration: 200,
       },
     },
+    MuiAlert: {
+      defaultProps: {
+        variant: "outlined",
+      },
+    },
   },
 });
 

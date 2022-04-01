@@ -1,7 +1,7 @@
-export const mapValues = <T, R>(
+export function mapValues<T, R>(
   obj: T,
   fn: (value: T[keyof T], key: keyof T) => R
-) => {
+): Record<keyof T, R> {
   const nextObj = {} as Record<keyof T, R>;
 
   for (const key in obj) {
@@ -10,12 +10,12 @@ export const mapValues = <T, R>(
   }
 
   return nextObj;
-};
+}
 
-export const pick = <T, K extends keyof T>(
+export function pick<T, K extends keyof T>(
   obj: T,
   keys: readonly K[]
-): Pick<T, K> => {
+): Pick<T, K> {
   const result = {} as Pick<T, K>;
 
   keys.forEach((key) => {
@@ -25,10 +25,7 @@ export const pick = <T, K extends keyof T>(
   });
 
   return result;
-};
-
-export const cloneJson = <T>(json: T): T =>
-  JSON.parse(JSON.stringify(json)) as T;
+}
 
 export async function promiseAllValues<K extends string, V>(
   obj: Record<K, Promise<V>>

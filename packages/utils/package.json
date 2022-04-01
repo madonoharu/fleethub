@@ -1,6 +1,6 @@
 {
   "name": "@fh/utils",
-  "version": "0.5.0",
+  "version": "1.2.1",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "sideEffects": false,

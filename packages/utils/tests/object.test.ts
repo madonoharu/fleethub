@@ -1,4 +1,4 @@
-import { cloneJson, mapValues } from "../src";
+import { mapValues } from "../src";
 
 describe("utils/object", () => {
   const obj = { a: 1, b: 2, c: 3 };
@@ -8,11 +8,5 @@ describe("utils/object", () => {
       b: 14,
       c: 21,
     });
-  });
-
-  it("cloneJson", () => {
-    const cloned = cloneJson(obj);
-    expect(cloned).not.toBe(obj);
-    expect(cloned).toEqual(obj);
   });
 });
