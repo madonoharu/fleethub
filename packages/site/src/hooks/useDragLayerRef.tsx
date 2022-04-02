@@ -69,11 +69,11 @@ const DragLayer: React.FC = () => {
   );
 };
 
-const initalState = {};
+const initialState = {};
 
 export const DragLayerProvider: React.FC = ({ children }) => {
   return (
-    <DragLayerRefContext.Provider value={initalState}>
+    <DragLayerRefContext.Provider value={initialState}>
       <DragLayer />
       {children}
     </DragLayerRefContext.Provider>

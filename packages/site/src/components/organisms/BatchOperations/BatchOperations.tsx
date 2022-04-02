@@ -32,7 +32,7 @@ const createHandler =
     }
   };
 
-type BatchOperationPropss = {
+type BatchOperationProps = {
   onStarsSelect?: (value: number | undefined) => void;
   onExpSelect?: (value: number | undefined) => void;
   onMoraleStateSelect?: (value: MoraleState) => void;
@@ -51,7 +51,7 @@ const GridContainer = styled("div")`
   }
 `;
 
-const BatchOperations: React.FCX<BatchOperationPropss> = ({
+const BatchOperations: React.FCX<BatchOperationProps> = ({
   onStarsSelect,
   onExpSelect,
   onMoraleStateSelect,

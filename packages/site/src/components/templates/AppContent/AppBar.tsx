@@ -62,7 +62,7 @@ const AppBar: React.FCX<Props> = ({
 
   const { canUndo, canRedo, undo, redo } = useUndo();
 
-  const ImprotMenuModal = useModal();
+  const ImportMenuModal = useModal();
 
   const handleHomeClick = () => {
     dispatch(appSlice.actions.openFile(""));
@@ -100,7 +100,7 @@ const AppBar: React.FCX<Props> = ({
       <ImportButton
         size="small"
         title="デッキビルダー形式などから編成を読み込む"
-        onClick={ImprotMenuModal.show}
+        onClick={ImportMenuModal.show}
       />
       <UndoButton
         size="small"
@@ -132,9 +132,9 @@ const AppBar: React.FCX<Props> = ({
         <Button onClick={handleMapSelectOpen}>{t("Maps")}</Button>
         <LanguageSelect />
 
-        <ImprotMenuModal>
-          <ImportMenu onClose={ImprotMenuModal.hide} />
-        </ImprotMenuModal>
+        <ImportMenuModal>
+          <ImportMenu onClose={ImportMenuModal.hide} />
+        </ImportMenuModal>
       </div>
     </MuiAppBar>
   );

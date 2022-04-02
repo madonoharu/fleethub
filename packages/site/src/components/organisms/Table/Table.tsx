@@ -14,17 +14,17 @@ export type ColumnProps<Datum> = {
   getValue: (datum: Datum, index: number) => React.ReactNode;
 } & MuiTableCellProps;
 
-type TableClellProps<Datum> = {
+type TableCellProps<Datum> = {
   datum: Datum;
   datumIndex: number;
   column: ColumnProps<Datum>;
 };
 
-function TableClell<Datum>({
+function TableCell<Datum>({
   datum,
   datumIndex,
   column,
-}: TableClellProps<Datum>) {
+}: TableCellProps<Datum>) {
   const { label: _, getValue, ...rest } = column;
 
   return <MuiTableCell {...rest}>{getValue(datum, datumIndex)}</MuiTableCell>;
@@ -32,7 +32,7 @@ function TableClell<Datum>({
 
 function TableHeadCell<Datum>({
   column,
-}: Omit<TableClellProps<Datum>, "datum">) {
+}: Omit<TableCellProps<Datum>, "datum">) {
   const { label, getValue: _, ...rest } = column;
 
   return <MuiTableCell {...rest}>{label}</MuiTableCell>;
@@ -48,7 +48,7 @@ function TableRow<Datum>({ datum, columns, datumIndex }: TableRowProps<Datum>) {
   return (
     <MuiTableRow>
       {columns.map((column, index) => (
-        <TableClell
+        <TableCell
           key={index}
           datum={datum}
           datumIndex={datumIndex}

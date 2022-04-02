@@ -5,7 +5,7 @@ import set from "lodash/set";
 import { useCallback } from "react";
 import { useImmer } from "use-immer";
 
-import { initalNightSituation } from "../store";
+import { initialNightSituation } from "../store";
 
 import { useFhCore } from "./useFhCore";
 
@@ -34,8 +34,8 @@ const useComp = ({ comp }: Props) => {
     fleetAntiAirResist: 1,
     anti_air_cutin: null,
 
-    attackerNightSituation: initalNightSituation,
-    targetNightSituation: initalNightSituation,
+    attackerNightSituation: initialNightSituation,
+    targetNightSituation: initialNightSituation,
   });
 
   const bind = useCallback(

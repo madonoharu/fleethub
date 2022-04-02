@@ -25,7 +25,7 @@ export function toSide(type: OrgType): Side {
   }
 }
 
-function deafultFormation(type: OrgType): Formation {
+function defaultFormationFrom(type: OrgType): Formation {
   if (type === "Single" || type === "EnemySingle") {
     return "LineAhead";
   } else {
@@ -55,7 +55,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
     onChange({
       ...value,
       org_type,
-      formation: changesForm ? deafultFormation(org_type) : value.formation,
+      formation: changesForm ? defaultFormationFrom(org_type) : value.formation,
     });
   };
 

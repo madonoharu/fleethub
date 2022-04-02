@@ -36,8 +36,8 @@ export const appSlice = createSlice({
     },
   },
 
-  extraReducers: (bapplder) => {
-    bapplder
+  extraReducers: (builder) => {
+    builder
       .addCase(entitiesSlice.actions.createPlan, (state, { payload }) => {
         state.fileId = payload.input.id;
       })

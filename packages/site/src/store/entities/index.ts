@@ -9,8 +9,8 @@ export { filesSlice, isPlan, isFolder } from "./filesSlice";
 export { entitiesSlice } from "./entitiesSlice";
 
 export {
-  initalCustomModifiers,
-  initalNightSituation,
+  initialCustomModifiers,
+  initialNightSituation,
   initialStepConfig,
 } from "./base";
 export * from "./selectors";

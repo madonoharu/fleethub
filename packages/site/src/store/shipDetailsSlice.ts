@@ -6,8 +6,8 @@ import {
 } from "fleethub-core";
 
 import {
-  initalNightSituation,
-  initalCustomModifiers,
+  initialNightSituation,
+  initialCustomModifiers,
   entitiesSlice,
 } from "./entities";
 
@@ -26,8 +26,8 @@ const initialShipEnv: WarfareAnalyzerShipEnvironment = {
   ship_index: 0,
   formation: "LineAhead",
   fleet_los_mod: 0,
-  night_situation: initalNightSituation,
-  custom_mods: initalCustomModifiers,
+  night_situation: initialNightSituation,
+  custom_mods: initialCustomModifiers,
 };
 
 const initialState: ShipDetailsState = {
