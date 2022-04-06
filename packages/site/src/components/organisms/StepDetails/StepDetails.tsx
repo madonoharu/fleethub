@@ -103,7 +103,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         <Flexbox gap={1}>
           <FormationSelect
             color="primary"
-            label={t("Formation")}
+            label={t("Formation.name")}
             combined={playerOrg.is_combined()}
             value={config.player.formation}
             onChange={bind("player.formation")}
@@ -121,7 +121,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         </Flexbox>
         <FormationSelect
           css={{ width: "fit-content" }}
-          label={t("Formation")}
+          label={t("Formation.name")}
           color="secondary"
           combined={enemyOrg.is_combined()}
           value={config.enemy.formation}

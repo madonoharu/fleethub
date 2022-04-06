@@ -32,13 +32,15 @@ declare module "@mui/system/createTheme" {
 }
 
 declare module "react-i18next" {
-  interface Resources {
-    common: Record<string, string>;
-    gear_types: string[];
-    stype: string[];
-    ctype: Record<string, string>;
-    ships: Record<string, string>;
-    gears: Record<string, string>;
+  interface CustomTypeOptions {
+    resources: {
+      common: typeof import("../public/locales/en/common.json");
+      gear_types: string[];
+      stype: string[];
+      ctype: Record<string, string>;
+      ships: Record<string, string>;
+      gears: Record<string, string>;
+    };
   }
 }
 

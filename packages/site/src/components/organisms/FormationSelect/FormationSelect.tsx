@@ -42,7 +42,7 @@ const FormationSelect: React.FC<Props> = ({
   combined,
   ...rest
 }) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation("common", { keyPrefix: "Formation" });
 
   const itemFilter = combined ? isCombinedFormation : isSingleFormation;
 

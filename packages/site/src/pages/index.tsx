@@ -99,6 +99,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({
 
   const ssrConfig = await serverSideTranslations(locale, [
     "common",
+    "terms",
     "gears",
     "gear_types",
     "ships",

@@ -19,10 +19,16 @@ type Props = {
 
 const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { className, shipId } = props;
-  const { t } = useTranslation("ships");
+  const { t, i18n } = useTranslation("ships");
   const masterShip = useMasterShip(shipId);
 
-  const displayName = t(`${shipId}`, `${masterShip?.name || shipId}`);
+  const defaultName = masterShip?.name || shipId.toString();
+  let displayName: string;
+  if (i18n.resolvedLanguage === "ja") {
+    displayName = defaultName;
+  } else {
+    displayName = t(`${shipId}`, defaultName);
+  }
 
   return (
     <Flexbox ref={ref} className={className}>

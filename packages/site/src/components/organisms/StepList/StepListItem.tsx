@@ -60,7 +60,7 @@ const StepListItem: React.FCX<StepListItemProps> = ({
           <Flexbox gap={1}>
             <NodeLabel name={step.name} type={step.type} d={step.d} />
             <Typography variant="subtitle2">
-              {t(config.enemy.formation)}
+              {t(`Formation.${config.enemy.formation}`)}
             </Typography>
             <Button
               sx={{ ml: "auto" }}

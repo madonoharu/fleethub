@@ -33,8 +33,8 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
   const { analyzer } = useFhCore();
 
   if (ctx.attacker_env.org_type === ctx.target_env.org_type) {
-    const attackerText = t(ctx.attacker_env.org_type);
-    const targetText = t(ctx.target_env.org_type);
+    const attackerText = t(`OrgType.${ctx.attacker_env.org_type}`);
+    const targetText = t(`OrgType.${ctx.target_env.org_type}`);
 
     return (
       <Alert className={className} style={style} severity="error">
@@ -62,7 +62,7 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
       panel: <AttackTable type={day.attack_type.t} info={day} />,
     },
     closing_torpedo && {
-      label: t("WarfareTorpedo"),
+      label: t("WarfareType.Torpedo"),
       panel: <AttackTable type="Torpedo" info={closing_torpedo} />,
     },
     night && {
@@ -70,7 +70,7 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
       panel: <AttackTable type={night.attack_type.t} info={night} />,
     },
     openingAsw && {
-      label: t("PhaseOpeningAsw"),
+      label: t("OpeningAsw"),
       panel: <AttackTable type="Asw" info={openingAsw} />,
     },
     shelling_support && {

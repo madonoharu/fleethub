@@ -4,7 +4,7 @@ import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { getRangeLabel, getSpeedLabel } from "../../../utils";
+import { getRangeAbbr, getSpeedRank } from "../../../utils";
 import GearNameplate from "../GearNameplate";
 
 const SHIP_STAT_KEYS = [
@@ -22,16 +22,18 @@ const SHIP_STAT_KEYS = [
 ] as const;
 
 const ShipTooltipContent: React.FCX<{ ship: Ship }> = ({ ship }) => {
-  const { t } = useTranslation(["ships", "common"]);
+  const { t, i18n } = useTranslation(["common", "ships"]);
   const isAbyssal = ship.is_abyssal();
 
   const renderRow = (key: typeof SHIP_STAT_KEYS[number]) => {
     let text: React.ReactNode;
 
     if (key === "speed") {
-      text = t(`common:${getSpeedLabel(ship[key])}`);
+      const rank = getSpeedRank(ship.speed);
+      text = rank ? t(`common:SpeedRank.${rank}`) : "?";
     } else if (key === "range") {
-      text = t(`common:${getRangeLabel(ship[key])}`);
+      const abbr = getRangeAbbr(ship.range);
+      text = abbr ? t(`common:RangeAbbr.${abbr}`) : "?";
     } else {
       let left: number | undefined;
       let right: number | undefined;
@@ -60,11 +62,16 @@ const ShipTooltipContent: React.FCX<{ ship: Ship }> = ({ ship }) => {
     );
   };
 
+  let displayName: string;
+  if (i18n.resolvedLanguage === "ja") {
+    displayName = ship.name;
+  } else {
+    displayName = t(`ships:${ship.ship_id}`, ship.name);
+  }
+
   return (
     <div>
-      <Typography variant="subtitle2">
-        {t(`ships:${ship.ship_id}`, ship.name)}
-      </Typography>
+      <Typography variant="subtitle2">{displayName}</Typography>
 
       <div
         css={{

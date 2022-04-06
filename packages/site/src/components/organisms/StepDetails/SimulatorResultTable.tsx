@@ -70,7 +70,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
           data={simResult.sunk_vec}
           columns={[
             {
-              label: t("Sunk"),
+              label: t("DamageState.Sunk"),
               getValue: ([n]) => n,
               align: "right",
             },
@@ -95,7 +95,8 @@ const SimulatorResultTable: React.FCX<Props> = ({
           columns={[
             {
               label: "index",
-              getValue: (item) => `${t(item.role)} ${item.index + 1}`,
+              getValue: (item) =>
+                `${t(`FleetType.${item.role}`)} ${item.index + 1}`,
             },
             {
               label: t("Ship"),
@@ -105,7 +106,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
               },
             },
             {
-              label: t("DamageState"),
+              label: t("DamageState.name"),
               getValue: (item) => (
                 <DamageStateMapBarChart data={item.damage_state_map} />
               ),

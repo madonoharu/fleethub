@@ -106,7 +106,7 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
 
       {onMoraleStateSelect && (
         <>
-          <Divider label={t("MoraleState")} />
+          <Divider label={t("MoraleState.name")} />
           <GridContainer>
             {MORALE_STATES.map((state) => (
               <Button
@@ -118,7 +118,7 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
                   onMoraleStateSelect(event.currentTarget.value as MoraleState);
                 }}
               >
-                {t(state)}
+                {t(`MoraleState.${state}`)}
               </Button>
             ))}
           </GridContainer>
@@ -127,7 +127,7 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
 
       {onDamageStateSelect && (
         <>
-          <Divider label={t("DamageState")} />
+          <Divider label={t("DamageState.name")} />
           <GridContainer>
             {DAMAGE_STATES.map((state) => (
               <Button
@@ -139,7 +139,7 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
                   onDamageStateSelect(event.currentTarget.value as DamageState);
                 }}
               >
-                {t(state)}
+                {t(`DamageState.${state}`)}
               </Button>
             ))}
           </GridContainer>

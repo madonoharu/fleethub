@@ -7,7 +7,7 @@ import { Gear } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { getRangeLabel, withSign } from "../../../utils";
+import { getRangeAbbr, withSign } from "../../../utils";
 import { StatIcon } from "../../molecules";
 
 const STAT_KEYS = [
@@ -28,12 +28,6 @@ const STAT_KEYS = [
 ] as const;
 
 type StatKey = typeof STAT_KEYS[number];
-
-type StatEntry = {
-  key: StatKey;
-  value: number | string;
-  bonus?: number | string;
-};
 
 const StatLabel: React.FCX<{ statKey: StatKey }> = ({ className, statKey }) => {
   const { t } = useTranslation("common");
@@ -62,10 +56,17 @@ const Bonus = styled(Value)(
   `
 );
 
-export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) => {
+export type Props = {
+  gear: Gear;
+  ebonuses?: EquipmentBonuses;
+};
+
+const GearStatList: React.FCX<Props> = ({ className, gear, ebonuses }) => {
+  const { t } = useTranslation("common");
+
   const isLbFighter = gear.gear_type == "LbFighter";
 
-  return STAT_KEYS.map((key): StatEntry | undefined => {
+  const data = STAT_KEYS.map((key) => {
     if (isLbFighter && (key === "accuracy" || key === "evasion")) {
       return;
     }
@@ -85,29 +86,25 @@ export const toStatEntries = (gear: Gear, ebonuses?: EquipmentBonuses) => {
 
     if (!value && !bonus) return;
 
-    if (key === "range") return { key, value: getRangeLabel(value), bonus };
-    if (key === "speed") return { key, value: "", bonus };
+    if (key === "range") {
+      const addr = getRangeAbbr(value);
+      const text = addr ? t(`RangeAbbr.${addr}`) : "?";
+      return { key, value: text, bonus };
+    }
+
+    if (key === "speed") {
+      return { key, value: "", bonus };
+    }
+
     return { key, value, bonus };
   }).filter(nonNullable);
-};
-
-export type Props = {
-  gear: Gear;
-  ebonuses?: EquipmentBonuses;
-};
-
-const GearStatList: React.FCX<Props> = ({ className, gear, ebonuses }) => {
-  const { t } = useTranslation("common");
-  const data = toStatEntries(gear, ebonuses);
 
   return (
     <Typography className={className} variant="body2" component="div">
       {data.map((datum) => (
         <React.Fragment key={datum.key}>
           <StatLabel statKey={datum.key} />
-          <Value>
-            {datum.key === "range" ? t(`${datum.value}`) : datum.value}
-          </Value>
+          <Value>{datum.value}</Value>
           <Bonus>{datum.bonus}</Bonus>
         </React.Fragment>
       ))}

@@ -83,7 +83,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
               variant="outlined"
               onClick={() => onSelect?.(enemy, formation)}
             >
-              {t(formation)}
+              {t(`Formation.${formation}`)}
             </Button>
           ))}
       </Flexbox>

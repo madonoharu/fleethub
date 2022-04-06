@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import LinkIcon from "@mui/icons-material/Link";
 import { Button, Link } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useAsyncOnPublish } from "../../../hooks";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 const FolderMenu: React.FCX<Props> = ({ className, file }) => {
+  const { t } = useTranslation("common");
   const { asyncOnPublish, onUrlCopy, Snackbar } = useAsyncOnPublish(file.id);
 
   const url = asyncOnPublish.result;
@@ -35,7 +37,7 @@ const FolderMenu: React.FCX<Props> = ({ className, file }) => {
         onClick={onUrlCopy}
         disabled={asyncOnPublish.loading}
       >
-        共有URLをクリップボードにコピーする
+        {t("CopySharedLinkToClipboard")}
       </StyledButton>
       {url && (
         <Link href={url} noWrap>

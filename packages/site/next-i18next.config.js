@@ -8,4 +8,6 @@ module.exports = {
     locales: ["ja", "en", "ko", "zh-CN", "zh-TW"],
   },
   localePath: path.resolve("./public/locales"),
+  returnNull: false,
+  returnEmptyString: false,
 };

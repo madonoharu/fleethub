@@ -17,7 +17,7 @@ type Props = SelectInputProps & {
 };
 
 const AirStateSelect: React.FC<Props> = ({ value, onChange, ...rest }) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation("common", { keyPrefix: "AirState" });
 
   return (
     <Select

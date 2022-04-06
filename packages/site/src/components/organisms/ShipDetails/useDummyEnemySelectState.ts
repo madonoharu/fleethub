@@ -24,7 +24,7 @@ export const useDummyEnemySelectState = () => {
     const dummyEnemies = [
       { label: t("common:None"), ship: core.create_default_ship() },
       {
-        label: t("common:ApShellModifier"),
+        label: t("common:ap_shell_mod"),
         ship: core.create_ship_by_id(1511),
       },
       { label: t("common:SoftSkinned"), ship: core.create_ship_by_id(1573) },

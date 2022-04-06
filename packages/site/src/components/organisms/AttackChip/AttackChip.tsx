@@ -1,7 +1,12 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Chip } from "@mui/material";
-import { DayBattleAttackType, NightBattleAttackType } from "fleethub-core";
+import {
+  DayBattleAttackType,
+  DayCutin,
+  NightBattleAttackType,
+  NightCutin,
+} from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -15,25 +20,32 @@ type Props = {
   cutin?: string | null | undefined;
 };
 
-const getLabel = (type: WarfareType, cutin: string | null | undefined) => {
-  if (cutin) return cutin;
-
-  if (type === "NightAttack") return "Night";
-  if (type === "Shelling") return "AttackTypeSingleAttack";
-  if (type === "Torpedo") return "AttackTypeTorpedo";
-  if (type === "Asw") return "WarfareAntiSub";
-  return "Unknown";
-};
-
 const AttackChip: React.FCX<Props> = ({ className, type, cutin }) => {
   const { t } = useTranslation("common");
+
+  let label: string;
+  if (type === "Shelling") {
+    if (cutin) {
+      label = t(`DayCutin.${cutin as DayCutin}`);
+    } else {
+      label = t("WarfareType.Shelling");
+    }
+  } else if (type === "NightAttack") {
+    if (cutin) {
+      label = t(`NightCutin.${cutin as NightCutin}`);
+    } else {
+      label = t("Night");
+    }
+  } else if (type === "Torpedo") {
+    label = t("WarfareType.Torpedo");
+  } else if (type === "Asw") {
+    label = t("WarfareType.AntiSub");
+  } else {
+    label = t("Unknown");
+  }
+
   return (
-    <Chip
-      className={className}
-      variant="outlined"
-      size="small"
-      label={t(getLabel(type, cutin))}
-    />
+    <Chip className={className} variant="outlined" size="small" label={label} />
   );
 };
 

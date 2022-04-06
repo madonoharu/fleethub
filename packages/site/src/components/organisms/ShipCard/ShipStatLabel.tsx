@@ -6,7 +6,7 @@ import React from "react";
 
 import { useModal } from "../../../hooks";
 import { ShipEntity } from "../../../store";
-import { withSign, getRangeLabel, getSpeedLabel } from "../../../utils";
+import { withSign, getRangeAbbr, getSpeedRank } from "../../../utils";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { NumberInput, StatIcon } from "../../molecules";
 
@@ -72,7 +72,7 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
         alignItems="center"
       >
         <StatIcon css={{ paddingTop: 1 }} icon={statKey} />
-        <span css={{ marginLeft: 8 }}>{t(statKey)}</span>
+        <span css={{ marginLeft: 8 }}>{t(`${statKey}`)}</span>
       </Typography>
       <div>
         <LabeledValue label={t("ShipStatsCurrent")} value={maybeNumber(stat)} />
@@ -152,11 +152,13 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
   let text: React.ReactNode;
 
   if (statKey === "range") {
-    const label = getRangeLabel(stat);
-    text = <span css={{ marginLeft: 8 }}>{t(label)}</span>;
+    const abbr = getRangeAbbr(stat);
+    const label = abbr ? t(`RangeAbbr.${abbr}`) : "?";
+    text = <span css={{ marginLeft: 8 }}>{label}</span>;
   } else if (statKey === "speed") {
-    const label = getSpeedLabel(stat);
-    text = <span css={{ marginLeft: 8 }}>{t(label)}</span>;
+    const rank = getSpeedRank(stat);
+    const label = rank ? t(`SpeedRank.${rank}`) : "?";
+    text = <span css={{ marginLeft: 8 }}>{label}</span>;
   } else if (typeof stat === "number") {
     text = <ValueText>{stat}</ValueText>;
   } else {
