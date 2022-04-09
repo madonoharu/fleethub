@@ -71,7 +71,9 @@ const DragLayer: React.FC = () => {
 
 const initialState = {};
 
-export const DragLayerProvider: React.FC = ({ children }) => {
+export const DragLayerProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <DragLayerRefContext.Provider value={initialState}>
       <DragLayer />

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
-import { AirstrikeContactChance } from "fleethub-core";
+import { AirState, AirstrikeContactChance } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -19,6 +19,7 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
   label,
 }) => {
   const { t } = useTranslation("common");
+  const a = t(`AirState.${"" as AirState}`);
   return (
     <div>
       <Typography color="textSecondary">{label}</Typography>
@@ -29,7 +30,7 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
         columns={[
           {
             label: t("AirState.name"),
-            getValue: (datum) => t(`AirState.${datum.air_state}`) as string,
+            getValue: (datum) => t(`AirState.${datum.air_state}`),
           },
           {
             label: t("trigger_rate"),

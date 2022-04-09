@@ -109,12 +109,12 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
             onChange={bind("player.formation")}
           />
           <AirStateSelect
-            label={t("AirState")}
+            label={t("AirState.name")}
             value={config.air_state}
             onChange={bind("air_state")}
           />
           <EngagementSelect
-            label={t("Engagement")}
+            label={t("Engagement.name")}
             value={config.engagement}
             onChange={bind("engagement")}
           />

@@ -2,7 +2,7 @@ import { Path, PathValue } from "@fh/utils";
 import constate from "constate";
 import { Comp, Engagement, Formation, NightSituation } from "fleethub-core";
 import set from "lodash/set";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useImmer } from "use-immer";
 
 import { initialNightSituation } from "../store";
@@ -22,6 +22,7 @@ type FleetInfoState = {
 
 type Props = {
   comp: Comp;
+  children: React.ReactNode;
 };
 
 const useComp = ({ comp }: Props) => {
