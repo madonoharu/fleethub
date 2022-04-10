@@ -45,11 +45,18 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
   onPreset,
   onRemove,
 }) => {
-  const { t } = useTranslation(["ships", "common"]);
+  const { t, i18n } = useTranslation(["ships", "common"]);
   const { ship_id, name } = ship;
 
   if (readonly) {
     disableDetails = true;
+  }
+
+  let displayName: string;
+  if (i18n.resolvedLanguage === "ja") {
+    displayName = name;
+  } else {
+    displayName = t(`ships:${ship_id}`, name);
   }
 
   return (
@@ -59,8 +66,8 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         onChange={(level) => onUpdate?.({ level })}
       />
 
-      <Typography css={{ marginRight: "auto" }} noWrap variant="body2">
-        {t(`ships:${ship_id}`, name)}
+      <Typography marginRight="auto" noWrap variant="body2">
+        {displayName}
       </Typography>
 
       <AnalyticsButton

@@ -10,6 +10,7 @@ import { entitiesSlice } from "./entities/entitiesSlice";
 import { parseUrl } from "./parseUrl";
 
 type StoreProviderProps = {
+  children: React.ReactNode;
   masterData: MasterData;
 };
 

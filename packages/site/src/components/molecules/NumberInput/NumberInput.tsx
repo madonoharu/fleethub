@@ -2,8 +2,13 @@ import styled from "@emotion/styled";
 import { round } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { Button, InputAdornment } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Button,
+  InputAdornment,
+  InputProps as MuiInputProps,
+} from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 import { Input, InputProps } from "../../atoms";
 
@@ -16,10 +21,23 @@ const StyledButton = styled(Button)`
   min-height: 0;
 `;
 
-const stepValue = (value: number, step: number) => {
+function stepValue(value: number, step: number): number {
   const precision = Math.ceil(-Math.log10(Math.abs(step)));
   return round(value + step, precision);
-};
+}
+
+function clamp(value: number, min?: number, max?: number): number {
+  let r = value;
+
+  if (typeof min === "number") {
+    r = Math.max(r, min);
+  }
+  if (typeof max === "number") {
+    r = Math.min(r, max);
+  }
+
+  return r;
+}
 
 type AdornmentProps = {
   increase: () => void;
@@ -48,16 +66,24 @@ const Adornment: React.FCX<AdornmentProps> = ({
   );
 };
 
-// todo!
-// const toHalf = (str: string) =>
-//   str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
+function toHalf(str: string): string {
+  return str.replace(/[\uff10-\uff19]/g, (s) =>
+    String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+  );
+}
 
-const isNumeric = (str: string) => {
-  if (str === "") return false;
+function toNumber(str: string): number | null {
+  if (str === "") {
+    return null;
+  }
 
-  const num = Number(str);
-  return Number.isFinite(num);
-};
+  const num = Number(toHalf(str));
+  if (!Number.isFinite(num)) {
+    return null;
+  }
+
+  return num;
+}
 
 export type NumberInputProps = {
   value: number;
@@ -78,61 +104,69 @@ const NumberInput: React.FC<NumberInputProps> = ({
   InputProps,
   ...textFieldProps
 }) => {
-  const changeValue = useCallback(
-    (next: number) => {
-      if (!onChange) return;
-
-      next = typeof min === "number" ? Math.max(next, min) : next;
-      next = typeof max === "number" ? Math.min(next, max) : next;
-
-      onChange(next);
-    },
-    [min, max, onChange]
-  );
-
+  const [text, setText] = React.useState(value.toString());
   const [isFocused, setIsFocused] = useState(false);
-  const handleFocus = React.useCallback(
-    () => setIsFocused(true),
-    [setIsFocused]
-  );
-  const handleBlur = React.useCallback(
-    () => setIsFocused(false),
-    [setIsFocused]
-  );
-
-  const [inputStr, setInputStr] = React.useState(value.toString());
+  const handleFocus = React.useCallback(() => setIsFocused(true), []);
+  const handleBlur = React.useCallback(() => setIsFocused(false), []);
 
   useEffect(() => {
-    if (!isFocused) setInputStr(value.toString());
-  }, [value, isFocused, setInputStr]);
+    if (!isFocused && text !== value.toString()) {
+      setText(value.toString());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused, value]);
 
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const str = event.target.value;
-      setInputStr(str);
+  const debounced = useDebouncedCallback((value: string) => {
+    const num = toNumber(value);
 
-      const next = Number(str);
-      if (isNumeric(str)) {
-        changeValue(next);
-      }
-    },
-    [changeValue, setInputStr]
-  );
+    if (onChange && num !== null) {
+      onChange(clamp(num, min, max));
+    }
+  }, 80);
 
-  const mergedInputProps = useMemo(() => {
-    const increase = () => changeValue(stepValue(value, step));
-    const decrease = () => changeValue(stepValue(value, -step));
+  const update = (fn: (value: string) => string) => {
+    setText((value) => {
+      const next = fn(value);
+      debounced(next);
+      return next;
+    });
+  };
+
+  const mergedInputProps: MuiInputProps = useMemo(() => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      update(() => event.target.value);
+    };
+
+    const increase = () => {
+      update((current) => {
+        const currentNum = toNumber(current) || 0;
+        const nextNum = stepValue(currentNum, step);
+        return clamp(nextNum, min, max).toString();
+      });
+    };
+
+    const decrease = () => {
+      update((current) => {
+        const currentNum = toNumber(current) || 0;
+        const nextNum = stepValue(currentNum, -step);
+        return clamp(nextNum, min, max).toString();
+      });
+    };
 
     const endAdornment = <Adornment increase={increase} decrease={decrease} />;
 
-    return { endAdornment, ...InputProps };
-  }, [value, step, changeValue, InputProps]);
+    return {
+      onChange: handleChange,
+      endAdornment,
+      ...InputProps,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [min, max, step, InputProps]);
 
   return (
     <div className={className}>
       <Input
-        value={inputStr}
-        onChange={handleChange}
+        value={text}
         onFocus={handleFocus}
         onBlur={handleBlur}
         InputProps={mergedInputProps}

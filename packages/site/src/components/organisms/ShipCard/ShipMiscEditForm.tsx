@@ -63,7 +63,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
   return (
     <div className={className} style={style}>
-      <Divider label={t("DamageState")} />
+      <Divider label={t("DamageState.name")} />
 
       <Flexbox gap={1}>
         <StyledNumberInput
@@ -79,13 +79,13 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           getOptionLabel={(state) => (
             <StartIcon>
               <DamageStateIcon state={state} />
-              <span>{t(state)}</span>
+              <span>{t(`DamageState.${state}`)}</span>
             </StartIcon>
           )}
         />
       </Flexbox>
 
-      <Divider label={t("MoraleState")} />
+      <Divider label={t("MoraleState.name")} />
       <Flexbox gap={1}>
         <StyledNumberInput value={ship.morale} max={100} min={0} />
         <Select
@@ -95,7 +95,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           getOptionLabel={(state) => (
             <StartIcon>
               <MoraleStateIcon state={state} />
-              <span>{t(state)}</span>
+              <span>{t(`MoraleState.${state}`)}</span>
             </StartIcon>
           )}
         />

@@ -23,7 +23,7 @@ type OrgTypeSelectProps = {
 };
 
 const OrgTypeSelect: React.FCX<OrgTypeSelectProps> = ({ side, ...rest }) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation("common", { keyPrefix: "OrgType" });
 
   const itemFilter = (item: OrgType) => {
     if (side === "Player") {

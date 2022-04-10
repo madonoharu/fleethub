@@ -26,7 +26,7 @@ const FleetCutinInfoTable: React.FCX<FleetCutinInfoTableProps> = ({
       {data.map((info) => (
         <div key={info.formation}>
           <Typography variant="subtitle1">
-            {t(info.cutin)} {t(info.formation)}
+            {t(`FleetCutin.${info.cutin}`)} {t(`Formation.${info.formation}`)}
           </Typography>
           <Table
             size="small"
@@ -69,7 +69,7 @@ const FleetCutinAnalysisTable: React.FCX<FleetCutinAnalysisTableProps> = ({
   return (
     <div className={className}>
       <EngagementSelect
-        label={t("Engagement")}
+        label={t("Engagement.name")}
         InputProps={{
           sx: { ml: "auto" },
         }}

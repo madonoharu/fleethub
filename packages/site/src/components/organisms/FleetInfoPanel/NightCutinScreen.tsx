@@ -33,6 +33,8 @@ const RightContainer = styled.div`
 const NightCutinRateCell: React.FC<{ info: NightCutinRateInfo }> = ({
   info,
 }) => {
+  const { t } = useTranslation("common");
+
   const total = info.rates
     .map(([, rate]) => Number(rate))
     .reduce((a, b) => a + b, 0);
@@ -49,8 +51,8 @@ const NightCutinRateCell: React.FC<{ info: NightCutinRateInfo }> = ({
         ))}
       </LeftContainer>
       <RightContainer>
-        <StyledLabeledValue label="CI項" value={info.cutin_term} />
-        <StyledLabeledValue label="合計" value={toPercent(total)} />
+        <StyledLabeledValue label={t("cutin_term")} value={info.cutin_term} />
+        <StyledLabeledValue label={t("Total")} value={toPercent(total)} />
       </RightContainer>
     </div>
   );
@@ -86,8 +88,8 @@ const NightCutinTable: React.FCX<Props> = ({ className, info }) => {
 };
 
 const NightCutinPanel: React.FCX = ({ className }) => {
-  const { t } = useTranslation("common");
   const { comp, analyzer, state, bind } = useCompContext();
+  const { t } = useTranslation("common");
 
   const info = analyzer.analyze_night_cutin(
     comp,
@@ -102,17 +104,17 @@ const NightCutinPanel: React.FCX = ({ className }) => {
     <Stack className={className} gap={1}>
       <Flexbox gap={1}>
         <Typography>
-          夜間触接率 {toPercent(info.night_contact_chance.total)}
+          {t("NightContact")} {toPercent(info.night_contact_chance.total)}
         </Typography>
 
-        <Typography ml={5}>{t("攻撃側")}</Typography>
+        <Typography ml={5}>攻撃側</Typography>
         <NightSituationForm
           value={state.attackerNightSituation}
           onChange={bind("attackerNightSituation")}
           color={attackerColor}
         />
 
-        <Typography ml={5}>{t("相手側")}</Typography>
+        <Typography ml={5}>相手側</Typography>
         <NightSituationForm
           value={state.targetNightSituation}
           onChange={bind("targetNightSituation")}

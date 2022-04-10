@@ -8,7 +8,7 @@
   "module": "esm/index.js",
   "scripts": {
     "build": "yarn build:cjs & yarn build:esm",
-    "build:cjs": "tsc -p ./tsconfig.build.json -m commonjs --outDir cjs",
-    "build:esm": "tsc -p ./tsconfig.build.json -m esnext --outDir esm"
+    "build:cjs": "tsc -m commonjs --outDir cjs",
+    "build:esm": "tsc -m esnext --outDir esm"
   }
 }

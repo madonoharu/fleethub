@@ -398,12 +398,16 @@ impl Ship {
         }
     }
 
+    pub fn is_ao_carrier(&self) -> bool {
+        self.ship_id == ship_id!("速吸改") || self.ctype == ctype!("特2TL型")
+    }
+
     pub fn is_carrier_like(&self) -> bool {
         if matches!(self.ship_type, ShipType::CVL | ShipType::CV | ShipType::CVB) {
             return true;
         }
 
-        if self.ship_id == ship_id!("速吸改") || self.is_installation() {
+        if self.is_ao_carrier() || self.is_installation() {
             self.gears.has_by(|gear| gear.is_carrier_shelling_plane())
         } else {
             false
@@ -704,7 +708,7 @@ impl Ship {
                 }
             }
 
-            if self.ship_id == ship_id!("速吸改") && has_anti_sub_aircraft() {
+            if self.is_ao_carrier() && has_anti_sub_aircraft() {
                 return Some(AswAttackType::Aircraft);
             }
         }

@@ -16,7 +16,7 @@ function createEquippable(start2: Start2): MasterEquippable {
     const id = stype.api_id;
     const equip_type = Object.entries(stype.api_equip_type)
       .filter(([, equippable]) => equippable === 1)
-      .map(([gtype]) => Number(gtype));
+      .map(([type]) => Number(type));
 
     return { id, equip_type };
   });

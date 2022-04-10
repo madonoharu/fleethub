@@ -29,27 +29,27 @@ const HitRateDetails: React.FCX<HitRateDetailsProps> = ({
         value={toPercent(hitRate?.critical)}
       />
       <LabeledValue
-        label={t("AccuracyTerm")}
+        label={t("accuracy_term")}
         value={numstr(params?.accuracy_term) || "-"}
       />
       <LabeledValue
-        label={t("EvasionTerm")}
+        label={t("evasion_term")}
         value={numstr(params?.evasion_term) || "-"}
       />
       <LabeledValue
-        label={t("TargetMoraleModifier")}
+        label={t("target_morale_mod")}
         value={numstr(params?.target_morale_mod) || "-"}
       />
       <LabeledValue
-        label={t("HitPercentageBonus")}
+        label={t("hit_percentage_bonus")}
         value={`${numstr(params?.hit_percentage_bonus) || "-"}%`}
       />
       <LabeledValue
-        label={t("CriticalPercentageBonus")}
+        label={t("critical_percentage_bonus")}
         value={`${numstr(params?.critical_percentage_bonus) || "-"}%`}
       />
       <LabeledValue
-        label={t("CriticalRateConstant")}
+        label={t("critical_rate_constant")}
         value={numstr(params?.critical_rate_constant) || "-"}
       />
     </div>

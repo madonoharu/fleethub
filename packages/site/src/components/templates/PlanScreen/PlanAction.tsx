@@ -1,6 +1,7 @@
 import SaveIcon from "@mui/icons-material/Save";
 import { Fab } from "@mui/material";
 import { Org } from "fleethub-core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useAsyncOnPublish, useFile, useModal } from "../../../hooks";
@@ -29,6 +30,7 @@ const PlanAction: React.FCX<PlanActionProps> = ({
   isTemp,
   actions,
 }) => {
+  const { t } = useTranslation("common");
   const MenuModal = useModal();
   const { asyncOnPublish, onUrlCopy, onTweet, Snackbar } = useAsyncOnPublish(
     file.id
@@ -38,7 +40,7 @@ const PlanAction: React.FCX<PlanActionProps> = ({
     <>
       <Flexbox className={className} gap={1}>
         <LinkButton
-          title="共有URLをコピー"
+          title={t("CopySharedLinkToClipboard")}
           onClick={onUrlCopy}
           disabled={asyncOnPublish.loading}
         />

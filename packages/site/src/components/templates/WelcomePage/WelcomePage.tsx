@@ -23,7 +23,7 @@ import { ImportMenu } from "../../organisms";
 const WelcomePage: React.FCX = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const ImprotMenuModal = useModal();
+  const ImportMenuModal = useModal();
 
   const handleCreatePlan = () => {
     dispatch(entitiesSlice.actions.createPlan());
@@ -69,7 +69,7 @@ const WelcomePage: React.FCX = () => {
             startIcon={<SaveAltIcon />}
             variant="contained"
             color="primary"
-            onClick={ImprotMenuModal.show}
+            onClick={ImportMenuModal.show}
           >
             {t("デッキビルダー形式などから編成を読み込む")}
           </Button>
@@ -170,9 +170,9 @@ const WelcomePage: React.FCX = () => {
         </Typography>
       </Stack>
 
-      <ImprotMenuModal>
-        <ImportMenu onClose={ImprotMenuModal.hide} />
-      </ImprotMenuModal>
+      <ImportMenuModal>
+        <ImportMenu onClose={ImportMenuModal.hide} />
+      </ImportMenuModal>
     </Container>
   );
 };

@@ -29,7 +29,7 @@ export const useAsyncOnPublish = (id: string) => {
         if (!result) throw new Error("Failed to copy");
 
         Snackbar.show({
-          message: "共有URLをコピーしました",
+          message: "コピーしました",
           severity: "success",
         });
 

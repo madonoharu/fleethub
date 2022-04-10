@@ -73,7 +73,7 @@ const AntiAirPanel: React.FCX = ({ className }) => {
 
         <FormationSelect
           variant="outlined"
-          label={t("Formation")}
+          label={t("Formation.name")}
           combined={comp.is_combined()}
           value={state.formation}
           onChange={bind("formation")}
@@ -114,28 +114,28 @@ const AntiAirPanel: React.FCX = ({ className }) => {
             getValue: (datum) => <ShipNameplate shipId={datum.ship_id} />,
           },
           {
-            label: "加重対空",
+            label: t("adjusted_anti_air"),
             align: "right",
             getValue: (datum) => datum.adjusted_anti_air,
           },
           {
-            label: "割合撃墜",
+            label: t("proportional_shotdown_rate"),
             align: "right",
             getValue: (datum) =>
               datum.proportional_shotdown_rate?.toFixed(4) ?? "?",
           },
           {
-            label: "固定撃墜",
+            label: t("fixed_shotdown_number"),
             align: "right",
             getValue: (datum) => datum.fixed_shotdown_number ?? "?",
           },
           {
-            label: "最低保証",
+            label: t("minimum_bonus"),
             align: "right",
             getValue: (datum) => datum.minimum_bonus,
           },
           {
-            label: "対空CI個艦発動率",
+            label: t("anti_air_cutin_chance"),
             align: "right",
             getValue: (datum) => (
               <StyledCutinChanceCell rates={datum.anti_air_cutin_chance} />

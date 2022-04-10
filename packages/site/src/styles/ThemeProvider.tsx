@@ -39,7 +39,9 @@ const globalStyles = (theme: Theme) => css`
   }
 `;
 
-const ThemeProvider: React.FC = ({ children }) => (
+const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
     <Global styles={globalStyles} />

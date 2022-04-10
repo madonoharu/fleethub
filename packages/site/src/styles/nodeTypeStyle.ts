@@ -124,7 +124,7 @@ const nodeTypes = [
     background: "#dddddd",
     border: "#999999",
   },
-];
+] as const;
 
 export const getNodeTypeStyle = (id: number) => {
   return nodeTypes.find((type) => type.id === id) || nodeTypes[0];

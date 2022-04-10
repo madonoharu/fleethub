@@ -47,7 +47,10 @@ const CutinRateCell: React.FCX<{ info: DayCutinRateInfo }> = ({
         ))}
       </LeftContainer>
       <RightContainer>
-        <LabeledValue label="観測項" value={info.observation_term} />
+        <LabeledValue
+          label={t("observation_term")}
+          value={info.observation_term}
+        />
         <LabeledValue label={t("SpecialAttack")} value={toPercent(total)} />
       </RightContainer>
     </div>
@@ -66,7 +69,7 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({
   const { t } = useTranslation("common");
   return (
     <div>
-      {label} 艦隊索敵補正: {info.fleet_los_mod ?? "不明"}
+      {label} {t("fleet_los_mod")}: {info.fleet_los_mod ?? "?"}
       {info.ships.length === 0 ? (
         "発動不可"
       ) : (
@@ -79,13 +82,13 @@ const FleetDayAttackRateTable: React.FC<FleetDayAttackRateTableProps> = ({
               getValue: ({ ship_id }) => <ShipNameplate shipId={ship_id} />,
             },
             {
-              label: t("AirSupremacy"),
+              label: t("AirState.AirSupremacy"),
               getValue: (shipInfo) => (
                 <CutinRateCell info={shipInfo.air_supremacy} />
               ),
             },
             {
-              label: t("AirSuperiority"),
+              label: t("AirState.AirSuperiority"),
               getValue: (shipInfo) => (
                 <CutinRateCell info={shipInfo.air_superiority} />
               ),
@@ -105,9 +108,12 @@ const DayCutinRateTable: React.FCX = ({ className }) => {
 
   return (
     <div className={className}>
-      <FleetDayAttackRateTable label={t("Main")} info={info.main} />
+      <FleetDayAttackRateTable label={t("FleetType.Main")} info={info.main} />
       {info.escort && (
-        <FleetDayAttackRateTable label={t("Escort")} info={info.escort} />
+        <FleetDayAttackRateTable
+          label={t("FleetType.Escort")}
+          info={info.escort}
+        />
       )}
       <FleetCutinAnalysisTable type="shelling" />
     </div>

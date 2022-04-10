@@ -34,7 +34,9 @@ const CustomModifiersDialog: React.FCX<CustomModifiersDialogProps> = ({
       return null;
     }
 
-    return <span key={key}>{`${t(key)} x${mod.a} +${mod.b}`}</span>;
+    const label = t(key as keyof CustomModifiers);
+
+    return <span key={key}>{`${label} x${mod.a} +${mod.b}`}</span>;
   };
 
   const visibleMods = Object.values(value).some(hasMod);

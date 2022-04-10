@@ -188,11 +188,11 @@ export function createUpdateRowsRequests(
     const id = getId(next);
     return !currentIds.includes(id);
   });
-  const apendRowsRequests = createAppendRowsRequests(
+  const appendRowsRequests = createAppendRowsRequests(
     sheetId,
     headerValues,
     newRows
   );
 
-  return [...updateCellRequests, ...apendRowsRequests];
+  return [...updateCellRequests, ...appendRowsRequests];
 }

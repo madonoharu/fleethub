@@ -3,6 +3,7 @@ import {
   AttackPowerParams,
   AttackPower,
   AttackPowerModifier,
+  SpecialEnemyModifiers,
 } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -61,31 +62,31 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
       />
       {params.ap_shell_mod && (
         <LabeledValue
-          label={t("ApShellModifier")}
+          label={t("ap_shell_mod")}
           value={numstr(params.ap_shell_mod) || "-"}
         />
       )}
       {params.carrier_power && (
         <LabeledValue
-          label={t("CarrierModifier")}
+          label={t("carrier_power")}
           value={numstr(params.carrier_power) || "-"}
         />
       )}
       {params.proficiency_critical_mod && (
         <LabeledValue
-          label={t("ProficiencyCriticalModifier")}
+          label={t("proficiency_critical_mod")}
           value={numstr(params.proficiency_critical_mod) || "-"}
         />
       )}
       {Boolean(params.armor_penetration) && (
         <LabeledValue
-          label={t("ArmorPenetration")}
+          label={t("armor_penetration")}
           value={numstr(params.armor_penetration) || "-"}
         />
       )}
       {params.remaining_ammo_mod !== 1 && (
         <LabeledValue
-          label={t("RemainingAmmoMod")}
+          label={t("remaining_ammo_mod")}
           value={numstr(params.remaining_ammo_mod) || "-"}
         />
       )}
@@ -103,7 +104,11 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
         <>
           <Divider label={t("special_enemy_mods")} />
           {Object.entries(special_enemy_mods).map(([key, mod]) => (
-            <AttackPowerModifierLabel key={key} label={t(key)} mod={mod} />
+            <AttackPowerModifierLabel
+              key={key}
+              label={t(key as keyof SpecialEnemyModifiers)}
+              mod={mod}
+            />
           ))}
         </>
       )}

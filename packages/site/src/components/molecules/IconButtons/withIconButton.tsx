@@ -23,20 +23,20 @@ export const withIconButton = (WrappedIcon: React.FC) => {
     label,
     tooltipProps,
     size,
-    ...iconButonProps
+    ...iconButtonProps
   }) => {
     const WrappedButton = (
       <IconButton
         size={size === "tiny" || size === "small" ? "small" : undefined}
         css={size === "tiny" && tinyStyle}
-        {...iconButonProps}
+        {...iconButtonProps}
       >
         <WrappedIcon css={{ display: "block", fontSize: "inherit" }} />
         {label}
       </IconButton>
     );
 
-    if (title && !iconButonProps.disabled) {
+    if (title && !iconButtonProps.disabled) {
       return (
         <Tooltip title={title} {...tooltipProps}>
           {WrappedButton}

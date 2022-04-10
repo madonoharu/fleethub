@@ -35,6 +35,10 @@ rules:
     - warn
     - argsIgnorePattern: ^_
       varsIgnorePattern: ^_
+  "@typescript-eslint/restrict-template-expressions":
+    - error
+    - allowAny: true
+
   react-hooks/rules-of-hooks: error
   react-hooks/exhaustive-deps: warn
   react/display-name: off

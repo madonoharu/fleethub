@@ -27,8 +27,8 @@ export const navSlice = createSlice({
     },
   },
 
-  extraReducers: (bapplder) => {
-    bapplder.addMatcher(isRejected, (state, { error }) => {
+  extraReducers: (builder) => {
+    builder.addMatcher(isRejected, (state, { error }) => {
       state.alert = {
         severity: "error",
         message: error.code || error.message || error.code || "unknown error",

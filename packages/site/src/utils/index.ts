@@ -25,23 +25,23 @@ export const toPercent = (v: number | null | undefined, fractionDigits = 1) => {
   return (v * 100).toFixed(fractionDigits) + "%";
 };
 
-export const getSpeedLabel = (v: number | undefined) => {
-  if (v === undefined || v < 0) return "?";
-  if (v === 0) return "SpeedLand";
-  if (v <= 5) return "SpeedSlow";
-  if (v <= 10) return "SpeedFast";
-  if (v <= 15) return "SpeedFaster";
-  return "SpeedFastest";
-};
+export function getSpeedRank(v: number | undefined | null) {
+  if (typeof v !== "number" || v < 0) return undefined;
+  if (v === 0) return "Land";
+  if (v <= 5) return "Slow";
+  if (v <= 10) return "Fast";
+  if (v <= 15) return "Faster";
+  return "Fastest";
+}
 
-export const getRangeLabel = (v: number | undefined) => {
-  if (!v || v <= 0) return "?";
-  if (v === 1) return "RangeShortAbbr";
-  if (v === 2) return "RangeMediumAbbr";
-  if (v === 3) return "RangeLongAbbr";
-  if (v === 4) return "RangeVeryLongAbbr";
-  return "RangeExtremeLongAbbr";
-};
+export function getRangeAbbr(v: number | undefined | null) {
+  if (!v || v <= 0) return undefined;
+  if (v === 1) return "Short";
+  if (v === 2) return "Medium";
+  if (v === 3) return "Long";
+  if (v === 4) return "VeryLong";
+  return "ExtremeLong";
+}
 
 export const createShallowEqualSelector = createSelectorCreator(
   defaultMemoize,
