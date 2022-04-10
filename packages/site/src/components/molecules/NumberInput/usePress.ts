@@ -1,37 +1,52 @@
-import React from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-const resetTimer = (timer: React.MutableRefObject<number | null>) => {
-  if (!timer.current) return;
+class Timer {
+  private id?: number;
 
-  clearTimeout(timer.current);
-  timer.current = null;
-};
+  reset(): this {
+    window.clearTimeout(this.id);
+
+    return this;
+  }
+
+  setTimeout(handler: () => void, timeout: number) {
+    this.reset();
+    this.id = window.setTimeout(handler, timeout);
+  }
+
+  setInterval(handler: () => void, timeout: number) {
+    this.reset();
+    this.id = window.setInterval(handler, timeout);
+  }
+}
 
 const usePress = (onPress: () => void) => {
-  const [isPressed, setIsPressed] = React.useState(false);
-  const timer = React.useRef<number | null>(null);
+  const ref = useRef(new Timer());
 
-  React.useEffect(() => {
-    if (!isPressed) return;
+  useEffect(
+    () => () => {
+      ref.current.reset();
+    },
+    []
+  );
 
-    resetTimer(timer);
-    timer.current = window.setTimeout(onPress, 50);
-  }, [isPressed, timer, onPress]);
-
-  const onMouseDown = React.useCallback(() => {
+  const start = useCallback(() => {
     onPress();
-    timer.current = window.setTimeout(() => setIsPressed(true), 500);
-  }, [onPress, timer, setIsPressed]);
 
-  const onMouseUp = React.useCallback(() => {
-    resetTimer(timer);
-    setIsPressed(false);
-  }, [timer, setIsPressed]);
+    const timer = ref.current;
+    timer.setTimeout(() => {
+      timer.setInterval(onPress, 50);
+    }, 400);
+  }, [onPress]);
+
+  const cancel = useCallback(() => {
+    ref.current.reset();
+  }, []);
 
   return {
-    onMouseDown,
-    onMouseUp,
-    onMouseLeave: onMouseUp,
+    onMouseDown: start,
+    onMouseUp: cancel,
+    onMouseLeave: cancel,
   };
 };
 
