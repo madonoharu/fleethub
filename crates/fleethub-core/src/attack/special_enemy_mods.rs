@@ -187,7 +187,7 @@ pub fn special_enemy_modifiers(
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
 
     let toku_daihatsu_tank_count = shikon_count + honi_count;
-    let t89_tank_and_honi_count = t89_tank_count + honi_count;
+    let t89_tank_or_honi_count = t89_tank_count + honi_count;
 
     // 改修補正
     let landing_craft_stars = gears.sum_by(|gear| {
@@ -319,7 +319,7 @@ pub fn special_enemy_modifiers(
     if special_enemy_type == SpecialEnemyType::SupplyDepot {
         let mut n = 1.0;
 
-        if t89_tank_and_honi_count > 0 {
+        if t89_tank_or_honi_count > 0 {
             n += 1.0;
         }
         if africa_count > 0 {
@@ -347,7 +347,7 @@ pub fn special_enemy_modifiers(
         apply_mod!(
             mods.postcap_general_mod,
             a,
-            t89_tank_and_honi_count,
+            t89_tank_or_honi_count,
             [1.3, 1.3 * 1.6]
         );
         apply_mod!(mods.postcap_general_mod, a, m4a1dd_count, [1.2]);
@@ -389,7 +389,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_and_honi_count,
+                t89_tank_or_honi_count,
                 [1.5, 1.5 * 1.4]
             );
             apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]); //2積み検証待ち
@@ -434,7 +434,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_and_honi_count,
+                t89_tank_or_honi_count,
                 [1.2, 1.2 * 1.4]
             );
             // apply_mod!(mods.precap_general_mod,a, africa_count, [1.2]); //検証待ち
@@ -478,7 +478,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_and_honi_count,
+                t89_tank_or_honi_count,
                 [1.6, 1.6 * 1.5]
             );
             // apply_mod!(mods.precap_general_mod,a, africa_count, [1.6]); //検証待ち
@@ -506,7 +506,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_and_honi_count,
+                t89_tank_or_honi_count,
                 [1.5, 1.5 * 1.3]
             );
             apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]); //2積み検証待ち

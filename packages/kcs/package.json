@@ -1,10 +1,11 @@
 {
   "name": "kcs",
   "scripts": {
-    "build": "yarn esbuild src/index.ts --bundle --minify --outfile=lib/index.js"
+    "build": "yarn swc src/index.ts -d lib"
   },
   "devDependencies": {
-    "esbuild": "^0.14.28",
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.165",
     "fleethub-core": "npm:latest"
   }
 }
