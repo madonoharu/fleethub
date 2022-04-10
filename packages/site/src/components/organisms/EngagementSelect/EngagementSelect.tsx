@@ -12,7 +12,7 @@ type Props = SelectInputProps & {
 };
 
 const EngagementSelect: React.FC<Props> = ({ value, onChange, ...rest }) => {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation("common", { keyPrefix: "Engagement" });
 
   return (
     <Select

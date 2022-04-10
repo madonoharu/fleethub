@@ -29,9 +29,12 @@ const EnemyCompScreen: React.FCX<{ enemy: MapEnemyComp }> = ({ enemy }) => {
   }, [core, enemy]);
 
   const list: TabsProps["list"] = [
-    { label: t("Main"), panel: <FleetPanel comp={comp} role="Main" /> },
+    {
+      label: t("FleetType.Main"),
+      panel: <FleetPanel comp={comp} role="Main" />,
+    },
     comp.is_combined() && {
-      label: t("Escort"),
+      label: t("FleetType.Escort"),
       panel: <FleetPanel comp={comp} role="Escort" />,
     },
   ];

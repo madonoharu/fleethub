@@ -51,7 +51,7 @@ const GearLabel: React.FCX<GearLabelProps> = ({
 }) => {
   const { t } = useTranslation("common");
 
-  const hanldeExpChange = (exp: number) => {
+  const handleExpChange = (exp: number) => {
     onUpdate?.({ exp });
   };
 
@@ -84,7 +84,7 @@ const GearLabel: React.FCX<GearLabelProps> = ({
 
       <GearLabelAction>
         {gear.has_proficiency() && (
-          <GearExpSelect exp={gear.exp} onChange={hanldeExpChange} />
+          <GearExpSelect exp={gear.exp} onChange={handleExpChange} />
         )}
         <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
       </GearLabelAction>

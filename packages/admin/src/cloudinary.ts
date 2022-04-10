@@ -115,13 +115,13 @@ export const updateGearIcons = async () => {
     .max_results(500)
     .execute();
 
-  const exsits = (id: string) =>
+  const exists = (id: string) =>
     searchRes.resources.some((resource) => resource.filename === id);
 
   for (const [key, value] of Object.entries(frames)) {
     const id = key.replace("common_icon_weapon_id_", "");
 
-    if (exsits(id)) continue;
+    if (exists(id)) continue;
 
     const { w, h, x, y } = value.frame;
     const width = 40;

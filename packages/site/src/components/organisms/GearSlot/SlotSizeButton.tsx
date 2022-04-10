@@ -48,6 +48,7 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
             variant="outlined"
             value={current || 0}
             min={0}
+            max={255}
             onChange={onChange}
           />
           <Button onClick={handleInit}>{t("Reset")}</Button>

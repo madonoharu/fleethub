@@ -25,13 +25,27 @@ export function toSide(type: OrgType): Side {
   }
 }
 
-function deafultFormation(type: OrgType): Formation {
+function defaultFormationFrom(type: OrgType): Formation {
   if (type === "Single" || type === "EnemySingle") {
     return "LineAhead";
   } else {
     return "Cruising4";
   }
 }
+
+type RoleSelectProps = {
+  color: "primary" | "secondary";
+  value: Role;
+  onChange: (value: Role) => void;
+};
+
+const RoleSelect: React.FC<RoleSelectProps> = (props) => {
+  const { t } = useTranslation("common", { keyPrefix: "FleetType" });
+
+  return (
+    <Select<Role> options={["Main", "Escort"]} getOptionLabel={t} {...props} />
+  );
+};
 
 type ShipParamsSettingsProps = {
   side?: Side;
@@ -55,7 +69,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
     onChange({
       ...value,
       org_type,
-      formation: changesForm ? deafultFormation(org_type) : value.formation,
+      formation: changesForm ? defaultFormationFrom(org_type) : value.formation,
     });
   };
 
@@ -81,13 +95,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
           onChange={handleOrgTypeChange}
         />
 
-        <Select<Role>
-          color={color}
-          options={["Main", "Escort"]}
-          value={value.role}
-          onChange={bind("role")}
-          getOptionLabel={t}
-        />
+        <RoleSelect color={color} value={value.role} onChange={bind("role")} />
 
         <FormationSelect
           color={color}
@@ -141,7 +149,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
       <Divider label="昼戦設定" />
       <Flexbox>
         <NumberInput
-          label="艦隊索敵補正"
+          label={t("fleet_los_mod")}
           value={value.fleet_los_mod || 0}
           onChange={bind("fleet_los_mod")}
         />

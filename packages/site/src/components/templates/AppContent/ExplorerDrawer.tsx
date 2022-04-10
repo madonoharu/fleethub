@@ -32,6 +32,7 @@ const Container = styled.div<{ $open?: boolean }>(
 
 type Props = {
   open?: boolean;
+  children: React.ReactNode;
 };
 
 const ExplorerDrawer: React.FC<Props> = ({ open, children }) => {

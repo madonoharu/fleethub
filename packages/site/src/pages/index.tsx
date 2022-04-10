@@ -24,7 +24,7 @@ type Props = {
   generationMap: Record<string, string>;
 };
 
-const Loader: React.FC = ({ children }) => {
+const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: masterData } = useGcs<MasterData>(MASTER_DATA_PATH);
 
   if (!masterData) {
@@ -99,6 +99,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({
 
   const ssrConfig = await serverSideTranslations(locale, [
     "common",
+    "terms",
     "gears",
     "gear_types",
     "ships",

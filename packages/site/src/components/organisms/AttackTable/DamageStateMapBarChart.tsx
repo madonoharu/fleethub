@@ -22,7 +22,7 @@ const DamageStateMapBarChart: React.FCX<DamageStateMapBarChartProps> = ({
   const legendSize = 15;
   const height = 12;
   const theme = useTheme();
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
 
   const ordinalColorScale = scaleOrdinal({
     domain,
@@ -72,7 +72,7 @@ const DamageStateMapBarChart: React.FCX<DamageStateMapBarChartProps> = ({
                   </svg>
 
                   <LegendLabel align="left" margin="0 0 0 4px">
-                    {`${t(label.datum)} ${toPercent(rate)}`}
+                    {`${t(`DamageState.${label.datum}`)} ${toPercent(rate)}`}
                   </LegendLabel>
                 </LegendItem>
               );

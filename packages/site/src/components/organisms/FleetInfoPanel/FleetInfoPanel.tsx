@@ -1,6 +1,7 @@
 import { Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import { Comp, Fleet } from "fleethub-core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { CompProvider } from "../../../hooks";
@@ -22,21 +23,23 @@ const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
   comp,
   fleet,
 }) => {
+  const { t } = useTranslation("common");
+
   const list: TabsProps["list"] = [
     {
-      label: "昼戦",
+      label: t("Day"),
       panel: <DayCutinRateTable />,
     },
     {
-      label: "夜戦",
+      label: t("Night"),
       panel: <NightCutinScreen />,
     },
     {
-      label: "触接率",
+      label: t("Contact"),
       panel: <ContactChancePanel />,
     },
-    { label: "対空", panel: <AntiAirScreen /> },
-    { label: "その他", panel: <MiscScreen comp={comp} fleet={fleet} /> },
+    { label: t("anti_air"), panel: <AntiAirScreen /> },
+    { label: t("Misc"), panel: <MiscScreen comp={comp} fleet={fleet} /> },
   ];
 
   return (

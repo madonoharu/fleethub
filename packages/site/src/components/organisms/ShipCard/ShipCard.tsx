@@ -130,14 +130,22 @@ const ShipCard: React.FCX<ShipCardProps> = ({
 
         <Flexbox>
           {visibleDamageState && (
-            <Tooltip title={`${t("DamageState")} ${t(damageState)}`}>
+            <Tooltip
+              title={`${t("DamageState.name")} ${t(
+                `DamageState.${damageState}`
+              )}`}
+            >
               <TinyIconButton onClick={EditModal.show}>
                 <DamageStateIcon state={damageState} />
               </TinyIconButton>
             </Tooltip>
           )}
           {visibleMoraleState && (
-            <Tooltip title={`${t("MoraleState")} ${t(moraleState)}`}>
+            <Tooltip
+              title={`${t("MoraleState.name")} ${t(
+                `MoraleState.${moraleState}`
+              )}`}
+            >
               <TinyIconButton onClick={EditModal.show}>
                 <MoraleStateIcon state={moraleState} />
               </TinyIconButton>

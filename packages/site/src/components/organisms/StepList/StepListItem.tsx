@@ -13,7 +13,7 @@ import {
   stepsSlice,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { DeleteButton, NodeLable } from "../../molecules";
+import { DeleteButton, NodeLabel } from "../../molecules";
 import { ShipBannerGroup } from "../../organisms";
 import StepDetails from "../StepDetails";
 import Swappable from "../Swappable";
@@ -58,9 +58,9 @@ const StepListItem: React.FCX<StepListItemProps> = ({
       >
         <Paper sx={{ p: 1 }}>
           <Flexbox gap={1}>
-            <NodeLable name={step.name} type={step.type} d={step.d} />
+            <NodeLabel name={step.name} type={step.type} d={step.d} />
             <Typography variant="subtitle2">
-              {t(config.enemy.formation)}
+              {t(`Formation.${config.enemy.formation}`)}
             </Typography>
             <Button
               sx={{ ml: "auto" }}

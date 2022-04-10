@@ -27,6 +27,7 @@ const Container = styled.div<{ $type: FileType }>(
 );
 
 export type DraggableFileProps = {
+  children: React.ReactNode;
   file: FileEntity;
   canDrop: (dragFile: FileEntity) => boolean;
   onDrop: (dragFile: FileEntity) => void;

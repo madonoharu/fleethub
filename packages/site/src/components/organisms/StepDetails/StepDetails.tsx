@@ -103,25 +103,25 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
         <Flexbox gap={1}>
           <FormationSelect
             color="primary"
-            label={t("Formation")}
+            label={t("Formation.name")}
             combined={playerOrg.is_combined()}
             value={config.player.formation}
             onChange={bind("player.formation")}
           />
           <AirStateSelect
-            label={t("AirState")}
+            label={t("AirState.name")}
             value={config.air_state}
             onChange={bind("air_state")}
           />
           <EngagementSelect
-            label={t("Engagement")}
+            label={t("Engagement.name")}
             value={config.engagement}
             onChange={bind("engagement")}
           />
         </Flexbox>
         <FormationSelect
           css={{ width: "fit-content" }}
-          label={t("Formation")}
+          label={t("Formation.name")}
           color="secondary"
           combined={enemyOrg.is_combined()}
           value={config.enemy.formation}

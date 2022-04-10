@@ -48,7 +48,7 @@ const FileForm: React.FCX<FileFormProps> = ({
           onChange={onNameChange}
         />
         <LinkButton
-          title={t("Share")}
+          title={t("CopySharedLinkToClipboard") || ""}
           disabled={asyncOnPublish.loading}
           onClick={asyncOnPublish.onUrlCopy}
         />

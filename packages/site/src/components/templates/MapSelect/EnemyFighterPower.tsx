@@ -32,16 +32,16 @@ const EnemyFighterPower: React.FCX<EnemyFighterPowerProps> = ({
     <Typography className={className} component="div" variant="body2">
       {label && <Label>{label}</Label>}
       <FighterPowerValue airState={"AirSupremacy"}>
-        {t("AirSupremacy")} {fp[3]}
+        {t("AirState.AirSupremacy")} {fp[3]}
       </FighterPowerValue>
       <FighterPowerValue airState={"AirSuperiority"}>
-        {t("AirSuperiority")} {fp[2]}
+        {t("AirState.AirSuperiority")} {fp[2]}
       </FighterPowerValue>
       <FighterPowerValue airState={"AirParity"}>
-        {t("AirParity")} {fp[1]}
+        {t("AirState.AirParity")} {fp[1]}
       </FighterPowerValue>
       <FighterPowerValue airState={"AirDenial"}>
-        {t("AirDenial")} {fp[0]}
+        {t("AirState.AirDenial")} {fp[0]}
       </FighterPowerValue>
     </Typography>
   );

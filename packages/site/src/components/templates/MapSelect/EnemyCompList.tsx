@@ -7,7 +7,7 @@ import React from "react";
 
 import { useModal } from "../../../hooks";
 import { Flexbox } from "../../atoms";
-import { InfoButton, NodeLable } from "../../molecules";
+import { InfoButton, NodeLabel } from "../../molecules";
 import { EnemyCompScreen, ShipBannerGroup } from "../../organisms";
 
 import EnemyFighterPower from "./EnemyFighterPower";
@@ -83,7 +83,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
               variant="outlined"
               onClick={() => onSelect?.(enemy, formation)}
             >
-              {t(formation)}
+              {t(`Formation.${formation}`)}
             </Button>
           ))}
       </Flexbox>
@@ -105,7 +105,7 @@ const EnemyCompList: React.FCX<EnemyCompListProps> = ({
 }) => {
   return (
     <Stack className={className} gap={1}>
-      <NodeLable name={node.point} type={node.type} d={node.d} />
+      <NodeLabel name={node.point} type={node.type} d={node.d} />
       {node.enemies
         ?.filter(
           (enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty

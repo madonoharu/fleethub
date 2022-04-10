@@ -21,7 +21,7 @@ const AreaList: React.FCX<AreaListProps> = ({ className, areas, onChange }) => {
     <div className={className}>
       {worlds.map((world) => (
         <div key={world}>
-          <Divider label={t(`worldName.${world}`)} />
+          <Divider label={t(`worldName.${world as 1}`)} />
           {areas
             .filter((id) => Math.floor(id / 10) === world)
             .map((id) => (

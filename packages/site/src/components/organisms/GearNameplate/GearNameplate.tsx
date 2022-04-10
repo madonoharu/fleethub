@@ -23,12 +23,20 @@ type Props = {
 export const GearNameplate = React.forwardRef<HTMLDivElement, Props>(
   (props, ref) => {
     const { className, name, iconId, wrap } = props;
-    const { t } = useTranslation("gears");
+    const { t, i18n } = useTranslation("gears");
+
+    let displayName: string;
+    if (i18n.resolvedLanguage === "ja") {
+      displayName = name;
+    } else {
+      displayName = t(name);
+    }
+
     return (
       <Flexbox ref={ref} className={className}>
         <StyledGearIcon iconId={iconId} />
         <Typography variant="body2" align="left" noWrap={!wrap}>
-          {t(name)}
+          {displayName}
         </Typography>
       </Flexbox>
     );

@@ -9,11 +9,15 @@ type FileItem = {
 };
 
 export type FileDropZoneProps = {
+  children?: React.ReactNode;
   onDrop: (dragFile: FileEntity) => void;
   canDrop?: (dragFile: FileEntity) => boolean;
 };
 
-export const useFileDrop = ({ canDrop, onDrop }: FileDropZoneProps) => {
+export const useFileDrop = ({
+  canDrop,
+  onDrop,
+}: Pick<FileDropZoneProps, "canDrop" | "onDrop">) => {
   return useDrop({
     accept: "file",
     canDrop: canDrop && ((item: FileItem) => canDrop(item.file)),

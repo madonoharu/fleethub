@@ -6,7 +6,7 @@ import { Graph } from "@visx/network";
 import { ScaleSVG } from "@visx/responsive";
 import React from "react";
 
-import { NodeLable } from "../../molecules";
+import { NodeLabel } from "../../molecules";
 
 import { NodeCircle } from "./NodeIcon";
 
@@ -20,7 +20,7 @@ const NauticalChartNode: React.FC<{
 
   return (
     <Tooltip
-      title={<NodeLable name={node.point} type={node.type} d={node.d} />}
+      title={<NodeLabel name={node.point} type={node.type} d={node.d} />}
     >
       <NodeCircle
         type={node.type}

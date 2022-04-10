@@ -289,7 +289,7 @@ export const entitiesSlice = createSlice({
         insert(state.files, result);
       },
       prepare: (input: Partial<Plan> = {}, to?: string) => {
-        function getInitalPlan(): Plan {
+        function getInitialPlan(): Plan {
           return {
             id: nanoid(),
             type: "plan",
@@ -311,7 +311,7 @@ export const entitiesSlice = createSlice({
         return {
           payload: {
             input: {
-              ...getInitalPlan(),
+              ...getInitialPlan(),
               ...input,
             },
             to,
@@ -329,9 +329,9 @@ export const entitiesSlice = createSlice({
     ) => {
       const { position, name } = action.payload;
 
-      const sourceEnity = state[position.tag].entities[position.id];
+      const sourceEntity = state[position.tag].entities[position.id];
 
-      if (!sourceEnity) {
+      if (!sourceEntity) {
         return;
       }
 
@@ -345,7 +345,7 @@ export const entitiesSlice = createSlice({
       ormAdapters.presets.addOne(state.presets, preset);
 
       GEAR_KEYS.forEach((key) => {
-        const id = sourceEnity[key];
+        const id = sourceEntity[key];
         const gear = id && state.gears.entities[id];
 
         if (gear) {

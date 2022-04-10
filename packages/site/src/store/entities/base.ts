@@ -15,13 +15,13 @@ export function getSliceName<K extends string>(
   return `${ENTITIES_SLICE_NAME}/${key}`;
 }
 
-export const initalNightSituation: NightSituation = {
+export const initialNightSituation: NightSituation = {
   night_contact_rank: null,
   searchlight: false,
   starshell: false,
 };
 
-export const initalCustomModifiers: CustomModifiers = {
+export const initialCustomModifiers: CustomModifiers = {
   precap_mod: { a: 1, b: 0 },
   postcap_mod: { a: 1, b: 0 },
 };
@@ -31,13 +31,13 @@ export const initialStepConfig: StepConfig = {
   engagement: "Parallel",
   player: {
     formation: "LineAhead",
-    night_situation: initalNightSituation,
-    custom_mods: initalCustomModifiers,
+    night_situation: initialNightSituation,
+    custom_mods: initialCustomModifiers,
   },
   enemy: {
     formation: "LineAhead",
-    night_situation: initalNightSituation,
-    custom_mods: initalCustomModifiers,
+    night_situation: initialNightSituation,
+    custom_mods: initialCustomModifiers,
   },
 };
 

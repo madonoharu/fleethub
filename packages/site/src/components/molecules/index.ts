@@ -13,7 +13,7 @@ export { default as Tabs } from "./Tabs";
 export * from "./Tabs";
 export { default as TextField } from "./TextField";
 export * from "./TextField";
-export { default as NodeLable } from "./NodeLable";
+export { default as NodeLabel } from "./NodeLabel";
 export { default as SelectedMenu } from "./SelectedMenu";
 export { default as ConsumptionRateSelect } from "./ConsumptionRateSelect";
 export type { ConsumptionRate } from "./ConsumptionRateSelect";

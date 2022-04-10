@@ -103,7 +103,7 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
         />
         <Select
           css={{ width: 96 }}
-          label={t("RouteSup")}
+          label={t("FleetType.RouteSup")}
           options={SUP_OPTIONS}
           value={org.route_sup as FleetKey | undefined}
           getOptionLabel={(key) => (key ? uppercase(key) : t("None"))}

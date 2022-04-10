@@ -28,7 +28,7 @@ export type FileLabelProps = {
   text: React.ReactNode;
   action: React.ReactNode;
   onClick?: () => void;
-} & DraggableFileProps;
+} & Omit<DraggableFileProps, "children">;
 
 const handleActionClick = (event: React.MouseEvent) => event.stopPropagation();
 

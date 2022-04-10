@@ -6,8 +6,9 @@ import {
   WarfareInfo,
   AttackStats,
 } from "fleethub-core";
-import { TFunction, useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next";
 import React from "react";
+import { TFunction } from "react-i18next";
 
 import { numstr, toPercent } from "../../../utils";
 import { Flexbox } from "../../atoms";
@@ -27,9 +28,9 @@ type Info = NonNullable<
 >;
 type InfoItem = Info["items"][number];
 
-const createDamageColumns = (
-  t: TFunction
-): ColumnProps<{ stats: AttackStats }>[] => [
+type TFn = TFunction<"common", undefined>;
+
+const createDamageColumns = (t: TFn): ColumnProps<{ stats: AttackStats }>[] => [
   {
     label: `${t("HitRate")} (${t("Critical")})`,
     getValue: (item) => (
@@ -93,7 +94,7 @@ const createDamageColumns = (
 ];
 
 const createAttackPowerColumns = (
-  t: TFunction
+  t: TFn
 ): ColumnProps<{ stats: AttackStats }>[] => [
   {
     label: t("Normal"),
@@ -120,7 +121,7 @@ const createAttackPowerColumns = (
 ];
 
 export const createAttackTableColumns = (
-  t: TFunction,
+  t: TFn,
   disableDamage: boolean
 ): ColumnProps<{ stats: AttackStats }>[] => {
   const inner = disableDamage

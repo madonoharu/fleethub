@@ -77,7 +77,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
     return (
       <>
         <Typography key={ft} className={ft} variant="subtitle2">
-          {t(ft)}
+          {t(`FleetType.${ft}`)}
         </Typography>
         {fleetMeta.ships.map(([key, ship]) =>
           renderShip(ft, fleetMeta, key as ShipKey, ship)

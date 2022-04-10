@@ -1387,6 +1387,8 @@ macro_rules! ctype {
     ("耐氷型雑用輸送艦") => { 111 };
     ("Illustrious級") => { 112 };
     ("Conte di Cavour級") => { 113 };
+    ("Gato級") => { 114 };
+    ("特2TL型") => { 115 };
 }
 
 macro_rules! matches_ship_id {

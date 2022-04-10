@@ -6,13 +6,13 @@ import React from "react";
 
 import { getNodeTypeStyle } from "../../../styles";
 
-type NodeLableProps = {
+type NodeLabelProps = {
   name: string;
   type: MapNode["type"];
   d: MapNode["d"];
 };
 
-const NodeLable: React.FCX<NodeLableProps> = ({
+const NodeLabel: React.FCX<NodeLabelProps> = ({
   className,
   style,
   name,
@@ -32,7 +32,7 @@ const NodeLable: React.FCX<NodeLableProps> = ({
   );
 };
 
-export default styled(NodeLable)`
+export default styled(NodeLabel)`
   display: flex;
   gap: 16px;
   > span:first-of-type {

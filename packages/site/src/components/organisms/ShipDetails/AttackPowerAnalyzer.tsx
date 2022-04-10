@@ -59,7 +59,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
       panel: <AttackTable type={day.attack_type.t} info={day} disableDamage />,
     },
     closing_torpedo && {
-      label: t("WarfareTorpedo"),
+      label: t("WarfareType.Torpedo"),
       panel: (
         <AttackTable type="Torpedo" info={closing_torpedo} disableDamage />
       ),
@@ -71,11 +71,11 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
       ),
     },
     openingAsw && {
-      label: t("PhaseOpeningAsw"),
+      label: t("OpeningAsw"),
       panel: <AttackTable type="Asw" info={openingAsw} disableDamage />,
     },
     asw && {
-      label: t("WarfareAntiSub"),
+      label: t("WarfareType.AntiSub"),
       panel: <AttackTable type={asw.attack_type.t} info={asw} disableDamage />,
     },
     shelling_support && {

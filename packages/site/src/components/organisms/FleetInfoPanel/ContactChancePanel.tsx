@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
-import { AirstrikeContactChance } from "fleethub-core";
+import { AirState, AirstrikeContactChance } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -19,6 +19,7 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
   label,
 }) => {
   const { t } = useTranslation("common");
+  const a = t(`AirState.${"" as AirState}`);
   return (
     <div>
       <Typography color="textSecondary">{label}</Typography>
@@ -28,31 +29,31 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
         data={data}
         columns={[
           {
-            label: t("AirState"),
-            getValue: (datum) => t(datum.air_state),
+            label: t("AirState.name"),
+            getValue: (datum) => t(`AirState.${datum.air_state}`),
           },
           {
-            label: "開始率",
+            label: t("trigger_rate"),
             align: "right",
             getValue: (datum) => toPercent(datum.trigger_rate),
           },
           {
-            label: "x1.2触接率",
+            label: `x1.2 ${t("ContactChance")}`,
             align: "right",
             getValue: (datum) => toPercent(datum.rank3),
           },
           {
-            label: "x1.17触接率",
+            label: `x1.17 ${t("ContactChance")}`,
             align: "right",
             getValue: (datum) => toPercent(datum.rank2),
           },
           {
-            label: "x1.12触接率",
+            label: `x1.12 ${t("ContactChance")}`,
             align: "right",
             getValue: (datum) => toPercent(datum.rank1),
           },
           {
-            label: "合計触接率",
+            label: `${t("Total")} ${t("ContactChance")}`,
             align: "right",
             getValue: (datum) => toPercent(datum.total),
           },
