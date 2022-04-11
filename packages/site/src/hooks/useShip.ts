@@ -1,6 +1,5 @@
 import { Ship } from "fleethub-core";
 import { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 import {
   entitiesSlice,
@@ -11,10 +10,11 @@ import {
   shipsSlice,
 } from "../store";
 
+import { useAppDispatch, useAppSelector } from "./rtk-hooks";
 import { useFhCore } from "./useFhCore";
 
 export const useShipActions = (id?: string) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return useMemo(() => {
     const add = (ship: Ship, position?: ShipPosition) => {
@@ -52,7 +52,7 @@ export const useShipActions = (id?: string) => {
 export const useShip = (id?: string) => {
   const { core } = useFhCore();
 
-  const ship = useSelector(
+  const ship = useAppSelector(
     (root) => {
       if (!id) return;
       const state = selectShipState(root, id);

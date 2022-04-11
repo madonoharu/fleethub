@@ -4,9 +4,13 @@ import { MasterData } from "fleethub-core";
 import dynamic from "next/dynamic";
 import React, { useRef } from "react";
 import { useAsyncCallback } from "react-async-hook";
-import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCore, useSnackbar } from "../../../hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFhCore,
+  useSnackbar,
+} from "../../../hooks";
 import {
   appSlice,
   parseDeckStr,
@@ -77,10 +81,10 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
   const Snackbar = useSnackbar();
 
-  const importToTemp = useSelector(
+  const importToTemp = useAppSelector(
     (state) => selectAppState(state).importToTemp
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleImportToTempChange = (value: boolean) => {
     dispatch(appSlice.actions.setImportToTemp(value));

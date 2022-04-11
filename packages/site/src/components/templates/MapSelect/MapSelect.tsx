@@ -1,8 +1,8 @@
 import { styled } from "@mui/system";
 import dynamic from "next/dynamic";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { entitiesSlice, mapSelectSlice, MapSelectState } from "../../../store";
 import { Dialog } from "../../organisms";
 
@@ -17,8 +17,8 @@ const StyledDialog = styled(Dialog)`
 const MapMenu = dynamic(() => import("./MapMenu"));
 
 const MapSelect: React.FCX = ({ className }) => {
-  const state = useSelector((root) => root.present.mapSelect);
-  const dispatch = useDispatch();
+  const state = useAppSelector((root) => root.present.mapSelect);
+  const dispatch = useAppDispatch();
 
   const update = (changes: Partial<MapSelectState>) => {
     dispatch(mapSelectSlice.actions.update(changes));

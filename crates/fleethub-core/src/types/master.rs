@@ -6,7 +6,11 @@ use enumset::EnumSet;
 use fasteval::{bool_to_f64, Compiler, Evaler, Instruction, Slab};
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{
+    convert::{FromWasmAbi, IntoWasmAbi},
+    describe::WasmDescribe,
+    prelude::*,
+};
 
 use crate::{
     gear::IBonuses,
@@ -18,6 +22,29 @@ use super::BattleConfig;
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct GearTypes(u8, u8, u8, u8, u8);
+
+impl WasmDescribe for GearTypes {
+    fn describe() {
+        <Vec<u8> as WasmDescribe>::describe()
+    }
+}
+
+impl IntoWasmAbi for GearTypes {
+    type Abi = <Vec<u8> as IntoWasmAbi>::Abi;
+
+    fn into_abi(self) -> Self::Abi {
+        <Vec<u8> as IntoWasmAbi>::into_abi(self.into())
+    }
+}
+
+impl FromWasmAbi for GearTypes {
+    type Abi = <Vec<u8> as FromWasmAbi>::Abi;
+
+    unsafe fn from_abi(js: Self::Abi) -> Self {
+        let vec = <Vec<u8> as FromWasmAbi>::from_abi(js);
+        Self::from(vec)
+    }
+}
 
 impl GearTypes {
     pub fn get(&self, index: usize) -> Option<u8> {
@@ -41,6 +68,30 @@ impl GearTypes {
 
     pub fn icon_id(&self) -> u8 {
         self.3
+    }
+}
+
+impl From<[u8; 5]> for GearTypes {
+    fn from(input: [u8; 5]) -> Self {
+        Self(input[0], input[1], input[2], input[3], input[4])
+    }
+}
+
+impl From<GearTypes> for Vec<u8> {
+    fn from(input: GearTypes) -> Self {
+        vec![input.0, input.1, input.2, input.3, input.4]
+    }
+}
+
+impl From<Vec<u8>> for GearTypes {
+    fn from(input: Vec<u8>) -> Self {
+        let mut array = [0_u8; 5];
+
+        input.into_iter().enumerate().for_each(|(i, v)| {
+            array[i] = v;
+        });
+
+        array.into()
     }
 }
 

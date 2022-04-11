@@ -13,16 +13,15 @@ import {
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { useModal } from "../../../hooks";
+import { useAppDispatch, useModal } from "../../../hooks";
 import { entitiesSlice, transferJorData, JorData } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { ImportMenu } from "../../organisms";
 
 const WelcomePage: React.FCX = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const ImportMenuModal = useModal();
 
   const handleCreatePlan = () => {
@@ -34,7 +33,7 @@ const WelcomePage: React.FCX = () => {
       "message",
       (ev) => {
         if (ev.origin === "https://kcjervis.github.io") {
-          const data: JorData = ev.data;
+          const data = ev.data as JorData;
           const payload = transferJorData(data);
           dispatch(entitiesSlice.actions.import(payload));
         }

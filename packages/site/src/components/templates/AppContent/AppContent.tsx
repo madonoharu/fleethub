@@ -1,8 +1,11 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { DragLayerProvider } from "../../../hooks";
+import {
+  DragLayerProvider,
+  useAppDispatch,
+  useAppSelector,
+} from "../../../hooks";
 import { appSlice, selectAppState } from "../../../store";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";
@@ -17,8 +20,8 @@ const Bottom = styled.div`
 `;
 
 const AppContent: React.FC = () => {
-  const dispatch = useDispatch();
-  const explorerOpen = useSelector(
+  const dispatch = useAppDispatch();
+  const explorerOpen = useAppSelector(
     (state) => selectAppState(state).explorerOpen
   );
   const toggleExplorerOpen = () =>

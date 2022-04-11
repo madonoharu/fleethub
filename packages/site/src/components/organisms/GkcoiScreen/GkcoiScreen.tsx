@@ -6,8 +6,8 @@ import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { appSlice } from "../../../store";
 import { createGkcoiDeck, GkcoiLang, GkcoiTheme } from "../../../utils";
 import { Flexbox } from "../../atoms";
@@ -44,8 +44,8 @@ const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
   style,
   org,
 }) => {
-  const dispatch = useDispatch();
-  const theme = useSelector((root) => root.present.app.gkcoiTheme);
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector((root) => root.present.app.gkcoiTheme);
   const { i18n } = useTranslation();
   const lang = GKCOI_LANGS[i18n.language] || "jp";
 

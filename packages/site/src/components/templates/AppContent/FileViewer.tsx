@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { useSelector } from "react-redux";
 
+import { useAppSelector } from "../../../hooks";
 import { filesSelectors, selectAppState } from "../../../store";
 import { DirectoryBreadcrumbs } from "../../organisms";
 import FolderPage from "../FolderPage";
@@ -14,7 +14,7 @@ const StyledDirectoryBreadcrumbs = styled(DirectoryBreadcrumbs)`
 `;
 
 const FileViewer: React.FC = () => {
-  const file = useSelector((state) => {
+  const file = useAppSelector((state) => {
     const { fileId } = selectAppState(state);
     if (!fileId) return;
     return filesSelectors.selectById(state, fileId);

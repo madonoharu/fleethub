@@ -78,7 +78,7 @@ function createAppendRowsRequests(
 
   const rows = data.map((row) => {
     const values: sheets_v4.Schema$CellData[] = headerValues.map((key) => {
-      const value = get(row, key);
+      const value: unknown = get(row, key);
 
       return {
         userEnteredValue: toEnteredValue(value),
@@ -168,7 +168,7 @@ export function createUpdateRowsRequests(
 
     return headerValues.flatMap((key, columnIndex) => {
       const currentValue = get(currentRow, key);
-      const nextValue = get(nextRow, key);
+      const nextValue: unknown = get(nextRow, key);
 
       if (equalCellValue(currentValue, nextValue)) {
         return [];

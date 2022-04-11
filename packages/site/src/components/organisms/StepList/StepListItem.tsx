@@ -3,9 +3,8 @@ import { Typography, Paper, Button } from "@mui/material";
 import { styled } from "@mui/system";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { useModal, useOrg } from "../../../hooks";
+import { useAppDispatch, useModal, useOrg } from "../../../hooks";
 import {
   initialStepConfig,
   PlanEntity,
@@ -35,7 +34,7 @@ const StepListItem: React.FCX<StepListItemProps> = ({
 }) => {
   const { org } = useOrg(step.org);
   const { t } = useTranslation("common");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const StepDetailsModal = useModal();
 
   if (!org) return null;

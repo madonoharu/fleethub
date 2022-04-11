@@ -62,21 +62,28 @@ export const getBannerIds = async () => {
     .with_field("tags")
     .max_results(500);
 
-  let res: SearchApiResponse = await search.execute();
+  let res = (await search.execute()) as SearchApiResponse;
   const resources = res.resources;
 
   while (res.next_cursor) {
-    res = await search.next_cursor(res.next_cursor).execute();
+    res = (await search
+      .next_cursor(res.next_cursor)
+      .execute()) as SearchApiResponse;
     resources.push(...res.resources);
   }
 
   const bannerIds: Record<string, string> = {};
 
   resources.forEach((resource) => {
-    if (!resource.tags.includes("banner")) return;
+    if (!resource.tags.includes("banner")) {
+      return;
+    }
+
     resource.tags.forEach((tag) => {
       const id = Number(tag);
-      if (Number.isFinite(id)) bannerIds[id] = resource.filename;
+      if (Number.isFinite(id)) {
+        bannerIds[id] = resource.filename as string;
+      }
     });
   });
 
@@ -97,7 +104,7 @@ export const updateShipBanners = async (start2: Start2) => {
     console.log(`add banner ${name}`);
 
     if (res?.phash) {
-      banners[id] = res.phash;
+      banners[id] = res.phash as string;
     }
   }
 
@@ -110,10 +117,10 @@ export const updateGearIcons = async () => {
   const { frames }: CommonIconWeapon = await got(
     commonIconWeaponUrl.json
   ).json();
-  const searchRes: SearchApiResponse = await cloudinary.v2.search
+  const searchRes = (await cloudinary.v2.search
     .expression("gear_icons")
     .max_results(500)
-    .execute();
+    .execute()) as SearchApiResponse;
 
   const exists = (id: string) =>
     searchRes.resources.some((resource) => resource.filename === id);

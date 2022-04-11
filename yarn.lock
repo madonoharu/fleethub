@@ -730,14 +730,14 @@ __metadata:
     react-dnd: ^16.0.0
     react-dnd-html5-backend: ^16.0.0
     react-dom: 18.0.0
-    react-redux: beta
+    react-redux: ^8.0.0-rc.0
     react-twitter-widgets: ^1.10.0
     recharts: 2.1.9
     redux-persist: ^6.0.0
     redux-state-sync: ^3.1.2
     redux-undo: ^1.0.1
     sharp: ^0.30.3
-    swr: ^1.2.2
+    swr: ^1.3.0
     ts-norm: ^0.4.0
     typescript: ^4.6.3
     use-debounce: ^7.0.1
@@ -4887,15 +4887,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-register@npm:^3.3.2":
-  version: 3.3.2
-  resolution: "esbuild-register@npm:3.3.2"
-  peerDependencies:
-    esbuild: ">=0.12 <1"
-  checksum: 94c353571b23f9a54d00e4551f03696c99b068699f6afaa2bed9cdf5247ec54536f50ea4c68572485904026a4fd374625418682fd240837895839aeba3f29ec2
-  languageName: node
-  linkType: hard
-
 "escalade@npm:^3.1.1":
   version: 3.1.1
   resolution: "escalade@npm:3.1.1"
@@ -5500,7 +5491,6 @@ __metadata:
     "@typescript-eslint/parser": ^5.18.0
     cross-env: ^7.0.3
     dotenv: ^16.0.0
-    esbuild-register: ^3.3.2
     eslint: ^8.13.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
@@ -9129,9 +9119,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:beta":
-  version: 8.0.0-beta.4
-  resolution: "react-redux@npm:8.0.0-beta.4"
+"react-redux@npm:^8.0.0-rc.0":
+  version: 8.0.0-rc.0
+  resolution: "react-redux@npm:8.0.0-rc.0"
   dependencies:
     "@babel/runtime": ^7.12.1
     "@types/hoist-non-react-statics": ^3.3.1
@@ -9142,11 +9132,13 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
   peerDependenciesMeta:
+    "@types/react":
+      optional: true
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: 587def905039846ac369ec77c5efd069c646fa900c75893c68bd255c303e01de525bfd0c883000308f78c543fc7b16c71027befd4ea6a173ddb4b4cc31990887
+  checksum: c31ab48274d2c6f46c8279841207935fced29889625b5daee4a78d22156858fdea7d19b477e84354858b37384a919864c59cc2b6a6761077bc409051b5490235
   languageName: node
   linkType: hard
 
@@ -10250,12 +10242,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "swr@npm:1.2.2"
+"swr@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "swr@npm:1.3.0"
   peerDependencies:
     react: ^16.11.0 || ^17.0.0 || ^18.0.0
-  checksum: 723747c7c263536d8c9ee8b38039462395ba09a7925508f22c8fc940a1ae72e1f05ef678767b2197ce337e170f4812563281bc4b5f9ad7e4eec895cd7139fb8e
+  checksum: e7a184f0d560e9c8be85c023cc8e65e56a88a6ed46f9394b301b07f838edca23d2e303685319a4fcd620b81d447a7bcb489c7fa0a752c259f91764903c690cdb
   languageName: node
   linkType: hard
 

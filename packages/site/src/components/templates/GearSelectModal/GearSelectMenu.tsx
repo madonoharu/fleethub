@@ -3,9 +3,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import { nanoid } from "@reduxjs/toolkit";
 import { Gear } from "fleethub-core";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCore, useShip } from "../../../hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFhCore,
+  useShip,
+} from "../../../hooks";
 import { entitiesSlice } from "../../../store";
 import { makeGetNextEbonuses } from "../../../utils";
 import { Tabs, TabsProps } from "../../molecules";
@@ -20,9 +24,9 @@ type Props = {
 const GearSelectMenu: React.FCX<Props> = ({ className, gears }) => {
   const { module } = useFhCore();
 
-  const dispatch = useDispatch();
-  const create = useSelector((root) => root.present.gearSelect.create);
-  const position = useSelector((root) => root.present.gearSelect.position);
+  const dispatch = useAppDispatch();
+  const create = useAppSelector((root) => root.present.gearSelect.create);
+  const position = useAppSelector((root) => root.present.gearSelect.position);
 
   const ship = useShip(position?.id);
   const key = position?.key;

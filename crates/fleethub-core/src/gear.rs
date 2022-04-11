@@ -74,7 +74,7 @@ pub struct Gear {
 
     #[wasm_bindgen(getter_with_clone)]
     pub name: String,
-    #[wasm_bindgen(skip)]
+    #[wasm_bindgen(getter_with_clone)]
     pub types: GearTypes,
     #[wasm_bindgen(skip)]
     pub attrs: EnumSet<GearAttr>,
@@ -161,11 +161,6 @@ impl Gear {
 impl Gear {
     pub fn default() -> Self {
         Default::default()
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn types(&self) -> JsValue {
-        JsValue::from_serde(&self.types).unwrap()
     }
 
     #[wasm_bindgen(getter)]

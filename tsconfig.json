@@ -1,10 +1,20 @@
 {
   "ts-node": {
-    "swc": true
+    "swc": true,
+    "compilerOptions": {
+      "lib": ["es2020"],
+      "module": "commonjs",
+      "target": "es2020",
+
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true
+    }
   },
   "compilerOptions": {
     "allowJs": false
   },
-  "extends": "ts-node/node14/tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "include": ["packages", "scripts", "crates"]
 }

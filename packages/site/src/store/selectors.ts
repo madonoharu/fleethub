@@ -1,9 +1,8 @@
-import { DefaultRootState } from "react-redux";
+import type { RootState } from "./createStore";
 
-export const getPresentState = (root: DefaultRootState) => root.present;
+export const getPresentState = (root: RootState) => root.present;
 
-export const selectAppState = (root: DefaultRootState) =>
-  getPresentState(root).app;
+export const selectAppState = (root: RootState) => getPresentState(root).app;
 
-export const selectGkcoiState = (root: DefaultRootState) =>
+export const selectGkcoiState = (root: RootState) =>
   getPresentState(root).gkcoi;

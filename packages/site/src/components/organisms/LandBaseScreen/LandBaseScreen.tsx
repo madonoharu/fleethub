@@ -4,9 +4,8 @@ import { Paper, Stack } from "@mui/material";
 import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { SwapEvent, useModal } from "../../../hooks";
+import { SwapEvent, useAppDispatch, useModal } from "../../../hooks";
 import {
   airSquadronsSlice,
   gearsSlice,
@@ -33,7 +32,7 @@ type LandBaseScreenProps = {
 const LandBaseScreen: React.FCX<LandBaseScreenProps> = ({ className, org }) => {
   const { t } = useTranslation("common");
   const BatchOperationsModal = useModal();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const id = org.id;
   const airSquadrons = AIR_SQUADRON_KEYS.map((key) =>
