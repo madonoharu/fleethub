@@ -1,11 +1,11 @@
-import { DefaultRootState } from "react-redux";
+import type { RootState } from "../createStore";
 
 import { ormAdapters } from "./base";
 import { getEntities } from "./entitiesSlice";
 import { createDenormalizeSelector } from "./rtk-ts-norm";
 import { schemata } from "./schemata";
 
-const entitiesSelector = (root: DefaultRootState) =>
+const entitiesSelector = (root: RootState) =>
   getEntities(root.present.entities);
 
 export const selectShipState = createDenormalizeSelector(
@@ -24,13 +24,13 @@ export const selectPreset = createDenormalizeSelector(
 );
 
 export const orgsSelectors = ormAdapters.orgs.getSelectors(
-  (root: DefaultRootState) => root.present.entities.orgs
+  (root: RootState) => root.present.entities.orgs
 );
 
 export const filesSelectors = ormAdapters.files.getSelectors(
-  (root: DefaultRootState) => root.present.entities.files
+  (root: RootState) => root.present.entities.files
 );
 
 export const stepsSelectors = ormAdapters.steps.getSelectors(
-  (root: DefaultRootState) => root.present.entities.steps
+  (root: RootState) => root.present.entities.steps
 );

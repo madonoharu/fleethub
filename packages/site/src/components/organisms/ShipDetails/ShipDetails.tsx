@@ -4,9 +4,13 @@ import { Button, Stack } from "@mui/material";
 import { Comp, Ship, Side, WarfareShipEnvironment } from "fleethub-core";
 import { produce } from "immer";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCore, useModal } from "../../../hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFhCore,
+  useModal,
+} from "../../../hooks";
 import {
   shipDetailsSlice,
   ShipDetailsState,
@@ -55,8 +59,8 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
 }) => {
   const { core } = useFhCore();
 
-  const state = useSelector((root) => root.present.shipDetails);
-  const dispatch = useDispatch();
+  const state = useAppSelector((root) => root.present.shipDetails);
+  const dispatch = useAppDispatch();
 
   const PlayerShipEnvModal = useModal();
   const EnemyShipEnvModal = useModal();

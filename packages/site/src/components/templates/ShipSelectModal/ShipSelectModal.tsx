@@ -2,9 +2,8 @@ import { nonNullable } from "@fh/utils";
 import { AppThunk } from "@reduxjs/toolkit";
 import { Ship } from "fleethub-core";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { useFhCore } from "../../../hooks";
+import { useAppDispatch, useAppSelector, useFhCore } from "../../../hooks";
 import { entitiesSlice, shipSelectSlice } from "../../../store";
 import { Dialog } from "../../organisms";
 import ShipList from "../ShipList";
@@ -34,9 +33,9 @@ const ShipSelectModal: React.FCX = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [masterData]);
 
-  const dispatch = useDispatch();
-  const open = useSelector((root) => root.present.shipSelect.open);
-  const create = useSelector((root) => root.present.shipSelect.create);
+  const dispatch = useAppDispatch();
+  const open = useAppSelector((root) => root.present.shipSelect.open);
+  const create = useAppSelector((root) => root.present.shipSelect.create);
 
   const handleSelect = (ship: Ship) => {
     if (!create) return;

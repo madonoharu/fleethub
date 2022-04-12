@@ -10,7 +10,7 @@ use crate::{
     ship::Ship,
     types::{
         AirSquadronState, EBonusFn, EBonuses, FleetState, GearAttr, GearState, GearType,
-        MasterData, OrgState, OrgType, ShipAttr, ShipState, SlotSizeArray,
+        MasterData, OrgState, OrgType, ShipAttr, ShipState, SlotSizeVec,
     },
     utils::xxh3,
 };
@@ -132,7 +132,7 @@ impl Factory {
             .map(create_gear)
             .collect::<GearArray>();
 
-        let max_slots: SlotSizeArray = (0..4)
+        let max_slots: SlotSizeVec = (0..4)
             .map(|index| {
                 if let Some(gear) = gears.get(index) {
                     if gear.gear_type == GearType::LargeLbAircraft {

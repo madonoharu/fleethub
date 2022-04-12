@@ -1,10 +1,9 @@
-import { useSelector, useDispatch } from "react-redux";
-
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { GearCategoryFilter, gearSelectSlice } from "../../../store";
 
 export const useGearListState = () => {
-  const dispatch = useDispatch();
-  const state = useSelector((root) => root.present.gearSelect);
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((root) => root.present.gearSelect);
   const { category, abyssal } = state;
 
   const setAbyssal = (abyssal: boolean) =>

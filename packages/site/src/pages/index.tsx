@@ -95,22 +95,26 @@ const Index: NextComponentType<NextPageContext, unknown, Props> = ({
 export const getStaticProps: GetStaticProps<Props> = async ({
   locale = "",
 }) => {
-  const generationMap = await storage.fetchGenerationMap();
-
-  const ssrConfig = await serverSideTranslations(locale, [
-    "common",
-    "terms",
-    "gears",
-    "gear_types",
-    "ships",
-    "ctype",
+  const [generationMap, ssrConfig] = await Promise.all([
+    storage.fetchGenerationMap(),
+    serverSideTranslations(locale, [
+      "common",
+      "terms",
+      "gears",
+      "gear_types",
+      "ships",
+      "ctype",
+    ]),
   ]);
+
+  const time = new Date().toISOString();
 
   return {
     revalidate: 60,
     props: {
       ...ssrConfig,
       generationMap,
+      time,
     },
   };
 };

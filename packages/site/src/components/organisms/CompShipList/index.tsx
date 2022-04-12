@@ -4,8 +4,8 @@ import { styled, css } from "@mui/system";
 import { Comp, FleetType, FleetMeta, ShipMeta } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { useDispatch } from "react-redux";
 
+import { useAppDispatch } from "../../../hooks";
 import { entitiesSlice, ShipPosition, SwapShipPayload } from "../../../store";
 
 import CompShipButton from "./CompShipButton";
@@ -23,7 +23,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
   onShipSelect,
 }) => {
   const { t } = useTranslation("common");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const isEnemy = comp.is_enemy();
   const color = isEnemy ? "secondary" : "primary";

@@ -1,9 +1,14 @@
 import { GEAR_KEYS, nonNullable } from "@fh/utils";
 import { Button, Divider } from "@mui/material";
 import React, { useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual } from "react-redux";
 
-import { useFhCore, useShip } from "../../../hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFhCore,
+  useShip,
+} from "../../../hooks";
 import {
   entitiesSlice,
   GearPosition,
@@ -23,12 +28,12 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
   const { core, module } = useFhCore();
   const [allVisible, setAllVisible] = useState(false);
 
-  const presets = useSelector((root) => {
+  const presets = useAppSelector((root) => {
     const ids = root.present.entities.presets.ids as string[];
     return ids.map((id) => selectPreset(root, id)).filter(nonNullable);
   }, shallowEqual);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const tag = position?.tag;
   const shipEntityId = position?.tag === "ships" ? position?.id : "";

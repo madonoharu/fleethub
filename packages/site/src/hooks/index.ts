@@ -30,3 +30,4 @@ export * from "./useOrg";
 export * from "./useOrgContext";
 export * from "./useGcs";
 export * from "./useCompContext";
+export * from "./rtk-hooks";

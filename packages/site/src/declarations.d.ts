@@ -1,15 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import type {} from "@emotion/react/types/css-prop";
-import { AppDispatch, RootState } from "./store";
 
 declare module "react" {
   // eslint-disable-next-line @typescript-eslint/ban-types
   type FCX<P = {}> = FC<P & { className?: string; style?: CSSProperties }>;
-}
-
-declare module "react-redux" {
-  interface DefaultRootState extends RootState {}
-  export function useDispatch(): AppDispatch;
 }
 
 declare module "@reduxjs/toolkit" {

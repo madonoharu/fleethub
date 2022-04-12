@@ -69,6 +69,10 @@ const ShipTooltipContent: React.FCX<{ ship: Ship }> = ({ ship }) => {
     displayName = t(`ships:${ship.ship_id}`, ship.name);
   }
 
+  const slotSize = ship.slots
+    .map((v) => (v == null ? "?" : v.toString()))
+    .join(", ");
+
   return (
     <div>
       <Typography variant="subtitle2">{displayName}</Typography>
@@ -85,6 +89,8 @@ const ShipTooltipContent: React.FCX<{ ship: Ship }> = ({ ship }) => {
       >
         {SHIP_STAT_KEYS.map(renderRow)}
       </div>
+
+      <div>搭載 {slotSize}</div>
 
       {GEAR_KEYS.map((key) => {
         const gear = ship.get_gear(key);

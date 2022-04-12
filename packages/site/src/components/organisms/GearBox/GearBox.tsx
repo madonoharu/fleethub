@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Gear } from "fleethub-core";
 import React, { useMemo } from "react";
-import { useDispatch } from "react-redux";
 
+import { useAppDispatch } from "../../../hooks";
 import {
   entitiesSlice,
   GearEntity,
@@ -25,7 +25,7 @@ type Props = {
 };
 
 const useGearActions = (id?: string) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return useMemo(() => {
     const update = (changes: Partial<GearEntity>) => {
@@ -51,7 +51,7 @@ const GearBox: React.FCX<Props> = ({
   size,
   equippable,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const id = gear?.id;
 

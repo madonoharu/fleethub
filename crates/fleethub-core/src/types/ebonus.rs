@@ -8,7 +8,7 @@ use crate::{
     types::{ctype, gear_id, ShipAttr, SpeedGroup},
 };
 
-use super::{GearTypes, MasterShip};
+use super::{GearTypeIdArray, MasterShip};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -56,7 +56,7 @@ impl EBonusFnShipInput {
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EBonusFnGearInput {
     pub gear_id: u16,
-    pub types: GearTypes,
+    pub types: GearTypeIdArray,
 
     pub firepower: i16,
     pub torpedo: i16,

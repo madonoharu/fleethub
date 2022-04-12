@@ -4,9 +4,9 @@ import { Paper, Typography } from "@mui/material";
 import { AirSquadron, AirSquadronMode } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
-import { shallowEqual, useDispatch } from "react-redux";
+import { shallowEqual } from "react-redux";
 
-import { useModal } from "../../../hooks";
+import { useAppDispatch, useModal } from "../../../hooks";
 import { AirSquadronEntity, airSquadronsSlice } from "../../../store";
 import { Flexbox, LabeledValue } from "../../atoms";
 import { BusinessCenterButton, SelectedMenu } from "../../molecules";
@@ -16,7 +16,7 @@ import PresetMenu from "../PresetMenu";
 const AIR_SQUADRON_MODES: AirSquadronMode[] = ["Sortie", "AirDefense"];
 
 const useAirSquadronActions = (id: string) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return useMemo(() => {
     const update = (changes: Partial<AirSquadronEntity>) =>

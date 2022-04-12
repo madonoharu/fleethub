@@ -1,9 +1,8 @@
 import { GEAR_KEYS } from "@fh/utils";
 import { Stack, Typography, Paper } from "@mui/material";
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { useFhCore } from "../../../hooks";
+import { useAppDispatch, useFhCore } from "../../../hooks";
 import { presetsSlice, Preset } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton, TextField } from "../../molecules";
@@ -14,7 +13,7 @@ type PresetCardProps = {
 };
 
 const PresetCard: React.FCX<PresetCardProps> = ({ preset }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { core } = useFhCore();
 
   const { id } = preset;

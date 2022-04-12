@@ -3,9 +3,9 @@ import { Button } from "@mui/material";
 import { styled } from "@mui/system";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual } from "react-redux";
 
-import { useOrg } from "../../../hooks";
+import { useAppDispatch, useAppSelector, useOrg } from "../../../hooks";
 import {
   filesSlice,
   mapSelectSlice,
@@ -25,7 +25,7 @@ type StepListProps = {
 
 const StepList: React.FCX<StepListProps> = ({ className, file }) => {
   const { t } = useTranslation("common");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { org, actions } = useOrg(file.org);
 
@@ -37,7 +37,7 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
     dispatch(filesSlice.actions.removeSteps(file.id));
   };
 
-  const steps = useSelector((root) => {
+  const steps = useAppSelector((root) => {
     if (!file.steps) {
       return [];
     }

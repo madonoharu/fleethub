@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use crate::{
     gear::Gear,
     gear_array::GearArray,
-    types::{AirSquadronMode, GearAttr, GearType, SlotSizeArray},
+    types::{AirSquadronMode, GearAttr, GearType, SlotSizeVec},
 };
 
 #[wasm_bindgen]
@@ -16,9 +16,9 @@ pub struct AirSquadron {
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
     #[wasm_bindgen(skip)]
-    pub slots: SlotSizeArray,
+    pub slots: SlotSizeVec,
     #[wasm_bindgen(skip)]
-    pub max_slots: SlotSizeArray,
+    pub max_slots: SlotSizeVec,
 }
 
 #[wasm_bindgen]

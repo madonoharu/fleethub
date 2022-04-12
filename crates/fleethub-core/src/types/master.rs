@@ -4,9 +4,8 @@ use anyhow::Result;
 use arrayvec::ArrayVec;
 use enumset::EnumSet;
 use fasteval::{bool_to_f64, Compiler, Evaler, Instruction, Slab};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use tsify::Tsify;
-use wasm_bindgen::prelude::*;
 
 use crate::{
     gear::IBonuses,
@@ -14,38 +13,7 @@ use crate::{
     types::{gear_id, GearAttr, GearState, GearType, ShipAttr, SpeedGroup},
 };
 
-use super::BattleConfig;
-
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-pub struct GearTypes(u8, u8, u8, u8, u8);
-
-impl GearTypes {
-    pub fn get(&self, index: usize) -> Option<u8> {
-        match index {
-            0 => Some(self.0),
-            1 => Some(self.1),
-            2 => Some(self.2),
-            3 => Some(self.3),
-            4 => Some(self.4),
-            _ => None,
-        }
-    }
-
-    pub fn gear_type_id(&self) -> u8 {
-        self.2
-    }
-
-    pub fn gear_type(&self) -> GearType {
-        num_traits::FromPrimitive::from_u8(self.gear_type_id()).unwrap_or_default()
-    }
-
-    pub fn icon_id(&self) -> u8 {
-        self.3
-    }
-}
-
-const SLOT_SIZE_ARRAY_CAPACITY: usize = 5;
-pub type SlotSizeArray = ArrayVec<Option<u8>, SLOT_SIZE_ARRAY_CAPACITY>;
+use super::{BattleConfig, GearTypeIdArray, SlotSizeVec};
 
 trait EvalerStruct {
     fn ns(&self, key: &str, args: Vec<f64>) -> Option<f64>;
@@ -69,7 +37,7 @@ trait EvalerStruct {
 pub struct MasterGear {
     pub gear_id: u16,
     pub name: String,
-    pub types: GearTypes,
+    pub types: GearTypeIdArray,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub special_type: Option<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -188,7 +156,7 @@ impl EvalerStruct for MasterGear {
     fn ns(&self, key: &str, args: Vec<f64>) -> Option<f64> {
         let result = match key {
             "gear_id" => self.gear_id as f64,
-            "gear_type" => self.types.2 as f64,
+            "gear_type" => self.types.gear_type_id() as f64,
             "special_type" => self.special_type() as f64,
             "max_hp" => self.max_hp() as f64,
             "firepower" => self.firepower() as f64,
@@ -213,7 +181,9 @@ impl EvalerStruct for MasterGear {
             }
 
             "gear_id_in" => bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64)),
-            "gear_type_in" => bool_to_f64!(args.iter().any(|v| *v == self.types.2 as f64)),
+            "gear_type_in" => {
+                bool_to_f64!(args.iter().any(|v| *v == self.types.gear_type_id() as f64))
+            }
 
             _ => return None,
         };
@@ -352,8 +322,7 @@ pub struct MasterShip {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_level: Option<u16>,
     pub slotnum: usize,
-    #[tsify(type = "Array<number | null>")]
-    pub slots: SlotSizeArray,
+    pub slots: SlotSizeVec,
     #[tsify(type = "Array<GearState>")]
     pub stock: ArrayVec<GearState, 5>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -474,7 +443,7 @@ where
 }
 
 impl MasterData {
-    pub fn new(js: JsValue) -> serde_json::Result<Self> {
+    pub fn new(js: wasm_bindgen::JsValue) -> serde_json::Result<Self> {
         let mut master: Self = js.into_serde()?;
 
         let Self {
@@ -599,7 +568,7 @@ pub mod test {
         let gear = MasterGear {
             gear_id: 10,
             name: "name".to_string(),
-            types: GearTypes(0, 1, 2, 3, 4),
+            types: [0, 1, 2, 3, 4].into(),
             special_type: Some(26),
             max_hp: Some(11),
             firepower: Some(12),

@@ -2,7 +2,8 @@
 import { entitiesSlice } from "./entitiesSlice";
 
 jest.mock("@reduxjs/toolkit", () => {
-  const originalModule = jest.requireActual("@reduxjs/toolkit");
+  const originalModule =
+    jest.requireActual<typeof import("@reduxjs/toolkit")>("@reduxjs/toolkit");
 
   let count = 0;
   const nanoid = () => `${count++}`;

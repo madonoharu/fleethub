@@ -1,5 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { MasterData } from "fleethub-core";
+import { MasterData, OrgState } from "fleethub-core";
 import { normalize } from "ts-norm";
 
 import {
@@ -16,9 +16,9 @@ import { cloneAffectedEntities } from "./entities/rtk-ts-norm";
 import { FileState, schemata } from "./entities/schemata";
 
 async function readJorShortUrl(short: URL) {
-  const res: { url?: string } = await fetch(
+  const res = (await fetch(
     `/api/locate?url=${encodeURIComponent(short.toString())}`
-  ).then((res) => res.json());
+  ).then((res) => res.json())) as { url?: string };
 
   if (typeof res.url !== "string") return;
 
@@ -28,14 +28,14 @@ async function readJorShortUrl(short: URL) {
   let jorState: JorOrgState | undefined;
 
   if (operationJson) {
-    jorState = JSON.parse(operationJson);
+    jorState = JSON.parse(operationJson) as JorOrgState;
   }
 
   const path = long.searchParams.get("operation-path");
   if (path) {
-    jorState = await fetch(
+    jorState = (await fetch(
       `https://storage.googleapis.com/jervis-6f57c.appspot.com/${path}`
-    ).then((res) => res.json());
+    ).then((res) => res.json())) as JorOrgState;
   }
 
   if (!jorState) return;
@@ -60,9 +60,9 @@ export function parseDeckStr(masterData: MasterData, str: string) {
   try {
     const url = new URL(str);
     const predeck = url.searchParams.get("predeck");
-    parsed = JSON.parse(predeck || "");
+    parsed = JSON.parse(predeck || "") as MaybeDeck;
   } catch (_) {
-    parsed = JSON.parse(str);
+    parsed = JSON.parse(str) as MaybeDeck;
   }
 
   const org = createOrgStateByDeck(masterData, parsed);
@@ -118,7 +118,7 @@ export async function parseUrl(
       id: nanoid(),
       name: "",
       description: "",
-      org: JSON.parse(org),
+      org: JSON.parse(org) as OrgState,
       steps: [],
     };
 

@@ -5,9 +5,8 @@ import { produce } from "immer";
 import set from "lodash/set";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 
-import { useOrg } from "../../../hooks";
+import { useAppDispatch, useOrg } from "../../../hooks";
 import {
   initialStepConfig,
   PlanEntity,
@@ -46,7 +45,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
   step,
 }) => {
   const { t } = useTranslation("common");
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { org: playerOrg } = useOrg(plan.org);
   const { org: enemyOrg } = useOrg(step.org);

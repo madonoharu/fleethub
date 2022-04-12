@@ -3,9 +3,9 @@ import { Update } from "@reduxjs/toolkit";
 import { Comp, DamageState, Fleet, MoraleState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { shallowEqual, useDispatch } from "react-redux";
+import { shallowEqual } from "react-redux";
 
-import { useModal } from "../../../hooks";
+import { useAppDispatch, useModal } from "../../../hooks";
 import {
   fleetsSlice,
   gearsSlice,
@@ -37,7 +37,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
   comp,
   fleet,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const BatchOperationsModal = useModal();
   const { t } = useTranslation("common");
 

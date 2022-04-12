@@ -1,8 +1,9 @@
 import { Ship, ShipCategory } from "fleethub-core";
 import { TFunction, useTranslation } from "next-i18next";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { useImmer } from "use-immer";
+
+import { useAppSelector } from "../../../hooks";
 
 type FilterFn = (ship: Ship) => boolean;
 
@@ -59,7 +60,7 @@ const searchShip = (t: TFunction, ships: Ship[], searchValue: string) => {
 export const useShipListState = (ships: Ship[]) => {
   const { t } = useTranslation("ships");
 
-  const abyssal = useSelector((root) => root.present.shipSelect.abyssal);
+  const abyssal = useAppSelector((root) => root.present.shipSelect.abyssal);
 
   const [state, update] = useImmer<ShipFilterState>({
     abyssal: abyssal || false,
