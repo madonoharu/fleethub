@@ -35,6 +35,7 @@ const config = {
   },
   i18n,
 
+  swcMinify: true,
   reactStrictMode: true,
 
   experimental: {

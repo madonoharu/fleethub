@@ -38,7 +38,7 @@
     "http-status-codes": "^2.2.0",
     "literal-case": "^1.0.0",
     "localforage": "^1.10.0",
-    "next": "^12.1.4",
+    "next": "^12.1.5",
     "next-i18next": "^11.0.0",
     "re-reselect": "^4.0.0",
     "react": "18.0.0",
@@ -60,9 +60,9 @@
     "xxhashjs": "^0.2.2"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^12.1.4",
+    "@next/bundle-analyzer": "^12.1.5",
     "@simbathesailor/use-what-changed": "^2.0.0",
-    "@types/react": "18.0.1",
+    "@types/react": "18.0.3",
     "@types/react-dom": "^18.0.0",
     "@types/xxhashjs": "^0.2.2",
     "next-transpile-modules": "^9.0.0",

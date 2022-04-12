@@ -36,7 +36,7 @@
   "devDependencies": {
     "@fh/admin": "workspace:packages/admin",
     "@fh/utils": "workspace:packages/utils",
-    "@next/eslint-plugin-next": "^12.1.4",
+    "@next/eslint-plugin-next": "^12.1.5",
     "@swc/core": "^1.2.165",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.4.1",
