@@ -5,7 +5,8 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     types::{
-        gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypes, MasterGear,
+        gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypeIdArray,
+        MasterGear,
     },
     utils::xxh3,
 };
@@ -75,7 +76,7 @@ pub struct Gear {
     #[wasm_bindgen(getter_with_clone)]
     pub name: String,
     #[wasm_bindgen(getter_with_clone)]
-    pub types: GearTypes,
+    pub types: GearTypeIdArray,
     #[wasm_bindgen(skip)]
     pub attrs: EnumSet<GearAttr>,
     #[wasm_bindgen(skip)]
