@@ -4,8 +4,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import {
   appSlice,
   FileEntity,
@@ -22,9 +22,9 @@ import PlanLabel from "./PlanLabel";
 const TransitionProps = { timeout: 150 };
 
 const Explorer: React.FCX = ({ className }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { rootIds, tempIds, entities } = useSelector(
+  const { rootIds, tempIds, entities } = useAppSelector(
     (root) => root.present.entities.files
   );
 

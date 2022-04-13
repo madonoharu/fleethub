@@ -4,9 +4,9 @@ import { Button } from "@mui/material";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useContext } from "react";
-import { shallowEqual, useDispatch } from "react-redux";
+import { shallowEqual } from "react-redux";
 
-import { CompContext } from "../../../hooks";
+import { useAppDispatch, CompContext } from "../../../hooks";
 import {
   ShipPosition,
   shipSelectSlice,
@@ -24,7 +24,7 @@ export type ShipBoxProps = {
 const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
   const { t } = useTranslation("common");
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const comp = useContext(CompContext);
 
   const id = ship?.id || "";

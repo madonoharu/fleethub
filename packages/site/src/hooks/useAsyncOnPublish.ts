@@ -1,17 +1,19 @@
 import copy from "copy-to-clipboard";
 import { useAsyncCallback } from "react-async-hook";
-import { useDispatch, useSelector } from "react-redux";
 
 import { filesSelectors, publishFile } from "../store";
 import { tweet } from "../utils";
 
+import { useAppDispatch, useAppSelector } from "./rtk-hooks";
 import { useSnackbar } from "./useSnackbar";
 
 export const useAsyncOnPublish = (id: string) => {
-  const shareUrl = useSelector((root) => root.present.nav.shareUrl);
-  const name = useSelector((root) => filesSelectors.selectById(root, id)?.name);
+  const shareUrl = useAppSelector((root) => root.present.nav.shareUrl);
+  const name = useAppSelector(
+    (root) => filesSelectors.selectById(root, id)?.name
+  );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const Snackbar = useSnackbar();
 
   const asyncOnPublish = useAsyncCallback(async () => {

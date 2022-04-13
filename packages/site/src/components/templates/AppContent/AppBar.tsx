@@ -8,10 +8,9 @@ import UndoIcon from "@mui/icons-material/Undo";
 import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@mui/material";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import { ActionCreators } from "redux-undo";
 
-import { useModal } from "../../../hooks";
+import { useAppDispatch, useAppSelector, useModal } from "../../../hooks";
 import {
   shipSelectSlice,
   gearSelectSlice,
@@ -30,10 +29,10 @@ const FolderOpenButton = withIconButton(FolderOpenIcon);
 const FolderButton = withIconButton(FolderIcon);
 
 const useUndo = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const canUndo = useSelector((state) => state.past.length > 0);
-  const canRedo = useSelector((state) => state.future.length > 0);
+  const canUndo = useAppSelector((state) => state.past.length > 0);
+  const canRedo = useAppSelector((state) => state.future.length > 0);
 
   const actions = useMemo(
     () => ({
@@ -58,7 +57,7 @@ const AppBar: React.FCX<Props> = ({
 }) => {
   const { t } = useTranslation();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { canUndo, canRedo, undo, redo } = useUndo();
 

@@ -17,7 +17,7 @@ use crate::{
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
         DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState, ShipAttr,
-        ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeArray, SpecialEnemyType,
+        ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
     },
     utils::xxh3,
 };
@@ -46,8 +46,8 @@ pub struct Ship {
     pub ship_type: ShipType,
     pub ctype: u16,
 
-    #[wasm_bindgen(skip)]
-    pub slots: SlotSizeArray,
+    #[wasm_bindgen(getter_with_clone)]
+    pub slots: SlotSizeVec,
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
     #[wasm_bindgen(skip)]
@@ -236,6 +236,8 @@ impl Ship {
         let ctype = master.ctype;
         let is_nisshin = ctype == ctype!("日進型");
 
+        let slotnum = master.slotnum;
+
         let slots = [state.ss1, state.ss2, state.ss3, state.ss4, state.ss5]
             .into_iter()
             .enumerate()
@@ -248,7 +250,8 @@ impl Ship {
                     }
                 })
             })
-            .collect();
+            .collect::<SlotSizeVec>()
+            .with_slotnum(slotnum);
 
         let mut ship = Ship {
             id: state.id.clone().unwrap_or_default(),

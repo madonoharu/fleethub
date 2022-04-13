@@ -3,9 +3,8 @@ import { FleetKey, FLEET_KEYS, nonNullable } from "@fh/utils";
 import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { CompContext } from "../../../hooks";
+import { CompContext, useAppDispatch } from "../../../hooks";
 import { PlanEntity, orgsSlice } from "../../../store";
 import { Tabs, TabsProps } from "../../molecules";
 import {
@@ -48,7 +47,7 @@ type PlanTabsProps = {
 const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
   const { t } = useTranslation("common");
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleFleetSwap = (
     event: Parameters<typeof orgsSlice.actions.swapFleet>[0]

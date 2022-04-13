@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { DefaultRootState } from "react-redux";
 import { Entities } from "ts-norm";
 
 import { publishFileData, tweet } from "../../utils";
+import type { RootState } from "../createStore";
 
 import { getEntities } from "./entitiesSlice";
 import { cloneAffectedEntities } from "./rtk-ts-norm";
@@ -17,7 +17,7 @@ export const publishFile = createAsyncThunk(
   "entities/publishFile",
   async (arg: { fileId: string; tweets?: boolean }, thunkAPI) => {
     const { fileId, tweets } = arg;
-    const root = thunkAPI.getState() as DefaultRootState;
+    const root = thunkAPI.getState() as RootState;
 
     let count = 0;
     const idGenerator = () => `${(count++).toString(32)}`;

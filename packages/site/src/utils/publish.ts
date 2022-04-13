@@ -32,8 +32,8 @@ export const publishFileData = async (data: PublicFile) => {
 
 export const readPublicFile = async (id: string): Promise<PublicFile> => {
   const res = await fetch(`${GCS_PREFIX_URL}/public/${id}.json`);
-  const data = await res.json();
-  return data as PublicFile;
+  const data = (await res.json()) as PublicFile;
+  return data;
 };
 
 export const getPublicId = (url: URL) => url.searchParams.get(PUBLIC_ID_KEY);

@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { Link } from "@mui/material";
 import React from "react";
-import { useDispatch } from "react-redux";
 
+import { useAppDispatch } from "../../../hooks";
 import { appSlice, FileEntity } from "../../../store";
 
 type FileLinkProps = {
@@ -10,7 +10,7 @@ type FileLinkProps = {
 };
 
 const FileLink: React.FCX<FileLinkProps> = ({ className, file }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleClick = () => {
     dispatch(appSlice.actions.openFile(file.id));

@@ -3,9 +3,8 @@ import { Button } from "@mui/material";
 import { styled } from "@mui/system";
 import { ShipMeta } from "fleethub-core";
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { useSwap } from "../../../hooks";
+import { useAppDispatch, useSwap } from "../../../hooks";
 import { ShipPosition, shipSelectSlice, SwapShipPayload } from "../../../store";
 import ShipBanner from "../ShipBanner";
 
@@ -21,7 +20,7 @@ type Props = {
 
 const Inner = React.forwardRef<HTMLButtonElement, Props>(
   ({ className, position, meta, color, selected, onSelect }, ref) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const id = meta?.id || "";
 

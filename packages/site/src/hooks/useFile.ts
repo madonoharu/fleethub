@@ -1,11 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { useMemo } from "react";
-import {
-  DefaultRootState,
-  shallowEqual,
-  useDispatch,
-  useSelector,
-} from "react-redux";
+import { shallowEqual } from "react-redux";
 
 import {
   appSlice,
@@ -13,8 +8,11 @@ import {
   FileEntity,
   isFolder,
   filesSelectors,
+  filesSlice,
+  RootState,
 } from "../store";
-import { filesSlice as filesSlice2 } from "../store/entities/filesSlice";
+
+import { useAppDispatch, useAppSelector } from "./rtk-hooks";
 
 const getParents = (files: FileEntity[], id: string): FileEntity[] => {
   const parent = files.find(
@@ -28,23 +26,21 @@ const getParents = (files: FileEntity[], id: string): FileEntity[] => {
 
 const makeSelectParents = () =>
   createSelector(
-    (state: DefaultRootState) => filesSelectors.selectAll(state),
-    (state: DefaultRootState, id: string) => id,
+    (state: RootState) => filesSelectors.selectAll(state),
+    (state: RootState, id: string) => id,
     (files, id) => getParents(files, id)
   );
 
 export const useIsTemp = (id: string) =>
-  useSelector((root) => {
+  useAppSelector((root) => {
     const tempIds = root.present.entities.files.tempIds;
     return tempIds.includes(id);
   });
 
 export function useFileActions(id: string) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const actions = useMemo(() => {
-    const filesSlice = filesSlice2;
-
     const open = () => dispatch(appSlice.actions.openFile(id));
     const update = (changes: Partial<FileEntity>) =>
       dispatch(filesSlice.actions.update({ id, changes }));
@@ -79,12 +75,12 @@ export function useFileActions(id: string) {
 }
 
 export function useFileCanDrop(id: string) {
-  const entity = useSelector(
+  const entity = useAppSelector(
     (root) => root.present.entities.files.entities[id]
   );
 
   const selectParents = useMemo(makeSelectParents, []);
-  const parents = useSelector(
+  const parents = useAppSelector(
     (state) => selectParents(state, id),
     shallowEqual
   );
@@ -101,7 +97,7 @@ export function useFileCanDrop(id: string) {
 }
 
 export const useFile = (id: string) => {
-  const file = useSelector((root) => filesSelectors.selectById(root, id));
+  const file = useAppSelector((root) => filesSelectors.selectById(root, id));
 
   const isTemp = useIsTemp(id);
 

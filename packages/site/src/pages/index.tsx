@@ -10,17 +10,23 @@ import {
 } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import AppContent from "../components/templates/AppContent";
 import { GCS_PREFIX_URL, MASTER_DATA_PATH } from "../firebase";
 import { FhCoreContext, GenerationMapContext, useGcs } from "../hooks";
 import { StoreProvider } from "../store";
 
+const AppContent = dynamic(() => import("../components/templates/AppContent"), {
+  // trueの場合、ISRのrevalidate時に10sを超えてしまう
+  ssr: false,
+});
+
 type Props = {
+  createdAt: string;
   generationMap: Record<string, string>;
 };
 
@@ -95,22 +101,26 @@ const Index: NextComponentType<NextPageContext, unknown, Props> = ({
 export const getStaticProps: GetStaticProps<Props> = async ({
   locale = "",
 }) => {
-  const generationMap = await storage.fetchGenerationMap();
-
-  const ssrConfig = await serverSideTranslations(locale, [
-    "common",
-    "terms",
-    "gears",
-    "gear_types",
-    "ships",
-    "ctype",
+  const [generationMap, ssrConfig] = await Promise.all([
+    storage.fetchGenerationMap(),
+    serverSideTranslations(locale, [
+      "common",
+      "terms",
+      "gears",
+      "gear_types",
+      "ships",
+      "ctype",
+    ]),
   ]);
+
+  const createdAt = new Date().toISOString();
 
   return {
     revalidate: 60,
     props: {
-      ...ssrConfig,
+      createdAt,
       generationMap,
+      ...ssrConfig,
     },
   };
 };

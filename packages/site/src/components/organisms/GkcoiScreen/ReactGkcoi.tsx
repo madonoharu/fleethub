@@ -20,9 +20,11 @@ type Props = {
 const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
   const hash = useMemo(() => murmurhash(stringify(deck)), [deck]);
 
-  const { data, error } = useSWRImmutable(["gkcoi", hash], () =>
-    generate(deck)
-  );
+  const { data, error } = useSWRImmutable<
+    HTMLCanvasElement,
+    unknown,
+    [string, string]
+  >(["gkcoi", hash], () => generate(deck));
 
   if (error) {
     return (

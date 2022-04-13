@@ -8,35 +8,58 @@ use std::{
 use counter::Counter;
 use num_traits::Zero;
 use serde::{Deserialize, Serialize};
+use wasm_bindgen::prelude::*;
 
-#[derive(Debug, Default, Clone, PartialEq)]
-pub struct NumMap<K, V>
-where
-    K: Hash + Eq,
-{
+#[wasm_bindgen(typescript_custom_section)]
+const TS_APPEND_CONTENT: &'static str = r#"
+export type NumMap<K, V> = Partial<Record<K, V>>;
+"#;
+
+#[derive(Debug, Default, Clone)]
+pub struct NumMap<K, V> {
     map: HashMap<K, V>,
     zero: V,
 }
 
-#[allow(dead_code)]
-impl<K, V> NumMap<K, V>
+impl<K, V> PartialEq for NumMap<K, V>
 where
-    K: Hash + Eq,
-    V: Zero,
+    HashMap<K, V>: PartialEq,
 {
-    pub fn new() -> Self {
-        HashMap::new().into()
+    fn eq(&self, other: &Self) -> bool {
+        self.map == other.map
+    }
+}
+
+#[allow(dead_code)]
+impl<K, V> NumMap<K, V> {
+    pub fn new() -> Self
+    where
+        V: Zero,
+    {
+        Self {
+            map: HashMap::new(),
+            zero: V::zero(),
+        }
     }
 
-    pub fn get(&self, k: &K) -> &V {
+    pub fn get(&self, k: &K) -> &V
+    where
+        K: Hash + Eq,
+    {
         self.map.get(k).unwrap_or(&self.zero)
     }
 
-    pub fn insert(&mut self, k: K, v: V) -> Option<V> {
+    pub fn insert(&mut self, k: K, v: V) -> Option<V>
+    where
+        K: Eq + Hash,
+    {
         self.map.insert(k, v)
     }
 
-    pub fn entry(&mut self, k: K) -> hash_map::Entry<K, V> {
+    pub fn entry(&mut self, k: K) -> hash_map::Entry<K, V>
+    where
+        K: Eq + Hash,
+    {
         self.map.entry(k)
     }
 
@@ -52,14 +75,16 @@ where
         self.map.is_empty()
     }
 
-    pub fn into_vec(self) -> Vec<(K, V)> {
+    pub fn into_vec(self) -> Vec<(K, V)>
+    where
+        Self: IntoIterator<Item = (K, V)>,
+    {
         self.into_iter().collect()
     }
 }
 
 impl<K, V> From<HashMap<K, V>> for NumMap<K, V>
 where
-    K: Hash + Eq,
     V: Zero,
 {
     fn from(map: HashMap<K, V>) -> Self {
@@ -72,8 +97,8 @@ where
 
 impl<K, V> FromIterator<(K, V)> for NumMap<K, V>
 where
-    K: Hash + Eq,
-    V: AddAssign + Zero,
+    Self: AddAssign<(K, V)>,
+    V: Zero,
 {
     fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
         let mut result = Self::new();
@@ -84,19 +109,7 @@ where
     }
 }
 
-impl<K, V> Into<HashMap<K, V>> for NumMap<K, V>
-where
-    K: Hash + Eq,
-{
-    fn into(self) -> HashMap<K, V> {
-        self.map
-    }
-}
-
-impl<K, V> IntoIterator for NumMap<K, V>
-where
-    K: Hash + Eq,
-{
+impl<K, V> IntoIterator for NumMap<K, V> {
     type Item = (K, V);
     type IntoIter = hash_map::IntoIter<K, V>;
 
@@ -107,17 +120,16 @@ where
 
 impl<K, V, const N: usize> From<[(K, V); N]> for NumMap<K, V>
 where
-    K: Hash + Eq + Clone,
-    V: Zero + AddAssign + Clone,
+    Self: FromIterator<(K, V)>,
 {
     fn from(array: [(K, V); N]) -> Self {
-        array.iter().cloned().collect()
+        array.into_iter().collect()
     }
 }
 
 impl<K> From<Counter<K>> for NumMap<K, usize>
 where
-    K: Hash + Eq,
+    K: Eq + Hash,
 {
     fn from(counter: Counter<K>) -> Self {
         counter.into_map().into()
@@ -126,7 +138,7 @@ where
 
 impl<K, V> AddAssign<(K, V)> for NumMap<K, V>
 where
-    K: Hash + Eq,
+    K: Eq + Hash,
     V: AddAssign + Zero,
 {
     fn add_assign(&mut self, (key, value): (K, V)) {
@@ -137,7 +149,7 @@ where
 
 impl<K, V> AddAssign for NumMap<K, V>
 where
-    K: Hash + Eq,
+    K: Eq + Hash,
     V: AddAssign + Zero,
 {
     fn add_assign(&mut self, rhs: Self) {
@@ -149,7 +161,7 @@ where
 
 impl<K, V> Add for NumMap<K, V>
 where
-    K: Hash + Eq,
+    K: Eq + Hash,
     V: AddAssign + Zero,
 {
     type Output = Self;
@@ -162,7 +174,7 @@ where
 
 impl<K, V> Mul<V> for NumMap<K, V>
 where
-    K: Hash + Eq,
+    K: Eq + Hash,
     V: Clone + Mul<Output = V> + Zero,
 {
     type Output = NumMap<K, V>;
@@ -190,8 +202,7 @@ where
 
 impl<K, V> Serialize for NumMap<K, V>
 where
-    K: Hash + Eq + Serialize,
-    V: Serialize,
+    HashMap<K, V>: Serialize,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -203,8 +214,8 @@ where
 
 impl<'de, K, V> Deserialize<'de> for NumMap<K, V>
 where
-    K: Hash + Eq + Deserialize<'de>,
-    V: Zero + Deserialize<'de>,
+    HashMap<K, V>: Deserialize<'de>,
+    V: Zero,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
