@@ -1,13 +1,7 @@
 import { storage } from "@fh/admin";
+import { Alert } from "@mui/material";
 import { createEquipmentBonuses } from "equipment-bonus";
-import {
-  air_squadron_can_equip,
-  org_type_is_single,
-  org_type_default_formation,
-  org_type_is_player,
-  FhCore,
-  MasterData,
-} from "fleethub-core";
+import { FhCore, MasterData } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
@@ -31,22 +25,28 @@ type Props = {
 };
 
 const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: masterData } = useGcs<MasterData>(MASTER_DATA_PATH);
+  const { data: masterData, error } = useGcs<MasterData>(MASTER_DATA_PATH);
+
+  if (error) {
+    console.error(error);
+    return <Alert severity="error">{error.message}</Alert>;
+  }
 
   if (!masterData) {
     return null;
   }
 
-  const core = new FhCore(masterData, createEquipmentBonuses);
+  let core: FhCore;
+  try {
+    core = new FhCore(masterData, createEquipmentBonuses);
+  } catch (error: unknown) {
+    console.error(error);
+    return <Alert severity="error">{String(error)}</Alert>;
+  }
+
   const analyzer = core.create_analyzer();
 
   const value = {
-    module: {
-      air_squadron_can_equip,
-      org_type_is_single,
-      org_type_default_formation,
-      org_type_is_player,
-    },
     core,
     analyzer,
     masterData,
