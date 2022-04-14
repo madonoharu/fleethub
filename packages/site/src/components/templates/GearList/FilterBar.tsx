@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { GearCategoryFilter } from "../../../store";
@@ -31,6 +32,7 @@ const FilterBar: React.FCX<Props> = ({
   onAbyssalChange,
   onCategoryChange,
 }) => {
+  const { t } = useTranslation("common");
   return (
     <>
       <div className={className}>
@@ -42,7 +44,7 @@ const FilterBar: React.FCX<Props> = ({
         />
         <Right>
           <Checkbox
-            label="深海"
+            label={t("Abyssal")}
             size="small"
             checked={abyssal || false}
             onChange={onAbyssalChange}

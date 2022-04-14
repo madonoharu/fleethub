@@ -140,12 +140,12 @@
   "fleet_los_mod": "舰队索敌补正",
   "observation_term": "观测项",
   "cutin_term": "CI项",
-  "fleet_anti_air": null,
+  "fleet_adjusted_anti_air": "舰队防空值",
   "adjusted_anti_air": "加权对空",
   "proportional_shotdown_rate": "比例击坠率",
   "fixed_shotdown_number": "固定击坠",
-  "minimum_bonus": null,
-  "anti_air_cutin_chance": null,
+  "guaranteed": "最低保障",
+  "anti_air_cutin_chance": "对空CI触发率",
   "trigger_rate": "开始率",
   "ContactChance": "接触率",
   "max_hp": "耐久",
@@ -201,7 +201,7 @@
   "PhaseClosingTorpedo": "闭幕雷击",
   "PhaseOpeningAirStrike": "开幕空战",
   "PhaseOpeningJetAssault": "喷气机强袭",
-  "AntiAirCutin": "对空 CI",
+  "AntiAirCutin": "对空CI",
   "AntiAirPropellantBarrage": "对空喷进弹幕",
   "CopyToClipboard": "复制到剪贴板",
   "CopySharedLinkToClipboard": "复制共享链接到剪贴板",
@@ -236,8 +236,8 @@
   "Distribution": "分布",
   "EnemyType": "敌方类型",
   "ImageGeneration": "图像生成",
-  "Misc": null,
-
+  "Misc": "其他",
+  "Abyssal": "深海",
   "Total": "合计",
   "Edit": "编辑",
   "Undo": "撤销",
@@ -252,7 +252,6 @@
   "Consume": "消费",
   "Unknown": "未知",
   "None": "无",
-
   "RangeAbbr": {
     "Short": "短",
     "Medium": "中",
@@ -299,5 +298,15 @@
     "FinishLine": "终止",
     "LBAS": "基地航空队",
     "Unknown": "不明"
+  },
+  "ShipCategory": {
+    "Battleship": "战列舰",
+    "AircraftCarrier": "航空母舰",
+    "HeavyCruiser": "重巡洋舰",
+    "LightCruiser": "轻巡洋舰",
+    "Destroyer": "驱逐舰",
+    "CoastalDefenseShip": "海防舰",
+    "Submarine": "潜水艇",
+    "AuxiliaryShip": "辅助舰船"
   }
 }

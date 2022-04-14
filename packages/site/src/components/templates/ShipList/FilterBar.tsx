@@ -1,4 +1,5 @@
 import { ShipCategory } from "fleethub-core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 import { Updater } from "use-immer";
 
@@ -7,18 +8,16 @@ import { SelectButtons } from "../../molecules";
 
 import { ShipFilterState } from "./useShipListState";
 
-const shipCategoryMap: Record<ShipCategory, string> = {
-  Battleship: "戦艦級",
-  AircraftCarrier: "航空母艦",
-  HeavyCruiser: "重巡級",
-  LightCruiser: "軽巡級",
-  Destroyer: "駆逐艦",
-  CoastalDefenseShip: "海防艦",
-  Submarine: "潜水艦",
-  AuxiliaryShip: "補助艦艇",
-};
-
-const SHIP_CATEGORY_OPTIONS = Object.keys(shipCategoryMap) as ShipCategory[];
+const SHIP_CATEGORY_OPTIONS: ShipCategory[] = [
+  "Battleship",
+  "AircraftCarrier",
+  "HeavyCruiser",
+  "LightCruiser",
+  "Destroyer",
+  "CoastalDefenseShip",
+  "Submarine",
+  "AuxiliaryShip",
+];
 
 type Props = {
   state: ShipFilterState;
@@ -26,15 +25,19 @@ type Props = {
 };
 
 const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
-  const handleAbyssalChange = (value: boolean) =>
+  const { t } = useTranslation("common");
+
+  const handleAbyssalChange = (value: boolean) => {
     update((s) => {
       s.abyssal = value;
     });
+  };
 
-  const handleVisiblePrevFormChange = (value: boolean) =>
+  const handleVisiblePrevFormChange = (value: boolean) => {
     update((s) => {
       s.visiblePrevForm = value;
     });
+  };
 
   const handleCategoryChange = (category: ShipCategory) => {
     update((s) => {
@@ -49,7 +52,7 @@ const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
         options={SHIP_CATEGORY_OPTIONS}
         value={state.category}
         onChange={handleCategoryChange}
-        getOptionLabel={(key) => shipCategoryMap[key]}
+        getOptionLabel={(key) => t(`ShipCategory.${key}`)}
       />
       <Checkbox
         label="改造前表示"
@@ -58,7 +61,7 @@ const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
         onChange={handleVisiblePrevFormChange}
       />
       <Checkbox
-        label="深海"
+        label={t("Abyssal")}
         size="small"
         checked={state.abyssal}
         onChange={handleAbyssalChange}

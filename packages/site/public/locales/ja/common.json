@@ -140,11 +140,11 @@
   "fleet_los_mod": "艦隊索敵補正",
   "observation_term": "観測項",
   "cutin_term": "CI項",
-  "fleet_anti_air": "艦隊防空",
+  "fleet_adjusted_anti_air": "艦隊防空値",
   "adjusted_anti_air": "加重対空",
   "proportional_shotdown_rate": "割合撃墜率",
   "fixed_shotdown_number": "固定撃墜",
-  "minimum_bonus": "最低保証",
+  "guaranteed": "最低保証",
   "anti_air_cutin_chance": "対空CI発動率",
   "trigger_rate": "開始率",
   "ContactChance": "触接率",
@@ -237,7 +237,7 @@
   "EnemyType": "敵種別",
   "ImageGeneration": "画像生成",
   "Misc": "その他",
-
+  "Abyssal": "深海",
   "Total": "合計",
   "Edit": "編集",
   "Undo": "取り消す",
@@ -252,7 +252,6 @@
   "Consume": "消費する",
   "Unknown": "不明",
   "None": "なし",
-
   "RangeAbbr": {
     "Short": "短",
     "Medium": "中",
@@ -299,5 +298,15 @@
     "FinishLine": "ゴール地点",
     "LBAS": "基地航空隊",
     "Unknown": "不明"
+  },
+  "ShipCategory": {
+    "Battleship": "戦艦級",
+    "AircraftCarrier": "航空母艦",
+    "HeavyCruiser": "重巡級",
+    "LightCruiser": "軽巡級",
+    "Destroyer": "駆逐艦",
+    "CoastalDefenseShip": "海防艦",
+    "Submarine": "潜水艦",
+    "AuxiliaryShip": "補助艦艇"
   }
 }
