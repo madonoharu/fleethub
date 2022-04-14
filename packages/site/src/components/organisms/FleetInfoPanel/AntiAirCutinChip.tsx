@@ -15,7 +15,7 @@ const AntiAirCutinChip: React.FCX<Props> = ({ className, antiAirCutin }) => (
     title={
       <>
         <Typography variant="subtitle2">{antiAirCutin.id}</Typography>
-        <LabeledValue label="固定" value={antiAirCutin.minimum_bonus} />
+        <LabeledValue label="固定" value={antiAirCutin.guaranteed} />
         <LabeledValue label="変動" value={antiAirCutin.multiplier} />
         <LabeledValue
           label="発動定数(推測)"

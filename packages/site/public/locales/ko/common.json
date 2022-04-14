@@ -140,12 +140,12 @@
   "fleet_los_mod": "함대 색적 보정",
   "observation_term": "관측항",
   "cutin_term": "CI항",
-  "fleet_anti_air": null,
+  "fleet_adjusted_anti_air": "함대방공치",
   "adjusted_anti_air": "가중대공",
   "proportional_shotdown_rate": "고정 격추율",
   "fixed_shotdown_number": "고정 격추 수",
-  "minimum_bonus": null,
-  "anti_air_cutin_chance": null,
+  "guaranteed": "최저보증",
+  "anti_air_cutin_chance": "대공컷인 발동확률",
   "trigger_rate": "개시율",
   "ContactChance": "촉접율",
   "max_hp": "체력",
@@ -236,8 +236,8 @@
   "Distribution": "분포",
   "EnemyType": "적 종류",
   "ImageGeneration": "이미지 생성",
-  "Misc": null,
-
+  "Misc": "기타",
+  "Abyssal": "심해",
   "Total": "합계",
   "Edit": "편집",
   "Undo": "실행 취소",
@@ -252,7 +252,6 @@
   "Consume": "소비하다",
   "Unknown": "알 수 없음",
   "None": "없음",
-
   "RangeAbbr": {
     "Short": "단",
     "Medium": "중",
@@ -299,5 +298,15 @@
     "FinishLine": "도착지",
     "LBAS": "기지항공대",
     "Unknown": "불명"
+  },
+  "ShipCategory": {
+    "Battleship": "전함",
+    "AircraftCarrier": "항공모함",
+    "HeavyCruiser": "중순양함",
+    "LightCruiser": "경순양함",
+    "Destroyer": "구축함",
+    "CoastalDefenseShip": "해방함",
+    "Submarine": "잠수함",
+    "AuxiliaryShip": "보조함"
   }
 }

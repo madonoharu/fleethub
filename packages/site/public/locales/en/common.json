@@ -140,11 +140,11 @@
   "fleet_los_mod": "Fleet LoS",
   "observation_term": "Observation Term",
   "cutin_term": "CI Term",
-  "fleet_anti_air": "Fleet AA",
+  "fleet_adjusted_anti_air": "Fleet AA",
   "adjusted_anti_air": "Adjusted AA",
   "proportional_shotdown_rate": "Prop",
   "fixed_shotdown_number": "Fixed",
-  "minimum_bonus": "Guaranteed",
+  "guaranteed": "Guaranteed",
   "anti_air_cutin_chance": "AACI Chance",
   "trigger_rate": "Trigger Chance",
   "ContactChance": "Contact Chance",
@@ -237,7 +237,7 @@
   "EnemyType": "Enemy Type",
   "ImageGeneration": "Image",
   "Misc": "Misc",
-
+  "Abyssal": "Abyssal",
   "Total": "Total",
   "Edit": "Edit",
   "Undo": "Undo",
@@ -252,7 +252,6 @@
   "Consume": "Consume",
   "Unknown": "Unknown",
   "None": "None",
-
   "RangeAbbr": {
     "Short": "S",
     "Medium": "M",
@@ -299,5 +298,15 @@
     "FinishLine": "Finish Line",
     "LBAS": "LBAS",
     "Unknown": "Unknown"
+  },
+  "ShipCategory": {
+    "Battleship": "BB",
+    "AircraftCarrier": "CV",
+    "HeavyCruiser": "CA",
+    "LightCruiser": "CL",
+    "Destroyer": "DD",
+    "CoastalDefenseShip": "DE",
+    "Submarine": "SS",
+    "AuxiliaryShip": "Aux"
   }
 }

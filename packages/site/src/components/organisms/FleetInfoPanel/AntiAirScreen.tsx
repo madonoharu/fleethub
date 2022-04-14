@@ -61,7 +61,7 @@ const AntiAirPanel: React.FCX = ({ className }) => {
   const info = analyzer.analyze_anti_air(
     comp,
     state.formation,
-    state.adjustedAntiAirResist,
+    state.shipAntiAirResist,
     state.fleetAntiAirResist,
     state.anti_air_cutin || undefined
   );
@@ -69,7 +69,10 @@ const AntiAirPanel: React.FCX = ({ className }) => {
   return (
     <div className={className}>
       <Container>
-        <LabeledValue label="艦隊対空" value={round(info.fleet_anti_air, 4)} />
+        <LabeledValue
+          label={t("fleet_adjusted_anti_air")}
+          value={round(info.fleet_adjusted_anti_air, 4)}
+        />
 
         <FormationSelect
           variant="outlined"
@@ -91,8 +94,8 @@ const AntiAirPanel: React.FCX = ({ className }) => {
           step={0.1}
           min={0}
           max={1}
-          value={state.adjustedAntiAirResist}
-          onChange={bind("adjustedAntiAirResist")}
+          value={state.shipAntiAirResist}
+          onChange={bind("shipAntiAirResist")}
         />
         <StyledNumberInput
           variant="outlined"
@@ -130,9 +133,9 @@ const AntiAirPanel: React.FCX = ({ className }) => {
             getValue: (datum) => datum.fixed_shotdown_number ?? "?",
           },
           {
-            label: t("minimum_bonus"),
+            label: t("guaranteed"),
             align: "right",
-            getValue: (datum) => datum.minimum_bonus,
+            getValue: (datum) => datum.guaranteed,
           },
           {
             label: t("anti_air_cutin_chance"),

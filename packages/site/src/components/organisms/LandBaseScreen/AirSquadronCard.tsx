@@ -92,7 +92,7 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
               slotSize={ss}
               maxSlotSize={max}
               position={{ tag: "airSquadrons", id, key }}
-              equippable={gear && airSquadron.can_equip(gear)}
+              equippable={gear?.can_be_deployed_to_land_base()}
               onSlotSizeChange={(value) => {
                 actions.update({ [`ss${i + 1}` as SlotSizeKey]: value });
               }}

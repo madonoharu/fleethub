@@ -4,12 +4,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import { Gear } from "fleethub-core";
 import React from "react";
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useFhCore,
-  useShip,
-} from "../../../hooks";
+import { useAppDispatch, useAppSelector, useShip } from "../../../hooks";
 import { entitiesSlice } from "../../../store";
 import { makeGetNextEbonuses } from "../../../utils";
 import { Tabs, TabsProps } from "../../molecules";
@@ -22,8 +17,6 @@ type Props = {
 };
 
 const GearSelectMenu: React.FCX<Props> = ({ className, gears }) => {
-  const { module } = useFhCore();
-
   const dispatch = useAppDispatch();
   const create = useAppSelector((root) => root.present.gearSelect.create);
   const position = useAppSelector((root) => root.present.gearSelect.position);
@@ -34,10 +27,11 @@ const GearSelectMenu: React.FCX<Props> = ({ className, gears }) => {
   let canEquip: ((gear: Gear) => boolean) | undefined;
 
   if (position?.tag === "airSquadrons") {
-    canEquip = module.air_squadron_can_equip;
+    canEquip = (gear) => gear.can_be_deployed_to_land_base();
   } else if (ship) {
     canEquip = (gear) => ship.can_equip(gear, position?.key || "g1");
   }
+
   const getNextEbonuses = ship && key && makeGetNextEbonuses(ship, key);
 
   const handleSelect = (gear: Gear) => {

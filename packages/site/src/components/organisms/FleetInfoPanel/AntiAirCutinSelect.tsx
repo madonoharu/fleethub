@@ -32,7 +32,7 @@ const AntiAirCutinSelect: React.FCX<Props> = ({
   return (
     <Select
       variant="outlined"
-      label="対空CI"
+      label={t("AntiAirCutin")}
       options={options}
       value={current}
       onChange={(def) => {
@@ -54,7 +54,7 @@ const AntiAirCutinSelect: React.FCX<Props> = ({
           >
             <span>{def.id}種</span>
             <span>x{def.multiplier || "?"}</span>
-            <span>+{def.minimum_bonus || "?"}</span>
+            <span>+{def.guaranteed || "?"}</span>
           </Typography>
         );
       }}

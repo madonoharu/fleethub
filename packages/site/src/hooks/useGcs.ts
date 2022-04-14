@@ -24,5 +24,5 @@ export async function gcsFetcher<T>(
 
 export function useGcs<T>(path: string) {
   const generationMap = React.useContext(GenerationMapContext);
-  return useSWRImmutable<T>([path, generationMap[path]], gcsFetcher);
+  return useSWRImmutable<T, Error>([path, generationMap[path]], gcsFetcher);
 }
