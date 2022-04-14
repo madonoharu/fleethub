@@ -12,7 +12,7 @@ import { useFhCore } from "./useFhCore";
 type FleetInfoState = {
   engagement: Engagement;
   formation: Formation;
-  adjustedAntiAirResist: number;
+  shipAntiAirResist: number;
   fleetAntiAirResist: number;
   anti_air_cutin: number | null;
 
@@ -31,7 +31,7 @@ const useComp = ({ comp }: Props) => {
   const [state, update] = useImmer<FleetInfoState>({
     engagement: "Parallel",
     formation: comp.default_formation(),
-    adjustedAntiAirResist: 1,
+    shipAntiAirResist: 1,
     fleetAntiAirResist: 1,
     anti_air_cutin: null,
 

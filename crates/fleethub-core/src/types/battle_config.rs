@@ -101,7 +101,7 @@ pub struct AntiAirCutinDef {
     pub id: u8,
     pub chance_numer: Option<u8>,
     pub multiplier: Option<f64>,
-    pub minimum_bonus: Option<u8>,
+    pub guaranteed: Option<u8>,
     pub sequential: Option<bool>,
 }
 

@@ -9,7 +9,6 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { useFhCore } from "../../../hooks";
 import { Divider, Flexbox } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
 import CustomModifiersForm from "../CustomModifiersDialog/CustomModifiersForm";
@@ -60,11 +59,10 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
   onChange,
 }) => {
   const { t } = useTranslation("common");
-  const { org_type_is_single } = useFhCore().module;
 
   const handleOrgTypeChange = (org_type: OrgType) => {
     const changesForm =
-      org_type_is_single(org_type) !== org_type_is_single(value.org_type);
+      org_type.includes("Single") !== value.org_type.includes("Single");
 
     onChange({
       ...value,

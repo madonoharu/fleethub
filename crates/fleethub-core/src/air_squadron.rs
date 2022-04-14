@@ -22,18 +22,9 @@ pub struct AirSquadron {
 }
 
 #[wasm_bindgen]
-pub fn air_squadron_can_equip(gear: &Gear) -> bool {
-    gear.has_proficiency()
-}
-
-#[wasm_bindgen]
 impl AirSquadron {
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
         self.gears.get_by_gear_key(key).cloned()
-    }
-
-    pub fn can_equip(&self, gear: &Gear) -> bool {
-        air_squadron_can_equip(gear)
     }
 
     pub fn get_slot_size(&self, index: usize) -> Result<u8, JsValue> {

@@ -46,7 +46,7 @@
     "react-dnd": "^16.0.0",
     "react-dnd-html5-backend": "^16.0.0",
     "react-dom": "18.0.0",
-    "react-redux": "^8.0.0-rc.0",
+    "react-redux": "^8.0.0-rc.1",
     "react-twitter-widgets": "^1.10.0",
     "recharts": "2.1.9",
     "redux-persist": "^6.0.0",
@@ -62,7 +62,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^12.1.5",
     "@simbathesailor/use-what-changed": "^2.0.0",
-    "@types/react": "18.0.3",
+    "@types/react": "18.0.5",
     "@types/react-dom": "^18.0.0",
     "@types/xxhashjs": "^0.2.2",
     "next-transpile-modules": "^9.0.0",

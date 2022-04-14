@@ -1,11 +1,10 @@
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, EnumIter, EnumString};
+use strum::EnumIter;
 use tsify::Tsify;
-use wasm_bindgen::prelude::*;
 
-use super::Formation;
+use super::OrgType;
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -156,145 +155,6 @@ pub struct AirSquadronState {
     pub ss4: Option<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ss5: Option<u8>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub enum Side {
-    Player,
-    Enemy,
-}
-
-impl Default for Side {
-    fn default() -> Self {
-        Self::Player
-    }
-}
-
-impl Side {
-    pub fn is_player(&self) -> bool {
-        *self == Self::Player
-    }
-
-    pub fn is_enemy(&self) -> bool {
-        !self.is_player()
-    }
-}
-
-#[derive(
-    Debug, Clone, Copy, PartialEq, Hash, EnumString, AsRefStr, Serialize, Deserialize, Tsify,
-)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub enum OrgType {
-    /// 通常艦隊
-    Single,
-    /// 空母機動部隊
-    CarrierTaskForce,
-    /// 水上打撃部隊
-    SurfaceTaskForce,
-    /// 輸送護衛部隊
-    TransportEscort,
-    /// 敵通常
-    EnemySingle,
-    /// 敵連合
-    EnemyCombined,
-}
-
-impl Default for OrgType {
-    fn default() -> Self {
-        OrgType::Single
-    }
-}
-
-impl OrgType {
-    pub fn is_single(&self) -> bool {
-        matches!(*self, Self::Single | Self::EnemySingle)
-    }
-
-    pub fn is_combined(&self) -> bool {
-        !self.is_single()
-    }
-
-    pub fn default_formation(&self) -> Formation {
-        if self.is_combined() {
-            Formation::Combined(Default::default())
-        } else {
-            Formation::Single(Default::default())
-        }
-    }
-
-    pub fn is_enemy(&self) -> bool {
-        matches!(*self, Self::EnemySingle | Self::EnemyCombined)
-    }
-
-    pub fn is_player(&self) -> bool {
-        !self.is_enemy()
-    }
-
-    pub fn side(&self) -> Side {
-        if self.is_player() {
-            Side::Player
-        } else {
-            Side::Enemy
-        }
-    }
-}
-
-#[wasm_bindgen]
-pub fn org_type_is_single(org_type: OrgType) -> bool {
-    org_type.is_single()
-}
-
-#[wasm_bindgen]
-pub fn org_type_default_formation(org_type: OrgType) -> Formation {
-    org_type.default_formation()
-}
-
-#[wasm_bindgen]
-pub fn org_type_is_player(org_type: OrgType) -> bool {
-    org_type.is_player()
-}
-
-#[wasm_bindgen]
-pub fn org_type_side(org_type: OrgType) -> Side {
-    org_type.side()
-}
-
-#[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    EnumString,
-    AsRefStr,
-    Serialize,
-    Deserialize,
-    Tsify,
-)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub enum Role {
-    Main,
-    Escort,
-}
-
-impl Default for Role {
-    fn default() -> Self {
-        Self::Main
-    }
-}
-
-impl Role {
-    pub fn is_main(&self) -> bool {
-        matches!(*self, Self::Main)
-    }
-
-    pub fn is_escort(&self) -> bool {
-        matches!(*self, Self::Escort)
-    }
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]

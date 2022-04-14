@@ -44,7 +44,7 @@ impl Analyzer {
         &self,
         comp: &Comp,
         formation: Formation,
-        adjusted_anti_air_resist: f64,
+        ship_anti_air_resist: f64,
         fleet_anti_air_resist: f64,
         aaci: Option<u8>,
     ) -> CompAntiAirInfo {
@@ -52,7 +52,7 @@ impl Analyzer {
             comp,
             &self.config,
             formation,
-            adjusted_anti_air_resist,
+            ship_anti_air_resist,
             fleet_anti_air_resist,
             aaci,
         )

@@ -68,30 +68,30 @@ impl<'a> AntiAirAnalyzer<'a> {
         &self,
         comp: &Comp,
         formation: Formation,
-        adjusted_anti_air_resist: f64,
+        ship_anti_air_resist: f64,
         fleet_anti_air_resist: f64,
         aaci: Option<u8>,
     ) -> CompAntiAirInfo {
         let formation_mod = self.config.get_formation_fleet_anti_air_mod(formation);
 
-        let fleet_anti_air = comp.fleet_anti_air(formation_mod);
+        let fleet_adjusted_anti_air = comp.adjusted_anti_air(formation_mod);
         let anti_air_cutin = aaci.and_then(|id| self.find_aaci(id));
 
         let ships = comp
             .members()
             .map(|member| {
-                let air_defence = member.air_defense(fleet_anti_air, anti_air_cutin);
+                let air_defense = member.air_defense(fleet_adjusted_anti_air, anti_air_cutin);
 
                 ShipAntiAirInfo {
                     ship_id: member.ship.ship_id,
-                    adjusted_anti_air: air_defence.adjusted_anti_air(),
-                    proportional_shotdown_rate: air_defence
-                        .proportional_shotdown_rate(adjusted_anti_air_resist),
-                    fixed_shotdown_number: air_defence
-                        .fixed_shotdown_number(adjusted_anti_air_resist, fleet_anti_air_resist),
-                    minimum_bonus: air_defence.minimum_bonus(),
+                    adjusted_anti_air: air_defense.ship_adjusted_anti_air(),
+                    proportional_shotdown_rate: air_defense
+                        .proportional_shotdown_rate(ship_anti_air_resist),
+                    fixed_shotdown_number: air_defense
+                        .fixed_shotdown_number(ship_anti_air_resist, fleet_anti_air_resist),
+                    guaranteed: air_defense.guaranteed(),
                     anti_air_cutin_chance: self.ship_anti_air_cutin_chance(member.ship),
-                    anti_air_propellant_barrage_chance: air_defence
+                    anti_air_propellant_barrage_chance: air_defense
                         .anti_air_propellant_barrage_chance(),
                 }
             })
@@ -127,7 +127,7 @@ impl<'a> AntiAirAnalyzer<'a> {
             .collect::<Vec<_>>();
 
         CompAntiAirInfo {
-            fleet_anti_air,
+            fleet_adjusted_anti_air,
             ships,
             anti_air_cutin_chance,
         }
@@ -141,7 +141,7 @@ pub struct ShipAntiAirInfo {
     adjusted_anti_air: Option<f64>,
     proportional_shotdown_rate: Option<f64>,
     fixed_shotdown_number: Option<i32>,
-    minimum_bonus: Option<i32>,
+    guaranteed: Option<i32>,
     anti_air_cutin_chance: Vec<(u8, f64)>,
     anti_air_propellant_barrage_chance: Option<f64>,
 }
@@ -149,7 +149,7 @@ pub struct ShipAntiAirInfo {
 #[derive(Debug, Serialize, Tsify)]
 #[tsify(into_wasm_abi)]
 pub struct CompAntiAirInfo {
-    fleet_anti_air: f64,
+    fleet_adjusted_anti_air: f64,
     ships: Vec<ShipAntiAirInfo>,
     anti_air_cutin_chance: Vec<(u8, f64)>,
 }
@@ -159,14 +159,14 @@ impl CompAntiAirInfo {
         comp: &Comp,
         config: &BattleConfig,
         formation: Formation,
-        adjusted_anti_air_resist: f64,
+        ship_anti_air_resist: f64,
         fleet_anti_air_resist: f64,
         aaci: Option<u8>,
     ) -> Self {
         AntiAirAnalyzer::new(config).analyze(
             comp,
             formation,
-            adjusted_anti_air_resist,
+            ship_anti_air_resist,
             fleet_anti_air_resist,
             aaci,
         )

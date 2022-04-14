@@ -25,7 +25,7 @@ type PresetMenuProps = {
 };
 
 const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
-  const { core, module } = useFhCore();
+  const { core } = useFhCore();
   const [allVisible, setAllVisible] = useState(false);
 
   const presets = useAppSelector((root) => {
@@ -59,7 +59,7 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
       return GEAR_KEYS.every((key) => {
         const gearState = preset[key];
         const gear = gearState && core.create_gear(gearState);
-        return !gear || module.air_squadron_can_equip(gear);
+        return !gear || gear.can_be_deployed_to_land_base();
       });
     };
   }

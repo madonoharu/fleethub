@@ -212,9 +212,12 @@ impl Comp {
         self.org_type.default_formation()
     }
 
-    /// 艦隊対空値
-    pub fn fleet_anti_air(&self, formation_mod: f64) -> f64 {
-        let total = self.ships().map(|ship| ship.fleet_anti_air()).sum::<i32>() as f64;
+    /// 艦隊防空値
+    pub fn adjusted_anti_air(&self, formation_mod: f64) -> f64 {
+        let total = self
+            .ships()
+            .map(|ship| ship.fleet_anti_air_mod())
+            .sum::<i32>() as f64;
 
         let post_floor = (total * formation_mod).floor() * 2.;
 

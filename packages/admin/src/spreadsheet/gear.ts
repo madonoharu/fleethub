@@ -41,7 +41,7 @@ function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
 
       improvable: Boolean(row?.improvable),
       special_type: Number(row?.special_type),
-      adjusted_anti_air_resistance: Number(row?.adjusted_anti_air_resistance),
+      ship_anti_air_resistance: Number(row?.ship_anti_air_resistance),
       fleet_anti_air_resistance: Number(row?.fleet_anti_air_resistance),
     };
 
@@ -123,7 +123,7 @@ const IBONUS_KEYS: (keyof MasterIBonuses)[] = [
   "defense_power",
   "contact_selection",
   "fighter_power",
-  "adjusted_anti_air",
+  "ship_anti_air",
   "fleet_anti_air",
   "elos",
 ];
