@@ -27,7 +27,7 @@ const SHEET_DATA = [
   { sheetId: 667921219, key: "defense_power" },
   { sheetId: 1845135187, key: "contact_selection" },
   { sheetId: 139440268, key: "fighter_power" },
-  { sheetId: 1148954527, key: "adjusted_anti_air" },
+  { sheetId: 1148954527, key: "ship_anti_air" },
   { sheetId: 7973442, key: "fleet_anti_air" },
   { sheetId: 195030457, key: "elos" },
   { sheetId: 1827664524, key: "anti_air_cutin" },

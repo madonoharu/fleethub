@@ -73,7 +73,7 @@ pub struct MasterGear {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub improvable: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub adjusted_anti_air_resistance: Option<f64>,
+    pub ship_anti_air_resistance: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fleet_anti_air_resistance: Option<f64>,
 
@@ -243,7 +243,7 @@ pub struct MasterIBonuses {
     defense_power: Vec<MasterIBonusRule>,
     contact_selection: Vec<MasterIBonusRule>,
     fighter_power: Vec<MasterIBonusRule>,
-    adjusted_anti_air: Vec<MasterIBonusRule>,
+    ship_anti_air: Vec<MasterIBonusRule>,
     fleet_anti_air: Vec<MasterIBonusRule>,
     elos: Vec<MasterIBonusRule>,
 }
@@ -271,7 +271,7 @@ impl MasterIBonuses {
             defense_power: calc(&self.defense_power),
             contact_selection: calc(&self.contact_selection),
             fighter_power: calc(&self.fighter_power),
-            adjusted_anti_air: calc(&self.adjusted_anti_air),
+            ship_anti_air: calc(&self.ship_anti_air),
             fleet_anti_air: calc(&self.fleet_anti_air),
             elos: calc(&self.elos),
         }

@@ -56,7 +56,7 @@ pub struct IBonuses {
     pub defense_power: f64,
     pub contact_selection: f64,
     pub fighter_power: f64,
-    pub adjusted_anti_air: f64,
+    pub ship_anti_air: f64,
     pub fleet_anti_air: f64,
     pub elos: f64,
 }
@@ -101,7 +101,7 @@ pub struct Gear {
     pub radius: u8,
     pub cost: u8,
     pub improvable: bool,
-    pub adjusted_anti_air_resistance: f64,
+    pub ship_anti_air_resistance: f64,
     pub fleet_anti_air_resistance: f64,
 }
 
@@ -149,7 +149,7 @@ impl Gear {
             radius: master.radius.unwrap_or_default(),
             cost: master.cost.unwrap_or_default(),
             improvable: master.improvable.unwrap_or_default(),
-            adjusted_anti_air_resistance: master.adjusted_anti_air_resistance.unwrap_or(1.0),
+            ship_anti_air_resistance: master.ship_anti_air_resistance.unwrap_or(1.0),
             fleet_anti_air_resistance: master.fleet_anti_air_resistance.unwrap_or(1.0),
 
             attrs: master.attrs.clone(),
@@ -293,7 +293,7 @@ impl Gear {
         (multiplier * (slot_size as f64).sqrt() + pm).floor() as i32
     }
 
-    pub fn fleet_anti_air(&self) -> f64 {
+    pub fn fleet_anti_air_mod(&self) -> f64 {
         if self.anti_air == 0 {
             return 0.;
         }
@@ -317,7 +317,7 @@ impl Gear {
         multiplier * (self.anti_air as f64) + self.ibonuses.fleet_anti_air
     }
 
-    pub fn adjusted_anti_air(&self) -> f64 {
+    pub fn ship_anti_air_mod(&self) -> f64 {
         if self.anti_air == 0 {
             return 0.;
         }
@@ -336,7 +336,7 @@ impl Gear {
             0.
         };
 
-        multiplier * (self.anti_air as f64) + self.ibonuses.adjusted_anti_air
+        multiplier * (self.anti_air as f64) + self.ibonuses.ship_anti_air
     }
 
     pub fn calc_contact_trigger_factor(&self, slot_size: u8) -> f64 {

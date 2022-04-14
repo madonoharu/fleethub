@@ -43,7 +43,7 @@ fn try_air_defense<R: Rng + ?Sized>(
     formation: Formation,
 ) -> Result<(), CalculationError> {
     let formation_mod = config.get_formation_fleet_anti_air_mod(formation);
-    let fleet_anti_air = target_comp.fleet_anti_air(formation_mod);
+    let fleet_adjusted_anti_air = target_comp.adjusted_anti_air(formation_mod);
 
     let anti_air_cutin = target_comp.choose_anti_air_cutin(rng, config);
 
@@ -63,7 +63,7 @@ fn try_air_defense<R: Rng + ?Sized>(
             let member = member_vec.choose(rng).expect("member_vec.len() > 0");
 
             member
-                .air_defense(fleet_anti_air, anti_air_cutin)
+                .air_defense(fleet_adjusted_anti_air, anti_air_cutin)
                 .try_intercept(rng, &mut plane)
         })
 }

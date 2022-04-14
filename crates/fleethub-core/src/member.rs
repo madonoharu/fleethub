@@ -63,37 +63,16 @@ pub trait MemberImpl {
         self.role().is_escort()
     }
 
-    fn adjusted_anti_air(&self) -> Option<f64> {
-        let ship = self.ship();
-        let total = ship.gears.sum_by(|g| g.adjusted_anti_air());
-
-        if self.is_enemy() {
-            let anti_air = ship.anti_air()? as f64;
-            return Some(anti_air.sqrt().floor() * 2. + total);
-        }
-
-        let naked_anti_air = ship.naked_anti_air()? as f64;
-        let pre_floor = naked_anti_air + total;
-
-        let result = if ship.gears.iter().count() == 0 {
-            pre_floor
-        } else {
-            2. * (pre_floor / 2.).floor()
-        };
-
-        Some(result)
-    }
-
     fn air_defense<'a>(
         &'a self,
-        fleet_anti_air: f64,
+        fleet_adjusted_anti_air: f64,
         anti_air_cutin: Option<&'a AntiAirCutinDef>,
     ) -> ShipAirDefense {
         ShipAirDefense {
             ship: self.ship(),
             role: self.role(),
             org_type: self.org_type(),
-            fleet_anti_air,
+            fleet_adjusted_anti_air,
             anti_air_cutin,
         }
     }
@@ -141,7 +120,7 @@ pub struct ShipAirDefense<'a> {
     pub ship: &'a Ship,
     pub org_type: OrgType,
     pub role: Role,
-    pub fleet_anti_air: f64,
+    pub fleet_adjusted_anti_air: f64,
     pub anti_air_cutin: Option<&'a AntiAirCutinDef>,
 }
 
@@ -155,8 +134,9 @@ impl<'a> ShipAirDefense<'a> {
             0.8
         }
     }
-    pub fn adjusted_anti_air(&self) -> Option<f64> {
-        let total = self.ship.gears.sum_by(|g| g.adjusted_anti_air());
+
+    pub fn ship_adjusted_anti_air(&self) -> Option<f64> {
+        let total = self.ship.gears.sum_by(|g| g.ship_anti_air_mod());
 
         if self.org_type.is_enemy() {
             let anti_air = self.ship.anti_air()? as f64;
@@ -175,10 +155,10 @@ impl<'a> ShipAirDefense<'a> {
         Some(result)
     }
 
-    pub fn proportional_shotdown_rate(&self, adjusted_anti_air_resist: f64) -> Option<f64> {
-        let adjusted_anti_air = self.adjusted_anti_air()?;
+    pub fn proportional_shotdown_rate(&self, ship_anti_air_resist: f64) -> Option<f64> {
+        let ship_adjusted_anti_air = self.ship_adjusted_anti_air()?;
 
-        let result = (adjusted_anti_air * adjusted_anti_air_resist).floor()
+        let result = (ship_adjusted_anti_air * ship_anti_air_resist).floor()
             * self.combined_fleet_mod()
             * 0.5
             * 0.25
@@ -188,15 +168,15 @@ impl<'a> ShipAirDefense<'a> {
 
     pub fn fixed_shotdown_number(
         &self,
-        adjusted_anti_air_resist: f64,
+        ship_anti_air_resist: f64,
         fleet_anti_air_resist: f64,
     ) -> Option<i32> {
-        let adjusted_anti_air = self.adjusted_anti_air()?;
+        let ship_adjusted_anti_air = self.ship_adjusted_anti_air()?;
 
         let side_mod = if self.org_type.is_enemy() { 0.75 } else { 0.8 };
 
-        let base = (adjusted_anti_air * adjusted_anti_air_resist).floor()
-            + (self.fleet_anti_air * fleet_anti_air_resist).floor();
+        let base = (ship_adjusted_anti_air * ship_anti_air_resist).floor()
+            + (self.fleet_adjusted_anti_air * fleet_anti_air_resist).floor();
 
         let mut pre_floor = base * 0.5 * 0.25 * side_mod * self.combined_fleet_mod();
 
@@ -207,9 +187,9 @@ impl<'a> ShipAirDefense<'a> {
         Some(pre_floor.floor() as i32)
     }
 
-    pub fn minimum_bonus(&self) -> Option<i32> {
+    pub fn guaranteed(&self) -> Option<i32> {
         if let Some(cutin) = self.anti_air_cutin {
-            cutin.minimum_bonus.map(|v| v as i32)
+            cutin.guaranteed.map(|v| v as i32)
         } else if self.org_type.is_player() {
             Some(1)
         } else {
@@ -230,7 +210,7 @@ impl<'a> ShipAirDefense<'a> {
             return Some(0.);
         }
 
-        let adjusted_anti_air = self.adjusted_anti_air()?;
+        let ship_adjusted_anti_air = self.ship_adjusted_anti_air()?;
         let count = self.ship.gears.count(gear_id!("12cm30連装噴進砲改二"));
 
         if count == 0 {
@@ -245,8 +225,9 @@ impl<'a> ShipAirDefense<'a> {
             0.
         };
 
-        let rate =
-            (adjusted_anti_air + 0.9 * luck) / 281. + (count as f64 - 1.) * 0.15 + ship_class_bonus;
+        let rate = (ship_adjusted_anti_air + 0.9 * luck) / 281.0
+            + (count as f64 - 1.) * 0.15
+            + ship_class_bonus;
 
         Some(rate.min(1.))
     }
@@ -258,24 +239,24 @@ impl<'a> ShipAirDefense<'a> {
     ) -> Result<(), CalculationError> {
         let current = plane.slot_size.ok_or(CalculationError::UnknownValue)?;
 
-        let adjusted_aa_resist = plane.gear.adjusted_anti_air_resistance;
+        let ship_aa_resist = plane.gear.ship_anti_air_resistance;
         let fleet_aa_resist = plane.gear.fleet_anti_air_resistance;
 
         let proportional_shotdown_rate = if rng.gen_bool(0.5) {
-            self.proportional_shotdown_rate(adjusted_aa_resist)
+            self.proportional_shotdown_rate(ship_aa_resist)
                 .ok_or(CalculationError::UnknownValue)?
         } else {
             0.0
         };
 
         let fixed_shotdown = if rng.gen_bool(0.5) {
-            self.fixed_shotdown_number(adjusted_aa_resist, fleet_aa_resist)
+            self.fixed_shotdown_number(ship_aa_resist, fleet_aa_resist)
                 .ok_or(CalculationError::UnknownValue)?
         } else {
             0
         };
 
-        let minimum = self.minimum_bonus().ok_or(CalculationError::UnknownValue)?;
+        let minimum = self.guaranteed().ok_or(CalculationError::UnknownValue)?;
 
         let proportional_shotdown = (proportional_shotdown_rate * current as f64) as u8;
 
