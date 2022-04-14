@@ -430,6 +430,10 @@ impl Gear {
             _ => 0.0,
         }
     }
+
+    pub fn can_be_deployed_to_land_base(&self) -> bool {
+        self.has_proficiency()
+    }
 }
 
 #[cfg(test)]
