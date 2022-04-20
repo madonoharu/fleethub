@@ -55,10 +55,10 @@ const Adornment: React.FCX<AdornmentProps> = ({
   return (
     <InputAdornment className={className} position="end">
       <div>
-        <StyledButton {...increaseProps}>
+        <StyledButton aria-label="increase" {...increaseProps}>
           <ArrowDropUpIcon />
         </StyledButton>
-        <StyledButton {...decreaseProps}>
+        <StyledButton aria-label="decrease" {...decreaseProps}>
           <ArrowDropDownIcon />
         </StyledButton>
       </div>
@@ -139,7 +139,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
     const increase = () => {
       update((current) => {
-        const currentNum = toNumber(current) || 0;
+        const currentNum = toNumber(current);
+        if (currentNum === null) {
+          return current;
+        }
+
         const nextNum = stepValue(currentNum, step);
         return clamp(nextNum, min, max).toString();
       });
@@ -147,7 +151,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
     const decrease = () => {
       update((current) => {
-        const currentNum = toNumber(current) || 0;
+        const currentNum = toNumber(current);
+        if (currentNum === null) {
+          return current;
+        }
+
         const nextNum = stepValue(currentNum, -step);
         return clamp(nextNum, min, max).toString();
       });
