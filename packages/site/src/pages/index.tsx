@@ -1,7 +1,7 @@
 import { storage } from "@fh/admin";
 import { Alert } from "@mui/material";
 import { createEquipmentBonuses } from "equipment-bonus";
-import { FhCore, MasterData } from "fleethub-core";
+import { FhCore } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
@@ -11,7 +11,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { GCS_PREFIX_URL, MASTER_DATA_PATH } from "../firebase";
-import { FhCoreContext, GenerationMapContext, useGcs } from "../hooks";
+import { FhCoreContext, GenerationMapContext, useMasterData } from "../hooks";
 import { StoreProvider } from "../store";
 
 const AppContent = dynamic(() => import("../components/templates/AppContent"), {
@@ -25,7 +25,7 @@ type Props = {
 };
 
 const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: masterData, error } = useGcs<MasterData>(MASTER_DATA_PATH);
+  const { data: masterData, error } = useMasterData();
 
   if (error) {
     console.error(error);

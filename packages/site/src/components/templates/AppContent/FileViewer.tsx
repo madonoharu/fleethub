@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import React from "react";
 
 import { useAppSelector } from "../../../hooks";
-import { filesSelectors, selectAppState } from "../../../store";
+import { filesSelectors } from "../../../store";
 import { DirectoryBreadcrumbs } from "../../organisms";
 import FolderPage from "../FolderPage";
 import PlanScreen from "../PlanScreen";
@@ -14,10 +14,10 @@ const StyledDirectoryBreadcrumbs = styled(DirectoryBreadcrumbs)`
 `;
 
 const FileViewer: React.FC = () => {
-  const file = useAppSelector((state) => {
-    const { fileId } = selectAppState(state);
+  const file = useAppSelector((root) => {
+    const { fileId } = root.present.app;
     if (!fileId) return;
-    return filesSelectors.selectById(state, fileId);
+    return filesSelectors.selectById(root, fileId);
   });
 
   if (!file) return <WelcomePage />;

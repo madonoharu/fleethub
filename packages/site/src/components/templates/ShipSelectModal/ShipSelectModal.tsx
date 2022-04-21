@@ -8,21 +8,21 @@ import { entitiesSlice, shipSelectSlice } from "../../../store";
 import { Dialog } from "../../organisms";
 import ShipList from "../ShipList";
 
-const selectShip =
-  (ship: Ship, id?: string): AppThunk =>
-  (dispatch, getState) => {
+function selectShip(ship: Ship, id?: string): AppThunk {
+  return (dispatch, getState) => {
     const root = getState();
-    const shipSelectState = root.present.shipSelect;
+    const state = root.present.shipSelect;
 
     dispatch(
       entitiesSlice.actions.createShip({
         input: ship.state(),
-        position: shipSelectState.position,
-        id: id || shipSelectState.id,
-        reselect: shipSelectState.reselect,
+        position: state.position,
+        id: id || state.id,
+        reselect: state.reselect,
       })
     );
   };
+}
 
 const ShipSelectModal: React.FCX = () => {
   const { masterData, core } = useFhCore();
