@@ -55,3 +55,11 @@ ignorePatterns:
   - "**/cjs/*"
   - "**/pkg/*"
   - "**/*.config.js"
+  - "**/*.setup.js"
+
+overrides:
+  - files:
+      - "**/__tests__/**/*.[jt]s?(x)"
+      - "**/?(*.)+(spec|test).[jt]s?(x)"
+    rules:
+      react/react-in-jsx-scope: off

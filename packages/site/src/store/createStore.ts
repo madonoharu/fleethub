@@ -9,7 +9,6 @@ import { entitiesSlice } from "./entities";
 import { gearSelectSlice } from "./gearSelectSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
 import { mapSelectSlice } from "./mapSelectSlice";
-import { navSlice } from "./navSlice";
 import { shipDetailsSlice } from "./shipDetailsSlice";
 import { shipSelectSlice } from "./shipSelectSlice";
 import undoableOptions from "./undoableOptions";
@@ -24,7 +23,7 @@ const storage = typeof window !== "undefined" ? localforage : noopStorage;
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
-  nav: navSlice.reducer,
+  entities: entitiesSlice.reducer,
 
   shipSelect: shipSelectSlice.reducer,
   gearSelect: gearSelectSlice.reducer,
@@ -32,8 +31,6 @@ const combinedReducer = combineReducers({
 
   gkcoi: gkcoiSlice.reducer,
   shipDetails: shipDetailsSlice.reducer,
-
-  entities: entitiesSlice.reducer,
 });
 
 const persistedReducerBase: typeof combinedReducer = (...args) => {
@@ -59,7 +56,7 @@ const persistedReducer = persistReducer(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     deserialize: false,
-    blacklist: ["nav", "shipDetails", "shipSelect", "gearSelect", "mapSelect"],
+    whitelist: ["app", "entities"],
   },
   persistedReducerBase
 );
