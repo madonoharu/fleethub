@@ -15,6 +15,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import SettingsIcon from "@mui/icons-material/Settings";
 import ShareIcon from "@mui/icons-material/Share";
 import StarIcon from "@mui/icons-material/Star";
 import TwitterIcon from "@mui/icons-material/Twitter";
@@ -37,6 +38,7 @@ export const MoreVertButton = withIconButton(MoreVertIcon);
 export const OpenInNewButton = withIconButton(OpenInNewIcon);
 export const RestartAltButton = withIconButton(RestartAltIcon);
 export const SaveButton = withIconButton(SaveIcon);
+export const SettingsButton = withIconButton(SettingsIcon);
 export const ShareButton = withIconButton(ShareIcon);
 export const StarButton = withIconButton(StarIcon);
 
