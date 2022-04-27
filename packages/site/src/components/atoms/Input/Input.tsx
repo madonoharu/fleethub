@@ -22,16 +22,8 @@ const Input: React.FC<InputProps> = ({ startLabel, InputProps, ...rest }) => {
     <StartInputAdornment position="start">{startLabel}</StartInputAdornment>
   );
 
-  const size = rest.variant === "outlined" ? "small" : undefined;
-  const margin = rest.variant === "outlined" ? "dense" : undefined;
-
   return (
-    <MuiTextField
-      size={size}
-      margin={margin}
-      InputProps={{ startAdornment, ...InputProps }}
-      {...rest}
-    />
+    <MuiTextField InputProps={{ startAdornment, ...InputProps }} {...rest} />
   );
 };
 
