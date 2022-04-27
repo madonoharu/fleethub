@@ -1,5 +1,5 @@
 import { storage } from "@fh/admin";
-import { Alert } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
 import { createEquipmentBonuses } from "equipment-bonus";
 import { FhCore } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
@@ -25,23 +25,33 @@ type Props = {
 };
 
 const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: masterData, error } = useMasterData();
+  const { data, error } = useMasterData();
 
   if (error) {
     console.error(error);
-    return <Alert severity="error">{error.message}</Alert>;
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        <AlertTitle>マスターデータの読み込みに失敗しました</AlertTitle>
+        {error.message}
+      </Alert>
+    );
   }
 
-  if (!masterData) {
+  if (!data) {
     return null;
   }
 
   let core: FhCore;
   try {
-    core = new FhCore(masterData, createEquipmentBonuses);
+    core = new FhCore(data, createEquipmentBonuses);
   } catch (error: unknown) {
     console.error(error);
-    return <Alert severity="error">{String(error)}</Alert>;
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        <AlertTitle>マスターデータの読み込みに失敗しました</AlertTitle>
+        {String(error)}
+      </Alert>
+    );
   }
 
   const analyzer = core.create_analyzer();
@@ -49,7 +59,7 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const value = {
     core,
     analyzer,
-    masterData,
+    masterData: data,
   };
 
   return (
