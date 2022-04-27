@@ -19,7 +19,7 @@ const AntiAirCutinSelect: React.FCX<Props> = ({
 }) => {
   const { t } = useTranslation("common");
   const { masterData } = useFhCore();
-  const data = masterData.config.anti_air_cutin;
+  const data = masterData.anti_air_cutin;
 
   const options = useMemo(() => [null, ...data], [data]);
   const current = data.find((def) => def.id === value) || null;

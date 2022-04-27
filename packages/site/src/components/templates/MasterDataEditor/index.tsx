@@ -44,7 +44,7 @@ const MasterDataEditor: React.FC = () => {
 
   return (
     <div>
-      {data.config.night_cutin.map((def) => (
+      {data.night_cutin.map((def) => (
         <NightCutinEditor key={def.tag} def={def} />
       ))}
     </div>

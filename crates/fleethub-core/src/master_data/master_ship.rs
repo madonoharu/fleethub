@@ -41,7 +41,7 @@ pub struct MasterShip {
     #[serde(default)]
     pub torpedo_accuracy: u8,
     pub speed: u8,
-    #[tsify(optional)]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub range: Option<u8>,
     #[serde(default)]
     pub fuel: u16,

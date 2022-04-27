@@ -49,7 +49,10 @@ pub struct MasterData {
     pub ship_attrs: Vec<MasterAttrRule<ShipAttr>>,
     pub ibonuses: MasterIBonuses,
     pub equippable: MasterEquippable,
-    pub config: MasterConfig,
+    pub formation: Vec<NestedFormationDef>,
+    pub anti_air_cutin: Vec<AntiAirCutinDef>,
+    pub day_cutin: Vec<DayCutinDef>,
+    pub night_cutin: Vec<NightCutinDef>,
 }
 
 impl MasterData {
@@ -100,26 +103,25 @@ impl MasterData {
     }
 
     pub fn battle_config(&self) -> BattleConfig {
-        let config = &self.config;
-        let formation = config
+        let formation = self
             .formation
             .iter()
             .map(|def| (def.tag(), def.clone()))
             .collect();
 
-        let anti_air_cutin = config
+        let anti_air_cutin = self
             .anti_air_cutin
             .iter()
             .map(|def| (def.id, def.clone()))
             .collect();
 
-        let day_cutin = config
+        let day_cutin = self
             .day_cutin
             .iter()
             .map(|def| (def.tag, def.clone()))
             .collect();
 
-        let night_cutin = config
+        let night_cutin = self
             .night_cutin
             .iter()
             .map(|def| (def.tag, def.clone()))

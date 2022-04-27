@@ -107,7 +107,7 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
             <AttackPowerModifierLabel
               key={key}
               label={t(key as keyof SpecialEnemyModifiers)}
-              mod={mod}
+              mod={mod as AttackPowerModifier}
             />
           ))}
         </>

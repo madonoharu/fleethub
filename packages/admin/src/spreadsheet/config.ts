@@ -80,9 +80,11 @@ function getNightCutinDefs(table: SpreadsheetTable): NightCutinDef[] {
   });
 }
 
+type ConfigKey = "anti_air_cutin" | "day_cutin" | "night_cutin" | "formation";
+
 export function createConfig(
-  tables: Record<keyof MasterData["config"], SpreadsheetTable>
-): MasterData["config"] {
+  tables: Record<ConfigKey, SpreadsheetTable>
+): Pick<MasterData, ConfigKey> {
   return {
     anti_air_cutin: getAntiAirCutinDefs(tables.anti_air_cutin),
     day_cutin: getDayCutinDefs(tables.day_cutin),
