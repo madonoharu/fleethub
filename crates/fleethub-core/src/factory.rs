@@ -6,11 +6,12 @@ use crate::{
     fleet::{Fleet, ShipArray},
     gear::Gear,
     gear_array::GearArray,
+    master_data::MasterData,
     org::Org,
     ship::Ship,
     types::{
-        AirSquadronState, EBonusFn, EBonuses, FleetState, GearAttr, GearState, GearType,
-        MasterData, OrgState, OrgType, ShipAttr, ShipState, SlotSizeVec,
+        AirSquadronState, EBonusFn, EBonuses, FleetState, GearAttr, GearState, GearType, OrgState,
+        OrgType, ShipAttr, ShipState, SlotSizeVec,
     },
     utils::xxh3,
 };

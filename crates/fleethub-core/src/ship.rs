@@ -5,7 +5,6 @@ mod night_cutin;
 
 use std::hash::Hash;
 
-use num_traits::FromPrimitive;
 use paste::paste;
 use wasm_bindgen::prelude::*;
 
@@ -13,11 +12,12 @@ use crate::{
     attack::{AswAttackType, ProficiencyModifiers},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
+    master_data::MasterShip,
     plane::{Plane, PlaneImpl, PlaneMut},
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
-        DamageState, DayCutin, EBonuses, GearAttr, GearType, MasterShip, MoraleState, ShipAttr,
-        ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
+        DamageState, DayCutin, EBonuses, GearAttr, GearType, MoraleState, ShipAttr, ShipCategory,
+        ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
     },
     utils::xxh3,
 };
@@ -261,9 +261,9 @@ impl Ship {
             level: state.level.unwrap_or(master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
             morale: state.morale.unwrap_or(49),
-            ammo: state.ammo.unwrap_or(master.ammo.unwrap_or_default()),
-            fuel: state.fuel.unwrap_or(master.fuel.unwrap_or_default()),
-            ship_type: FromPrimitive::from_u8(master.stype).unwrap_or_default(),
+            ammo: state.ammo.unwrap_or(master.ammo),
+            fuel: state.fuel.unwrap_or(master.fuel),
+            ship_type: num_traits::FromPrimitive::from_u8(master.stype).unwrap_or_default(),
             ctype,
 
             slots,
@@ -923,7 +923,7 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn sort_id(&self) -> u16 {
-        self.master.sort_id.unwrap_or_default()
+        self.master.sort_id
     }
 
     pub fn remodel_rank(&self) -> u16 {
@@ -937,12 +937,12 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn next_id(&self) -> u16 {
-        self.master.next_id.unwrap_or_default()
+        self.master.next_id
     }
 
     #[wasm_bindgen(getter)]
     pub fn useful(&self) -> bool {
-        self.master.useful.unwrap_or_default()
+        self.master.useful
     }
 
     pub fn damage_state(&self) -> DamageState {
@@ -1204,12 +1204,12 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn max_ammo(&self) -> u16 {
-        self.master.ammo.unwrap_or_default()
+        self.master.ammo
     }
 
     #[wasm_bindgen(getter)]
     pub fn max_fuel(&self) -> u16 {
-        self.master.fuel.unwrap_or_default()
+        self.master.fuel
     }
 
     #[wasm_bindgen(getter)]
@@ -1468,7 +1468,7 @@ impl Ship {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{gear::Gear, types::StatInterval};
+    use crate::{gear::Gear, master_data::StatInterval};
 
     #[test]
     fn test_max_hp() {

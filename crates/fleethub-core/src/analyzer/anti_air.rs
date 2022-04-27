@@ -18,7 +18,7 @@ impl<'a> AntiAirAnalyzer<'a> {
     }
 
     fn find_aaci(&self, id: u8) -> Option<&AntiAirCutinDef> {
-        self.config.anti_air_cutin.iter().find(|def| def.id == id)
+        self.config.anti_air_cutin.get(&id)
     }
 
     pub fn ship_anti_air_cutin_chance(&self, ship: &Ship) -> Vec<(u8, f64)> {

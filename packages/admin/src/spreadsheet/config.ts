@@ -5,7 +5,6 @@ import {
   FormationDef,
   NightCutinDef,
   NestedFormationDef,
-  BattleConfig,
   MasterData,
 } from "fleethub-core";
 import set from "lodash/set";
@@ -83,7 +82,7 @@ function getNightCutinDefs(table: SpreadsheetTable): NightCutinDef[] {
 
 export function createConfig(
   tables: Record<keyof MasterData["config"], SpreadsheetTable>
-): BattleConfig {
+): MasterData["config"] {
   return {
     anti_air_cutin: getAntiAirCutinDefs(tables.anti_air_cutin),
     day_cutin: getDayCutinDefs(tables.day_cutin),

@@ -134,7 +134,7 @@ impl<'a> WarfareAnalyzer<'a> {
         let items = match attack_type {
             DayBattleAttackType::Shelling(t) => {
                 let day_cutin_rate_info = DayCutinRateInfo::new(
-                    &self.config.day_cutin,
+                    &self.config,
                     self.attacker,
                     self.ctx.attacker_env.fleet_los_mod,
                     self.ctx.attacker_env.is_main_flagship(),
@@ -147,7 +147,7 @@ impl<'a> WarfareAnalyzer<'a> {
                     .into_iter()
                     .map(|(cutin, rate)| {
                         let sp_def = cutin
-                            .and_then(|cutin| self.config.get_day_cutin_def(cutin))
+                            .and_then(|cutin| self.config.day_cutin.get(&cutin))
                             .map(|def| def.into());
 
                         let attack_ctx = ShellingAttackContext::new(
@@ -202,7 +202,7 @@ impl<'a> WarfareAnalyzer<'a> {
                     .into_iter()
                     .map(|(cutin, rate)| {
                         let sp_def = cutin
-                            .and_then(|cutin| self.config.get_night_cutin_def(cutin))
+                            .and_then(|cutin| self.config.night_cutin.get(&cutin))
                             .map(|def| def.into());
 
                         let attack_ctx = NightAttackContext::new(

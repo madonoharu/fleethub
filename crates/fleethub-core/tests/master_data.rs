@@ -1,9 +1,6 @@
 use std::{fs, path::Path};
 
-use fleethub_core::{
-    ship::Ship,
-    types::{MasterData, ShipState},
-};
+use fleethub_core::{master_data::MasterData, ship::Ship, types::ShipState};
 use once_cell::sync::Lazy;
 
 async fn init_master_data() -> anyhow::Result<MasterData> {

@@ -1,5 +1,6 @@
 import { nonNullable } from "@fh/utils";
 import {
+  GearAttr,
   MasterAttrRule,
   MasterData,
   MasterGear,
@@ -55,7 +56,7 @@ function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
 
 function makeReplaceGearExpr(
   start2: Start2,
-  gear_attrs: MasterAttrRule[]
+  gear_attrs: MasterAttrRule<GearAttr>[]
 ): (str: string) => string {
   const replaceType = (str: string) =>
     start2.api_mst_slotitem_equiptype.reduce(
@@ -92,15 +93,15 @@ function makeReplaceGearExpr(
 function createGearAttrs(
   table: SpreadsheetTable,
   start2: Start2
-): MasterAttrRule[] {
-  const gear_attrs: MasterAttrRule[] = [];
+): MasterAttrRule<GearAttr>[] {
+  const gear_attrs: MasterAttrRule<GearAttr>[] = [];
   const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
   table.rows.forEach((row) => {
     const expr = replaceExpr(row.expr as string);
 
     gear_attrs.push({
-      tag: cellValueToString(row.tag),
+      tag: cellValueToString(row.tag) as GearAttr,
       name: cellValueToString(row.name),
       expr,
     });
@@ -131,7 +132,7 @@ const IBONUS_KEYS: (keyof MasterIBonuses)[] = [
 function createMasterIBonuses(
   tables: Record<keyof MasterIBonuses, SpreadsheetTable>,
   start2: Start2,
-  gear_attrs: MasterAttrRule[]
+  gear_attrs: MasterAttrRule<GearAttr>[]
 ): MasterIBonuses {
   const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
 
