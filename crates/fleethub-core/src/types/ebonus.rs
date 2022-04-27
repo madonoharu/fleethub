@@ -5,10 +5,11 @@ use wasm_bindgen::JsValue;
 use crate::{
     gear::Gear,
     gear_array::GearArray,
+    master_data::MasterShip,
     types::{ctype, gear_id, ShipAttr, SpeedGroup},
 };
 
-use super::{GearTypeIdArray, MasterShip};
+use super::GearTypeIdArray;
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -105,7 +106,7 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
         _ => return 0,
     };
 
-    let speed_group = ship.speed_group.unwrap_or_default();
+    let speed_group = ship.speed_group;
     let new_model_boiler_count = gears.count(gear_id!("新型高温高圧缶"));
 
     // 新型高速潜水艦補正

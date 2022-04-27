@@ -5,7 +5,7 @@ use crate::{
     comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    types::{AirStateRank, BattleConfig, DayCutin, DayCutinDef, Role},
+    types::{AirStateRank, BattleConfig, DayCutin, Role},
 };
 
 #[derive(Debug, Default, Serialize, Tsify)]
@@ -17,7 +17,7 @@ pub struct DayCutinRateInfo {
 
 impl DayCutinRateInfo {
     pub fn new(
-        day_cutin_defs: &Vec<DayCutinDef>,
+        config: &BattleConfig,
         ship: &Ship,
         fleet_los_mod: Option<f64>,
         is_main_flagship: bool,
@@ -34,7 +34,7 @@ impl DayCutinRateInfo {
         let mut rates = cutin_set
             .into_iter()
             .map(|ci| {
-                let ci_def = day_cutin_defs.iter().find(|def| def.tag == ci).unwrap();
+                let ci_def = config.day_cutin.get(&ci).unwrap();
 
                 let actual_rate = if let (Some(o), Some(d), Some(t)) =
                     (observation_term, ci_def.chance_denom, total_cutin_rate)
@@ -74,7 +74,7 @@ pub struct ShipDayCutinRateInfo {
 
 impl ShipDayCutinRateInfo {
     fn new(
-        day_cutin_defs: &Vec<DayCutinDef>,
+        config: &BattleConfig,
         ship: &Ship,
         fleet_los_mod: Option<f64>,
         is_main_flagship: bool,
@@ -84,7 +84,7 @@ impl ShipDayCutinRateInfo {
         Self {
             ship_id: ship.ship_id,
             air_supremacy: DayCutinRateInfo::new(
-                day_cutin_defs,
+                config,
                 ship,
                 fleet_los_mod,
                 is_main_flagship,
@@ -92,7 +92,7 @@ impl ShipDayCutinRateInfo {
                 anti_inst,
             ),
             air_superiority: DayCutinRateInfo::new(
-                day_cutin_defs,
+                config,
                 ship,
                 fleet_los_mod,
                 is_main_flagship,
@@ -114,7 +114,7 @@ pub struct FleetDayCutinRateInfo {
 }
 
 impl FleetDayCutinRateInfo {
-    pub fn new(day_cutin_defs: &Vec<DayCutinDef>, fleet: &Fleet, role: Role) -> Self {
+    pub fn new(config: &BattleConfig, fleet: &Fleet, role: Role) -> Self {
         let fleet_los_mod = fleet.fleet_los_mod();
 
         let ships = fleet
@@ -122,7 +122,7 @@ impl FleetDayCutinRateInfo {
             .iter()
             .map(|(index, ship)| {
                 let is_main_flagship = role == Role::Main && index == 0;
-                ShipDayCutinRateInfo::new(day_cutin_defs, ship, fleet_los_mod, is_main_flagship)
+                ShipDayCutinRateInfo::new(config, ship, fleet_los_mod, is_main_flagship)
             })
             .filter(|info| info.non_empty())
             .collect();
@@ -143,14 +143,12 @@ pub struct CompDayCutinRateInfo {
 
 impl CompDayCutinRateInfo {
     pub fn new(comp: &Comp, config: &BattleConfig) -> Self {
-        let day_cutin_defs = &config.day_cutin;
-
         Self {
-            main: FleetDayCutinRateInfo::new(day_cutin_defs, &comp.main, Role::Main),
+            main: FleetDayCutinRateInfo::new(config, &comp.main, Role::Main),
             escort: comp
                 .escort
                 .as_ref()
-                .map(|fleet| FleetDayCutinRateInfo::new(day_cutin_defs, fleet, Role::Escort)),
+                .map(|fleet| FleetDayCutinRateInfo::new(config, fleet, Role::Escort)),
         }
     }
 }

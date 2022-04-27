@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
@@ -201,12 +203,11 @@ impl From<&NightCutinDef> for SpecialAttackDef<NightSpecialAttack> {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
-#[tsify(from_wasm_abi)]
 pub struct BattleConfig {
-    pub formation: Vec<NestedFormationDef>,
-    pub anti_air_cutin: Vec<AntiAirCutinDef>,
-    pub day_cutin: Vec<DayCutinDef>,
-    pub night_cutin: Vec<NightCutinDef>,
+    pub formation: HashMap<Formation, NestedFormationDef>,
+    pub anti_air_cutin: HashMap<u8, AntiAirCutinDef>,
+    pub day_cutin: HashMap<DayCutin, DayCutinDef>,
+    pub night_cutin: HashMap<NightCutin, NightCutinDef>,
 }
 
 impl BattleConfig {
@@ -216,11 +217,11 @@ impl BattleConfig {
         fleet_len: usize,
         ship_index: usize,
     ) -> &FormationDef {
-        self.formation
-            .iter()
-            .find(|nfd| formation == nfd.tag())
-            .map(|nfd| nfd.get_def(fleet_len, ship_index))
-            .unwrap_or_else(|| unreachable!())
+        let nfd = self
+            .formation
+            .get(&formation)
+            .unwrap_or_else(|| unreachable!());
+        nfd.get_def(fleet_len, ship_index)
     }
 
     pub fn get_formation_def_by_env(&self, env: &WarfareShipEnvironment) -> &FormationDef {
@@ -229,17 +230,5 @@ impl BattleConfig {
 
     pub fn get_formation_fleet_anti_air_mod(&self, formation: Formation) -> f64 {
         self.get_formation_def(formation, 0, 6).fleet_anti_air_mod
-    }
-
-    pub fn get_anti_air_cutin_def(&self, id: u8) -> Option<&AntiAirCutinDef> {
-        self.anti_air_cutin.iter().find(|def| def.id == id)
-    }
-
-    pub fn get_day_cutin_def(&self, cutin: DayCutin) -> Option<&DayCutinDef> {
-        self.day_cutin.iter().find(|def| def.tag == cutin)
-    }
-
-    pub fn get_night_cutin_def(&self, cutin: NightCutin) -> Option<&NightCutinDef> {
-        self.night_cutin.iter().find(|def| def.tag == cutin)
     }
 }

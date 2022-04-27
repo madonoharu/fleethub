@@ -1,7 +1,7 @@
 import { storage } from "@fh/admin";
-import { Alert } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
 import { createEquipmentBonuses } from "equipment-bonus";
-import { FhCore, MasterData } from "fleethub-core";
+import { FhCore } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
@@ -11,7 +11,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { GCS_PREFIX_URL, MASTER_DATA_PATH } from "../firebase";
-import { FhCoreContext, GenerationMapContext, useGcs } from "../hooks";
+import { FhCoreContext, GenerationMapContext, useMasterData } from "../hooks";
 import { StoreProvider } from "../store";
 
 const AppContent = dynamic(() => import("../components/templates/AppContent"), {
@@ -25,23 +25,33 @@ type Props = {
 };
 
 const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: masterData, error } = useGcs<MasterData>(MASTER_DATA_PATH);
+  const { data, error } = useMasterData();
 
   if (error) {
     console.error(error);
-    return <Alert severity="error">{error.message}</Alert>;
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        <AlertTitle>マスターデータの読み込みに失敗しました</AlertTitle>
+        {error.message}
+      </Alert>
+    );
   }
 
-  if (!masterData) {
+  if (!data) {
     return null;
   }
 
   let core: FhCore;
   try {
-    core = new FhCore(masterData, createEquipmentBonuses);
+    core = new FhCore(data, createEquipmentBonuses);
   } catch (error: unknown) {
     console.error(error);
-    return <Alert severity="error">{String(error)}</Alert>;
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        <AlertTitle>マスターデータの読み込みに失敗しました</AlertTitle>
+        {String(error)}
+      </Alert>
+    );
   }
 
   const analyzer = core.create_analyzer();
@@ -49,7 +59,7 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const value = {
     core,
     analyzer,
-    masterData,
+    masterData: data,
   };
 
   return (

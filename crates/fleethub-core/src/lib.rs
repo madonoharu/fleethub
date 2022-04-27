@@ -1,5 +1,6 @@
 pub mod air_squadron;
 pub mod analyzer;
+pub mod attack;
 pub mod comp;
 pub mod console;
 pub mod error;
@@ -8,12 +9,11 @@ pub mod factory;
 pub mod fleet;
 pub mod gear;
 pub mod gear_array;
+pub mod master_data;
 pub mod member;
 pub mod org;
 pub mod plane;
 pub mod ship;
-
-pub mod attack;
 pub mod simulator;
 pub mod types;
 pub mod utils;
@@ -27,19 +27,10 @@ use analyzer::Analyzer;
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
+use master_data::MasterData;
 use org::Org;
 use ship::Ship;
-use types::{AirSquadronState, EBonusFn, FleetState, GearState, MasterData, OrgState, ShipState};
-
-#[wasm_bindgen(typescript_custom_section)]
-const TS_APPEND_CONTENT: &'static str = r#"
-import * as bindings from "../bindings";
-export * from "../bindings";
-"#;
-
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+use types::{AirSquadronState, EBonusFn, FleetState, GearState, OrgState, ShipState};
 
 #[wasm_bindgen]
 pub struct FhCore {
@@ -49,9 +40,14 @@ pub struct FhCore {
 #[wasm_bindgen]
 impl FhCore {
     #[wasm_bindgen(constructor)]
-    pub fn new(js_master: JsValue, js_fn: js_sys::Function) -> Result<FhCore, JsValue> {
-        let master_data =
-            MasterData::new(js_master).map_err(|err| JsValue::from(err.to_string()))?;
+    pub fn new(
+        js_master: <MasterData as tsify::Tsify>::JsType,
+        js_fn: js_sys::Function,
+    ) -> Result<FhCore, JsValue> {
+        let master_data = js_master
+            .into_serde::<MasterData>()
+            .map_err(|err| JsValue::from(err.to_string()))?
+            .init();
 
         let factory = Factory {
             master_data,
@@ -94,7 +90,7 @@ impl FhCore {
     }
 
     pub fn create_analyzer(&self) -> Analyzer {
-        Analyzer::new(self.factory.master_data.config.clone())
+        Analyzer::new(self.factory.master_data.battle_config())
     }
 
     pub fn simulate_shelling_support(
@@ -108,8 +104,8 @@ impl FhCore {
         use simulator::ShellingSupportSimulator;
 
         let mut rng = SmallRng::from_entropy();
-        let config = &self.factory.master_data.config;
-        let mut sim = ShellingSupportSimulator::new(&mut rng, config, player, enemy, params);
+        let config = self.factory.master_data.battle_config();
+        let mut sim = ShellingSupportSimulator::new(&mut rng, &config, player, enemy, params);
 
         sim.run(times)
             .map_err(|err| JsValue::from(&err.to_string()))

@@ -85,7 +85,7 @@ const WelcomePage: React.FCX = () => {
           Tips
         </Typography>
         <Divider />
-        <Typography>
+        <Typography component="div">
           <p>
             デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
           </p>

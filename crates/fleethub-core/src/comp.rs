@@ -131,7 +131,7 @@ impl Comp {
 
                 let aaci = aaci_vec
                     .into_iter()
-                    .filter_map(|id| config.get_anti_air_cutin_def(id))
+                    .filter_map(|id| config.anti_air_cutin.get(&id))
                     .find(|aaci| {
                         let p = aaci.rate().unwrap_or_default();
                         if aaci.is_sequential() {

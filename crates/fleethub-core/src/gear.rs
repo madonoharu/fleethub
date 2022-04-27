@@ -1,13 +1,10 @@
 use enumset::EnumSet;
-use num_traits::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    types::{
-        gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypeIdArray,
-        MasterGear,
-    },
+    master_data::MasterGear,
+    types::{gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypeIdArray},
     utils::xxh3,
 };
 
@@ -111,10 +108,8 @@ impl Gear {
 
         let gear_type = master.types.gear_type();
 
-        let special_type: GearType = master
-            .special_type
-            .and_then(FromPrimitive::from_u8)
-            .unwrap_or(gear_type);
+        let special_type: GearType =
+            num_traits::FromPrimitive::from_u8(master.special_type_id()).unwrap_or_default();
 
         let default_exp = master.default_exp();
         let exp = state.exp.unwrap_or(default_exp);
@@ -133,24 +128,24 @@ impl Gear {
 
             name: master.name.clone(),
             types: master.types.clone(),
-            max_hp: master.max_hp.unwrap_or_default(),
-            firepower: master.firepower.unwrap_or_default(),
-            armor: master.armor.unwrap_or_default(),
-            torpedo: master.torpedo.unwrap_or_default(),
-            anti_air: master.anti_air.unwrap_or_default(),
-            speed: master.speed.unwrap_or_default(),
-            bombing: master.bombing.unwrap_or_default(),
-            asw: master.asw.unwrap_or_default(),
-            los: master.los.unwrap_or_default(),
-            luck: master.luck.unwrap_or_default(),
-            accuracy: master.accuracy.unwrap_or_default(),
-            evasion: master.evasion.unwrap_or_default(),
-            range: master.range.unwrap_or_default(),
-            radius: master.radius.unwrap_or_default(),
-            cost: master.cost.unwrap_or_default(),
-            improvable: master.improvable.unwrap_or_default(),
-            ship_anti_air_resistance: master.ship_anti_air_resistance.unwrap_or(1.0),
-            fleet_anti_air_resistance: master.fleet_anti_air_resistance.unwrap_or(1.0),
+            max_hp: master.max_hp,
+            firepower: master.firepower,
+            armor: master.armor,
+            torpedo: master.torpedo,
+            anti_air: master.anti_air,
+            speed: master.speed,
+            bombing: master.bombing,
+            asw: master.asw,
+            los: master.los,
+            luck: master.luck,
+            accuracy: master.accuracy,
+            evasion: master.evasion,
+            range: master.range,
+            radius: master.radius,
+            cost: master.cost,
+            improvable: master.improvable,
+            ship_anti_air_resistance: master.ship_anti_air_resistance,
+            fleet_anti_air_resistance: master.fleet_anti_air_resistance,
 
             attrs: master.attrs.clone(),
             ibonuses,
