@@ -9,7 +9,6 @@ import {
 import { appSlice } from "../../../store";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";
-import MasterDataEditor from "../MasterDataEditor";
 import ShipSelectModal from "../ShipSelectModal";
 
 import AppBar from "./AppBar";
@@ -31,7 +30,6 @@ const AppContent: React.FC = () => {
       <AppBar explorerOpen={explorerOpen} onExplorerOpen={toggleExplorerOpen} />
       <ExplorerDrawer open={explorerOpen}>
         <FileViewer />
-        <MasterDataEditor />
         <Bottom />
       </ExplorerDrawer>
 
