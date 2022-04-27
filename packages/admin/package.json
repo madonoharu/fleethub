@@ -1,6 +1,6 @@
 {
   "name": "@fh/admin",
-  "version": "1.2.1",
+  "version": "1.3.3",
   "license": "UNLICENSED",
   "main": "cjs/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "@google-cloud/asset": "^3.23.1",
     "cloudinary": "^1.29.1",
     "dequal": "^2.0.2",
-    "firebase-admin": "^10.0.2",
+    "firebase-admin": "^10.1.0",
     "googleapis": "^100.0.0",
     "got": "11.8.3"
   },
