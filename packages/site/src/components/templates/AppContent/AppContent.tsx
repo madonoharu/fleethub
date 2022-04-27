@@ -6,7 +6,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../hooks";
-import { appSlice, selectAppState } from "../../../store";
+import { appSlice } from "../../../store";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";
 import ShipSelectModal from "../ShipSelectModal";
@@ -21,9 +21,7 @@ const Bottom = styled.div`
 
 const AppContent: React.FC = () => {
   const dispatch = useAppDispatch();
-  const explorerOpen = useAppSelector(
-    (state) => selectAppState(state).explorerOpen
-  );
+  const explorerOpen = useAppSelector((root) => root.present.app.explorerOpen);
   const toggleExplorerOpen = () =>
     dispatch(appSlice.actions.toggleExplorerOpen());
 

@@ -155,7 +155,7 @@ impl<'a> NightCutinRateAnalyzer<'a> {
     }
 
     fn get_cutin_def(&self, cutin: NightCutin) -> Option<&NightCutinDef> {
-        self.config.night_cutin.iter().find(|def| def.tag == cutin)
+        self.config.night_cutin.get(&cutin)
     }
 
     fn analyze_cutin_rates_with_damage_state(

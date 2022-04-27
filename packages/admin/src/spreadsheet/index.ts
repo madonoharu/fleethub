@@ -37,7 +37,7 @@ export function createMasterData(
     ...shipData,
     ...gearData,
     equippable,
-    config,
+    ...config,
   };
 }
 

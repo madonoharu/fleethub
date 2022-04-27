@@ -6,6 +6,7 @@ use tsify::Tsify;
 #[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearAttr {
+    Unknown,
     /// 深海
     Abyssal,
     /// 高角砲
@@ -62,6 +63,13 @@ pub enum GearAttr {
     SemiNightPlane,
     /// 高高度迎撃機
     HighAltitudeInterceptor,
+}
+
+impl Default for GearAttr {
+    #[inline]
+    fn default() -> Self {
+        Self::Unknown
+    }
 }
 
 #[cfg(test)]

@@ -31,7 +31,9 @@ const ShipBanner = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
 
   let inner: React.ReactNode;
 
-  if (publicId) {
+  if (!data) {
+    inner = null;
+  } else if (publicId) {
     inner = (
       <Image
         layout="fixed"
@@ -43,7 +45,7 @@ const ShipBanner = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
       />
     );
   } else {
-    inner = <BrokenImage className={className} />;
+    inner = <BrokenImage />;
   }
 
   return (

@@ -5,6 +5,7 @@ import { ThunkAction } from "redux-thunk";
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo";
 
 import { appSlice } from "./appSlice";
+import { configSlice } from "./configSlice";
 import { entitiesSlice } from "./entities";
 import { gearSelectSlice } from "./gearSelectSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
@@ -23,6 +24,7 @@ const storage = typeof window !== "undefined" ? localforage : noopStorage;
 
 const combinedReducer = combineReducers({
   app: appSlice.reducer,
+  config: configSlice.reducer,
   entities: entitiesSlice.reducer,
 
   shipSelect: shipSelectSlice.reducer,

@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useMasterShip } from "../../../hooks";
+import { useMasterData } from "../../../hooks";
 import { Flexbox } from "../../atoms";
 import ShipBanner from "../ShipBanner";
 
@@ -20,9 +20,11 @@ type Props = {
 const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { className, shipId } = props;
   const { t, i18n } = useTranslation("ships");
-  const masterShip = useMasterShip(shipId);
+  const { data } = useMasterData();
 
-  const defaultName = masterShip?.name || shipId.toString();
+  const ship = data?.ships.find((ship) => ship.ship_id === shipId);
+
+  const defaultName = ship?.name || shipId.toString();
   let displayName: string;
   if (i18n.resolvedLanguage === "ja") {
     displayName = defaultName;

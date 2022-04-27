@@ -16,7 +16,6 @@ import {
   parseDeckStr,
   parseUrl,
   entitiesSlice,
-  selectAppState,
   PublicFile,
 } from "../../../store";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
@@ -81,9 +80,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
   const Snackbar = useSnackbar();
 
-  const importToTemp = useAppSelector(
-    (state) => selectAppState(state).importToTemp
-  );
+  const importToTemp = useAppSelector((root) => root.present.app.importToTemp);
   const dispatch = useAppDispatch();
 
   const handleImportToTempChange = (value: boolean) => {

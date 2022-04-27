@@ -3,13 +3,18 @@ import {
   MasterAttrRule,
   MasterData,
   MasterShip,
-  MasterVariantDef,
+  ShipAttr,
   SpeedGroup,
 } from "fleethub-core";
 import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
 import set from "lodash/set";
 
 import { cellValueToString, SpreadsheetTable } from "./utils";
+
+interface ShipClassDef {
+  id: number;
+  name: string;
+}
 
 const SUFFIXES = [
   "甲",
@@ -232,10 +237,9 @@ function createShips(table: SpreadsheetTable, start2: Start2): MasterShip[] {
   return ships;
 }
 
-function createShipClasses(table: SpreadsheetTable): MasterVariantDef[] {
+function createShipClasses(table: SpreadsheetTable): ShipClassDef[] {
   return table.rows.map((row) => ({
     id: Number(row.id),
-    tag: cellValueToString(row.tag),
     name: cellValueToString(row.name),
   }));
 }
@@ -243,9 +247,9 @@ function createShipClasses(table: SpreadsheetTable): MasterVariantDef[] {
 const createShipAttrs = (
   table: SpreadsheetTable,
   start2: Start2,
-  ship_classes: MasterVariantDef[]
+  ship_classes: ShipClassDef[]
 ) => {
-  const attrs: MasterAttrRule[] = [];
+  const attrs: MasterAttrRule<ShipAttr>[] = [];
 
   const replaceShipType = (str: string) =>
     start2.api_mst_stype.reduce(
@@ -268,15 +272,16 @@ const createShipAttrs = (
       str
     );
 
-  const replaceAttr = (str: string) =>
-    attrs.reduce(
+  const replaceAttr = (str: string) => {
+    return attrs.reduce(
       (current, attr) =>
         current.replace(RegExp(`\\b${attr.tag}\\b`, "g"), attr.expr),
       str
     );
+  };
 
-  const replaceExpr = (str: string) =>
-    replaceAttr(str)
+  const replaceExpr = (str: string) => {
+    return replaceAttr(str)
       .replace(/ship_type == "[^"]+"/g, replaceShipType)
       .replace(/ship_class == "[^"]+"/g, replaceShipClass)
       .replace(/name == "[^"]+"/g, replaceName)
@@ -286,12 +291,13 @@ const createShipAttrs = (
       .replace(/\bname/g, "ship_id")
       .replace(/\n/g, " ")
       .replace(/\s{2,}/g, " ");
+  };
 
   table.rows.forEach((row) => {
     const expr = replaceExpr(cellValueToString(row.expr));
 
     attrs.push({
-      tag: cellValueToString(row.tag),
+      tag: cellValueToString(row.tag) as ShipAttr,
       name: cellValueToString(row.name),
       expr,
     });

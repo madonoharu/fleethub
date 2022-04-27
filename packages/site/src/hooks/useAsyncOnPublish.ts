@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from "./rtk-hooks";
 import { useSnackbar } from "./useSnackbar";
 
 export const useAsyncOnPublish = (id: string) => {
-  const shareUrl = useAppSelector((root) => root.present.nav.shareUrl);
   const name = useAppSelector(
     (root) => filesSelectors.selectById(root, id)?.name
   );
@@ -17,7 +16,6 @@ export const useAsyncOnPublish = (id: string) => {
   const Snackbar = useSnackbar();
 
   const asyncOnPublish = useAsyncCallback(async () => {
-    if (shareUrl) return shareUrl;
     const url = await dispatch(publishFile({ fileId: id })).unwrap();
     return url;
   });
@@ -58,7 +56,6 @@ export const useAsyncOnPublish = (id: string) => {
   const { loading, execute } = asyncOnPublish;
 
   return {
-    shareUrl,
     loading,
     execute,
     asyncOnPublish,
