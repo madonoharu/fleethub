@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
-use wasm_bindgen::JsValue;
+use wasm_bindgen::prelude::*;
 
 use crate::{
     gear::Gear,
@@ -10,6 +10,12 @@ use crate::{
 };
 
 use super::GearTypeIdArray;
+
+#[wasm_bindgen(module = "equipment-bonus")]
+extern "C" {
+    #[wasm_bindgen(js_name = createEquipmentBonuses)]
+    fn create_equipment_bonuses(ship: ShipInput, gears: GearVecInput) -> EBonuses;
+}
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -24,25 +30,22 @@ pub struct EBonuses {
     pub bombing: i16,
     pub accuracy: i16,
     pub range: i8,
-
-    #[serde(skip_deserializing)]
-    pub effective_los: i16,
     #[serde(skip_deserializing)]
     pub speed: u8,
     #[serde(skip_deserializing)]
     pub carrier_power: i16,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub struct EBonusFnShipInput {
+#[derive(Debug, Default, Clone, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
+struct ShipInput {
     pub ship_id: u16,
     pub ctype: u16,
     pub stype: u8,
     pub yomi: String,
 }
 
-impl EBonusFnShipInput {
+impl ShipInput {
     pub fn new(ship: &MasterShip) -> Self {
         Self {
             ship_id: ship.ship_id,
@@ -53,12 +56,10 @@ impl EBonusFnShipInput {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub struct EBonusFnGearInput {
+#[derive(Debug, Default, Clone, Serialize, Tsify)]
+struct GearInput {
     pub gear_id: u16,
     pub types: GearTypeIdArray,
-
     pub firepower: i16,
     pub torpedo: i16,
     pub anti_air: i16,
@@ -75,7 +76,7 @@ pub struct EBonusFnGearInput {
     pub ace: u8,
 }
 
-impl EBonusFnGearInput {
+impl GearInput {
     pub fn new(gear: &Gear) -> Self {
         Self {
             gear_id: gear.gear_id,
@@ -98,6 +99,10 @@ impl EBonusFnGearInput {
         }
     }
 }
+
+#[derive(Debug, Default, Clone, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
+struct GearVecInput(Vec<GearInput>);
 
 fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
     let base = match ship.speed {
@@ -205,72 +210,32 @@ fn get_speed_synergy(
     }
 }
 
-pub struct EBonusFn {
-    pub js: Option<js_sys::Function>,
+fn carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
+    let min_air_torpedo_bonus = gears
+        .values()
+        .filter(|gear| gear.has_proficiency())
+        .map(|gear| {
+            let ship_input = ShipInput::new(ship);
+            let gears_input = GearVecInput(vec![GearInput::new(gear)]);
+            let torpedo = create_equipment_bonuses(ship_input, gears_input).torpedo;
+            torpedo
+        })
+        .filter(|v| *v > 0)
+        .min();
+
+    min_air_torpedo_bonus.unwrap_or_default()
 }
 
-impl EBonusFn {
-    pub fn new(js: js_sys::Function) -> Self {
-        Self { js: Some(js) }
-    }
+impl EBonuses {
+    pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
+        let ship_input = ShipInput::new(ship);
+        let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
 
-    fn call_base(&self, ship: &EBonusFnShipInput, gears: &Vec<EBonusFnGearInput>) -> EBonuses {
-        self.js
-            .as_ref()
-            .map(|f| {
-                f.call2(
-                    &JsValue::null(),
-                    &JsValue::from_serde(ship).unwrap(),
-                    &JsValue::from_serde(gears).unwrap(),
-                )
-                .unwrap()
-                .into_serde()
-                .unwrap()
-            })
-            .unwrap_or_default()
-    }
+        let mut ebonuses = create_equipment_bonuses(ship_input, gears_input);
+        ebonuses.carrier_power = carrier_power(ship, gears);
+        ebonuses.speed = get_speed_bonus(ship, gears);
 
-    fn carrier_power(&self, ship: &EBonusFnShipInput, gears: &GearArray) -> i16 {
-        let min_air_torpedo_bonus = gears
-            .values()
-            .filter(|gear| gear.has_proficiency())
-            .map(|gear| {
-                let torpedo = self
-                    .call_base(ship, &vec![EBonusFnGearInput::new(gear)])
-                    .torpedo;
-                torpedo
-            })
-            .filter(|v| *v > 0)
-            .min();
-
-        min_air_torpedo_bonus.unwrap_or_default()
-    }
-
-    pub fn call(&self, ship: &MasterShip, gears: &GearArray) -> EBonuses {
-        let ship_input = EBonusFnShipInput::new(ship);
-        let gear_inputs = gears
-            .values()
-            .map(EBonusFnGearInput::new)
-            .collect::<Vec<_>>();
-
-        let mut base = self.call_base(&ship_input, &gear_inputs);
-
-        let sg_radar_los = if gears.has(gear_id!("SG レーダー(初期型)")) {
-            let filtered = gear_inputs
-                .into_iter()
-                .filter(|gear| gear.gear_id == gear_id!("SG レーダー(初期型)"))
-                .collect::<Vec<_>>();
-
-            self.call_base(&ship_input, &filtered).los
-        } else {
-            0
-        };
-
-        base.effective_los = base.los - sg_radar_los;
-        base.carrier_power = self.carrier_power(&ship_input, gears);
-        base.speed = get_speed_bonus(ship, gears);
-
-        base
+        ebonuses
     }
 }
 

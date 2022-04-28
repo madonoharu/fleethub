@@ -30,7 +30,7 @@ use gear::Gear;
 use master_data::MasterData;
 use org::Org;
 use ship::Ship;
-use types::{AirSquadronState, EBonusFn, FleetState, GearState, OrgState, ShipState};
+use types::{AirSquadronState, FleetState, GearState, OrgState, ShipState};
 
 #[wasm_bindgen]
 pub struct FhCore {
@@ -46,19 +46,13 @@ extern "C" {
 #[wasm_bindgen]
 impl FhCore {
     #[wasm_bindgen(constructor)]
-    pub fn new(
-        js_master: <MasterData as tsify::Tsify>::JsType,
-        js_fn: js_sys::Function,
-    ) -> Result<FhCore, JsValue> {
+    pub fn new(js_master: <MasterData as tsify::Tsify>::JsType) -> Result<FhCore, JsValue> {
         let master_data = js_master
             .into_serde::<MasterData>()
             .map_err(|err| JsValue::from(err.to_string()))?
             .init();
 
-        let factory = Factory {
-            master_data,
-            ebonus_fn: EBonusFn::new(js_fn),
-        };
+        let factory = Factory { master_data };
 
         Ok(Self { factory })
     }

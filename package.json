@@ -1,6 +1,6 @@
 {
   "name": "fleethub",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "private": true,
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
@@ -37,7 +37,7 @@
     "@fh/admin": "workspace:packages/admin",
     "@fh/utils": "workspace:packages/utils",
     "@next/eslint-plugin-next": "^12.1.5",
-    "@swc/core": "^1.2.172",
+    "@swc/core": "^1.2.173",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@types/fs-extra": "^9.0.13",
