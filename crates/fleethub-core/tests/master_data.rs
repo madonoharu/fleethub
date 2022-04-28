@@ -42,14 +42,13 @@ pub static MASTER_DATA: Lazy<MasterData> = Lazy::new(|| {
 
 #[test]
 fn test() {
-    use fleethub_core::{factory::Factory, types::EBonusFn};
+    use fleethub_core::factory::Factory;
 
     use serde_json::json;
 
     fn create_ship(json: serde_json::Value) -> Ship {
         let factory = Factory {
             master_data: MASTER_DATA.clone(),
-            ebonus_fn: EBonusFn { js: None },
         };
 
         let input: ShipState = serde_json::from_value(json).unwrap();

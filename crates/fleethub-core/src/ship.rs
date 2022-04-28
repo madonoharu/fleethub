@@ -1461,7 +1461,7 @@ impl Ship {
     pub fn elos(&self, node_divaricated_factor: u8) -> Option<f64> {
         let naked_los = self.naked_los()? as f64;
         let total = self.gears.sum_by(|gear| gear.elos());
-        let ebonus = self.ebonuses.effective_los as f64;
+        let ebonus = self.ebonuses.los as f64;
 
         Some((naked_los + ebonus).sqrt() + total * (node_divaricated_factor as f64) - 2.0)
     }
