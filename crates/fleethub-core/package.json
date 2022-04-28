@@ -1,6 +1,6 @@
 {
   "name": "fleethub-core",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "license": "UNLICENSED",
   "sideEffects": false,
   "exports": {
@@ -15,5 +15,8 @@
   ],
   "collaborators": [
     "まどの <madonoharu@gmail.com>"
-  ]
+  ],
+  "peerDependencies": {
+    "equipment-bonus": "*"
+  }
 }

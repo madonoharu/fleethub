@@ -111,10 +111,10 @@ impl<'a> ShellingSupportAttackParams<'a> {
             let formation_mod = attacker_formation_accuracy_mod;
 
             // 乗算前に切り捨て
-            let premultiplication =
+            let pre_multiplication =
                 (SHELLING_SUPPORT_ACCURACY_CONSTANT + basic_accuracy_term + gears_accuracy).floor();
 
-            let result = (premultiplication * formation_mod * morale_mod).floor();
+            let result = (pre_multiplication * formation_mod * morale_mod).floor();
 
             Some(result)
         };

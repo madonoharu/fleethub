@@ -1,6 +1,4 @@
 import { storage } from "@fh/admin";
-import { Alert, AlertTitle } from "@mui/material";
-import { createEquipmentBonuses } from "equipment-bonus";
 import { FhCore } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -10,7 +8,12 @@ import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { GCS_PREFIX_URL, MASTER_DATA_PATH } from "../firebase";
+import ErrorAlert from "../components/molecules/ErrorAlert";
+import {
+  GCS_PREFIX_URL,
+  MASTER_DATA_PATH,
+  SHIP_BANNERS_PATH,
+} from "../firebase";
 import { FhCoreContext, GenerationMapContext, useMasterData } from "../hooks";
 import { StoreProvider } from "../store";
 
@@ -30,10 +33,11 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (error) {
     console.error(error);
     return (
-      <Alert severity="error" sx={{ m: 2 }}>
-        <AlertTitle>マスターデータの読み込みに失敗しました</AlertTitle>
-        {error.message}
-      </Alert>
+      <ErrorAlert
+        sx={{ m: 2 }}
+        title="マスターデータの読み込みに失敗しました"
+        error={error}
+      />
     );
   }
 
@@ -43,22 +47,25 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   let core: FhCore;
   try {
-    core = new FhCore(data, createEquipmentBonuses);
+    core = new FhCore(data);
   } catch (error: unknown) {
     console.error(error);
     return (
-      <Alert severity="error" sx={{ m: 2 }}>
-        <AlertTitle>マスターデータの読み込みに失敗しました</AlertTitle>
-        {String(error)}
-      </Alert>
+      <ErrorAlert
+        sx={{ m: 2 }}
+        title="マスターデータの読み込みに失敗しました"
+        error={error}
+      />
     );
   }
 
   const analyzer = core.create_analyzer();
+  const allShips = core.create_all_ships();
 
   const value = {
     core,
     analyzer,
+    allShips,
     masterData: data,
   };
 
@@ -72,23 +79,21 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const Index: NextComponentType<NextPageContext, unknown, Props> = ({
   generationMap,
 }) => {
-  const preloadLinks = [MASTER_DATA_PATH, "data/ship_banners.json"].map(
-    (path) => {
-      const gen = generationMap[path];
+  const preloadLinks = [MASTER_DATA_PATH, SHIP_BANNERS_PATH].map((path) => {
+    const gen = generationMap[path];
 
-      return (
-        gen && (
-          <link
-            key={path}
-            rel="preload"
-            href={`${GCS_PREFIX_URL}/${path}?generation=${gen}`}
-            as="fetch"
-            crossOrigin="anonymous"
-          />
-        )
-      );
-    }
-  );
+    return (
+      gen && (
+        <link
+          key={path}
+          rel="preload"
+          href={`${GCS_PREFIX_URL}/${path}?generation=${gen}`}
+          as="fetch"
+          crossOrigin="anonymous"
+        />
+      )
+    );
+  });
 
   return (
     <div>

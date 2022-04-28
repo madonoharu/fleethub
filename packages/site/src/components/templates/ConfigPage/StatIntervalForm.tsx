@@ -6,7 +6,7 @@ import { Updater } from "use-immer";
 
 import { MasterShipOverrides, StatIntervalKey } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { NumberInput, RestartAltButton, StatIcon } from "../../molecules";
+import { RestartAltButton, StatIcon } from "../../molecules";
 
 import ValueInput from "./ValueInput";
 
@@ -29,9 +29,6 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
   const [s0, s1] = ship[statKey];
   const configInterval = config[statKey] || [null, null];
 
-  const v0 = configInterval[0] ?? s0;
-  const v1 = configInterval[1] ?? s1;
-
   const handleReset = () => {
     updater((draft) => {
       delete draft[statKey];
@@ -48,7 +45,11 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
     };
 
     elem = (
-      <NumberInput sx={{ width: 88 }} value={v0} onChange={handleChange} />
+      <ValueInput
+        defaultValue={s0}
+        value={configInterval[0]}
+        onChange={handleChange}
+      />
     );
   } else {
     const handleChange = (i: number) => (v: number) => {

@@ -20,7 +20,7 @@ pub mod utils;
 
 use comp::Comp;
 use simulator::{ShellingSupportSimulatorParams, SimulatorResult};
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{prelude::*, JsCast};
 
 use air_squadron::AirSquadron;
 use analyzer::Analyzer;
@@ -30,7 +30,7 @@ use gear::Gear;
 use master_data::MasterData;
 use org::Org;
 use ship::Ship;
-use types::{AirSquadronState, EBonusFn, FleetState, GearState, OrgState, ShipState};
+use types::{AirSquadronState, FleetState, GearState, OrgState, ShipState};
 
 #[wasm_bindgen]
 pub struct FhCore {
@@ -38,21 +38,21 @@ pub struct FhCore {
 }
 
 #[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "Ship[]")]
+    pub type AllShips;
+}
+
+#[wasm_bindgen]
 impl FhCore {
     #[wasm_bindgen(constructor)]
-    pub fn new(
-        js_master: <MasterData as tsify::Tsify>::JsType,
-        js_fn: js_sys::Function,
-    ) -> Result<FhCore, JsValue> {
+    pub fn new(js_master: <MasterData as tsify::Tsify>::JsType) -> Result<FhCore, JsValue> {
         let master_data = js_master
             .into_serde::<MasterData>()
             .map_err(|err| JsValue::from(err.to_string()))?
             .init();
 
-        let factory = Factory {
-            master_data,
-            ebonus_fn: EBonusFn::new(js_fn),
-        };
+        let factory = Factory { master_data };
 
         Ok(Self { factory })
     }
@@ -79,6 +79,19 @@ impl FhCore {
 
     pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
         self.factory.create_ship_by_id(ship_id)
+    }
+
+    pub fn create_all_ships(&self) -> AllShips {
+        let js = self
+            .factory
+            .master_data
+            .ships
+            .iter()
+            .filter_map(|ship| self.factory.create_ship_by_id(ship.ship_id))
+            .map(JsValue::from)
+            .collect::<js_sys::Array>();
+
+        js.unchecked_into()
     }
 
     pub fn create_comp_by_map_enemy(&self, main: Vec<u16>, escort: Option<Vec<u16>>) -> Comp {

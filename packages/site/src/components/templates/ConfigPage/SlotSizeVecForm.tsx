@@ -6,7 +6,9 @@ import { Updater } from "use-immer";
 
 import { MasterShipOverrides } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { NumberInput, RestartAltButton } from "../../molecules";
+import { RestartAltButton } from "../../molecules";
+
+import ValueInput from "./ValueInput";
 
 interface SlotSizeVecFormProps {
   ship: MasterShip;
@@ -42,13 +44,11 @@ const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({
       <Typography variant="subtitle2">{t("slots")}</Typography>
       <Flexbox gap={1}>
         {ship.slots.map((s, i) => {
-          const v = configSlots[i] ?? s;
-
           return (
-            <NumberInput
+            <ValueInput
               key={i}
-              sx={{ width: 88 }}
-              value={v}
+              defaultValue={s}
+              value={configSlots[i]}
               min={0}
               max={255}
               onChange={handleChange(i)}

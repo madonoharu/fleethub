@@ -1,6 +1,10 @@
 use std::{fs, path::Path};
 
-use fleethub_core::{master_data::MasterData, ship::Ship, types::ShipState};
+use fleethub_core::{
+    master_data::MasterData,
+    ship::Ship,
+    types::{ShipAttr, ShipState},
+};
 use once_cell::sync::Lazy;
 
 async fn init_master_data() -> anyhow::Result<MasterData> {
@@ -28,7 +32,7 @@ async fn init_master_data() -> anyhow::Result<MasterData> {
     };
 
     let md: MasterData = serde_json::from_slice(&bytes)?;
-    Ok(md)
+    Ok(md.init())
 }
 
 pub static MASTER_DATA: Lazy<MasterData> = Lazy::new(|| {
@@ -38,14 +42,13 @@ pub static MASTER_DATA: Lazy<MasterData> = Lazy::new(|| {
 
 #[test]
 fn test() {
-    use fleethub_core::{factory::Factory, types::EBonusFn};
+    use fleethub_core::factory::Factory;
 
     use serde_json::json;
 
     fn create_ship(json: serde_json::Value) -> Ship {
         let factory = Factory {
             master_data: MASTER_DATA.clone(),
-            ebonus_fn: EBonusFn { js: None },
         };
 
         let input: ShipState = serde_json::from_value(json).unwrap();
@@ -59,6 +62,7 @@ fn test() {
         };
     }
 
-    let s = ship!({ "ship_id": 1 });
-    assert_eq!(s.name(), "睦月");
+    let s = ship!({ "ship_id": 883 });
+    assert_eq!(s.name(), "龍鳳改二戊");
+    assert_eq!(s.master.attrs, ShipAttr::NightCarrier | ShipAttr::Kai2);
 }

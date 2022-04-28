@@ -10,15 +10,14 @@ use crate::{
     org::Org,
     ship::Ship,
     types::{
-        AirSquadronState, EBonusFn, EBonuses, FleetState, GearAttr, GearState, GearType, OrgState,
-        OrgType, ShipAttr, ShipState, SlotSizeVec,
+        AirSquadronState, EBonuses, FleetState, GearAttr, GearState, GearType, OrgState, OrgType,
+        ShipAttr, ShipState, SlotSizeVec,
     },
     utils::xxh3,
 };
 
 pub struct Factory {
     pub master_data: MasterData,
-    pub ebonus_fn: EBonusFn,
 }
 
 impl Factory {
@@ -66,7 +65,7 @@ impl Factory {
         let equippable = self.master_data.create_ship_equippable(&master_ship);
 
         let ebonuses: EBonuses = if gears.has_by(|gear| !gear.is_abyssal()) {
-            self.ebonus_fn.call(&master_ship, &gears)
+            EBonuses::new(&master_ship, &gears)
         } else {
             Default::default()
         };

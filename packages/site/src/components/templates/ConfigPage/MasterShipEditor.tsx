@@ -12,11 +12,12 @@ import {
   STAT_INTERVAL_KEYS,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { NumberInput, RestartAltButton, StatIcon } from "../../molecules";
+import { RestartAltButton, StatIcon } from "../../molecules";
 import { ShipNameplate } from "../../organisms";
 
 import SlotSizeVecForm from "./SlotSizeVecForm";
 import StatIntervalForm from "./StatIntervalForm";
+import ValueInput from "./ValueInput";
 
 interface RangeFormProps {
   ship: MasterShip;
@@ -46,9 +47,9 @@ const RangeForm: React.FC<RangeFormProps> = ({ ship, config, updater }) => {
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>
       <Flexbox gap={1}>
-        <NumberInput
-          sx={{ width: 88 }}
-          value={config[statKey] ?? ship[statKey] ?? null}
+        <ValueInput
+          defaultValue={ship[statKey] ?? null}
+          value={config[statKey] ?? null}
           onChange={handleChange}
         />
         <RestartAltButton onClick={handleReset} />
@@ -85,11 +86,17 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
       const next = produce(config, arg);
 
       dispatch(
-        configSlice.actions.setMasterShipOverrides({ shipId, overrides: next })
+        configSlice.actions.setMasterShipOverrides({
+          id: shipId,
+          overrides: next,
+        })
       );
     } else {
       dispatch(
-        configSlice.actions.setMasterShipOverrides({ shipId, overrides: arg })
+        configSlice.actions.setMasterShipOverrides({
+          id: shipId,
+          overrides: arg,
+        })
       );
     }
   };
