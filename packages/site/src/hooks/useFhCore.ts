@@ -1,9 +1,10 @@
-import { FhCore, MasterData, Analyzer } from "fleethub-core";
+import { FhCore, MasterData, Analyzer, Ship } from "fleethub-core";
 import { createContext, useContext } from "react";
 
 export type FhCoreState = {
   core: FhCore;
   analyzer: Analyzer;
+  allShips: Ship[];
   masterData: MasterData;
 };
 
@@ -17,12 +18,4 @@ export const useFhCore = () => {
   }
 
   return contextValue;
-};
-
-export const useMasterShip = (shipId: number) => {
-  const { masterData } = useFhCore();
-
-  const ship = masterData.ships.find((ship) => ship.ship_id === shipId);
-
-  return ship;
 };

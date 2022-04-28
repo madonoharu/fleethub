@@ -6,6 +6,7 @@ import { entitiesSlice } from "./entities/entitiesSlice";
 
 type AppState = {
   fileId?: string;
+  configOpen?: boolean;
   explorerOpen: boolean;
   importToTemp: boolean;
   gkcoiTheme: GkcoiTheme;
@@ -22,8 +23,15 @@ export const appSlice = createSlice({
   initialState,
 
   reducers: {
+    openHome: (state) => {
+      delete state.fileId;
+      delete state.configOpen;
+    },
     openFile: (state, { payload }: PayloadAction<string>) => {
       if (state.fileId !== payload) state.fileId = payload;
+    },
+    openConfig: (state) => {
+      state.configOpen = true;
     },
     toggleExplorerOpen: (state) => {
       state.explorerOpen = !state.explorerOpen;
