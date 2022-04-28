@@ -1,5 +1,4 @@
 import { storage } from "@fh/admin";
-import { createEquipmentBonuses } from "equipment-bonus";
 import { FhCore } from "fleethub-core";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -48,7 +47,7 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   let core: FhCore;
   try {
-    core = new FhCore(data, createEquipmentBonuses);
+    core = new FhCore(data);
   } catch (error: unknown) {
     console.error(error);
     return (

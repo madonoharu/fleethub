@@ -16,6 +16,18 @@ const getCtypeEntries = (ships: Ship[]): Array<[number, Ship[]]> => {
 
   return Object.entries(group)
     .filter((entry): entry is [string, Ship[]] => Boolean(entry[1]))
+    .sort((a, b) => {
+      const ship0 = a[1][0];
+      const ship1 = b[1][0];
+      const sortId0 = ship0.sort_id;
+      const sortId1 = ship1.sort_id;
+
+      if (!sortId0 || !sortId1) {
+        return ship0.ship_id - ship1.ship_id;
+      }
+
+      return sortId0 - sortId1;
+    })
     .map(([k, v]) => [Number(k), v]);
 };
 

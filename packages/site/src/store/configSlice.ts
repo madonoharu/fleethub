@@ -1,8 +1,4 @@
-import {
-  createEntityAdapter,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { MasterShip, NightCutin, NightCutinDef } from "fleethub-core";
 
 export const STAT_INTERVAL_KEYS = [
@@ -33,8 +29,6 @@ export interface MasterDataOverrides {
 export interface ConfigState {
   overrides?: MasterDataOverrides;
 }
-
-const nightCutinAdapter = createEntityAdapter<NightCutinOverrides>();
 
 type SetOverridesPayloadAction<K, T> = PayloadAction<{ id: K; overrides: T }>;
 
