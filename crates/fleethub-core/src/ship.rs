@@ -54,7 +54,8 @@ pub struct Ship {
     pub ebonuses: EBonuses,
 
     state: ShipState,
-    master: MasterShip,
+    #[wasm_bindgen(skip)]
+    pub master: MasterShip,
     equippable: ShipEquippable,
 }
 
@@ -1256,6 +1257,11 @@ impl Ship {
     pub fn accuracy(&self) -> i16 {
         let accuracy = self.gears.sum_by(|gear| gear.accuracy);
         accuracy + self.ebonuses.accuracy
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn torpedo_accuracy_mod(&self) -> f64 {
+        self.master.torpedo_accuracy as f64
     }
 
     pub fn is_installation(&self) -> bool {

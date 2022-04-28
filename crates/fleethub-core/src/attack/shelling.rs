@@ -203,10 +203,10 @@ impl<'a> ShellingAttackContext<'a> {
                 .map_or(1.0, |def| def.accuracy_mod);
 
             // 乗算前に切り捨て
-            let premultiplication =
+            let pre_multiplication =
                 (fleet_factor + basic_accuracy_term + ship_accuracy + ibonus).floor();
 
-            let result = ((premultiplication * formation_mod * morale_mod + fit_gun_bonus)
+            let result = ((pre_multiplication * formation_mod * morale_mod + fit_gun_bonus)
                 * cutin_mod
                 * ap_shell_mod)
                 .floor();

@@ -17,7 +17,7 @@ import {
   mapSelectSlice,
   appSlice,
 } from "../../../store";
-import { ImportButton, withIconButton } from "../../molecules";
+import { ImportButton, SettingsButton, withIconButton } from "../../molecules";
 import { ImportMenu } from "../../organisms";
 
 import LanguageSelect from "./LanguageSelect";
@@ -64,7 +64,7 @@ const AppBar: React.FCX<Props> = ({
   const ImportMenuModal = useModal();
 
   const handleHomeClick = () => {
-    dispatch(appSlice.actions.openFile(""));
+    dispatch(appSlice.actions.openHome());
   };
 
   const handleShipSelectOpen = () => {
@@ -113,6 +113,12 @@ const AppBar: React.FCX<Props> = ({
         disabled={!canRedo}
         onClick={redo}
       />
+      {/* <SettingsButton
+        size="small"
+        onClick={() => {
+          dispatch(appSlice.actions.openConfig());
+        }}
+      /> */}
 
       <div css={{ marginLeft: "auto" }}>
         <Tooltip title="GitHub repository">

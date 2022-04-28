@@ -20,7 +20,7 @@ pub mod utils;
 
 use comp::Comp;
 use simulator::{ShellingSupportSimulatorParams, SimulatorResult};
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{prelude::*, JsCast};
 
 use air_squadron::AirSquadron;
 use analyzer::Analyzer;
@@ -35,6 +35,12 @@ use types::{AirSquadronState, EBonusFn, FleetState, GearState, OrgState, ShipSta
 #[wasm_bindgen]
 pub struct FhCore {
     factory: Factory,
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "Ship[]")]
+    pub type AllShips;
 }
 
 #[wasm_bindgen]
@@ -79,6 +85,19 @@ impl FhCore {
 
     pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
         self.factory.create_ship_by_id(ship_id)
+    }
+
+    pub fn create_all_ships(&self) -> AllShips {
+        let js = self
+            .factory
+            .master_data
+            .ships
+            .iter()
+            .filter_map(|ship| self.factory.create_ship_by_id(ship.ship_id))
+            .map(JsValue::from)
+            .collect::<js_sys::Array>();
+
+        js.unchecked_into()
     }
 
     pub fn create_comp_by_map_enemy(&self, main: Vec<u16>, escort: Option<Vec<u16>>) -> Comp {

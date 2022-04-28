@@ -17,3 +17,4 @@ export { default as NodeLabel } from "./NodeLabel";
 export { default as SelectedMenu } from "./SelectedMenu";
 export { default as ConsumptionRateSelect } from "./ConsumptionRateSelect";
 export type { ConsumptionRate } from "./ConsumptionRateSelect";
+export { default as ErrorAlert } from "./ErrorAlert";

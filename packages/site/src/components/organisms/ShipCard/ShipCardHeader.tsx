@@ -93,6 +93,10 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
               label="艦隊索敵因子"
               value={numstr(ship.fleet_los_factor())}
             />
+            <LabeledValue
+              label={t("common:torpedo_accuracy")}
+              value={numstr(ship.torpedo_accuracy_mod)}
+            />
           </Stack>
         }
         size="tiny"

@@ -7,6 +7,9 @@ interface ValueInputProps {
   defaultValue: number | null;
   value: number | null;
   onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
 const ValueInput: React.FCX<ValueInputProps> = ({
@@ -14,6 +17,9 @@ const ValueInput: React.FCX<ValueInputProps> = ({
   defaultValue,
   value,
   onChange,
+  min,
+  max,
+  step,
 }) => {
   const hasValue = value !== null && value !== defaultValue;
   const color = hasValue ? "secondary" : undefined;
@@ -25,6 +31,9 @@ const ValueInput: React.FCX<ValueInputProps> = ({
       focused={hasValue}
       value={value ?? defaultValue}
       onChange={onChange}
+      min={min}
+      max={max}
+      step={step}
     />
   );
 };

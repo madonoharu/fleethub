@@ -7,6 +7,7 @@ import {
   useAppSelector,
 } from "../../../hooks";
 import { appSlice } from "../../../store";
+import ConfigPage from "../ConfigPage";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";
 import ShipSelectModal from "../ShipSelectModal";
@@ -21,15 +22,18 @@ const Bottom = styled.div`
 
 const AppContent: React.FC = () => {
   const dispatch = useAppDispatch();
+  const configOpen = useAppSelector((root) => root.present.app.configOpen);
   const explorerOpen = useAppSelector((root) => root.present.app.explorerOpen);
-  const toggleExplorerOpen = () =>
+
+  const toggleExplorerOpen = () => {
     dispatch(appSlice.actions.toggleExplorerOpen());
+  };
 
   return (
     <DragLayerProvider>
       <AppBar explorerOpen={explorerOpen} onExplorerOpen={toggleExplorerOpen} />
       <ExplorerDrawer open={explorerOpen}>
-        <FileViewer />
+        {configOpen ? <ConfigPage /> : <FileViewer />}
         <Bottom />
       </ExplorerDrawer>
 
