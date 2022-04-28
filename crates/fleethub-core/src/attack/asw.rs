@@ -182,10 +182,10 @@ impl<'a> AswAttackContext<'a> {
             let morale_mod = attacker.morale_state().common_accuracy_mod();
 
             // 乗算前に切り捨て
-            let premultiplication =
+            let pre_multiplication =
                 (ASW_ACCURACY_CONSTANT + basic_accuracy_term + asw_equipment_mod + ibonus).floor();
 
-            Some(premultiplication * formation_mod * morale_mod)
+            Some(pre_multiplication * formation_mod * morale_mod)
         };
 
         let calc_hit_rate_params = || {
