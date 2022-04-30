@@ -31,7 +31,6 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data, error } = useMasterData();
 
   if (error) {
-    console.error(error);
     return (
       <ErrorAlert
         sx={{ m: 2 }}
@@ -49,7 +48,6 @@ const Loader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   try {
     core = new FhCore(data);
   } catch (error: unknown) {
-    console.error(error);
     return (
       <ErrorAlert
         sx={{ m: 2 }}

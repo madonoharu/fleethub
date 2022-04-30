@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, SxProps } from "@mui/material";
+import { Alert, AlertTitle, SxProps, Typography } from "@mui/material";
 import React from "react";
 
 interface ErrorAlertProps {
@@ -13,14 +13,16 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ title, error, sx }) => {
   let message: string;
 
   if (error instanceof Error) {
-    message = error.message;
+    message = error.stack || String(error);
   } else {
     message = String(error);
   }
   return (
     <Alert severity="error" sx={sx}>
       <AlertTitle>{title}</AlertTitle>
-      {message}
+      <Typography variant="body2" display="block" whiteSpace="pre-wrap">
+        {message}
+      </Typography>
     </Alert>
   );
 };

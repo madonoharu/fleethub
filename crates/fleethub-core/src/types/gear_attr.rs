@@ -27,8 +27,8 @@ pub enum GearAttr {
     AirRadar,
     /// 爆雷投射機
     DepthChargeProjector,
-    /// 増加爆雷
-    AdditionalDepthCharge,
+    /// シナジー爆雷
+    SynergisticDepthCharge,
     /// 対潜迫撃砲
     AntiSubMortar,
     /// 対潜兵器

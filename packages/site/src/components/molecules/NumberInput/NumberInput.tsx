@@ -19,13 +19,6 @@ import { Input, InputProps } from "../../atoms";
 
 import { useLongPress } from "./useLongPress";
 
-const StyledButton = styled(Button)`
-  display: flex;
-  padding: 0;
-  height: 20px;
-  min-height: 0;
-`;
-
 function stepValue(value: number, step: number): number {
   const precision = Math.ceil(-Math.log10(Math.abs(step)));
   return round(value + step, precision);
@@ -43,35 +36,6 @@ function clamp(value: number, min?: number, max?: number): number {
 
   return r;
 }
-
-type AdornmentProps = {
-  onIncrease: () => void;
-  onDecrease: () => void;
-  onFinish: () => void;
-};
-
-const Adornment: React.FCX<AdornmentProps> = ({
-  className,
-  onIncrease,
-  onDecrease,
-  onFinish,
-}) => {
-  const increaseProps = useLongPress({ onPress: onIncrease, onFinish });
-  const decreaseProps = useLongPress({ onPress: onDecrease, onFinish });
-
-  return (
-    <InputAdornment className={className} position="end">
-      <div>
-        <StyledButton aria-label="increase" {...increaseProps}>
-          <ArrowDropUpIcon />
-        </StyledButton>
-        <StyledButton aria-label="decrease" {...decreaseProps}>
-          <ArrowDropDownIcon />
-        </StyledButton>
-      </div>
-    </InputAdornment>
-  );
-};
 
 function toHalf(str: string): string {
   return str.replace(/[\uff10-\uff19]/g, (s) =>
@@ -92,13 +56,53 @@ function toNumber(str: string): number | null {
   return num;
 }
 
-export type NumberInputProps = {
+const StyledButton = styled(Button)`
+  display: flex;
+  height: 20px;
+  width: 32px;
+`;
+
+const StyledInputAdornment = styled(InputAdornment)`
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 0;
+`;
+
+interface NumberInputAdornmentProps {
+  onIncrease: () => void;
+  onDecrease: () => void;
+  onFinish: () => void;
+}
+
+const NumberInputAdornment: React.FCX<NumberInputAdornmentProps> = ({
+  className,
+  onIncrease,
+  onDecrease,
+  onFinish,
+}) => {
+  const increaseHandlers = useLongPress({ onPress: onIncrease, onFinish });
+  const decreaseHandlers = useLongPress({ onPress: onDecrease, onFinish });
+
+  return (
+    <StyledInputAdornment className={className} position="end">
+      <StyledButton aria-label="increase" {...increaseHandlers}>
+        <ArrowDropUpIcon />
+      </StyledButton>
+      <StyledButton aria-label="decrease" {...decreaseHandlers}>
+        <ArrowDropDownIcon />
+      </StyledButton>
+    </StyledInputAdornment>
+  );
+};
+
+export interface NumberInputProps
+  extends Omit<InputProps, "type" | "inputProps" | "onChange" | "onInput"> {
   value: number | null;
   onChange?: (value: number) => void;
   min?: number;
   max?: number;
   step?: number;
-} & Omit<InputProps, "type" | "inputProps" | "onChange" | "onInput">;
+}
 
 const NumberInput: React.FC<NumberInputProps> = ({
   className,
@@ -163,7 +167,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
     };
 
     const endAdornment = (
-      <Adornment
+      <NumberInputAdornment
         onIncrease={increase}
         onDecrease={decrease}
         onFinish={handleFinish}
@@ -178,16 +182,15 @@ const NumberInput: React.FC<NumberInputProps> = ({
   }, [min, max, step, onChange, InputProps]);
 
   return (
-    <div className={className}>
-      <Input
-        value={text}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        InputProps={mergedInputProps}
-        variant={variant}
-        {...textFieldProps}
-      />
-    </div>
+    <Input
+      className={className}
+      value={text}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      InputProps={mergedInputProps}
+      variant={variant}
+      {...textFieldProps}
+    />
   );
 };
 
@@ -203,7 +206,7 @@ export default styled(NumberInput)`
   .MuiInputLabel-root {
     white-space: nowrap;
   }
-  .MuiOutlinedInput-adornedEnd {
-    padding-right: 8px;
+  .MuiOutlinedInput-root {
+    padding-right: 0;
   }
 `;
