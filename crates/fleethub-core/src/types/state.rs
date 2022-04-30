@@ -20,6 +20,20 @@ pub struct GearState {
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
+pub struct ShipOverrides {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_hp: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub luck: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naked_evasion: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naked_asw: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naked_los: Option<u16>,
+}
+
+#[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct ShipState {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -78,6 +92,9 @@ pub struct ShipState {
     pub ss4: Option<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ss5: Option<u8>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub overrides: Option<ShipOverrides>,
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]

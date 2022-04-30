@@ -145,6 +145,11 @@ macro_rules! impl_naked_stats_with_level {
                 $(
                     #[wasm_bindgen(getter)]
                     pub fn [<naked_ $key>](&self) -> Option<u16> {
+                        let ovr = self.state.overrides.as_ref().and_then(|o| o.[<naked_ $key>]);
+                        if ovr.is_some() {
+                            return ovr;
+                        }
+
                         let stat_mod = self.state.[<$key _mod>];
 
                         self.master
@@ -1182,6 +1187,11 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn max_hp(&self) -> Option<u16> {
+        let ovr = self.state.overrides.as_ref().and_then(|o| o.max_hp);
+        if ovr.is_some() {
+            return ovr;
+        }
+
         if let Some(left) = self.master.max_hp.0 {
             let base = if self.level >= 100 {
                 left + get_marriage_bonus(left)
@@ -1225,6 +1235,11 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn luck(&self) -> Option<u16> {
+        let ovr = self.state.overrides.as_ref().and_then(|o| o.luck);
+        if ovr.is_some() {
+            return ovr;
+        }
+
         let left = self.master.luck.0;
 
         if let Some(base) = left {
