@@ -169,7 +169,7 @@ impl<'a> AswAttackContext<'a> {
             let asw_equipment_mod = attacker.gears.sum_by(|gear| {
                 if gear.gear_type == GearType::Sonar {
                     2.0 * (gear.asw as f64)
-                } else if gear.has_attr(GearAttr::AdditionalDepthCharge) {
+                } else if gear.has_attr(GearAttr::SynergisticDepthCharge) {
                     gear.asw as f64
                 } else {
                     0.0

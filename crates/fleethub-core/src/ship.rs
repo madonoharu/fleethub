@@ -824,7 +824,7 @@ impl Ship {
         let has_sonar = gears.has_type(GearType::Sonar);
         let has_large_sonar = gears.has_type(GearType::LargeSonar);
         let has_depth_charge = gears.has_type(GearType::DepthCharge);
-        let has_additional_depth_charge = gears.has_attr(GearAttr::AdditionalDepthCharge);
+        let has_additional_depth_charge = gears.has_attr(GearAttr::SynergisticDepthCharge);
         let has_depth_charge_projector = gears.has_attr(GearAttr::DepthChargeProjector);
 
         let old_mod = if (has_sonar || has_large_sonar) && has_depth_charge {
