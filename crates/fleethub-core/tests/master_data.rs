@@ -2,7 +2,7 @@ use std::{fs, path::Path};
 
 use fleethub_core::{
     master_data::MasterData,
-    types::{ShipAttr, ShipOverrides, ShipState},
+    types::{GearAttr, GearState, ShipAttr, ShipOverrides, ShipState},
     FhCore,
 };
 use once_cell::sync::Lazy;
@@ -55,6 +55,18 @@ fn test_ship() {
 
     assert_eq!(ship.name(), "龍鳳改二戊");
     assert_eq!(ship.master.attrs, ShipAttr::NightCarrier | ShipAttr::Kai2);
+}
+
+#[test]
+fn test_gear() {
+    let hedgehog = FH_CORE
+        .create_gear(Some(GearState {
+            gear_id: 439,
+            ..Default::default()
+        }))
+        .unwrap();
+
+    assert!(hedgehog.has_attr(GearAttr::SynergisticDepthCharge));
 }
 
 #[test]
