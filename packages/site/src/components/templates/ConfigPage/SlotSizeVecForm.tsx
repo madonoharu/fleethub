@@ -6,9 +6,7 @@ import { Updater } from "use-immer";
 
 import { MasterShipOverrides } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { RestartAltButton } from "../../molecules";
-
-import ValueInput from "./ValueInput";
+import ResettableInput from "../../organisms/ResettableInput";
 
 interface SlotSizeVecFormProps {
   ship: MasterShip;
@@ -24,18 +22,12 @@ const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({
   const { t } = useTranslation("common");
   const configSlots = config.slots || [];
 
-  const handleChange = (i: number) => (v: number) => {
+  const handleChange = (i: number) => (v: number | null) => {
     updater((draft) => {
       if (!draft.slots) {
         draft.slots = new Array(ship.slotnum).fill(null);
       }
       draft.slots[i] = v;
-    });
-  };
-
-  const handleReset = () => {
-    updater((draft) => {
-      delete draft.slots;
     });
   };
 
@@ -45,7 +37,7 @@ const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({
       <Flexbox gap={1}>
         {ship.slots.map((s, i) => {
           return (
-            <ValueInput
+            <ResettableInput
               key={i}
               defaultValue={s}
               value={configSlots[i]}
@@ -55,8 +47,6 @@ const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({
             />
           );
         })}
-
-        <RestartAltButton onClick={handleReset} />
       </Flexbox>
     </>
   );

@@ -43,7 +43,11 @@ const MasterDataEditor: React.FC = () => {
 
   return (
     <div>
-      <Button variant="outlined" onClick={NightCutinModal.show}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={NightCutinModal.show}
+      >
         {t("NightCutin.name")}
       </Button>
 
