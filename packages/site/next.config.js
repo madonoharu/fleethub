@@ -39,8 +39,8 @@ const config = {
   reactStrictMode: true,
 
   experimental: {
-    // https://github.com/vercel/next.js/issues/30425
-    esmExternals: false,
+    // https://github.com/vercel/next.js/issues/32314
+    // esmExternals: false,
   },
 
   webpack: (config, { isServer, dev }) => {

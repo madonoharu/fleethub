@@ -6,9 +6,8 @@ import { Updater } from "use-immer";
 
 import { MasterShipOverrides, StatIntervalKey } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { RestartAltButton, StatIcon } from "../../molecules";
-
-import ValueInput from "./ValueInput";
+import { StatIcon } from "../../molecules";
+import ResettableInput from "../../organisms/ResettableInput";
 
 interface StatIntervalFormProps {
   statKey: StatIntervalKey;
@@ -29,30 +28,24 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
   const [s0, s1] = ship[statKey];
   const configInterval = config[statKey] || [null, null];
 
-  const handleReset = () => {
-    updater((draft) => {
-      delete draft[statKey];
-    });
-  };
-
   let elem: React.ReactElement;
 
   if (abyssal) {
-    const handleChange = (v: number) => {
+    const handleChange = (v: number | null) => {
       updater((draft) => {
         draft[statKey] = [v, v];
       });
     };
 
     elem = (
-      <ValueInput
+      <ResettableInput
         defaultValue={s0}
         value={configInterval[0]}
         onChange={handleChange}
       />
     );
   } else {
-    const handleChange = (i: number) => (v: number) => {
+    const handleChange = (i: number) => (v: number | null) => {
       updater((draft) => {
         const next: StatInterval = [...configInterval];
         next[i] = v;
@@ -61,18 +54,18 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
     };
 
     elem = (
-      <>
-        <ValueInput
+      <Flexbox gap={2}>
+        <ResettableInput
           defaultValue={s0}
           value={configInterval[0]}
           onChange={handleChange(0)}
         />
-        <ValueInput
+        <ResettableInput
           defaultValue={s1}
           value={configInterval[1]}
           onChange={handleChange(1)}
         />
-      </>
+      </Flexbox>
     );
   }
 
@@ -82,10 +75,7 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
         <StatIcon icon={statKey} />
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>
-      <Flexbox gap={1}>
-        {elem}
-        <RestartAltButton onClick={handleReset} />
-      </Flexbox>
+      {elem}
     </div>
   );
 };

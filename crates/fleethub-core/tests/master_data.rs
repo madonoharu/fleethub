@@ -2,8 +2,8 @@ use std::{fs, path::Path};
 
 use fleethub_core::{
     master_data::MasterData,
-    ship::Ship,
-    types::{ShipAttr, ShipState},
+    types::{ShipAttr, ShipOverrides, ShipState},
+    FhCore,
 };
 use once_cell::sync::Lazy;
 
@@ -35,34 +35,47 @@ async fn init_master_data() -> anyhow::Result<MasterData> {
     Ok(md.init())
 }
 
-pub static MASTER_DATA: Lazy<MasterData> = Lazy::new(|| {
+pub static FH_CORE: Lazy<FhCore> = Lazy::new(|| {
     let rt = tokio::runtime::Runtime::new().unwrap();
-    rt.block_on(init_master_data()).unwrap()
+    let master_data = rt.block_on(init_master_data()).unwrap();
+    FhCore::from_master_data(master_data)
 });
 
+macro_rules! create_ship {
+    ($input:tt) => {{
+        let value = serde_json::json!($input);
+        let state: ShipState = serde_json::from_value(value).unwrap();
+        FH_CORE.create_ship(Some(state)).unwrap()
+    }};
+}
+
 #[test]
-fn test() {
-    use fleethub_core::factory::Factory;
+fn test_ship() {
+    let ship = create_ship!({ "ship_id": 883 });
 
-    use serde_json::json;
+    assert_eq!(ship.name(), "龍鳳改二戊");
+    assert_eq!(ship.master.attrs, ShipAttr::NightCarrier | ShipAttr::Kai2);
+}
 
-    fn create_ship(json: serde_json::Value) -> Ship {
-        let factory = Factory {
-            master_data: MASTER_DATA.clone(),
-        };
+#[test]
+fn test_overrides() {
+    let state = ShipState {
+        ship_id: 1,
+        overrides: Some(ShipOverrides {
+            max_hp: Some(1),
+            luck: Some(2),
+            naked_evasion: Some(3),
+            naked_asw: Some(4),
+            naked_los: Some(5),
+        }),
+        ..Default::default()
+    };
 
-        let input: ShipState = serde_json::from_value(json).unwrap();
+    let ship = FH_CORE.create_ship(Some(state)).unwrap();
 
-        factory.create_ship(Some(input)).unwrap()
-    }
-
-    macro_rules! ship {
-        ($input:tt) => {
-            create_ship(json!($input))
-        };
-    }
-
-    let s = ship!({ "ship_id": 883 });
-    assert_eq!(s.name(), "龍鳳改二戊");
-    assert_eq!(s.master.attrs, ShipAttr::NightCarrier | ShipAttr::Kai2);
+    assert_eq!(ship.max_hp(), Some(1));
+    assert_eq!(ship.luck(), Some(2));
+    assert_eq!(ship.naked_evasion(), Some(3));
+    assert_eq!(ship.naked_asw(), Some(4));
+    assert_eq!(ship.naked_los(), Some(5));
 }

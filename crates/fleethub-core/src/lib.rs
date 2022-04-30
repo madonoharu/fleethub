@@ -43,6 +43,14 @@ extern "C" {
     pub type AllShips;
 }
 
+impl FhCore {
+    pub fn from_master_data(master_data: MasterData) -> Self {
+        Self {
+            factory: Factory { master_data },
+        }
+    }
+}
+
 #[wasm_bindgen]
 impl FhCore {
     #[wasm_bindgen(constructor)]

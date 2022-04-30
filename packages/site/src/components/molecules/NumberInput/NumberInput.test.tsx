@@ -54,4 +54,13 @@ describe("NumberInput", () => {
     fireEvent.mouseDown(decreaseButton);
     expect(input).toHaveValue("0");
   });
+
+  it("change value", () => {
+    const mockFn = jest.fn<void, [number]>();
+    const { rerender } = render(<NumberInput value={1} onChange={mockFn} />);
+    rerender(<NumberInput value={2} onChange={mockFn} />);
+
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveValue("2");
+  });
 });

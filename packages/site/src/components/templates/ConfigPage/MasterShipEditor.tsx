@@ -12,12 +12,12 @@ import {
   STAT_INTERVAL_KEYS,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
-import { RestartAltButton, StatIcon } from "../../molecules";
+import { StatIcon } from "../../molecules";
 import { ShipNameplate } from "../../organisms";
+import ResettableInput from "../../organisms/ResettableInput";
 
 import SlotSizeVecForm from "./SlotSizeVecForm";
 import StatIntervalForm from "./StatIntervalForm";
-import ValueInput from "./ValueInput";
 
 interface RangeFormProps {
   ship: MasterShip;
@@ -28,15 +28,13 @@ interface RangeFormProps {
 const RangeForm: React.FC<RangeFormProps> = ({ ship, config, updater }) => {
   const { t } = useTranslation("common");
   const statKey = "range";
-  const handleChange = (v: number) => {
+  const handleChange = (v: number | null) => {
     updater((draft) => {
-      draft[statKey] = v;
-    });
-  };
-
-  const handleReset = () => {
-    updater((draft) => {
-      delete draft[statKey];
+      if (v === null) {
+        delete draft[statKey];
+      } else {
+        draft[statKey] = v;
+      }
     });
   };
 
@@ -46,14 +44,11 @@ const RangeForm: React.FC<RangeFormProps> = ({ ship, config, updater }) => {
         <StatIcon icon={statKey} />
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>
-      <Flexbox gap={1}>
-        <ValueInput
-          defaultValue={ship[statKey] ?? null}
-          value={config[statKey] ?? null}
-          onChange={handleChange}
-        />
-        <RestartAltButton onClick={handleReset} />
-      </Flexbox>
+      <ResettableInput
+        defaultValue={ship[statKey] ?? null}
+        value={config[statKey] ?? null}
+        onChange={handleChange}
+      />
     </>
   );
 };

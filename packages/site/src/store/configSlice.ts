@@ -30,6 +30,11 @@ export interface ConfigState {
   overrides?: MasterDataOverrides;
 }
 
+type Update<Id extends number | string, T> = {
+  id: Id;
+  changes: T;
+};
+
 type SetOverridesPayloadAction<K, T> = PayloadAction<{ id: K; overrides: T }>;
 
 const initialState: ConfigState = {};
@@ -49,15 +54,23 @@ export const configSlice = createSlice({
       state.overrides.ships[id] = overrides;
     },
 
-    setNightCutinOverrides: (
+    updateNightCutinOverrides: (
       state,
-      action: SetOverridesPayloadAction<NightCutin, NightCutinOverrides>
+      action: PayloadAction<Update<NightCutin, NightCutinOverrides>>
     ) => {
-      const { id, overrides } = action.payload;
+      const { id, changes } = action.payload;
 
       state.overrides ||= {};
       state.overrides.night_cutin ||= {};
-      state.overrides.night_cutin[id] = overrides;
+      state.overrides.night_cutin[id] ||= {};
+      Object.assign(state.overrides.night_cutin[id], changes);
+    },
+
+    removeNightCutinOverrides: (
+      state,
+      { payload }: PayloadAction<NightCutin>
+    ) => {
+      delete state?.overrides?.night_cutin?.[payload];
     },
   },
 });
