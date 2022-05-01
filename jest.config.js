@@ -12,5 +12,24 @@ const customJestConfig = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig);
+// https://github.com/vercel/next.js/discussions/34589
+module.exports = async () => {
+  const nextJestConfig = await createJestConfig(customJestConfig)();
+
+  const esmPatterns = [
+    "got",
+    "p-cancelable",
+    "@szmarczak/http-timer",
+    "lowercase-keys",
+  ];
+
+  return {
+    ...nextJestConfig,
+    transformIgnorePatterns: [
+      `/node_modules/(?!(${esmPatterns.join("|")})/)`,
+      ...nextJestConfig.transformIgnorePatterns.filter(
+        (pattern) => pattern !== "/node_modules/"
+      ),
+    ],
+  };
+};

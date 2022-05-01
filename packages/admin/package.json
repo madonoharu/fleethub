@@ -2,9 +2,10 @@
   "name": "@fh/admin",
   "version": "1.3.3",
   "license": "UNLICENSED",
-  "main": "cjs/index.js",
+  "main": "esm/index.js",
+  "type": "module",
   "scripts": {
-    "build": "tsc -m commonjs --outDir cjs"
+    "build": "tsc -m esnext --outDir esm"
   },
   "dependencies": {
     "@fh/utils": "workspace:packages/utils",
@@ -13,7 +14,7 @@
     "dequal": "^2.0.2",
     "firebase-admin": "^10.1.0",
     "googleapis": "^100.0.0",
-    "got": "11.8.3"
+    "got": "12.0.4"
   },
   "optionalDependencies": {
     "fleethub-core": "npm:latest"

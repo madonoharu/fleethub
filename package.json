@@ -23,7 +23,7 @@
     "start": "yarn workspace @fh/site start",
     "test": "jest",
     "test:fleethub-macro": "wasm-pack test --node crates/fleethub-macro",
-    "ts": "ts-node",
+    "ts": "NODE_OPTIONS='--experimental-specifier-resolution=node' ts-node-esm",
     "update:locales": "yarn ts scripts/updateLocales",
     "update:storage": "yarn ts scripts/updateStorage",
     "update:types": "yarn ts scripts/updateTypes",
@@ -55,7 +55,7 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "fleethub-core": "npm:latest",
     "fs-extra": "^10.1.0",
-    "got": "11.8.3",
+    "got": "12.0.4",
     "husky": "^7.0.4",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^28.0.3",
@@ -67,8 +67,8 @@
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
+  "packageManager": "yarn@3.2.0",
   "engines": {
     "npm": "Please use yarn"
-  },
-  "packageManager": "yarn@3.2.0"
+  }
 }
