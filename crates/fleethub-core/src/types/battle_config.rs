@@ -101,7 +101,7 @@ impl NestedFormationDef {
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AntiAirCutinDef {
     pub id: u8,
-    pub chance_numer: Option<u8>,
+    pub type_factor: Option<u8>,
     pub multiplier: Option<f64>,
     pub guaranteed: Option<u8>,
     pub sequential: Option<bool>,
@@ -109,7 +109,7 @@ pub struct AntiAirCutinDef {
 
 impl AntiAirCutinDef {
     pub fn rate(&self) -> Option<f64> {
-        Some(self.chance_numer? as f64 / 101.)
+        Some(self.type_factor? as f64 / 100.0)
     }
 
     pub fn is_sequential(&self) -> bool {
@@ -122,7 +122,7 @@ impl AntiAirCutinDef {
 pub struct DayCutinDef {
     pub tag: DayCutin,
     pub hits: u8,
-    pub chance_denom: Option<u8>,
+    pub type_factor: Option<u8>,
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
 }
@@ -146,7 +146,7 @@ impl Default for CutinModifiers {
 pub struct NightCutinDef {
     pub tag: NightCutin,
     pub hits: f64,
-    pub chance_denom: Option<u8>,
+    pub type_factor: Option<u8>,
     pub power_mod: Option<f64>,
     pub accuracy_mod: Option<f64>,
 }
@@ -165,7 +165,7 @@ impl NightCutinDef {
         let rate = if self.tag == NightCutin::DoubleAttack {
             109.0 / 110.0
         } else {
-            (cutin_term.ceil() / self.chance_denom? as f64).min(1.)
+            (cutin_term.ceil() / self.type_factor? as f64).min(1.)
         };
 
         Some(rate)

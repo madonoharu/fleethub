@@ -1,3 +1,4 @@
+#[macro_export]
 #[rustfmt::skip]
 macro_rules! ship_id {
     ("睦月") => { 1 };
@@ -696,6 +697,7 @@ macro_rules! ship_id {
     ("Colorado改") => { 1496 };
 }
 
+#[macro_export]
 #[rustfmt::skip]
 macro_rules! gear_id {
     ("12cm単装砲") => { 1 };
@@ -1276,6 +1278,7 @@ macro_rules! gear_id {
     ("深海空超要塞改") => { 631 };
 }
 
+#[macro_export]
 #[rustfmt::skip]
 macro_rules! ctype {
     ("綾波型") => { 1 };
@@ -1510,16 +1513,18 @@ macro_rules! ctype {
     ("集積地棲姫III") => { 2084 };
 }
 
+#[macro_export]
 macro_rules! matches_ship_id {
     ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
         matches!($expression, $(ship_id!($pattern))|+)
     }
 }
 
+#[macro_export]
 macro_rules! matches_gear_id {
     ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
         matches!($expression, $(gear_id!($pattern))|+)
     }
 }
 
-pub(crate) use {ctype, gear_id, matches_gear_id, matches_ship_id, ship_id};
+pub use {ctype, gear_id, matches_gear_id, matches_ship_id, ship_id};

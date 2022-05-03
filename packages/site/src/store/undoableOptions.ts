@@ -32,8 +32,17 @@ export const batchUndoable = (cb: () => void, group = nanoid()) => {
 const groupBy: GroupByFunction = () =>
   groupSet.keys().next().value as string | undefined;
 
-const actionTypeFilter: FilterFunction = (action) =>
-  typeof action.type === "string" && action.type.startsWith("entities");
+const IGNORE_ACTIONS: string[] = ["entities/import"];
+
+const actionTypeFilter: FilterFunction = (action) => {
+  const type = action.type as unknown;
+
+  if (typeof type !== "string") {
+    return false;
+  }
+
+  return type.startsWith("entities") && !IGNORE_ACTIONS.includes(type);
+};
 
 const filter: FilterFunction = (...args) =>
   !undoableState.ignore && actionTypeFilter(...args);

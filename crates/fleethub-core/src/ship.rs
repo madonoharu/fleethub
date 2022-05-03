@@ -1187,7 +1187,7 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn max_hp(&self) -> Option<u16> {
-        let ovr = self.state.overrides.as_ref().and_then(|o| o.max_hp);
+        let ovr = self.state.overrides.as_ref().and_then(|o| o.naked_max_hp);
         if ovr.is_some() {
             return ovr;
         }
@@ -1235,7 +1235,7 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn luck(&self) -> Option<u16> {
-        let ovr = self.state.overrides.as_ref().and_then(|o| o.luck);
+        let ovr = self.state.overrides.as_ref().and_then(|o| o.naked_luck);
         if ovr.is_some() {
             return ovr;
         }

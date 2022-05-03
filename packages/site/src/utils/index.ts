@@ -53,7 +53,6 @@ export const createDeepEqualSelector = createSelectorCreator(
   deepEqual
 );
 
-export { default as batch } from "./batch";
 export * from "./cloudinary";
 export * from "./ebonuses";
 export * from "./link";

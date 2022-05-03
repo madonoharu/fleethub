@@ -1,4 +1,5 @@
 import { styled } from "@mui/system";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { NumberInput, RestartAltButton } from "../../molecules";
@@ -23,6 +24,8 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
   max,
   step,
 }) => {
+  const { t } = useTranslation("common");
+
   const hasValue = value !== null && value !== defaultValue;
   const color = hasValue ? "secondary" : undefined;
 
@@ -42,7 +45,11 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
         max={max}
         step={step}
       />
-      <RestartAltButton sx={{ ml: 1 }} onClick={handleReset} />
+      <RestartAltButton
+        title={t("Reset")}
+        sx={{ ml: 1 }}
+        onClick={handleReset}
+      />
     </div>
   );
 };

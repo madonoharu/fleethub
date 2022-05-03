@@ -279,7 +279,7 @@ pub fn special_enemy_modifiers(
 
     // 陸上共通 支援上陸用舟艇シナジー
     let calc_landing_craft_synergy_bonuses = || {
-        if ab_count >= 2 || armed_count >= 2 || armored_boat_group_count == 0 {
+        if armored_boat_group_count >= 2 && (ab_count == 0 || armed_count == 0) {
             return None;
         }
 
@@ -294,7 +294,7 @@ pub fn special_enemy_modifiers(
         let mut a13_2 = 1.2;
         let mut b13_2 = 10.0;
 
-        if armored_boat_group_count <= 2 {
+        if armored_boat_group_count == 1 {
             return Some((a13_2, b13_2));
         }
 

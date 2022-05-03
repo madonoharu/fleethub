@@ -3,10 +3,35 @@ import { NextComponentType } from "next";
 import { appWithTranslation } from "next-i18next";
 import { AppContext, AppInitialProps, AppProps } from "next/app";
 import React from "react";
+import { Provider as ReduxProvider } from "react-redux";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import { ActionCreators } from "redux-undo";
 
+import { createStore, entitiesSlice } from "../store";
 import { createEmotionCache, ThemeProvider } from "../styles";
 
 import "core-js/features/array/at";
+
+const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const store = createStore();
+  const persistor = persistStore(store);
+
+  const handleBeforeLift = () => {
+    store.dispatch(entitiesSlice.actions.sweep());
+    store.dispatch(ActionCreators.clearHistory());
+  };
+
+  return (
+    <ReduxProvider store={store}>
+      <PersistGate onBeforeLift={handleBeforeLift} persistor={persistor}>
+        {children}
+      </PersistGate>
+    </ReduxProvider>
+  );
+};
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -23,7 +48,9 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, MyAppProps> = ({
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider>
-        <Component {...pageProps} />
+        <StoreProvider>
+          <Component {...pageProps} />
+        </StoreProvider>
       </ThemeProvider>
     </CacheProvider>
   );
