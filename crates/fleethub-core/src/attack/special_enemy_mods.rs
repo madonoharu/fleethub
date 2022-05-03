@@ -284,7 +284,8 @@ pub fn special_enemy_modifiers(
         }
 
         let daihatsu_count = gears.count(gear_id!("大発動艇"));
-        let dlc_group1_count = daihatsu_count + toku_daihatsu_count + t89_tank_count;
+        let dlc_group1_count =
+            daihatsu_count + toku_daihatsu_count + t89_tank_count + africa_count + honi_count;
         let dlc_group2_count = shikon_count + t2_tank_count;
 
         if dlc_group1_count + dlc_group2_count == 0 {
