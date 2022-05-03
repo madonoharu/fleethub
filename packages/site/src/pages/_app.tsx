@@ -17,7 +17,10 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const store = createStore();
-  const persistor = persistStore(store);
+  // https://github.com/vercel/next.js/pull/16085
+  const persistor = persistStore(store, null, () => {
+    persistor.persist();
+  });
 
   const handleBeforeLift = () => {
     store.dispatch(entitiesSlice.actions.sweep());
