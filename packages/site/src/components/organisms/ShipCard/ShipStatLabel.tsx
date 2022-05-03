@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Button, Tooltip, Typography } from "@mui/material";
+import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -76,18 +77,15 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
       </Typography>
       <div>
         <LabeledValue label={t("ShipStatsCurrent")} value={maybeNumber(stat)} />
-        <LabeledValue
-          label={t("ShipStatsUnequipped")}
-          value={maybeNumber(naked)}
-        />
-        <LabeledValue label={"装備ボーナス"} value={ebonusText} />
-        <LabeledValue label={"強化"} value={modText} />
+        <LabeledValue label={t("Naked")} value={maybeNumber(naked)} />
+        <LabeledValue label={t("EquipmentBonus")} value={ebonusText} />
+        <LabeledValue label={t("Increase")} value={modText} />
       </div>
 
       {onModChange && (
         <NumberInput
           css={{ width: 120, marginTop: 8 }}
-          label={"表示"}
+          label={t("ShipStatsCurrent")}
           value={stat || 0}
           onChange={handleStatChange}
           max={30000}
@@ -99,7 +97,7 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
         <Flexbox mt={1}>
           <NumberInput
             css={{ width: 120 }}
-            label={"強化"}
+            label={t("Increase")}
             value={mod || 0}
             onChange={onModChange}
             max={30000}
@@ -124,16 +122,23 @@ const ValueText = styled.span`
   white-space: nowrap;
 `;
 
-type ShipStatLabelProps = StatProps & {
+type ShipStatLabelProps = {
+  statKey: ShipStatKey;
+  ship: Ship;
   onUpdate?: (state: Partial<ShipEntity>) => void;
 };
 
 const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
   className,
+  statKey,
+  ship,
   onUpdate,
-  ...rest
 }) => {
-  const { statKey, stat, mod, ebonus } = rest;
+  const stat = ship[statKey];
+  const naked = ship.get_naked_stat(statKey);
+  const mod = ship.get_stat_mod(statKey);
+  const ebonus = ship.get_ebonus(statKey);
+
   const Modal = useModal();
   const { t } = useTranslation("common");
 
@@ -183,7 +188,14 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
       </Tooltip>
 
       <Modal>
-        <ShipStatEditor {...rest} onModChange={handleModChange} />
+        <ShipStatEditor
+          statKey={statKey}
+          stat={stat}
+          naked={naked}
+          mod={mod}
+          ebonus={ebonus}
+          onModChange={handleModChange}
+        />
       </Modal>
     </>
   );

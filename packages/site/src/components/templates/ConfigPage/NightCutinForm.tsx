@@ -13,7 +13,7 @@ interface NightCutinFormProps {
   overrides: NightCutinOverrides;
 }
 
-const KEYS = ["power_mod", "accuracy_mod", "chance_denom"] as const;
+const KEYS = ["power_mod", "accuracy_mod", "type_factor"] as const;
 
 const NightCutinForm: React.FC<NightCutinFormProps> = ({
   source,
@@ -36,7 +36,7 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({
             defaultValue={source[key]}
             value={overrides[key] ?? null}
             min={0}
-            step={key === "chance_denom" ? 1 : 0.1}
+            step={key === "type_factor" ? 1 : 0.1}
             onChange={(v) => {
               dispatch(
                 configSlice.actions.updateNightCutinOverrides({

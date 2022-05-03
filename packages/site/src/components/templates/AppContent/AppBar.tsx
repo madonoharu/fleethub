@@ -45,23 +45,19 @@ const useUndo = () => {
   return { canUndo, canRedo, ...actions };
 };
 
-type Props = {
-  explorerOpen?: boolean;
-  onExplorerOpen: () => void;
-};
-
-const AppBar: React.FCX<Props> = ({
-  explorerOpen,
-  onExplorerOpen,
-  className,
-}) => {
+const AppBar: React.FCX = ({ className }) => {
   const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
+  const explorerOpen = useAppSelector((root) => root.present.app.explorerOpen);
 
   const { canUndo, canRedo, undo, redo } = useUndo();
 
   const ImportMenuModal = useModal();
+
+  const toggleExplorerOpen = () => {
+    dispatch(appSlice.actions.toggleExplorerOpen());
+  };
 
   const handleHomeClick = () => {
     dispatch(appSlice.actions.openHome());
@@ -79,20 +75,16 @@ const AppBar: React.FCX<Props> = ({
     dispatch(mapSelectSlice.actions.show());
   };
 
-  const handleExplorerOpen = () => {
-    onExplorerOpen();
-  };
-
   return (
     <MuiAppBar className={className} position="sticky">
       {explorerOpen ? (
         <FolderOpenButton
           size="small"
           title="List"
-          onClick={handleExplorerOpen}
+          onClick={toggleExplorerOpen}
         />
       ) : (
-        <FolderButton size="small" title="List" onClick={handleExplorerOpen} />
+        <FolderButton size="small" title="List" onClick={toggleExplorerOpen} />
       )}
 
       <HomeButton size="small" title="Home" onClick={handleHomeClick} />

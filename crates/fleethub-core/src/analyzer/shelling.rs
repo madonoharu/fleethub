@@ -37,7 +37,7 @@ impl DayCutinRateInfo {
                 let ci_def = config.day_cutin.get(&ci).unwrap();
 
                 let actual_rate = if let (Some(o), Some(d), Some(t)) =
-                    (observation_term, ci_def.chance_denom, total_cutin_rate)
+                    (observation_term, ci_def.type_factor, total_cutin_rate)
                 {
                     let base_rate = (o / d as f64).min(1.0);
                     let actual_rate = (1.0 - t) * base_rate;

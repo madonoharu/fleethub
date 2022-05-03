@@ -1,18 +1,14 @@
 import styled from "@emotion/styled";
 import React from "react";
 
-import {
-  DragLayerProvider,
-  useAppDispatch,
-  useAppSelector,
-} from "../../../hooks";
-import { appSlice } from "../../../store";
+import { useAppSelector } from "../../../hooks";
 import ConfigPage from "../ConfigPage";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";
 import ShipSelectModal from "../ShipSelectModal";
 
 import AppBar from "./AppBar";
+import AppWrapper from "./AppWrapper";
 import ExplorerDrawer from "./ExplorerDrawer";
 import FileViewer from "./FileViewer";
 
@@ -21,17 +17,12 @@ const Bottom = styled.div`
 `;
 
 const AppContent: React.FC = () => {
-  const dispatch = useAppDispatch();
   const configOpen = useAppSelector((root) => root.present.app.configOpen);
   const explorerOpen = useAppSelector((root) => root.present.app.explorerOpen);
 
-  const toggleExplorerOpen = () => {
-    dispatch(appSlice.actions.toggleExplorerOpen());
-  };
-
   return (
-    <DragLayerProvider>
-      <AppBar explorerOpen={explorerOpen} onExplorerOpen={toggleExplorerOpen} />
+    <AppWrapper>
+      <AppBar />
       <ExplorerDrawer open={explorerOpen}>
         {configOpen ? <ConfigPage /> : <FileViewer />}
         <Bottom />
@@ -40,7 +31,7 @@ const AppContent: React.FC = () => {
       <ShipSelectModal />
       <GearSelectModal />
       <MapSelect />
-    </DragLayerProvider>
+    </AppWrapper>
   );
 };
 
