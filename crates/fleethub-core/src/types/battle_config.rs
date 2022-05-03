@@ -101,7 +101,8 @@ impl NestedFormationDef {
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AntiAirCutinDef {
     pub id: u8,
-    pub chance_numer: Option<u8>,
+    #[serde(rename = "chance_numer")]
+    pub type_factor: Option<u8>,
     pub multiplier: Option<f64>,
     pub guaranteed: Option<u8>,
     pub sequential: Option<bool>,
@@ -109,7 +110,7 @@ pub struct AntiAirCutinDef {
 
 impl AntiAirCutinDef {
     pub fn rate(&self) -> Option<f64> {
-        Some(self.chance_numer? as f64 / 101.)
+        Some(self.type_factor? as f64 / 100.0)
     }
 
     pub fn is_sequential(&self) -> bool {

@@ -26,4 +26,5 @@ pub use hit::*;
 pub use night::*;
 pub use shelling::*;
 pub use shelling_support::*;
+pub use special_enemy_mods::*;
 pub use torpedo::*;

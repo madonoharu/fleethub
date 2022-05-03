@@ -74,8 +74,8 @@ fn test_overrides() {
     let state = ShipState {
         ship_id: 1,
         overrides: Some(ShipOverrides {
-            max_hp: Some(1),
-            luck: Some(2),
+            naked_max_hp: Some(1),
+            naked_luck: Some(2),
             naked_evasion: Some(3),
             naked_asw: Some(4),
             naked_los: Some(5),

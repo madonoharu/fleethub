@@ -22,9 +22,9 @@ pub struct GearState {
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
 pub struct ShipOverrides {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_hp: Option<u16>,
+    pub naked_max_hp: Option<u16>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub luck: Option<u16>,
+    pub naked_luck: Option<u16>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub naked_evasion: Option<u16>,
     #[serde(skip_serializing_if = "Option::is_none")]
