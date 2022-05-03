@@ -55,7 +55,7 @@ const WelcomePage: React.FCX = () => {
             作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。
           </Typography>
         </div>
-        <Flexbox gap={1}>
+        <Flexbox gap={1} css={{ flexWrap: "wrap" }}>
           <Button
             startIcon={<NoteAddIcon />}
             variant="contained"

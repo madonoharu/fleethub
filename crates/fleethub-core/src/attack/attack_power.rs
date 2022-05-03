@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Tsify)]
 pub struct AttackPowerModifier {
     pub a: f64,
     pub b: f64,

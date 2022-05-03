@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 use wasm_bindgen::prelude::*;
@@ -210,7 +212,7 @@ fn get_speed_synergy(
     }
 }
 
-fn carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
+fn get_carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
     let min_air_torpedo_bonus = gears
         .values()
         .filter(|gear| gear.has_proficiency())
@@ -227,15 +229,22 @@ fn carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
 }
 
 impl EBonuses {
+    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
     pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
         let ship_input = ShipInput::new(ship);
         let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
 
         let mut ebonuses = create_equipment_bonuses(ship_input, gears_input);
-        ebonuses.carrier_power = carrier_power(ship, gears);
+        ebonuses.carrier_power = get_carrier_power(ship, gears);
         ebonuses.speed = get_speed_bonus(ship, gears);
 
         ebonuses
+    }
+
+    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+    #[allow(unused_variables)]
+    pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
+        Self::default()
     }
 }
 

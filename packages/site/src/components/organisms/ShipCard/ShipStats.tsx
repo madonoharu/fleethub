@@ -35,10 +35,7 @@ const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
         <ShipStatLabel
           key={key}
           statKey={key}
-          stat={ship[key]}
-          naked={ship.get_naked_stat(key)}
-          mod={ship.get_stat_mod(key)}
-          ebonus={ship.get_ebonus(key)}
+          ship={ship}
           onUpdate={onUpdate}
         />
       ))}

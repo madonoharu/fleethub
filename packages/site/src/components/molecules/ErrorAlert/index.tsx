@@ -2,7 +2,7 @@ import { Alert, AlertTitle, SxProps, Typography } from "@mui/material";
 import React from "react";
 
 interface ErrorAlertProps {
-  title: string;
+  title?: string;
   error: unknown;
   sx?: SxProps;
 }
@@ -19,7 +19,7 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ title, error, sx }) => {
   }
   return (
     <Alert severity="error" sx={sx}>
-      <AlertTitle>{title}</AlertTitle>
+      {title ? <AlertTitle>{title}</AlertTitle> : null}
       <Typography variant="body2" display="block" whiteSpace="pre-wrap">
         {message}
       </Typography>
