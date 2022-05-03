@@ -23,7 +23,6 @@ type Props = {
 };
 
 const Index: NextComponentType<NextPageContext, unknown, Props> = ({
-  createdAt,
   generationMap,
 }) => {
   const preloadLinks = [MASTER_DATA_PATH, SHIP_BANNERS_PATH].map((path) => {
