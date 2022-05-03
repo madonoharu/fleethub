@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
-    "build": "yarn workspace @fh/utils build && (yarn workspace @fh/admin build & yarn workspace kcs build) && next build",
+    "build": "(yarn up fleethub-core@npm:latest equipment-bonus & yarn workspace @fh/utils build) && (yarn workspace @fh/admin build & yarn workspace kcs build) && next build",
     "dev": "next dev",
     "start": "next start"
   },
