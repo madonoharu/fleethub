@@ -18,6 +18,7 @@ const UrlLoader: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(entitiesSlice.actions.sweep());
     const url = new URL(location.href);
     window.history.replaceState(null, "", location.pathname);
 
