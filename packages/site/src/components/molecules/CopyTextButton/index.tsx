@@ -1,5 +1,4 @@
 import Assignment from "@mui/icons-material/Assignment";
-import copy from "copy-to-clipboard";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -17,9 +16,14 @@ const CopyTextButton: React.FC<Props> = ({ value }) => {
   const { t } = useTranslation("common");
 
   const handleClick = () => {
-    const result = copy(value);
-    if (result) Snackbar.show({ message: "Success" });
-    else Snackbar.show({ message: "Error", severity: "error" });
+    navigator.clipboard
+      .writeText(value)
+      .then(() => {
+        Snackbar.show({ message: "Success" });
+      })
+      .catch((error) => {
+        Snackbar.show({ message: String(error), severity: "error" });
+      });
   };
 
   return (

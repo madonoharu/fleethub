@@ -53,10 +53,8 @@ const persistedReducer = persistReducer(
     version: 1,
     storage,
     throttle: 50,
-    timeout: 1000,
+    timeout: 0,
     serialize: false,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     deserialize: false,
     whitelist: ["app", "entities"],
   },

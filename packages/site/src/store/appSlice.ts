@@ -1,8 +1,11 @@
-import { AppThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { MasterData } from "fleethub-core";
+import { ActionCreators } from "redux-undo";
 
 import { GkcoiTheme } from "../utils";
 
 import { entitiesSlice } from "./entities/entitiesSlice";
+import { parseUrl } from "./parseUrl";
 
 type AppState = {
   fileId?: string;
@@ -55,11 +58,22 @@ export const appSlice = createSlice({
   },
 });
 
-export const openDefaultFile = (): AppThunk => (dispatch, getState) => {
-  const root = getState();
-  const rootIds = root.present.entities.files.rootIds;
+export const initApp = createAsyncThunk(
+  "app/init",
+  async (masterData: MasterData, thunkAPI) => {
+    if (typeof window === "undefined") {
+      return;
+    }
 
-  if (rootIds.length) {
-    dispatch(appSlice.actions.openFile(rootIds[rootIds.length - 1]));
+    const url = new URL(location.href);
+    window.history.replaceState(null, "", location.pathname);
+
+    const payload = await parseUrl(masterData, url);
+
+    if (payload) {
+      thunkAPI.dispatch(entitiesSlice.actions.import(payload));
+    }
+
+    thunkAPI.dispatch(ActionCreators.clearHistory());
   }
-};
+);
