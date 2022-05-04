@@ -17,6 +17,7 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const store = createStore();
+
   // https://github.com/vercel/next.js/pull/16085
   const persistor = persistStore(store, null, () => {
     persistor.persist();
@@ -27,10 +28,11 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
     store.dispatch(ActionCreators.clearHistory());
   };
 
+  // https://github.com/vercel/next.js/issues/8240#issuecomment-647699316
   return (
     <ReduxProvider store={store}>
       <PersistGate onBeforeLift={handleBeforeLift} persistor={persistor}>
-        {children}
+        {() => children}
       </PersistGate>
     </ReduxProvider>
   );
