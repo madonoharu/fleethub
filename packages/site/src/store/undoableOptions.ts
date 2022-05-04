@@ -32,7 +32,7 @@ export const batchUndoable = (cb: () => void, group = nanoid()) => {
 const groupBy: GroupByFunction = () =>
   groupSet.keys().next().value as string | undefined;
 
-const IGNORE_ACTIONS: string[] = ["entities/import", "entities/sweep"];
+const IGNORE_ACTIONS: string[] = [];
 
 const actionTypeFilter: FilterFunction = (action) => {
   const type = action.type as unknown;
