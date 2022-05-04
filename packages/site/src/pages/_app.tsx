@@ -23,17 +23,10 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({
     persistor.persist();
   });
 
-  const handleBeforeLift = () => {
-    store.dispatch(entitiesSlice.actions.sweep());
-    store.dispatch(ActionCreators.clearHistory());
-  };
-
   // https://github.com/vercel/next.js/issues/8240#issuecomment-647699316
   return (
     <ReduxProvider store={store}>
-      <PersistGate onBeforeLift={handleBeforeLift} persistor={persistor}>
-        {() => children}
-      </PersistGate>
+      <PersistGate persistor={persistor}>{() => children}</PersistGate>
     </ReduxProvider>
   );
 };
