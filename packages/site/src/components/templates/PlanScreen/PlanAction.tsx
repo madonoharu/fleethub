@@ -41,6 +41,7 @@ const PlanAction: React.FCX<PlanActionProps> = ({
       <Flexbox className={className} gap={1}>
         <LinkButton
           title={t("CopySharedLinkToClipboard")}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={onUrlCopy}
           disabled={asyncOnPublish.loading}
         />

@@ -39,6 +39,7 @@ const PlanMenu: React.FCX<Props> = ({ className, file }) => {
 
       <StyledButton
         startIcon={<LinkIcon />}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={onUrlCopy}
         disabled={asyncOnPublish.loading}
       >
