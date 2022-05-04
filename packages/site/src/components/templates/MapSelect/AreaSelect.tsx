@@ -44,7 +44,7 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, onChange }) => {
 
   const ids = Object.keys(generationMap)
     .map((key) => {
-      const str = key.replace(/maps\/(\d+)\.json/, (_, id: string) => id);
+      const str = key.replace(/data\/maps\/(\d+)\.json/, (_, id: string) => id);
       return Number(str);
     })
     .filter((id) => !Number.isNaN(id));

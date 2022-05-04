@@ -32,7 +32,7 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
 
   const { masterData } = useFhCore();
 
-  const { data } = useGcs<FhMap>(`maps/${mapId}.json`);
+  const { data } = useGcs<FhMap>(`data/maps/${mapId}.json`);
 
   const node = data?.nodes.find((node) => {
     if (point) {

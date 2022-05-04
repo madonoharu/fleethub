@@ -11,6 +11,12 @@ declare module "@reduxjs/toolkit" {
   export type AppStore = import("./store").AppStore;
 }
 
+declare module "redux-persist" {
+  interface PersistConfig {
+    deserialize?: boolean;
+  }
+}
+
 declare module "@emotion/react" {
   type MyTheme = import("./styles").Theme;
   export interface Theme extends MyTheme {}

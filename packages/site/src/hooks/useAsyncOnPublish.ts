@@ -1,4 +1,3 @@
-import copy from "copy-to-clipboard";
 import { useAsyncCallback } from "react-async-hook";
 
 import { filesSelectors, publishFile } from "../store";
@@ -20,25 +19,19 @@ export const useAsyncOnPublish = (id: string) => {
     return url;
   });
 
+  const handleRejected = (error: unknown) => {
+    console.error(error);
+    Snackbar.show({ message: String(error), severity: "error" });
+  };
+
   const onUrlCopy = () => {
     asyncOnPublish
       .execute()
-      .then((url) => {
-        const result = copy(url);
-
-        if (!result) throw new Error("Failed to copy");
-
-        Snackbar.show({
-          message: "コピーしました",
-          severity: "success",
-        });
-
-        return url;
+      .then(async (url) => {
+        await navigator.clipboard.writeText(url);
+        Snackbar.show({ message: "Success" });
       })
-      .catch((error) => {
-        console.error(error);
-        Snackbar.show({ message: "失敗しました", severity: "error" });
-      });
+      .catch(handleRejected);
   };
 
   const onTweet = () => {
@@ -47,10 +40,7 @@ export const useAsyncOnPublish = (id: string) => {
       .then((url) => {
         tweet({ url, text: name || "" });
       })
-      .catch((error) => {
-        console.error(error);
-        Snackbar.show({ message: "失敗しました", severity: "error" });
-      });
+      .catch(handleRejected);
   };
 
   const { loading, execute } = asyncOnPublish;

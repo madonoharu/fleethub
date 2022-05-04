@@ -152,16 +152,12 @@ export const fetchGenerationMap = async (): Promise<Record<string, string>> => {
     items: { name: string; generation: string }[];
   };
 
-  const res1 = await api({
-    searchParams: { prefix: "maps" },
-  }).json<ListResponse>();
-
-  const res2 = await api({
+  const res = await api({
     searchParams: { prefix: "data" },
   }).json<ListResponse>();
 
   const result = Object.fromEntries(
-    res1.items.concat(res2.items).map((item) => [item.name, item.generation])
+    res.items.map((item) => [item.name, item.generation])
   );
 
   return result;

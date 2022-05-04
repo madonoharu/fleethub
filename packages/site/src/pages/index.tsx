@@ -17,14 +17,16 @@ const AppContent = dynamic(() => import("../components/templates/AppContent"), {
   ssr: false,
 });
 
-type Props = {
+interface PageProps {
   createdAt: string;
   generationMap: Record<string, string>;
-};
+}
 
-const Index: NextComponentType<NextPageContext, unknown, Props> = ({
-  generationMap,
-}) => {
+const Index: NextComponentType<NextPageContext, unknown, PageProps> = (
+  props
+) => {
+  const { generationMap } = props;
+
   const preloadLinks = [MASTER_DATA_PATH, SHIP_BANNERS_PATH].map((path) => {
     const gen = generationMap[path];
 
@@ -55,7 +57,7 @@ const Index: NextComponentType<NextPageContext, unknown, Props> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({
+export const getStaticProps: GetStaticProps<PageProps> = async ({
   locale = "",
 }) => {
   const [generationMap, ssrConfig] = await Promise.all([

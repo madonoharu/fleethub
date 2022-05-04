@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
+import { CircularProgress } from "@mui/material";
 import React from "react";
 
-import { useAppSelector } from "../../../hooks";
+import { useAppSelector, useBootstrapped } from "../../../hooks";
 import ConfigPage from "../ConfigPage";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";
@@ -11,6 +12,7 @@ import AppBar from "./AppBar";
 import AppWrapper from "./AppWrapper";
 import ExplorerDrawer from "./ExplorerDrawer";
 import FileViewer from "./FileViewer";
+import UrlLoader from "./UrlLoader";
 
 const Bottom = styled.div`
   height: 400px;
@@ -24,7 +26,7 @@ const AppContent: React.FC = () => {
     <AppWrapper>
       <AppBar />
       <ExplorerDrawer open={explorerOpen}>
-        {configOpen ? <ConfigPage /> : <FileViewer />}
+        <UrlLoader>{configOpen ? <ConfigPage /> : <FileViewer />}</UrlLoader>
         <Bottom />
       </ExplorerDrawer>
 
