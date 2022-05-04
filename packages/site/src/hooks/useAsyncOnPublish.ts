@@ -24,14 +24,14 @@ export const useAsyncOnPublish = (id: string) => {
     Snackbar.show({ message: String(error), severity: "error" });
   };
 
-  const onUrlCopy = () => {
-    asyncOnPublish
-      .execute()
-      .then(async (url) => {
-        await navigator.clipboard.writeText(url);
-        Snackbar.show({ message: "Success" });
-      })
-      .catch(handleRejected);
+  const onUrlCopy = async () => {
+    try {
+      const url = await asyncOnPublish.execute();
+      await navigator.clipboard.writeText(url);
+      Snackbar.show({ message: "Success" });
+    } catch (error) {
+      handleRejected(error);
+    }
   };
 
   const onTweet = () => {
