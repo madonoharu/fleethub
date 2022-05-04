@@ -37,6 +37,6 @@ export function transferJorData(data: JorData) {
 
   return {
     ...normalized,
-    to: "temp",
+    to: "root",
   };
 }
