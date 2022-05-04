@@ -31,8 +31,8 @@ const FolderButton = withIconButton(FolderIcon);
 const useUndo = () => {
   const dispatch = useAppDispatch();
 
-  const canUndo = useAppSelector((state) => state.past.length > 0);
-  const canRedo = useAppSelector((state) => state.future.length > 0);
+  const canUndo = useAppSelector((root) => root.past.length > 0);
+  const canRedo = useAppSelector((root) => root.future.length > 0);
 
   const actions = useMemo(
     () => ({

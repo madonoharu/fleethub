@@ -352,9 +352,17 @@ impl Gear {
         rate
     }
 
-    pub fn is_night_plane(&self) -> bool {
+    pub fn is_night_attacker(&self) -> bool {
         self.has_attr(GearAttr::NightAttacker)
-            || self.has_attr(GearAttr::NightFighter)
+    }
+
+    pub fn is_night_fighter(&self) -> bool {
+        self.has_attr(GearAttr::NightFighter)
+    }
+
+    pub fn is_night_plane(&self) -> bool {
+        self.is_night_attacker()
+            || self.is_night_fighter()
             || self.has_attr(GearAttr::SemiNightPlane)
     }
 
@@ -363,8 +371,17 @@ impl Gear {
             return 0.0;
         }
 
-        let torpedo = if anti_inst { 0 } else { self.torpedo };
-        let base = (self.firepower + self.bombing + torpedo) as f64;
+        let base = {
+            let torpedo = if anti_inst { 0.0 } else { self.torpedo as f64 };
+            // TBM-3S+3Wの爆装は直接加算されない
+            let bombing = if self.is_night_attacker() || self.is_night_fighter() {
+                0.0
+            } else {
+                self.bombing as f64
+            };
+
+            self.firepower as f64 + bombing + torpedo
+        };
 
         let (a, b) =
             if self.has_attr(GearAttr::NightAttacker) || self.has_attr(GearAttr::NightFighter) {
