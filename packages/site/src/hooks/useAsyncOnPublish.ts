@@ -1,7 +1,7 @@
 import { useAsyncCallback } from "react-async-hook";
 
 import { filesSelectors, publishFile } from "../store";
-import { tweet } from "../utils";
+import { tweet, copy } from "../utils";
 
 import { useAppDispatch, useAppSelector } from "./rtk-hooks";
 import { useSnackbar } from "./useSnackbar";
@@ -24,14 +24,14 @@ export const useAsyncOnPublish = (id: string) => {
     Snackbar.show({ message: String(error), severity: "error" });
   };
 
-  const onUrlCopy = async () => {
-    try {
-      const url = await asyncOnPublish.execute();
-      await navigator.clipboard.writeText(url);
-      Snackbar.show({ message: "Success" });
-    } catch (error) {
-      handleRejected(error);
-    }
+  const onUrlCopy = () => {
+    asyncOnPublish
+      .execute()
+      .then(async (url) => {
+        await copy(url);
+        Snackbar.show({ message: "Success" });
+      })
+      .catch(handleRejected);
   };
 
   const onTweet = () => {
