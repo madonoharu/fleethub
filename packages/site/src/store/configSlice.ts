@@ -1,5 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MasterShip, NightCutin, NightCutinDef } from "fleethub-core";
+import {
+  AntiAirCutinDef,
+  DayCutin,
+  DayCutinDef,
+  MasterShip,
+  NightCutin,
+  NightCutinDef,
+} from "fleethub-core";
 
 export const STAT_INTERVAL_KEYS = [
   "max_hp",
@@ -16,26 +23,24 @@ export const STAT_INTERVAL_KEYS = [
 export type StatIntervalKey = typeof STAT_INTERVAL_KEYS[number];
 
 export type MasterShipOverrides = Partial<
-  Pick<Partial<MasterShip>, StatIntervalKey | "range" | "slots">
+  Pick<MasterShip, StatIntervalKey | "range" | "torpedo_accuracy" | "slots">
 >;
-
-export type NightCutinOverrides = Partial<NightCutinDef>;
 
 export interface MasterDataOverrides {
   ships?: Partial<Record<number, MasterShipOverrides>>;
-  night_cutin?: Partial<Record<NightCutin, NightCutinOverrides>>;
+  day_cutin?: Partial<Record<DayCutin, Partial<DayCutinDef>>>;
+  night_cutin?: Partial<Record<NightCutin, Partial<NightCutinDef>>>;
+  anti_air_cutin?: Partial<Record<number, Partial<AntiAirCutinDef>>>;
 }
 
 export interface ConfigState {
-  overrides?: MasterDataOverrides;
+  masterData?: MasterDataOverrides;
 }
 
-type Update<Id extends number | string, T> = {
+type UpdateAction<Id extends number | string, T> = PayloadAction<{
   id: Id;
-  changes: T;
-};
-
-type SetOverridesPayloadAction<K, T> = PayloadAction<{ id: K; overrides: T }>;
+  changes: Partial<T>;
+}>;
 
 const initialState: ConfigState = {};
 
@@ -43,34 +48,62 @@ export const configSlice = createSlice({
   name: "config",
   initialState,
   reducers: {
-    setMasterShipOverrides: (
+    updateMasterShip: (
       state,
-      action: SetOverridesPayloadAction<number, MasterShipOverrides>
-    ) => {
-      const { id, overrides } = action.payload;
-
-      state.overrides ||= {};
-      state.overrides.ships ||= {};
-      state.overrides.ships[id] = overrides;
-    },
-
-    updateNightCutinOverrides: (
-      state,
-      action: PayloadAction<Update<NightCutin, NightCutinOverrides>>
+      action: UpdateAction<number, MasterShipOverrides>
     ) => {
       const { id, changes } = action.payload;
 
-      state.overrides ||= {};
-      state.overrides.night_cutin ||= {};
-      state.overrides.night_cutin[id] ||= {};
-      Object.assign(state.overrides.night_cutin[id], changes);
+      state.masterData ||= {};
+      state.masterData.ships ||= {};
+      state.masterData.ships[id] ||= {};
+      Object.assign(state.masterData.ships[id], changes);
     },
 
-    removeNightCutinOverrides: (
+    removeMasterShip: (state, { payload }: PayloadAction<number>) => {
+      delete state.masterData?.ships?.[payload];
+    },
+
+    updateDayCutin: (state, action: UpdateAction<DayCutin, DayCutinDef>) => {
+      const { id, changes } = action.payload;
+
+      state.masterData ||= {};
+      state.masterData.day_cutin ||= {};
+      state.masterData.day_cutin[id] ||= {};
+      Object.assign(state.masterData.day_cutin[id], changes);
+    },
+
+    removeDayCutin: (state, { payload }: PayloadAction<DayCutin>) => {
+      delete state?.masterData?.day_cutin?.[payload];
+    },
+
+    updateNightCutin: (
       state,
-      { payload }: PayloadAction<NightCutin>
+      action: UpdateAction<NightCutin, NightCutinDef>
     ) => {
-      delete state?.overrides?.night_cutin?.[payload];
+      const { id, changes } = action.payload;
+
+      state.masterData ||= {};
+      state.masterData.night_cutin ||= {};
+      state.masterData.night_cutin[id] ||= {};
+      Object.assign(state.masterData.night_cutin[id], changes);
+    },
+
+    removeNightCutin: (state, { payload }: PayloadAction<NightCutin>) => {
+      delete state?.masterData?.night_cutin?.[payload];
+    },
+
+    updateAntiAirCutin: (state, action: UpdateAction<number, DayCutinDef>) => {
+      const { id, changes } = action.payload;
+
+      state.masterData ||= {};
+      state.masterData.anti_air_cutin ||= {};
+      state.masterData.anti_air_cutin[id] ||= {};
+      Object.assign(state.masterData.anti_air_cutin[id], changes);
+    },
+
+    removeAntiAirCutin: (state, { payload }: PayloadAction<number>) => {
+      delete state?.masterData?.anti_air_cutin?.[payload];
     },
   },
 });

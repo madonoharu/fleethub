@@ -37,11 +37,11 @@ const IGNORE_ACTIONS: string[] = [];
 const actionTypeFilter: FilterFunction = (action) => {
   const type = action.type as unknown;
 
-  if (typeof type !== "string") {
+  if (typeof type !== "string" || IGNORE_ACTIONS.includes(type)) {
     return false;
   }
 
-  return type.startsWith("entities") && !IGNORE_ACTIONS.includes(type);
+  return type.startsWith("entities") || type.startsWith("config");
 };
 
 const filter: FilterFunction = (...args) =>

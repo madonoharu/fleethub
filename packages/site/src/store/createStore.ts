@@ -56,7 +56,7 @@ const persistedReducer = persistReducer(
     timeout: 0,
     serialize: false,
     deserialize: false,
-    whitelist: ["app", "entities"],
+    whitelist: ["app", "config", "entities"],
   },
   persistedReducerBase
 );

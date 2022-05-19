@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { Chip } from "@mui/material";
+import { styled, css } from "@mui/system";
 import {
   DayBattleAttackType,
   DayCutin,

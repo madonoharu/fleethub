@@ -45,6 +45,7 @@ pub struct MasterConfig {
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
     pub gear_attrs: Vec<MasterAttrRule<GearAttr>>,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub ships: Vec<MasterShip>,
     pub ship_attrs: Vec<MasterAttrRule<ShipAttr>>,
     pub ibonuses: MasterIBonuses,

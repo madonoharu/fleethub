@@ -1,9 +1,7 @@
-import { Typography } from "@mui/material";
-import { MasterShip } from "fleethub-core";
-import { produce } from "immer";
+import { Stack, Typography } from "@mui/material";
+import { MasterShip, SlotSizeVec, StatInterval } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { Updater } from "use-immer";
 
 import { useAppDispatch, useAppSelector, useMasterData } from "../../../hooks";
 import {
@@ -19,37 +17,35 @@ import ResettableInput from "../../organisms/ResettableInput";
 import SlotSizeVecForm from "./SlotSizeVecForm";
 import StatIntervalForm from "./StatIntervalForm";
 
-interface RangeFormProps {
+interface StatFormProps {
+  statKey: "range" | "torpedo_accuracy";
   ship: MasterShip;
   config: MasterShipOverrides;
-  updater: Updater<MasterShipOverrides>;
+  onChange: (value: number | null) => void;
 }
 
-const RangeForm: React.FC<RangeFormProps> = ({ ship, config, updater }) => {
+const StatForm: React.FC<StatFormProps> = ({
+  statKey,
+  ship,
+  config,
+  onChange,
+}) => {
   const { t } = useTranslation("common");
-  const statKey = "range";
-  const handleChange = (v: number | null) => {
-    updater((draft) => {
-      if (v === null) {
-        delete draft[statKey];
-      } else {
-        draft[statKey] = v;
-      }
-    });
-  };
 
   return (
-    <>
+    <div>
       <Flexbox gap={1}>
         <StatIcon icon={statKey} />
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>
       <ResettableInput
-        defaultValue={ship[statKey] ?? null}
-        value={config[statKey] ?? null}
-        onChange={handleChange}
+        defaultValue={ship[statKey]}
+        value={config[statKey]}
+        min={0}
+        max={10000}
+        onChange={onChange}
       />
-    </>
+    </div>
   );
 };
 
@@ -67,7 +63,7 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
 
   const dispatch = useAppDispatch();
   const config = useAppSelector((root) => {
-    return root.present.config.overrides?.ships?.[shipId] || initialConfig;
+    return root.present.config.masterData?.ships?.[shipId] || initialConfig;
   });
 
   const ship = data?.ships.find((ship) => ship.ship_id === shipId);
@@ -76,28 +72,41 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
     return null;
   }
 
-  const updater: Updater<MasterShipOverrides> = (arg) => {
-    if (typeof arg === "function") {
-      const next = produce(config, arg);
+  const handleChange =
+    (key: StatFormProps["statKey"]) => (value: number | null) => {
+      dispatch(
+        configSlice.actions.updateMasterShip({
+          id: shipId,
+          changes: {
+            [key]: value,
+          },
+        })
+      );
+    };
 
+  const handleStatIntervalChange =
+    (key: typeof STAT_INTERVAL_KEYS[number]) => (stat: StatInterval) => {
       dispatch(
-        configSlice.actions.setMasterShipOverrides({
+        configSlice.actions.updateMasterShip({
           id: shipId,
-          overrides: next,
+          changes: {
+            [key]: stat,
+          },
         })
       );
-    } else {
-      dispatch(
-        configSlice.actions.setMasterShipOverrides({
-          id: shipId,
-          overrides: arg,
-        })
-      );
-    }
+    };
+
+  const handleSlotSizeChange = (slots: SlotSizeVec) => {
+    dispatch(
+      configSlice.actions.updateMasterShip({
+        id: shipId,
+        changes: { slots },
+      })
+    );
   };
 
   return (
-    <div className={className} css={{ padding: 8 }}>
+    <Stack className={className} gap={1}>
       <ShipNameplate shipId={ship.ship_id} />
 
       {STAT_INTERVAL_KEYS.map((key) => (
@@ -106,12 +115,27 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
           statKey={key}
           ship={ship}
           config={config}
-          updater={updater}
+          onChange={handleStatIntervalChange(key)}
         />
       ))}
-      <RangeForm ship={ship} config={config} updater={updater} />
-      <SlotSizeVecForm ship={ship} config={config} updater={updater} />
-    </div>
+      <StatForm
+        statKey="range"
+        ship={ship}
+        config={config}
+        onChange={handleChange("range")}
+      />
+      <StatForm
+        statKey="torpedo_accuracy"
+        ship={ship}
+        config={config}
+        onChange={handleChange("torpedo_accuracy")}
+      />
+      <SlotSizeVecForm
+        ship={ship}
+        config={config}
+        onChange={handleSlotSizeChange}
+      />
+    </Stack>
   );
 };
 

@@ -1,49 +1,46 @@
-import { Button } from "@mui/material";
-import { Ship } from "fleethub-core";
-import React, { useState } from "react";
+import { Container } from "@mui/material";
+import { useTranslation } from "next-i18next";
+import React from "react";
 
-import { useFhCore } from "../../../hooks";
-import { Dialog } from "../../organisms";
-import ShipList from "../ShipList";
+import { useMasterData } from "../../../hooks";
+import { Tabs } from "../../molecules";
 
-import MasterDataEditor from "./MasterDataEditor";
-import MasterShipEditor from "./MasterShipEditor";
+import AntiAirCutinMenu from "./AntiAirCutinMenu";
+import DayCutinMenu from "./DayCutinMenu";
+import NightCutinMenu from "./NightCutinMenu";
+import ShipsMenu from "./ShipsMenu";
 
 const ConfigPage: React.FC = () => {
-  const { allShips } = useFhCore();
-  const [open, setOpen] = useState(false);
-  const [ship, setShip] = useState<Ship>();
+  const { data } = useMasterData();
+  const { t } = useTranslation("common");
+
+  if (!data) {
+    return null;
+  }
 
   return (
-    <div css={{ padding: 8 }}>
-      <MasterDataEditor />
-
-      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-        艦船設定を追加
-      </Button>
-
-      <Dialog
-        open={Boolean(ship)}
-        full
-        onClose={() => {
-          setShip(undefined);
-          setOpen(false);
-        }}
-      >
-        {ship && <MasterShipEditor shipId={ship.ship_id} />}
-      </Dialog>
-
-      <Dialog open={open} full onClose={() => setOpen(false)}>
-        {open && (
-          <ShipList
-            ships={allShips}
-            onSelect={(ship) => {
-              setShip(ship);
-            }}
-          />
-        )}
-      </Dialog>
-    </div>
+    <Container>
+      <Tabs
+        list={[
+          {
+            label: t("DayCutin.name"),
+            panel: <DayCutinMenu data={data} />,
+          },
+          {
+            label: t("NightCutin.name"),
+            panel: <NightCutinMenu data={data} />,
+          },
+          {
+            label: t("AntiAirCutin"),
+            panel: <AntiAirCutinMenu data={data} />,
+          },
+          {
+            label: t("Ship"),
+            panel: <ShipsMenu />,
+          },
+        ]}
+      />
+    </Container>
   );
 };
 
