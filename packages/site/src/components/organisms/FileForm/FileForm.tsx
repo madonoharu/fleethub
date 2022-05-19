@@ -50,7 +50,6 @@ const FileForm: React.FCX<FileFormProps> = ({
         <LinkButton
           title={t("CopySharedLinkToClipboard") || ""}
           disabled={asyncOnPublish.loading}
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={asyncOnPublish.onUrlCopy}
         />
         <FileCopyButton title={t("Copy")} onClick={onCopy} />

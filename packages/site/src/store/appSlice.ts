@@ -31,7 +31,10 @@ export const appSlice = createSlice({
       delete state.configOpen;
     },
     openFile: (state, { payload }: PayloadAction<string>) => {
-      if (state.fileId !== payload) state.fileId = payload;
+      state.configOpen = false;
+      if (state.fileId !== payload) {
+        state.fileId = payload;
+      }
     },
     openConfig: (state) => {
       state.configOpen = true;

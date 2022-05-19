@@ -147,6 +147,7 @@
   "adjusted_anti_air": "加权对空",
   "proportional_shotdown_rate": "比例击坠率",
   "fixed_shotdown_number": "固定击坠",
+  "multiplier": "倍率",
   "guaranteed": "最低保障",
   "anti_air_cutin_chance": "对空CI触发率",
   "trigger_rate": "开始率",

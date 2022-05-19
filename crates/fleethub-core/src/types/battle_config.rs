@@ -101,8 +101,11 @@ impl NestedFormationDef {
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AntiAirCutinDef {
     pub id: u8,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub type_factor: Option<u8>,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub multiplier: Option<f64>,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub guaranteed: Option<u8>,
     pub sequential: Option<bool>,
 }
@@ -122,8 +125,11 @@ impl AntiAirCutinDef {
 pub struct DayCutinDef {
     pub tag: DayCutin,
     pub hits: u8,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub type_factor: Option<u8>,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub power_mod: Option<f64>,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub accuracy_mod: Option<f64>,
 }
 
@@ -146,8 +152,11 @@ impl Default for CutinModifiers {
 pub struct NightCutinDef {
     pub tag: NightCutin,
     pub hits: f64,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub type_factor: Option<u8>,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub power_mod: Option<f64>,
+    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
     pub accuracy_mod: Option<f64>,
 }
 

@@ -2,7 +2,6 @@ import { Typography } from "@mui/material";
 import { MasterShip, StatInterval } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { Updater } from "use-immer";
 
 import { MasterShipOverrides, StatIntervalKey } from "../../../store";
 import { Flexbox } from "../../atoms";
@@ -13,14 +12,14 @@ interface StatIntervalFormProps {
   statKey: StatIntervalKey;
   ship: MasterShip;
   config: MasterShipOverrides;
-  updater: Updater<MasterShipOverrides>;
+  onChange: (value: StatInterval) => void;
 }
 
 const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
   statKey,
   ship,
   config,
-  updater,
+  onChange,
 }) => {
   const { t } = useTranslation("common");
 
@@ -32,25 +31,23 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
 
   if (abyssal) {
     const handleChange = (v: number | null) => {
-      updater((draft) => {
-        draft[statKey] = [v, v];
-      });
+      onChange([v, v]);
     };
 
     elem = (
       <ResettableInput
         defaultValue={s0}
         value={configInterval[0]}
+        min={0}
+        max={10000}
         onChange={handleChange}
       />
     );
   } else {
     const handleChange = (i: number) => (v: number | null) => {
-      updater((draft) => {
-        const next: StatInterval = [...configInterval];
-        next[i] = v;
-        draft[statKey] = next;
-      });
+      const next: StatInterval = [...configInterval];
+      next[i] = v;
+      onChange(next);
     };
 
     elem = (
@@ -58,11 +55,15 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
         <ResettableInput
           defaultValue={s0}
           value={configInterval[0]}
+          min={0}
+          max={10000}
           onChange={handleChange(0)}
         />
         <ResettableInput
           defaultValue={s1}
           value={configInterval[1]}
+          min={0}
+          max={10000}
           onChange={handleChange(1)}
         />
       </Flexbox>
