@@ -231,7 +231,7 @@
   "CreateComposition": "編成",
   "CreateFolder": "創建文件夾",
   "OpenFolderPage": "打開文件夾頁麵",
-  "Chance": "概率",
+  "ProcRate": "發動率",
   "Proficiency": "熟練度",
   "Normal": "平擊",
   "Critical": "爆擊",
@@ -288,7 +288,8 @@
     "50": "春活 2021",
     "51": "夏活 2021",
     "52": "秋活 2021",
-    "53": "冬活 2022"
+    "53": "冬活 2022",
+    "54": "春活 2022"
   },
   "nodeType": {
     "Start": "起始點",

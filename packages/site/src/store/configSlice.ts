@@ -56,8 +56,8 @@ export const configSlice = createSlice({
 
       state.masterData ||= {};
       state.masterData.ships ||= {};
-      state.masterData.ships[id] ||= {};
-      Object.assign(state.masterData.ships[id], changes);
+      const target = (state.masterData.ships[id] ||= {});
+      Object.assign(target, changes);
     },
 
     removeMasterShip: (state, { payload }: PayloadAction<number>) => {
@@ -70,7 +70,8 @@ export const configSlice = createSlice({
       state.masterData ||= {};
       state.masterData.day_cutin ||= {};
       state.masterData.day_cutin[id] ||= {};
-      Object.assign(state.masterData.day_cutin[id], changes);
+      const target = (state.masterData.day_cutin[id] ||= {});
+      Object.assign(target, changes);
     },
 
     removeDayCutin: (state, { payload }: PayloadAction<DayCutin>) => {
@@ -85,8 +86,8 @@ export const configSlice = createSlice({
 
       state.masterData ||= {};
       state.masterData.night_cutin ||= {};
-      state.masterData.night_cutin[id] ||= {};
-      Object.assign(state.masterData.night_cutin[id], changes);
+      const target = (state.masterData.night_cutin[id] ||= {});
+      Object.assign(target, changes);
     },
 
     removeNightCutin: (state, { payload }: PayloadAction<NightCutin>) => {
@@ -98,8 +99,8 @@ export const configSlice = createSlice({
 
       state.masterData ||= {};
       state.masterData.anti_air_cutin ||= {};
-      state.masterData.anti_air_cutin[id] ||= {};
-      Object.assign(state.masterData.anti_air_cutin[id], changes);
+      const target = (state.masterData.anti_air_cutin[id] ||= {});
+      Object.assign(target, changes);
     },
 
     removeAntiAirCutin: (state, { payload }: PayloadAction<number>) => {

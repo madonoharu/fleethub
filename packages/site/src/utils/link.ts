@@ -20,7 +20,7 @@ const getPredeckUrl = (base: string, org?: Org | undefined) => {
 };
 
 export const openKctools = (org?: Org | undefined) => {
-  const url = getPredeckUrl("https://noro6.github.io/kcTools/", org);
+  const url = getPredeckUrl("https://noro6.github.io/kc-web/", org);
   window.open(url, "_blank", "noreferrer");
 };
 

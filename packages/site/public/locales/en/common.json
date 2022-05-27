@@ -231,7 +231,7 @@
   "CreateComposition": "Create composition",
   "CreateFolder": "Create folder",
   "OpenFolderPage": "Open folder page",
-  "Chance": "Chance",
+  "ProcRate": "Proc Rate",
   "Proficiency": "Proficiency",
   "Normal": "Normal",
   "Critical": "Critical",
@@ -288,7 +288,8 @@
     "50": "Spring 2021",
     "51": "Summer 2021",
     "52": "Fall 2021",
-    "53": "Winter 2022"
+    "53": "Winter 2022",
+    "54": "Spring 2022"
   },
   "nodeType": {
     "Start": "Start",

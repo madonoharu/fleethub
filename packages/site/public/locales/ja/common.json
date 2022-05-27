@@ -231,7 +231,7 @@
   "CreateComposition": "編成を作成",
   "CreateFolder": "フォルダを作成",
   "OpenFolderPage": "フォルダページを開く",
-  "Chance": "確率",
+  "ProcRate": "発動率",
   "Proficiency": "熟練度",
   "Normal": "通常",
   "Critical": "クリティカル",
@@ -288,7 +288,8 @@
     "50": "2021春",
     "51": "2021夏",
     "52": "2021秋",
-    "53": "2022冬"
+    "53": "2022冬",
+    "54": "2022春"
   },
   "nodeType": {
     "Start": "出撃地点",
