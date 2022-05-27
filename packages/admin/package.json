@@ -1,6 +1,6 @@
 {
   "name": "@fh/admin",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "license": "UNLICENSED",
   "main": "esm/index.js",
   "type": "module",
@@ -10,11 +10,11 @@
   "dependencies": {
     "@fh/utils": "workspace:packages/utils",
     "@google-cloud/asset": "^3.23.1",
-    "cloudinary": "^1.29.1",
+    "cloudinary": "^1.30.0",
     "dequal": "^2.0.2",
-    "firebase-admin": "^10.1.0",
+    "firebase-admin": "^10.2.0",
     "googleapis": "^100.0.0",
-    "got": "12.0.4"
+    "got": "12.1.0"
   },
   "optionalDependencies": {
     "fleethub-core": "npm:latest"
