@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -32,11 +32,13 @@ const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
     displayName = t(`${shipId}`, defaultName);
   }
 
+  const visibleId = shipId > 1500;
+
   return (
     <Flexbox ref={ref} className={className}>
       <StyledShipBanner shipId={shipId} />
       <div>
-        {shipId > 1500 && (
+        {visibleId && (
           <Typography variant="caption" display="block">
             ID:{shipId}
           </Typography>

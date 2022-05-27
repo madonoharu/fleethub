@@ -18,7 +18,7 @@ import {
 type OrmState<T extends AnyEntitySchema[]> = UnionToIntersection<
   T extends (infer E)[]
     ? E extends EntitySchema<any, infer Key, any, any, any>
-      ? Record<Key, EntityState<EntityType<E>>>
+      ? Record<Key, EntityState<EntityType<E & AnyEntitySchema>>>
       : never
     : never
 >;
@@ -58,8 +58,6 @@ export function createStateOperator<
 export function createOrmAdapters<T extends AnyEntitySchema[]>(
   ...args: T
 ): OrmAdapter<T> {
-  type State = OrmState<T>;
-
   const entityAdapters: Record<string, EntityAdapter<unknown> | undefined> = {};
 
   args.forEach((schema) => {
@@ -73,10 +71,13 @@ export function createOrmAdapters<T extends AnyEntitySchema[]>(
     entityAdapters[key] = createEntityAdapter({ selectId });
   });
 
-  const setEntities = (state: State, entities: Entities) => {
+  const setEntities = (
+    state: Record<string, EntityState<unknown>>,
+    entities: Entities
+  ) => {
     Object.entries(entities).forEach(([key, dict]) => {
       const entityAdapter = entityAdapters[key];
-      const entityState = (state as Record<string, EntityState<unknown>>)[key];
+      const entityState = state[key];
 
       if (entityAdapter) {
         entityAdapter.addMany(entityState, dict);
@@ -87,5 +88,5 @@ export function createOrmAdapters<T extends AnyEntitySchema[]>(
   return {
     setEntities,
     ...entityAdapters,
-  } as OrmAdapter<T>;
+  } as unknown as OrmAdapter<T>;
 }

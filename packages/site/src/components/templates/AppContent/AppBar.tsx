@@ -105,12 +105,12 @@ const AppBar: React.FCX = ({ className }) => {
         disabled={!canRedo}
         onClick={redo}
       />
-      {/* <SettingsButton
+      <SettingsButton
         size="small"
         onClick={() => {
           dispatch(appSlice.actions.openConfig());
         }}
-      /> */}
+      />
 
       <div css={{ marginLeft: "auto" }}>
         <Tooltip title="GitHub repository">

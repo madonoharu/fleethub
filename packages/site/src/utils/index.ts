@@ -62,3 +62,4 @@ export * from "./gkcoi";
 export * from "./jor";
 export * from "./compress";
 export * from "./measure";
+export * from "./copy";

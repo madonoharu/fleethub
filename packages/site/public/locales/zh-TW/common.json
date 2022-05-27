@@ -147,6 +147,7 @@
   "adjusted_anti_air": "加權對空值",
   "proportional_shotdown_rate": "擊墜百分比",
   "fixed_shotdown_number": "固定擊墜",
+  "multiplier": "倍率",
   "guaranteed": "最低保證",
   "anti_air_cutin_chance": "對空CI發動率",
   "trigger_rate": "開始率",
@@ -230,7 +231,7 @@
   "CreateComposition": "編成",
   "CreateFolder": "創建文件夾",
   "OpenFolderPage": "打開文件夾頁麵",
-  "Chance": "概率",
+  "ProcRate": "發動率",
   "Proficiency": "熟練度",
   "Normal": "平擊",
   "Critical": "爆擊",
@@ -287,7 +288,8 @@
     "50": "春活 2021",
     "51": "夏活 2021",
     "52": "秋活 2021",
-    "53": "冬活 2022"
+    "53": "冬活 2022",
+    "54": "春活 2022"
   },
   "nodeType": {
     "Start": "起始點",

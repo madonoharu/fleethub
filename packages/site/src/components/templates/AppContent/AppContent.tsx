@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
-import { CircularProgress } from "@mui/material";
 import React from "react";
 
-import { useAppSelector, useBootstrapped } from "../../../hooks";
+import { useAppSelector } from "../../../hooks";
 import ConfigPage from "../ConfigPage";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";

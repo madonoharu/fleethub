@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useCompContext } from "../../../hooks";
-import { numstr } from "../../../utils";
+import { numstr, toPercent } from "../../../utils";
 import { createAttackTableColumns } from "../AttackTable/AttackTable";
 import EngagementSelect from "../EngagementSelect";
 import ShipNameplate from "../ShipNameplate";
@@ -26,7 +26,8 @@ const FleetCutinInfoTable: React.FCX<FleetCutinInfoTableProps> = ({
       {data.map((info) => (
         <div key={info.formation}>
           <Typography variant="subtitle1">
-            {t(`FleetCutin.${info.cutin}`)} {t(`Formation.${info.formation}`)}
+            {t(`FleetCutin.${info.cutin}`)} {t(`Formation.${info.formation}`)}{" "}
+            {t(`ProcRate`)} {toPercent(info.rate)}
           </Typography>
           <Table
             size="small"

@@ -3,6 +3,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useSnackbar } from "../../../hooks";
+import { copy } from "../../../utils";
 import { withIconButton } from "../IconButtons";
 
 const AssignmentButton = withIconButton(Assignment);
@@ -16,8 +17,7 @@ const CopyTextButton: React.FC<Props> = ({ value }) => {
   const { t } = useTranslation("common");
 
   const handleClick = () => {
-    navigator.clipboard
-      .writeText(value)
+    copy(value)
       .then(() => {
         Snackbar.show({ message: "Success" });
       })

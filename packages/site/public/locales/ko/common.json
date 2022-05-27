@@ -147,6 +147,7 @@
   "adjusted_anti_air": "가중대공",
   "proportional_shotdown_rate": "고정 격추율",
   "fixed_shotdown_number": "고정 격추 수",
+  "multiplier": "배율",
   "guaranteed": "최저보증",
   "anti_air_cutin_chance": "대공컷인 발동확률",
   "trigger_rate": "개시율",
@@ -230,7 +231,7 @@
   "CreateComposition": "편성 만들기",
   "CreateFolder": "폴더 만들기",
   "OpenFolderPage": "폴더 페이지를 열다",
-  "Chance": "확률",
+  "ProcRate": "발동률",
   "Proficiency": "숙련도",
   "Normal": "통상",
   "Critical": "크리티컬",
@@ -287,7 +288,8 @@
     "50": "2021[[termSpring]",
     "51": "2021년 여름",
     "52": "2021년 겨울",
-    "53": "2022년 겨울"
+    "53": "2022년 겨울",
+    "54": "2022년 봄"
   },
   "nodeType": {
     "Start": "출발점",

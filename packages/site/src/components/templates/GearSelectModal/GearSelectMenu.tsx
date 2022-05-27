@@ -68,7 +68,7 @@ const GearSelectMenu: React.FCX<Props> = ({ className, gears }) => {
       icon: <SearchIcon />,
       iconPosition: "start" as const,
       label: "検索",
-      panel: <GearSearchMenu gears={gears} />,
+      panel: <GearSearchMenu gears={gears} onSelect={handleSelect} />,
     },
   ];
 

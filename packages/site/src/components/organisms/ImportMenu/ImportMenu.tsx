@@ -133,7 +133,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
       <StyledDivider label="編成を直接読み込むJavaScriptコード" />
       <Typography variant="body2" mb={1}>
-        <Link href="https://noro6.github.io/kcTools/manager">
+        <Link href="https://noro6.github.io/kc-web/#/manager">
           制空権シミュレータの艦娘管理
         </Link>
         での反映と同じ手順で編成を直接読み込めます
