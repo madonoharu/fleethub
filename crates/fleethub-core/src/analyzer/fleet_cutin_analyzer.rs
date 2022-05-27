@@ -3,8 +3,9 @@ use tsify::Tsify;
 
 use crate::{
     attack::{
-        get_fleet_cutin, get_fleet_cutin_mod, NightAttackContext, NightSituation,
-        ShellingAttackContext, ShellingAttackType, WarfareContext, WarfareShipEnvironment,
+        calc_fleet_cutin_rate, get_fleet_cutin, get_fleet_cutin_mod, NightAttackContext,
+        NightSituation, ShellingAttackContext, ShellingAttackType, WarfareContext,
+        WarfareShipEnvironment,
     },
     comp::Comp,
     fleet::Fleet,
@@ -28,6 +29,7 @@ pub struct FleetCutinInfoItem {
 #[derive(Debug, Serialize, Tsify)]
 pub struct FleetCutinInfo {
     cutin: FleetCutin,
+    rate: Option<f64>,
     formation: Formation,
     items: Vec<FleetCutinInfoItem>,
 }
@@ -210,11 +212,12 @@ impl<'a> FleetCutinAnalyzer<'a> {
                 let is_night = false;
                 let fleet = self.get_fleet(is_night);
                 let cutin = get_fleet_cutin(fleet, formation, is_night)?;
-
+                let rate = calc_fleet_cutin_rate(fleet, cutin);
                 let items = self.analyze_shelling(fleet, cutin, formation, engagement);
 
                 Some(FleetCutinInfo {
                     cutin,
+                    rate,
                     formation,
                     items,
                 })
@@ -226,11 +229,12 @@ impl<'a> FleetCutinAnalyzer<'a> {
                 let is_night = true;
                 let fleet = self.get_fleet(is_night);
                 let cutin = get_fleet_cutin(fleet, formation, is_night)?;
-
+                let rate = calc_fleet_cutin_rate(fleet, cutin);
                 let items = self.analyze_night(fleet, cutin, formation, engagement);
 
                 Some(FleetCutinInfo {
                     cutin,
+                    rate,
                     formation,
                     items,
                 })

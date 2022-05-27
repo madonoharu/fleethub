@@ -11,6 +11,54 @@ fn is_big7(ship: &Ship) -> bool {
     matches!(ship.ctype, ctype!("長門型") | ctype!("Nelson級"))
 }
 
+/// Int(2√ﾈﾙｿﾝLv+√3番艦Lv+√5番艦Lv+√ﾈﾙｿﾝ運+0.5√3番艦運+0.5√5番艦運+12)
+/// https://twitter.com/Xe_UCH/status/1398930917184270337
+fn calc_nelson_touch_rate(fleet: &Fleet) -> Option<f64> {
+    let s1 = fleet.ships.get(0)?;
+    let s3 = fleet.ships.get(2)?;
+    let s5 = fleet.ships.get(4)?;
+
+    let s1_level = s1.level as f64;
+    let s3_level = s3.level as f64;
+    let s5_level = s5.level as f64;
+    let s1_luck = s1.luck()? as f64;
+    let s3_luck = s3.luck()? as f64;
+    let s5_luck = s5.luck()? as f64;
+
+    let result = 2.0 * s1_level.sqrt()
+        + s3_level.sqrt()
+        + s5_level.sqrt()
+        + s1_luck.sqrt()
+        + 0.5 * s3_luck.sqrt()
+        + 0.5 * s5_luck.sqrt()
+        + 12.0;
+
+    Some((result.floor() / 100.0).min(1.0))
+}
+
+/// (√一番艦Lv +√二番艦Lv) + 1.2*(√一番艦運 +√二番艦運)+30
+/// https://twitter.com/kanprint/status/1490311067742142467
+fn calc_nagato_cutin_rate(fleet: &Fleet) -> Option<f64> {
+    let s1 = fleet.ships.get(0)?;
+    let s2 = fleet.ships.get(1)?;
+
+    let s1_level = s1.level as f64;
+    let s2_level = s2.level as f64;
+    let s1_luck = s1.luck()? as f64;
+    let s2_luck = s2.luck()? as f64;
+
+    let result = s1_level.sqrt() + s2_level.sqrt() + 1.2 * (s1_luck.sqrt() + s2_luck.sqrt()) + 30.0;
+    Some((result / 100.0).min(1.0))
+}
+
+pub fn calc_fleet_cutin_rate(fleet: &Fleet, cutin: FleetCutin) -> Option<f64> {
+    match cutin {
+        FleetCutin::NelsonTouch => calc_nelson_touch_rate(fleet),
+        FleetCutin::NagatoCutin => calc_nagato_cutin_rate(fleet),
+        _ => None,
+    }
+}
+
 pub fn get_fleet_cutin_mod(
     attack_type: FleetCutin,
     engagement: Engagement,

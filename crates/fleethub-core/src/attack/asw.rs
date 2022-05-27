@@ -4,7 +4,7 @@ use tsify::Tsify;
 use crate::{
     attack::{DefenseParams, HitRateParams},
     ship::Ship,
-    types::{BattleConfig, Engagement, GearAttr, GearType, ShipType},
+    types::{gear_id, matches_gear_id, BattleConfig, Engagement, GearAttr, GearType, ShipType},
 };
 
 use super::{
@@ -166,11 +166,21 @@ impl<'a> AswAttackContext<'a> {
         let calc_accuracy_term = || {
             let basic_accuracy_term = attacker.basic_accuracy_term()?;
 
+            // 爆雷命中補正
+            // 九五式爆雷 二式爆雷
+            // https://twitter.com/kankenRJ/status/944494853580210177
+            //
+            // 対潜の単純合計ではない
+            // https://twitter.com/shiro_sh39/status/1514416400227479552
+            //
+            // Hedgehog(初期型)は無し
+            // https://twitter.com/panmodoki10/status/1522507740274651136
+            // 暫定 4 * 個数
             let asw_equipment_mod = attacker.gears.sum_by(|gear| {
                 if gear.gear_type == GearType::Sonar {
                     2.0 * (gear.asw as f64)
-                } else if gear.has_attr(GearAttr::SynergisticDepthCharge) {
-                    gear.asw as f64
+                } else if matches_gear_id!(gear.gear_id, "九五式爆雷" | "二式爆雷") {
+                    4.0
                 } else {
                     0.0
                 }
