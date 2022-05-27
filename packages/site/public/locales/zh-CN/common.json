@@ -149,7 +149,7 @@
   "fixed_shotdown_number": "固定击坠",
   "multiplier": "倍率",
   "guaranteed": "最低保障",
-  "anti_air_cutin_chance": "对空CI触发率",
+  "anti_air_cutin_chance": "对空CI发动率",
   "trigger_rate": "开始率",
   "ContactChance": "接触率",
   "max_hp": "耐久",
@@ -231,7 +231,7 @@
   "CreateComposition": "编成",
   "CreateFolder": "创建文件夹",
   "OpenFolderPage": "打开文件夹页面",
-  "Chance": "概率",
+  "ProcRate": "发动率",
   "Proficiency": "熟练度",
   "Normal": "平击",
   "Critical": "爆击",
@@ -288,7 +288,8 @@
     "50": "2021 春活",
     "51": "2021 夏活",
     "52": "2021 秋活",
-    "53": "2022 冬活"
+    "53": "2022 冬活",
+    "54": "2022 春活"
   },
   "nodeType": {
     "Start": "出发",
