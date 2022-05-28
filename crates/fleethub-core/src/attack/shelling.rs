@@ -8,8 +8,9 @@ use crate::{
 };
 
 use super::{
-    fleet_factor, special_enemy_mods::special_enemy_modifiers, AttackParams, DefenseParams,
-    WarfareContext, WarfareShipEnvironment,
+    fleet_factor::{self, ShipPosition},
+    special_enemy_mods::special_enemy_modifiers,
+    AttackParams, DefenseParams, WarfareContext, WarfareShipEnvironment,
 };
 
 const SHELLING_POWER_CAP: f64 = 220.0;
@@ -100,6 +101,19 @@ impl<'a> ShellingAttackContext<'a> {
     pub fn attack_params(&self, attacker: &Ship, target: &Ship) -> AttackParams {
         let ctx = self;
 
+        let attacker_side = ctx.attacker_env.org_type.side();
+        let (player_position, enemy_position) = if ctx.attacker_env.org_type.is_player() {
+            (
+                ShipPosition::from(ctx.attacker_env),
+                ShipPosition::from(ctx.target_env),
+            )
+        } else {
+            (
+                ShipPosition::from(ctx.target_env),
+                ShipPosition::from(ctx.attacker_env),
+            )
+        };
+
         let ap_shell_mods = target
             .is_heavily_armored_ship()
             .then(|| attacker.get_ap_shell_modifiers());
@@ -134,10 +148,10 @@ impl<'a> ShellingAttackContext<'a> {
         let calc_attack_power_params = || -> Option<AttackPowerParams> {
             let firepower = attacker.firepower()? as f64;
             let ibonus = attacker.gears.sum_by(|gear| gear.ibonuses.shelling_power);
-            let fleet_factor = fleet_factor::find_shelling_power_factor(
-                ctx.attacker_env.org_type,
-                ctx.target_env.org_type,
-                ctx.attacker_env.role,
+            let fleet_factor = fleet_factor::get_shelling_power_factor(
+                player_position,
+                enemy_position,
+                attacker_side,
             ) as f64;
             let damage_mod = attacker.damage_state().common_power_mod();
             let cruiser_fit_bonus = attacker.cruiser_fit_bonus();
@@ -183,10 +197,8 @@ impl<'a> ShellingAttackContext<'a> {
         };
 
         let calc_accuracy_term = || -> Option<f64> {
-            let fleet_factor = fleet_factor::find_shelling_accuracy_factor(
-                ctx.attacker_env.org_type,
-                ctx.attacker_env.role,
-            ) as f64;
+            let fleet_factor =
+                fleet_factor::get_shelling_accuracy_factor(player_position, enemy_position) as f64;
 
             let basic_accuracy_term = attacker.basic_accuracy_term()?;
             let ship_accuracy = attacker.accuracy() as f64;
