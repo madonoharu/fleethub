@@ -5,11 +5,7 @@ import {
   Engagement,
 } from "fleethub-core";
 
-import {
-  initialNightSituation,
-  initialCustomModifiers,
-  entitiesSlice,
-} from "./entities";
+import { initialNightSituation, entitiesSlice } from "./entities";
 
 export type ShipDetailsState = {
   enemies: string[];
@@ -27,7 +23,7 @@ const initialShipEnv: WarfareAnalyzerShipEnvironment = {
   formation: "LineAhead",
   fleet_los_mod: 0,
   night_situation: initialNightSituation,
-  custom_mods: initialCustomModifiers,
+  custom_mods: {},
 };
 
 const initialState: ShipDetailsState = {

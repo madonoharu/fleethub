@@ -8,11 +8,7 @@ export { stepsSlice } from "./stepsSlice";
 export { filesSlice, isPlan, isFolder } from "./filesSlice";
 export { entitiesSlice } from "./entitiesSlice";
 
-export {
-  initialCustomModifiers,
-  initialNightSituation,
-  initialStepConfig,
-} from "./base";
+export { initialNightSituation, initialStepConfig } from "./base";
 export * from "./selectors";
 export * from "./thunkActions";
 

@@ -9,7 +9,7 @@ const StyledInput = styled(NumberInput)`
 `;
 
 type AttackPowerModifierFormProps = {
-  value: AttackPowerModifier;
+  value: AttackPowerModifier | undefined;
   onChange?: (value: AttackPowerModifier) => void;
 };
 
@@ -19,19 +19,21 @@ const AttackPowerModifierForm: React.FCX<AttackPowerModifierFormProps> = ({
   value,
   onChange,
 }) => {
+  const current = value || { a: 1, b: 0 };
+
   return (
     <div className={className} style={style}>
       <StyledInput
         label="乗算"
         min={0}
         step={0.1}
-        value={value.a}
-        onChange={(a) => onChange?.({ ...value, a })}
+        value={current.a}
+        onChange={(a) => onChange?.({ ...current, a })}
       />
       <StyledInput
         label="加算"
-        value={value.b}
-        onChange={(b) => onChange?.({ ...value, b })}
+        value={current.b}
+        onChange={(b) => onChange?.({ ...current, b })}
       />
     </div>
   );
