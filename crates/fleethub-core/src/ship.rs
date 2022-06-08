@@ -425,16 +425,19 @@ impl Ship {
 
     pub fn participates_day(&self, anti_inst: bool) -> bool {
         if self.is_carrier_like() {
-            if anti_inst
-                && self.has_non_zero_slot_gear_by(|gear| {
-                    gear.gear_type == GearType::CbDiveBomber
-                        && !gear.has_attr(GearAttr::AntiInstDiveBomber)
-                })
+            if !self.has_non_zero_slot_gear_by(|gear| gear.is_carrier_shelling_plane()) {
+                false
+            } else if !anti_inst {
+                true
+            } else if self
+                .has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiInstDiveBomber))
             {
-                return false;
+                true
+            } else {
+                self.planes()
+                    .filter(|plane| plane.gear_as_ref().is_carrier_shelling_plane())
+                    .all(|plane| plane.gear_type() == GearType::CbTorpedoBomber)
             }
-
-            self.has_non_zero_slot_gear_by(|gear| gear.is_carrier_shelling_plane())
         } else if self.ship_type.is_submarine() {
             anti_inst && self.gears.has_type(GearType::AmphibiousTank)
         } else {
@@ -1115,6 +1118,8 @@ impl Ship {
         if !self.equippable.types.contains(&(gear.special_type as u8)) {
             return false;
         }
+
+        // excludeEquipList
 
         if key == "gx" {
             if self.ship_type.is_submarine()

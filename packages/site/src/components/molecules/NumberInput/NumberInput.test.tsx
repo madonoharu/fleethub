@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe("NumberInput", () => {
   it("increase and decrease", () => {
-    jest.useFakeTimers("modern");
+    jest.useFakeTimers();
 
     const mockFn = jest.fn<void, [number]>();
 
@@ -38,7 +38,7 @@ describe("NumberInput", () => {
   });
 
   it("null", () => {
-    jest.useFakeTimers("modern");
+    jest.useFakeTimers();
 
     const mockFn = jest.fn<void, [number]>();
     render(<NumberInput value={null} onChange={mockFn} />);

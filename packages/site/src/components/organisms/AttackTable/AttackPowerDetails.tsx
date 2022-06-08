@@ -11,13 +11,19 @@ import React from "react";
 import { numstr } from "../../../utils";
 import { LabeledValue, Divider } from "../../atoms";
 
-function hasMod(mod: AttackPowerModifier): boolean {
+function hasMod(
+  mod: AttackPowerModifier | undefined
+): mod is AttackPowerModifier {
+  if (!mod) {
+    return false;
+  }
+
   return mod.a != 1 || mod.b != 0;
 }
 
 const AttackPowerModifierLabel: React.FC<{
   label: string;
-  mod: AttackPowerModifier;
+  mod: AttackPowerModifier | undefined;
 }> = ({ label, mod }) => {
   if (!hasMod(mod)) {
     return null;
