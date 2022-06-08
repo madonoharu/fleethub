@@ -130,6 +130,7 @@
   "scratch_damage": "擦彈",
   "precap_mod": "閾值前補正",
   "postcap_mod": "閾值後補正",
+  "basic_power_mod": "基本攻擊力補正",
   "special_enemy_mods": "特效補正",
   "precap_general_mod": "其它閾值前補正",
   "postcap_general_mod": "其它閾值後補正",
