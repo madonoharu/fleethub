@@ -130,6 +130,7 @@
   "scratch_damage": "割合",
   "precap_mod": "キャップ前補正",
   "postcap_mod": "キャップ後補正",
+  "basic_power_mod": "基本攻撃力補正",
   "special_enemy_mods": "特殊敵補正",
   "precap_general_mod": "キャップ前基本補正",
   "postcap_general_mod": "キャップ後基本補正",

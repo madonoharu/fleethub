@@ -68,11 +68,15 @@ impl SpecialEnemyModifiers {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct CustomModifiers {
+    #[serde(default)]
     pub precap_mod: AttackPowerModifier,
+    #[serde(default)]
     pub postcap_mod: AttackPowerModifier,
+    #[serde(default)]
+    pub basic_power_mod: AttackPowerModifier,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackPowerParams {
     pub basic: f64,
     pub cap: f64,
@@ -120,13 +124,18 @@ impl AttackPowerParams {
         precap = landing_craft_synergy_mod.apply(precap);
         precap += precap_general_mod.b;
 
+        precap = self.custom_mods.basic_power_mod.apply(precap);
+
         if let Some(v) = self.carrier_power {
             precap = ((precap + v) * 1.5).floor() + 25.0
         }
 
-        let precap_mod = self.precap_mod.compose(&self.custom_mods.precap_mod);
+        precap = self
+            .precap_mod
+            .compose(&self.custom_mods.precap_mod)
+            .apply(precap);
 
-        precap_mod.apply(precap)
+        precap
     }
 
     fn apply_postcap_mods(&self, capped: f64) -> (f64, f64) {
@@ -141,9 +150,10 @@ impl AttackPowerParams {
         postcap = postcap_general_mod.apply(postcap).floor();
         postcap = pt_mod.apply(postcap).floor();
 
-        let postcap_mod = self.postcap_mod.compose(&self.custom_mods.postcap_mod);
-
-        postcap = postcap_mod.apply(postcap);
+        postcap = self
+            .postcap_mod
+            .compose(&self.custom_mods.postcap_mod)
+            .apply(postcap);
 
         if let Some(v) = self.ap_shell_mod {
             postcap = (postcap * v).floor()
@@ -178,5 +188,62 @@ impl AttackPowerParams {
             armor_penetration: self.armor_penetration,
             remaining_ammo_mod: self.remaining_ammo_mod,
         }
+    }
+}
+
+impl Default for AttackPowerParams {
+    fn default() -> Self {
+        Self {
+            basic: 0.0,
+            cap: f64::MAX,
+            precap_mod: Default::default(),
+            postcap_mod: Default::default(),
+            ap_shell_mod: Default::default(),
+            carrier_power: Default::default(),
+            proficiency_critical_mod: None,
+            armor_penetration: 0.0,
+            remaining_ammo_mod: 1.0,
+            special_enemy_mods: Default::default(),
+            custom_mods: Default::default(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod test {
+
+    use super::*;
+
+    #[test]
+    fn test_attack_power() {
+        let precap = AttackPowerParams {
+            basic: 150.0,
+            precap_mod: AttackPowerModifier { a: 1.2, b: 0.0 },
+            custom_mods: CustomModifiers {
+                precap_mod: AttackPowerModifier { a: 1.3, b: 0.0 },
+                ..Default::default()
+            },
+            ..Default::default()
+        }
+        .calc();
+
+        assert_eq!(precap.normal, 150.0 * 1.2 * 1.3);
+
+        let postcap = AttackPowerParams {
+            basic: 200.0,
+            cap: 180.0,
+            postcap_mod: AttackPowerModifier { a: 1.2, b: 0.0 },
+            custom_mods: CustomModifiers {
+                postcap_mod: AttackPowerModifier { a: 1.3, b: 0.0 },
+                ..Default::default()
+            },
+            ..Default::default()
+        }
+        .calc();
+
+        assert_eq!(
+            postcap.normal,
+            (180.0 + 20.0_f64.sqrt()).floor() * (1.2 * 1.3)
+        );
     }
 }

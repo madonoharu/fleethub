@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.6.1"
+version = "1.6.2"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 description = "fleethub-core"
@@ -38,10 +38,10 @@ enumset = "1.0.11"
 anyhow = "1.0.57"
 thiserror = "1.0.31"
 itertools = "0.10.3"
-enum-map = "2.2.0"
+enum-map = "2.3.0"
 seq-macro = "0.3.0"
 tsify = "0.2.0"
-serde_with = "1.13.0"
+serde_with = "1.14.0"
 
 [dependencies.web-sys]
 version = "0.3.57"
@@ -51,7 +51,7 @@ features = ["console"]
 wasm-bindgen-test = "0.3.30"
 criterion = "0.3.5"
 reqwest = { version = "0.11.10", features = ["brotli"] }
-tokio = { version = "1.18.2", features = ["full"] }
+tokio = { version = "1.19.2", features = ["full"] }
 once_cell = "1.12.0"
 
 [[bench]]

@@ -9,7 +9,15 @@ import { useModal } from "../../../hooks";
 
 import CustomModifiersForm from "./CustomModifiersForm";
 
-function hasMod(mod: AttackPowerModifier): boolean {
+const KEYS = ["basic_power_mod", "precap_mod", "postcap_mod"] as const;
+
+function hasMod(
+  mod: AttackPowerModifier | undefined
+): mod is AttackPowerModifier {
+  if (!mod) {
+    return false;
+  }
+
   return mod.a != 1 || mod.b != 0;
 }
 
@@ -27,18 +35,6 @@ const CustomModifiersDialog: React.FCX<CustomModifiersDialogProps> = ({
   const { t } = useTranslation("common");
   const Modal = useModal();
 
-  const renderEntry = (entry: [string, AttackPowerModifier]) => {
-    const [key, mod] = entry;
-
-    if (!hasMod(mod)) {
-      return null;
-    }
-
-    const label = t(key as keyof CustomModifiers);
-
-    return <span key={key}>{`${label} x${mod.a} +${mod.b}`}</span>;
-  };
-
   const visibleMods = Object.values(value).some(hasMod);
 
   return (
@@ -52,7 +48,19 @@ const CustomModifiersDialog: React.FCX<CustomModifiersDialogProps> = ({
         sx={{ justifyContent: "flex-start" }}
       >
         {visibleMods ? (
-          <Stack>{Object.entries(value).map(renderEntry)}</Stack>
+          <Stack>
+            {KEYS.map((key) => {
+              const mod = value[key];
+
+              if (!hasMod(mod)) {
+                return null;
+              }
+
+              const label = t(key as keyof CustomModifiers);
+
+              return <span key={key}>{`${label} x${mod.a} +${mod.b}`}</span>;
+            })}
+          </Stack>
         ) : (
           t("custom_mods")
         )}

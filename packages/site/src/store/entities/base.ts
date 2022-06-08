@@ -1,6 +1,6 @@
 import { SlotSizeKey, SLOT_SIZE_KEYS } from "@fh/utils";
 import { EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { CustomModifiers, NightSituation } from "fleethub-core";
+import { NightSituation } from "fleethub-core";
 
 import { createOrmAdapters } from "./createOrmAdapters";
 import { schemata, StepConfig } from "./schemata";
@@ -21,23 +21,18 @@ export const initialNightSituation: NightSituation = {
   starshell: false,
 };
 
-export const initialCustomModifiers: CustomModifiers = {
-  precap_mod: { a: 1, b: 0 },
-  postcap_mod: { a: 1, b: 0 },
-};
-
 export const initialStepConfig: StepConfig = {
   air_state: "AirSupremacy",
   engagement: "Parallel",
   player: {
     formation: "LineAhead",
     night_situation: initialNightSituation,
-    custom_mods: initialCustomModifiers,
+    custom_mods: {},
   },
   enemy: {
     formation: "LineAhead",
     night_situation: initialNightSituation,
-    custom_mods: initialCustomModifiers,
+    custom_mods: {},
   },
 };
 

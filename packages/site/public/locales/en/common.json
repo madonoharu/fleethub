@@ -130,6 +130,7 @@
   "scratch_damage": "Scratch",
   "precap_mod": "Precap Modifier",
   "postcap_mod": "Postcap Modifier",
+  "basic_power_mod": "Basic Power Modifier",
   "special_enemy_mods": "Special Enemy Modifier",
   "precap_general_mod": "Precap Modifier",
   "postcap_general_mod": "Postcap Modifier",
