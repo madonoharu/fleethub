@@ -2,7 +2,7 @@ use crate::types::{OrgType, Role, Side};
 
 use super::WarfareShipEnvironment;
 
-use OrgType::{CarrierTaskForce as CTF, SurfaceTaskForce as STF, TransportEscort as TCF};
+use OrgType::{CarrierTaskForce as CTF, SurfaceTaskForce as STF, TransportEscort as TCF, *};
 
 #[derive(Debug, Clone, Copy)]
 pub struct ShipPosition {
@@ -119,26 +119,41 @@ pub fn get_shelling_accuracy_factor(
     }
 }
 
-pub fn find_torpedo_power_factor(attacker_org_type: OrgType, target_org_type: OrgType) -> i32 {
-    let (player, enemy) = if attacker_org_type.is_player() {
-        (attacker_org_type, target_org_type)
-    } else {
-        (target_org_type, attacker_org_type)
-    };
-
-    if enemy.is_combined() {
+pub fn get_torpedo_power_factor(player: ShipPosition, enemy: ShipPosition) -> i32 {
+    if enemy.org_type.is_combined() {
         15
-    } else if player.is_single() {
+    } else if player.org_type.is_single() {
         5
     } else {
         0
     }
 }
 
+pub fn get_torpedo_accuracy_factor(
+    player: ShipPosition,
+    enemy: ShipPosition,
+    attacker_side: Side,
+) -> i32 {
+    if attacker_side.is_player() {
+        match (player.org_type, enemy.org_type) {
+            (Single, EnemySingle) => 85,
+            (Single, EnemyCombined) => 50,
+            (CTF, EnemySingle) => 85,
+            (CTF, EnemyCombined) => 46,
+            (STF, EnemySingle) => 85,
+            (STF, EnemyCombined) => 46,
+            (TCF, EnemySingle) => 85,
+            (TCF, EnemyCombined) => 50,
+            _ => 85,
+        }
+    } else {
+        85
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
-    use OrgType::*;
     use Role::*;
 
     impl From<(OrgType, Role)> for ShipPosition {
