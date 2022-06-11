@@ -92,7 +92,7 @@
     "NelsonTouch": "Nelson Touch",
     "NagatoCutin": "Nagato CI",
     "ColoradoCutin": "Colorado CI",
-    "KongouCutin": "Kongou-Class CI"
+    "KongouCutin": "Kongou-class CI"
   },
   "SpeedRank": {
     "name": "t$(speed)",
@@ -122,7 +122,9 @@
   "armor_penetration": "Armor Penetration",
   "remaining_ammo_mod": "Remaining Ammo Modifier",
   "accuracy_term": "Accuracy Term",
+  "basic_accuracy_term": "Basic Accuracy Term",
   "evasion_term": "Evasion Term",
+  "basic_evasion_term": "Basic Evasion Term",
   "hit_percentage_bonus": "Hit Rate Bonus",
   "critical_percentage_bonus": "Critical Rate Bonus",
   "critical_rate_constant": "Critical Constant",
