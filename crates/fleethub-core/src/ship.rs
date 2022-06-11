@@ -145,11 +145,6 @@ macro_rules! impl_naked_stats_with_level {
                 $(
                     #[wasm_bindgen(getter)]
                     pub fn [<naked_ $key>](&self) -> Option<u16> {
-                        let ovr = self.state.overrides.as_ref().and_then(|o| o.[<naked_ $key>]);
-                        if ovr.is_some() {
-                            return ovr;
-                        }
-
                         let stat_mod = self.state.[<$key _mod>];
 
                         self.master
@@ -244,7 +239,9 @@ impl Ship {
 
         let slotnum = master.slotnum;
 
-        let slots = [state.ss1, state.ss2, state.ss3, state.ss4, state.ss5]
+        let slots = state
+            .slots
+            .clone()
             .into_iter()
             .enumerate()
             .map(|(index, slot_size)| {
@@ -423,7 +420,7 @@ impl Ship {
         }
     }
 
-    pub fn participates_day(&self, anti_inst: bool) -> bool {
+    pub fn participates_in_day(&self, anti_inst: bool) -> bool {
         if self.is_carrier_like() {
             if !self.has_non_zero_slot_gear_by(|gear| gear.is_carrier_shelling_plane()) {
                 false
@@ -1192,11 +1189,6 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn max_hp(&self) -> Option<u16> {
-        let ovr = self.state.overrides.as_ref().and_then(|o| o.naked_max_hp);
-        if ovr.is_some() {
-            return ovr;
-        }
-
         if let Some(left) = self.master.max_hp.0 {
             let base = if self.level >= 100 {
                 left + get_marriage_bonus(left)
@@ -1240,11 +1232,6 @@ impl Ship {
 
     #[wasm_bindgen(getter)]
     pub fn luck(&self) -> Option<u16> {
-        let ovr = self.state.overrides.as_ref().and_then(|o| o.naked_luck);
-        if ovr.is_some() {
-            return ovr;
-        }
-
         let left = self.master.luck.0;
 
         if let Some(base) = left {
@@ -1409,10 +1396,11 @@ impl Ship {
     }
 
     pub fn basic_evasion_term(&self) -> Option<f64> {
-        let evasion = self.evasion()? as f64;
-        let luck = self.luck()? as f64;
-
-        Some(evasion + (2.0 * luck).sqrt())
+        self.master.basic_evasion_term.or_else(|| {
+            let evasion = self.evasion()? as f64;
+            let luck = self.luck()? as f64;
+            Some(evasion + (2.0 * luck).sqrt())
+        })
     }
 
     pub fn evasion_term(

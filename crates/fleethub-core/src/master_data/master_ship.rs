@@ -40,6 +40,8 @@ pub struct MasterShip {
     pub luck: StatInterval,
     #[serde(default)]
     pub torpedo_accuracy: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub basic_evasion_term: Option<f64>,
     pub speed: u8,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub range: Option<u8>,

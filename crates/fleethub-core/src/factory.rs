@@ -10,8 +10,8 @@ use crate::{
     org::Org,
     ship::Ship,
     types::{
-        AirSquadronState, EBonuses, FleetState, GearAttr, GearState, GearType, OrgState, OrgType,
-        ShipAttr, ShipState, SlotSizeVec,
+        AirSquadronState, EBonuses, FleetState, GearAttr, GearState, GearType, GearVecState,
+        OrgState, OrgType, ShipAttr, ShipState, SlotSizeVec,
     },
     utils::xxh3,
 };
@@ -40,20 +40,10 @@ impl Factory {
     pub fn create_ship(&self, input: Option<ShipState>) -> Option<Ship> {
         let state = input?;
 
-        let ShipState {
-            g1,
-            g2,
-            g3,
-            g4,
-            g5,
-            gx,
-            ..
-        } = &state;
-
-        let create_gear = |g: &Option<GearState>| self.create_gear(g.clone());
-        let gears = [g1, g2, g3, g4, g5, gx]
-            .into_iter()
-            .map(create_gear)
+        let gears = state
+            .gears
+            .iter()
+            .map(|g| self.create_gear(g.cloned()))
             .collect::<GearArray>();
 
         let master_ship = self
@@ -240,14 +230,18 @@ impl Factory {
 
         let state = if master_ship.has_attr(ShipAttr::Abyssal) {
             let stock = &master_ship.stock;
-            ShipState {
-                ship_id,
+            let gears = GearVecState {
                 g1: stock.get(0).cloned(),
                 g2: stock.get(1).cloned(),
                 g3: stock.get(2).cloned(),
                 g4: stock.get(3).cloned(),
                 g5: stock.get(4).cloned(),
                 gx: stock.get(5).cloned(),
+            };
+
+            ShipState {
+                ship_id,
+                gears,
                 ..Default::default()
             }
         } else {
