@@ -1,6 +1,5 @@
 {
   "name": "@fh/admin",
-  "version": "1.6.2",
   "license": "UNLICENSED",
   "main": "esm/index.js",
   "type": "module",
@@ -12,7 +11,7 @@
     "@google-cloud/asset": "^3.23.1",
     "cloudinary": "^1.30.0",
     "dequal": "^2.0.2",
-    "firebase-admin": "^10.2.0",
+    "firebase-admin": "^10.3.0",
     "googleapis": "^101.0.0",
     "got": "12.1.0"
   },
