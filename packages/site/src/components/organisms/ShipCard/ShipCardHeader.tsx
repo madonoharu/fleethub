@@ -59,6 +59,10 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
     displayName = t(`ships:${ship_id}`, name);
   }
 
+  if (ship.is_abyssal()) {
+    displayName = `ID:${ship_id} ${displayName}`;
+  }
+
   return (
     <div className={className}>
       <LevelButton
@@ -66,7 +70,7 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         onChange={(level) => onUpdate?.({ level })}
       />
 
-      <Typography marginRight="auto" noWrap variant="body2">
+      <Typography marginLeft="4px" marginRight="auto" noWrap variant="body2">
         {displayName}
       </Typography>
 
