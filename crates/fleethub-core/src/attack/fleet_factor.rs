@@ -2,6 +2,8 @@ use crate::types::{OrgType, Role, Side};
 
 use super::WarfareShipEnvironment;
 
+use OrgType::{CarrierTaskForce as CTF, SurfaceTaskForce as STF, TransportEscort as TCF, *};
+
 #[derive(Debug, Clone, Copy)]
 pub struct ShipPosition {
     org_type: OrgType,
@@ -27,9 +29,9 @@ pub fn get_shelling_power_factor(player: ShipPosition, enemy: ShipPosition, side
             (10, -5)
         } else {
             match player.org_type {
-                CarrierTaskForce => (10, 5),
-                SurfaceTaskForce => (5, -5),
-                TransportEscort => (10, 5),
+                CTF => (10, 5),
+                STF => (5, -5),
+                TCF => (10, 5),
                 _ => (0, 0),
             }
         };
@@ -45,16 +47,16 @@ pub fn get_shelling_power_factor(player: ShipPosition, enemy: ShipPosition, side
         let factors = if enemy.org_type.is_single() {
             match player.org_type {
                 Single => (0, 0),
-                CarrierTaskForce => (2, 10),
-                SurfaceTaskForce => (10, -5),
-                TransportEscort => (-5, 10),
+                CTF => (2, 10),
+                STF => (10, -5),
+                TCF => (-5, 10),
                 _ => (0, 0),
             }
         } else {
             match player.org_type {
-                CarrierTaskForce => (2, -5),
-                SurfaceTaskForce => (2, -5),
-                TransportEscort => (-5, -5),
+                CTF => (2, -5),
+                STF => (2, -5),
+                TCF => (-5, -5),
                 _ => (5, 5),
             }
         };
@@ -68,66 +70,109 @@ pub fn get_shelling_power_factor(player: ShipPosition, enemy: ShipPosition, side
 }
 
 // https://docs.google.com/spreadsheets/d/1sABE9Cc-QXTWaiqIdpYt19dFTWKUi0SDAtaWSWyyAXg
-pub fn get_shelling_accuracy_factor(player: ShipPosition, enemy: ShipPosition) -> i32 {
+pub fn get_shelling_accuracy_factor(
+    player: ShipPosition,
+    enemy: ShipPosition,
+    attacker_side: Side,
+) -> i32 {
     use OrgType::*;
     use Role::*;
 
-    if enemy.org_type.is_single() {
-        match (player.org_type, player.role) {
-            (CarrierTaskForce, Main) => 78,
-            (CarrierTaskForce, Escort) => 45,
-            (SurfaceTaskForce, Main) => 45,
-            (SurfaceTaskForce, Escort) => 67,
-            (TransportEscort, Main) => 54,
-            (TransportEscort, Escort) => 45,
+    if attacker_side.is_player() {
+        match ((player.org_type, player.role), (enemy.org_type, enemy.role)) {
+            ((Single, _), (EnemySingle, _)) => 90,
+            ((Single, _), (EnemyCombined, _)) => 80,
+
+            ((CTF, Main), (EnemySingle, _)) => 78,
+            ((CTF, Main), (EnemyCombined, _)) => 78,
+            ((CTF, Escort), (EnemySingle, _)) => 45,
+            ((CTF, Escort), (EnemyCombined, _)) => 67,
+
+            ((STF, Main), (EnemySingle, _)) => 45,
+            ((STF, Main), (EnemyCombined, _)) => 78,
+            ((STF, Escort), (EnemySingle, _)) => 67,
+            ((STF, Escort), (EnemyCombined, _)) => 67,
+
+            ((TCF, Main), (EnemySingle, _)) => 54,
+            ((TCF, Main), (EnemyCombined, _)) => 54,
+            ((TCF, Escort), (EnemySingle, _)) => 45,
+            ((TCF, Escort), (EnemyCombined, _)) => 67,
             _ => 90,
         }
     } else {
-        match (player.org_type, player.role) {
-            (CarrierTaskForce, Main) => 78,
-            (CarrierTaskForce, Escort) => 67,
-            (SurfaceTaskForce, Main) => 78,
-            (SurfaceTaskForce, Escort) => 67,
-            (TransportEscort, Main) => 54,
-            (TransportEscort, Escort) => 67,
-            _ => 80,
+        match ((player.org_type, player.role), (enemy.org_type, enemy.role)) {
+            ((Single, _), (EnemySingle, _)) => 90,
+            ((Single, _), (EnemyCombined, Main)) => 90,
+            ((Single, _), (EnemyCombined, Escort)) => 75,
+
+            ((CTF, Main), (EnemySingle, _)) => 88,
+            ((CTF, Escort), (EnemySingle, _)) => 65,
+            ((STF, Main), (EnemySingle, _)) => 65,
+            ((STF, Escort), (EnemySingle, _)) => 75,
+            ((TCF, Main), (EnemySingle, _)) => 88,
+            ((TCF, Escort), (EnemySingle, _)) => 65,
+
+            ((_, _), (EnemyCombined, Main)) => 88,
+            ((_, _), (EnemyCombined, Escort)) => 75,
+            _ => 90,
         }
     }
 }
 
-pub fn find_torpedo_power_factor(attacker_org_type: OrgType, target_org_type: OrgType) -> i32 {
-    let (player, enemy) = if attacker_org_type.is_player() {
-        (attacker_org_type, target_org_type)
-    } else {
-        (target_org_type, attacker_org_type)
-    };
-
-    if enemy.is_combined() {
+pub fn get_torpedo_power_factor(player: ShipPosition, enemy: ShipPosition) -> i32 {
+    if enemy.org_type.is_combined() {
         15
-    } else if player.is_single() {
+    } else if player.org_type.is_single() {
         5
     } else {
         0
     }
 }
 
+pub fn get_torpedo_accuracy_factor(
+    player: ShipPosition,
+    enemy: ShipPosition,
+    attacker_side: Side,
+) -> i32 {
+    if attacker_side.is_player() {
+        match (player.org_type, enemy.org_type) {
+            (Single, EnemySingle) => 85,
+            (Single, EnemyCombined) => 50,
+            (CTF, EnemySingle) => 85,
+            (CTF, EnemyCombined) => 46,
+            (STF, EnemySingle) => 85,
+            (STF, EnemyCombined) => 46,
+            (TCF, EnemySingle) => 85,
+            (TCF, EnemyCombined) => 50,
+            _ => 85,
+        }
+    } else {
+        85
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
-    use OrgType::*;
     use Role::*;
+
+    impl From<(OrgType, Role)> for ShipPosition {
+        fn from((org_type, role): (OrgType, Role)) -> Self {
+            Self { org_type, role }
+        }
+    }
 
     #[test]
     fn test_get_shelling_power_factor() {
         let table = [
             (Single, EnemySingle, (0, 0), (0, 0)),
-            (CarrierTaskForce, EnemySingle, (2, 10), (10, 5)),
-            (SurfaceTaskForce, EnemySingle, (10, -5), (5, -5)),
-            (TransportEscort, EnemySingle, (-5, 10), (10, 5)),
+            (CTF, EnemySingle, (2, 10), (10, 5)),
+            (STF, EnemySingle, (10, -5), (5, -5)),
+            (TCF, EnemySingle, (-5, 10), (10, 5)),
             (Single, EnemyCombined, (5, 5), (10, -5)),
-            (CarrierTaskForce, EnemyCombined, (2, -5), (10, -5)),
-            (SurfaceTaskForce, EnemyCombined, (2, -5), (10, -5)),
-            (TransportEscort, EnemyCombined, (-5, -5), (10, -5)),
+            (CTF, EnemyCombined, (2, -5), (10, -5)),
+            (STF, EnemyCombined, (2, -5), (10, -5)),
+            (TCF, EnemyCombined, (-5, -5), (10, -5)),
         ];
 
         table
@@ -196,7 +241,7 @@ mod test {
 
         let value = get_shelling_power_factor(
             ShipPosition {
-                org_type: CarrierTaskForce,
+                org_type: CTF,
                 role: Main,
             },
             ShipPosition {
@@ -212,46 +257,47 @@ mod test {
     #[test]
     fn test_get_shelling_accuracy_factor() {
         let table = [
-            (Single, EnemySingle, 90, 90),
-            (CarrierTaskForce, EnemySingle, 78, 45),
-            (SurfaceTaskForce, EnemySingle, 45, 67),
-            (TransportEscort, EnemySingle, 54, 45),
-            (Single, EnemyCombined, 80, 80),
-            (CarrierTaskForce, EnemyCombined, 78, 67),
-            (SurfaceTaskForce, EnemyCombined, 78, 67),
-            (TransportEscort, EnemyCombined, 54, 67),
+            ((Single, Main), (EnemySingle, Main), 90),
+            ((CTF, Main), (EnemySingle, Main), 78),
+            ((CTF, Main), (EnemyCombined, Main), 78),
+            ((CTF, Escort), (EnemySingle, Main), 45),
+            ((CTF, Escort), (EnemyCombined, Main), 67),
+            ((STF, Main), (EnemySingle, Main), 45),
+            ((STF, Main), (EnemyCombined, Main), 78),
+            ((STF, Escort), (EnemySingle, Main), 67),
+            ((STF, Escort), (EnemyCombined, Main), 67),
+            ((TCF, Main), (EnemySingle, Main), 54),
+            ((TCF, Main), (EnemyCombined, Main), 54),
+            ((TCF, Escort), (EnemySingle, Main), 45),
+            ((TCF, Escort), (EnemyCombined, Main), 67),
+            ((EnemySingle, Main), (Single, Main), 90),
+            ((EnemySingle, Main), (CTF, Main), 88),
+            ((EnemySingle, Main), (CTF, Escort), 65),
+            ((EnemySingle, Main), (STF, Main), 65),
+            ((EnemySingle, Main), (STF, Escort), 75),
+            ((EnemySingle, Main), (TCF, Main), 88),
+            ((EnemySingle, Main), (TCF, Escort), 65),
+            ((EnemyCombined, Main), (Single, Main), 90),
+            ((EnemyCombined, Main), (CTF, Main), 88),
+            ((EnemyCombined, Escort), (Single, Main), 75),
+            ((EnemyCombined, Escort), (CTF, Main), 75),
         ];
 
-        table
-            .into_iter()
-            .for_each(|(player, enemy, expected_main, expected_escort)| {
-                assert_eq!(
-                    get_shelling_accuracy_factor(
-                        ShipPosition {
-                            org_type: player,
-                            role: Main,
-                        },
-                        ShipPosition {
-                            org_type: enemy,
-                            role: Main,
-                        },
-                    ),
-                    expected_main
-                );
+        table.into_iter().for_each(|arg| {
+            let attacker_side = arg.0 .0.side();
 
-                assert_eq!(
-                    get_shelling_accuracy_factor(
-                        ShipPosition {
-                            org_type: player,
-                            role: Escort,
-                        },
-                        ShipPosition {
-                            org_type: enemy,
-                            role: Main,
-                        },
-                    ),
-                    expected_escort
-                );
-            });
+            let (player, enemy) = if attacker_side.is_player() {
+                (arg.0.into(), arg.1.into())
+            } else {
+                (arg.1.into(), arg.0.into())
+            };
+
+            assert_eq!(
+                get_shelling_accuracy_factor(player, enemy, attacker_side),
+                arg.2,
+                "{:#?}",
+                arg
+            );
+        });
     }
 }

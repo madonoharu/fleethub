@@ -2,7 +2,7 @@ mod master_data;
 
 use fleethub_core::{
     attack::{special_enemy_modifiers, AttackPowerModifier},
-    types::{gear_id, GearState, ShipState, SpecialEnemyType},
+    types::{gear_id, GearState, GearVecState, ShipState, SpecialEnemyType},
 };
 use master_data::FH_CORE;
 
@@ -16,11 +16,14 @@ fn test_case(vec: Vec<u16>, a: f64, b: f64) {
 
     let ship_state = ShipState {
         ship_id: 1,
-        g1: get_gear_state(0),
-        g2: get_gear_state(1),
-        g3: get_gear_state(2),
-        g4: get_gear_state(3),
-        g5: get_gear_state(4),
+        gears: GearVecState {
+            g1: get_gear_state(0),
+            g2: get_gear_state(1),
+            g3: get_gear_state(2),
+            g4: get_gear_state(3),
+            g5: get_gear_state(4),
+            gx: get_gear_state(5),
+        },
         ..Default::default()
     };
 
@@ -35,7 +38,6 @@ macro_rules! table {
     ($([$($x:tt),+ $(,)?] => ($a:expr, $b: expr)),+ $(,)?) => {
         $(test_case(vec![$(gear_id!($x)),+], $a, $b);)+
     };
-    ($x:tt) => {};
 }
 
 #[test]

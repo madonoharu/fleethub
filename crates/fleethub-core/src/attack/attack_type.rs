@@ -27,7 +27,7 @@ pub enum NightBattleAttackType {
 pub fn get_day_battle_attack_type(attacker: &Ship, target: &Ship) -> Option<DayBattleAttackType> {
     let is_carrier_like = attacker.is_carrier_like();
     let anti_inst = target.is_installation();
-    let participates = attacker.participates_day(anti_inst);
+    let participates = attacker.participates_in_day(anti_inst);
 
     let capable = !is_carrier_like || attacker.is_healthy_as_carrier();
 

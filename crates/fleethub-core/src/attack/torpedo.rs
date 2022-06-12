@@ -4,12 +4,12 @@ use crate::{
 };
 
 use super::{
-    fleet_factor, AttackParams, AttackPowerModifier, AttackPowerParams, CustomModifiers,
-    DefenseParams, HitRateParams, WarfareContext, WarfareShipEnvironment,
+    fleet_factor::{self, ShipPosition},
+    AttackParams, AttackPowerModifier, AttackPowerParams, CustomModifiers, DefenseParams,
+    HitRateParams, WarfareContext, WarfareShipEnvironment,
 };
 
 const TORPEDO_POWER_CAP: f64 = 180.0;
-const TORPEDO_ACCURACY_CONSTANT: f64 = 85.0;
 const TORPEDO_CRITICAL_RATE_CONSTANT: f64 = 1.5;
 
 pub struct TorpedoAttackContext<'a> {
@@ -48,13 +48,10 @@ impl<'a> TorpedoAttackContext<'a> {
         }
     }
 
-    fn attack_power_params(&self, attacker: &Ship) -> Option<AttackPowerParams> {
+    fn attack_power_params(&self, attacker: &Ship, fleet_factor: f64) -> Option<AttackPowerParams> {
         let torpedo = attacker.torpedo()? as f64;
         let ibonus = attacker.gears.sum_by(|gear| gear.ibonuses.torpedo_power);
-        let fleet_factor = fleet_factor::find_torpedo_power_factor(
-            self.attacker_env.org_type,
-            self.target_env.org_type,
-        ) as f64;
+
         let basic = torpedo + ibonus + fleet_factor;
 
         let damage_mod = attacker.damage_state().torpedo_power_mod();
@@ -79,7 +76,28 @@ impl<'a> TorpedoAttackContext<'a> {
     }
 
     pub fn attack_params(&self, attacker: &Ship, target: &Ship) -> AttackParams {
-        let attack_power_params = self.attack_power_params(attacker);
+        let attacker_side = self.attacker_env.org_type.side();
+        let (player_position, enemy_position) = if self.attacker_env.org_type.is_player() {
+            (
+                ShipPosition::from(self.attacker_env),
+                ShipPosition::from(self.target_env),
+            )
+        } else {
+            (
+                ShipPosition::from(self.target_env),
+                ShipPosition::from(self.attacker_env),
+            )
+        };
+
+        let power_fleet_factor =
+            fleet_factor::get_torpedo_power_factor(player_position, enemy_position) as f64;
+        let accuracy_fleet_factor = fleet_factor::get_torpedo_accuracy_factor(
+            player_position,
+            enemy_position,
+            attacker_side,
+        ) as f64;
+
+        let attack_power_params = self.attack_power_params(attacker, power_fleet_factor);
         let normal_attack_power = attack_power_params.as_ref().map(|p| p.calc().normal);
 
         let calc_accuracy_term = || {
@@ -93,7 +111,7 @@ impl<'a> TorpedoAttackContext<'a> {
             let morale_mod = attacker.morale_state().torpedo_accuracy_mod();
 
             // 乗算前に切り捨て
-            let pre_multiplication = (TORPEDO_ACCURACY_CONSTANT
+            let pre_multiplication = (accuracy_fleet_factor
                 + basic_accuracy_term
                 + equipment_accuracy
                 + ibonus
