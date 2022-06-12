@@ -82,7 +82,7 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
               value={numstr(ship.fit_gun_bonus(true))}
             />
             <LabeledValue
-              label="基礎命中項"
+              label={t("common:basic_accuracy_term")}
               value={numstr(ship.basic_accuracy_term(), 2)}
             />
             <LabeledValue
