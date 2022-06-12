@@ -18,7 +18,7 @@ import SlotSizeVecForm from "./SlotSizeVecForm";
 import StatIntervalForm from "./StatIntervalForm";
 
 interface StatFormProps {
-  statKey: "range" | "torpedo_accuracy";
+  statKey: "range" | "torpedo_accuracy" | "basic_evasion_term";
   ship: MasterShip;
   config: MasterShipOverrides;
   onChange: (value: number | null) => void;
@@ -129,6 +129,12 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
         ship={ship}
         config={config}
         onChange={handleChange("torpedo_accuracy")}
+      />
+      <StatForm
+        statKey="basic_evasion_term"
+        ship={ship}
+        config={config}
+        onChange={handleChange("basic_evasion_term")}
       />
       <SlotSizeVecForm
         ship={ship}

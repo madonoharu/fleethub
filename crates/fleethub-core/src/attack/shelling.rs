@@ -197,8 +197,11 @@ impl<'a> ShellingAttackContext<'a> {
         };
 
         let calc_accuracy_term = || -> Option<f64> {
-            let fleet_factor =
-                fleet_factor::get_shelling_accuracy_factor(player_position, enemy_position) as f64;
+            let fleet_factor = fleet_factor::get_shelling_accuracy_factor(
+                player_position,
+                enemy_position,
+                attacker_side,
+            ) as f64;
 
             let basic_accuracy_term = attacker.basic_accuracy_term()?;
             let ship_accuracy = attacker.accuracy() as f64;

@@ -2,7 +2,7 @@ use std::{fs, path::Path};
 
 use fleethub_core::{
     master_data::MasterData,
-    types::{GearAttr, GearState, ShipAttr, ShipOverrides, ShipState},
+    types::{GearAttr, GearState, ShipAttr, ShipState},
     FhCore,
 };
 use once_cell::sync::Lazy;
@@ -49,6 +49,8 @@ macro_rules! create_ship {
     }};
 }
 
+pub(crate) use create_ship;
+
 #[test]
 fn test_ship() {
     let ship = create_ship!({ "ship_id": 883 });
@@ -67,27 +69,4 @@ fn test_gear() {
         .unwrap();
 
     assert!(hedgehog.has_attr(GearAttr::SynergisticDepthCharge));
-}
-
-#[test]
-fn test_overrides() {
-    let state = ShipState {
-        ship_id: 1,
-        overrides: Some(ShipOverrides {
-            naked_max_hp: Some(1),
-            naked_luck: Some(2),
-            naked_evasion: Some(3),
-            naked_asw: Some(4),
-            naked_los: Some(5),
-        }),
-        ..Default::default()
-    };
-
-    let ship = FH_CORE.create_ship(Some(state)).unwrap();
-
-    assert_eq!(ship.max_hp(), Some(1));
-    assert_eq!(ship.luck(), Some(2));
-    assert_eq!(ship.naked_evasion(), Some(3));
-    assert_eq!(ship.naked_asw(), Some(4));
-    assert_eq!(ship.naked_los(), Some(5));
 }

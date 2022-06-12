@@ -67,6 +67,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({
       "gears",
       "gear_types",
       "ships",
+      "stype",
       "ctype",
     ]),
   ]);

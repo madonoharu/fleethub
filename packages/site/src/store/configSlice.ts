@@ -23,7 +23,14 @@ export const STAT_INTERVAL_KEYS = [
 export type StatIntervalKey = typeof STAT_INTERVAL_KEYS[number];
 
 export type MasterShipOverrides = Partial<
-  Pick<MasterShip, StatIntervalKey | "range" | "torpedo_accuracy" | "slots">
+  Pick<
+    MasterShip,
+    | StatIntervalKey
+    | "range"
+    | "torpedo_accuracy"
+    | "basic_evasion_term"
+    | "slots"
+  >
 >;
 
 export interface MasterDataOverrides {

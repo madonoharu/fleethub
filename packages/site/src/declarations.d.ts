@@ -36,7 +36,7 @@ declare module "react-i18next" {
     resources: {
       common: typeof import("../public/locales/en/common.json");
       gear_types: string[];
-      stype: string[];
+      stype: Record<string, string>;
       ctype: Record<string, string>;
       ships: Record<string, string>;
       gears: Record<string, string>;

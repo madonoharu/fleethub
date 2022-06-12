@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Button, DialogContent, Tooltip } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -29,7 +30,7 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
 
   return (
     <DialogContent>
-      <NumberInput startLabel="Level" fullWidth {...inputProps} />
+      <NumberInput startLabel="Lv" fullWidth {...inputProps} />
       <Slider {...inputProps} />
       <SpaceBetween>
         <StyledButton variant="outlined" onClick={set1}>
@@ -47,11 +48,12 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
 };
 
 const Component: React.FCX<Props> = ({ className, value, onChange }) => {
+  const { t } = useTranslation("common");
   const Modal = useModal();
 
   return (
     <>
-      <Tooltip title="Change">
+      <Tooltip title={t("Change")}>
         <Button className={className} onClick={Modal.show}>
           Lv{value}
         </Button>
@@ -67,7 +69,7 @@ const Component: React.FCX<Props> = ({ className, value, onChange }) => {
 const StyledComponent = styled(Component)`
   height: 100%;
   justify-content: flex-start;
-  width: 56px;
+  width: 48px;
 `;
 
 export default StyledComponent;
