@@ -1,9 +1,11 @@
+use enumset::EnumSet;
+
 use crate::{
     fleet::Fleet,
     ship::Ship,
     types::{
-        ctype, ship_id, CombinedFormation, DamageState, Engagement, FleetCutin, Formation,
-        GearAttr, GearType, ShipAttr, SingleFormation,
+        ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, CombinedFormation, DamageState,
+        Engagement, FleetCutin, Formation, GearAttr, GearType, ShipAttr, SingleFormation,
     },
 };
 
@@ -171,6 +173,49 @@ pub fn get_fleet_cutin_mod(
 
             base * engagement_mod
         }
+
+        FleetCutin::Yamato2ShipCutin => {
+            let s1 = fleet.ships.get(0).unwrap_or_else(|| unreachable!());
+            let s2 = fleet.ships.get(1).unwrap_or_else(|| unreachable!());
+
+            let includes_musashi_kai2 = is_musashi_kai2(s1) || is_musashi_kai2(s2);
+
+            let base = if includes_musashi_kai2 {
+                if shots == 1 {
+                    1.4 * 1.1
+                } else {
+                    1.55 * 1.2
+                }
+            } else {
+                if shots == 1 {
+                    1.4
+                } else {
+                    1.55
+                }
+            };
+
+            let mut v = 1.0;
+            if attacker.gears.has_type(GearType::ApShell) {
+                v *= 1.35;
+            }
+            if attacker.gears.has_attr(GearAttr::SurfaceRadar) {
+                v *= 1.15;
+            }
+            if attacker.gears.has_by(|gear| {
+                matches_gear_id!(
+                    gear.gear_id,
+                    "15m二重測距儀+21号電探改二" | "15m二重測距儀改+21号電探改二+熟練射撃指揮所"
+                )
+            }) {
+                v *= 1.1;
+            }
+
+            base * v
+        }
+
+        FleetCutin::Yamato3ShipCutin => {
+            todo!()
+        }
     }
 }
 
@@ -254,7 +299,11 @@ fn can_do_colorado_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
         return None;
     }
 
-    if fleet.ships.count_by(|ship| !ship.ship_type.is_submarine()) < 6 {
+    if fleet
+        .ships
+        .count_by(|ship| ship.ship_type.is_surface_ship())
+        < 6
+    {
         return None;
     }
 
@@ -317,16 +366,131 @@ fn can_do_kongou_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
     }
 }
 
-pub fn get_fleet_cutin(fleet: &Fleet, formation: Formation, is_night: bool) -> Option<FleetCutin> {
-    if can_do_nelson_touch(fleet, formation).is_some() {
-        Some(FleetCutin::NelsonTouch)
-    } else if can_do_nagato_cutin(fleet, formation).is_some() {
-        Some(FleetCutin::NagatoCutin)
-    } else if can_do_colorado_cutin(fleet, formation).is_some() {
-        Some(FleetCutin::ColoradoCutin)
-    } else if is_night && can_do_kongou_cutin(fleet, formation).is_some() {
-        Some(FleetCutin::KongouCutin)
+fn is_yamato_kai2(ship: &Ship) -> bool {
+    matches_ship_id!(ship.ship_id, "大和改二" | "大和改二重")
+}
+
+fn is_musashi_kai2(ship: &Ship) -> bool {
+    ship.ship_id == ship_id!("武蔵改二")
+}
+
+fn can_do_yamato_2ship_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
+    if !matches!(
+        formation,
+        Formation::Single(SingleFormation::Echelon)
+            | Formation::Combined(CombinedFormation::Cruising4)
+    ) {
+        return None;
+    }
+
+    if fleet
+        .ships
+        .count_by(|ship| ship.ship_type.is_surface_ship())
+        < 6
+    {
+        return None;
+    }
+
+    let s1 = fleet.ships.get(0)?;
+    let s2 = fleet.ships.get(1)?;
+
+    if !(s1.damage_state() <= DamageState::Shouha && s2.damage_state() <= DamageState::Shouha) {
+        return None;
+    }
+
+    let includes_yamato_kai2 = is_yamato_kai2(s1) || is_yamato_kai2(s2);
+
+    if !includes_yamato_kai2 {
+        return None;
+    }
+
+    let includes_musashi_kai2 = is_musashi_kai2(s1) || is_musashi_kai2(s2);
+
+    if includes_musashi_kai2 {
+        Some(())
+    } else if matches_ship_id!(s2.ship_id, "Bismarck drei" | "Iowa改" | "Richelieu改") {
+        Some(())
     } else {
         None
     }
+}
+
+fn can_do_yamato_3ship_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
+    if !matches!(
+        formation,
+        Formation::Single(SingleFormation::Echelon)
+            | Formation::Combined(CombinedFormation::Cruising4)
+    ) {
+        return None;
+    }
+
+    if fleet
+        .ships
+        .count_by(|ship| ship.ship_type.is_surface_ship())
+        < 6
+    {
+        return None;
+    }
+
+    let s1 = fleet.ships.get(0)?;
+    let s2 = fleet.ships.get(1)?;
+    let s3 = fleet.ships.get(2)?;
+
+    if !(s1.damage_state() <= DamageState::Shouha
+        && s2.damage_state() <= DamageState::Shouha
+        && s3.damage_state() <= DamageState::Shouha)
+    {
+        return None;
+    }
+
+    let pair = [s1.ship_id, s2.ship_id];
+
+    const HELPER_PAIRS: [(u16, u16); 7] = [
+        (ship_id!("長門改二"), ship_id!("陸奥改二")),
+        (ship_id!("伊勢改二"), ship_id!("日向改二")),
+        (ship_id!("扶桑改二"), ship_id!("山城改二")),
+        (ship_id!("金剛改二丙"), ship_id!("比叡改二丙")),
+        (ship_id!("Warspite改"), ship_id!("Nelson改")),
+        (ship_id!("Italia"), ship_id!("Roma改")),
+        (ship_id!("Washington改"), ship_id!("South Dakota改")),
+    ];
+
+    if HELPER_PAIRS
+        .iter()
+        .any(|(p1, p2)| pair.contains(p1) && pair.contains(p2))
+        || (pair[0] == ship_id!("武蔵改二") && matches_ship_id!(pair[1], "長門改二" | "陸奥改二"))
+    {
+        Some(())
+    } else {
+        None
+    }
+}
+
+pub fn get_possible_fleet_cutin_set(
+    fleet: &Fleet,
+    formation: Formation,
+    is_night: bool,
+) -> EnumSet<FleetCutin> {
+    let mut set = EnumSet::new();
+
+    if can_do_nelson_touch(fleet, formation).is_some() {
+        set.insert(FleetCutin::NelsonTouch);
+    }
+    if can_do_nagato_cutin(fleet, formation).is_some() {
+        set.insert(FleetCutin::NagatoCutin);
+    }
+    if can_do_colorado_cutin(fleet, formation).is_some() {
+        set.insert(FleetCutin::ColoradoCutin);
+    }
+    if is_night && can_do_kongou_cutin(fleet, formation).is_some() {
+        set.insert(FleetCutin::KongouCutin);
+    }
+    if can_do_yamato_2ship_cutin(fleet, formation).is_some() {
+        set.insert(FleetCutin::Yamato2ShipCutin);
+    }
+    if can_do_yamato_3ship_cutin(fleet, formation).is_some() {
+        set.insert(FleetCutin::Yamato3ShipCutin);
+    }
+
+    set
 }
