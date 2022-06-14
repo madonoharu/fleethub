@@ -92,7 +92,9 @@
     "NelsonTouch": "Nelson Touch",
     "NagatoCutin": "Nagato CI",
     "ColoradoCutin": "Colorado CI",
-    "KongouCutin": "Kongou-class CI"
+    "KongouCutin": "Kongou-class CI",
+    "Yamato2ShipCutin": "Yamato-class CI",
+    "Yamato3ShipCutin": "Yamato 3-ship CI"
   },
   "SpeedRank": {
     "name": "t$(speed)",
@@ -122,9 +124,9 @@
   "armor_penetration": "Armor Penetration",
   "remaining_ammo_mod": "Remaining Ammo Modifier",
   "accuracy_term": "Accuracy Term",
-  "basic_accuracy_term": "Basic Accuracy Term",
+  "basic_accuracy_term": "Basic Acc Term",
   "evasion_term": "Evasion Term",
-  "basic_evasion_term": "Basic Evasion Term",
+  "basic_evasion_term": "Basic Eva Term",
   "hit_percentage_bonus": "Hit Rate Bonus",
   "critical_percentage_bonus": "Critical Rate Bonus",
   "critical_rate_constant": "Critical Constant",
@@ -154,6 +156,7 @@
   "guaranteed": "Guaranteed",
   "anti_air_cutin_chance": "AACI Chance",
   "trigger_rate": "Trigger Chance",
+  "ohko_power": "OHKO Power",
   "ContactChance": "Contact Chance",
   "max_hp": "HP",
   "firepower": "FP",

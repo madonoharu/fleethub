@@ -99,7 +99,7 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
             />
             <LabeledValue
               label={t("common:torpedo_accuracy")}
-              value={numstr(ship.torpedo_accuracy_mod)}
+              value={numstr(ship.innate_torpedo_accuracy)}
             />
           </Stack>
         }

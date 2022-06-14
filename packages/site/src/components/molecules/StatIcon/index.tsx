@@ -2,9 +2,9 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import React from "react";
 
-type Props = {
+interface Props {
   icon: string;
-};
+}
 
 const StatIcon: React.FCX<Props> = ({ className, icon }) => {
   return (
@@ -18,5 +18,5 @@ const StatIcon: React.FCX<Props> = ({ className, icon }) => {
 };
 
 export default styled(StatIcon)`
-  filter: contrast(180%) opacity(0.9);
+  filter: contrast(1.8);
 `;

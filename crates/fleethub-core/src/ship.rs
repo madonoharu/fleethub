@@ -9,7 +9,7 @@ use paste::paste;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    attack::{AswAttackType, ProficiencyModifiers},
+    attack::{AswAttackType, DefensePowerRange, ProficiencyModifiers},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
     master_data::MasterShip,
@@ -1267,7 +1267,7 @@ impl Ship {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn torpedo_accuracy_mod(&self) -> f64 {
+    pub fn innate_torpedo_accuracy(&self) -> f64 {
         self.master.torpedo_accuracy as f64
     }
 
@@ -1472,6 +1472,13 @@ impl Ship {
         let ebonus = self.ebonuses.los as f64;
 
         Some((naked_los + ebonus).sqrt() + total * (node_divaricated_factor as f64) - 2.0)
+    }
+
+    /// 確殺攻撃力
+    pub fn ohko_power(&self) -> Option<f64> {
+        let basic_defense_power = self.basic_defense_power(0.0)?;
+        let max_defense_power = DefensePowerRange::new(basic_defense_power).max();
+        Some(self.current_hp as f64 + max_defense_power)
     }
 
     pub fn take_damage(&mut self, value: u16) {

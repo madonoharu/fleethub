@@ -214,6 +214,11 @@ impl Gear {
         }
     }
 
+    #[inline]
+    pub fn is_high_angle_mount(&self) -> bool {
+        self.has_attr(GearAttr::HighAngleMount)
+    }
+
     pub fn is_carrier_shelling_plane(&self) -> bool {
         matches!(
             self.gear_type,

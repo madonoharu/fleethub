@@ -92,7 +92,9 @@
     "NelsonTouch": "納爾遜特殊攻擊",
     "NagatoCutin": "長門特殊攻擊",
     "ColoradoCutin": "科羅拉多特殊攻擊",
-    "KongouCutin": "金剛級改二丙特殊攻擊"
+    "KongouCutin": "金剛級改二丙特殊攻擊",
+    "Yamato2ShipCutin": "大和 2 艦特殊攻擊",
+    "Yamato3ShipCutin": "大和 3 艦特殊攻擊"
   },
   "SpeedRank": {
     "name": "t$(speed)",
@@ -154,6 +156,7 @@
   "guaranteed": "最低保證",
   "anti_air_cutin_chance": "對空CI發動率",
   "trigger_rate": "開始率",
+  "ohko_power": "一拳擊殺攻擊力",
   "ContactChance": "觸接率",
   "max_hp": "血量",
   "firepower": "火力",
