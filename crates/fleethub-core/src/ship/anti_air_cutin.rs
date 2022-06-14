@@ -1,5 +1,6 @@
 use crate::{
     gear::Gear,
+    matches_gear_id,
     types::{ctype, gear_id, ship_id, GearAttr, GearType, ShipAttr, ShipType},
 };
 
@@ -91,6 +92,36 @@ impl Ship {
         let has_air_radar = gears.has_attr(GearAttr::AirRadar);
         let high_angle_mount_count = gears.count_attr(GearAttr::HighAngleMount);
         let has_high_angle_mount = high_angle_mount_count > 0;
+
+        // 大和改二改二
+        if ctype == ctype!("大和型") && self.has_attr(ShipAttr::Kai2) {
+            let has_15m_duplex_rangefinder_t21_air_radar_or_fdc = gears.has_by(|gear| {
+                matches_gear_id!(
+                    gear.gear_id,
+                    "15m二重測距儀+21号電探改二" | "15m二重測距儀改+21号電探改二+熟練射撃指揮所"
+                )
+            });
+
+            if has_15m_duplex_rangefinder_t21_air_radar_or_fdc {
+                let number_of_10cm_cd = gears.count(gear_id!("10cm連装高角砲群 集中配備"));
+                let has_ha_mount_with_aa_gth_6 =
+                    gears.has_by(|gear| gear.is_high_angle_mount() && gear.anti_air >= 6);
+
+                if number_of_10cm_cd >= 2 && has_ha_mount_with_aa_gth_6 {
+                    if has_ha_mount_with_aa_gth_6 {
+                        vec.push(42)
+                    }
+                    vec.push(43)
+                }
+
+                if number_of_10cm_cd >= 1 {
+                    if has_ha_mount_with_aa_gth_6 {
+                        vec.push(44)
+                    }
+                    vec.push(45)
+                }
+            }
+        }
 
         // 摩耶改二 かつ 高角砲を装備 かつ 特殊機銃を装備
         if ship_id == ship_id!("摩耶改二") && has_high_angle_mount && gears.has_by(is_cdmg) {
@@ -185,8 +216,9 @@ impl Ship {
             vec.push(7)
         }
 
-        // 武蔵改二 かつ 10cm連装高角砲改+増設機銃を装備 かつ 対空電探を装備
-        if ship_id == ship_id!("武蔵改二")
+        // 大和型改二 かつ 10cm連装高角砲改+増設機銃を装備 かつ 対空電探を装備
+        if ctype == ctype!("大和型")
+            && self.has_attr(ShipAttr::Kai2)
             && gears.has(gear_id!("10cm連装高角砲改+増設機銃"))
             && has_air_radar
         {
