@@ -3,9 +3,9 @@ use tsify::Tsify;
 
 use crate::{
     attack::{
-        calc_fleet_cutin_rate, get_fleet_cutin, get_fleet_cutin_mod, NightAttackContext,
-        NightSituation, ShellingAttackContext, ShellingAttackType, WarfareContext,
-        WarfareShipEnvironment,
+        calc_fleet_cutin_rate, get_fleet_cutin_mod, get_possible_fleet_cutin_set,
+        NightAttackContext, NightSituation, ShellingAttackContext, ShellingAttackType,
+        WarfareContext, WarfareShipEnvironment,
     },
     comp::Comp,
     fleet::Fleet,
@@ -208,35 +208,41 @@ impl<'a> FleetCutinAnalyzer<'a> {
         let engagement = self.engagement;
 
         let shelling = Formation::iter()
-            .filter_map(|formation| {
+            .flat_map(|formation| {
                 let is_night = false;
                 let fleet = self.get_fleet(is_night);
-                let cutin = get_fleet_cutin(fleet, formation, is_night)?;
-                let rate = calc_fleet_cutin_rate(fleet, cutin);
-                let items = self.analyze_shelling(fleet, cutin, formation, engagement);
+                let cutin_set = get_possible_fleet_cutin_set(fleet, formation, is_night);
 
-                Some(FleetCutinInfo {
-                    cutin,
-                    rate,
-                    formation,
-                    items,
+                cutin_set.into_iter().map(move |cutin| {
+                    let rate = calc_fleet_cutin_rate(fleet, cutin);
+                    let items = self.analyze_shelling(fleet, cutin, formation, engagement);
+
+                    FleetCutinInfo {
+                        cutin,
+                        rate,
+                        formation,
+                        items,
+                    }
                 })
             })
             .collect::<Vec<_>>();
 
         let night = Formation::iter()
-            .filter_map(|formation| {
+            .flat_map(|formation| {
                 let is_night = true;
                 let fleet = self.get_fleet(is_night);
-                let cutin = get_fleet_cutin(fleet, formation, is_night)?;
-                let rate = calc_fleet_cutin_rate(fleet, cutin);
-                let items = self.analyze_night(fleet, cutin, formation, engagement);
+                let cutin_set = get_possible_fleet_cutin_set(fleet, formation, is_night);
 
-                Some(FleetCutinInfo {
-                    cutin,
-                    rate,
-                    formation,
-                    items,
+                cutin_set.into_iter().map(move |cutin| {
+                    let rate = calc_fleet_cutin_rate(fleet, cutin);
+                    let items = self.analyze_night(fleet, cutin, formation, engagement);
+
+                    FleetCutinInfo {
+                        cutin,
+                        rate,
+                        formation,
+                        items,
+                    }
                 })
             })
             .collect::<Vec<_>>();

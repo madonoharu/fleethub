@@ -92,7 +92,9 @@
     "NelsonTouch": "넬슨 터치",
     "NagatoCutin": "나가토 일제사격",
     "ColoradoCutin": "콜로라도 CI",
-    "KongouCutin": "콩고급 야전 공격"
+    "KongouCutin": "콩고급 야전 공격",
+    "Yamato2ShipCutin": "야마토 돌격제사",
+    "Yamato3ShipCutin": ""
   },
   "SpeedRank": {
     "name": "t$(speed)",
@@ -154,6 +156,7 @@
   "guaranteed": "최저보증",
   "anti_air_cutin_chance": "대공컷인 발동확률",
   "trigger_rate": "개시율",
+  "ohko_power": null,
   "ContactChance": "촉접율",
   "max_hp": "체력",
   "firepower": "화력",

@@ -106,6 +106,11 @@ impl ShipType {
         self.category() == ShipCategory::Submarine
     }
 
+    #[inline]
+    pub fn is_surface_ship(&self) -> bool {
+        !self.is_submarine()
+    }
+
     pub fn is_battleship(&self) -> bool {
         self.category() == ShipCategory::Battleship
     }

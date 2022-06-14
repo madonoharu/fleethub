@@ -1,13 +1,16 @@
+use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
+#[derive(Debug, EnumSetType, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum FleetCutin {
     NelsonTouch,
     NagatoCutin,
     ColoradoCutin,
     KongouCutin,
+    Yamato2ShipCutin,
+    Yamato3ShipCutin,
 }
 
 impl FleetCutin {
@@ -17,6 +20,8 @@ impl FleetCutin {
             FleetCutin::NagatoCutin => vec![0, 0, 1],
             FleetCutin::ColoradoCutin => vec![0, 1, 2],
             FleetCutin::KongouCutin => vec![0, 1],
+            FleetCutin::Yamato2ShipCutin => vec![0, 0, 1],
+            FleetCutin::Yamato3ShipCutin => vec![0, 1, 2],
         }
     }
 }
