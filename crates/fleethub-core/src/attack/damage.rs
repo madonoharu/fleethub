@@ -17,18 +17,24 @@ enum DamageType {
     OverkillProtection,
 }
 
-struct DefensePowerRange {
+pub struct DefensePowerRange {
     // 最小1.0
     basic_defense_power: f64,
 }
 
 impl DefensePowerRange {
+    pub fn new(basic_defense_power: f64) -> Self {
+        Self {
+            basic_defense_power,
+        }
+    }
+
     pub fn min(&self) -> f64 {
         self.start()
     }
 
     pub fn max(&self) -> f64 {
-        self.last().unwrap_or(self.start())
+        self.last().unwrap_or_else(|| self.start())
     }
 }
 

@@ -105,7 +105,7 @@ impl<'a> TorpedoAttackContext<'a> {
             let equipment_accuracy = attacker.gears.sum_by(|gear| gear.accuracy) as f64;
             let ibonus = attacker.gears.sum_by(|gear| gear.ibonuses.torpedo_accuracy);
             let attack_power_mod = (normal_attack_power? * 0.2).floor();
-            let ship_mod = attacker.torpedo_accuracy_mod();
+            let innate_torpedo_accuracy = attacker.innate_torpedo_accuracy();
 
             let formation_mod = self.formation_accuracy_mod;
             let morale_mod = attacker.morale_state().torpedo_accuracy_mod();
@@ -116,7 +116,7 @@ impl<'a> TorpedoAttackContext<'a> {
                 + equipment_accuracy
                 + ibonus
                 + attack_power_mod
-                + ship_mod)
+                + innate_torpedo_accuracy)
                 .floor();
 
             let accuracy_term = (pre_multiplication * formation_mod * morale_mod).floor();

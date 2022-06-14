@@ -178,7 +178,7 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
           {text}
           {Boolean(ebonus || mod) && (
             <>
-              <span>(</span>
+              <span css={{ marginLeft: 2 }}>(</span>
               {ebonus ? <BonusText>{withSign(ebonus)}</BonusText> : null}
               {mod ? <ModText>{withSign(mod)}</ModText> : null}
               <span>)</span>

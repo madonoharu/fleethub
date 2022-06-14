@@ -35,7 +35,7 @@ const StatForm: React.FC<StatFormProps> = ({
   return (
     <div>
       <Flexbox gap={1}>
-        <StatIcon icon={statKey} />
+        {statKey === "range" && <StatIcon icon={statKey} />}
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>
       <ResettableInput
