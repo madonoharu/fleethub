@@ -214,7 +214,51 @@ pub fn get_fleet_cutin_mod(
         }
 
         FleetCutin::Yamato3ShipCutin => {
-            todo!()
+            let s2 = fleet.ships.get(1).unwrap_or_else(|| unreachable!());
+
+            let base = if is_musashi_kai2(s2) {
+                if shots == 2 {
+                    1.8
+                } else {
+                    1.65
+                }
+            } else if matches_ship_id!(s2.ship_id, "長門改二" | "陸奥改二") {
+                1.65
+            } else if matches_ship_id!(s2.ship_id, "伊勢改二" | "日向改二") {
+                if shots == 2 {
+                    1.575
+                } else {
+                    1.65
+                }
+            } else {
+                if shots == 3 {
+                    1.65
+                } else {
+                    1.5
+                }
+            };
+
+            let mut v = 1.0;
+
+            if attacker.gears.has_type(GearType::ApShell) {
+                v *= 1.35;
+            }
+            if attacker.gears.has_attr(GearAttr::SurfaceRadar) {
+                v *= 1.15;
+            }
+            if shots <= 2
+                && attacker.gears.has_by(|gear| {
+                    matches_gear_id!(
+                        gear.gear_id,
+                        "15m二重測距儀+21号電探改二"
+                            | "15m二重測距儀改+21号電探改二+熟練射撃指揮所"
+                    )
+                })
+            {
+                v *= 1.1;
+            }
+
+            base * v
         }
     }
 }
@@ -436,6 +480,10 @@ fn can_do_yamato_3ship_cutin(fleet: &Fleet, formation: Formation) -> Option<()> 
     let s2 = fleet.ships.get(1)?;
     let s3 = fleet.ships.get(2)?;
 
+    if !is_yamato_kai2(s1) {
+        return None;
+    }
+
     if !(s1.damage_state() <= DamageState::Shouha
         && s2.damage_state() <= DamageState::Shouha
         && s3.damage_state() <= DamageState::Shouha)
@@ -443,7 +491,7 @@ fn can_do_yamato_3ship_cutin(fleet: &Fleet, formation: Formation) -> Option<()> 
         return None;
     }
 
-    let pair = [s1.ship_id, s2.ship_id];
+    let pair = [s2.ship_id, s3.ship_id];
 
     const HELPER_PAIRS: [(u16, u16); 7] = [
         (ship_id!("長門改二"), ship_id!("陸奥改二")),
