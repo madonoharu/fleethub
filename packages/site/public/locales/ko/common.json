@@ -156,6 +156,7 @@
   "guaranteed": "최저보증",
   "anti_air_cutin_chance": "대공컷인 발동확률",
   "trigger_rate": "개시율",
+  "ohko_power": null,
   "ContactChance": "촉접율",
   "max_hp": "체력",
   "firepower": "화력",

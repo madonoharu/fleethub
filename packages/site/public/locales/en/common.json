@@ -156,6 +156,7 @@
   "guaranteed": "Guaranteed",
   "anti_air_cutin_chance": "AACI Chance",
   "trigger_rate": "Trigger Chance",
+  "ohko_power": "OHKO Power",
   "ContactChance": "Contact Chance",
   "max_hp": "HP",
   "firepower": "FP",

@@ -156,6 +156,7 @@
   "guaranteed": "最低保障",
   "anti_air_cutin_chance": "对空CI发动率",
   "trigger_rate": "开始率",
+  "ohko_power": "一拳击杀攻击力",
   "ContactChance": "接触率",
   "max_hp": "耐久",
   "firepower": "火力",

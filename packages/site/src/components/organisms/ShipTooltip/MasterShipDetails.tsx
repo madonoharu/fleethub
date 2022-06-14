@@ -47,9 +47,11 @@ const MasterShipDetails: React.FCX<Props> = ({ className, ship }) => {
         {abyssal && (
           <>
             <span>{t("common:torpedo_accuracy")}</span>
-            <span>{ship.torpedo_accuracy_mod}</span>
+            <span>{ship.innate_torpedo_accuracy}</span>
             <span>{t("common:basic_evasion_term")}</span>
-            <span>{numstr(ship.basic_evasion_term(), 2) || "?"}</span>
+            <span>{numstr(ship.basic_evasion_term()) || "?"}</span>
+            <span>{t("common:ohko_power")}</span>
+            <span>{numstr(ship.ohko_power()) || "?"}</span>
           </>
         )}
       </div>
