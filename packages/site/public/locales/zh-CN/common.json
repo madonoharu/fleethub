@@ -92,7 +92,9 @@
     "NelsonTouch": "Nelson Touch",
     "NagatoCutin": "长门齐射",
     "ColoradoCutin": "科罗拉多CI",
-    "KongouCutin": "僚舰夜战突击"
+    "KongouCutin": "僚舰夜战突击",
+    "Yamato2ShipCutin": "大和全力齐射",
+    "Yamato3ShipCutin": "大和三舰突击"
   },
   "SpeedRank": {
     "name": "t$(speed)",

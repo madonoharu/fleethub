@@ -92,7 +92,9 @@
     "NelsonTouch": "Nelson Touch",
     "NagatoCutin": "Nagato CI",
     "ColoradoCutin": "Colorado CI",
-    "KongouCutin": "Kongou-class CI"
+    "KongouCutin": "Kongou-class CI",
+    "Yamato2ShipCutin": "Yamato-class CI",
+    "Yamato3ShipCutin": "Yamato 3-ship CI"
   },
   "SpeedRank": {
     "name": "t$(speed)",
