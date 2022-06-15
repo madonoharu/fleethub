@@ -19,8 +19,7 @@ const SIZES = {
 };
 
 const ShipBanner = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { className, shipId, size = "small" } = props;
-
+  const { shipId, size = "small", ...rest } = props;
   const { data } = useGcs<Dict<string, string>>("data/ship_banners.json");
 
   const publicId = data?.[shipId] || "";
@@ -49,11 +48,7 @@ const ShipBanner = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   }
 
   return (
-    <div
-      ref={ref}
-      className={className}
-      css={{ width, height, textAlign: "center" }}
-    >
+    <div css={{ width, height, textAlign: "center" }} ref={ref} {...rest}>
       {inner}
     </div>
   );

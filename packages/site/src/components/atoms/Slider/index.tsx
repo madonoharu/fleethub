@@ -1,13 +1,13 @@
 import MuiSlider, { SliderProps } from "@mui/material/Slider";
 import React from "react";
 
-type Props = Omit<SliderProps, "onChange" | "value"> & {
+interface Props extends Omit<SliderProps, "onChange" | "value"> {
   value?: number;
   onChange?: (value: number) => void;
-};
+}
 
 const Slider = React.forwardRef<HTMLSpanElement, Props>((props, ref) => {
-  const { onChange } = props;
+  const { onChange, ...rest } = props;
 
   const handleChange = React.useCallback(
     (event: Event, value: number | number[]) => {
@@ -16,7 +16,7 @@ const Slider = React.forwardRef<HTMLSpanElement, Props>((props, ref) => {
     [onChange]
   );
 
-  return <MuiSlider ref={ref} {...props} onChange={handleChange} />;
+  return <MuiSlider ref={ref} {...rest} onChange={handleChange} />;
 });
 
 export default Slider;
