@@ -20,20 +20,17 @@ const Exp = styled(Typography)`
   border-radius: 2px;
 `;
 
-type ProficiencyIconProps = Pick<
-  React.ComponentProps<"div">,
-  "className" | "onClick"
-> & {
+interface ProficiencyIconProps extends React.ComponentProps<"div"> {
   exp: number;
-};
+}
 
 const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>(
   (props, ref) => {
-    const { exp, ...divProps } = props;
+    const { exp, ...rest } = props;
     const ace = expToAce(exp);
 
     return (
-      <div ref={ref} {...divProps}>
+      <div ref={ref} {...rest}>
         <Image height={24} width={18} src={`/proficiency/${ace}.png`} />
         <Exp>{exp}</Exp>
       </div>

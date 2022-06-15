@@ -104,18 +104,18 @@ impl Ship {
 
             if has_15m_duplex_rangefinder_t21_air_radar_or_fdc {
                 let number_of_10cm_cd = gears.count(gear_id!("10cm連装高角砲群 集中配備"));
-                let has_ha_mount_with_aa_gth_6 =
-                    gears.has_by(|gear| gear.is_high_angle_mount() && gear.anti_air >= 6);
+                let has_aa_gun_with_aa_gth_6 = gears
+                    .has_by(|gear| gear.gear_type == GearType::AntiAirGun && gear.anti_air >= 6);
 
-                if number_of_10cm_cd >= 2 && has_ha_mount_with_aa_gth_6 {
-                    if has_ha_mount_with_aa_gth_6 {
+                if number_of_10cm_cd >= 2 {
+                    if has_aa_gun_with_aa_gth_6 {
                         vec.push(42)
                     }
                     vec.push(43)
                 }
 
                 if number_of_10cm_cd >= 1 {
-                    if has_ha_mount_with_aa_gth_6 {
+                    if has_aa_gun_with_aa_gth_6 {
                         vec.push(44)
                     }
                     vec.push(45)

@@ -18,7 +18,7 @@ type Props = {
 };
 
 const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { className, shipId } = props;
+  const { shipId, ...rest } = props;
   const { t, i18n } = useTranslation("ships");
   const { data } = useMasterData();
 
@@ -35,7 +35,7 @@ const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const visibleId = shipId > 1500;
 
   return (
-    <Flexbox ref={ref} className={className}>
+    <Flexbox ref={ref} {...rest}>
       <StyledShipBanner shipId={shipId} />
       <div>
         {visibleId && (
