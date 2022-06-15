@@ -62,13 +62,11 @@ const GearLabel: React.FCX<GearLabelProps> = ({
   return (
     <Flexbox className={className}>
       <GearTooltip gear={gear}>
-        <div>
-          <GearNameplate
-            equippable={equippable}
-            iconId={gear.icon_id}
-            name={gear.name}
-          />
-        </div>
+        <GearNameplate
+          equippable={equippable}
+          iconId={gear.icon_id}
+          name={gear.name}
+        />
       </GearTooltip>
 
       <UpdateButton

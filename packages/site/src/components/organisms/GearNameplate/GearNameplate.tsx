@@ -22,7 +22,7 @@ type Props = {
 
 export const GearNameplate = React.forwardRef<HTMLDivElement, Props>(
   (props, ref) => {
-    const { className, name, iconId, wrap } = props;
+    const { name, iconId, wrap, ...rest } = props;
     const { t, i18n } = useTranslation("gears");
 
     let displayName: string;
@@ -33,7 +33,7 @@ export const GearNameplate = React.forwardRef<HTMLDivElement, Props>(
     }
 
     return (
-      <Flexbox ref={ref} className={className}>
+      <Flexbox ref={ref} {...rest}>
         <StyledGearIcon iconId={iconId} />
         <Typography variant="body2" align="left" noWrap={!wrap}>
           {displayName}

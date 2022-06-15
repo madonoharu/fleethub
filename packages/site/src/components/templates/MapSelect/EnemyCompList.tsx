@@ -5,10 +5,10 @@ import { Formation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useModal } from "../../../hooks";
+import { useFhCore, useModal } from "../../../hooks";
 import { Flexbox } from "../../atoms";
 import { InfoButton, NodeLabel } from "../../molecules";
-import { EnemyCompScreen, ShipBannerGroup } from "../../organisms";
+import { EnemyCompScreen, ShipBanner, ShipTooltip } from "../../organisms";
 
 import EnemyFighterPower from "./EnemyFighterPower";
 
@@ -41,7 +41,22 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
 }) => {
   const { t } = useTranslation("common");
 
+  const { allShips } = useFhCore();
   const Modal = useModal();
+
+  const renderShipBanner = (id: number, index: number) => {
+    const ship = allShips.find((ship) => ship.ship_id === id);
+
+    if (!ship) {
+      return <ShipBanner shipId={id} />;
+    }
+
+    return (
+      <ShipTooltip key={index} ship={ship}>
+        <ShipBanner shipId={id} />
+      </ShipTooltip>
+    );
+  };
 
   return (
     <Paper className={className} sx={{ p: 1 }}>
@@ -66,7 +81,14 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
         />
       </div>
 
-      <ShipBannerGroup main={enemy.main} escort={enemy.escort} />
+      <Stack gap={0.5}>
+        <Stack direction="row" gap={0.5}>
+          {enemy.main.map(renderShipBanner)}
+        </Stack>
+        <Stack direction="row" gap={0.5}>
+          {enemy.escort?.map(renderShipBanner)}
+        </Stack>
+      </Stack>
 
       <Modal full>
         <EnemyCompScreen enemy={enemy} />

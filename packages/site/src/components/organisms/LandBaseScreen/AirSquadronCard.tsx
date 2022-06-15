@@ -34,21 +34,21 @@ const StyledLabeledValue = styled(LabeledValue)`
   margin-right: 8px;
 `;
 
-type Props = {
+interface Props {
   className?: string;
   label?: string;
   airSquadron: AirSquadron;
-};
+}
 
 const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
-  ({ className, label, airSquadron }, ref) => {
+  ({ label, airSquadron, ...rest }, ref) => {
     const { id } = airSquadron;
     const { t } = useTranslation("common");
     const PresetModal = useModal();
     const actions = useAirSquadronActions(id);
 
     return (
-      <Paper ref={ref} className={className}>
+      <Paper ref={ref} {...rest}>
         <Flexbox>
           <Typography variant="subtitle2">{label}</Typography>
           <BusinessCenterButton

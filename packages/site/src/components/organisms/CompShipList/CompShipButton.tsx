@@ -8,7 +8,7 @@ import { useAppDispatch, useSwap } from "../../../hooks";
 import { ShipPosition, shipSelectSlice, SwapShipPayload } from "../../../store";
 import ShipBanner from "../ShipBanner";
 
-type Props = {
+interface Props {
   className?: string;
   position: ShipPosition;
   meta: ShipMeta | null;
@@ -16,10 +16,10 @@ type Props = {
   selected: boolean;
   onSwap: (event: SwapShipPayload) => void;
   onSelect: React.MouseEventHandler<HTMLButtonElement>;
-};
+}
 
 const Inner = React.forwardRef<HTMLButtonElement, Props>(
-  ({ className, position, meta, color, selected, onSelect }, ref) => {
+  ({ position, meta, selected, onSelect, onSwap: _, ...rest }, ref) => {
     const dispatch = useAppDispatch();
 
     const id = meta?.id || "";
@@ -28,11 +28,10 @@ const Inner = React.forwardRef<HTMLButtonElement, Props>(
       return (
         <Button
           ref={ref}
-          className={className}
           variant={selected ? "contained" : "outlined"}
-          color={color}
           value={id}
           onClick={onSelect}
+          {...rest}
         >
           <ShipBanner shipId={meta.ship_id} />
         </Button>
@@ -43,13 +42,7 @@ const Inner = React.forwardRef<HTMLButtonElement, Props>(
       };
 
       return (
-        <Button
-          ref={ref}
-          className={className}
-          variant="outlined"
-          color={color}
-          onClick={handleClick}
-        >
+        <Button ref={ref} variant="outlined" onClick={handleClick} {...rest}>
           <AddIcon />
         </Button>
       );
