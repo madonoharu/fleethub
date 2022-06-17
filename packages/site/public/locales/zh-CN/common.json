@@ -250,6 +250,8 @@
   "Searchlight": "$t(gear_types:29)",
   "Starshell": "$t(gear_types:33)",
   "Modifier": "补正",
+  "Multiplicative": "乘算",
+  "Additive": "加算",
   "Individual": "单独",
   "Cumulative": "累积",
   "Distribution": "分布",

@@ -46,9 +46,17 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
   const { t } = useTranslation("common");
   const displayName = useShipName(ship.ship_id, ship.is_abyssal());
 
+  const handleCurrentHpChange = (v: number | undefined) => {
+    onChange?.({ current_hp: v });
+  };
+
+  const handleMoraleChange = (v: number | undefined) => {
+    onChange?.({ morale: v });
+  };
+
   const setDamageState = (state: DamageState) => {
     const next = state === "Normal" ? undefined : ship.get_damage_bound(state);
-    onChange?.({ current_hp: next });
+    handleCurrentHpChange(next);
   };
 
   const setMoraleState = (state: MoraleState) => {
@@ -62,7 +70,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
       morale = 0;
     }
 
-    onChange?.({ morale });
+    handleMoraleChange(morale);
   };
 
   return (
@@ -77,6 +85,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           value={ship.current_hp}
           max={ship.max_hp || 0}
           min={0}
+          onChange={handleCurrentHpChange}
         />
         <Select
           options={DAMAGE_STATES}
@@ -93,7 +102,12 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
       <Divider label={t("MoraleState.name")} />
       <Flexbox gap={1}>
-        <StyledNumberInput value={ship.morale} max={100} min={0} />
+        <StyledNumberInput
+          value={ship.morale}
+          max={100}
+          min={0}
+          onChange={handleMoraleChange}
+        />
         <Select
           options={MORALE_STATES}
           value={ship.morale_state()}
@@ -117,16 +131,18 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           label={`${t("day_gunfit_accuracy")}`}
           defaultValue={null}
           value={ship.state_day_gunfit_accuracy()}
-          onChange={(v) => onChange?.({ day_gunfit_accuracy: v ?? undefined })}
+          onChange={(v) => {
+            onChange?.({ day_gunfit_accuracy: v ?? undefined });
+          }}
         />
         <ResettableInput
           css={{ flexGrow: 1 }}
           label={`${t("night_gunfit_accuracy")}`}
           defaultValue={null}
           value={ship.state_night_gunfit_accuracy()}
-          onChange={(v) =>
-            onChange?.({ night_gunfit_accuracy: v ?? undefined })
-          }
+          onChange={(v) => {
+            onChange?.({ night_gunfit_accuracy: v ?? undefined });
+          }}
         />
       </Stack>
     </div>

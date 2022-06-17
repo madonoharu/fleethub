@@ -1,5 +1,6 @@
 import { styled } from "@mui/system";
 import { AttackPowerModifier } from "fleethub-core";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { NumberInput } from "../../molecules";
@@ -19,19 +20,20 @@ const AttackPowerModifierForm: React.FCX<AttackPowerModifierFormProps> = ({
   value,
   onChange,
 }) => {
+  const { t } = useTranslation("common");
   const current = value || { a: 1, b: 0 };
 
   return (
     <div className={className} style={style}>
       <StyledInput
-        label="乗算"
+        label={t("Multiplicative")}
         min={0}
         step={0.1}
         value={current.a}
         onChange={(a) => onChange?.({ ...current, a })}
       />
       <StyledInput
-        label="加算"
+        label={t("Additive")}
         value={current.b}
         onChange={(b) => onChange?.({ ...current, b })}
       />

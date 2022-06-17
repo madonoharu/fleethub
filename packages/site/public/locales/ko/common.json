@@ -250,6 +250,8 @@
   "Searchlight": "$t(gear_types:29)",
   "Starshell": "$t(gear_types:33)",
   "Modifier": "보정",
+  "Multiplicative": "곱셈",
+  "Additive": "가산",
   "Individual": "개별",
   "Cumulative": "누적",
   "Distribution": "분포",

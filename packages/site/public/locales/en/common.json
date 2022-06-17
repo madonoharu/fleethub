@@ -250,6 +250,8 @@
   "Searchlight": "$t(gear_types:29)",
   "Starshell": "$t(gear_types:33)",
   "Modifier": "Modifier",
+  "Multiplicative": "Multiplicative",
+  "Additive": "Additive",
   "Individual": "Individual",
   "Cumulative": "Cumulative",
   "Distribution": "Distribution",
