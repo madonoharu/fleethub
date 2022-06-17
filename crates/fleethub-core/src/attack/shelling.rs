@@ -208,7 +208,7 @@ impl<'a> ShellingAttackContext<'a> {
             let ibonus = attacker
                 .gears
                 .sum_by(|gear| gear.ibonuses.shelling_accuracy);
-            let fit_gun_bonus = attacker.fit_gun_bonus(!IS_DAY);
+            let gunfit_accuracy = attacker.gunfit_accuracy(!IS_DAY);
             let morale_mod = attacker.morale_state().common_accuracy_mod();
             let formation_mod = ctx.formation_accuracy_mod;
             let ap_shell_mod = ap_shell_mods.map(|mods| mods.1).unwrap_or(1.0);
@@ -221,7 +221,7 @@ impl<'a> ShellingAttackContext<'a> {
             let pre_multiplication =
                 (fleet_factor + basic_accuracy_term + ship_accuracy + ibonus).floor();
 
-            let result = ((pre_multiplication * formation_mod * morale_mod + fit_gun_bonus)
+            let result = ((pre_multiplication * formation_mod * morale_mod + gunfit_accuracy)
                 * cutin_mod
                 * ap_shell_mod)
                 .floor();

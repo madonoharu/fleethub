@@ -4,6 +4,7 @@ import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useShipName } from "../../../hooks";
 import { numstr } from "../../../utils";
 import GearNameplate from "../GearNameplate";
 
@@ -14,19 +15,10 @@ interface Props {
 }
 
 const MasterShipDetails: React.FCX<Props> = ({ className, ship }) => {
-  const { t, i18n } = useTranslation(["common", "ships", "stype"]);
-
-  let displayName: string;
-  if (i18n.resolvedLanguage === "ja") {
-    displayName = ship.name;
-  } else {
-    displayName = t(`ships:${ship.ship_id}`, {
-      ns: "ships",
-      defaultValue: ship.name,
-    });
-  }
+  const { t } = useTranslation(["common", "stype"]);
 
   const abyssal = ship.is_abyssal();
+  const displayName = useShipName(ship.ship_id);
 
   return (
     <Typography className={className} variant="body2" component="div">

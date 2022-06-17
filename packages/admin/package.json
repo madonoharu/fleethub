@@ -11,8 +11,8 @@
     "@google-cloud/asset": "^3.23.1",
     "cloudinary": "^1.30.0",
     "dequal": "^2.0.2",
-    "firebase-admin": "^10.3.0",
-    "googleapis": "^102.0.0",
+    "firebase-admin": "^11.0.0",
+    "googleapis": "^103.0.0",
     "got": "12.1.0"
   },
   "optionalDependencies": {

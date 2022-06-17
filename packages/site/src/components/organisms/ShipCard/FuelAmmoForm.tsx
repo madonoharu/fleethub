@@ -50,7 +50,7 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
     <Flexbox className={className} style={style} gap={1}>
       <StyledNumberInput
         startLabel={<FuelIcon />}
-        label={`${t("fuel")} ${toPercent(fuelRate)}`}
+        label={`${t("fuel")} ${toPercent(fuelRate, 0)}`}
         value={fuel}
         min={0}
         max={max_fuel}
@@ -58,7 +58,7 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
       />
       <StyledNumberInput
         startLabel={<AmmoIcon />}
-        label={`${t("ammo")} ${toPercent(ammoRate)}`}
+        label={`${t("ammo")} ${toPercent(ammoRate, 0)}`}
         value={ammo}
         min={0}
         max={max_ammo}

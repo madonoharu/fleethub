@@ -6,7 +6,7 @@ import { OrgType, Ship, WarfareAnalyzerContext } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useFhCore } from "../../../hooks";
+import { useFhCore, useShipName } from "../../../hooks";
 import { Tabs, TabItem } from "../../molecules";
 import AttackTable from "../AttackTable";
 
@@ -31,6 +31,8 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
 }) => {
   const { t } = useTranslation("common");
   const { analyzer } = useFhCore();
+  const attackerName = useShipName(attacker.ship_id, attacker.is_abyssal());
+  const targetName = useShipName(target.ship_id, target.is_abyssal());
 
   if (ctx.attacker_env.org_type === ctx.target_env.org_type) {
     const attackerText = t(`OrgType.${ctx.attacker_env.org_type}`);
@@ -86,11 +88,11 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
     <Paper className={className} style={style}>
       <Typography alignItems="center" display="flex" gap={1}>
         <Typography variant="inherit" component="span" color={attackerColor}>
-          {attacker.name}
+          {attackerName}
         </Typography>
         <ArrowForward fontSize="inherit" />
         <Typography variant="inherit" component="span" color={targetColor}>
-          {target.name}
+          {targetName}
         </Typography>
       </Typography>
       <Tabs list={list} size="small" />

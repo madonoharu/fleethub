@@ -6,24 +6,31 @@ import { createSelectorCreator, defaultMemoize } from "reselect";
 export type Recipe<T> = (draft: Draft<T>) => void;
 export type Update<T> = (recipe: Recipe<T>) => void;
 
-export const withSign = (num?: number) => {
-  if (!num) return "";
-  return num > 0 ? `+${num}` : num.toString();
-};
+export function withSign(num?: number): string {
+  if (num === undefined) {
+    return "";
+  } else {
+    return num > 0 ? `+${num}` : num.toString();
+  }
+}
 
-export const numstr = (
-  v: number | null | undefined,
-  fractionDigits = 3
-): string => {
-  if (v === null || v === undefined) return "";
-  if (Number.isInteger(v)) return v.toString();
-  return round(v, fractionDigits).toString();
-};
+export function numstr(v: number | null | undefined, precision = 3): string {
+  if (v === null || v === undefined) {
+    return "";
+  } else if (Number.isInteger(v)) {
+    return v.toString();
+  } else {
+    return round(v, precision).toString();
+  }
+}
 
-export const toPercent = (v: number | null | undefined, fractionDigits = 1) => {
-  if (v == null || v === undefined || Number.isNaN(v)) return "?%";
-  return (v * 100).toFixed(fractionDigits) + "%";
-};
+export function toPercent(v: number | null | undefined, precision = 1): string {
+  if (v == null || v === undefined || Number.isNaN(v)) {
+    return "?%";
+  } else {
+    return (v * 100).toFixed(precision) + "%";
+  }
+}
 
 export function getSpeedRank(v: number | undefined | null) {
   if (typeof v !== "number" || v < 0) return undefined;

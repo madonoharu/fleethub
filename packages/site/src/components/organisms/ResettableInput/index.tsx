@@ -14,6 +14,10 @@ interface ResettableInputProps {
   step?: number;
 }
 
+const INPUT_LABEL_PROPS = {
+  shrink: true,
+};
+
 const ResettableInput: React.FCX<ResettableInputProps> = ({
   className,
   label,
@@ -36,6 +40,7 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
   return (
     <div className={className}>
       <NumberInput
+        InputLabelProps={INPUT_LABEL_PROPS}
         color={color}
         focused={hasValue}
         label={label}

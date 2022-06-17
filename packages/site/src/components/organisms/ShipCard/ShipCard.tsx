@@ -194,6 +194,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
 };
 
 const Styled = styled(ShipCard)`
+  min-width: 360px;
   height: ${24 * 8}px;
   display: grid;
   grid-template-columns: 160px calc(100% - 160px);

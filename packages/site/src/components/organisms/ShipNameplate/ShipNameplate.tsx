@@ -1,9 +1,8 @@
 import { Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useMasterData } from "../../../hooks";
+import { useShipName } from "../../../hooks";
 import { Flexbox } from "../../atoms";
 import ShipBanner from "../ShipBanner";
 
@@ -19,18 +18,7 @@ type Props = {
 
 const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { shipId, ...rest } = props;
-  const { t, i18n } = useTranslation("ships");
-  const { data } = useMasterData();
-
-  const ship = data?.ships.find((ship) => ship.ship_id === shipId);
-
-  const defaultName = ship?.name || shipId.toString();
-  let displayName: string;
-  if (i18n.resolvedLanguage === "ja") {
-    displayName = defaultName;
-  } else {
-    displayName = t(`${shipId}`, defaultName);
-  }
+  const displayName = useShipName(shipId);
 
   const visibleId = shipId > 1500;
 

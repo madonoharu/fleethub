@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
 import { DAMAGE_STATES, MORALE_STATES } from "@fh/utils";
+import { Stack, Typography } from "@mui/material";
 import { DamageState, MoraleState, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useShipName } from "../../../hooks";
 import { ShipEntity } from "../../../store";
 import {
   DamageStateIcon,
@@ -12,6 +14,7 @@ import {
   MoraleStateIcon,
 } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
+import ResettableInput from "../ResettableInput";
 
 import FuelAmmoForm from "./FuelAmmoForm";
 
@@ -41,10 +44,19 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
   onChange,
 }) => {
   const { t } = useTranslation("common");
+  const displayName = useShipName(ship.ship_id, ship.is_abyssal());
+
+  const handleCurrentHpChange = (v: number | undefined) => {
+    onChange?.({ current_hp: v });
+  };
+
+  const handleMoraleChange = (v: number | undefined) => {
+    onChange?.({ morale: v });
+  };
 
   const setDamageState = (state: DamageState) => {
     const next = state === "Normal" ? undefined : ship.get_damage_bound(state);
-    onChange?.({ current_hp: next });
+    handleCurrentHpChange(next);
   };
 
   const setMoraleState = (state: MoraleState) => {
@@ -58,11 +70,13 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
       morale = 0;
     }
 
-    onChange?.({ morale });
+    handleMoraleChange(morale);
   };
 
   return (
     <div className={className} style={style}>
+      <Typography variant="subtitle1">{displayName}</Typography>
+
       <Divider label={t("DamageState.name")} />
 
       <Flexbox gap={1}>
@@ -71,6 +85,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           value={ship.current_hp}
           max={ship.max_hp || 0}
           min={0}
+          onChange={handleCurrentHpChange}
         />
         <Select
           options={DAMAGE_STATES}
@@ -87,7 +102,12 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
       <Divider label={t("MoraleState.name")} />
       <Flexbox gap={1}>
-        <StyledNumberInput value={ship.morale} max={100} min={0} />
+        <StyledNumberInput
+          value={ship.morale}
+          max={100}
+          min={0}
+          onChange={handleMoraleChange}
+        />
         <Select
           options={MORALE_STATES}
           value={ship.morale_state()}
@@ -103,6 +123,28 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
       <Divider label={`${t("fuel")} & ${t("ammo")}`} />
       <FuelAmmoForm ship={ship} onChange={onChange} />
+
+      <Divider label={`${t("Override")}`} />
+      <Stack direction="row" gap={1}>
+        <ResettableInput
+          css={{ flexGrow: 1 }}
+          label={`${t("day_gunfit_accuracy")}`}
+          defaultValue={null}
+          value={ship.state_day_gunfit_accuracy()}
+          onChange={(v) => {
+            onChange?.({ day_gunfit_accuracy: v ?? undefined });
+          }}
+        />
+        <ResettableInput
+          css={{ flexGrow: 1 }}
+          label={`${t("night_gunfit_accuracy")}`}
+          defaultValue={null}
+          value={ship.state_night_gunfit_accuracy()}
+          onChange={(v) => {
+            onChange?.({ night_gunfit_accuracy: v ?? undefined });
+          }}
+        />
+      </Stack>
     </div>
   );
 };

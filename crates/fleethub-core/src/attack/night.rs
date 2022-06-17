@@ -248,7 +248,7 @@ fn calc_accuracy_term(ctx: &NightAttackContext, attacker: &Ship) -> Option<f64> 
         .special_attack_def
         .as_ref()
         .map_or(1.0, |def| def.accuracy_mod);
-    let fit_gun_bonus = attacker.fit_gun_bonus(true);
+    let gunfit_accuracy = attacker.gunfit_accuracy(true);
 
     // 乗算前に切り捨て
     let pre_multiplication = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod
@@ -259,7 +259,7 @@ fn calc_accuracy_term(ctx: &NightAttackContext, attacker: &Ship) -> Option<f64> 
 
     let accuracy_term = (pre_multiplication * formation_mod * morale_mod * cutin_mod
         + searchlight_mod
-        + fit_gun_bonus)
+        + gunfit_accuracy)
         .floor();
 
     Some(accuracy_term)

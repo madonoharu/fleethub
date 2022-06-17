@@ -5,6 +5,7 @@ import { Ship } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { useShipName } from "../../../hooks";
 import { ShipEntity } from "../../../store";
 import { numstr } from "../../../utils";
 import { LabeledValue } from "../../atoms";
@@ -45,23 +46,13 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
   onPreset,
   onRemove,
 }) => {
-  const { t, i18n } = useTranslation(["ships", "common"]);
-  const { ship_id, name } = ship;
+  const { t } = useTranslation("common");
 
   if (readonly) {
     disableDetails = true;
   }
 
-  let displayName: string;
-  if (i18n.resolvedLanguage === "ja") {
-    displayName = name;
-  } else {
-    displayName = t(`ships:${ship_id}`, name);
-  }
-
-  if (ship.is_abyssal()) {
-    displayName = `ID:${ship_id} ${displayName}`;
-  }
+  const displayName = useShipName(ship.ship_id, ship.is_abyssal());
 
   return (
     <div className={className}>
@@ -78,15 +69,15 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         title={
           <Stack>
             <LabeledValue
-              label="昼戦フィット補正"
-              value={numstr(ship.fit_gun_bonus(false))}
+              label={t("day_gunfit_accuracy")}
+              value={numstr(ship.gunfit_accuracy(false))}
             />
             <LabeledValue
-              label="夜戦フィット補正"
-              value={numstr(ship.fit_gun_bonus(true))}
+              label={t("night_gunfit_accuracy")}
+              value={numstr(ship.gunfit_accuracy(true))}
             />
             <LabeledValue
-              label={t("common:basic_accuracy_term")}
+              label={t("basic_accuracy_term")}
               value={numstr(ship.basic_accuracy_term(), 2)}
             />
             <LabeledValue
@@ -98,7 +89,7 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
               value={numstr(ship.fleet_los_factor())}
             />
             <LabeledValue
-              label={t("common:torpedo_accuracy")}
+              label={t("torpedo_accuracy")}
               value={numstr(ship.innate_torpedo_accuracy)}
             />
           </Stack>
@@ -107,38 +98,26 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
       />
       {!readonly && (
         <EditButton
-          title={t("common:EditMiscStats")}
+          title={t("EditMiscStats")}
           size="tiny"
           onClick={onEditClick}
         />
       )}
       {!disableDetails && (
-        <InfoButton
-          title={t("common:Details")}
-          size="tiny"
-          onClick={onDetailClick}
-        />
+        <InfoButton title={t("Details")} size="tiny" onClick={onDetailClick} />
       )}
       {!disableDetails && (
-        <UpdateButton
-          title={t("common:Change")}
-          size="tiny"
-          onClick={onReselect}
-        />
+        <UpdateButton title={t("Change")} size="tiny" onClick={onReselect} />
       )}
       {!readonly && (
         <BusinessCenterButton
-          title={t("common:Presets")}
+          title={t("Presets")}
           size="tiny"
           onClick={onPreset}
         />
       )}
       {!disableDetails && (
-        <ClearButton
-          title={t("common:Remove")}
-          size="tiny"
-          onClick={onRemove}
-        />
+        <ClearButton title={t("Remove")} size="tiny" onClick={onRemove} />
       )}
     </div>
   );

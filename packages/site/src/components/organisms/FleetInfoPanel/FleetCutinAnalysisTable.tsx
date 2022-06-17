@@ -24,7 +24,7 @@ const FleetCutinInfoTable: React.FCX<FleetCutinInfoTableProps> = ({
   return (
     <Stack className={className} gap={2}>
       {data.map((info) => (
-        <div key={info.formation}>
+        <div key={`${info.cutin}-${info.formation}`}>
           <Typography variant="subtitle1">
             {t(`FleetCutin.${info.cutin}`)} {t(`Formation.${info.formation}`)}{" "}
             {t(`ProcRate`)} {toPercent(info.rate)}
