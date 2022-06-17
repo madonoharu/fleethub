@@ -1,6 +1,6 @@
 mod anti_air_cutin;
 mod day_cutin;
-mod fit_gun_bonus;
+mod gunfit_accuracy;
 mod night_cutin;
 
 use std::hash::Hash;
@@ -1382,10 +1382,6 @@ impl Ship {
         } else {
             0.0
         }
-    }
-
-    pub fn fit_gun_bonus(&self, is_night: bool) -> f64 {
-        fit_gun_bonus::fit_gun_bonus(self, is_night)
     }
 
     pub fn basic_accuracy_term(&self) -> Option<f64> {

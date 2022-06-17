@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
 import { DAMAGE_STATES, MORALE_STATES } from "@fh/utils";
+import { Stack, Typography } from "@mui/material";
 import { DamageState, MoraleState, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useShipName } from "../../../hooks";
 import { ShipEntity } from "../../../store";
 import {
   DamageStateIcon,
@@ -12,6 +14,7 @@ import {
   MoraleStateIcon,
 } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
+import ResettableInput from "../ResettableInput";
 
 import FuelAmmoForm from "./FuelAmmoForm";
 
@@ -41,6 +44,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
   onChange,
 }) => {
   const { t } = useTranslation("common");
+  const displayName = useShipName(ship.ship_id, ship.is_abyssal());
 
   const setDamageState = (state: DamageState) => {
     const next = state === "Normal" ? undefined : ship.get_damage_bound(state);
@@ -63,6 +67,8 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
   return (
     <div className={className} style={style}>
+      <Typography variant="subtitle1">{displayName}</Typography>
+
       <Divider label={t("DamageState.name")} />
 
       <Flexbox gap={1}>
@@ -103,6 +109,26 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
       <Divider label={`${t("fuel")} & ${t("ammo")}`} />
       <FuelAmmoForm ship={ship} onChange={onChange} />
+
+      <Divider label={`${t("Override")}`} />
+      <Stack direction="row" gap={1}>
+        <ResettableInput
+          css={{ flexGrow: 1 }}
+          label={`${t("day_gunfit_accuracy")}`}
+          defaultValue={null}
+          value={ship.state_day_gunfit_accuracy()}
+          onChange={(v) => onChange?.({ day_gunfit_accuracy: v ?? undefined })}
+        />
+        <ResettableInput
+          css={{ flexGrow: 1 }}
+          label={`${t("night_gunfit_accuracy")}`}
+          defaultValue={null}
+          value={ship.state_night_gunfit_accuracy()}
+          onChange={(v) =>
+            onChange?.({ night_gunfit_accuracy: v ?? undefined })
+          }
+        />
+      </Stack>
     </div>
   );
 };

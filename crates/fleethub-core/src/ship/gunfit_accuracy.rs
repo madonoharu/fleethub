@@ -1,6 +1,39 @@
-use crate::types::{ctype, gear_id, ship_id, ShipAttr, ShipType};
+use wasm_bindgen::prelude::*;
+
+use crate::types::{ctype, gear_id, matches_gear_id, ship_id, ShipAttr, ShipType};
 
 use super::Ship;
+
+#[wasm_bindgen]
+impl Ship {
+    #[inline]
+    pub fn state_day_gunfit_accuracy(&self) -> Option<f64> {
+        self.state.day_gunfit_accuracy.map(|v| v.into())
+    }
+
+    #[inline]
+    pub fn state_night_gunfit_accuracy(&self) -> Option<f64> {
+        self.state.night_gunfit_accuracy.map(|v| v.into())
+    }
+
+    /// フィット砲補正
+    pub fn gunfit_accuracy(&self, is_night: bool) -> f64 {
+        let state = if is_night {
+            self.state_night_gunfit_accuracy()
+        } else {
+            self.state_day_gunfit_accuracy()
+        };
+
+        state.unwrap_or_else(|| match self.ship_type {
+            ShipType::DD => destroyer_bonus(self),
+            ShipType::CL | ShipType::CLT | ShipType::CT => light_cruiser_bonus(self),
+            ShipType::CA | ShipType::CAV => heavy_cruiser_bonus(self, is_night),
+            ShipType::FBB | ShipType::BB | ShipType::BBV => battleship_bonus(self, is_night),
+            ShipType::AV => seaplane_tender_bonus(self),
+            _ => 0.0,
+        })
+    }
+}
 
 /// 駆逐フィット補正
 fn destroyer_bonus(ship: &Ship) -> f64 {
@@ -23,17 +56,13 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
     let gears = &ship.gears;
     let ctype = ship.ctype;
 
-    let single_gun_count = gears.count_by(|gear| {
-        matches!(
-            gear.gear_id,
-            gear_id!("14cm単装砲") | gear_id!("15.2cm単装砲")
-        )
-    }) as f64;
+    let single_gun_count =
+        gears.count_by(|gear| matches_gear_id!(gear.gear_id, "14cm単装砲" | "15.2cm単装砲")) as f64;
 
     let twin_gun_count1 = gears.count_by(|gear| {
-        matches!(
+        matches_gear_id!(
             gear.gear_id,
-            gear_id!("15.2cm連装砲") | gear_id!("14cm連装砲") | gear_id!("15.2cm連装砲改")
+            "15.2cm連装砲" | "14cm連装砲" | "15.2cm連装砲改"
         )
     }) as f64;
 
@@ -47,14 +76,14 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
 
     if ctype == ctype!("阿賀野型") {
         let twin_gun_count2 = gears.count_by(|gear| {
-            matches!(
+            matches_gear_id!(
                 gear.gear_id,
-                gear_id!("Bofors 15.2cm連装砲 Model 1930")
-                    | gear_id!("14cm連装砲改")
-                    | gear_id!("6inch 連装速射砲 Mk.XXI")
-                    | gear_id!("Bofors 15cm連装速射砲 Mk.9 Model 1938")
-                    | gear_id!("Bofors 15cm連装速射砲 Mk.9改+単装速射砲 Mk.10改 Model 1938")
-                    | gear_id!("15.2cm連装砲改二")
+                "Bofors 15.2cm連装砲 Model 1930"
+                    | "14cm連装砲改"
+                    | "6inch 連装速射砲 Mk.XXI"
+                    | "Bofors 15cm連装速射砲 Mk.9 Model 1938"
+                    | "Bofors 15cm連装速射砲 Mk.9改+単装速射砲 Mk.10改 Model 1938"
+                    | "15.2cm連装砲改二"
             )
         }) as f64;
 
@@ -62,12 +91,9 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
     }
 
     if ctype == ctype!("大淀型") {
-        let triple_gun_count = gears.count_by(|gear| {
-            matches!(
-                gear.gear_id,
-                gear_id!("15.5cm三連装砲") | gear_id!("15.5cm三連装砲改")
-            )
-        }) as f64;
+        let triple_gun_count = gears
+            .count_by(|gear| matches_gear_id!(gear.gear_id, "15.5cm三連装砲" | "15.5cm三連装砲改"))
+            as f64;
 
         result += 7.0 * triple_gun_count.sqrt();
     }
@@ -112,27 +138,27 @@ fn seaplane_tender_bonus(ship: &Ship) -> f64 {
     let mut result = 0.0;
 
     let count14cm15cm = gears.count_by(|gear| {
-        matches!(
+        matches_gear_id!(
             gear.gear_id,
-            gear_id!("14cm単装砲")
-                | gear_id!("14cm連装砲")
-                | gear_id!("14cm連装砲改")
-                | gear_id!("15.2cm単装砲")
-                | gear_id!("15.2cm連装砲")
-                | gear_id!("15.2cm連装砲改")
-                | gear_id!("15.2cm三連装砲")
+            "14cm単装砲"
+                | "14cm連装砲"
+                | "14cm連装砲改"
+                | "15.2cm単装砲"
+                | "15.2cm連装砲"
+                | "15.2cm連装砲改"
+                | "15.2cm三連装砲"
         )
     });
 
     let count203 = gears.count_by(|gear| {
-        matches!(
+        matches_gear_id!(
             gear.gear_id,
-            gear_id!("20.3cm連装砲")
-                | gear_id!("20.3cm(3号)連装砲")
-                | gear_id!("20.3cm(2号)連装砲")
-                | gear_id!("203mm/53 連装砲")
-                | gear_id!("152mm/55 三連装速射砲")
-                | gear_id!("152mm/55 三連装速射砲改")
+            "20.3cm連装砲"
+                | "20.3cm(3号)連装砲"
+                | "20.3cm(2号)連装砲"
+                | "203mm/53 連装砲"
+                | "152mm/55 三連装速射砲"
+                | "152mm/55 三連装速射砲改"
         )
     });
 
@@ -161,12 +187,9 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
     let is_married = ship.level > 99;
     let m = if is_married { 0.6 } else { 1.0 };
 
-    let count_51cm = gears.count_by(|gear| {
-        matches!(
-            gear.gear_id,
-            gear_id!("51cm連装砲") | gear_id!("試製51cm連装砲")
-        )
-    }) as f64;
+    let count_51cm = gears
+        .count_by(|gear| matches_gear_id!(gear.gear_id, "51cm連装砲" | "試製51cm連装砲"))
+        as f64;
 
     let count_46cm_triple_kai = gears.count(gear_id!("46cm三連装砲改")) as f64;
     let count_46cm_triple = gears.count(gear_id!("46cm三連装砲")) as f64;
@@ -174,9 +197,9 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
     let count_41cm_triple_kai2 = gears.count(gear_id!("41cm三連装砲改二")) as f64;
     let count_41cm_twin_kai2 = gears.count(gear_id!("41cm連装砲改二")) as f64;
     let count_41cm_series = gears.count_by(|gear| {
-        matches!(
+        matches_gear_id!(
             gear.gear_id,
-            gear_id!("41cm連装砲") | gear_id!("試製41cm三連装砲") | gear_id!("41cm三連装砲改")
+            "41cm連装砲" | "試製41cm三連装砲" | "41cm三連装砲改"
         )
     }) as f64;
 
@@ -192,46 +215,34 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
     let count_16inch_mk1_twin = gears.count(gear_id!("16inch Mk.I連装砲")) as f64;
 
     let count_381mm = gears.count_by(|gear| {
-        matches!(
-            gear.gear_id,
-            gear_id!("381mm/50 三連装砲") | gear_id!("381mm/50 三連装砲改")
-        )
+        matches_gear_id!(gear.gear_id, "381mm/50 三連装砲" | "381mm/50 三連装砲改")
     }) as f64;
 
-    let count_38cm_quad = gears.count_by(|gear| {
-        matches!(
-            gear.gear_id,
-            gear_id!("38cm四連装砲") | gear_id!("38cm四連装砲改")
-        )
-    }) as f64;
+    let count_38cm_quad = gears
+        .count_by(|gear| matches_gear_id!(gear.gear_id, "38cm四連装砲" | "38cm四連装砲改"))
+        as f64;
 
     let count_35_6cm_38cm_twin = gears.count_by(|gear| {
-        matches!(
+        matches_gear_id!(
             gear.gear_id,
-            gear_id!("35.6cm連装砲")
-                | gear_id!("試製35.6cm三連装砲")
-                | gear_id!("35.6cm連装砲(ダズル迷彩)")
-                | gear_id!("35.6cm三連装砲改(ダズル迷彩仕様)")
-                | gear_id!("35.6cm連装砲改")
-                | gear_id!("35.6cm連装砲改二")
-                | gear_id!("38cm連装砲")
-                | gear_id!("38cm連装砲改")
+            "35.6cm連装砲"
+                | "試製35.6cm三連装砲"
+                | "35.6cm連装砲(ダズル迷彩)"
+                | "35.6cm三連装砲改(ダズル迷彩仕様)"
+                | "35.6cm連装砲改"
+                | "35.6cm連装砲改二"
+                | "38cm連装砲"
+                | "38cm連装砲改"
         )
     }) as f64;
 
     let count_38_1cm = gears.count_by(|gear| {
-        matches!(
-            gear.gear_id,
-            gear_id!("38.1cm Mk.I連装砲") | gear_id!("38.1cm Mk.I/N連装砲改")
-        )
+        matches_gear_id!(gear.gear_id, "38.1cm Mk.I連装砲" | "38.1cm Mk.I/N連装砲改")
     }) as f64;
 
-    let count_30_5cm = gears.count_by(|gear| {
-        matches!(
-            gear.gear_id,
-            gear_id!("30.5cm三連装砲") | gear_id!("30.5cm三連装砲改")
-        )
-    }) as f64;
+    let count_30_5cm = gears
+        .count_by(|gear| matches_gear_id!(gear.gear_id, "30.5cm三連装砲" | "30.5cm三連装砲改"))
+        as f64;
 
     let count_35_6cm_38cm_twin_38_1cm_30_5cm = count_35_6cm_38cm_twin + count_38_1cm + count_30_5cm;
 
@@ -377,16 +388,4 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
     }
 
     r
-}
-
-/// フィット砲補正
-pub fn fit_gun_bonus(ship: &Ship, is_night: bool) -> f64 {
-    match ship.ship_type {
-        ShipType::DD => destroyer_bonus(ship),
-        ShipType::CL | ShipType::CLT | ShipType::CT => light_cruiser_bonus(ship),
-        ShipType::CA | ShipType::CAV => heavy_cruiser_bonus(ship, is_night),
-        ShipType::FBB | ShipType::BB | ShipType::BBV => battleship_bonus(ship, is_night),
-        ShipType::AV => seaplane_tender_bonus(ship),
-        _ => 0.0,
-    }
 }
