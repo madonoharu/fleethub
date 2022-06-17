@@ -19,13 +19,13 @@ const HitRateDetails: React.FCX<HitRateDetailsProps> = ({
   const { t } = useTranslation("common");
   return (
     <div className={className}>
-      <LabeledValue label={t("HitRate")} value={toPercent(hitRate?.total)} />
+      <LabeledValue label={t("hit_rate")} value={toPercent(hitRate?.total)} />
       <LabeledValue
-        label={`${t("HitRate")} ${t("Normal")}`}
+        label={`${t("hit_rate")} ${t("Normal")}`}
         value={toPercent(hitRate?.normal)}
       />
       <LabeledValue
-        label={`${t("HitRate")} ${t("Critical")}`}
+        label={`${t("hit_rate")} ${t("Critical")}`}
         value={toPercent(hitRate?.critical)}
       />
       <LabeledValue

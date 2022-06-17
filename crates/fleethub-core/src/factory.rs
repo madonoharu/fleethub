@@ -101,25 +101,10 @@ impl Factory {
         let state = input.unwrap_or_default();
         let xxh3 = xxh3(&state);
 
-        let AirSquadronState {
-            id,
-            mode,
-            g1,
-            g2,
-            g3,
-            g4,
-            ss1,
-            ss2,
-            ss3,
-            ss4,
-            ..
-        } = state;
-
-        let create_gear = |g: Option<GearState>| self.create_gear(g);
-
-        let gears = [g1, g2, g3, g4]
+        let gears = state
+            .gears
             .into_iter()
-            .map(create_gear)
+            .map(|gear| self.create_gear(gear))
             .collect::<GearArray>();
 
         let max_slots: SlotSizeVec = (0..4)
@@ -139,16 +124,17 @@ impl Factory {
             .map(Some)
             .collect();
 
-        let slots = [ss1, ss2, ss3, ss4]
+        let slots = state
+            .slots
             .into_iter()
             .enumerate()
             .map(|(index, ss)| ss.or_else(|| max_slots.get(index).cloned().flatten()))
             .collect();
 
         AirSquadron {
-            id: id.unwrap_or_default(),
+            id: state.id.unwrap_or_default(),
             xxh3,
-            mode: mode.unwrap_or_default(),
+            mode: state.mode.unwrap_or_default(),
             gears,
             slots,
             max_slots,

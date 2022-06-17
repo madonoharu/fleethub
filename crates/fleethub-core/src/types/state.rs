@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
 use tsify::Tsify;
@@ -47,6 +48,24 @@ impl GearVecState {
             gx,
         } = self;
         [g1, g2, g3, g4, g5, gx].into_iter().map(|g| g.as_ref())
+    }
+}
+
+impl IntoIterator for GearVecState {
+    type Item = Option<GearState>;
+    type IntoIter = std::array::IntoIter<Self::Item, 6>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        let Self {
+            g1,
+            g2,
+            g3,
+            g4,
+            g5,
+            gx,
+        } = self;
+
+        [g1, g2, g3, g4, g5, gx].into_iter()
     }
 }
 
@@ -110,6 +129,13 @@ pub struct ShipState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub luck_mod: Option<i16>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[tsify(type = "number")]
+    pub day_gunfit_accuracy: Option<OrderedFloat<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[tsify(type = "number")]
+    pub night_gunfit_accuracy: Option<OrderedFloat<f64>>,
+
     #[serde(flatten)]
     pub gears: GearVecState,
     #[serde(flatten)]
@@ -168,29 +194,10 @@ pub struct AirSquadronState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mode: Option<AirSquadronMode>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub g1: Option<GearState>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub g2: Option<GearState>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub g3: Option<GearState>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub g4: Option<GearState>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub g5: Option<GearState>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gx: Option<GearState>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ss1: Option<u8>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ss2: Option<u8>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ss3: Option<u8>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ss4: Option<u8>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ss5: Option<u8>,
+    #[serde(flatten)]
+    pub gears: GearVecState,
+    #[serde(flatten)]
+    pub slots: SlotSizeVecState,
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]

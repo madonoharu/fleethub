@@ -32,9 +32,10 @@ type TFn = TFunction<"common", undefined>;
 
 const createDamageColumns = (t: TFn): ColumnProps<{ stats: AttackStats }>[] => [
   {
-    label: `${t("HitRate")} (${t("Critical")})`,
+    label: `${t("hit_rate")} (${t("Critical")})`,
+    align: "right",
     getValue: (item) => (
-      <Flexbox gap={1}>
+      <Flexbox gap={1} justifyContent="flex-end">
         <span>{toPercent(item.stats.hit_rate?.total)}</span>
         <span>({toPercent(item.stats.hit_rate?.critical)})</span>
         <InfoButton
@@ -51,6 +52,7 @@ const createDamageColumns = (t: TFn): ColumnProps<{ stats: AttackStats }>[] => [
   },
   {
     label: t("Normal"),
+    align: "right",
     getValue: (item) => {
       const { damage, attack_power } = item.stats;
       if (!damage) return "?";
@@ -72,6 +74,7 @@ const createDamageColumns = (t: TFn): ColumnProps<{ stats: AttackStats }>[] => [
   },
   {
     label: t("Critical"),
+    align: "right",
     getValue: (item) => {
       const { damage, attack_power } = item.stats;
       if (!damage) return "?";
@@ -98,6 +101,7 @@ const createAttackPowerColumns = (
 ): ColumnProps<{ stats: AttackStats }>[] => [
   {
     label: t("Normal"),
+    align: "right",
     getValue: (item) => (
       <Typography
         variant="inherit"
@@ -109,6 +113,7 @@ const createAttackPowerColumns = (
   },
   {
     label: t("Critical"),
+    align: "right",
     getValue: (item) => (
       <Typography
         variant="inherit"
@@ -131,7 +136,7 @@ export const createAttackTableColumns = (
   return [
     ...inner,
     {
-      label: t("Details"),
+      label: null,
       getValue: ({ stats }) => {
         const { attack_power, attack_power_params } = stats;
         if (!attack_power || !attack_power_params) return null;
@@ -167,16 +172,18 @@ const AttackTable: React.FCX<AttackTableProps> = ({
   const { t } = useTranslation("common");
 
   const data: AttackInfoItem<DayCutin | NightCutin | null>[] = info.items;
-
   const columns: ColumnProps<InfoItem>[] = [
     {
       label: t("Type"),
       getValue: (item) => (
-        <Flexbox gap={1}>
-          <AttackChip type={type} cutin={item.cutin} />
-          <span>{toPercent(item.rate)}</span>
-        </Flexbox>
+        <AttackChip type={type} cutin={item.cutin} css={{ width: "100%" }} />
       ),
+    },
+
+    {
+      label: t("ProcRate"),
+      align: "right",
+      getValue: (item) => toPercent(item.rate),
     },
 
     ...createAttackTableColumns(t, disableDamage),
