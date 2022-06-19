@@ -17,6 +17,7 @@ const ReactGkcoi = dynamic(() => import("./ReactGkcoi"), { ssr: false });
 
 const THEME_NAMES: Record<GkcoiTheme, string> = {
   dark: "Dark",
+  white: "White",
   "dark-ex": "遠征 dark-ex",
   official: "公式 official",
   "74lc": "七四式(大型) 74lc",
