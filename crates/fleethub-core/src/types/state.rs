@@ -141,7 +141,8 @@ pub struct ShipState {
     #[tsify(type = "number")]
     pub night_gunfit_accuracy: Option<OrderedFloat<f64>>,
 
-    pub custom_power_mods: Option<CustomPowerModifiers>,
+    #[serde(default)]
+    pub custom_power_mods: CustomPowerModifiers,
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]

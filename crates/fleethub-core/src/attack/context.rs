@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-use crate::types::{AirState, CustomPowerModifiers, Engagement, Formation, OrgType, Role};
+use crate::types::{AirState, Engagement, Formation, OrgType, Role};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -30,5 +30,4 @@ pub struct WarfareContext {
     pub target_env: WarfareShipEnvironment,
     pub engagement: Engagement,
     pub air_state: AirState,
-    pub custom_mods: CustomPowerModifiers,
 }

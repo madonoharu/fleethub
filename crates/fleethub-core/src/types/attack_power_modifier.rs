@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Tsify)]
+#[serde(default)]
 pub struct AttackPowerModifier {
     pub a: f64,
     pub b: f64,
@@ -77,11 +78,10 @@ impl SpecialEnemyModifiers {
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi)]
+#[serde(default)]
 pub struct CustomPowerModifiers {
-    #[serde(default)]
     pub precap_mod: AttackPowerModifier,
-    #[serde(default)]
     pub postcap_mod: AttackPowerModifier,
-    #[serde(default)]
     pub basic_power_mod: AttackPowerModifier,
 }

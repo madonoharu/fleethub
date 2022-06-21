@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import { CustomModifiers } from "fleethub-core";
+import { CustomPowerModifiers } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -9,12 +9,12 @@ import AttackPowerModifierForm from "./AttackPowerModifierForm";
 
 const KEYS = ["basic_power_mod", "precap_mod", "postcap_mod"] as const;
 
-export type CustomModifiersFormProps = {
-  value: CustomModifiers;
-  onChange?: (value: CustomModifiers) => void;
+export type CustomPowerModifiersFormProps = {
+  value: CustomPowerModifiers;
+  onChange?: (value: CustomPowerModifiers) => void;
 };
 
-const CustomModifiersForm: React.FCX<CustomModifiersFormProps> = ({
+const CustomPowerModifiersForm: React.FCX<CustomPowerModifiersFormProps> = ({
   className,
   style,
   value,
@@ -23,8 +23,8 @@ const CustomModifiersForm: React.FCX<CustomModifiersFormProps> = ({
   const { t } = useTranslation("common");
 
   const bind =
-    <K extends keyof CustomModifiers>(key: K) =>
-    (input: CustomModifiers[K]) => {
+    <K extends keyof CustomPowerModifiers>(key: K) =>
+    (input: CustomPowerModifiers[K]) => {
       onChange?.({ ...value, [key]: input });
     };
 
@@ -40,4 +40,4 @@ const CustomModifiersForm: React.FCX<CustomModifiersFormProps> = ({
   );
 };
 
-export default CustomModifiersForm;
+export default CustomPowerModifiersForm;

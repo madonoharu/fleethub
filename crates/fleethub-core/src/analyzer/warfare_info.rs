@@ -9,10 +9,7 @@ use crate::{
         TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
     },
     ship::Ship,
-    types::{
-        AirState, BattleConfig, CustomPowerModifiers, DayCutin, Engagement, Formation, NightCutin,
-        OrgType, Role,
-    },
+    types::{AirState, BattleConfig, DayCutin, Engagement, Formation, NightCutin, OrgType, Role},
 };
 
 use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightCutinRateAnalyzer};
@@ -30,7 +27,6 @@ pub struct WarfareAnalyzerShipEnvironment {
     pub formation: Formation,
     pub fleet_los_mod: Option<f64>,
     pub night_situation: NightSituation,
-    pub custom_mods: CustomPowerModifiers,
 }
 
 impl WarfareAnalyzerShipEnvironment {
@@ -79,7 +75,6 @@ impl WarfareAnalyzerContext {
             target_env: self.target_env.as_warfare_ship_environment(),
             engagement: self.engagement,
             air_state: self.air_state,
-            custom_mods: self.attacker_env.custom_mods.clone(),
         }
     }
 }

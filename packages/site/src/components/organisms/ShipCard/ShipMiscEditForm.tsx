@@ -14,6 +14,7 @@ import {
   MoraleStateIcon,
 } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
+import CustomPowerModifiersForm from "../CustomModifiersDialog/CustomPowerModifiersForm";
 import ResettableInput from "../ResettableInput";
 
 import FuelAmmoForm from "./FuelAmmoForm";
@@ -123,6 +124,11 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
       <Divider label={`${t("fuel")} & ${t("ammo")}`} />
       <FuelAmmoForm ship={ship} onChange={onChange} />
+
+      <CustomPowerModifiersForm
+        value={ship.state().custom_power_mods!}
+        onChange={(v) => onChange?.({ custom_power_mods: v })}
+      />
 
       <Divider label={`${t("Override")}`} />
       <Stack direction="row" gap={1}>

@@ -16,8 +16,8 @@ use crate::{
     plane::{Plane, PlaneImpl, PlaneMut},
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
-        DamageState, DayCutin, EBonuses, GearAttr, GearType, MoraleState, ShipAttr, ShipCategory,
-        ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
+        CustomPowerModifiers, DamageState, DayCutin, EBonuses, GearAttr, GearType, MoraleState,
+        ShipAttr, ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
     },
     utils::xxh3,
 };
@@ -903,6 +903,10 @@ impl Ship {
 
     pub fn state(&self) -> ShipState {
         self.state.clone()
+    }
+
+    pub fn custom_power_mods(&self) -> CustomPowerModifiers {
+        self.state.custom_power_mods.clone()
     }
 
     pub fn meta(&self) -> ShipMeta {
