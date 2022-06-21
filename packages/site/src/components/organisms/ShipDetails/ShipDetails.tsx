@@ -18,6 +18,7 @@ import {
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import AirStateSelect from "../AirStateSelect";
+import CustomModifiersDialog from "../CustomModifiersDialog";
 import EngagementSelect from "../EngagementSelect";
 import ShipCard from "../ShipCard";
 
@@ -139,17 +140,18 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
         />
       </EnemyShipEnvModal>
 
-      <Flexbox
-        gap={1}
-        css={{
-          "> *": {
-            width: "50%",
-          },
-        }}
-      >
-        <ShipCard ship={ship} comp={comp} visibleMiscStats disableDetails />
-        <AttackPowerAnalyzer core={core} state={state} ship={ship} />
-      </Flexbox>
+      <Stack gap={1} flexDirection="row">
+        <Stack gap={1} flexBasis="100%">
+          <ShipCard ship={ship} comp={comp} visibleMiscStats disableDetails />
+          <CustomModifiersDialog ship={ship} />
+        </Stack>
+        <AttackPowerAnalyzer
+          css={{ flexBasis: "100%" }}
+          core={core}
+          state={state}
+          ship={ship}
+        />
+      </Stack>
 
       <ShipDetailsEnemyList state={state} ship={ship} />
     </Stack>

@@ -1,8 +1,8 @@
 mod master_data;
 
 use fleethub_core::{
-    attack::{special_enemy_modifiers, AttackPowerModifier},
-    types::{gear_id, GearState, GearVecState, ShipState, SpecialEnemyType},
+    attack::special_enemy_modifiers,
+    types::{gear_id, AttackPowerModifier, GearState, GearVecState, ShipState, SpecialEnemyType},
 };
 use master_data::FH_CORE;
 

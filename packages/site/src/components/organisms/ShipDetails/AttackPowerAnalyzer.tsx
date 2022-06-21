@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import { Ship, WarfareAnalyzerContext, FhCore } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";

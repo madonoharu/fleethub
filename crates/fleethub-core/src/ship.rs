@@ -16,8 +16,8 @@ use crate::{
     plane::{Plane, PlaneImpl, PlaneMut},
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
-        DamageState, DayCutin, EBonuses, GearAttr, GearType, MoraleState, ShipAttr, ShipCategory,
-        ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
+        CustomPowerModifiers, DamageState, DayCutin, EBonuses, GearAttr, GearType, MoraleState,
+        ShipAttr, ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
     },
     utils::xxh3,
 };
@@ -905,6 +905,10 @@ impl Ship {
         self.state.clone()
     }
 
+    pub fn custom_power_mods(&self) -> CustomPowerModifiers {
+        self.state.custom_power_mods.clone()
+    }
+
     pub fn meta(&self) -> ShipMeta {
         ShipMeta {
             id: self.id.clone(),
@@ -1294,13 +1298,8 @@ impl Ship {
             return 1.0;
         }
 
-        let rate = self.ammo as f64 / max as f64;
-
-        if rate >= 0.5 {
-            1.0
-        } else {
-            rate * 2.0
-        }
+        let percent = self.ammo * 100 / max;
+        (percent as f64 / 50.0).min(1.0)
     }
 
     pub fn remaining_fuel_mod(&self) -> f64 {
@@ -1310,13 +1309,8 @@ impl Ship {
             return 0.0;
         }
 
-        let rate = self.fuel as f64 / max as f64;
-
-        if rate < 0.75 {
-            75.0 - (rate * 100.0).floor()
-        } else {
-            0.0
-        }
+        let percent = self.fuel * 100 / max;
+        75_u16.saturating_sub(percent) as f64
     }
 
     pub fn fighter_power(&self, air_type: AirWaveType) -> Option<i32> {
@@ -1582,5 +1576,48 @@ mod test {
 
         def_stats_test!(firepower, torpedo, armor, anti_air);
         def_stats_with_level_test!(evasion, los, asw);
+    }
+
+    #[test]
+    fn test_remaining_ammo_mod() {
+        let ship = Ship {
+            master: MasterShip {
+                ammo: 130,
+                ..Default::default()
+            },
+            ammo: 63,
+            ..Default::default()
+        };
+
+        assert_eq!(ship.remaining_ammo_mod(), 0.96)
+    }
+
+    #[test]
+    fn test_remaining_fuel_mod() {
+        assert_eq!(
+            Ship {
+                master: MasterShip {
+                    fuel: 130,
+                    ..Default::default()
+                },
+                fuel: 98,
+                ..Default::default()
+            }
+            .remaining_fuel_mod(),
+            0.0
+        );
+
+        assert_eq!(
+            Ship {
+                master: MasterShip {
+                    fuel: 130,
+                    ..Default::default()
+                },
+                fuel: 97,
+                ..Default::default()
+            }
+            .remaining_fuel_mod(),
+            1.0
+        )
     }
 }

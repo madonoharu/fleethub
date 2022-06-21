@@ -3,11 +3,7 @@ import { AttackPowerModifier } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { NumberInput } from "../../molecules";
-
-const StyledInput = styled(NumberInput)`
-  width: 120px;
-`;
+import ResettableInput from "../ResettableInput";
 
 type AttackPowerModifierFormProps = {
   value: AttackPowerModifier | undefined;
@@ -25,17 +21,19 @@ const AttackPowerModifierForm: React.FCX<AttackPowerModifierFormProps> = ({
 
   return (
     <div className={className} style={style}>
-      <StyledInput
+      <ResettableInput
         label={t("Multiplicative")}
         min={0}
         step={0.1}
+        defaultValue={1}
         value={current.a}
-        onChange={(a) => onChange?.({ ...current, a })}
+        onChange={(a) => onChange?.({ ...current, a: a ?? undefined })}
       />
-      <StyledInput
+      <ResettableInput
         label={t("Additive")}
+        defaultValue={0}
         value={current.b}
-        onChange={(b) => onChange?.({ ...current, b })}
+        onChange={(b) => onChange?.({ ...current, b: b ?? undefined })}
       />
     </div>
   );

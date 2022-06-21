@@ -1,10 +1,9 @@
 use rand::prelude::*;
 
 use crate::{
-    attack::AttackPowerModifier,
     member::MemberImpl,
     plane::{AirstrikeType, PlaneImpl},
-    types::ContactRank,
+    types::{AttackPowerModifier, ContactRank},
 };
 
 use super::{AttackParams, AttackPowerParams, DefenseParams, HitRateParams, ProficiencyModifiers};

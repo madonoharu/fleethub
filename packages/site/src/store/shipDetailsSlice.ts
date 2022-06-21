@@ -23,7 +23,6 @@ const initialShipEnv: WarfareAnalyzerShipEnvironment = {
   formation: "LineAhead",
   fleet_los_mod: 0,
   night_situation: initialNightSituation,
-  custom_mods: {},
 };
 
 const initialState: ShipDetailsState = {
