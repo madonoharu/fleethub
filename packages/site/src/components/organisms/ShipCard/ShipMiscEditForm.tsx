@@ -126,7 +126,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
       <FuelAmmoForm ship={ship} onChange={onChange} />
 
       <CustomPowerModifiersForm
-        value={ship.state().custom_power_mods!}
+        value={ship.custom_power_mods()}
         onChange={(v) => onChange?.({ custom_power_mods: v })}
       />
 
