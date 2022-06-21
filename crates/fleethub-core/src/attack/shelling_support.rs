@@ -1,12 +1,11 @@
 use crate::{
-    types::{BattleConfig, Engagement, FormationDef},
+    types::{AttackPowerModifier, BattleConfig, CustomPowerModifiers, Engagement, FormationDef},
     Ship,
 };
 
 use super::{
-    special_enemy_mods::shelling_support_special_enemy_modifiers, AttackParams,
-    AttackPowerModifier, AttackPowerParams, CustomModifiers, DefenseParams, HitRateParams,
-    ShellingAttackType, WarfareContext,
+    special_enemy_mods::shelling_support_special_enemy_modifiers, AttackParams, AttackPowerParams,
+    DefenseParams, HitRateParams, ShellingAttackType, WarfareContext,
 };
 
 const SHELLING_SUPPORT_POWER_CAP: f64 = 170.0;
@@ -20,7 +19,7 @@ pub struct ShellingSupportAttackParams<'a> {
     pub engagement: Engagement,
     pub attacker_formation_def: &'a FormationDef,
     pub target_formation_def: &'a FormationDef,
-    pub custom_mods: CustomModifiers,
+    pub custom_mods: CustomPowerModifiers,
     pub defense_params: Option<DefenseParams>,
 }
 

@@ -4,12 +4,15 @@ use tsify::Tsify;
 use crate::{
     attack::{
         get_day_battle_attack_type, get_night_battle_attack_type, get_oasw_attack_type,
-        AswAttackContext, AswAttackType, AswTime, CustomModifiers, DayBattleAttackType,
-        NightAttackContext, NightBattleAttackType, NightSituation, ShellingAttackContext,
-        ShellingSupportAttackContext, TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
+        AswAttackContext, AswAttackType, AswTime, DayBattleAttackType, NightAttackContext,
+        NightBattleAttackType, NightSituation, ShellingAttackContext, ShellingSupportAttackContext,
+        TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
     },
     ship::Ship,
-    types::{AirState, BattleConfig, DayCutin, Engagement, Formation, NightCutin, OrgType, Role},
+    types::{
+        AirState, BattleConfig, CustomPowerModifiers, DayCutin, Engagement, Formation, NightCutin,
+        OrgType, Role,
+    },
 };
 
 use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightCutinRateAnalyzer};
@@ -27,7 +30,7 @@ pub struct WarfareAnalyzerShipEnvironment {
     pub formation: Formation,
     pub fleet_los_mod: Option<f64>,
     pub night_situation: NightSituation,
-    pub custom_mods: CustomModifiers,
+    pub custom_mods: CustomPowerModifiers,
 }
 
 impl WarfareAnalyzerShipEnvironment {

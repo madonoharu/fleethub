@@ -5,13 +5,13 @@ use tsify::Tsify;
 
 use crate::{
     attack::{
-        get_day_battle_attack_type, CustomModifiers, DayBattleAttackType, DefenseParams,
-        ShellingAttackType, ShellingSupportAttackParams,
+        get_day_battle_attack_type, DayBattleAttackType, DefenseParams, ShellingAttackType,
+        ShellingSupportAttackParams,
     },
     comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    types::{BattleConfig, Engagement, Formation, FormationDef, Side},
+    types::{BattleConfig, CustomPowerModifiers, Engagement, Formation, FormationDef, Side},
 };
 
 use super::{BattleLogger, SimulatorResult};
@@ -88,7 +88,7 @@ pub struct ShellingSupportSimulatorParams {
     attacker_formation: Formation,
     target_formation: Formation,
     engagement: Engagement,
-    custom_mods: CustomModifiers,
+    custom_mods: CustomPowerModifiers,
 }
 
 struct ShellingSupportBattle<'a, R>
@@ -101,7 +101,7 @@ where
     engagement: Engagement,
     attacker_formation_def: &'a FormationDef,
     target_formation_def: &'a FormationDef,
-    custom_mods: CustomModifiers,
+    custom_mods: CustomPowerModifiers,
 }
 
 impl<'a, R> ShellingSupportBattle<'a, R>

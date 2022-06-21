@@ -4,13 +4,13 @@ use tsify::Tsify;
 use crate::{
     attack::{DefenseParams, HitRateParams},
     ship::Ship,
-    types::{gear_id, matches_gear_id, BattleConfig, Engagement, GearAttr, GearType, ShipType},
+    types::{
+        gear_id, matches_gear_id, AttackPowerModifier, BattleConfig, CustomPowerModifiers,
+        Engagement, GearAttr, GearType, ShipType,
+    },
 };
 
-use super::{
-    AttackParams, AttackPowerModifier, AttackPowerParams, CustomModifiers, WarfareContext,
-    WarfareShipEnvironment,
-};
+use super::{AttackParams, AttackPowerParams, WarfareContext, WarfareShipEnvironment};
 
 const ASW_POWER_CAP: f64 = 170.0;
 const ASW_ACCURACY_CONSTANT: f64 = 80.0;
@@ -55,7 +55,7 @@ pub struct AswAttackContext<'a> {
     pub formation_accuracy_mod: f64,
     pub formation_evasion_mod: f64,
 
-    pub custom_mods: &'a CustomModifiers,
+    pub custom_mods: &'a CustomPowerModifiers,
 }
 
 impl<'a> AswAttackContext<'a> {

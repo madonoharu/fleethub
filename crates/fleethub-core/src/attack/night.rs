@@ -5,15 +5,14 @@ use crate::{
     attack::DefenseParams,
     ship::Ship,
     types::{
-        BattleConfig, ContactRank, GearType, NightAttackType, NightSpecialAttack, ShipType,
-        SpecialAttackDef,
+        AttackPowerModifier, BattleConfig, ContactRank, CustomPowerModifiers, GearType,
+        NightAttackType, NightSpecialAttack, ShipType, SpecialAttackDef,
     },
 };
 
 use super::{
     shelling::ProficiencyModifiers, special_enemy_mods::special_enemy_modifiers, AttackParams,
-    AttackPowerModifier, AttackPowerParams, CustomModifiers, HitRateParams, WarfareContext,
-    WarfareShipEnvironment,
+    AttackPowerParams, HitRateParams, WarfareContext, WarfareShipEnvironment,
 };
 
 const NIGHT_POWER_CAP: f64 = 360.0;
@@ -39,7 +38,7 @@ pub struct NightAttackContext<'a> {
     pub formation_accuracy_mod: f64,
     pub formation_evasion_mod: f64,
 
-    pub custom_mods: &'a CustomModifiers,
+    pub custom_mods: &'a CustomPowerModifiers,
 
     pub special_attack_def: Option<SpecialAttackDef<NightSpecialAttack>>,
 }
