@@ -2,9 +2,12 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 use crate::{
-    attack::{AttackPowerModifier, AttackPowerParams, CustomModifiers, HitRateParams},
+    attack::{AttackPowerParams, HitRateParams},
     ship::Ship,
-    types::{AirState, BattleConfig, Engagement, ShellingSpecialAttack, SpecialAttackDef},
+    types::{
+        AirState, AttackPowerModifier, BattleConfig, Engagement, ShellingSpecialAttack,
+        SpecialAttackDef,
+    },
 };
 
 use super::{
@@ -44,7 +47,6 @@ pub struct ShellingAttackContext<'a> {
 
     pub attacker_env: &'a WarfareShipEnvironment,
     pub target_env: &'a WarfareShipEnvironment,
-    pub custom_mods: &'a CustomModifiers,
     pub engagement: Engagement,
     pub air_state: AirState,
 
@@ -88,7 +90,6 @@ impl<'a> ShellingAttackContext<'a> {
             attack_type,
             attacker_env,
             target_env,
-            custom_mods: &warfare_context.custom_mods,
             air_state: warfare_context.air_state,
             engagement: warfare_context.engagement,
             formation_power_mod,
@@ -177,7 +178,7 @@ impl<'a> ShellingAttackContext<'a> {
             let precap_mod = AttackPowerModifier::new(a14, b14);
             let postcap_mod = AttackPowerModifier::new(a11, 0.0);
 
-            let custom_mods = self.custom_mods.clone();
+            let custom_mods = attacker.custom_power_mods();
 
             let params = AttackPowerParams {
                 basic,

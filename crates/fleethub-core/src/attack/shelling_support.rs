@@ -1,12 +1,11 @@
 use crate::{
-    types::{BattleConfig, Engagement, FormationDef},
+    types::{AttackPowerModifier, BattleConfig, Engagement, FormationDef},
     Ship,
 };
 
 use super::{
-    special_enemy_mods::shelling_support_special_enemy_modifiers, AttackParams,
-    AttackPowerModifier, AttackPowerParams, CustomModifiers, DefenseParams, HitRateParams,
-    ShellingAttackType, WarfareContext,
+    special_enemy_mods::shelling_support_special_enemy_modifiers, AttackParams, AttackPowerParams,
+    DefenseParams, HitRateParams, ShellingAttackType, WarfareContext,
 };
 
 const SHELLING_SUPPORT_POWER_CAP: f64 = 170.0;
@@ -20,7 +19,6 @@ pub struct ShellingSupportAttackParams<'a> {
     pub engagement: Engagement,
     pub attacker_formation_def: &'a FormationDef,
     pub target_formation_def: &'a FormationDef,
-    pub custom_mods: CustomModifiers,
     pub defense_params: Option<DefenseParams>,
 }
 
@@ -33,7 +31,6 @@ impl<'a> ShellingSupportAttackParams<'a> {
             engagement,
             attacker_formation_def,
             target_formation_def,
-            custom_mods,
             defense_params,
         } = self;
 
@@ -98,7 +95,7 @@ impl<'a> ShellingSupportAttackParams<'a> {
                 remaining_ammo_mod,
                 armor_penetration: 0.0,
                 special_enemy_mods,
-                custom_mods,
+                custom_mods: attacker.custom_power_mods(),
             };
 
             Some(params)
@@ -162,8 +159,6 @@ impl<'a> ShellingSupportAttackContext<'a> {
         let attacker_formation_def = self.config.get_formation_def_by_env(attacker_env);
         let target_formation_def = self.config.get_formation_def_by_env(target_env);
 
-        let custom_mods = self.warfare_context.custom_mods.clone();
-
         let armor_penetration = 0.0;
         let defense_params =
             DefenseParams::from_target(target, target_env.org_type.side(), armor_penetration);
@@ -175,7 +170,6 @@ impl<'a> ShellingSupportAttackContext<'a> {
             engagement: self.warfare_context.engagement,
             attacker_formation_def,
             target_formation_def,
-            custom_mods,
             defense_params,
         }
     }

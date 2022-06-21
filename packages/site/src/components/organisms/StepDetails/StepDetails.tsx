@@ -1,5 +1,5 @@
 import { Path, PathValue } from "@fh/utils";
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { produce } from "immer";
 import set from "lodash/set";
@@ -136,22 +136,22 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
           value={config.enemy.night_situation}
           onChange={bind("enemy.night_situation")}
         />
-        <CustomModifiersDialog
-          value={config.player.custom_mods}
-          onChange={bind("player.custom_mods")}
-        />
-        <CustomModifiersDialog
-          value={config.enemy.custom_mods}
-          onChange={bind("enemy.custom_mods")}
-        />
-
-        {playerShip && (
-          <ShipCard ship={playerShip} comp={playerComp} visibleMiscStats />
-        )}
-
-        {enemyShip && (
-          <ShipCard ship={enemyShip} comp={enemyComp} visibleMiscStats />
-        )}
+        <Stack gap={1}>
+          {playerShip && (
+            <>
+              <ShipCard ship={playerShip} comp={playerComp} visibleMiscStats />
+              <CustomModifiersDialog ship={playerShip} />
+            </>
+          )}
+        </Stack>
+        <Stack gap={1}>
+          {enemyShip && (
+            <>
+              <ShipCard ship={enemyShip} comp={enemyComp} visibleMiscStats />
+              <CustomModifiersDialog ship={enemyShip} />
+            </>
+          )}
+        </Stack>
       </GridContainer>
 
       <Tabs

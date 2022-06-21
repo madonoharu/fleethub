@@ -30,7 +30,7 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
 }) => {
   const { t } = useTranslation("common");
 
-  const hasValue = value !== null && value !== defaultValue;
+  const hasValue = typeof value === "number" && value !== defaultValue;
   const color = hasValue ? "secondary" : undefined;
 
   const handleReset = () => {

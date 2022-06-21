@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use strum::EnumIter;
 use tsify::Tsify;
 
-use super::OrgType;
+use super::{CustomPowerModifiers, OrgType};
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -129,6 +129,11 @@ pub struct ShipState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub luck_mod: Option<i16>,
 
+    #[serde(flatten)]
+    pub gears: GearVecState,
+    #[serde(flatten)]
+    pub slots: SlotSizeVecState,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     #[tsify(type = "number")]
     pub day_gunfit_accuracy: Option<OrderedFloat<f64>>,
@@ -136,10 +141,8 @@ pub struct ShipState {
     #[tsify(type = "number")]
     pub night_gunfit_accuracy: Option<OrderedFloat<f64>>,
 
-    #[serde(flatten)]
-    pub gears: GearVecState,
-    #[serde(flatten)]
-    pub slots: SlotSizeVecState,
+    #[serde(default)]
+    pub custom_power_mods: CustomPowerModifiers,
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]

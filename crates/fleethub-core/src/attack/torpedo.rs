@@ -1,12 +1,12 @@
 use crate::{
     ship::Ship,
-    types::{AirState, BattleConfig, Engagement},
+    types::{AirState, AttackPowerModifier, BattleConfig, Engagement},
 };
 
 use super::{
     fleet_factor::{self, ShipPosition},
-    AttackParams, AttackPowerModifier, AttackPowerParams, CustomModifiers, DefenseParams,
-    HitRateParams, WarfareContext, WarfareShipEnvironment,
+    AttackParams, AttackPowerParams, DefenseParams, HitRateParams, WarfareContext,
+    WarfareShipEnvironment,
 };
 
 const TORPEDO_POWER_CAP: f64 = 180.0;
@@ -15,7 +15,6 @@ const TORPEDO_CRITICAL_RATE_CONSTANT: f64 = 1.5;
 pub struct TorpedoAttackContext<'a> {
     pub attacker_env: &'a WarfareShipEnvironment,
     pub target_env: &'a WarfareShipEnvironment,
-    pub custom_mods: &'a CustomModifiers,
     pub engagement: Engagement,
     pub air_state: AirState,
 
@@ -39,7 +38,6 @@ impl<'a> TorpedoAttackContext<'a> {
         Self {
             attacker_env,
             target_env,
-            custom_mods: &warfare_context.custom_mods,
             air_state: warfare_context.air_state,
             engagement: warfare_context.engagement,
             formation_power_mod,
@@ -71,7 +69,7 @@ impl<'a> TorpedoAttackContext<'a> {
             proficiency_critical_mod: None,
             armor_penetration: 0.0,
             special_enemy_mods: Default::default(),
-            custom_mods: self.custom_mods.clone(),
+            custom_mods: attacker.custom_power_mods(),
         })
     }
 

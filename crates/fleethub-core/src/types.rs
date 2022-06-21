@@ -1,5 +1,6 @@
 mod air_combat;
 mod air_state;
+mod attack_power_modifier;
 mod battle_config;
 mod const_id;
 mod contact_rank;
@@ -25,6 +26,7 @@ mod state;
 
 pub use air_combat::*;
 pub use air_state::*;
+pub use attack_power_modifier::*;
 pub use battle_config::*;
 #[allow(unused_imports)]
 pub use const_id::*;

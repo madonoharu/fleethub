@@ -1,13 +1,14 @@
 import BuildIcon from "@mui/icons-material/Build";
 import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/system";
-import { AttackPowerModifier, CustomModifiers } from "fleethub-core";
+import { AttackPowerModifier, CustomPowerModifiers, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useModal } from "../../../hooks";
+import { useAppDispatch, useModal } from "../../../hooks";
+import { shipsSlice } from "../../../store";
 
-import CustomModifiersForm from "./CustomModifiersForm";
+import CustomPowerModifiersForm from "./CustomPowerModifiersForm";
 
 const KEYS = ["basic_power_mod", "precap_mod", "postcap_mod"] as const;
 
@@ -21,21 +22,29 @@ function hasMod(
   return mod.a != 1 || mod.b != 0;
 }
 
-type CustomModifiersDialogProps = {
-  value: CustomModifiers;
-  onChange?: (value: CustomModifiers) => void;
+type CustomPowerModifiersDialogProps = {
+  ship: Ship;
 };
 
-const CustomModifiersDialog: React.FCX<CustomModifiersDialogProps> = ({
-  className,
-  style,
-  value,
-  onChange,
-}) => {
+const CustomPowerModifiersDialog: React.FCX<
+  CustomPowerModifiersDialogProps
+> = ({ className, style, ship }) => {
   const { t } = useTranslation("common");
   const Modal = useModal();
 
-  const visibleMods = Object.values(value).some(hasMod);
+  const mods = ship.custom_power_mods();
+  const visibleMods = Object.values(mods).some(hasMod);
+
+  const dispatch = useAppDispatch();
+
+  const handleChange = (value: CustomPowerModifiers) => {
+    dispatch(
+      shipsSlice.actions.update({
+        id: ship.id,
+        changes: { custom_power_mods: value },
+      })
+    );
+  };
 
   return (
     <div>
@@ -50,15 +59,19 @@ const CustomModifiersDialog: React.FCX<CustomModifiersDialogProps> = ({
         {visibleMods ? (
           <Stack>
             {KEYS.map((key) => {
-              const mod = value[key];
+              const mod = mods[key];
 
               if (!hasMod(mod)) {
                 return null;
               }
 
-              const label = t(key as keyof CustomModifiers);
+              const label = t(key as keyof CustomPowerModifiers);
 
-              return <span key={key}>{`${label} x${mod.a} +${mod.b}`}</span>;
+              return (
+                <span key={key}>{`${label} x${mod.a ?? "1.0"} +${
+                  mod.b ?? "0"
+                }`}</span>
+              );
             })}
           </Stack>
         ) : (
@@ -67,13 +80,13 @@ const CustomModifiersDialog: React.FCX<CustomModifiersDialogProps> = ({
       </Button>
 
       <Modal>
-        <CustomModifiersForm value={value} onChange={onChange} />
+        <CustomPowerModifiersForm value={mods} onChange={handleChange} />
       </Modal>
     </div>
   );
 };
 
-export default styled(CustomModifiersDialog)`
+export default styled(CustomPowerModifiersDialog)`
   display: grid;
   grid-template-columns: max-content auto;
   gap: 8px;

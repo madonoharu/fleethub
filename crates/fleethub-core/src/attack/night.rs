@@ -5,15 +5,14 @@ use crate::{
     attack::DefenseParams,
     ship::Ship,
     types::{
-        BattleConfig, ContactRank, GearType, NightAttackType, NightSpecialAttack, ShipType,
-        SpecialAttackDef,
+        AttackPowerModifier, BattleConfig, ContactRank, GearType, NightAttackType,
+        NightSpecialAttack, ShipType, SpecialAttackDef,
     },
 };
 
 use super::{
     shelling::ProficiencyModifiers, special_enemy_mods::special_enemy_modifiers, AttackParams,
-    AttackPowerModifier, AttackPowerParams, CustomModifiers, HitRateParams, WarfareContext,
-    WarfareShipEnvironment,
+    AttackPowerParams, HitRateParams, WarfareContext, WarfareShipEnvironment,
 };
 
 const NIGHT_POWER_CAP: f64 = 360.0;
@@ -38,8 +37,6 @@ pub struct NightAttackContext<'a> {
     pub formation_power_mod: f64,
     pub formation_accuracy_mod: f64,
     pub formation_evasion_mod: f64,
-
-    pub custom_mods: &'a CustomModifiers,
 
     pub special_attack_def: Option<SpecialAttackDef<NightSpecialAttack>>,
 }
@@ -69,7 +66,6 @@ impl<'a> NightAttackContext<'a> {
         Self {
             attacker_env,
             target_env,
-            custom_mods: &warfare_context.custom_mods,
             attacker_situation,
             target_situation,
             attack_type,
@@ -189,7 +185,7 @@ fn calc_attack_power_params(
     let postcap_mod = Default::default();
 
     let special_enemy_mods = special_enemy_modifiers(attacker, target.special_enemy_type(), false);
-    let custom_mods = ctx.custom_mods.clone();
+    let custom_mods = attacker.custom_power_mods();
 
     let base = AttackPowerParams {
         cap: NIGHT_POWER_CAP,

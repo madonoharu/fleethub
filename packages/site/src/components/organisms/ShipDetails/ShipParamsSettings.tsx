@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 import { Divider, Flexbox } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
-import CustomModifiersForm from "../CustomModifiersDialog/CustomModifiersForm";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import OrgTypeSelect from "../OrgTypeSelect";
@@ -158,11 +157,6 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
         color={color}
         value={value.night_situation}
         onChange={bind("night_situation")}
-      />
-
-      <CustomModifiersForm
-        value={value.custom_mods}
-        onChange={bind("custom_mods")}
       />
     </Stack>
   );

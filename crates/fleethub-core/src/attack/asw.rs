@@ -4,13 +4,13 @@ use tsify::Tsify;
 use crate::{
     attack::{DefenseParams, HitRateParams},
     ship::Ship,
-    types::{gear_id, matches_gear_id, BattleConfig, Engagement, GearAttr, GearType, ShipType},
+    types::{
+        gear_id, matches_gear_id, AttackPowerModifier, BattleConfig, Engagement, GearAttr,
+        GearType, ShipType,
+    },
 };
 
-use super::{
-    AttackParams, AttackPowerModifier, AttackPowerParams, CustomModifiers, WarfareContext,
-    WarfareShipEnvironment,
-};
+use super::{AttackParams, AttackPowerParams, WarfareContext, WarfareShipEnvironment};
 
 const ASW_POWER_CAP: f64 = 170.0;
 const ASW_ACCURACY_CONSTANT: f64 = 80.0;
@@ -54,8 +54,6 @@ pub struct AswAttackContext<'a> {
     pub formation_power_mod: f64,
     pub formation_accuracy_mod: f64,
     pub formation_evasion_mod: f64,
-
-    pub custom_mods: &'a CustomModifiers,
 }
 
 impl<'a> AswAttackContext<'a> {
@@ -68,7 +66,6 @@ impl<'a> AswAttackContext<'a> {
         let WarfareContext {
             attacker_env,
             target_env,
-            custom_mods,
             engagement,
             ..
         } = ctx;
@@ -95,8 +92,6 @@ impl<'a> AswAttackContext<'a> {
             formation_power_mod,
             formation_accuracy_mod,
             formation_evasion_mod,
-
-            custom_mods,
         }
     }
 
@@ -159,7 +154,7 @@ impl<'a> AswAttackContext<'a> {
                 ap_shell_mod: None,
                 carrier_power: None,
                 special_enemy_mods: Default::default(),
-                custom_mods: self.custom_mods.clone(),
+                custom_mods: attacker.custom_power_mods(),
             })
         };
 

@@ -1,52 +1,7 @@
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Tsify)]
-pub struct AttackPowerModifier {
-    pub a: f64,
-    pub b: f64,
-}
-
-impl Default for AttackPowerModifier {
-    fn default() -> Self {
-        Self { a: 1.0, b: 0.0 }
-    }
-}
-
-impl From<(f64, f64)> for AttackPowerModifier {
-    #[inline]
-    fn from((a, b): (f64, f64)) -> Self {
-        Self { a, b }
-    }
-}
-
-impl AttackPowerModifier {
-    pub fn new(a: f64, b: f64) -> Self {
-        Self { a, b }
-    }
-
-    pub fn set(&mut self, a: f64, b: f64) {
-        self.a = a;
-        self.b = b;
-    }
-
-    pub fn compose(&self, other: &Self) -> Self {
-        Self {
-            a: self.a * other.a,
-            b: self.b + other.b,
-        }
-    }
-
-    pub fn merge(&mut self, a: f64, b: f64) {
-        self.a *= a;
-        self.b += b;
-    }
-
-    #[inline]
-    pub fn apply(&self, v: f64) -> f64 {
-        self.a * v + self.b
-    }
-}
+use crate::types::{AttackPowerModifier, CustomPowerModifiers};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct SpecialEnemyModifiers {
@@ -66,16 +21,6 @@ impl SpecialEnemyModifiers {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-pub struct CustomModifiers {
-    #[serde(default)]
-    pub precap_mod: AttackPowerModifier,
-    #[serde(default)]
-    pub postcap_mod: AttackPowerModifier,
-    #[serde(default)]
-    pub basic_power_mod: AttackPowerModifier,
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackPowerParams {
     pub basic: f64,
@@ -88,7 +33,7 @@ pub struct AttackPowerParams {
     pub armor_penetration: f64,
     pub remaining_ammo_mod: f64,
     pub special_enemy_mods: SpecialEnemyModifiers,
-    pub custom_mods: CustomModifiers,
+    pub custom_mods: CustomPowerModifiers,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
@@ -219,7 +164,7 @@ mod test {
         let precap = AttackPowerParams {
             basic: 150.0,
             precap_mod: AttackPowerModifier { a: 1.2, b: 0.0 },
-            custom_mods: CustomModifiers {
+            custom_mods: CustomPowerModifiers {
                 precap_mod: AttackPowerModifier { a: 1.3, b: 0.0 },
                 ..Default::default()
             },
@@ -233,7 +178,7 @@ mod test {
             basic: 200.0,
             cap: 180.0,
             postcap_mod: AttackPowerModifier { a: 1.2, b: 0.0 },
-            custom_mods: CustomModifiers {
+            custom_mods: CustomPowerModifiers {
                 postcap_mod: AttackPowerModifier { a: 1.3, b: 0.0 },
                 ..Default::default()
             },

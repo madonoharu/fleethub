@@ -17,8 +17,10 @@ const ReactGkcoi = dynamic(() => import("./ReactGkcoi"), { ssr: false });
 
 const THEME_NAMES: Record<GkcoiTheme, string> = {
   dark: "Dark",
-  white: "White",
+  light: "Light",
   "dark-ex": "遠征 dark-ex",
+  "light-ex": "遠征 light-ex",
+  white: "White",
   official: "公式 official",
   "74lc": "七四式(大型) 74lc",
   "74mc": "七四式(中型) 74mc",
@@ -34,6 +36,7 @@ const GKCOI_LANGS: Dict<string, GkcoiLang> = {
   en: "en",
   ko: "kr",
   "zh-CN": "scn",
+  "zh-TW": "tcn",
 };
 
 type GkcoiScreenProps = {

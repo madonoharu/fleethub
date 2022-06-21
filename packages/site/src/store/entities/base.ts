@@ -27,12 +27,10 @@ export const initialStepConfig: StepConfig = {
   player: {
     formation: "LineAhead",
     night_situation: initialNightSituation,
-    custom_mods: {},
   },
   enemy: {
     formation: "LineAhead",
     night_situation: initialNightSituation,
-    custom_mods: {},
   },
 };
 

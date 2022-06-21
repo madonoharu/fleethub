@@ -10,7 +10,8 @@ use crate::{
 };
 
 fn is_big7(ship: &Ship) -> bool {
-    matches!(ship.ctype, ctype!("長門型") | ctype!("Nelson級"))
+    // なぜか未改造はビッグセブン補正が適応されない
+    matches!(ship.ctype, ctype!("長門型") | ctype!("Nelson級")) && ship.remodel_rank() >= 2
 }
 
 /// Int(2√ﾈﾙｿﾝLv+√3番艦Lv+√5番艦Lv+√ﾈﾙｿﾝ運+0.5√3番艦運+0.5√5番艦運+12)
@@ -132,18 +133,20 @@ pub fn get_fleet_cutin_mod(
         }
 
         FleetCutin::ColoradoCutin => {
-            let base = if shots == 1 { 1.3 } else { 1.15 };
+            let base = if shots == 1 { 1.5 } else { 1.3 };
 
             let second_ship = fleet.ships.get(1).unwrap_or_else(|| unreachable!());
             let third_ship = fleet.ships.get(2).unwrap_or_else(|| unreachable!());
 
             let companion_ship_mod = {
                 let mut v = 1.0;
+                // 2番艦ビッグセブン補正
                 if shots == 2 && is_big7(second_ship) {
-                    v *= 1.1
-                }
-                if shots == 3 && is_big7(third_ship) {
                     v *= 1.15
+                }
+                // 3番艦ビッグセブン補正
+                if shots == 3 && is_big7(third_ship) {
+                    v *= 1.17
                 }
                 v
             };
@@ -155,6 +158,9 @@ pub fn get_fleet_cutin_mod(
                 }
                 if attacker.gears.has_attr(GearAttr::SurfaceRadar) {
                     v *= 1.15
+                }
+                if attacker.gears.has(gear_id!("SG レーダー(後期型)")) {
+                    v *= 1.15;
                 }
                 v
             };
