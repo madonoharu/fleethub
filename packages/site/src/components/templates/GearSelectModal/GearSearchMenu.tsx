@@ -75,7 +75,11 @@ const GearSearchMenu: React.FCX<GearSearchMenuProps> = ({
 
   return (
     <div>
-      <SearchInput value={searchValue} onChange={setSearchValue} />
+      <SearchInput
+        value={searchValue}
+        onChange={setSearchValue}
+        autoFocus={true}
+      />
 
       {searchValue && (
         <GearSearchResult

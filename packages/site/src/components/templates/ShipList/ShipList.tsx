@@ -53,7 +53,11 @@ const ShipList: React.FC<Props> = ({ ships, onSelect }) => {
 
   return (
     <>
-      <SearchInput value={searchValue} onChange={setSearchValue} />
+      <SearchInput
+        value={searchValue}
+        onChange={setSearchValue}
+        autoFocus={true}
+      />
       <FilterBar state={state} update={update} />
       {searchValue ? (
         <ShipSearchResult
