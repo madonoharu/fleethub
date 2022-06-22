@@ -184,13 +184,14 @@ pub fn get_fleet_cutin_mod(
             let s1 = fleet.ships.get(0).unwrap_or_else(|| unreachable!());
             let s2 = fleet.ships.get(1).unwrap_or_else(|| unreachable!());
 
-            let includes_musashi_kai2 = is_musashi_kai2(s1) || is_musashi_kai2(s2);
+            let s1_is_musashi_kai2 = is_musashi_kai2(s1);
+            let includes_musashi_kai2 = s1_is_musashi_kai2 || is_musashi_kai2(s2);
 
             let base = if includes_musashi_kai2 {
                 if shots == 1 {
                     1.4 * 1.1
                 } else {
-                    1.55 * 1.2
+                    1.55 * if s1_is_musashi_kai2 { 1.25 } else { 1.2 }
                 }
             } else {
                 if shots == 1 {

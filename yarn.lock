@@ -678,7 +678,7 @@ __metadata:
     dequal: ^2.0.2
     firebase-admin: ^11.0.0
     fleethub-core: "npm:latest"
-    googleapis: ^103.0.0
+    googleapis: ^104.0.0
     got: 12.1.0
   dependenciesMeta:
     fleethub-core:
@@ -696,9 +696,9 @@ __metadata:
     "@emotion/styled": ^11.9.3
     "@fh/utils": "*"
     "@mui/icons-material": ^5.8.4
-    "@mui/lab": ^5.0.0-alpha.86
-    "@mui/material": ^5.8.4
-    "@mui/system": ^5.8.4
+    "@mui/lab": ^5.0.0-alpha.87
+    "@mui/material": ^5.8.5
+    "@mui/system": ^5.8.5
     "@next/bundle-analyzer": ^12.1.6
     "@reduxjs/toolkit": ^1.8.2
     "@simbathesailor/use-what-changed": ^2.0.0
@@ -717,7 +717,7 @@ __metadata:
     fast-json-stable-stringify: ^2.1.0
     firebase: ^9.8.3
     fleethub-core: "npm:latest"
-    gkcoi: ^1.3.4
+    gkcoi: ^1.3.5
     http-status-codes: ^2.2.0
     immer: ^9.0.15
     literal-case: ^1.0.0
@@ -737,7 +737,7 @@ __metadata:
     redux-persist: ^6.0.0
     redux-state-sync: ^3.1.2
     redux-undo: ^1.0.1
-    sharp: ^0.30.6
+    sharp: ^0.30.7
     swr: ^1.3.0
     tilg: ^0.1.1
     ts-norm: ^0.4.0
@@ -1696,9 +1696,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/base@npm:5.0.0-alpha.85":
-  version: 5.0.0-alpha.85
-  resolution: "@mui/base@npm:5.0.0-alpha.85"
+"@mui/base@npm:5.0.0-alpha.86":
+  version: 5.0.0-alpha.86
+  resolution: "@mui/base@npm:5.0.0-alpha.86"
   dependencies:
     "@babel/runtime": ^7.17.2
     "@emotion/is-prop-valid": ^1.1.2
@@ -1715,7 +1715,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 36970ceeaf95298f28b284632ad4f7fd78da93334f30f93fe789233b64f2745d4af2f51e8bd108e49863b0c70071859d1100eaf902a16cb51f79db731e81600e
+  checksum: fea157d932b7230c155ff2cdce167cfe4763ae819367513db551f2cafda89b627a06701ae963b10b9b6a57242480288830f177bc823973eb79c14f26e4be81b0
   languageName: node
   linkType: hard
 
@@ -1735,13 +1735,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/lab@npm:^5.0.0-alpha.86":
-  version: 5.0.0-alpha.86
-  resolution: "@mui/lab@npm:5.0.0-alpha.86"
+"@mui/lab@npm:^5.0.0-alpha.87":
+  version: 5.0.0-alpha.87
+  resolution: "@mui/lab@npm:5.0.0-alpha.87"
   dependencies:
     "@babel/runtime": ^7.17.2
-    "@mui/base": 5.0.0-alpha.85
-    "@mui/system": ^5.8.4
+    "@mui/base": 5.0.0-alpha.86
+    "@mui/system": ^5.8.5
     "@mui/utils": ^5.8.4
     "@mui/x-date-pickers": 5.0.0-alpha.1
     clsx: ^1.1.1
@@ -1775,17 +1775,17 @@ __metadata:
       optional: true
     moment:
       optional: true
-  checksum: e73e4b175cbc220078bdb150fcde57b971096978bcb4efada541e35fe924232074f6bbbc0ce9b94eea54838fe7719e87060ac86a3026823060359299f2767fce
+  checksum: e7fe3e33f3b5e9c6f097a8e9e244d0345a3d5f6286ebc8f4d67bc2132761b27c1fdcf7c663a4dec9bc4d27943d04d1291946d38e39af3b8457247070b5594288
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^5.8.4":
-  version: 5.8.4
-  resolution: "@mui/material@npm:5.8.4"
+"@mui/material@npm:^5.8.5":
+  version: 5.8.5
+  resolution: "@mui/material@npm:5.8.5"
   dependencies:
     "@babel/runtime": ^7.17.2
-    "@mui/base": 5.0.0-alpha.85
-    "@mui/system": ^5.8.4
+    "@mui/base": 5.0.0-alpha.86
+    "@mui/system": ^5.8.5
     "@mui/types": ^7.1.4
     "@mui/utils": ^5.8.4
     "@types/react-transition-group": ^4.4.4
@@ -1807,7 +1807,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 904d545254981a38c8b28218b8219c324ab564a6387a8ebbc7ba0511c779c9cb29dbbd0cb97ae617eadedece75465def3beeee87541623f6b1b82b9b045e5855
+  checksum: c315c5e7ca2eb3a0afce76066f0ba816932d46252ea8ab572895e27a85dcf9952cb2128ce3b87b087ce5e86c844c85cf7876c0112f058111539290b4a387e8e7
   languageName: node
   linkType: hard
 
@@ -1848,9 +1848,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/system@npm:^5.8.4":
-  version: 5.8.4
-  resolution: "@mui/system@npm:5.8.4"
+"@mui/system@npm:^5.8.5":
+  version: 5.8.5
+  resolution: "@mui/system@npm:5.8.5"
   dependencies:
     "@babel/runtime": ^7.17.2
     "@mui/private-theming": ^5.8.4
@@ -1872,7 +1872,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 304cc1c95b165fa6fbf604d416cf94bcaa9c4c06bdb3475eb7bc2d473cd657ac12a3dfd09a5ceb3d185119b3e3d3d019a5861b37f4f4f63b3c5f1123155b0022
+  checksum: ffce524a6dcd5cd74b045a36386ebeb35ef0bfc2629ce12e2d630a85e8cdfca0cdc842375b930ea66d7d7588493af96c87320528aca39937c2a645c5a7642cd8
   languageName: node
   linkType: hard
 
@@ -2740,13 +2740,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^28.1.2":
-  version: 28.1.2
-  resolution: "@types/jest@npm:28.1.2"
+"@types/jest@npm:*, @types/jest@npm:^28.1.3":
+  version: 28.1.3
+  resolution: "@types/jest@npm:28.1.3"
   dependencies:
     jest-matcher-utils: ^28.0.0
     pretty-format: ^28.0.0
-  checksum: 53ec95b0b27c61380225b94f8660e661e8c6c6fc69b7130531fb5d72ebf5c8838a4266b8a6d7b3a77b3bcdabed632de0c21c9592a2529c1efe80a0f0a995a3aa
+  checksum: 28141f2d5b3bafd063362de9790cb8f219488d9b0ad47524a84bef1142a4f0d9d35be0c56988d9f922205225cc83c986acd4be424bd8653b38dc27ab672455e2
   languageName: node
   linkType: hard
 
@@ -2958,11 +2958,11 @@ __metadata:
   linkType: hard
 
 "@types/testing-library__jest-dom@npm:^5.9.1":
-  version: 5.14.4
-  resolution: "@types/testing-library__jest-dom@npm:5.14.4"
+  version: 5.14.5
+  resolution: "@types/testing-library__jest-dom@npm:5.14.5"
   dependencies:
     "@types/jest": "*"
-  checksum: 1d67a421757e5e6c32f232f848418b79658dc32d202f5b5f89e79dc49e6e8f24f0415db0f9fafe38c43c843d7f532cac53aa401f0129ae4b45c8d57e5974fbe3
+  checksum: dcb05416758fe88c1f4f3aa97b4699fcb46a5ed8f53c6b81721e66155452a48caf12ecb97dfdfd4130678e65efd66b9fca0ac434b3d63affec84842a84a6bf38
   languageName: node
   linkType: hard
 
@@ -3753,17 +3753,16 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.20.2":
-  version: 4.20.4
-  resolution: "browserslist@npm:4.20.4"
+  version: 4.21.0
+  resolution: "browserslist@npm:4.21.0"
   dependencies:
-    caniuse-lite: ^1.0.30001349
-    electron-to-chromium: ^1.4.147
-    escalade: ^3.1.1
+    caniuse-lite: ^1.0.30001358
+    electron-to-chromium: ^1.4.164
     node-releases: ^2.0.5
-    picocolors: ^1.0.0
+    update-browserslist-db: ^1.0.0
   bin:
     browserslist: cli.js
-  checksum: 0e56c42da765524e5c31bc9a1f08afaa8d5dba085071137cf21e56dc78d0cf0283764143df4c7d1c0cd18c3187fc9494e1d93fa0255004f0be493251a28635f9
+  checksum: dfad21090d0a4745f55c4c126172bc4d5743a500440791c731773f215a16f201a0b8a114c040fa5788ce2d1a13076601f751e54ee6c5f9de59f0cee3ce9875e3
   languageName: node
   linkType: hard
 
@@ -3893,7 +3892,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001332, caniuse-lite@npm:^1.0.30001349":
+"caniuse-lite@npm:^1.0.30001332, caniuse-lite@npm:^1.0.30001358":
   version: 1.0.30001358
   resolution: "caniuse-lite@npm:1.0.30001358"
   checksum: dd8d8e6b1f5e24b97d38bb110c35b96f701f8a303e7066e9d0dc4d0ae99d741e89d56688d4e811e260c5fe573835f2bedd49a6f35f3f43e9fa7e5d154b1fad0e
@@ -4813,10 +4812,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.4.147":
-  version: 1.4.164
-  resolution: "electron-to-chromium@npm:1.4.164"
-  checksum: c26b674ddf7703c41d9bfe301aff62706ed6e33b02ddc7330cd3d6b272a534636f6117e7bce0f6a090f773e9157169f99aaa564adfeadc6cff3c98f2fcbc003f
+"electron-to-chromium@npm:^1.4.164":
+  version: 1.4.165
+  resolution: "electron-to-chromium@npm:1.4.165"
+  checksum: dbbb2e825df41cd012401e36b3c0ff934607c5ddee59402763b19093ead6ca20a87656474189de01dafb088e8e73792685bd01f50a62e9b86687d717179dca65
   languageName: node
   linkType: hard
 
@@ -5552,11 +5551,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.7.5
-  resolution: "fleethub-core@npm:1.7.5"
+  version: 1.7.6
+  resolution: "fleethub-core@npm:1.7.6"
   peerDependencies:
     equipment-bonus: "*"
-  checksum: c3db620354731108fcdcf65f6e0ebba9071a56e94da3aa32e10f8612d14298e4498b5b2bce19225f6b93bde3331b972d86ae8403484e211faac6d8dd59ae2b5a
+  checksum: 3bd395d1c76b6aa10aaaee2af011b2f4d72ff370e8f27f2f370d892af547e6b50e1abe2a846f7a2cbe7773215662c6162d13188fa0da0c7c3c410db677cc2a01
   languageName: node
   linkType: hard
 
@@ -5579,7 +5578,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.3.0
     "@types/fs-extra": ^9.0.13
-    "@types/jest": ^28.1.2
+    "@types/jest": ^28.1.3
     "@types/node": ^18.0.0
     "@types/signale": ^1.4.4
     "@typescript-eslint/eslint-plugin": ^5.29.0
@@ -5873,15 +5872,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gkcoi@npm:^1.3.4":
-  version: 1.3.4
-  resolution: "gkcoi@npm:1.3.4"
+"gkcoi@npm:^1.3.5":
+  version: 1.3.5
+  resolution: "gkcoi@npm:1.3.5"
   dependencies:
     chart.js: ^3.7.1
     chartjs-plugin-datalabels: ^2.0.0
     lzjs: ^1.3.0
     steganography.ts: ^2.0.0
-  checksum: c80a19cf88391963196a19a9d0e010773cceeebe95985466286fb58549bb8fba646790fd6c5c3760f1e12abc92bbf88bcd51e401042f7735e30366d4822ec33a
+  checksum: 59879afe8df59c815ca9dd7a70f2b67f05f2f505f6f3a2a65f25d664910ee541d9cdda8c2e7b1c87e517d80c22e7d9ffa3652108fdf88038cad012c0f5f46f68
   languageName: node
   linkType: hard
 
@@ -5992,8 +5991,8 @@ __metadata:
   linkType: hard
 
 "google-auth-library@npm:^8.0.1, google-auth-library@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "google-auth-library@npm:8.0.2"
+  version: 8.0.3
+  resolution: "google-auth-library@npm:8.0.3"
   dependencies:
     arrify: ^2.0.0
     base64-js: ^1.3.0
@@ -6001,10 +6000,10 @@ __metadata:
     fast-text-encoding: ^1.0.0
     gaxios: ^5.0.0
     gcp-metadata: ^5.0.0
-    gtoken: ^5.3.2
+    gtoken: ^6.0.0
     jws: ^4.0.0
     lru-cache: ^6.0.0
-  checksum: 696238dba187de6523e81c500e56deae7e899c0090ec488b71fde54c17f95dabe085108b3aab5073e05dab1eb4aafe6bb8df0d1d6c5bd9d6bd9c2fc4fc0613d7
+  checksum: 73722bf276f9a8af212e6f23ff40ead58c17b2a8e343798cddfca86a12e47fa0eb6a9d0eac964e865d1ed7599699f7bcbdb6e0d3f1648f91f05d1fd789520f62
   languageName: node
   linkType: hard
 
@@ -6032,8 +6031,8 @@ __metadata:
   linkType: hard
 
 "google-gax@npm:^3.0.1":
-  version: 3.1.1
-  resolution: "google-gax@npm:3.1.1"
+  version: 3.1.2
+  resolution: "google-gax@npm:3.1.2"
   dependencies:
     "@grpc/grpc-js": ~1.6.0
     "@grpc/proto-loader": ^0.6.12
@@ -6050,7 +6049,7 @@ __metadata:
     retry-request: ^5.0.0
   bin:
     compileProtos: build/tools/compileProtos.js
-  checksum: fb132fe82453424fde075897fd7fb4852c65ad3c9915285dba3fed934533dc3db82f98b39eceb53a42ec5f9d1dd101c00379904affe643bcb98dbd9f1a087790
+  checksum: 1ad013f753e24d2ece310bb028cdd97857fee679948c8388391b801bdd0d69a2a6785dd0d851f83c0d4f8e091eb3ef590e0ad9d2d5a9e345a38b16eef879cc8d
   languageName: node
   linkType: hard
 
@@ -6062,6 +6061,17 @@ __metadata:
   bin:
     gp12-pem: build/src/bin/gp12-pem.js
   checksum: 72ce13b9536c69f21584cb7477ed4c34674325639a5dac42e8d774b78d367cb196ae7d37a52bba868235205760df353ac678a5e1756a4f4ded82e16d29d6cbb1
+  languageName: node
+  linkType: hard
+
+"google-p12-pem@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "google-p12-pem@npm:4.0.0"
+  dependencies:
+    node-forge: ^1.3.1
+  bin:
+    gp12-pem: build/src/bin/gp12-pem.js
+  checksum: f41a88d339e9fe633dc915bc0f3335c0196fa318f994dcd5dfaa0f3f7aa2d99f6122e2c80bd0f4bb22f2b61ff645b7cc782a74e12ceaf6c9ad9e08cdeb4d615e
   languageName: node
   linkType: hard
 
@@ -6079,13 +6089,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"googleapis@npm:^103.0.0":
-  version: 103.0.0
-  resolution: "googleapis@npm:103.0.0"
+"googleapis@npm:^104.0.0":
+  version: 104.0.0
+  resolution: "googleapis@npm:104.0.0"
   dependencies:
     google-auth-library: ^8.0.2
     googleapis-common: ^6.0.0
-  checksum: 4a2bb1ae2e59583b6f9ce9e32859fc23e0d89fcb248d30b3b1206ea324f5574882b44839822ba9055efdfc0ea14f0043795fc9fcc7bc7fc2d067d495f591256b
+  checksum: b6aabd6913daf4ebbdc5500907991560680e4bedda6852a03767c890467719369e7b7c8e9152bf77908345c7626f2465d329a916270c7bf277a4af0d26262ae1
   languageName: node
   linkType: hard
 
@@ -6117,7 +6127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gtoken@npm:^5.0.4, gtoken@npm:^5.3.2":
+"gtoken@npm:^5.0.4":
   version: 5.3.2
   resolution: "gtoken@npm:5.3.2"
   dependencies:
@@ -6125,6 +6135,17 @@ __metadata:
     google-p12-pem: ^3.1.3
     jws: ^4.0.0
   checksum: 1fd640e98afcb3d5c77026fd4ff0671dce724acad11169e5b63701a853e1f5a03f4c76fe6eb95500db80f8444753ce212701d396186ef006088d08be4174f2d7
+  languageName: node
+  linkType: hard
+
+"gtoken@npm:^6.0.0":
+  version: 6.0.1
+  resolution: "gtoken@npm:6.0.1"
+  dependencies:
+    gaxios: ^4.0.0
+    google-p12-pem: ^4.0.0
+    jws: ^4.0.0
+  checksum: d343aaa8896d35bcdaf4622a17c10cd53c498301026be4a3c1725e266ef84f695f7fd1367f0847fe8ea3e1175d8f63fe976c4baeb78010adf17c76e181c8d62e
   languageName: node
   linkType: hard
 
@@ -7558,12 +7579,12 @@ __metadata:
   linkType: soft
 
 "keyv@npm:^4.0.0":
-  version: 4.3.1
-  resolution: "keyv@npm:4.3.1"
+  version: 4.3.2
+  resolution: "keyv@npm:4.3.2"
   dependencies:
     compress-brotli: ^1.3.8
     json-buffer: 3.0.1
-  checksum: 105ae783d204b338772a1e36dbca04894c9ec306c959363d1d384eafd8150e1637a6edb7aed6ba700199913f44e3e0e9c1c65e33196f2cd56c248721547bc7b6
+  checksum: 237952f5faa2ed08da36677d7a3faae48b7e3c305264698cbf4480443f293a2f0c6c63c1d05f5cd4a842ee864dbb395745e6636fecd07489565776a22de7b8d6
   languageName: node
   linkType: hard
 
@@ -8923,7 +8944,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prebuild-install@npm:^7.1.0":
+"prebuild-install@npm:^7.1.1":
   version: 7.1.1
   resolution: "prebuild-install@npm:7.1.1"
   dependencies:
@@ -9933,20 +9954,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sharp@npm:^0.30.6":
-  version: 0.30.6
-  resolution: "sharp@npm:0.30.6"
+"sharp@npm:^0.30.7":
+  version: 0.30.7
+  resolution: "sharp@npm:0.30.7"
   dependencies:
     color: ^4.2.3
     detect-libc: ^2.0.1
     node-addon-api: ^5.0.0
     node-gyp: latest
-    prebuild-install: ^7.1.0
+    prebuild-install: ^7.1.1
     semver: ^7.3.7
     simple-get: ^4.0.1
     tar-fs: ^2.1.1
     tunnel-agent: ^0.6.0
-  checksum: 2560b5769d78ee660d767e59f6fa56531c448d16383f9700e4ecb8016382104c1bb42991bdd4ea741c0f4d934ea5246c5d602fc5f39062bcc1c2c8786421fd5a
+  checksum: bbc63ca3c7ea8a5bff32cd77022cfea30e25a03f5bd031e935924bf6cf0e11e3388e8b0e22b3137bf8816aa73407f1e4fbeb190f3a35605c27ffca9f32b91601
   languageName: node
   linkType: hard
 
@@ -10888,6 +10909,20 @@ __metadata:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 4fa18d8d8d977c55cb09715385c203197105e10a6d220087ec819f50cb68870f02942244f1017565484237f1f8c5d3cd413631b1ae104d3096f24fdfde1b4aa2
+  languageName: node
+  linkType: hard
+
+"update-browserslist-db@npm:^1.0.0":
+  version: 1.0.3
+  resolution: "update-browserslist-db@npm:1.0.3"
+  dependencies:
+    escalade: ^3.1.1
+    picocolors: ^1.0.0
+  peerDependencies:
+    browserslist: ">= 4.21.0"
+  bin:
+    browserslist-lint: cli.js
+  checksum: 7ffbb87405efddd34d69f7d5929b44a3c4c7d72751542eb9e494536cafb0d57290d261af25986584dabc5b76ddd719061b5efb4ddf26af092bf35b095f20ce90
   languageName: node
   linkType: hard
 
