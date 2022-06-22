@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { Button } from "@mui/material";
+import { css, styled } from "@mui/system";
 import { EquipmentBonuses } from "equipment-bonus";
 import { Gear } from "fleethub-core";
 import React from "react";
@@ -33,8 +32,11 @@ const GearButton: React.FCX<Props> = ({
   );
 };
 
-const hasBonus = (bonuses?: EquipmentBonuses) =>
-  bonuses && Object.values(bonuses).some((value) => value !== 0);
+function hasBonus(bonuses?: EquipmentBonuses): boolean {
+  return Boolean(
+    bonuses && Object.values(bonuses).some((value) => value !== 0)
+  );
+}
 
 export default styled(GearButton)(
   ({ theme, ebonuses }) => css`

@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { EquipmentBonuses } from "equipment-bonus";
-import { Gear } from "fleethub-core";
+import { EBonuses, Gear } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -72,19 +72,13 @@ const GearStatList: React.FCX<Props> = ({ className, gear, ebonuses }) => {
     }
 
     const value = gear[key];
+    const bonusValue = ebonuses?.[key as keyof EBonuses] || 0;
 
-    let bonus = "";
-    if (
-      ebonuses &&
-      key !== "interception" &&
-      key !== "anti_bomber" &&
-      key !== "radius" &&
-      key !== "speed"
-    ) {
-      bonus = withSign(ebonuses[key]);
+    if (!value && !bonusValue) {
+      return;
     }
 
-    if (!value && !bonus) return;
+    const bonus = bonusValue ? withSign(bonusValue) : "";
 
     if (key === "range") {
       const addr = getRangeAbbr(value);

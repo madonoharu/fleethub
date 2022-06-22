@@ -12,7 +12,7 @@
     "cloudinary": "^1.30.0",
     "dequal": "^2.0.2",
     "firebase-admin": "^11.0.0",
-    "googleapis": "^103.0.0",
+    "googleapis": "^104.0.0",
     "got": "12.1.0"
   },
   "optionalDependencies": {

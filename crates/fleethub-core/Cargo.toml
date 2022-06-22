@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.7.5"
+version = "1.7.6"
 authors = ["まどの <madonoharu@gmail.com>"]
 edition = "2021"
 description = "fleethub-core"
@@ -40,7 +40,7 @@ thiserror = "1.0.31"
 itertools = "0.10.3"
 enum-map = "2.4.0"
 seq-macro = "0.3.0"
-tsify = "0.2.0"
+tsify = "0.3.0"
 serde_with = "1.14.0"
 ordered-float = { version = "3.0.0", features = ["serde"] }
 
