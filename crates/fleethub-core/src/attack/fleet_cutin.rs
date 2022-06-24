@@ -188,13 +188,13 @@ pub fn get_fleet_cutin_mod(
             let includes_musashi_kai2 = s1_is_musashi_kai2 || is_musashi_kai2(s2);
 
             let base = if includes_musashi_kai2 {
-                if shots == 1 {
+                if shots <= 2 {
                     1.4 * 1.1
                 } else {
                     1.55 * if s1_is_musashi_kai2 { 1.25 } else { 1.2 }
                 }
             } else {
-                if shots == 1 {
+                if shots <= 2 {
                     1.4
                 } else {
                     1.55
