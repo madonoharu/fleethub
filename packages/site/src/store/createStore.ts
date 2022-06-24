@@ -1,6 +1,11 @@
-import { AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
+import {
+  AnyAction,
+  combineReducers,
+  configureStore,
+  Reducer,
+} from "@reduxjs/toolkit";
 import localforage from "localforage";
-import { persistReducer, WebStorage } from "redux-persist";
+import { persistReducer, Storage, PersistConfig } from "redux-persist";
 import { ThunkAction } from "redux-thunk";
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo";
 
@@ -14,7 +19,7 @@ import { shipDetailsSlice } from "./shipDetailsSlice";
 import { shipSelectSlice } from "./shipSelectSlice";
 import undoableOptions from "./undoableOptions";
 
-const noopStorage: WebStorage = {
+const noopStorage: Storage = {
   getItem: () => Promise.resolve(null),
   setItem: () => Promise.resolve(),
   removeItem: () => Promise.resolve(),
@@ -47,19 +52,21 @@ const persistedReducerBase: typeof combinedReducer = (...args) => {
   return next;
 };
 
-const persistedReducer = persistReducer(
-  {
-    key: "root",
-    version: 1,
-    storage,
-    throttle: 50,
-    timeout: 0,
-    serialize: false,
-    deserialize: false,
-    whitelist: ["app", "config", "entities"],
-  },
-  persistedReducerBase
-);
+type StateFromReducer<R> = R extends Reducer<infer S> ? S : never;
+type PresentState = StateFromReducer<typeof combinedReducer>;
+
+export const persistConfig: PersistConfig<PresentState> = {
+  key: "root",
+  version: 1,
+  storage,
+  throttle: 50,
+  timeout: 0,
+  serialize: false,
+  deserialize: false,
+  whitelist: ["app", "config", "entities"],
+};
+
+const persistedReducer = persistReducer(persistConfig, persistedReducerBase);
 
 const rootReducer = undoable(persistedReducer, undoableOptions);
 

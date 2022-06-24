@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "作战室",
+    "description": "作战室是舰Colle的编成模拟器。可以计算CI发动率、对陆攻击力等。"
+  },
+  "Changelog": "更改日志",
   "FleetType": {
     "Main": "主力",
     "Escort": "护卫",
@@ -113,6 +118,7 @@
   },
   "AttackPower": "攻击力",
   "BasicAttackPower": "基本攻击力",
+  "Damage": "伤害",
   "ScratchDamage": "擦弹",
   "hits": "回数",
   "hit_rate": "命中率",
@@ -268,11 +274,19 @@
   "Close": "关闭",
   "Help": "帮助",
   "Save": "保存",
-  "Change": "变化",
+  "Change": "更改",
   "Remove": "删除",
   "Consume": "消费",
   "Unknown": "未知",
   "None": "无",
+  "Settings": "设置",
+  "Global": "综合",
+  "Download": "下载",
+  "Backup": "备份",
+  "Restore": "恢复",
+  "AddShipConfig": "添加舰娘设置",
+  "DeleteAllData": "删除所有数据",
+  "AreYouSure": "你确定吗？",
   "RangeAbbr": {
     "Short": "短",
     "Medium": "中",

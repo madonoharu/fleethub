@@ -1,7 +1,8 @@
+import { copy } from "@fh/utils";
 import { useAsyncCallback } from "react-async-hook";
 
 import { filesSelectors, publishFile } from "../store";
-import { tweet, copy } from "../utils";
+import { tweet } from "../utils";
 
 import { useAppDispatch, useAppSelector } from "./rtk-hooks";
 import { useSnackbar } from "./useSnackbar";

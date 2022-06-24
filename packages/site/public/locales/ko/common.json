@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "작전실",
+    "description": "작전실은 칸코레의 편성 시뮬레이터입니다.컷인 발동률이나 대지보정 등의 계산을 할 수 있습니다."
+  },
+  "Changelog": "변경 로그",
   "FleetType": {
     "Main": "주력",
     "Escort": "호위",
@@ -113,6 +118,7 @@
   },
   "AttackPower": "공격력",
   "BasicAttackPower": "기본 공격력",
+  "Damage": "데미지",
   "ScratchDamage": "지근탄",
   "hits": "횟수",
   "hit_rate": "명중률",
@@ -239,7 +245,7 @@
   "EditMiscStats": "기타 상태를 편집합니다",
   "CreateComposition": "편성 만들기",
   "CreateFolder": "폴더 만들기",
-  "OpenFolderPage": "폴더 페이지를 열다",
+  "OpenFolderPage": "폴더화면 열기",
   "ProcRate": "발동률",
   "Proficiency": "숙련도",
   "Normal": "통상",
@@ -273,6 +279,14 @@
   "Consume": "소비하다",
   "Unknown": "알 수 없음",
   "None": "없음",
+  "Settings": "설정",
+  "Global": "글로벌",
+  "Download": "다운로드",
+  "Backup": "백업",
+  "Restore": "복원",
+  "AddShipConfig": "함선 설정 추가",
+  "DeleteAllData": "모든 데이터 삭제",
+  "AreYouSure": "확실합니까?",
   "RangeAbbr": {
     "Short": "단",
     "Medium": "중",

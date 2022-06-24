@@ -17,7 +17,7 @@ import AttackChip from "../AttackChip";
 import Table, { ColumnProps } from "../Table";
 
 import AttackPowerDetails from "./AttackPowerDetails";
-import DamageRange from "./DamageRange";
+import DamageCell from "./DamageCell";
 import DamageStateMapBarChart from "./DamageStateMapBarChart";
 import HitRateDetails from "./HitRateDetails";
 
@@ -51,47 +51,10 @@ const createDamageColumns = (t: TFn): ColumnProps<{ stats: AttackStats }>[] => [
     ),
   },
   {
-    label: t("Normal"),
+    label: t("Damage"),
     align: "right",
     getValue: (item) => {
-      const { damage, attack_power } = item.stats;
-      if (!damage) return "?";
-      const {
-        normal_damage_min: min,
-        normal_damage_max: max,
-        normal_scratch_rate: sr,
-      } = damage;
-
-      return (
-        <DamageRange
-          min={min}
-          max={max}
-          scratchRate={sr}
-          isCapped={attack_power?.is_capped}
-        />
-      );
-    },
-  },
-  {
-    label: t("Critical"),
-    align: "right",
-    getValue: (item) => {
-      const { damage, attack_power } = item.stats;
-      if (!damage) return "?";
-      const {
-        critical_damage_min: min,
-        critical_damage_max: max,
-        critical_scratch_rate: sr,
-      } = damage;
-
-      return (
-        <DamageRange
-          min={min}
-          max={max}
-          scratchRate={sr}
-          isCapped={attack_power?.is_capped}
-        />
-      );
+      return <DamageCell stats={item.stats} />;
     },
   },
 ];
@@ -123,39 +86,34 @@ const createAttackPowerColumns = (
       </Typography>
     ),
   },
+  {
+    label: null,
+    align: "right",
+    getValue: ({ stats }) => {
+      const { attack_power, attack_power_params } = stats;
+      if (!attack_power || !attack_power_params) return null;
+
+      return (
+        <InfoButton
+          size="tiny"
+          title={
+            <AttackPowerDetails
+              power={attack_power}
+              params={attack_power_params}
+            />
+          }
+        />
+      );
+    },
+  },
 ];
 
-export const createAttackTableColumns = (
+export function createAttackTableColumns(
   t: TFn,
   disableDamage: boolean
-): ColumnProps<{ stats: AttackStats }>[] => {
-  const inner = disableDamage
-    ? createAttackPowerColumns(t)
-    : createDamageColumns(t);
-
-  return [
-    ...inner,
-    {
-      label: null,
-      getValue: ({ stats }) => {
-        const { attack_power, attack_power_params } = stats;
-        if (!attack_power || !attack_power_params) return null;
-
-        return (
-          <InfoButton
-            size="tiny"
-            title={
-              <AttackPowerDetails
-                power={attack_power}
-                params={attack_power_params}
-              />
-            }
-          />
-        );
-      },
-    },
-  ];
-};
+): ColumnProps<{ stats: AttackStats }>[] {
+  return disableDamage ? createAttackPowerColumns(t) : createDamageColumns(t);
+}
 
 type AttackTableProps = {
   type: AttackTableType;
