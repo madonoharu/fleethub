@@ -1,9 +1,9 @@
+import { copy } from "@fh/utils";
 import Assignment from "@mui/icons-material/Assignment";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useSnackbar } from "../../../hooks";
-import { copy } from "../../../utils";
 import { withIconButton } from "../IconButtons";
 
 const AssignmentButton = withIconButton(Assignment);

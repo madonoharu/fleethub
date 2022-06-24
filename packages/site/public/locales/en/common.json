@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "FleetHub",
+    "description": "FleetHub is KanColle's composition simulator that calculates CI proc rate, anti-install power, etc."
+  },
+  "Changelog": "Changelog",
   "FleetType": {
     "Main": "Main",
     "Escort": "Escort",
@@ -113,6 +118,7 @@
   },
   "AttackPower": "Attack Power",
   "BasicAttackPower": "Basic Attack Power",
+  "Damage": "Damage",
   "ScratchDamage": "Scratch",
   "hits": "Hits",
   "hit_rate": "Hit Rate",
@@ -273,6 +279,14 @@
   "Consume": "Consume",
   "Unknown": "Unknown",
   "None": "None",
+  "Settings": "Settings",
+  "Global": "Global",
+  "Download": "Download",
+  "Backup": "Backup",
+  "Restore": "Restore",
+  "AddShipConfig": "Add ship config",
+  "DeleteAllData": "Delete all data",
+  "AreYouSure": "Are you sure?",
   "RangeAbbr": {
     "Short": "S",
     "Medium": "M",

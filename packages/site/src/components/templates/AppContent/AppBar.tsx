@@ -120,7 +120,7 @@ const AppBar: React.FCX = ({ className }) => {
             href="https://github.com/MadonoHaru/fleethub"
             color="inherit"
           >
-            作戦室 v{process.env.VERSION}
+            v{process.env.VERSION}
           </Button>
         </Tooltip>
 

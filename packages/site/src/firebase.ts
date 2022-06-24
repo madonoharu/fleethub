@@ -1,3 +1,4 @@
+import { compress } from "@fh/utils";
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "firebase/app";
 import {
@@ -7,8 +8,6 @@ import {
   UploadMetadata,
   uploadString,
 } from "firebase/storage";
-
-import { compress } from "./utils";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTRbVqrTpJH2VNisHn7Zxb50bAQ-M80aA",

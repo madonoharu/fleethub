@@ -6,3 +6,7 @@ export * from "./object";
 export * from "./string";
 export * from "./types";
 export * from "./utilityTypes";
+export * from "./download";
+export * from "./copy";
+export * from "./measure";
+export * from "./compress";

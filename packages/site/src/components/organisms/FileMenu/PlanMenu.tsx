@@ -55,7 +55,7 @@ const PlanMenu: React.FCX<Props> = ({ className, file }) => {
         startIcon={<KctoolsIcon />}
         onClick={() => openKctools(org)}
       >
-        制空権シミュレーターで開く
+        制空権シミュレータで開く
       </StyledButton>
 
       <StyledButton

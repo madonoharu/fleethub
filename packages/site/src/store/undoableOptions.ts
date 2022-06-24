@@ -1,4 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
+import { REHYDRATE } from "redux-persist";
 import { FilterFunction, GroupByFunction, UndoableOptions } from "redux-undo";
 
 const groupSet = new Set<string>();
@@ -41,7 +42,11 @@ const actionTypeFilter: FilterFunction = (action) => {
     return false;
   }
 
-  return type.startsWith("entities") || type.startsWith("config");
+  return (
+    type.startsWith("entities") ||
+    type.startsWith("config") ||
+    type === REHYDRATE
+  );
 };
 
 const filter: FilterFunction = (...args) =>

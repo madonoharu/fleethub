@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "作戦室",
+    "description": "作戦室は艦これの編成シミュレータです。カットイン発動率や対地火力などの計算ができます。"
+  },
+  "Changelog": "変更履歴",
   "FleetType": {
     "Main": "主力",
     "Escort": "護衛",
@@ -113,6 +118,7 @@
   },
   "AttackPower": "攻撃力",
   "BasicAttackPower": "基本攻撃力",
+  "Damage": "ダメージ",
   "ScratchDamage": "割合",
   "hits": "回数",
   "hit_rate": "命中率",
@@ -273,6 +279,14 @@
   "Consume": "消費する",
   "Unknown": "不明",
   "None": "なし",
+  "Settings": "設定",
+  "Global": "全体",
+  "Download": "ダウンロード",
+  "Backup": "バックアップ",
+  "Restore": "復元",
+  "AddShipConfig": "艦娘設定を追加",
+  "DeleteAllData": "すべてのデータを削除する",
+  "AreYouSure": "よろしいですか？",
   "RangeAbbr": {
     "Short": "短",
     "Medium": "中",
