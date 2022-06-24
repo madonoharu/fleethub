@@ -107,6 +107,7 @@ const AppBar: React.FCX = ({ className }) => {
       />
       <SettingsButton
         size="small"
+        title={t("Settings")}
         onClick={() => {
           dispatch(appSlice.actions.openConfig());
         }}

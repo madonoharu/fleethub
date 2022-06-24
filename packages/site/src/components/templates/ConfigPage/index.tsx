@@ -7,12 +7,13 @@ import { Tabs } from "../../molecules";
 
 import AntiAirCutinMenu from "./AntiAirCutinMenu";
 import DayCutinMenu from "./DayCutinMenu";
+import GlobalScreen from "./GlobalScreen";
 import NightCutinMenu from "./NightCutinMenu";
 import ShipsMenu from "./ShipsMenu";
 
 const ConfigPage: React.FC = () => {
-  const { data } = useMasterData();
   const { t } = useTranslation("common");
+  const { data } = useMasterData();
 
   if (!data) {
     return null;
@@ -22,6 +23,10 @@ const ConfigPage: React.FC = () => {
     <Container>
       <Tabs
         list={[
+          {
+            label: t("Global"),
+            panel: <GlobalScreen />,
+          },
           {
             label: t("DayCutin.name"),
             panel: <DayCutinMenu data={data} />,
