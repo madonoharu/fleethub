@@ -50,10 +50,10 @@ const WelcomePage: React.FCX = () => {
     <Container maxWidth="md" sx={{ pt: 5 }}>
       <Stack gap={1}>
         <div>
-          <Typography variant="h4">作戦室 v{process.env.VERSION}</Typography>
-          <Typography mt={2}>
-            作戦室は艦これの編成を支援するサイトです。弾着率、対地火力などの計算が行えます。
+          <Typography variant="h4">
+            {t("meta.title")} v{process.env.VERSION}
           </Typography>
+          <Typography mt={2}>{t("meta.description")}</Typography>
         </div>
         <Flexbox gap={1} css={{ flexWrap: "wrap" }}>
           <Button
@@ -90,7 +90,7 @@ const WelcomePage: React.FCX = () => {
             デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
           </p>
           <Link href="https://github.com/madonoharu/fleethub/releases">
-            変更履歴
+            {t("Changelog")}
           </Link>
         </Typography>
 

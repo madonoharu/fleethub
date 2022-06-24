@@ -36,3 +36,9 @@ export async function promiseAllValues<K extends string, V>(
 
   return Object.fromEntries(await Promise.all(promises)) as Record<K, V>;
 }
+
+export function isUnknownRecord(
+  value: unknown
+): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}

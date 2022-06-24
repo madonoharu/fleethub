@@ -1,5 +1,6 @@
 import { storage } from "@fh/admin";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -25,6 +26,7 @@ interface PageProps {
 const Index: NextComponentType<NextPageContext, unknown, PageProps> = (
   props
 ) => {
+  const { t } = useTranslation("common");
   const { generationMap } = props;
 
   const preloadLinks = [MASTER_DATA_PATH, SHIP_BANNERS_PATH].map((path) => {
@@ -46,7 +48,8 @@ const Index: NextComponentType<NextPageContext, unknown, PageProps> = (
   return (
     <div>
       <Head>
-        <title>作戦室</title>
+        <title>{`${t("meta.title")} - jervis.vercel.app`}</title>
+        <meta name="description" content={t("meta.description")} />
         {preloadLinks}
       </Head>
 

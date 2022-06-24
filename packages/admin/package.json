@@ -7,7 +7,7 @@
     "build": "tsc -m esnext --outDir esm"
   },
   "dependencies": {
-    "@fh/utils": "workspace:packages/utils",
+    "@fh/utils": "workspace:*",
     "@google-cloud/asset": "^4.0.0",
     "cloudinary": "^1.30.0",
     "dequal": "^2.0.2",

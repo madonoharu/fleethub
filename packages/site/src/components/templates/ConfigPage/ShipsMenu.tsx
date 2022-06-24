@@ -1,4 +1,5 @@
 import { Button, Paper, Stack } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { shallowEqual } from "react-redux";
 
@@ -11,6 +12,7 @@ import ShipList from "../ShipList";
 import MasterShipEditor from "./MasterShipEditor";
 
 const ShipsMenu: React.FC = () => {
+  const { t } = useTranslation("common");
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number>();
 
@@ -32,7 +34,7 @@ const ShipsMenu: React.FC = () => {
           color="primary"
           onClick={() => setOpen(true)}
         >
-          艦船設定を追加
+          {t("AddShipConfig")}
         </Button>
 
         {shipIds.map((id) => (

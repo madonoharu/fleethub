@@ -4,7 +4,7 @@ import React from "react";
 
 import { SelectedMenu } from "../../molecules";
 
-const languageNameMap = {
+const LANGUAGE_NAME_MAP = {
   ja: "日本語",
   en: "English",
   ko: "한국어",
@@ -12,8 +12,9 @@ const languageNameMap = {
   "zh-TW": "中文(繁體)",
 };
 
-const getLanguageName = (lang: string) =>
-  languageNameMap[lang as keyof typeof languageNameMap] || "";
+function getLanguageName(lang: string): string {
+  return LANGUAGE_NAME_MAP[lang as keyof typeof LANGUAGE_NAME_MAP] || "";
+}
 
 const LanguageSelect: React.FCX = ({ className }) => {
   const router = useRouter();
