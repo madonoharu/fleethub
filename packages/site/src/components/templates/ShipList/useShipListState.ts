@@ -3,7 +3,7 @@ import { TFunction, useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { useImmer } from "use-immer";
 
-import { useAppSelector } from "../../../hooks";
+import { useRootSelector } from "../../../hooks";
 
 type FilterFn = (ship: Ship) => boolean;
 
@@ -60,7 +60,7 @@ const searchShip = (t: TFunction, ships: Ship[], searchValue: string) => {
 export const useShipListState = (ships: Ship[]) => {
   const { t } = useTranslation("ships");
 
-  const abyssal = useAppSelector((root) => root.present.shipSelect.abyssal);
+  const abyssal = useRootSelector((root) => root.shipSelect.abyssal);
 
   const [state, update] = useImmer<ShipFilterState>({
     abyssal: abyssal || false,

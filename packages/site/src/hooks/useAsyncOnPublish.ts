@@ -4,11 +4,11 @@ import { useAsyncCallback } from "react-async-hook";
 import { filesSelectors, publishFile } from "../store";
 import { tweet } from "../utils";
 
-import { useAppDispatch, useAppSelector } from "./rtk-hooks";
+import { useAppDispatch, useRootSelector } from "./rtk-hooks";
 import { useSnackbar } from "./useSnackbar";
 
 export const useAsyncOnPublish = (id: string) => {
-  const name = useAppSelector(
+  const name = useRootSelector(
     (root) => filesSelectors.selectById(root, id)?.name
   );
 

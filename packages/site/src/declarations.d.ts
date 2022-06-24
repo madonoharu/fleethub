@@ -6,11 +6,6 @@ declare module "react" {
   type FCX<P = {}> = FC<P & { className?: string; style?: CSSProperties }>;
 }
 
-declare module "@reduxjs/toolkit" {
-  export type AppThunk = import("./store").AppThunk;
-  export type AppStore = import("./store").AppStore;
-}
-
 declare module "redux-persist" {
   interface PersistConfig {
     deserialize?: boolean;

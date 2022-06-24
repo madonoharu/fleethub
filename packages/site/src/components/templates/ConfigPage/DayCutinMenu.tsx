@@ -3,7 +3,7 @@ import { DayCutinDef, MasterData } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { configSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
 import AttackChip from "../../organisms/AttackChip";
@@ -19,8 +19,8 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
   const cutin = def.tag;
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
-  const current = useAppSelector(
-    (root) => root.present.config.masterData?.day_cutin?.[cutin]
+  const current = useRootSelector(
+    (root) => root.config.masterData?.day_cutin?.[cutin]
   );
 
   return (

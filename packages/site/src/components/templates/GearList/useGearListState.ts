@@ -1,9 +1,9 @@
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { GearCategoryFilter, gearSelectSlice } from "../../../store";
 
 export const useGearListState = () => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((root) => root.present.gearSelect);
+  const state = useRootSelector((root) => root.gearSelect);
   const { category, abyssal } = state;
 
   const setAbyssal = (abyssal: boolean) =>

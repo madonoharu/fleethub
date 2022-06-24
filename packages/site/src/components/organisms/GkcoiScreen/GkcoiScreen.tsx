@@ -7,7 +7,7 @@ import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
 
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { appSlice } from "../../../store";
 import { createGkcoiDeck, GkcoiLang, GkcoiTheme } from "../../../utils";
 import { Flexbox } from "../../atoms";
@@ -49,7 +49,7 @@ const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
   org,
 }) => {
   const dispatch = useAppDispatch();
-  const theme = useAppSelector((root) => root.present.app.gkcoiTheme);
+  const theme = useRootSelector((root) => root.app.gkcoiTheme);
   const { i18n } = useTranslation();
   const lang = GKCOI_LANGS[i18n.language] || "jp";
 
@@ -58,8 +58,9 @@ const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
     [org, theme, lang]
   );
 
-  const handleChange = (theme: GkcoiTheme) =>
+  const handleThemeChange = (theme: GkcoiTheme) => {
     dispatch(appSlice.actions.setGkcoiTheme(theme));
+  };
 
   return (
     <Paper className={className} style={style}>
@@ -68,7 +69,7 @@ const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
           label="theme"
           options={GKCOI_THEMES}
           value={theme}
-          onChange={handleChange}
+          onChange={handleThemeChange}
           getOptionLabel={getThemeLabel}
         />
         <Button

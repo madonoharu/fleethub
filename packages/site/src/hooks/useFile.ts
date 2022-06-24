@@ -12,7 +12,7 @@ import {
   RootState,
 } from "../store";
 
-import { useAppDispatch, useAppSelector } from "./rtk-hooks";
+import { useAppDispatch, useRootSelector } from "./rtk-hooks";
 
 const getParents = (files: FileEntity[], id: string): FileEntity[] => {
   const parent = files.find(
@@ -32,8 +32,8 @@ const makeSelectParents = () =>
   );
 
 export const useIsTemp = (id: string) =>
-  useAppSelector((root) => {
-    const tempIds = root.present.entities.files.tempIds;
+  useRootSelector((root) => {
+    const tempIds = root.entities.files.tempIds;
     return tempIds.includes(id);
   });
 
@@ -75,13 +75,11 @@ export function useFileActions(id: string) {
 }
 
 export function useFileCanDrop(id: string) {
-  const entity = useAppSelector(
-    (root) => root.present.entities.files.entities[id]
-  );
+  const entity = useRootSelector((root) => root.entities.files.entities[id]);
 
   const selectParents = useMemo(makeSelectParents, []);
-  const parents = useAppSelector(
-    (state) => selectParents(state, id),
+  const parents = useRootSelector(
+    (root) => selectParents(root, id),
     shallowEqual
   );
 
@@ -97,7 +95,7 @@ export function useFileCanDrop(id: string) {
 }
 
 export const useFile = (id: string) => {
-  const file = useAppSelector((root) => filesSelectors.selectById(root, id));
+  const file = useRootSelector((root) => filesSelectors.selectById(root, id));
 
   const isTemp = useIsTemp(id);
 

@@ -11,7 +11,7 @@ import {
   shipsSlice,
 } from "../store";
 
-import { useAppDispatch, useAppSelector } from "./rtk-hooks";
+import { useAppDispatch, useRootSelector } from "./rtk-hooks";
 import { useFhCore } from "./useFhCore";
 
 export function useShipName(shipId: number, withId = false): string {
@@ -76,7 +76,7 @@ export function useShipActions(id?: string) {
 export function useShip(id?: string): Ship | undefined {
   const { core } = useFhCore();
 
-  const ship = useAppSelector(
+  const ship = useRootSelector(
     (root) => {
       if (!id) return;
       const state = selectShipState(root, id);

@@ -5,7 +5,7 @@ import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import React from "react";
 
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useRootSelector } from "../../../hooks";
 import {
   appSlice,
   FileEntity,
@@ -24,8 +24,8 @@ const TransitionProps = { timeout: 150 };
 const Explorer: React.FCX = ({ className }) => {
   const dispatch = useAppDispatch();
 
-  const { rootIds, tempIds, entities } = useAppSelector(
-    (root) => root.present.entities.files
+  const { rootIds, tempIds, entities } = useRootSelector(
+    (root) => root.entities.files
   );
 
   const [expanded, setExpanded] = React.useState<string[]>(["root", "temp"]);

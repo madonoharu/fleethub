@@ -3,7 +3,7 @@ import { MasterData, NightCutinDef } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { configSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
 import AttackChip from "../../organisms/AttackChip";
@@ -20,8 +20,8 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
   const dispatch = useAppDispatch();
 
   const cutin = def.tag;
-  const current = useAppSelector(
-    (root) => root.present.config.masterData?.night_cutin?.[cutin]
+  const current = useRootSelector(
+    (root) => root.config.masterData?.night_cutin?.[cutin]
   );
 
   return (

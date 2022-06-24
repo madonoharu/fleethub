@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 
-import { useAppSelector } from "../../../hooks";
+import { useRootSelector } from "../../../hooks";
 import { filesSelectors } from "../../../store";
 import { DirectoryBreadcrumbs } from "../../organisms";
 import FolderPage from "../FolderPage";
@@ -14,8 +14,8 @@ const StyledDirectoryBreadcrumbs = styled(DirectoryBreadcrumbs)`
 `;
 
 const FileViewer: React.FC = () => {
-  const file = useAppSelector((root) => {
-    const { fileId } = root.present.app;
+  const file = useRootSelector((root) => {
+    const { fileId } = root.app;
     if (!fileId) return;
     return filesSelectors.selectById(root, fileId);
   });

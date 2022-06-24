@@ -7,9 +7,9 @@ import { useAsyncCallback } from "react-async-hook";
 
 import {
   useAppDispatch,
-  useAppSelector,
   useFhCore,
   useSnackbar,
+  useRootSelector,
 } from "../../../hooks";
 import {
   appSlice,
@@ -80,7 +80,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
   const Snackbar = useSnackbar();
 
-  const importToTemp = useAppSelector((root) => root.present.app.importToTemp);
+  const importToTemp = useRootSelector((root) => root.app.importToTemp);
   const dispatch = useAppDispatch();
 
   const handleImportToTempChange = (value: boolean) => {

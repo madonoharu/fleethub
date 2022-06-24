@@ -6,10 +6,10 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import {
+  useRootSelector,
   useMasterData,
   FhCoreContext,
   DragLayerProvider,
-  useAppSelector,
 } from "../../../hooks";
 import { MasterDataOverrides } from "../../../store";
 import ErrorAlert from "../../molecules/ErrorAlert";
@@ -100,9 +100,7 @@ interface AppWrapperProps {
 
 const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   const { data, error } = useMasterData();
-  const masterDataConfig = useAppSelector(
-    (root) => root.present.config.masterData
-  );
+  const masterDataConfig = useRootSelector((root) => root.config.masterData);
 
   if (error) {
     return (

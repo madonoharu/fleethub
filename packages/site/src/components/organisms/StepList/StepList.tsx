@@ -5,7 +5,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import { shallowEqual } from "react-redux";
 
-import { useAppDispatch, useAppSelector, useOrg } from "../../../hooks";
+import { useAppDispatch, useRootSelector, useOrg } from "../../../hooks";
 import {
   filesSlice,
   mapSelectSlice,
@@ -37,7 +37,7 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
     dispatch(filesSlice.actions.removeSteps(file.id));
   };
 
-  const steps = useAppSelector((root) => {
+  const steps = useRootSelector((root) => {
     if (!file.steps) {
       return [];
     }

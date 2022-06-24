@@ -53,9 +53,9 @@ const persistedReducerBase: typeof combinedReducer = (...args) => {
 };
 
 type StateFromReducer<R> = R extends Reducer<infer S> ? S : never;
-type PresentState = StateFromReducer<typeof combinedReducer>;
+export type RootState = StateFromReducer<typeof combinedReducer>;
 
-export const persistConfig: PersistConfig<PresentState> = {
+export const persistConfig: PersistConfig<RootState> = {
   key: "root",
   version: 1,
   storage,
@@ -86,12 +86,12 @@ export const createStore = () => {
   return store;
 };
 
-export type AppStore = ReturnType<typeof createStore>;
-export type RootState = ReturnType<AppStore["getState"]>;
+type AppStore = ReturnType<typeof createStore>;
+export type RootStateWithHistory = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
 export type AppThunk = ThunkAction<
   void,
-  RootState,
+  RootStateWithHistory,
   typeof extraArgument,
   AnyAction
 >;

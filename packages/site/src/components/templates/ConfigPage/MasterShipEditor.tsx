@@ -3,7 +3,7 @@ import { MasterShip, SlotSizeVec, StatInterval } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useAppDispatch, useAppSelector, useMasterData } from "../../../hooks";
+import { useAppDispatch, useRootSelector, useMasterData } from "../../../hooks";
 import {
   configSlice,
   MasterShipOverrides,
@@ -62,8 +62,8 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
   const { data } = useMasterData();
 
   const dispatch = useAppDispatch();
-  const config = useAppSelector((root) => {
-    return root.present.config.masterData?.ships?.[shipId] || initialConfig;
+  const config = useRootSelector((root) => {
+    return root.config.masterData?.ships?.[shipId] || initialConfig;
   });
 
   const ship = data?.ships.find((ship) => ship.ship_id === shipId);
