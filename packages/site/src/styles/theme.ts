@@ -3,22 +3,9 @@ import { createTheme } from "@mui/material/styles";
 
 import { colors, palette } from "./colors";
 
-const fontFamily = `
--apple-system, 
-BlinkMacSystemFont,
-"Segoe UI",
-Roboto,
-"Hiragino Sans",
-sans-serif,
-"Apple Color Emoji",
-"Segoe UI Emoji",
-"Segoe UI Symbol",
-"Noto Sans Emoji"
-`;
-
 const muiTheme = createTheme({
   typography: {
-    fontFamily,
+    fontFamily: "var(--font-body)",
   },
   palette,
   components: {
@@ -37,6 +24,7 @@ const muiTheme = createTheme({
       defaultProps: {
         target: "_blank",
         rel: "noreferrer",
+        color: "primary.light",
       },
     },
     MuiTooltip: {

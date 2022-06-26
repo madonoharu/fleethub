@@ -3,6 +3,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
@@ -22,6 +23,7 @@ import PlanLabel from "./PlanLabel";
 const TransitionProps = { timeout: 150 };
 
 const Explorer: React.FCX = ({ className }) => {
+  const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
 
   const { rootIds, tempIds, entities } = useRootSelector(
@@ -108,7 +110,7 @@ const Explorer: React.FCX = ({ className }) => {
         <TreeItem
           key="temp"
           nodeId="temp"
-          label="temp"
+          label={t("Temp")}
           TransitionProps={TransitionProps}
         >
           {tempIds.map(renderFile)}

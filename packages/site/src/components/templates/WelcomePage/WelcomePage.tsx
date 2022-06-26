@@ -1,3 +1,4 @@
+import CableIcon from "@mui/icons-material/Cable";
 import MailIcon from "@mui/icons-material/Mail";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
@@ -10,17 +11,17 @@ import {
   Typography,
   Stack,
   Link,
+  css,
 } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useAppDispatch, useModal } from "../../../hooks";
-import { entitiesSlice, transferJorData, JorData } from "../../../store";
-import { Flexbox } from "../../atoms";
+import { entitiesSlice, migrateFromJor, JorData } from "../../../store";
 import { ImportMenu } from "../../organisms";
 
 const WelcomePage: React.FCX = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation("common");
   const dispatch = useAppDispatch();
   const ImportMenuModal = useModal();
 
@@ -28,13 +29,13 @@ const WelcomePage: React.FCX = () => {
     dispatch(entitiesSlice.actions.createPlan());
   };
 
-  const handleTransfer = () => {
+  const handleMigrate = () => {
     window.addEventListener(
       "message",
       (ev) => {
         if (ev.origin === "https://kcjervis.github.io") {
           const data = ev.data as JorData;
-          const payload = transferJorData(data);
+          const payload = migrateFromJor(data);
           dispatch(entitiesSlice.actions.import(payload));
         }
       },
@@ -50,19 +51,33 @@ const WelcomePage: React.FCX = () => {
     <Container maxWidth="md" sx={{ pt: 5 }}>
       <Stack gap={1}>
         <div>
-          <Typography variant="h4">
-            {t("meta.title")} v{process.env.VERSION}
-          </Typography>
+          <Stack direction="row" alignItems="flex-end" gap={1}>
+            <Typography variant="h4">
+              {t("meta.title")} v{process.env.VERSION}
+            </Typography>
+            <Link href="https://github.com/madonoharu/fleethub/releases">
+              {t("Changelog")}
+            </Link>
+          </Stack>
           <Typography mt={2}>{t("meta.description")}</Typography>
         </div>
-        <Flexbox gap={1} css={{ flexWrap: "wrap" }}>
+        <Stack
+          gap={1}
+          mr="auto"
+          css={css`
+            > button {
+              justify-content: flex-start;
+            }
+          `}
+          color="primary"
+        >
           <Button
             startIcon={<NoteAddIcon />}
             variant="contained"
             color="primary"
             onClick={handleCreatePlan}
           >
-            {t("CreateComposition")}
+            {t("CreateComp")}
           </Button>
           <Button
             startIcon={<SaveAltIcon />}
@@ -70,29 +85,33 @@ const WelcomePage: React.FCX = () => {
             color="primary"
             onClick={ImportMenuModal.show}
           >
-            {t("デッキビルダー形式などから編成を読み込む")}
+            {t("ImportComps")}
           </Button>
           <Button
-            startIcon={<SaveAltIcon />}
+            startIcon={<CableIcon />}
             variant="contained"
             color="primary"
-            onClick={handleTransfer}
+            onClick={handleMigrate}
           >
-            {t("Jervis ORからデータを引き継ぐ")}
+            {t("MigrateFromJor")}
           </Button>
-        </Flexbox>
+        </Stack>
         <Typography variant="h5" mt={4}>
           Tips
         </Typography>
         <Divider />
-        <Typography component="div">
+        <p>
+          デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
+        </p>
+
+        {i18n.language !== "ja" && (
           <p>
-            デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
+            About Localization -{" "}
+            <Link href="https://github.com/madonoharu/fleethub/tree/develop/packages/site/public/locales">
+              {t("AboutLocalization")}
+            </Link>
           </p>
-          <Link href="https://github.com/madonoharu/fleethub/releases">
-            {t("Changelog")}
-          </Link>
-        </Typography>
+        )}
 
         <Typography variant="h5" mt={4}>
           Author

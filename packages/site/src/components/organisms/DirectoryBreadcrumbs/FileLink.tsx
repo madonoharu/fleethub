@@ -5,9 +5,9 @@ import React from "react";
 import { useAppDispatch } from "../../../hooks";
 import { appSlice, FileEntity } from "../../../store";
 
-type FileLinkProps = {
+interface FileLinkProps {
   file: FileEntity;
-};
+}
 
 const FileLink: React.FCX<FileLinkProps> = ({ className, file }) => {
   const dispatch = useAppDispatch();
@@ -26,4 +26,5 @@ const FileLink: React.FCX<FileLinkProps> = ({ className, file }) => {
 export default styled(FileLink)`
   display: block;
   max-width: 120px;
+  cursor: pointer;
 `;

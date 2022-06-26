@@ -14,10 +14,9 @@ import {
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton, Select } from "../../molecules";
+import SupSelect from "../SupSelect";
 
 import StepListItem from "./StepListItem";
-
-const SUP_OPTIONS = [undefined, ...FLEET_KEYS];
 
 type StepListProps = {
   file: PlanEntity;
@@ -101,12 +100,9 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
           onChange={(sortie) => actions.update({ sortie })}
           getOptionLabel={uppercase}
         />
-        <Select
-          css={{ width: 96 }}
+        <SupSelect
           label={t("FleetType.RouteSup")}
-          options={SUP_OPTIONS}
           value={org.route_sup as FleetKey | undefined}
-          getOptionLabel={(key) => (key ? uppercase(key) : t("None"))}
           onChange={(route_sup) => actions.update({ route_sup })}
         />
 

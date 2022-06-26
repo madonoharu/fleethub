@@ -49,6 +49,7 @@ declare global {
     interface ProcessEnv {
       readonly KCS_SCRIPT: string;
       readonly VERSION: string;
+      readonly NEXT_PUBLIC_VERCEL_URL?: string;
     }
   }
 }

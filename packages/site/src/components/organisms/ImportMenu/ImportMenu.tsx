@@ -1,6 +1,5 @@
-import styled from "@emotion/styled";
-import { Link, Typography } from "@mui/material";
-import { MasterData } from "fleethub-core";
+import { styled, Link, Typography, Stack } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import React, { useRef } from "react";
 import { useAsyncCallback } from "react-async-hook";
@@ -27,29 +26,31 @@ const StyledDivider = styled(Divider)`
   margin-top: 8px;
 `;
 
-type UrlFormProps = {
-  masterData: MasterData;
+interface ImportFormProps {
   onSuccess: (file: PublicFile) => void;
-  onError: () => void;
-};
+  onError: (error: Error) => void;
+}
 
-const UrlForm: React.FCX<UrlFormProps> = ({
-  masterData,
-  onSuccess,
-  onError,
-}) => {
+const ImportForm: React.FCX<ImportFormProps> = ({ onSuccess, onError }) => {
+  const { masterData } = useFhCore();
   const ref = useRef<HTMLInputElement>(null);
 
   const asyncParse = useAsyncCallback(
     async () => {
       const str = ref.current?.value || "";
-      const data = await parseUrl(masterData, new URL(str));
 
-      if (!data) {
-        throw new Error("data is undefined");
+      if (str.startsWith("{")) {
+        const parsed = parseDeckStr(masterData, str);
+        return parsed;
+      } else {
+        const data = await parseUrl(masterData, new URL(str));
+
+        if (!data) {
+          throw new Error("data is undefined");
+        }
+
+        return data;
       }
-
-      return data;
     },
     {
       onSuccess,
@@ -70,69 +71,56 @@ const UrlForm: React.FCX<UrlFormProps> = ({
   );
 };
 
-type Props = {
+interface Props {
   onClose?: () => void;
-};
+}
 
 const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
-  const [deckStr, setDeckStr] = React.useState("");
-  const { masterData } = useFhCore();
+  const { t } = useTranslation("common");
+  const outputToTemp = useRootSelector((root) => root.app.outputToTemp);
+  const dispatch = useAppDispatch();
 
   const Snackbar = useSnackbar();
 
-  const importToTemp = useRootSelector((root) => root.app.importToTemp);
-  const dispatch = useAppDispatch();
-
-  const handleImportToTempChange = (value: boolean) => {
-    dispatch(appSlice.actions.setImportToTemp(value));
+  const handleOutputToTempChange = (value: boolean) => {
+    dispatch(appSlice.actions.setOutputToTemp(value));
   };
 
-  const to = importToTemp ? "temp" : "root";
-
-  const handleDeckImport = () => {
-    try {
-      const parsed = parseDeckStr(masterData, deckStr);
-      dispatch(entitiesSlice.actions.import({ ...parsed, to }));
-
-      onClose?.();
-    } catch (error) {
-      console.error(error);
-      Snackbar.show({ message: "失敗しました", severity: "error" });
-    }
+  const handleImport = (data: PublicFile) => {
+    const to = outputToTemp ? "temp" : "root";
+    dispatch(entitiesSlice.actions.import({ ...data, to }));
+    onClose?.();
   };
 
   return (
-    <div className={className}>
-      <Flexbox>
-        <Typography variant="subtitle1">編成を読み込む</Typography>
-      </Flexbox>
+    <Stack className={className} gap={1}>
+      <Typography variant="subtitle1">{t("ImportComps")}</Typography>
 
       <Checkbox
-        label="一時領域で開く"
-        checked={importToTemp}
-        onChange={handleImportToTempChange}
+        label={t("OutputToTemp")}
+        checked={outputToTemp}
+        onChange={handleOutputToTempChange}
       />
 
-      <StyledDivider label="デッキビルダー形式から" />
-      <Flexbox gap={1}>
-        <TextField fullWidth value={deckStr} onChange={setDeckStr} />
-        <ImportButton onClick={handleDeckImport} />
-      </Flexbox>
+      <ImportForm onSuccess={handleImport} onError={Snackbar.error} />
 
-      <StyledDivider label="共有URLから" />
-      <UrlForm
-        masterData={masterData}
-        onSuccess={(file) => {
-          dispatch(entitiesSlice.actions.import({ ...file, to }));
-          onClose?.();
-        }}
-        onError={() => {
-          Snackbar.show({ message: "失敗しました", severity: "error" });
-        }}
-      />
+      <Typography variant="subtitle2">{t("SupportedFormats")}</Typography>
+      <ul>
+        {[
+          t("DeckBuilderFormat"),
+          "jervis.vercel.app?p=...",
+          "jervis.page.link/...",
+          "jervis.vercel.app?predeck=...",
+          "deckbuilder.html?predeck=...",
+        ].map((format, index) => (
+          <Typography variant="body2" component="li" key={index}>
+            {format}
+          </Typography>
+        ))}
+      </ul>
 
       <StyledDivider label="編成を直接読み込むJavaScriptコード" />
-      <Typography variant="body2" mb={1}>
+      <Typography variant="body2">
         <Link href="https://noro6.github.io/kc-web/#/manager">
           制空権シミュレータの艦娘管理
         </Link>
@@ -141,7 +129,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
       <KcsScript />
 
       <Snackbar />
-    </div>
+    </Stack>
   );
 };
 

@@ -94,7 +94,7 @@ const AppBar: React.FCX = ({ className }) => {
       <HomeButton size="small" title="Home" onClick={handleHomeClick} />
       <ImportButton
         size="small"
-        title="デッキビルダー形式などから編成を読み込む"
+        title={t("ImportComps")}
         onClick={ImportMenuModal.show}
       />
       <UndoButton

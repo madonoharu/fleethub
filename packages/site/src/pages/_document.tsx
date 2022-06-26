@@ -4,9 +4,16 @@ import React from "react";
 
 import { theme, createEmotionCache } from "../styles";
 
+const ORIGIN = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : "http://localhost:3000";
+
 export default class MyDocument extends Document {
   render() {
-    const lang = this.props.locale || "ja";
+    const { page, locales, defaultLocale = "ja" } = this.props.__NEXT_DATA__;
+    const lang = this.props.locale || defaultLocale;
+    const defaultHref = `${ORIGIN}${page}`;
+
     return (
       <Html lang={lang}>
         <Head>
@@ -15,6 +22,20 @@ export default class MyDocument extends Document {
           <link rel="icon" href="/favicon.ico" />
           {/* PWA primary color */}
           <meta name="theme-color" content={theme.palette.primary.main} />
+
+          {locales?.map((locale) => (
+            <link
+              key={locale}
+              rel="alternate"
+              hrefLang={locale}
+              href={
+                locale === defaultLocale
+                  ? defaultHref
+                  : `${ORIGIN}/${locale}${page}`
+              }
+            />
+          ))}
+          <link rel="alternate" hrefLang="x-default" href={defaultHref} />
         </Head>
         <body>
           <Main />

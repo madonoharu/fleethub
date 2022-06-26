@@ -1,7 +1,6 @@
 import { ShipCategory } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { Updater } from "use-immer";
 
 import { Checkbox, Flexbox } from "../../atoms";
 import { SelectButtons } from "../../molecules";
@@ -19,30 +18,26 @@ const SHIP_CATEGORY_OPTIONS: ShipCategory[] = [
   "AuxiliaryShip",
 ];
 
-type Props = {
-  state: ShipFilterState;
-  update: Updater<ShipFilterState>;
-};
+interface Props {
+  filterState: ShipFilterState;
+  updateFilterState: (changes: Partial<ShipFilterState>) => void;
+}
 
-const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
+const FilterBar: React.FCX<Props> = (props) => {
   const { t } = useTranslation("common");
 
-  const handleAbyssalChange = (value: boolean) => {
-    update((s) => {
-      s.abyssal = value;
-    });
-  };
-
-  const handleVisiblePrevFormChange = (value: boolean) => {
-    update((s) => {
-      s.visiblePrevForm = value;
-    });
-  };
+  const { className, filterState, updateFilterState } = props;
 
   const handleCategoryChange = (category: ShipCategory) => {
-    update((s) => {
-      s.category = category;
-    });
+    updateFilterState({ category });
+  };
+
+  const handleVisibleAllFormsChange = (visibleAllForms: boolean) => {
+    updateFilterState({ visibleAllForms });
+  };
+
+  const handleAbyssalChange = (abyssal: boolean) => {
+    updateFilterState({ abyssal });
   };
 
   return (
@@ -50,20 +45,20 @@ const FilterBar: React.FCX<Props> = ({ className, state, update }) => {
       <SelectButtons
         css={{ marginRight: "auto" }}
         options={SHIP_CATEGORY_OPTIONS}
-        value={state.category}
+        value={filterState.category}
         onChange={handleCategoryChange}
         getOptionLabel={(key) => t(`ShipCategory.${key}`)}
       />
       <Checkbox
-        label="改造前表示"
+        label={t("ShowAllForms")}
         size="small"
-        checked={state.visiblePrevForm}
-        onChange={handleVisiblePrevFormChange}
+        checked={filterState.visibleAllForms}
+        onChange={handleVisibleAllFormsChange}
       />
       <Checkbox
         label={t("Abyssal")}
         size="small"
-        checked={state.abyssal}
+        checked={filterState.abyssal}
         onChange={handleAbyssalChange}
       />
     </Flexbox>
