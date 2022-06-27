@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ShipCategory } from "fleethub-core";
 
 import { entitiesSlice, ShipPosition } from "./entities/entitiesSlice";
 
@@ -9,6 +10,8 @@ export type ShipSelectState = {
   position?: ShipPosition;
   reselect?: boolean;
   abyssal?: boolean;
+  visibleAllForms?: boolean;
+  category?: ShipCategory;
 };
 
 const initialState: ShipSelectState = {
@@ -33,7 +36,13 @@ export const shipSelectSlice = createSlice({
     show: (state) => {
       state.open = true;
     },
-    hide,
+    hide: ({ visibleAllForms, category }) => {
+      return {
+        open: false,
+        visibleAllForms,
+        category,
+      };
+    },
   },
 
   extraReducers: (builder) =>

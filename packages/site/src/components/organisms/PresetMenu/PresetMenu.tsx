@@ -5,7 +5,7 @@ import { shallowEqual } from "react-redux";
 
 import {
   useAppDispatch,
-  useAppSelector,
+  useRootSelector,
   useFhCore,
   useShip,
 } from "../../../hooks";
@@ -28,9 +28,11 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
   const { core } = useFhCore();
   const [allVisible, setAllVisible] = useState(false);
 
-  const presets = useAppSelector((root) => {
-    const ids = root.present.entities.presets.ids as string[];
-    return ids.map((id) => selectPreset(root, id)).filter(nonNullable);
+  const presets = useRootSelector((root) => {
+    const ids = root.entities.presets.ids;
+    return ids
+      .map((id) => selectPreset(root, id as string))
+      .filter(nonNullable);
   }, shallowEqual);
 
   const dispatch = useAppDispatch();

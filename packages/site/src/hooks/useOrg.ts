@@ -3,15 +3,15 @@ import { useMemo } from "react";
 
 import { OrgEntity, orgsSelectors, orgsSlice, selectOrgState } from "../store";
 
-import { useAppDispatch, useAppSelector } from "./rtk-hooks";
+import { useAppDispatch, useRootSelector } from "./rtk-hooks";
 import { useFhCore } from "./useFhCore";
 
 export function useOrgEntity(id: string): OrgEntity | undefined {
-  return useAppSelector((root) => orgsSelectors.selectById(root, id));
+  return useRootSelector((root) => orgsSelectors.selectById(root, id));
 }
 
 export function useOrgState(id: string): OrgState | undefined {
-  return useAppSelector((root) => selectOrgState(root, id));
+  return useRootSelector((root) => selectOrgState(root, id));
 }
 
 export const useOrg = (id: string) => {

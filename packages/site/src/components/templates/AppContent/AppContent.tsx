@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 
-import { useAppSelector } from "../../../hooks";
+import { useRootSelector } from "../../../hooks";
 import ConfigPage from "../ConfigPage";
 import GearSelectModal from "../GearSelectModal";
 import MapSelect from "../MapSelect";
@@ -18,8 +18,8 @@ const Bottom = styled.div`
 `;
 
 const AppContent: React.FC = () => {
-  const configOpen = useAppSelector((root) => root.present.app.configOpen);
-  const explorerOpen = useAppSelector((root) => root.present.app.explorerOpen);
+  const configOpen = useRootSelector((root) => root.app.configOpen);
+  const explorerOpen = useRootSelector((root) => root.app.explorerOpen);
 
   return (
     <AppWrapper>

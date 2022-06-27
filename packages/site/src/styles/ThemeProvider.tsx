@@ -5,14 +5,35 @@ import React from "react";
 import { theme, Theme } from "./theme";
 
 const globalStyles = (theme: Theme) => css`
-  body {
-    background: #141e30;
+  :root {
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif,
+      "Segoe UI Emoji", "Segoe UI Symbol";
   }
 
-  * {
+  body {
+    background: #141e30;
     scrollbar-color: ${theme.colors.scrollbar} transparent;
     scrollbar-width: thin;
   }
+
+  code {
+    font-family: Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono",
+      monospace;
+    background-color: rgba(102, 178, 255, 0.15);
+    direction: ltr;
+    display: inline-block;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    letter-spacing: 0px;
+    padding: 0px 5px;
+    border-radius: 5px;
+  }
+
+  ul {
+    margin-block: 0;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;

@@ -38,8 +38,13 @@ type Props = {
 };
 
 const ShipList: React.FC<Props> = ({ ships, onSelect }) => {
-  const { state, update, visibleShips, searchValue, setSearchValue } =
-    useShipListState(ships);
+  const {
+    filterState,
+    visibleShips,
+    searchValue,
+    updateFilterState,
+    setSearchValue,
+  } = useShipListState(ships);
 
   const { t } = useTranslation("ctype");
 
@@ -58,7 +63,10 @@ const ShipList: React.FC<Props> = ({ ships, onSelect }) => {
         onChange={setSearchValue}
         autoFocus={true}
       />
-      <FilterBar state={state} update={update} />
+      <FilterBar
+        filterState={filterState}
+        updateFilterState={updateFilterState}
+      />
       {searchValue ? (
         <ShipSearchResult
           searchValue={searchValue}

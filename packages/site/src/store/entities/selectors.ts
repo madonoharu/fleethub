@@ -5,8 +5,7 @@ import { getEntities } from "./entitiesSlice";
 import { createDenormalizeSelector } from "./rtk-ts-norm";
 import { schemata } from "./schemata";
 
-const entitiesSelector = (root: RootState) =>
-  getEntities(root.present.entities);
+const entitiesSelector = (root: RootState) => getEntities(root.entities);
 
 export const selectShipState = createDenormalizeSelector(
   schemata.ship,
@@ -24,13 +23,13 @@ export const selectPreset = createDenormalizeSelector(
 );
 
 export const orgsSelectors = ormAdapters.orgs.getSelectors(
-  (root: RootState) => root.present.entities.orgs
+  (root: RootState) => root.entities.orgs
 );
 
 export const filesSelectors = ormAdapters.files.getSelectors(
-  (root: RootState) => root.present.entities.files
+  (root: RootState) => root.entities.files
 );
 
 export const stepsSelectors = ormAdapters.steps.getSelectors(
-  (root: RootState) => root.present.entities.steps
+  (root: RootState) => root.entities.steps
 );

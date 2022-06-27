@@ -1,12 +1,11 @@
 import styled from "@emotion/styled";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import { Button, Container } from "@mui/material";
+import { Button, Container, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFile } from "../../../hooks";
-import { Flexbox } from "../../atoms";
 import { FileDropZone, FileForm } from "../../organisms";
 
 import FolderPageItem from "./FolderPageItem";
@@ -46,26 +45,26 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
           onRemove={actions.remove}
         />
 
-        <ListContainer>
-          <Flexbox gap={1}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handlePlanCreate}
-              startIcon={<NoteAddIcon />}
-            >
-              {t("CreateComposition")}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleFolderCreate}
-              startIcon={<CreateNewFolderIcon />}
-            >
-              {t("CreateFolder")}
-            </Button>
-          </Flexbox>
+        <Stack direction="row" gap={1} mt={1}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handlePlanCreate}
+            startIcon={<NoteAddIcon />}
+          >
+            {t("CreateComp")}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleFolderCreate}
+            startIcon={<CreateNewFolderIcon />}
+          >
+            {t("CreateFolder")}
+          </Button>
+        </Stack>
 
+        <ListContainer>
           {file.children.map((id) => (
             <FolderPageItem key={id} id={id} parent={id} />
           ))}

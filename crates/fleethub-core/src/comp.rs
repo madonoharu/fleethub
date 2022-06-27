@@ -171,6 +171,10 @@ impl Comp {
         self.org_type.is_enemy()
     }
 
+    pub fn has_route_sup(&self) -> bool {
+        self.route_sup.is_some()
+    }
+
     pub fn meta(&self) -> CompMeta {
         let fleets = [FleetType::Main, FleetType::Escort, FleetType::RouteSup]
             .into_iter()

@@ -1,17 +1,18 @@
 import { Ship, ShipCategory } from "fleethub-core";
 import { TFunction, useTranslation } from "next-i18next";
 import React, { useState } from "react";
-import { useImmer } from "use-immer";
+import { shallowEqual } from "react-redux";
 
-import { useAppSelector } from "../../../hooks";
+import { useAppDispatch, useRootSelector } from "../../../hooks";
+import { shipSelectSlice } from "../../../store";
 
 type FilterFn = (ship: Ship) => boolean;
 
-export type ShipFilterState = {
-  abyssal: boolean;
-  visiblePrevForm: boolean;
+export interface ShipFilterState {
   category: ShipCategory;
-};
+  visibleAllForms: boolean;
+  abyssal: boolean;
+}
 
 const createFilterFn = (state: ShipFilterState): FilterFn => {
   const fns: FilterFn[] = [];
@@ -20,7 +21,7 @@ const createFilterFn = (state: ShipFilterState): FilterFn => {
     fns.push((ship) => ship.is_abyssal());
   } else {
     fns.push((ship) => !ship.is_abyssal());
-    if (!state.visiblePrevForm) {
+    if (!state.visibleAllForms) {
       fns.push((ship) => !ship.next_id || ship.useful);
     }
   }
@@ -60,13 +61,19 @@ const searchShip = (t: TFunction, ships: Ship[], searchValue: string) => {
 export const useShipListState = (ships: Ship[]) => {
   const { t } = useTranslation("ships");
 
-  const abyssal = useAppSelector((root) => root.present.shipSelect.abyssal);
+  const dispatch = useAppDispatch();
+  const filterState: ShipFilterState = useRootSelector((root) => {
+    const state = root.shipSelect;
+    return {
+      category: state.category || "Battleship",
+      visibleAllForms: state.visibleAllForms || false,
+      abyssal: state.abyssal || false,
+    };
+  }, shallowEqual);
 
-  const [state, update] = useImmer<ShipFilterState>({
-    abyssal: abyssal || false,
-    visiblePrevForm: false,
-    category: "Battleship",
-  });
+  const updateFilterState = (changes: Partial<ShipFilterState>) => {
+    dispatch(shipSelectSlice.actions.update(changes));
+  };
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -75,15 +82,15 @@ export const useShipListState = (ships: Ship[]) => {
       return searchShip(t, ships, searchValue);
     }
 
-    const filterFn = createFilterFn(state);
+    const filterFn = createFilterFn(filterState);
     return ships.filter(filterFn).sort(sortIdComparer);
-  }, [searchValue, t, state, ships]);
+  }, [searchValue, t, filterState, ships]);
 
   return {
-    state,
-    update,
+    filterState,
     visibleShips,
     searchValue,
     setSearchValue,
+    updateFilterState,
   };
 };

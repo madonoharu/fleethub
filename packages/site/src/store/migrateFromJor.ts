@@ -9,7 +9,7 @@ export type JorData = {
   operations: JorOrgState[];
 };
 
-export function transferJorData(data: JorData) {
+export function migrateFromJor(data: JorData) {
   const children = data.operations.map((o) => {
     const org = createOrgStateByJor(o);
 

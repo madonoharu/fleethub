@@ -4,7 +4,7 @@ import {
   Snackbar as MuiSnackbar,
   SnackbarProps as MuiSnackbarProps,
 } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 
 type SnackbarProps = MuiSnackbarProps &
   Pick<AlertProps, "severity"> & {
@@ -21,11 +21,21 @@ const Snackbar: React.FC<SnackbarProps> = ({ severity, message, ...rest }) => (
 
 export const useSnackbar = () => {
   const [state, setState] = useState<SnackbarProps>({});
-  const show = useCallback(
-    (props?: SnackbarProps) => setState({ open: true, ...props }),
-    []
-  );
-  const hide = useCallback(() => setState({ open: false }), []);
+
+  const { show, hide, error } = useMemo(() => {
+    const show = (props?: SnackbarProps) => setState({ open: true, ...props });
+    const hide = () => setState({ open: false });
+
+    const showError = (error: unknown) => {
+      console.error(error);
+      show({
+        severity: "error",
+        message: String(error),
+      });
+    };
+
+    return { show, hide, error: showError };
+  }, []);
 
   const Modal: React.FC<SnackbarProps> = useCallback(
     (props) => <Snackbar onClose={hide} {...state} {...props} />,
@@ -36,5 +46,6 @@ export const useSnackbar = () => {
     isOpen: state.open,
     show,
     hide,
+    error,
   });
 };

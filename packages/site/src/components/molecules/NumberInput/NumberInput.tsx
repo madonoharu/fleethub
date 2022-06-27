@@ -14,10 +14,33 @@ import React, {
   useRef,
   useState,
 } from "react";
+import simpleEvaluate from "simple-evaluate";
 
 import { Input, InputProps } from "../../atoms";
 
 import { useLongPress } from "./useLongPress";
+
+function evaluate(str: string): number | null {
+  if (str === "") {
+    return null;
+  }
+  try {
+    const num = Number(simpleEvaluate(null, toHalf(str)));
+    return Number.isFinite(num) ? num : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function toHalf(str: string): string {
+  return str.replace(/[\uff10-\uff19]/g, (s) =>
+    String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+  );
+}
+
+function format(str: string): string {
+  return str.replace(/[^0-9\uff10-\uff19. ()*/+-]/g, "");
+}
 
 function stepValue(value: number, step: number): number {
   const precision = Math.ceil(-Math.log10(Math.abs(step)));
@@ -35,25 +58,6 @@ function clamp(value: number, min?: number, max?: number): number {
   }
 
   return r;
-}
-
-function toHalf(str: string): string {
-  return str.replace(/[\uff10-\uff19]/g, (s) =>
-    String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-  );
-}
-
-function toNumber(str: string): number | null {
-  if (str === "") {
-    return null;
-  }
-
-  const num = Number(toHalf(str));
-  if (!Number.isFinite(num)) {
-    return null;
-  }
-
-  return num;
 }
 
 const StyledButton = styled(Button)`
@@ -115,55 +119,63 @@ const NumberInput: React.FC<NumberInputProps> = ({
   InputProps,
   ...textFieldProps
 }) => {
-  const valueStr = value === null ? "" : value.toString();
+  const [inner, setInner] = useState(`${value ?? ""}`);
+  const innerRef = useRef(inner);
+  innerRef.current = inner;
 
-  const [text, setText] = useState(valueStr);
-  const textRef = useRef(text);
-  textRef.current = text;
-
-  const [isFocused, setIsFocused] = useState(false);
-  const handleFocus = useCallback(() => setIsFocused(true), []);
-  const handleBlur = useCallback(() => setIsFocused(false), []);
+  const handleBlur = useCallback(() => {
+    setInner((str) => {
+      if (str === "") {
+        return `${value ?? ""}`;
+      } else {
+        return toHalf(str);
+      }
+    });
+  }, [value]);
 
   useEffect(() => {
-    if (!isFocused && text !== valueStr) {
-      setText(valueStr);
+    if (evaluate(innerRef.current) !== value) {
+      setInner(`${value ?? ""}`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused, valueStr]);
+  }, [value]);
 
   const mergedInputProps: MuiInputProps = useMemo(() => {
     const update = (value: string) => {
-      const num = toNumber(value);
+      const num = evaluate(value);
       if (onChange && num !== null) {
         onChange(clamp(num, min, max));
       }
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.currentTarget.value;
-      setText(value);
+      const value = format(event.currentTarget.value);
+      console.log(`${event.currentTarget.value} -> ${value}`);
+      setInner(value);
       update(value);
     };
 
     const increase = () => {
-      setText((current) => {
-        const currentNum = toNumber(current) || 0;
+      setInner((current) => {
+        const currentNum = evaluate(current) || 0;
         const nextNum = stepValue(currentNum, step);
         return clamp(nextNum, min, max).toString();
       });
     };
 
     const decrease = () => {
-      setText((current) => {
-        const currentNum = toNumber(current) || 0;
+      setInner((current) => {
+        const currentNum = evaluate(current) || 0;
         const nextNum = stepValue(currentNum, -step);
         return clamp(nextNum, min, max).toString();
       });
     };
 
     const handleFinish = () => {
-      update(textRef.current);
+      update(innerRef.current);
+    };
+
+    const onCompositionEnd = () => {
+      setInner(toHalf);
     };
 
     const endAdornment = (
@@ -176,7 +188,9 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
     return {
       onChange: handleChange,
+      onCompositionEnd,
       endAdornment,
+      inputMode: "numeric",
       ...InputProps,
     };
   }, [min, max, step, onChange, InputProps]);
@@ -184,8 +198,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   return (
     <Input
       className={className}
-      value={text}
-      onFocus={handleFocus}
+      value={inner}
       onBlur={handleBlur}
       InputProps={mergedInputProps}
       variant={variant}

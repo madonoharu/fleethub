@@ -30,11 +30,11 @@ describe("NumberInput", () => {
 
     press(increaseButton, 1000);
     expect(input).toHaveValue("14");
-    expect(mockFn.mock.calls[0][0]).toBe(14);
+    expect(mockFn).toHaveBeenLastCalledWith(14);
 
     press(decreaseButton, 399);
     expect(input).toHaveValue("13");
-    expect(mockFn.mock.calls[1][0]).toBe(13);
+    expect(mockFn).toHaveBeenLastCalledWith(13);
   });
 
   it("null", () => {
@@ -62,5 +62,67 @@ describe("NumberInput", () => {
 
     const input = screen.getByRole("textbox");
     expect(input).toHaveValue("2");
+  });
+
+  it("evaluate", () => {
+    const mockFn = jest.fn<void, [number]>();
+    render(<NumberInput value={1} onChange={mockFn} />);
+    const input = screen.getByRole<HTMLInputElement>("textbox");
+
+    fireEvent.change(input, { target: { value: "*+-1.3" } });
+    expect(mockFn).not.toBeCalled();
+
+    fireEvent.change(input, {
+      target: { value: "-1.2 * -1.3 - 1.42 + 5 / 2" },
+    });
+    expect(mockFn).toHaveBeenLastCalledWith(-1.2 * -1.3 - 1.42 + 5 / 2);
+  });
+
+  it("blur", () => {
+    const mockFn = jest.fn<void, [number]>();
+    render(<NumberInput value={2} onChange={mockFn} />);
+    const input = screen.getByRole<HTMLInputElement>("textbox");
+
+    fireEvent.change(input, { target: { value: "3" } });
+    expect(input).toHaveValue("3");
+    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenLastCalledWith(3);
+
+    fireEvent.change(input, { target: { value: "" } });
+    expect(input).toHaveValue("");
+    expect(mockFn).toBeCalledTimes(1);
+
+    fireEvent.blur(input);
+    expect(input).toHaveValue("2");
+    expect(mockFn).toBeCalledTimes(1);
+
+    fireEvent.change(input, { target: { value: "０.１２３４５６７８９" } });
+    expect(input).toHaveValue("０.１２３４５６７８９");
+    expect(mockFn).toBeCalledTimes(2);
+    expect(mockFn).toHaveBeenLastCalledWith(0.123456789);
+
+    fireEvent.blur(input);
+    expect(input).toHaveValue("0.123456789");
+    expect(mockFn).toBeCalledTimes(2);
+  });
+
+  it("compositionEnd", () => {
+    const mockFn = jest.fn<void, [number]>();
+    render(<NumberInput value={1} onChange={mockFn} />);
+    const input = screen.getByRole<HTMLInputElement>("textbox");
+
+    fireEvent.change(input, { target: { value: "１２３" } });
+    expect(input).toHaveValue("１２３");
+    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenLastCalledWith(123);
+
+    fireEvent.compositionEnd(input);
+    expect(input).toHaveValue("123");
+    expect(mockFn).toBeCalledTimes(1);
+
+    fireEvent.change(input, { target: { value: "" } });
+    fireEvent.compositionEnd(input);
+    expect(input).toHaveValue("");
+    expect(mockFn).toBeCalledTimes(1);
   });
 });

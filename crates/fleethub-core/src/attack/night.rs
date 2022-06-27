@@ -137,12 +137,20 @@ impl<'a> NightAttackContext<'a> {
         let defense_params =
             DefenseParams::from_target(target, ctx.target_env.org_type.side(), armor_penetration);
 
+        let hits = ctx.special_attack_def.as_ref().map_or(1.0, |def| {
+            if attacker.level >= 80 {
+                def.hits
+            } else {
+                def.hits.floor()
+            }
+        });
+
         AttackParams {
             attack_power_params,
             hit_rate_params,
             defense_params,
             is_cutin: ctx.special_attack_def.is_some(),
-            hits: ctx.special_attack_def.as_ref().map_or(1.0, |def| def.hits),
+            hits,
         }
     }
 }

@@ -23,7 +23,7 @@ const ExplorerHeader: React.FCX<ExplorerHeaderProps> = ({
   return (
     <Flexbox className={className}>
       <Button onClick={onPlanCreate} startIcon={<NoteAddIcon />}>
-        {t("CreateComposition")}
+        {t("CreateComp")}
       </Button>
       <Button onClick={onFolderCreate} startIcon={<CreateNewFolderIcon />}>
         {t("CreateFolder")}
