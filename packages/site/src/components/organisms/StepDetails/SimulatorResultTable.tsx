@@ -1,5 +1,5 @@
 import { round } from "@fh/utils";
-import { Paper, TableContainer, Typography } from "@mui/material";
+import { Alert, Paper, TableContainer, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { Comp, SimulatorResult } from "fleethub-core";
 import { useTranslation } from "next-i18next";
@@ -29,6 +29,14 @@ const SimulatorResultTable: React.FCX<Props> = ({
   const { t } = useTranslation("common");
   const { core } = useFhCore();
 
+  if (!player.has_route_sup()) {
+    return (
+      <div className={className}>
+        <Alert severity="warning">支援艦隊が設定されていません</Alert>
+      </div>
+    );
+  }
+
   let simResult: SimulatorResult | undefined;
   let executionTime: React.ReactNode = null;
 
@@ -54,6 +62,11 @@ const SimulatorResultTable: React.FCX<Props> = ({
     );
   } catch (err) {
     console.error(err);
+    return (
+      <div className={className}>
+        <Alert severity="error">{String(err)}</Alert>
+      </div>
+    );
   }
 
   if (!simResult) {

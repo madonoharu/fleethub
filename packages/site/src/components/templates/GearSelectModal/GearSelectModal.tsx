@@ -1,7 +1,7 @@
 import { nonNullable } from "@fh/utils";
 import React, { useMemo } from "react";
 
-import { useAppDispatch, useAppSelector, useFhCore } from "../../../hooks";
+import { useAppDispatch, useRootSelector, useFhCore } from "../../../hooks";
 import { gearSelectSlice } from "../../../store";
 import { Dialog } from "../../organisms";
 
@@ -21,7 +21,7 @@ const GearSelectModal: React.FCX = () => {
   );
 
   const dispatch = useAppDispatch();
-  const open = useAppSelector((root) => root.present.gearSelect.open);
+  const open = useRootSelector((root) => root.gearSelect.open);
 
   const handleClose = () => dispatch(gearSelectSlice.actions.hide());
 

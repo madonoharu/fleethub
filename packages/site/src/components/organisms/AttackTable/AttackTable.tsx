@@ -20,6 +20,7 @@ import AttackPowerDetails from "./AttackPowerDetails";
 import DamageCell from "./DamageCell";
 import DamageStateMapBarChart from "./DamageStateMapBarChart";
 import HitRateDetails from "./HitRateDetails";
+import ProcRateCell from "./ProcRateCell";
 
 type AttackTableType = "Shelling" | "Asw" | "NightAttack" | "Torpedo";
 
@@ -140,8 +141,7 @@ const AttackTable: React.FCX<AttackTableProps> = ({
 
     {
       label: t("ProcRate"),
-      align: "right",
-      getValue: (item) => toPercent(item.rate),
+      getValue: (item) => <ProcRateCell sx={{ ml: 1 }} item={item} />,
     },
 
     ...createAttackTableColumns(t, disableDamage),

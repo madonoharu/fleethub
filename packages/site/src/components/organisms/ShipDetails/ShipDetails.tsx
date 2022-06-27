@@ -7,7 +7,7 @@ import React, { useEffect } from "react";
 
 import {
   useAppDispatch,
-  useAppSelector,
+  useRootSelector,
   useFhCore,
   useModal,
 } from "../../../hooks";
@@ -60,7 +60,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
 }) => {
   const { core } = useFhCore();
 
-  const state = useAppSelector((root) => root.present.shipDetails);
+  const state = useRootSelector((root) => root.shipDetails);
   const dispatch = useAppDispatch();
 
   const PlayerShipEnvModal = useModal();

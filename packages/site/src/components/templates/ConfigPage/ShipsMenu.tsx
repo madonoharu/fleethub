@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 import { shallowEqual } from "react-redux";
 
-import { useAppDispatch, useAppSelector, useFhCore } from "../../../hooks";
+import { useAppDispatch, useRootSelector, useFhCore } from "../../../hooks";
 import { configSlice } from "../../../store";
 import { DeleteButton } from "../../molecules";
 import { Dialog, ShipNameplate } from "../../organisms";
@@ -19,8 +19,8 @@ const ShipsMenu: React.FC = () => {
   const { allShips } = useFhCore();
   const dispatch = useAppDispatch();
 
-  const shipIds = useAppSelector((root) => {
-    return Object.keys(root.present.config.masterData?.ships || {}).map((v) =>
+  const shipIds = useRootSelector((root) => {
+    return Object.keys(root.config.masterData?.ships || {}).map((v) =>
       Number(v)
     );
   }, shallowEqual);

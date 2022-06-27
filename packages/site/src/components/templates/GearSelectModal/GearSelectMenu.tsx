@@ -4,7 +4,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import { Gear } from "fleethub-core";
 import React from "react";
 
-import { useAppDispatch, useAppSelector, useShip } from "../../../hooks";
+import { useAppDispatch, useRootSelector, useShip } from "../../../hooks";
 import { entitiesSlice } from "../../../store";
 import { makeGetNextEbonuses } from "../../../utils";
 import { Tabs, TabsProps } from "../../molecules";
@@ -18,8 +18,8 @@ type Props = {
 
 const GearSelectMenu: React.FCX<Props> = ({ className, gears }) => {
   const dispatch = useAppDispatch();
-  const create = useAppSelector((root) => root.present.gearSelect.create);
-  const position = useAppSelector((root) => root.present.gearSelect.position);
+  const create = useRootSelector((root) => root.gearSelect.create);
+  const position = useRootSelector((root) => root.gearSelect.position);
 
   const ship = useShip(position?.id);
   const key = position?.key;

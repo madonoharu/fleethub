@@ -9,5 +9,5 @@ export * from "./shipSelectSlice";
 export * from "./shipDetailsSlice";
 export * from "./configSlice";
 
-export * from "./transferJorData";
+export * from "./migrateFromJor";
 export * from "./parseUrl";

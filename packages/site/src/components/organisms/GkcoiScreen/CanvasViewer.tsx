@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { Fab, Tooltip } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -19,6 +20,7 @@ type Props = {
 };
 
 const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
+  const { t } = useTranslation("common");
   const Modal = useModal();
 
   const element = (
@@ -35,7 +37,7 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
 
   return (
     <div className={className}>
-      <Tooltip title="download">
+      <Tooltip title={t("Download")}>
         <Fab
           css={{ position: "absolute", top: -32, right: -40 }}
           color="secondary"

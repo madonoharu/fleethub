@@ -1,4 +1,4 @@
-import { Path, PathValue } from "@fh/utils";
+import { FleetKey, Path, PathValue } from "@fh/utils";
 import { Stack, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { produce } from "immer";
@@ -13,6 +13,7 @@ import {
   StepEntity,
   StepConfig,
   stepsSlice,
+  orgsSlice,
 } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { Tabs } from "../../molecules";
@@ -23,6 +24,7 @@ import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
 import NightSituationForm from "../NightSituationForm";
 import ShipCard from "../ShipCard";
+import SupSelect from "../SupSelect";
 
 import SimulatorResultTable from "./SimulatorResultTable";
 import WarfareDetails from "./WarfareDetails";
@@ -171,12 +173,27 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
           {
             label: "砲撃支援シミュレータ",
             panel: (
-              <SimulatorResultTable
-                player={playerComp}
-                enemy={enemyComp}
-                config={config}
-                times={10000}
-              />
+              <div>
+                <SupSelect
+                  label={t("FleetType.RouteSup")}
+                  sx={{ mb: 1 }}
+                  value={playerOrg.route_sup as FleetKey | undefined}
+                  onChange={(route_sup) =>
+                    dispatch(
+                      orgsSlice.actions.update({
+                        id: playerOrg.id,
+                        changes: { route_sup },
+                      })
+                    )
+                  }
+                />
+                <SimulatorResultTable
+                  player={playerComp}
+                  enemy={enemyComp}
+                  config={config}
+                  times={10000}
+                />
+              </div>
             ),
           },
         ]}

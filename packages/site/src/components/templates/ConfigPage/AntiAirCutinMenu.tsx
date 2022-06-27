@@ -3,7 +3,7 @@ import { AntiAirCutinDef, MasterData } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { configSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
 import ResettableInput from "../../organisms/ResettableInput";
@@ -19,8 +19,8 @@ const AntiAirCutinForm: React.FC<AntiAirCutinFormProps> = ({ def }) => {
 
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
-  const current = useAppSelector(
-    (root) => root.present.config.masterData?.anti_air_cutin?.[id]
+  const current = useRootSelector(
+    (root) => root.config.masterData?.anti_air_cutin?.[id]
   );
 
   return (

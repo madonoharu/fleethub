@@ -11,13 +11,13 @@ type AppState = {
   fileId?: string;
   configOpen?: boolean;
   explorerOpen: boolean;
-  importToTemp: boolean;
+  outputToTemp: boolean;
   gkcoiTheme: GkcoiTheme;
 };
 
 const initialState: AppState = {
   explorerOpen: true,
-  importToTemp: false,
+  outputToTemp: false,
   gkcoiTheme: "dark",
 };
 
@@ -42,8 +42,8 @@ export const appSlice = createSlice({
     toggleExplorerOpen: (state) => {
       state.explorerOpen = !state.explorerOpen;
     },
-    setImportToTemp: (state, { payload }: PayloadAction<boolean>) => {
-      state.importToTemp = payload;
+    setOutputToTemp: (state, { payload }: PayloadAction<boolean>) => {
+      state.outputToTemp = payload;
     },
     setGkcoiTheme: (state, { payload }: PayloadAction<GkcoiTheme>) => {
       state.gkcoiTheme = payload;
@@ -54,9 +54,11 @@ export const appSlice = createSlice({
     builder
       .addCase(entitiesSlice.actions.createPlan, (state, { payload }) => {
         state.fileId = payload.input.id;
+        state.configOpen = false;
       })
       .addCase(entitiesSlice.actions.import, (state, { payload }) => {
         state.fileId = payload.result;
+        state.configOpen = false;
       });
   },
 });

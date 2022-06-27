@@ -10,7 +10,12 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ActionCreators } from "redux-undo";
 
-import { useAppDispatch, useAppSelector, useModal } from "../../../hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useRootSelector,
+  useModal,
+} from "../../../hooks";
 import {
   shipSelectSlice,
   gearSelectSlice,
@@ -30,9 +35,8 @@ const FolderButton = withIconButton(FolderIcon);
 
 const useUndo = () => {
   const dispatch = useAppDispatch();
-
-  const canUndo = useAppSelector((root) => root.past.length > 0);
-  const canRedo = useAppSelector((root) => root.future.length > 0);
+  const canUndo = useAppSelector((history) => history.past.length > 0);
+  const canRedo = useAppSelector((history) => history.future.length > 0);
 
   const actions = useMemo(
     () => ({
@@ -49,7 +53,7 @@ const AppBar: React.FCX = ({ className }) => {
   const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
-  const explorerOpen = useAppSelector((root) => root.present.app.explorerOpen);
+  const explorerOpen = useRootSelector((root) => root.app.explorerOpen);
 
   const { canUndo, canRedo, undo, redo } = useUndo();
 
@@ -90,7 +94,7 @@ const AppBar: React.FCX = ({ className }) => {
       <HomeButton size="small" title="Home" onClick={handleHomeClick} />
       <ImportButton
         size="small"
-        title="デッキビルダー形式などから編成を読み込む"
+        title={t("ImportComps")}
         onClick={ImportMenuModal.show}
       />
       <UndoButton

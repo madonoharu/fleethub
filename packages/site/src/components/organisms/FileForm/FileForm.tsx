@@ -1,9 +1,10 @@
+import { Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useAsyncOnPublish } from "../../../hooks";
 import { FileEntity } from "../../../store";
-import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
+import { FolderIcon, PlanIcon } from "../../atoms";
 import {
   FileCopyButton,
   DeleteButton,
@@ -38,8 +39,8 @@ const FileForm: React.FCX<FileFormProps> = ({
   const asyncOnPublish = useAsyncOnPublish(file.id);
 
   return (
-    <div className={className}>
-      <Flexbox gap={1}>
+    <Stack className={className} gap={1}>
+      <Stack direction="row" gap={1}>
         <TextField
           placeholder="name"
           fullWidth
@@ -56,7 +57,7 @@ const FileForm: React.FCX<FileFormProps> = ({
         <DeleteButton title={t("Remove")} onClick={onRemove} />
 
         {isTemp && <SaveButton title={t("Save")} onClick={onSave} />}
-      </Flexbox>
+      </Stack>
 
       <TextField
         label={t("Description")}
@@ -69,7 +70,7 @@ const FileForm: React.FCX<FileFormProps> = ({
       />
 
       <asyncOnPublish.Snackbar />
-    </div>
+    </Stack>
   );
 };
 
