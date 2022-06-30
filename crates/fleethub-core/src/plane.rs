@@ -96,15 +96,7 @@ pub trait PlaneImpl {
     }
 
     fn contact_rank(&self) -> ContactRank {
-        let accuracy = self.gear_as_ref().accuracy;
-
-        if accuracy <= 1 {
-            ContactRank::Rank1
-        } else if accuracy == 2 {
-            ContactRank::Rank2
-        } else {
-            ContactRank::Rank3
-        }
+        ContactRank::from_accuracy(self.gear_as_ref().accuracy)
     }
 
     fn participates_in_fighter_combat(&self, air_type: AirWaveType) -> bool {

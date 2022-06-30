@@ -1,10 +1,14 @@
 import { Tooltip, Button, ButtonGroup, ButtonProps } from "@mui/material";
 import { styled } from "@mui/system";
-import { NightSituation } from "fleethub-core";
+import { ContactRank, NightSituation } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useModal } from "../../../hooks";
 import { GearIcon } from "../../molecules";
+
+import ContactRankIcon from "./ContactRankIcon";
+import ContactRankMenu from "./ContactRankMenu";
 
 type NightSituationFormProps = {
   value: NightSituation;
@@ -20,6 +24,8 @@ const NightSituationForm: React.FCX<NightSituationFormProps> = ({
   color = "primary",
 }) => {
   const { t } = useTranslation("common");
+
+  const ContactModal = useModal();
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     const key = event.currentTarget.value as keyof NightSituation;
@@ -37,26 +43,42 @@ const NightSituationForm: React.FCX<NightSituationFormProps> = ({
     onClick: handleClick,
   });
 
-  return (
-    <Tooltip title="夜戦設定" placement="top-start">
-      <ButtonGroup
-        className={className}
-        style={style}
-        size="small"
-        color={color}
-      >
-        <Button {...bind("night_contact_rank")}>
-          <GearIcon iconId={10} />
-        </Button>
+  const handleContactRankChange = (rank: ContactRank | null) => {
+    onChange?.({
+      ...value,
+      night_contact_rank: rank,
+    });
+    ContactModal.hide();
+  };
 
-        <Button title={t("Starshell")} {...bind("starshell")}>
-          <GearIcon iconId={27} />
-        </Button>
-        <Button title={t("Searchlight")} {...bind("searchlight")}>
-          <GearIcon iconId={24} />
-        </Button>
-      </ButtonGroup>
-    </Tooltip>
+  return (
+    <>
+      <Tooltip title="夜戦設定" placement="top-start">
+        <ButtonGroup
+          className={className}
+          style={style}
+          size="small"
+          color={color}
+        >
+          <Button
+            onClick={ContactModal.show}
+            variant={value.night_contact_rank ? "contained" : "outlined"}
+          >
+            <ContactRankIcon rank={value.night_contact_rank} />
+          </Button>
+
+          <Button title={t("Starshell")} {...bind("starshell")}>
+            <GearIcon iconId={27} />
+          </Button>
+          <Button title={t("Searchlight")} {...bind("searchlight")}>
+            <GearIcon iconId={24} />
+          </Button>
+        </ButtonGroup>
+      </Tooltip>
+      <ContactModal>
+        <ContactRankMenu onClick={handleContactRankChange} />
+      </ContactModal>
+    </>
   );
 };
 

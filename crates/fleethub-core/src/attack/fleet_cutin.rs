@@ -4,8 +4,8 @@ use crate::{
     fleet::Fleet,
     ship::Ship,
     types::{
-        ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, CombinedFormation, DamageState,
-        Engagement, FleetCutin, Formation, GearAttr, GearType, ShipAttr, SingleFormation,
+        ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, DamageState, Engagement,
+        FleetCutin, Formation, GearAttr, GearType, ShipAttr, SingleFormation,
     },
 };
 
@@ -169,7 +169,8 @@ pub fn get_fleet_cutin_mod(
         }
 
         FleetCutin::KongouCutin => {
-            let base = 1.9;
+            // 2022/6/8に上方修正
+            let base = 2.2;
 
             let engagement_mod = match engagement {
                 Engagement::GreenT => 1.25,
@@ -279,8 +280,7 @@ fn can_do_nelson_touch(fleet: &Fleet, formation: Formation) -> Option<()> {
 
     if !matches!(
         formation,
-        Formation::Single(SingleFormation::DoubleLine)
-            | Formation::Combined(CombinedFormation::Cruising2)
+        Formation::Single(SingleFormation::DoubleLine) | Formation::CRUISING2
     ) {
         return None;
     }
@@ -313,11 +313,7 @@ fn can_do_nagato_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
         return None;
     }
 
-    if !matches!(
-        formation,
-        Formation::Single(SingleFormation::Echelon)
-            | Formation::Combined(CombinedFormation::Cruising2)
-    ) {
+    if !matches!(formation, Formation::ECHELON | Formation::CRUISING2) {
         return None;
     }
 
@@ -342,11 +338,7 @@ fn can_do_colorado_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
         return None;
     }
 
-    if !matches!(
-        formation,
-        Formation::Single(SingleFormation::Echelon)
-            | Formation::Combined(CombinedFormation::Cruising2)
-    ) {
+    if !matches!(formation, Formation::ECHELON | Formation::CRUISING2) {
         return None;
     }
 
@@ -398,8 +390,7 @@ fn can_do_kongou_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
 
     if !matches!(
         formation,
-        Formation::Single(SingleFormation::LineAhead | SingleFormation::Echelon)
-            | Formation::Combined(CombinedFormation::Cruising2 | CombinedFormation::Cruising4)
+        Formation::LINE_AHEAD | Formation::ECHELON | Formation::CRUISING2 | Formation::CRUISING4
     ) {
         return None;
     }
@@ -426,11 +417,7 @@ fn is_musashi_kai2(ship: &Ship) -> bool {
 }
 
 fn can_do_yamato_2ship_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
-    if !matches!(
-        formation,
-        Formation::Single(SingleFormation::Echelon)
-            | Formation::Combined(CombinedFormation::Cruising4)
-    ) {
+    if !matches!(formation, Formation::ECHELON | Formation::CRUISING4) {
         return None;
     }
 
@@ -467,11 +454,7 @@ fn can_do_yamato_2ship_cutin(fleet: &Fleet, formation: Formation) -> Option<()> 
 }
 
 fn can_do_yamato_3ship_cutin(fleet: &Fleet, formation: Formation) -> Option<()> {
-    if !matches!(
-        formation,
-        Formation::Single(SingleFormation::Echelon)
-            | Formation::Combined(CombinedFormation::Cruising4)
-    ) {
+    if !matches!(formation, Formation::ECHELON | Formation::CRUISING4) {
         return None;
     }
 

@@ -8,13 +8,17 @@ pub enum ContactRank {
     Rank3,
 }
 
-pub struct NightContactModifiers {
-    pub power_mod: f64,
-    pub accuracy_mod: f64,
-    pub critical_rate_constant: f64,
-}
-
 impl ContactRank {
+    pub fn from_accuracy(accuracy: i16) -> Self {
+        if accuracy <= 1 {
+            Self::Rank1
+        } else if accuracy == 2 {
+            Self::Rank2
+        } else {
+            Self::Rank3
+        }
+    }
+
     pub fn airstrike_power_mod(self) -> f64 {
         match self {
             Self::Rank1 => 1.12,
@@ -42,4 +46,10 @@ impl ContactRank {
             },
         }
     }
+}
+
+pub struct NightContactModifiers {
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub critical_rate_constant: f64,
 }

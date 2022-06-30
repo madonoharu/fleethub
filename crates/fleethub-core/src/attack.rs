@@ -6,6 +6,7 @@ mod attack_type;
 mod context;
 mod damage;
 mod fleet_cutin;
+pub mod fleet_cutin_mod;
 mod fleet_factor;
 mod hit;
 mod night;

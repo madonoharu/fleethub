@@ -49,6 +49,10 @@ impl FhCore {
             factory: Factory { master_data },
         }
     }
+
+    pub fn master_data(&self) -> &MasterData {
+        &self.factory.master_data
+    }
 }
 
 #[wasm_bindgen]
