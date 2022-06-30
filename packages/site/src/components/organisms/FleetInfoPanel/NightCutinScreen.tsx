@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Typography, Stack } from "@mui/material";
+import { Typography, Stack, Tooltip } from "@mui/material";
 import { NightCutinRateInfo, FleetNightCutinRateInfo } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -9,6 +9,7 @@ import { toPercent } from "../../../utils";
 import { LabeledValue, Flexbox } from "../../atoms";
 import AttackChip from "../AttackChip";
 import NightSituationForm from "../NightSituationForm";
+import ContactRankIcon from "../NightSituationForm/ContactRankIcon";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 
@@ -103,9 +104,15 @@ const NightCutinPanel: React.FCX = ({ className }) => {
   return (
     <Stack className={className} gap={1}>
       <Flexbox gap={1}>
-        <Typography>
-          {t("NightContact")} {toPercent(info.night_contact_chance.total)}
-        </Typography>
+        <Typography>{t("NightContact")}</Typography>
+        {([1, 2, 3] as const).map((n) => (
+          <Tooltip key={n} title={t(`ContactRank.Rank${n}`)}>
+            <Typography variant="body2">
+              <ContactRankIcon rank={`Rank${n}`} />
+              <span>{toPercent(info.night_contact_chance[`rank${n}`])}</span>
+            </Typography>
+          </Tooltip>
+        ))}
 
         <Typography ml={5}>攻撃側</Typography>
         <NightSituationForm

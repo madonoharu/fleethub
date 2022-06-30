@@ -56,7 +56,54 @@ pub enum Formation {
     Combined(CombinedFormation),
 }
 
+impl From<SingleFormation> for Formation {
+    #[inline]
+    fn from(inner: SingleFormation) -> Self {
+        Self::Single(inner)
+    }
+}
+
+impl From<CombinedFormation> for Formation {
+    #[inline]
+    fn from(inner: CombinedFormation) -> Self {
+        Self::Combined(inner)
+    }
+}
+
+impl PartialEq<SingleFormation> for Formation {
+    fn eq(&self, other: &SingleFormation) -> bool {
+        *self == Self::from(*other)
+    }
+}
+
+impl PartialEq<CombinedFormation> for Formation {
+    fn eq(&self, other: &CombinedFormation) -> bool {
+        *self == Self::from(*other)
+    }
+}
+
 impl Formation {
+    /// 単縦陣
+    pub const LINE_AHEAD: Self = Self::Single(SingleFormation::LineAhead);
+    /// 複縦陣
+    pub const DOUBLE_LINE: Self = Self::Single(SingleFormation::DoubleLine);
+    /// 輪形陣
+    pub const DIAMOND: Self = Self::Single(SingleFormation::Diamond);
+    /// 梯形陣
+    pub const ECHELON: Self = Self::Single(SingleFormation::Echelon);
+    /// 単横陣
+    pub const LINE_ABREAST: Self = Self::Single(SingleFormation::LineAbreast);
+    /// 警戒陣
+    pub const VANGUARD: Self = Self::Single(SingleFormation::Vanguard);
+    /// 第一警戒航行序列
+    pub const CRUISING1: Self = Self::Combined(CombinedFormation::Cruising1);
+    /// 第二警戒航行序列
+    pub const CRUISING2: Self = Self::Combined(CombinedFormation::Cruising2);
+    /// 第三警戒航行序列
+    pub const CRUISING3: Self = Self::Combined(CombinedFormation::Cruising3);
+    /// 第四警戒航行序列
+    pub const CRUISING4: Self = Self::Combined(CombinedFormation::Cruising4);
+
     /// 陣形相性
     ///
     /// 砲撃戦と対潜戦では攻撃側と防御側は以下の陣形条件を満たすなら命中補正は1.0となる
@@ -109,17 +156,5 @@ impl FromStr for Formation {
 impl Default for Formation {
     fn default() -> Self {
         Self::Single(Default::default())
-    }
-}
-
-impl From<SingleFormation> for Formation {
-    fn from(inner: SingleFormation) -> Self {
-        Self::Single(inner)
-    }
-}
-
-impl From<CombinedFormation> for Formation {
-    fn from(inner: CombinedFormation) -> Self {
-        Self::Combined(inner)
     }
 }

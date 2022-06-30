@@ -1,10 +1,6 @@
 use std::{fs, path::Path};
 
-use fleethub_core::{
-    master_data::MasterData,
-    types::{GearAttr, GearState, ShipAttr, ShipState},
-    FhCore,
-};
+use fleethub_core::{fleet::Fleet, master_data::MasterData, ship::Ship, FhCore};
 use once_cell::sync::Lazy;
 
 async fn init_master_data() -> anyhow::Result<MasterData> {
@@ -41,32 +37,56 @@ pub static FH_CORE: Lazy<FhCore> = Lazy::new(|| {
     FhCore::from_master_data(master_data)
 });
 
-macro_rules! create_ship {
-    ($input:tt) => {{
-        let value = serde_json::json!($input);
-        let state: ShipState = serde_json::from_value(value).unwrap();
-        FH_CORE.create_ship(Some(state)).unwrap()
-    }};
+fn walk<F: FnMut(&mut toml::Value)>(input: &mut toml::Value, f: &mut F) {
+    use toml::Value::*;
+
+    f(input);
+
+    match input {
+        Array(array) => array.iter_mut().for_each(|value| walk(value, f)),
+        Table(table) => table.iter_mut().for_each(|(_, value)| walk(value, f)),
+        _ => (),
+    }
 }
 
-pub(crate) use create_ship;
+fn set_ship_id(value: &mut toml::Value) {
+    if let Some(name) = value.get("ship_id").and_then(|v| v.as_str()) {
+        let id = FH_CORE
+            .master_data()
+            .ships
+            .iter()
+            .find_map(|ship| (ship.name == name).then(|| ship.ship_id as u32))
+            .expect(format!("\"{name}\" does not exist").as_str());
 
-#[test]
-fn test_ship() {
-    let ship = create_ship!({ "ship_id": 883 });
-
-    assert_eq!(ship.name(), "龍鳳改二戊");
-    assert_eq!(ship.master.attrs, ShipAttr::NightCarrier | ShipAttr::Kai2);
+        value["ship_id"] = id.into();
+    }
 }
 
-#[test]
-fn test_gear() {
-    let hedgehog = FH_CORE
-        .create_gear(Some(GearState {
-            gear_id: 439,
-            ..Default::default()
-        }))
-        .unwrap();
+fn set_gear_id(value: &mut toml::Value) {
+    if let Some(name) = value.get("gear_id").and_then(|v| v.as_str()) {
+        let id = FH_CORE
+            .master_data()
+            .gears
+            .iter()
+            .find_map(|gear| (gear.name == name).then(|| gear.gear_id as u32))
+            .expect(format!("\"{name}\" does not exist").as_str());
 
-    assert!(hedgehog.has_attr(GearAttr::SynergisticDepthCharge));
+        value["gear_id"] = id.into();
+    }
+}
+
+#[allow(dead_code)]
+pub fn ship_from_toml(mut toml: toml::Value) -> Ship {
+    walk(&mut toml, &mut set_ship_id);
+    walk(&mut toml, &mut set_gear_id);
+    let state = toml.try_into().unwrap();
+    FH_CORE.create_ship(Some(state)).unwrap()
+}
+
+#[allow(dead_code)]
+pub fn fleet_from_toml(mut toml: toml::Value) -> Fleet {
+    walk(&mut toml, &mut set_ship_id);
+    walk(&mut toml, &mut set_gear_id);
+    let state = toml.try_into().unwrap();
+    FH_CORE.create_fleet(Some(state))
 }

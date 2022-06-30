@@ -312,6 +312,11 @@
     "AntiLand": "Anti-Land",
     "Aerial": "Aerial"
   },
+  "ContactRank": {
+    "Rank1": "Accuracy 1 or less",
+    "Rank2": "Accuracy 2",
+    "Rank3": "Accuracy 3 or more"
+  },
   "worldName": {
     "1": "World 1",
     "2": "World 2",
