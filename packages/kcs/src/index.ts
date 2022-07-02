@@ -1,4 +1,4 @@
-import {
+import type {
   AirSquadronState,
   FleetState,
   GearState,
@@ -163,7 +163,13 @@ function createOrgState(model: Model): OrgState {
   return result;
 }
 
-declare const temp1: { model: Model };
+declare const temp1: { model: Model | undefined } | undefined;
+
+if (typeof temp1 === "undefined") {
+  throw new Error(`temp1が存在しません。手順を確認してください。`);
+} else if (typeof temp1.model === "undefined") {
+  throw new Error(`temp1内にmodelが存在しません。手順を確認してください。`);
+}
 
 const org = createOrgState(temp1.model);
 const str = JSON.stringify(org);
