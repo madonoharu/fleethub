@@ -104,15 +104,29 @@ const NightCutinPanel: React.FCX = ({ className }) => {
   return (
     <Stack className={className} gap={1}>
       <Flexbox gap={1}>
-        <Typography>{t("NightContact")}</Typography>
-        {([1, 2, 3] as const).map((n) => (
-          <Tooltip key={n} title={t(`ContactRank.Rank${n}`)}>
-            <Typography variant="body2">
-              <ContactRankIcon rank={`Rank${n}`} />
-              <span>{toPercent(info.night_contact_chance[`rank${n}`])}</span>
-            </Typography>
-          </Tooltip>
-        ))}
+        {([1, 2, 3] as const).map((n) => {
+          const rate = info.night_contact_chance[`rank${n}`];
+
+          if (n !== 1 && rate === 0) {
+            return null;
+          }
+
+          const title = `${t("NightContact")} ${t(`ContactRank.Rank${n}`)}`;
+
+          return (
+            <Tooltip key={n} title={title}>
+              <Typography
+                variant="body2"
+                display="flex"
+                alignItems="center"
+                gap={1}
+              >
+                <ContactRankIcon rank={`Rank${n}`} />
+                <span>{toPercent(rate)}</span>
+              </Typography>
+            </Tooltip>
+          );
+        })}
 
         <Typography ml={5}>攻撃側</Typography>
         <NightSituationForm
