@@ -2,23 +2,20 @@ use serde::{Deserialize, Serialize};
 use strum::EnumIter;
 use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, EnumIter, Serialize, Deserialize, Tsify)]
+#[derive(
+    Debug, Default, Clone, Copy, Hash, PartialEq, Eq, EnumIter, Serialize, Deserialize, Tsify,
+)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum Engagement {
     /// T有利
     GreenT,
     /// 同航戦
+    #[default]
     Parallel,
     /// 反航戦
     HeadOn,
     /// T不利
     RedT,
-}
-
-impl Default for Engagement {
-    fn default() -> Self {
-        Self::Parallel
-    }
 }
 
 impl Engagement {
