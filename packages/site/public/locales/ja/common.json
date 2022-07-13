@@ -274,9 +274,9 @@
   "FleetCutin": {
     "name": "艦隊特殊攻撃",
     "NelsonTouch": "Nelson Touch",
-    "NagatoCutin": "長門一斉射",
-    "ColoradoCutin": "Colorado CI",
-    "KongouCutin": "僚艦夜戦突撃",
+    "NagatoClassCutin": "長門一斉射",
+    "ColoradoClassCutin": "Colorado CI",
+    "KongouClassCutin": "僚艦夜戦突撃",
     "Yamato2ShipCutin": "大和全力斉射",
     "Yamato3ShipCutin": "大和三隻突撃"
   },

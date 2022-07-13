@@ -8,8 +8,8 @@ import { useCompContext } from "../../../hooks";
 import { toPercent } from "../../../utils";
 import { LabeledValue, Flexbox } from "../../atoms";
 import AttackChip from "../AttackChip";
-import NightSituationForm from "../NightSituationForm";
-import ContactRankIcon from "../NightSituationForm/ContactRankIcon";
+import NightConditionsForm from "../NightConditionsForm";
+import ContactRankIcon from "../NightConditionsForm/ContactRankIcon";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 
@@ -94,8 +94,8 @@ const NightCutinPanel: React.FCX = ({ className }) => {
 
   const info = analyzer.analyze_night_cutin(
     comp,
-    state.attackerNightSituation,
-    state.targetNightSituation
+    state.attackerNightConditions,
+    state.targetNightConditions
   );
 
   const attackerColor = comp.is_enemy() ? "secondary" : "primary";
@@ -129,16 +129,16 @@ const NightCutinPanel: React.FCX = ({ className }) => {
         })}
 
         <Typography ml={5}>攻撃側</Typography>
-        <NightSituationForm
-          value={state.attackerNightSituation}
-          onChange={bind("attackerNightSituation")}
+        <NightConditionsForm
+          value={state.attackerNightConditions}
+          onChange={bind("attackerNightConditions")}
           color={attackerColor}
         />
 
         <Typography ml={5}>相手側</Typography>
-        <NightSituationForm
-          value={state.targetNightSituation}
-          onChange={bind("targetNightSituation")}
+        <NightConditionsForm
+          value={state.targetNightConditions}
+          onChange={bind("targetNightConditions")}
           color={targetColor}
         />
       </Flexbox>

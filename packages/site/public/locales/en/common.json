@@ -274,9 +274,9 @@
   "FleetCutin": {
     "name": "Fleet CI",
     "NelsonTouch": "Nelson Touch",
-    "NagatoCutin": "Nagato CI",
-    "ColoradoCutin": "Colorado-class CI",
-    "KongouCutin": "Kongou-class CI",
+    "NagatoClassCutin": "Nagato CI",
+    "ColoradoClassCutin": "Colorado-class CI",
+    "KongouClassCutin": "Kongou-class CI",
     "Yamato2ShipCutin": "Yamato-class CI",
     "Yamato3ShipCutin": "Yamato 3-ship CI"
   },

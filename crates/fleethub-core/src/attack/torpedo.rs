@@ -1,20 +1,19 @@
 use crate::{
     ship::Ship,
-    types::{AirState, AttackPowerModifier, BattleConfig, Engagement},
+    types::{AirState, AttackPowerModifier, BattleConfig, Engagement, ShipEnvironment},
 };
 
 use super::{
     fleet_factor::{self, ShipPosition},
     AttackParams, AttackPowerParams, DefenseParams, HitRateParams, WarfareContext,
-    WarfareShipEnvironment,
 };
 
 const TORPEDO_POWER_CAP: f64 = 180.0;
 const TORPEDO_CRITICAL_RATE_CONSTANT: f64 = 1.5;
 
 pub struct TorpedoAttackContext<'a> {
-    pub attacker_env: &'a WarfareShipEnvironment,
-    pub target_env: &'a WarfareShipEnvironment,
+    pub attacker_env: &'a ShipEnvironment,
+    pub target_env: &'a ShipEnvironment,
     pub engagement: Engagement,
     pub air_state: AirState,
 

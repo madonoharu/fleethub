@@ -10,9 +10,9 @@
     "@fh/utils": "workspace:*",
     "@google-cloud/asset": "^4.0.0",
     "cloudinary": "^1.30.0",
-    "dequal": "^2.0.2",
+    "dequal": "^2.0.3",
     "firebase-admin": "^11.0.0",
-    "googleapis": "^104.0.0",
+    "googleapis": "^105.0.0",
     "got": "12.1.0"
   },
   "optionalDependencies": {

@@ -3,11 +3,10 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     air_squadron::AirSquadron,
-    attack::WarfareShipEnvironment,
     comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    types::{Formation, GearAttr, OrgType, Role, Side},
+    types::{GearAttr, OrgType, Role, Side},
 };
 
 #[wasm_bindgen]
@@ -258,15 +257,6 @@ impl Org {
             .sum::<i32>();
 
         (interception_power as f64 * modifier).floor() as i32
-    }
-
-    pub fn create_warfare_ship_environment(
-        &self,
-        ship: &Ship,
-        formation: Formation,
-    ) -> WarfareShipEnvironment {
-        self.create_comp_by_key("f1")
-            .create_warfare_ship_environment(ship, formation)
     }
 }
 

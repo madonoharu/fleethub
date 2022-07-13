@@ -5,10 +5,22 @@ use strum::{AsRefStr, EnumIter, IntoEnumIterator};
 use tsify::Tsify;
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, Tsify,
+    Debug,
+    Default,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    AsRefStr,
+    EnumIter,
+    Serialize,
+    Deserialize,
+    Tsify,
 )]
 pub enum SingleFormation {
     /// 単縦陣
+    #[default]
     LineAhead,
     /// 複縦陣
     DoubleLine,
@@ -22,14 +34,19 @@ pub enum SingleFormation {
     Vanguard,
 }
 
-impl Default for SingleFormation {
-    fn default() -> Self {
-        Self::LineAhead
-    }
-}
-
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, Hash, AsRefStr, EnumIter, Serialize, Deserialize, Tsify,
+    Debug,
+    Default,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    AsRefStr,
+    EnumIter,
+    Serialize,
+    Deserialize,
+    Tsify,
 )]
 pub enum CombinedFormation {
     /// 第一警戒航行序列
@@ -39,13 +56,8 @@ pub enum CombinedFormation {
     /// 第三警戒航行序列
     Cruising3,
     /// 第四警戒航行序列
+    #[default]
     Cruising4,
-}
-
-impl Default for CombinedFormation {
-    fn default() -> Self {
-        Self::Cruising4
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]

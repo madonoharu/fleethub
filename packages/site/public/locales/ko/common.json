@@ -274,9 +274,9 @@
   "FleetCutin": {
     "name": "함대 CI",
     "NelsonTouch": "넬슨 터치",
-    "NagatoCutin": "나가토 일제사격",
-    "ColoradoCutin": "콜로라도 CI",
-    "KongouCutin": "콩고급 야전 공격",
+    "NagatoClassCutin": "나가토 일제사격",
+    "ColoradoClassCutin": "콜로라도 CI",
+    "KongouClassCutin": "콩고급 야전 공격",
     "Yamato2ShipCutin": "야마토 3척돌격",
     "Yamato3ShipCutin": ""
   },

@@ -6,11 +6,11 @@ use crate::{
     ship::Ship,
     types::{
         gear_id, matches_gear_id, AttackPowerModifier, BattleConfig, Engagement, GearAttr,
-        GearType, ShipType,
+        GearType, ShipEnvironment, ShipType,
     },
 };
 
-use super::{AttackParams, AttackPowerParams, WarfareContext, WarfareShipEnvironment};
+use super::{AttackParams, AttackPowerParams, WarfareContext};
 
 const ASW_POWER_CAP: f64 = 170.0;
 const ASW_ACCURACY_CONSTANT: f64 = 80.0;
@@ -48,8 +48,8 @@ pub struct AswAttackContext<'a> {
     pub attack_type: AswAttackType,
     pub time: AswTime,
 
-    pub attacker_env: &'a WarfareShipEnvironment,
-    pub target_env: &'a WarfareShipEnvironment,
+    pub attacker_env: &'a ShipEnvironment,
+    pub target_env: &'a ShipEnvironment,
     pub engagement: Engagement,
     pub formation_power_mod: f64,
     pub formation_accuracy_mod: f64,

@@ -5,11 +5,11 @@ use crate::{
     attack::{
         get_day_battle_attack_type, get_night_battle_attack_type, get_oasw_attack_type,
         AswAttackContext, AswAttackType, AswTime, DayBattleAttackType, NightAttackContext,
-        NightBattleAttackType, NightSituation, ShellingAttackContext, ShellingSupportAttackContext,
-        TorpedoAttackContext, WarfareContext, WarfareShipEnvironment,
+        NightBattleAttackType, ShellingAttackContext, ShellingSupportAttackContext,
+        TorpedoAttackContext, WarfareContext,
     },
     ship::Ship,
-    types::{AirState, BattleConfig, DayCutin, Engagement, Formation, NightCutin, OrgType, Role},
+    types::{BattleConfig, DayCutin, NightCutin},
 };
 
 use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightCutinRateAnalyzer};
@@ -17,67 +17,6 @@ use super::{AttackInfo, AttackInfoItem, AttackStats, DayCutinRateInfo, NightCuti
 pub type DayBattleAttackInfo = AttackInfo<DayBattleAttackType, Option<DayCutin>>;
 pub type NightBattleAttackInfo = AttackInfo<NightBattleAttackType, Option<NightCutin>>;
 pub type TorpedoAttackInfo = AttackInfo<(), ()>;
-
-#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
-pub struct WarfareAnalyzerShipEnvironment {
-    pub org_type: OrgType,
-    pub role: Role,
-    pub ship_index: usize,
-    pub fleet_len: usize,
-    pub formation: Formation,
-    pub fleet_los_mod: Option<f64>,
-    pub night_situation: NightSituation,
-}
-
-impl WarfareAnalyzerShipEnvironment {
-    pub fn is_flagship(&self) -> bool {
-        self.ship_index == 0
-    }
-    pub fn is_main_flagship(&self) -> bool {
-        self.role.is_main() && self.is_flagship()
-    }
-
-    pub fn as_warfare_ship_environment(&self) -> WarfareShipEnvironment {
-        let Self {
-            org_type,
-            role,
-            ship_index,
-            fleet_len,
-            formation,
-            fleet_los_mod,
-            ..
-        } = *self;
-
-        WarfareShipEnvironment {
-            org_type,
-            role,
-            ship_index,
-            fleet_len,
-            formation,
-            fleet_los_mod,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(from_wasm_abi)]
-pub struct WarfareAnalyzerContext {
-    pub attacker_env: WarfareAnalyzerShipEnvironment,
-    pub target_env: WarfareAnalyzerShipEnvironment,
-    pub engagement: Engagement,
-    pub air_state: AirState,
-}
-
-impl WarfareAnalyzerContext {
-    pub fn to_warfare_context(&self) -> WarfareContext {
-        WarfareContext {
-            attacker_env: self.attacker_env.as_warfare_ship_environment(),
-            target_env: self.target_env.as_warfare_ship_environment(),
-            engagement: self.engagement,
-            air_state: self.air_state,
-        }
-    }
-}
 
 #[derive(Debug, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -91,16 +30,15 @@ pub struct WarfareInfo {
 
 pub struct WarfareAnalyzer<'a> {
     config: &'a BattleConfig,
-    ctx: &'a WarfareAnalyzerContext,
+    ctx: &'a WarfareContext,
     attacker: &'a Ship,
     target: &'a Ship,
-    warfare_context: WarfareContext,
 }
 
 impl<'a> WarfareAnalyzer<'a> {
     pub fn new(
         config: &'a BattleConfig,
-        ctx: &'a WarfareAnalyzerContext,
+        ctx: &'a WarfareContext,
         attacker: &'a Ship,
         target: &'a Ship,
     ) -> Self {
@@ -109,12 +47,11 @@ impl<'a> WarfareAnalyzer<'a> {
             ctx,
             attacker,
             target,
-            warfare_context: ctx.to_warfare_context(),
         }
     }
 
     fn analyze_asw_attack(&self, attack_type: AswAttackType, time: AswTime) -> AttackStats {
-        let asw_ctx = AswAttackContext::new(self.config, &self.warfare_context, attack_type, time);
+        let asw_ctx = AswAttackContext::new(self.config, &self.ctx, attack_type, time);
 
         asw_ctx
             .attack_params(self.attacker, self.target)
@@ -148,12 +85,8 @@ impl<'a> WarfareAnalyzer<'a> {
                             .and_then(|cutin| self.config.day_cutin.get(&cutin))
                             .map(|def| def.into());
 
-                        let attack_ctx = ShellingAttackContext::new(
-                            self.config,
-                            &self.warfare_context,
-                            t,
-                            sp_def,
-                        );
+                        let attack_ctx =
+                            ShellingAttackContext::new(self.config, &self.ctx, t, sp_def);
                         let stats = attack_ctx
                             .attack_params(self.attacker, self.target)
                             .into_stats();
@@ -190,8 +123,8 @@ impl<'a> WarfareAnalyzer<'a> {
                     .analyze_cutin_rates(
                         self.attacker,
                         self.ctx.attacker_env.is_flagship(),
-                        &self.ctx.attacker_env.night_situation,
-                        &self.ctx.target_env.night_situation,
+                        &self.ctx.attacker_env.as_night_conditions(),
+                        &self.ctx.target_env.as_night_conditions(),
                         anti_inst,
                     );
 
@@ -203,14 +136,8 @@ impl<'a> WarfareAnalyzer<'a> {
                             .and_then(|cutin| self.config.night_cutin.get(&cutin))
                             .map(|def| def.into());
 
-                        let attack_ctx = NightAttackContext::new(
-                            self.config,
-                            &self.warfare_context,
-                            &self.ctx.attacker_env.night_situation,
-                            &self.ctx.target_env.night_situation,
-                            attack_type,
-                            sp_def,
-                        );
+                        let attack_ctx =
+                            NightAttackContext::new(self.config, &self.ctx, attack_type, sp_def);
 
                         let stats = attack_ctx
                             .attack_params(self.attacker, self.target)
@@ -246,7 +173,7 @@ impl<'a> WarfareAnalyzer<'a> {
             return None;
         }
 
-        let torpedo_ctx = TorpedoAttackContext::new(self.config, &self.warfare_context);
+        let torpedo_ctx = TorpedoAttackContext::new(self.config, &self.ctx);
         let stats = torpedo_ctx
             .attack_params(self.attacker, self.target)
             .into_stats();
@@ -266,7 +193,7 @@ impl<'a> WarfareAnalyzer<'a> {
             get_day_battle_attack_type(self.attacker, self.target)
         {
             let shelling_ctx =
-                ShellingSupportAttackContext::new(self.config, &self.warfare_context, attack_type);
+                ShellingSupportAttackContext::new(self.config, &self.ctx, attack_type);
             let stats = shelling_ctx
                 .attack_params(self.attacker, self.target)
                 .into_stats();

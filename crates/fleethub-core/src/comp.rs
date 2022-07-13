@@ -3,14 +3,13 @@ use rand::Rng;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    attack::WarfareShipEnvironment,
     fleet::Fleet,
     member::{Member, MemberMut},
     plane::{Plane, PlaneMut},
     ship::Ship,
     types::{
         AirWaveType, AntiAirCutinDef, BattleConfig, CompMeta, FleetType, Formation, OrgType, Role,
-        Side,
+        ShipEnvironment, Side,
     },
 };
 
@@ -265,9 +264,9 @@ impl Comp {
     pub fn create_warfare_ship_environment(
         &self,
         ship: &Ship,
-        formation: Formation,
-    ) -> WarfareShipEnvironment {
-        let (role, ship_index) = self
+        formation: Option<Formation>,
+    ) -> ShipEnvironment {
+        let (role, index) = self
             .members()
             .find_map(|entry| (entry.ship == ship).then(|| (entry.role, entry.index)))
             .unwrap_or_default();
@@ -277,13 +276,14 @@ impl Comp {
             Role::Escort => self.escort.as_ref().unwrap_or_else(|| unreachable!()),
         };
 
-        WarfareShipEnvironment {
+        ShipEnvironment {
             org_type: self.org_type,
             fleet_len: fleet.len,
-            ship_index,
+            index,
             role,
-            formation,
+            formation: formation.unwrap_or_else(|| self.org_type.default_formation()),
             fleet_los_mod: fleet.fleet_los_mod(),
+            ..Default::default()
         }
     }
 }
