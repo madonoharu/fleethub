@@ -1,38 +1,25 @@
-use serde::{Deserialize, Serialize};
-use tsify::Tsify;
-
 use crate::{
     attack::DefenseParams,
     ship::Ship,
     types::{
-        AttackPowerModifier, BattleConfig, ContactRank, GearType, NightAttackType,
-        NightSpecialAttack, ShipType, SpecialAttackDef,
+        AttackPowerModifier, BattleConfig, GearType, NightAttackType, NightSpecialAttack,
+        ShipEnvironment, ShipType, SpecialAttackDef,
     },
 };
 
 use super::{
     shelling::ProficiencyModifiers, special_enemy_mods::special_enemy_modifiers, AttackParams,
-    AttackPowerParams, HitRateParams, WarfareContext, WarfareShipEnvironment,
+    AttackPowerParams, HitRateParams, WarfareContext,
 };
 
 const NIGHT_POWER_CAP: f64 = 360.0;
 const NIGHT_ACCURACY_CONSTANT: f64 = 69.0;
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub struct NightSituation {
-    pub night_contact_rank: Option<ContactRank>,
-    pub starshell: bool,
-    pub searchlight: bool,
-}
-
 pub struct NightAttackContext<'a> {
     pub attack_type: NightAttackType,
 
-    pub attacker_env: &'a WarfareShipEnvironment,
-    pub target_env: &'a WarfareShipEnvironment,
-    pub attacker_situation: &'a NightSituation,
-    pub target_situation: &'a NightSituation,
+    pub attacker_env: &'a ShipEnvironment,
+    pub target_env: &'a ShipEnvironment,
 
     pub formation_power_mod: f64,
     pub formation_accuracy_mod: f64,
@@ -45,8 +32,6 @@ impl<'a> NightAttackContext<'a> {
     pub fn new(
         config: &BattleConfig,
         warfare_context: &'a WarfareContext,
-        attacker_situation: &'a NightSituation,
-        target_situation: &'a NightSituation,
         attack_type: NightAttackType,
         special_attack_def: Option<SpecialAttackDef<NightSpecialAttack>>,
     ) -> Self {
@@ -66,8 +51,6 @@ impl<'a> NightAttackContext<'a> {
         Self {
             attacker_env,
             target_env,
-            attacker_situation,
-            target_situation,
             attack_type,
 
             formation_power_mod: attacker_formation_mods.power_mod,
@@ -79,7 +62,7 @@ impl<'a> NightAttackContext<'a> {
     }
 
     fn starshell_accuracy_mod(&self) -> f64 {
-        if self.attacker_situation.starshell {
+        if self.attacker_env.night_conditions.starshell() {
             5.0
         } else {
             0.0
@@ -87,7 +70,7 @@ impl<'a> NightAttackContext<'a> {
     }
 
     fn searchlight_accuracy_mod(&self) -> f64 {
-        if self.attacker_situation.searchlight {
+        if self.attacker_env.night_conditions.searchlight() {
             7.0
         } else {
             0.0
@@ -95,14 +78,16 @@ impl<'a> NightAttackContext<'a> {
     }
 
     fn night_contact_power_mod(&self) -> f64 {
-        self.attacker_situation
+        self.attacker_env
+            .night_conditions
             .night_contact_rank
             .map(|rank| rank.night_mods().power_mod)
             .unwrap_or(0.0)
     }
 
     fn night_contact_accuracy_mod(&self) -> f64 {
-        self.attacker_situation
+        self.attacker_env
+            .night_conditions
             .night_contact_rank
             .map(|rank| rank.night_mods().accuracy_mod)
             .unwrap_or(1.0)
@@ -111,7 +96,8 @@ impl<'a> NightAttackContext<'a> {
     const NIGHT_CRITICAL_RATE_CONSTANT: f64 = 1.5;
 
     fn critical_rate_constant(&self) -> f64 {
-        self.attacker_situation
+        self.attacker_env
+            .night_conditions
             .night_contact_rank
             .map(|rank| rank.night_mods().critical_rate_constant)
             .unwrap_or(Self::NIGHT_CRITICAL_RATE_CONSTANT)
@@ -279,12 +265,13 @@ fn calc_evasion_term(ctx: &NightAttackContext, target: &Ship) -> Option<f64> {
     };
 
     // todo!
-    let searchlight_evasion_mod =
-        if target.gears.has_type(GearType::Searchlight) && ctx.target_situation.searchlight {
-            0.2
-        } else {
-            1.0
-        };
+    let searchlight_evasion_mod = if target.gears.has_type(GearType::Searchlight)
+        && ctx.target_env.night_conditions.searchlight()
+    {
+        0.2
+    } else {
+        1.0
+    };
 
     target.evasion_term(formation_mod, ship_type_additive, searchlight_evasion_mod)
 }

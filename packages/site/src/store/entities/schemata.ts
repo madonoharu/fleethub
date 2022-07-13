@@ -16,13 +16,13 @@ import {
   GearState,
   OrgState,
   ShipState,
-  WarfareAnalyzerShipEnvironment,
+  ShipEnvironment,
 } from "fleethub-core";
 import { schema, EntityType } from "ts-norm";
 
 type StepConfigShipEnv = Pick<
-  WarfareAnalyzerShipEnvironment,
-  "formation" | "night_situation"
+  ShipEnvironment,
+  "formation" | "night_conditions"
 >;
 
 export type StepConfig = {

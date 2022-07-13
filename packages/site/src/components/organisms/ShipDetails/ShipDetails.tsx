@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import BuildIcon from "@mui/icons-material/Build";
 import { Button, Stack } from "@mui/material";
-import { Comp, Ship, Side, WarfareShipEnvironment } from "fleethub-core";
+import { Comp, Ship, ShipEnvironment } from "fleethub-core";
 import { produce } from "immer";
 import React, { useEffect } from "react";
 
@@ -26,16 +26,16 @@ import AttackPowerAnalyzer from "./AttackPowerAnalyzer";
 import ShipDetailsEnemyList from "./ShipDetailsEnemyList";
 import ShipParamsSettings, { toSide } from "./ShipParamsSettings";
 
-function mergeStateByEnv(
+function initOrgType(
   current: ShipDetailsState,
-  env: WarfareShipEnvironment
+  env: ShipEnvironment
 ): ShipDetailsState {
   const next = produce(current, (draft) => {
-    const attackerSide = toSide(env.org_type);
-    const targetSide = toSide(draft.enemy.org_type);
+    const playerSide = toSide(env.org_type || "Single");
+    const enemySide = toSide(draft.enemy.org_type || "EnemySingle");
 
-    if (attackerSide === targetSide) {
-      if (attackerSide === "Player") {
+    if (playerSide === enemySide) {
+      if (playerSide === "Player") {
         draft.enemy.org_type = "EnemySingle";
       } else {
         draft.enemy.org_type = "Single";
@@ -79,9 +79,6 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
     );
   };
 
-  const attackerSide: Side = toSide(state.player.org_type);
-  const targetSide: Side = attackerSide === "Player" ? "Enemy" : "Player";
-
   useEffect(() => {
     if (!comp) return;
 
@@ -90,7 +87,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
       state.player.formation
     );
 
-    update(mergeStateByEnv(state, env));
+    update(initOrgType(state, env));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -134,7 +131,6 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
       </PlayerShipEnvModal>
       <EnemyShipEnvModal>
         <ShipParamsSettings
-          side={targetSide}
           value={state.enemy}
           onChange={(enemy) => update({ enemy })}
         />

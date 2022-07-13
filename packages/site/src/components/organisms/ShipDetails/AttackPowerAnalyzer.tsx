@@ -1,7 +1,7 @@
 import { nonNullable } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { Ship, WarfareAnalyzerContext, FhCore } from "fleethub-core";
+import { Ship, WarfareContext, FhCore } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
@@ -31,7 +31,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
 
   const submarine = useMemo(() => core.create_ship_by_id(1530), [core]);
 
-  const ctx: WarfareAnalyzerContext = {
+  const ctx: WarfareContext = {
     attacker_env: state.player,
     target_env: state.enemy,
     engagement: state.engagement,

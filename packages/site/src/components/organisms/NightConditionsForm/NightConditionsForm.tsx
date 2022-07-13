@@ -1,6 +1,6 @@
-import { Tooltip, Button, ButtonGroup, ButtonProps } from "@mui/material";
+import { Tooltip, Button, ButtonGroup } from "@mui/material";
 import { styled } from "@mui/system";
-import { ContactRank, NightSituation } from "fleethub-core";
+import { ContactRank, NightConditions } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -10,13 +10,17 @@ import { GearIcon } from "../../molecules";
 import ContactRankIcon from "./ContactRankIcon";
 import ContactRankMenu from "./ContactRankMenu";
 
-type NightSituationFormProps = {
-  value: NightSituation;
-  onChange?: (value: NightSituation) => void;
+function isSome(value: unknown): boolean {
+  return value !== undefined && value !== null;
+}
+
+type NightConditionsFormProps = {
+  value: NightConditions | undefined;
+  onChange?: (value: NightConditions) => void;
   color?: "primary" | "secondary";
 };
 
-const NightSituationForm: React.FCX<NightSituationFormProps> = ({
+const NightConditionsForm: React.FCX<NightConditionsFormProps> = ({
   className,
   style,
   value,
@@ -27,29 +31,16 @@ const NightSituationForm: React.FCX<NightSituationFormProps> = ({
 
   const ContactModal = useModal();
 
-  const handleClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {
-    const key = event.currentTarget.value as keyof NightSituation;
-    if (key === "night_contact_rank") {
-      onChange?.({ ...value, [key]: value[key] ? null : "Rank1" });
-    } else {
-      onChange?.({ ...value, [key]: !value[key] });
-    }
-  };
-
-  const bind = (key: keyof NightSituation): ButtonProps => ({
-    color,
-    variant: value[key] ? "contained" : "outlined",
-    value: key,
-    onClick: handleClick,
-  });
-
   const handleContactRankChange = (rank: ContactRank | null) => {
     onChange?.({
       ...value,
-      night_contact_rank: rank,
+      night_contact_rank: rank ?? undefined,
     });
     ContactModal.hide();
   };
+
+  const starshell = isSome(value?.starshell_index);
+  const searchlight = isSome(value?.searchlight_index);
 
   return (
     <>
@@ -62,15 +53,33 @@ const NightSituationForm: React.FCX<NightSituationFormProps> = ({
         >
           <Button
             onClick={ContactModal.show}
-            variant={value.night_contact_rank ? "contained" : "outlined"}
+            variant={value?.night_contact_rank ? "contained" : "outlined"}
           >
-            <ContactRankIcon rank={value.night_contact_rank} />
+            <ContactRankIcon rank={value?.night_contact_rank ?? null} />
           </Button>
 
-          <Button title={t("Starshell")} {...bind("starshell")}>
+          <Button
+            title={t("Starshell")}
+            variant={starshell ? "contained" : "outlined"}
+            onClick={() => {
+              onChange?.({
+                ...value,
+                starshell_index: starshell ? undefined : 0,
+              });
+            }}
+          >
             <GearIcon iconId={27} />
           </Button>
-          <Button title={t("Searchlight")} {...bind("searchlight")}>
+          <Button
+            title={t("Searchlight")}
+            variant={searchlight ? "contained" : "outlined"}
+            onClick={() => {
+              onChange?.({
+                ...value,
+                searchlight_index: searchlight ? undefined : 0,
+              });
+            }}
+          >
             <GearIcon iconId={24} />
           </Button>
         </ButtonGroup>
@@ -82,7 +91,7 @@ const NightSituationForm: React.FCX<NightSituationFormProps> = ({
   );
 };
 
-export default styled(NightSituationForm)`
+export default styled(NightConditionsForm)`
   img {
     filter: saturate(1.6) contrast(1.6);
   }

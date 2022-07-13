@@ -1,18 +1,12 @@
 import { Button, Stack } from "@mui/material";
-import {
-  Formation,
-  OrgType,
-  Role,
-  Side,
-  WarfareAnalyzerShipEnvironment,
-} from "fleethub-core";
+import { Formation, OrgType, Role, Side, ShipEnvironment } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { Divider, Flexbox } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
 import FormationSelect from "../FormationSelect";
-import NightSituationForm from "../NightSituationForm";
+import NightConditionsForm from "../NightConditionsForm";
 import OrgTypeSelect from "../OrgTypeSelect";
 
 export function toSide(type: OrgType): Side {
@@ -23,12 +17,16 @@ export function toSide(type: OrgType): Side {
   }
 }
 
-function defaultFormationFrom(type: OrgType): Formation {
+function defaultFormation(type: OrgType): Formation {
   if (type === "Single" || type === "EnemySingle") {
     return "LineAhead";
   } else {
     return "Cruising4";
   }
+}
+
+function isSingleFleet(type: OrgType): boolean {
+  return type === "Single" || type === "EnemySingle";
 }
 
 type RoleSelectProps = {
@@ -37,48 +35,57 @@ type RoleSelectProps = {
   onChange: (value: Role) => void;
 };
 
+const ROLE_OPTIONS = ["Main", "Escort"] as const;
+
 const RoleSelect: React.FC<RoleSelectProps> = (props) => {
   const { t } = useTranslation("common", { keyPrefix: "FleetType" });
-
-  return (
-    <Select<Role> options={["Main", "Escort"]} getOptionLabel={t} {...props} />
-  );
+  return <Select<Role> options={ROLE_OPTIONS} getOptionLabel={t} {...props} />;
 };
 
 type ShipParamsSettingsProps = {
-  side?: Side;
-  value: WarfareAnalyzerShipEnvironment;
-  onChange: (changes: WarfareAnalyzerShipEnvironment) => void;
+  value: ShipEnvironment;
+  onChange: (changes: ShipEnvironment) => void;
 };
 
 const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
   className,
-  side,
   value,
   onChange,
 }) => {
   const { t } = useTranslation("common");
 
-  const handleOrgTypeChange = (org_type: OrgType) => {
-    const changesForm =
-      org_type.includes("Single") !== value.org_type.includes("Single");
+  const orgType = value.org_type || "Single";
+  const side = toSide(orgType);
+  const role = value.role || "Main";
+  const index = value.index || 0;
+  const fleet_len = value.fleet_len || 6;
+  const fleet_los_mod = value.fleet_los_mod || 0;
+
+  const handleOrgTypeChange = (next: OrgType) => {
+    let nextFormation: Formation | undefined = value.formation;
+    if (isSingleFleet(next) !== isSingleFleet(orgType)) {
+      nextFormation = defaultFormation(next);
+    }
 
     onChange({
       ...value,
-      org_type,
-      formation: changesForm ? defaultFormationFrom(org_type) : value.formation,
+      org_type: next,
+      formation: nextFormation,
     });
   };
 
-  const bind = <K extends keyof WarfareAnalyzerShipEnvironment>(key: K) => {
-    return (next: WarfareAnalyzerShipEnvironment[K]) => {
-      onChange({ ...value, [key]: next });
+  const bind = <K extends keyof ShipEnvironment>(key: K) => {
+    return (next: ShipEnvironment[K]) => {
+      onChange({
+        ...value,
+        [key]: next,
+      });
     };
   };
 
-  const setShipIndex = (i: number) => bind("ship_index")(i);
+  const setShipIndex = (i: number) => bind("index")(i);
 
-  const isPlayer = toSide(value.org_type) === "Player";
+  const isPlayer = toSide(orgType) === "Player";
   const color = isPlayer ? "primary" : "secondary";
 
   return (
@@ -88,18 +95,18 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
         <OrgTypeSelect
           color={color}
           side={side}
-          value={value.org_type}
+          value={orgType}
           onChange={handleOrgTypeChange}
         />
 
-        <RoleSelect color={color} value={value.role} onChange={bind("role")} />
+        <RoleSelect color={color} value={role} onChange={bind("role")} />
 
         <FormationSelect
           color={color}
           combined={
             value.org_type !== "Single" && value.org_type !== "EnemySingle"
           }
-          value={value.formation}
+          value={value.formation || "LineAhead"}
           onChange={bind("formation")}
         />
 
@@ -108,7 +115,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
           label="艦隊の艦数"
           css={{ minWidth: 120 }}
           options={[1, 2, 3, 4, 5, 6, 7]}
-          value={value.fleet_len}
+          value={fleet_len}
           onChange={bind("fleet_len")}
         />
       </Flexbox>
@@ -120,7 +127,7 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
           label="艦の位置"
           css={{ minWidth: 120 }}
           options={[1, 2, 3, 4, 5, 6, 7]}
-          value={value.ship_index + 1}
+          value={index + 1}
           onChange={(i) => setShipIndex(i - 1)}
         />
 
@@ -130,15 +137,12 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
         <Button
           variant="outlined"
           onClick={() =>
-            setShipIndex(Math.max(Math.floor(value.fleet_len / 2) - 1, 0))
+            setShipIndex(Math.max(Math.floor(fleet_len / 2) - 1, 0))
           }
         >
           上半分に設定
         </Button>
-        <Button
-          variant="outlined"
-          onClick={() => setShipIndex(value.fleet_len - 1)}
-        >
+        <Button variant="outlined" onClick={() => setShipIndex(fleet_len - 1)}>
           下半分に設定
         </Button>
       </Flexbox>
@@ -147,16 +151,16 @@ const ShipParamsSettings: React.FCX<ShipParamsSettingsProps> = ({
       <Flexbox>
         <NumberInput
           label={t("fleet_los_mod")}
-          value={value.fleet_los_mod || 0}
+          value={fleet_los_mod}
           onChange={bind("fleet_los_mod")}
         />
       </Flexbox>
 
       <Divider label="夜戦設定" />
-      <NightSituationForm
+      <NightConditionsForm
         color={color}
-        value={value.night_situation}
-        onChange={bind("night_situation")}
+        value={value.night_conditions}
+        onChange={bind("night_conditions")}
       />
     </Stack>
   );

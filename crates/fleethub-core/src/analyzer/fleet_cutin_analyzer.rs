@@ -4,14 +4,13 @@ use tsify::Tsify;
 use crate::{
     attack::{
         calc_fleet_cutin_rate, get_possible_fleet_cutin_effect_vec, NightAttackContext,
-        NightSituation, ShellingAttackContext, ShellingAttackType, WarfareContext,
-        WarfareShipEnvironment,
+        ShellingAttackContext, ShellingAttackType, WarfareContext,
     },
     comp::Comp,
     ship::Ship,
     types::{
         AirState, BattleConfig, Engagement, FleetCutin, Formation, NightAttackType,
-        NightSpecialAttack, ShellingSpecialAttack, SpecialAttackDef,
+        NightSpecialAttack, ShellingSpecialAttack, ShipEnvironment, SpecialAttackDef,
     },
 };
 
@@ -45,10 +44,8 @@ pub struct FleetCutinAnalyzer<'a> {
     comp: &'a Comp,
     engagement: Engagement,
     air_state: AirState,
-    target: Ship,
-    target_env: WarfareShipEnvironment,
-    attacker_night_situation: NightSituation,
-    target_night_situation: NightSituation,
+    enemy: Ship,
+    enemy_env: ShipEnvironment,
 }
 
 impl<'a> FleetCutinAnalyzer<'a> {
@@ -58,10 +55,8 @@ impl<'a> FleetCutinAnalyzer<'a> {
             comp,
             engagement,
             air_state: Default::default(),
-            target: Default::default(),
-            target_env: Default::default(),
-            attacker_night_situation: Default::default(),
-            target_night_situation: Default::default(),
+            enemy: Default::default(),
+            enemy_env: Default::default(),
         }
     }
 
@@ -71,8 +66,10 @@ impl<'a> FleetCutinAnalyzer<'a> {
         formation: Formation,
         engagement: Engagement,
     ) -> WarfareContext {
-        let attacker_env = self.comp.create_warfare_ship_environment(ship, formation);
-        let target_env = self.target_env.clone();
+        let attacker_env = self
+            .comp
+            .create_warfare_ship_environment(ship, Some(formation));
+        let target_env = self.enemy_env.clone();
 
         WarfareContext {
             attacker_env,
@@ -106,7 +103,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
             Some(sp_def),
         );
 
-        let stats = attack_ctx.attack_params(ship, &self.target).into_stats();
+        let stats = attack_ctx.attack_params(ship, &self.enemy).into_stats();
 
         FleetCutinInfoItem {
             ship_id: ship.ship_id,
@@ -136,13 +133,11 @@ impl<'a> FleetCutinAnalyzer<'a> {
         let attack_ctx = NightAttackContext::new(
             self.config,
             &warfare_context,
-            &self.attacker_night_situation,
-            &self.target_night_situation,
             NightAttackType::Normal,
             Some(sp_def),
         );
 
-        let stats = attack_ctx.attack_params(ship, &self.target).into_stats();
+        let stats = attack_ctx.attack_params(ship, &self.enemy).into_stats();
 
         FleetCutinInfoItem {
             ship_id: ship.ship_id,

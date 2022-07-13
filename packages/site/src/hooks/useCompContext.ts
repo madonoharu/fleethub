@@ -1,11 +1,9 @@
 import { Path, PathValue } from "@fh/utils";
 import constate from "constate";
-import { Comp, Engagement, Formation, NightSituation } from "fleethub-core";
+import { Comp, Engagement, Formation, NightConditions } from "fleethub-core";
 import set from "lodash/set";
 import React, { useCallback } from "react";
 import { useImmer } from "use-immer";
-
-import { initialNightSituation } from "../store";
 
 import { useFhCore } from "./useFhCore";
 
@@ -16,8 +14,8 @@ type FleetInfoState = {
   fleetAntiAirResist: number;
   anti_air_cutin: number | null;
 
-  attackerNightSituation: NightSituation;
-  targetNightSituation: NightSituation;
+  attackerNightConditions: NightConditions;
+  targetNightConditions: NightConditions;
 };
 
 type Props = {
@@ -35,8 +33,8 @@ const useComp = ({ comp }: Props) => {
     fleetAntiAirResist: 1,
     anti_air_cutin: null,
 
-    attackerNightSituation: initialNightSituation,
-    targetNightSituation: initialNightSituation,
+    attackerNightConditions: {},
+    targetNightConditions: {},
   });
 
   const bind = useCallback(

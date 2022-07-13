@@ -6,14 +6,14 @@ use crate::{
     ship::Ship,
     types::{
         AirState, AttackPowerModifier, BattleConfig, Engagement, ShellingSpecialAttack,
-        SpecialAttackDef,
+        ShipEnvironment, SpecialAttackDef,
     },
 };
 
 use super::{
     fleet_factor::{self, ShipPosition},
     special_enemy_mods::special_enemy_modifiers,
-    AttackParams, DefenseParams, WarfareContext, WarfareShipEnvironment,
+    AttackParams, DefenseParams, WarfareContext,
 };
 
 const SHELLING_POWER_CAP: f64 = 220.0;
@@ -45,8 +45,8 @@ pub enum ShellingAttackType {
 pub struct ShellingAttackContext<'a> {
     pub attack_type: ShellingAttackType,
 
-    pub attacker_env: &'a WarfareShipEnvironment,
-    pub target_env: &'a WarfareShipEnvironment,
+    pub attacker_env: &'a ShipEnvironment,
+    pub target_env: &'a ShipEnvironment,
     pub engagement: Engagement,
     pub air_state: AirState,
 

@@ -1,9 +1,9 @@
 import {
-  Org,
+  Comp,
   Ship,
   Side,
-  WarfareAnalyzerContext,
-  WarfareAnalyzerShipEnvironment,
+  WarfareContext,
+  ShipEnvironment,
 } from "fleethub-core";
 import React from "react";
 
@@ -12,19 +12,19 @@ import { Flexbox } from "../../atoms";
 import WarfareAnalyzer from "../WarfareAnalyzer";
 
 type WarfareDetailsProps = {
-  playerOrg: Org;
+  playerComp: Comp;
   playerShip: Ship;
-  enemyOrg: Org;
+  enemyComp: Comp;
   enemyShip: Ship;
   config: StepConfig;
 };
 
 const createAnalyzerProps = (
-  { playerOrg, playerShip, enemyOrg, enemyShip, config }: WarfareDetailsProps,
+  { playerComp, playerShip, enemyComp, enemyShip, config }: WarfareDetailsProps,
   attackerSide: Side
 ) => {
   const playerEnv = {
-    ...playerOrg.create_warfare_ship_environment(
+    ...playerComp.create_warfare_ship_environment(
       playerShip,
       config.player.formation
     ),
@@ -32,7 +32,7 @@ const createAnalyzerProps = (
   };
 
   const enemyEnv = {
-    ...enemyOrg.create_warfare_ship_environment(
+    ...enemyComp.create_warfare_ship_environment(
       enemyShip,
       config.enemy.formation
     ),
@@ -40,9 +40,9 @@ const createAnalyzerProps = (
   };
 
   let attacker: Ship;
-  let attacker_env: WarfareAnalyzerShipEnvironment;
+  let attacker_env: ShipEnvironment;
   let target: Ship;
-  let target_env: WarfareAnalyzerShipEnvironment;
+  let target_env: ShipEnvironment;
 
   if (attackerSide == "Player") {
     attacker = playerShip;
@@ -56,7 +56,7 @@ const createAnalyzerProps = (
     target_env = playerEnv;
   }
 
-  const ctx: WarfareAnalyzerContext = {
+  const ctx: WarfareContext = {
     attacker_env,
     target_env,
     air_state: config.air_state,

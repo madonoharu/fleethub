@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Alert, AlertTitle, Paper, Typography } from "@mui/material";
-import { OrgType, Ship, WarfareAnalyzerContext } from "fleethub-core";
+import { OrgType, Ship, WarfareContext } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -17,7 +17,7 @@ const getTypeColor = (type: OrgType) =>
   isEnemy(type) ? "secondary.light" : "primary.light";
 
 type WarfareAnalyzerProps = {
-  ctx: WarfareAnalyzerContext;
+  ctx: WarfareContext;
   attacker: Ship;
   target: Ship;
 };
@@ -33,10 +33,12 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
   const { analyzer } = useFhCore();
   const attackerName = useShipName(attacker.ship_id, attacker.is_abyssal());
   const targetName = useShipName(target.ship_id, target.is_abyssal());
+  const attackerOrgType = ctx.attacker_env.org_type || "Single";
+  const targetOrgType = ctx.target_env.org_type || "Single";
 
   if (ctx.attacker_env.org_type === ctx.target_env.org_type) {
-    const attackerText = t(`OrgType.${ctx.attacker_env.org_type}`);
-    const targetText = t(`OrgType.${ctx.target_env.org_type}`);
+    const attackerText = t(`OrgType.${attackerOrgType}`);
+    const targetText = t(`OrgType.${targetOrgType}`);
 
     return (
       <Alert className={className} style={style} severity="error">
@@ -81,8 +83,8 @@ const WarfareAnalyzer: React.FCX<WarfareAnalyzerProps> = ({
     },
   ].filter(nonNullable);
 
-  const attackerColor = getTypeColor(ctx.attacker_env.org_type);
-  const targetColor = getTypeColor(ctx.target_env.org_type);
+  const attackerColor = getTypeColor(attackerOrgType);
+  const targetColor = getTypeColor(targetOrgType);
 
   return (
     <Paper className={className} style={style}>
