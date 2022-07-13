@@ -83,9 +83,11 @@ impl Comp {
 }
 
 #[derive(Debug, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
+#[tsify(from_wasm_abi)]
 pub struct ShellingSupportSimulatorParams {
+    #[serde(default)]
     attacker_formation: Formation,
+    #[serde(default)]
     target_formation: Formation,
     engagement: Engagement,
 }

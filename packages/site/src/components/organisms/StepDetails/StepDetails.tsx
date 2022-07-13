@@ -22,7 +22,7 @@ import CompShipList from "../CompShipList";
 import CustomModifiersDialog from "../CustomModifiersDialog";
 import EngagementSelect from "../EngagementSelect";
 import FormationSelect from "../FormationSelect";
-import NightSituationForm from "../NightSituationForm";
+import NightConditionsForm from "../NightConditionsForm";
 import ShipCard from "../ShipCard";
 import SupSelect from "../SupSelect";
 
@@ -106,7 +106,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
             color="primary"
             label={t("Formation.name")}
             combined={playerOrg.is_combined()}
-            value={config.player.formation}
+            value={config.player.formation || "LineAhead"}
             onChange={bind("player.formation")}
           />
           <AirStateSelect
@@ -125,18 +125,18 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
           label={t("Formation.name")}
           color="secondary"
           combined={enemyOrg.is_combined()}
-          value={config.enemy.formation}
+          value={config.enemy.formation || "LineAhead"}
           onChange={bind("enemy.formation")}
         />
-        <NightSituationForm
+        <NightConditionsForm
           color="primary"
-          value={config.player.night_situation}
-          onChange={bind("player.night_situation")}
+          value={config.player.night_conditions}
+          onChange={bind("player.night_conditions")}
         />
-        <NightSituationForm
+        <NightConditionsForm
           color="secondary"
-          value={config.enemy.night_situation}
-          onChange={bind("enemy.night_situation")}
+          value={config.enemy.night_conditions}
+          onChange={bind("enemy.night_conditions")}
         />
         <Stack gap={1}>
           {playerShip && (
@@ -162,9 +162,9 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
             label: t("Details"),
             panel: playerShip && enemyShip && (
               <WarfareDetails
-                playerOrg={playerOrg}
+                playerComp={playerComp}
                 playerShip={playerShip}
-                enemyOrg={enemyOrg}
+                enemyComp={enemyComp}
                 enemyShip={enemyShip}
                 config={config}
               />

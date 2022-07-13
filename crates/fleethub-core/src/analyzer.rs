@@ -21,10 +21,10 @@ pub use warfare_info::*;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    attack::NightSituation,
+    attack::WarfareContext,
     comp::Comp,
     ship::Ship,
-    types::{BattleConfig, Engagement, Formation},
+    types::{BattleConfig, Engagement, Formation, NightConditions},
 };
 
 #[wasm_bindgen]
@@ -65,10 +65,10 @@ impl Analyzer {
     pub fn analyze_night_cutin(
         &self,
         comp: &Comp,
-        attacker_situation: NightSituation,
-        target_situation: NightSituation,
+        attacker_conditions: NightConditions,
+        target_conditions: NightConditions,
     ) -> FleetNightCutinRateInfo {
-        FleetNightCutinRateInfo::new(comp, &self.config, &attacker_situation, &target_situation)
+        FleetNightCutinRateInfo::new(comp, &self.config, &attacker_conditions, &target_conditions)
     }
 
     pub fn analyze_contact_chance(&self, comp: &Comp) -> CompContactChanceInfo {
@@ -77,7 +77,7 @@ impl Analyzer {
 
     pub fn analyze_warfare(
         &self,
-        params: WarfareAnalyzerContext,
+        params: WarfareContext,
         attacker: &Ship,
         target: &Ship,
     ) -> WarfareInfo {

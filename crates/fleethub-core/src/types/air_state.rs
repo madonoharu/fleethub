@@ -3,7 +3,7 @@ use tsify::Tsify;
 
 use super::Side;
 
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Default, Clone, Copy, Hash, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum AirState {
     /// 制空確保
@@ -11,17 +11,12 @@ pub enum AirState {
     /// 制空優勢
     AirSuperiority,
     /// 制空均衡
+    #[default]
     AirParity,
     /// 制空劣勢
     AirDenial,
     /// 制空喪失
     AirIncapability,
-}
-
-impl Default for AirState {
-    fn default() -> Self {
-        Self::AirSupremacy
-    }
 }
 
 impl AirState {

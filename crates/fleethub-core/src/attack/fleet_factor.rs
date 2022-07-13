@@ -1,6 +1,4 @@
-use crate::types::{OrgType, Role, Side};
-
-use super::WarfareShipEnvironment;
+use crate::types::{OrgType, Role, ShipEnvironment, Side};
 
 use OrgType::{CarrierTaskForce as CTF, SurfaceTaskForce as STF, TransportEscort as TCF, *};
 
@@ -10,8 +8,8 @@ pub struct ShipPosition {
     role: Role,
 }
 
-impl From<&WarfareShipEnvironment> for ShipPosition {
-    fn from(env: &WarfareShipEnvironment) -> Self {
+impl From<&ShipEnvironment> for ShipPosition {
+    fn from(env: &ShipEnvironment) -> Self {
         Self {
             org_type: env.org_type,
             role: env.role,

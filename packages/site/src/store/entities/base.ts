@@ -1,6 +1,5 @@
 import { SlotSizeKey, SLOT_SIZE_KEYS } from "@fh/utils";
 import { EntityState, PayloadAction } from "@reduxjs/toolkit";
-import { NightSituation } from "fleethub-core";
 
 import { createOrmAdapters } from "./createOrmAdapters";
 import { schemata, StepConfig } from "./schemata";
@@ -15,22 +14,16 @@ export function getSliceName<K extends string>(
   return `${ENTITIES_SLICE_NAME}/${key}`;
 }
 
-export const initialNightSituation: NightSituation = {
-  night_contact_rank: null,
-  searchlight: false,
-  starshell: false,
-};
-
 export const initialStepConfig: StepConfig = {
   air_state: "AirSupremacy",
   engagement: "Parallel",
   player: {
     formation: "LineAhead",
-    night_situation: initialNightSituation,
+    night_conditions: {},
   },
   enemy: {
     formation: "LineAhead",
-    night_situation: initialNightSituation,
+    night_conditions: {},
   },
 };
 

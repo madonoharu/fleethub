@@ -1,10 +1,5 @@
 import { Divider, Stack } from "@mui/material";
-import {
-  Ship,
-  Side,
-  WarfareAnalyzerContext,
-  WarfareAnalyzerShipEnvironment,
-} from "fleethub-core";
+import { Ship, Side, WarfareContext, ShipEnvironment } from "fleethub-core";
 import React from "react";
 
 import { useShip } from "../../../hooks";
@@ -26,9 +21,9 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
 
   const createProps = (side: Side) => {
     let attacker: Ship;
-    let attacker_env: WarfareAnalyzerShipEnvironment;
+    let attacker_env: ShipEnvironment;
     let target: Ship;
-    let target_env: WarfareAnalyzerShipEnvironment;
+    let target_env: ShipEnvironment;
 
     if (side === "Player") {
       attacker = ship;
@@ -42,7 +37,7 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
       target_env = state.player;
     }
 
-    const ctx: WarfareAnalyzerContext = {
+    const ctx: WarfareContext = {
       air_state: state.air_state,
       engagement: state.engagement,
       attacker_env,
