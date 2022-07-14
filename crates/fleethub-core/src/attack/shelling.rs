@@ -5,7 +5,7 @@ use crate::{
     attack::{AttackPowerParams, HitRateParams},
     ship::Ship,
     types::{
-        AirState, AttackPowerModifier, BattleConfig, Engagement, ShellingSpecialAttack,
+        AirState, AttackPowerModifier, BattleDefinitions, Engagement, ShellingSpecialAttack,
         ShipEnvironment, SpecialAttackDef,
     },
 };
@@ -61,7 +61,7 @@ const IS_DAY: bool = true;
 
 impl<'a> ShellingAttackContext<'a> {
     pub fn new(
-        config: &BattleConfig,
+        config: &BattleDefinitions,
         warfare_context: &'a WarfareContext,
         attack_type: ShellingAttackType,
         special_attack_def: Option<SpecialAttackDef<ShellingSpecialAttack>>,

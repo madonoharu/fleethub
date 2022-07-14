@@ -32,9 +32,9 @@ function initOrgType(
 ): ShipDetailsState {
   const next = produce(current, (draft) => {
     const playerSide = toSide(env.org_type || "Single");
-    const enemySide = toSide(draft.enemy.org_type || "EnemySingle");
+    const enemySide = draft.enemy.org_type && toSide(draft.enemy.org_type);
 
-    if (playerSide === enemySide) {
+    if (!enemySide || playerSide === enemySide) {
       if (playerSide === "Player") {
         draft.enemy.org_type = "EnemySingle";
       } else {

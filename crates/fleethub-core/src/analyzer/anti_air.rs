@@ -5,20 +5,20 @@ use crate::{
     comp::Comp,
     member::MemberImpl,
     ship::Ship,
-    types::{AntiAirCutinDef, BattleConfig, Formation},
+    types::{AntiAirCutinDef, BattleDefinitions, Formation},
 };
 
 pub struct AntiAirAnalyzer<'a> {
-    config: &'a BattleConfig,
+    battle_defs: &'a BattleDefinitions,
 }
 
 impl<'a> AntiAirAnalyzer<'a> {
-    pub fn new(config: &'a BattleConfig) -> Self {
-        Self { config }
+    pub fn new(battle_defs: &'a BattleDefinitions) -> Self {
+        Self { battle_defs }
     }
 
     fn find_aaci(&self, id: u8) -> Option<&AntiAirCutinDef> {
-        self.config.anti_air_cutin.get(&id)
+        self.battle_defs.anti_air_cutin.get(&id)
     }
 
     pub fn ship_anti_air_cutin_chance(&self, ship: &Ship) -> Vec<(u8, f64)> {
@@ -72,7 +72,7 @@ impl<'a> AntiAirAnalyzer<'a> {
         fleet_anti_air_resist: f64,
         aaci: Option<u8>,
     ) -> CompAntiAirInfo {
-        let formation_mod = self.config.get_formation_fleet_anti_air_mod(formation);
+        let formation_mod = self.battle_defs.get_formation_fleet_anti_air_mod(formation);
 
         let fleet_adjusted_anti_air = comp.adjusted_anti_air(formation_mod);
         let anti_air_cutin = aaci.and_then(|id| self.find_aaci(id));
@@ -157,7 +157,7 @@ pub struct CompAntiAirInfo {
 impl CompAntiAirInfo {
     pub fn new(
         comp: &Comp,
-        config: &BattleConfig,
+        config: &BattleDefinitions,
         formation: Formation,
         ship_anti_air_resist: f64,
         fleet_anti_air_resist: f64,

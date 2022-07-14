@@ -7,8 +7,8 @@ use crate::{
     plane::PlaneImpl,
     ship::Ship,
     types::{
-        gear_id, BattleConfig, ContactRank, DamageState, GearType, NightConditions, NightCutin,
-        NightCutinDef,
+        gear_id, BattleDefinitions, ContactRank, DamageState, GearType, NightConditions,
+        NightCutin, NightCutinDef,
     },
 };
 
@@ -139,7 +139,7 @@ pub struct FleetNightCutinRateInfo {
 impl FleetNightCutinRateInfo {
     pub fn new(
         comp: &Comp,
-        config: &BattleConfig,
+        config: &BattleDefinitions,
         attacker_conditions: &NightConditions,
         target_conditions: &NightConditions,
     ) -> Self {
@@ -148,16 +148,16 @@ impl FleetNightCutinRateInfo {
 }
 
 pub struct NightCutinRateAnalyzer<'a> {
-    config: &'a BattleConfig,
+    battle_defs: &'a BattleDefinitions,
 }
 
 impl<'a> NightCutinRateAnalyzer<'a> {
-    pub fn new(config: &'a BattleConfig) -> Self {
-        Self { config }
+    pub fn new(battle_defs: &'a BattleDefinitions) -> Self {
+        Self { battle_defs }
     }
 
     fn get_cutin_def(&self, cutin: NightCutin) -> Option<&NightCutinDef> {
-        self.config.night_cutin.get(&cutin)
+        self.battle_defs.night_cutin.get(&cutin)
     }
 
     fn analyze_cutin_rates_with_damage_state(

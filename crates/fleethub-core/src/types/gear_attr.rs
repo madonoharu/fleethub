@@ -17,6 +17,8 @@ pub enum GearAttr {
     NightAttacker,
     /// 重爆撃機
     HeavyBomber,
+    /// 夜間偵察機
+    NightRecon,
     /// 主砲
     MainGun,
     /// 電探
@@ -55,8 +57,6 @@ pub enum GearAttr {
     CbFighterBomber,
     /// 対地艦爆
     AntiInstDiveBomber,
-    /// 夜間偵察機
-    NightRecon,
     /// 艦上Swordfish
     CbSwordfish,
     /// 準夜間機
