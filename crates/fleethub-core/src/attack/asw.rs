@@ -5,7 +5,7 @@ use crate::{
     attack::{DefenseParams, HitRateParams},
     ship::Ship,
     types::{
-        gear_id, matches_gear_id, AttackPowerModifier, BattleConfig, Engagement, GearAttr,
+        gear_id, matches_gear_id, AttackPowerModifier, BattleDefinitions, Engagement, GearAttr,
         GearType, ShipEnvironment, ShipType,
     },
 };
@@ -58,7 +58,7 @@ pub struct AswAttackContext<'a> {
 
 impl<'a> AswAttackContext<'a> {
     pub fn new(
-        config: &BattleConfig,
+        config: &BattleDefinitions,
         ctx: &'a WarfareContext,
         attack_type: AswAttackType,
         time: AswTime,

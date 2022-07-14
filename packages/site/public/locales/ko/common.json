@@ -277,8 +277,8 @@
     "NagatoClassCutin": "나가토 일제사격",
     "ColoradoClassCutin": "콜로라도 CI",
     "KongouClassCutin": "콩고급 야전 공격",
-    "Yamato2ShipCutin": "야마토 3척돌격",
-    "Yamato3ShipCutin": ""
+    "Yamato2ShipCutin": "야마토 전력 일제사격",
+    "Yamato3ShipCutin": "야마토 3척돌격"
   },
   "SpeedRank": {
     "name": "t$(speed)",

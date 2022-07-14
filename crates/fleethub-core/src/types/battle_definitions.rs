@@ -212,14 +212,14 @@ impl From<&NightCutinDef> for SpecialAttackDef<NightSpecialAttack> {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
-pub struct BattleConfig {
+pub struct BattleDefinitions {
     pub formation: HashMap<Formation, NestedFormationDef>,
     pub anti_air_cutin: HashMap<u8, AntiAirCutinDef>,
     pub day_cutin: HashMap<DayCutin, DayCutinDef>,
     pub night_cutin: HashMap<NightCutin, NightCutinDef>,
 }
 
-impl BattleConfig {
+impl BattleDefinitions {
     pub fn get_formation_def(
         &self,
         formation: Formation,

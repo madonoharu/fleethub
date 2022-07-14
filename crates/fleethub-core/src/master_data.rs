@@ -17,8 +17,8 @@ use crate::{
     gear::IBonuses,
     ship::ShipEquippable,
     types::{
-        AntiAirCutinDef, BattleConfig, DayCutinDef, GearAttr, NestedFormationDef, NightCutinDef,
-        ShipAttr,
+        AntiAirCutinDef, BattleDefinitions, DayCutinDef, GearAttr, NestedFormationDef,
+        NightCutinDef, ShipAttr,
     },
 };
 
@@ -103,7 +103,7 @@ impl MasterData {
         self.equippable.create_ship_equippable(ship)
     }
 
-    pub fn battle_config(&self) -> BattleConfig {
+    pub fn battle_definitions(&self) -> BattleDefinitions {
         let formation = self
             .formation
             .iter()
@@ -128,7 +128,7 @@ impl MasterData {
             .map(|def| (def.tag, def.clone()))
             .collect();
 
-        BattleConfig {
+        BattleDefinitions {
             formation,
             anti_air_cutin,
             day_cutin,

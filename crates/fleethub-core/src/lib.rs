@@ -115,7 +115,7 @@ impl FhCore {
     }
 
     pub fn create_analyzer(&self) -> Analyzer {
-        Analyzer::new(self.factory.master_data.battle_config())
+        Analyzer::new(self.factory.master_data.battle_definitions())
     }
 
     pub fn simulate_shelling_support(
@@ -129,7 +129,7 @@ impl FhCore {
         use simulator::ShellingSupportSimulator;
 
         let mut rng = SmallRng::from_entropy();
-        let config = self.factory.master_data.battle_config();
+        let config = self.factory.master_data.battle_definitions();
         let mut sim = ShellingSupportSimulator::new(&mut rng, &config, player, enemy, params);
 
         sim.run(times)

@@ -8,8 +8,8 @@ use crate::{
     plane::{Plane, PlaneMut},
     ship::Ship,
     types::{
-        AirWaveType, AntiAirCutinDef, BattleConfig, CompMeta, FleetType, Formation, OrgType, Role,
-        ShipEnvironment, Side,
+        AirWaveType, AntiAirCutinDef, BattleDefinitions, CompMeta, FleetType, Formation, OrgType,
+        Role, ShipEnvironment, Side,
     },
 };
 
@@ -119,7 +119,7 @@ impl Comp {
     pub fn choose_anti_air_cutin<'a, R: Rng + ?Sized>(
         &self,
         rng: &mut R,
-        config: &'a BattleConfig,
+        battle_defs: &'a BattleDefinitions,
     ) -> Option<&'a AntiAirCutinDef> {
         self.members()
             .map(|entry| entry.ship)
@@ -130,7 +130,7 @@ impl Comp {
 
                 let aaci = aaci_vec
                     .into_iter()
-                    .filter_map(|id| config.anti_air_cutin.get(&id))
+                    .filter_map(|id| battle_defs.anti_air_cutin.get(&id))
                     .find(|aaci| {
                         let p = aaci.rate().unwrap_or_default();
                         if aaci.is_sequential() {
