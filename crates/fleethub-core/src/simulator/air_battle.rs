@@ -9,7 +9,7 @@ use crate::{
     error::CalculationError,
     member::MemberImpl,
     plane::{PlaneImpl, PlaneMut, PlaneVec},
-    types::{AirState, AirWaveType, BattleConfig, ContactRank, Formation, Side},
+    types::{AirState, AirWaveType, BattleDefinitions, ContactRank, Formation, Side},
 };
 
 fn try_fighter_combat<R: Rng + ?Sized>(
@@ -36,7 +36,7 @@ fn try_fighter_combat<R: Rng + ?Sized>(
 
 fn try_air_defense<R: Rng + ?Sized>(
     rng: &mut R,
-    config: &BattleConfig,
+    config: &BattleDefinitions,
     attacker_comp: &mut Comp,
     target_comp: &Comp,
     escort_participates: bool,
@@ -120,7 +120,7 @@ where
     R: Rng + ?Sized,
 {
     rng: &'a mut R,
-    config: &'a BattleConfig,
+    battle_defs: &'a BattleDefinitions,
     player_comp: &'a mut Comp,
     enemy_comp: &'a mut Comp,
     escort_participates: bool,
@@ -201,7 +201,7 @@ where
 
         try_air_defense(
             self.rng,
-            self.config,
+            self.battle_defs,
             self.player_comp,
             self.enemy_comp,
             escort_participates,
@@ -210,7 +210,7 @@ where
 
         try_air_defense(
             self.rng,
-            self.config,
+            self.battle_defs,
             self.enemy_comp,
             self.player_comp,
             escort_participates,

@@ -1,5 +1,5 @@
 use crate::{
-    types::{AttackPowerModifier, BattleConfig, Engagement, FormationDef},
+    types::{AttackPowerModifier, BattleDefinitions, Engagement, FormationDef},
     Ship,
 };
 
@@ -143,7 +143,7 @@ impl<'a> ShellingSupportAttackParams<'a> {
 }
 
 pub struct ShellingSupportAttackContext<'a> {
-    config: &'a BattleConfig,
+    battle_defs: &'a BattleDefinitions,
     warfare_context: &'a WarfareContext,
     attack_type: ShellingAttackType,
 }
@@ -156,8 +156,8 @@ impl<'a> ShellingSupportAttackContext<'a> {
     ) -> ShellingSupportAttackParams<'a> {
         let attacker_env = &self.warfare_context.attacker_env;
         let target_env = &self.warfare_context.target_env;
-        let attacker_formation_def = self.config.get_formation_def_by_env(attacker_env);
-        let target_formation_def = self.config.get_formation_def_by_env(target_env);
+        let attacker_formation_def = self.battle_defs.get_formation_def_by_env(attacker_env);
+        let target_formation_def = self.battle_defs.get_formation_def_by_env(target_env);
 
         let armor_penetration = 0.0;
         let defense_params =
@@ -175,12 +175,12 @@ impl<'a> ShellingSupportAttackContext<'a> {
     }
 
     pub fn new(
-        config: &'a BattleConfig,
+        battle_defs: &'a BattleDefinitions,
         warfare_context: &'a WarfareContext,
         attack_type: ShellingAttackType,
     ) -> Self {
         Self {
-            config,
+            battle_defs,
             warfare_context,
             attack_type,
         }

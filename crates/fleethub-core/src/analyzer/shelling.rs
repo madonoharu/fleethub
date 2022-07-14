@@ -5,7 +5,7 @@ use crate::{
     comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    types::{AirStateRank, BattleConfig, DayCutin, Role},
+    types::{AirStateRank, BattleDefinitions, DayCutin, Role},
 };
 
 #[derive(Debug, Default, Serialize, Tsify)]
@@ -17,7 +17,7 @@ pub struct DayCutinRateInfo {
 
 impl DayCutinRateInfo {
     pub fn new(
-        config: &BattleConfig,
+        config: &BattleDefinitions,
         ship: &Ship,
         fleet_los_mod: Option<f64>,
         is_main_flagship: bool,
@@ -74,7 +74,7 @@ pub struct ShipDayCutinRateInfo {
 
 impl ShipDayCutinRateInfo {
     fn new(
-        config: &BattleConfig,
+        config: &BattleDefinitions,
         ship: &Ship,
         fleet_los_mod: Option<f64>,
         is_main_flagship: bool,
@@ -114,7 +114,7 @@ pub struct FleetDayCutinRateInfo {
 }
 
 impl FleetDayCutinRateInfo {
-    pub fn new(config: &BattleConfig, fleet: &Fleet, role: Role) -> Self {
+    pub fn new(config: &BattleDefinitions, fleet: &Fleet, role: Role) -> Self {
         let fleet_los_mod = fleet.fleet_los_mod();
 
         let ships = fleet
@@ -142,7 +142,7 @@ pub struct CompDayCutinRateInfo {
 }
 
 impl CompDayCutinRateInfo {
-    pub fn new(comp: &Comp, config: &BattleConfig) -> Self {
+    pub fn new(comp: &Comp, config: &BattleDefinitions) -> Self {
         Self {
             main: FleetDayCutinRateInfo::new(config, &comp.main, Role::Main),
             escort: comp

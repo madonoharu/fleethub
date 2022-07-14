@@ -2,7 +2,7 @@ use crate::{
     attack::DefenseParams,
     ship::Ship,
     types::{
-        AttackPowerModifier, BattleConfig, GearType, NightAttackType, NightSpecialAttack,
+        AttackPowerModifier, BattleDefinitions, GearType, NightAttackType, NightSpecialAttack,
         ShipEnvironment, ShipType, SpecialAttackDef,
     },
 };
@@ -30,7 +30,7 @@ pub struct NightAttackContext<'a> {
 
 impl<'a> NightAttackContext<'a> {
     pub fn new(
-        config: &BattleConfig,
+        config: &BattleDefinitions,
         warfare_context: &'a WarfareContext,
         attack_type: NightAttackType,
         special_attack_def: Option<SpecialAttackDef<NightSpecialAttack>>,

@@ -1,16 +1,16 @@
 mod airstrike;
 mod anti_air;
-mod asw;
+mod asw2;
 mod attack_info;
 mod damage;
 mod fleet_cutin_analyzer;
 mod night;
 mod shelling;
+mod warfare_analyzer;
 mod warfare_info;
 
 pub use airstrike::*;
 pub use anti_air::*;
-pub use asw::*;
 pub use attack_info::*;
 pub use damage::*;
 pub use fleet_cutin_analyzer::*;
@@ -24,17 +24,17 @@ use crate::{
     attack::WarfareContext,
     comp::Comp,
     ship::Ship,
-    types::{BattleConfig, Engagement, Formation, NightConditions},
+    types::{BattleDefinitions, Engagement, Formation, NightConditions},
 };
 
 #[wasm_bindgen]
 pub struct Analyzer {
-    config: BattleConfig,
+    battle_defs: BattleDefinitions,
 }
 
 impl Analyzer {
-    pub fn new(config: BattleConfig) -> Self {
-        Self { config }
+    pub fn new(battle_defs: BattleDefinitions) -> Self {
+        Self { battle_defs }
     }
 }
 
@@ -50,7 +50,7 @@ impl Analyzer {
     ) -> CompAntiAirInfo {
         CompAntiAirInfo::new(
             comp,
-            &self.config,
+            &self.battle_defs,
             formation,
             ship_anti_air_resist,
             fleet_anti_air_resist,
@@ -59,7 +59,7 @@ impl Analyzer {
     }
 
     pub fn analyze_day_cutin(&self, comp: &Comp) -> CompDayCutinRateInfo {
-        CompDayCutinRateInfo::new(comp, &self.config)
+        CompDayCutinRateInfo::new(comp, &self.battle_defs)
     }
 
     pub fn analyze_night_cutin(
@@ -68,7 +68,12 @@ impl Analyzer {
         attacker_conditions: NightConditions,
         target_conditions: NightConditions,
     ) -> FleetNightCutinRateInfo {
-        FleetNightCutinRateInfo::new(comp, &self.config, &attacker_conditions, &target_conditions)
+        FleetNightCutinRateInfo::new(
+            comp,
+            &self.battle_defs,
+            &attacker_conditions,
+            &target_conditions,
+        )
     }
 
     pub fn analyze_contact_chance(&self, comp: &Comp) -> CompContactChanceInfo {
@@ -81,11 +86,11 @@ impl Analyzer {
         attacker: &Ship,
         target: &Ship,
     ) -> WarfareInfo {
-        let analyzer = WarfareAnalyzer::new(&self.config, &params, attacker, target);
+        let analyzer = WarfareAnalyzer::new(&self.battle_defs, &params, attacker, target);
         analyzer.analyze()
     }
 
     pub fn analyze_fleet_cutin(&self, comp: &Comp, engagement: Engagement) -> FleetCutinAnalysis {
-        FleetCutinAnalyzer::new(&self.config, comp, engagement).analyze()
+        FleetCutinAnalyzer::new(&self.battle_defs, comp, engagement).analyze()
     }
 }

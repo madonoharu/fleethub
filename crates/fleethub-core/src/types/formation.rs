@@ -1,22 +1,9 @@
-use std::str::FromStr;
-
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, EnumIter, IntoEnumIterator};
+use strum::{EnumIter, IntoEnumIterator};
 use tsify::Tsify;
 
 #[derive(
-    Debug,
-    Default,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    Hash,
-    AsRefStr,
-    EnumIter,
-    Serialize,
-    Deserialize,
-    Tsify,
+    Debug, Default, Clone, Copy, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, Tsify,
 )]
 pub enum SingleFormation {
     /// 単縦陣
@@ -35,18 +22,7 @@ pub enum SingleFormation {
 }
 
 #[derive(
-    Debug,
-    Default,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    Hash,
-    AsRefStr,
-    EnumIter,
-    Serialize,
-    Deserialize,
-    Tsify,
+    Debug, Default, Clone, Copy, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, Tsify,
 )]
 pub enum CombinedFormation {
     /// 第一警戒航行序列
@@ -144,24 +120,6 @@ impl Formation {
         SingleFormation::iter()
             .map(Self::Single)
             .chain(CombinedFormation::iter().map(Self::Combined))
-    }
-}
-
-impl AsRef<str> for Formation {
-    fn as_ref(&self) -> &str {
-        match self {
-            Self::Single(v) => v.as_ref(),
-            Self::Combined(v) => v.as_ref(),
-        }
-    }
-}
-
-impl FromStr for Formation {
-    type Err = serde_json::Error;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let json = ["\"", s, "\""].concat();
-        serde_json::from_str(&json)
     }
 }
 

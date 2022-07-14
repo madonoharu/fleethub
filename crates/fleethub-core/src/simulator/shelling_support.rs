@@ -11,7 +11,7 @@ use crate::{
     comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    types::{BattleConfig, Engagement, Formation, FormationDef, Side},
+    types::{BattleDefinitions, Engagement, Formation, FormationDef, Side},
 };
 
 use super::{BattleLogger, SimulatorResult};
@@ -169,7 +169,7 @@ where
 {
     pub fn new(
         rng: &'a mut R,
-        config: &'a BattleConfig,
+        battle_defs: &'a BattleDefinitions,
         attacker_comp: &'a mut Comp,
         target_comp: &'a mut Comp,
         params: ShellingSupportSimulatorParams,
@@ -180,8 +180,8 @@ where
             engagement,
         } = params;
 
-        let attacker_formation_def = config.get_formation_def(attacker_formation, 6, 0);
-        let target_formation_def = config.get_formation_def(target_formation, 6, 0);
+        let attacker_formation_def = battle_defs.get_formation_def(attacker_formation, 6, 0);
+        let target_formation_def = battle_defs.get_formation_def(target_formation, 6, 0);
 
         Self {
             battle: ShellingSupportBattle {

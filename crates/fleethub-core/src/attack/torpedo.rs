@@ -1,6 +1,6 @@
 use crate::{
     ship::Ship,
-    types::{AirState, AttackPowerModifier, BattleConfig, Engagement, ShipEnvironment},
+    types::{AirState, AttackPowerModifier, BattleDefinitions, Engagement, ShipEnvironment},
 };
 
 use super::{
@@ -23,7 +23,7 @@ pub struct TorpedoAttackContext<'a> {
 }
 
 impl<'a> TorpedoAttackContext<'a> {
-    pub fn new(config: &BattleConfig, warfare_context: &'a WarfareContext) -> Self {
+    pub fn new(config: &BattleDefinitions, warfare_context: &'a WarfareContext) -> Self {
         let attacker_env = &warfare_context.attacker_env;
         let target_env = &warfare_context.target_env;
 
