@@ -3,10 +3,10 @@ use rand::prelude::*;
 use crate::{
     member::MemberImpl,
     plane::{AirstrikeType, PlaneImpl},
-    types::{AttackPowerModifier, ContactRank},
+    types::{AttackPowerModifier, ContactRank, ProficiencyModifiers},
 };
 
-use super::{AttackParams, AttackPowerParams, DefenseParams, HitRateParams, ProficiencyModifiers};
+use super::{AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
 
 const AIRSTRIKE_POWER_CAP: f64 = 170.0;
 

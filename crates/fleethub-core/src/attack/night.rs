@@ -3,13 +3,13 @@ use crate::{
     ship::Ship,
     types::{
         AttackPowerModifier, BattleDefinitions, GearType, NightAttackType, NightSpecialAttack,
-        ShipEnvironment, ShipType, SpecialAttackDef,
+        ProficiencyModifiers, ShipEnvironment, ShipType, SpecialAttackDef,
     },
 };
 
 use super::{
-    shelling::ProficiencyModifiers, special_enemy_mods::special_enemy_modifiers, AttackParams,
-    AttackPowerParams, HitRateParams, WarfareContext,
+    special_enemy_mods::special_enemy_modifiers, AttackParams, AttackPowerParams, HitRateParams,
+    WarfareContext,
 };
 
 const NIGHT_POWER_CAP: f64 = 360.0;

@@ -9,7 +9,7 @@ use paste::paste;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    attack::{AswAttackType, DefensePowerRange, ProficiencyModifiers},
+    attack::{AswAttackType, DefensePowerRange},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
     master_data::MasterShip,
@@ -17,7 +17,8 @@ use crate::{
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
         CustomPowerModifiers, DamageState, DayCutin, EBonuses, GearAttr, GearType, MoraleState,
-        ShipAttr, ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
+        ProficiencyModifiers, ShipAttr, ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeVec,
+        SpecialEnemyType,
     },
     utils::xxh3,
 };
