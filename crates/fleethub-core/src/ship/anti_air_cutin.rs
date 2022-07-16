@@ -20,7 +20,7 @@ impl Ship {
 
         if ctype == ctype!("Fletcher級") {
             let mk30_kai_count = gears.count(gear_id!("5inch単装砲 Mk.30改"));
-            let mk30_count = gears.count(gear_id!("5inch単装砲 Mk.30改")) + mk30_kai_count;
+            let mk30_count = gears.count(gear_id!("5inch単装砲 Mk.30")) + mk30_kai_count;
             let mk30_gfcs_count = gears.count(gear_id!("5inch単装砲 Mk.30改+GFCS Mk.37"));
 
             // 5inch単装砲 Mk.30改＋GFCS Mk.37 2本
