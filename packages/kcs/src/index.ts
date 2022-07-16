@@ -37,7 +37,7 @@ interface ShipMap {
 
 interface Airunit {
   airUnitState: number;
-  squadrons: (Squadron | null)[];
+  squadrons: Squadron[];
 }
 
 interface AirnuitMap {
@@ -113,7 +113,7 @@ function createAirSquadron(input: Airunit): AirSquadronState {
   }
 
   input.squadrons.forEach((item, index) => {
-    if (!item?.mst_id) {
+    if (item.mst_id <= 0) {
       return;
     }
 
