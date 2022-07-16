@@ -36,7 +36,7 @@ pub struct NightConditions {
 
 impl NightConditions {
     pub fn starshell(&self) -> bool {
-        self.searchlight_index.is_some()
+        self.starshell_index.is_some()
     }
 
     pub fn searchlight(&self) -> bool {
