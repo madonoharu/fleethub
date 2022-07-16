@@ -15,6 +15,13 @@ impl Default for Side {
 }
 
 impl Side {
+    pub fn not(self) -> Self {
+        match self {
+            Self::Player => Self::Enemy,
+            Self::Enemy => Self::Player,
+        }
+    }
+
     pub fn is_player(&self) -> bool {
         *self == Self::Player
     }

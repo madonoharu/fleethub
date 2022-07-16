@@ -1,6 +1,5 @@
 mod airstrike;
 mod anti_air;
-mod asw2;
 mod attack_info;
 mod damage;
 mod fleet_cutin_analyzer;

@@ -1,6 +1,7 @@
 pub mod air_squadron;
 pub mod analyzer;
 pub mod attack;
+pub mod attack2;
 pub mod comp;
 pub mod console;
 pub mod error;

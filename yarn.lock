@@ -5474,11 +5474,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.7.11
-  resolution: "fleethub-core@npm:1.7.11"
+  version: 1.7.13
+  resolution: "fleethub-core@npm:1.7.13"
   peerDependencies:
     equipment-bonus: "*"
-  checksum: 7e06edd5a790ebcaa7419bda75803a1d3a4fa122c862ac95851afbacb040b20e7ba25d0468965d8202868922d0d569459f7901521bce916be97aa26c51c2daa9
+  checksum: dd10e10208a8a00f804dc3f7d91903e55ea9699937d4c8e702b16471d595cad4b723ccabb8f03721175d5d8f7a1356ebb38e9b0fd20fe716a6c6af61fa032678
   languageName: node
   linkType: hard
 

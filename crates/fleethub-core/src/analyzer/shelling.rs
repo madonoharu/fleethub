@@ -17,7 +17,7 @@ pub struct DayCutinRateInfo {
 
 impl DayCutinRateInfo {
     pub fn new(
-        config: &BattleDefinitions,
+        battle_defs: &BattleDefinitions,
         ship: &Ship,
         fleet_los_mod: Option<f64>,
         is_main_flagship: bool,
@@ -34,7 +34,7 @@ impl DayCutinRateInfo {
         let mut rates = cutin_set
             .into_iter()
             .map(|ci| {
-                let ci_def = config.day_cutin.get(&ci).unwrap();
+                let ci_def = battle_defs.day_cutin.get(&ci).unwrap();
 
                 let actual_rate = if let (Some(o), Some(d), Some(t)) =
                     (observation_term, ci_def.type_factor, total_cutin_rate)
@@ -74,7 +74,7 @@ pub struct ShipDayCutinRateInfo {
 
 impl ShipDayCutinRateInfo {
     fn new(
-        config: &BattleDefinitions,
+        battle_defs: &BattleDefinitions,
         ship: &Ship,
         fleet_los_mod: Option<f64>,
         is_main_flagship: bool,
@@ -84,7 +84,7 @@ impl ShipDayCutinRateInfo {
         Self {
             ship_id: ship.ship_id,
             air_supremacy: DayCutinRateInfo::new(
-                config,
+                battle_defs,
                 ship,
                 fleet_los_mod,
                 is_main_flagship,
@@ -92,7 +92,7 @@ impl ShipDayCutinRateInfo {
                 anti_inst,
             ),
             air_superiority: DayCutinRateInfo::new(
-                config,
+                battle_defs,
                 ship,
                 fleet_los_mod,
                 is_main_flagship,
