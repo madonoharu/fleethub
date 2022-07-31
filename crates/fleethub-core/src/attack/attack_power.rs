@@ -3,6 +3,8 @@ use tsify::Tsify;
 
 use crate::types::{AttackPowerModifier, CustomPowerModifiers};
 
+use super::HitType;
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 pub struct SpecialEnemyModifiers {
     pub precap_general_mod: AttackPowerModifier,
@@ -47,7 +49,42 @@ pub struct AttackPower {
     pub remaining_ammo_mod: f64,
 }
 
+impl AttackPower {
+    pub fn get_attack_term(&self, hit_type: HitType) -> f64 {
+        match hit_type {
+            HitType::Miss => 0.0,
+            HitType::Normal => self.normal,
+            HitType::Critical => self.critical,
+        }
+    }
+}
+
 impl AttackPowerParams {
+    pub fn calc(&self) -> AttackPower {
+        let cap = self.cap;
+        let precap = self.apply_precap_mods(self.basic);
+
+        let is_capped = precap > cap;
+
+        let capped = if is_capped {
+            cap + (precap - cap).sqrt()
+        } else {
+            precap
+        };
+
+        let (normal, critical) = self.apply_postcap_mods(capped);
+
+        AttackPower {
+            precap,
+            is_capped,
+            capped,
+            normal,
+            critical,
+            armor_penetration: self.armor_penetration,
+            remaining_ammo_mod: self.remaining_ammo_mod,
+        }
+    }
+
     fn apply_precap_mods(&self, basic: f64) -> f64 {
         let mut precap = basic;
 
@@ -77,7 +114,7 @@ impl AttackPowerParams {
 
         precap = self
             .precap_mod
-            .compose(&self.custom_mods.precap_mod)
+            .compose(self.custom_mods.precap_mod)
             .apply(precap);
 
         precap
@@ -97,7 +134,7 @@ impl AttackPowerParams {
 
         postcap = self
             .postcap_mod
-            .compose(&self.custom_mods.postcap_mod)
+            .compose(self.custom_mods.postcap_mod)
             .apply(postcap);
 
         if let Some(v) = self.ap_shell_mod {
@@ -107,32 +144,7 @@ impl AttackPowerParams {
         let normal = postcap;
         let critical = (normal * 1.5 * self.proficiency_critical_mod.unwrap_or(1.0)).floor();
 
-        return (normal, critical);
-    }
-
-    pub fn calc(&self) -> AttackPower {
-        let cap = self.cap;
-        let precap = self.apply_precap_mods(self.basic);
-
-        let is_capped = precap > cap;
-
-        let capped = if is_capped {
-            cap + (precap - cap).sqrt()
-        } else {
-            precap
-        };
-
-        let (normal, critical) = self.apply_postcap_mods(capped);
-
-        AttackPower {
-            precap,
-            is_capped,
-            capped,
-            normal,
-            critical,
-            armor_penetration: self.armor_penetration,
-            remaining_ammo_mod: self.remaining_ammo_mod,
-        }
+        (normal, critical)
     }
 }
 

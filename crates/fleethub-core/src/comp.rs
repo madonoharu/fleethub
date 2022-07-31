@@ -1,22 +1,27 @@
+use std::ops::Deref;
+
+use enumset::EnumSet;
 use itertools::Itertools;
 use rand::Rng;
 use wasm_bindgen::prelude::*;
 
 use crate::{
     fleet::Fleet,
-    member::{Member, MemberMut},
+    member::{BattleMemberRef, CompMemberMut, CompMemberRef},
     plane::{Plane, PlaneMut},
     ship::Ship,
     types::{
         AirWaveType, AntiAirCutinDef, BattleDefinitions, CompMeta, FleetType, Formation, OrgType,
-        Role, ShipEnvironment, Side,
+        Role, ShipConditions, ShipPosition, Side,
     },
 };
 
 #[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct Comp {
+    #[wasm_bindgen(readonly)]
     pub org_type: OrgType,
+    #[wasm_bindgen(readonly)]
     pub hq_level: u8,
     #[wasm_bindgen(getter_with_clone)]
     pub main: Fleet,
@@ -29,51 +34,172 @@ pub struct Comp {
 }
 
 impl Comp {
+    pub fn get_fleet(&self, ft: impl Into<FleetType>) -> Option<&Fleet> {
+        Some(match ft.into() {
+            FleetType::Main => &self.main,
+            FleetType::Escort => self.escort.as_ref()?,
+            FleetType::RouteSup => self.route_sup.as_ref()?,
+            _ => return None,
+        })
+    }
+
+    pub fn night_fleet_role(&self) -> Role {
+        if self.is_combined() && self.escort.is_some() {
+            Role::Escort
+        } else {
+            Role::Main
+        }
+    }
+
     pub fn night_fleet(&self) -> &Fleet {
-        self.escort.as_ref().unwrap_or_else(|| &self.main)
+        self.get_fleet(self.night_fleet_role())
+            .unwrap_or_else(|| unreachable!())
     }
 
-    pub fn members(&self) -> impl Iterator<Item = Member> {
-        self.main
-            .ships
-            .iter()
-            .map(|(index, ship)| Member {
-                org_type: self.org_type,
-                role: Role::Main,
-                index,
+    pub fn get_battle_member(
+        &self,
+        formation: Formation,
+        role: Role,
+        index: usize,
+    ) -> Option<BattleMemberRef> {
+        let fleet = self.get_fleet(role)?;
+        let ship = fleet.ships.get(index)?;
+        let fleet_len = fleet.len;
+
+        let position = ShipPosition {
+            org_type: self.org_type,
+            role,
+            fleet_len,
+            index,
+        };
+
+        Some(BattleMemberRef {
+            ship: CompMemberRef { ship, position },
+            formation,
+        })
+    }
+
+    fn fleet_entries(
+        &self,
+        query: impl Into<EnumSet<FleetType>>,
+    ) -> impl Iterator<Item = (FleetType, &Fleet)> {
+        let query = query.into();
+        let Self {
+            main,
+            escort,
+            route_sup,
+            boss_sup,
+            ..
+        } = self;
+
+        let all = [
+            (FleetType::Main, Some(main)),
+            (FleetType::Escort, escort.as_ref()),
+            (FleetType::RouteSup, route_sup.as_ref()),
+            (FleetType::BossSup, boss_sup.as_ref()),
+        ];
+
+        all.into_iter().filter_map(move |(ft, fleet)| {
+            if query.contains(ft) {
+                Some((ft, fleet?))
+            } else {
+                None
+            }
+        })
+    }
+
+    fn fleet_entries_mut(
+        &mut self,
+        query: impl Into<EnumSet<FleetType>>,
+    ) -> impl Iterator<Item = (FleetType, &mut Fleet)> {
+        let query = query.into();
+        let Self {
+            main,
+            escort,
+            route_sup,
+            boss_sup,
+            ..
+        } = self;
+
+        let all = [
+            (FleetType::Main, Some(main)),
+            (FleetType::Escort, escort.as_mut()),
+            (FleetType::RouteSup, route_sup.as_mut()),
+            (FleetType::BossSup, boss_sup.as_mut()),
+        ];
+
+        all.into_iter().filter_map(move |(ft, fleet)| {
+            if query.contains(ft) {
+                Some((ft, fleet?))
+            } else {
+                None
+            }
+        })
+    }
+
+    pub fn members_by(
+        &self,
+        query: impl Into<EnumSet<FleetType>>,
+    ) -> impl Iterator<Item = CompMemberRef> {
+        let org_type = self.org_type;
+
+        self.fleet_entries(query).flat_map(move |(ft, fleet)| {
+            let role = if ft == FleetType::Main {
+                Role::Main
+            } else {
+                Role::Escort
+            };
+
+            let fleet_len = fleet.len;
+
+            fleet.ships.iter().map(move |(index, ship)| CompMemberRef {
                 ship,
-            })
-            .chain(self.escort.iter().flat_map(|fleet| {
-                fleet.ships.iter().map(|(index, ship)| Member {
-                    org_type: self.org_type,
-                    role: Role::Escort,
+                position: ShipPosition {
+                    org_type,
+                    role,
+                    fleet_len,
                     index,
-                    ship,
-                })
-            }))
+                },
+            })
+        })
     }
 
-    pub fn members_mut(&mut self) -> impl Iterator<Item = MemberMut> {
-        self.main
-            .ships
-            .iter_mut()
-            .map(|(index, ship)| MemberMut {
-                org_type: self.org_type,
-                role: Role::Main,
-                index,
-                ship,
-            })
-            .chain(
-                self.escort
-                    .iter_mut()
-                    .flat_map(|fleet| fleet.ships.iter_mut())
-                    .map(|(index, ship)| MemberMut {
-                        org_type: self.org_type,
-                        role: Role::Escort,
+    pub fn members_mut_by(
+        &mut self,
+        query: impl Into<EnumSet<FleetType>>,
+    ) -> impl Iterator<Item = CompMemberMut> {
+        let org_type = self.org_type;
+
+        self.fleet_entries_mut(query).flat_map(move |(ft, fleet)| {
+            let role = if ft == FleetType::Main {
+                Role::Main
+            } else {
+                Role::Escort
+            };
+
+            let fleet_len = fleet.len;
+
+            fleet
+                .ships
+                .iter_mut()
+                .map(move |(index, ship)| CompMemberMut {
+                    ship,
+                    position: ShipPosition {
+                        org_type,
+                        role,
+                        fleet_len,
                         index,
-                        ship,
-                    }),
-            )
+                    },
+                })
+        })
+    }
+
+    pub fn members(&self) -> impl Iterator<Item = CompMemberRef> {
+        self.members_by(FleetType::Main | FleetType::Escort)
+    }
+
+    pub fn members_mut(&mut self) -> impl Iterator<Item = CompMemberMut> {
+        self.members_mut_by(FleetType::Main | FleetType::Escort)
     }
 
     pub fn planes(&self, escort_participates: bool) -> impl Iterator<Item = Plane> {
@@ -148,7 +274,9 @@ impl Comp {
 
     pub fn reset_battle_state(&mut self) {
         self.main.reset_battle_state();
-        self.escort.as_mut().map(|f| f.reset_battle_state());
+        if let Some(f) = self.escort.as_mut() {
+            f.reset_battle_state()
+        }
     }
 }
 
@@ -184,15 +312,6 @@ impl Comp {
             .collect();
 
         CompMeta { fleets }
-    }
-
-    fn get_fleet(&self, ft: FleetType) -> Option<&Fleet> {
-        Some(match ft {
-            FleetType::Main => &self.main,
-            FleetType::Escort => self.escort.as_ref()?,
-            FleetType::RouteSup => self.route_sup.as_ref()?,
-            _ => return None,
-        })
     }
 
     pub fn get_fleet_id(&self, ft: FleetType) -> Option<String> {
@@ -261,30 +380,50 @@ impl Comp {
         self.ships().map(|ship| ship.transport_point()).sum()
     }
 
-    pub fn create_warfare_ship_environment(
-        &self,
-        ship: &Ship,
-        formation: Option<Formation>,
-    ) -> ShipEnvironment {
-        let (role, index) = self
-            .members()
-            .find_map(|entry| (entry.ship == ship).then(|| (entry.role, entry.index)))
-            .unwrap_or_default();
+    pub(crate) fn get_ship_position(&self, ship: &Ship) -> ShipPosition {
+        self.members()
+            .find(|member| member.ship == ship)
+            .map(|member| member.position)
+            .unwrap_or_default()
+    }
 
-        let fleet = match role {
-            Role::Main => &self.main,
-            Role::Escort => self.escort.as_ref().unwrap_or_else(|| unreachable!()),
-        };
+    pub fn get_ship_conditions(&self, ship: &Ship, formation: Option<Formation>) -> ShipConditions {
+        let position = self.get_ship_position(ship);
 
-        ShipEnvironment {
-            org_type: self.org_type,
-            fleet_len: fleet.len,
-            index,
-            role,
+        ShipConditions {
+            position,
             formation: formation.unwrap_or_else(|| self.org_type.default_formation()),
-            fleet_los_mod: fleet.fleet_los_mod(),
-            ..Default::default()
         }
+    }
+}
+
+struct FleetTypeQuery(EnumSet<FleetType>);
+
+impl From<FleetType> for FleetTypeQuery {
+    #[inline]
+    fn from(t: FleetType) -> Self {
+        Self(EnumSet::only(t))
+    }
+}
+
+impl From<EnumSet<FleetType>> for FleetTypeQuery {
+    #[inline]
+    fn from(set: EnumSet<FleetType>) -> Self {
+        Self(set)
+    }
+}
+
+impl From<Role> for FleetTypeQuery {
+    #[inline]
+    fn from(role: Role) -> Self {
+        FleetType::from(role).into()
+    }
+}
+
+impl Deref for FleetTypeQuery {
+    type Target = EnumSet<FleetType>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 

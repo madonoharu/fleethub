@@ -66,7 +66,8 @@ export const colors = {
   folder: muiColors.green[300],
 
   Shelling: muiColors.orange[400],
-  NightAttack: muiColors.indigo[200],
+  Night: muiColors.indigo[200],
   Asw: stats.asw,
   Torpedo: stats.torpedo,
+  Unknown: palette.text.disabled,
 };

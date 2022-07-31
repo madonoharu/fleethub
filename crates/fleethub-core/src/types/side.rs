@@ -1,3 +1,5 @@
+use std::ops::Not;
+
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
@@ -13,20 +15,25 @@ impl Default for Side {
         Self::Player
     }
 }
+impl Not for Side {
+    type Output = Self;
 
-impl Side {
-    pub fn not(self) -> Self {
+    fn not(self) -> Self::Output {
         match self {
             Self::Player => Self::Enemy,
             Self::Enemy => Self::Player,
         }
     }
+}
 
-    pub fn is_player(&self) -> bool {
-        *self == Self::Player
+impl Side {
+    #[inline]
+    pub fn is_player(self) -> bool {
+        self == Self::Player
     }
 
-    pub fn is_enemy(&self) -> bool {
+    #[inline]
+    pub fn is_enemy(self) -> bool {
         !self.is_player()
     }
 }

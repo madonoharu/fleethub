@@ -1,42 +1,37 @@
-mod master_data;
+mod common;
 
-use fleethub_core::{
-    attack::special_enemy_modifiers,
-    types::{gear_id, AttackPowerModifier, GearState, GearVecState, ShipState, SpecialEnemyType},
-};
-use master_data::FH_CORE;
+use fleethub_core::types::{AttackPowerModifier, SpecialEnemyType, Time};
 
-fn test_case(vec: Vec<u16>, a: f64, b: f64) {
-    let get_gear_state = |i: usize| {
-        vec.get(i).map(|&gear_id| GearState {
-            gear_id,
-            ..Default::default()
-        })
+fn test_case(gears: Vec<&str>, expected: (f64, f64)) {
+    let get = |index: usize| gears.get(index).unwrap_or(&"").to_string();
+
+    let g1 = get(0);
+    let g2 = get(1);
+    let g3 = get(2);
+    let g4 = get(3);
+    let g5 = get(4);
+    let gx = get(5);
+
+    let ship = ship! {
+        ship_id = "睦月"
+        g1 = g1
+        g2 = g2
+        g3 = g3
+        g4 = g4
+        g5 = g5
+        gx = gx
     };
 
-    let ship_state = ShipState {
-        ship_id: 1,
-        gears: GearVecState {
-            g1: get_gear_state(0),
-            g2: get_gear_state(1),
-            g3: get_gear_state(2),
-            g4: get_gear_state(3),
-            g5: get_gear_state(4),
-            gx: get_gear_state(5),
-        },
-        ..Default::default()
-    };
-
-    let ship = FH_CORE.create_ship(Some(ship_state)).unwrap();
-
-    let mods = special_enemy_modifiers(&ship, SpecialEnemyType::SoftSkinned, true);
-
-    assert_eq!(mods.landing_craft_synergy_mod, AttackPowerModifier { a, b });
+    let mods = ship.special_enemy_mods(SpecialEnemyType::SoftSkinned, Time::Day);
+    assert_eq!(
+        mods.landing_craft_synergy_mod,
+        AttackPowerModifier::from(expected)
+    );
 }
 
 macro_rules! table {
-    ($([$($x:tt),+ $(,)?] => ($a:expr, $b: expr)),+ $(,)?) => {
-        $(test_case(vec![$(gear_id!($x)),+], $a, $b);)+
+    ($($gears: expr => $expected: expr),+ $(,)?) => {
+        $(test_case($gears.into(), $expected);)+
     };
 }
 

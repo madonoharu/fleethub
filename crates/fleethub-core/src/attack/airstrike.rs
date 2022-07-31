@@ -1,7 +1,7 @@
 use rand::prelude::*;
 
 use crate::{
-    member::MemberImpl,
+    member::CompMemberRef,
     plane::{AirstrikeType, PlaneImpl},
     types::{AttackPowerModifier, ContactRank, ProficiencyModifiers},
 };
@@ -10,16 +10,14 @@ use super::{AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
 
 const AIRSTRIKE_POWER_CAP: f64 = 170.0;
 
-pub fn create_airstrike_params<P: PlaneImpl, R: Rng + ?Sized, M: MemberImpl>(
+pub fn create_airstrike_params<P: PlaneImpl, R: Rng + ?Sized>(
     rng: &mut R,
     plane: P,
     proficiency_modifiers: &ProficiencyModifiers,
     remaining_ammo_mod: f64,
     contact_rank: Option<ContactRank>,
-    target: &M,
+    target: &CompMemberRef,
 ) -> AttackParams {
-    let target_ship = target.ship();
-
     let attack_power_params = {
         let slot_size = plane.slot_size().unwrap_or_default() as f64;
 
@@ -51,12 +49,12 @@ pub fn create_airstrike_params<P: PlaneImpl, R: Rng + ?Sized, M: MemberImpl>(
     };
 
     let hit_rate_params = {
-        let evasion_term = target_ship.evasion_term(1.0, 0.0, 1.0);
+        let evasion_term = target.evasion_term(1.0, 0.0, 1.0);
 
         evasion_term.map(|evasion_term| HitRateParams {
             accuracy_term: 95.0,
             evasion_term,
-            target_morale_mod: target_ship.morale_state().hit_rate_mod(),
+            target_morale_mod: target.morale_state().hit_rate_mod(),
             critical_rate_constant: 0.2,
             critical_percentage_bonus: proficiency_modifiers.critical_percentage_bonus,
             hit_percentage_bonus: proficiency_modifiers.hit_percentage_bonus,
@@ -64,7 +62,7 @@ pub fn create_airstrike_params<P: PlaneImpl, R: Rng + ?Sized, M: MemberImpl>(
     };
 
     const ARMOR_PENETRATION: f64 = 0.0;
-    let defense_params = DefenseParams::from_target(target_ship, target.side(), ARMOR_PENETRATION);
+    let defense_params = DefenseParams::from_target(target, target.side(), ARMOR_PENETRATION);
 
     AttackParams {
         attack_power_params,

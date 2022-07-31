@@ -1,23 +1,26 @@
 import { round } from "@fh/utils";
 import { Alert, Paper, TableContainer, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { Comp, SimulatorResult } from "fleethub-core";
+import type {
+  Comp,
+  NodeAttackAnalyzerConfig,
+  SimulatorResult,
+} from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
-import { StepConfig } from "../../../store";
 import { toPercent } from "../../../utils";
-import DamageStateMapBarChart from "../AttackTable/DamageStateMapBarChart";
+import DamageStateDensityBarChart from "../AttackTable/DamageStateDensityBarChart";
 import ShipBanner from "../ShipBanner";
 import Table from "../Table";
 
-type Props = {
+interface Props {
   player: Comp;
   enemy: Comp;
   times: number;
-  config: StepConfig;
-};
+  config: NodeAttackAnalyzerConfig;
+}
 
 const SimulatorResultTable: React.FCX<Props> = ({
   className,
@@ -46,9 +49,9 @@ const SimulatorResultTable: React.FCX<Props> = ({
       player,
       enemy,
       {
-        engagement: config.engagement,
-        attacker_formation: config.player.formation,
-        target_formation: config.enemy.formation,
+        engagement: config.engagement || "Parallel",
+        attacker_formation: config.left?.formation || "LineAhead",
+        target_formation: config.right?.formation || "LineAhead",
       },
       times
     );
@@ -120,7 +123,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
             {
               label: t("DamageState.name"),
               getValue: (item) => (
-                <DamageStateMapBarChart data={item.damage_state_map} />
+                <DamageStateDensityBarChart data={item.damage_state_map} />
               ),
             },
           ]}

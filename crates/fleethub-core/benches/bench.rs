@@ -1,24 +1,22 @@
+#![allow(unused)]
+
+use std::hash::{Hash, Hasher};
+
 use criterion::{criterion_group, criterion_main, Criterion};
-use fleethub_core::{ship::Ship, types::ShipState};
+use fleethub_core::types::{Role, ShipState};
+use rand::prelude::*;
 
 fn bm1(c: &mut Criterion) {
-    let ship = Ship::default();
-    c.bench_function("clone", |b| {
-        b.iter(|| {
-            let _ = ship.clone();
-        })
-    });
+    todo!()
 }
 
-fn bm2(c: &mut Criterion) {
-    let state = ShipState::default();
-
-    c.bench_function("JsValue", |b| {
-        b.iter(|| {
-            let _ = serde_json::to_string(&state);
-        })
-    });
+fn config() -> Criterion {
+    Criterion::default().sample_size(10000)
 }
 
-criterion_group!(benches, bm1, bm2);
+criterion_group! {
+    name = benches;
+    config = config();
+    targets = bm1
+}
 criterion_main!(benches);

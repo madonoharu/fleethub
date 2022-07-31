@@ -54,7 +54,7 @@ pub struct MasterGear {
 }
 
 impl MasterGear {
-    pub fn ns<'a>(&'a self) -> impl EvalNamespace + 'a {
+    pub fn ns(&self) -> impl EvalNamespace + '_ {
         |key: &str, args: Vec<f64>| -> Option<f64> {
             let result = match key {
                 "gear_id" => self.gear_id.into(),
@@ -78,7 +78,7 @@ impl MasterGear {
                 "improvable" => bool_to_f64!(self.improvable),
 
                 "types" => {
-                    let index = args.get(0)?.floor() as usize;
+                    let index = args.first()?.floor() as usize;
                     self.types.get(index)?.into()
                 }
 
@@ -95,7 +95,8 @@ impl MasterGear {
     }
 
     pub fn special_type_id(&self) -> u8 {
-        self.special_type.unwrap_or(self.types.gear_type_id())
+        self.special_type
+            .unwrap_or_else(|| self.types.gear_type_id())
     }
 
     pub fn has_attr(&self, attr: GearAttr) -> bool {

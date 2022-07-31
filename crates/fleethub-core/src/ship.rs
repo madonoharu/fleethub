@@ -2,6 +2,7 @@ mod anti_air_cutin;
 mod day_cutin;
 mod gunfit_accuracy;
 mod night_cutin;
+mod special_enemy_modifiers;
 
 use std::hash::Hash;
 
@@ -9,19 +10,20 @@ use paste::paste;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    attack::{AswAttackType, DefensePowerRange},
     gear::Gear,
     gear_array::{into_gear_index, into_gear_key, GearArray},
     master_data::MasterShip,
     plane::{Plane, PlaneImpl, PlaneMut},
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
-        CustomPowerModifiers, DamageState, DayCutin, EBonuses, GearAttr, GearType, MoraleState,
-        ProficiencyModifiers, ShipAttr, ShipCategory, ShipMeta, ShipState, ShipType, SlotSizeVec,
-        SpecialEnemyType,
+        AswAttackType, AswPhase, CustomPowerModifiers, DamageState, DayCutin, DayPhaseAttackType,
+        DefensePower, EBonuses, GearAttr, GearType, MoraleState, NightAttackType,
+        NightPhaseAttackType, ProficiencyModifiers, ShellingType, ShipAttr, ShipCategory, ShipMeta,
+        ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
     },
-    utils::xxh3,
 };
+
+pub use night_cutin::NightCutinTermParams;
 
 #[derive(Debug, Default, Clone)]
 pub struct ShipEquippable {
@@ -35,16 +37,24 @@ pub struct ShipEquippable {
 pub struct Ship {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    pub xxh3: u64,
-
+    #[wasm_bindgen(readonly)]
+    pub hash: u64,
+    #[wasm_bindgen(readonly)]
     pub ship_id: u16,
+    #[wasm_bindgen(readonly)]
     pub level: u16,
+    #[wasm_bindgen(readonly)]
     pub current_hp: u16,
+    #[wasm_bindgen(readonly)]
     pub morale: u8,
+    #[wasm_bindgen(readonly)]
     pub ammo: u16,
+    #[wasm_bindgen(readonly)]
     pub fuel: u16,
 
+    #[wasm_bindgen(readonly)]
     pub ship_type: ShipType,
+    #[wasm_bindgen(readonly)]
     pub ctype: u16,
 
     #[wasm_bindgen(getter_with_clone)]
@@ -211,30 +221,25 @@ impl PartialEq for Ship {
     fn eq(&self, other: &Self) -> bool {
         self.state.id.is_some() && self.state.id == other.state.id
     }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.eq(other)
-    }
 }
 
 impl Eq for Ship {}
 
 impl Hash for Ship {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.xxh3.hash(state);
+        self.hash.hash(state);
     }
 }
 
 impl Ship {
     pub fn new(
+        hash: u64,
         state: ShipState,
         master: &MasterShip,
         equippable: ShipEquippable,
         gears: GearArray,
         ebonuses: EBonuses,
     ) -> Self {
-        let xxh3 = xxh3(&state);
-
         let ctype = master.ctype;
         let is_nisshin = ctype == ctype!("日進型");
 
@@ -259,10 +264,10 @@ impl Ship {
 
         let mut ship = Ship {
             id: state.id.clone().unwrap_or_default(),
-            xxh3,
+            hash,
 
             ship_id: state.ship_id,
-            level: state.level.unwrap_or(master.default_level()),
+            level: state.level.unwrap_or_else(|| master.default_level()),
             current_hp: state.current_hp.unwrap_or_default(),
             morale: state.morale.unwrap_or(49),
             ammo: state.ammo.unwrap_or(master.ammo),
@@ -421,14 +426,13 @@ impl Ship {
         }
     }
 
-    pub fn participates_in_day(&self, anti_inst: bool) -> bool {
+    pub fn participates_in_day_combat(&self, anti_inst: bool) -> bool {
         if self.is_carrier_like() {
             if !self.has_non_zero_slot_gear_by(|gear| gear.is_carrier_shelling_plane()) {
                 false
-            } else if !anti_inst {
-                true
-            } else if self
-                .has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiInstDiveBomber))
+            } else if !anti_inst
+                || self
+                    .has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiInstDiveBomber))
             {
                 true
             } else {
@@ -682,7 +686,7 @@ impl Ship {
         self.ship_type == ShipType::CVL && self.master.asw.0.unwrap_or_default() > 0
     }
 
-    pub fn asw_attack_type(&self, is_night: bool) -> Option<AswAttackType> {
+    pub fn select_asw_attack_type(&self, phase: AswPhase) -> Option<AswAttackType> {
         use ShipType::*;
 
         if self.is_submarine() {
@@ -702,9 +706,7 @@ impl Ship {
             return None;
         }
 
-        let naked_asw = self.naked_asw().unwrap_or_default();
-
-        if !is_night {
+        if !phase.is_night() {
             let has_anti_sub_aircraft =
                 || self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiSubAircraft));
 
@@ -723,6 +725,7 @@ impl Ship {
             }
         }
 
+        let naked_asw = self.naked_asw().unwrap_or_default();
         if naked_asw == 0 {
             return None;
         }
@@ -737,6 +740,61 @@ impl Ship {
         };
 
         is_anti_sub_ship.then(|| AswAttackType::DepthCharge)
+    }
+
+    pub fn select_day_phase_attack_type(&self, target: &Ship) -> Option<DayPhaseAttackType> {
+        let is_carrier_like = self.is_carrier_like();
+        let anti_inst = target.is_installation();
+        let participates = self.participates_in_day_combat(anti_inst);
+
+        let capable = !is_carrier_like || self.is_healthy_as_carrier();
+
+        if !participates || !capable {
+            return None;
+        }
+
+        if target.is_submarine() {
+            self.select_asw_attack_type(AswPhase::Day)
+                .map(DayPhaseAttackType::Asw)
+        } else {
+            let t = if is_carrier_like {
+                ShellingType::Carrier
+            } else {
+                ShellingType::Normal
+            };
+
+            Some(DayPhaseAttackType::Shelling(t))
+        }
+    }
+
+    pub fn select_night_phase_attack_type(&self, target: &Ship) -> Option<NightPhaseAttackType> {
+        if self.damage_state() >= DamageState::Taiha {
+            return None;
+        }
+
+        if target.is_submarine() {
+            return self
+                .select_asw_attack_type(AswPhase::Night)
+                .map(NightPhaseAttackType::Asw);
+        }
+
+        let attack_type = if self.is_night_carrier() && self.is_healthy_as_carrier() {
+            Some(NightAttackType::Carrier)
+        } else if self.ctype == ctype!("Ark Royal級")
+            && self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::CbSwordfish))
+            && self.is_healthy_as_carrier()
+        {
+            Some(NightAttackType::Swordfish)
+        } else {
+            self.can_do_normal_night_attack()
+                .then(|| NightAttackType::Normal)
+        };
+
+        attack_type.map(NightPhaseAttackType::Night)
+    }
+
+    pub fn prioritizes_shelling(&self) -> bool {
+        matches_ship_id!(self.ship_id, "鈴谷航改二" | "熊野航改二")
     }
 
     pub fn can_do_oasw(&self) -> bool {
@@ -849,7 +907,7 @@ impl Ship {
 
     pub fn asw_armor_penetration(&self) -> f64 {
         let total = self.gears.sum_by(|gear| {
-            if matches!(gear.gear_id, gear_id!("九五式爆雷") | gear_id!("二式爆雷")) {
+            if matches_gear_id!(gear.gear_id, "九五式爆雷" | "二式爆雷") {
                 let asw = gear.asw as f64;
                 (asw - 2.0).max(0.0).sqrt()
             } else {
@@ -1468,12 +1526,20 @@ impl Ship {
     /// 確殺攻撃力
     pub fn ohko_power(&self) -> Option<f64> {
         let basic_defense_power = self.basic_defense_power(0.0)?;
-        let max_defense_power = DefensePowerRange::new(basic_defense_power).max();
+        let max_defense_power = DefensePower::new(basic_defense_power).max();
         Some(self.current_hp as f64 + max_defense_power)
     }
+}
 
+impl Ship {
     pub fn take_damage(&mut self, value: u16) {
         self.current_hp = self.current_hp.saturating_sub(value);
+    }
+
+    pub fn set_damage_state(&mut self, damage_state: DamageState) {
+        let max_hp = self.max_hp().unwrap_or_default();
+        let bound = damage_state.bound(max_hp);
+        self.current_hp = bound;
     }
 }
 

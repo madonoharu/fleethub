@@ -58,18 +58,6 @@ impl From<CombinedFormation> for Formation {
     }
 }
 
-impl PartialEq<SingleFormation> for Formation {
-    fn eq(&self, other: &SingleFormation) -> bool {
-        *self == Self::from(*other)
-    }
-}
-
-impl PartialEq<CombinedFormation> for Formation {
-    fn eq(&self, other: &CombinedFormation) -> bool {
-        *self == Self::from(*other)
-    }
-}
-
 impl Formation {
     /// 単縦陣
     pub const LINE_AHEAD: Self = Self::Single(SingleFormation::LineAhead);
@@ -98,10 +86,10 @@ impl Formation {
     /// - 複縦 → 単横
     /// - 単横 → 梯形
     /// - 梯形 → 単縦
-    pub fn is_ineffective(&self, other: Self) -> bool {
+    pub fn is_ineffective(self, other: Self) -> bool {
         use SingleFormation::*;
 
-        match (*self, other) {
+        match (self, other) {
             (Self::Single(a), Self::Single(b)) => {
                 matches!(
                     (a, b),
@@ -112,7 +100,7 @@ impl Formation {
         }
     }
 
-    pub fn is_combined(&self) -> bool {
+    pub fn is_combined(self) -> bool {
         matches!(self, Self::Combined(_))
     }
 

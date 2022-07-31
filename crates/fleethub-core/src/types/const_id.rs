@@ -1548,14 +1548,14 @@ macro_rules! ctype {
 #[macro_export]
 macro_rules! matches_ship_id {
     ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
-        matches!($expression, $(ship_id!($pattern))|+)
+        matches!($expression, $($crate::types::ship_id!($pattern))|+)
     }
 }
 
 #[macro_export]
 macro_rules! matches_gear_id {
     ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
-        matches!($expression, $(gear_id!($pattern))|+)
+        matches!($expression, $($crate::types::gear_id!($pattern))|+)
     }
 }
 

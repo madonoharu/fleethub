@@ -1,0 +1,34 @@
+description = "熟練度命中テスト8(1スロ目熟練100)"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "Aquila改"
+g1 = { gear_id = "九九式艦爆", stars = 0, exp = 100 }
+
+# 防御艦設定
+[target]
+ship_id = "駆逐ハ級後期型"
+
+[expected]
+# 昼戦可否
+day.is_active = true
+# 夜戦可否
+night.is_active = false
+# 開幕対潜可否
+opening_asw.is_active = false
+# 閉幕雷撃可否
+closing_torpedo.is_active = false
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+# 命中項
+hit_rate_params.accuracy_term = 113
+# 命中率補正
+hit_rate_params.hit_percentage_bonus = 12
+# クリ率補正
+hit_rate_params.critical_percentage_bonus = 8
+
+# 命中率（通常命中率 + クリティカル率）
+hit_rate.total = 0.71
+# クリティカル率
+hit_rate.critical = 0.19

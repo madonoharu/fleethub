@@ -5,7 +5,7 @@ use crate::{
     ship::Ship,
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, DamageState, Engagement,
-        FleetCutin, Formation, GearAttr, GearType, ShipAttr,
+        FleetCutin, Formation, GearAttr, GearType, ShipAttr, Time,
     },
 };
 
@@ -19,7 +19,7 @@ pub fn get_possible_fleet_cutin_effect_vec(
     fleet: &Fleet,
     formation: Formation,
     engagement: Engagement,
-    is_night: bool,
+    time: Time,
 ) -> Vec<FleetCutinEffect> {
     [
         get_nelson_touch_mod(fleet, formation, engagement),
@@ -27,7 +27,7 @@ pub fn get_possible_fleet_cutin_effect_vec(
         get_colorado_class_cutin(fleet, formation),
         get_yamato_2ship_cutin(fleet, formation),
         get_yamato_3ship_cutin(fleet, formation),
-        is_night
+        time.is_night()
             .then(|| get_kongou_class_cutin(fleet, formation, engagement))
             .flatten(),
     ]
@@ -400,10 +400,10 @@ fn get_yamato_3ship_cutin(fleet: &Fleet, formation: Formation) -> Option<FleetCu
         (ship_id!("Colorado改"), ship_id!("Maryland改")),
     ];
 
-    if !HELPER_PAIRS
+    if !(HELPER_PAIRS
         .iter()
         .any(|(p1, p2)| pair.contains(p1) && pair.contains(p2))
-        && !(pair[0] == ship_id!("武蔵改二") && matches_ship_id!(pair[1], "長門改二" | "陸奥改二"))
+        || pair[0] == ship_id!("武蔵改二") && matches_ship_id!(pair[1], "長門改二" | "陸奥改二"))
     {
         return None;
     }

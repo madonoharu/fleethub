@@ -4,50 +4,61 @@ import { Comp, Fleet } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { CompProvider } from "../../../hooks";
+import { CompProvider, useCompContext } from "../../../hooks";
 import { Tabs, TabsProps } from "../../molecules";
 
-import AntiAirScreen from "./AntiAirScreen";
-import ContactChancePanel from "./ContactChancePanel";
-import DayCutinRateTable from "./DayCutinRateTable";
+import AntiAirAnalysisScreen from "./AntiAirAnalysisScreen";
+import ContactAnalysisScreen from "./ContactAnalysisScreen";
+import DayAnalysisScreen from "./DayAnalysisScreen";
 import MiscScreen from "./MiscScreen";
-import NightCutinScreen from "./NightCutinScreen";
+import NightAnalysisScreen from "./NightAnalysisScreen";
 
-export type FleetInfoPanelProps = {
-  comp: Comp;
-  fleet: Fleet;
-};
-
-const FleetInfoPanel: React.FCX<FleetInfoPanelProps> = ({
-  className,
-  comp,
-  fleet,
-}) => {
+const Inner: React.FCX<{ fleet: Fleet }> = ({ fleet }) => {
   const { t } = useTranslation("common");
+  const { comp, analyzer, config } = useCompContext();
+
+  const result = analyzer.analyze_comp(comp, config);
 
   const list: TabsProps["list"] = [
     {
       label: t("Day"),
-      panel: <DayCutinRateTable />,
+      panel: (
+        <DayAnalysisScreen
+          analysis={result.day}
+          isCombined={comp.is_combined()}
+        />
+      ),
     },
     {
       label: t("Night"),
-      panel: <NightCutinScreen />,
+      panel: <NightAnalysisScreen analysis={result.night} />,
     },
     {
       label: t("Contact"),
-      panel: <ContactChancePanel />,
+      panel: <ContactAnalysisScreen analysis={result.contact} />,
     },
-    { label: t("anti_air"), panel: <AntiAirScreen /> },
+    {
+      label: t("anti_air"),
+      panel: <AntiAirAnalysisScreen analysis={result.anti_air} />,
+    },
     { label: t("Misc"), panel: <MiscScreen comp={comp} fleet={fleet} /> },
   ];
 
+  return <Tabs size="small" list={list} />;
+};
+
+interface Props {
+  comp: Comp;
+  fleet: Fleet;
+}
+
+const FleetInfoPanel: React.FCX<Props> = ({ className, comp, fleet }) => {
   return (
-    <CompProvider comp={comp}>
-      <Paper className={className}>
-        <Tabs size="small" list={list} />
-      </Paper>
-    </CompProvider>
+    <Paper className={className}>
+      <CompProvider comp={comp}>
+        <Inner fleet={fleet} />
+      </CompProvider>
+    </Paper>
   );
 };
 

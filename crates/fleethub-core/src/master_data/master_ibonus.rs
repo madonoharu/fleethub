@@ -16,7 +16,7 @@ impl MasterIBonusRule {
         if self.expr.eval(&mut gear.ns()).unwrap_or_default() == 1.0 {
             let mut ns = |name: &str, args: Vec<f64>| match name {
                 "x" => Some(stars as f64),
-                "sqrt" => args.get(0).map(|v| v.sqrt()),
+                "sqrt" => args.first().map(|v| v.sqrt()),
                 _ => None,
             };
 

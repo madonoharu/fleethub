@@ -10,27 +10,13 @@ import {
 import { nanoid } from "@reduxjs/toolkit";
 import {
   AirSquadronState,
-  AirState,
-  Engagement,
   FleetState,
   GearState,
   OrgState,
   ShipState,
-  ShipEnvironment,
+  NodeAttackAnalyzerConfig,
 } from "fleethub-core";
 import { schema, EntityType } from "ts-norm";
-
-type StepConfigShipEnv = Pick<
-  ShipEnvironment,
-  "formation" | "night_conditions"
->;
-
-export type StepConfig = {
-  player: StepConfigShipEnv;
-  enemy: StepConfigShipEnv;
-  air_state: AirState;
-  engagement: Engagement;
-};
 
 export type Step = {
   id: string;
@@ -38,7 +24,7 @@ export type Step = {
   type: MapNode["type"];
   d: MapNode["d"];
   org: OrgState;
-  config?: StepConfig;
+  config?: NodeAttackAnalyzerConfig;
 };
 
 export type Preset = {

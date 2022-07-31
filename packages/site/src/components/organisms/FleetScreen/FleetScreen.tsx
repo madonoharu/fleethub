@@ -206,7 +206,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
 const Memoized = React.memo(
   FleetScreen,
   ({ fleet: prevFleet, ...prevRest }, { fleet: nextFleet, ...nextRest }) =>
-    prevFleet.xxh3 === nextFleet.xxh3 && shallowEqual(prevRest, nextRest)
+    prevFleet.hash === nextFleet.hash && shallowEqual(prevRest, nextRest)
 );
 
 export default Memoized;

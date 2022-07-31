@@ -6,7 +6,7 @@ import React from "react";
 import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { configSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
-import AttackChip from "../../organisms/AttackChip";
+import { AttackTypeChip } from "../../molecules";
 import ResettableInput from "../../organisms/ResettableInput";
 
 interface NightCutinFormProps {
@@ -26,7 +26,7 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
 
   return (
     <div>
-      <AttackChip type="NightAttack" cutin={cutin} sx={{ mb: 2 }} />
+      <AttackTypeChip type="Night" cutin={cutin} sx={{ mb: 2 }} />
 
       <Flexbox gap={1} alignItems="flex-end">
         {KEYS.map((key) => (

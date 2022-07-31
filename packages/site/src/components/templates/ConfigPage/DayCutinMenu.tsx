@@ -6,7 +6,7 @@ import React from "react";
 import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { configSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
-import AttackChip from "../../organisms/AttackChip";
+import { AttackTypeChip } from "../../molecules";
 import ResettableInput from "../../organisms/ResettableInput";
 
 const KEYS = ["power_mod", "accuracy_mod", "type_factor"] as const;
@@ -25,7 +25,7 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
 
   return (
     <Paper sx={{ p: 1 }}>
-      <AttackChip sx={{ mb: 2 }} type="Shelling" cutin={def.tag} />
+      <AttackTypeChip sx={{ mb: 2 }} type="Shelling" cutin={def.tag} />
 
       <Flexbox gap={1}>
         {KEYS.map((key) => (

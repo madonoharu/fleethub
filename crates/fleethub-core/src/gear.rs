@@ -5,7 +5,6 @@ use wasm_bindgen::prelude::*;
 use crate::{
     master_data::MasterGear,
     types::{gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypeIdArray},
-    utils::xxh3,
 };
 
 #[derive(Debug)]
@@ -63,11 +62,15 @@ pub struct IBonuses {
 pub struct Gear {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    pub xxh3: u64,
-
+    #[wasm_bindgen(readonly)]
+    pub hash: u64,
+    #[wasm_bindgen(readonly)]
     pub gear_id: u16,
+    #[wasm_bindgen(readonly)]
     pub stars: u8,
+    #[wasm_bindgen(readonly)]
     pub exp: u8,
+    #[wasm_bindgen(readonly)]
     pub default_exp: u8,
 
     #[wasm_bindgen(getter_with_clone)]
@@ -78,34 +81,52 @@ pub struct Gear {
     pub attrs: EnumSet<GearAttr>,
     #[wasm_bindgen(skip)]
     pub ibonuses: IBonuses,
+
+    #[wasm_bindgen(readonly)]
     pub gear_type: GearType,
     #[wasm_bindgen(skip)]
     pub special_type: GearType,
 
+    #[wasm_bindgen(readonly)]
     pub max_hp: i16,
+    #[wasm_bindgen(readonly)]
     pub firepower: i16,
+    #[wasm_bindgen(readonly)]
     pub armor: i16,
+    #[wasm_bindgen(readonly)]
     pub torpedo: i16,
+    #[wasm_bindgen(readonly)]
     pub anti_air: i16,
+    #[wasm_bindgen(readonly)]
     pub speed: i16,
+    #[wasm_bindgen(readonly)]
     pub bombing: i16,
+    #[wasm_bindgen(readonly)]
     pub asw: i16,
+    #[wasm_bindgen(readonly)]
     pub los: i16,
+    #[wasm_bindgen(readonly)]
     pub luck: i16,
+    #[wasm_bindgen(readonly)]
     pub accuracy: i16,
+    #[wasm_bindgen(readonly)]
     pub evasion: i16,
+    #[wasm_bindgen(readonly)]
     pub range: u8,
+    #[wasm_bindgen(readonly)]
     pub radius: u8,
+    #[wasm_bindgen(readonly)]
     pub cost: u8,
+    #[wasm_bindgen(readonly)]
     pub improvable: bool,
+    #[wasm_bindgen(readonly)]
     pub ship_anti_air_resistance: f64,
+    #[wasm_bindgen(readonly)]
     pub fleet_anti_air_resistance: f64,
 }
 
 impl Gear {
-    pub fn new(state: GearState, master: &MasterGear, ibonuses: IBonuses) -> Self {
-        let xxh3 = xxh3(&state);
-
+    pub fn new(hash: u64, state: GearState, master: &MasterGear, ibonuses: IBonuses) -> Self {
         let gear_type = master.types.gear_type();
 
         let special_type: GearType =
@@ -115,9 +136,8 @@ impl Gear {
         let exp = state.exp.unwrap_or(default_exp);
 
         Gear {
-            xxh3,
-
             id: state.id.unwrap_or_default(),
+            hash,
             gear_id: state.gear_id,
             stars: state.stars.unwrap_or_default(),
             exp,
@@ -147,7 +167,7 @@ impl Gear {
             ship_anti_air_resistance: master.ship_anti_air_resistance,
             fleet_anti_air_resistance: master.fleet_anti_air_resistance,
 
-            attrs: master.attrs.clone(),
+            attrs: master.attrs,
             ibonuses,
         }
     }
@@ -258,19 +278,17 @@ impl Gear {
         ace_mod as f64 + (self.exp as f64 / 10.0).sqrt()
     }
 
-    pub fn proficiency_critical_power_mod(&self) -> f64 {
-        let ace_bonus = match self.ace() {
-            7 => 10.0,
-            6 => 7.0,
-            5 => 5.0,
-            4 => 4.0,
-            3 => 3.0,
-            2 => 2.0,
-            1 => 1.0,
-            _ => 0.0,
-        };
-
-        ((self.exp as f64).sqrt() + ace_bonus).floor()
+    pub fn exp_critical_bonus(&self) -> f64 {
+        match self.exp {
+            0..=9 => 0.0,
+            10..=24 => 1.0,
+            25..=39 => 2.0,
+            40..=54 => 3.0,
+            55..=69 => 4.0,
+            70..=79 => 5.0,
+            80..=99 => 7.0,
+            _ => 10.0,
+        }
     }
 
     pub fn calc_fighter_power(&self, slot_size: u8) -> i32 {
@@ -319,21 +337,21 @@ impl Gear {
 
     pub fn ship_anti_air_mod(&self) -> f64 {
         if self.anti_air == 0 {
-            return 0.;
+            return 0.0;
         }
 
         let gear_type = self.gear_type;
 
         let multiplier = if gear_type == GearType::AntiAirGun {
-            6.
+            6.0
         } else if gear_type == GearType::AntiAirFireDirector
             || self.has_attr(GearAttr::HighAngleMount)
         {
-            4.
+            4.0
         } else if self.has_attr(GearAttr::Radar) {
-            3.
+            3.0
         } else {
-            0.
+            0.0
         };
 
         multiplier * (self.anti_air as f64) + self.ibonuses.ship_anti_air
@@ -353,8 +371,8 @@ impl Gear {
 
     pub fn night_contact_rate(&self, level: u16) -> f64 {
         let b = (self.los as f64).sqrt() * (level as f64).sqrt();
-        let rate = (b.floor() / 25.0).min(1.0);
-        rate
+
+        (b.floor() / 25.0).min(1.0)
     }
 
     pub fn is_night_attacker(&self) -> bool {

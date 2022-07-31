@@ -85,6 +85,7 @@
   "Proficiency": "熟练度",
   "Normal": "平击",
   "Critical": "爆击",
+  "CriticalAbbr": "爆击",
   "SpecialAttack": "特殊攻击",
   "SoftSkinned": "软皮",
   "NightContact": "夜间接触",
@@ -156,6 +157,8 @@
   "multiplier": "倍率",
   "guaranteed": "最低保障",
   "anti_air_cutin_chance": "对空CI发动率",
+  "ship_anti_air_resist": "加权对空回避",
+  "fleet_anti_air_resist": "舰队对空回避",
   "trigger_rate": "开始率",
   "ohko_power": "击杀攻击力",
   "ContactChance": "接触率",
@@ -305,12 +308,11 @@
     "Submarine": "潜水艇",
     "AuxiliaryShip": "辅助舰船"
   },
-  "WarfareType": {
+  "AttackType": {
     "Shelling": "炮击",
-    "Torpedo": "雷击",
-    "AntiSub": "反潜",
-    "AntiLand": "对陆基",
-    "Aerial": "空战"
+    "Night": "夜战",
+    "Asw": "先制对潜",
+    "Torpedo": "雷击"
   },
   "ContactRank": {
     "Rank1": "命中1以下",

@@ -85,6 +85,7 @@
   "Proficiency": "숙련도",
   "Normal": "통상",
   "Critical": "크리티컬",
+  "CriticalAbbr": "크리티컬",
   "SpecialAttack": "특수 공격",
   "SoftSkinned": "소프트 스킨",
   "NightContact": "야간 촉접",
@@ -156,6 +157,8 @@
   "multiplier": "배율",
   "guaranteed": "최저보증",
   "anti_air_cutin_chance": "대공컷인 발동확률",
+  "ship_anti_air_resist": "가중대공 회피",
+  "fleet_anti_air_resist": "함대방공 회피",
   "trigger_rate": "개시율",
   "ohko_power": "일격사 공격력",
   "ContactChance": "촉접율",
@@ -305,12 +308,11 @@
     "Submarine": "잠수함",
     "AuxiliaryShip": "보조함"
   },
-  "WarfareType": {
+  "AttackType": {
     "Shelling": "포격",
-    "Torpedo": "뇌격",
-    "AntiSub": "대잠",
-    "AntiLand": "대지",
-    "Aerial": "항공"
+    "Night": "야전",
+    "Asw": "대잠",
+    "Torpedo": "뇌격"
   },
   "ContactRank": {
     "Rank1": "명중 1이하",

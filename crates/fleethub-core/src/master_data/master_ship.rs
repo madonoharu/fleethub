@@ -67,7 +67,7 @@ pub struct MasterShip {
 }
 
 impl MasterShip {
-    pub fn ns<'a>(&'a self) -> impl EvalNamespace + 'a {
+    pub fn ns(&self) -> impl EvalNamespace + '_ {
         |key: &str, args: Vec<f64>| -> Option<f64> {
             let result = match key {
                 "ship_id" => self.ship_id.into(),

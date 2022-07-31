@@ -1,4 +1,5 @@
-use std::ops::Deref;
+mod battle_member;
+mod comp_member;
 
 use rand::prelude::*;
 
@@ -6,115 +7,11 @@ use crate::{
     error::CalculationError,
     plane::PlaneMut,
     ship::Ship,
-    types::{ctype, gear_id, AntiAirCutinDef, OrgType, Role, ShipType, Side},
+    types::{ctype, gear_id, AntiAirCutinDef, OrgType, Role, ShipType},
 };
 
-pub struct Member<'a> {
-    pub org_type: OrgType,
-    pub role: Role,
-    pub index: usize,
-    pub ship: &'a Ship,
-}
-
-pub struct MemberMut<'a> {
-    pub org_type: OrgType,
-    pub role: Role,
-    pub index: usize,
-    pub ship: &'a mut Ship,
-}
-
-impl<'a> Deref for Member<'a> {
-    type Target = &'a Ship;
-
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        &self.ship
-    }
-}
-
-pub trait MemberImpl {
-    fn org_type(&self) -> OrgType;
-    fn role(&self) -> Role;
-    fn index(&self) -> usize;
-    fn ship(&self) -> &Ship;
-
-    fn remains(&self) -> bool {
-        self.ship().current_hp > 0
-    }
-
-    #[inline]
-    fn side(&self) -> Side {
-        self.org_type().side()
-    }
-
-    fn is_enemy(&self) -> bool {
-        self.org_type().is_enemy()
-    }
-
-    fn is_combined(&self) -> bool {
-        self.org_type().is_combined()
-    }
-
-    fn is_main(&self) -> bool {
-        self.role().is_main()
-    }
-
-    fn is_escort(&self) -> bool {
-        self.role().is_escort()
-    }
-
-    fn air_defense<'a>(
-        &'a self,
-        fleet_adjusted_anti_air: f64,
-        anti_air_cutin: Option<&'a AntiAirCutinDef>,
-    ) -> ShipAirDefense {
-        ShipAirDefense {
-            ship: self.ship(),
-            role: self.role(),
-            org_type: self.org_type(),
-            fleet_adjusted_anti_air,
-            anti_air_cutin,
-        }
-    }
-}
-
-impl<'a> MemberImpl for Member<'a> {
-    #[inline]
-    fn org_type(&self) -> OrgType {
-        self.org_type
-    }
-    #[inline]
-    fn role(&self) -> Role {
-        self.role
-    }
-    #[inline]
-    fn index(&self) -> usize {
-        self.index
-    }
-    #[inline]
-    fn ship(&self) -> &Ship {
-        self.ship
-    }
-}
-
-impl<'a> MemberImpl for MemberMut<'a> {
-    #[inline]
-    fn org_type(&self) -> OrgType {
-        self.org_type
-    }
-    #[inline]
-    fn role(&self) -> Role {
-        self.role
-    }
-    #[inline]
-    fn index(&self) -> usize {
-        self.index
-    }
-    #[inline]
-    fn ship(&self) -> &Ship {
-        self.ship
-    }
-}
+pub use battle_member::*;
+pub use comp_member::*;
 
 pub struct ShipAirDefense<'a> {
     pub ship: &'a Ship,
@@ -140,7 +37,7 @@ impl<'a> ShipAirDefense<'a> {
 
         if self.org_type.is_enemy() {
             let anti_air = self.ship.anti_air()? as f64;
-            return Some(anti_air.sqrt().floor() * 2. + total);
+            return Some(anti_air.sqrt().floor() * 2.0 + total);
         }
 
         let naked_anti_air = self.ship.naked_anti_air()? as f64;
@@ -149,7 +46,7 @@ impl<'a> ShipAirDefense<'a> {
         let result = if self.ship.gears.iter().count() == 0 {
             pre_floor
         } else {
-            2. * (pre_floor / 2.).floor()
+            2.0 * (pre_floor / 2.0).floor()
         };
 
         Some(result)

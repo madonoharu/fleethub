@@ -219,8 +219,8 @@ fn get_carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
         .map(|gear| {
             let ship_input = ShipInput::new(ship);
             let gears_input = GearVecInput(vec![GearInput::new(gear)]);
-            let torpedo = create_equipment_bonuses(ship_input, gears_input).torpedo;
-            torpedo
+
+            create_equipment_bonuses(ship_input, gears_input).torpedo
         })
         .filter(|v| *v > 0)
         .min();
@@ -229,7 +229,7 @@ fn get_carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
 }
 
 impl EBonuses {
-    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+    #[cfg(target_arch = "wasm32")]
     pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
         let ship_input = ShipInput::new(ship);
         let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
@@ -241,9 +241,8 @@ impl EBonuses {
         ebonuses
     }
 
-    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    #[allow(unused_variables)]
-    pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn new(_: &MasterShip, _: &GearArray) -> Self {
         Self::default()
     }
 }

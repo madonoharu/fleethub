@@ -55,7 +55,7 @@
   "ShipStatsUnequipped": "當前值(扣除裝備加成)",
   "Day": "晝戰",
   "Night": "夜戰",
-  "OpeningAsw": "先制反潛",
+  "OpeningAsw": "先制對潛",
   "Support": "支援",
   "AttackTypeDepthCharge": "對潛攻擊",
   "AttackTypeAirAttack": "航空攻擊",
@@ -85,6 +85,7 @@
   "Proficiency": "熟練度",
   "Normal": "平擊",
   "Critical": "爆擊",
+  "CriticalAbbr": "爆擊",
   "SpecialAttack": "特殊攻擊",
   "SoftSkinned": "軟皮",
   "NightContact": "夜間觸接",
@@ -156,6 +157,8 @@
   "multiplier": "倍率",
   "guaranteed": "最低保證",
   "anti_air_cutin_chance": "對空CI發動率",
+  "ship_anti_air_resist": "加權對空迴避",
+  "fleet_anti_air_resist": "艦隊對空迴避",
   "trigger_rate": "開始率",
   "ohko_power": "擊殺攻擊力",
   "ContactChance": "觸接率",
@@ -305,12 +308,11 @@
     "Submarine": "潛艦",
     "AuxiliaryShip": "輔助艦船"
   },
-  "WarfareType": {
+  "AttackType": {
     "Shelling": "炮擊",
-    "Torpedo": "雷擊",
-    "AntiSub": "反潛",
-    "AntiLand": "對地炮擊",
-    "Aerial": "空戰"
+    "Night": "夜戰",
+    "Asw": "對潛",
+    "Torpedo": "雷擊"
   },
   "ContactRank": {
     "Rank1": "命中1以下",

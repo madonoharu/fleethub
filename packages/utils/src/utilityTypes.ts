@@ -36,21 +36,19 @@ export type ValueOf<T> = { [K in keyof T]: T[K] }[keyof T];
 export type Literal = string | number | bigint | boolean;
 
 type PathImpl<T, Key extends keyof T> = Key extends string
-  ? T[Key] extends object
-    ?
-        | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof unknown[]>> &
-            string}`
-        | `${Key}.${Exclude<keyof T[Key], keyof unknown[]> & string}`
+  ? Required<T>[Key] extends object
+    ? PathImpl2<Required<T>, Key>
     : never
   : never;
 
-type PathImpl2<T> = PathImpl<T, keyof T> | keyof T;
+type PathImpl2<T extends object, Key extends keyof T & string> =
+  | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof unknown[]>> &
+      string}`
+  | `${Key}.${Exclude<keyof T[Key], keyof unknown[]> & string}`;
 
-export type Path<T> = PathImpl2<T> extends string | keyof T
-  ? PathImpl2<T>
-  : keyof T;
+export type Path<T> = PathImpl<T, keyof T> | keyof T;
 
-export type PathValue<
+type PathValueImpl<
   T,
   P extends Path<T>
 > = P extends `${infer Key}.${infer Rest}`
@@ -62,3 +60,5 @@ export type PathValue<
   : P extends keyof T
   ? T[P]
   : never;
+
+export type PathValue<T, P extends Path<T>> = PathValueImpl<Required<T>, P>;

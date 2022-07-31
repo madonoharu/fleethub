@@ -1,7 +1,9 @@
 use crate::{
     gear::Gear,
-    matches_gear_id,
-    types::{ctype, gear_id, ship_id, GearAttr, GearType, ShipAttr, ShipType},
+    types::{
+        ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, GearAttr, GearType, ShipAttr,
+        ShipType,
+    },
 };
 
 use super::Ship;
@@ -93,6 +95,8 @@ impl Ship {
         let high_angle_mount_count = gears.count_attr(GearAttr::HighAngleMount);
         let has_high_angle_mount = high_angle_mount_count > 0;
 
+        let is_ise_class_bbv = ctype == ctype!("伊勢型") && ship_type == ShipType::BBV;
+
         // 大和改二改二
         if ctype == ctype!("大和型") && self.has_attr(ShipAttr::Kai2) {
             let has_15m_duplex_rangefinder_t21_air_radar_or_fdc = gears.has_by(|gear| {
@@ -175,8 +179,7 @@ impl Ship {
         }
 
         // 伊勢型航空戦艦 かつ 12cm30連装噴進砲改二を装備 かつ 対空強化弾(三式弾)を装備 かつ 対空電探を装備
-        if ctype == ctype!("伊勢型")
-            && self.ship_type == ShipType::BBV
+        if is_ise_class_bbv
             && gears.has(gear_id!("12cm30連装噴進砲改二"))
             && gears.has_type(GearType::AntiAirShell)
             && has_air_radar
@@ -226,19 +229,19 @@ impl Ship {
         }
 
         // (伊勢型航空戦艦|武蔵改|武蔵改二) かつ 12cm30連装噴進砲改二を装備 かつ 対空電探を装備
-        if (ctype == ctype!("伊勢型") && ship_type == ShipType::BBV)
-            || matches!(ship_id, ship_id!("武蔵改") | ship_id!("武蔵改二"))
+        if (is_ise_class_bbv || matches_ship_id!(ship_id, "武蔵改" | "武蔵改二"))
+            && gears.has(gear_id!("12cm30連装噴進砲改二"))
+            && has_air_radar
         {
-            if gears.has(gear_id!("12cm30連装噴進砲改二")) && has_air_radar {
-                vec.push(28)
-            }
+            vec.push(28)
         }
 
         // (浜風乙改 または 磯風乙改) かつ 高角砲を装備 かつ 対空電探を装備
-        if matches!(ship_id, ship_id!("浜風乙改") | ship_id!("磯風乙改")) {
-            if has_high_angle_mount && has_air_radar {
-                vec.push(29)
-            }
+        if matches_ship_id!(ship_id, "浜風乙改" | "磯風乙改")
+            && has_high_angle_mount
+            && has_air_radar
+        {
+            vec.push(29)
         }
 
         // 高射装置を装備 かつ 高角砲を装備
@@ -283,10 +286,10 @@ impl Ship {
         }
 
         // (UIT-25 または 伊504) かつ 標準機銃を装備
-        if ship_id == ship_id!("UIT-25") || ship_id == ship_id!("伊504") {
-            if gears.has_by(is_standard_anti_air_gun) {
-                vec.push(23)
-            }
+
+        if matches_ship_id!(ship_id, "UIT-25" | "伊504") && gears.has_by(is_standard_anti_air_gun)
+        {
+            vec.push(23)
         }
 
         // (龍田改二|天龍改二) かつ 高角砲を装備 かつ 標準機銃を装備
