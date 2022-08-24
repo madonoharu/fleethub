@@ -82,8 +82,8 @@ fn get_marriage_bonus(left: u16) -> u16 {
 }
 
 fn get_average_exp_modifiers(planes: &Vec<(usize, &Gear)>) -> (f64, f64, f64) {
-    let average_exp =
-        planes.iter().map(|(_, gear)| gear.exp as f64).sum::<f64>() / (planes.len() as f64);
+    let total_exp = planes.iter().map(|(_, gear)| gear.exp as f64).sum::<f64>();
+    let average_exp = total_exp / planes.len() as f64;
 
     let a = if average_exp >= 10.0 {
         average_exp.sqrt().floor()
@@ -91,20 +91,14 @@ fn get_average_exp_modifiers(planes: &Vec<(usize, &Gear)>) -> (f64, f64, f64) {
         0.0
     };
 
-    let b = if average_exp >= 100.0 {
-        9.0
-    } else if average_exp >= 80.0 {
-        6.0
-    } else if average_exp >= 70.0 {
-        4.0
-    } else if average_exp >= 55.0 {
-        3.0
-    } else if average_exp >= 40.0 {
-        2.0
-    } else if average_exp >= 25.0 {
-        1.0
-    } else {
-        0.0
+    let b = match average_exp as u8 {
+        0..=24 => 0.0,
+        25..=39 => 1.0,
+        40..=54 => 2.0,
+        55..=69 => 3.0,
+        70..=79 => 4.0,
+        80..=99 => 6.0,
+        _ => 9.0,
     };
 
     (average_exp, a, b)
@@ -485,6 +479,9 @@ impl Ship {
         (1.3 * (bombing as f64)).floor() as i16 + torpedo + 15
     }
 
+    /// 熟練度補正の仮定式
+    ///
+    /// https://docs.google.com/spreadsheets/d/1N0fzRwOUUhCXnHWe1hKHm_Hgt2kxRm3ybZhVjh9gk0E
     pub fn proficiency_modifiers(&self, cutin: Option<DayCutin>) -> ProficiencyModifiers {
         if let Some(cutin) = cutin {
             return self.carrier_cutin_proficiency_modifiers(cutin);
@@ -507,15 +504,11 @@ impl Ship {
             })
             .collect::<Vec<_>>();
 
-        let (_, average_exp_mod_a, average_exp_mod_b) = get_average_exp_modifiers(&planes);
-
-        let hit_percentage_bonus = average_exp_mod_a + average_exp_mod_b;
-
         let critical_power_mod = 1.0
             + planes
                 .iter()
                 .map(|(index, gear)| {
-                    let m = gear.proficiency_critical_power_mod();
+                    let m = (gear.exp as f64).sqrt().floor() + gear.exp_critical_bonus();
                     if *index == 0 {
                         m / 100.0
                     } else {
@@ -524,15 +517,17 @@ impl Ship {
                 })
                 .sum::<f64>();
 
+        let hit_percentage_bonus = {
+            let (_, a, b) = get_average_exp_modifiers(&planes);
+            a + b
+        };
+
         let critical_percentage_bonus = planes
             .iter()
             .map(|(index, gear)| {
-                let first_slot_bonus = if *index == 0 { 6.0 } else { 0.0 };
-                let exp = gear.exp as f64;
-                let ace = gear.ace() as f64;
-                let modifier = ((exp * 0.1).sqrt() + ace) / 2.0 + 1.0;
-
-                (modifier + first_slot_bonus).floor()
+                let exp_bonus = gear.exp_critical_bonus();
+                let multiplier = if *index == 0 { 0.8 } else { 0.6 };
+                (exp_bonus * multiplier).floor()
             })
             .sum::<f64>();
 

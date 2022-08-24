@@ -57,21 +57,21 @@ impl Distribution<HitType> for HitRate {
 }
 
 impl HitRateParams {
-    fn calc_basis(&self) -> f64 {
+    /// キャップ後命中率
+    fn calc_capped(&self) -> f64 {
         let value = (self.accuracy_term - self.evasion_term) * self.target_morale_mod;
         value.clamp(10.0, 96.0)
     }
 
     pub fn calc(&self) -> HitRate {
-        let basis = self.calc_basis();
+        let capped = self.calc_capped();
+        let postcap = capped + self.hit_percentage_bonus;
 
         let critical_percent =
-            (basis.sqrt() * self.critical_rate_constant + 1.0 + self.critical_percentage_bonus)
+            (postcap.sqrt() * self.critical_rate_constant + self.critical_percentage_bonus + 1.0)
                 .floor();
 
-        let hit_percent = (basis + 1.0 + self.hit_percentage_bonus)
-            .floor()
-            .max(critical_percent);
+        let hit_percent = (postcap + 1.0).floor().max(critical_percent);
 
         let total = (hit_percent / 100.0).min(1.0);
         let critical = (critical_percent / 100.0).min(1.0);
@@ -108,7 +108,7 @@ mod test {
             ..min
         };
 
-        assert_eq!(min.calc_basis(), 10.0);
+        assert_eq!(min.calc_capped(), 10.0);
         assert_eq!(
             min.calc(),
             HitRate {
@@ -118,12 +118,12 @@ mod test {
             }
         );
 
-        assert_eq!(max.calc_basis(), 96.0);
+        assert_eq!(max.calc_capped(), 96.0);
         assert_eq!(
             max.calc(),
             HitRate {
-                normal: 0.9,
-                critical: 0.1,
+                normal: 0.89,
+                critical: 0.11,
                 total: 1.0
             }
         );
