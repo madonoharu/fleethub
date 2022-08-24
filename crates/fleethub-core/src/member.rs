@@ -33,6 +33,7 @@ impl<'a> ShipAirDefense<'a> {
     }
 
     pub fn ship_adjusted_anti_air(&self) -> Option<f64> {
+        let ebonus = self.ship.ebonuses.anti_air as f64;
         let total = self.ship.gears.sum_by(|g| g.ship_anti_air_mod());
 
         if self.org_type.is_enemy() {
@@ -41,7 +42,7 @@ impl<'a> ShipAirDefense<'a> {
         }
 
         let naked_anti_air = self.ship.naked_anti_air()? as f64;
-        let pre_floor = naked_anti_air + total;
+        let pre_floor = naked_anti_air + total + ebonus * 0.75 * 2.0;
 
         let result = if self.ship.gears.iter().count() == 0 {
             pre_floor

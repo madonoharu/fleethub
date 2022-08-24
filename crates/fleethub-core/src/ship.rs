@@ -1395,8 +1395,10 @@ impl Ship {
         Some(naked_los + total)
     }
 
-    pub fn fleet_anti_air_mod(&self) -> i32 {
-        self.gears.sum_by(|g| g.fleet_anti_air_mod()).floor() as i32
+    pub fn fleet_anti_air_mod(&self) -> f64 {
+        let ebonus = self.ebonuses.anti_air as f64;
+        let total = self.gears.sum_by(|g| g.fleet_anti_air_mod()).floor();
+        total + ebonus
     }
 
     pub fn cruiser_fit_bonus(&self) -> f64 {

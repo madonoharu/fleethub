@@ -339,9 +339,9 @@ impl Comp {
         let total = self
             .ships()
             .map(|ship| ship.fleet_anti_air_mod())
-            .sum::<i32>() as f64;
+            .sum::<f64>();
 
-        let post_floor = (total * formation_mod).floor() * 2.;
+        let post_floor = (total * formation_mod).floor() * 2.0;
 
         if self.org_type.side().is_player() {
             post_floor / 1.3
