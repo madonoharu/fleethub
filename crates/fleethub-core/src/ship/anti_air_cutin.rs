@@ -228,6 +228,16 @@ impl Ship {
             vec.push(26)
         }
 
+        // 大淀改専用 10cm連装高角砲改+増設機銃、12cm30連装噴進砲改二、対空電探
+        if ctype == ctype!("大淀型")
+            && self.remodel_rank() >= 2
+            && gears.has(gear_id!("10cm連装高角砲改+増設機銃"))
+            && gears.has(gear_id!("12cm30連装噴進砲改二"))
+            && has_air_radar
+        {
+            vec.push(27)
+        }
+
         // (伊勢型航空戦艦|武蔵改|武蔵改二) かつ 12cm30連装噴進砲改二を装備 かつ 対空電探を装備
         if (is_ise_class_bbv || matches_ship_id!(ship_id, "武蔵改" | "武蔵改二"))
             && gears.has(gear_id!("12cm30連装噴進砲改二"))
