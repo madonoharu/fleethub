@@ -802,11 +802,10 @@ impl Ship {
             ..
         } = self;
 
-        if matches_ship_id!(
-            ship_id,
-            "五十鈴改二" | "龍田改二" | "夕張改二丁" | "Samuel B.Roberts改"
-        ) || ctype == ctype!("Fletcher級")
+        if matches_ship_id!(ship_id, "五十鈴改二" | "龍田改二" | "夕張改二丁")
+            || ctype == ctype!("Fletcher級")
             || (ctype == ctype!("J級") && self.remodel_rank() >= 2)
+            || (ctype == ctype!("John C.Butler級") && self.remodel_rank() >= 2)
         {
             return true;
         }
