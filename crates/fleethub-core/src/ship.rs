@@ -902,7 +902,7 @@ impl Ship {
 
     pub fn asw_armor_penetration(&self) -> f64 {
         let total = self.gears.sum_by(|gear| {
-            if matches_gear_id!(gear.gear_id, "九五式爆雷" | "二式爆雷") {
+            if gear.has_attr(GearAttr::ApDepthCharge) {
                 let asw = gear.asw as f64;
                 (asw - 2.0).max(0.0).sqrt()
             } else {
