@@ -5,4 +5,3 @@ edition = "2021"
 
 [build-dependencies]
 ureq = { version = "2.5.0", features = ["brotli"] }
-walkdir = "2"

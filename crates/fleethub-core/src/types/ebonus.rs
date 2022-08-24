@@ -242,8 +242,29 @@ impl EBonuses {
     }
 
     #[cfg(not(target_arch = "wasm32"))]
-    pub fn new(_: &MasterShip, _: &GearArray) -> Self {
-        Self::default()
+    pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
+        let ship_input = ShipInput::new(ship);
+        let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
+
+        let ship_json = serde_json::to_string(&ship_input).unwrap();
+        let gears_json = serde_json::to_string(&gears_input).unwrap();
+
+        let code = format!(
+            r#"
+                const {{ createEquipmentBonuses }} = require("equipment-bonus");
+                const result = createEquipmentBonuses({ship_json}, {gears_json});
+                console.log(JSON.stringify(result));
+            "#
+        );
+
+        let stdout = std::process::Command::new("node")
+            .arg("-e")
+            .arg(code)
+            .output()
+            .unwrap()
+            .stdout;
+
+        serde_json::from_slice(&stdout).unwrap()
     }
 }
 

@@ -1,1 +1,1 @@
-mod attack_analyzer;
+mod attacks;

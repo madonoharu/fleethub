@@ -82,14 +82,16 @@ fn get_marriage_bonus(left: u16) -> u16 {
 }
 
 fn get_average_exp_modifiers(planes: &Vec<(usize, &Gear)>) -> (f64, f64, f64) {
-    let total_exp = planes.iter().map(|(_, gear)| gear.exp as f64).sum::<f64>();
-    let average_exp = total_exp / planes.len() as f64;
+    let len = planes.len() as f64;
 
-    let a = if average_exp >= 10.0 {
-        average_exp.sqrt().floor()
-    } else {
-        0.0
-    };
+    if len == 0.0 {
+        return Default::default();
+    }
+
+    let total_exp = planes.iter().map(|(_, gear)| gear.exp as f64).sum::<f64>();
+    let average_exp = total_exp / len;
+
+    let a = (0.1 * average_exp).sqrt().floor();
 
     let b = match average_exp as u8 {
         0..=24 => 0.0,

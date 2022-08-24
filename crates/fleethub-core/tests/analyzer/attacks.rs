@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::path::Path;
 
 use fleethub_core::{
     analyzer::{AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig},
@@ -6,13 +6,12 @@ use fleethub_core::{
 };
 
 use serde::Deserialize;
-use toml_edit::easy::{from_str, Value};
-use wasm_bindgen_test::*;
+use toml_edit::easy::{from_slice, Value};
 
 use crate::*;
 
 #[derive(Debug, Deserialize)]
-struct AttackAnalyzerTestCase {
+struct AttackTestCase {
     #[serde(skip)]
     path: String,
     #[serde(default)]
@@ -26,11 +25,13 @@ struct AttackAnalyzerTestCase {
     expected: Value,
 }
 
-impl AttackAnalyzerTestCase {
-    fn new(path: String, toml: String) -> Self {
+impl AttackTestCase {
+    fn new(path: &Path) -> Self {
+        let contents = std::fs::read(path).unwrap();
+
         Self {
-            path,
-            ..from_str(&toml).unwrap()
+            path: path.to_string_lossy().to_string(),
+            ..from_slice(&contents).unwrap()
         }
     }
 
@@ -74,12 +75,23 @@ impl AttackAnalyzerTestCase {
     }
 }
 
-#[wasm_bindgen_test]
-fn test_day_phase_attacks() {
-    let map: BTreeMap<String, String> =
-        serde_json::from_str(fleethub_core_test::ATTACK_TESTS).unwrap();
+#[test]
+fn test_attacks() {
+    let vec = walkdir::WalkDir::new("tests/analyzer/attack_tests")
+        .into_iter()
+        .filter_map(|e| {
+            let entry = e.ok()?;
+            let path = entry.path();
 
-    map.into_iter().for_each(|(path, toml)| {
-        AttackAnalyzerTestCase::new(path, toml).check();
-    });
+            if matches!(path.extension(), Some(e) if e == "toml") {
+                Some(AttackTestCase::new(path))
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+
+    assert!(!vec.is_empty());
+
+    vec.into_iter().for_each(|case| case.check());
 }
