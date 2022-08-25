@@ -58,7 +58,9 @@ type ShipCardProps = {
   ship: Ship;
   comp?: Comp;
   visibleMiscStats?: boolean;
-  disableDetails?: boolean;
+  visibleDetails?: boolean;
+  visibleUpdate?: boolean;
+  visibleRemove?: boolean;
 };
 
 const ShipCard: React.FCX<ShipCardProps> = ({
@@ -66,7 +68,9 @@ const ShipCard: React.FCX<ShipCardProps> = ({
   ship,
   comp,
   visibleMiscStats,
-  disableDetails,
+  visibleDetails,
+  visibleUpdate,
+  visibleRemove,
 }) => {
   const { id } = ship;
   const { t } = useTranslation("common");
@@ -101,7 +105,9 @@ const ShipCard: React.FCX<ShipCardProps> = ({
         onPreset={PresetModal.show}
         onRemove={actions.remove}
         readonly={readonly}
-        disableDetails={disableDetails}
+        visibleDetails={visibleDetails}
+        visibleUpdate={visibleUpdate}
+        visibleRemove={visibleRemove}
       />
       <Column>
         <StyledShipBanner shipId={ship.ship_id} size="medium" />
