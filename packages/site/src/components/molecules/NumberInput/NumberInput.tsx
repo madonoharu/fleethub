@@ -149,7 +149,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = format(event.currentTarget.value);
-      console.log(`${event.currentTarget.value} -> ${value}`);
       setInner(value);
       update(value);
     };

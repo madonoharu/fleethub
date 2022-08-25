@@ -111,7 +111,7 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
 const Memoized = React.memo(
   AirSquadronCard,
   ({ airSquadron: prev, ...prevRest }, { airSquadron: next, ...nextRest }) =>
-    prev.xxh3 === next.xxh3 && shallowEqual(prevRest, nextRest)
+    prev.hash === next.hash && shallowEqual(prevRest, nextRest)
 );
 
 export default styled(Memoized)`

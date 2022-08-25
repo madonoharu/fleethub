@@ -15,12 +15,12 @@ const displayWithFloor = (
   return floor(v, fractionDigits).toString();
 };
 
-type Prosp = {
+interface Props {
   fleet: Fleet;
   comp: Comp;
-};
+}
 
-const MiscScreen: React.FC<Prosp> = ({ fleet, comp }) => {
+const MiscScreen: React.FC<Props> = ({ fleet, comp }) => {
   const tp = comp.transport_point();
 
   return (

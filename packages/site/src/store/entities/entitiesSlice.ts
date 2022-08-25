@@ -11,7 +11,7 @@ import xor from "lodash/xor";
 import { Entities, normalize } from "ts-norm";
 
 import { airSquadronsSlice } from "./airSquadronsSlice";
-import { ENTITIES_SLICE_NAME, initialStepConfig, ormAdapters } from "./base";
+import { ENTITIES_SLICE_NAME, ormAdapters } from "./base";
 import { filesSlice, insert, isFolder, isPlan } from "./filesSlice";
 import { fleetsSlice } from "./fleetsSlice";
 import { gearsSlice } from "./gearsSlice";
@@ -244,13 +244,12 @@ export const entitiesSlice = createSlice({
         d: payload.d,
         org: payload.org,
         config: {
-          ...initialStepConfig,
-          enemy: {
-            ...initialStepConfig.enemy,
+          left: {
             formation: payload.formation,
           },
         },
       };
+
       const normalized = normalize(step, schemata.step);
       addEntities(state, normalized.entities);
 

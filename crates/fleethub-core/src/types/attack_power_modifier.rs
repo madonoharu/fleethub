@@ -1,13 +1,20 @@
+use std::fmt;
 use std::hash::Hash;
 
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Tsify)]
+#[derive(Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
 #[serde(default)]
 pub struct AttackPowerModifier {
     pub a: f64,
     pub b: f64,
+}
+
+impl fmt::Debug for AttackPowerModifier {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "(a: {}, b: {})", self.a, self.b)
+    }
 }
 
 impl Default for AttackPowerModifier {
@@ -16,6 +23,7 @@ impl Default for AttackPowerModifier {
     }
 }
 
+#[allow(clippy::derive_hash_xor_eq)]
 impl Hash for AttackPowerModifier {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         use ordered_float::OrderedFloat;
@@ -41,7 +49,7 @@ impl AttackPowerModifier {
         self.b = b;
     }
 
-    pub fn compose(&self, other: &Self) -> Self {
+    pub fn compose(&self, other: Self) -> Self {
         Self {
             a: self.a * other.a,
             b: self.b + other.b,
@@ -54,7 +62,7 @@ impl AttackPowerModifier {
     }
 
     #[inline]
-    pub fn apply(&self, v: f64) -> f64 {
+    pub fn apply(self, v: f64) -> f64 {
         self.a * v + self.b
     }
 }

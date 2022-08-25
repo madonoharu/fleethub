@@ -6,6 +6,7 @@ mod master_ship;
 
 use enumset::EnumSet;
 use serde::{de::DeserializeOwned, Deserialize};
+use serde_with::{serde_as, DefaultOnError};
 use tsify::Tsify;
 
 use master_equippable::*;
@@ -24,9 +25,10 @@ use crate::{
 
 use compiled_evaler::CompiledEvaler;
 
+#[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterAttrRule<T: Default + DeserializeOwned> {
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub tag: T,
     pub name: String,
     #[tsify(type = "string")]
@@ -41,11 +43,12 @@ pub struct MasterConfig {
     pub night_cutin: Vec<NightCutinDef>,
 }
 
+#[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterData {
     pub gears: Vec<MasterGear>,
     pub gear_attrs: Vec<MasterAttrRule<GearAttr>>,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub ships: Vec<MasterShip>,
     pub ship_attrs: Vec<MasterAttrRule<ShipAttr>>,
     pub ibonuses: MasterIBonuses,

@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-
+use hashbrown::HashMap;
 use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;

@@ -3,7 +3,7 @@ use num_derive::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 
 pub enum ShipCategory {
@@ -73,8 +73,14 @@ impl Default for ShipType {
     }
 }
 
+impl From<u8> for ShipType {
+    fn from(stype: u8) -> Self {
+        num_traits::FromPrimitive::from_u8(stype).unwrap_or_default()
+    }
+}
+
 impl ShipType {
-    pub fn category(&self) -> ShipCategory {
+    pub fn category(self) -> ShipCategory {
         use ShipCategory::*;
         use ShipType::*;
 
@@ -90,32 +96,32 @@ impl ShipType {
         }
     }
 
-    pub fn is_destroyer(&self) -> bool {
+    pub fn is_destroyer(self) -> bool {
         self.category() == ShipCategory::Destroyer
     }
 
-    pub fn is_light_cruiser(&self) -> bool {
+    pub fn is_light_cruiser(self) -> bool {
         self.category() == ShipCategory::LightCruiser
     }
 
-    pub fn is_aircraft_carrier(&self) -> bool {
+    pub fn is_aircraft_carrier(self) -> bool {
         self.category() == ShipCategory::AircraftCarrier
     }
 
-    pub fn is_submarine(&self) -> bool {
+    pub fn is_submarine(self) -> bool {
         self.category() == ShipCategory::Submarine
     }
 
     #[inline]
-    pub fn is_surface_ship(&self) -> bool {
+    pub fn is_surface_ship(self) -> bool {
         !self.is_submarine()
     }
 
-    pub fn is_battleship(&self) -> bool {
+    pub fn is_battleship(self) -> bool {
         self.category() == ShipCategory::Battleship
     }
 
-    pub fn transport_point(&self) -> i32 {
+    pub fn transport_point(self) -> i32 {
         use ShipType::*;
         match self {
             SSV => 1,

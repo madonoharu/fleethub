@@ -11,7 +11,7 @@ use crate::{
 pub struct AirSquadron {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    pub xxh3: u64,
+    pub hash: u64,
     pub mode: AirSquadronMode,
     #[wasm_bindgen(skip)]
     pub gears: GearArray,

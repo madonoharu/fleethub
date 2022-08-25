@@ -7,7 +7,6 @@ use crate::{
     attack::create_airstrike_params,
     comp::Comp,
     error::CalculationError,
-    member::MemberImpl,
     plane::{PlaneImpl, PlaneMut, PlaneVec},
     types::{AirState, AirWaveType, BattleDefinitions, ContactRank, Formation, Side},
 };
@@ -86,7 +85,7 @@ fn try_airstrike<R: Rng + ?Sized>(
 
     attacker_comp
         .members()
-        .filter(|member| member.is_main() || escort_participates)
+        .filter(|member| member.position.is_main() || escort_participates)
         .try_for_each(|attacker| {
             let proficiency_modifiers = attacker.proficiency_modifiers(None);
             let remaining_ammo_mod = attacker.remaining_ammo_mod();
@@ -97,20 +96,17 @@ fn try_airstrike<R: Rng + ?Sized>(
                 .try_for_each(|plane| {
                     let target = target_vec.choose_mut(rng).expect("member_vec.len() > 0");
 
-                    let value = create_airstrike_params(
+                    let attack = create_airstrike_params(
                         rng,
                         plane,
                         &proficiency_modifiers,
                         remaining_ammo_mod,
                         contact_rank,
-                        target,
+                        &target.as_ref(),
                     )
-                    .into_attack()
-                    .gen_damage_value(rng)?;
+                    .into_attack();
 
-                    target.ship.take_damage(value);
-
-                    Ok(())
+                    attack.apply(rng, target)
                 })
         })
 }

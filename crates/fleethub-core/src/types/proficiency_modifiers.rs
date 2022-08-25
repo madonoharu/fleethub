@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct ProficiencyModifiers {
     pub hit_percentage_bonus: f64,
     pub critical_power_mod: f64,

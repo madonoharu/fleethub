@@ -5,12 +5,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useAppDispatch, useModal, useOrg } from "../../../hooks";
-import {
-  initialStepConfig,
-  PlanEntity,
-  StepEntity,
-  stepsSlice,
-} from "../../../store";
+import { PlanEntity, StepEntity, stepsSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { DeleteButton, NodeLabel } from "../../molecules";
 import { ShipBannerGroup } from "../../organisms";
@@ -41,11 +36,14 @@ const StepListItem: React.FCX<StepListItemProps> = ({
 
   const main = org.main_ship_ids();
   const escort = org.escort_ship_ids();
-  const config = step.config || initialStepConfig;
+  const config = step.config || {};
 
   const handleRemove = () => {
     dispatch(stepsSlice.actions.remove(step.id));
   };
+
+  // todo!
+  const formation = config.left?.formation || "LineAhead";
 
   return (
     <>
@@ -59,7 +57,7 @@ const StepListItem: React.FCX<StepListItemProps> = ({
           <Flexbox gap={1}>
             <NodeLabel name={step.name} type={step.type} d={step.d} />
             <Typography variant="subtitle2">
-              {t(`Formation.${config.enemy.formation || "LineAhead"}`)}
+              {t(`Formation.${formation}`)}
             </Typography>
             <Button
               sx={{ ml: "auto" }}

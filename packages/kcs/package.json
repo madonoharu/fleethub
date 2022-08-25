@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",
-    "@swc/core": "^1.2.213",
+    "@swc/core": "^1.2.242",
     "fleethub-core": "npm:latest"
   }
 }

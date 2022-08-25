@@ -42,8 +42,8 @@ function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
 
       improvable: Boolean(row?.improvable),
       special_type: Number(row?.special_type),
-      ship_anti_air_resistance: Number(row?.ship_anti_air_resistance),
-      fleet_anti_air_resistance: Number(row?.fleet_anti_air_resistance),
+      ship_anti_air_resist: Number(row?.ship_anti_air_resist),
+      fleet_anti_air_resist: Number(row?.fleet_anti_air_resist),
     };
 
     deleteFalsyValues(next);

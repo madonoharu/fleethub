@@ -9,6 +9,11 @@ const muiTheme = createTheme({
   },
   palette,
   components: {
+    MuiTypography: {
+      defaultProps: {
+        variant: "body2",
+      },
+    },
     MuiContainer: {
       defaultProps: {
         maxWidth: "lg",
@@ -38,6 +43,11 @@ const muiTheme = createTheme({
           background: "rgba(30, 20, 20, 0.85)",
           backdropFilter: "blur(8px)",
         },
+      },
+    },
+    MuiTable: {
+      defaultProps: {
+        size: "small",
       },
     },
     MuiSnackbar: {

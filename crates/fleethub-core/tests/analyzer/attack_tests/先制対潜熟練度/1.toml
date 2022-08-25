@@ -1,0 +1,26 @@
+description = "先制対潜に熟練度補正が適応されないことを確認"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "龍鳳改二戊"
+level = 134
+luck_mod = 4
+g1 = { gear_id = "零戦62型(爆戦/岩井隊)", exp = 120 }
+g2 = { gear_id = "TBM-3W+3S", exp = 120 }
+g3 = { gear_id = "F6F-5N", exp = 120 }
+g4 = { gear_id = "F6F-3N", exp = 120 }
+
+# 防御艦設定
+[target]
+# ソ級flagship
+ship_id = 1572
+
+[expected.opening_asw.data.SingleAttack]
+# 命中項
+hit_rate_params.accuracy_term = 113
+# 命中率補正
+hit_rate_params.hit_percentage_bonus = 0
+# クリ率補正
+hit_rate_params.critical_percentage_bonus = 0
+# 攻撃力熟練度クリ補正
+attack_power_params.proficiency_critical_mod = 1.0

@@ -1,0 +1,27 @@
+description = "昼カットインの確認"
+
+[attacker]
+ship_id = "長門改二"
+g1 = "41cm連装砲改二"
+g2 = "41cm連装砲改二"
+g3 = { gear_id = "零式水上偵察機11型乙(熟練)", stars = 10, exp = 120 }
+g4 = { gear_id = "一式徹甲弾改", stars = 10 }
+gx = "水雷戦隊 熟練見張員"
+
+[target]
+ship_id = "駆逐イ級"
+
+
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 183
+damage.normal_damage_max = 185
+
+
+[expected.day.data.DoubleAttack]
+damage.normal_damage_min = 220
+damage.normal_damage_max = 223
+
+
+[expected.day.data.MainMain]
+damage.normal_damage_min = 277
+damage.normal_damage_max = 280

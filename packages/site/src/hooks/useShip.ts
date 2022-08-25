@@ -82,7 +82,7 @@ export function useShip(id?: string): Ship | undefined {
       const state = selectShipState(root, id);
       return state && core.create_ship(state);
     },
-    (a, b) => a?.xxh3 === b?.xxh3
+    (a, b) => a?.hash === b?.hash
   );
 
   return ship;

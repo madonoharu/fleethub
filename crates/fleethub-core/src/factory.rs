@@ -1,3 +1,6 @@
+use std::hash::Hasher;
+
+use hashbrown::hash_map::DefaultHashBuilder;
 use seq_macro::seq;
 
 use crate::{
@@ -13,16 +16,31 @@ use crate::{
         AirSquadronState, EBonuses, FleetState, GearAttr, GearState, GearType, GearVecState,
         OrgState, OrgType, ShipAttr, ShipState, SlotSizeVec,
     },
-    utils::xxh3,
 };
 
 pub struct Factory {
     pub master_data: MasterData,
+    hash_builder: DefaultHashBuilder,
 }
 
 impl Factory {
+    pub fn new(master_data: MasterData) -> Self {
+        Self {
+            master_data,
+            hash_builder: DefaultHashBuilder::new(),
+        }
+    }
+
+    fn make_hash<T: std::hash::Hash>(&self, val: &T) -> u64 {
+        use std::hash::BuildHasher;
+        let mut state = self.hash_builder.build_hasher();
+        val.hash(&mut state);
+        state.finish()
+    }
+
     pub fn create_gear(&self, input: Option<GearState>) -> Option<Gear> {
         let state = input?;
+        let hash = self.make_hash(&state);
 
         let master_gear = self
             .master_data
@@ -34,11 +52,12 @@ impl Factory {
             .master_data
             .get_ibonuses(master_gear, state.stars.unwrap_or_default());
 
-        Some(Gear::new(state, master_gear, ibonuses))
+        Some(Gear::new(hash, state, master_gear, ibonuses))
     }
 
     pub fn create_ship(&self, input: Option<ShipState>) -> Option<Ship> {
         let state = input?;
+        let hash = self.make_hash(&state);
 
         let gears = state
             .gears
@@ -52,22 +71,22 @@ impl Factory {
             .iter()
             .find(|ship| ship.ship_id == state.ship_id)?;
 
-        let equippable = self.master_data.create_ship_equippable(&master_ship);
+        let equippable = self.master_data.create_ship_equippable(master_ship);
 
         let ebonuses: EBonuses = if gears.has_by(|gear| !gear.is_abyssal()) {
-            EBonuses::new(&master_ship, &gears)
+            EBonuses::new(master_ship, &gears)
         } else {
             Default::default()
         };
 
-        let ship = Ship::new(state, master_ship, equippable, gears, ebonuses);
+        let ship = Ship::new(hash, state, master_ship, equippable, gears, ebonuses);
 
         Some(ship)
     }
 
     pub fn create_fleet(&self, input: Option<FleetState>) -> Fleet {
         let state = input.unwrap_or_default();
-        let xxh3 = xxh3(&state);
+        let hash = self.make_hash(&state);
 
         let FleetState {
             id,
@@ -92,14 +111,14 @@ impl Factory {
         Fleet {
             id: id.unwrap_or_default(),
             len,
-            xxh3,
+            hash,
             ships,
         }
     }
 
     pub fn create_air_squadron(&self, input: Option<AirSquadronState>) -> AirSquadron {
         let state = input.unwrap_or_default();
-        let xxh3 = xxh3(&state);
+        let hash = self.make_hash(&state);
 
         let gears = state
             .gears
@@ -133,7 +152,7 @@ impl Factory {
 
         AirSquadron {
             id: state.id.unwrap_or_default(),
-            xxh3,
+            hash,
             mode: state.mode.unwrap_or_default(),
             gears,
             slots,
@@ -143,7 +162,7 @@ impl Factory {
 
     pub fn create_org(&self, input: Option<OrgState>) -> Option<Org> {
         let state = input?;
-        let xxh3 = xxh3(&state);
+        let hash = self.make_hash(&state);
 
         let OrgState {
             id,
@@ -187,8 +206,8 @@ impl Factory {
         });
 
         Some(Org {
-            xxh3,
             id: id.unwrap_or_default(),
+            hash,
 
             f1,
             f2,
@@ -250,11 +269,13 @@ impl Factory {
                 .and_then(|ship_id| self.create_ship_state_by_id(*ship_id))
         };
 
+        #[allow(clippy::eq_op)]
         let state = seq!(N in 1..=7 {
             FleetState {
                 id: None,
                 len: Some(ids.len()),
                 #(
+
                     s ~N: create_ship_state(N - 1),
                 )*
             }

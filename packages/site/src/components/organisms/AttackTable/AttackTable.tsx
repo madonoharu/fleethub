@@ -1,11 +1,5 @@
 import { Typography } from "@mui/material";
-import {
-  AttackInfoItem,
-  DayCutin,
-  NightCutin,
-  WarfareInfo,
-  AttackStats,
-} from "fleethub-core";
+import type { ActionReport, AttackReport } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { TFunction } from "react-i18next";
@@ -13,38 +7,33 @@ import { TFunction } from "react-i18next";
 import { numstr, toPercent } from "../../../utils";
 import { Flexbox } from "../../atoms";
 import { InfoButton } from "../../molecules";
-import AttackChip from "../AttackChip";
+import AttackStyleChip from "../AttackStyleChip";
 import Table, { ColumnProps } from "../Table";
 
 import AttackPowerDetails from "./AttackPowerDetails";
 import DamageCell from "./DamageCell";
-import DamageStateMapBarChart from "./DamageStateMapBarChart";
+import DamageStateDensityBarChart from "./DamageStateDensityBarChart";
 import HitRateDetails from "./HitRateDetails";
 import ProcRateCell from "./ProcRateCell";
 
-type AttackTableType = "Shelling" | "Asw" | "NightAttack" | "Torpedo";
-
-type Info = NonNullable<
-  WarfareInfo["day"] | WarfareInfo["closing_torpedo"] | WarfareInfo["night"]
->;
-type InfoItem = Info["items"][number];
-
 type TFn = TFunction<"common", undefined>;
 
-const createDamageColumns = (t: TFn): ColumnProps<{ stats: AttackStats }>[] => [
+type ItemType = AttackReport<unknown>;
+
+const createDamageColumns = (t: TFn): ColumnProps<AttackReport<unknown>>[] => [
   {
     label: `${t("hit_rate")} (${t("Critical")})`,
     align: "right",
     getValue: (item) => (
       <Flexbox gap={1} justifyContent="flex-end">
-        <span>{toPercent(item.stats.hit_rate?.total)}</span>
-        <span>({toPercent(item.stats.hit_rate?.critical)})</span>
+        <span>{toPercent(item.hit_rate?.total)}</span>
+        <span>({toPercent(item.hit_rate?.critical)})</span>
         <InfoButton
           size="tiny"
           title={
             <HitRateDetails
-              hitRate={item.stats.hit_rate}
-              params={item.stats.hit_rate_params}
+              hitRate={item.hit_rate}
+              params={item.hit_rate_params}
             />
           }
         />
@@ -55,43 +44,43 @@ const createDamageColumns = (t: TFn): ColumnProps<{ stats: AttackStats }>[] => [
     label: t("Damage"),
     align: "right",
     getValue: (item) => {
-      return <DamageCell stats={item.stats} />;
+      return <DamageCell stats={item} />;
     },
   },
 ];
 
 const createAttackPowerColumns = (
   t: TFn
-): ColumnProps<{ stats: AttackStats }>[] => [
+): ColumnProps<AttackReport<unknown>>[] => [
   {
     label: t("Normal"),
     align: "right",
     getValue: (item) => (
       <Typography
         variant="inherit"
-        color={item.stats.attack_power?.is_capped ? "secondary" : undefined}
+        color={item.attack_power?.is_capped ? "secondary" : undefined}
       >
-        {numstr(item.stats.attack_power?.normal) || "?"}
+        {numstr(item.attack_power?.normal) || "?"}
       </Typography>
     ),
   },
   {
-    label: t("Critical"),
+    label: t("CriticalAbbr"),
     align: "right",
     getValue: (item) => (
       <Typography
         variant="inherit"
-        color={item.stats.attack_power?.is_capped ? "secondary" : undefined}
+        color={item.attack_power?.is_capped ? "secondary" : undefined}
       >
-        {numstr(item.stats.attack_power?.critical) || "?"}
+        {numstr(item.attack_power?.critical) || "?"}
       </Typography>
     ),
   },
   {
     label: null,
     align: "right",
-    getValue: ({ stats }) => {
-      const { attack_power, attack_power_params } = stats;
+    getValue: (item) => {
+      const { attack_power, attack_power_params } = item;
       if (!attack_power || !attack_power_params) return null;
 
       return (
@@ -112,30 +101,40 @@ const createAttackPowerColumns = (
 export function createAttackTableColumns(
   t: TFn,
   disableDamage: boolean
-): ColumnProps<{ stats: AttackStats }>[] {
-  return disableDamage ? createAttackPowerColumns(t) : createDamageColumns(t);
+): ColumnProps<AttackReport<unknown>>[] {
+  const columns = disableDamage
+    ? createAttackPowerColumns(t)
+    : createDamageColumns(t);
+  return columns;
 }
 
+type AttackTableVariant = "power" | "damage";
+
+type AttackReportType = Partial<ActionReport<unknown>> &
+  Pick<ActionReport<unknown>, "data">;
+
 type AttackTableProps = {
-  type: AttackTableType;
-  info: Info;
-  disableDamage?: boolean;
+  report: AttackReportType;
+  variant?: AttackTableVariant;
 };
 
 const AttackTable: React.FCX<AttackTableProps> = ({
   className,
-  type,
-  info,
-  disableDamage = false,
+  report,
+  variant,
 }) => {
   const { t } = useTranslation("common");
+  const { damage_state_density } = report;
+  const data = Object.values(report.data);
+  data.sort((a, b) => (b.proc_rate || 0) - (a.proc_rate || 0));
 
-  const data: AttackInfoItem<DayCutin | NightCutin | null>[] = info.items;
-  const columns: ColumnProps<InfoItem>[] = [
+  const disableDamage = variant === "power";
+
+  const columns: ColumnProps<ItemType>[] = [
     {
       label: t("Type"),
       getValue: (item) => (
-        <AttackChip type={type} cutin={item.cutin} css={{ width: "100%" }} />
+        <AttackStyleChip attack={item.style} css={{ width: "100%" }} />
       ),
     },
 
@@ -151,12 +150,12 @@ const AttackTable: React.FCX<AttackTableProps> = ({
     <div className={className}>
       <Table data={data} padding="none" columns={columns} />
 
-      {info.damage_state_map && !disableDamage && (
+      {damage_state_density && !disableDamage && (
         <>
           <Typography marginTop={1} variant="subtitle2">
             命中ダメージ分布
           </Typography>
-          <DamageStateMapBarChart data={info.damage_state_map} />
+          <DamageStateDensityBarChart data={damage_state_density} />
         </>
       )}
     </div>

@@ -48,8 +48,21 @@ impl ContactRank {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct NightContactModifiers {
     pub power_mod: f64,
     pub accuracy_mod: f64,
     pub critical_rate_constant: f64,
+}
+
+impl Default for NightContactModifiers {
+    fn default() -> Self {
+        const NIGHT_CRITICAL_RATE_CONSTANT: f64 = 1.5;
+
+        Self {
+            power_mod: 0.0,
+            accuracy_mod: 1.0,
+            critical_rate_constant: NIGHT_CRITICAL_RATE_CONSTANT,
+        }
+    }
 }

@@ -1,7 +1,6 @@
-import { nonNullable } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { Ship, WarfareContext, FhCore } from "fleethub-core";
+import { Ship, FhCore } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
@@ -28,63 +27,47 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   const { t } = useTranslation("common");
   const { core, analyzer } = useFhCore();
   const dummyEnemySelectState = useDummyEnemySelectState();
-
   const submarine = useMemo(() => core.create_ship_by_id(1530), [core]);
 
-  const ctx: WarfareContext = {
-    attacker_env: state.player,
-    target_env: state.enemy,
-    engagement: state.engagement,
-    air_state: state.air_state,
-  };
-
-  const info = analyzer.analyze_warfare(
-    ctx,
+  const analysis = analyzer.analyze_attack(
+    state,
     ship,
     dummyEnemySelectState.value.ship
   );
 
-  const day = info?.day;
-  const closing_torpedo = info?.closing_torpedo;
-  const night = info?.night;
-  const shelling_support = info.shelling_support;
+  const { day, closing_torpedo, night, support_shelling } = analysis;
 
-  const aswInfo = submarine && analyzer.analyze_warfare(ctx, ship, submarine);
-  const asw = aswInfo?.day;
-  const openingAsw = aswInfo?.opening_asw;
+  const aswAnalysis =
+    submarine && analyzer.analyze_attack(state, ship, submarine);
+  const dayAsw = aswAnalysis?.day;
+  const openingAsw = aswAnalysis?.opening_asw;
 
   const list: TabItem[] = [
-    day && {
+    day.is_active && {
       label: t("Day"),
-      panel: <AttackTable type={day.attack_type.t} info={day} disableDamage />,
+      panel: <AttackTable report={day} variant="power" />,
     },
-    closing_torpedo && {
-      label: t("WarfareType.Torpedo"),
-      panel: (
-        <AttackTable type="Torpedo" info={closing_torpedo} disableDamage />
-      ),
+    closing_torpedo.is_active && {
+      label: t("AttackType.Torpedo"),
+      panel: <AttackTable report={closing_torpedo} variant="power" />,
     },
-    night && {
+    night.is_active && {
       label: t("Night"),
-      panel: (
-        <AttackTable type={night.attack_type.t} info={night} disableDamage />
-      ),
+      panel: <AttackTable report={night} variant="power" />,
     },
-    openingAsw && {
+    openingAsw?.is_active && {
       label: t("OpeningAsw"),
-      panel: <AttackTable type="Asw" info={openingAsw} disableDamage />,
+      panel: <AttackTable report={openingAsw} variant="power" />,
     },
-    asw && {
-      label: t("WarfareType.AntiSub"),
-      panel: <AttackTable type={asw.attack_type.t} info={asw} disableDamage />,
+    dayAsw?.is_active && {
+      label: t("AttackType.Asw"),
+      panel: <AttackTable report={dayAsw} variant="power" />,
     },
-    shelling_support && {
+    support_shelling.is_active && {
       label: t("Support"),
-      panel: (
-        <AttackTable type="Shelling" info={shelling_support} disableDamage />
-      ),
+      panel: <AttackTable report={support_shelling} variant="power" />,
     },
-  ].filter(nonNullable);
+  ];
 
   return (
     <Paper className={className} style={style} sx={{ paddingX: 1 }}>

@@ -39,12 +39,13 @@ impl MasterEquippable {
             .map(|es| &es.api_equip_type);
 
         let types = equip_ship
-            .or(self
-                .equip_stype
-                .iter()
-                .find(|es| es.id == ship.stype)
-                .map(|es| &es.equip_type))
-            .map(|v| v.clone())
+            .or_else(|| {
+                self.equip_stype
+                    .iter()
+                    .find(|es| es.id == ship.stype)
+                    .map(|es| &es.equip_type)
+            })
+            .cloned()
             .unwrap_or_default();
 
         let exslot_gear_ids = self

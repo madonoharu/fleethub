@@ -1,0 +1,13 @@
+description = "攻撃可否を確認できる"
+
+[attacker]
+ship_id = "長門改二"
+
+[target]
+ship_id = "駆逐イ級"
+
+[expected]
+day.is_active = true
+night.is_active = true
+opening_asw.is_active = false
+closing_torpedo.is_active = false

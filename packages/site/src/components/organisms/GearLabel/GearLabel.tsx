@@ -93,7 +93,7 @@ const GearLabel: React.FCX<GearLabelProps> = ({
 const Memoized = React.memo(
   GearLabel,
   ({ gear: prevGear, ...prevRest }, { gear: nextGear, ...nextRest }) =>
-    shallowEqual(prevRest, nextRest) && prevGear.xxh3 === nextGear.xxh3
+    shallowEqual(prevRest, nextRest) && prevGear.hash === nextGear.hash
 );
 
 const Styled = styled(Memoized)(

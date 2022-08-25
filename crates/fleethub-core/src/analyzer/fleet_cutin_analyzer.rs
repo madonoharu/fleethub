@@ -2,201 +2,228 @@ use serde::Serialize;
 use tsify::Tsify;
 
 use crate::{
-    attack::{
-        calc_fleet_cutin_rate, get_possible_fleet_cutin_effect_vec, NightAttackContext,
-        ShellingAttackContext, ShellingAttackType, WarfareContext,
-    },
+    analyzer::AttackReport,
+    attack::{calc_fleet_cutin_rate, get_possible_fleet_cutin_effect_vec, FleetCutinEffect},
+    attack::{NightAttackParams, ShellingAttackParams},
     comp::Comp,
+    member::BattleMemberRef,
     ship::Ship,
     types::{
-        AirState, BattleDefinitions, Engagement, FleetCutin, Formation, NightAttackType,
-        NightSpecialAttack, ShellingSpecialAttack, ShipEnvironment, SpecialAttackDef,
+        AttackType, BattleDefinitions, DayCutinLike, Engagement, FleetCutin, Formation,
+        NightAttackStyle, NightAttackType, NightConditions, Role, ShellingStyle, ShellingType,
+        ShipConditions, Time,
     },
 };
 
-use super::AttackStats;
-
 #[derive(Debug, Serialize, Tsify)]
-pub struct FleetCutinInfoItem {
+pub struct FleetCutinAttackReport<T> {
+    index: usize,
     ship_id: u16,
-    cutin: FleetCutin,
-    fleet_cutin_mod: f64,
-    stats: AttackStats,
+    power_mod: f64,
+    #[serde(flatten)]
+    attack_report: AttackReport<T>,
 }
 
 #[derive(Debug, Serialize, Tsify)]
-pub struct FleetCutinInfo {
+pub struct FleetCutinReport<T> {
     cutin: FleetCutin,
     rate: Option<f64>,
     formation: Formation,
-    items: Vec<FleetCutinInfoItem>,
+    attacks: Vec<FleetCutinAttackReport<T>>,
 }
 
 #[derive(Debug, Serialize, Tsify)]
 #[tsify(into_wasm_abi)]
 pub struct FleetCutinAnalysis {
-    shelling: Vec<FleetCutinInfo>,
-    night: Vec<FleetCutinInfo>,
+    shelling: Vec<FleetCutinReport<ShellingStyle>>,
+    night: Vec<FleetCutinReport<NightAttackStyle>>,
 }
 
 pub struct FleetCutinAnalyzer<'a> {
     battle_defs: &'a BattleDefinitions,
     comp: &'a Comp,
     engagement: Engagement,
-    air_state: AirState,
-    enemy: Ship,
-    enemy_env: ShipEnvironment,
+    target_ship: Ship,
+    target_conditions: ShipConditions,
 }
 
 impl<'a> FleetCutinAnalyzer<'a> {
     pub fn new(battle_defs: &'a BattleDefinitions, comp: &'a Comp, engagement: Engagement) -> Self {
+        let target_side = !comp.side();
+
         Self {
             battle_defs,
             comp,
             engagement,
-            air_state: Default::default(),
-            enemy: Default::default(),
-            enemy_env: Default::default(),
+            target_ship: Default::default(),
+            target_conditions: ShipConditions::with_side(target_side),
         }
     }
 
-    fn create_warfare_context(
-        &self,
-        ship: &Ship,
-        formation: Formation,
-        engagement: Engagement,
-    ) -> WarfareContext {
-        let attacker_env = self
-            .comp
-            .create_warfare_ship_environment(ship, Some(formation));
-        let target_env = self.enemy_env.clone();
-
-        WarfareContext {
-            attacker_env,
-            target_env,
-            engagement,
-            air_state: self.air_state,
-        }
+    fn target(&self) -> BattleMemberRef {
+        BattleMemberRef::new(
+            &self.target_ship,
+            self.target_conditions.position,
+            self.target_conditions.formation,
+        )
     }
 
     fn analyze_shelling(
         &self,
-        ship: &Ship,
         formation: Formation,
-        cutin: FleetCutin,
-        fleet_cutin_mod: f64,
-    ) -> FleetCutinInfoItem {
+        effect: FleetCutinEffect,
+    ) -> FleetCutinReport<ShellingStyle> {
+        let role = Role::Main;
+        let fleet = &self.comp.main;
         let engagement = self.engagement;
-        let warfare_context = self.create_warfare_context(ship, formation, engagement);
 
-        let sp_def = SpecialAttackDef {
-            kind: ShellingSpecialAttack::FleetCutin(cutin),
-            power_mod: fleet_cutin_mod,
-            accuracy_mod: 1.0,
-            hits: 1.0,
-        };
+        let cutin = effect.cutin;
+        let rate = calc_fleet_cutin_rate(fleet, cutin);
 
-        let attack_ctx = ShellingAttackContext::new(
-            self.battle_defs,
-            &warfare_context,
-            ShellingAttackType::Normal,
-            Some(sp_def),
-        );
+        let attacks = effect
+            .attacks
+            .into_iter()
+            .map(|(index, power_mod)| {
+                let attacker = self
+                    .comp
+                    .get_battle_member(formation, role, index)
+                    .unwrap_or_else(|| unreachable!());
+                let target = &self.target();
+                let style = ShellingStyle {
+                    attack_type: ShellingType::Normal,
+                    cutin: Some(DayCutinLike::FleetCutin(cutin)),
+                    power_mod,
+                    accuracy_mod: 1.0,
+                    hits: 1.0,
+                };
 
-        let stats = attack_ctx.attack_params(ship, &self.enemy).into_stats();
+                let params = ShellingAttackParams {
+                    style: style.clone(),
+                    attacker: &attacker,
+                    target,
+                    engagement,
+                    formation_params: self.battle_defs.get_formation_params(
+                        AttackType::Shelling(Default::default()),
+                        attacker.conditions(),
+                        target.conditions(),
+                    ),
+                }
+                .calc_attack_params();
 
-        FleetCutinInfoItem {
-            ship_id: ship.ship_id,
+                let attack_report = AttackReport::new(style, None, params);
+                FleetCutinAttackReport {
+                    index,
+                    ship_id: attacker.ship_id,
+                    power_mod,
+                    attack_report,
+                }
+            })
+            .collect::<Vec<_>>();
+
+        FleetCutinReport {
             cutin,
-            fleet_cutin_mod,
-            stats,
+            rate,
+            formation,
+            attacks,
         }
     }
 
-    fn analyze_night(
+    fn analyze_night_attack(
         &self,
-        ship: &Ship,
         formation: Formation,
-        cutin: FleetCutin,
-        fleet_cutin_mod: f64,
-    ) -> FleetCutinInfoItem {
-        let engagement = self.engagement;
-        let warfare_context = self.create_warfare_context(ship, formation, engagement);
+        effect: FleetCutinEffect,
+        night_conditions: &NightConditions,
+    ) -> FleetCutinReport<NightAttackStyle> {
+        let role = self.comp.night_fleet_role();
+        let fleet = self.comp.night_fleet();
+        let cutin = effect.cutin;
+        let rate = calc_fleet_cutin_rate(fleet, cutin);
 
-        let sp_def = SpecialAttackDef {
-            kind: NightSpecialAttack::FleetCutin(cutin),
-            power_mod: fleet_cutin_mod,
-            accuracy_mod: 1.0,
-            hits: 1.0,
-        };
+        let attacks = effect
+            .attacks
+            .into_iter()
+            .map(|(index, power_mod)| {
+                let attacker = self
+                    .comp
+                    .get_battle_member(formation, role, index)
+                    .unwrap_or_else(|| unreachable!());
+                let target = &self.target();
 
-        let attack_ctx = NightAttackContext::new(
-            self.battle_defs,
-            &warfare_context,
-            NightAttackType::Normal,
-            Some(sp_def),
-        );
+                let attack_type = NightAttackType::Normal;
 
-        let stats = attack_ctx.attack_params(ship, &self.enemy).into_stats();
+                let style = NightAttackStyle {
+                    attack_type,
+                    cutin: Some(cutin.into()),
+                    power_mod,
+                    ..Default::default()
+                };
 
-        FleetCutinInfoItem {
-            ship_id: ship.ship_id,
+                let params = NightAttackParams {
+                    style: style.clone(),
+                    attacker: &attacker,
+                    target,
+                    formation_params: self.battle_defs.get_formation_params(
+                        attack_type,
+                        attacker.conditions(),
+                        target.conditions(),
+                    ),
+                    night_conditions,
+                }
+                .calc_attack_params();
+
+                let attack_report = AttackReport::new(style, None, params);
+                FleetCutinAttackReport {
+                    index,
+                    ship_id: attacker.ship_id,
+                    power_mod,
+                    attack_report,
+                }
+            })
+            .collect::<Vec<_>>();
+
+        FleetCutinReport {
             cutin,
-            fleet_cutin_mod,
-            stats,
+            rate,
+            formation,
+            attacks,
         }
     }
 
-    fn analyze_impl(&self, is_night: bool) -> Vec<FleetCutinInfo> {
-        let fleet = if is_night {
-            self.comp.night_fleet()
-        } else {
-            &self.comp.main
-        };
-
-        let engagement = self.engagement;
-
+    pub fn analyze_shelling_attacks(&self) -> Vec<FleetCutinReport<ShellingStyle>> {
         Formation::iter()
             .flat_map(|formation| {
-                let effect_vec =
-                    get_possible_fleet_cutin_effect_vec(fleet, formation, engagement, is_night);
+                let fleet = &self.comp.main;
+                let vec = get_possible_fleet_cutin_effect_vec(
+                    fleet,
+                    formation,
+                    self.engagement,
+                    Time::Day,
+                );
 
-                effect_vec.into_iter().map(move |effect| {
-                    let cutin = effect.cutin;
-                    let rate = calc_fleet_cutin_rate(fleet, cutin);
-
-                    let items = effect
-                        .attacks
-                        .into_iter()
-                        .map(|(ship_index, fleet_cutin_mod)| {
-                            let attacker = fleet
-                                .ships
-                                .get(ship_index)
-                                .unwrap_or_else(|| unreachable!());
-
-                            if is_night {
-                                self.analyze_night(attacker, formation, cutin, fleet_cutin_mod)
-                            } else {
-                                self.analyze_shelling(attacker, formation, cutin, fleet_cutin_mod)
-                            }
-                        })
-                        .collect::<Vec<_>>();
-
-                    FleetCutinInfo {
-                        cutin,
-                        rate,
-                        formation,
-                        items,
-                    }
-                })
+                vec.into_iter()
+                    .map(move |effect| self.analyze_shelling(formation, effect))
             })
             .collect()
     }
 
-    pub fn analyze(&self) -> FleetCutinAnalysis {
-        let shelling = self.analyze_impl(false);
-        let night = self.analyze_impl(true);
+    pub fn analyze_night_attacks(
+        &self,
+        night_conditions: &NightConditions,
+    ) -> Vec<FleetCutinReport<NightAttackStyle>> {
+        Formation::iter()
+            .flat_map(|formation| {
+                let fleet = self.comp.night_fleet();
+                let vec = get_possible_fleet_cutin_effect_vec(
+                    fleet,
+                    formation,
+                    self.engagement,
+                    Time::Night,
+                );
 
-        FleetCutinAnalysis { shelling, night }
+                vec.into_iter().map(move |effect| {
+                    self.analyze_night_attack(formation, effect, night_conditions)
+                })
+            })
+            .collect()
     }
 }

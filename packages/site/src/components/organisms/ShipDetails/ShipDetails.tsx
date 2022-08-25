@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import BuildIcon from "@mui/icons-material/Build";
 import { Button, Stack } from "@mui/material";
-import { Comp, Ship, ShipEnvironment } from "fleethub-core";
+import { Comp, Ship, ShipConditions } from "fleethub-core";
 import { produce } from "immer";
 import React, { useEffect } from "react";
 
@@ -22,27 +22,32 @@ import CustomModifiersDialog from "../CustomModifiersDialog";
 import EngagementSelect from "../EngagementSelect";
 import ShipCard from "../ShipCard";
 
+import AttackAnalyzerShipConfigForm, {
+  toSide,
+} from "./AttackAnalyzerShipConfigForm";
 import AttackPowerAnalyzer from "./AttackPowerAnalyzer";
 import ShipDetailsEnemyList from "./ShipDetailsEnemyList";
-import ShipParamsSettings, { toSide } from "./ShipParamsSettings";
 
-function initOrgType(
+function initShipDetailsState(
   current: ShipDetailsState,
-  env: ShipEnvironment
+  conditions: ShipConditions
 ): ShipDetailsState {
   const next = produce(current, (draft) => {
-    const playerSide = toSide(env.org_type || "Single");
-    const enemySide = draft.enemy.org_type && toSide(draft.enemy.org_type);
+    draft.left ||= {};
+    draft.right ||= {};
 
-    if (!enemySide || playerSide === enemySide) {
-      if (playerSide === "Player") {
-        draft.enemy.org_type = "EnemySingle";
+    const leftSide = toSide(conditions.org_type || "Single");
+    const rightSide = draft?.right?.org_type && toSide(draft.right.org_type);
+
+    if (!rightSide || leftSide === rightSide) {
+      if (leftSide === "Player") {
+        draft.right.org_type = "EnemySingle";
       } else {
-        draft.enemy.org_type = "Single";
+        draft.right.org_type = "Single";
       }
     }
 
-    Object.assign(draft.player, env);
+    Object.assign(draft.left, conditions);
   });
 
   return next;
@@ -63,8 +68,8 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
   const state = useRootSelector((root) => root.shipDetails);
   const dispatch = useAppDispatch();
 
-  const PlayerShipEnvModal = useModal();
-  const EnemyShipEnvModal = useModal();
+  const LeftConfigModal = useModal();
+  const RightConfigModal = useModal();
 
   const update = (payload: Partial<ShipDetailsState>) => {
     dispatch(shipDetailsSlice.actions.update(payload));
@@ -82,12 +87,9 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
   useEffect(() => {
     if (!comp) return;
 
-    const env = comp.create_warfare_ship_environment(
-      ship,
-      state.player.formation
-    );
+    const conditions = comp.get_ship_conditions(ship, state.left?.formation);
 
-    update(initOrgType(state, env));
+    update(initShipDetailsState(state, conditions));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,18 +97,18 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
     <Stack className={className} gap={1}>
       <Flexbox gap={1}>
         <EngagementSelect
-          value={state.engagement}
+          value={state.engagement || "Parallel"}
           onChange={(engagement) => update({ engagement })}
         />
         <AirStateSelect
-          value={state.air_state}
+          value={state.air_state || "AirSupremacy"}
           onChange={(air_state) => update({ air_state })}
         />
         <Button
           variant="contained"
           color="primary"
           startIcon={<BuildIcon />}
-          onClick={PlayerShipEnvModal.show}
+          onClick={LeftConfigModal.show}
         >
           自艦隊設定
         </Button>
@@ -114,7 +116,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
           variant="contained"
           color="secondary"
           startIcon={<BuildIcon />}
-          onClick={EnemyShipEnvModal.show}
+          onClick={RightConfigModal.show}
         >
           相手艦設定
         </Button>
@@ -123,18 +125,18 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
         </Button>
       </Flexbox>
 
-      <PlayerShipEnvModal>
-        <ShipParamsSettings
-          value={state.player}
-          onChange={(player) => update({ player })}
+      <LeftConfigModal>
+        <AttackAnalyzerShipConfigForm
+          value={state.left || {}}
+          onChange={(left) => update({ left })}
         />
-      </PlayerShipEnvModal>
-      <EnemyShipEnvModal>
-        <ShipParamsSettings
-          value={state.enemy}
-          onChange={(enemy) => update({ enemy })}
+      </LeftConfigModal>
+      <RightConfigModal>
+        <AttackAnalyzerShipConfigForm
+          value={state.right || {}}
+          onChange={(right) => update({ right })}
         />
-      </EnemyShipEnvModal>
+      </RightConfigModal>
 
       <Stack gap={1} flexDirection="row">
         <Stack gap={1} flexBasis="100%">

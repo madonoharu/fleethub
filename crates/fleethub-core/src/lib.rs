@@ -1,7 +1,10 @@
+#![allow(clippy::let_and_return)]
+
 pub mod air_squadron;
 pub mod analyzer;
 pub mod attack;
-pub mod attack2;
+pub mod battle;
+pub mod builder;
 pub mod comp;
 pub mod console;
 pub mod error;
@@ -19,12 +22,11 @@ pub mod simulator;
 pub mod types;
 pub mod utils;
 
-use comp::Comp;
-use simulator::{ShellingSupportSimulatorParams, SimulatorResult};
 use wasm_bindgen::{prelude::*, JsCast};
 
 use air_squadron::AirSquadron;
 use analyzer::Analyzer;
+use comp::Comp;
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
@@ -47,7 +49,7 @@ extern "C" {
 impl FhCore {
     pub fn from_master_data(master_data: MasterData) -> Self {
         Self {
-            factory: Factory { master_data },
+            factory: Factory::new(master_data),
         }
     }
 
@@ -65,7 +67,7 @@ impl FhCore {
             .map_err(|err| JsValue::from(err.to_string()))?
             .init();
 
-        let factory = Factory { master_data };
+        let factory = Factory::new(master_data);
 
         Ok(Self { factory })
     }
@@ -118,22 +120,13 @@ impl FhCore {
     pub fn create_analyzer(&self) -> Analyzer {
         Analyzer::new(self.factory.master_data.battle_definitions())
     }
+}
 
-    pub fn simulate_shelling_support(
-        &self,
-        player: &mut Comp,
-        enemy: &mut Comp,
-        params: ShellingSupportSimulatorParams,
-        times: usize,
-    ) -> Result<SimulatorResult, JsValue> {
-        use rand::prelude::*;
-        use simulator::ShellingSupportSimulator;
+#[cfg(test)]
+pub mod test {
+    use rand::prelude::*;
 
-        let mut rng = SmallRng::from_entropy();
-        let config = self.factory.master_data.battle_definitions();
-        let mut sim = ShellingSupportSimulator::new(&mut rng, &config, player, enemy, params);
-
-        sim.run(times)
-            .map_err(|err| JsValue::from(&err.to_string()))
+    pub fn rng(seed: u64) -> impl Rng {
+        SmallRng::seed_from_u64(seed)
     }
 }

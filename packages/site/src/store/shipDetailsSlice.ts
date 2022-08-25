@@ -1,22 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ShipEnvironment, AirState, Engagement } from "fleethub-core";
+import type { ShipAnalyzerConfig } from "fleethub-core";
 
 import { entitiesSlice } from "./entities";
 
-export type ShipDetailsState = {
+export interface ShipDetailsState extends ShipAnalyzerConfig {
   enemies: string[];
-  player: ShipEnvironment;
-  enemy: ShipEnvironment;
-  air_state: AirState;
-  engagement: Engagement;
-};
+}
 
 const initialState: ShipDetailsState = {
   enemies: [],
-  player: {},
-  enemy: {},
-  air_state: "AirSupremacy",
-  engagement: "Parallel",
 };
 
 export const shipDetailsSlice = createSlice({

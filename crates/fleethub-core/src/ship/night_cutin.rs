@@ -1,6 +1,8 @@
 use enumset::EnumSet;
 
-use crate::types::{gear_id, GearAttr, GearType, NightCutin, ShipType};
+use crate::types::{
+    gear_id, DamageState, GearAttr, GearType, NightConditions, NightCutin, ShipType, Side,
+};
 
 use super::Ship;
 
@@ -105,5 +107,87 @@ impl Ship {
         }
 
         set
+    }
+
+    pub fn calc_night_cutin_term(&self, params: NightCutinTermParams) -> Option<f64> {
+        let level = self.level as f64;
+        let luck = self.luck()? as f64;
+        let damage_state = params
+            .damage_state_override
+            .unwrap_or_else(|| self.damage_state());
+
+        let mut value = if luck < 50.0 {
+            luck + 15.0 + 0.75 * level.sqrt()
+        } else {
+            (luck - 50.0).sqrt() + 65.0 + 0.8 * level.sqrt()
+        }
+        .floor();
+
+        if params.is_flagship {
+            value += 15.0
+        }
+
+        if damage_state == DamageState::Chuuha {
+            value += 18.0
+        }
+
+        // https://twitter.com/Divinity__123/status/1479343022974324739
+        if self.gears.has(gear_id!("水雷戦隊 熟練見張員"))
+            && (self.ship_type.is_destroyer() || self.ship_type.is_light_cruiser())
+        {
+            value += 9.0
+        } else if self.gears.has_type(GearType::ShipPersonnel) {
+            value += 5.0
+        }
+
+        if params.attacker_searchlight {
+            value += 7.0
+        }
+
+        if params.target_searchlight {
+            value += -5.0
+        }
+
+        if params.attacker_starshell {
+            value += 4.0
+        }
+
+        if params.target_starshell {
+            value += -10.0
+        }
+
+        Some(value)
+    }
+}
+
+pub struct NightCutinTermParams {
+    pub is_flagship: bool,
+    pub attacker_starshell: bool,
+    pub attacker_searchlight: bool,
+    pub target_starshell: bool,
+    pub target_searchlight: bool,
+    pub damage_state_override: Option<DamageState>,
+}
+
+impl NightCutinTermParams {
+    pub fn new(is_flagship: bool, attacker_side: Side, conditions: &NightConditions) -> Self {
+        let attacker = conditions.night_fleet_conditions(attacker_side);
+        let target = conditions.night_fleet_conditions(!attacker_side);
+
+        Self {
+            is_flagship,
+            attacker_starshell: attacker.activates_starshell(),
+            attacker_searchlight: attacker.activates_searchlight(),
+            target_starshell: target.activates_starshell(),
+            target_searchlight: target.activates_searchlight(),
+            damage_state_override: None,
+        }
+    }
+
+    pub fn set_damage_state_override(self, damage_state: DamageState) -> Self {
+        Self {
+            damage_state_override: Some(damage_state),
+            ..self
+        }
     }
 }

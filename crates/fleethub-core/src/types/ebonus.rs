@@ -219,8 +219,8 @@ fn get_carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
         .map(|gear| {
             let ship_input = ShipInput::new(ship);
             let gears_input = GearVecInput(vec![GearInput::new(gear)]);
-            let torpedo = create_equipment_bonuses(ship_input, gears_input).torpedo;
-            torpedo
+
+            create_equipment_bonuses(ship_input, gears_input).torpedo
         })
         .filter(|v| *v > 0)
         .min();
@@ -229,7 +229,7 @@ fn get_carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
 }
 
 impl EBonuses {
-    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+    #[cfg(target_arch = "wasm32")]
     pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
         let ship_input = ShipInput::new(ship);
         let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
@@ -241,10 +241,30 @@ impl EBonuses {
         ebonuses
     }
 
-    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    #[allow(unused_variables)]
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
-        Self::default()
+        let ship_input = ShipInput::new(ship);
+        let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
+
+        let ship_json = serde_json::to_string(&ship_input).unwrap();
+        let gears_json = serde_json::to_string(&gears_input).unwrap();
+
+        let code = format!(
+            r#"
+                const {{ createEquipmentBonuses }} = require("equipment-bonus");
+                const result = createEquipmentBonuses({ship_json}, {gears_json});
+                console.log(JSON.stringify(result));
+            "#
+        );
+
+        let stdout = std::process::Command::new("node")
+            .arg("-e")
+            .arg(code)
+            .output()
+            .unwrap()
+            .stdout;
+
+        serde_json::from_slice(&stdout).unwrap()
     }
 }
 

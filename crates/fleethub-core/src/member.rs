@@ -1,4 +1,5 @@
-use std::ops::Deref;
+mod battle_member;
+mod comp_member;
 
 use rand::prelude::*;
 
@@ -6,115 +7,13 @@ use crate::{
     error::CalculationError,
     plane::PlaneMut,
     ship::Ship,
-    types::{ctype, gear_id, AntiAirCutinDef, OrgType, Role, ShipType, Side},
+    types::{ctype, gear_id, AntiAirCutinDef, OrgType, Role, ShipType},
 };
 
-pub struct Member<'a> {
-    pub org_type: OrgType,
-    pub role: Role,
-    pub index: usize,
-    pub ship: &'a Ship,
-}
+pub use battle_member::*;
+pub use comp_member::*;
 
-pub struct MemberMut<'a> {
-    pub org_type: OrgType,
-    pub role: Role,
-    pub index: usize,
-    pub ship: &'a mut Ship,
-}
-
-impl<'a> Deref for Member<'a> {
-    type Target = &'a Ship;
-
-    #[inline]
-    fn deref(&self) -> &Self::Target {
-        &self.ship
-    }
-}
-
-pub trait MemberImpl {
-    fn org_type(&self) -> OrgType;
-    fn role(&self) -> Role;
-    fn index(&self) -> usize;
-    fn ship(&self) -> &Ship;
-
-    fn remains(&self) -> bool {
-        self.ship().current_hp > 0
-    }
-
-    #[inline]
-    fn side(&self) -> Side {
-        self.org_type().side()
-    }
-
-    fn is_enemy(&self) -> bool {
-        self.org_type().is_enemy()
-    }
-
-    fn is_combined(&self) -> bool {
-        self.org_type().is_combined()
-    }
-
-    fn is_main(&self) -> bool {
-        self.role().is_main()
-    }
-
-    fn is_escort(&self) -> bool {
-        self.role().is_escort()
-    }
-
-    fn air_defense<'a>(
-        &'a self,
-        fleet_adjusted_anti_air: f64,
-        anti_air_cutin: Option<&'a AntiAirCutinDef>,
-    ) -> ShipAirDefense {
-        ShipAirDefense {
-            ship: self.ship(),
-            role: self.role(),
-            org_type: self.org_type(),
-            fleet_adjusted_anti_air,
-            anti_air_cutin,
-        }
-    }
-}
-
-impl<'a> MemberImpl for Member<'a> {
-    #[inline]
-    fn org_type(&self) -> OrgType {
-        self.org_type
-    }
-    #[inline]
-    fn role(&self) -> Role {
-        self.role
-    }
-    #[inline]
-    fn index(&self) -> usize {
-        self.index
-    }
-    #[inline]
-    fn ship(&self) -> &Ship {
-        self.ship
-    }
-}
-
-impl<'a> MemberImpl for MemberMut<'a> {
-    #[inline]
-    fn org_type(&self) -> OrgType {
-        self.org_type
-    }
-    #[inline]
-    fn role(&self) -> Role {
-        self.role
-    }
-    #[inline]
-    fn index(&self) -> usize {
-        self.index
-    }
-    #[inline]
-    fn ship(&self) -> &Ship {
-        self.ship
-    }
-}
+const AIR_COMBAT_CONSTANT: f64 = 0.25;
 
 pub struct ShipAirDefense<'a> {
     pub ship: &'a Ship,
@@ -136,33 +35,14 @@ impl<'a> ShipAirDefense<'a> {
     }
 
     pub fn ship_adjusted_anti_air(&self) -> Option<f64> {
-        let total = self.ship.gears.sum_by(|g| g.ship_anti_air_mod());
-
-        if self.org_type.is_enemy() {
-            let anti_air = self.ship.anti_air()? as f64;
-            return Some(anti_air.sqrt().floor() * 2. + total);
-        }
-
-        let naked_anti_air = self.ship.naked_anti_air()? as f64;
-        let pre_floor = naked_anti_air + total;
-
-        let result = if self.ship.gears.iter().count() == 0 {
-            pre_floor
-        } else {
-            2. * (pre_floor / 2.).floor()
-        };
-
-        Some(result)
+        self.ship.ship_adjusted_anti_air(self.org_type.side())
     }
 
     pub fn proportional_shotdown_rate(&self, ship_anti_air_resist: f64) -> Option<f64> {
         let ship_adjusted_anti_air = self.ship_adjusted_anti_air()?;
+        let ship_aa = (ship_adjusted_anti_air * ship_anti_air_resist).floor();
 
-        let result = (ship_adjusted_anti_air * ship_anti_air_resist).floor()
-            * self.combined_fleet_mod()
-            * 0.5
-            * 0.25
-            * 0.02;
+        let result = 0.02 * AIR_COMBAT_CONSTANT * self.combined_fleet_mod() * ship_aa;
         Some(result)
     }
 
@@ -175,10 +55,10 @@ impl<'a> ShipAirDefense<'a> {
 
         let side_mod = if self.org_type.is_enemy() { 0.75 } else { 0.8 };
 
-        let base = (ship_adjusted_anti_air * ship_anti_air_resist).floor()
-            + (self.fleet_adjusted_anti_air * fleet_anti_air_resist).floor();
-
-        let mut pre_floor = base * 0.5 * 0.25 * side_mod * self.combined_fleet_mod();
+        let ship_aa = (ship_adjusted_anti_air * ship_anti_air_resist).floor();
+        let fleet_aa = (self.fleet_adjusted_anti_air * fleet_anti_air_resist).floor();
+        let mut pre_floor =
+            AIR_COMBAT_CONSTANT * self.combined_fleet_mod() * side_mod * (ship_aa + fleet_aa);
 
         if let Some(cutin) = self.anti_air_cutin {
             pre_floor *= cutin.multiplier?;
@@ -222,14 +102,14 @@ impl<'a> ShipAirDefense<'a> {
         let ship_class_bonus = if self.ship.ctype == ctype!("伊勢型") {
             0.25
         } else {
-            0.
+            0.0
         };
 
         let rate = (ship_adjusted_anti_air + 0.9 * luck) / 281.0
-            + (count as f64 - 1.) * 0.15
+            + (count as f64 - 1.0) * 0.15
             + ship_class_bonus;
 
-        Some(rate.min(1.))
+        Some(rate.min(1.0))
     }
 
     pub fn try_intercept<R: Rng + ?Sized>(
@@ -239,8 +119,8 @@ impl<'a> ShipAirDefense<'a> {
     ) -> Result<(), CalculationError> {
         let current = plane.slot_size.ok_or(CalculationError::UnknownValue)?;
 
-        let ship_aa_resist = plane.gear.ship_anti_air_resistance;
-        let fleet_aa_resist = plane.gear.fleet_anti_air_resistance;
+        let ship_aa_resist = plane.gear.ship_anti_air_resist;
+        let fleet_aa_resist = plane.gear.fleet_anti_air_resist;
 
         let proportional_shotdown_rate = if rng.gen_bool(0.5) {
             self.proportional_shotdown_rate(ship_aa_resist)

@@ -1,12 +1,16 @@
 import { Stack, Paper } from "@mui/material";
-import { MasterData, NightCutinDef } from "fleethub-core";
+import type {
+  MasterData,
+  NightAttackStyle,
+  NightCutinDef,
+} from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { configSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
-import AttackChip from "../../organisms/AttackChip";
+import { AttackTypeChip } from "../../molecules";
 import ResettableInput from "../../organisms/ResettableInput";
 
 interface NightCutinFormProps {
@@ -24,9 +28,14 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
     (root) => root.config.masterData?.night_cutin?.[cutin]
   );
 
+  const attack: Pick<NightAttackStyle, "tag" | "cutin"> = {
+    tag: "NightAttackStyle",
+    cutin,
+  };
+
   return (
     <div>
-      <AttackChip type="NightAttack" cutin={cutin} sx={{ mb: 2 }} />
+      <AttackTypeChip sx={{ mb: 2 }} attack={attack} />
 
       <Flexbox gap={1} alignItems="flex-end">
         {KEYS.map((key) => (

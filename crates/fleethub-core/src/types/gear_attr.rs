@@ -35,6 +35,8 @@ pub enum GearAttr {
     AntiSubMortar,
     /// 対潜兵器
     AntiSubWeapon,
+    /// 装甲貫通爆雷
+    ApDepthCharge,
     /// 対潜航空機
     AntiSubAircraft,
     /// 後期型艦首魚雷
