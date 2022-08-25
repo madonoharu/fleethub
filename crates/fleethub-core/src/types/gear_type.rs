@@ -123,6 +123,8 @@ pub enum GearType {
     LargeRadar2 = 93,
     /// 艦上偵察機（II）
     CbRecon2 = 94,
+    /// 副砲（II）
+    SecondaryGun2 = 95,
 }
 
 impl Default for GearType {

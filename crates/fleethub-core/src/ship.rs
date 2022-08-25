@@ -1171,7 +1171,7 @@ impl Ship {
             return true;
         };
 
-        if !self.equippable.types.contains(&(gear.special_type as u8)) {
+        if !self.equippable.types.contains(&gear.special_type) {
             return false;
         }
 
@@ -1187,10 +1187,7 @@ impl Ship {
                 return true;
             }
 
-            return self
-                .equippable
-                .exslot_types
-                .contains(&(gear.special_type as u8))
+            return self.equippable.exslot_types.contains(&gear.special_type)
                 || self.equippable.exslot_gear_ids.contains(&gear.gear_id)
                 || gear.gear_id == gear_id!("改良型艦本式タービン");
         }
