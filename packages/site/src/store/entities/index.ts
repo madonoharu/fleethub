@@ -8,7 +8,6 @@ export { stepsSlice } from "./stepsSlice";
 export { filesSlice, isPlan, isFolder } from "./filesSlice";
 export { entitiesSlice } from "./entitiesSlice";
 
-export { initialStepConfig } from "./base";
 export * from "./selectors";
 export * from "./thunkActions";
 

@@ -1,0 +1,35 @@
+description = "大鷹型夜戦テスト1(☆0,0)"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "大鷹改二"
+g1 = { gear_id = "15.2cm三連装砲", stars = 0 }
+g2 = { gear_id = "15.2cm三連装砲", stars = 0 }
+
+# 防御艦設定
+[target]
+ship_id = "駆逐イ級"
+
+[expected]
+# 昼戦可否
+day.is_active = false
+# 夜戦可否
+night.is_active = true
+# 開幕対潜可否
+opening_asw.is_active = false
+# 閉幕雷撃可否
+closing_torpedo.is_active = false
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 45
+damage.normal_damage_max = 47
+damage.critical_damage_min = 70
+damage.critical_damage_max = 72
+
+# 夜戦連撃
+[expected.night.data.DoubleAttack]
+damage.normal_damage_min = 55
+damage.normal_damage_max = 57
+damage.critical_damage_min = 85
+damage.critical_damage_max = 87

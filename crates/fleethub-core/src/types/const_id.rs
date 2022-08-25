@@ -706,6 +706,7 @@ macro_rules! ship_id {
     ("早潮改二") => { 915 };
     ("大和改二重") => { 916 };
     ("Maryland改") => { 918 };
+    ("Samuel B.Roberts Mk.II") => { 920 };
     ("Colorado改") => { 1496 };
 }
 
@@ -1169,6 +1170,7 @@ macro_rules! gear_id {
     ("後期型電探&逆探+シュノーケル装備") => { 458 };
     ("B-25") => { 459 };
     ("15m二重測距儀改+21号電探改二+熟練射撃指揮所") => { 460 };
+    ("熟練聴音員+後期型艦首魚雷(4門)") => { 461 };
     ("15.5cm三連装副砲改二") => { 463 };
     ("10cm連装高角砲群 集中配備") => { 464 };
     ("試製51cm三連装砲") => { 465 };
@@ -1177,6 +1179,8 @@ macro_rules! gear_id {
     ("38cm四連装砲改 deux") => { 468 };
     ("零式水上偵察機11型乙改(夜偵)") => { 469 };
     ("12.7cm連装砲C型改三") => { 470 };
+    ("Loire 130M") => { 471 };
+    ("Mk.32 対潜魚雷(Mk.2落射機)") => { 472 };
     ("5inch単装砲") => { 501 };
     ("5inch連装砲") => { 502 };
     ("3inch単装高角砲") => { 503 };
@@ -1548,14 +1552,14 @@ macro_rules! ctype {
 #[macro_export]
 macro_rules! matches_ship_id {
     ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
-        matches!($expression, $(ship_id!($pattern))|+)
+        matches!($expression, $($crate::types::ship_id!($pattern))|+)
     }
 }
 
 #[macro_export]
 macro_rules! matches_gear_id {
     ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
-        matches!($expression, $(gear_id!($pattern))|+)
+        matches!($expression, $($crate::types::gear_id!($pattern))|+)
     }
 }
 

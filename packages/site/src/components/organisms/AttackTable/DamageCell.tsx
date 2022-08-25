@@ -1,5 +1,5 @@
 import { styled, css, Stack, Tooltip, Typography } from "@mui/material";
-import { AttackStats } from "fleethub-core";
+import { AttackReport } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -61,7 +61,7 @@ const DamageRange: React.FCX<DamageRangeProps> = ({
 };
 
 interface DamageCellProps {
-  stats: AttackStats;
+  stats: AttackReport<unknown>;
 }
 
 const DamageCell: React.FC<DamageCellProps> = ({ stats }) => {

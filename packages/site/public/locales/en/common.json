@@ -57,10 +57,7 @@
   "Night": "Night Battle",
   "OpeningAsw": "OASW",
   "Support": "Support",
-  "AttackTypeDepthCharge": "Depth Charge",
-  "AttackTypeAirAttack": "Aerial Attack",
-  "AttackTypeTorpedo": "ShTorp",
-  "AttackTypeSingleAttack": "Single Attack",
+  "SingleAttack": "Single Attack",
   "AttackTypeNone": "Can't Attack",
   "PhaseOpeningTorpedo": "OTorp",
   "PhaseClosingTorpedo": "CTorp",
@@ -85,6 +82,7 @@
   "Proficiency": "Proficiency",
   "Normal": "Normal",
   "Critical": "Critical",
+  "CriticalAbbr": "Critical",
   "SpecialAttack": "Special Attack",
   "SoftSkinned": "Soft-Skinned",
   "NightContact": "Night Contact",
@@ -156,6 +154,8 @@
   "multiplier": "Multiplier",
   "guaranteed": "Guaranteed",
   "anti_air_cutin_chance": "AACI Chance",
+  "ship_anti_air_resist": "Ship AA Resist",
+  "fleet_anti_air_resist": "Fleet AA Resist",
   "trigger_rate": "Trigger Chance",
   "ohko_power": "OHKO Power",
   "ContactChance": "Contact Chance",
@@ -212,10 +212,10 @@
     "Echelon": "Echelon",
     "LineAbreast": "Line Abreast",
     "Vanguard": "Vanguard",
-    "Cruising1": "Combined (Anti-Sub)",
-    "Cruising2": "Combined (Forward)",
-    "Cruising3": "Combined (Diamond)",
-    "Cruising4": "Combined (Battle)"
+    "Cruising1": "CF1",
+    "Cruising2": "CF2",
+    "Cruising3": "CF3",
+    "Cruising4": "CF4"
   },
   "AirState": {
     "name": "Air State",
@@ -305,12 +305,24 @@
     "Submarine": "SS",
     "AuxiliaryShip": "Aux"
   },
-  "WarfareType": {
+  "AttackType": {
     "Shelling": "Shelling",
-    "Torpedo": "Torpedo",
-    "AntiSub": "Anti-Sub",
-    "AntiLand": "Anti-Land",
-    "Aerial": "Aerial"
+    "Night": "Night",
+    "Asw": "Asw",
+    "Torpedo": "ShTorp"
+  },
+  "ShellingType": {
+    "Normal": "Normal",
+    "Carrier": "Aerial"
+  },
+  "NightAttackType": {
+    "Normal": "Normal",
+    "Swordfish": "Swordfish",
+    "Carrier": "Aerial"
+  },
+  "AswAttackType": {
+    "DepthCharge": "Depth Charge",
+    "Aircraft": "Aerial"
   },
   "ContactRank": {
     "Rank1": "Accuracy 1 or less",

@@ -1,12 +1,17 @@
 import { Divider, Stack } from "@mui/material";
-import { Ship, Side, WarfareContext, ShipEnvironment } from "fleethub-core";
+import {
+  Ship,
+  Side,
+  AttackAnalyzerConfig,
+  AttackAnalyzerShipConfig,
+} from "fleethub-core";
 import React from "react";
 
 import { useShip } from "../../../hooks";
 import { ShipDetailsState } from "../../../store";
 import { Flexbox } from "../../atoms";
+import AttackAnalyzer from "../AttackAnalyzer";
 import ShipCard from "../ShipCard";
-import WarfareAnalyzer from "../WarfareAnalyzer";
 
 type EnemyListItemProps = {
   ship: Ship;
@@ -21,30 +26,30 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
 
   const createProps = (side: Side) => {
     let attacker: Ship;
-    let attacker_env: ShipEnvironment;
+    let attackerConfig: AttackAnalyzerShipConfig | undefined;
     let target: Ship;
-    let target_env: ShipEnvironment;
+    let targetConfig: AttackAnalyzerShipConfig | undefined;
 
     if (side === "Player") {
       attacker = ship;
-      attacker_env = state.player;
+      attackerConfig = state.left;
       target = enemy;
-      target_env = state.enemy;
+      targetConfig = state.right;
     } else {
       attacker = enemy;
-      attacker_env = state.enemy;
+      attackerConfig = state.right;
       target = ship;
-      target_env = state.player;
+      targetConfig = state.left;
     }
 
-    const ctx: WarfareContext = {
+    const config: AttackAnalyzerConfig = {
       air_state: state.air_state,
       engagement: state.engagement,
-      attacker_env,
-      target_env,
+      attacker: attackerConfig,
+      target: targetConfig,
     };
 
-    return { ctx, attacker, target };
+    return { config, attacker, target };
   };
 
   return (
@@ -59,8 +64,8 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
           },
         }}
       >
-        <WarfareAnalyzer {...createProps("Player")} />
-        <WarfareAnalyzer {...createProps("Enemy")} />
+        <AttackAnalyzer {...createProps("Player")} />
+        <AttackAnalyzer {...createProps("Enemy")} />
       </Flexbox>
     </Stack>
   );

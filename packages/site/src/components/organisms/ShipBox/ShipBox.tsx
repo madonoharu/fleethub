@@ -73,7 +73,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
 const Memoized = React.memo(
   ShipBox,
   ({ ship: prevShip, ...prevRest }, { ship: nextShip, ...nextRest }) =>
-    prevShip?.xxh3 === nextShip?.xxh3 && shallowEqual(prevRest, nextRest)
+    prevShip?.hash === nextShip?.hash && shallowEqual(prevRest, nextRest)
 );
 
 const Styled = styled(Memoized)`

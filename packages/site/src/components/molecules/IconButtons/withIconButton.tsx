@@ -22,7 +22,7 @@ export const withIconButton = (WrappedIcon: React.FC) => {
     title,
     label,
     tooltipProps,
-    size,
+    size = "tiny",
     ...iconButtonProps
   }) => {
     const WrappedButton = (

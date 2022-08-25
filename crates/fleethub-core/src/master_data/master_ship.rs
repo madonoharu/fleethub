@@ -4,7 +4,7 @@ use fasteval::{bool_to_f64, EvalNamespace};
 use serde::Deserialize;
 use tsify::Tsify;
 
-use crate::types::{GearState, ShipAttr, SlotSizeVec, SpeedGroup};
+use crate::types::{GearState, ShipAttr, ShipType, SlotSizeVec, SpeedGroup};
 
 #[derive(Debug, Default, Clone, Copy, Deserialize, Tsify)]
 pub struct StatInterval(pub Option<u16>, pub Option<u16>);
@@ -67,7 +67,7 @@ pub struct MasterShip {
 }
 
 impl MasterShip {
-    pub fn ns<'a>(&'a self) -> impl EvalNamespace + 'a {
+    pub fn ns(&self) -> impl EvalNamespace + '_ {
         |key: &str, args: Vec<f64>| -> Option<f64> {
             let result = match key {
                 "ship_id" => self.ship_id.into(),
@@ -97,9 +97,16 @@ impl MasterShip {
         self.slots.get(index).cloned().flatten()
     }
 
+    #[inline]
+    pub fn ship_type(&self) -> ShipType {
+        ShipType::from(self.stype)
+    }
+
     pub fn default_level(&self) -> u16 {
         if self.ship_id < 1500 {
             99
+        } else if self.ship_type().is_submarine() {
+            50
         } else {
             1
         }

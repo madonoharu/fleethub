@@ -3,18 +3,20 @@ import React from "react";
 
 import { cloudinaryLoader } from "../../../utils";
 
-type Props = {
+interface Props {
+  className?: string;
   iconId: number;
-};
+}
 
-const GearIcon: React.FCX<Props> = ({ className, iconId }) => {
+const GearIcon = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
+  const { iconId, ...rest } = props;
   if (!iconId) return null;
 
   const width = 24;
   const height = 24;
 
   return (
-    <div className={className} css={{ width, height }}>
+    <div ref={ref} css={{ width, height }} {...rest}>
       <Image
         layout="fixed"
         loader={cloudinaryLoader}
@@ -24,6 +26,6 @@ const GearIcon: React.FCX<Props> = ({ className, iconId }) => {
       />
     </div>
   );
-};
+});
 
 export default GearIcon;

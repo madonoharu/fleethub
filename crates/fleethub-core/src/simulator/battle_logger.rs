@@ -1,6 +1,4 @@
-use std::collections::HashMap;
-
-use counter::Counter;
+use hashbrown::HashMap;
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
@@ -8,13 +6,14 @@ use tsify::Tsify;
 use crate::{
     comp::Comp,
     types::{DamageState, Role},
+    utils::Histogram,
 };
 
 #[derive(Debug, Default)]
 pub struct BattleLogger {
     times: usize,
-    sunk_counter: Counter<usize>,
-    damage_map: HashMap<String, Counter<DamageState>>,
+    sunk_counter: Histogram<usize, usize>,
+    damage_map: HashMap<String, Histogram<DamageState, usize>>,
 }
 
 impl BattleLogger {
@@ -36,17 +35,17 @@ impl BattleLogger {
 
                         self.damage_map
                             .entry(ship.id.clone())
-                            .or_insert_with(Counter::new)
+                            .or_insert_with(Histogram::new)
                     }
                 };
 
                 let ds = ship.damage_state();
-                ds_counter[&ds] += 1;
+                *ds_counter += (ds, 1_usize);
                 ds == DamageState::Sunk
             })
             .count();
 
-        self.sunk_counter[&sunk_count] += 1;
+        self.sunk_counter += (sunk_count, 1);
     }
 
     pub fn create_result(self, comp: &Comp) -> SimulatorResult {
@@ -57,7 +56,6 @@ impl BattleLogger {
             .into_iter()
             .map(|(id, counter)| {
                 let damage_state_map = counter
-                    .into_map()
                     .into_iter()
                     .map(|(ds, count)| (ds, count as f64 / times_f64))
                     .collect::<HashMap<_, _>>();
@@ -69,8 +67,8 @@ impl BattleLogger {
 
                 SimulatorResultItem {
                     id,
-                    role: entry.role,
-                    index: entry.index,
+                    role: entry.position.role,
+                    index: entry.position.index,
                     damage_state_map,
                 }
             })
@@ -86,7 +84,6 @@ impl BattleLogger {
 
         let sunk_vec = self
             .sunk_counter
-            .into_map()
             .into_iter()
             .sorted_by(|a, b| b.0.cmp(&a.0))
             .scan(0.0, |acc, (n, count)| {

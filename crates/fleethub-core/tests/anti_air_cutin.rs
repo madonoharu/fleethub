@@ -1,36 +1,31 @@
-mod master_data;
+mod common;
 
-use fleethub_core::types::{gear_id, ship_id, GearState, GearVecState, ShipState};
-use master_data::FH_CORE;
+fn test_case(ship_name: &str, gears: Vec<&str>, expected: Vec<u8>) {
+    let get = |index: usize| gears.get(index).unwrap_or(&"").to_string();
 
-fn test_case(ship_id: u16, vec: Vec<u16>, expected: Vec<u8>) {
-    let get_gear_state = |i: usize| {
-        vec.get(i).map(|&gear_id| GearState {
-            gear_id,
-            ..Default::default()
-        })
+    let g1 = get(0);
+    let g2 = get(1);
+    let g3 = get(2);
+    let g4 = get(3);
+    let g5 = get(4);
+    let gx = get(5);
+
+    let ship = ship! {
+        ship_id = ship_name
+        g1 = g1
+        g2 = g2
+        g3 = g3
+        g4 = g4
+        g5 = g5
+        gx = gx
     };
 
-    let ship_state = ShipState {
-        ship_id,
-        gears: GearVecState {
-            g1: get_gear_state(0),
-            g2: get_gear_state(1),
-            g3: get_gear_state(2),
-            g4: get_gear_state(3),
-            g5: get_gear_state(4),
-            gx: get_gear_state(5),
-        },
-        ..Default::default()
-    };
-
-    let ship = FH_CORE.create_ship(Some(ship_state)).unwrap();
     assert_eq!(ship.get_possible_anti_air_cutin_ids(), expected);
 }
 
 macro_rules! table {
-  ($([$ship: tt, $($x:tt),+ $(,)?] => $expected: expr),+ $(,)?) => {
-      $(test_case(ship_id!($ship) ,vec![$(gear_id!($x)),+], $expected.into());)+
+  ($([$ship: expr, $($gear: expr),+ $(,)?] => $expected: expr),+ $(,)?) => {
+      $(test_case($ship, vec![$($gear),+], $expected.into());)+
   };
 }
 
@@ -56,5 +51,11 @@ fn test_anti_air_cutin() {
         ["大和改二", "10cm連装高角砲群 集中配備", "10cm連装高角砲群 集中配備", "15m二重測距儀+21号電探改二"] => [43, 45, 5, 8],
         ["大和改二", "10cm連装高角砲群 集中配備", "15m二重測距儀+21号電探改二", "25mm三連装機銃"] => [44, 45, 8],
         ["大和改二", "10cm連装高角砲群 集中配備", "15m二重測距儀+21号電探改二"] => [45, 8],
+
+        ["大淀改", "10cm連装高角砲改+増設機銃", "12cm30連装噴進砲改二", "13号対空電探"] => [8, 27],
+        ["大淀改", "10cm連装高角砲改+増設機銃", "12cm30連装噴進砲改二"] => [],
+        ["大淀改", "10cm連装高角砲改+増設機銃", "13号対空電探"] => [8],
+        ["大淀改", "12cm30連装噴進砲改二", "13号対空電探"] => [],
+        ["大淀", "10cm連装高角砲改+増設機銃", "12cm30連装噴進砲改二", "13号対空電探"] => [8],
     }
 }

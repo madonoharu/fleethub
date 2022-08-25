@@ -1,6 +1,6 @@
 mod air_battle;
 mod battle_logger;
-mod shelling_support;
+mod support_shelling_simulator;
 
 pub use battle_logger::*;
-pub use shelling_support::*;
+pub use support_shelling_simulator::*;

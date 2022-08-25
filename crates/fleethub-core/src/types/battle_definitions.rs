@@ -1,42 +1,38 @@
-use std::collections::HashMap;
+use std::hash::Hash;
 
+use enumset::EnumSet;
+use hashbrown::HashMap;
+use rand::prelude::*;
 use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, DefaultOnError};
 use tsify::Tsify;
 
 use super::{
-    DayCutin, Formation, NightCutin, NightSpecialAttack, ShellingSpecialAttack, ShipEnvironment,
+    AttackType, DayCutin, DayCutinLike, Formation, NightCutin, NightCutinLike, ShipConditions,
+    ShipEnvironment,
 };
 
-pub struct FormationWarfareModifiers {
+#[serde_as]
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
+pub struct FormationCombatModifiersDef {
+    #[serde_as(as = "DefaultOnError")]
+    #[serde(default = "num_traits::one")]
     pub power_mod: f64,
+    #[serde_as(as = "DefaultOnError")]
+    #[serde(default = "num_traits::one")]
     pub accuracy_mod: f64,
+    #[serde_as(as = "DefaultOnError")]
+    #[serde(default = "num_traits::one")]
     pub evasion_mod: f64,
 }
 
-impl Default for FormationWarfareModifiers {
+impl Default for FormationCombatModifiersDef {
     fn default() -> Self {
         Self {
-            power_mod: 1.0,
-            accuracy_mod: 1.0,
-            evasion_mod: 1.0,
-        }
-    }
-}
-
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub struct FormationWarfareDef {
-    pub power_mod: Option<f64>,
-    pub accuracy_mod: Option<f64>,
-    pub evasion_mod: Option<f64>,
-}
-
-impl FormationWarfareDef {
-    pub fn to_modifiers(&self) -> FormationWarfareModifiers {
-        FormationWarfareModifiers {
-            power_mod: self.power_mod.unwrap_or(1.0),
-            accuracy_mod: self.accuracy_mod.unwrap_or(1.0),
-            evasion_mod: self.evasion_mod.unwrap_or(1.0),
+            power_mod: num_traits::one(),
+            accuracy_mod: num_traits::one(),
+            evasion_mod: num_traits::one(),
         }
     }
 }
@@ -47,11 +43,11 @@ pub struct FormationDef {
     pub tag: Formation,
     pub protection_rate: Option<f64>,
     pub fleet_anti_air_mod: f64,
-    pub shelling: FormationWarfareDef,
-    pub torpedo: FormationWarfareDef,
-    pub asw: FormationWarfareDef,
-    pub night: FormationWarfareDef,
-    pub shelling_support: FormationWarfareDef,
+    pub shelling: FormationCombatModifiersDef,
+    pub torpedo: FormationCombatModifiersDef,
+    pub asw: FormationCombatModifiersDef,
+    pub night: FormationCombatModifiersDef,
+    pub support_shelling: FormationCombatModifiersDef,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
@@ -97,15 +93,16 @@ impl NestedFormationDef {
     }
 }
 
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AntiAirCutinDef {
     pub id: u8,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub type_factor: Option<u8>,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub multiplier: Option<f64>,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub guaranteed: Option<u8>,
     pub sequential: Option<bool>,
 }
@@ -120,16 +117,17 @@ impl AntiAirCutinDef {
     }
 }
 
+#[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 #[tsify(from_wasm_abi)]
 pub struct DayCutinDef {
     pub tag: DayCutin,
     pub hits: u8,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub type_factor: Option<u8>,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub power_mod: Option<f64>,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub accuracy_mod: Option<f64>,
 }
 
@@ -147,20 +145,32 @@ impl Default for CutinModifiers {
     }
 }
 
+impl DayCutinDef {
+    pub fn rate(&self, observation_term: f64) -> f64 {
+        let type_factor = self.type_factor.unwrap_or_default() as f64;
+        (observation_term / type_factor).min(1.0)
+    }
+
+    pub fn gen_bool<R: Rng + ?Sized>(&self, observation_term: f64, rng: &mut R) -> bool {
+        let type_factor = self.type_factor.unwrap_or_default();
+        let a = rng.gen_range(0..type_factor);
+        observation_term > a as f64
+    }
+}
+
+#[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 #[tsify(from_wasm_abi)]
 pub struct NightCutinDef {
     pub tag: NightCutin,
     pub hits: f64,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub type_factor: Option<u8>,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub power_mod: Option<f64>,
-    #[serde(deserialize_with = "serde_with::rust::default_on_error::deserialize")]
+    #[serde_as(as = "DefaultOnError")]
     pub accuracy_mod: Option<f64>,
 }
-
-impl NightCutin where Self: Serialize {}
 
 impl NightCutinDef {
     pub fn to_modifiers(&self) -> CutinModifiers {
@@ -178,36 +188,6 @@ impl NightCutinDef {
         };
 
         Some(rate)
-    }
-}
-
-#[derive(Debug, Default, Clone)]
-pub struct SpecialAttackDef<T> {
-    pub kind: T,
-    pub power_mod: f64,
-    pub accuracy_mod: f64,
-    pub hits: f64,
-}
-
-impl From<&DayCutinDef> for SpecialAttackDef<ShellingSpecialAttack> {
-    fn from(def: &DayCutinDef) -> Self {
-        Self {
-            kind: ShellingSpecialAttack::DayCutin(def.tag),
-            power_mod: def.power_mod.unwrap_or(1.0),
-            accuracy_mod: def.accuracy_mod.unwrap_or(1.0),
-            hits: def.hits.into(),
-        }
-    }
-}
-
-impl From<&NightCutinDef> for SpecialAttackDef<NightSpecialAttack> {
-    fn from(def: &NightCutinDef) -> Self {
-        Self {
-            kind: NightSpecialAttack::NightCutin(def.tag),
-            power_mod: def.power_mod.unwrap_or(1.0),
-            accuracy_mod: def.accuracy_mod.unwrap_or(1.0),
-            hits: def.hits,
-        }
     }
 }
 
@@ -239,5 +219,120 @@ impl BattleDefinitions {
 
     pub fn get_formation_fleet_anti_air_mod(&self, formation: Formation) -> f64 {
         self.get_formation_def(formation, 0, 6).fleet_anti_air_mod
+    }
+
+    pub fn get_day_cutin(&self, cutin: Option<DayCutin>) -> Option<&DayCutinDef> {
+        self.day_cutin.get(&cutin?)
+    }
+
+    pub fn get_night_cutin_defs(
+        &self,
+        set: EnumSet<NightCutin>,
+    ) -> impl Iterator<Item = &NightCutinDef> {
+        set.into_iter()
+            .filter_map(|cutin| self.night_cutin.get(&cutin))
+    }
+
+    pub fn get_formation_params<T: Into<AttackType>>(
+        &self,
+        attack_type: T,
+        attacker: ShipConditions,
+        target: ShipConditions,
+    ) -> FormationParams {
+        let attack_type = attack_type.into();
+
+        let attacker_def = self.get_formation_def(
+            attacker.formation,
+            attacker.position.fleet_len,
+            attacker.position.index,
+        );
+        let target_def = self.get_formation_def(
+            target.formation,
+            target.position.fleet_len,
+            target.position.index,
+        );
+
+        let (attacker_mods, target_mods) = match attack_type {
+            AttackType::Shelling(_) => (&attacker_def.shelling, &target_def.shelling),
+            AttackType::Asw(_) => (&attacker_def.asw, &target_def.asw),
+            AttackType::Night(_) => (&attacker_def.night, &target_def.night),
+            AttackType::Torpedo => (&attacker_def.torpedo, &target_def.torpedo),
+            AttackType::SupportShelling(_) => {
+                (&attacker_def.support_shelling, &target_def.support_shelling)
+            }
+        };
+
+        let is_ineffective = attacker.formation.is_ineffective(target.formation);
+
+        let power_mod = attacker_mods.power_mod;
+        let accuracy_mod = if is_ineffective {
+            1.0
+        } else {
+            attacker_mods.accuracy_mod
+        };
+
+        let target_evasion_mod = target_mods.evasion_mod;
+
+        FormationParams {
+            power_mod,
+            accuracy_mod,
+            target_evasion_mod,
+        }
+    }
+
+    pub fn get_flagship_protection_rate(&self, formation: Formation) -> f64 {
+        let def = self.get_formation_def(formation, 6, 0);
+        def.protection_rate.unwrap_or(0.6)
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct FormationParams {
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub target_evasion_mod: f64,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct SpecialAttackDef<T> {
+    pub kind: T,
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub hits: f64,
+}
+
+impl<T: PartialEq> PartialEq for SpecialAttackDef<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.kind == other.kind
+    }
+}
+
+impl<T: Eq> Eq for SpecialAttackDef<T> {}
+
+impl<T: Hash> Hash for SpecialAttackDef<T> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.kind.hash(state)
+    }
+}
+
+impl From<&DayCutinDef> for SpecialAttackDef<DayCutinLike> {
+    fn from(def: &DayCutinDef) -> Self {
+        Self {
+            kind: def.tag.into(),
+            power_mod: def.power_mod.unwrap_or(1.0),
+            accuracy_mod: def.accuracy_mod.unwrap_or(1.0),
+            hits: def.hits.into(),
+        }
+    }
+}
+
+impl From<&NightCutinDef> for SpecialAttackDef<NightCutinLike> {
+    fn from(def: &NightCutinDef) -> Self {
+        Self {
+            kind: def.tag.into(),
+            power_mod: def.power_mod.unwrap_or(1.0),
+            accuracy_mod: def.accuracy_mod.unwrap_or(1.0),
+            hits: def.hits,
+        }
     }
 }

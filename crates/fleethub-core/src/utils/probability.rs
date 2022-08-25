@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-fn exactly_n_of(vec: &Vec<f64>, n: usize) -> f64 {
+fn exactly_n_of(vec: &[f64], n: usize) -> f64 {
     vec.iter()
         .combinations(n)
         .map(|c| {
@@ -17,7 +17,7 @@ fn exactly_n_of(vec: &Vec<f64>, n: usize) -> f64 {
 
 #[allow(dead_code)]
 fn at_least_n_of(vec: &Vec<f64>, n: usize) -> f64 {
-    (n..=vec.len()).map(|n| exactly_n_of(&vec, n)).sum()
+    (n..=vec.len()).map(|n| exactly_n_of(vec, n)).sum()
 }
 
 #[cfg(test)]

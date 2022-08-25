@@ -1,16 +1,16 @@
 import { styled } from "@mui/material";
-import type { AttackInfoItem } from "fleethub-core";
+import type { AttackReport } from "fleethub-core";
 import React from "react";
 
 import { toPercent } from "../../../utils";
 
 interface Props {
-  item: AttackInfoItem<unknown>;
+  item: AttackReport<unknown>;
 }
 
 const ProcRateCell: React.FCX<Props> = ({ className, item }) => {
-  const rate = item.rate;
-  const hits = item.stats.hits;
+  const rate = item.proc_rate;
+  const hits = item.hits;
 
   const n1 = Math.floor(hits);
   const n2 = n1 + 1;

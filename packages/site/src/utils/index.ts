@@ -14,8 +14,8 @@ export function withSign(num?: number): string {
   }
 }
 
-export function numstr(v: number | null | undefined, precision = 3): string {
-  if (v === null || v === undefined) {
+export function numstr(v: unknown, precision = 3): string {
+  if (typeof v !== "number") {
     return "";
   } else if (Number.isInteger(v)) {
     return v.toString();

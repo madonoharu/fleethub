@@ -1,115 +1,69 @@
-use std::{hash::Hash, ops::Range};
-
 use rand::prelude::*;
 
 use crate::{
     ship::Ship,
-    types::{MoraleState, Side},
-    utils::{NumMap, RandomRange, RandomRangeToDistribution, ToDistribution},
+    types::{DefensePower, MoraleState, Side},
+    utils::{Density, Histogram},
 };
 
 use super::{AttackPower, HitType};
 
-#[derive(Debug, Hash, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 enum DamageType {
-    Just(u16),
+    Actual(u16),
     Scratch,
     OverkillProtection,
 }
 
-pub struct DefensePowerRange {
-    // 最小1.0
-    basic_defense_power: f64,
-}
-
-impl DefensePowerRange {
-    pub fn new(basic_defense_power: f64) -> Self {
-        Self {
-            basic_defense_power,
-        }
-    }
-
-    pub fn min(&self) -> f64 {
-        self.start()
-    }
-
-    pub fn max(&self) -> f64 {
-        self.last().unwrap_or_else(|| self.start())
-    }
-}
-
-impl RandomRange<u16, f64> for DefensePowerRange {
-    fn gen(&self, random_value: u16) -> f64 {
-        let min = self.basic_defense_power * 0.7;
-        min + random_value as f64 * 0.6
-    }
-
-    fn range(&self) -> Range<u16> {
-        0..(self.basic_defense_power.floor() as u16)
-    }
-}
-
-pub struct ScratchDamageRange {
+struct ScratchDamage {
     current_hp: u16,
 }
 
-impl ScratchDamageRange {
-    pub fn new(current_hp: u16) -> Self {
-        Self { current_hp }
+impl ScratchDamage {
+    fn iter(&self) -> impl DoubleEndedIterator<Item = u16> {
+        let current_hp = self.current_hp;
+        let range = 0..current_hp.max(1);
+        range.map(move |v| (current_hp as f64 * 0.06 + v as f64 * 0.08) as u16)
     }
 
-    pub fn min(&self) -> u16 {
-        self.start()
+    fn choose<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
+        self.iter().choose(rng).unwrap_or_default()
     }
 
-    pub fn max(&self) -> u16 {
-        self.last().unwrap_or_default()
-    }
-}
-
-impl RandomRange<u16, u16> for ScratchDamageRange {
-    fn gen(&self, random_value: u16) -> u16 {
-        (self.current_hp as f64 * 0.06 + random_value as f64 * 0.08).floor() as u16
+    fn min(&self) -> u16 {
+        self.iter().next().unwrap_or_default()
     }
 
-    fn range(&self) -> Range<u16> {
-        if self.current_hp == 0 {
-            0..1
-        } else {
-            0..self.current_hp
-        }
+    fn max(&self) -> u16 {
+        self.iter().next_back().unwrap_or_default()
     }
 }
 
-pub struct OverkillProtectionDamageRange {
+struct OverkillProtectionDamage {
     current_hp: u16,
 }
 
-impl OverkillProtectionDamageRange {
-    pub fn new(current_hp: u16) -> Self {
-        Self { current_hp }
+impl OverkillProtectionDamage {
+    fn iter(&self) -> impl DoubleEndedIterator<Item = u16> {
+        let current_hp = self.current_hp;
+        let range = 0..current_hp.max(1);
+        range.map(move |v| (current_hp as f64 * 0.5 + v as f64 * 0.3) as u16)
     }
 
-    pub fn min(&self) -> u16 {
-        self.start()
+    fn choose<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
+        self.iter().choose(rng).unwrap_or_default()
     }
 
-    pub fn max(&self) -> u16 {
-        self.last().unwrap_or_default()
-    }
-}
-
-impl RandomRange<u16, u16> for OverkillProtectionDamageRange {
-    fn gen(&self, random_value: u16) -> u16 {
-        (self.current_hp as f64 * 0.5 + random_value as f64 * 0.3).floor() as u16
+    fn min(&self) -> u16 {
+        self.iter().next().unwrap_or_default()
     }
 
-    fn range(&self) -> Range<u16> {
-        0..self.current_hp
+    fn max(&self) -> u16 {
+        self.iter().next_back().unwrap_or_default()
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct DefenseParams {
     pub max_hp: u16,
     pub current_hp: u16,
@@ -131,27 +85,49 @@ impl DefenseParams {
             sinkable,
         })
     }
-
-    fn defense_power_range(&self) -> DefensePowerRange {
-        DefensePowerRange {
-            basic_defense_power: self.basic_defense_power,
-        }
-    }
 }
 
 pub struct Damage {
     pub hit_type: HitType,
-    pub attack_power: AttackPower,
-    pub defense_params: DefenseParams,
+    pub attack_term: f64,
+    pub remaining_ammo_mod: f64,
+    pub current_hp: u16,
+    pub basic_defense_power: f64,
+    pub overkill_protection: bool,
+    pub sinkable: bool,
     pub is_cutin: bool,
 }
 
 impl Damage {
-    fn attack_term(&self) -> f64 {
-        match self.hit_type {
+    pub fn new(
+        hit_type: HitType,
+        attack_power: AttackPower,
+        defense_params: DefenseParams,
+        is_cutin: bool,
+    ) -> Self {
+        let attack_term = match hit_type {
             HitType::Miss => 0.0,
-            HitType::Normal => self.attack_power.normal,
-            HitType::Critical => self.attack_power.critical,
+            HitType::Normal => attack_power.normal,
+            HitType::Critical => attack_power.critical,
+        };
+
+        let DefenseParams {
+            current_hp,
+            basic_defense_power,
+            overkill_protection,
+            sinkable,
+            ..
+        } = defense_params;
+
+        Self {
+            hit_type,
+            attack_term,
+            remaining_ammo_mod: attack_power.remaining_ammo_mod,
+            current_hp,
+            basic_defense_power,
+            overkill_protection,
+            sinkable,
+            is_cutin,
         }
     }
 
@@ -160,76 +136,83 @@ impl Damage {
             return if self.is_cutin {
                 DamageType::Scratch
             } else {
-                DamageType::Just(0)
+                DamageType::Actual(0)
             };
         }
 
         let effective_defense_power = defense_power.max(1.0);
-        let value = ((self.attack_term() - effective_defense_power)
-            * self.attack_power.remaining_ammo_mod)
+        let value = ((self.attack_term - effective_defense_power) * self.remaining_ammo_mod)
             .floor()
             .max(0.0) as u16;
 
-        let current_hp = self.defense_params.current_hp;
+        let current_hp = self.current_hp;
 
         if 0 == value {
             DamageType::Scratch
         } else if value < current_hp {
-            DamageType::Just(value)
-        } else if self.defense_params.overkill_protection {
+            DamageType::Actual(value)
+        } else if self.overkill_protection {
             DamageType::OverkillProtection
-        } else if self.defense_params.sinkable {
-            DamageType::Just(value)
+        } else if self.sinkable {
+            DamageType::Actual(value)
         } else if current_hp <= 1 {
-            DamageType::Just(0)
+            DamageType::Actual(0)
         } else {
-            DamageType::Just(current_hp - 1)
+            DamageType::Actual(current_hp - 1)
         }
     }
 
-    pub fn scratch_damage_range(&self) -> ScratchDamageRange {
-        ScratchDamageRange::new(self.defense_params.current_hp)
+    fn defense_power(&self) -> DefensePower {
+        DefensePower::new(self.basic_defense_power)
     }
 
-    pub fn overkill_protection_damage_range(&self) -> OverkillProtectionDamageRange {
-        OverkillProtectionDamageRange::new(self.defense_params.current_hp)
+    fn scratch_damage(&self) -> ScratchDamage {
+        ScratchDamage {
+            current_hp: self.current_hp,
+        }
+    }
+
+    fn overkill_protection_damage(&self) -> OverkillProtectionDamage {
+        OverkillProtectionDamage {
+            current_hp: self.current_hp,
+        }
     }
 
     pub fn min(&self) -> u16 {
-        let max_defense_power = self.defense_params.defense_power_range().max();
+        let max_defense_power = self.defense_power().max();
         let damage_type = self.calc_damage_type(max_defense_power);
 
         match damage_type {
-            DamageType::Just(value) => value,
-            DamageType::Scratch => self.scratch_damage_range().min(),
-            DamageType::OverkillProtection => self.overkill_protection_damage_range().min(),
+            DamageType::Actual(value) => value,
+            DamageType::Scratch => self.scratch_damage().min(),
+            DamageType::OverkillProtection => self.overkill_protection_damage().min(),
         }
     }
 
     pub fn max(&self) -> u16 {
-        let min_defense_power = self.defense_params.defense_power_range().min();
+        let min_defense_power = self.defense_power().min();
         let damage_type = self.calc_damage_type(min_defense_power);
 
         match damage_type {
-            DamageType::Just(value) => value,
-            DamageType::Scratch => self.scratch_damage_range().max(),
-            DamageType::OverkillProtection => self.overkill_protection_damage_range().max(),
+            DamageType::Actual(value) => value,
+            DamageType::Scratch => self.scratch_damage().max(),
+            DamageType::OverkillProtection => self.overkill_protection_damage().max(),
         }
     }
 
-    pub fn gen<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
-        let defense_power = self.defense_params.defense_power_range().choose(rng);
+    pub fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
+        let defense_power = self.defense_power().choose(rng);
         let damage_type = self.calc_damage_type(defense_power);
 
         match damage_type {
-            DamageType::Just(value) => value,
-            DamageType::Scratch => self.scratch_damage_range().choose(rng),
-            DamageType::OverkillProtection => self.overkill_protection_damage_range().choose(rng),
+            DamageType::Actual(value) => value,
+            DamageType::Scratch => self.scratch_damage().choose(rng),
+            DamageType::OverkillProtection => self.overkill_protection_damage().choose(rng),
         }
     }
 
     pub fn scratch_rate(&self) -> f64 {
-        let defense_power_vec = self.defense_params.defense_power_range().to_vec();
+        let defense_power_vec = self.defense_power().to_vec();
 
         let len = defense_power_vec.len() as f64;
 
@@ -244,76 +227,57 @@ impl Damage {
         scratch_count / len
     }
 
-    pub fn to_distribution(&self) -> NumMap<u16, f64> {
+    fn damage_type_density(&self) -> Histogram<DamageType, f64> {
         if self.hit_type == HitType::Miss {
-            return if self.is_cutin {
-                self.scratch_damage_range().to_distribution()
+            if self.is_cutin {
+                Some(DamageType::Scratch).density()
             } else {
-                Some((0, 1.0)).into_iter().collect()
-            };
+                Some(DamageType::Actual(0)).density()
+            }
+        } else {
+            self.defense_power()
+                .iter()
+                .map(|defense_power| self.calc_damage_type(defense_power))
+                .density()
         }
+    }
 
-        let mut just_count = 0.0;
-        let mut scratch_count = 0.0;
-        let mut overkill_protection_count = 0.0;
+    pub fn density(&self) -> Histogram<u16, f64> {
+        let damage_type_density = self.damage_type_density();
 
-        let just_damages = self
-            .defense_params
-            .defense_power_range()
-            .to_vec()
+        damage_type_density
             .into_iter()
-            .map(|defense_power| {
-                let damage_type = self.calc_damage_type(defense_power);
-
-                match damage_type {
-                    DamageType::Just(_) => just_count += 1.0,
-                    DamageType::Scratch => scratch_count += 1.0,
-                    DamageType::OverkillProtection => overkill_protection_count += 1.0,
+            .map(|(damage_type, rate)| {
+                let current_density = match damage_type {
+                    DamageType::Actual(value) => Some(value).density(),
+                    DamageType::Scratch => self.scratch_damage().iter().density(),
+                    DamageType::OverkillProtection => {
+                        self.overkill_protection_damage().iter().density()
+                    }
                 };
 
-                damage_type
+                current_density * rate
             })
-            .filter_map(|damage_type| match damage_type {
-                DamageType::Just(value) => Some(value),
-                _ => None,
-            })
-            .collect::<Vec<_>>();
-
-        let total_count = just_count + scratch_count + overkill_protection_count;
-
-        let just_rate = just_count / total_count;
-        let scratch_rate = scratch_count / total_count;
-        let overkill_rate = overkill_protection_count / total_count;
-
-        let scratch_distribution = self.scratch_damage_range().to_distribution();
-        let overkill_distribution = self.overkill_protection_damage_range().to_distribution();
-        let just_distribution = just_damages.into_iter().to_distribution();
-
-        let damage_map = just_distribution * just_rate
-            + scratch_distribution * scratch_rate
-            + overkill_distribution * overkill_rate;
-
-        damage_map
+            .sum()
     }
 }
 
 #[cfg(test)]
 mod test {
+    use crate::{histogram, test::rng};
+
     use super::*;
 
     #[test]
-    fn test_scratch_damage() {
-        let mut rng = SmallRng::seed_from_u64(0);
+    fn test_internal_scratch_damage() {
+        let hp0_damage = ScratchDamage { current_hp: 0 };
+        assert!(hp0_damage.iter().collect::<Vec<_>>() == vec![0]);
+        assert_eq!(hp0_damage.choose(&mut rng(0)), 0);
 
-        let hp0_damage = ScratchDamageRange { current_hp: 0 };
-
-        assert!(hp0_damage.to_vec() == vec![0]);
-        assert_eq!(hp0_damage.choose(&mut rng), 0);
-
-        let hp100_damage = ScratchDamageRange { current_hp: 100 };
+        let hp100_damage = ScratchDamage { current_hp: 100 };
 
         assert_eq!(
-            hp100_damage.to_vec(),
+            hp100_damage.iter().collect::<Vec<_>>(),
             vec![
                 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8,
                 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10,
@@ -323,23 +287,24 @@ mod test {
             ]
         );
 
-        assert_eq!(hp100_damage.choose(&mut rng), 9);
-        assert_eq!(hp100_damage.choose(&mut rng), 13);
+        assert_eq!(hp100_damage.choose(&mut rng(0)), 9);
+        assert_eq!(hp100_damage.choose(&mut rng(1)), 11);
     }
 
     #[test]
-    fn test_overkill_protection_damage() {
-        let mut rng = SmallRng::seed_from_u64(0);
+    fn test_internal_overkill_protection_damage() {
+        let hp0_damage = OverkillProtectionDamage { current_hp: 0 };
+        assert_eq!(hp0_damage.iter().collect::<Vec<_>>(), vec![0]);
+        assert_eq!(hp0_damage.choose(&mut rng(0)), 0);
 
-        let hp0_damage = OverkillProtectionDamageRange { current_hp: 0 };
+        let hp1_damage = OverkillProtectionDamage { current_hp: 1 };
+        assert_eq!(hp1_damage.iter().collect::<Vec<_>>(), vec![0]);
+        assert_eq!(hp1_damage.choose(&mut rng(0)), 0);
 
-        assert!(hp0_damage.to_vec().is_empty());
-        assert_eq!(hp0_damage.choose(&mut rng), 0);
-
-        let hp100_damage = OverkillProtectionDamageRange { current_hp: 100 };
+        let hp100_damage = OverkillProtectionDamage { current_hp: 100 };
 
         assert_eq!(
-            hp100_damage.to_vec(),
+            hp100_damage.iter().collect::<Vec<_>>(),
             vec![
                 50, 50, 50, 50, 51, 51, 51, 52, 52, 52, 53, 53, 53, 53, 54, 54, 54, 55, 55, 55, 56,
                 56, 56, 56, 57, 57, 57, 58, 58, 58, 59, 59, 59, 59, 60, 60, 60, 61, 61, 61, 62, 62,
@@ -349,6 +314,188 @@ mod test {
             ]
         );
 
-        assert_eq!(hp100_damage.choose(&mut rng), 63);
+        assert_eq!(hp100_damage.choose(&mut rng(0)), 63);
+    }
+
+    const BASE_DAMAGE: Damage = Damage {
+        attack_term: 17.0,
+        hit_type: HitType::Normal,
+        remaining_ammo_mod: 1.0,
+        current_hp: 31,
+        basic_defense_power: 13.0,
+        overkill_protection: false,
+        sinkable: false,
+        is_cutin: false,
+    };
+
+    #[test]
+    fn test_normal_damage() {
+        assert_eq!(
+            BASE_DAMAGE.damage_type_density(),
+            histogram! {
+                DamageType::Actual(1) => 0.15384615384615385,
+                DamageType::Actual(2) => 0.07692307692307693,
+                DamageType::Actual(3) => 0.15384615384615385,
+                DamageType::Actual(4) => 0.15384615384615385,
+                DamageType::Actual(5) => 0.07692307692307693,
+                DamageType::Actual(6) => 0.15384615384615385,
+                DamageType::Actual(7) => 0.15384615384615385,
+                DamageType::Scratch => 0.07692307692307693,
+            }
+        );
+
+        assert_eq!(
+            BASE_DAMAGE.density(),
+            histogram! {
+                1 => 0.1588089330024814,
+                2 => 0.10918114143920596,
+                3 => 0.18362282878411912,
+                4 => 0.16377171215880895,
+                5 => 0.07692307692307693,
+                6 => 0.15384615384615385,
+                7 => 0.15384615384615385,
+            }
+        );
+    }
+
+    #[test]
+    fn test_remaining_ammo_mod() {
+        let damage = Damage {
+            remaining_ammo_mod: 0.6,
+            ..BASE_DAMAGE
+        };
+
+        assert_eq!(
+            damage.damage_type_density(),
+            histogram! {
+                DamageType::Actual(1) => 0.23076923076923078,
+                DamageType::Actual(2) => 0.23076923076923078,
+                DamageType::Actual(3) => 0.15384615384615385,
+                DamageType::Actual(4) => 0.23076923076923078,
+                DamageType::Scratch => 0.15384615384615385,
+            }
+        );
+
+        assert_eq!(
+            damage.density(),
+            histogram! {
+                1 => 0.24069478908188588,
+                2 => 0.29528535980148884,
+                3 => 0.21339950372208438,
+                4 => 0.250620347394541,
+            }
+        );
+    }
+
+    #[test]
+    fn test_miss_damage() {
+        let miss_damage = Damage {
+            hit_type: HitType::Miss,
+            ..BASE_DAMAGE
+        };
+
+        assert_eq!(
+            miss_damage.damage_type_density(),
+            histogram! {
+                DamageType::Actual(0) => 1.0,
+            }
+        );
+
+        let cutin = Damage {
+            is_cutin: true,
+            ..miss_damage
+        };
+
+        assert_eq!(
+            cutin.damage_type_density(),
+            histogram! {
+                DamageType::Scratch => 1.0,
+            }
+        );
+
+        assert_eq!(
+            cutin.density(),
+            histogram! {
+                1 => 0.06451612903225806,
+                2 => 0.41935483870967744,
+                3 => 0.3870967741935484,
+                4 => 0.12903225806451613,
+            }
+        );
+    }
+
+    #[test]
+    fn test_overkill_protection() {
+        let damage = Damage {
+            attack_term: 45.0,
+            overkill_protection: true,
+            ..BASE_DAMAGE
+        };
+
+        assert_eq!(
+            damage.damage_type_density(),
+            histogram! {
+                DamageType::Actual(29) => 0.15384615384615385,
+                DamageType::Actual(30) => 0.07692307692307693,
+                DamageType::Actual(28) => 0.07692307692307693,
+                DamageType::OverkillProtection => 0.6923076923076923,
+            }
+        );
+
+        assert_eq!(
+            damage.density(),
+            histogram! {
+                15 => 0.04466501240694789,
+                16 => 0.06699751861042183,
+                17 => 0.08933002481389578,
+                18 => 0.06699751861042183,
+                19 => 0.06699751861042183,
+                20 => 0.08933002481389578,
+                21 => 0.06699751861042183,
+                22 => 0.06699751861042183,
+                23 => 0.08933002481389578,
+                24 => 0.04466501240694789,
+                28 => 0.07692307692307693,
+                29 => 0.15384615384615385,
+                30 => 0.07692307692307693,
+            }
+        );
+    }
+
+    #[test]
+    fn test_sinkable_damage() {
+        let damage = Damage {
+            attack_term: 45.0,
+            sinkable: true,
+            ..BASE_DAMAGE
+        };
+
+        assert_eq!(
+            damage.damage_type_density(),
+            histogram! {
+                DamageType::Actual(28) => 0.07692307692307693,
+                DamageType::Actual(29) => 0.15384615384615385,
+                DamageType::Actual(30) => 0.07692307692307693,
+                DamageType::Actual(31) => 0.15384615384615385,
+                DamageType::Actual(32) => 0.15384615384615385,
+                DamageType::Actual(33) => 0.07692307692307693,
+                DamageType::Actual(34) => 0.15384615384615385,
+                DamageType::Actual(35) => 0.15384615384615385,
+            }
+        );
+
+        assert_eq!(
+            damage.density(),
+            histogram! {
+                28 => 0.07692307692307693,
+                29 => 0.15384615384615385,
+                30 => 0.07692307692307693,
+                31 => 0.15384615384615385,
+                32 => 0.15384615384615385,
+                33 => 0.07692307692307693,
+                34 => 0.15384615384615385,
+                35 => 0.15384615384615385,
+            }
+        );
     }
 }

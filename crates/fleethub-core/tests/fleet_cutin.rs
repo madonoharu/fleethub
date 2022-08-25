@@ -1,17 +1,17 @@
-mod master_data;
+mod common;
 
+use common::fleet_from_toml;
 use fleethub_core::{
     attack::{get_possible_fleet_cutin_effect_vec, FleetCutinEffect},
-    types::{Engagement, FleetCutin, Formation},
+    types::{Engagement, FleetCutin, Formation, Time},
 };
-use master_data::fleet_from_toml;
-use toml::toml;
+use toml_edit::easy::{toml, Value};
 
 fn assert_fleet_cutin(
-    value: toml::Value,
+    value: Value,
     formation: Formation,
     engagement: Engagement,
-    is_night: bool,
+    time: Time,
     cutin: FleetCutin,
     expected: impl IntoIterator<Item = (usize, f64)>,
 ) {
@@ -20,14 +20,10 @@ fn assert_fleet_cutin(
         attacks: expected.into_iter().collect(),
     };
 
-    let result = get_possible_fleet_cutin_effect_vec(
-        &fleet_from_toml(value),
-        formation,
-        engagement,
-        is_night,
-    )
-    .into_iter()
-    .any(|effect| effect == expected_effect);
+    let result =
+        get_possible_fleet_cutin_effect_vec(&fleet_from_toml(value), formation, engagement, time)
+            .into_iter()
+            .any(|effect| effect == expected_effect);
 
     assert!(result)
 }
@@ -45,7 +41,7 @@ fn test_nelson_touch() {
         },
         Formation::DOUBLE_LINE,
         Engagement::Parallel,
-        false,
+        Time::Day,
         FleetCutin::NelsonTouch,
         [(0, 2.0), (2, 2.0), (4, 2.0)],
     );
@@ -62,7 +58,7 @@ fn test_nelson_touch() {
         },
         Formation::DOUBLE_LINE,
         Engagement::RedT,
-        false,
+        Time::Day,
         FleetCutin::NelsonTouch,
         [(0, 2.0 * 1.25), (2, 2.0 * 1.25), (4, 2.0 * 1.25)],
     );
@@ -81,7 +77,7 @@ fn test_nagato_class_cutin() {
         },
         Formation::ECHELON,
         Engagement::Parallel,
-        false,
+        Time::Day,
         FleetCutin::NagatoClassCutin,
         [(0, 1.4 * 1.2), (0, 1.4 * 1.2), (1, 1.4 * 1.2)],
     );
@@ -98,7 +94,7 @@ fn test_nagato_class_cutin() {
         },
         Formation::ECHELON,
         Engagement::Parallel,
-        false,
+        Time::Day,
         FleetCutin::NagatoClassCutin,
         [(0, 1.4 * 1.2 * 1.15), (0, 1.4 * 1.2 * 1.15), (1, 1.4 * 1.2)],
     );
@@ -117,7 +113,7 @@ fn test_colorado_class_cutin() {
         },
         Formation::ECHELON,
         Engagement::Parallel,
-        false,
+        Time::Day,
         FleetCutin::ColoradoClassCutin,
         [(0, 1.5), (1, 1.3), (2, 1.3)],
     );
@@ -136,7 +132,7 @@ fn test_kongou_cutin() {
         },
         Formation::LINE_AHEAD,
         Engagement::Parallel,
-        true,
+        Time::Night,
         FleetCutin::KongouClassCutin,
         [(0, 2.2), (1, 2.2)],
     );
@@ -155,7 +151,7 @@ fn test_yamato_2ship_cutin() {
         },
         Formation::ECHELON,
         Engagement::Parallel,
-        false,
+        Time::Day,
         FleetCutin::Yamato2ShipCutin,
         [(0, 1.4 * 1.1), (0, 1.4 * 1.1), (1, 1.55 * 1.2)],
     );
@@ -185,7 +181,7 @@ fn test_yamato_3ship_cutin() {
                 value,
                 Formation::ECHELON,
                 Engagement::Parallel,
-                false,
+                Time::Day,
                 FleetCutin::Yamato3ShipCutin,
                 $expected
             )

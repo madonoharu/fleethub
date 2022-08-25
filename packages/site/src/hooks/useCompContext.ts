@@ -1,22 +1,11 @@
 import { Path, PathValue } from "@fh/utils";
 import constate from "constate";
-import { Comp, Engagement, Formation, NightConditions } from "fleethub-core";
+import { Comp, CompAnalyzerConfig } from "fleethub-core";
 import set from "lodash/set";
 import React, { useCallback } from "react";
 import { useImmer } from "use-immer";
 
 import { useFhCore } from "./useFhCore";
-
-type FleetInfoState = {
-  engagement: Engagement;
-  formation: Formation;
-  shipAntiAirResist: number;
-  fleetAntiAirResist: number;
-  anti_air_cutin: number | null;
-
-  attackerNightConditions: NightConditions;
-  targetNightConditions: NightConditions;
-};
 
 type Props = {
   comp: Comp;
@@ -26,33 +15,32 @@ type Props = {
 const useComp = ({ comp }: Props) => {
   const { analyzer } = useFhCore();
 
-  const [state, update] = useImmer<FleetInfoState>({
+  const [config, updateConfig] = useImmer<CompAnalyzerConfig>({
     engagement: "Parallel",
     formation: comp.default_formation(),
-    shipAntiAirResist: 1,
-    fleetAntiAirResist: 1,
+    ship_anti_air_resist: 1,
+    fleet_anti_air_resist: 1,
     anti_air_cutin: null,
-
-    attackerNightConditions: {},
-    targetNightConditions: {},
+    left_night_fleet_conditions: {},
+    right_night_fleet_conditions: {},
   });
 
   const bind = useCallback(
-    <P extends Path<FleetInfoState>>(path: P) => {
-      return (value: PathValue<FleetInfoState, P>) => {
-        update((draft) => {
+    <P extends Path<CompAnalyzerConfig>>(path: P) => {
+      return (value: PathValue<CompAnalyzerConfig, P>) => {
+        updateConfig((draft) => {
           set(draft, path, value);
         });
       };
     },
-    [update]
+    [updateConfig]
   );
 
   return {
     comp,
     analyzer,
-    state,
-    update,
+    config,
+    updateConfig,
     bind,
   };
 };

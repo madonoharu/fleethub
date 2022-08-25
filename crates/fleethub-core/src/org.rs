@@ -14,7 +14,8 @@ use crate::{
 pub struct Org {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
-    pub xxh3: u64,
+    #[wasm_bindgen(readonly)]
+    pub hash: u64,
 
     #[wasm_bindgen(skip)]
     pub f1: Fleet,
@@ -32,7 +33,9 @@ pub struct Org {
     #[wasm_bindgen(skip)]
     pub a3: AirSquadron,
 
+    #[wasm_bindgen(readonly)]
     pub hq_level: u8,
+    #[wasm_bindgen(readonly)]
     pub org_type: OrgType,
     #[wasm_bindgen(getter_with_clone)]
     pub sortie: String,

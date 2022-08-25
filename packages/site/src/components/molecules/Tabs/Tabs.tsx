@@ -19,14 +19,20 @@ const smallStyle = css`
   }
 `;
 
-export type TabItem = {
+interface TabItemProps extends MuiTabProps {
   panel: React.ReactNode;
-} & MuiTabProps;
+}
+
+export type TabItem = TabItemProps | null | undefined | false;
+
+function isTabItemProps(item: TabItem): item is TabItemProps {
+  return Boolean(item);
+}
 
 type TabsPropsBase = {
   value?: number;
   onChange?: (value: number) => void;
-  list: (TabItem | null | undefined | false)[];
+  list: TabItem[];
   size?: "small";
 };
 
@@ -41,13 +47,16 @@ const Tabs: React.FC<TabsProps> = ({
   ...rest
 }) => {
   const [inner, setInner] = React.useState(0);
+  const entries = list
+    .filter(isTabItemProps)
+    .map((item, index): [number, TabItemProps] => [index, item]);
+  const map = new Map(entries);
 
-  let current = value ?? inner;
-  let item = list.at(current);
+  let index = value ?? inner;
+  let item = map.get(index);
 
-  if (list.length > 0 && !item) {
-    current = 0;
-    item = list.at(0);
+  if (!item && entries.length > 0) {
+    [index, item] = entries[0];
   }
 
   const handleChange = (event: React.SyntheticEvent, next: number) => {
@@ -57,15 +66,10 @@ const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div className={className} css={size === "small" && smallStyle}>
-      <MuiTabs value={current} onChange={handleChange} {...rest}>
-        {list.map((item, index) => {
-          if (!item) {
-            return null;
-          }
-
+      <MuiTabs value={index} onChange={handleChange} {...rest}>
+        {entries.map(([index, item]) => {
           const { panel: _, ...tabProps } = item;
-
-          return <MuiTab key={index} {...tabProps} />;
+          return <MuiTab key={index} value={index} {...tabProps} />;
         })}
       </MuiTabs>
 

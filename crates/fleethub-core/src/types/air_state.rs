@@ -1,17 +1,20 @@
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
 use tsify::Tsify;
 
 use super::Side;
 
-#[derive(Debug, Default, Clone, Copy, Hash, Serialize, Deserialize, Tsify)]
+#[derive(
+    Debug, Default, Clone, Copy, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, Tsify,
+)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum AirState {
     /// 制空確保
+    #[default]
     AirSupremacy,
     /// 制空優勢
     AirSuperiority,
     /// 制空均衡
-    #[default]
     AirParity,
     /// 制空劣勢
     AirDenial,
@@ -20,6 +23,10 @@ pub enum AirState {
 }
 
 impl AirState {
+    pub const fn air_parity() -> Self {
+        Self::AirParity
+    }
+
     pub fn new(player: i32, enemy: i32) -> Self {
         if player >= enemy * 3 {
             Self::AirSupremacy
@@ -74,17 +81,18 @@ impl AirState {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Tsify,
+    Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Tsify,
 )]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum AirStateRank {
     /// 喪失時の味方 | 確保時の敵 | 均衡
+    #[default]
     Rank0,
     /// 劣勢時の味方 | 優勢時の敵
     Rank1,
     /// 優勢時の味方 | 劣勢時の敵
     Rank2,
-    /// 制空時の味方 | 喪失時の敵
+    /// 確保時の味方 | 喪失時の敵
     Rank3,
 }
 

@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-
+use hashbrown::HashMap;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
