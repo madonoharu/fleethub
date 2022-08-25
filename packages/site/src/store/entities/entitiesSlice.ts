@@ -8,7 +8,7 @@ import {
 } from "@reduxjs/toolkit";
 import { Formation, GearState, OrgState, ShipState } from "fleethub-core";
 import xor from "lodash/xor";
-import { Entities, normalize } from "ts-norm";
+import { Entities, nonNullable, normalize } from "ts-norm";
 
 import { airSquadronsSlice } from "./airSquadronsSlice";
 import { ENTITIES_SLICE_NAME, ormAdapters } from "./base";
@@ -405,11 +405,23 @@ export const entitiesSlice = createSlice({
         entities
       );
 
+      const presetGearIds = Object.values(state.presets.entities)
+        .flatMap((preset) => GEAR_KEYS.map((key) => preset?.[key]))
+        .filter(nonNullable);
+
       schemaKeys.forEach((key) => {
         const dict = affectedEntities[key] || {};
-        const ids = Object.keys(dict);
+        const allowlist = Object.keys(dict);
         const adapter: EntityStateAdapter<unknown> = ormAdapters[key];
-        adapter.removeMany(state[key], xor(ids, state[key].ids));
+
+        if (key === "gears") {
+          allowlist.push(...presetGearIds);
+        }
+        if (key === "presets") {
+          return;
+        }
+
+        adapter.removeMany(state[key], xor(allowlist, state[key].ids));
       });
     },
   },

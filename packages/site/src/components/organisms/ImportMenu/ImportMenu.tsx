@@ -62,6 +62,7 @@ const ImportForm: React.FCX<ImportFormProps> = ({ onSuccess, onError }) => {
     <Flexbox gap={1}>
       <TextField ref={ref} fullWidth />
       <ImportButton
+        size="medium"
         onClick={() => {
           void asyncParse.execute();
         }}

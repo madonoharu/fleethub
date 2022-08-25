@@ -140,7 +140,14 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
 
       <Stack gap={1} flexDirection="row">
         <Stack gap={1} flexBasis="100%">
-          <ShipCard ship={ship} comp={comp} visibleMiscStats disableDetails />
+          <ShipCard
+            ship={ship}
+            comp={comp}
+            visibleMiscStats
+            visibleDetails={false}
+            visibleUpdate={false}
+            visibleRemove={false}
+          />
           <CustomModifiersDialog ship={ship} />
         </Stack>
         <AttackPowerAnalyzer

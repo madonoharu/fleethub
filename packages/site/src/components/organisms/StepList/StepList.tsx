@@ -106,7 +106,7 @@ const StepList: React.FCX<StepListProps> = ({ className, file }) => {
           onChange={(route_sup) => actions.update({ route_sup })}
         />
 
-        <DeleteButton onClick={removeSteps} />
+        <DeleteButton size="medium" onClick={removeSteps} />
       </Flexbox>
 
       {steps.map((step, index) => (

@@ -51,6 +51,7 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
         step={step}
       />
       <RestartAltButton
+        size="medium"
         title={t("Reset")}
         sx={{ ml: 1 }}
         onClick={handleReset}

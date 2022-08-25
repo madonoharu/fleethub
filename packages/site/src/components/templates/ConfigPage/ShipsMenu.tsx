@@ -51,6 +51,7 @@ const ShipsMenu: React.FC = () => {
               <ShipNameplate shipId={id} sx={{ height: 40 }} />
             </Button>
             <DeleteButton
+              size="medium"
               onClick={() => {
                 dispatch(configSlice.actions.removeMasterShip(id));
               }}

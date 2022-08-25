@@ -75,6 +75,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
           />
         ) : null}
         <InfoButton
+          size="medium"
           css={{ gridColumn: "2", gridRow: "1 / span 2" }}
           title={t("Details")}
           onClick={Modal.show}

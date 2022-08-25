@@ -69,7 +69,7 @@ const StepListItem: React.FCX<StepListItemProps> = ({
               {t("Details")}
             </Button>
 
-            <DeleteButton onClick={handleRemove} />
+            <DeleteButton size="medium" onClick={handleRemove} />
           </Flexbox>
 
           <ShipBannerGroup
