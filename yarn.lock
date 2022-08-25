@@ -666,7 +666,7 @@ __metadata:
     clsx: ^1.2.1
     constate: ^3.3.2
     core-js: ^3.25.0
-    equipment-bonus: "npm:latest"
+    equipment-bonus: ^7.0.26
     fast-json-stable-stringify: ^2.1.0
     firebase: ^9.9.3
     fleethub-core: "npm:latest"
@@ -4921,7 +4921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"equipment-bonus@npm:latest":
+"equipment-bonus@npm:^7.0.26":
   version: 7.0.26
   resolution: "equipment-bonus@npm:7.0.26"
   checksum: dd7b5fe14d47cbdcd08c2d4118b0885b2bec2746603224942b45259f16c3b56372490a0639dd20d9c0a1e6f1b7db602ea63b3f8c8d144d919e633cf3904bf7fb

@@ -40,11 +40,13 @@ const PlanAction: React.FCX<PlanActionProps> = ({
     <>
       <Flexbox className={className} gap={1}>
         <LinkButton
+          size="medium"
           title={t("CopySharedLinkToClipboard")}
           onClick={onUrlCopy}
           disabled={asyncOnPublish.loading}
         />
         <TweetButton
+          size="medium"
           title="編成をツイート"
           onClick={() => {
             void onTweet();
@@ -52,10 +54,15 @@ const PlanAction: React.FCX<PlanActionProps> = ({
           disabled={asyncOnPublish.loading}
         />
         <KctoolsButton
+          size="medium"
           title="制空権シミュレータで開く"
           onClick={() => openKctools(org)}
         />
-        <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
+        <MoreVertButton
+          size="medium"
+          title="メニューを開く"
+          onClick={MenuModal.show}
+        />
         {isTemp && (
           <Fab color="primary" size="small" onClick={actions.save}>
             <SaveIcon />

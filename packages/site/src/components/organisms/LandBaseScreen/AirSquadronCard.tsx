@@ -52,6 +52,7 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
         <Flexbox>
           <Typography variant="subtitle2">{label}</Typography>
           <BusinessCenterButton
+            size="medium"
             sx={{ ml: "auto" }}
             title={t("Presets")}
             onClick={PresetModal.show}

@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
@@ -30,7 +30,7 @@
     "clsx": "^1.2.1",
     "constate": "^3.3.2",
     "core-js": "^3.25.0",
-    "equipment-bonus": "npm:latest",
+    "equipment-bonus": "^7.0.26",
     "fast-json-stable-stringify": "^2.1.0",
     "firebase": "^9.9.3",
     "fleethub-core": "npm:latest",

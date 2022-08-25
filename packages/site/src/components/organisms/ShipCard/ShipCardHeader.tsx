@@ -25,7 +25,9 @@ const AnalyticsButton = withIconButton(AnalyticsIcon);
 type ShipHeaderProps = {
   ship: Ship;
   readonly?: boolean;
-  disableDetails?: boolean;
+  visibleDetails?: boolean;
+  visibleUpdate?: boolean;
+  visibleRemove?: boolean;
   onUpdate?: (changes: Partial<ShipEntity>) => void;
   onEditClick?: () => void;
   onDetailClick?: () => void;
@@ -38,7 +40,9 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
   className,
   ship,
   readonly,
-  disableDetails,
+  visibleDetails = true,
+  visibleUpdate = true,
+  visibleRemove = true,
   onUpdate,
   onEditClick,
   onDetailClick,
@@ -47,10 +51,6 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
   onRemove,
 }) => {
   const { t } = useTranslation("common");
-
-  if (readonly) {
-    disableDetails = true;
-  }
 
   const displayName = useShipName(ship.ship_id, ship.is_abyssal());
 
@@ -98,26 +98,26 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
       />
       {!readonly && (
         <EditButton
-          title={t("EditMiscStats")}
           size="tiny"
+          title={t("EditMiscStats")}
           onClick={onEditClick}
         />
       )}
-      {!disableDetails && (
-        <InfoButton title={t("Details")} size="tiny" onClick={onDetailClick} />
+      {!readonly && visibleDetails && (
+        <InfoButton size="tiny" title={t("Details")} onClick={onDetailClick} />
       )}
-      {!disableDetails && (
-        <UpdateButton title={t("Change")} size="tiny" onClick={onReselect} />
+      {!readonly && visibleUpdate && (
+        <UpdateButton size="tiny" title={t("Change")} onClick={onReselect} />
       )}
       {!readonly && (
         <BusinessCenterButton
-          title={t("Presets")}
           size="tiny"
+          title={t("Presets")}
           onClick={onPreset}
         />
       )}
-      {!disableDetails && (
-        <ClearButton title={t("Remove")} size="tiny" onClick={onRemove} />
+      {!readonly && visibleRemove && (
+        <ClearButton size="tiny" title={t("Remove")} onClick={onRemove} />
       )}
     </div>
   );

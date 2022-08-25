@@ -34,7 +34,7 @@ const PresetCard: React.FCX<PresetCardProps> = ({ preset }) => {
           value={preset.name || ""}
           onChange={handleNameChange}
         />
-        <DeleteButton sx={{ ml: "auto" }} size="small" onClick={handleRemove} />
+        <DeleteButton size="small" sx={{ ml: "auto" }} onClick={handleRemove} />
       </Flexbox>
 
       <Stack>

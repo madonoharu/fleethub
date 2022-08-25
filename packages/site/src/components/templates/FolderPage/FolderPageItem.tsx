@@ -83,9 +83,13 @@ const FolderPageItem: React.FCX<FolderPageItemProps> = ({
       <ListItemButton className={className} divider onClick={onOpen}>
         {renderFile(file)}
         <FileAction onClick={(e) => e.stopPropagation()}>
-          <FileCopyButton title={t("Copy")} onClick={onCopy} />
-          <DeleteButton title={t("Remove")} onClick={onRemove} />
-          <MoreVertButton title="メニューを開く" onClick={MenuModal.show} />
+          <FileCopyButton size="medium" title={t("Copy")} onClick={onCopy} />
+          <DeleteButton size="medium" title={t("Remove")} onClick={onRemove} />
+          <MoreVertButton
+            size="medium"
+            title="メニューを開く"
+            onClick={MenuModal.show}
+          />
         </FileAction>
       </ListItemButton>
 

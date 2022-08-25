@@ -55,7 +55,12 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
   return (
     <Stack gap={1}>
       <Divider />
-      <ShipCard ship={enemy} css={{ maxWidth: 1178 / 2 - 4 }} />
+      <ShipCard
+        ship={enemy}
+        css={{ maxWidth: 1178 / 2 - 4 }}
+        visibleDetails={false}
+        visibleUpdate={false}
+      />
       <Flexbox
         gap={1}
         css={{

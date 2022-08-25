@@ -28,7 +28,11 @@ const CopyTextButton: React.FC<Props> = ({ value }) => {
 
   return (
     <>
-      <AssignmentButton title={t("CopyToClipboard")} onClick={handleClick} />
+      <AssignmentButton
+        size="medium"
+        title={t("CopyToClipboard")}
+        onClick={handleClick}
+      />
       <Snackbar />
     </>
   );

@@ -49,14 +49,17 @@ const FileForm: React.FCX<FileFormProps> = ({
           onChange={onNameChange}
         />
         <LinkButton
+          size="medium"
           title={t("CopySharedLinkToClipboard") || ""}
           disabled={asyncOnPublish.loading}
           onClick={asyncOnPublish.onUrlCopy}
         />
-        <FileCopyButton title={t("Copy")} onClick={onCopy} />
-        <DeleteButton title={t("Remove")} onClick={onRemove} />
+        <FileCopyButton size="medium" title={t("Copy")} onClick={onCopy} />
+        <DeleteButton size="medium" title={t("Remove")} onClick={onRemove} />
 
-        {isTemp && <SaveButton title={t("Save")} onClick={onSave} />}
+        {isTemp && (
+          <SaveButton size="medium" title={t("Save")} onClick={onSave} />
+        )}
       </Stack>
 
       <TextField
