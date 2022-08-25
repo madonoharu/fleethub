@@ -12,7 +12,7 @@ use crate::{
         AswAttackStyle, AswPhase, AttackType, BattleDefinitions, DayPhaseAttackStyle,
         DayPhaseAttackType, FormationParams, NightAttackStyle, NightAttackType,
         NightPhaseAttackStyle, NightPhaseAttackType, ShellingStyle, ShellingType,
-        TorpedoAttackStyle, TorpedoAttackType,
+        SupportShellingStyle, SupportShellingType, TorpedoAttackStyle, TorpedoAttackType,
     },
     utils::some_or_return,
 };
@@ -37,7 +37,7 @@ pub struct AttackAnalysis {
     pub night: ActionReport<NightPhaseAttackStyle>,
     pub closing_torpedo: ActionReport<TorpedoAttackStyle>,
     pub opening_asw: ActionReport<AswAttackStyle>,
-    pub support_shelling: ActionReport<ShellingStyle>,
+    pub support_shelling: ActionReport<SupportShellingStyle>,
 }
 
 impl AttackAnalyzer<'_> {
@@ -301,7 +301,7 @@ impl AttackAnalyzer<'_> {
         let attacker = &self.attacker_combat_ship();
         let target = &self.target_combat_ship();
 
-        if !target.is_submarine() || !attacker.can_do_oasw() {
+        if !target.is_submarine() || !attacker.can_do_opening_asw() {
             return ActionReport::empty();
         }
 
@@ -328,14 +328,14 @@ impl AttackAnalyzer<'_> {
         ActionReport::one(style, params)
     }
 
-    fn analyze_support_shelling(&self) -> ActionReport<ShellingStyle> {
+    fn analyze_support_shelling(&self) -> ActionReport<SupportShellingStyle> {
         let attacker = &self.attacker_combat_ship();
         let target = &self.target_combat_ship();
 
         let attack_type = if let Some(DayPhaseAttackType::Shelling(attack_type)) =
             attacker.select_day_phase_attack_type(target)
         {
-            attack_type
+            SupportShellingType(attack_type)
         } else {
             return ActionReport::empty();
         };
@@ -351,7 +351,7 @@ impl AttackAnalyzer<'_> {
         }
         .calc_attack_params();
 
-        let style = ShellingStyle::new(attack_type, None);
+        let style = SupportShellingStyle { attack_type };
         ActionReport::one(style, params)
     }
 }

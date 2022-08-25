@@ -143,7 +143,9 @@ impl NightAttackParams<'_> {
 
         let precap_mod = AttackPowerModifier::new(a14, b14);
         let postcap_mod = Default::default();
-        let proficiency_critical_mod = proficiency_mods.map(|mods| mods.critical_power_mod);
+        let proficiency_critical_mod = proficiency_mods
+            .as_ref()
+            .map_or(1.0, |mods| mods.critical_power_mod);
 
         let special_enemy_mods =
             attacker.special_enemy_mods(target.special_enemy_type(), Time::Night);

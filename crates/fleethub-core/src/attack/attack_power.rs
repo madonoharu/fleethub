@@ -31,7 +31,7 @@ pub struct AttackPowerParams {
     pub postcap_mod: AttackPowerModifier,
     pub ap_shell_mod: Option<f64>,
     pub carrier_power: Option<f64>,
-    pub proficiency_critical_mod: Option<f64>,
+    pub proficiency_critical_mod: f64,
     pub armor_penetration: f64,
     pub remaining_ammo_mod: f64,
     pub special_enemy_mods: SpecialEnemyModifiers,
@@ -142,7 +142,7 @@ impl AttackPowerParams {
         }
 
         let normal = postcap;
-        let critical = (normal * 1.5 * self.proficiency_critical_mod.unwrap_or(1.0)).floor();
+        let critical = (normal * 1.5 * self.proficiency_critical_mod).floor();
 
         (normal, critical)
     }
@@ -157,7 +157,7 @@ impl Default for AttackPowerParams {
             postcap_mod: Default::default(),
             ap_shell_mod: Default::default(),
             carrier_power: Default::default(),
-            proficiency_critical_mod: None,
+            proficiency_critical_mod: 1.0,
             armor_penetration: 0.0,
             remaining_ammo_mod: 1.0,
             special_enemy_mods: Default::default(),

@@ -57,10 +57,7 @@
   "Night": "Night Battle",
   "OpeningAsw": "OASW",
   "Support": "Support",
-  "AttackTypeDepthCharge": "Depth Charge",
-  "AttackTypeAirAttack": "Aerial Attack",
-  "AttackTypeTorpedo": "ShTorp",
-  "AttackTypeSingleAttack": "Single Attack",
+  "SingleAttack": "Single Attack",
   "AttackTypeNone": "Can't Attack",
   "PhaseOpeningTorpedo": "OTorp",
   "PhaseClosingTorpedo": "CTorp",
@@ -215,10 +212,10 @@
     "Echelon": "Echelon",
     "LineAbreast": "Line Abreast",
     "Vanguard": "Vanguard",
-    "Cruising1": "Combined (Anti-Sub)",
-    "Cruising2": "Combined (Forward)",
-    "Cruising3": "Combined (Diamond)",
-    "Cruising4": "Combined (Battle)"
+    "Cruising1": "CF1",
+    "Cruising2": "CF2",
+    "Cruising3": "CF3",
+    "Cruising4": "CF4"
   },
   "AirState": {
     "name": "Air State",
@@ -312,7 +309,20 @@
     "Shelling": "Shelling",
     "Night": "Night",
     "Asw": "Asw",
-    "Torpedo": "Torpedo"
+    "Torpedo": "ShTorp"
+  },
+  "ShellingType": {
+    "Normal": "Normal",
+    "Carrier": "Aerial"
+  },
+  "NightAttackType": {
+    "Normal": "Normal",
+    "Swordfish": "Swordfish",
+    "Carrier": "Aerial"
+  },
+  "AswAttackType": {
+    "DepthCharge": "Depth Charge",
+    "Aircraft": "Aerial"
   },
   "ContactRank": {
     "Rank1": "Accuracy 1 or less",

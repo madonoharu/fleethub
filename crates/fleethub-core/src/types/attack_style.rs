@@ -3,7 +3,7 @@ use tsify::Tsify;
 
 use super::{
     AswAttackType, AttackType, DayCutin, DayCutinDef, DayCutinLike, NightAttackType, NightCutinDef,
-    NightCutinLike, ShellingType, TorpedoAttackType,
+    NightCutinLike, ShellingType, SupportShellingType, TorpedoAttackType,
 };
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Tsify)]
@@ -157,6 +157,12 @@ impl From<AswAttackType> for NightPhaseAttackStyle {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Tsify)]
+#[serde(tag = "tag")]
+pub struct SupportShellingStyle {
+    pub attack_type: SupportShellingType,
+}
+
 pub trait AttackStyleKey {
     fn key(&self) -> String {
         "SingleAttack".to_string()
@@ -232,6 +238,8 @@ impl AttackStyleKey for ShellingType {}
 impl AttackStyleKey for TorpedoAttackStyle {}
 
 impl AttackStyleKey for AswAttackType {}
+
+impl AttackStyleKey for SupportShellingStyle {}
 
 #[cfg(test)]
 mod test {

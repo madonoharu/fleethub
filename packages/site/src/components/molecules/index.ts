@@ -19,4 +19,3 @@ export { default as ConsumptionRateSelect } from "./ConsumptionRateSelect";
 export type { ConsumptionRate } from "./ConsumptionRateSelect";
 export { default as ErrorAlert } from "./ErrorAlert";
 export { default as AttackTypeChip } from "./AttackTypeChip";
-export type { AttackTypeTag } from "./AttackTypeChip";

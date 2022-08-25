@@ -24,7 +24,6 @@ const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
       <Typography color="textSecondary">{label}</Typography>
       <Table
         className={className}
-        padding="none"
         data={data}
         columns={[
           {
@@ -80,7 +79,7 @@ const ContactAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
 };
 
 export default styled(ContactAnalysisScreen)`
-  width: 620px;
+  width: fit-content;
   margin-right: auto;
   margin-left: auto;
   > * {

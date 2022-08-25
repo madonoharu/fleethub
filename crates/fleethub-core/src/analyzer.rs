@@ -24,7 +24,13 @@ pub use fleet_cutin_analyzer::*;
 pub use node_attack_analyzer::*;
 pub use ship_analyzer::*;
 
-use crate::{comp::Comp, ship::Ship, types::BattleDefinitions};
+use crate::{
+    battle::BattleComp,
+    comp::Comp,
+    ship::Ship,
+    simulator::{SimulatorResult, SupportShellingSimulator},
+    types::BattleDefinitions,
+};
 
 #[wasm_bindgen]
 pub struct Analyzer {
@@ -94,5 +100,31 @@ impl Analyzer {
 
     pub fn analyze_comp(&self, comp: &Comp, config: CompAnalyzerConfig) -> CompAnalysis {
         CompAnalyzer::new(&self.battle_defs, comp, config).analyze()
+    }
+
+    pub fn simulate_support_shelling(
+        &self,
+        player_comp: &Comp,
+        enemy_comp: &Comp,
+        config: NodeAttackAnalyzerConfig,
+        times: usize,
+    ) -> Result<SimulatorResult, JsValue> {
+        use rand::prelude::*;
+
+        let mut rng = SmallRng::from_entropy();
+        let mut player = BattleComp::new(player_comp.clone(), config.left.formation);
+        let mut enemy = BattleComp::new(enemy_comp.clone(), config.right.formation);
+
+        let mut simulator = SupportShellingSimulator::new(
+            &mut rng,
+            &self.battle_defs,
+            &mut player,
+            &mut enemy,
+            config.engagement,
+        );
+
+        simulator
+            .run(times)
+            .map_err(|err| JsValue::from(&err.to_string()))
     }
 }

@@ -80,7 +80,7 @@ impl AswAttackParams<'_> {
 
             let proficiency_critical_mod = proficiency_mods
                 .as_ref()
-                .map(|mods| mods.critical_power_mod);
+                .map_or(1.0, |mods| mods.critical_power_mod);
 
             Some(AttackPowerParams {
                 basic,

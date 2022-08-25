@@ -57,10 +57,7 @@
   "Night": "야간전",
   "OpeningAsw": "선제 대잠",
   "Support": "지원",
-  "AttackTypeDepthCharge": "폭뢰 공격",
-  "AttackTypeAirAttack": "항공 공격",
-  "AttackTypeTorpedo": "뇌격",
-  "AttackTypeSingleAttack": "포격",
+  "SingleAttack": "포격",
   "AttackTypeNone": "공격 불능",
   "PhaseOpeningTorpedo": "개막 뇌격",
   "PhaseClosingTorpedo": "뇌격전",
@@ -313,6 +310,19 @@
     "Night": "야전",
     "Asw": "대잠",
     "Torpedo": "뇌격"
+  },
+  "ShellingType": {
+    "Normal": "통상공격",
+    "Carrier": "항공공격"
+  },
+  "NightAttackType": {
+    "Normal": "통상공격",
+    "Swordfish": "Swordfish",
+    "Carrier": "항공공격"
+  },
+  "AswAttackType": {
+    "DepthCharge": "폭뢰",
+    "Aircraft": "항공공격"
   },
   "ContactRank": {
     "Rank1": "명중 1이하",

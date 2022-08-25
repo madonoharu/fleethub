@@ -1,12 +1,16 @@
-use std::collections::BTreeMap;
+use std::{
+    collections::BTreeMap,
+    ops::{Deref, DerefMut},
+};
 
+use enumset::EnumSet;
 use rand::prelude::*;
 
 use crate::{
     comp::Comp,
     fleet::Fleet,
     member::{BattleMemberMut, BattleMemberRef, CompMemberMut, CompMemberRef},
-    types::{Formation, OrgType, Participant, Role, ShipPosition},
+    types::{FleetType, Formation, OrgType, Participant, Role, ShipPosition},
 };
 
 pub struct BattleComp {
@@ -14,10 +18,39 @@ pub struct BattleComp {
     pub formation: Formation,
 }
 
+impl Deref for BattleComp {
+    type Target = Comp;
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        &self.comp
+    }
+}
+
+impl DerefMut for BattleComp {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.comp
+    }
+}
+
 impl BattleComp {
+    pub fn new(comp: Comp, formation: Formation) -> Self {
+        Self { comp, formation }
+    }
+
     #[inline]
     pub fn org_type(&self) -> OrgType {
         self.comp.org_type
+    }
+
+    pub fn members_by(
+        &self,
+        query: impl Into<EnumSet<FleetType>>,
+    ) -> impl Iterator<Item = BattleMemberRef> {
+        let formation = self.formation;
+
+        self.comp
+            .members_by(query)
+            .map(move |ship| BattleMemberRef { ship, formation })
     }
 
     pub fn members(&self, participant: Participant) -> impl Iterator<Item = BattleMemberRef> {

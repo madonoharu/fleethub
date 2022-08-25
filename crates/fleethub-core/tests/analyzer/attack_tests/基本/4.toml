@@ -11,12 +11,31 @@ gx = "水雷戦隊 熟練見張員"
 [target]
 ship_id = "駆逐イ級"
 
+# 期待される昼戦の結果
 [expected.day.data.SingleAttack]
 damage.normal_damage_min = 183
 damage.normal_damage_max = 185
 damage.critical_damage_min = 277
 damage.critical_damage_max = 279
+
+# 通常命中の最終攻撃力
 attack_power.normal = 189
+# クリティカルの最終攻撃力
 attack_power.critical = 283
+
+# 命中率（通常命中率 + クリティカル率）
 hit_rate.total = 0.97
+# クリティカル率
 hit_rate.critical = 0.13
+
+# 熟練度 クリティカル補正
+attack_power_params.proficiency_critical_mod = 1
+
+# 命中項
+hit_rate_params.accuracy_term = 150
+# 回避項
+hit_rate_params.evasion_term = 15
+# 熟練度 命中率補正
+hit_rate_params.hit_percentage_bonus = 0
+# 熟練度 クリ率補正
+hit_rate_params.critical_percentage_bonus = 0

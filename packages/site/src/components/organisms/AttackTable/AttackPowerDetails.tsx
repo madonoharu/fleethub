@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Typography } from "@mui/material";
 import {
   AttackPowerParams,
   AttackPower,
@@ -35,8 +36,8 @@ const AttackPowerModifierLabel: React.FC<{
 };
 
 type AttackPowerDetailsProps = {
-  power: AttackPower;
-  params: AttackPowerParams;
+  power: AttackPower | null;
+  params: AttackPowerParams | null;
 };
 
 const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
@@ -45,6 +46,10 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
   params,
 }) => {
   const { t } = useTranslation("common");
+
+  if (!power || !params) {
+    return <Typography>{t("Unknown")}</Typography>;
+  }
 
   const { special_enemy_mods, custom_mods } = params;
 
@@ -78,7 +83,7 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
           value={numstr(params.carrier_power) || "-"}
         />
       )}
-      {params.proficiency_critical_mod && (
+      {params.proficiency_critical_mod !== 1 && (
         <LabeledValue
           label={t("proficiency_critical_mod")}
           value={numstr(params.proficiency_critical_mod) || "-"}

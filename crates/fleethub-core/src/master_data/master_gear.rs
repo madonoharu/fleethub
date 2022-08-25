@@ -45,9 +45,9 @@ pub struct MasterGear {
     #[serde(default)]
     pub improvable: bool,
     #[serde(default = "num_traits::one")]
-    pub ship_anti_air_resistance: f64,
+    pub ship_anti_air_resist: f64,
     #[serde(default = "num_traits::one")]
-    pub fleet_anti_air_resistance: f64,
+    pub fleet_anti_air_resist: f64,
 
     #[serde(skip_deserializing)]
     pub attrs: EnumSet<GearAttr>,

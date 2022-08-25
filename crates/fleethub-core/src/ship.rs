@@ -19,7 +19,7 @@ use crate::{
         AswAttackType, AswPhase, CustomPowerModifiers, DamageState, DayCutin, DayPhaseAttackType,
         DefensePower, EBonuses, GearAttr, GearType, MoraleState, NightAttackType,
         NightPhaseAttackType, ProficiencyModifiers, ShellingType, ShipAttr, ShipCategory, ShipMeta,
-        ShipState, ShipType, SlotSizeVec, SpecialEnemyType,
+        ShipState, ShipType, Side, SlotSizeVec, SpecialEnemyType,
     },
 };
 
@@ -268,7 +268,7 @@ impl Ship {
             morale: state.morale.unwrap_or(49),
             ammo: state.ammo.unwrap_or(master.ammo),
             fuel: state.fuel.unwrap_or(master.fuel),
-            ship_type: num_traits::FromPrimitive::from_u8(master.stype).unwrap_or_default(),
+            ship_type: master.ship_type(),
             ctype,
 
             slots,
@@ -794,7 +794,7 @@ impl Ship {
         matches_ship_id!(self.ship_id, "鈴谷航改二" | "熊野航改二")
     }
 
-    pub fn can_do_oasw(&self) -> bool {
+    pub fn can_do_opening_asw(&self) -> bool {
         let &Self {
             ship_id,
             ship_type,
@@ -1396,33 +1396,53 @@ impl Ship {
         Some(naked_los + total)
     }
 
+    /// 加重対空
+    pub fn ship_adjusted_anti_air(&self, side: Side) -> Option<f64> {
+        let ebonus = self.ebonuses.anti_air as f64;
+        let total = self.gears.sum_by(|g| g.ship_anti_air_mod());
+
+        if side.is_enemy() {
+            let anti_air = self.anti_air()? as f64;
+            return Some(anti_air.sqrt().floor() + total);
+        }
+
+        let naked_anti_air = self.naked_anti_air()? as f64;
+        let pre_floor = naked_anti_air / 2.0 + total + ebonus * 0.75;
+
+        let result = if self.gears.iter().count() == 0 {
+            pre_floor
+        } else {
+            pre_floor.floor()
+        };
+
+        Some(result)
+    }
+
+    /// 艦隊対空補正
     pub fn fleet_anti_air_mod(&self) -> f64 {
         let ebonus = self.ebonuses.anti_air as f64;
-        let total = self.gears.sum_by(|g| g.fleet_anti_air_mod()).floor();
-        total + ebonus
+        let total = self.gears.sum_by(|g| g.fleet_anti_air_mod());
+        (total + ebonus * 0.5).floor()
     }
 
     pub fn cruiser_fit_bonus(&self) -> f64 {
         if matches!(self.ship_type, ShipType::CL | ShipType::CLT | ShipType::CT) {
-            let single_gun_count = self.gears.count_by(|gear| {
-                matches!(
-                    gear.gear_id,
-                    gear_id!("14cm単装砲") | gear_id!("15.2cm単装砲")
-                )
-            });
+            let single_gun_count = self
+                .gears
+                .count_by(|gear| matches_gear_id!(gear.gear_id, "14cm単装砲" | "15.2cm単装砲"));
 
             let twin_gun_count = self.gears.count_by(|gear| {
-                matches!(
+                matches_gear_id!(
                     gear.gear_id,
-                    gear_id!("15.2cm連装砲")
-                        | gear_id!("14cm連装砲")
-                        | gear_id!("15.2cm連装砲改")
-                        | gear_id!("Bofors 15.2cm連装砲 Model 1930")
-                        | gear_id!("14cm連装砲改")
-                        | gear_id!("6inch 連装速射砲 Mk.XXI")
-                        | gear_id!("Bofors 15cm連装速射砲 Mk.9 Model 1938")
-                        | gear_id!("Bofors 15cm連装速射砲 Mk.9改+単装速射砲 Mk.10改 Model 1938")
-                        | gear_id!("15.2cm連装砲改二")
+                    "15.2cm連装砲"
+                        | "14cm連装砲"
+                        | "15.2cm連装砲改"
+                        | "Bofors 15.2cm連装砲 Model 1930"
+                        | "14cm連装砲改"
+                        | "6inch 連装速射砲 Mk.XXI"
+                        | "Bofors 15cm連装速射砲 Mk.9 Model 1938"
+                        | "Bofors 15cm連装速射砲 Mk.9改+単装速射砲 Mk.10改 Model 1938"
+                        | "15.2cm連装砲改二"
                 )
             });
 

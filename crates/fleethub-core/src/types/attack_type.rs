@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
@@ -35,6 +37,24 @@ pub enum NightAttackType {
     Carrier,
 }
 
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, Tsify)]
+pub struct SupportShellingType(pub ShellingType);
+
+impl Deref for SupportShellingType {
+    type Target = ShellingType;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl From<ShellingType> for SupportShellingType {
+    #[inline]
+    fn from(t: ShellingType) -> Self {
+        Self(t)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
 #[serde(tag = "t", content = "c")]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -43,6 +63,13 @@ pub enum AttackType {
     Shelling(ShellingType),
     Night(NightAttackType),
     Torpedo,
+    SupportShelling(SupportShellingType),
+}
+
+impl AttackType {
+    pub fn is_asw(self) -> bool {
+        matches!(self, Self::Asw(_))
+    }
 }
 
 impl From<AswAttackType> for AttackType {
@@ -90,6 +117,13 @@ impl From<TorpedoAttackType> for AttackType {
     #[inline]
     fn from(_: TorpedoAttackType) -> Self {
         Self::Torpedo
+    }
+}
+
+impl From<SupportShellingType> for AttackType {
+    #[inline]
+    fn from(t: SupportShellingType) -> Self {
+        Self::SupportShelling(t)
     }
 }
 

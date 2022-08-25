@@ -1,5 +1,5 @@
 import { Stack, Paper } from "@mui/material";
-import { DayCutinDef, MasterData } from "fleethub-core";
+import type { DayCutinDef, MasterData, ShellingStyle } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -23,9 +23,14 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
     (root) => root.config.masterData?.day_cutin?.[cutin]
   );
 
+  const attack: Pick<ShellingStyle, "tag" | "cutin"> = {
+    tag: "ShellingStyle",
+    cutin,
+  };
+
   return (
     <Paper sx={{ p: 1 }}>
-      <AttackTypeChip sx={{ mb: 2 }} type="Shelling" cutin={def.tag} />
+      <AttackTypeChip sx={{ mb: 2 }} attack={attack} />
 
       <Flexbox gap={1}>
         {KEYS.map((key) => (

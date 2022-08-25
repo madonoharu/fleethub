@@ -1,0 +1,32 @@
+description = "速吸改梯形フラソ対潜"
+
+[attacker]
+ship_id = "速吸改"
+formation = "LineAbreast"
+g1 = { gear_id = "TBM-3W+3S", exp = 120 }
+
+# 防御艦設定
+[target]
+# ソ級flagship
+ship_id = 1572
+formation = "Echelon"
+
+[expected.day.data.SingleAttack]
+# 命中項
+hit_rate_params.accuracy_term = 104
+# 回避項
+hit_rate_params.evasion_term = 34
+# 命中率補正
+hit_rate_params.hit_percentage_bonus = 0
+# クリ率補正
+hit_rate_params.critical_percentage_bonus = 0
+
+# 通常命中の最終対潜攻撃力
+attack_power.normal = 51
+# クリティカルの最終対潜攻撃力
+attack_power.critical = 76
+
+# 命中率
+hit_rate.total = 0.71
+# クリティカル率
+hit_rate.critical = 0.1

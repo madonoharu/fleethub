@@ -117,7 +117,7 @@ const WelcomePage: React.FCX = () => {
           Author
         </Typography>
         <Divider />
-        <Typography>まどの</Typography>
+        <Typography variant="body1">まどの</Typography>
         <Link
           display="flex"
           alignItems="center"
@@ -147,15 +147,21 @@ const WelcomePage: React.FCX = () => {
           Maintainers
         </Typography>
         <Divider />
-        <Typography>
-          白(
-          <Link href="https://twitter.com/shiro_sh39">@shiro_sh39</Link>)
+        <Typography variant="body1">
+          <div>
+            <span>白</span>
+            <Link sx={{ ml: 1 }} href="https://twitter.com/shiro_sh39">
+              @shiro_sh39
+            </Link>
+          </div>
+          <div>
+            <span>ダイコン</span>
+            <Link sx={{ ml: 1 }} href="https://twitter.com/panmodoki10">
+              @panmodoki10
+            </Link>
+          </div>
+          <span>ゆーる</span>
         </Typography>
-        <Typography>
-          ダイコン(
-          <Link href="https://twitter.com/panmodoki10">@panmodoki10</Link>)
-        </Typography>
-        <Typography>ゆーる</Typography>
 
         <Typography variant="h5" mt={4}>
           免責事項

@@ -47,7 +47,7 @@ pub struct FormationDef {
     pub torpedo: FormationCombatModifiersDef,
     pub asw: FormationCombatModifiersDef,
     pub night: FormationCombatModifiersDef,
-    pub shelling_support: FormationCombatModifiersDef,
+    pub support_shelling: FormationCombatModifiersDef,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
@@ -257,6 +257,9 @@ impl BattleDefinitions {
             AttackType::Asw(_) => (&attacker_def.asw, &target_def.asw),
             AttackType::Night(_) => (&attacker_def.night, &target_def.night),
             AttackType::Torpedo => (&attacker_def.torpedo, &target_def.torpedo),
+            AttackType::SupportShelling(_) => {
+                (&attacker_def.support_shelling, &target_def.support_shelling)
+            }
         };
 
         let is_ineffective = attacker.formation.is_ineffective(target.formation);

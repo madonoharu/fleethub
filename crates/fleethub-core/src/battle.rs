@@ -3,6 +3,7 @@
 mod battle_comp;
 mod day_phase;
 mod night_phase;
+pub mod support_shelling_phase;
 mod target_picker;
 mod torpedo_phase;
 

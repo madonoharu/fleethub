@@ -1,4 +1,3 @@
-use hashbrown::HashMap;
 use serde::Serialize;
 use tsify::Tsify;
 
@@ -10,7 +9,7 @@ use crate::{
     utils::some_or_return,
 };
 
-use super::{AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig, AttackReport};
+use super::{ActionReport, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig};
 
 pub struct DayCutinAnalyzer<'a> {
     pub battle_defs: &'a BattleDefinitions,
@@ -23,7 +22,8 @@ pub struct DayCutinAnalyzer<'a> {
 #[derive(Serialize, Tsify)]
 struct DayCutinReport {
     observation_term: Option<f64>,
-    data: HashMap<String, AttackReport<DayPhaseAttackStyle>>,
+    #[serde(flatten)]
+    report: ActionReport<DayPhaseAttackStyle>,
 }
 
 #[derive(Serialize, Tsify)]
@@ -31,15 +31,17 @@ struct ShipDayCutinAnalysis {
     ship_id: u16,
     role: Role,
     index: usize,
-    data: [DayCutinReport; 2],
+    rank3: DayCutinReport,
+    rank2: DayCutinReport,
 }
 
 #[derive(Serialize, Tsify)]
 pub struct CompDayCutinAnalysis {
-    air_states: [AirState; 2],
-    data: Vec<ShipDayCutinAnalysis>,
+    rank3_air_state: AirState,
+    rank2_air_state: AirState,
     main_fleet_los_mod: Option<f64>,
     escort_fleet_los_mod: Option<f64>,
+    ships: Vec<ShipDayCutinAnalysis>,
 }
 
 impl DayCutinAnalyzer<'_> {
@@ -74,11 +76,11 @@ impl DayCutinAnalyzer<'_> {
         };
 
         let observation_term = attack_analyzer.calc_observation_term();
-        let data = attack_analyzer.analyze_day_phase_action().data;
+        let report = attack_analyzer.analyze_day_phase_action();
 
         DayCutinReport {
             observation_term,
-            data,
+            report,
         }
     }
 
@@ -91,14 +93,15 @@ impl DayCutinAnalyzer<'_> {
         let ship = self.comp.get_battle_member(self.formation, role, index)?;
         let air_states = self.air_states();
 
-        let data = air_states
+        let [rank3, rank2] = air_states
             .map(|air_state| self.analyze_ship_with_air_state(&ship, air_state, fleet_los_mod));
 
         Some(ShipDayCutinAnalysis {
             ship_id: ship.ship_id,
             role: ship.position.role,
             index: ship.position.index,
-            data,
+            rank3,
+            rank2,
         })
     }
 
@@ -120,16 +123,18 @@ impl DayCutinAnalyzer<'_> {
     }
 
     pub fn analyze(&self) -> CompDayCutinAnalysis {
-        let data = [Role::Main, Role::Escort]
+        let ships = [Role::Main, Role::Escort]
             .into_iter()
             .flat_map(|role| self.analyze_fleet(role))
             .collect();
+        let [rank3_air_state, rank2_air_state] = self.air_states();
 
         CompDayCutinAnalysis {
-            air_states: self.air_states(),
-            data,
+            rank3_air_state,
+            rank2_air_state,
             main_fleet_los_mod: self.fleet_los_mod(Role::Main),
             escort_fleet_los_mod: self.fleet_los_mod(Role::Escort),
+            ships,
         }
     }
 }

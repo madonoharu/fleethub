@@ -72,7 +72,7 @@ impl ShellingAttackParams<'_> {
 
             let proficiency_critical_mod = proficiency_mods
                 .as_ref()
-                .map(|mods| mods.critical_power_mod);
+                .map_or(1.0, |mods| mods.critical_power_mod);
             let remaining_ammo_mod = attacker.remaining_ammo_mod();
 
             // 基本攻撃力の定数 5.0 は`fleet_factor`に含まれている

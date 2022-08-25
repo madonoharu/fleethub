@@ -30,7 +30,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
   config,
 }) => {
   const { t } = useTranslation("common");
-  const { core } = useFhCore();
+  const { analyzer } = useFhCore();
 
   if (!player.has_route_sup()) {
     return (
@@ -45,14 +45,10 @@ const SimulatorResultTable: React.FCX<Props> = ({
 
   try {
     const startTime = performance.now();
-    simResult = core.simulate_shelling_support(
+    simResult = analyzer.simulate_support_shelling(
       player,
       enemy,
-      {
-        engagement: config.engagement || "Parallel",
-        attacker_formation: config.left?.formation || "LineAhead",
-        target_formation: config.right?.formation || "LineAhead",
-      },
+      config,
       times
     );
     const endTime = performance.now();

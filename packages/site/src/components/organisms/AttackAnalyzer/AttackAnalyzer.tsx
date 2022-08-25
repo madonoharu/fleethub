@@ -30,7 +30,7 @@ const AttackAnalyzer: React.FCX<Props> = ({
   const attackerOrgType = config.attacker?.org_type || "Single";
   const targetOrgType = config.target?.org_type || "Single";
 
-  if (attackerOrgType === targetOrgType) {
+  if (isEnemy(attackerOrgType) === isEnemy(targetOrgType)) {
     const attackerText = t(`OrgType.${attackerOrgType}`);
     const targetText = t(`OrgType.${targetOrgType}`);
 

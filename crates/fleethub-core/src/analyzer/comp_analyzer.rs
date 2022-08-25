@@ -21,23 +21,23 @@ use super::{
 #[derive(Serialize, Tsify)]
 #[tsify(into_wasm_abi)]
 pub struct CompAnalysis {
-    day: CompDayAnalysis,
-    night: CompNightAnalysis,
-    contact: ContactAnalysis,
-    anti_air: CompAntiAirAnalysis,
+    pub day: CompDayAnalysis,
+    pub night: CompNightAnalysis,
+    pub contact: ContactAnalysis,
+    pub anti_air: CompAntiAirAnalysis,
 }
 
 #[derive(Serialize, Tsify)]
 #[tsify(into_wasm_abi)]
-struct CompDayAnalysis {
-    day_cutin: CompDayCutinAnalysis,
-    fleet_cutin: Vec<FleetCutinReport<ShellingStyle>>,
+pub struct CompDayAnalysis {
+    pub day_cutin: CompDayCutinAnalysis,
+    pub fleet_cutin: Vec<FleetCutinReport<ShellingStyle>>,
 }
 
 #[derive(Serialize, Tsify)]
-struct CompNightAnalysis {
-    night_cutin: CompNightCutinAnalysis,
-    fleet_cutin: Vec<FleetCutinReport<NightAttackStyle>>,
+pub struct CompNightAnalysis {
+    pub night_cutin: CompNightCutinAnalysis,
+    pub fleet_cutin: Vec<FleetCutinReport<NightAttackStyle>>,
 }
 
 #[derive(Deserialize, Tsify)]
@@ -50,6 +50,19 @@ pub struct CompAnalyzerConfig {
     pub fleet_anti_air_resist: f64,
     pub left_night_fleet_conditions: NightFleetConditions,
     pub right_night_fleet_conditions: NightFleetConditions,
+}
+impl Default for CompAnalyzerConfig {
+    fn default() -> Self {
+        Self {
+            engagement: Default::default(),
+            formation: Default::default(),
+            anti_air_cutin: None,
+            ship_anti_air_resist: 1.0,
+            fleet_anti_air_resist: 1.0,
+            left_night_fleet_conditions: Default::default(),
+            right_night_fleet_conditions: Default::default(),
+        }
+    }
 }
 
 impl CompAnalyzerConfig {

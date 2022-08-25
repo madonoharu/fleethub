@@ -42,7 +42,7 @@ pub fn create_airstrike_params<P: PlaneImpl, R: Rng + ?Sized>(
             cap: AIRSTRIKE_POWER_CAP,
             precap_mod,
             postcap_mod,
-            proficiency_critical_mod: Some(proficiency_modifiers.critical_power_mod),
+            proficiency_critical_mod: proficiency_modifiers.critical_power_mod,
             remaining_ammo_mod,
             ..Default::default()
         })

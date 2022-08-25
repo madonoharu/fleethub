@@ -57,10 +57,7 @@
   "Night": "夜戰",
   "OpeningAsw": "先制對潛",
   "Support": "支援",
-  "AttackTypeDepthCharge": "對潛攻擊",
-  "AttackTypeAirAttack": "航空攻擊",
-  "AttackTypeTorpedo": "雷擊",
-  "AttackTypeSingleAttack": "炮擊",
+  "SingleAttack": "單擊",
   "AttackTypeNone": "作戰不能",
   "PhaseOpeningTorpedo": "先制雷擊",
   "PhaseClosingTorpedo": "一般雷擊",
@@ -215,10 +212,10 @@
     "Echelon": "梯形陣",
     "LineAbreast": "單橫陣",
     "Vanguard": "警戒陣",
-    "Cruising1": "聯合艦隊(對潛警戒)",
-    "Cruising2": "聯合艦隊(警戒陣列)",
-    "Cruising3": "聯合艦隊(輪型陣)",
-    "Cruising4": "聯合艦隊(戰鬥陣列)"
+    "Cruising1": "第一(對潛)",
+    "Cruising2": "第二(前方)",
+    "Cruising3": "第三(輪形)",
+    "Cruising4": "第四(戰鬥)"
   },
   "AirState": {
     "name": "制空狀態",
@@ -313,6 +310,19 @@
     "Night": "夜戰",
     "Asw": "對潛",
     "Torpedo": "雷擊"
+  },
+  "ShellingType": {
+    "Normal": "普通攻擊",
+    "Carrier": "航空攻擊"
+  },
+  "NightAttackType": {
+    "Normal": "普通攻擊",
+    "Swordfish": "Swordfish",
+    "Carrier": "航空攻擊"
+  },
+  "AswAttackType": {
+    "DepthCharge": "爆雷",
+    "Aircraft": "航空攻擊"
   },
   "ContactRank": {
     "Rank1": "命中1以下",

@@ -92,7 +92,7 @@ pub enum AirStateRank {
     Rank1,
     /// 優勢時の味方 | 劣勢時の敵
     Rank2,
-    /// 制空時の味方 | 喪失時の敵
+    /// 確保時の味方 | 喪失時の敵
     Rank3,
 }
 

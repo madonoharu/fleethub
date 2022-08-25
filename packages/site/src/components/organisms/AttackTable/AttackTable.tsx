@@ -124,18 +124,17 @@ const AttackTable: React.FCX<AttackTableProps> = ({
   variant,
 }) => {
   const { t } = useTranslation("common");
-
   const { damage_state_density } = report;
   const data = Object.values(report.data);
   data.sort((a, b) => (b.proc_rate || 0) - (a.proc_rate || 0));
 
-  const disableDamage = variant !== "damage";
+  const disableDamage = variant === "power";
 
   const columns: ColumnProps<ItemType>[] = [
     {
       label: t("Type"),
       getValue: (item) => (
-        <AttackStyleChip attackStyle={item.style} css={{ width: "100%" }} />
+        <AttackStyleChip attack={item.style} css={{ width: "100%" }} />
       ),
     },
 

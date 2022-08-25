@@ -13,6 +13,8 @@ use crate::{
 pub use battle_member::*;
 pub use comp_member::*;
 
+const AIR_COMBAT_CONSTANT: f64 = 0.25;
+
 pub struct ShipAirDefense<'a> {
     pub ship: &'a Ship,
     pub org_type: OrgType,
@@ -33,34 +35,14 @@ impl<'a> ShipAirDefense<'a> {
     }
 
     pub fn ship_adjusted_anti_air(&self) -> Option<f64> {
-        let ebonus = self.ship.ebonuses.anti_air as f64;
-        let total = self.ship.gears.sum_by(|g| g.ship_anti_air_mod());
-
-        if self.org_type.is_enemy() {
-            let anti_air = self.ship.anti_air()? as f64;
-            return Some(anti_air.sqrt().floor() * 2.0 + total);
-        }
-
-        let naked_anti_air = self.ship.naked_anti_air()? as f64;
-        let pre_floor = naked_anti_air + total + ebonus * 0.75 * 2.0;
-
-        let result = if self.ship.gears.iter().count() == 0 {
-            pre_floor
-        } else {
-            2.0 * (pre_floor / 2.0).floor()
-        };
-
-        Some(result)
+        self.ship.ship_adjusted_anti_air(self.org_type.side())
     }
 
     pub fn proportional_shotdown_rate(&self, ship_anti_air_resist: f64) -> Option<f64> {
         let ship_adjusted_anti_air = self.ship_adjusted_anti_air()?;
+        let ship_aa = (ship_adjusted_anti_air * ship_anti_air_resist).floor();
 
-        let result = (ship_adjusted_anti_air * ship_anti_air_resist).floor()
-            * self.combined_fleet_mod()
-            * 0.5
-            * 0.25
-            * 0.02;
+        let result = 0.02 * AIR_COMBAT_CONSTANT * self.combined_fleet_mod() * ship_aa;
         Some(result)
     }
 
@@ -73,10 +55,10 @@ impl<'a> ShipAirDefense<'a> {
 
         let side_mod = if self.org_type.is_enemy() { 0.75 } else { 0.8 };
 
-        let base = (ship_adjusted_anti_air * ship_anti_air_resist).floor()
-            + (self.fleet_adjusted_anti_air * fleet_anti_air_resist).floor();
-
-        let mut pre_floor = base * 0.5 * 0.25 * side_mod * self.combined_fleet_mod();
+        let ship_aa = (ship_adjusted_anti_air * ship_anti_air_resist).floor();
+        let fleet_aa = (self.fleet_adjusted_anti_air * fleet_anti_air_resist).floor();
+        let mut pre_floor =
+            AIR_COMBAT_CONSTANT * self.combined_fleet_mod() * side_mod * (ship_aa + fleet_aa);
 
         if let Some(cutin) = self.anti_air_cutin {
             pre_floor *= cutin.multiplier?;
@@ -120,14 +102,14 @@ impl<'a> ShipAirDefense<'a> {
         let ship_class_bonus = if self.ship.ctype == ctype!("伊勢型") {
             0.25
         } else {
-            0.
+            0.0
         };
 
         let rate = (ship_adjusted_anti_air + 0.9 * luck) / 281.0
-            + (count as f64 - 1.) * 0.15
+            + (count as f64 - 1.0) * 0.15
             + ship_class_bonus;
 
-        Some(rate.min(1.))
+        Some(rate.min(1.0))
     }
 
     pub fn try_intercept<R: Rng + ?Sized>(
@@ -137,8 +119,8 @@ impl<'a> ShipAirDefense<'a> {
     ) -> Result<(), CalculationError> {
         let current = plane.slot_size.ok_or(CalculationError::UnknownValue)?;
 
-        let ship_aa_resist = plane.gear.ship_anti_air_resistance;
-        let fleet_aa_resist = plane.gear.fleet_anti_air_resistance;
+        let ship_aa_resist = plane.gear.ship_anti_air_resist;
+        let fleet_aa_resist = plane.gear.fleet_anti_air_resist;
 
         let proportional_shotdown_rate = if rng.gen_bool(0.5) {
             self.proportional_shotdown_rate(ship_aa_resist)

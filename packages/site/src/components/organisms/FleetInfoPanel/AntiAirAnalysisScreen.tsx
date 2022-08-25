@@ -106,12 +106,18 @@ const AntiAirAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
       </Container>
 
       <Table
-        padding="none"
         data={analysis.ships}
+        sx={{ width: "fit-content", m: "auto" }}
         columns={[
           {
             label: t("Ship"),
-            getValue: (ship) => <ShipNameplate shipId={ship.ship_id} />,
+            getValue: (ship) => (
+              <ShipNameplate
+                shipId={ship.ship_id}
+                fleetType={ship.role}
+                index={ship.index}
+              />
+            ),
           },
           {
             label: t("adjusted_anti_air"),

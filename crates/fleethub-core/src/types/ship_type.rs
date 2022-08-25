@@ -73,6 +73,12 @@ impl Default for ShipType {
     }
 }
 
+impl From<u8> for ShipType {
+    fn from(stype: u8) -> Self {
+        num_traits::FromPrimitive::from_u8(stype).unwrap_or_default()
+    }
+}
+
 impl ShipType {
     pub fn category(self) -> ShipCategory {
         use ShipCategory::*;

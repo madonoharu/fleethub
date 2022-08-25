@@ -4,22 +4,16 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { numstr, toPercent } from "../../../utils";
-import { AttackTypeChip, AttackTypeTag } from "../../molecules";
+import { AttackTypeChip } from "../../molecules";
 
 interface CutinDetailsProps {
-  type: AttackTypeTag | null;
-  cutin: string;
-  attackStyle: Record<string, unknown>;
+  attack: Record<string, unknown> & { cutin: string };
 }
 
-const CutinDetails: React.FC<CutinDetailsProps> = ({
-  type,
-  cutin,
-  attackStyle,
-}) => {
+const CutinDetails: React.FC<CutinDetailsProps> = ({ attack }) => {
   const { t } = useTranslation("common");
 
-  const hits = typeof attackStyle.hits === "number" ? attackStyle.hits : 1;
+  const hits = typeof attack.hits === "number" ? attack.hits : 1;
   let hitsText: string;
 
   if (Number.isInteger(hits)) {
@@ -32,7 +26,7 @@ const CutinDetails: React.FC<CutinDetailsProps> = ({
 
   return (
     <>
-      <AttackTypeChip type={type} cutin={cutin} />
+      <AttackTypeChip attack={attack} sx={{ mb: 1 }} />
       <Typography
         component="div"
         variant="body2"
@@ -43,9 +37,9 @@ const CutinDetails: React.FC<CutinDetailsProps> = ({
         `}
       >
         <span>{t("power_mod")}</span>
-        <span>{numstr(attackStyle.power_mod) || "?"}</span>
+        <span>{numstr(attack.power_mod) || "?"}</span>
         <span>{t("accuracy_mod")}</span>
-        <span>{numstr(attackStyle.accuracy_mod) || "?"}</span>
+        <span>{numstr(attack.accuracy_mod) || "?"}</span>
         <span>{t("hits")}</span>
         <span>{hitsText}</span>
       </Typography>
@@ -54,49 +48,25 @@ const CutinDetails: React.FC<CutinDetailsProps> = ({
 };
 
 interface Props {
-  attackStyle: unknown;
+  attack: unknown;
 }
 
-const AttackStyleChip: React.FCX<Props> = ({ className, attackStyle }) => {
-  if (!isUnknownRecord(attackStyle)) {
-    return <AttackTypeChip type={null} cutin={null} />;
-  }
+function hasCutin(
+  attack: unknown
+): attack is Record<string, unknown> & { cutin: string } {
+  return isUnknownRecord(attack) && typeof attack.cutin === "string";
+}
 
-  const type = getAttackTypeTag(attackStyle.tag);
-  const cutin = attackStyle.cutin;
-
-  if (typeof cutin === "string") {
+const AttackStyleChip: React.FCX<Props> = ({ className, attack }) => {
+  if (hasCutin(attack)) {
     return (
-      <Tooltip
-        title={
-          <CutinDetails type={type} cutin={cutin} attackStyle={attackStyle} />
-        }
-      >
-        <AttackTypeChip className={className} type={type} cutin={cutin} />
+      <Tooltip title={<CutinDetails attack={attack} />}>
+        <AttackTypeChip className={className} attack={attack} />
       </Tooltip>
     );
   }
 
-  return <AttackTypeChip className={className} type={type} cutin={cutin} />;
+  return <AttackTypeChip className={className} attack={attack} />;
 };
-
-function getAttackTypeTag(value: unknown): AttackTypeTag | null {
-  if (isUnknownRecord(value) && typeof value.tag === "string") {
-    switch (value.tag) {
-      case "ShellingStyle":
-        return "Shelling";
-      case "NightAttackStyle":
-        return "Night";
-      case "AswAttackStyle":
-        return "Asw";
-      case "TorpedoAttackStyle":
-        return "Torpedo";
-      default:
-        return null;
-    }
-  } else {
-    return null;
-  }
-}
 
 export default AttackStyleChip;

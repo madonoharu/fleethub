@@ -1,28 +1,30 @@
-import { styled } from "@mui/material";
+import { styled, Stack, Typography } from "@mui/material";
 import { CompDayAnalysis, DayCutinReport } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useCompContext } from "../../../hooks";
 import { numstr, toPercent } from "../../../utils";
-import { LabeledValue } from "../../atoms";
+import { InfoButton } from "../../molecules";
 import AttackStyleChip from "../AttackStyleChip";
+import AttackPowerDetails from "../AttackTable/AttackPowerDetails";
+import EngagementSelect from "../EngagementSelect";
+import FormationSelect from "../FormationSelect";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
 
-const LeftContainer = styled("div")`
-  > * {
-    margin-top: 4px;
-  }
-  > :last-child {
-    margin-bottom: 4px;
-  }
+const GridContainer1 = styled("div")`
+  display: grid;
+  grid-template-columns: auto auto 48px;
+  justify-content: end;
+  align-content: start;
+  gap: 8px;
 `;
 
-const RightContainer = styled(LeftContainer)`
-  margin-left: 24px;
-  line-height: 24px;
+const GridContainer2 = styled(GridContainer1)`
+  grid-template-columns: auto 48px;
 `;
 
 const DayCutinReportCell: React.FCX<{ report: DayCutinReport }> = ({
@@ -30,33 +32,47 @@ const DayCutinReportCell: React.FCX<{ report: DayCutinReport }> = ({
   report,
 }) => {
   const { t } = useTranslation("common");
-  const data = Object.values(report.data);
-  data.sort((a, b) => (b.proc_rate ?? 0) - (a.proc_rate ?? 0));
   const singleRate = report.data["SingleAttack"]?.proc_rate;
   const total = typeof singleRate === "number" ? 1 - singleRate : null;
 
+  const entries = Object.entries(report.data);
+  entries.sort((a, b) => (b[1].proc_rate ?? 0) - (a[1].proc_rate ?? 0));
+
   return (
-    <div
-      className={className}
-      css={{ display: "flex", alignItems: "flex-end" }}
-    >
-      <LeftContainer>
-        {data.map((attack, index) => (
-          <LabeledValue
-            key={index}
-            label={<AttackStyleChip attackStyle={attack.style} />}
-            value={toPercent(attack.proc_rate)}
-          />
+    <Stack className={className} direction="row" gap={1}>
+      <GridContainer1>
+        {entries.map(([key, attack]) => (
+          <React.Fragment key={key}>
+            <AttackStyleChip attack={attack.style} />
+            <InfoButton
+              title={
+                <AttackPowerDetails
+                  power={attack.attack_power}
+                  params={attack.attack_power_params}
+                />
+              }
+            />
+            <Typography variant="inherit" align="right">
+              {toPercent(attack.proc_rate)}
+            </Typography>
+          </React.Fragment>
         ))}
-      </LeftContainer>
-      <RightContainer>
-        <LabeledValue
-          label={t("observation_term")}
-          value={numstr(report.observation_term) || "?"}
-        />
-        <LabeledValue label={t("SpecialAttack")} value={toPercent(total)} />
-      </RightContainer>
-    </div>
+      </GridContainer1>
+      <GridContainer2>
+        <Typography component="span" variant="inherit" color="textSecondary">
+          {t("observation_term")}
+        </Typography>
+        <Typography component="span" variant="inherit" align="right">
+          {numstr(report.observation_term) || "?"}
+        </Typography>
+        <Typography component="span" variant="inherit" color="textSecondary">
+          {t("SpecialAttack")}
+        </Typography>
+        <Typography component="span" variant="inherit" align="right">
+          {toPercent(total)}
+        </Typography>
+      </GridContainer2>
+    </Stack>
   );
 };
 
@@ -67,6 +83,7 @@ interface Props {
 }
 
 const DayAnalysisScreen: React.FC<Props> = ({ isCombined, analysis }) => {
+  const { config, bind } = useCompContext();
   const { t } = useTranslation("common");
   const { day_cutin, fleet_cutin } = analysis;
 
@@ -82,29 +99,42 @@ const DayAnalysisScreen: React.FC<Props> = ({ isCombined, analysis }) => {
   }
 
   return (
-    <div>
-      {fleetLosText}
+    <Stack gap={1}>
+      <Stack direction="row" gap={1}>
+        <Typography>{fleetLosText}</Typography>
+        <EngagementSelect
+          sx={{ ml: "auto" }}
+          value={config.engagement}
+          onChange={bind("engagement")}
+        />
+        <FormationSelect
+          value={config.formation}
+          onChange={bind("formation")}
+        />
+      </Stack>
       <Table
-        padding="none"
-        data={day_cutin.data}
+        sx={{ mb: 2 }}
+        data={day_cutin.ships}
         columns={[
           {
             label: t("Ship"),
-            getValue: ({ ship_id }) => <ShipNameplate shipId={ship_id} />,
+            getValue: ({ ship_id, role, index }) => (
+              <ShipNameplate shipId={ship_id} fleetType={role} index={index} />
+            ),
           },
           {
-            label: t(`AirState.${day_cutin.air_states[0]}`),
-            getValue: (item) => <DayCutinReportCell report={item.data[0]} />,
+            label: t(`AirState.${day_cutin.rank3_air_state}`),
+            getValue: (item) => <DayCutinReportCell report={item.rank3} />,
           },
           {
-            label: t(`AirState.${day_cutin.air_states[1]}`),
-            getValue: (item) => <DayCutinReportCell report={item.data[1]} />,
+            label: t(`AirState.${day_cutin.rank2_air_state}`),
+            getValue: (item) => <DayCutinReportCell report={item.rank2} />,
           },
         ]}
       />
 
       <FleetCutinAnalysisTable data={fleet_cutin} />
-    </div>
+    </Stack>
   );
 };
 

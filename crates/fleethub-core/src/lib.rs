@@ -22,12 +22,11 @@ pub mod simulator;
 pub mod types;
 pub mod utils;
 
-use comp::Comp;
-use simulator::SimulatorResult;
 use wasm_bindgen::{prelude::*, JsCast};
 
 use air_squadron::AirSquadron;
 use analyzer::Analyzer;
+use comp::Comp;
 use factory::Factory;
 use fleet::Fleet;
 use gear::Gear;
@@ -120,16 +119,6 @@ impl FhCore {
 
     pub fn create_analyzer(&self) -> Analyzer {
         Analyzer::new(self.factory.master_data.battle_definitions())
-    }
-
-    pub fn simulate_shelling_support(
-        &self,
-        _player: &mut Comp,
-        _enemy: &mut Comp,
-        _params: JsValue,
-        _times: usize,
-    ) -> Result<SimulatorResult, JsValue> {
-        Err(JsValue::from("unimplemented"))
     }
 }
 

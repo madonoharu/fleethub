@@ -4,7 +4,7 @@ use crate::{
     member::BattleMemberRef,
     types::{
         BattleDefinitions, DayPhaseAttackType, Formation, NightAttackType, NightPhaseAttackType,
-        Participant, ShipPosition, TorpedoAttackType,
+        Participant, ShipPosition, SupportShellingType, TorpedoAttackType,
     },
 };
 
@@ -206,6 +206,40 @@ impl TargetPicker<NightPhaseAttackType> {
             flagship_protection_rate,
             formation: target_formation,
             searchlight_state,
+        }
+    }
+}
+
+impl TargetPicker<SupportShellingType> {
+    pub fn new(
+        battle_defs: &BattleDefinitions,
+        attacker: &BattleMemberRef,
+        target_comp: &BattleComp,
+    ) -> Self {
+        let target_formation = target_comp.formation;
+        let flagship_protection_rate = battle_defs.get_flagship_protection_rate(target_formation);
+
+        let candidates = target_comp
+            .members(Participant::Both)
+            .filter_map(|ship| {
+                let attack_type = attacker.select_day_phase_attack_type(&ship)?;
+
+                match attack_type {
+                    DayPhaseAttackType::Shelling(t) => Some(Candidate {
+                        attack_type: t.into(),
+                        position: ship.position,
+                        is_protector: ship.is_protector(),
+                    }),
+                    _ => None,
+                }
+            })
+            .collect::<Vec<_>>();
+
+        Self {
+            candidates,
+            flagship_protection_rate,
+            formation: target_formation,
+            searchlight_state: None,
         }
     }
 }

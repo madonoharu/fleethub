@@ -25,6 +25,7 @@ struct NightCutinActionReport {
 #[derive(Serialize, Tsify)]
 struct ShipNightCutinAnalysis {
     ship_id: u16,
+    index: usize,
     normal: NightCutinActionReport,
     chuuha: NightCutinActionReport,
 }
@@ -78,6 +79,7 @@ impl NightCutinAnalyzer<'_> {
 
         ShipNightCutinAnalysis {
             ship_id: ship.ship_id,
+            index: ship.position.index,
             normal,
             chuuha,
         }

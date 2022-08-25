@@ -120,9 +120,9 @@ pub struct Gear {
     #[wasm_bindgen(readonly)]
     pub improvable: bool,
     #[wasm_bindgen(readonly)]
-    pub ship_anti_air_resistance: f64,
+    pub ship_anti_air_resist: f64,
     #[wasm_bindgen(readonly)]
-    pub fleet_anti_air_resistance: f64,
+    pub fleet_anti_air_resist: f64,
 }
 
 impl Gear {
@@ -164,8 +164,8 @@ impl Gear {
             radius: master.radius,
             cost: master.cost,
             improvable: master.improvable,
-            ship_anti_air_resistance: master.ship_anti_air_resistance,
-            fleet_anti_air_resistance: master.fleet_anti_air_resistance,
+            ship_anti_air_resist: master.ship_anti_air_resist,
+            fleet_anti_air_resist: master.fleet_anti_air_resist,
 
             attrs: master.attrs,
             ibonuses,
@@ -313,7 +313,7 @@ impl Gear {
 
     pub fn fleet_anti_air_mod(&self) -> f64 {
         if self.anti_air == 0 {
-            return 0.;
+            return 0.0;
         }
 
         let gear_type = self.gear_type;
@@ -342,19 +342,19 @@ impl Gear {
 
         let gear_type = self.gear_type;
 
-        let multiplier = if gear_type == GearType::AntiAirGun {
-            6.0
+        let a = if gear_type == GearType::AntiAirGun {
+            3.0
         } else if gear_type == GearType::AntiAirFireDirector
             || self.has_attr(GearAttr::HighAngleMount)
         {
-            4.0
+            2.0
         } else if self.has_attr(GearAttr::Radar) {
-            3.0
+            1.5
         } else {
             0.0
         };
 
-        multiplier * (self.anti_air as f64) + self.ibonuses.ship_anti_air
+        a * (self.anti_air as f64) + self.ibonuses.ship_anti_air
     }
 
     pub fn calc_contact_trigger_factor(&self, slot_size: u8) -> f64 {

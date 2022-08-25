@@ -1,13 +1,14 @@
-import styled from "@emotion/styled";
-import { Typography, Stack, Tooltip } from "@mui/material";
+import { styled, Typography, Stack, Tooltip } from "@mui/material";
 import { CompNightAnalysis, NightCutinActionReport } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useCompContext } from "../../../hooks";
 import { toPercent } from "../../../utils";
-import { LabeledValue, Flexbox } from "../../atoms";
+import { Flexbox } from "../../atoms";
+import { InfoButton } from "../../molecules";
 import AttackStyleChip from "../AttackStyleChip";
+import AttackPowerDetails from "../AttackTable/AttackPowerDetails";
 import NightFleetConditionsForm from "../NightFleetConditionsForm";
 import ContactRankIcon from "../NightFleetConditionsForm/ContactRankIcon";
 import ShipNameplate from "../ShipNameplate";
@@ -15,20 +16,16 @@ import Table from "../Table";
 
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
 
-const StyledLabeledValue = styled(LabeledValue)`
-  margin-top: 4px;
-  :last-child {
-    margin-bottom: 4px;
-  }
+const GridContainer1 = styled("div")`
+  display: grid;
+  grid-template-columns: auto auto 48px;
+  justify-content: end;
+  align-content: start;
+  gap: 8px;
 `;
 
-const LeftContainer = styled.div`
-  width: 120px;
-  margin-right: 24px;
-`;
-
-const RightContainer = styled.div`
-  line-height: 24px;
+const GridContainer2 = styled(GridContainer1)`
+  grid-template-columns: auto 48px;
 `;
 
 const NightCutinActionReportCell: React.FC<{
@@ -40,27 +37,47 @@ const NightCutinActionReportCell: React.FC<{
     return null;
   }
 
-  const data = Object.values(report.data);
-  data.sort((a, b) => (b.proc_rate ?? 0) - (a.proc_rate ?? 0));
   const singleRate = report.data["SingleAttack"]?.proc_rate;
   const total = typeof singleRate === "number" ? 1 - singleRate : null;
 
+  const entries = Object.entries(report.data);
+  entries.sort((a, b) => (b[1].proc_rate ?? 0) - (a[1].proc_rate ?? 0));
+
   return (
-    <div style={{ display: "flex", alignItems: "flex-end" }}>
-      <LeftContainer>
-        {data.map((attack, index) => (
-          <StyledLabeledValue
-            key={index}
-            label={<AttackStyleChip attackStyle={attack.style} />}
-            value={toPercent(attack.proc_rate)}
-          />
+    <Stack direction="row" gap={2}>
+      <GridContainer1>
+        {entries.map(([key, attack]) => (
+          <React.Fragment key={key}>
+            <AttackStyleChip attack={attack.style} />
+            <InfoButton
+              title={
+                <AttackPowerDetails
+                  power={attack.attack_power}
+                  params={attack.attack_power_params}
+                />
+              }
+            />
+            <Typography variant="inherit" align="right">
+              {toPercent(attack.proc_rate)}
+            </Typography>
+          </React.Fragment>
         ))}
-      </LeftContainer>
-      <RightContainer>
-        <StyledLabeledValue label={t("cutin_term")} value={report.cutin_term} />
-        <StyledLabeledValue label={t("Total")} value={toPercent(total)} />
-      </RightContainer>
-    </div>
+      </GridContainer1>
+      <GridContainer2>
+        <Typography component="span" variant="inherit" color="textSecondary">
+          {t("cutin_term")}
+        </Typography>
+        <Typography component="span" variant="inherit" align="right">
+          {report.cutin_term}
+        </Typography>
+        <Typography component="span" variant="inherit" color="textSecondary">
+          {t("Total")}
+        </Typography>
+        <Typography component="span" variant="inherit" align="right">
+          {toPercent(total)}
+        </Typography>
+      </GridContainer2>
+    </Stack>
   );
 };
 
@@ -121,12 +138,14 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
       </Flexbox>
 
       <Table
-        padding="none"
+        sx={{ mb: 2 }}
         data={night_cutin.ships}
         columns={[
           {
             label: "艦娘",
-            getValue: (ship) => <ShipNameplate shipId={ship.ship_id} />,
+            getValue: (ship) => (
+              <ShipNameplate shipId={ship.ship_id} index={ship.index} />
+            ),
             width: 160,
           },
           {

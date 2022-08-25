@@ -4,27 +4,30 @@ use tsify::Tsify;
 use crate::{
     comp::Comp,
     ship::Ship,
-    types::{AntiAirCutinDef, BattleDefinitions, Formation},
+    types::{AntiAirCutinDef, BattleDefinitions, Formation, Role},
 };
 
 #[derive(Debug, Serialize, Tsify)]
 #[tsify(into_wasm_abi)]
 pub struct AntiAirReport {
-    ship_id: u16,
-    adjusted_anti_air: Option<f64>,
-    proportional_shotdown_rate: Option<f64>,
-    fixed_shotdown_number: Option<i32>,
-    guaranteed: Option<i32>,
-    anti_air_cutin_chance: Vec<(u8, f64)>,
-    anti_air_propellant_barrage_chance: Option<f64>,
+    pub ship_id: u16,
+    pub role: Role,
+    pub index: usize,
+
+    pub adjusted_anti_air: Option<f64>,
+    pub proportional_shotdown_rate: Option<f64>,
+    pub fixed_shotdown_number: Option<i32>,
+    pub guaranteed: Option<i32>,
+    pub anti_air_cutin_chance: Vec<(u8, f64)>,
+    pub anti_air_propellant_barrage_chance: Option<f64>,
 }
 
 #[derive(Debug, Serialize, Tsify)]
 #[tsify(into_wasm_abi)]
 pub struct CompAntiAirAnalysis {
-    fleet_adjusted_anti_air: f64,
-    ships: Vec<AntiAirReport>,
-    anti_air_cutin_chance: Vec<(u8, f64)>,
+    pub fleet_adjusted_anti_air: f64,
+    pub ships: Vec<AntiAirReport>,
+    pub anti_air_cutin_chance: Vec<(u8, f64)>,
 }
 
 pub struct AntiAirAnalyzer<'a> {
@@ -59,6 +62,9 @@ impl AntiAirAnalyzer<'_> {
 
                 AntiAirReport {
                     ship_id: member.ship.ship_id,
+                    role: member.position.role,
+                    index: member.position.index,
+
                     adjusted_anti_air: air_defense.ship_adjusted_anti_air(),
                     proportional_shotdown_rate: air_defense
                         .proportional_shotdown_rate(ship_anti_air_resist),

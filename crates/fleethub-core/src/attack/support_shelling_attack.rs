@@ -2,17 +2,19 @@
 
 use crate::{
     member::BattleMemberRef,
-    types::{AttackPowerModifier, Engagement, FormationParams, ShellingType, Time},
+    types::{
+        AttackPowerModifier, Engagement, FormationParams, ShellingType, SupportShellingType, Time,
+    },
 };
 
-use super::{AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
+use super::{Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
 
 const SUPPORT_SHELLING_POWER_CAP: f64 = 170.0;
 const SUPPORT_SHELLING_CRITICAL_RATE_CONSTANT: f64 = 1.0;
 const SUPPORT_SHELLING_ACCURACY_CONSTANT: f64 = 64.0;
 
 pub struct SupportShellingAttackParams<'a> {
-    pub attack_type: ShellingType,
+    pub attack_type: SupportShellingType,
     pub attacker: &'a BattleMemberRef<'a>,
     pub target: &'a BattleMemberRef<'a>,
     pub engagement: Engagement,
@@ -20,6 +22,10 @@ pub struct SupportShellingAttackParams<'a> {
 }
 
 impl SupportShellingAttackParams<'_> {
+    pub fn to_attack(&self) -> Attack {
+        self.calc_attack_params().into_attack()
+    }
+
     pub fn calc_attack_params(&self) -> AttackParams {
         let defense_params = DefenseParams::from_target(self.target, self.target.side(), 0.0);
 
@@ -39,7 +45,7 @@ impl SupportShellingAttackParams<'_> {
         let mut carrier_power = None;
         let mut carrier_power_ebonus = 0.0;
 
-        if self.attack_type == ShellingType::Carrier {
+        if self.attack_type.0 == ShellingType::Carrier {
             let anti_inst = target.is_installation();
 
             carrier_power = Some(attacker.carrier_power(anti_inst) as f64);
@@ -72,7 +78,7 @@ impl SupportShellingAttackParams<'_> {
             postcap_mod,
             ap_shell_mod: None,
             carrier_power,
-            proficiency_critical_mod: None,
+            proficiency_critical_mod: 1.0,
             remaining_ammo_mod,
             armor_penetration: 0.0,
             special_enemy_mods,

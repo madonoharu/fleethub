@@ -70,7 +70,7 @@ impl TorpedoAttackParams<'_> {
             postcap_mod,
             ap_shell_mod: None,
             carrier_power: None,
-            proficiency_critical_mod: None,
+            proficiency_critical_mod: 1.0,
             armor_penetration: 0.0,
             remaining_ammo_mod: attacker.remaining_ammo_mod(),
             special_enemy_mods: Default::default(),

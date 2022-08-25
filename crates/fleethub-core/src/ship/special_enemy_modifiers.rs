@@ -15,11 +15,11 @@ impl Ship {
     }
 
     /// 砲撃支援特効補正
-    pub fn shelling_support_special_enemy_mods(
+    pub fn support_shelling_special_enemy_mods(
         &self,
         special_enemy_type: SpecialEnemyType,
     ) -> SpecialEnemyModifiers {
-        shelling_support_special_enemy_modifiers(self, special_enemy_type)
+        support_shelling_special_enemy_modifiers(self, special_enemy_type)
     }
 }
 
@@ -532,7 +532,7 @@ pub fn special_enemy_modifiers(
 }
 
 /// 砲撃支援特効補正
-fn shelling_support_special_enemy_modifiers(
+fn support_shelling_special_enemy_modifiers(
     attacker: &Ship,
     special_enemy_type: SpecialEnemyType,
 ) -> SpecialEnemyModifiers {
