@@ -197,8 +197,8 @@ impl TryFrom<ShipPosition> for PlayerFleetType {
     type Error = TryFromOrgTypeError;
 
     fn try_from(value: ShipPosition) -> Result<Self, Self::Error> {
-        let ShipPosition { org_type, role, .. } = value;
-        (org_type, role).try_into()
+        let role = value.role();
+        (value.org_type, role).try_into()
     }
 }
 
@@ -206,8 +206,8 @@ impl TryFrom<ShipPosition> for EnemyFleetType {
     type Error = TryFromOrgTypeError;
 
     fn try_from(value: ShipPosition) -> Result<Self, Self::Error> {
-        let ShipPosition { org_type, role, .. } = value;
-        (org_type, role).try_into()
+        let role = value.role();
+        (value.org_type, role).try_into()
     }
 }
 
@@ -255,7 +255,7 @@ mod test {
     fn get_ship_position(value: (OrgType, Role)) -> ShipPosition {
         ShipPosition {
             org_type: value.0,
-            role: value.1,
+            fleet_type: value.1.into(),
             ..Default::default()
         }
     }

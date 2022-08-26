@@ -254,7 +254,7 @@ mod test {
 
     fn pos(role: Role, index: usize) -> ShipPosition {
         ShipPosition {
-            role,
+            fleet_type: role.into(),
             index,
             ..Default::default()
         }

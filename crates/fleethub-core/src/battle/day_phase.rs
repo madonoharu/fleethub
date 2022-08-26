@@ -71,9 +71,9 @@ where
 
     fn fleet_los_mod(&self, attacker_position: ShipPosition) -> f64 {
         if attacker_position.side().is_player() {
-            self.player_comp.fleet_los_mod(attacker_position.role)
+            self.player_comp.fleet_los_mod(attacker_position.fleet_type)
         } else {
-            self.enemy_comp.fleet_los_mod(attacker_position.role)
+            self.enemy_comp.fleet_los_mod(attacker_position.fleet_type)
         }
     }
 

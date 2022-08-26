@@ -22,7 +22,7 @@ const toGearInput = (gear: Gear): GearInput => ({
   range: gear.range,
   torpedo: gear.torpedo,
   types: Array.from(gear.types),
-  special_type: gear.special_type_id,
+  special_type: gear.special_type,
   ace: gear.ace,
   stars: gear.stars,
 });

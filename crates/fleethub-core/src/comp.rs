@@ -7,7 +7,7 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     fleet::Fleet,
-    member::{BattleMemberRef, CompMemberMut, CompMemberRef},
+    member::{BattleMemberMut, BattleMemberRef, CompMemberMut, CompMemberRef},
     plane::{Plane, PlaneMut},
     ship::Ship,
     types::{
@@ -39,44 +39,65 @@ impl Comp {
             FleetType::Main => &self.main,
             FleetType::Escort => self.escort.as_ref()?,
             FleetType::RouteSup => self.route_sup.as_ref()?,
-            _ => return None,
+            FleetType::BossSup => self.boss_sup.as_ref()?,
         })
     }
 
-    pub fn night_fleet_role(&self) -> Role {
+    pub fn get_fleet_mut(&mut self, ft: impl Into<FleetType>) -> Option<&mut Fleet> {
+        Some(match ft.into() {
+            FleetType::Main => &mut self.main,
+            FleetType::Escort => self.escort.as_mut()?,
+            FleetType::RouteSup => self.route_sup.as_mut()?,
+            FleetType::BossSup => self.boss_sup.as_mut()?,
+        })
+    }
+
+    pub fn night_fleet_type(&self) -> FleetType {
         if self.is_combined() && self.escort.is_some() {
-            Role::Escort
+            FleetType::Escort
         } else {
-            Role::Main
+            FleetType::Main
         }
     }
 
     pub fn night_fleet(&self) -> &Fleet {
-        self.get_fleet(self.night_fleet_role())
+        self.get_fleet(self.night_fleet_type())
             .unwrap_or_else(|| unreachable!())
     }
 
     pub fn get_battle_member(
         &self,
         formation: Formation,
-        role: Role,
+        position: ShipPosition,
+    ) -> Option<BattleMemberRef> {
+        let fleet = self.get_fleet(position.fleet_type)?;
+        let ship = fleet.ships.get(position.index)?;
+
+        Some(BattleMemberRef::new(ship, position, formation))
+    }
+
+    pub fn get_battle_member_mut(
+        &mut self,
+        formation: Formation,
+        position: ShipPosition,
+    ) -> Option<BattleMemberMut> {
+        let fleet = self.get_fleet_mut(position.fleet_type)?;
+        let ship = fleet.ships.get_mut(position.index)?;
+
+        Some(BattleMemberMut::new(ship, position, formation))
+    }
+
+    pub fn get_battle_member_by_index(
+        &self,
+        formation: Formation,
+        fleet_type: FleetType,
         index: usize,
     ) -> Option<BattleMemberRef> {
-        let fleet = self.get_fleet(role)?;
+        let fleet = self.get_fleet(fleet_type)?;
         let ship = fleet.ships.get(index)?;
-        let fleet_len = fleet.len;
+        let position = self.get_ship_position(fleet_type, index);
 
-        let position = ShipPosition {
-            org_type: self.org_type,
-            role,
-            fleet_len,
-            index,
-        };
-
-        Some(BattleMemberRef {
-            ship: CompMemberRef { ship, position },
-            formation,
-        })
+        Some(BattleMemberRef::new(ship, position, formation))
     }
 
     fn fleet_entries(
@@ -143,25 +164,20 @@ impl Comp {
     ) -> impl Iterator<Item = CompMemberRef> {
         let org_type = self.org_type;
 
-        self.fleet_entries(query).flat_map(move |(ft, fleet)| {
-            let role = if ft == FleetType::Main {
-                Role::Main
-            } else {
-                Role::Escort
-            };
+        self.fleet_entries(query)
+            .flat_map(move |(fleet_type, fleet)| {
+                let fleet_len = fleet.len;
 
-            let fleet_len = fleet.len;
-
-            fleet.ships.iter().map(move |(index, ship)| CompMemberRef {
-                ship,
-                position: ShipPosition {
-                    org_type,
-                    role,
-                    fleet_len,
-                    index,
-                },
+                fleet.ships.iter().map(move |(index, ship)| CompMemberRef {
+                    ship,
+                    position: ShipPosition {
+                        org_type,
+                        fleet_type,
+                        fleet_len,
+                        index,
+                    },
+                })
             })
-        })
     }
 
     pub fn members_mut_by(
@@ -170,32 +186,27 @@ impl Comp {
     ) -> impl Iterator<Item = CompMemberMut> {
         let org_type = self.org_type;
 
-        self.fleet_entries_mut(query).flat_map(move |(ft, fleet)| {
-            let role = if ft == FleetType::Main {
-                Role::Main
-            } else {
-                Role::Escort
-            };
+        self.fleet_entries_mut(query)
+            .flat_map(move |(fleet_type, fleet)| {
+                let fleet_len = fleet.len;
 
-            let fleet_len = fleet.len;
-
-            fleet
-                .ships
-                .iter_mut()
-                .map(move |(index, ship)| CompMemberMut {
-                    ship,
-                    position: ShipPosition {
-                        org_type,
-                        role,
-                        fleet_len,
-                        index,
-                    },
-                })
-        })
+                fleet
+                    .ships
+                    .iter_mut()
+                    .map(move |(index, ship)| CompMemberMut {
+                        ship,
+                        position: ShipPosition {
+                            org_type,
+                            fleet_type,
+                            fleet_len,
+                            index,
+                        },
+                    })
+            })
     }
 
-    pub fn members(&self) -> impl Iterator<Item = CompMemberRef> {
-        self.members_by(FleetType::Main | FleetType::Escort)
+    pub fn all_members(&self) -> impl Iterator<Item = CompMemberRef> {
+        self.members_by(EnumSet::all())
     }
 
     pub fn members_mut(&mut self) -> impl Iterator<Item = CompMemberMut> {
@@ -231,7 +242,7 @@ impl Comp {
     }
 
     pub fn ships(&self) -> impl Iterator<Item = &Ship> {
-        self.members().map(|entry| entry.ship)
+        self.all_members().map(|entry| entry.ship)
     }
 
     pub fn ships_mut(&mut self) -> impl Iterator<Item = &mut Ship> {
@@ -247,7 +258,7 @@ impl Comp {
         rng: &mut R,
         battle_defs: &'a BattleDefinitions,
     ) -> Option<&'a AntiAirCutinDef> {
-        self.members()
+        self.members_by(FleetType::Main | FleetType::Escort)
             .map(|entry| entry.ship)
             .filter_map(|ship| {
                 let aaci_vec = ship.get_possible_anti_air_cutin_ids();
@@ -299,7 +310,11 @@ impl Comp {
     }
 
     pub fn has_route_sup(&self) -> bool {
-        self.route_sup.is_some()
+        if let Some(sup) = &self.route_sup {
+            sup.ships.values().count() > 0
+        } else {
+            false
+        }
     }
 
     pub fn meta(&self) -> CompMeta {
@@ -380,15 +395,26 @@ impl Comp {
         self.ships().map(|ship| ship.transport_point()).sum()
     }
 
-    pub(crate) fn get_ship_position(&self, ship: &Ship) -> ShipPosition {
-        self.members()
-            .find(|member| member.ship == ship)
-            .map(|member| member.position)
-            .unwrap_or_default()
+    pub(crate) fn get_ship_position(&self, fleet_type: FleetType, index: usize) -> ShipPosition {
+        ShipPosition {
+            org_type: self.org_type,
+            fleet_type,
+            fleet_len: self.get_fleet(fleet_type).map_or(6, |f| f.len),
+            index,
+        }
     }
 
     pub fn get_ship_conditions(&self, ship: &Ship, formation: Option<Formation>) -> ShipConditions {
-        let position = self.get_ship_position(ship);
+        let position = self
+            .all_members()
+            .find_map(|member| {
+                if member.ship == ship {
+                    Some(member.position)
+                } else {
+                    None
+                }
+            })
+            .unwrap_or_default();
 
         ShipConditions {
             position,

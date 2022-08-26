@@ -9,7 +9,6 @@ use tsify::Tsify;
 
 use super::{
     AttackType, DayCutin, DayCutinLike, Formation, NightCutin, NightCutinLike, ShipConditions,
-    ShipEnvironment,
 };
 
 #[serde_as]
@@ -211,10 +210,6 @@ impl BattleDefinitions {
             .get(&formation)
             .unwrap_or_else(|| unreachable!());
         nfd.get_def(fleet_len, ship_index)
-    }
-
-    pub fn get_formation_def_by_env(&self, env: &ShipEnvironment) -> &FormationDef {
-        self.get_formation_def(env.formation, env.fleet_len, env.index)
     }
 
     pub fn get_formation_fleet_anti_air_mod(&self, formation: Formation) -> f64 {

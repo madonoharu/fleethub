@@ -69,12 +69,16 @@ where
         fleet_adjusted_anti_air: f64,
         anti_air_cutin: Option<&'a AntiAirCutinDef>,
     ) -> ShipAirDefense {
-        let ShipPosition { org_type, role, .. } = self.position;
+        let ShipPosition {
+            org_type,
+            fleet_type,
+            ..
+        } = self.position;
 
         ShipAirDefense {
             ship: self,
             org_type,
-            role,
+            role: fleet_type.into(),
             fleet_adjusted_anti_air,
             anti_air_cutin,
         }

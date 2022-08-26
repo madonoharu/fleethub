@@ -5,7 +5,7 @@ use tsify::Tsify;
 
 use crate::{
     comp::Comp,
-    types::{DamageState, Role},
+    types::{DamageState, FleetType},
     utils::Histogram,
 };
 
@@ -61,19 +61,19 @@ impl BattleLogger {
                     .collect::<HashMap<_, _>>();
 
                 let entry = comp
-                    .members()
+                    .all_members()
                     .find(|member| member.ship.id == id)
-                    .unwrap_or_else(|| unreachable!());
+                    .unwrap_or_else(|| unreachable!("id: {}", id));
 
                 SimulatorResultItem {
                     id,
-                    role: entry.position.role,
+                    fleet_type: entry.position.fleet_type,
                     index: entry.position.index,
                     damage_state_map,
                 }
             })
             .sorted_by(|a, b| {
-                let ord = a.role.cmp(&b.role);
+                let ord = a.fleet_type.cmp(&b.fleet_type);
                 if ord.is_eq() {
                     a.index.cmp(&b.index)
                 } else {
@@ -100,7 +100,7 @@ impl BattleLogger {
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct SimulatorResultItem {
     pub id: String,
-    pub role: Role,
+    pub fleet_type: FleetType,
     pub index: usize,
     pub damage_state_map: HashMap<DamageState, f64>,
 }
