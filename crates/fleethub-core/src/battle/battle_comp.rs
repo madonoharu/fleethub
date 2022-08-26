@@ -8,9 +8,8 @@ use rand::prelude::*;
 
 use crate::{
     comp::Comp,
-    fleet::Fleet,
-    member::{BattleMemberMut, BattleMemberRef, CompMemberMut, CompMemberRef},
-    types::{FleetType, Formation, OrgType, Participant, Role, ShipPosition},
+    member::{BattleMemberMut, BattleMemberRef},
+    types::{FleetType, Formation, OrgType, Participant, ShipPosition},
 };
 
 pub struct BattleComp {
@@ -57,83 +56,35 @@ impl BattleComp {
         let formation = self.formation;
         let is_combined = self.comp.is_combined();
 
-        self.comp.members().filter_map(move |ship| {
-            let is_main = ship.position.is_main();
-            match participant {
-                Participant::Main => is_main,
-                Participant::Escort => {
-                    if is_combined {
-                        !is_main
-                    } else {
-                        is_main
+        self.comp
+            .members_by(FleetType::Main | FleetType::Escort)
+            .filter_map(move |ship| {
+                let is_main = ship.position.is_main();
+                match participant {
+                    Participant::Main => is_main,
+                    Participant::Escort => {
+                        if is_combined {
+                            !is_main
+                        } else {
+                            is_main
+                        }
                     }
+                    Participant::Both => true,
                 }
-                Participant::Both => true,
-            }
-            .then(|| BattleMemberRef { ship, formation })
-        })
-    }
-
-    pub fn get_fleet(&self, role: Role) -> Option<&Fleet> {
-        match role {
-            Role::Main => Some(&self.comp.main),
-            Role::Escort => self.comp.escort.as_ref(),
-        }
-    }
-
-    pub fn get_fleet_mut(&mut self, role: Role) -> Option<&mut Fleet> {
-        match role {
-            Role::Main => Some(&mut self.comp.main),
-            Role::Escort => self.comp.escort.as_mut(),
-        }
+                .then(|| BattleMemberRef { ship, formation })
+            })
     }
 
     pub fn get_ship(&self, position: ShipPosition) -> Option<BattleMemberRef> {
-        let ShipPosition { role, index, .. } = position;
-
-        let org_type = self.org_type();
-        let formation = self.formation;
-        let fleet = self.get_fleet(role)?;
-        let ship = fleet.ships.get(index)?;
-        let fleet_len = fleet.len;
-
-        let position = ShipPosition {
-            org_type,
-            role,
-            fleet_len,
-            index,
-        };
-
-        Some(BattleMemberRef {
-            ship: CompMemberRef { ship, position },
-            formation,
-        })
+        self.comp.get_battle_member(self.formation, position)
     }
 
     pub fn get_ship_mut(&mut self, position: ShipPosition) -> Option<BattleMemberMut> {
-        let ShipPosition { role, index, .. } = position;
-
-        let org_type = self.org_type();
-        let formation = self.formation;
-        let fleet = self.get_fleet_mut(role)?;
-        let ship = fleet.ships.get_mut(index)?;
-        let fleet_len = fleet.len;
-
-        let position = ShipPosition {
-            org_type,
-            role,
-            fleet_len,
-            index,
-        };
-
-        Some(BattleMemberMut {
-            ship: CompMemberMut { ship, position },
-            formation,
-        })
+        self.comp.get_battle_member_mut(self.formation, position)
     }
 
-    pub fn fleet_los_mod(&self, role: Role) -> f64 {
-        self.get_fleet(role)
+    pub fn fleet_los_mod(&self, ft: FleetType) -> f64 {
+        self.get_fleet(ft)
             .and_then(|f| f.fleet_los_mod())
             .unwrap_or_default()
     }

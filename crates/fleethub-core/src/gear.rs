@@ -182,7 +182,7 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn special_type_id(&self) -> u8 {
+    pub fn special_type(&self) -> u8 {
         self.special_type
     }
 

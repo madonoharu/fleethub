@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-use super::{FleetPosition, Formation, OrgType, ShipEnvironment, ShipPosition, Side};
+use super::{Formation, OrgType, ShipPosition, Side};
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(default)]
@@ -51,10 +51,6 @@ impl ShipConditions {
         self.position.is_main_flagship()
     }
 
-    pub fn fleet_position(&self) -> FleetPosition {
-        self.position.into()
-    }
-
     pub fn with_side(side: Side) -> Self {
         let org_type = if side.is_player() {
             OrgType::Single
@@ -68,20 +64,6 @@ impl ShipConditions {
                 ..Default::default()
             },
             formation: Formation::LINE_AHEAD,
-        }
-    }
-}
-
-impl From<&ShipEnvironment> for ShipConditions {
-    fn from(env: &ShipEnvironment) -> Self {
-        Self {
-            position: ShipPosition {
-                org_type: env.org_type,
-                role: env.role,
-                fleet_len: env.fleet_len,
-                index: env.index,
-            },
-            formation: env.formation,
         }
     }
 }

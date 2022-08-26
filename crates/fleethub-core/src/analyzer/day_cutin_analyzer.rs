@@ -5,7 +5,9 @@ use crate::{
     comp::Comp,
     member::BattleMemberRef,
     ship::Ship,
-    types::{AirState, BattleDefinitions, DayPhaseAttackStyle, Engagement, Formation, Role},
+    types::{
+        AirState, BattleDefinitions, DayPhaseAttackStyle, Engagement, FleetType, Formation, Role,
+    },
     utils::some_or_return,
 };
 
@@ -87,10 +89,12 @@ impl DayCutinAnalyzer<'_> {
     fn analyze_ship(
         &self,
         fleet_los_mod: Option<f64>,
-        role: Role,
+        fleet_type: FleetType,
         index: usize,
     ) -> Option<ShipDayCutinAnalysis> {
-        let ship = self.comp.get_battle_member(self.formation, role, index)?;
+        let ship = self
+            .comp
+            .get_battle_member_by_index(self.formation, fleet_type, index)?;
         let air_states = self.air_states();
 
         let [rank3, rank2] = air_states
@@ -98,42 +102,42 @@ impl DayCutinAnalyzer<'_> {
 
         Some(ShipDayCutinAnalysis {
             ship_id: ship.ship_id,
-            role: ship.position.role,
-            index: ship.position.index,
+            role: fleet_type.into(),
+            index,
             rank3,
             rank2,
         })
     }
 
-    fn analyze_fleet(&self, role: Role) -> Vec<ShipDayCutinAnalysis> {
-        let fleet = some_or_return!(self.comp.get_fleet(role), vec![]);
+    fn analyze_fleet(&self, fleet_type: FleetType) -> Vec<ShipDayCutinAnalysis> {
+        let fleet = some_or_return!(self.comp.get_fleet(fleet_type), vec![]);
         let fleet_los_mod = fleet.fleet_los_mod();
 
         fleet
             .ships
             .iter()
-            .filter_map(|(index, _)| self.analyze_ship(fleet_los_mod, role, index))
+            .filter_map(|(index, _)| self.analyze_ship(fleet_los_mod, fleet_type, index))
             .collect()
     }
 
-    fn fleet_los_mod(&self, role: Role) -> Option<f64> {
+    fn fleet_los_mod(&self, fleet_type: FleetType) -> Option<f64> {
         self.comp
-            .get_fleet(role)
+            .get_fleet(fleet_type)
             .and_then(|fleet| fleet.fleet_los_mod())
     }
 
     pub fn analyze(&self) -> CompDayCutinAnalysis {
-        let ships = [Role::Main, Role::Escort]
+        let ships = [FleetType::Main, FleetType::Escort]
             .into_iter()
-            .flat_map(|role| self.analyze_fleet(role))
+            .flat_map(|fleet_type| self.analyze_fleet(fleet_type))
             .collect();
         let [rank3_air_state, rank2_air_state] = self.air_states();
 
         CompDayCutinAnalysis {
             rank3_air_state,
             rank2_air_state,
-            main_fleet_los_mod: self.fleet_los_mod(Role::Main),
-            escort_fleet_los_mod: self.fleet_los_mod(Role::Escort),
+            main_fleet_los_mod: self.fleet_los_mod(FleetType::Main),
+            escort_fleet_los_mod: self.fleet_los_mod(FleetType::Escort),
             ships,
         }
     }
