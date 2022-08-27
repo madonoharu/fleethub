@@ -1,4 +1,5 @@
 import { FhMap, MapEnemyComp, MapNode, MapNodeType } from "@fh/utils";
+import { Link, Typography } from "@mui/material";
 import { Formation, OrgState } from "fleethub-core";
 import React from "react";
 
@@ -78,6 +79,12 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
       <Flexbox>
         <AreaSelect value={mapId} onChange={handleAreaChange} />
         <DifficultySelect value={diff} onChange={handleDiffChange} />
+        <Typography variant="h6" sx={{ ml: "auto" }}>
+          <span>from</span>
+          <Link ml={1} variant="inherit" href="https://tsunkit.net/nav">
+            KCNav
+          </Link>
+        </Typography>
       </Flexbox>
 
       <div css={{ width: 640 }}>

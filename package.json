@@ -23,7 +23,6 @@
     "start": "yarn workspace @fh/site start",
     "test": "jest",
     "ts": "NODE_OPTIONS='--experimental-specifier-resolution=node' ts-node-esm",
-    "update:locales": "yarn ts scripts/updateLocales",
     "update:storage": "yarn ts scripts/updateStorage",
     "update:types": "yarn ts scripts/updateTypes",
     "utils": "yarn workspace @fh/utils"

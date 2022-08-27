@@ -21,7 +21,7 @@ import { entitiesSlice, migrateFromJor, JorData } from "../../../store";
 import { ImportMenu } from "../../organisms";
 
 const WelcomePage: React.FCX = () => {
-  const { t, i18n } = useTranslation("common");
+  const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
   const ImportMenuModal = useModal();
 
@@ -103,15 +103,24 @@ const WelcomePage: React.FCX = () => {
         <p>
           デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
         </p>
-
-        {i18n.language !== "ja" && (
-          <p>
-            About Localization -{" "}
-            <Link href="https://github.com/madonoharu/fleethub/tree/develop/packages/site/public/locales">
-              {t("AboutLocalization")}
-            </Link>
-          </p>
-        )}
+        <Typography variant="h5" mt={4}>
+          About Map Data
+        </Typography>
+        <Divider />
+        <p>
+          <Link href="https://tsunkit.net/nav">KCNav</Link>
+          <span>のデータをお借りしています。</span>
+        </p>
+        <Typography variant="h5" mt={4}>
+          About Localization
+        </Typography>
+        <Divider />
+        <p>
+          <Link href="https://github.com/KC3Kai/kc3-translations">
+            KC3改 Translations
+          </Link>
+          <span>から翻訳データを生成しています。</span>
+        </p>
 
         <Typography variant="h5" mt={4}>
           Author
@@ -142,7 +151,6 @@ const WelcomePage: React.FCX = () => {
           <MailIcon />
           madonoharu@gmail.com
         </Typography>
-
         <Typography variant="h5" mt={4}>
           Maintainers
         </Typography>
@@ -162,7 +170,6 @@ const WelcomePage: React.FCX = () => {
           </div>
           <span>ゆーる</span>
         </Typography>
-
         <Typography variant="h5" mt={4}>
           免責事項
         </Typography>
@@ -170,7 +177,6 @@ const WelcomePage: React.FCX = () => {
         <Typography>
           当サイトに表示される情報は仮説式等を多く使用しているため、その正確性については保障しません。また、当サイトの計算結果によって発生した損害について一切の責任を負いません。
         </Typography>
-
         <Typography variant="h5" mt={4}>
           プライバシーポリシー
         </Typography>
@@ -184,7 +190,6 @@ const WelcomePage: React.FCX = () => {
           </Link>
           をご覧ください。
         </Typography>
-
         <Typography variant="h5" mt={4}>
           知的財産権
         </Typography>
