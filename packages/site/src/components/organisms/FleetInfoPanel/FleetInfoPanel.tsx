@@ -25,7 +25,7 @@ const Inner: React.FCX<{ fleet: Fleet }> = ({ fleet }) => {
       panel: (
         <DayAnalysisScreen
           analysis={result.day}
-          isCombined={comp.is_combined()}
+          combined={comp.is_combined()}
         />
       ),
     },
