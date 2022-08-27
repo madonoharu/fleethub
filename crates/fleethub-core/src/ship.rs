@@ -639,7 +639,7 @@ impl Ship {
         Some(naked_firepower + night_plane_power)
     }
 
-    pub fn night_ark_royal_power(&self, anti_inst: bool) -> Option<f64> {
+    pub fn night_swordfish_power(&self, anti_inst: bool) -> Option<f64> {
         let naked_firepower = self.naked_firepower()? as f64;
 
         let night_plane_power = self
@@ -651,7 +651,7 @@ impl Ship {
 
                 let firepower = gear.firepower as f64;
                 let torpedo = if anti_inst { 0 } else { gear.torpedo } as f64;
-                let ibonus = gear.ibonuses.night_power;
+                let ibonus = (gear.stars as f64).sqrt();
 
                 Some(firepower + torpedo + ibonus)
             })

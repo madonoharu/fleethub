@@ -31,12 +31,12 @@ impl ContactRank {
         match self {
             Self::Rank1 => NightContactModifiers {
                 power_mod: 5.0,
-                accuracy_mod: 1.15,
+                accuracy_mod: 1.1,
                 critical_rate_constant: 1.57,
             },
             Self::Rank2 => NightContactModifiers {
                 power_mod: 7.0,
-                accuracy_mod: 1.1,
+                accuracy_mod: 1.15,
                 critical_rate_constant: 1.64,
             },
             Self::Rank3 => NightContactModifiers {

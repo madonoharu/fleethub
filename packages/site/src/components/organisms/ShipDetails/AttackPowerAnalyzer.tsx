@@ -1,6 +1,6 @@
 import { Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { Ship, FhCore } from "fleethub-core";
+import type { Ship, FhCore } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
@@ -29,16 +29,17 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   const dummyEnemySelectState = useDummyEnemySelectState();
   const submarine = useMemo(() => core.create_ship_by_id(1530), [core]);
 
-  const analysis = analyzer.analyze_attack(
+  const analysis = analyzer.analyze_ship_attack(
     state,
     ship,
-    dummyEnemySelectState.value.ship
+    dummyEnemySelectState.value.ship,
+    true
   );
 
   const { day, closing_torpedo, night, support_shelling } = analysis;
 
   const aswAnalysis =
-    submarine && analyzer.analyze_attack(state, ship, submarine);
+    submarine && analyzer.analyze_ship_attack(state, ship, submarine, true);
   const dayAsw = aswAnalysis?.day;
   const openingAsw = aswAnalysis?.opening_asw;
 

@@ -35,9 +35,8 @@ impl AttackAnalyzerShipConfig {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
-#[tsify(from_wasm_abi, into_wasm_abi)]
 pub struct AttackAnalyzerConfig {
     pub air_state: AirState,
     pub engagement: Engagement,

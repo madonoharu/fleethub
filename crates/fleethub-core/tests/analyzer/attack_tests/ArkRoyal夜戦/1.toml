@@ -1,0 +1,36 @@
+description = "アクロ夜戦"
+
+[attacker]
+ship_id = "Ark Royal改"
+g1 = { gear_id = "Swordfish", stars = 1, exp = 120 }
+g2 = { gear_id = "Swordfish", exp = 120 }
+g3 = "15.5cm三連装副砲"
+g4 = "15.5cm三連装副砲"
+
+# 防御艦設定
+[target]
+# 軽巡ツ級elite
+ship_id = 1592
+
+# 夜戦
+[expected.night.data.DoubleAttack]
+# 命中項
+hit_rate_params.accuracy_term = 110
+#回避項
+hit_rate_params.evasion_term = 63
+# 命中率補正
+hit_rate_params.hit_percentage_bonus = 12
+# クリ率補正
+hit_rate_params.critical_percentage_bonus = 14
+# クリ攻撃力補正
+attack_power_params.proficiency_critical_mod = 1.3
+
+# 夜戦命中の最終攻撃力
+attack_power.normal = 74
+# クリティカルの最終対潜攻撃力
+attack_power.critical = 144
+
+# 命中率
+hit_rate.total = 0.60
+# クリティカル率
+hit_rate.critical = 0.26
