@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
-    "build": "yarn g:setup && next build",
+    "build": "next build",
     "dev": "next dev",
     "start": "next start"
   },
