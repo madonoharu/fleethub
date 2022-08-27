@@ -25,6 +25,7 @@ where
     R: Rng + ?Sized,
 {
     pub fn try_combat(&mut self) -> anyhow::Result<()> {
+        #[allow(clippy::needless_collect)]
         let order = self
             .player_comp
             .members_by(FleetType::RouteSup)

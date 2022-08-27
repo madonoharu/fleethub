@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import BuildIcon from "@mui/icons-material/Build";
 import { Button, Stack } from "@mui/material";
-import { Comp, Ship, ShipConditions } from "fleethub-core";
+import type { Comp, Ship, ShipConditions } from "fleethub-core";
 import { produce } from "immer";
 import React, { useEffect } from "react";
 

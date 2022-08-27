@@ -54,7 +54,7 @@ where
 
         (0..times).try_for_each(|_| -> Result<()> {
             self.phase.try_combat()?;
-            logger.write(&self.phase.enemy_comp);
+            logger.write(self.phase.enemy_comp);
             self.phase.enemy_comp.reset_battle_state();
             Ok(())
         })?;

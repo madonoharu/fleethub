@@ -85,7 +85,7 @@ pub struct Gear {
     #[wasm_bindgen(readonly)]
     pub gear_type: GearType,
     #[wasm_bindgen(skip)]
-    pub special_type: GearType,
+    pub special_type: u8,
 
     #[wasm_bindgen(readonly)]
     pub max_hp: i16,
@@ -129,9 +129,6 @@ impl Gear {
     pub fn new(hash: u64, state: GearState, master: &MasterGear, ibonuses: IBonuses) -> Self {
         let gear_type = master.types.gear_type();
 
-        let special_type: GearType =
-            num_traits::FromPrimitive::from_u8(master.special_type_id()).unwrap_or_default();
-
         let default_exp = master.default_exp();
         let exp = state.exp.unwrap_or(default_exp);
 
@@ -144,7 +141,7 @@ impl Gear {
             default_exp,
 
             gear_type,
-            special_type,
+            special_type: master.special_type_id(),
 
             name: master.name.clone(),
             types: master.types.clone(),
@@ -185,8 +182,8 @@ impl Gear {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn special_type_id(&self) -> u8 {
-        num_traits::ToPrimitive::to_u8(&self.special_type).unwrap_or_default()
+    pub fn special_type(&self) -> u8 {
+        self.special_type
     }
 
     #[wasm_bindgen(getter)]

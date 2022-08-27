@@ -107,7 +107,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
             {
               label: "index",
               getValue: (item) =>
-                `${t(`FleetType.${item.role}`)} ${item.index + 1}`,
+                `${t(`FleetType.${item.fleet_type}`)} ${item.index + 1}`,
             },
             {
               label: t("Ship"),

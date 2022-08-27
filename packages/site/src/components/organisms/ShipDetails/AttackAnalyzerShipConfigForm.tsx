@@ -36,9 +36,8 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
   onChange,
 }) => {
   const { t } = useTranslation("common");
-  const { org_type, role, fleet_len, index, formation } = parse_ship_conditions(
-    value
-  ) as Required<ShipConditions>;
+  const { org_type, fleet_type, fleet_len, index, formation } =
+    parse_ship_conditions(value) as Required<ShipConditions>;
 
   const side = toSide(org_type);
   const fleet_los_mod = value.fleet_los_mod || 0;
@@ -67,7 +66,11 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
           onChange={bind("org_type")}
         />
 
-        <RoleSelect color={color} value={role} onChange={bind("role")} />
+        <RoleSelect
+          color={color}
+          value={fleet_type === "Escort" ? "Escort" : "Main"}
+          onChange={bind("fleet_type")}
+        />
 
         <FormationSelect
           color={color}

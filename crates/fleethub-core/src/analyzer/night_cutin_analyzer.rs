@@ -86,14 +86,14 @@ impl NightCutinAnalyzer<'_> {
     }
 
     pub fn analyze(&self) -> CompNightCutinAnalysis {
-        let night_fleet_role = self.comp.night_fleet_role();
+        let night_fleet_type = self.comp.night_fleet_type();
         let fleet = self.comp.night_fleet();
         let night_contact_chance = NightContactChance::new(fleet);
         let formation = self.config.formation;
 
         let ships = self
             .comp
-            .members_by(night_fleet_role)
+            .members_by(night_fleet_type)
             .map(|member| {
                 let mut ship = member.ship.clone();
                 let member = BattleMember::new(&mut ship, member.position, formation);

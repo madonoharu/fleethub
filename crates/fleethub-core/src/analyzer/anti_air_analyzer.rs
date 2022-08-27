@@ -4,7 +4,7 @@ use tsify::Tsify;
 use crate::{
     comp::Comp,
     ship::Ship,
-    types::{AntiAirCutinDef, BattleDefinitions, Formation, Role},
+    types::{AntiAirCutinDef, BattleDefinitions, FleetType, Formation, Role},
 };
 
 #[derive(Debug, Serialize, Tsify)]
@@ -56,13 +56,13 @@ impl AntiAirAnalyzer<'_> {
         let anti_air_cutin = aaci.and_then(|id| self.get_anti_air_cutin_def(id));
 
         let ships = comp
-            .members()
+            .members_by(FleetType::Main | FleetType::Escort)
             .map(|member| {
                 let air_defense = member.air_defense(fleet_adjusted_anti_air, anti_air_cutin);
 
                 AntiAirReport {
                     ship_id: member.ship.ship_id,
-                    role: member.position.role,
+                    role: member.position.fleet_type.into(),
                     index: member.position.index,
 
                     adjusted_anti_air: air_defense.ship_adjusted_anti_air(),

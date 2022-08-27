@@ -157,7 +157,7 @@ impl From<AswAttackType> for NightPhaseAttackStyle {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Tsify)]
 #[serde(tag = "tag")]
 pub struct SupportShellingStyle {
     pub attack_type: SupportShellingType,

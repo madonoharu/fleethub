@@ -1,12 +1,12 @@
 {
   "name": "@fh/site",
-  "version": "1.8.1",
+  "version": "1.8.3",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
-    "build": "(yarn up fleethub-core@npm:latest equipment-bonus & yarn workspace @fh/utils build) && (yarn workspace @fh/admin build & yarn workspace kcs build) && next build",
+    "build": "yarn g:setup && next build",
     "dev": "next dev",
     "start": "next start"
   },
@@ -30,7 +30,7 @@
     "clsx": "^1.2.1",
     "constate": "^3.3.2",
     "core-js": "^3.25.0",
-    "equipment-bonus": "^7.0.26",
+    "equipment-bonus": "npm:latest",
     "fast-json-stable-stringify": "^2.1.0",
     "firebase": "^9.9.3",
     "fleethub-core": "npm:latest",
@@ -68,6 +68,6 @@
     "@types/xxhashjs": "^0.2.2",
     "next-transpile-modules": "^9.0.0",
     "tilg": "^0.1.1",
-    "typescript": "^4.7.4"
+    "typescript": "4.7.4"
   }
 }

@@ -73,30 +73,3 @@ impl NightFleetConditions {
             .unwrap_or_default()
     }
 }
-
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-#[serde(default)]
-pub struct ShipEnvironment {
-    pub org_type: OrgType,
-    pub role: Role,
-    pub index: usize,
-    pub fleet_len: usize,
-    pub formation: Formation,
-    pub fleet_los_mod: Option<f64>,
-    pub night_conditions: NightFleetConditions,
-}
-
-impl ShipEnvironment {
-    pub fn is_flagship(&self) -> bool {
-        self.index == 0
-    }
-
-    pub fn is_main_flagship(&self) -> bool {
-        self.role.is_main() && self.is_flagship()
-    }
-
-    pub fn as_night_conditions(&self) -> &NightFleetConditions {
-        &self.night_conditions
-    }
-}

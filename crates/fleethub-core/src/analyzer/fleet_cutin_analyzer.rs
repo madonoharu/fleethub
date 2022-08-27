@@ -9,8 +9,8 @@ use crate::{
     member::BattleMemberRef,
     ship::Ship,
     types::{
-        AttackType, BattleDefinitions, DayCutinLike, Engagement, FleetCutin, Formation,
-        NightAttackStyle, NightAttackType, NightConditions, Role, ShellingStyle, ShellingType,
+        AttackType, BattleDefinitions, DayCutinLike, Engagement, FleetCutin, FleetType, Formation,
+        NightAttackStyle, NightAttackType, NightConditions, ShellingStyle, ShellingType,
         ShipConditions, Time,
     },
 };
@@ -73,7 +73,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
         formation: Formation,
         effect: FleetCutinEffect,
     ) -> FleetCutinReport<ShellingStyle> {
-        let role = Role::Main;
+        let fleet_type = FleetType::Main;
         let fleet = &self.comp.main;
         let engagement = self.engagement;
 
@@ -86,7 +86,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
             .map(|(index, power_mod)| {
                 let attacker = self
                     .comp
-                    .get_battle_member(formation, role, index)
+                    .get_battle_member_by_index(formation, fleet_type, index)
                     .unwrap_or_else(|| unreachable!());
                 let target = &self.target();
                 let style = ShellingStyle {
@@ -134,7 +134,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
         effect: FleetCutinEffect,
         night_conditions: &NightConditions,
     ) -> FleetCutinReport<NightAttackStyle> {
-        let role = self.comp.night_fleet_role();
+        let fleet_type = self.comp.night_fleet_type();
         let fleet = self.comp.night_fleet();
         let cutin = effect.cutin;
         let rate = calc_fleet_cutin_rate(fleet, cutin);
@@ -145,7 +145,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
             .map(|(index, power_mod)| {
                 let attacker = self
                     .comp
-                    .get_battle_member(formation, role, index)
+                    .get_battle_member_by_index(formation, fleet_type, index)
                     .unwrap_or_else(|| unreachable!());
                 let target = &self.target();
 

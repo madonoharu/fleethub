@@ -47,7 +47,7 @@ impl NodeAttackAnalyzer<'_> {
 
         let conditions = comp.get_ship_conditions(ship, Some(config.formation));
         let fleet_los_mod = comp
-            .get_fleet(conditions.position.role)
+            .get_fleet(conditions.position.fleet_type)
             .and_then(|fleet| fleet.fleet_los_mod());
 
         let attack_analyzer_ship_config = AttackAnalyzerShipConfig {

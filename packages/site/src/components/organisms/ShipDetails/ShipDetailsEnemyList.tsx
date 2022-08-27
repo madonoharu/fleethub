@@ -1,10 +1,5 @@
 import { Divider, Stack } from "@mui/material";
-import {
-  Ship,
-  Side,
-  AttackAnalyzerConfig,
-  AttackAnalyzerShipConfig,
-} from "fleethub-core";
+import type { Ship } from "fleethub-core";
 import React from "react";
 
 import { useShip } from "../../../hooks";
@@ -24,34 +19,6 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
 
   if (!enemy) return null;
 
-  const createProps = (side: Side) => {
-    let attacker: Ship;
-    let attackerConfig: AttackAnalyzerShipConfig | undefined;
-    let target: Ship;
-    let targetConfig: AttackAnalyzerShipConfig | undefined;
-
-    if (side === "Player") {
-      attacker = ship;
-      attackerConfig = state.left;
-      target = enemy;
-      targetConfig = state.right;
-    } else {
-      attacker = enemy;
-      attackerConfig = state.right;
-      target = ship;
-      targetConfig = state.left;
-    }
-
-    const config: AttackAnalyzerConfig = {
-      air_state: state.air_state,
-      engagement: state.engagement,
-      attacker: attackerConfig,
-      target: targetConfig,
-    };
-
-    return { config, attacker, target };
-  };
-
   return (
     <Stack gap={1}>
       <Divider />
@@ -69,8 +36,18 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
           },
         }}
       >
-        <AttackAnalyzer {...createProps("Player")} />
-        <AttackAnalyzer {...createProps("Enemy")} />
+        <AttackAnalyzer
+          config={state}
+          left={ship}
+          right={enemy}
+          attacker_is_left={true}
+        />
+        <AttackAnalyzer
+          config={state}
+          left={ship}
+          right={enemy}
+          attacker_is_left={false}
+        />
       </Flexbox>
     </Stack>
   );

@@ -1,6 +1,5 @@
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Alert, AlertTitle, Typography } from "@mui/material";
-import type { AttackAnalyzerConfig, OrgType, Ship } from "fleethub-core";
+import type { ShipAnalyzerConfig, OrgType, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -12,23 +11,25 @@ export function isEnemy(type: OrgType): boolean {
 }
 
 interface Props {
-  config: AttackAnalyzerConfig;
-  attacker: Ship;
-  target: Ship;
+  config: ShipAnalyzerConfig;
+  left: Ship;
+  right: Ship;
+  attacker_is_left: boolean;
 }
 
 const AttackAnalyzer: React.FCX<Props> = ({
   className,
   style,
   config,
-  attacker,
-  target,
+  left,
+  right,
+  attacker_is_left,
 }) => {
   const { t } = useTranslation("common");
   const { analyzer } = useFhCore();
 
-  const attackerOrgType = config.attacker?.org_type || "Single";
-  const targetOrgType = config.target?.org_type || "Single";
+  const attackerOrgType = config.left?.org_type || "Single";
+  const targetOrgType = config.right?.org_type || "Single";
 
   if (isEnemy(attackerOrgType) === isEnemy(targetOrgType)) {
     const attackerText = t(`OrgType.${attackerOrgType}`);
@@ -42,17 +43,20 @@ const AttackAnalyzer: React.FCX<Props> = ({
         severity="error"
       >
         <AlertTitle>
-          <Typography alignItems="center" display="flex" gap={1}>
-            {attackerText}
-            <ArrowForwardIcon fontSize="inherit" />
-            {targetText} は攻撃できません
+          <Typography alignItems="center">
+            {attackerText}と{targetText}は戦闘できません
           </Typography>
         </AlertTitle>
       </Alert>
     );
   }
 
-  const analysis = analyzer.analyze_attack(config, attacker, target);
+  const analysis = analyzer.analyze_ship_attack(
+    config,
+    left,
+    right,
+    attacker_is_left
+  );
 
   return (
     <AttackAnalysisCard

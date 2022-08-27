@@ -8,7 +8,7 @@ use crate::{
     comp::Comp,
     error::CalculationError,
     plane::{PlaneImpl, PlaneMut, PlaneVec},
-    types::{AirState, AirWaveType, BattleDefinitions, ContactRank, Formation, Side},
+    types::{AirState, AirWaveType, BattleDefinitions, ContactRank, FleetType, Formation, Side},
 };
 
 fn try_fighter_combat<R: Rng + ?Sized>(
@@ -47,7 +47,7 @@ fn try_air_defense<R: Rng + ?Sized>(
     let anti_air_cutin = target_comp.choose_anti_air_cutin(rng, config);
 
     let member_vec = target_comp
-        .members()
+        .members_by(FleetType::Main | FleetType::Escort)
         .filter(|member| member.remains())
         .collect::<Vec<_>>();
 
@@ -84,7 +84,7 @@ fn try_airstrike<R: Rng + ?Sized>(
     }
 
     attacker_comp
-        .members()
+        .members_by(FleetType::Main | FleetType::Escort)
         .filter(|member| member.position.is_main() || escort_participates)
         .try_for_each(|attacker| {
             let proficiency_modifiers = attacker.proficiency_modifiers(None);
