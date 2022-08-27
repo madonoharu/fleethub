@@ -311,19 +311,13 @@
     "Asw": "Asw",
     "Torpedo": "ShTorp"
   },
-  "ShellingType": {
-    "Normal": "Normal",
-    "Carrier": "Aerial"
-  },
+  "ShellingType": { "Normal": "Normal", "Carrier": "Aerial" },
   "NightAttackType": {
     "Normal": "Normal",
     "Swordfish": "Swordfish",
     "Carrier": "Aerial"
   },
-  "AswAttackType": {
-    "DepthCharge": "Depth Charge",
-    "Aircraft": "Aerial"
-  },
+  "AswAttackType": { "DepthCharge": "Depth Charge", "Aircraft": "Aerial" },
   "ContactRank": {
     "Rank1": "Accuracy 1 or less",
     "Rank2": "Accuracy 2",
@@ -349,7 +343,8 @@
     "51": "Summer 2021",
     "52": "Fall 2021",
     "53": "Winter 2022",
-    "54": "Spring 2022"
+    "54": "Spring 2022",
+    "55": "Summer 2022"
   },
   "nodeType": {
     "Start": "Start",

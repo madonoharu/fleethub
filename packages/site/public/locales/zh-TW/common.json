@@ -311,19 +311,13 @@
     "Asw": "對潛",
     "Torpedo": "雷擊"
   },
-  "ShellingType": {
-    "Normal": "普通攻擊",
-    "Carrier": "航空攻擊"
-  },
+  "ShellingType": { "Normal": "普通攻擊", "Carrier": "航空攻擊" },
   "NightAttackType": {
     "Normal": "普通攻擊",
     "Swordfish": "Swordfish",
     "Carrier": "航空攻擊"
   },
-  "AswAttackType": {
-    "DepthCharge": "爆雷",
-    "Aircraft": "航空攻擊"
-  },
+  "AswAttackType": { "DepthCharge": "爆雷", "Aircraft": "航空攻擊" },
   "ContactRank": {
     "Rank1": "命中1以下",
     "Rank2": "命中2",
@@ -349,7 +343,8 @@
     "51": "夏活 2021",
     "52": "秋活 2021",
     "53": "冬活 2022",
-    "54": "春活 2022"
+    "54": "春活 2022",
+    "55": "夏活 2022"
   },
   "nodeType": {
     "Start": "起始點",
