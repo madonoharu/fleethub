@@ -311,19 +311,13 @@
     "Asw": "대잠",
     "Torpedo": "뇌격"
   },
-  "ShellingType": {
-    "Normal": "통상공격",
-    "Carrier": "항공공격"
-  },
+  "ShellingType": { "Normal": "통상공격", "Carrier": "항공공격" },
   "NightAttackType": {
     "Normal": "통상공격",
     "Swordfish": "Swordfish",
     "Carrier": "항공공격"
   },
-  "AswAttackType": {
-    "DepthCharge": "폭뢰",
-    "Aircraft": "항공공격"
-  },
+  "AswAttackType": { "DepthCharge": "폭뢰", "Aircraft": "항공공격" },
   "ContactRank": {
     "Rank1": "명중 1이하",
     "Rank2": "명중 2",
@@ -349,7 +343,8 @@
     "51": "2021년 여름",
     "52": "2021년 겨울",
     "53": "2022년 겨울",
-    "54": "2022년 봄"
+    "54": "2022년 봄",
+    "55": "2022년 여름"
   },
   "nodeType": {
     "Start": "출발점",

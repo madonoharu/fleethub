@@ -78,11 +78,11 @@ const DayCutinReportCell: React.FCX<{ report: DayCutinReport }> = ({
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {
-  isCombined: boolean;
+  combined: boolean;
   analysis: CompDayAnalysis;
 }
 
-const DayAnalysisScreen: React.FC<Props> = ({ isCombined, analysis }) => {
+const DayAnalysisScreen: React.FC<Props> = ({ combined, analysis }) => {
   const { config, bind } = useCompContext();
   const { t } = useTranslation("common");
   const { day_cutin, fleet_cutin } = analysis;
@@ -90,7 +90,7 @@ const DayAnalysisScreen: React.FC<Props> = ({ isCombined, analysis }) => {
   const mainFleetLos = numstr(day_cutin.main_fleet_los_mod) || "?";
   const escortFleetLos = numstr(day_cutin.escort_fleet_los_mod) || "?";
   let fleetLosText: string;
-  if (isCombined) {
+  if (combined) {
     fleetLosText = `${t("fleet_los_mod")}: ${t(
       `FleetType.Main`
     )} ${mainFleetLos} ${t(`FleetType.Escort`)} ${escortFleetLos}`;
@@ -109,6 +109,7 @@ const DayAnalysisScreen: React.FC<Props> = ({ isCombined, analysis }) => {
         />
         <FormationSelect
           value={config.formation}
+          combined={combined}
           onChange={bind("formation")}
         />
       </Stack>

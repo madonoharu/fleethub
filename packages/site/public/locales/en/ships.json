@@ -555,6 +555,7 @@
   "579": "Gotland Kai",
   "580": "Maestrale Kai",
   "581": "Nisshin",
+  "582": "Natsugumo",
   "583": "Minegumo",
   "584": "Hachijou",
   "585": "Ishigaki",
@@ -680,6 +681,7 @@
   "718": "Tamanami Kai",
   "719": "I-201 Kai",
   "720": "Hayashio Kai",
+  "721": "Natsugumo Kai",
   "877": "Conte di Cavour",
   "878": "Conte di Cavour Kai",
   "879": "Conte di Cavour Nuovo",
@@ -1306,5 +1308,10 @@
   "2111": "$t(2109)",
   "2112": "Modernized Battleship Princess (Damaged)",
   "2113": "$t(2112)",
-  "2114": "$t(2112)"
+  "2114": "$t(2112)",
+  "2115": "Wo-Class Standard Carrier Kai B",
+  "2116": "$t(2115)",
+  "2117": "$t(1964)",
+  "2118": "$t(1964)",
+  "2119": "$t(1964)"
 }

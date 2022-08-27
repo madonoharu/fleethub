@@ -318,19 +318,13 @@
     "AntiLand": "対地",
     "Aerial": "航空"
   },
-  "ShellingType": {
-    "Normal": "通常",
-    "Carrier": "航空"
-  },
+  "ShellingType": { "Normal": "通常", "Carrier": "航空" },
   "NightAttackType": {
     "Normal": "通常",
     "Swordfish": "Swordfish",
     "Carrier": "航空"
   },
-  "AswAttackType": {
-    "DepthCharge": "爆雷",
-    "Aircraft": "航空"
-  },
+  "AswAttackType": { "DepthCharge": "爆雷", "Aircraft": "航空" },
   "ContactRank": {
     "Rank1": "命中1以下",
     "Rank2": "命中2",
@@ -356,7 +350,8 @@
     "51": "2021夏",
     "52": "2021秋",
     "53": "2022冬",
-    "54": "2022春"
+    "54": "2022春",
+    "55": "2022夏"
   },
   "nodeType": {
     "Start": "出撃地点",

@@ -33,7 +33,7 @@ const isCombinedFormation = (f: Formation) =>
 type Props = SelectInputProps & {
   value: Formation;
   onChange?: (formation: Formation) => void;
-  combined?: boolean;
+  combined: boolean;
 };
 
 const FormationSelect: React.FC<Props> = ({

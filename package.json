@@ -18,7 +18,7 @@
     "dev": "yarn workspace @fh/site dev",
     "postinstall": "husky install & yarn setup",
     "lint": "eslint --cache packages && yarn tsc --incremental --noEmit",
-    "setup": "yarn up fleethub-core@npm:latest equipment-bonus@npm:latest & ((yarn build:utils & yarn build:kcs) && yarn build:admin)",
+    "setup": "(yarn build:utils & yarn build:kcs) && yarn build:admin",
     "site": "yarn workspace @fh/site",
     "start": "yarn workspace @fh/site start",
     "test": "jest",
