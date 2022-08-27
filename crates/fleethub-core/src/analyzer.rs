@@ -45,23 +45,7 @@ impl Analyzer {
 
 #[wasm_bindgen]
 impl Analyzer {
-    pub fn analyze_attack(
-        &self,
-        config: AttackAnalyzerConfig,
-        attacker: &Ship,
-        target: &Ship,
-    ) -> AttackAnalysis {
-        let analyzer = AttackAnalyzer {
-            battle_defs: &self.battle_defs,
-            config,
-            attacker,
-            target,
-        };
-
-        analyzer.analyze()
-    }
-
-    pub fn analyze_attack_by_ship_analyzer(
+    pub fn analyze_ship_attack(
         &self,
         config: ShipAnalyzerConfig,
         left: &Ship,
@@ -76,7 +60,14 @@ impl Analyzer {
             (right, left)
         };
 
-        self.analyze_attack(config, attacker, target)
+        let analyzer = AttackAnalyzer {
+            battle_defs: &self.battle_defs,
+            config,
+            attacker,
+            target,
+        };
+
+        analyzer.analyze()
     }
 
     pub fn analyze_node_attack(

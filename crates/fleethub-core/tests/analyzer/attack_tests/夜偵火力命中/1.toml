@@ -1,0 +1,39 @@
+description = "夜偵命中1テスト"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "最上改二特"
+g1 = { gear_id = "零式水上偵察機11型乙改(夜偵)", stars = 0, exp = 120 }
+
+night_contact_rank = "Rank1"
+
+# 防御艦設定
+[target]
+ship_id = "駆逐ハ級後期型"
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+# 通常命中の最小ダメージ
+damage.normal_damage_min = 141
+# 通常命中の最大ダメージ
+damage.normal_damage_max = 158
+# クリティカルの最小ダメージ
+damage.critical_damage_min = 230
+# クリティカルの最大ダメージ
+damage.critical_damage_max = 247
+
+# 通常命中の最終攻撃力
+attack_power.normal = 179
+# クリティカルの最終攻撃力
+attack_power.critical = 268
+
+# 命中率（通常命中率 + クリティカル率）
+hit_rate.total = 0.50
+# クリティカル率
+hit_rate.critical = 0.11
+
+
+# 命中項
+hit_rate_params.accuracy_term = 104
+# 回避項
+hit_rate_params.evasion_term = 55

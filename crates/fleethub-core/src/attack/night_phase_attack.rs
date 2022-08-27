@@ -179,7 +179,7 @@ impl NightAttackParams<'_> {
                 }
             }
             NightAttackType::Swordfish => {
-                let night_carrier_power = attacker.night_ark_royal_power(anti_inst)?;
+                let night_carrier_power = attacker.night_swordfish_power(anti_inst)?;
 
                 AttackPowerParams {
                     basic: night_carrier_power + contact_mod,
