@@ -120,10 +120,21 @@ export const updateJson = async <
 export const readMasterData = () => readJson(MASTER_DATA_PATH);
 
 export async function writeMasterData(data: MasterData): Promise<void> {
-  await writeJson(MASTER_DATA_PATH, data, {
-    public: true,
-    immutable: true,
-  });
+  await writeJson(
+    MASTER_DATA_PATH,
+    { ...data, created_at: Date.now() },
+    {
+      public: true,
+      immutable: true,
+    }
+  );
+}
+
+export function equalMasterData(a: MasterData, b: MasterData): boolean {
+  const { created_at: _a, ...omittedA } = a;
+  const { created_at: _b, ...omittedB } = b;
+
+  return dequal(omittedA, omittedB);
 }
 
 export async function mergeMasterData(
@@ -132,7 +143,7 @@ export async function mergeMasterData(
 ): Promise<MasterData> {
   const next: MasterData = { ...target, ...source };
 
-  if (dequal(target, next)) {
+  if (equalMasterData(target, next)) {
     return next;
   }
 

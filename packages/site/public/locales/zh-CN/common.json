@@ -4,7 +4,10 @@
     "description": "作战室是舰Colle的编成模拟器。可以计算CI发动率、对陆攻击力等。"
   },
   "Changelog": "更改日志",
-  "AboutLocalization": "请帮我翻译。",
+  "SpecialThanksToGkcoi": "gkcoi用于图像生成。",
+  "SpecialThanksToKcnav": "KCNav用于海域数据。而它的开发者Chami正在提供API。",
+  "SpecialThanksToKc3": "许多翻译是由kc3-translations生成的。",
+  "AboutLocalization": "如果你发现错误的翻译，请随时与我联系。",
   "CreateComp": "编成",
   "CreateFolder": "创建文件夹",
   "MigrateFromJor": "从Jervis OR 迁移数据",

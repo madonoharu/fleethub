@@ -46,6 +46,7 @@ pub struct MasterConfig {
 #[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterData {
+    pub created_at: f64,
     pub gears: Vec<MasterGear>,
     pub gear_attrs: Vec<MasterAttrRule<GearAttr>>,
     #[serde_as(as = "DefaultOnError")]

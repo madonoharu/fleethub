@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use itertools::Itertools;
 use rand::{distributions::uniform::SampleRange, prelude::*};
 
@@ -13,14 +15,8 @@ pub enum AirstrikeType {
     TorpedoBomber,
 }
 
-pub trait PlaneImpl {
-    fn gear_as_ref(&self) -> &Gear;
+pub trait PlaneImpl: Deref<Target = Gear> {
     fn slot_size(&self) -> Option<u8>;
-
-    #[inline]
-    fn gear_type(&self) -> GearType {
-        self.gear_as_ref().gear_type
-    }
 
     fn remains(&self) -> bool {
         self.slot_size().unwrap_or_default() > 0
@@ -28,7 +24,7 @@ pub trait PlaneImpl {
 
     fn is_fighter(&self) -> bool {
         matches!(
-            self.gear_type(),
+            self.gear_type,
             GearType::CbFighter
                 | GearType::SeaplaneFighter
                 | GearType::LbFighter
@@ -38,14 +34,14 @@ pub trait PlaneImpl {
 
     fn is_dive_bomber(&self) -> bool {
         matches!(
-            self.gear_type(),
+            self.gear_type,
             GearType::CbDiveBomber | GearType::SeaplaneBomber | GearType::JetFighterBomber
         )
     }
 
     fn is_torpedo_bomber(&self) -> bool {
         matches!(
-            self.gear_type(),
+            self.gear_type,
             GearType::CbTorpedoBomber | GearType::JetTorpedoBomber
         )
     }
@@ -54,14 +50,14 @@ pub trait PlaneImpl {
         self.is_dive_bomber()
             | self.is_torpedo_bomber()
             | matches!(
-                self.gear_type(),
+                self.gear_type,
                 GearType::LbAttacker | GearType::LargeLbAircraft
             )
     }
 
     fn is_recon(&self) -> bool {
         matches!(
-            self.gear_type(),
+            self.gear_type,
             GearType::CbRecon
                 | GearType::ReconSeaplane
                 | GearType::LargeFlyingBoat
@@ -72,14 +68,14 @@ pub trait PlaneImpl {
 
     fn is_jet_plane(&self) -> bool {
         matches!(
-            self.gear_type(),
+            self.gear_type,
             GearType::JetFighter | GearType::JetFighterBomber | GearType::JetTorpedoBomber
         )
     }
 
     fn is_lb_plane(&self) -> bool {
         matches!(
-            self.gear_type(),
+            self.gear_type,
             GearType::LbAttacker
                 | GearType::LbFighter
                 | GearType::LbRecon
@@ -88,15 +84,15 @@ pub trait PlaneImpl {
     }
 
     fn is_contact_selection_plane(&self) -> bool {
-        self.is_recon() || self.gear_type() == GearType::CbTorpedoBomber
+        self.is_recon() || self.gear_type == GearType::CbTorpedoBomber
     }
 
     fn is_night_recon(&self) -> bool {
-        self.gear_as_ref().has_attr(GearAttr::NightRecon)
+        self.has_attr(GearAttr::NightRecon)
     }
 
     fn contact_rank(&self) -> ContactRank {
-        ContactRank::from_accuracy(self.gear_as_ref().accuracy)
+        ContactRank::from_accuracy(self.accuracy)
     }
 
     fn participates_in_fighter_combat(&self, air_type: AirWaveType) -> bool {
@@ -114,31 +110,20 @@ pub trait PlaneImpl {
     }
 
     fn fighter_power(&self) -> Option<i32> {
-        Some(self.gear_as_ref().calc_fighter_power(self.slot_size()?))
+        Some(self.calc_fighter_power(self.slot_size()?))
     }
 
     fn interception_power(&self) -> Option<i32> {
-        Some(
-            self.gear_as_ref()
-                .calc_interception_power(self.slot_size()?),
-        )
+        Some(self.calc_interception_power(self.slot_size()?))
     }
 
     fn contact_trigger_factor(&self) -> Option<f64> {
         let slot_size = self.slot_size()?;
-        Some(self.gear_as_ref().calc_contact_trigger_factor(slot_size))
-    }
-
-    fn contact_selection_rate(&self, rank: AirStateRank) -> f64 {
-        self.gear_as_ref().contact_selection_rate(rank)
-    }
-
-    fn night_contact_rate(&self, level: u16) -> f64 {
-        self.gear_as_ref().night_contact_rate(level)
+        Some(self.calc_contact_trigger_factor(slot_size))
     }
 
     fn airstrike_type(&self) -> AirstrikeType {
-        if self.gear_type() == GearType::JetFighterBomber {
+        if self.gear_type == GearType::JetFighterBomber {
             AirstrikeType::JetBomber
         } else if self.is_dive_bomber() {
             AirstrikeType::DiveBomber
@@ -152,16 +137,20 @@ pub trait PlaneImpl {
 
 pub struct Plane<'a> {
     pub index: usize,
-    pub gear: &'a Gear,
     pub slot_size: Option<u8>,
+    pub gear: &'a Gear,
+}
+
+impl Deref for Plane<'_> {
+    type Target = Gear;
+
+    #[inline]
+    fn deref(&self) -> &Self::Target {
+        self.gear
+    }
 }
 
 impl<'a> PlaneImpl for Plane<'a> {
-    #[inline]
-    fn gear_as_ref(&self) -> &Gear {
-        self.gear
-    }
-
     #[inline]
     fn slot_size(&self) -> Option<u8> {
         self.slot_size
@@ -174,12 +163,16 @@ pub struct PlaneMut<'a> {
     pub slot_size: &'a mut Option<u8>,
 }
 
-impl<'a> PlaneImpl for PlaneMut<'a> {
+impl Deref for PlaneMut<'_> {
+    type Target = Gear;
+
     #[inline]
-    fn gear_as_ref(&self) -> &Gear {
+    fn deref(&self) -> &Self::Target {
         self.gear
     }
+}
 
+impl<'a> PlaneImpl for PlaneMut<'a> {
     #[inline]
     fn slot_size(&self) -> Option<u8> {
         *self.slot_size

@@ -1,3 +1,4 @@
+const path = require("path");
 const fs = require("fs");
 const { i18n } = require("./next-i18next.config");
 const withTM = require("next-transpile-modules")(["ts-norm"]);
@@ -25,13 +26,19 @@ class WasmChunksFixPlugin {
   }
 }
 
+const CORE_VERSION = require(path.join(
+  require.resolve("fleethub-core"),
+  "../../package.json"
+)).version;
+
 /** @type {import("next").NextConfig} */
 const config = {
   env: {
     KCS_SCRIPT: fs
       .readFileSync(require.resolve("../kcs/lib/index.js"))
       .toString(),
-    VERSION: `${require("./package.json").version}`,
+    SITE_VERSION: `${require("./package.json").version}`,
+    CORE_VERSION,
   },
   i18n,
 

@@ -707,6 +707,10 @@
   "916": "Yamato Kai Ni Juu",
   "918": "Maryland Kai",
   "920": "Samuel B. Roberts Mk.II",
+  "921": "Ukuru",
+  "925": "Langley",
+  "926": "Ukuru Kai",
+  "930": "Langley Kai",
   "1496": "Colorado Kai",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
@@ -1313,5 +1317,11 @@
   "2116": "$t(2115)",
   "2117": "$t(1964)",
   "2118": "$t(1964)",
-  "2119": "$t(1964)"
+  "2119": "$t(1964)",
+  "2120": "Fast Light Carrier Water Demon",
+  "2121": "$t(2120)",
+  "2122": "$t(2120)",
+  "2123": "Fast Light Carrier Water Demon (Damaged)",
+  "2124": "$t(2123)",
+  "2125": "$t(2123)"
 }

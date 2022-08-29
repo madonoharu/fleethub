@@ -24,10 +24,10 @@ pub fn create_airstrike_params<P: PlaneImpl, R: Rng + ?Sized>(
         let (type_mod, stat) = match plane.airstrike_type() {
             AirstrikeType::TorpedoBomber => {
                 let type_mod = if rng.gen_bool(0.5) { 0.8 } else { 1.2 };
-                (type_mod, plane.gear_as_ref().torpedo)
+                (type_mod, plane.torpedo)
             }
-            AirstrikeType::DiveBomber => (1.0, plane.gear_as_ref().bombing),
-            AirstrikeType::JetBomber => (1.0 / 2.0_f64.sqrt(), plane.gear_as_ref().bombing),
+            AirstrikeType::DiveBomber => (1.0, plane.bombing),
+            AirstrikeType::JetBomber => (1.0 / 2.0_f64.sqrt(), plane.bombing),
         };
 
         let basic = type_mod * (stat as f64) * slot_size.sqrt();
