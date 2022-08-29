@@ -4,7 +4,10 @@
     "description": "作戦室は艦これの編成シミュレータです。カットイン発動率や対地火力などの計算ができます。"
   },
   "Changelog": "変更履歴",
-  "AboutLocalization": null,
+  "SpecialThanksToGkcoi": "画像生成にはgkcoiを利用しています。",
+  "SpecialThanksToKcnav": "マップデータにはKCNavを利用しています。また開発者のChami氏からAPIをご提供いただきました。",
+  "SpecialThanksToKc3": "翻訳データの生成にはkc3-translationsを利用しています。",
+  "AboutLocalization": "誤訳があったら教えてください。",
   "CreateComp": "編成を作成",
   "CreateFolder": "フォルダを作成",
   "MigrateFromJor": "Jervis ORからデータを引き継ぐ",

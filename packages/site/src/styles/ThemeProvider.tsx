@@ -17,6 +17,11 @@ const globalStyles = (theme: Theme) => css`
     scrollbar-width: thin;
   }
 
+  p {
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
+
   code {
     font-family: Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono",
       monospace;

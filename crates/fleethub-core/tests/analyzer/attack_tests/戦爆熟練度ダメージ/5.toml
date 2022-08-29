@@ -1,0 +1,24 @@
+description = "空母FBAダメージテスト(100,100,0)"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "Aquila改"
+g1 = { gear_id = "九六式艦戦", stars = 0, exp = 100 }
+g2 = { gear_id = "九九式艦爆", stars = 0, exp = 100 }
+g3 = { gear_id = "九七式艦攻", stars = 0, exp = 0 }
+
+
+# 防御艦設定
+[target]
+ship_id = "駆逐ハ級後期型"
+
+# 昼戦FBA
+[expected.day.data.FBA]
+# 通常命中の最小ダメージ
+damage.normal_damage_min = 110
+# 通常命中の最大ダメージ
+damage.normal_damage_max = 127
+# クリティカルの最小ダメージ
+damage.critical_damage_min = 209
+# クリティカルの最大ダメージ
+damage.critical_damage_max = 226

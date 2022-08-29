@@ -1,4 +1,3 @@
-import { dequal } from "dequal";
 import got from "got";
 import { Start2 } from "kc-tools";
 
@@ -25,7 +24,7 @@ export async function updateMasterDataBySpreadsheet(): Promise<void> {
   ]);
 
   const nextMd = createMasterData(tables, start2);
-  const updatesStorage = !dequal(currentMd, nextMd);
+  const updatesStorage = !storage.equalMasterData(currentMd, nextMd);
 
   await Promise.all([
     updatesStorage && storage.writeMasterData(nextMd),
@@ -46,3 +45,5 @@ export { isProjectMember } from "./auth";
 export { verifyGasIdToken, storage };
 export * from "./spreadsheet";
 export * from "./credentials";
+export * from "./kcnav";
+export * from "./map";
