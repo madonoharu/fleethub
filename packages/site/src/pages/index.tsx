@@ -13,6 +13,10 @@ import {
 } from "../firebase";
 import { GenerationMapContext } from "../hooks";
 
+if (typeof window !== "undefined") {
+  console.info(`fleethub-core: ${process.env.CORE_VERSION}`);
+}
+
 const AppContent = dynamic(() => import("../components/templates/AppContent"), {
   // trueの場合、ISRのrevalidate時に10sを超えてしまう
   ssr: false,

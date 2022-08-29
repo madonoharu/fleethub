@@ -81,14 +81,14 @@ fn get_marriage_bonus(left: u16) -> u16 {
     }
 }
 
-fn get_average_exp_modifiers(planes: &Vec<(usize, &Gear)>) -> (f64, f64, f64) {
+fn get_average_exp_modifiers(planes: &Vec<Plane>) -> (f64, f64, f64) {
     let len = planes.len() as f64;
 
     if len == 0.0 {
         return Default::default();
     }
 
-    let total_exp = planes.iter().map(|(_, gear)| gear.exp as f64).sum::<f64>();
+    let total_exp = planes.iter().map(|plane| plane.exp as f64).sum::<f64>();
     let average_exp = total_exp / len;
 
     let a = (0.1 * average_exp).sqrt().floor();
@@ -433,8 +433,8 @@ impl Ship {
                 true
             } else {
                 self.planes()
-                    .filter(|plane| plane.gear_as_ref().is_carrier_shelling_plane())
-                    .all(|plane| plane.gear_type() == GearType::CbTorpedoBomber)
+                    .filter(|plane| plane.is_carrier_shelling_plane())
+                    .all(|plane| plane.gear_type == GearType::CbTorpedoBomber)
             }
         } else if self.ship_type.is_submarine() {
             anti_inst && self.gears.has_type(GearType::AmphibiousTank)
@@ -490,12 +490,10 @@ impl Ship {
         }
 
         let planes = self
-            .gears_with_slot_size()
-            // 使い勝手のためにslot_sizeがNoneの場合スルーする
-            .filter_map(|(i, g, slot_size)| (slot_size? > 0).then(|| (i, g)))
-            .filter(|(_, gear)| {
+            .planes()
+            .filter(|plane| {
                 matches!(
-                    gear.gear_type,
+                    plane.gear_type,
                     GearType::CbDiveBomber
                         | GearType::CbTorpedoBomber
                         | GearType::SeaplaneBomber
@@ -509,9 +507,9 @@ impl Ship {
         let critical_power_mod = 1.0
             + planes
                 .iter()
-                .map(|(index, gear)| {
-                    let m = (gear.exp as f64).sqrt().floor() + gear.exp_critical_bonus();
-                    if *index == 0 {
+                .map(|plane| {
+                    let m = (plane.exp as f64).sqrt().floor() + plane.exp_critical_bonus();
+                    if plane.index == 0 {
                         m / 100.0
                     } else {
                         m / 200.0
@@ -526,9 +524,9 @@ impl Ship {
 
         let critical_percentage_bonus = planes
             .iter()
-            .map(|(index, gear)| {
-                let exp_bonus = gear.exp_critical_bonus();
-                let multiplier = if *index == 0 { 0.8 } else { 0.6 };
+            .map(|plane| {
+                let exp_bonus = plane.exp_critical_bonus();
+                let multiplier = if plane.index == 0 { 0.8 } else { 0.6 };
                 (exp_bonus * multiplier).floor()
             })
             .sum::<f64>();
@@ -542,74 +540,80 @@ impl Ship {
 
     /// 戦爆連合熟練度補正の仮定式
     ///
-    /// `critical_percentage_bonus` は21%程度？
+    /// `critical_percentage_bonus` は最大21%程度？
     ///
-    /// 命中項下限で 命中率 > クリティカル率 であることから `hit_percentage_bonus` と `critical_percentage_bonus` は同程度のボーナスあり？
     /// https://twitter.com/MorimotoKou/status/1046257562230771712
     /// https://docs.google.com/spreadsheets/d/1i5jTixnOVjqrwZvF_4Uqf3L9ObHhS7dFqG8KiE5awkY
     /// https://twitter.com/kankenRJ/status/995827605801709568
     fn carrier_cutin_proficiency_modifiers(&self, cutin: DayCutin) -> ProficiencyModifiers {
-        let mut f_count: usize = 0;
-        let mut db_count: usize = 0;
-        let mut tb_count: usize = 0;
-
-        let (f_limit, db_limit, tb_limit) = match cutin {
-            DayCutin::FBA => (1, 1, 1),
-            DayCutin::BBA => (0, 2, 1),
-            DayCutin::BA => (0, 1, 1),
-            _ => {
-                return ProficiencyModifiers::default();
+        let captain_exp = self.planes().find_map(|plane| {
+            if plane.index == 0 {
+                match cutin {
+                    DayCutin::FBA => matches!(
+                        plane.gear_type,
+                        GearType::CbFighter | GearType::CbDiveBomber | GearType::CbTorpedoBomber
+                    ),
+                    DayCutin::BBA | DayCutin::BA => matches!(
+                        plane.gear_type,
+                        GearType::CbDiveBomber | GearType::CbTorpedoBomber
+                    ),
+                    _ => false,
+                }
+                .then(|| plane.exp)
+            } else {
+                None
             }
-        };
+        });
 
-        let planes = self
-            .gears_with_slot_size()
-            // 使い勝手のためにslot_sizeがNoneの場合スルーする
-            .filter_map(|(i, g, slot_size)| (slot_size? > 0).then(|| (i, g)))
-            .filter(|(_, gear)| match gear.gear_type {
-                GearType::CbFighter => {
-                    f_count += 1;
-                    f_count <= f_limit
-                }
-                GearType::CbDiveBomber => {
-                    db_count += 1;
-                    db_count <= db_limit
-                }
-                GearType::CbTorpedoBomber => {
-                    tb_count += 1;
-                    tb_count <= tb_limit
-                }
-                _ => false,
+        // https://twitter.com/KennethWWKK/status/1028631784542486530
+        // 噴式戦闘爆撃機は平均熟練度補正に影響する
+        let bombers = self
+            .planes()
+            .filter(|plane| {
+                matches!(
+                    plane.gear_type,
+                    GearType::CbDiveBomber
+                        | GearType::CbTorpedoBomber
+                        | GearType::JetFighterBomber
+                        | GearType::JetTorpedoBomber
+                )
             })
             .collect::<Vec<_>>();
 
         let (average_exp, average_exp_mod_a, average_exp_mod_b) =
-            get_average_exp_modifiers(&planes);
+            get_average_exp_modifiers(&bombers);
 
-        let y = if average_exp < 50.0 {
-            1.0
-        } else if average_exp <= 116.0 {
-            1.0 + (average_exp - 50.0) / 1000.0
-        } else if average_exp < 119.0 {
-            1.066 + 0.03
-        } else {
-            1.066 + 0.04
+        let critical_power_mod = match captain_exp {
+            Some(captain_exp) => {
+                if captain_exp >= 100 {
+                    // https://docs.google.com/spreadsheets/d/1mlOwRPK8korbH37hU7VCf_9fPp6_ugRalBydS2CyNtE
+                    1.0 + 0.003 * captain_exp as f64 + 0.001 * average_exp - 0.23
+                } else {
+                    // https://docs.google.com/spreadsheets/d/18Bl4xHGPbzutLp1P8MTW2px0272--XvkbQ0XB3QZwZk
+                    1.0 + 0.024 + 0.0006 * captain_exp as f64
+                }
+            }
+            None => {
+                // https://docs.google.com/spreadsheets/d/1k1zhWfgrM48Xn6140aW7Bdqqu8U0k1wBtTe8iHAnnSM
+                if average_exp >= 119.0 {
+                    1.066 + 0.04
+                } else if average_exp >= 107.0 {
+                    1.066 + 0.03
+                } else if average_exp >= 50.0 {
+                    1.0 + (average_exp - 50.0) / 1000.0
+                } else {
+                    1.0
+                }
+            }
         };
 
-        let captain_participates = planes.iter().any(|(i, _)| *i == 0);
-
-        let critical_power_mod = if captain_participates {
-            y + 0.1 * (average_exp / 100.0).powf(2.0)
-        } else {
-            y
-        };
-
-        let hit_percentage_bonus = average_exp_mod_a + average_exp_mod_b + 2.0;
+        let hit_percentage_bonus = average_exp_mod_a + average_exp_mod_b;
+        let critical_percentage_bonus = hit_percentage_bonus + average_exp_mod_b;
 
         ProficiencyModifiers {
             hit_percentage_bonus,
             critical_power_mod,
-            critical_percentage_bonus: hit_percentage_bonus,
+            critical_percentage_bonus,
         }
     }
 

@@ -34,10 +34,11 @@ export function createMasterData(
   const config = createConfig(tables);
 
   return {
+    created_at: Date.now(),
     ...shipData,
     ...gearData,
-    equippable,
     ...config,
+    equippable,
   };
 }
 

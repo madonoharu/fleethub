@@ -4,7 +4,10 @@
     "description": "作戰室是艦Colle的編成模擬器。可以計算CI發動率、對陸攻擊力等。"
   },
   "Changelog": "更改日誌",
-  "AboutLocalization": "請幫我翻譯！",
+  "SpecialThanksToGkcoi": "gkcoi用於圖像生成。",
+  "SpecialThanksToKcnav": "KCNav用於海域數據。而它的開發者Chami正在提供API。",
+  "SpecialThanksToKc3": "許多翻譯是由kc3-translations生成的。",
+  "AboutLocalization": "如果你發現錯誤的翻譯，請隨時與我聯繫。",
   "CreateComp": "編成",
   "CreateFolder": "建立資料夾",
   "MigrateFromJor": "從Jervis OR 遷移資料",

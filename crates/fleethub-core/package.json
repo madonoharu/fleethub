@@ -1,6 +1,6 @@
 {
   "name": "fleethub-core",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "license": "UNLICENSED",
   "sideEffects": false,
   "exports": {
