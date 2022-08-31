@@ -275,19 +275,6 @@ impl Gear {
         ace_mod as f64 + (self.exp as f64 / 10.0).sqrt()
     }
 
-    pub fn exp_critical_bonus(&self) -> f64 {
-        match self.exp {
-            0..=9 => 0.0,
-            10..=24 => 1.0,
-            25..=39 => 2.0,
-            40..=54 => 3.0,
-            55..=69 => 4.0,
-            70..=79 => 5.0,
-            80..=99 => 7.0,
-            _ => 10.0,
-        }
-    }
-
     pub fn calc_fighter_power(&self, slot_size: u8) -> i32 {
         let pm = self.proficiency_fighter_power_modifier();
 
