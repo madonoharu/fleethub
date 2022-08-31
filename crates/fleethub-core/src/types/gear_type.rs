@@ -3,9 +3,12 @@ use num_derive::{FromPrimitive, ToPrimitive};
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, Tsify)]
+#[derive(
+    Debug, Default, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, Tsify,
+)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearType {
+    #[default]
     Unknown = 0,
     /// 小口径主砲
     SmallMainGun = 1,
@@ -127,9 +130,10 @@ pub enum GearType {
     SecondaryGun2 = 95,
 }
 
-impl Default for GearType {
-    fn default() -> Self {
-        Self::Unknown
+impl From<f64> for GearType {
+    #[inline]
+    fn from(n: f64) -> Self {
+        num_traits::FromPrimitive::from_f64(n).unwrap_or_default()
     }
 }
 

@@ -1,9 +1,12 @@
 use crate::{
     member::BattleMemberRef,
-    types::{AttackPowerModifier, Engagement, FleetFactors, FormationParams},
+    types::{AttackPowerModifier, Engagement, FleetFactors, FormationParams, TorpedoAttackType},
 };
 
-use super::{Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
+use super::{
+    anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers, Attack, AttackParams, AttackPowerParams,
+    DefenseParams, HitRateParams, SpecialEnemyModifiers,
+};
 
 const TORPEDO_POWER_CAP: f64 = 180.0;
 const TORPEDO_CRITICAL_RATE_CONSTANT: f64 = 1.5;
@@ -63,6 +66,12 @@ impl TorpedoAttackParams<'_> {
         let precap_mod = AttackPowerModifier::new(a14, 0.0);
         let postcap_mod = Default::default();
 
+        // todo!
+        let mut special_enemy_mods = SpecialEnemyModifiers::default();
+        if self.target.is_pt_imp() {
+            special_enemy_mods.precap_general_mod.merge(0.35, 15.0);
+        }
+
         Some(AttackPowerParams {
             basic,
             cap: TORPEDO_POWER_CAP,
@@ -73,7 +82,7 @@ impl TorpedoAttackParams<'_> {
             proficiency_critical_mod: 1.0,
             armor_penetration: 0.0,
             remaining_ammo_mod: attacker.remaining_ammo_mod(),
-            special_enemy_mods: Default::default(),
+            special_enemy_mods,
             custom_mods: attacker.custom_power_mods(),
         })
     }
@@ -84,6 +93,7 @@ impl TorpedoAttackParams<'_> {
         normal_attack_power: Option<f64>,
     ) -> Option<f64> {
         let attacker = self.attacker;
+        let target = self.target;
 
         let fleet_factor = fleet_factors?.accuracy as f64;
         let basic_accuracy_term = attacker.basic_accuracy_term()?;
@@ -94,6 +104,7 @@ impl TorpedoAttackParams<'_> {
 
         let formation_mod = self.formation_params.accuracy_mod;
         let morale_mod = attacker.morale_state().torpedo_accuracy_mod();
+        let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, TorpedoAttackType);
 
         // 乗算前に切り捨て
         let pre_multiplication = (fleet_factor
@@ -104,7 +115,11 @@ impl TorpedoAttackParams<'_> {
             + innate_torpedo_accuracy)
             .floor();
 
-        let accuracy_term = (pre_multiplication * formation_mod * morale_mod).floor();
+        let accuracy_term =
+            (pre_multiplication * formation_mod * morale_mod * pt_mods.multiplicative
+                + pt_mods.additive)
+                .floor();
+
         Some(accuracy_term)
     }
 

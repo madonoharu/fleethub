@@ -6,7 +6,10 @@ use crate::{
     },
 };
 
-use super::{Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
+use super::{
+    anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers, Attack, AttackParams, AttackPowerParams,
+    DefenseParams, HitRateParams,
+};
 
 const IS_DAY: bool = true;
 const SHELLING_POWER_CAP: f64 = 220.0;
@@ -117,17 +120,26 @@ impl ShellingAttackParams<'_> {
             let formation_mod = formation_params.accuracy_mod;
             let ap_shell_mod = ap_shell_mods.map(|mods| mods.1).unwrap_or(1.0);
             let cutin_mod = style.accuracy_mod;
+            let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, style.attack_type);
 
             // 乗算前に切り捨て
             let pre_multiplication =
                 (fleet_factor + basic_accuracy_term + ship_accuracy + ibonus).floor();
 
-            let result = ((pre_multiplication * formation_mod * morale_mod + gunfit_accuracy)
-                * cutin_mod
-                * ap_shell_mod)
-                .floor();
+            let post_formation =
+                (pre_multiplication * formation_mod * morale_mod * pt_mods.multiplicative
+                    + gunfit_accuracy
+                    + pt_mods.additive)
+                    .floor();
 
-            Some(result)
+            let accuracy_term = (post_formation
+                * cutin_mod
+                * ap_shell_mod
+                * pt_mods.ship_type_mod
+                * pt_mods.equipment_mod
+                * pt_mods.night_mod)
+                .floor();
+            Some(accuracy_term)
         };
 
         let calc_hit_rate_params = || {
