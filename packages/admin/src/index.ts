@@ -17,13 +17,16 @@ export function fetchStart2(): Promise<Start2> {
 export async function updateMasterDataBySpreadsheet(): Promise<void> {
   const spreadsheet = new MasterDataSpreadsheet();
 
-  const [tables, start2, currentMd] = await Promise.all([
+  const [tables, start2, currentMd, ctype] = await Promise.all([
     spreadsheet.readTables(),
     fetchStart2(),
     storage.readMasterData(),
+    got(
+      "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json"
+    ).json<string[]>(),
   ]);
 
-  const nextMd = createMasterData(tables, start2);
+  const nextMd = createMasterData(start2, ctype, tables);
   const updatesStorage = !storage.equalMasterData(currentMd, nextMd);
 
   await Promise.all([

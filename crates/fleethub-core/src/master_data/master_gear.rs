@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use enumset::EnumSet;
 use fasteval::{bool_to_f64, EvalNamespace};
 use serde::Deserialize;
@@ -87,7 +89,10 @@ impl MasterGear {
                     bool_to_f64!(args.iter().any(|v| *v == self.types.gear_type_id() as f64))
                 }
 
-                _ => return None,
+                _ => {
+                    let attr = GearAttr::from_str(key).ok()?;
+                    bool_to_f64!(self.has_attr(attr))
+                }
             };
 
             Some(result)

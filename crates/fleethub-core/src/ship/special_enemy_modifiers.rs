@@ -141,6 +141,10 @@ pub fn special_enemy_modifiers(
             apply_mod!(mods.pt_mod, a, lookouts_count, [1.1]);
             apply_mod!(mods.pt_mod, a, armored_boat_group_count, [1.2, 1.2 * 1.1]);
 
+            if time.is_night() {
+                mods.pt_mod.a *= 0.6;
+            }
+
             return mods;
         }
         SpecialEnemyType::BattleshipSummerPrincess => {

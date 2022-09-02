@@ -24,7 +24,7 @@ pub fn rng(seed: u64) -> SmallRng {
 pub static FH_CORE: Lazy<FhCore> = Lazy::new(|| {
     let master_data: MasterData =
         serde_json::from_str(fleethub_core_test::MASTER_DATA_STR).unwrap();
-    FhCore::from_master_data(master_data.init())
+    FhCore::from_master_data(master_data)
 });
 
 pub fn battle_definitions() -> BattleDefinitions {

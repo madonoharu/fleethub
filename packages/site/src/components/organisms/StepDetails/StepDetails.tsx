@@ -118,7 +118,7 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
           color="secondary"
           combined={rightOrg.is_combined()}
           value={config.left?.formation || "LineAhead"}
-          onChange={bind("left.formation")}
+          onChange={bind("right.formation")}
         />
         <NightFleetConditionsForm
           color="primary"

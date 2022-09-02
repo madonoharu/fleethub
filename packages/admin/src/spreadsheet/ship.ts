@@ -9,6 +9,7 @@ import {
 import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
 import set from "lodash/set";
 
+import { ExprParser } from "./parser";
 import { cellValueToString, SpreadsheetTable } from "./utils";
 
 interface ShipClassDef {
@@ -149,7 +150,11 @@ const getConvertibleShips = (ships: MasterShip[]) => {
   return ships.filter(isConvertible);
 };
 
-function createShips(table: SpreadsheetTable, start2: Start2): MasterShip[] {
+function createShips(
+  table: SpreadsheetTable,
+  start2: Start2,
+  nationalityMap: Map<number, number>
+): MasterShip[] {
   const { headerValues, rows } = table;
 
   const createShip = (mst: MstShip): MasterShip => {
@@ -190,6 +195,7 @@ function createShips(table: SpreadsheetTable, start2: Start2): MasterShip[] {
     if (isPlayerShip(mst)) {
       const { api_aftershipid, api_afterlv } = mst;
       const ship: MasterShip = {
+        nationality: nationalityMap.get(mst.api_ctype),
         speed_group: getDefaultSpeedGroup(base),
         ...base,
 
@@ -238,63 +244,20 @@ function createShips(table: SpreadsheetTable, start2: Start2): MasterShip[] {
 }
 
 function createShipClasses(table: SpreadsheetTable): ShipClassDef[] {
-  return table.rows.map((row) => ({
-    id: Number(row.id),
-    name: cellValueToString(row.name),
-  }));
+  return table.rows.map((row) => {
+    return {
+      id: Number(row.id),
+      name: cellValueToString(row.name),
+    };
+  });
 }
 
-const createShipAttrs = (
-  table: SpreadsheetTable,
-  start2: Start2,
-  ship_classes: ShipClassDef[]
-) => {
+const createShipAttrs = (parser: ExprParser, table: SpreadsheetTable) => {
   const attrs: MasterAttrRule<ShipAttr>[] = [];
 
-  const replaceShipType = (str: string) =>
-    start2.api_mst_stype.reduce(
-      (current, stype) =>
-        current.replace(`"${stype.api_name}"`, stype.api_id.toString()),
-      str
-    );
-
-  const replaceShipClass = (str: string) => {
-    return ship_classes.reduce(
-      (current, { name, id }) => current.replace(`"${name}"`, id.toString()),
-      str
-    );
-  };
-
-  const replaceName = (str: string) =>
-    start2.api_mst_ship.reduce(
-      (current, ship) =>
-        current.replace(`"${ship.api_name}"`, ship.api_id.toString()),
-      str
-    );
-
-  const replaceAttr = (str: string) => {
-    return attrs.reduce(
-      (current, attr) =>
-        current.replace(RegExp(`\\b${attr.tag}\\b`, "g"), attr.expr),
-      str
-    );
-  };
-
-  const replaceExpr = (str: string) => {
-    return replaceAttr(str)
-      .replace(/ship_type == "[^"]+"/g, replaceShipType)
-      .replace(/ship_class == "[^"]+"/g, replaceShipClass)
-      .replace(/name == "[^"]+"/g, replaceName)
-      .replace(/ship_type_in\(\s*("[^"]+",?\s*)+\)/gs, replaceShipType)
-      .replace(/ship_class_in\(\s*("[^"]+",?\s*)+\)/gs, replaceShipClass)
-      .replace(/name_in\(\s*("[^"]+",?\s*)+\)/gs, replaceName)
-      .replace(/\bname/g, "ship_id")
-      .replace(/\n/g, " ")
-      .replace(/\s{2,}/g, " ");
-  };
-
   table.rows.forEach((row) => {
-    const expr = replaceExpr(cellValueToString(row.expr));
+    const str = cellValueToString(row.expr);
+    const expr = parser.parseShip(str);
 
     attrs.push({
       tag: cellValueToString(row.tag) as ShipAttr,
@@ -306,13 +269,36 @@ const createShipAttrs = (
   return attrs;
 };
 
+function createNationalityMap(table: SpreadsheetTable): Map<number, number> {
+  const map = new Map<number, number>();
+
+  table.rows.forEach((row) => {
+    const id = Number(row.id);
+
+    if (!Number.isInteger(id)) {
+      return;
+    }
+
+    const ctypes = String(row.ctypes)
+      .split(",")
+      .map((str) => Number(str))
+      .filter(Number.isInteger);
+
+    ctypes.forEach((ctype) => {
+      map.set(ctype, id);
+    });
+  });
+
+  return map;
+}
+
 export function createShipData(
-  start2: Start2,
-  tables: Record<"ships" | "ship_classes" | "ship_attrs", SpreadsheetTable>
+  parser: ExprParser,
+  tables: Record<"ships" | "ship_attrs" | "nationalities", SpreadsheetTable>
 ): Pick<MasterData, "ships" | "ship_attrs"> {
-  const ships = createShips(tables.ships, start2);
-  const ship_classes = createShipClasses(tables.ship_classes);
-  const ship_attrs = createShipAttrs(tables.ship_attrs, start2, ship_classes);
+  const nationalityMap = createNationalityMap(tables.nationalities);
+  const ships = createShips(tables.ships, parser.start2, nationalityMap);
+  const ship_attrs = createShipAttrs(parser, tables.ship_attrs);
 
   return {
     ships,

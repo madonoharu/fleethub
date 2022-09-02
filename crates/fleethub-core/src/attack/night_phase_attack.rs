@@ -8,7 +8,8 @@ use crate::{
 };
 
 use super::{
-    AswAttackParams, Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams,
+    anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers, AswAttackParams, Attack, AttackParams,
+    AttackPowerParams, DefenseParams, HitRateParams,
 };
 
 const NIGHT_POWER_CAP: f64 = 360.0;
@@ -193,7 +194,10 @@ impl NightAttackParams<'_> {
 
     fn calc_accuracy_term(&self) -> Option<f64> {
         let Self {
-            style, attacker, ..
+            style,
+            attacker,
+            target,
+            ..
         } = self;
 
         let basic_accuracy_term = attacker.basic_accuracy_term()?;
@@ -209,6 +213,7 @@ impl NightAttackParams<'_> {
         let morale_mod = attacker.morale_state().common_accuracy_mod();
         let cutin_mod = style.accuracy_mod;
         let gunfit_accuracy = attacker.gunfit_accuracy(true);
+        let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, style.attack_type);
 
         // 乗算前に切り捨て
         let pre_multiplication = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod
@@ -217,10 +222,17 @@ impl NightAttackParams<'_> {
             + ibonus)
             .floor();
 
-        let accuracy_term = (pre_multiplication * formation_mod * morale_mod * cutin_mod
-            + searchlight_mod
-            + gunfit_accuracy)
-            .floor();
+        // 夜戦CI補正の位置は陣形補正と同じ
+        let post_formation =
+            (pre_multiplication * formation_mod * morale_mod * cutin_mod * pt_mods.multiplicative
+                + searchlight_mod
+                + gunfit_accuracy
+                + pt_mods.additive)
+                .floor();
+
+        let accuracy_term =
+            (post_formation * pt_mods.ship_type_mod * pt_mods.equipment_mod * pt_mods.night_mod)
+                .floor();
 
         Some(accuracy_term)
     }

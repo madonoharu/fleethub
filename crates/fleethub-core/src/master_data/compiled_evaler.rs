@@ -1,5 +1,11 @@
 use fasteval::{eval_compiled_ref, Compiler, EvalNamespace, Evaler, Instruction, Parser, Slab};
 use serde::Deserialize;
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen(typescript_custom_section)]
+const TS_APPEND_CONTENT: &'static str = r#"
+export type CompiledEvaler = string;
+"#;
 
 #[derive(Debug, Default, Deserialize)]
 #[serde(try_from = "String")]
@@ -10,7 +16,7 @@ pub struct CompiledEvaler {
 }
 
 impl CompiledEvaler {
-    fn new(expr: String) -> Result<Self, fasteval::Error> {
+    pub fn new(expr: String) -> Result<Self, fasteval::Error> {
         let parser = Parser::new();
         let mut slab = Slab::new();
 
@@ -28,6 +34,10 @@ impl CompiledEvaler {
 
     pub fn eval<T: EvalNamespace>(&self, ns: &mut T) -> Result<f64, fasteval::Error> {
         Ok(eval_compiled_ref!(&self.instruction, &self.slab, ns))
+    }
+
+    pub fn matches<T: EvalNamespace>(&self, ns: &mut T) -> bool {
+        self.eval(ns).unwrap_or_default() == 1.0
     }
 }
 
