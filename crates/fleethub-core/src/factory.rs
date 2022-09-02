@@ -71,7 +71,7 @@ impl Factory {
             .iter()
             .find(|ship| ship.ship_id == state.ship_id)?;
 
-        let equippable = self.master_data.create_ship_equippable(master_ship);
+        let equippability = self.master_data.create_ship_equippability(master_ship);
 
         let ebonuses: EBonuses = if gears.has_by(|gear| !gear.is_abyssal()) {
             EBonuses::new(master_ship, &gears)
@@ -79,7 +79,7 @@ impl Factory {
             Default::default()
         };
 
-        let ship = Ship::new(hash, state, master_ship, equippable, gears, ebonuses);
+        let ship = Ship::new(hash, state, master_ship, equippability, gears, ebonuses);
 
         Some(ship)
     }

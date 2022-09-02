@@ -12,8 +12,8 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     gear::Gear,
-    gear_array::{into_gear_index, into_gear_key, GearArray},
-    master_data::MasterShip,
+    gear_array::{into_gear_key, GearArray},
+    master_data::{MasterShip, ShipEquippability},
     plane::{Plane, PlaneImpl, PlaneMut},
     types::{
         ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
@@ -25,13 +25,6 @@ use crate::{
 };
 
 pub use night_cutin::NightCutinTermParams;
-
-#[derive(Debug, Default, Clone)]
-pub struct ShipEquippable {
-    pub types: Vec<u8>,
-    pub exslot_types: Vec<u8>,
-    pub exslot_gear_ids: Vec<u16>,
-}
 
 #[wasm_bindgen]
 #[derive(Debug, Default, Clone)]
@@ -68,7 +61,8 @@ pub struct Ship {
     state: ShipState,
     #[wasm_bindgen(skip)]
     pub master: MasterShip,
-    equippable: ShipEquippable,
+    #[wasm_bindgen(skip)]
+    pub equippability: ShipEquippability,
 }
 
 fn get_marriage_bonus(left: u16) -> u16 {
@@ -208,7 +202,7 @@ impl Ship {
         hash: u64,
         state: ShipState,
         master: &MasterShip,
-        equippable: ShipEquippable,
+        equippability: ShipEquippability,
         gears: GearArray,
         ebonuses: EBonuses,
     ) -> Self {
@@ -251,7 +245,7 @@ impl Ship {
             gears,
 
             ebonuses,
-            equippable,
+            equippability,
             master: master.clone(),
             state,
         };
@@ -1011,80 +1005,7 @@ impl Ship {
     }
 
     pub fn can_equip(&self, gear: &Gear, key: &str) -> bool {
-        if self.is_abyssal() {
-            return true;
-        };
-
-        if !self.equippable.types.contains(&gear.special_type) {
-            return false;
-        }
-
-        // excludeEquipList
-
-        if key == "gx" {
-            if self.ship_type.is_submarine()
-                && matches_gear_id!(
-                    gear.gear_id,
-                    "潜水艦後部魚雷発射管4門(初期型)" | "潜水艦後部魚雷発射管4門(後期型)"
-                )
-            {
-                return true;
-            }
-
-            return self.equippable.exslot_types.contains(&gear.special_type)
-                || self.equippable.exslot_gear_ids.contains(&gear.gear_id)
-                || gear.gear_id == gear_id!("改良型艦本式タービン");
-        }
-
-        if let Some(index) = into_gear_index(key) {
-            if index >= self.master.slotnum {
-                return false;
-            }
-        }
-
-        if self.ctype == ctype!("Richelieu級") && gear.gear_type == GearType::SeaplaneBomber {
-            return gear.gear_id == gear_id!("Laté 298B");
-        }
-
-        if self.has_attr(ShipAttr::RoyalNavy)
-            && self.ship_type == ShipType::BB
-            && matches!(
-                gear.gear_id,
-                gear_id!("Swordfish(水上機型)") | gear_id!("Swordfish Mk.III改(水上機型)")
-            )
-        {
-            return true;
-        }
-
-        let is_kai2 = self.has_attr(ShipAttr::Kai2);
-
-        if self.ctype == ctype!("阿賀野型")
-            && is_kai2
-            && key == "g4"
-            && gear.gear_type == GearType::Torpedo
-        {
-            return false;
-        }
-
-        if self.ctype == ctype!("伊勢型") && is_kai2 {
-            return key == "g1" || key == "g2" || !gear.has_attr(GearAttr::MainGun);
-        }
-
-        if self.ctype == ctype!("夕張型") && is_kai2 {
-            if key == "g4" {
-                return !(gear.has_attr(GearAttr::MainGun)
-                    || gear.gear_type == GearType::Torpedo
-                    || gear.gear_type == GearType::MidgetSubmarine);
-            }
-            if key == "g5" {
-                return matches!(
-                    gear.gear_type,
-                    GearType::AntiAirGun | GearType::SmallRadar | GearType::CombatRation
-                );
-            }
-        }
-
-        true
+        self.equippability.can_equip(key, gear)
     }
 
     #[wasm_bindgen(getter)]

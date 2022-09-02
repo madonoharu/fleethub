@@ -10,10 +10,13 @@ const SHEET_DATA = [
   { sheetId: 2088927150, key: "ships" },
   { sheetId: 934954887, key: "ship_types" },
   { sheetId: 363641447, key: "ship_classes" },
+  { sheetId: 832802435, key: "nationalities" },
   { sheetId: 1341468138, key: "ship_attrs" },
   { sheetId: 1972078575, key: "gears" },
   { sheetId: 1687646863, key: "gear_types" },
   { sheetId: 1192109753, key: "gear_attrs" },
+  { sheetId: 1560992895, key: "equippability" },
+
   { sheetId: 347061403, key: "shelling_power" },
   { sheetId: 1341171814, key: "carrier_shelling_power" },
   { sheetId: 593793628, key: "shelling_accuracy" },
@@ -30,6 +33,7 @@ const SHEET_DATA = [
   { sheetId: 1148954527, key: "ship_anti_air" },
   { sheetId: 7973442, key: "fleet_anti_air" },
   { sheetId: 195030457, key: "elos" },
+
   { sheetId: 1827664524, key: "anti_air_cutin" },
   { sheetId: 370851605, key: "day_cutin" },
   { sheetId: 1863042385, key: "night_cutin" },
@@ -77,7 +81,9 @@ export class MasterDataSpreadsheet {
     return tables[0];
   }
 
-  async readTables(): Promise<Record<SheetKey, SpreadsheetTable>>;
+  async readTables(): Promise<
+    Record<Exclude<SheetKey, "ship_classes">, SpreadsheetTable>
+  >;
   async readTables<K extends SheetKey>(
     keys: K[]
   ): Promise<Record<K, SpreadsheetTable>>;
@@ -89,7 +95,9 @@ export class MasterDataSpreadsheet {
     if (arg) {
       keys = arg;
     } else {
-      keys = SHEET_DATA.map((sheet) => sheet.key);
+      keys = SHEET_DATA.map((sheet) => sheet.key).filter(
+        (key) => key !== "ship_classes"
+      );
     }
 
     const sheetIds = keys.map(getSheetId);

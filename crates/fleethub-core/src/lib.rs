@@ -17,6 +17,7 @@ pub mod master_data;
 pub mod member;
 pub mod org;
 pub mod plane;
+mod result;
 pub mod ship;
 pub mod simulator;
 pub mod types;
@@ -64,8 +65,7 @@ impl FhCore {
     pub fn new(js_master: <MasterData as tsify::Tsify>::JsType) -> Result<FhCore, JsValue> {
         let master_data = js_master
             .into_serde::<MasterData>()
-            .map_err(|err| JsValue::from(err.to_string()))?
-            .init();
+            .map_err(|err| JsValue::from(err.to_string()))?;
 
         let factory = Factory::new(master_data);
 

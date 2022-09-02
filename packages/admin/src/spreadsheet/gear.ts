@@ -8,6 +8,7 @@ import {
 } from "fleethub-core";
 import { Start2 } from "kc-tools";
 
+import { ExprParser } from "./parser";
 import {
   deleteFalsyValues,
   cellValueToString,
@@ -54,60 +55,19 @@ function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
   return gears;
 }
 
-function makeReplaceGearExpr(
-  start2: Start2,
-  gear_attrs: MasterAttrRule<GearAttr>[]
-): (str: string) => string {
-  const replaceType = (str: string) =>
-    start2.api_mst_slotitem_equiptype.reduce(
-      (current, type) =>
-        current.replace(`"${type.api_name}"`, type.api_id.toString()),
-      str
-    );
-
-  const replaceName = (str: string) =>
-    start2.api_mst_slotitem.reduce(
-      (current, gear) =>
-        current.replace(`"${gear.api_name}"`, gear.api_id.toString()),
-      str
-    );
-
-  const replaceAttr = (str: string) =>
-    gear_attrs.reduce(
-      (current, attr) =>
-        current.replace(RegExp(`\\b${attr.tag}\\b`, "g"), attr.expr),
-      str
-    );
-
-  return (str: string) =>
-    replaceAttr(str)
-      .replace(/gear_type == "[^"]+"/g, replaceType)
-      .replace(/gear_type_in\(\s*("[^"]+",?\s*)+\)/gs, replaceType)
-      .replace(/name == "[^"]+"/g, replaceName)
-      .replace(/name_in\(\s*("[^"]+",?\s*)+\)/gs, replaceName)
-      .replace(/\bname/g, "gear_id")
-      .replace(/\n/g, " ")
-      .replace(/\s{2,}/g, " ");
-}
-
 function createGearAttrs(
   table: SpreadsheetTable,
-  start2: Start2
+  parser: ExprParser
 ): MasterAttrRule<GearAttr>[] {
-  const gear_attrs: MasterAttrRule<GearAttr>[] = [];
-  const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
+  return table.rows.map((row) => {
+    const expr = parser.parseGear(row.expr as string);
 
-  table.rows.forEach((row) => {
-    const expr = replaceExpr(row.expr as string);
-
-    gear_attrs.push({
+    return {
       tag: cellValueToString(row.tag) as GearAttr,
       name: cellValueToString(row.name),
       expr,
-    });
+    };
   });
-
-  return gear_attrs;
 }
 
 const IBONUS_KEYS: (keyof MasterIBonuses)[] = [
@@ -131,11 +91,8 @@ const IBONUS_KEYS: (keyof MasterIBonuses)[] = [
 
 function createMasterIBonuses(
   tables: Record<keyof MasterIBonuses, SpreadsheetTable>,
-  start2: Start2,
-  gear_attrs: MasterAttrRule<GearAttr>[]
+  parser: ExprParser
 ): MasterIBonuses {
-  const replaceExpr = makeReplaceGearExpr(start2, gear_attrs);
-
   const result = {} as MasterIBonuses;
 
   IBONUS_KEYS.forEach((key) => {
@@ -146,8 +103,9 @@ function createMasterIBonuses(
         if (!expr || !formula) {
           return undefined;
         }
+
         return {
-          expr: replaceExpr(cellValueToString(expr)),
+          expr: parser.parseGear(cellValueToString(expr)),
           formula: cellValueToString(formula),
         };
       })
@@ -160,15 +118,15 @@ function createMasterIBonuses(
 }
 
 export function createGearData(
+  parser: ExprParser,
   tables: Record<
     "gears" | "gear_attrs" | keyof MasterIBonuses,
     SpreadsheetTable
-  >,
-  start2: Start2
+  >
 ): Pick<MasterData, "gears" | "gear_attrs" | "ibonuses"> {
-  const gears = createGears(tables.gears, start2);
-  const gear_attrs = createGearAttrs(tables.gear_attrs, start2);
-  const ibonuses = createMasterIBonuses(tables, start2, gear_attrs);
+  const gears = createGears(tables.gears, parser.start2);
+  const gear_attrs = createGearAttrs(tables.gear_attrs, parser);
+  const ibonuses = createMasterIBonuses(tables, parser);
 
   return {
     gears,

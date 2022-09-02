@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use arrayvec::ArrayVec;
 use enumset::EnumSet;
 use fasteval::{bool_to_f64, EvalNamespace};
@@ -27,6 +29,8 @@ pub struct MasterShip {
     pub yomi: String,
     pub stype: u8,
     pub ctype: u16,
+    #[serde(default)]
+    pub nationality: u8,
     #[serde(default)]
     pub sort_id: u16,
     pub max_hp: StatInterval,
@@ -73,6 +77,7 @@ impl MasterShip {
                 "ship_id" => self.ship_id.into(),
                 "ship_type" => self.stype.into(),
                 "ship_class" => self.ctype.into(),
+                "nationality" => self.nationality.into(),
                 "sort_id" => self.sort_id.into(),
                 "speed" => self.speed.into(),
 
@@ -82,7 +87,10 @@ impl MasterShip {
                     bool_to_f64!(args.contains(&(self.ctype.into())))
                 }
 
-                _ => return None,
+                _ => {
+                    let attr = ShipAttr::from_str(key).ok()?;
+                    bool_to_f64!(self.has_attr(attr))
+                }
             };
 
             Some(result)
@@ -102,8 +110,12 @@ impl MasterShip {
         ShipType::from(self.stype)
     }
 
+    pub fn is_abyssal(&self) -> bool {
+        self.ship_id > 1500
+    }
+
     pub fn default_level(&self) -> u16 {
-        if self.ship_id < 1500 {
+        if !self.is_abyssal() {
             99
         } else if self.ship_type().is_submarine() {
             50
