@@ -1,10 +1,10 @@
+use std::str::FromStr;
+
 use enumset::EnumSetType;
-use num_derive::FromPrimitive;
 use serde::{Deserialize, Serialize};
-use strum::EnumString;
 use tsify::Tsify;
 
-#[derive(Debug, EnumSetType, FromPrimitive, EnumString, Serialize, Deserialize, Tsify)]
+#[derive(Debug, EnumSetType, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum ShipAttr {
     Unknown,
@@ -40,5 +40,14 @@ impl Default for ShipAttr {
     #[inline]
     fn default() -> Self {
         Self::Unknown
+    }
+}
+
+impl FromStr for ShipAttr {
+    type Err = serde_json::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let json = format!("\"{s}\"");
+        serde_json::from_str(&json)
     }
 }

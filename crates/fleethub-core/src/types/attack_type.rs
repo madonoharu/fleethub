@@ -67,8 +67,16 @@ pub enum AttackType {
 }
 
 impl AttackType {
+    pub fn is_torpedo(self) -> bool {
+        matches!(self, Self::Torpedo)
+    }
+
     pub fn is_asw(self) -> bool {
         matches!(self, Self::Asw(_))
+    }
+
+    pub fn is_night(self) -> bool {
+        matches!(self, Self::Night(_))
     }
 }
 

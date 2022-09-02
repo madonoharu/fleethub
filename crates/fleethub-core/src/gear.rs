@@ -1,4 +1,7 @@
+use std::str::FromStr;
+
 use enumset::EnumSet;
+use fasteval::{bool_to_f64, EvalNamespace};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -275,19 +278,6 @@ impl Gear {
         ace_mod as f64 + (self.exp as f64 / 10.0).sqrt()
     }
 
-    pub fn exp_critical_bonus(&self) -> f64 {
-        match self.exp {
-            0..=9 => 0.0,
-            10..=24 => 1.0,
-            25..=39 => 2.0,
-            40..=54 => 3.0,
-            55..=69 => 4.0,
-            70..=79 => 5.0,
-            80..=99 => 7.0,
-            _ => 10.0,
-        }
-    }
-
     pub fn calc_fighter_power(&self, slot_size: u8) -> i32 {
         let pm = self.proficiency_fighter_power_modifier();
 
@@ -465,6 +455,51 @@ impl Gear {
 
     pub fn can_be_deployed_to_land_base(&self) -> bool {
         self.has_proficiency()
+    }
+}
+
+impl Gear {
+    pub fn ns(&self) -> impl EvalNamespace + '_ {
+        |key: &str, args: Vec<f64>| -> Option<f64> {
+            let result = match key {
+                "gear_id" => self.gear_id.into(),
+                "gear_type" => self.types.gear_type_id().into(),
+                "special_type" => self.special_type.into(),
+                "max_hp" => self.max_hp.into(),
+                "firepower" => self.firepower.into(),
+                "armor" => self.armor.into(),
+                "torpedo" => self.torpedo.into(),
+                "anti_air" => self.anti_air.into(),
+                "speed" => self.speed.into(),
+                "bombing" => self.bombing.into(),
+                "asw" => self.asw.into(),
+                "los" => self.los.into(),
+                "luck" => self.luck.into(),
+                "accuracy" => self.accuracy.into(),
+                "evasion" => self.evasion.into(),
+                "range" => self.range.into(),
+                "radius" => self.radius.into(),
+                "cost" => self.cost.into(),
+                "improvable" => bool_to_f64!(self.improvable),
+
+                "types" => {
+                    let index = args.first()?.floor() as usize;
+                    self.types.get(index)?.into()
+                }
+
+                "gear_id_in" => bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64)),
+                "gear_type_in" => {
+                    bool_to_f64!(args.iter().any(|v| *v == self.types.gear_type_id() as f64))
+                }
+
+                _ => {
+                    let attr = GearAttr::from_str(key).ok()?;
+                    bool_to_f64!(self.has_attr(attr))
+                }
+            };
+
+            Some(result)
+        }
     }
 }
 

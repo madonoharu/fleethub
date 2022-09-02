@@ -1,0 +1,24 @@
+description = "PT命中テスト3"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "霞改二"
+g1 = "SG レーダー(後期型)"
+g2 = "7.7mm機銃"
+
+# 防御艦設定
+[target]
+ship_id = 1638
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+# 命中率（通常命中率 + クリティカル率）
+hit_rate.total = 0.34
+# クリティカル率
+hit_rate.critical = 0.08
+
+
+# 命中項
+hit_rate_params.accuracy_term = 113
+# 回避項
+hit_rate_params.evasion_term = 80

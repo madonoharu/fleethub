@@ -38,11 +38,11 @@ impl GearArray {
     }
 
     pub fn get_by_gear_key(&self, key: &str) -> Option<&Gear> {
-        into_gear_index(key).and_then(|index| self.get(index))
+        gear_key_to_index(key).and_then(|index| self.get(index))
     }
 }
 
-pub fn into_gear_index(key: &str) -> Option<usize> {
+pub fn gear_key_to_index(key: &str) -> Option<usize> {
     Some(match key {
         "g1" => 0,
         "g2" => 1,

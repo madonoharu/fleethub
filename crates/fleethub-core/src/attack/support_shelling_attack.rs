@@ -99,9 +99,9 @@ impl SupportShellingAttackParams<'_> {
         let pre_multiplication =
             (SUPPORT_SHELLING_ACCURACY_CONSTANT + basic_accuracy_term + gears_accuracy).floor();
 
-        let result = (pre_multiplication * formation_mod * morale_mod).floor();
+        let accuracy_term = (pre_multiplication * formation_mod * morale_mod).floor();
 
-        Some(result)
+        Some(accuracy_term)
     }
 
     fn calc_hit_rate_params(&self) -> Option<HitRateParams> {

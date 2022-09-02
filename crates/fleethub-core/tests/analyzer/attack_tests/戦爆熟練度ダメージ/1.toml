@@ -22,3 +22,8 @@ damage.normal_damage_max = 127
 damage.critical_damage_min = 212
 # クリティカルの最大ダメージ
 damage.critical_damage_max = 229
+
+# 命中率補正
+hit_rate_params.hit_percentage_bonus = 0
+# クリ率補正
+hit_rate_params.critical_percentage_bonus = 8
