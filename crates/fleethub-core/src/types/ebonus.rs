@@ -35,7 +35,7 @@ pub struct EBonuses {
     #[serde(skip_deserializing)]
     pub speed: u8,
     #[serde(skip_deserializing)]
-    pub carrier_power: i16,
+    pub aerial_power: i16,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Tsify)]
@@ -212,20 +212,41 @@ fn get_speed_synergy(
     }
 }
 
-fn get_carrier_power(ship: &MasterShip, gears: &GearArray) -> i16 {
-    let min_air_torpedo_bonus = gears
+fn get_aerial_power(ship: &MasterShip, gears: &GearArray) -> i16 {
+    let ship_input = ShipInput::new(ship);
+
+    let plane_bonuses = gears
         .values()
         .filter(|gear| gear.has_proficiency())
         .map(|gear| {
-            let ship_input = ShipInput::new(ship);
             let gears_input = GearVecInput(vec![GearInput::new(gear)]);
-
-            create_equipment_bonuses(ship_input, gears_input).torpedo
+            create_equipment_bonuses(ship_input.clone(), gears_input)
         })
-        .filter(|v| *v > 0)
-        .min();
+        .collect::<Vec<_>>();
 
-    min_air_torpedo_bonus.unwrap_or_default()
+    let min_torpedo = plane_bonuses
+        .iter()
+        .map(|ebonus| ebonus.torpedo)
+        .filter(|v| *v > 0)
+        .min()
+        .unwrap_or_default();
+
+    let min_bombing = plane_bonuses
+        .iter()
+        .map(|ebonus| ebonus.bombing)
+        .filter(|v| *v > 0)
+        .min()
+        .unwrap_or_default();
+
+    let other = gears
+        .values()
+        .filter(|gear| !gear.has_proficiency())
+        .map(GearInput::new)
+        .collect::<Vec<_>>();
+
+    let other_bonus = create_equipment_bonuses(ship_input, GearVecInput(other));
+
+    min_torpedo + min_bombing + other_bonus.torpedo + other_bonus.bombing
 }
 
 impl EBonuses {
@@ -235,7 +256,7 @@ impl EBonuses {
         let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
 
         let mut ebonuses = create_equipment_bonuses(ship_input, gears_input);
-        ebonuses.carrier_power = get_carrier_power(ship, gears);
+        ebonuses.aerial_power = get_aerial_power(ship, gears);
         ebonuses.speed = get_speed_bonus(ship, gears);
 
         ebonuses

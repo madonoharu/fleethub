@@ -77,10 +77,10 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
           value={numstr(params.ap_shell_mod) || "-"}
         />
       )}
-      {params.carrier_power && (
+      {params.aerial_power && (
         <LabeledValue
-          label={t("carrier_power")}
-          value={numstr(params.carrier_power) || "-"}
+          label={t("aerial_power")}
+          value={numstr(params.aerial_power) || "-"}
         />
       )}
       {params.proficiency_critical_mod !== 1 && (

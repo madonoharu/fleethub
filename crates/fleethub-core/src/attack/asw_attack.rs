@@ -91,7 +91,7 @@ impl AswAttackParams<'_> {
                 armor_penetration,
                 remaining_ammo_mod: attacker.remaining_ammo_mod(),
                 ap_shell_mod: None,
-                carrier_power: None,
+                aerial_power: None,
                 special_enemy_mods: Default::default(),
                 custom_mods: attacker.custom_power_mods(),
             })

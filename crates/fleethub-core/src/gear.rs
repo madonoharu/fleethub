@@ -2,11 +2,10 @@ use std::str::FromStr;
 
 use enumset::EnumSet;
 use fasteval::{bool_to_f64, EvalNamespace};
-use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    master_data::MasterGear,
+    master_data::{IBonuses, MasterGear},
     types::{gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypeIdArray},
 };
 
@@ -37,27 +36,6 @@ impl ProficiencyType {
             _ => 0,
         }
     }
-}
-
-#[wasm_bindgen]
-#[derive(Debug, Serialize, Deserialize, Default, Clone)]
-pub struct IBonuses {
-    pub shelling_power: f64,
-    pub carrier_shelling_power: f64,
-    pub shelling_accuracy: f64,
-    pub torpedo_power: f64,
-    pub torpedo_accuracy: f64,
-    pub torpedo_evasion: f64,
-    pub asw_power: f64,
-    pub asw_accuracy: f64,
-    pub night_power: f64,
-    pub night_accuracy: f64,
-    pub defense_power: f64,
-    pub contact_selection: f64,
-    pub fighter_power: f64,
-    pub ship_anti_air: f64,
-    pub fleet_anti_air: f64,
-    pub elos: f64,
 }
 
 #[wasm_bindgen]
@@ -404,8 +382,10 @@ impl Gear {
         let gear_multiplier = (self.firepower + self.torpedo + self.bombing + self.asw) as f64;
 
         let slot_size_mod = a * ss + b * gear_multiplier * ss.sqrt();
+        // 改修補正のハードコード
+        let ibonus = (self.stars as f64).sqrt();
 
-        base + slot_size_mod + self.ibonuses.night_power
+        base + slot_size_mod + ibonus
     }
 
     pub fn elos(&self) -> f64 {

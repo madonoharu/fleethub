@@ -18,7 +18,7 @@ const Content: React.FC<ContentProps> = ({ gear, ebonuses }) => {
   return (
     <div>
       <Typography variant="caption">
-        ID {gear.gear_id} {t(gear.gear_type_id)}
+        ID {gear.gear_id} {t(gear.special_type)}
       </Typography>
       <GearNameplate wrap iconId={gear.icon_id} name={gear.name} />
       <GearStatList gear={gear} ebonuses={ebonuses} />

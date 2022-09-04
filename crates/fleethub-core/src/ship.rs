@@ -427,7 +427,7 @@ impl Ship {
         self.master.firepower.0.unwrap_or_default() + self.master.torpedo.0.unwrap_or_default() > 0
     }
 
-    pub fn carrier_power(&self, anti_inst: bool) -> i16 {
+    pub fn aerial_power(&self, anti_inst: bool) -> i16 {
         let (torpedo, bombing) = if anti_inst {
             let torpedo = 0;
             let bombing = self.gears.sum_by(|gear| {
@@ -466,7 +466,7 @@ impl Ship {
             })
     }
 
-    pub fn night_carrier_power(&self, anti_inst: bool) -> Option<f64> {
+    pub fn night_aerial_power(&self, anti_inst: bool) -> Option<f64> {
         let naked_firepower = self.naked_firepower()? as f64;
 
         let night_plane_power = self
@@ -474,7 +474,9 @@ impl Ship {
             .filter_map(|(_, gear, slot_size)| Some(gear.night_plane_power(slot_size?, anti_inst)))
             .sum::<f64>();
 
-        Some(naked_firepower + night_plane_power)
+        let ibonus = self.gears.sum_by(|gear| gear.ibonuses.night_aerial_power);
+
+        Some(naked_firepower + night_plane_power + ibonus)
     }
 
     pub fn night_swordfish_power(&self, anti_inst: bool) -> Option<f64> {

@@ -265,6 +265,7 @@ function createDeckShip(ship: Ship): DeckShip {
     id: ship.ship_id,
     lv: ship.level,
     items,
+    hp: ship.max_hp || undefined,
     luck: ship.luck || undefined,
   };
 }
