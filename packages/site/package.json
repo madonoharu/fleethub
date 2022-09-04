@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "1.8.6",
+  "version": "1.8.7",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
@@ -40,7 +40,7 @@
     "literal-case": "^1.0.0",
     "localforage": "^1.10.0",
     "next": "^12.2.5",
-    "next-i18next": "^12.0.0",
+    "next-i18next": "^12.0.1",
     "re-reselect": "^4.0.1",
     "react": "18.2.0",
     "react-async-hook": "^4.0.0",
