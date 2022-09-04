@@ -68,10 +68,6 @@ impl Org {
 
 #[wasm_bindgen]
 impl Org {
-    pub fn fleet_len(&self, role: Role) -> usize {
-        self.get_fleet_by_role(role).len
-    }
-
     pub fn get_ship_entity_id(&self, role: Role, key: &str) -> Option<String> {
         self.get_fleet_by_role(role)
             .ships
@@ -86,10 +82,6 @@ impl Org {
             .collect()
     }
 
-    pub fn fleet_los_mod(&self, role: Role) -> Option<f64> {
-        self.get_fleet_by_role(role).fleet_los_mod()
-    }
-
     pub fn main_ship_ids(&self) -> Vec<u16> {
         self.f1.ships.values().map(|ship| ship.ship_id).collect()
     }
@@ -102,10 +94,6 @@ impl Org {
         self.get_fleet_by_key(key).clone()
     }
 
-    pub fn get_ship(&self, role: Role, key: &str) -> Option<Ship> {
-        self.get_fleet_by_role(role).get_ship(key)
-    }
-
     pub fn get_ship_by_id(&self, id: &str) -> Option<Ship> {
         let fleets = [&self.f1, &self.f2, &self.f3, &self.f4];
 
@@ -114,10 +102,6 @@ impl Org {
             .find_map(|fleet| fleet.ships.values().find(|ship| ship.eq_id(id)));
 
         ship.cloned()
-    }
-
-    pub fn get_fleet_id_by_role(&self, role: Role) -> String {
-        self.get_fleet_by_role(role).id.clone()
     }
 
     pub fn create_comp(&self) -> Comp {
@@ -260,12 +244,5 @@ impl Org {
             .sum::<i32>();
 
         (interception_power as f64 * modifier).floor() as i32
-    }
-}
-
-#[wasm_bindgen]
-impl Org {
-    pub fn default() -> Self {
-        Default::default()
     }
 }

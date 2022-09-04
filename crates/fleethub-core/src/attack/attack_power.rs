@@ -30,7 +30,7 @@ pub struct AttackPowerParams {
     pub precap_mod: AttackPowerModifier,
     pub postcap_mod: AttackPowerModifier,
     pub ap_shell_mod: Option<f64>,
-    pub carrier_power: Option<f64>,
+    pub aerial_power: Option<f64>,
     pub proficiency_critical_mod: f64,
     pub armor_penetration: f64,
     pub remaining_ammo_mod: f64,
@@ -108,7 +108,7 @@ impl AttackPowerParams {
 
         precap = self.custom_mods.basic_power_mod.apply(precap);
 
-        if let Some(v) = self.carrier_power {
+        if let Some(v) = self.aerial_power {
             precap = ((precap + v) * 1.5).floor() + 25.0
         }
 
@@ -156,7 +156,7 @@ impl Default for AttackPowerParams {
             precap_mod: Default::default(),
             postcap_mod: Default::default(),
             ap_shell_mod: Default::default(),
-            carrier_power: Default::default(),
+            aerial_power: Default::default(),
             proficiency_critical_mod: 1.0,
             armor_penetration: 0.0,
             remaining_ammo_mod: 1.0,

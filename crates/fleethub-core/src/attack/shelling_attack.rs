@@ -44,22 +44,22 @@ impl ShellingAttackParams<'_> {
         let special_enemy_mods =
             attacker.special_enemy_mods(target.special_enemy_type(), Time::Day);
 
-        let mut carrier_power = None;
-        let mut carrier_power_ebonus = 0.0;
+        let mut aerial_power = None;
+        let mut aerial_power_ebonus = 0.0;
+        let mut aerial_power_ibonus = 0.0;
         let mut proficiency_mods = None;
-        let mut carrier_shelling_power_ibonus = 0.0;
 
         if style.attack_type == ShellingType::Carrier {
             let day_cutin = style.as_day_cutin();
             let anti_inst = target.is_installation();
 
-            carrier_power = Some(attacker.carrier_power(anti_inst) as f64);
-            carrier_power_ebonus = attacker.ebonuses.carrier_power as f64;
+            aerial_power = Some(attacker.aerial_power(anti_inst) as f64);
+            aerial_power_ebonus = attacker.ebonuses.aerial_power as f64;
             proficiency_mods = Some(attacker.proficiency_modifiers(day_cutin));
 
-            carrier_shelling_power_ibonus = attacker
+            aerial_power_ibonus = attacker
                 .gears
-                .sum_by(|gear| gear.ibonuses.carrier_shelling_power);
+                .sum_by(|gear| gear.ibonuses.shelling_aerial_power);
         }
 
         let calc_attack_power_params = || -> Option<AttackPowerParams> {
@@ -79,10 +79,10 @@ impl ShellingAttackParams<'_> {
             let remaining_ammo_mod = attacker.remaining_ammo_mod();
 
             // 基本攻撃力の定数 5.0 は`fleet_factor`に含まれている
-            let basic = fleet_factor + firepower + ibonus + carrier_shelling_power_ibonus;
+            let basic = fleet_factor + firepower + ibonus + aerial_power_ibonus;
 
             let a14 = formation_mod * engagement_mod * damage_mod;
-            let b14 = cruiser_fit_bonus + carrier_power_ebonus;
+            let b14 = cruiser_fit_bonus + aerial_power_ebonus;
             let a11 = cutin_mod;
 
             let precap_mod = AttackPowerModifier::new(a14, b14);
@@ -96,7 +96,7 @@ impl ShellingAttackParams<'_> {
                 precap_mod,
                 postcap_mod,
                 ap_shell_mod: ap_shell_mods.map(|mods| mods.0),
-                carrier_power,
+                aerial_power,
                 proficiency_critical_mod,
                 remaining_ammo_mod,
                 armor_penetration: 0.0,

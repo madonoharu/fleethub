@@ -42,14 +42,14 @@ impl SupportShellingAttackParams<'_> {
         let attacker = self.attacker;
         let target = self.target;
 
-        let mut carrier_power = None;
-        let mut carrier_power_ebonus = 0.0;
+        let mut aerial_power = None;
+        let mut aerial_power_ebonus = 0.0;
 
         if self.attack_type.0 == ShellingType::Carrier {
             let anti_inst = target.is_installation();
 
-            carrier_power = Some(attacker.carrier_power(anti_inst) as f64);
-            carrier_power_ebonus = attacker.ebonuses.carrier_power as f64;
+            aerial_power = Some(attacker.aerial_power(anti_inst) as f64);
+            aerial_power_ebonus = attacker.ebonuses.aerial_power as f64;
         }
 
         let firepower = attacker.firepower()? as f64;
@@ -63,7 +63,7 @@ impl SupportShellingAttackParams<'_> {
         let basic = 4.0 + firepower;
 
         let a14 = formation_mod * engagement_mod * damage_mod;
-        let b14 = carrier_power_ebonus;
+        let b14 = aerial_power_ebonus;
 
         let precap_mod = AttackPowerModifier::new(a14, b14);
         let postcap_mod = Default::default();
@@ -77,7 +77,7 @@ impl SupportShellingAttackParams<'_> {
             precap_mod,
             postcap_mod,
             ap_shell_mod: None,
-            carrier_power,
+            aerial_power: aerial_power,
             proficiency_critical_mod: 1.0,
             remaining_ammo_mod,
             armor_penetration: 0.0,
