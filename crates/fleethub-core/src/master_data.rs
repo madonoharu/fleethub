@@ -15,10 +15,7 @@ pub use master_gear::*;
 pub use master_ibonus::*;
 pub use master_ship::*;
 
-use crate::{
-    gear::IBonuses,
-    types::{BattleDefinitions, GearAttr, ShipAttr},
-};
+use crate::types::{BattleDefinitions, GearAttr, ShipAttr};
 
 use compiled_evaler::CompiledEvaler;
 

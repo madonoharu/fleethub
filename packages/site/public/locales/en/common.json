@@ -121,7 +121,7 @@
   "accuracy_mod": "Accuracy Mod",
   "type_factor": "Type Factor",
   "ap_shell_mod": "AP Shell Modifier",
-  "carrier_power": "Carrier Modifier",
+  "aerial_power": "Carrier Modifier",
   "proficiency_critical_mod": "Proficiency Critical Modifier",
   "armor_penetration": "Armor Penetration",
   "remaining_ammo_mod": "Remaining Ammo Modifier",

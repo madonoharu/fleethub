@@ -121,7 +121,7 @@
   "accuracy_mod": "命中補正",
   "type_factor": "種別係数",
   "ap_shell_mod": "徹甲弾補正",
-  "carrier_power": "空母補正",
+  "aerial_power": "空母補正",
   "proficiency_critical_mod": "熟練度クリティカル補正",
   "armor_penetration": "装甲減算補正",
   "remaining_ammo_mod": "残弾薬補正",
