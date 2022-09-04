@@ -39,6 +39,7 @@ rules:
   react-hooks/exhaustive-deps: warn
   react/display-name: off
   react/prop-types: off
+  react/no-unknown-property: off
 
   import/order:
     - error
