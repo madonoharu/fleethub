@@ -19,8 +19,16 @@ const getPredeckUrl = (base: string, org?: Org | undefined) => {
   return url.href;
 };
 
+const getHashPredeckUrl = (base: string, org?: Org | undefined) => {
+  const url = new URL(base);
+  const deck = createDeck(org);
+
+  url.hash = `import:${JSON.stringify({ predeck: deck })}`;
+  return url.href;
+};
+
 export const openKctools = (org?: Org | undefined) => {
-  const url = getPredeckUrl("https://noro6.github.io/kc-web/", org);
+  const url = getHashPredeckUrl("https://noro6.github.io/kc-web/", org);
   window.open(url, "_blank", "noreferrer");
 };
 
