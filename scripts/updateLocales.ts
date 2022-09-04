@@ -13,7 +13,7 @@ const exec = promisify(child_process.exec);
 type Dictionary<K extends string = string> = Partial<Record<K, string>>;
 
 type LanguageCode = typeof languages[number]["code"];
-type Language = { code: LanguageCode; kc3?: string; poi?: string };
+type Language = { code: LanguageCode; kc3?: string };
 
 type KC3Ships = Record<string, string>;
 type KC3ShipAffix = {
@@ -62,9 +62,9 @@ function uniqDictionary(dict: Dictionary): Dictionary {
 }
 
 const languages = [
-  { code: "ja", kc3: "jp", poi: "ja-JP" },
-  { code: "en", poi: "en-US" },
-  { code: "ko", kc3: "kr", poi: "ko-KR" },
+  { code: "ja", kc3: "jp" },
+  { code: "en" },
+  { code: "ko", kc3: "kr" },
   { code: "zh-CN", kc3: "scn" },
   { code: "zh-TW", kc3: "tcn" },
 ] as const;
@@ -72,7 +72,6 @@ const languages = [
 class LocaleUpdater {
   private kc3: typeof got;
   private tsun: typeof got;
-  private poi: typeof got;
   private code: LanguageCode;
   private path: string;
 
@@ -87,10 +86,6 @@ class LocaleUpdater {
 
     this.tsun = got.extend({
       prefixUrl: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${this.code}`,
-    });
-
-    this.poi = got.extend({
-      prefixUrl: `https://raw.githubusercontent.com/poooi/poi/master/i18n`,
     });
 
     this.path = `packages/site/public/locales/${this.code}`;
@@ -113,13 +108,6 @@ class LocaleUpdater {
     });
 
     return kcnav;
-  }
-
-  private async getPoiJson<T = unknown>(dir: string) {
-    const json = await this.poi
-      .get(`${dir}/${this.language.poi || this.language.code}.json`)
-      .json<T>();
-    return json;
   }
 
   private async merge(filename: string, data: Record<string, unknown>) {

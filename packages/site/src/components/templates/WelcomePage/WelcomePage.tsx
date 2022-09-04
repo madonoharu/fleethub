@@ -199,6 +199,17 @@ const WelcomePage: React.FCX = () => {
         </Stack>
 
         <Typography variant="h5" mt={4}>
+          Contributor
+        </Typography>
+        <Divider />
+        <Typography variant="body1" component="div">
+          <span>にしくま</span>
+          <Link sx={{ ml: 1 }} href="https://twitter.com/nishikkuma">
+            @nishikkuma
+          </Link>
+        </Typography>
+
+        <Typography variant="h5" mt={4}>
           Maintainers
         </Typography>
         <Divider />
