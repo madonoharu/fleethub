@@ -220,7 +220,7 @@ impl Factory {
 
             hq_level: hq_level.unwrap_or(120),
             org_type,
-            sortie: sortie.unwrap_or_else(|| "f1".to_string()),
+            sortie: sortie.unwrap_or_default(),
             route_sup,
             boss_sup,
         })

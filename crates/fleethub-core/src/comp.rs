@@ -12,7 +12,7 @@ use crate::{
     ship::Ship,
     types::{
         AirWaveType, AntiAirCutinDef, BattleDefinitions, CompMeta, FleetType, Formation, OrgType,
-        Role, ShipConditions, ShipPosition, Side,
+        Role, ShipConditions, ShipKey, ShipPosition, Side,
     },
 };
 
@@ -333,11 +333,11 @@ impl Comp {
         self.get_fleet(ft).map(|f| f.id.clone())
     }
 
-    pub fn get_ship_with_clone(&self, ft: FleetType, key: &str) -> Option<Ship> {
+    pub fn get_ship_with_clone(&self, ft: FleetType, key: ShipKey) -> Option<Ship> {
         Some(self.get_fleet(ft)?.ships.get_by_key(key)?.clone())
     }
 
-    pub fn get_ship_entity_id(&self, ft: FleetType, key: &str) -> Option<String> {
+    pub fn get_ship_entity_id(&self, ft: FleetType, key: ShipKey) -> Option<String> {
         Some(self.get_fleet(ft)?.ships.get_by_key(key)?.id.clone())
     }
 
@@ -420,6 +420,10 @@ impl Comp {
             position,
             formation: formation.unwrap_or_else(|| self.org_type.default_formation()),
         }
+    }
+
+    pub fn fleet_los_mod(&self, fleet_type: FleetType) -> Option<f64> {
+        self.get_fleet(fleet_type)?.fleet_los_mod()
     }
 }
 

@@ -266,6 +266,7 @@ export const entitiesSlice = createSlice({
       const fileEntity = state.files.entities[payload.file];
       if (isPlan(fileEntity)) {
         fileEntity.steps.push(stepId);
+        fileEntity.activeStep = stepId;
       }
     },
 

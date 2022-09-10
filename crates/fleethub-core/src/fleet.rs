@@ -3,24 +3,15 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     ship::Ship,
-    types::{gear_id, ship_id, AirWaveType, DamageState, FleetMeta, GearType},
+    types::{gear_id, ship_id, AirWaveType, DamageState, FleetMeta, GearType, ShipKey},
     utils::OptionalArray,
 };
 
 pub type ShipArray = OptionalArray<Ship, 7>;
 
 impl ShipArray {
-    pub fn get_by_key(&self, key: &str) -> Option<&Ship> {
-        match key {
-            "s1" => self.get(0),
-            "s2" => self.get(1),
-            "s3" => self.get(2),
-            "s4" => self.get(3),
-            "s5" => self.get(4),
-            "s6" => self.get(5),
-            "s7" => self.get(6),
-            _ => None,
-        }
+    pub fn get_by_key(&self, key: ShipKey) -> Option<&Ship> {
+        self.get(key as usize)
     }
 }
 
@@ -105,7 +96,7 @@ impl Fleet {
         self.ships.values().count()
     }
 
-    pub fn get_ship(&self, key: &str) -> Option<Ship> {
+    pub fn get_ship(&self, key: ShipKey) -> Option<Ship> {
         self.ships.get_by_key(key).cloned()
     }
 

@@ -30,11 +30,14 @@ import ShipDetailsEnemyList from "./ShipDetailsEnemyList";
 
 function initShipDetailsState(
   current: ShipDetailsState,
-  conditions: ShipConditions
+  conditions: ShipConditions,
+  fleet_los_mod: number | undefined
 ): ShipDetailsState {
   const next = produce(current, (draft) => {
     draft.left ||= {};
     draft.right ||= {};
+
+    draft.left.fleet_los_mod = fleet_los_mod;
 
     const leftSide = toSide(conditions.org_type || "Single");
     const rightSide = draft?.right?.org_type && toSide(draft.right.org_type);
@@ -87,9 +90,13 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
   useEffect(() => {
     if (!comp) return;
 
-    const conditions = comp.get_ship_conditions(ship, state.left?.formation);
-
-    update(initShipDetailsState(state, conditions));
+    const conditions = comp.get_ship_conditions(
+      ship,
+      state.left?.formation
+    ) as Required<ShipConditions>;
+    const fleet_los_mod = comp.fleet_los_mod(conditions.fleet_type);
+    const payload = initShipDetailsState(state, conditions, fleet_los_mod);
+    update(payload);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
