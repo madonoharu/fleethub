@@ -421,6 +421,10 @@ impl Comp {
             formation: formation.unwrap_or_else(|| self.org_type.default_formation()),
         }
     }
+
+    pub fn fleet_los_mod(&self, fleet_type: FleetType) -> Option<f64> {
+        self.get_fleet(fleet_type)?.fleet_los_mod()
+    }
 }
 
 struct FleetTypeQuery(EnumSet<FleetType>);

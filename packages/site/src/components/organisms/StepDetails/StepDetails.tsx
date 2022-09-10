@@ -47,10 +47,10 @@ const StepDetails: React.FCX<StepDetailsProps> = ({
   const { org: rightOrg } = useOrg(step.org);
 
   const [leftShipId, setLeftShipId] = useState<string | undefined>(
-    leftOrg?.get_ship_entity_id("Main", "s1")
+    leftOrg?.first_ship_id()
   );
   const [rightShipId, setRightShipId] = useState<string | undefined>(
-    rightOrg?.get_ship_entity_id("Main", "s1")
+    rightOrg?.first_ship_id()
   );
 
   if (!leftOrg || !rightOrg) return null;

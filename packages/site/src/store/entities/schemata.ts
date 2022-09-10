@@ -44,6 +44,7 @@ export type Plan = FileBase<
   {
     org: OrgState;
     steps: Step[];
+    activeStep?: Step;
   }
 >;
 export type Folder = FileBase<
@@ -119,6 +120,7 @@ const file = schema<FileState>()
   .define((self) => ({
     org,
     steps: [step],
+    activeStep: step,
     children: [self],
   }));
 

@@ -12,11 +12,6 @@ import set from "lodash/set";
 import { ExprParser } from "./parser";
 import { cellValueToString, SpreadsheetTable } from "./utils";
 
-interface ShipClassDef {
-  id: number;
-  name: string;
-}
-
 const SUFFIXES = [
   "甲",
   "乙",
@@ -241,15 +236,6 @@ function createShips(
   });
 
   return ships;
-}
-
-function createShipClasses(table: SpreadsheetTable): ShipClassDef[] {
-  return table.rows.map((row) => {
-    return {
-      id: Number(row.id),
-      name: cellValueToString(row.name),
-    };
-  });
 }
 
 const createShipAttrs = (parser: ExprParser, table: SpreadsheetTable) => {
