@@ -117,6 +117,16 @@ const setGearPosition = (
   }
 };
 
+function shipPositionExists(state: State, position: ShipPosition): boolean {
+  if (position.tag === "shipDetails") {
+    return false;
+  }
+
+  const { tag, id } = position;
+  const entity = state[tag].entities[id];
+  return Boolean(entity);
+}
+
 const setShipPosition = (
   state: State,
   position: ShipPosition,
@@ -244,7 +254,7 @@ export const entitiesSlice = createSlice({
         d: payload.d,
         org: payload.org,
         config: {
-          left: {
+          right: {
             formation: payload.formation,
           },
         },
@@ -271,8 +281,13 @@ export const entitiesSlice = createSlice({
       state,
       { payload: { drag, drop } }: PayloadAction<SwapShipPayload>
     ) => {
-      setShipPosition(state, drag.position, drop.id);
-      setShipPosition(state, drop.position, drag.id);
+      if (
+        shipPositionExists(state, drag.position) &&
+        shipPositionExists(state, drop.position)
+      ) {
+        setShipPosition(state, drag.position, drop.id);
+        setShipPosition(state, drop.position, drag.id);
+      }
     },
 
     createPlan: {
