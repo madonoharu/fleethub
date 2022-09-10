@@ -1,4 +1,6 @@
 use js_sys::JsString;
+use serde::Serialize;
+use tsify::Tsify;
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -6,7 +8,7 @@ use crate::{
     comp::Comp,
     fleet::Fleet,
     ship::Ship,
-    types::{GearAttr, OrgType, Role, Side},
+    types::{FleetKey, FleetType, GearAttr, OrgType, ShipKey, Side},
 };
 
 #[wasm_bindgen]
@@ -37,42 +39,49 @@ pub struct Org {
     pub hq_level: u8,
     #[wasm_bindgen(readonly)]
     pub org_type: OrgType,
-    #[wasm_bindgen(getter_with_clone)]
-    pub sortie: String,
-    #[wasm_bindgen(getter_with_clone)]
-    pub route_sup: Option<String>,
-    #[wasm_bindgen(getter_with_clone)]
-    pub boss_sup: Option<String>,
+    #[wasm_bindgen(readonly)]
+    pub sortie: FleetKey,
+    #[wasm_bindgen(readonly)]
+    pub route_sup: Option<FleetKey>,
+    #[wasm_bindgen(readonly)]
+    pub boss_sup: Option<FleetKey>,
 }
 
 impl Org {
-    pub fn get_fleet_by_role(&self, role: Role) -> &Fleet {
-        match role {
-            Role::Main => &self.f1,
-            Role::Escort => &self.f2,
+    pub fn get_fleet(&self, key: FleetKey) -> &Fleet {
+        match key {
+            FleetKey::F1 => &self.f1,
+            FleetKey::F2 => &self.f2,
+            FleetKey::F3 => &self.f3,
+            FleetKey::F4 => &self.f4,
         }
     }
 
-    pub fn get_fleet_by_key(&self, key: &str) -> &Fleet {
-        match key {
-            "f1" => &self.f1,
-            "f2" => &self.f2,
-            "f3" => &self.f3,
-            "f4" => &self.f4,
-            _ => {
-                panic!(r#"get_fleet() argument must be "f1", "f2", "f3" or "f4""#);
-            }
-        }
+    pub fn get_ship(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<&Ship> {
+        self.get_fleet(fleet_key).ships.get_by_key(ship_key)
     }
 }
 
 #[wasm_bindgen]
 impl Org {
-    pub fn get_ship_entity_id(&self, role: Role, key: &str) -> Option<String> {
-        self.get_fleet_by_role(role)
-            .ships
-            .get_by_key(key)
+    pub fn first_ship_id(&self) -> Option<String> {
+        [&self.f1, &self.f2, &self.f3, &self.f4]
+            .iter()
+            .flat_map(|fleet| fleet.ships.values())
+            .find_map(|ship| Some(ship.id.clone()))
+    }
+
+    pub fn get_ship_mid(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<u16> {
+        self.get_ship(fleet_key, ship_key).map(|ship| ship.ship_id)
+    }
+
+    pub fn get_ship_eid(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<String> {
+        self.get_ship(fleet_key, ship_key)
             .map(|ship| ship.id.clone())
+    }
+
+    pub fn get_fleet_id(&self, key: FleetKey) -> String {
+        self.get_fleet(key).id.clone()
     }
 
     pub fn air_squadron_ids(&self) -> Vec<JsString> {
@@ -90,8 +99,12 @@ impl Org {
         self.f2.ships.values().map(|ship| ship.ship_id).collect()
     }
 
-    pub fn clone_fleet(&self, key: &str) -> Fleet {
-        self.get_fleet_by_key(key).clone()
+    pub fn clone_fleet(&self, key: FleetKey) -> Fleet {
+        self.get_fleet(key).clone()
+    }
+
+    pub fn clone_ship(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<Ship> {
+        self.get_ship(fleet_key, ship_key).cloned()
     }
 
     pub fn get_ship_by_id(&self, id: &str) -> Option<Ship> {
@@ -104,33 +117,30 @@ impl Org {
         ship.cloned()
     }
 
-    pub fn create_comp(&self) -> Comp {
-        self.create_comp_by_key(&self.sortie)
+    pub fn ship_keys(&self, key: FleetKey) -> Vec<JsString> {
+        self.get_fleet(key).ship_keys()
     }
 
-    pub fn create_comp_by_key(&self, key: &str) -> Comp {
+    pub fn create_comp(&self) -> Comp {
+        self.create_comp_by_key(self.sortie)
+    }
+
+    pub fn create_comp_by_key(&self, key: FleetKey) -> Comp {
         let org_type = self.org_type;
-        let enable_escort = org_type.is_combined() && matches!(key, "f1" | "f2");
+        let enable_escort = org_type.is_combined() && matches!(key, FleetKey::F1 | FleetKey::F2);
 
         let main = if enable_escort {
             &self.f1
         } else {
-            self.get_fleet_by_key(key)
+            self.get_fleet(key)
         }
         .clone();
 
         let escort = enable_escort.then(|| self.f2.clone());
 
         let (route_sup, boss_sup) = if org_type.is_player() {
-            let route_sup = self
-                .route_sup
-                .as_ref()
-                .map(|key| self.get_fleet_by_key(key).clone());
-
-            let boss_sup = self
-                .boss_sup
-                .as_ref()
-                .map(|key| self.get_fleet_by_key(key).clone());
+            let route_sup = self.route_sup.map(|key| self.get_fleet(key).clone());
+            let boss_sup = self.boss_sup.map(|key| self.get_fleet(key).clone());
 
             (route_sup, boss_sup)
         } else {
@@ -245,4 +255,63 @@ impl Org {
 
         (interception_power as f64 * modifier).floor() as i32
     }
+
+    pub fn create_move_ship_payload(&self, id: &str, x: i8, y: i8) -> Option<MoveShipPayload> {
+        let (current_fleet_key, current_index) = FleetKey::iter().find_map(|key| {
+            let fleet = self.get_fleet(key);
+            let (index, _) = fleet.ships.iter().find(|(_, s)| s.id == id)?;
+            Some((key, index))
+        })?;
+
+        let target_fleet_key = match x {
+            1 => current_fleet_key.next(),
+            -1 => current_fleet_key.next_back(),
+            _ => current_fleet_key,
+        };
+
+        let target_fleet = self.get_fleet(target_fleet_key);
+
+        if current_index >= target_fleet.len {
+            return None;
+        }
+
+        let target_ship_key: ShipKey = num_traits::FromPrimitive::from_i8(
+            (current_index as i8 + y).rem_euclid(target_fleet.len as i8),
+        )
+        .unwrap_or_default();
+
+        let current_fleet_id = self.get_fleet(current_fleet_key).id.clone();
+        let current_ship_key = ShipKey::from(current_index);
+        let target_fleet_id = target_fleet.id.clone();
+        let target_ship_id = target_fleet
+            .ships
+            .get_by_key(target_ship_key)
+            .map(|ship| ship.id.clone());
+
+        Some(MoveShipPayload {
+            current: (id.to_string(), current_fleet_id, current_ship_key),
+            target: (target_ship_id, target_fleet_id, target_ship_key),
+        })
+    }
+
+    pub fn get_fleet_type(&self, key: FleetKey) -> Option<FleetType> {
+        if self.sortie == key {
+            Some(FleetType::Main)
+        } else if self.is_combined() && key == FleetKey::F2 {
+            Some(FleetType::Escort)
+        } else if self.route_sup == Some(key) {
+            Some(FleetType::RouteSup)
+        } else if self.boss_sup == Some(key) {
+            Some(FleetType::BossSup)
+        } else {
+            None
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Tsify)]
+#[tsify(into_wasm_abi)]
+pub struct MoveShipPayload {
+    current: (String, String, ShipKey),
+    target: (Option<String>, String, ShipKey),
 }

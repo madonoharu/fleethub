@@ -1,10 +1,8 @@
-use hashbrown::HashMap;
 use ordered_float::OrderedFloat;
 use serde::{Deserialize, Serialize};
-use strum::EnumIter;
 use tsify::Tsify;
 
-use super::{CustomPowerModifiers, OrgType};
+use super::{CustomPowerModifiers, FleetKey, OrgType};
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
@@ -229,29 +227,9 @@ pub struct OrgState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub org_type: Option<OrgType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sortie: Option<String>,
+    pub sortie: Option<FleetKey>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub route_sup: Option<String>,
+    pub route_sup: Option<FleetKey>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boss_sup: Option<String>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, Tsify)]
-#[serde(rename_all = "lowercase")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub enum ShipKey {
-    S1,
-    S2,
-    S3,
-    S4,
-    S5,
-    S6,
-    S7,
-}
-
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[serde(transparent)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub struct ShipStateMap {
-    map: HashMap<ShipKey, ShipState>,
+    pub boss_sup: Option<FleetKey>,
 }

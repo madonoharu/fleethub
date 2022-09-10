@@ -1,5 +1,5 @@
 use crate::{
-    plane::Plane,
+    plane::{Plane, PlaneImpl},
     types::{DayCutin, GearType, ProficiencyModifiers},
 };
 
@@ -13,15 +13,16 @@ impl Ship {
         let planes = self
             .planes()
             .filter(|plane| {
-                matches!(
-                    plane.gear_type,
-                    GearType::CbDiveBomber
-                        | GearType::CbTorpedoBomber
-                        | GearType::SeaplaneBomber
-                        | GearType::LargeFlyingBoat
-                        | GearType::JetFighterBomber
-                        | GearType::JetTorpedoBomber
-                )
+                plane.remains()
+                    && matches!(
+                        plane.gear_type,
+                        GearType::CbDiveBomber
+                            | GearType::CbTorpedoBomber
+                            | GearType::SeaplaneBomber
+                            | GearType::LargeFlyingBoat
+                            | GearType::JetFighterBomber
+                            | GearType::JetTorpedoBomber
+                    )
             })
             .collect::<Vec<_>>();
 
@@ -79,7 +80,7 @@ impl Ship {
     /// https://docs.google.com/spreadsheets/d/1i5jTixnOVjqrwZvF_4Uqf3L9ObHhS7dFqG8KiE5awkY
     /// https://twitter.com/kankenRJ/status/995827605801709568
     fn carrier_cutin_proficiency_modifiers(&self, cutin: DayCutin) -> (f64, f64) {
-        let captain_plane = self.planes().find(|plane| {
+        let captain_plane = self.planes().filter(|plane| plane.remains()).find(|plane| {
             if plane.index == 0 {
                 match cutin {
                     DayCutin::FBA => matches!(
@@ -104,13 +105,14 @@ impl Ship {
         let bombers_with_jet = self
             .planes()
             .filter(|plane| {
-                matches!(
-                    plane.gear_type,
-                    GearType::CbDiveBomber
-                        | GearType::CbTorpedoBomber
-                        | GearType::JetFighterBomber
-                        | GearType::JetTorpedoBomber
-                )
+                plane.remains()
+                    && matches!(
+                        plane.gear_type,
+                        GearType::CbDiveBomber
+                            | GearType::CbTorpedoBomber
+                            | GearType::JetFighterBomber
+                            | GearType::JetTorpedoBomber
+                    )
             })
             .collect::<Vec<_>>();
 
@@ -148,10 +150,11 @@ impl Ship {
             let bombers = self
                 .planes()
                 .filter(|plane| {
-                    matches!(
-                        plane.gear_type,
-                        GearType::CbDiveBomber | GearType::CbTorpedoBomber
-                    )
+                    plane.remains()
+                        && matches!(
+                            plane.gear_type,
+                            GearType::CbDiveBomber | GearType::CbTorpedoBomber
+                        )
                 })
                 .collect::<Vec<_>>();
 
