@@ -55,4 +55,5 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, MyAppProps> = ({
   );
 };
 
-export default appWithTranslation(MyApp);
+// @see https://github.com/i18next/next-i18next/issues/1944
+export default appWithTranslation(MyApp as React.FC);

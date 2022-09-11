@@ -663,7 +663,7 @@ __metadata:
     "@next/bundle-analyzer": ^12.3.0
     "@reduxjs/toolkit": ^1.8.5
     "@simbathesailor/use-what-changed": ^2.0.0
-    "@types/react": 18.0.18
+    "@types/react": 18.0.19
     "@types/react-dom": ^18.0.6
     "@types/xxhashjs": ^0.2.2
     "@visx/legend": ^2.10.0
@@ -678,7 +678,7 @@ __metadata:
     fast-json-stable-stringify: ^2.1.0
     firebase: ^9.9.4
     fleethub-core: "npm:latest"
-    gkcoi: ^1.4.2
+    gkcoi: ^1.4.3
     http-status-codes: ^2.2.0
     immer: ^9.0.15
     literal-case: ^1.0.0
@@ -2216,9 +2216,9 @@ __metadata:
   linkType: hard
 
 "@sinclair/typebox@npm:^0.24.1":
-  version: 0.24.39
-  resolution: "@sinclair/typebox@npm:0.24.39"
-  checksum: 4e4ec3e7df9be6f1c8661ae73f7be6bf777b0bdf37415240c3f177a776bc51d7e87663435b0c351de6aa77ace5b581a4c983104e54f6aa3d7d0c462513143f70
+  version: 0.24.40
+  resolution: "@sinclair/typebox@npm:0.24.40"
+  checksum: 682722bb2bf6ec75ea1a1461efc103e4075fc9e32e9862a138371b62b732d12faea4ce693fcc059484eb81f3186dae64fcd5243a35d507fa96fec3fe5203b87c
   languageName: node
   linkType: hard
 
@@ -2919,7 +2919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*":
+"@types/react@npm:*, @types/react@npm:18.0.19":
   version: 18.0.19
   resolution: "@types/react@npm:18.0.19"
   dependencies:
@@ -2927,17 +2927,6 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 7dc048f9a6a38176c4c64ecf7f4c24c732df118402d7f34a4ff1702984c06f040fae1457b1b98b7f447ca2a3392dea7d027a05782dfe1b350475606f82ce6d63
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:18.0.18":
-  version: 18.0.18
-  resolution: "@types/react@npm:18.0.18"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: 6d72d35ab3eecf382a5e0f225923f5a2c753045fce02e4e29713f36c99a24f0f770666a49dde96167f37c86271f93339d1b7e2b8969d011b137a9ebd24ee6806
   languageName: node
   linkType: hard
 
@@ -4887,9 +4876,9 @@ __metadata:
   linkType: hard
 
 "equipment-bonus@npm:latest":
-  version: 7.0.27
-  resolution: "equipment-bonus@npm:7.0.27"
-  checksum: 63c10324d951f9370f90d8ff8dbcb0708e0a9e0e1e7e43f127f3248730d690f8f95f43d6d901196fda8b20b49a480c40e80de2883e46422db50f3f0a11ed5924
+  version: 7.0.28
+  resolution: "equipment-bonus@npm:7.0.28"
+  checksum: 57a79ac53f971b5465ef5523973203ce5db4e1582a3dc961909cea9b2f16ec5f34699fbfa27a7e61915f83d4ed8c5f08a053aa3e4b31c57948404fd2c2c95b3b
   languageName: node
   linkType: hard
 
@@ -5596,8 +5585,8 @@ __metadata:
     got: 12.4.1
     husky: ^8.0.1
     identity-obj-proxy: ^3.0.0
-    jest: ^29.0.2
-    jest-environment-jsdom: ^29.0.2
+    jest: ^29.0.3
+    jest-environment-jsdom: ^29.0.3
     kc-tools: ^1.1.0
     lint-staged: ^13.0.3
     listr2: ^5.0.5
@@ -5879,15 +5868,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gkcoi@npm:^1.4.2":
-  version: 1.4.2
-  resolution: "gkcoi@npm:1.4.2"
+"gkcoi@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "gkcoi@npm:1.4.3"
   dependencies:
     chart.js: ^3.8.0
     chartjs-plugin-datalabels: ^2.0.0
     lzjs: ^1.3.0
     ts-steganography: ^3.0.2
-  checksum: c49b31fb4c86d3781f96aa52f0ec1d2608cf40fc5c596110b3dfb4e080cc0683f6a15c5929155b2c752701c90ec292a4a9f47180a921b3811ba3aadf1c362f3a
+  checksum: 9fa51de70ed55d3ce6088d07636aa6d55a06761fbf95304010af8206c645763bff1a51caa47aeedf64b12a159618f8f0b3e93a644fad590b9f666b2a125e09ea
   languageName: node
   linkType: hard
 
@@ -6984,7 +6973,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^29.0.2":
+"jest-environment-jsdom@npm:^29.0.3":
   version: 29.0.3
   resolution: "jest-environment-jsdom@npm:29.0.3"
   dependencies:
@@ -7285,7 +7274,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^29.0.2":
+"jest@npm:^29.0.3":
   version: 29.0.3
   resolution: "jest@npm:29.0.3"
   dependencies:
