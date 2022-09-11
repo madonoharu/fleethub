@@ -1,35 +1,97 @@
-import styled from "@emotion/styled";
 import { uniq } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Button, Stack } from "@mui/material";
+import {
+  styled,
+  Button,
+  Stack,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { useContext } from "react";
 
 import { GenerationMapContext, useModal } from "../../../hooks";
 import { Divider } from "../../atoms";
 
-type AreaListProps = {
-  areas: number[];
-  onChange?: (id: number) => void;
+interface WorldAreaButtonsProps extends AreaListProps {
+  world: number;
+}
+
+const WorldAreaButtons: React.FCX<WorldAreaButtonsProps> = ({
+  world,
+  areas,
+  onClick,
+}) => {
+  const { t } = useTranslation("common");
+
+  return (
+    <div>
+      <Divider label={t(`worldName.${world as 1}`)} />
+      {areas
+        .filter((id) => Math.floor(id / 10) === world)
+        .map((id) => (
+          <Button
+            key={id}
+            component="button"
+            value={id.toString()}
+            onClick={onClick}
+          >
+            {world}-{id % 10}
+          </Button>
+        ))}
+    </div>
+  );
 };
 
-const AreaList: React.FCX<AreaListProps> = ({ className, areas, onChange }) => {
-  const { t } = useTranslation("common");
+interface AreaListProps {
+  areas: number[];
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+const EventAreaList: React.FCX<AreaListProps> = ({
+  className,
+  areas,
+  onClick,
+}) => {
+  const worlds = uniq(areas.map((id) => Math.floor(id / 10))).reverse();
+
+  if (worlds.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className={className}>
+      <WorldAreaButtons world={worlds[0]} areas={areas} onClick={onClick} />
+      <Accordion css={{ borderRadius: 4 }} disableGutters>
+        <AccordionSummary>Past Events</AccordionSummary>
+        <AccordionDetails sx={{ maxHeight: 256, overflowY: "scroll" }}>
+          {worlds.map((world) => (
+            <WorldAreaButtons
+              key={world}
+              world={world}
+              areas={areas}
+              onClick={onClick}
+            />
+          ))}
+        </AccordionDetails>
+      </Accordion>
+    </div>
+  );
+};
+
+const AreaList: React.FCX<AreaListProps> = ({ className, areas, onClick }) => {
   const worlds = uniq(areas.map((id) => Math.floor(id / 10)));
 
   return (
     <div className={className}>
       {worlds.map((world) => (
-        <div key={world}>
-          <Divider label={t(`worldName.${world as 1}`)} />
-          {areas
-            .filter((id) => Math.floor(id / 10) === world)
-            .map((id) => (
-              <Button key={id} onClick={() => onChange?.(id)}>
-                {world}-{id % 10}
-              </Button>
-            ))}
-        </div>
+        <WorldAreaButtons
+          key={world}
+          world={world}
+          areas={areas}
+          onClick={onClick}
+        />
       ))}
     </div>
   );
@@ -52,6 +114,10 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, onChange }) => {
   const normalAreas = ids.filter((id) => id < 100);
   const eventAreas = ids.filter((id) => id >= 100);
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onChange?.(Number(event.currentTarget.value));
+  };
+
   return (
     <Stack
       className={className}
@@ -60,8 +126,8 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, onChange }) => {
       flexWrap="wrap"
       gap={2}
     >
-      <AreaList areas={normalAreas} onChange={onChange} />
-      <AreaList areas={eventAreas} onChange={onChange} />
+      <AreaList areas={normalAreas} onClick={handleClick} />
+      <EventAreaList areas={eventAreas} onClick={handleClick} />
     </Stack>
   );
 };

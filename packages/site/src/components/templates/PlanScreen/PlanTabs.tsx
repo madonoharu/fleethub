@@ -15,7 +15,12 @@ import {
   FleetScreen,
 } from "../../organisms";
 
-const FleetTabPanel: React.FCX<{ org: Org; fleetKey: FleetKey }> = ({
+interface FleetTabPanelProps {
+  org: Org;
+  fleetKey: FleetKey;
+}
+
+const FleetTabPanel: React.FCX<FleetTabPanelProps> = ({
   className,
   org,
   fleetKey,
@@ -39,10 +44,10 @@ const StyledSwappable = styled(Swappable)`
   margin: 2px;
 ` as typeof Swappable;
 
-type PlanTabsProps = {
+interface PlanTabsProps {
   org: Org;
   file?: PlanEntity;
-};
+}
 
 const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
   const { t } = useTranslation("common");

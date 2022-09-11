@@ -18,6 +18,7 @@ import {
 } from "../../../store";
 import { Select } from "../../molecules";
 import { OrgShipList, ShipCard } from "../../organisms";
+import NodeAttackAnalyzer from "../../organisms/NodeAttackAnalyzer";
 
 interface Props {
   org: Org;
@@ -41,12 +42,9 @@ const PlanIndexScreen: React.FC<Props> = ({ org, file }) => {
 
   const { org: enemyOrg } = useOrg(activeStep?.org || "");
 
-  const [leftShipId, setLeftShipId] = useState(org.first_ship_id() || "");
-  const [rightShipId, setRightShipId] = useState(
-    enemyOrg?.first_ship_id() || ""
-  );
-  const leftShip = useShip(leftShipId);
-  const rightShip = useShip(rightShipId);
+  const [activeShipId, setActiveShipId] = useState(org.first_ship_id() || "");
+
+  const activeShip = useShip(activeShipId);
 
   const showMapMenu = () => {
     dispatch(
@@ -87,21 +85,27 @@ const PlanIndexScreen: React.FC<Props> = ({ org, file }) => {
       <Stack direction="row" alignItems="flex-start">
         <OrgShipList
           org={org}
-          selectedShip={leftShipId}
-          onShipClick={setLeftShipId}
+          selectedShip={activeShipId}
+          onShipClick={setActiveShipId}
         />
         {enemyOrg && (
           <OrgShipList
             org={enemyOrg}
-            selectedShip={rightShipId}
-            onShipClick={setRightShipId}
+            selectedShip={activeShipId}
+            onShipClick={setActiveShipId}
           />
         )}
       </Stack>
-      <Stack direction="row" gap={1} width="100%">
-        {leftShip && <ShipCard css={{ flexGrow: 1 }} ship={leftShip} />}
-        {rightShip && <ShipCard css={{ flexGrow: 1 }} ship={rightShip} />}
-      </Stack>
+      {activeShip && <ShipCard ship={activeShip} />}
+
+      {enemyOrg && (
+        <NodeAttackAnalyzer
+          config={activeStep?.config || {}}
+          leftComp={org.create_comp()}
+          rightComp={enemyOrg?.create_comp()}
+          attackerId={activeShipId}
+        />
+      )}
     </Stack>
   );
 };

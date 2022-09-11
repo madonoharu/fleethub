@@ -82,4 +82,5 @@ const AttackAnalysisCard: React.FCX<Props> = ({
 export default styled(AttackAnalysisCard)`
   padding: 8px;
   min-height: 320px;
+  min-width: 480px;
 `;
