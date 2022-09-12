@@ -37,3 +37,26 @@ impl Side {
         !self.is_player()
     }
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
+pub enum Align {
+    Left,
+    Right,
+}
+
+impl Align {
+    pub fn is_left(self) -> bool {
+        matches!(self, Self::Left)
+    }
+}
+
+impl Not for Align {
+    type Output = Self;
+
+    fn not(self) -> Self::Output {
+        match self {
+            Self::Left => Self::Right,
+            Self::Right => Self::Left,
+        }
+    }
+}

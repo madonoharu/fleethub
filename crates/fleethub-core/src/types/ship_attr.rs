@@ -28,6 +28,8 @@ pub enum ShipAttr {
     HarbourSummerPrincess,
     /// 集積地
     SupplyDepot,
+    /// 新集積地
+    NewSupplyDepot,
     /// PT小鬼群
     PtImp,
     /// 戦艦夏姫

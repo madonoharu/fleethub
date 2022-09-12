@@ -279,10 +279,7 @@ impl AttackAnalyzer<'_> {
         let formation_params = self.get_formation_params(attack_type);
         let engagement = self.config.engagement;
 
-        if attacker.naked_torpedo().unwrap_or_default() == 0
-            || target.is_submarine()
-            || target.is_installation()
-        {
+        if attacker.naked_torpedo().unwrap_or_default() == 0 || !target.is_attackable_by_torpedo() {
             return ActionReport::empty();
         }
 

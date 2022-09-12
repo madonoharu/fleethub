@@ -1102,6 +1102,11 @@ impl Ship {
         self.has_attr(ShipAttr::PtImp)
     }
 
+    pub fn is_attackable_by_torpedo(&self) -> bool {
+        let t = self.special_enemy_type();
+        t == SpecialEnemyType::NewSupplyDepot || (!self.is_submarine() && !t.is_installation())
+    }
+
     pub fn get_slot_size(&self, index: usize) -> Option<u8> {
         self.slots.get(index).and_then(|&s| s)
     }

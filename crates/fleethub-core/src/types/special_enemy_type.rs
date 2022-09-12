@@ -14,6 +14,8 @@ pub enum SpecialEnemyType {
     IsolatedIsland,
     /// 集積地
     SupplyDepot,
+    /// 新集積地
+    NewSupplyDepot,
     /// 港湾夏姫
     HarbourSummerPrincess,
     /// PT小鬼群
@@ -25,17 +27,22 @@ pub enum SpecialEnemyType {
 }
 
 impl SpecialEnemyType {
-    pub fn is_none(&self) -> bool {
-        matches!(*self, Self::None)
+    pub fn is_none(self) -> bool {
+        matches!(self, Self::None)
     }
 
-    pub fn is_installation(&self) -> bool {
+    pub fn is_new_supply_depot(self) -> bool {
+        matches!(self, Self::NewSupplyDepot)
+    }
+
+    pub fn is_installation(self) -> bool {
         matches!(
-            *self,
+            self,
             Self::SoftSkinned
                 | Self::Pillbox
                 | Self::IsolatedIsland
                 | Self::SupplyDepot
+                | Self::NewSupplyDepot
                 | Self::HarbourSummerPrincess
         )
     }

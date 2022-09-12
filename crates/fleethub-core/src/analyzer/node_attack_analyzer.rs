@@ -28,16 +28,16 @@ pub struct NodeAttackAnalyzer<'a> {
 impl NodeAttackAnalyzer<'_> {
     fn get_attack_analyzer_ship_config_and_ship(
         &self,
-        side: ColumnSide,
+        align: Align,
     ) -> (AttackAnalyzerShipConfig, &Ship) {
-        let (comp, ship, config) = match side {
-            ColumnSide::Left => {
+        let (comp, ship, config) = match align {
+            Align::Left => {
                 let comp = self.left_comp;
                 let ship = self.left_ship;
                 let config = &self.config.left;
                 (comp, ship, config)
             }
-            ColumnSide::Right => {
+            Align::Right => {
                 let comp = self.right_comp;
                 let ship = self.right_ship;
                 let config = &self.config.right;
@@ -61,9 +61,9 @@ impl NodeAttackAnalyzer<'_> {
 
     fn analyze_attack(&self, attacker_is_left: bool) -> AttackAnalysis {
         let (attacker_side, target_side) = if attacker_is_left {
-            (ColumnSide::Left, ColumnSide::Right)
+            (Align::Left, Align::Right)
         } else {
-            (ColumnSide::Right, ColumnSide::Left)
+            (Align::Right, Align::Left)
         };
 
         let (attacker_config, attacker_ship) =
@@ -113,7 +113,7 @@ pub struct NodeAttackAnalyzerShipConfig {
     pub night_fleet_conditions: NightFleetConditions,
 }
 
-enum ColumnSide {
+enum Align {
     Left,
     Right,
 }

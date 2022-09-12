@@ -123,6 +123,7 @@ impl NightAttackParams<'_> {
         } = self;
 
         let anti_inst = target.is_installation();
+        let torpedo_effective = !anti_inst || target.special_enemy_type().is_new_supply_depot();
         let attacker_night_conditions = self.attacker_night_conditions();
         let contact_mod = attacker_night_conditions.night_contact_mods().power_mod;
 
@@ -165,10 +166,14 @@ impl NightAttackParams<'_> {
 
         let result = match style.attack_type {
             NightAttackType::Normal => {
-                let firepower = attacker.firepower()?;
-                let torpedo = if anti_inst { 0 } else { attacker.torpedo()? };
+                let firepower = attacker.firepower()? as f64;
+                let torpedo = if torpedo_effective {
+                    attacker.torpedo()?
+                } else {
+                    0
+                } as f64;
                 let ibonus = attacker.gears.sum_by(|gear| gear.ibonuses.night_power);
-                let basic = firepower as f64 + torpedo as f64 + ibonus + contact_mod;
+                let basic = firepower + torpedo + ibonus + contact_mod;
                 AttackPowerParams { basic, ..base }
             }
             NightAttackType::Carrier => {

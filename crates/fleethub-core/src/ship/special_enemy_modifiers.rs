@@ -323,7 +323,11 @@ pub fn special_enemy_modifiers(
         mods.landing_craft_synergy_mod.merge(a, b);
     }
 
-    if special_enemy_type == SpecialEnemyType::SupplyDepot {
+    // 集積地キャップ後補正
+    if matches!(
+        special_enemy_type,
+        SpecialEnemyType::SupplyDepot | SpecialEnemyType::NewSupplyDepot
+    ) {
         let mut n = 1.0;
 
         if t89_tank_or_honi_count > 0 {
