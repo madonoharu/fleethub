@@ -2752,13 +2752,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^29.0.0":
+"@types/jest@npm:*":
   version: 29.0.0
   resolution: "@types/jest@npm:29.0.0"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
   checksum: b20c4b38c7c963862d82c21c0a1ae2b96015afb1511c835da43e8fd53659ca884f8103a2159be2ce74d2888472a1ac93d20d08ec1ac0970385cbb74c46d47585
+  languageName: node
+  linkType: hard
+
+"@types/jest@npm:^29.0.1":
+  version: 29.0.1
+  resolution: "@types/jest@npm:29.0.1"
+  dependencies:
+    expect: ^29.0.0
+    pretty-format: ^29.0.0
+  checksum: efd30357c290b5d385382302fae927885f2a9bde0aa45d4c7f970fa6e6d750df83edef73f16d1e9a005e08a5bcd7c6ff56a43f5ac2534a517df9ad1e44dd30c4
   languageName: node
   linkType: hard
 
@@ -5542,11 +5552,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.8.10
-  resolution: "fleethub-core@npm:1.8.10"
+  version: 1.8.11
+  resolution: "fleethub-core@npm:1.8.11"
   peerDependencies:
     equipment-bonus: "*"
-  checksum: bc970ca66fa8ea81d1768ddf58a5cf58db020c63ac44d9e33fb210adfdb7e1b8ca2156179144cd216bd366feb825a3e26cdaa3379df7def56a1198b3e10c7073
+  checksum: c3f64baf2c8af94df5c4e9fee750dc3607ca85162bfaf82a728f2785c419ec5dba0f88fa35830c22214b60bf7c6567e777fa5848c81f6ddadd337e526a3b698c
   languageName: node
   linkType: hard
 
@@ -5569,7 +5579,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     "@types/fs-extra": ^9.0.13
-    "@types/jest": ^29.0.0
+    "@types/jest": ^29.0.1
     "@types/node": ^18.7.16
     "@typescript-eslint/eslint-plugin": 5.36.2
     "@typescript-eslint/parser": 5.36.2
