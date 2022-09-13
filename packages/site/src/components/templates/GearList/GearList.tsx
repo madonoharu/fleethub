@@ -1,5 +1,4 @@
-import { EquipmentBonuses } from "equipment-bonus";
-import { Gear, GearCategory } from "fleethub-core";
+import type { Gear, GearCategory, EBonuses } from "fleethub-core";
 import React from "react";
 
 import FilterBar from "./FilterBar";
@@ -36,7 +35,7 @@ type GearListProps = {
   gears: Gear[];
   canEquip?: (gear: Gear) => boolean;
   onSelect?: (gear: Gear) => void;
-  getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
+  getNextEbonuses?: (gear: Gear) => EBonuses;
 };
 
 const GearList: React.FC<GearListProps> = ({

@@ -5,7 +5,7 @@ import React from "react";
 
 import { useFile, useModal, useOrg } from "../../../hooks";
 import { FileEntity, FolderEntity, PlanEntity } from "../../../store";
-import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
+import { Flexbox, FileIcon } from "../../atoms";
 import { FileCopyButton, MoreVertButton, DeleteButton } from "../../molecules";
 import { DraggableFile, FileMenu, ShipBannerGroup } from "../../organisms";
 
@@ -19,7 +19,7 @@ const PlanItem: React.FC<{ file: PlanEntity }> = ({ file }) => {
   return (
     <>
       <ListItemIcon>
-        <PlanIcon />
+        <FileIcon type={file.type} color={file.color} />
       </ListItemIcon>
       <ListItemText
         disableTypography
@@ -39,7 +39,7 @@ const FolderItem: React.FC<{ file: FolderEntity }> = ({ file }) => {
   return (
     <>
       <ListItemIcon>
-        <FolderIcon />
+        <FileIcon type={file.type} color={file.color} />
       </ListItemIcon>
       <ListItemText
         disableTypography

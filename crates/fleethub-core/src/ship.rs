@@ -291,28 +291,6 @@ impl Ship {
             })
     }
 
-    pub fn special_enemy_type(&self) -> SpecialEnemyType {
-        if self.has_attr(ShipAttr::Pillbox) {
-            SpecialEnemyType::Pillbox
-        } else if self.has_attr(ShipAttr::IsolatedIsland) {
-            SpecialEnemyType::IsolatedIsland
-        } else if self.has_attr(ShipAttr::HarbourSummerPrincess) {
-            SpecialEnemyType::HarbourSummerPrincess
-        } else if self.has_attr(ShipAttr::SupplyDepot) {
-            SpecialEnemyType::SupplyDepot
-        } else if self.has_attr(ShipAttr::PtImp) {
-            SpecialEnemyType::PtImp
-        } else if self.has_attr(ShipAttr::BattleshipSummerPrincess) {
-            SpecialEnemyType::BattleshipSummerPrincess
-        } else if self.has_attr(ShipAttr::HeavyCruiserSummerPrincess) {
-            SpecialEnemyType::HeavyCruiserSummerPrincess
-        } else if self.has_attr(ShipAttr::Installation) {
-            SpecialEnemyType::SoftSkinned
-        } else {
-            SpecialEnemyType::None
-        }
-    }
-
     pub fn gears_with_slot_size(&self) -> impl Iterator<Item = (usize, &Gear, Option<u8>)> {
         self.gears.iter().map(|(index, gear)| {
             let slot_size = if index == GearArray::EXSLOT_INDEX {
@@ -1098,8 +1076,35 @@ impl Ship {
         self.has_attr(ShipAttr::Installation)
     }
 
+    #[inline]
     pub fn is_pt_imp(&self) -> bool {
         self.has_attr(ShipAttr::PtImp)
+    }
+
+    pub fn special_enemy_type(&self) -> SpecialEnemyType {
+        use SpecialEnemyType::*;
+
+        if self.has_attr(ShipAttr::Pillbox) {
+            Pillbox
+        } else if self.has_attr(ShipAttr::IsolatedIsland) {
+            IsolatedIsland
+        } else if self.has_attr(ShipAttr::HarbourSummerPrincess) {
+            HarbourSummerPrincess
+        } else if self.has_attr(ShipAttr::NewSupplyDepot) {
+            NewSupplyDepot
+        } else if self.has_attr(ShipAttr::SupplyDepot) {
+            SupplyDepot
+        } else if self.is_installation() {
+            SoftSkinned
+        } else if self.is_pt_imp() {
+            PtImp
+        } else if self.has_attr(ShipAttr::BattleshipSummerPrincess) {
+            BattleshipSummerPrincess
+        } else if self.has_attr(ShipAttr::HeavyCruiserSummerPrincess) {
+            HeavyCruiserSummerPrincess
+        } else {
+            None
+        }
     }
 
     pub fn is_attackable_by_torpedo(&self) -> bool {

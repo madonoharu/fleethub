@@ -42,6 +42,7 @@ const FileMenu: React.FCX<Props> = ({ className, id, onClose }) => {
         onRemove={handleRemove}
         onNameChange={actions.setName}
         onDescriptionChange={actions.setDescription}
+        onColorChange={actions.setColor}
       />
 
       {file.type === "folder" ? (
