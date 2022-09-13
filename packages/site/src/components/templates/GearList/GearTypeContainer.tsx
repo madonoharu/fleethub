@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import { EquipmentBonuses } from "equipment-bonus";
-import { Gear } from "fleethub-core";
+import type { Gear, EBonuses } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -16,7 +15,7 @@ const Grid = styled.div`
 type Props = {
   entries: Array<[number, Gear[]]>;
   onSelect?: (gear: Gear) => void;
-  getNextEbonuses?: (gear: Gear) => EquipmentBonuses;
+  getNextEbonuses?: (gear: Gear) => EBonuses;
 };
 
 const GearTypeContainer: React.FC<Props> = ({

@@ -3,7 +3,7 @@ import { Org, OrgType } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { Flexbox, PlanIcon } from "../../atoms";
+import { Flexbox, FileIcon } from "../../atoms";
 import { NumberInput, TextField } from "../../molecules";
 import { OrgTypeSelect } from "../../organisms";
 
@@ -39,7 +39,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
       <Flexbox gap={1}>
         <TextField
           placeholder="name"
-          startLabel={<PlanIcon />}
+          startLabel={<FileIcon type={file.type} color={file.color} />}
           value={file.name}
           onChange={onNameChange}
         />

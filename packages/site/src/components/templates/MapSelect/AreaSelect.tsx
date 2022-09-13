@@ -63,7 +63,7 @@ const EventAreaList: React.FCX<AreaListProps> = ({
   return (
     <div className={className}>
       <WorldAreaButtons world={worlds[0]} areas={areas} onClick={onClick} />
-      <Accordion css={{ borderRadius: 4 }} disableGutters>
+      <Accordion css={{ borderRadius: 4, overflow: "hidden" }} disableGutters>
         <AccordionSummary>Past Events</AccordionSummary>
         <AccordionDetails sx={{ maxHeight: 256, overflowY: "scroll" }}>
           {worlds.map((world) => (

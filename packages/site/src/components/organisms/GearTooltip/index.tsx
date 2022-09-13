@@ -1,6 +1,5 @@
 import { Tooltip, TooltipProps, Typography } from "@mui/material";
-import { EquipmentBonuses } from "equipment-bonus";
-import { Gear } from "fleethub-core";
+import type { Gear, EBonuses } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -10,7 +9,7 @@ import GearStatList from "./GearStatList";
 
 type ContentProps = {
   gear: Gear;
-  ebonuses?: EquipmentBonuses | undefined;
+  ebonuses?: EBonuses | undefined;
 };
 
 const Content: React.FC<ContentProps> = ({ gear, ebonuses }) => {

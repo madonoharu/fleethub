@@ -42,9 +42,13 @@ const PlanIndexScreen: React.FC<Props> = ({ org, file }) => {
 
   const { org: enemyOrg } = useOrg(activeStep?.org || "");
 
-  const [activeShipId, setActiveShipId] = useState(org.first_ship_id() || "");
+  const [leftShipId, setLeftShipId] = useState(org.first_ship_id());
+  const leftShip = useShip(leftShipId);
 
-  const activeShip = useShip(activeShipId);
+  const [rightShipId, setRightShipId] = useState(
+    enemyOrg?.first_ship_id() || ""
+  );
+  const rightShip = useShip(rightShipId);
 
   const showMapMenu = () => {
     dispatch(
@@ -85,27 +89,30 @@ const PlanIndexScreen: React.FC<Props> = ({ org, file }) => {
       <Stack direction="row" alignItems="flex-start">
         <OrgShipList
           org={org}
-          selectedShip={activeShipId}
-          onShipClick={setActiveShipId}
+          selectedShip={leftShipId}
+          onShipClick={setLeftShipId}
         />
         {enemyOrg && (
           <OrgShipList
             org={enemyOrg}
-            selectedShip={activeShipId}
-            onShipClick={setActiveShipId}
+            selectedShip={rightShipId}
+            onShipClick={setRightShipId}
           />
         )}
       </Stack>
-      {activeShip && <ShipCard ship={activeShip} />}
 
-      {enemyOrg && (
-        <NodeAttackAnalyzer
-          config={activeStep?.config || {}}
-          leftComp={org.create_comp()}
-          rightComp={enemyOrg?.create_comp()}
-          attackerId={activeShipId}
-        />
-      )}
+      <Stack direction="row" gap={1}>
+        {leftShip && <ShipCard ship={leftShip} css={{ flexGrow: 1 }} />}
+        {rightShip && <ShipCard ship={rightShip} css={{ flexGrow: 1 }} />}
+      </Stack>
+
+      <NodeAttackAnalyzer
+        config={activeStep?.config || {}}
+        leftComp={org.create_comp()}
+        leftShip={leftShip}
+        rightComp={enemyOrg?.create_comp()}
+        rightShip={rightShip}
+      />
     </Stack>
   );
 };

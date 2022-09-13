@@ -1,13 +1,8 @@
 import styled from "@emotion/styled";
 import React from "react";
 
-import { FileType } from "../../../store";
-import { Flexbox, FolderIcon, PlanIcon } from "../../atoms";
+import { Flexbox, FileIcon } from "../../atoms";
 import { DraggableFile, DraggableFileProps } from "../../organisms";
-
-const getFileIcon = (type: FileType) => {
-  return type === "plan" ? PlanIcon : FolderIcon;
-};
 
 const FileLabelAction = styled.div`
   flex-shrink: 0;
@@ -41,12 +36,10 @@ const FileLabel: React.FCX<FileLabelProps> = ({
   canDrop,
   onDrop,
 }) => {
-  const Icon = getFileIcon(file.type);
-
   return (
     <DraggableFile file={file} canDrop={canDrop} onDrop={onDrop}>
       <Flexbox className={className} onClick={onClick}>
-        <Icon fontSize="small" />
+        <FileIcon fontSize="small" type={file.type} color={file.color} />
         <FileLabelText>{text}</FileLabelText>
         <FileLabelAction onClick={handleActionClick}>{action}</FileLabelAction>
       </Flexbox>

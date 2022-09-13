@@ -37,6 +37,7 @@ type FileBase<T extends string, P = Record<string, unknown>> = {
   type: T;
   name: string;
   description: string;
+  color?: string;
 } & P;
 
 export type Plan = FileBase<

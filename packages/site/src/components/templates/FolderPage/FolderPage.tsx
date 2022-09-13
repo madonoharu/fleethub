@@ -40,6 +40,7 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
           isTemp={isTemp}
           onNameChange={actions.setName}
           onDescriptionChange={actions.setDescription}
+          onColorChange={actions.setColor}
           onSave={actions.save}
           onCopy={actions.copy}
           onRemove={actions.remove}
