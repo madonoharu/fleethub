@@ -28,6 +28,7 @@ export const useDummyEnemySelectState = () => {
         ship: core.create_ship_by_id(1511),
       },
       { label: t("common:SoftSkinned"), ship: core.create_ship_by_id(1573) },
+      { label: t("common:NewSupplyDepot"), ship: core.create_ship_by_id(2144) },
       ...specialEnemies,
     ];
 

@@ -88,6 +88,7 @@
   "CriticalAbbr": "크리티컬",
   "SpecialAttack": "특수 공격",
   "SoftSkinned": "소프트 스킨",
+  "NewSupplyDepot": "신집적지",
   "NightContact": "야간 촉접",
   "Searchlight": "$t(gear_types:29)",
   "Starshell": "$t(gear_types:33)",
