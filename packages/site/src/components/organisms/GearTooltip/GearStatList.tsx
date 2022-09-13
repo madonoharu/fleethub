@@ -1,9 +1,6 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { nonNullable } from "@fh/utils";
-import { Typography } from "@mui/material";
-import { EquipmentBonuses } from "equipment-bonus";
-import { EBonuses, Gear } from "fleethub-core";
+import { css, styled, Typography } from "@mui/material";
+import type { EBonuses, Gear } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -45,7 +42,7 @@ const StatLabel: React.FCX<{ statKey: StatKey }> = ({ className, statKey }) => {
   );
 };
 
-const Value = styled.span`
+const Value = styled("span")`
   text-align: right;
   margin-left: 8px;
 `;
@@ -58,7 +55,7 @@ const Bonus = styled(Value)(
 
 export type Props = {
   gear: Gear;
-  ebonuses?: EquipmentBonuses;
+  ebonuses?: EBonuses;
 };
 
 const GearStatList: React.FCX<Props> = ({ className, gear, ebonuses }) => {

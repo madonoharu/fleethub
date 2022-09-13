@@ -55,6 +55,7 @@ export function useFileActions(id: string) {
 
     const setName = (name: string) => update({ name });
     const setDescription = (description: string) => update({ description });
+    const setColor = (color: string) => update({ color });
 
     return {
       open,
@@ -68,6 +69,7 @@ export function useFileActions(id: string) {
       createFolder,
       setName,
       setDescription,
+      setColor,
     };
   }, [dispatch, id]);
 

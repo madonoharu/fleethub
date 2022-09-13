@@ -1,10 +1,11 @@
-import { Stack } from "@mui/material";
+import PaletteIcon from "@mui/icons-material/Palette";
+import { Button, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
-import { useAsyncOnPublish } from "../../../hooks";
+import { useAsyncOnPublish, useModal } from "../../../hooks";
 import { FileEntity } from "../../../store";
-import { FolderIcon, PlanIcon } from "../../atoms";
+import { FileIcon } from "../../atoms";
 import {
   FileCopyButton,
   DeleteButton,
@@ -13,6 +14,8 @@ import {
   LinkButton,
 } from "../../molecules";
 
+import ColorPicker from "./ColorPicker";
+
 type FileFormProps = {
   file: FileEntity;
   isTemp: boolean;
@@ -20,7 +23,8 @@ type FileFormProps = {
   onCopy: () => void;
   onRemove: () => void;
   onNameChange: (name: string) => void;
-  onDescriptionChange: (name: string) => void;
+  onDescriptionChange: (description: string) => void;
+  onColorChange: (color: string) => void;
 };
 
 const FileForm: React.FCX<FileFormProps> = ({
@@ -32,11 +36,17 @@ const FileForm: React.FCX<FileFormProps> = ({
   onRemove,
   onNameChange,
   onDescriptionChange,
+  onColorChange,
 }) => {
   const { t } = useTranslation("common");
-  const icon = file.type === "folder" ? <FolderIcon /> : <PlanIcon />;
 
   const asyncOnPublish = useAsyncOnPublish(file.id);
+  const ColorPickerModal = useModal();
+
+  const handleColorChange = (color: string) => {
+    onColorChange(color);
+    ColorPickerModal.hide();
+  };
 
   return (
     <Stack className={className} gap={1}>
@@ -44,7 +54,7 @@ const FileForm: React.FCX<FileFormProps> = ({
         <TextField
           placeholder="name"
           fullWidth
-          startLabel={icon}
+          startLabel={<FileIcon type={file.type} color={file.color} />}
           value={file.name}
           onChange={onNameChange}
         />
@@ -71,6 +81,19 @@ const FileForm: React.FCX<FileFormProps> = ({
         onChange={onDescriptionChange}
         multiline
       />
+
+      <Button
+        variant="outlined"
+        startIcon={<PaletteIcon />}
+        onClick={ColorPickerModal.show}
+        sx={{ width: "fit-content" }}
+      >
+        Edit Icon Color
+      </Button>
+
+      <ColorPickerModal>
+        <ColorPicker color={file.color} onChange={handleColorChange} />
+      </ColorPickerModal>
 
       <asyncOnPublish.Snackbar />
     </Stack>

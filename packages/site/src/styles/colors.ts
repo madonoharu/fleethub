@@ -63,7 +63,7 @@ export const colors = {
   droppable: muiColors.yellow[300],
 
   planFile: muiColors.blue[400],
-  folder: muiColors.green[300],
+  folder: muiColors.green[400],
 
   Shelling: muiColors.orange[400],
   Night: muiColors.indigo[200],

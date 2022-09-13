@@ -1,7 +1,6 @@
 import { Button } from "@mui/material";
 import { css, styled } from "@mui/system";
-import { EquipmentBonuses } from "equipment-bonus";
-import { Gear } from "fleethub-core";
+import type { Gear, EBonuses } from "fleethub-core";
 import React from "react";
 
 import { GearNameplate, GearTooltip } from "../../organisms";
@@ -9,7 +8,7 @@ import { GearNameplate, GearTooltip } from "../../organisms";
 type Props = {
   gear: Gear;
   onClick?: () => void;
-  ebonuses?: EquipmentBonuses;
+  ebonuses?: EBonuses;
 };
 
 const GearButton: React.FCX<Props> = ({
@@ -32,7 +31,7 @@ const GearButton: React.FCX<Props> = ({
   );
 };
 
-function hasBonus(bonuses?: EquipmentBonuses): boolean {
+function hasBonus(bonuses?: EBonuses): boolean {
   return Boolean(
     bonuses && Object.values(bonuses).some((value) => value !== 0)
   );

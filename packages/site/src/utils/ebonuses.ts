@@ -50,9 +50,6 @@ const subtract = (
   right: EquipmentBonuses
 ): EquipmentBonuses => mapValues(left, (value, key) => value - right[key]);
 
-export const getEbonuses = (ship: Ship) =>
-  createEquipmentBonuses(toShipInput(ship), getGears(ship));
-
 export const makeGetNextEbonuses = (ship: Ship, excludedKey: GearKey) => {
   const filtered = getGears(ship, excludedKey);
 
