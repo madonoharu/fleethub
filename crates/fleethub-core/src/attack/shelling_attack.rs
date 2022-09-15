@@ -124,7 +124,8 @@ impl ShellingAttackParams<'_> {
 
             // 乗算前に切り捨て
             let pre_multiplication =
-                (fleet_factor + basic_accuracy_term + ship_accuracy + ibonus).floor();
+                (fleet_factor + basic_accuracy_term + ship_accuracy + ibonus + pt_mods.amagiri_mod)
+                    .floor();
 
             let post_formation =
                 (pre_multiplication * formation_mod * morale_mod * pt_mods.multiplicative
