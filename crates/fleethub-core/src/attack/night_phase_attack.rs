@@ -224,7 +224,8 @@ impl NightAttackParams<'_> {
         let pre_multiplication = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod
             + basic_accuracy_term
             + accuracy
-            + ibonus)
+            + ibonus
+            + pt_mods.amagiri_mod)
             .floor();
 
         // 夜戦CI補正の位置は陣形補正と同じ

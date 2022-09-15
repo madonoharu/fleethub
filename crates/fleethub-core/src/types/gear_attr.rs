@@ -65,24 +65,6 @@ pub enum GearAttr {
     SemiNightPlane,
     /// 高高度迎撃機
     HighAltitudeInterceptor,
-    /// A1
-    HistoricalAircraftA1,
-    /// A2
-    HistoricalAircraftA2,
-    /// A3
-    HistoricalAircraftA3,
-    /// B1
-    HistoricalAircraftB1,
-    /// B2
-    HistoricalAircraftB2,
-    /// B3
-    HistoricalAircraftB3,
-    /// C1
-    HistoricalAircraftC1,
-    /// C2
-    HistoricalAircraftC2,
-    /// C3
-    HistoricalAircraftC3,
 }
 
 impl Default for GearAttr {
