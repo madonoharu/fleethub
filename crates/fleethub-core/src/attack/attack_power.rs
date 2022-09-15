@@ -129,17 +129,19 @@ impl AttackPowerParams {
             ..
         } = &self.special_enemy_mods;
 
-        postcap = postcap_general_mod.apply(postcap).floor();
-        postcap = pt_mod.apply(postcap).floor();
-
-        postcap = self
-            .postcap_mod
+        postcap = pt_mod
             .compose(self.custom_mods.postcap_mod)
-            .apply(postcap);
+            .apply(postcap)
+            .floor();
+
+        postcap = self.postcap_mod.apply(postcap);
 
         if let Some(v) = self.ap_shell_mod {
             postcap = (postcap * v).floor()
         }
+
+        // https://twitter.com/hedgehog_hasira/status/1569717081016520704
+        postcap = postcap_general_mod.apply(postcap).floor();
 
         let normal = postcap;
         let critical = (normal * 1.5 * self.proficiency_critical_mod).floor();
