@@ -984,6 +984,10 @@ impl Ship {
         self.ship_type.is_submarine()
     }
 
+    pub fn is_amagiri(&self) -> bool {
+        matches_ship_id!(self.ship_id, "天霧" | "天霧改" | "天霧改二" | "天霧改二丁")
+    }
+
     pub fn can_equip(&self, gear: &Gear, key: &str) -> bool {
         self.equippability.can_equip(key, gear)
     }

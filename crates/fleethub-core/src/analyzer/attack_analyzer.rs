@@ -63,12 +63,22 @@ impl AttackAnalyzer<'_> {
 
     fn attacker_combat_ship(&self) -> BattleMemberRef {
         let conditions = self.config.attacker.conditions;
-        BattleMemberRef::new(self.attacker, conditions.position, conditions.formation)
+        BattleMemberRef::new(
+            self.attacker,
+            conditions.position,
+            conditions.formation,
+            conditions.amagiri_index,
+        )
     }
 
     fn target_combat_ship(&self) -> BattleMemberRef {
         let conditions = self.config.target.conditions;
-        BattleMemberRef::new(self.target, conditions.position, conditions.formation)
+        BattleMemberRef::new(
+            self.target,
+            conditions.position,
+            conditions.formation,
+            conditions.amagiri_index,
+        )
     }
 
     fn get_formation_params(&self, attack_type: impl Into<AttackType>) -> FormationParams {

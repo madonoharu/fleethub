@@ -59,10 +59,12 @@ impl<'a> FleetCutinAnalyzer<'a> {
     }
 
     fn target(&self) -> BattleMemberRef {
+        let conditions = self.target_conditions;
         BattleMemberRef::new(
             &self.target_ship,
-            self.target_conditions.position,
-            self.target_conditions.formation,
+            conditions.position,
+            conditions.formation,
+            conditions.amagiri_index,
         )
     }
 

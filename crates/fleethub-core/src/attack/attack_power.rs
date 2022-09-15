@@ -141,7 +141,7 @@ impl AttackPowerParams {
         }
 
         // https://twitter.com/hedgehog_hasira/status/1569717081016520704
-        postcap = postcap_general_mod.apply(postcap).floor();
+        postcap = postcap_general_mod.apply(postcap);
 
         let normal = postcap;
         let critical = (normal * 1.5 * self.proficiency_critical_mod).floor();
@@ -202,7 +202,7 @@ mod test {
 
         assert_eq!(
             postcap.normal,
-            (180.0 + 20.0_f64.sqrt()).floor() * (1.2 * 1.3)
+            ((180.0 + 20.0_f64.sqrt()).floor() * 1.3).floor() * 1.2
         );
     }
 }

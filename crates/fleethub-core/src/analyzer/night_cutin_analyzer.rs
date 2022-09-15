@@ -90,13 +90,15 @@ impl NightCutinAnalyzer<'_> {
         let fleet = self.comp.night_fleet();
         let night_contact_chance = NightContactChance::new(fleet);
         let formation = self.config.formation;
+        let amagiri_index = fleet.amagiri_index();
 
         let ships = self
             .comp
             .members_by(night_fleet_type)
             .map(|member| {
                 let mut ship = member.ship.clone();
-                let member = BattleMember::new(&mut ship, member.position, formation);
+                let member =
+                    BattleMember::new(&mut ship, member.position, formation, amagiri_index);
                 self.analyze_ship(member)
             })
             .collect();
