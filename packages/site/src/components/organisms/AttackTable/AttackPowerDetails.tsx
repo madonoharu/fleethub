@@ -128,6 +128,10 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
         <>
           <Divider label={t("custom_mods")} />
           <AttackPowerModifierLabel
+            label={t("basic_power_mod")}
+            mod={custom_mods.basic_power_mod}
+          />
+          <AttackPowerModifierLabel
             label={t("precap_mod")}
             mod={custom_mods.precap_mod}
           />

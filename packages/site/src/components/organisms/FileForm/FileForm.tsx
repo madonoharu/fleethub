@@ -88,7 +88,7 @@ const FileForm: React.FCX<FileFormProps> = ({
         onClick={ColorPickerModal.show}
         sx={{ width: "fit-content" }}
       >
-        Edit Icon Color
+        {t("ChangeIconColor")}
       </Button>
 
       <ColorPickerModal>

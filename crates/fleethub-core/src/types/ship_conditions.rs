@@ -9,6 +9,7 @@ struct ShipConditionsDef {
     #[serde(flatten)]
     pub position: ShipPosition,
     pub formation: Option<Formation>,
+    pub amagiri_index: Option<usize>,
 }
 
 impl From<ShipConditionsDef> for ShipConditions {
@@ -25,6 +26,7 @@ impl From<ShipConditionsDef> for ShipConditions {
         Self {
             position: def.position,
             formation,
+            amagiri_index: def.amagiri_index,
         }
     }
 }
@@ -36,6 +38,7 @@ pub struct ShipConditions {
     #[serde(flatten)]
     pub position: ShipPosition,
     pub formation: Formation,
+    pub amagiri_index: Option<usize>,
 }
 
 impl ShipConditions {
@@ -64,6 +67,7 @@ impl ShipConditions {
                 ..Default::default()
             },
             formation: Formation::LINE_AHEAD,
+            ..Default::default()
         }
     }
 }

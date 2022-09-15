@@ -223,7 +223,9 @@ export function createOrgStateByDeck(
   master: MasterData,
   deck: MaybeDeck
 ): OrgState {
-  const org: OrgState = {};
+  const org: OrgState = {
+    hq_level: toNumber(deck.hqlv),
+  };
 
   FLEET_KEYS.forEach((key) => {
     const f = deck[key];

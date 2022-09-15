@@ -63,12 +63,22 @@ impl AttackAnalyzer<'_> {
 
     fn attacker_combat_ship(&self) -> BattleMemberRef {
         let conditions = self.config.attacker.conditions;
-        BattleMemberRef::new(self.attacker, conditions.position, conditions.formation)
+        BattleMemberRef::new(
+            self.attacker,
+            conditions.position,
+            conditions.formation,
+            conditions.amagiri_index,
+        )
     }
 
     fn target_combat_ship(&self) -> BattleMemberRef {
         let conditions = self.config.target.conditions;
-        BattleMemberRef::new(self.target, conditions.position, conditions.formation)
+        BattleMemberRef::new(
+            self.target,
+            conditions.position,
+            conditions.formation,
+            conditions.amagiri_index,
+        )
     }
 
     fn get_formation_params(&self, attack_type: impl Into<AttackType>) -> FormationParams {
@@ -128,6 +138,7 @@ impl AttackAnalyzer<'_> {
             DayPhaseAttackStyle::Shelling(ShellingStyle::new(attack_type, None)),
             normal_attack_rate,
         ));
+        data.retain(|(_, rate)| *rate != Some(0.0));
 
         data
     }
@@ -237,6 +248,8 @@ impl AttackAnalyzer<'_> {
 
         let mut data = cutin_defs
             .scan(0.0, |total, def| {
+                let style = NightAttackStyle::new(attack_type, Some(def));
+
                 let actual_rate = cutin_term.and_then(|term| {
                     let individual_rate = def.rate(term)?;
                     let actual_rate = (1.0 - *total) * individual_rate;
@@ -244,7 +257,6 @@ impl AttackAnalyzer<'_> {
                     Some(actual_rate)
                 });
 
-                let style = NightAttackStyle::new(attack_type, Some(def));
                 Some((style, actual_rate))
             })
             .collect::<Vec<_>>();
@@ -254,6 +266,7 @@ impl AttackAnalyzer<'_> {
         data.push((NightAttackStyle::new(attack_type, None), normal_attack_rate));
 
         data.into_iter()
+            .filter(|(_, rate)| *rate != Some(0.0))
             .map(|(style, rate)| (NightPhaseAttackStyle::Night(style), rate))
             .collect()
     }

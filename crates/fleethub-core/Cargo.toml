@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.8.12"
+version = "1.9.0"
 authors = ["Madono <madonoharu@gmail.com>"]
 edition = "2021"
 description = "fleethub-core"
@@ -27,8 +27,8 @@ getrandom = { version = "0.2.7", features = ["js"] }
 # code size when deploying.
 console_error_panic_hook = { version = "0.1.7", optional = true }
 
-anyhow = "1.0.64"
-thiserror = "1.0.34"
+anyhow = "1.0.65"
+thiserror = "1.0.35"
 arrayvec = { version = "0.7.2", features = ["serde"] }
 hashbrown = { version = "0.12.3", features = ["serde"] }
 enumset = "1.0.11"
@@ -36,12 +36,13 @@ enum-map = "2.4.1"
 num-traits = "0.2.15"
 num-derive = "0.3.3"
 strum = { version = "0.24.1", features = ["derive"] }
-itertools = "0.10.3"
+itertools = "0.10.4"
 seq-macro = "0.3.1"
 paste = "1.0.9"
 tsify = "0.4.0"
 fasteval = "0.2.4"
 ordered-float = { version = "3.0.0", features = ["serde"] }
+gloo-utils = { version = "0.1.5", features = ["serde"] }
 
 [dependencies.web-sys]
 version = "0.3.60"

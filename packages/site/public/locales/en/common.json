@@ -79,8 +79,10 @@
   "Description": "Description",
   "Type": "Type",
   "BatchOperation": "Batch Operation",
+  "BatchInput": "Batch Input",
   "EditMiscStats": "Edit misc stats",
   "OpenFolderPage": "Open folder page",
+  "ChangeIconColor": "Change Icon Color",
   "ProcRate": "Proc Rate",
   "Proficiency": "Proficiency",
   "Normal": "Normal",
@@ -112,6 +114,8 @@
   "DeleteAllData": "Delete all data",
   "AreYouSure": "Are you sure?",
   "ShowAllForms": "Show all forms",
+  "DamageCalculator": "Damage Calculator",
+  "InputFromMap": "Input from map",
   "AttackPower": "Attack Power",
   "BasicAttackPower": "Basic Attack Power",
   "Damage": "Damage",
@@ -198,8 +202,8 @@
     "CarrierTaskForce": "CTF",
     "SurfaceTaskForce": "STF",
     "TransportEscort": "TCF",
-    "EnemySingle": "Enemies Single",
-    "EnemyCombined": "Enemies Combined Fleet"
+    "EnemySingle": "Enemy SF",
+    "EnemyCombined": "Enemy CF"
   },
   "Engagement": {
     "name": "Engage",

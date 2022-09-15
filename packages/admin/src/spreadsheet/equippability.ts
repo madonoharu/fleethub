@@ -1,7 +1,7 @@
 import { EquippabilityRule, MasterEquippability } from "fleethub-core";
 
 import { ExprParser } from "./parser";
-import { cellValueToString, SpreadsheetTable } from "./utils";
+import { toCellString, SpreadsheetTable } from "./utils";
 
 export function createEquippability(
   parser: ExprParser,
@@ -23,7 +23,7 @@ export function createEquippability(
 
   const rules = table.rows.map((row) => {
     const rule: EquippabilityRule = {
-      ship: parser.parseShip(cellValueToString(row.ship)),
+      ship: parser.parseShip(toCellString(row.ship)),
     };
 
     if (row.keys) {
@@ -31,10 +31,10 @@ export function createEquippability(
     }
 
     if (row.include) {
-      rule.include = parser.parseGear(String(row.include));
+      rule.include = parser.parseGear(toCellString(row.include));
     }
     if (row.exclude) {
-      rule.exclude = parser.parseGear(String(row.exclude));
+      rule.exclude = parser.parseGear(toCellString(row.exclude));
     }
 
     return rule;

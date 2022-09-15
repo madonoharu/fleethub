@@ -8,6 +8,7 @@ import type {
 } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
+import useTilg from "tilg";
 
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
@@ -16,23 +17,28 @@ import ShipBanner from "../ShipBanner";
 import Table from "../Table";
 
 interface Props {
-  player: Comp;
-  enemy: Comp;
+  leftComp?: Comp;
+  rightComp?: Comp;
   times: number;
   config: NodeAttackAnalyzerConfig;
 }
 
 const SimulatorResultTable: React.FCX<Props> = ({
   className,
-  player,
-  enemy,
+  leftComp,
+  rightComp,
   times,
   config,
 }) => {
   const { t } = useTranslation("common");
   const { analyzer } = useFhCore();
 
-  if (!player.has_route_sup()) {
+  useTilg();
+  if (!leftComp || !rightComp) {
+    return null;
+  }
+
+  if (!leftComp.has_route_sup()) {
     return (
       <div className={className}>
         <Alert severity="warning">支援艦隊が設定されていません</Alert>
@@ -46,8 +52,8 @@ const SimulatorResultTable: React.FCX<Props> = ({
   try {
     const startTime = performance.now();
     simResult = analyzer.simulate_support_shelling(
-      player,
-      enemy,
+      leftComp,
+      rightComp,
       config,
       times
     );
@@ -112,7 +118,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
             {
               label: t("Ship"),
               getValue: (item) => {
-                const ship = enemy.get_ship_by_eid_with_clone(item.id);
+                const ship = rightComp.get_ship_by_eid_with_clone(item.id);
                 return <ShipBanner shipId={ship?.ship_id || 0} />;
               },
             },

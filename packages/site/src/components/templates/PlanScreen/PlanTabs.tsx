@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { FleetKey, FLEET_KEYS, nonNullable } from "@fh/utils";
+import { FleetKey, FLEET_KEYS } from "@fh/utils";
 import { Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -10,10 +10,10 @@ import { Tabs, TabsProps } from "../../molecules";
 import {
   LandBaseScreen,
   GkcoiScreen,
-  StepList,
   Swappable,
   FleetScreen,
 } from "../../organisms";
+import NodeAttackAnalyzer from "../../organisms/NodeAttackAnalyzer";
 
 interface FleetTabPanelProps {
   org: Org;
@@ -77,9 +77,12 @@ const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
   const list = [
     ...fleetTabs,
     { label: t("Lbas"), panel: <LandBaseScreen org={org} /> },
-    file && { label: t("Enemies"), panel: <StepList file={file} /> },
+    file && {
+      label: t("DamageCalculator"),
+      panel: <NodeAttackAnalyzer file={file} org={org} />,
+    },
     { label: t("ImageGeneration"), panel: <GkcoiScreen org={org} /> },
-  ].filter(nonNullable);
+  ];
 
   return <Tabs className={className} list={list} size="small" />;
 };
