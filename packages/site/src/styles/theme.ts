@@ -9,6 +9,15 @@ const muiTheme = createTheme({
   },
   palette,
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        "@global": {
+          body: {
+            overflowY: "hidden",
+          },
+        },
+      },
+    },
     MuiTypography: {
       defaultProps: {
         variant: "body2",
@@ -56,11 +65,6 @@ const muiTheme = createTheme({
         anchorOrigin: { vertical: "top", horizontal: "right" },
       },
     },
-    MuiTabs: {
-      defaultProps: {
-        indicatorColor: "primary",
-      },
-    },
     MuiCheckbox: {
       defaultProps: {
         color: "primary",
@@ -69,16 +73,6 @@ const muiTheme = createTheme({
     MuiTextField: {
       defaultProps: {
         size: "small",
-      },
-    },
-
-    MuiCssBaseline: {
-      styleOverrides: {
-        "@global": {
-          body: {
-            overflowY: "hidden",
-          },
-        },
       },
     },
     MuiButton: {
@@ -93,10 +87,20 @@ const muiTheme = createTheme({
         },
       },
     },
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          backgroundColor: palette.primary.light,
+        },
+      },
+    },
     MuiTab: {
       styleOverrides: {
         root: {
           textTransform: "none",
+          "&.Mui-selected": {
+            color: palette.primary.light,
+          },
         },
       },
     },

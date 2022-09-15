@@ -1,9 +1,11 @@
 use crate::{
+    member::BattleMemberRef,
     ship::Ship,
-    types::{gear_id, AttackType, GearType},
+    types::{gear_id, AttackType, GearType, ShipType},
 };
 
 pub struct AntiPtImpAccuracyModifiers {
+    pub amagiri_mod: f64,
     pub additive: f64,
     pub multiplicative: f64,
     pub ship_type_mod: f64,
@@ -14,6 +16,7 @@ pub struct AntiPtImpAccuracyModifiers {
 impl Default for AntiPtImpAccuracyModifiers {
     fn default() -> Self {
         Self {
+            amagiri_mod: 0.0,
             additive: 0.0,
             multiplicative: 1.0,
             ship_type_mod: 1.0,
@@ -24,7 +27,11 @@ impl Default for AntiPtImpAccuracyModifiers {
 }
 
 impl AntiPtImpAccuracyModifiers {
-    pub fn new(attacker: &Ship, target: &Ship, attack_type: impl Into<AttackType>) -> Self {
+    pub fn new(
+        attacker: &BattleMemberRef,
+        target: &Ship,
+        attack_type: impl Into<AttackType>,
+    ) -> Self {
         if !target.is_pt_imp() {
             return Default::default();
         }
@@ -40,6 +47,20 @@ impl AntiPtImpAccuracyModifiers {
                 ..Default::default()
             };
         }
+
+        let amagiri_mod = attacker.amagiri_index.map_or(0.0, |amagiri_index| {
+            if amagiri_index.abs_diff(attacker.position.index) <= 1 {
+                if attacker.is_amagiri() {
+                    64.0
+                } else if matches!(attacker.ship_type, ShipType::DE | ShipType::DD) {
+                    32.0
+                } else {
+                    0.0
+                }
+            } else {
+                0.0
+            }
+        });
 
         let ship_type_mod = if attacker.ship_type.is_destroyer() {
             1.0
@@ -104,6 +125,7 @@ impl AntiPtImpAccuracyModifiers {
         let night_mod = if attack_type.is_night() { 0.7 } else { 1.0 };
 
         Self {
+            amagiri_mod,
             multiplicative: 0.42,
             additive: 24.0,
             ship_type_mod,

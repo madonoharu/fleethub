@@ -47,7 +47,7 @@ export const mapSelectSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(entitiesSlice.actions.addPlanEnemy, (state) => {
+    builder.addCase(entitiesSlice.actions.addStep, (state) => {
       if (!state.multiple) {
         return hide(state);
       }

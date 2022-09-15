@@ -89,15 +89,16 @@ type CreateShipPayload = {
   reselect?: boolean;
 };
 
-type AddPlanEnemyPayload = {
+export interface AddStepPayload {
   file: string;
   name: string;
-  point: string;
+  map: number;
+  node: string;
   d: MapNode["d"];
   type: MapNode["type"];
   org: OrgState;
   formation: Formation;
-};
+}
 
 export type ImportPayload = {
   result: string;
@@ -244,13 +245,15 @@ export const entitiesSlice = createSlice({
       },
     },
 
-    addPlanEnemy: (state, { payload }: PayloadAction<AddPlanEnemyPayload>) => {
+    addStep: (state, { payload }: PayloadAction<AddStepPayload>) => {
       const stepId = nanoid();
 
       const step: Step = {
         id: stepId,
         name: payload.name,
         type: payload.type,
+        map: payload.map,
+        node: payload.node,
         d: payload.d,
         org: payload.org,
         config: {

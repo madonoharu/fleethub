@@ -17,6 +17,14 @@ pub struct CompiledEvaler {
 
 impl CompiledEvaler {
     pub fn new(expr: String) -> Result<Self, fasteval::Error> {
+        if expr.is_empty() {
+            return Ok(Self {
+                expr,
+                slab: Slab::with_capacity(0),
+                instruction: Instruction::IConst(0.0),
+            });
+        }
+
         let parser = Parser::new();
         let mut slab = Slab::new();
 
@@ -77,5 +85,8 @@ mod test {
 
         ns.insert("x", 2.0);
         assert_eq!(evaler.eval(&mut ns).unwrap(), 3.0);
+
+        let empty_evaler: CompiledEvaler = serde_json::from_str("\"\"").unwrap();
+        assert_eq!(empty_evaler.eval(&mut ns).unwrap(), 0.0);
     }
 }

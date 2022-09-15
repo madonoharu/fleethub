@@ -13,6 +13,7 @@ where
 {
     pub ship: CompMember<S>,
     pub formation: Formation,
+    pub amagiri_index: Option<usize>,
 }
 
 impl<S> Deref for BattleMember<S>
@@ -41,10 +42,16 @@ impl<S> BattleMember<S>
 where
     S: Deref<Target = Ship>,
 {
-    pub fn new(ship: S, position: ShipPosition, formation: Formation) -> Self {
+    pub fn new(
+        ship: S,
+        position: ShipPosition,
+        formation: Formation,
+        amagiri_index: Option<usize>,
+    ) -> Self {
         Self {
             ship: CompMember::new(ship, position),
             formation,
+            amagiri_index,
         }
     }
 
@@ -52,6 +59,7 @@ where
         ShipConditions {
             position: self.position,
             formation: self.formation,
+            amagiri_index: self.amagiri_index,
         }
     }
 
@@ -59,6 +67,7 @@ where
         BattleMember {
             ship: self.ship.as_ref(),
             formation: self.formation,
+            amagiri_index: self.amagiri_index,
         }
     }
 
@@ -70,6 +79,7 @@ where
         BattleMember {
             ship: self.ship.as_mut(),
             formation,
+            amagiri_index: self.amagiri_index,
         }
     }
 }

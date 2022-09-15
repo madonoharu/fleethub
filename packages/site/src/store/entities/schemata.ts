@@ -20,8 +20,10 @@ import { schema, EntityType } from "ts-norm";
 
 export type Step = {
   id: string;
-  name: string;
+  map?: number;
+  node?: string;
   type: MapNode["type"];
+  name: string;
   d: MapNode["d"];
   org: OrgState;
   config?: NodeAttackAnalyzerConfig;

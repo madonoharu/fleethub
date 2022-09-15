@@ -120,9 +120,13 @@ impl<'a> CompAnalyzer<'a> {
             formation: self.config.formation,
         };
 
-        let fleet_cutin =
-            FleetCutinAnalyzer::new(self.battle_defs, self.comp, self.config.engagement)
-                .analyze_shelling_attacks();
+        let fleet_cutin = FleetCutinAnalyzer::new(
+            self.battle_defs,
+            self.comp,
+            self.config.engagement,
+            &self.dummy,
+        )
+        .analyze_shelling_attacks();
 
         CompDayAnalysis {
             day_cutin: day_cutin_analyzer.analyze(),
@@ -139,9 +143,13 @@ impl<'a> CompAnalyzer<'a> {
         }
         .analyze();
 
-        let fleet_cutin =
-            FleetCutinAnalyzer::new(self.battle_defs, self.comp, self.config.engagement)
-                .analyze_night_attacks(&self.config.night_conditions(self.comp.side()));
+        let fleet_cutin = FleetCutinAnalyzer::new(
+            self.battle_defs,
+            self.comp,
+            self.config.engagement,
+            &self.dummy,
+        )
+        .analyze_night_attacks(&self.config.night_conditions(self.comp.side()));
 
         CompNightAnalysis {
             night_cutin,

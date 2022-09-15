@@ -72,8 +72,14 @@ impl Comp {
     ) -> Option<BattleMemberRef> {
         let fleet = self.get_fleet(position.fleet_type)?;
         let ship = fleet.ships.get(position.index)?;
+        let amagiri_index = fleet.amagiri_index();
 
-        Some(BattleMemberRef::new(ship, position, formation))
+        Some(BattleMemberRef::new(
+            ship,
+            position,
+            formation,
+            amagiri_index,
+        ))
     }
 
     pub fn get_battle_member_mut(
@@ -82,9 +88,15 @@ impl Comp {
         position: ShipPosition,
     ) -> Option<BattleMemberMut> {
         let fleet = self.get_fleet_mut(position.fleet_type)?;
+        let amagiri_index = fleet.amagiri_index();
         let ship = fleet.ships.get_mut(position.index)?;
 
-        Some(BattleMemberMut::new(ship, position, formation))
+        Some(BattleMemberMut::new(
+            ship,
+            position,
+            formation,
+            amagiri_index,
+        ))
     }
 
     pub fn get_battle_member_by_index(
@@ -96,8 +108,14 @@ impl Comp {
         let fleet = self.get_fleet(fleet_type)?;
         let ship = fleet.ships.get(index)?;
         let position = self.get_ship_position(fleet_type, index);
+        let amagiri_index = fleet.amagiri_index();
 
-        Some(BattleMemberRef::new(ship, position, formation))
+        Some(BattleMemberRef::new(
+            ship,
+            position,
+            formation,
+            amagiri_index,
+        ))
     }
 
     fn fleet_entries(
@@ -404,6 +422,10 @@ impl Comp {
         }
     }
 
+    pub(crate) fn get_amagiri_index(&self, ft: FleetType) -> Option<usize> {
+        self.get_fleet(ft)?.amagiri_index()
+    }
+
     pub fn get_ship_conditions(&self, ship: &Ship, formation: Option<Formation>) -> ShipConditions {
         let position = self
             .all_members()
@@ -419,6 +441,7 @@ impl Comp {
         ShipConditions {
             position,
             formation: formation.unwrap_or_else(|| self.org_type.default_formation()),
+            amagiri_index: self.get_amagiri_index(position.fleet_type),
         }
     }
 

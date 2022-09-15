@@ -47,9 +47,15 @@ impl BattleComp {
     ) -> impl Iterator<Item = BattleMemberRef> {
         let formation = self.formation;
 
-        self.comp
-            .members_by(query)
-            .map(move |ship| BattleMemberRef { ship, formation })
+        self.comp.members_by(query).map(move |ship| {
+            let amagiri_index = self.get_amagiri_index(ship.position.fleet_type);
+
+            BattleMemberRef {
+                ship,
+                formation,
+                amagiri_index,
+            }
+        })
     }
 
     pub fn members(&self, participant: Participant) -> impl Iterator<Item = BattleMemberRef> {
@@ -60,6 +66,8 @@ impl BattleComp {
             .members_by(FleetType::Main | FleetType::Escort)
             .filter_map(move |ship| {
                 let is_main = ship.position.is_main();
+                let amagiri_index = self.get_amagiri_index(ship.position.fleet_type);
+
                 match participant {
                     Participant::Main => is_main,
                     Participant::Escort => {
@@ -71,7 +79,11 @@ impl BattleComp {
                     }
                     Participant::Both => true,
                 }
-                .then(|| BattleMemberRef { ship, formation })
+                .then(|| BattleMemberRef {
+                    ship,
+                    formation,
+                    amagiri_index,
+                })
             })
     }
 

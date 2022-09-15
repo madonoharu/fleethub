@@ -85,9 +85,10 @@ where
     }
 
     pub fn as_ref(&self) -> CompMember<&S::Target> {
+        let position = self.position;
         CompMember {
             ship: self,
-            position: self.position,
+            position,
         }
     }
 

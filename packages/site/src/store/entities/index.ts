@@ -19,4 +19,5 @@ export type {
   SwapPayload,
   SwapGearPayload,
   SwapShipPayload,
+  AddStepPayload,
 } from "./entitiesSlice";

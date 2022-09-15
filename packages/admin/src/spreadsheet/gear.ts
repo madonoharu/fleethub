@@ -9,11 +9,7 @@ import {
 import { Start2 } from "kc-tools";
 
 import { ExprParser } from "./parser";
-import {
-  deleteFalsyValues,
-  cellValueToString,
-  SpreadsheetTable,
-} from "./utils";
+import { deleteFalsyValues, toCellString, SpreadsheetTable } from "./utils";
 
 function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
   const { rows } = table;
@@ -60,11 +56,11 @@ function createGearAttrs(
   parser: ExprParser
 ): MasterAttrRule<GearAttr>[] {
   return table.rows.map((row) => {
-    const expr = parser.parseGear(row.expr as string);
+    const expr = parser.parseGear(toCellString(row.expr));
 
     return {
-      tag: cellValueToString(row.tag) as GearAttr,
-      name: cellValueToString(row.name),
+      tag: toCellString(row.tag) as GearAttr,
+      name: toCellString(row.name),
       expr,
     };
   });
@@ -106,8 +102,8 @@ function createMasterIBonuses(
         }
 
         return {
-          expr: parser.parseGear(cellValueToString(expr)),
-          formula: cellValueToString(formula),
+          expr: parser.parseGear(toCellString(expr)),
+          formula: toCellString(formula),
         };
       })
       .filter(nonNullable);
