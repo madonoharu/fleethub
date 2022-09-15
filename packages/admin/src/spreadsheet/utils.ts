@@ -29,7 +29,7 @@ export function intoCellValue(input: unknown): CellValue {
   return String(input);
 }
 
-export function cellValueToString(cellValue: CellValue): string {
+export function toCellString(cellValue: CellValue): string {
   switch (typeof cellValue) {
     case "boolean":
       return cellValue ? "TRUE" : "FALSE";

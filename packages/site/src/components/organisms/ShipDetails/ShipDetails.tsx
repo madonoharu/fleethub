@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import BuildIcon from "@mui/icons-material/Build";
-import { Button, Stack } from "@mui/material";
+import { Alert, AlertTitle, Button, Stack } from "@mui/material";
 import type { Comp, Ship, ShipConditions } from "fleethub-core";
 import { produce } from "immer";
+import { useTranslation } from "next-i18next";
 import React, { useEffect } from "react";
 
 import {
@@ -68,6 +69,8 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
 }) => {
   const { core } = useFhCore();
 
+  const { t } = useTranslation("common");
+
   const state = useRootSelector((root) => root.shipDetails);
   const dispatch = useAppDispatch();
 
@@ -127,9 +130,6 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
         >
           相手艦設定
         </Button>
-        <Button variant="contained" color="primary" onClick={handleEnemySelect}>
-          敵を追加して攻撃力を計算する
-        </Button>
       </Flexbox>
 
       <LeftConfigModal>
@@ -165,7 +165,16 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
         />
       </Stack>
 
-      <ShipDetailsEnemyList state={state} ship={ship} />
+      <Alert severity="error">
+        <AlertTitle>
+          廃止予定です。{t("DamageCalculator")}を使用してください
+        </AlertTitle>
+
+        <Button variant="contained" color="primary" onClick={handleEnemySelect}>
+          敵を追加して攻撃力を計算する
+        </Button>
+        <ShipDetailsEnemyList state={state} ship={ship} />
+      </Alert>
     </Stack>
   );
 };
@@ -173,4 +182,8 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
 export default styled(ShipDetails)`
   min-height: 80vh;
   padding-bottom: 400px;
+
+  .MuiAlert-message {
+    width: 100%;
+  }
 `;

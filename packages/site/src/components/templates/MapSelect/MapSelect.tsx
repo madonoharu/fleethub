@@ -4,9 +4,8 @@ import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { entitiesSlice, mapSelectSlice, MapSelectState } from "../../../store";
+import { AddStepPayload } from "../../../store/entities/entitiesSlice";
 import { Dialog } from "../../organisms";
-
-import { MapEnemySelectEvent } from "./MapMenu";
 
 const StyledDialog = styled(Dialog)`
   .MuiDialog-paper {
@@ -28,15 +27,15 @@ const MapSelect: React.FCX = ({ className }) => {
     dispatch(mapSelectSlice.actions.hide());
   };
 
-  const handleSelect = (event: MapEnemySelectEvent) => {
+  const handleSelect = (payload: Omit<AddStepPayload, "file">) => {
     if (!state.createStep || !state.position) {
       return;
     }
 
     dispatch(
-      entitiesSlice.actions.addPlanEnemy({
+      entitiesSlice.actions.addStep({
         file: state.position,
-        ...event,
+        ...payload,
       })
     );
   };

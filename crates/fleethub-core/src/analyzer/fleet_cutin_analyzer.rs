@@ -32,30 +32,28 @@ pub struct FleetCutinReport<T> {
     attacks: Vec<FleetCutinAttackReport<T>>,
 }
 
-#[derive(Debug, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
-pub struct FleetCutinAnalysis {
-    shelling: Vec<FleetCutinReport<ShellingStyle>>,
-    night: Vec<FleetCutinReport<NightAttackStyle>>,
-}
-
 pub struct FleetCutinAnalyzer<'a> {
-    battle_defs: &'a BattleDefinitions,
-    comp: &'a Comp,
-    engagement: Engagement,
-    target_ship: Ship,
-    target_conditions: ShipConditions,
+    pub battle_defs: &'a BattleDefinitions,
+    pub comp: &'a Comp,
+    pub engagement: Engagement,
+    pub target_ship: &'a Ship,
+    pub target_conditions: ShipConditions,
 }
 
 impl<'a> FleetCutinAnalyzer<'a> {
-    pub fn new(battle_defs: &'a BattleDefinitions, comp: &'a Comp, engagement: Engagement) -> Self {
+    pub fn new(
+        battle_defs: &'a BattleDefinitions,
+        comp: &'a Comp,
+        engagement: Engagement,
+        target_ship: &'a Ship,
+    ) -> Self {
         let target_side = !comp.side();
 
         Self {
             battle_defs,
             comp,
             engagement,
-            target_ship: Default::default(),
+            target_ship,
             target_conditions: ShipConditions::with_side(target_side),
         }
     }
@@ -224,6 +222,32 @@ impl<'a> FleetCutinAnalyzer<'a> {
                     self.analyze_night_attack(formation, effect, night_conditions)
                 })
             })
+            .collect()
+    }
+
+    pub(crate) fn analyze_shelling_attacks_by_formation(
+        &self,
+        formation: Formation,
+    ) -> Vec<FleetCutinReport<ShellingStyle>> {
+        let fleet = &self.comp.main;
+        let vec = get_possible_fleet_cutin_effect_vec(fleet, formation, self.engagement, Time::Day);
+
+        vec.into_iter()
+            .map(move |effect| self.analyze_shelling(formation, effect))
+            .collect()
+    }
+
+    pub(crate) fn analyze_night_attacks_by_formation(
+        &self,
+        formation: Formation,
+        night_conditions: &NightConditions,
+    ) -> Vec<FleetCutinReport<NightAttackStyle>> {
+        let fleet = self.comp.night_fleet();
+        let vec =
+            get_possible_fleet_cutin_effect_vec(fleet, formation, self.engagement, Time::Night);
+
+        vec.into_iter()
+            .map(move |effect| self.analyze_night_attack(formation, effect, night_conditions))
             .collect()
     }
 }

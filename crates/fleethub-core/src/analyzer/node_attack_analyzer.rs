@@ -4,16 +4,25 @@ use tsify::Tsify;
 use crate::{
     comp::Comp,
     ship::Ship,
-    types::{AirState, BattleDefinitions, Engagement, Formation, NightFleetConditions},
+    types::{
+        AirState, BattleDefinitions, Engagement, Formation, NightAttackStyle, NightConditions,
+        NightFleetConditions, ShellingStyle, Side,
+    },
 };
 
-use super::{AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig};
+use super::{
+    AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig,
+    FleetCutinAnalyzer, FleetCutinReport,
+};
 
 #[derive(Serialize, Tsify)]
 #[tsify(into_wasm_abi)]
 pub struct NodeAttackAnalysis {
     pub left: AttackAnalysis,
     pub right: AttackAnalysis,
+
+    pub shelling_fleet_cutin: Vec<FleetCutinReport<ShellingStyle>>,
+    pub night_fleet_cutin: Vec<FleetCutinReport<NightAttackStyle>>,
 }
 
 pub struct NodeAttackAnalyzer<'a> {
@@ -26,6 +35,34 @@ pub struct NodeAttackAnalyzer<'a> {
 }
 
 impl NodeAttackAnalyzer<'_> {
+    pub fn analyze(&self) -> NodeAttackAnalysis {
+        let left = self.analyze_attack(true);
+        let right = self.analyze_attack(false);
+
+        let (target_config, target_ship) =
+            self.get_attack_analyzer_ship_config_and_ship(Align::Right);
+
+        let fleet_cutin_analyzer = FleetCutinAnalyzer {
+            battle_defs: self.battle_defs,
+            engagement: self.config.engagement,
+            comp: self.left_comp,
+            target_ship,
+            target_conditions: target_config.conditions,
+        };
+
+        let formation = self.config.left.formation;
+        let night_conditions = self.config.get_night_conditions(self.left_comp.side());
+
+        NodeAttackAnalysis {
+            left,
+            right,
+            shelling_fleet_cutin: fleet_cutin_analyzer
+                .analyze_shelling_attacks_by_formation(formation),
+            night_fleet_cutin: fleet_cutin_analyzer
+                .analyze_night_attacks_by_formation(formation, &night_conditions),
+        }
+    }
+
     fn get_attack_analyzer_ship_config_and_ship(
         &self,
         align: Align,
@@ -86,13 +123,6 @@ impl NodeAttackAnalyzer<'_> {
         }
         .analyze()
     }
-
-    pub fn analyze(&self) -> NodeAttackAnalysis {
-        let left = self.analyze_attack(true);
-        let right = self.analyze_attack(false);
-
-        NodeAttackAnalysis { left, right }
-    }
 }
 
 #[derive(Default, Serialize, Deserialize, Tsify)]
@@ -103,6 +133,22 @@ pub struct NodeAttackAnalyzerConfig {
     pub engagement: Engagement,
     pub left: NodeAttackAnalyzerShipConfig,
     pub right: NodeAttackAnalyzerShipConfig,
+}
+
+impl NodeAttackAnalyzerConfig {
+    pub(crate) fn get_night_conditions(&self, left_side: Side) -> NightConditions {
+        if left_side.is_player() {
+            NightConditions {
+                player: self.left.night_fleet_conditions.clone(),
+                enemy: self.right.night_fleet_conditions.clone(),
+            }
+        } else {
+            NightConditions {
+                player: self.right.night_fleet_conditions.clone(),
+                enemy: self.left.night_fleet_conditions.clone(),
+            }
+        }
+    }
 }
 
 #[derive(Default, Serialize, Deserialize, Tsify)]

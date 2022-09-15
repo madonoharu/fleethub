@@ -10,7 +10,6 @@ mod day_cutin_analyzer;
 mod fleet_cutin_analyzer;
 mod night_cutin_analyzer;
 mod node_attack_analyzer;
-mod node_attack_analyzer2;
 mod ship_analyzer;
 
 use wasm_bindgen::prelude::*;
@@ -87,24 +86,8 @@ impl Analyzer {
             right_comp,
             right_ship,
         };
+
         analyzer.analyze()
-    }
-
-    pub fn analyze_node_attack2(
-        &self,
-        config: NodeAttackAnalyzerConfig,
-        left_comp: &Comp,
-        right_comp: &Comp,
-        attacker_id: String,
-    ) -> Option<node_attack_analyzer2::NodeAttackAnalysis2> {
-        let analyzer = node_attack_analyzer2::NodeAttackAnalyzer {
-            battle_defs: &self.battle_defs,
-            config,
-            left_comp,
-            right_comp,
-        };
-
-        analyzer.analyze(attacker_id)
     }
 
     pub fn analyze_comp(&self, comp: &Comp, config: CompAnalyzerConfig) -> CompAnalysis {

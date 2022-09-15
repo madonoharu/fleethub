@@ -10,7 +10,7 @@ import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
 import set from "lodash/set";
 
 import { ExprParser } from "./parser";
-import { cellValueToString, SpreadsheetTable } from "./utils";
+import { toCellString, SpreadsheetTable } from "./utils";
 
 const SUFFIXES = [
   "甲",
@@ -242,12 +242,12 @@ const createShipAttrs = (parser: ExprParser, table: SpreadsheetTable) => {
   const attrs: MasterAttrRule<ShipAttr>[] = [];
 
   table.rows.forEach((row) => {
-    const str = cellValueToString(row.expr);
+    const str = toCellString(row.expr);
     const expr = parser.parseShip(str);
 
     attrs.push({
-      tag: cellValueToString(row.tag) as ShipAttr,
-      name: cellValueToString(row.name),
+      tag: toCellString(row.tag) as ShipAttr,
+      name: toCellString(row.name),
       expr,
     });
   });

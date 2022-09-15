@@ -1,10 +1,10 @@
 import { FhMap, MapEnemyComp, MapNode, MapNodeType } from "@fh/utils";
 import { Link, Typography } from "@mui/material";
-import { Formation, OrgState } from "fleethub-core";
+import { Formation } from "fleethub-core";
 import React from "react";
 
 import { useFhCore, useGcs } from "../../../hooks";
-import { MapSelectState } from "../../../store";
+import { MapSelectState, AddStepPayload } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { NauticalChart } from "../../organisms";
 
@@ -13,19 +13,10 @@ import DifficultySelect from "./DifficultySelect";
 import EnemyCompList from "./EnemyCompList";
 import { createOrg } from "./createOrg";
 
-export type MapEnemySelectEvent = {
-  name: string;
-  point: string;
-  d: MapNode["d"];
-  type: MapNode["type"];
-  org: OrgState;
-  formation: Formation;
-};
-
 type MapMenuProps = {
   state: MapSelectState;
   update: (changes: Partial<MapSelectState>) => void;
-  onEnemySelect: (event: MapEnemySelectEvent) => void;
+  onEnemySelect: (payload: Omit<AddStepPayload, "file">) => void;
 };
 
 const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
@@ -65,7 +56,8 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
     const org = createOrg(masterData, enemy);
 
     onEnemySelect({
-      point,
+      map: mapId,
+      node: point,
       name,
       d,
       type,

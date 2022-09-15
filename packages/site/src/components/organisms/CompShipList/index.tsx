@@ -13,14 +13,14 @@ import CompShipButton from "./CompShipButton";
 type CompShipListProps = {
   comp: Comp;
   selectedShip?: string;
-  onShipSelect: (id: string) => void;
+  onShipClick: (id: string) => void;
 };
 
 const CompShipList: React.FCX<CompShipListProps> = ({
   className,
   comp,
   selectedShip,
-  onShipSelect,
+  onShipClick,
 }) => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
   const handleShipSelect: React.MouseEventHandler<HTMLButtonElement> = (
     event
   ) => {
-    onShipSelect(event.currentTarget.value);
+    onShipClick(event.currentTarget.value);
   };
 
   const handleSwap = (payload: SwapShipPayload) => {
@@ -102,6 +102,7 @@ export default styled(CompShipList)(({ comp }) => {
     display: grid;
     grid-auto-columns: 128px;
     grid-auto-rows: 32px;
+    grid-template-rows: repeat(8, 32px);
     gap: 4px;
 
     .Main {
