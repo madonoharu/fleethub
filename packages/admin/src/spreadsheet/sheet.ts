@@ -17,6 +17,8 @@ const SHEET_DATA = [
   { sheetId: 1192109753, key: "gear_attrs" },
   { sheetId: 1560992895, key: "equippability" },
 
+  { sheetId: 1430282016, key: "historical_bonuses" },
+
   { sheetId: 347061403, key: "shelling_power" },
   { sheetId: 593793628, key: "shelling_accuracy" },
   { sheetId: 1341171814, key: "shelling_aerial_power" },

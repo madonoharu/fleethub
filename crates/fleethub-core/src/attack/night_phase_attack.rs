@@ -1,9 +1,9 @@
 use crate::{
     member::BattleMemberRef,
     types::{
-        AswPhase, AttackPowerModifier, Engagement, FormationParams, GearType, NightAttackStyle,
-        NightAttackType, NightConditions, NightFleetConditions, NightPhaseAttackStyle,
-        ProficiencyModifiers, ShipType, Time,
+        AswPhase, AttackPowerModifier, Engagement, FormationParams, GearType, HistoricalParams,
+        NightAttackStyle, NightAttackType, NightConditions, NightFleetConditions,
+        NightPhaseAttackStyle, ProficiencyModifiers, ShipType, Time,
     },
 };
 
@@ -21,6 +21,7 @@ pub struct NightPhaseAttackParams<'a> {
     pub attacker: &'a BattleMemberRef<'a>,
     pub target: &'a BattleMemberRef<'a>,
     pub formation_params: FormationParams,
+    pub historical_params: HistoricalParams,
     pub night_conditions: &'a NightConditions,
 }
 
@@ -30,6 +31,7 @@ impl NightPhaseAttackParams<'_> {
         let target = self.target;
         let engagement = self.engagement;
         let formation_params = self.formation_params;
+        let historical_params = self.historical_params;
         let night_conditions = self.night_conditions;
 
         let attack_params = match self.style.clone() {
@@ -38,6 +40,7 @@ impl NightPhaseAttackParams<'_> {
                 attacker,
                 target,
                 formation_params,
+                historical_params,
                 night_conditions,
             }
             .calc_attack_params(),
@@ -48,6 +51,7 @@ impl NightPhaseAttackParams<'_> {
                 target,
                 engagement,
                 formation_params,
+                historical_params,
             }
             .calc_attack_params(),
         };
@@ -65,6 +69,7 @@ pub struct NightAttackParams<'a> {
     pub attacker: &'a BattleMemberRef<'a>,
     pub target: &'a BattleMemberRef<'a>,
     pub formation_params: FormationParams,
+    pub historical_params: HistoricalParams,
     pub night_conditions: &'a NightConditions,
 }
 
@@ -219,9 +224,10 @@ impl NightAttackParams<'_> {
         let cutin_mod = style.accuracy_mod;
         let gunfit_accuracy = attacker.gunfit_accuracy(true);
         let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, style.attack_type);
+        let historical_mod = self.historical_params.accuracy_mod;
 
         // 乗算前に切り捨て
-        let pre_multiplication = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod
+        let multiplicand = ((NIGHT_ACCURACY_CONSTANT + starshell_mod) * contact_mod
             + basic_accuracy_term
             + accuracy
             + ibonus
@@ -229,16 +235,20 @@ impl NightAttackParams<'_> {
             .floor();
 
         // 夜戦CI補正の位置は陣形補正と同じ
-        let post_formation =
-            (pre_multiplication * formation_mod * morale_mod * cutin_mod * pt_mods.multiplicative
+        let post_formation_mod =
+            (multiplicand * formation_mod * morale_mod * cutin_mod * pt_mods.multiplicative
                 + searchlight_mod
                 + gunfit_accuracy
                 + pt_mods.additive)
                 .floor();
 
-        let accuracy_term =
-            (post_formation * pt_mods.ship_type_mod * pt_mods.equipment_mod * pt_mods.night_mod)
-                .floor();
+        // 史実補正の位置どこ？
+        let accuracy_term = (post_formation_mod
+            * pt_mods.ship_type_mod
+            * pt_mods.equipment_mod
+            * pt_mods.night_mod
+            * historical_mod)
+            .floor();
 
         Some(accuracy_term)
     }
@@ -246,6 +256,7 @@ impl NightAttackParams<'_> {
     fn calc_evasion_term(&self) -> Option<f64> {
         let target = self.target;
         let formation_mod = self.formation_params.target_evasion_mod;
+        let historical_mod = self.historical_params.target_evasion_mod;
 
         let ship_type_additive = if matches!(target.ship_type, ShipType::CA | ShipType::CAV) {
             5.0
@@ -259,8 +270,10 @@ impl NightAttackParams<'_> {
             1.0
         };
 
+        let postcap_multiplicative = searchlight_evasion_mod * historical_mod;
+
         self.target
-            .evasion_term(formation_mod, ship_type_additive, searchlight_evasion_mod)
+            .evasion_term(formation_mod, ship_type_additive, postcap_multiplicative)
     }
 
     fn calc_hit_rate_params(

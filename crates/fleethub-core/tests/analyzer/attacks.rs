@@ -2,7 +2,7 @@ use std::path::Path;
 
 use fleethub_core::{
     analyzer::{AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig},
-    types::{AirState, Engagement},
+    types::{AirState, Engagement, NodeState},
 };
 
 use serde::Deserialize;
@@ -16,6 +16,8 @@ struct AttackTestCase {
     path: String,
     #[serde(default)]
     description: String,
+    #[serde(default)]
+    node_state: NodeState,
     #[serde(default)]
     air_state: AirState,
     #[serde(default)]
@@ -39,6 +41,7 @@ impl AttackTestCase {
         AttackAnalyzerConfig {
             air_state: self.air_state,
             engagement: self.engagement,
+            node_state: self.node_state.clone(),
             attacker: self.attacker.config.clone(),
             target: self.target.config.clone(),
         }

@@ -1,8 +1,8 @@
 use crate::{
     member::BattleMemberRef,
     types::{
-        AttackPowerModifier, Engagement, FleetFactors, FormationParams, ShellingStyle,
-        ShellingType, Time,
+        AttackPowerModifier, Engagement, FleetFactors, FormationParams, HistoricalParams,
+        ShellingStyle, ShellingType, Time,
     },
 };
 
@@ -21,6 +21,7 @@ pub struct ShellingAttackParams<'a> {
     pub target: &'a BattleMemberRef<'a>,
     pub engagement: Engagement,
     pub formation_params: FormationParams,
+    pub historical_params: HistoricalParams,
 }
 
 impl ShellingAttackParams<'_> {
@@ -88,6 +89,7 @@ impl ShellingAttackParams<'_> {
             let precap_mod = AttackPowerModifier::new(a14, b14);
             let postcap_mod = AttackPowerModifier::new(a11, 0.0);
 
+            let historical_mod = self.historical_params.power_mod;
             let custom_mods = attacker.custom_power_mods();
 
             let params = AttackPowerParams {
@@ -101,6 +103,7 @@ impl ShellingAttackParams<'_> {
                 remaining_ammo_mod,
                 armor_penetration: 0.0,
                 special_enemy_mods,
+                historical_mod,
                 custom_mods,
             };
 
@@ -121,31 +124,35 @@ impl ShellingAttackParams<'_> {
             let ap_shell_mod = ap_shell_mods.map(|mods| mods.1).unwrap_or(1.0);
             let cutin_mod = style.accuracy_mod;
             let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, style.attack_type);
+            let historical_mod = self.historical_params.accuracy_mod;
 
             // 乗算前に切り捨て
-            let pre_multiplication =
+            let multiplicand =
                 (fleet_factor + basic_accuracy_term + ship_accuracy + ibonus + pt_mods.amagiri_mod)
                     .floor();
 
-            let post_formation =
-                (pre_multiplication * formation_mod * morale_mod * pt_mods.multiplicative
+            let post_formation_mod =
+                (multiplicand * formation_mod * morale_mod * pt_mods.multiplicative
                     + gunfit_accuracy
                     + pt_mods.additive)
                     .floor();
 
-            let accuracy_term = (post_formation
+            // 史実補正の位置どこ？
+            let accuracy_term = (post_formation_mod
                 * cutin_mod
                 * ap_shell_mod
                 * pt_mods.ship_type_mod
                 * pt_mods.equipment_mod
-                * pt_mods.night_mod)
+                * pt_mods.night_mod
+                * historical_mod)
                 .floor();
             Some(accuracy_term)
         };
 
         let calc_hit_rate_params = || {
             let formation_mod = formation_params.target_evasion_mod;
-            let evasion_term = target.evasion_term(formation_mod, 0.0, 1.0)?;
+            let historical_mod = self.historical_params.target_evasion_mod;
+            let evasion_term = target.evasion_term(formation_mod, 0.0, historical_mod)?;
 
             let accuracy_term = calc_accuracy_term()?;
 

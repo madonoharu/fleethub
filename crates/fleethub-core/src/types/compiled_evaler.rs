@@ -47,6 +47,10 @@ impl CompiledEvaler {
     pub fn matches<T: EvalNamespace>(&self, ns: &mut T) -> bool {
         self.eval(ns).unwrap_or_default() == 1.0
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.expr.is_empty()
+    }
 }
 
 impl Clone for CompiledEvaler {

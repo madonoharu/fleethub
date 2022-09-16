@@ -10,7 +10,7 @@ use crate::{
     ship::{NightCutinTermParams, Ship},
     types::{
         AswAttackStyle, AswPhase, AttackType, BattleDefinitions, DayPhaseAttackStyle,
-        DayPhaseAttackType, FormationParams, NightAttackStyle, NightAttackType,
+        DayPhaseAttackType, FormationParams, HistoricalParams, NightAttackStyle, NightAttackType,
         NightPhaseAttackStyle, NightPhaseAttackType, ShellingStyle, ShellingType,
         SupportShellingStyle, SupportShellingType, TorpedoAttackStyle, TorpedoAttackType,
     },
@@ -89,6 +89,14 @@ impl AttackAnalyzer<'_> {
         )
     }
 
+    fn get_historical_params(&self) -> HistoricalParams {
+        self.battle_defs.get_historical_params(
+            self.config.node_state,
+            &self.attacker_combat_ship(),
+            &self.target_combat_ship(),
+        )
+    }
+
     pub fn calc_observation_term(&self) -> Option<f64> {
         let attacker = &self.attacker_combat_ship();
         let fleet_los_mod = self.config.attacker.fleet_los_mod?;
@@ -149,6 +157,7 @@ impl AttackAnalyzer<'_> {
         proc_rate: Option<f64>,
     ) -> AttackReport<DayPhaseAttackStyle> {
         let formation_params = self.get_formation_params(style.to_attack_type());
+        let historical_params = self.get_historical_params();
 
         let attack_params = DayPhaseAttackParams {
             style: style.clone(),
@@ -156,6 +165,7 @@ impl AttackAnalyzer<'_> {
             attacker: &self.attacker_combat_ship(),
             target: &self.target_combat_ship(),
             formation_params,
+            historical_params,
         }
         .calc_attack_params();
 
@@ -168,8 +178,9 @@ impl AttackAnalyzer<'_> {
         let attack_type = attacker.select_day_phase_attack_type(target);
         let attack_type = some_or_return!(attack_type, ActionReport::empty());
 
-        let formation_params = self.get_formation_params(attack_type);
         let engagement = self.config.engagement;
+        let formation_params = self.get_formation_params(attack_type);
+        let historical_params = self.get_historical_params();
 
         let styles = match attack_type {
             DayPhaseAttackType::Shelling(attack_type) => {
@@ -189,6 +200,7 @@ impl AttackAnalyzer<'_> {
                     attacker,
                     target,
                     formation_params,
+                    historical_params,
                 }
                 .calc_attack_params();
 
@@ -205,9 +217,10 @@ impl AttackAnalyzer<'_> {
         let attack_type = attacker.select_night_phase_attack_type(target);
         let attack_type = some_or_return!(attack_type, ActionReport::empty());
 
-        let formation_params = self.get_formation_params(attack_type);
-        let night_conditions = &self.config.night_conditions();
         let engagement = self.config.engagement;
+        let formation_params = self.get_formation_params(attack_type);
+        let historical_params = self.get_historical_params();
+        let night_conditions = &self.config.night_conditions();
 
         let styles = match attack_type {
             NightPhaseAttackType::Night(attack_type) => self.analyze_night_attack(attack_type),
@@ -225,6 +238,7 @@ impl AttackAnalyzer<'_> {
                     attacker,
                     target,
                     formation_params,
+                    historical_params,
                     night_conditions,
                 }
                 .calc_attack_params();
@@ -289,8 +303,9 @@ impl AttackAnalyzer<'_> {
 
         let attacker = &self.attacker_combat_ship();
         let target = &self.target_combat_ship();
-        let formation_params = self.get_formation_params(attack_type);
         let engagement = self.config.engagement;
+        let formation_params = self.get_formation_params(attack_type);
+        let historical_params = self.get_historical_params();
 
         if attacker.naked_torpedo().unwrap_or_default() == 0 || !target.is_attackable_by_torpedo() {
             return ActionReport::empty();
@@ -301,6 +316,7 @@ impl AttackAnalyzer<'_> {
             target,
             engagement,
             formation_params,
+            historical_params,
         }
         .calc_attack_params();
 
@@ -322,8 +338,9 @@ impl AttackAnalyzer<'_> {
         );
         let style = AswAttackStyle { attack_type };
 
-        let formation_params = self.get_formation_params(attack_type);
         let engagement = self.config.engagement;
+        let formation_params = self.get_formation_params(attack_type);
+        let historical_params = self.get_historical_params();
 
         let params = AswAttackParams {
             style,
@@ -332,6 +349,7 @@ impl AttackAnalyzer<'_> {
             target,
             engagement,
             formation_params,
+            historical_params,
         }
         .calc_attack_params();
 

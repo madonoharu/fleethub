@@ -1,4 +1,3 @@
-mod compiled_evaler;
 mod master_battle_definitions;
 mod master_equippability;
 mod master_gear;
@@ -15,9 +14,7 @@ pub use master_gear::*;
 pub use master_ibonus::*;
 pub use master_ship::*;
 
-use crate::types::{BattleDefinitions, GearAttr, ShipAttr};
-
-use compiled_evaler::CompiledEvaler;
+use crate::types::{BattleDefinitions, CompiledEvaler, GearAttr, ShipAttr};
 
 #[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
@@ -44,7 +41,8 @@ struct MasterDataShadow {
     ships: Vec<MasterShip>,
     ship_attrs: Vec<MasterAttrRule<ShipAttr>>,
     ibonuses: MasterIBonuses,
-    equippable: MasterEquippability,
+    #[serde(alias = "equippable")]
+    equippability: MasterEquippability,
     #[serde(flatten)]
     battle_definitions: MasterBattleDefinitions,
 }
@@ -59,7 +57,7 @@ pub struct MasterData {
     pub ships: Vec<MasterShip>,
     pub ship_attrs: Vec<MasterAttrRule<ShipAttr>>,
     pub ibonuses: MasterIBonuses,
-    pub equippable: MasterEquippability,
+    pub equippability: MasterEquippability,
     #[serde(flatten)]
     pub battle_definitions: MasterBattleDefinitions,
 }
@@ -73,7 +71,7 @@ impl From<MasterDataShadow> for MasterData {
             mut ships,
             ship_attrs,
             ibonuses,
-            equippable,
+            equippability,
             battle_definitions,
         } = def;
 
@@ -100,7 +98,7 @@ impl From<MasterDataShadow> for MasterData {
             ships,
             ship_attrs,
             ibonuses,
-            equippable,
+            equippability,
             battle_definitions,
         }
     }
@@ -112,7 +110,7 @@ impl MasterData {
     }
 
     pub fn create_ship_equippability(&self, ship: &MasterShip) -> ShipEquippability {
-        self.equippable.create_ship_equippability(ship)
+        self.equippability.create_ship_equippability(ship)
     }
 
     pub fn battle_definitions(&self) -> BattleDefinitions {

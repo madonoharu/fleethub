@@ -50,7 +50,6 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
   });
 
   const handleTabChange = (event: unknown, id: unknown) => {
-    console.log(id);
     if (typeof id === "string") {
       dispatch(
         filesSlice.actions.update({

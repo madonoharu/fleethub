@@ -1,9 +1,13 @@
 use serde::Deserialize;
 use tsify::Tsify;
 
-use crate::{gear::Gear, gear_array::gear_key_to_index, types::gear_id};
+use crate::{
+    gear::Gear,
+    gear_array::gear_key_to_index,
+    types::{gear_id, CompiledEvaler},
+};
 
-use super::{compiled_evaler::CompiledEvaler, MasterShip};
+use super::MasterShip;
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct EquipStype {

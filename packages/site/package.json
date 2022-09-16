@@ -1,6 +1,6 @@
 {
   "name": "@fh/site",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
   "main": "index.js",
@@ -18,7 +18,7 @@
     "@fh/admin": "workspace:*",
     "@fh/utils": "workspace:*",
     "@firebase/analytics": "^0.8.0",
-    "@firebase/app": "^0.7.32",
+    "@firebase/app": "^0.7.33",
     "@firebase/storage": "^0.9.9",
     "@mui/icons-material": "^5.10.3",
     "@mui/lab": "^5.0.0-alpha.99",
