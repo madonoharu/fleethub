@@ -33,6 +33,7 @@ impl ShipAnalyzerConfig {
         AttackAnalyzerConfig {
             air_state,
             engagement,
+            node_state: Default::default(),
             attacker,
             target,
         }

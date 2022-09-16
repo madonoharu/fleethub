@@ -1,6 +1,9 @@
 use crate::{
     member::BattleMemberRef,
-    types::{AttackPowerModifier, Engagement, FleetFactors, FormationParams, TorpedoAttackType},
+    types::{
+        AttackPowerModifier, Engagement, FleetFactors, FormationParams, HistoricalParams,
+        TorpedoAttackType,
+    },
 };
 
 use super::{
@@ -16,6 +19,7 @@ pub struct TorpedoAttackParams<'a> {
     pub target: &'a BattleMemberRef<'a>,
     pub engagement: Engagement,
     pub formation_params: FormationParams,
+    pub historical_params: HistoricalParams,
 }
 
 impl TorpedoAttackParams<'_> {
@@ -83,6 +87,7 @@ impl TorpedoAttackParams<'_> {
             armor_penetration: 0.0,
             remaining_ammo_mod: attacker.remaining_ammo_mod(),
             special_enemy_mods,
+            historical_mod: self.historical_params.power_mod,
             custom_mods: attacker.custom_power_mods(),
         })
     }
@@ -105,9 +110,10 @@ impl TorpedoAttackParams<'_> {
         let formation_mod = self.formation_params.accuracy_mod;
         let morale_mod = attacker.morale_state().torpedo_accuracy_mod();
         let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, TorpedoAttackType);
+        let historical_mod = self.historical_params.accuracy_mod;
 
         // 乗算前に切り捨て
-        let pre_multiplication = (fleet_factor
+        let multiplicand = (fleet_factor
             + basic_accuracy_term
             + equipment_accuracy
             + ibonus
@@ -115,10 +121,12 @@ impl TorpedoAttackParams<'_> {
             + innate_torpedo_accuracy)
             .floor();
 
-        let accuracy_term =
-            (pre_multiplication * formation_mod * morale_mod * pt_mods.multiplicative
-                + pt_mods.additive)
+        let post_formation_mod =
+            (multiplicand * formation_mod * morale_mod * pt_mods.multiplicative + pt_mods.additive)
                 .floor();
+
+        // 史実補正の位置どこ？
+        let accuracy_term = (post_formation_mod * historical_mod).floor();
 
         Some(accuracy_term)
     }
@@ -133,7 +141,8 @@ impl TorpedoAttackParams<'_> {
         let accuracy_term = self.calc_accuracy_term(fleet_factors, normal_attack_power)?;
         let formation_mod = self.formation_params.target_evasion_mod;
         let ibonus = target.gears.sum_by(|gear| gear.ibonuses.torpedo_evasion);
-        let evasion_term = target.evasion_term(formation_mod, ibonus, 1.0)?;
+        let historical_mod = self.historical_params.target_evasion_mod;
+        let evasion_term = target.evasion_term(formation_mod, ibonus, historical_mod)?;
 
         Some(HitRateParams {
             accuracy_term,

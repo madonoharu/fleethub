@@ -12,14 +12,13 @@ use rand::prelude::*;
 use crate::{
     comp::Comp,
     types::{
-        AirState, BattleDefinitions, DayCombatRound, EnemyCompType, Engagement, Phase,
+        AirState, BattleDefinitions, DayCombatRound, EnemyCompType, Engagement, NodeState, Phase,
         PlayerCompType,
     },
 };
 
 pub use battle_comp::*;
 use day_phase::DayPhase;
-pub use day_phase::DayPhaseAction;
 use torpedo_phase::TorpedoPhase;
 
 pub struct Battle<'a, R>
@@ -29,6 +28,7 @@ where
     pub rng: &'a mut R,
     pub battle_defs: BattleDefinitions,
     pub engagement: Engagement,
+    pub node_state: NodeState,
     pub player_comp: BattleComp,
     pub enemy_comp: BattleComp,
 }
@@ -41,6 +41,7 @@ where
         rng: &'a mut R,
         battle_defs: BattleDefinitions,
         engagement: Engagement,
+        node_state: NodeState,
         player_comp: Comp,
         enemy_comp: Comp,
     ) -> Self {
@@ -48,6 +49,7 @@ where
             rng,
             battle_defs,
             engagement,
+            node_state,
             player_comp: BattleComp {
                 comp: player_comp,
                 formation: Default::default(),
@@ -74,6 +76,7 @@ where
         TorpedoPhase {
             rng: self.rng,
             battle_defs: &self.battle_defs,
+            node_state: self.node_state,
             engagement: self.engagement,
             player_comp: &mut self.player_comp,
             enemy_comp: &mut self.enemy_comp,
@@ -86,6 +89,7 @@ where
             rng: self.rng,
             battle_defs: &self.battle_defs,
             engagement: self.engagement,
+            node_state: self.node_state,
             air_state,
             round,
             player_comp: &mut self.player_comp,

@@ -1,6 +1,6 @@
 import { FLEET_KEYS, nonNullable, uppercase } from "@fh/utils";
 import { Paper, Stack } from "@mui/material";
-import type { NodeAttackAnalyzerConfig, Org } from "fleethub-core";
+import type { NodeAttackAnalyzerConfig, NodeState, Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 
@@ -17,7 +17,7 @@ import {
   stepsSelectors,
   stepsSlice,
 } from "../../../store";
-import { Select } from "../../molecules";
+import { NumberInput, Select } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import CustomModifiersDialog from "../CustomModifiersDialog";
 import EngagementSelect from "../EngagementSelect";
@@ -26,6 +26,7 @@ import SupSelect from "../SupSelect";
 
 import AnalyzerForm from "./AnalyzerForm";
 import NodeAttackDetails from "./NodeAttackDetails";
+import NodeStateForm from "./NodeStateForm";
 import NodeStepper from "./NodeStepper";
 import SimulateButton from "./SimulateButton";
 
@@ -48,7 +49,15 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
     );
   });
 
-  const config: NodeAttackAnalyzerConfig = activeStep?.config || {};
+  const node_state: NodeState = {
+    map: activeStep?.map || 0,
+    node: activeStep?.node || "",
+    debuff: false,
+    phase: 0,
+  };
+
+  const base = activeStep?.config || {};
+  const config: NodeAttackAnalyzerConfig = { node_state, ...base };
 
   const leftComp = leftOrg.create_comp();
   const [leftShipId, setLeftShipId] = useState(leftOrg.first_ship_id());
@@ -103,6 +112,11 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
             value={config.engagement || "Parallel"}
             onChange={(engagement) => handleConfigChange({ engagement })}
           />
+          <NumberInput value={config.node_state?.map || 0} />
+          <NodeStateForm
+            value={config.node_state}
+            onChange={(node_state) => handleConfigChange({ node_state })}
+          />
         </Stack>
 
         <AnalyzerForm
@@ -150,4 +164,4 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
   );
 };
 
-export default NodeAttackAnalyzer;
+export default React.memo(NodeAttackAnalyzer);

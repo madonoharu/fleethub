@@ -6,7 +6,7 @@ use crate::{
     ship::Ship,
     types::{
         AirState, BattleDefinitions, Engagement, Formation, NightAttackStyle, NightConditions,
-        NightFleetConditions, ShellingStyle, Side,
+        NightFleetConditions, NodeState, ShellingStyle, Side,
     },
 };
 
@@ -44,6 +44,7 @@ impl NodeAttackAnalyzer<'_> {
 
         let fleet_cutin_analyzer = FleetCutinAnalyzer {
             battle_defs: self.battle_defs,
+            node_state: self.config.node_state,
             engagement: self.config.engagement,
             comp: self.left_comp,
             target_ship,
@@ -110,6 +111,7 @@ impl NodeAttackAnalyzer<'_> {
         let config = AttackAnalyzerConfig {
             air_state: self.config.air_state,
             engagement: self.config.engagement,
+            node_state: self.config.node_state.clone(),
             attacker: attacker_config,
             target: target_config,
         };
@@ -130,6 +132,7 @@ impl NodeAttackAnalyzer<'_> {
 pub struct NodeAttackAnalyzerConfig {
     pub air_state: AirState,
     pub engagement: Engagement,
+    pub node_state: NodeState,
     pub left: NodeAttackAnalyzerShipConfig,
     pub right: NodeAttackAnalyzerShipConfig,
 }

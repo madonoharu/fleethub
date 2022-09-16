@@ -1,4 +1,4 @@
-import { Dict } from "@fh/utils";
+import { Dict, isUnknownRecord } from "@fh/utils";
 import { MasterData } from "fleethub-core";
 import React from "react";
 import { SWRResponse } from "swr";
@@ -21,7 +21,13 @@ export async function gcsFetcher<T>(
   }
 
   const res = await fetch(url.href);
-  return (await res.json()) as T;
+  const json = (await res.json()) as T;
+
+  if (isUnknownRecord(json) && typeof json.created_at === "number") {
+    console.info(path, new Date(json.created_at).toLocaleString());
+  }
+
+  return json;
 }
 
 export function useGcs<T>(path: string): SWRResponse<T, Error> {

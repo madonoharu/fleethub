@@ -7,8 +7,11 @@ use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DefaultOnError};
 use tsify::Tsify;
 
+use crate::member::BattleMemberRef;
+
 use super::{
-    AttackType, DayCutin, DayCutinLike, Formation, NightCutin, NightCutinLike, ShipConditions,
+    AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, HistoricalParams, NightCutin,
+    NightCutinLike, NodeId, NodeState, ShipConditions,
 };
 
 #[serde_as]
@@ -157,6 +160,39 @@ impl DayCutinDef {
     }
 }
 
+#[derive(Debug, Default, Clone, Deserialize, Tsify)]
+#[serde(default)]
+pub struct HistoricalBonusDef {
+    map: i16,
+    node: NodeId,
+    phase: u8,
+    debuff: bool,
+    ship: CompiledEvaler,
+    enemy: CompiledEvaler,
+    #[serde(default = "num_traits::one")]
+    pub power_mod: f64,
+    #[serde(default = "num_traits::one")]
+    pub accuracy_mod: f64,
+    #[serde(default = "num_traits::one")]
+    pub evasion_mod: f64,
+}
+
+impl HistoricalBonusDef {
+    pub fn matches(
+        &self,
+        node_state: NodeState,
+        ship: &BattleMemberRef,
+        enemy: &BattleMemberRef,
+    ) -> bool {
+        self.map == node_state.map
+            && (self.node.is_empty() || self.node == node_state.node)
+            && (self.phase == 0 || self.phase == node_state.phase)
+            && (!self.debuff || self.debuff == node_state.debuff)
+            && (self.ship.is_empty() || self.ship.matches(&mut ship.ns()))
+            && (self.enemy.is_empty() || self.enemy.matches(&mut enemy.ns()))
+    }
+}
+
 #[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 #[tsify(from_wasm_abi)]
@@ -196,6 +232,7 @@ pub struct BattleDefinitions {
     pub anti_air_cutin: HashMap<u8, AntiAirCutinDef>,
     pub day_cutin: HashMap<DayCutin, DayCutinDef>,
     pub night_cutin: HashMap<NightCutin, NightCutinDef>,
+    pub historical_bonuses: Vec<HistoricalBonusDef>,
 }
 
 impl BattleDefinitions {
@@ -210,6 +247,38 @@ impl BattleDefinitions {
             .get(&formation)
             .unwrap_or_else(|| unreachable!());
         nfd.get_def(fleet_len, ship_index)
+    }
+
+    pub fn get_historical_params(
+        &self,
+        node_state: NodeState,
+        attacker: &BattleMemberRef,
+        target: &BattleMemberRef,
+    ) -> HistoricalParams {
+        let mut params = HistoricalParams::default();
+
+        if node_state.map == 0 {
+            return params;
+        }
+
+        if attacker.position.org_type.is_player() {
+            self.historical_bonuses
+                .iter()
+                .filter(|def| def.matches(node_state, attacker, target))
+                .for_each(|def| {
+                    params.power_mod *= def.power_mod;
+                    params.accuracy_mod *= def.accuracy_mod;
+                })
+        } else {
+            self.historical_bonuses
+                .iter()
+                .filter(|def| def.matches(node_state, target, attacker))
+                .for_each(|def| {
+                    params.target_evasion_mod *= def.evasion_mod;
+                })
+        };
+
+        params
     }
 
     pub fn get_formation_fleet_anti_air_mod(&self, formation: Formation) -> f64 {

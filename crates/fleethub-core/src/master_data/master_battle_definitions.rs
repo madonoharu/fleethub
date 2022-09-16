@@ -2,7 +2,8 @@ use serde::Deserialize;
 use tsify::Tsify;
 
 use crate::types::{
-    AntiAirCutinDef, BattleDefinitions, DayCutinDef, NestedFormationDef, NightCutinDef,
+    AntiAirCutinDef, BattleDefinitions, DayCutinDef, HistoricalBonusDef, NestedFormationDef,
+    NightCutinDef,
 };
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
@@ -11,6 +12,8 @@ pub struct MasterBattleDefinitions {
     pub anti_air_cutin: Vec<AntiAirCutinDef>,
     pub day_cutin: Vec<DayCutinDef>,
     pub night_cutin: Vec<NightCutinDef>,
+    #[serde(default)]
+    pub historical_bonuses: Vec<HistoricalBonusDef>,
 }
 
 impl MasterBattleDefinitions {
@@ -44,6 +47,7 @@ impl MasterBattleDefinitions {
             anti_air_cutin,
             day_cutin,
             night_cutin,
+            historical_bonuses: self.historical_bonuses.clone(),
         }
     }
 }

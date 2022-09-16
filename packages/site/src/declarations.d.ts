@@ -50,6 +50,7 @@ declare global {
       readonly KCS_SCRIPT: string;
       readonly SITE_VERSION: string;
       readonly CORE_VERSION: string;
+      readonly MASTER_DATA_PATH: string;
       readonly NEXT_PUBLIC_VERCEL_URL?: string;
     }
   }

@@ -1,8 +1,11 @@
-use std::ops::{Deref, DerefMut};
+use std::{
+    ops::{Deref, DerefMut},
+    str::FromStr,
+};
 
 use crate::{
     ship::Ship,
-    types::{Formation, ShipConditions, ShipPosition},
+    types::{Formation, ShipAttr, ShipConditions, ShipPosition},
 };
 
 use super::comp_member::CompMember;
@@ -80,6 +83,41 @@ where
             ship: self.ship.as_mut(),
             formation,
             amagiri_index: self.amagiri_index,
+        }
+    }
+
+    pub fn ns(&self) -> impl fasteval::EvalNamespace + '_ {
+        use fasteval::bool_to_f64;
+        |name: &str, args: Vec<f64>| -> Option<f64> {
+            let result = match name {
+                "ship_id" => self.ship_id.into(),
+                "ship_type" => self.stype().into(),
+                "ship_class" => self.ctype.into(),
+                "nationality" => self.master.nationality.into(),
+                "sort_id" => self.master.sort_id.into(),
+                "speed" => self.master.speed.into(),
+
+                "ship_id_in" => bool_to_f64!(args.contains(&self.ship_id.into())),
+                "ship_type_in" => bool_to_f64!(args.contains(&self.stype().into())),
+                "ship_class_in" => bool_to_f64!(args.contains(&(self.ctype.into()))),
+                "nationality_in" => bool_to_f64!(args.contains(&(self.master.nationality.into()))),
+
+                "is_flagship" => bool_to_f64!(self.position.is_main_flagship()),
+
+                "has" => bool_to_f64!(self.gears.has(*args.first()? as u16)),
+                "has_any" => bool_to_f64!(args.into_iter().any(|arg| self.gears.has(arg as u16))),
+                "has_gear_type" => bool_to_f64!(self.gears.has_type((*args.first()?).into())),
+                "has_any_gear_type" => {
+                    bool_to_f64!(args.into_iter().any(|arg| self.gears.has_type(arg.into())))
+                }
+
+                _ => {
+                    let attr = ShipAttr::from_str(name).ok()?;
+                    bool_to_f64!(self.has_attr(attr))
+                }
+            };
+
+            Some(result)
         }
     }
 }

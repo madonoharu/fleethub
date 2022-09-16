@@ -6,7 +6,7 @@ use crate::{
     ship::NightCutinTermParams,
     types::{
         AirState, BattleDefinitions, Engagement, NightAttackStyle, NightConditions,
-        NightPhaseAttackStyle, NightPhaseAttackType, Participant, ShipPosition,
+        NightPhaseAttackStyle, NightPhaseAttackType, NodeState, Participant, ShipPosition,
     },
     utils::some_or_return,
 };
@@ -19,6 +19,7 @@ where
 {
     pub rng: &'a mut R,
     pub battle_defs: &'a BattleDefinitions,
+    pub node_state: NodeState,
     pub engagement: Engagement,
     pub air_state: AirState,
     pub player_comp: &'a mut BattleComp,
@@ -70,6 +71,9 @@ where
             attacker.conditions(),
             target.conditions(),
         );
+        let historical_params =
+            self.battle_defs
+                .get_historical_params(self.node_state, &attacker, &target.as_ref());
 
         let style = match attack_type {
             NightPhaseAttackType::Night(attack_type) => {
@@ -103,6 +107,7 @@ where
             attacker: &attacker,
             target: &target.as_ref(),
             formation_params,
+            historical_params,
             night_conditions,
         }
         .to_attack();

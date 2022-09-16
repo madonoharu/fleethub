@@ -6,7 +6,7 @@ use crate::{
     ship::Ship,
     types::{
         BattleDefinitions, Engagement, Formation, NightAttackStyle, NightConditions,
-        NightFleetConditions, ShellingStyle, Side,
+        NightFleetConditions, NodeState, ShellingStyle, Side,
     },
 };
 
@@ -111,6 +111,16 @@ impl<'a> CompAnalyzer<'a> {
         }
     }
 
+    fn fleet_cutin_analyzer(&self) -> FleetCutinAnalyzer {
+        FleetCutinAnalyzer::new(
+            self.battle_defs,
+            NodeState::default(),
+            self.config.engagement,
+            self.comp,
+            &self.dummy,
+        )
+    }
+
     fn analyze_day(&self) -> CompDayAnalysis {
         let day_cutin_analyzer = DayCutinAnalyzer {
             battle_defs: self.battle_defs,
@@ -120,13 +130,7 @@ impl<'a> CompAnalyzer<'a> {
             formation: self.config.formation,
         };
 
-        let fleet_cutin = FleetCutinAnalyzer::new(
-            self.battle_defs,
-            self.comp,
-            self.config.engagement,
-            &self.dummy,
-        )
-        .analyze_shelling_attacks();
+        let fleet_cutin = self.fleet_cutin_analyzer().analyze_shelling_attacks();
 
         CompDayAnalysis {
             day_cutin: day_cutin_analyzer.analyze(),
@@ -143,13 +147,9 @@ impl<'a> CompAnalyzer<'a> {
         }
         .analyze();
 
-        let fleet_cutin = FleetCutinAnalyzer::new(
-            self.battle_defs,
-            self.comp,
-            self.config.engagement,
-            &self.dummy,
-        )
-        .analyze_night_attacks(&self.config.night_conditions(self.comp.side()));
+        let fleet_cutin = self
+            .fleet_cutin_analyzer()
+            .analyze_night_attacks(&self.config.night_conditions(self.comp.side()));
 
         CompNightAnalysis {
             night_cutin,
