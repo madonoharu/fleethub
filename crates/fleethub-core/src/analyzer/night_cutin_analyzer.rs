@@ -50,6 +50,7 @@ impl NightCutinAnalyzer<'_> {
             config: AttackAnalyzerConfig {
                 air_state: Default::default(),
                 engagement: self.config.engagement,
+                node_state: Default::default(),
                 attacker: AttackAnalyzerShipConfig {
                     conditions: ship.conditions(),
                     night_fleet_conditions: self.config.left_night_fleet_conditions.clone(),

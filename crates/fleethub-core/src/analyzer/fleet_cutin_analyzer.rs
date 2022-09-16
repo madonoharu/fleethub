@@ -10,7 +10,7 @@ use crate::{
     ship::Ship,
     types::{
         AttackType, BattleDefinitions, DayCutinLike, Engagement, FleetCutin, FleetType, Formation,
-        NightAttackStyle, NightAttackType, NightConditions, ShellingStyle, ShellingType,
+        NightAttackStyle, NightAttackType, NightConditions, NodeState, ShellingStyle, ShellingType,
         ShipConditions, Time,
     },
 };
@@ -34,8 +34,9 @@ pub struct FleetCutinReport<T> {
 
 pub struct FleetCutinAnalyzer<'a> {
     pub battle_defs: &'a BattleDefinitions,
-    pub comp: &'a Comp,
+    pub node_state: NodeState,
     pub engagement: Engagement,
+    pub comp: &'a Comp,
     pub target_ship: &'a Ship,
     pub target_conditions: ShipConditions,
 }
@@ -43,16 +44,18 @@ pub struct FleetCutinAnalyzer<'a> {
 impl<'a> FleetCutinAnalyzer<'a> {
     pub fn new(
         battle_defs: &'a BattleDefinitions,
-        comp: &'a Comp,
+        node_state: NodeState,
         engagement: Engagement,
+        comp: &'a Comp,
         target_ship: &'a Ship,
     ) -> Self {
         let target_side = !comp.side();
 
         Self {
             battle_defs,
-            comp,
+            node_state,
             engagement,
+            comp,
             target_ship,
             target_conditions: ShipConditions::with_side(target_side),
         }
@@ -106,6 +109,11 @@ impl<'a> FleetCutinAnalyzer<'a> {
                         AttackType::Shelling(Default::default()),
                         attacker.conditions(),
                         target.conditions(),
+                    ),
+                    historical_params: self.battle_defs.get_historical_params(
+                        self.node_state,
+                        &attacker,
+                        target,
                     ),
                 }
                 .calc_attack_params();
@@ -166,6 +174,11 @@ impl<'a> FleetCutinAnalyzer<'a> {
                         attack_type,
                         attacker.conditions(),
                         target.conditions(),
+                    ),
+                    historical_params: self.battle_defs.get_historical_params(
+                        self.node_state,
+                        &attacker,
+                        target,
                     ),
                     night_conditions,
                 }

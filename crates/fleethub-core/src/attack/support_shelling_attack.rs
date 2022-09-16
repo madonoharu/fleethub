@@ -82,6 +82,7 @@ impl SupportShellingAttackParams<'_> {
             remaining_ammo_mod,
             armor_penetration: 0.0,
             special_enemy_mods,
+            historical_mod: 1.0,
             custom_mods: attacker.custom_power_mods(),
         };
 
@@ -96,10 +97,10 @@ impl SupportShellingAttackParams<'_> {
         let formation_mod = self.formation_params.accuracy_mod;
 
         // 乗算前に切り捨て
-        let pre_multiplication =
+        let multiplicand =
             (SUPPORT_SHELLING_ACCURACY_CONSTANT + basic_accuracy_term + gears_accuracy).floor();
 
-        let accuracy_term = (pre_multiplication * formation_mod * morale_mod).floor();
+        let accuracy_term = (multiplicand * formation_mod * morale_mod).floor();
 
         Some(accuracy_term)
     }

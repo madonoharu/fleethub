@@ -5,7 +5,8 @@ use crate::{
     battle::target_picker::TargetPicker,
     error::SHIP_NOT_FOUND,
     types::{
-        AttackType, BattleDefinitions, Engagement, Participant, ShipPosition, TorpedoAttackType,
+        AttackType, BattleDefinitions, Engagement, NodeState, Participant, ShipPosition,
+        TorpedoAttackType,
     },
 };
 
@@ -17,6 +18,7 @@ where
 {
     pub rng: &'a mut R,
     pub battle_defs: &'a BattleDefinitions,
+    pub node_state: NodeState,
     pub engagement: Engagement,
     pub player_comp: &'a mut BattleComp,
     pub enemy_comp: &'a mut BattleComp,
@@ -78,12 +80,16 @@ where
             attacker.conditions(),
             target.conditions(),
         );
+        let historical_params =
+            self.battle_defs
+                .get_historical_params(self.node_state, &attacker, &target.as_ref());
 
         let attack = TorpedoAttackParams {
             attacker: &attacker,
             target: &target.as_ref(),
             engagement,
             formation_params,
+            historical_params,
         }
         .to_attack();
 

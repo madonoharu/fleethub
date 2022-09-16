@@ -6,6 +6,7 @@ mod attack_type;
 mod battle_conditions;
 mod battle_definitions;
 mod comp_type;
+mod compiled_evaler;
 mod const_id;
 mod contact_rank;
 mod cutin;
@@ -23,6 +24,7 @@ mod gear_type_id_array;
 mod matchup;
 mod meta;
 mod morale_state;
+mod node_state;
 mod org_type;
 mod participant;
 mod phase;
@@ -47,6 +49,7 @@ pub use attack_type::*;
 pub use battle_conditions::*;
 pub use battle_definitions::*;
 pub use comp_type::*;
+pub use compiled_evaler::*;
 pub use const_id::*;
 pub use contact_rank::*;
 pub use cutin::*;
@@ -64,6 +67,7 @@ pub use gear_type::*;
 pub use gear_type_id_array::*;
 pub use meta::*;
 pub use morale_state::*;
+pub use node_state::*;
 pub use org_type::*;
 pub use participant::*;
 pub use phase::*;
@@ -79,3 +83,20 @@ pub use slot_size_vec::*;
 pub use special_enemy_type::*;
 pub use speed::*;
 pub use state::*;
+
+#[derive(Debug, Clone, Copy)]
+pub struct HistoricalParams {
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub target_evasion_mod: f64,
+}
+
+impl Default for HistoricalParams {
+    fn default() -> Self {
+        Self {
+            power_mod: 1.0,
+            accuracy_mod: 1.0,
+            target_evasion_mod: 1.0,
+        }
+    }
+}

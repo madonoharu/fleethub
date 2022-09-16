@@ -39,6 +39,10 @@ const config = {
       .toString(),
     SITE_VERSION: `${require("./package.json").version}`,
     CORE_VERSION,
+    MASTER_DATA_PATH:
+      process.env.NODE_ENV === "development"
+        ? "data/master_data.dev.json"
+        : "data/master_data.json",
   },
   i18n,
 

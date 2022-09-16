@@ -1,6 +1,6 @@
 {
   "name": "fleethub",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "private": true,
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
@@ -41,7 +41,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/fs-extra": "^9.0.13",
-    "@types/jest": "^29.0.2",
+    "@types/jest": "^29.0.3",
     "@types/node": "^18.7.18",
     "@typescript-eslint/eslint-plugin": "5.37.0",
     "@typescript-eslint/parser": "5.37.0",

@@ -2,8 +2,8 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 use crate::types::{
-    AirState, Engagement, NightConditions, NightFleetConditions, OrgType, ShipConditions,
-    ShipPosition, Side,
+    AirState, Engagement, NightConditions, NightFleetConditions, NodeState, OrgType,
+    ShipConditions, ShipPosition, Side,
 };
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
@@ -40,6 +40,7 @@ impl AttackAnalyzerShipConfig {
 pub struct AttackAnalyzerConfig {
     pub air_state: AirState,
     pub engagement: Engagement,
+    pub node_state: NodeState,
     pub attacker: AttackAnalyzerShipConfig,
     pub target: AttackAnalyzerShipConfig,
 }
@@ -59,8 +60,9 @@ impl Default for AttackAnalyzerConfig {
         }
 
         Self {
-            air_state: AirState::AirSupremacy,
+            air_state: Default::default(),
             engagement: Default::default(),
+            node_state: Default::default(),
             attacker,
             target,
         }

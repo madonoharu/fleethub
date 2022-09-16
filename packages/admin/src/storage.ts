@@ -13,36 +13,34 @@ export interface SaveOptions extends GcsSaveOptions {
   metadata?: Record<string, string>;
 }
 
-export const BUCKET_NAME = "kcfleethub.appspot.com";
-export const GCS_PREFIX_URL = `https://storage.googleapis.com/${BUCKET_NAME}`;
-export const MASTER_DATA_PATH = "data/master_data.json";
-
-export const getBucket = () => getApp().storage().bucket();
-
-export const readJson = <
-  P extends string,
-  T extends P extends typeof MASTER_DATA_PATH ? MasterData : unknown
->(
-  path: P
-) =>
-  got
-    .get(`https://storage.googleapis.com/kcfleethub.appspot.com/${path}`)
-    .json<T>();
-
-export const exists = (path: string): Promise<boolean> =>
-  getBucket()
-    .file(path)
-    .exists()
-    .then((res) => res[0]);
-
 export type Metadata = {
   generation: string;
 };
 
-export const getMetadata = async (path: string): Promise<Metadata> => {
+export const BUCKET_NAME = "kcfleethub.appspot.com";
+export const GCS_PREFIX_URL = `https://storage.googleapis.com/${BUCKET_NAME}`;
+export const MASTER_DATA_PATH =
+  process.env["MASTER_DATA_PATH"] || "data/master_data.json";
+
+const getBucket = () => getApp().storage().bucket();
+
+export function readJson<T>(path: string): Promise<T> {
+  return got
+    .get(`https://storage.googleapis.com/kcfleethub.appspot.com/${path}`)
+    .json<T>();
+}
+
+export function exists(path: string): Promise<boolean> {
+  return getBucket()
+    .file(path)
+    .exists()
+    .then((res) => res[0]);
+}
+
+export async function getMetadata(path: string): Promise<Metadata> {
   const res = await getBucket().file(path).getMetadata();
   return res[0] as Metadata;
-};
+}
 
 const createGcsSaveOptions = (options?: SaveOptions): GcsSaveOptions => {
   const result: SaveOptions = { ...options };
@@ -77,11 +75,8 @@ export const write = async (
   await file.save(data, createGcsSaveOptions(options));
 };
 
-export const writeJson = async <
-  P extends string,
-  T extends P extends typeof MASTER_DATA_PATH ? MasterData : object
->(
-  path: P,
+export const writeJson = async <T extends object>(
+  path: string,
   data: T,
   options?: SaveOptions
 ): Promise<T> => {
@@ -94,30 +89,29 @@ export const writeJson = async <
   return data;
 };
 
-export const updateJson = async <
-  P extends string,
-  T extends P extends typeof MASTER_DATA_PATH ? MasterData : object
->(
-  path: P,
+export async function updateJson<T extends object>(
+  path: string,
   updater: (current: T | undefined) => T,
   options?: SaveOptions
-): Promise<T> => {
+): Promise<T> {
   let current: T | undefined;
   if (await exists(path)) {
-    current = await readJson<P, T>(path);
+    current = await readJson<T>(path);
   }
 
   const next = updater(current);
 
   if (!dequal(current, next)) {
     console.log(`update: ${path}`);
-    await writeJson<P, T>(path, next, options);
+    await writeJson<T>(path, next, options);
   }
 
   return next;
-};
+}
 
-export const readMasterData = () => readJson(MASTER_DATA_PATH);
+export function readMasterData(): Promise<MasterData> {
+  return readJson(MASTER_DATA_PATH);
+}
 
 export async function writeMasterData(data: MasterData): Promise<void> {
   await writeJson(

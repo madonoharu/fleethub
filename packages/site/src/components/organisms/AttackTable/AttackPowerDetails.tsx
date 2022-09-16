@@ -124,6 +124,13 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
         </>
       )}
 
+      {params.historical_mod !== 1 && (
+        <LabeledValue
+          label={t("historical_mod")}
+          value={numstr(params.historical_mod) || "-"}
+        />
+      )}
+
       {hasCustom && (
         <>
           <Divider label={t("custom_mods")} />

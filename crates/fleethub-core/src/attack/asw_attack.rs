@@ -2,7 +2,7 @@ use crate::{
     member::BattleMemberRef,
     types::{
         matches_gear_id, AswAttackStyle, AswAttackType, AswPhase, AttackPowerModifier, Engagement,
-        FormationParams, GearAttr, GearType, ShipType,
+        FormationParams, GearAttr, GearType, HistoricalParams, ShipType,
     },
 };
 
@@ -19,6 +19,7 @@ pub struct AswAttackParams<'a> {
     pub target: &'a BattleMemberRef<'a>,
     pub engagement: Engagement,
     pub formation_params: FormationParams,
+    pub historical_params: HistoricalParams,
 }
 
 impl AswAttackParams<'_> {
@@ -30,6 +31,7 @@ impl AswAttackParams<'_> {
             target,
             engagement,
             formation_params,
+            historical_params,
         } = self;
 
         let attacker_side = attacker.side();
@@ -82,6 +84,8 @@ impl AswAttackParams<'_> {
                 .as_ref()
                 .map_or(1.0, |mods| mods.critical_power_mod);
 
+            let historical_mod = historical_params.power_mod;
+
             Some(AttackPowerParams {
                 basic,
                 cap: ASW_POWER_CAP,
@@ -93,6 +97,7 @@ impl AswAttackParams<'_> {
                 ap_shell_mod: None,
                 aerial_power: None,
                 special_enemy_mods: Default::default(),
+                historical_mod,
                 custom_mods: attacker.custom_power_mods(),
             })
         };
@@ -124,12 +129,15 @@ impl AswAttackParams<'_> {
 
             let formation_mod = formation_params.accuracy_mod;
             let morale_mod = attacker.morale_state().common_accuracy_mod();
+            let historical_mod = historical_params.accuracy_mod;
 
             // 乗算前に切り捨て
-            let pre_multiplication =
+            let multiplicand =
                 (ASW_ACCURACY_CONSTANT + basic_accuracy_term + asw_equipment_mod + ibonus).floor();
+            let post_formation_mod = (multiplicand * formation_mod * morale_mod).floor();
+            let accuracy_term = (post_formation_mod * historical_mod).floor();
 
-            Some(pre_multiplication * formation_mod * morale_mod)
+            Some(accuracy_term)
         };
 
         let calc_hit_rate_params = || {

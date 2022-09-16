@@ -5,10 +5,12 @@ import {
   FormationDef,
   NightCutinDef,
   NestedFormationDef,
-  MasterData,
+  MasterBattleDefinitions,
+  HistoricalBonusDef,
 } from "fleethub-core";
 import set from "lodash/set";
 
+import { ExprParser } from "./parser";
 import { SpreadsheetTable } from "./utils";
 
 function getAntiAirCutinDefs(table: SpreadsheetTable): AntiAirCutinDef[] {
@@ -80,15 +82,47 @@ function getNightCutinDefs(table: SpreadsheetTable): NightCutinDef[] {
   });
 }
 
-type ConfigKey = "anti_air_cutin" | "day_cutin" | "night_cutin" | "formation";
+function getHistoricalBonusDefs(
+  parser: ExprParser,
+  table: SpreadsheetTable
+): HistoricalBonusDef[] {
+  const { headerValues, rows } = table;
 
-export function createConfig(
-  tables: Record<ConfigKey, SpreadsheetTable>
-): Pick<MasterData, ConfigKey> {
+  return rows
+    .map((row) => {
+      const def: HistoricalBonusDef = {};
+
+      headerValues.forEach((h) => {
+        const cellValue = row[h];
+        if (cellValue) {
+          set(def, h, cellValue);
+        }
+      });
+
+      if (def.ship) {
+        def.ship = parser.parseHistoricalBonusesShip(def.ship);
+      }
+      if (def.enemy) {
+        def.ship = parser.parseHistoricalBonusesShip(def.enemy);
+      }
+
+      return def;
+    })
+    .filter((def) => Boolean(def.map));
+}
+
+export function createBattleDefinitions(
+  parser: ExprParser,
+  tables: Record<keyof MasterBattleDefinitions, SpreadsheetTable>
+): MasterBattleDefinitions {
   return {
     anti_air_cutin: getAntiAirCutinDefs(tables.anti_air_cutin),
     day_cutin: getDayCutinDefs(tables.day_cutin),
     night_cutin: getNightCutinDefs(tables.night_cutin),
     formation: getFormationDefs(tables.formation),
+    historical_bonuses: getHistoricalBonusDefs(
+      parser,
+      tables.historical_bonuses
+    ),
   };
 }

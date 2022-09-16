@@ -28,7 +28,7 @@ if (typeof window !== "undefined") {
 
 export const GCS_PREFIX_URL =
   "https://storage.googleapis.com/kcfleethub.appspot.com";
-export const MASTER_DATA_PATH = "data/master_data.json";
+export const MASTER_DATA_PATH = process.env.MASTER_DATA_PATH;
 export const SHIP_BANNERS_PATH = "data/ship_banners.json";
 
 export const publicFileExists = (id: string) => {

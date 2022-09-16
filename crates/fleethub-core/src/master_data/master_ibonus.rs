@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-use super::{compiled_evaler::CompiledEvaler, master_gear::MasterGear};
+use crate::types::CompiledEvaler;
+
+use super::master_gear::MasterGear;
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterIBonusRule {

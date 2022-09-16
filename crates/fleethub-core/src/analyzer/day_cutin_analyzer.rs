@@ -66,6 +66,7 @@ impl DayCutinAnalyzer<'_> {
             config: AttackAnalyzerConfig {
                 air_state,
                 engagement: self.engagement,
+                node_state: Default::default(),
                 attacker: AttackAnalyzerShipConfig {
                     conditions: ship.conditions(),
                     fleet_los_mod,

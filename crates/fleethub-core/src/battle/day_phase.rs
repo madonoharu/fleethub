@@ -2,14 +2,12 @@ use itertools::Itertools;
 use rand::prelude::*;
 
 use crate::{
-    attack::Attack,
     attack::DayPhaseAttackParams,
     battle::target_picker::TargetPicker,
     error::SHIP_NOT_FOUND,
-    member::BattleMemberRef,
     types::{
         AirState, BattleDefinitions, DayCombatRound, DayPhaseAttackStyle, DayPhaseAttackType,
-        Engagement, Participant, ShellingStyle, ShipPosition,
+        Engagement, NodeState, Participant, ShellingStyle, ShipPosition,
     },
 };
 
@@ -40,6 +38,7 @@ where
     pub rng: &'a mut R,
     pub battle_defs: &'a BattleDefinitions,
     pub engagement: Engagement,
+    pub node_state: NodeState,
     pub air_state: AirState,
     pub round: DayCombatRound,
     pub player_comp: &'a mut BattleComp,
@@ -119,6 +118,10 @@ where
             target.conditions(),
         );
 
+        let historical_params =
+            self.battle_defs
+                .get_historical_params(self.node_state, &attacker, &target.as_ref());
+
         let style = match attack_type {
             DayPhaseAttackType::Shelling(attack_type) => {
                 let is_main_flagship = attacker.position.is_main_flagship();
@@ -146,66 +149,9 @@ where
             attacker: &attacker,
             target: &target.as_ref(),
             formation_params,
+            historical_params,
         }
         .to_attack()
         .apply(self.rng, &mut target)
-    }
-}
-
-pub struct DayPhaseAction<'a> {
-    pub attack_type: DayPhaseAttackType,
-    pub battle_defs: &'a BattleDefinitions,
-    pub air_state: AirState,
-    pub engagement: Engagement,
-    pub fleet_los_mod: f64,
-    pub attacker: &'a BattleMemberRef<'a>,
-    pub target: &'a BattleMemberRef<'a>,
-}
-
-impl DayPhaseAction<'_> {
-    fn attack<R: Rng + ?Sized>(self, rng: &mut R) -> Attack {
-        let attack_type = self.attack_type;
-        let attacker = self.attacker;
-        let target = self.target;
-        let attacker_side = attacker.side();
-        let engagement = self.engagement;
-        let air_state_rank = self.air_state.rank(attacker_side);
-        let fleet_los_mod = self.fleet_los_mod;
-
-        let style = match attack_type {
-            DayPhaseAttackType::Shelling(attack_type) => {
-                let is_main_flagship = attacker.position.is_main_flagship();
-
-                let observation_term = attacker
-                    .calc_observation_term(fleet_los_mod, is_main_flagship, air_state_rank)
-                    .unwrap_or_default();
-                let anti_inst = target.is_installation();
-                let day_cutin_set = attacker.get_possible_day_cutin_set(anti_inst);
-
-                let cutin_def = day_cutin_set
-                    .into_iter()
-                    .filter_map(|ci| self.battle_defs.day_cutin.get(&ci))
-                    .find(|def| def.gen_bool(observation_term, rng));
-
-                let style = ShellingStyle::new(attack_type, cutin_def);
-                DayPhaseAttackStyle::Shelling(style)
-            }
-            DayPhaseAttackType::Asw(ty) => ty.into(),
-        };
-
-        let formation_params = self.battle_defs.get_formation_params(
-            attack_type,
-            attacker.conditions(),
-            target.conditions(),
-        );
-
-        DayPhaseAttackParams {
-            style,
-            engagement,
-            attacker,
-            target,
-            formation_params,
-        }
-        .to_attack()
     }
 }

@@ -6,7 +6,7 @@ import {
   ShipAttr,
   SpeedGroup,
 } from "fleethub-core";
-import { MstPlayerShip, MstShip, Start2 } from "kc-tools";
+import { MstPlayerShip, MstShip } from "kc-tools";
 import set from "lodash/set";
 
 import { ExprParser } from "./parser";
@@ -146,10 +146,10 @@ const getConvertibleShips = (ships: MasterShip[]) => {
 };
 
 function createShips(
-  table: SpreadsheetTable,
-  start2: Start2,
-  nationalityMap: Map<number, number>
+  parser: ExprParser,
+  table: SpreadsheetTable
 ): MasterShip[] {
+  const { start2, nationalityMap } = parser;
   const { headerValues, rows } = table;
 
   const createShip = (mst: MstShip): MasterShip => {
@@ -190,7 +190,7 @@ function createShips(
     if (isPlayerShip(mst)) {
       const { api_aftershipid, api_afterlv } = mst;
       const ship: MasterShip = {
-        nationality: nationalityMap.get(mst.api_ctype),
+        nationality: nationalityMap.getByCtype(mst.api_ctype),
         speed_group: getDefaultSpeedGroup(base),
         ...base,
 
@@ -255,35 +255,11 @@ const createShipAttrs = (parser: ExprParser, table: SpreadsheetTable) => {
   return attrs;
 };
 
-function createNationalityMap(table: SpreadsheetTable): Map<number, number> {
-  const map = new Map<number, number>();
-
-  table.rows.forEach((row) => {
-    const id = Number(row.id);
-
-    if (!Number.isInteger(id)) {
-      return;
-    }
-
-    const ctypes = String(row.ctypes)
-      .split(",")
-      .map((str) => Number(str))
-      .filter(Number.isInteger);
-
-    ctypes.forEach((ctype) => {
-      map.set(ctype, id);
-    });
-  });
-
-  return map;
-}
-
 export function createShipData(
   parser: ExprParser,
   tables: Record<"ships" | "ship_attrs" | "nationalities", SpreadsheetTable>
 ): Pick<MasterData, "ships" | "ship_attrs"> {
-  const nationalityMap = createNationalityMap(tables.nationalities);
-  const ships = createShips(tables.ships, parser.start2, nationalityMap);
+  const ships = createShips(parser, tables.ships);
   const ship_attrs = createShipAttrs(parser, tables.ship_attrs);
 
   return {

@@ -14,19 +14,37 @@ export function fetchStart2(): Promise<Start2> {
     .json();
 }
 
+export function fetchCtypeNames(): Promise<string[]> {
+  return got
+    .get(
+      "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json"
+    )
+    .json();
+}
+
+export async function createMasterDataBySpreadsheet() {
+  const spreadsheet = new MasterDataSpreadsheet();
+
+  const [start2, ctypeNames, tables] = await Promise.all([
+    fetchStart2(),
+    fetchCtypeNames(),
+    spreadsheet.readTables(),
+  ]);
+
+  return createMasterData(start2, ctypeNames, tables);
+}
+
 export async function updateMasterDataBySpreadsheet(): Promise<void> {
   const spreadsheet = new MasterDataSpreadsheet();
 
-  const [tables, start2, currentMd, ctype] = await Promise.all([
-    spreadsheet.readTables(),
+  const [start2, ctypeNames, tables, currentMd] = await Promise.all([
     fetchStart2(),
+    fetchCtypeNames(),
+    spreadsheet.readTables(),
     storage.readMasterData(),
-    got(
-      "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json"
-    ).json<string[]>(),
   ]);
 
-  const nextMd = createMasterData(start2, ctype, tables);
+  const nextMd = createMasterData(start2, ctypeNames, tables);
   const updatesStorage = !storage.equalMasterData(currentMd, nextMd);
 
   await Promise.all([
