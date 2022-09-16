@@ -63,7 +63,8 @@ const NodeAttackDetails: React.FC<Props> = ({
   };
 
   const historical_mod =
-    result.left.day.data["SingleAttack"]?.attack_power_params?.historical_mod;
+    result.left.day.data["SingleAttack"]?.attack_power_params?.historical_mod ||
+    1;
 
   return (
     <Paper sx={{ p: 1 }}>
