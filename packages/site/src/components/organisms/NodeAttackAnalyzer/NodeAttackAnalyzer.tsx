@@ -17,7 +17,7 @@ import {
   stepsSelectors,
   stepsSlice,
 } from "../../../store";
-import { NumberInput, Select } from "../../molecules";
+import { Select } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import CustomModifiersDialog from "../CustomModifiersDialog";
 import EngagementSelect from "../EngagementSelect";
@@ -112,7 +112,6 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
             value={config.engagement || "Parallel"}
             onChange={(engagement) => handleConfigChange({ engagement })}
           />
-          <NumberInput value={config.node_state?.map || 0} />
           <NodeStateForm
             value={config.node_state}
             onChange={(node_state) => handleConfigChange({ node_state })}
