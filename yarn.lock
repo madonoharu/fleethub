@@ -657,7 +657,7 @@ __metadata:
     "@fh/admin": "workspace:*"
     "@fh/utils": "workspace:*"
     "@firebase/analytics": ^0.8.0
-    "@firebase/app": ^0.7.32
+    "@firebase/app": ^0.7.33
     "@firebase/storage": ^0.9.9
     "@mui/icons-material": ^5.10.3
     "@mui/lab": ^5.0.0-alpha.99
@@ -741,16 +741,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app@npm:^0.7.32":
-  version: 0.7.32
-  resolution: "@firebase/app@npm:0.7.32"
+"@firebase/app@npm:^0.7.33":
+  version: 0.7.33
+  resolution: "@firebase/app@npm:0.7.33"
   dependencies:
     "@firebase/component": 0.5.17
     "@firebase/logger": 0.3.3
     "@firebase/util": 1.6.3
     idb: 7.0.1
     tslib: ^2.1.0
-  checksum: 005b1fea853bb2cd63ad531a7f34f866482684226d2f6d7a7a5bbc7be9d67f83f954f197a0ad29ad6178aa3e566dace10d5842ecdfd464ff900b41ad2dc9c7b9
+  checksum: 52904eb31c6a56561c331eba76a9d37a6d2b9b4f804410391dc74b3a02a2f6e2c8e60ca2d61e9c81333a48b373bb8152634e6204d95cf792bcef34aab4d5e486
   languageName: node
   linkType: hard
 
@@ -911,8 +911,8 @@ __metadata:
   linkType: hard
 
 "@google-cloud/storage@npm:^6.1.0":
-  version: 6.4.2
-  resolution: "@google-cloud/storage@npm:6.4.2"
+  version: 6.5.0
+  resolution: "@google-cloud/storage@npm:6.5.0"
   dependencies:
     "@google-cloud/paginator": ^3.0.7
     "@google-cloud/projectify": ^3.0.0
@@ -932,7 +932,7 @@ __metadata:
     retry-request: ^5.0.0
     teeny-request: ^8.0.0
     uuid: ^8.0.0
-  checksum: ebd8bf46675f21b429915d9889c56574acc395745126e40f96803334c1e2d8b35a60d22b1f0ecf9db4bb67c373f53e4eeef9406af334cdf9c0ca8461da777ab3
+  checksum: b97dc19814e4154ef0920202e79feaf14c3d7de2ea9aa295bc2e2784b3b0ba4e7feabdd4b499d0f2e996accc4fa965b974174bdb60d5f51408967a268bdc5b9f
   languageName: node
   linkType: hard
 
@@ -2383,13 +2383,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^29.0.2":
-  version: 29.0.2
-  resolution: "@types/jest@npm:29.0.2"
+"@types/jest@npm:*, @types/jest@npm:^29.0.3":
+  version: 29.0.3
+  resolution: "@types/jest@npm:29.0.3"
   dependencies:
     expect: ^29.0.0
     pretty-format: ^29.0.0
-  checksum: 27c46b58fad9791adf88167ba2c14ae3513cb1fe5df038faafe7fc4513ebb230dd8029a1dd0acd1abeb82aa014839ac10e0dcf1bfae9fcc0e69bc1eb1e5204f0
+  checksum: 14a8ec1954540ec59f4072c3c4dbc6b5d5ff616556c98671aca26606bdf9d49616a3f269f3e488c80cd481ee19880351575c1f6895827628818e193600c121e0
   languageName: node
   linkType: hard
 
@@ -3389,16 +3389,16 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.21.3":
-  version: 4.21.3
-  resolution: "browserslist@npm:4.21.3"
+  version: 4.21.4
+  resolution: "browserslist@npm:4.21.4"
   dependencies:
-    caniuse-lite: ^1.0.30001370
-    electron-to-chromium: ^1.4.202
+    caniuse-lite: ^1.0.30001400
+    electron-to-chromium: ^1.4.251
     node-releases: ^2.0.6
-    update-browserslist-db: ^1.0.5
+    update-browserslist-db: ^1.0.9
   bin:
     browserslist: cli.js
-  checksum: ff512a7bcca1c530e2854bbdfc7be2791d0fb524097a6340e56e1d5924164c7e4e0a9b070de04cdc4c149d15cb4d4275cb7c626ebbce954278a2823aaad2452a
+  checksum: 4af3793704dbb4615bcd29059ab472344dc7961c8680aa6c4bb84f05340e14038d06a5aead58724eae69455b8fade8b8c69f1638016e87e5578969d74c078b79
   languageName: node
   linkType: hard
 
@@ -3528,10 +3528,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001332, caniuse-lite@npm:^1.0.30001370":
-  version: 1.0.30001400
-  resolution: "caniuse-lite@npm:1.0.30001400"
-  checksum: 984e29d3c02fd02a59cc92ef4a5e9390fce250de3791056362347cf901f0d91041246961a57cfa8fed800538d03ee341bc4f7eaed19bf7be0ef8a181d94cd848
+"caniuse-lite@npm:^1.0.30001332, caniuse-lite@npm:^1.0.30001400":
+  version: 1.0.30001402
+  resolution: "caniuse-lite@npm:1.0.30001402"
+  checksum: 6068ccccd64b357f75388cb2303cf351b686b20800571d0a845bff5c0e0d24f83df0133afbbdd8177a33eb087c93d39ecf359035a52b2feac5f182c946f706ee
   languageName: node
   linkType: hard
 
@@ -4422,10 +4422,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.4.202":
-  version: 1.4.251
-  resolution: "electron-to-chromium@npm:1.4.251"
-  checksum: 470a04dfe1d34814f8bc7e1dde606851b6f787a6d78655a57df063844fc71feb64ce793c52a3a130ceac1fc368b8d3e25a4c55c847a1e9c02c3090f9dcbf40ac
+"electron-to-chromium@npm:^1.4.251":
+  version: 1.4.253
+  resolution: "electron-to-chromium@npm:1.4.253"
+  checksum: 74a4a0f983ffa7c42b1d6847f96c7c333ab86bd2eb374a98ec58ff5ffd2ec9bc6295442bb83b7ba54aeff31a453915b7b0ccf9040863dafb72d8bc182ee1f69f
   languageName: node
   linkType: hard
 
@@ -5139,11 +5139,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.9.0
-  resolution: "fleethub-core@npm:1.9.0"
+  version: 1.10.0
+  resolution: "fleethub-core@npm:1.10.0"
   dependencies:
     equipment-bonus: "*"
-  checksum: e4215be034581bca1c26870ebd1b16f193cc9b2757f6faa4779bc5493c66410f226f5cf826bfc58840468a0414ccf0bb20edfe3846c998a25d955c4fb0e948ea
+  checksum: 505d71c1ef74f9b1ea7a1a831916026e977d159d5a8892cf8080977c8af1bf71d4c231cf8888272ac71de32fe92117caf2dce99e9c2256cacdd463a2e8bf9127
   languageName: node
   linkType: hard
 
@@ -5166,7 +5166,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     "@types/fs-extra": ^9.0.13
-    "@types/jest": ^29.0.2
+    "@types/jest": ^29.0.3
     "@types/node": ^18.7.18
     "@typescript-eslint/eslint-plugin": 5.37.0
     "@typescript-eslint/parser": 5.37.0
@@ -10560,7 +10560,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"update-browserslist-db@npm:^1.0.5":
+"update-browserslist-db@npm:^1.0.9":
   version: 1.0.9
   resolution: "update-browserslist-db@npm:1.0.9"
   dependencies:
