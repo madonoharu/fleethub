@@ -192,6 +192,7 @@
   "slots": "搭載",
   "day_gunfit_accuracy": "晝戰適重補正",
   "night_gunfit_accuracy": "夜戰適重補正",
+  "debuff": "削甲",
   "FleetType": {
     "Main": "主力",
     "Escort": "護衛",

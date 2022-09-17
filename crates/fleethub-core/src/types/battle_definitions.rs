@@ -11,7 +11,7 @@ use crate::member::BattleMemberRef;
 
 use super::{
     AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, HistoricalParams, NightCutin,
-    NightCutinLike, NodeId, NodeState, ShipConditions,
+    NightCutinLike, NodeState, ShipConditions,
 };
 
 #[serde_as]
@@ -164,7 +164,7 @@ impl DayCutinDef {
 #[serde(default)]
 pub struct HistoricalBonusDef {
     map: i16,
-    node: NodeId,
+    node: CompiledEvaler,
     phase: u8,
     debuff: bool,
     ship: CompiledEvaler,
@@ -185,7 +185,7 @@ impl HistoricalBonusDef {
         enemy: &BattleMemberRef,
     ) -> bool {
         self.map == node_state.map
-            && (self.node.is_empty() || self.node == node_state.node)
+            && (self.node.is_empty() || self.node.matches(&mut node_state.node.ns()))
             && (self.phase == 0 || self.phase == node_state.phase)
             && (!self.debuff || self.debuff == node_state.debuff)
             && (self.ship.is_empty() || self.ship.matches(&mut ship.ns()))

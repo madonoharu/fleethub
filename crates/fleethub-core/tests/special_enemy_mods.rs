@@ -1,8 +1,16 @@
 mod common;
 
-use fleethub_core::types::{AttackPowerModifier, SpecialEnemyType, Time};
+use fleethub_core::types::{
+    AttackPowerModifier, AttackType, SpecialEnemyModifiers, SpecialEnemyType,
+};
 
-fn test_case(gears: Vec<&str>, expected: (f64, f64)) {
+use SpecialEnemyType::*;
+
+fn get_special_enemy_mods(
+    special_enemy_type: SpecialEnemyType,
+    attack_type: AttackType,
+    gears: Vec<&str>,
+) -> SpecialEnemyModifiers {
     let get = |index: usize| gears.get(index).unwrap_or(&"").to_string();
 
     let g1 = get(0);
@@ -22,11 +30,7 @@ fn test_case(gears: Vec<&str>, expected: (f64, f64)) {
         gx = gx
     };
 
-    let mods = ship.special_enemy_mods(SpecialEnemyType::SoftSkinned, Time::Day);
-    assert_eq!(
-        mods.landing_craft_synergy_mod,
-        AttackPowerModifier::from(expected)
-    );
+    ship.special_enemy_mods(special_enemy_type, attack_type)
 }
 
 macro_rules! table {
@@ -37,6 +41,15 @@ macro_rules! table {
 
 #[test]
 fn test_landing_craft_synergy_mod() {
+    fn test_case(gears: Vec<&str>, expected: (f64, f64)) {
+        let mods =
+            get_special_enemy_mods(SoftSkinned, AttackType::Shelling(Default::default()), gears);
+        assert_eq!(
+            mods.landing_craft_synergy_mod,
+            AttackPowerModifier::from(expected)
+        );
+    }
+
     table! {
         ["装甲艇(AB艇)"] => (1.0, 0.0),
         ["武装大発"] => (1.0, 0.0),
@@ -66,4 +79,87 @@ fn test_landing_craft_synergy_mod() {
         ["武装大発", "装甲艇(AB艇)", "大発動艇", "特二式内火艇"] => (1.56, 15.0),
         ["武装大発", "装甲艇(AB艇)", "大発動艇", "大発動艇", "大発動艇"] => (1.56, 15.0),
     }
+}
+
+#[test]
+fn test_anti_isolated_island() {
+    fn test_case(gears: Vec<&str>, expected: (f64, f64)) {
+        let mods = get_special_enemy_mods(
+            IsolatedIsland,
+            AttackType::Shelling(Default::default()),
+            gears,
+        );
+        assert_eq!(mods.precap_general_mod, AttackPowerModifier::from(expected));
+    }
+
+    table! {
+        ["大発動艇(II号戦車/北アフリカ仕様)"] => (2.16, 0.0),
+    }
+}
+
+#[test]
+fn test_special_enemy_mods_with_attack_type_torpedo() {
+    [
+        None,
+        SoftSkinned,
+        Pillbox,
+        IsolatedIsland,
+        SupplyDepot,
+        NewSupplyDepot,
+        HarbourSummerPrincess,
+    ]
+    .into_iter()
+    .for_each(|ty| {
+        assert_eq!(
+            get_special_enemy_mods(
+                ty,
+                AttackType::Torpedo,
+                vec![
+                    "WG42 (Wurfgerät 42)",
+                    "武装大発",
+                    "装甲艇(AB艇)",
+                    "大発動艇(II号戦車/北アフリカ仕様)"
+                ]
+            ),
+            Default::default()
+        );
+    });
+
+    assert_eq!(
+        get_special_enemy_mods(SpecialEnemyType::PtImp, AttackType::Torpedo, vec![]),
+        SpecialEnemyModifiers {
+            postcap_general_mod: (0.35, 15.0).into(),
+            ..Default::default()
+        }
+    );
+}
+
+#[test]
+fn test_special_enemy_mods_with_attack_type_support_shelling() {
+    [
+        None,
+        SoftSkinned,
+        Pillbox,
+        IsolatedIsland,
+        SupplyDepot,
+        NewSupplyDepot,
+        HarbourSummerPrincess,
+        PtImp,
+    ]
+    .into_iter()
+    .for_each(|ty| {
+        assert_eq!(
+            get_special_enemy_mods(
+                ty,
+                AttackType::SupportShelling(Default::default()),
+                vec![
+                    "WG42 (Wurfgerät 42)",
+                    "武装大発",
+                    "装甲艇(AB艇)",
+                    "大発動艇(II号戦車/北アフリカ仕様)"
+                ]
+            ),
+            Default::default()
+        );
+    });
 }

@@ -103,7 +103,7 @@ function getHistoricalBonusDefs(
         def.ship = parser.parseHistoricalBonusesShip(def.ship);
       }
       if (def.enemy) {
-        def.ship = parser.parseHistoricalBonusesShip(def.enemy);
+        def.enemy = parser.parseHistoricalBonusesShip(def.enemy);
       }
 
       return def;

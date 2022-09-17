@@ -1,7 +1,8 @@
 use crate::{
-    attack::SpecialEnemyModifiers,
     ship::Ship,
-    types::{gear_id, GearType, ShipType, SpecialEnemyType, Time},
+    types::{
+        gear_id, AttackType, GearAttr, GearType, ShipType, SpecialEnemyModifiers, SpecialEnemyType,
+    },
 };
 
 impl Ship {
@@ -9,17 +10,9 @@ impl Ship {
     pub fn special_enemy_mods(
         &self,
         special_enemy_type: SpecialEnemyType,
-        time: Time,
+        attack_type: AttackType,
     ) -> SpecialEnemyModifiers {
-        special_enemy_modifiers(self, special_enemy_type, time)
-    }
-
-    /// 砲撃支援特効補正
-    pub fn support_shelling_special_enemy_mods(
-        &self,
-        special_enemy_type: SpecialEnemyType,
-    ) -> SpecialEnemyModifiers {
-        support_shelling_special_enemy_modifiers(self, special_enemy_type)
+        special_enemy_modifiers(self, special_enemy_type, attack_type)
     }
 }
 
@@ -89,43 +82,23 @@ macro_rules! apply_mod {
     };
 }
 
-/// 特効補正
-pub fn special_enemy_modifiers(
-    attacker: &Ship,
-    special_enemy_type: SpecialEnemyType,
-    time: Time,
-) -> SpecialEnemyModifiers {
+fn anti_pt_imp_modifiers(attacker: &Ship, attack_type: AttackType) -> SpecialEnemyModifiers {
     let mut mods = SpecialEnemyModifiers::new();
-
-    if special_enemy_type.is_none() {
-        return mods;
-    }
-
     let gears = &attacker.gears;
 
-    let has_seaplane = gears.has_by(|gear| {
-        matches!(
-            gear.gear_type,
-            GearType::SeaplaneBomber | GearType::SeaplaneFighter
-        )
-    });
-
-    let cb_dive_bomber_count = gears.count_type(GearType::CbDiveBomber);
-
-    let has_aa_shell = gears.has_type(GearType::AntiAirShell);
-    let has_ap_shell = gears.has_type(GearType::ApShell);
-
-    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
-    let armed_count = gears.count(gear_id!("武装大発"));
-    let armored_boat_group_count = ab_count + armed_count;
-
-    match special_enemy_type {
-        SpecialEnemyType::PtImp => {
+    match attack_type {
+        AttackType::Shelling(_) | AttackType::Night(_) => {
             let small_gun_count = gears.count_type(GearType::SmallMainGun);
             let sec_gun_count = gears.count_type(GearType::SecondaryGun);
-            let jet_fighter_bomber_count = gears.count_type(GearType::JetFighterBomber);
             let aa_gun_count = gears.count_type(GearType::AntiAirGun);
             let lookouts_count = gears.count_type(GearType::ShipPersonnel);
+
+            let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
+            let armed_count = gears.count(gear_id!("武装大発"));
+            let armored_boat_group_count = ab_count + armed_count;
+
+            let cb_dive_bomber_count = gears.count_type(GearType::CbDiveBomber);
+            let jet_fighter_bomber_count = gears.count_type(GearType::JetFighterBomber);
 
             mods.postcap_general_mod.merge(0.35, 15.0);
 
@@ -141,12 +114,70 @@ pub fn special_enemy_modifiers(
             apply_mod!(mods.pt_mod, a, lookouts_count, [1.1]);
             apply_mod!(mods.pt_mod, a, armored_boat_group_count, [1.2, 1.2 * 1.1]);
 
-            if time.is_night() {
+            if attack_type.is_night() {
                 mods.pt_mod.a *= 0.6;
             }
-
-            return mods;
         }
+
+        AttackType::Torpedo => {
+            mods.postcap_general_mod.merge(0.35, 15.0);
+        }
+
+        _ => (),
+    }
+
+    mods
+}
+
+/// 特効補正
+fn special_enemy_modifiers(
+    attacker: &Ship,
+    special_enemy_type: SpecialEnemyType,
+    attack_type: AttackType,
+) -> SpecialEnemyModifiers {
+    match special_enemy_type {
+        SpecialEnemyType::PtImp => {
+            return anti_pt_imp_modifiers(attacker, attack_type);
+        }
+        SpecialEnemyType::None => {
+            return Default::default();
+        }
+        _ => (),
+    }
+
+    match attack_type {
+        AttackType::SupportShelling(_) => {
+            return support_shelling_special_enemy_modifiers(attacker, special_enemy_type);
+        }
+
+        AttackType::Torpedo | AttackType::Asw(_) => {
+            return Default::default();
+        }
+
+        AttackType::Shelling(_) | AttackType::Night(_) => (),
+    }
+
+    let mut mods = SpecialEnemyModifiers::new();
+
+    let gears = &attacker.gears;
+
+    let has_seaplane = gears.has_by(|gear| {
+        matches!(
+            gear.gear_type,
+            GearType::SeaplaneBomber | GearType::SeaplaneFighter
+        )
+    });
+
+    let anti_inst_dive_bomber_count = gears.count_attr(GearAttr::AntiInstDiveBomber);
+
+    let has_aa_shell = gears.has_type(GearType::AntiAirShell);
+    let has_ap_shell = gears.has_type(GearType::ApShell);
+
+    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
+    let armed_count = gears.count(gear_id!("武装大発"));
+    let armored_boat_group_count = ab_count + armed_count;
+
+    match special_enemy_type {
         SpecialEnemyType::BattleshipSummerPrincess => {
             apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.1);
             apply_mod!(mods.postcap_general_mod, a, has_ap_shell, 1.2);
@@ -363,7 +394,7 @@ pub fn special_enemy_modifiers(
         );
         apply_mod!(mods.postcap_general_mod, a, m4a1dd_count, [1.2]);
         apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.7, 1.7 * 1.5]);
-        apply_mod!(mods.postcap_general_mod, a, africa_count, [1.3]); //2積み検証待ち
+        apply_mod!(mods.postcap_general_mod, a, africa_count, [1.3]);
         apply_mod!(
             mods.postcap_general_mod,
             a,
@@ -392,7 +423,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                cb_dive_bomber_count,
+                anti_inst_dive_bomber_count,
                 [1.5, 1.5 * 2.0]
             );
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
@@ -403,14 +434,14 @@ pub fn special_enemy_modifiers(
                 t89_tank_or_honi_count,
                 [1.5, 1.5 * 1.4]
             );
-            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]); //2積み検証待ち
+            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [2.0]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
 
             let ship_is_dd_or_cl = matches!(attacker.ship_type, ShipType::DD | ShipType::CL);
             apply_mod!(mods.precap_general_mod, a, ship_is_dd_or_cl, 1.4);
 
-            if time.is_day() {
+            if attack_type.is_shelling() {
                 apply_mod!(
                     mods.precap_general_mod,
                     a,
@@ -437,7 +468,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                cb_dive_bomber_count,
+                anti_inst_dive_bomber_count,
                 [1.4, 1.4 * 1.75]
             );
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
@@ -448,11 +479,11 @@ pub fn special_enemy_modifiers(
                 t89_tank_or_honi_count,
                 [1.2, 1.2 * 1.4]
             );
-            // apply_mod!(mods.precap_general_mod,a, africa_count, [1.2]); //検証待ち
+            apply_mod!(mods.precap_general_mod, a, africa_count, [1.2]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [1.8]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
 
-            if time.is_day() {
+            if attack_type.is_shelling() {
                 apply_mod!(
                     mods.precap_general_mod,
                     a,
@@ -481,7 +512,7 @@ pub fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                cb_dive_bomber_count,
+                anti_inst_dive_bomber_count,
                 [1.3, 1.3 * 1.2]
             );
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.7]);
@@ -492,7 +523,7 @@ pub fn special_enemy_modifiers(
                 t89_tank_or_honi_count,
                 [1.6, 1.6 * 1.5]
             );
-            // apply_mod!(mods.precap_general_mod,a, africa_count, [1.6]); //検証待ち
+            apply_mod!(mods.precap_general_mod, a, africa_count, [1.6]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [2.0]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.8]);
         }
@@ -520,11 +551,11 @@ pub fn special_enemy_modifiers(
                 t89_tank_or_honi_count,
                 [1.5, 1.5 * 1.3]
             );
-            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]); //2積み検証待ち
+            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [1.1]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [1.5, 1.5 * 1.2]);
 
-            if time.is_day() {
+            if attack_type.is_shelling() {
                 apply_mod!(
                     mods.precap_general_mod,
                     a,

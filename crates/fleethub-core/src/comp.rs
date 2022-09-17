@@ -327,6 +327,14 @@ impl Comp {
         self.org_type.is_enemy()
     }
 
+    pub fn has_ship_eid(&self, id: &str) -> bool {
+        self.all_members().any(|ship| ship.id == id)
+    }
+
+    pub fn first_ship_id(&self) -> Option<String> {
+        self.all_members().next().map(|ship| ship.id.clone())
+    }
+
     pub fn has_route_sup(&self) -> bool {
         if let Some(sup) = &self.route_sup {
             sup.ships.values().count() > 0
