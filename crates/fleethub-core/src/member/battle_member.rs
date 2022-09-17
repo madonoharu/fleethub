@@ -111,6 +111,9 @@ where
                     bool_to_f64!(args.into_iter().any(|arg| self.gears.has_type(arg.into())))
                 }
 
+                "count" => self.gears.count(*args.first()? as u16) as f64,
+                "count_gear_type" => self.gears.count_type((*args.first()?).into()) as f64,
+
                 _ => {
                     let attr = ShipAttr::from_str(name).ok()?;
                     bool_to_f64!(self.has_attr(attr))
