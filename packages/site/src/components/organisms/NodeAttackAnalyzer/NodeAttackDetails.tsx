@@ -1,10 +1,9 @@
-import { Tabs, Tab, Stack, Paper, Typography } from "@mui/material";
+import { Tabs, Tab, Stack, Paper } from "@mui/material";
 import type { Comp, Ship, NodeAttackAnalyzerConfig } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useState } from "react";
 
 import { useFhCore } from "../../../hooks";
-import { numstr } from "../../../utils";
 
 import AttackReportDetails from "./AttackReportDetails";
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
@@ -62,10 +61,6 @@ const NodeAttackDetails: React.FC<Props> = ({
     setKey(value);
   };
 
-  const historical_mod =
-    result.left.day.data["SingleAttack"]?.attack_power_params?.historical_mod ||
-    1;
-
   return (
     <Paper sx={{ p: 1 }}>
       <Tabs value={key} onChange={handleChange}>
@@ -81,13 +76,7 @@ const NodeAttackDetails: React.FC<Props> = ({
         ))}
       </Tabs>
 
-      {historical_mod !== 1 && (
-        <Typography>
-          {t("historical_mod")}: {numstr(historical_mod)}
-        </Typography>
-      )}
-
-      <Stack flexDirection="row" gap={1} flexWrap="wrap">
+      <Stack flexDirection="row" gap={1} mt={1} flexWrap="wrap">
         <AttackReportDetails
           css={{ flexBasis: 1, flexGrow: 1 }}
           tag={key}

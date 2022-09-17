@@ -8,8 +8,9 @@ import {
 } from "fleethub-core";
 import { Start2 } from "kc-tools";
 
+import { SpreadsheetTable } from "./SpreadsheetTable";
 import { parseHistoricalAircraftGroup, ExprParser } from "./parser";
-import { deleteFalsyValues, toCellString, SpreadsheetTable } from "./utils";
+import { deleteFalsyValues, toCellString } from "./utils";
 
 function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
   const { rows } = table;

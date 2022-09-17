@@ -257,7 +257,7 @@ impl BattleDefinitions {
     ) -> HistoricalParams {
         let mut params = HistoricalParams::default();
 
-        if node_state.map == 0 {
+        if node_state.map == 0 || node_state.disable_historical_mod {
             return params;
         }
 

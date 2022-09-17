@@ -1,4 +1,4 @@
-import { SpreadsheetTable } from "./utils";
+import { SpreadsheetTable } from "./SpreadsheetTable";
 
 export class NationalityMap {
   nameMap: Map<string, number>;

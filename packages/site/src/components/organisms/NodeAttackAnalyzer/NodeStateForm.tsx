@@ -21,20 +21,29 @@ const NodeStateForm: React.FC<Props> = ({ value = {}, onChange }) => {
     onChange?.({ ...value, debuff });
   };
 
+  const handleDisableHistoricalModChange = (checked: boolean) => {
+    onChange?.({ ...value, disable_historical_mod: !checked });
+  };
+
   return (
-    <Stack flexDirection="row">
+    <Stack flexDirection="row" gap={2}>
       <NumberInput
         sx={{ width: 64 }}
         label="Phase"
         value={value?.phase || 0}
         min={0}
-        max={9}
+        max={4}
         onChange={handlePhaseChange}
       />
       <Checkbox
         label={t("debuff")}
         checked={value?.debuff}
         onChange={handleDebuffChange}
+      />
+      <Checkbox
+        label={t("historical_mod")}
+        checked={!value?.disable_historical_mod}
+        onChange={handleDisableHistoricalModChange}
       />
     </Stack>
   );

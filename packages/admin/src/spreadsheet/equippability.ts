@@ -1,7 +1,8 @@
 import { EquippabilityRule, MasterEquippability } from "fleethub-core";
 
+import { SpreadsheetTable } from "./SpreadsheetTable";
 import { ExprParser } from "./parser";
-import { toCellString, SpreadsheetTable } from "./utils";
+import { toCellString } from "./utils";
 
 export function createEquippability(
   parser: ExprParser,
