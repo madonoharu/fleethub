@@ -67,7 +67,7 @@ impl AttackPowerModifier {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize, Tsify)]
 pub struct SpecialEnemyModifiers {
     pub precap_general_mod: AttackPowerModifier,
     pub stype_mod: AttackPowerModifier,

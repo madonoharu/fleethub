@@ -2,7 +2,7 @@ use crate::{
     member::BattleMemberRef,
     types::{
         AttackPowerModifier, Engagement, FleetFactors, FormationParams, HistoricalParams,
-        ShellingStyle, ShellingType, Time,
+        ShellingStyle, ShellingType,
     },
 };
 
@@ -43,7 +43,7 @@ impl ShellingAttackParams<'_> {
             .then(|| attacker.get_ap_shell_modifiers());
 
         let special_enemy_mods =
-            attacker.special_enemy_mods(target.special_enemy_type(), Time::Day);
+            attacker.special_enemy_mods(target.special_enemy_type(), style.attack_type.into());
 
         let mut aerial_power = None;
         let mut aerial_power_ebonus = 0.0;

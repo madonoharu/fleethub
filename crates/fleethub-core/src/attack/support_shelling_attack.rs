@@ -2,9 +2,7 @@
 
 use crate::{
     member::BattleMemberRef,
-    types::{
-        AttackPowerModifier, Engagement, FormationParams, ShellingType, SupportShellingType, Time,
-    },
+    types::{AttackPowerModifier, Engagement, FormationParams, ShellingType, SupportShellingType},
 };
 
 use super::{Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
@@ -69,7 +67,7 @@ impl SupportShellingAttackParams<'_> {
         let postcap_mod = Default::default();
 
         let special_enemy_mods =
-            attacker.special_enemy_mods(self.target.special_enemy_type(), Time::Day);
+            attacker.special_enemy_mods(self.target.special_enemy_type(), self.attack_type.into());
 
         let params = AttackPowerParams {
             basic,

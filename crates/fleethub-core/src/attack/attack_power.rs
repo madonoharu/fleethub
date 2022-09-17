@@ -1,27 +1,9 @@
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-use crate::types::{AttackPowerModifier, CustomPowerModifiers};
+use crate::types::{AttackPowerModifier, CustomPowerModifiers, SpecialEnemyModifiers};
 
 use super::HitType;
-
-#[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-pub struct SpecialEnemyModifiers {
-    pub precap_general_mod: AttackPowerModifier,
-    pub stype_mod: AttackPowerModifier,
-    pub landing_craft_synergy_mod: AttackPowerModifier,
-    pub toku_daihatsu_tank_mod: AttackPowerModifier,
-    pub m4a1dd_mod: AttackPowerModifier,
-    pub honi_mod: AttackPowerModifier,
-    pub postcap_general_mod: AttackPowerModifier,
-    pub pt_mod: AttackPowerModifier,
-}
-
-impl SpecialEnemyModifiers {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackPowerParams {
