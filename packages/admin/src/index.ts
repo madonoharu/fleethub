@@ -45,12 +45,11 @@ export async function updateMasterDataBySpreadsheet(): Promise<void> {
   ]);
 
   const nextMd = createMasterData(start2, ctypeNames, tables);
-  const updatesStorage = !storage.equalMasterData(currentMd, nextMd);
+  const updates = !storage.equalMasterData(currentMd, nextMd);
 
-  await Promise.all([
-    updatesStorage && storage.writeMasterData(nextMd),
-    spreadsheet.writeMasterData(tables, nextMd),
-  ]);
+  if (updates) {
+    await storage.writeMasterData(nextMd);
+  }
 }
 
 export async function updateImages(): Promise<void> {

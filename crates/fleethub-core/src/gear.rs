@@ -104,6 +104,8 @@ pub struct Gear {
     pub ship_anti_air_resist: f64,
     #[wasm_bindgen(readonly)]
     pub fleet_anti_air_resist: f64,
+    #[wasm_bindgen(skip)]
+    pub historical_aircraft_group: u8,
 }
 
 impl Gear {
@@ -144,8 +146,8 @@ impl Gear {
             improvable: master.improvable,
             ship_anti_air_resist: master.ship_anti_air_resist,
             fleet_anti_air_resist: master.fleet_anti_air_resist,
-
             attrs: master.attrs,
+            historical_aircraft_group: master.historical_aircraft_group,
             ibonuses,
         }
     }
