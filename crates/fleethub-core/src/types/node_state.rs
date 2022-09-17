@@ -38,11 +38,14 @@ impl FromStr for NodeId {
     }
 }
 
+#[serde_as]
 #[derive(Debug, Default, Clone, Copy, Serialize, Deserialize, Tsify)]
 #[serde(default)]
 pub struct NodeState {
+    #[serde_as(as = "DefaultOnError")]
     pub map: i16,
     pub node: NodeId,
+    #[serde_as(as = "DefaultOnError")]
     pub phase: u8,
     pub debuff: bool,
 }

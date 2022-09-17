@@ -192,6 +192,7 @@
   "slots": "함재기",
   "day_gunfit_accuracy": "주간 피트 보정",
   "night_gunfit_accuracy": "야간 피트 보정",
+  "debuff": "장갑파쇄",
   "FleetType": {
     "Main": "주력",
     "Escort": "호위",

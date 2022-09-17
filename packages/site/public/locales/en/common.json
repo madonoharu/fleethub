@@ -192,6 +192,7 @@
   "slots": "Carry",
   "day_gunfit_accuracy": "Day Gunfit Bonus",
   "night_gunfit_accuracy": "Night Gunfit Bonus",
+  "debuff": "Debuff",
   "FleetType": {
     "Main": "Main",
     "Escort": "Escort",
