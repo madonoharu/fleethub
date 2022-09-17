@@ -1,7 +1,7 @@
 import { Start2 } from "kc-tools";
 
+import { CellValue } from "./SpreadsheetTable";
 import { NationalityMap } from "./nationality";
-import { CellValue } from "./utils";
 
 export function parseHistoricalAircraftGroup(value: CellValue): number {
   if (typeof value !== "string") {
@@ -95,7 +95,7 @@ export class ExprParser {
   }
 
   replaceHistoricalAircraftGroup(str: string): string {
-    return str.replace(/"[A-Z]\d"/g, (s) =>
+    return str.replace(/"([A-Z]\d)"/g, (_, s: string) =>
       parseHistoricalAircraftGroup(s).toString()
     );
   }

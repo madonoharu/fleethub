@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Typography } from "@mui/material";
-import type { AttackAnalysis } from "fleethub-core";
+import type { AttackAnalysis, AttackReport } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useShipName } from "../../../hooks";
+import { numstr } from "../../../utils";
 import AttackTable from "../AttackTable";
 
 interface Props {
@@ -32,6 +33,10 @@ const AttackReportDetails: React.FCX<Props> = ({
     : "secondary.light";
   const targetColor = !attacker_is_player ? "primary.light" : "secondary.light";
 
+  const historical_mod =
+    Object.values<AttackReport<unknown>>(analysis.day.data).at(0)
+      ?.attack_power_params?.historical_mod || 1;
+
   return (
     <div className={className} style={style}>
       <Typography alignItems="center" display="flex" gap={1} mb={1}>
@@ -43,6 +48,12 @@ const AttackReportDetails: React.FCX<Props> = ({
           {targetName}
         </Typography>
       </Typography>
+
+      {historical_mod !== 1 && (
+        <Typography>
+          {t("historical_mod")}: {numstr(historical_mod)}
+        </Typography>
+      )}
 
       {report.is_active ? (
         <AttackTable report={report} />

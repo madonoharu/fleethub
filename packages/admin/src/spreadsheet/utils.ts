@@ -1,33 +1,11 @@
 import { sheets_v4 } from "googleapis";
 import get from "lodash/get";
 
-export type CellValue = string | number | boolean | undefined;
-export type SpreadsheetRow = Record<string, CellValue>;
-
-export type SpreadsheetTable = {
-  sheetId: number;
-  headerValues: string[];
-  rows: SpreadsheetRow[];
-};
+import { CellValue, intoCellValue, SpreadsheetTable } from "./SpreadsheetTable";
 
 type Requests = NonNullable<
   sheets_v4.Schema$BatchUpdateSpreadsheetRequest["requests"]
 >;
-
-export function intoCellValue(input: unknown): CellValue {
-  if (input === "" || input === undefined || input === null) {
-    return undefined;
-  }
-
-  switch (typeof input) {
-    case "number":
-    case "string":
-    case "boolean":
-      return input;
-  }
-
-  return String(input);
-}
 
 export function toCellString(cellValue: CellValue): string {
   switch (typeof cellValue) {

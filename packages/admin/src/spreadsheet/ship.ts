@@ -9,8 +9,9 @@ import {
 import { MstPlayerShip, MstShip } from "kc-tools";
 import set from "lodash/set";
 
+import { SpreadsheetTable } from "./SpreadsheetTable";
 import { ExprParser } from "./parser";
-import { toCellString, SpreadsheetTable } from "./utils";
+import { toCellString } from "./utils";
 
 const SUFFIXES = [
   "甲",
