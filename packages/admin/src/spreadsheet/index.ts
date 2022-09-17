@@ -1,14 +1,13 @@
 import { MasterData } from "fleethub-core";
 import { Start2 } from "kc-tools";
 
+import { SpreadsheetTable, SheetKey } from "./SpreadsheetTable";
 import { createBattleDefinitions } from "./createBattleDefinitions";
 import { createEquippability } from "./equippability";
 import { createGearData } from "./gear";
 import { NationalityMap } from "./nationality";
 import { ExprParser } from "./parser";
-import { SheetKey } from "./sheet";
 import { createShipData } from "./ship";
-import { SpreadsheetTable } from "./utils";
 
 export function createMasterData(
   start2: Start2,
