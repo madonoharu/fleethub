@@ -8,7 +8,7 @@ import {
 } from "fleethub-core";
 import { Start2 } from "kc-tools";
 
-import { ExprParser } from "./parser";
+import { parseHistoricalAircraftGroup, ExprParser } from "./parser";
 import { deleteFalsyValues, toCellString, SpreadsheetTable } from "./utils";
 
 function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
@@ -41,6 +41,9 @@ function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
       special_type: Number(row?.special_type),
       ship_anti_air_resist: Number(row?.ship_anti_air_resist),
       fleet_anti_air_resist: Number(row?.fleet_anti_air_resist),
+      historical_aircraft_group: parseHistoricalAircraftGroup(
+        row?.historical_aircraft_group
+      ),
     };
 
     deleteFalsyValues(next);

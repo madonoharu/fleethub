@@ -1,6 +1,15 @@
 import { Start2 } from "kc-tools";
 
 import { NationalityMap } from "./nationality";
+import { CellValue } from "./utils";
+
+export function parseHistoricalAircraftGroup(value: CellValue): number {
+  if (typeof value !== "string") {
+    return 0;
+  }
+  const n = parseInt(value, 16);
+  return n >= 0 && n <= 255 ? n : 0;
+}
 
 export class ExprParser {
   constructor(
@@ -85,6 +94,12 @@ export class ExprParser {
     return result;
   }
 
+  replaceHistoricalAircraftGroup(str: string): string {
+    return str.replace(/"[A-Z]\d"/g, (s) =>
+      parseHistoricalAircraftGroup(s).toString()
+    );
+  }
+
   parseHistoricalBonusesShip(str: string): string {
     str = this.parseGearName(str);
     str = this.parseGearType(str);
@@ -92,6 +107,7 @@ export class ExprParser {
     str = this.parseShipType(str);
     str = this.parseShipClass(str);
     str = this.parseNationality(str);
+    str = this.replaceHistoricalAircraftGroup(str);
     const result = str.replace(/\n/g, " ").replace(/\s{2,}/g, " ");
 
     if (result.includes('"')) {

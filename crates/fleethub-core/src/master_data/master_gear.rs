@@ -53,6 +53,8 @@ pub struct MasterGear {
 
     #[serde(skip_deserializing)]
     pub attrs: EnumSet<GearAttr>,
+    #[serde(default)]
+    pub historical_aircraft_group: u8,
 }
 
 impl MasterGear {
