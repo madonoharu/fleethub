@@ -2,13 +2,13 @@ use crate::{
     member::BattleMemberRef,
     types::{
         AttackPowerModifier, Engagement, FleetFactors, FormationParams, HistoricalParams,
-        TorpedoAttackType,
+        SpecialEnemyModifiers, TorpedoAttackType,
     },
 };
 
 use super::{
     anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers, Attack, AttackParams, AttackPowerParams,
-    DefenseParams, HitRateParams, SpecialEnemyModifiers,
+    DefenseParams, HitRateParams,
 };
 
 const TORPEDO_POWER_CAP: f64 = 180.0;

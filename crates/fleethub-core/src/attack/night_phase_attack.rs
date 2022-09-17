@@ -3,7 +3,7 @@ use crate::{
     types::{
         AswPhase, AttackPowerModifier, Engagement, FormationParams, GearType, HistoricalParams,
         NightAttackStyle, NightAttackType, NightConditions, NightFleetConditions,
-        NightPhaseAttackStyle, ProficiencyModifiers, ShipType, Time,
+        NightPhaseAttackStyle, ProficiencyModifiers, ShipType,
     },
 };
 
@@ -155,7 +155,7 @@ impl NightAttackParams<'_> {
             .map_or(1.0, |mods| mods.critical_power_mod);
 
         let special_enemy_mods =
-            attacker.special_enemy_mods(target.special_enemy_type(), Time::Night);
+            attacker.special_enemy_mods(target.special_enemy_type(), self.style.attack_type.into());
         let custom_mods = attacker.custom_power_mods();
 
         let base = AttackPowerParams {
