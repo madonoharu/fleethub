@@ -10,8 +10,8 @@ import {
 } from "fleethub-core";
 import set from "lodash/set";
 
+import { SpreadsheetTable } from "./SpreadsheetTable";
 import { ExprParser } from "./parser";
-import { SpreadsheetTable } from "./utils";
 
 function getAntiAirCutinDefs(table: SpreadsheetTable): AntiAirCutinDef[] {
   const { headerValues, rows } = table;

@@ -48,4 +48,5 @@ pub struct NodeState {
     #[serde_as(as = "DefaultOnError")]
     pub phase: u8,
     pub debuff: bool,
+    pub disable_historical_mod: bool,
 }
