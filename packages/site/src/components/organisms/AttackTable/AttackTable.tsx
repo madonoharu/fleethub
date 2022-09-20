@@ -22,7 +22,7 @@ type ItemType = AttackReport<unknown>;
 
 const createDamageColumns = (t: TFn): ColumnProps<AttackReport<unknown>>[] => [
   {
-    label: `${t("hit_rate")} (${t("Critical")})`,
+    label: `${t("hit_rate")} (${t("CriticalAbbr")})`,
     align: "right",
     getValue: (item) => (
       <Flexbox gap={1} justifyContent="flex-end">

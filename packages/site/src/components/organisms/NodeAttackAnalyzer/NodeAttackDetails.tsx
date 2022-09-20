@@ -76,7 +76,7 @@ const NodeAttackDetails: React.FC<Props> = ({
         ))}
       </Tabs>
 
-      <Stack flexDirection="row" gap={1} mt={1} flexWrap="wrap">
+      <Stack gap={1} mt={1}>
         <AttackReportDetails
           css={{ flexBasis: 1, flexGrow: 1 }}
           tag={key}

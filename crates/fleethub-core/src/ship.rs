@@ -844,19 +844,18 @@ impl Ship {
         self.master.attrs.contains(attr)
     }
 
-    pub fn gear_keys(&self) -> JsValue {
+    pub fn gear_keys(&self) -> Vec<js_sys::JsString> {
         let slotnum = self.master.slotnum;
 
-        let keys = (0..GearArray::CAPACITY)
+        (0..GearArray::CAPACITY)
             .filter(|&index| {
                 index < slotnum
                     || index == GearArray::EXSLOT_INDEX
                     || self.gears.get(index).is_some()
             })
             .filter_map(into_gear_key)
-            .collect::<Vec<_>>();
-
-        JsValue::from_serde(&keys).unwrap()
+            .map(js_sys::JsString::from)
+            .collect::<Vec<_>>()
     }
 
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
@@ -1112,8 +1111,7 @@ impl Ship {
     }
 
     pub fn is_attackable_by_torpedo(&self) -> bool {
-        let t = self.special_enemy_type();
-        t == SpecialEnemyType::NewSupplyDepot || (!self.is_submarine() && !t.is_installation())
+        !self.is_submarine() && !self.is_installation()
     }
 
     pub fn get_slot_size(&self, index: usize) -> Option<u8> {
