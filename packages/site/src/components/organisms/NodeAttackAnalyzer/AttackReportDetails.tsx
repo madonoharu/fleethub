@@ -7,7 +7,7 @@ import React from "react";
 
 import { useShipName } from "../../../hooks";
 import { numstr } from "../../../utils";
-import AttackTable from "../AttackTable";
+import DamageTable from "../DamageTable";
 
 interface Props {
   tag: "day" | "night" | "closing_torpedo" | "opening_asw" | "support_shelling";
@@ -56,7 +56,7 @@ const AttackReportDetails: React.FCX<Props> = ({
       )}
 
       {report.is_active ? (
-        <AttackTable report={report} />
+        <DamageTable report={report} />
       ) : (
         <Typography>{t("AttackTypeNone")}</Typography>
       )}

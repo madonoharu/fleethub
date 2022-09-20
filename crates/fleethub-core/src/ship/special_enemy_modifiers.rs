@@ -227,28 +227,19 @@ fn special_enemy_modifiers(
             GearType::SeaplaneBomber | GearType::SeaplaneFighter
         )
     });
-
-    let anti_inst_dive_bomber_count = gears.count_attr(GearAttr::AntiInstDiveBomber);
-
+    let landing_craft_count = gears.count_type(GearType::LandingCraft);
+    let amphibious_tank_count = gears.count_type(GearType::AmphibiousTank);
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     let has_ap_shell = gears.has_type(GearType::ApShell);
-
-    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
-    let armed_count = gears.count(gear_id!("武装大発"));
-    let armored_boat_group_count = ab_count + armed_count;
+    let anti_inst_dive_bomber_count = gears.count_attr(GearAttr::AntiInstDiveBomber);
 
     let wg42_count = gears.count(gear_id!("WG42 (Wurfgerät 42)"));
-
-    let mortar_count = gears.count(gear_id!("二式12cm迫撃砲改"));
-    let mortar_cd_count = gears.count(gear_id!("二式12cm迫撃砲改 集中配備"));
-    let mortar_group_count = mortar_count + mortar_cd_count;
-
     let type4_rocket_count = gears.count(gear_id!("艦載型 四式20cm対地噴進砲"));
     let type4_rocket_cd_count = gears.count(gear_id!("四式20cm対地噴進砲 集中配備"));
     let type4_rocket_group_count = type4_rocket_count + type4_rocket_cd_count;
-
-    let landing_craft_count = gears.count_type(GearType::LandingCraft);
-    let amphibious_tank_count = gears.count_type(GearType::AmphibiousTank);
+    let mortar_count = gears.count(gear_id!("二式12cm迫撃砲改"));
+    let mortar_cd_count = gears.count(gear_id!("二式12cm迫撃砲改 集中配備"));
+    let mortar_group_count = mortar_count + mortar_cd_count;
 
     let toku_daihatsu_count = gears.count(gear_id!("特大発動艇"));
     let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
@@ -256,11 +247,13 @@ fn special_enemy_modifiers(
     let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
     let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
     let honi_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
-
-    let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
-
+    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
+    let armed_count = gears.count(gear_id!("武装大発"));
+    let armored_boat_group_count = ab_count + armed_count;
     let toku_daihatsu_tank_count = shikon_count + honi_count;
     let t89_tank_or_honi_count = t89_tank_count + honi_count;
+
+    let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
 
     // 改修補正
     let landing_craft_stars = gears.sum_by(|gear| {
