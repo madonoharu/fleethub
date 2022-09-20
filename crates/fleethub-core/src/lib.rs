@@ -23,6 +23,7 @@ pub mod simulator;
 pub mod types;
 pub mod utils;
 
+use gloo_utils::format::JsValueSerdeExt;
 use wasm_bindgen::{prelude::*, JsCast};
 
 use air_squadron::AirSquadron;

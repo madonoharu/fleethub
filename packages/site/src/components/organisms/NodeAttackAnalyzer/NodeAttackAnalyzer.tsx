@@ -134,13 +134,13 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
 
       <Stack direction="row" gap={1} flexWrap="wrap">
         {leftShip && (
-          <Stack gap={1} flexBasis={1} flexGrow={1}>
+          <Stack gap={1} flexBasis={1} flexGrow={1} minWidth={0}>
             <ShipCard ship={leftShip} comp={leftComp} visibleMiscStats />
             <CustomModifiersDialog ship={leftShip} />
           </Stack>
         )}
         {rightShip && (
-          <Stack gap={1} flexBasis={1} flexGrow={1}>
+          <Stack gap={1} flexBasis={1} flexGrow={1} minWidth={0}>
             <ShipCard ship={rightShip} comp={rightComp} visibleMiscStats />
             <CustomModifiersDialog ship={rightShip} />
           </Stack>
