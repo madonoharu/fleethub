@@ -72,11 +72,16 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
     setRightShipId(rightComp.first_ship_id());
   }
 
-  const handleConfigChange = (value: NodeAttackAnalyzerConfig) => {
+  const handleConfigChange = (value: Partial<NodeAttackAnalyzerConfig>) => {
     dispatch(
       stepsSlice.actions.update({
         id: activeStep?.id || "",
-        changes: { config: value },
+        changes: {
+          config: {
+            ...config,
+            ...value,
+          },
+        },
       })
     );
   };
