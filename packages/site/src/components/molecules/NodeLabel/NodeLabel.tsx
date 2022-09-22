@@ -35,12 +35,6 @@ const NodeLabel: React.FCX<NodeLabelProps> = ({
 export default styled(NodeLabel)`
   display: flex;
   gap: 16px;
-  > span:first-of-type {
-    min-width: 58px;
-  }
-  > span:nth-of-type(2) {
-    min-width: 64px;
-  }
   > * {
     flex-grow: 0;
   }

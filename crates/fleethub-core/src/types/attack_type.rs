@@ -6,7 +6,7 @@ use tsify::Tsify;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
 pub enum AswAttackType {
     DepthCharge,
-    Aircraft,
+    Aerial,
 }
 
 impl AswAttackType {
@@ -17,7 +17,7 @@ impl AswAttackType {
     pub fn type_constant(self) -> f64 {
         match self {
             Self::DepthCharge => 13.0,
-            Self::Aircraft => 8.0,
+            Self::Aerial => 8.0,
         }
     }
 }
@@ -26,7 +26,7 @@ impl AswAttackType {
 pub enum ShellingType {
     #[default]
     Normal,
-    Carrier,
+    Aerial,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, Tsify)]
@@ -34,7 +34,7 @@ pub enum NightAttackType {
     #[default]
     Normal,
     Swordfish,
-    Carrier,
+    Aerial,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, Tsify)]

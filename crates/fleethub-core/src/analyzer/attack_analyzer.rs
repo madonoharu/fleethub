@@ -32,6 +32,7 @@ pub struct AttackAnalysis {
     pub attacker_is_player: bool,
     pub attacker_ship_id: u16,
     pub target_ship_id: u16,
+    pub historical_params: HistoricalParams,
 
     pub day: ActionReport<DayPhaseAttackStyle>,
     pub night: ActionReport<NightPhaseAttackStyle>,
@@ -48,10 +49,13 @@ impl AttackAnalyzer<'_> {
         let opening_asw = self.analyze_opening_asw();
         let support_shelling = self.analyze_support_shelling();
 
+        let historical_params = self.get_historical_params();
+
         AttackAnalysis {
             attacker_is_player: self.config.attacker.side().is_player(),
             attacker_ship_id: self.attacker.ship_id,
             target_ship_id: self.target.ship_id,
+            historical_params,
 
             day,
             night,

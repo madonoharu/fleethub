@@ -177,7 +177,7 @@ impl TargetPicker<NightPhaseAttackType> {
                 let attack_type = attacker.select_night_phase_attack_type(&ship)?;
 
                 match attack_type {
-                    NightPhaseAttackType::Night(NightAttackType::Carrier) => {
+                    NightPhaseAttackType::Night(NightAttackType::Aerial) => {
                         prioritizes_night_attack = true;
                         has_night_attack = true;
                     }

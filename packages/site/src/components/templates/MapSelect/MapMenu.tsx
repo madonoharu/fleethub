@@ -11,6 +11,7 @@ import { NauticalChart } from "../../organisms";
 import AreaSelect from "./AreaSelect";
 import DifficultySelect from "./DifficultySelect";
 import EnemyCompList from "./EnemyCompList";
+import NodeSelect from "./NodeSelect";
 import { createOrg } from "./createOrg";
 
 type MapMenuProps = {
@@ -20,13 +21,13 @@ type MapMenuProps = {
 };
 
 const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
-  const { mapId, point, diff } = state;
+  const { mapId, point, diff, createStep } = state;
 
   const { masterData } = useFhCore();
 
   const { data } = useGcs<FhMap>(`data/maps/${mapId}.json`);
 
-  const node = data?.nodes.find((node) => {
+  const activeNode = data?.nodes.find((node) => {
     if (point) {
       return node.point === point;
     } else {
@@ -47,8 +48,8 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
   };
 
   const handleEnemySelect = (enemy: MapEnemyComp, formation: Formation) => {
-    if (!node) return;
-    const { point, type, d } = node;
+    if (!activeNode) return;
+    const { point, type, d } = activeNode;
 
     const mapKey = `${Math.floor(mapId / 10)}-${mapId % 10}`;
     const name = `${mapKey} ${point}`;
@@ -68,9 +69,14 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
 
   return (
     <div>
-      <Flexbox>
+      <Flexbox gap={1}>
         <AreaSelect value={mapId} onChange={handleAreaChange} />
         <DifficultySelect value={diff} onChange={handleDiffChange} />
+        <NodeSelect
+          options={data?.nodes}
+          value={activeNode}
+          onChange={handleNodeClick}
+        />
         <Typography variant="h6" sx={{ ml: "auto" }}>
           <span>from</span>
           <Link ml={1} variant="inherit" href="https://tsunkit.net/nav">
@@ -80,11 +86,18 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
       </Flexbox>
 
       <div css={{ width: 640 }}>
-        {data && <NauticalChart map={data} onClick={handleNodeClick} />}
-        {node && (
+        {data && (
+          <NauticalChart
+            activeNode={activeNode?.point}
+            map={data}
+            onClick={handleNodeClick}
+          />
+        )}
+        {activeNode && (
           <EnemyCompList
-            node={node}
+            node={activeNode}
             difficulty={diff}
+            disableFormationClick={!createStep}
             onSelect={handleEnemySelect}
           />
         )}

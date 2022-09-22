@@ -15,11 +15,13 @@ import { GenerationMapContext, useModal } from "../../../hooks";
 import { Divider } from "../../atoms";
 
 interface WorldAreaButtonsProps extends AreaListProps {
+  latest?: boolean;
   world: number;
 }
 
 const WorldAreaButtons: React.FCX<WorldAreaButtonsProps> = ({
   world,
+  latest,
   areas,
   onClick,
 }) => {
@@ -37,7 +39,7 @@ const WorldAreaButtons: React.FCX<WorldAreaButtonsProps> = ({
             value={id.toString()}
             onClick={onClick}
           >
-            {world}-{id % 10}
+            {latest ? "E" : world}-{id % 10}
           </Button>
         ))}
     </div>
@@ -62,7 +64,12 @@ const EventAreaList: React.FCX<AreaListProps> = ({
 
   return (
     <div className={className}>
-      <WorldAreaButtons world={worlds[0]} areas={areas} onClick={onClick} />
+      <WorldAreaButtons
+        latest
+        world={worlds[0]}
+        areas={areas}
+        onClick={onClick}
+      />
       <Accordion css={{ borderRadius: 4, overflow: "hidden" }} disableGutters>
         <AccordionSummary>Past Events</AccordionSummary>
         <AccordionDetails sx={{ maxHeight: 256, overflowY: "scroll" }}>
@@ -134,7 +141,6 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, onChange }) => {
 
 const StyledButton = styled(Button)`
   height: 40px;
-  margin-right: 8px;
   .MuiButton-endIcon {
     font-size: 1.5rem;
   }

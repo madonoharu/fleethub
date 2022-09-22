@@ -1,7 +1,8 @@
 use crate::{
     ship::Ship,
     types::{
-        gear_id, AttackType, GearAttr, GearType, ShipType, SpecialEnemyModifiers, SpecialEnemyType,
+        gear_id, AttackType, GearAttr, GearType, NightAttackType, ShellingType, ShipType,
+        SpecialEnemyModifiers, SpecialEnemyType,
     },
 };
 
@@ -231,7 +232,15 @@ fn special_enemy_modifiers(
     let amphibious_tank_count = gears.count_type(GearType::AmphibiousTank);
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     let has_ap_shell = gears.has_type(GearType::ApShell);
-    let anti_inst_dive_bomber_count = gears.count_attr(GearAttr::AntiInstDiveBomber);
+
+    let dive_bomber_count = if matches!(
+        attack_type,
+        AttackType::Shelling(ShellingType::Aerial) | AttackType::Night(NightAttackType::Aerial)
+    ) {
+        gears.count_attr(GearAttr::AntiInstDiveBomber)
+    } else {
+        gears.count_type(GearType::CbDiveBomber) + gears.count_type(GearType::JetFighterBomber)
+    };
 
     let wg42_count = gears.count(gear_id!("WG42 (Wurfgerät 42)"));
     let type4_rocket_count = gears.count(gear_id!("艦載型 四式20cm対地噴進砲"));
@@ -460,7 +469,7 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                anti_inst_dive_bomber_count,
+                dive_bomber_count,
                 [1.5, 1.5 * 2.0]
             );
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
@@ -505,7 +514,7 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                anti_inst_dive_bomber_count,
+                dive_bomber_count,
                 [1.4, 1.4 * 1.75]
             );
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
@@ -549,7 +558,7 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                anti_inst_dive_bomber_count,
+                dive_bomber_count,
                 [1.3, 1.3 * 1.2]
             );
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.7]);
