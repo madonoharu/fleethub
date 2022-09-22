@@ -115,6 +115,7 @@
   "AreYouSure": "Are you sure?",
   "ShowAllForms": "Show all forms",
   "DamageCalculator": "Damage Calculator",
+  "PleaseSelectTheEnemyComp": "Please select the enemy comp",
   "InputFromMap": "Input from map",
   "AttackPower": "Attack Power",
   "BasicAttackPower": "Basic Attack Power",
@@ -321,13 +322,13 @@
     "Asw": "Asw",
     "Torpedo": "ShTorp"
   },
-  "ShellingType": { "Normal": "Normal", "Carrier": "Aerial" },
+  "ShellingType": { "Normal": "Normal", "Aerial": "Aerial" },
   "NightAttackType": {
     "Normal": "Normal",
     "Swordfish": "Swordfish",
-    "Carrier": "Aerial"
+    "Aerial": "Aerial"
   },
-  "AswAttackType": { "DepthCharge": "Depth Charge", "Aircraft": "Aerial" },
+  "AswAttackType": { "DepthCharge": "Depth Charge", "Aerial": "Aerial" },
   "ContactRank": {
     "Rank1": "Accuracy 1 or less",
     "Rank2": "Accuracy 2",

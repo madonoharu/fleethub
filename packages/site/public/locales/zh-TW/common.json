@@ -115,6 +115,7 @@
   "AreYouSure": "你確定嗎？",
   "ShowAllForms": "顯示所有形態",
   "DamageCalculator": "傷害計算器",
+  "PleaseSelectTheEnemyComp": "請選擇敵方編成",
   "InputFromMap": "從地圖輸入",
   "AttackPower": "攻擊力",
   "BasicAttackPower": "基本攻擊力",
@@ -321,13 +322,13 @@
     "Asw": "對潛",
     "Torpedo": "雷擊"
   },
-  "ShellingType": { "Normal": "普通攻擊", "Carrier": "航空攻擊" },
+  "ShellingType": { "Normal": "普通攻擊", "Aerial": "航空攻擊" },
   "NightAttackType": {
     "Normal": "普通攻擊",
     "Swordfish": "Swordfish",
-    "Carrier": "航空攻擊"
+    "Aerial": "航空攻擊"
   },
-  "AswAttackType": { "DepthCharge": "爆雷", "Aircraft": "航空攻擊" },
+  "AswAttackType": { "DepthCharge": "爆雷", "Aerial": "航空攻擊" },
   "ContactRank": {
     "Rank1": "命中1以下",
     "Rank2": "命中2",

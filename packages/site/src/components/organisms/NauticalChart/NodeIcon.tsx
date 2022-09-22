@@ -32,7 +32,7 @@ export const NodeCircle = React.forwardRef<SVGGElement, NodeCircleProps>(
 
         <Typography
           component="text"
-          style={{ fontWeight: "bold" }}
+          fontWeight="bold"
           fill={typeStyle.color}
           textAnchor="middle"
           dominantBaseline="central"

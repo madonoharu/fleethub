@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Typography } from "@mui/material";
-import type { AttackAnalysis, AttackReport } from "fleethub-core";
+import type { AttackAnalysis } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -23,7 +23,12 @@ const AttackReportDetails: React.FCX<Props> = ({
   const { t } = useTranslation("common");
 
   const report = analysis[tag];
-  const { attacker_is_player, attacker_ship_id, target_ship_id } = analysis;
+  const {
+    attacker_is_player,
+    attacker_ship_id,
+    target_ship_id,
+    historical_params,
+  } = analysis;
 
   const attackerName = useShipName(attacker_ship_id, attacker_ship_id > 1500);
   const targetName = useShipName(target_ship_id, target_ship_id > 1500);
@@ -33,9 +38,22 @@ const AttackReportDetails: React.FCX<Props> = ({
     : "secondary.light";
   const targetColor = !attacker_is_player ? "primary.light" : "secondary.light";
 
-  const historical_mod =
-    Object.values<AttackReport<unknown>>(analysis.day.data).at(0)
-      ?.attack_power_params?.historical_mod || 1;
+  let historicalParamsText = "";
+  if (historical_params.power_mod !== 1) {
+    historicalParamsText += ` ${t("power_mod")} ${numstr(
+      historical_params.power_mod
+    )}`;
+  }
+  if (historical_params.accuracy_mod !== 1) {
+    historicalParamsText += ` ${t("accuracy_mod")} ${numstr(
+      historical_params.accuracy_mod
+    )}`;
+  }
+  if (historical_params.target_evasion_mod !== 1) {
+    historicalParamsText += ` ${t("evasion")} ${numstr(
+      historical_params.target_evasion_mod
+    )}`;
+  }
 
   return (
     <div className={className} style={style}>
@@ -49,9 +67,9 @@ const AttackReportDetails: React.FCX<Props> = ({
         </Typography>
       </Typography>
 
-      {historical_mod !== 1 && (
+      {historicalParamsText && (
         <Typography>
-          {t("historical_mod")}: {numstr(historical_mod)}
+          {t("historical_mod")} {historicalParamsText}
         </Typography>
       )}
 

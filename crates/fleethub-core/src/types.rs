@@ -83,20 +83,3 @@ pub use slot_size_vec::*;
 pub use special_enemy_type::*;
 pub use speed::*;
 pub use state::*;
-
-#[derive(Debug, Clone, Copy)]
-pub struct HistoricalParams {
-    pub power_mod: f64,
-    pub accuracy_mod: f64,
-    pub target_evasion_mod: f64,
-}
-
-impl Default for HistoricalParams {
-    fn default() -> Self {
-        Self {
-            power_mod: 1.0,
-            accuracy_mod: 1.0,
-            target_evasion_mod: 1.0,
-        }
-    }
-}

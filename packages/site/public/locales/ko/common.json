@@ -42,7 +42,7 @@
   "Details": "상세",
   "Map": "해역",
   "Maps": "해역",
-  "Enemies": "적 편성",
+  "Enemies": "적편성",
   "LbasDistance": "전투행동반경",
   "ElosNodeFactor": "분기점 계수",
   "FighterPower": "제공",
@@ -115,6 +115,7 @@
   "AreYouSure": "확실합니까?",
   "ShowAllForms": "모든 개조 표시",
   "DamageCalculator": "데미지 계산기",
+  "PleaseSelectTheEnemyComp": "적편성을 선택하십시오",
   "InputFromMap": "지도에서 입력",
   "AttackPower": "공격력",
   "BasicAttackPower": "기본 공격력",
@@ -321,13 +322,13 @@
     "Asw": "대잠",
     "Torpedo": "뇌격"
   },
-  "ShellingType": { "Normal": "통상공격", "Carrier": "항공공격" },
+  "ShellingType": { "Normal": "통상공격", "Aerial": "항공공격" },
   "NightAttackType": {
     "Normal": "통상공격",
     "Swordfish": "Swordfish",
-    "Carrier": "항공공격"
+    "Aerial": "항공공격"
   },
-  "AswAttackType": { "DepthCharge": "폭뢰", "Aircraft": "항공공격" },
+  "AswAttackType": { "DepthCharge": "폭뢰", "Aerial": "항공공격" },
   "ContactRank": {
     "Rank1": "명중 1이하",
     "Rank2": "명중 2",
