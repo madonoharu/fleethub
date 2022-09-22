@@ -65,11 +65,16 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
 
   const { org: rightOrg } = useOrg(activeStep?.org || "");
   const rightComp = rightOrg?.create_comp();
-  const [rightShipId, setRightShipId] = useState(rightComp?.first_ship_id());
+  const rightCompFirstShipId = rightComp?.first_ship_id();
+  const [rightShipId, setRightShipId] = useState(rightCompFirstShipId);
   const rightShip = useShip(rightShipId);
 
-  if (rightComp && rightShipId && !rightComp.has_ship_eid(rightShipId)) {
-    setRightShipId(rightComp.first_ship_id());
+  if (
+    rightComp &&
+    rightCompFirstShipId &&
+    !rightComp.has_ship_eid(rightShipId || "")
+  ) {
+    setRightShipId(rightCompFirstShipId);
   }
 
   const handleConfigChange = (value: Partial<NodeAttackAnalyzerConfig>) => {
