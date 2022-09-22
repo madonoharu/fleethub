@@ -115,6 +115,7 @@
   "AreYouSure": "你确定吗？",
   "ShowAllForms": "显示所有形態",
   "DamageCalculator": "伤害计算器",
+  "PleaseSelectTheEnemyComp": "请选择敌方编成",
   "InputFromMap": "从地图输入",
   "AttackPower": "攻击力",
   "BasicAttackPower": "基本攻击力",
@@ -321,13 +322,13 @@
     "Asw": "先制对潜",
     "Torpedo": "雷击"
   },
-  "ShellingType": { "Normal": "普通攻击", "Carrier": "航空攻击" },
+  "ShellingType": { "Normal": "普通攻击", "Aerial": "航空攻击" },
   "NightAttackType": {
     "Normal": "普通攻击",
     "Swordfish": "Swordfish",
-    "Carrier": "航空攻击"
+    "Aerial": "航空攻击"
   },
-  "AswAttackType": { "DepthCharge": "爆雷", "Aircraft": "航空攻击" },
+  "AswAttackType": { "DepthCharge": "爆雷", "Aerial": "航空攻击" },
   "ContactRank": {
     "Rank1": "命中1以下",
     "Rank2": "命中2",

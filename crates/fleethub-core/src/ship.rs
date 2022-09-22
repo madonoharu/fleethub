@@ -527,16 +527,16 @@ impl Ship {
 
             if matches!(self.ship_type, CAV | CVL | BBV | AV | LHA) {
                 if !is_abyssal {
-                    return has_anti_sub_aircraft().then(|| AswAttackType::Aircraft);
+                    return has_anti_sub_aircraft().then(|| AswAttackType::Aerial);
                 }
 
                 if has_anti_sub_aircraft() {
-                    return Some(AswAttackType::Aircraft);
+                    return Some(AswAttackType::Aerial);
                 }
             }
 
             if self.is_ao_carrier() && has_anti_sub_aircraft() {
-                return Some(AswAttackType::Aircraft);
+                return Some(AswAttackType::Aerial);
             }
         }
 
@@ -573,7 +573,7 @@ impl Ship {
                 .map(DayPhaseAttackType::Asw)
         } else {
             let t = if is_carrier_like {
-                ShellingType::Carrier
+                ShellingType::Aerial
             } else {
                 ShellingType::Normal
             };
@@ -594,7 +594,7 @@ impl Ship {
         }
 
         let attack_type = if self.is_night_carrier() && self.is_healthy_as_carrier() {
-            Some(NightAttackType::Carrier)
+            Some(NightAttackType::Aerial)
         } else if self.ctype == ctype!("Ark Royal級")
             && self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::CbSwordfish))
             && self.is_healthy_as_carrier()

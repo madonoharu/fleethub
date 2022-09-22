@@ -84,7 +84,7 @@ impl NightAttackParams<'_> {
 
         let proficiency_mods = matches!(
             style.attack_type,
-            NightAttackType::Carrier | NightAttackType::Swordfish
+            NightAttackType::Aerial | NightAttackType::Swordfish
         )
         .then(|| attacker.proficiency_modifiers(None));
 
@@ -183,7 +183,7 @@ impl NightAttackParams<'_> {
                 let basic = firepower + torpedo + ibonus + contact_mod;
                 AttackPowerParams { basic, ..base }
             }
-            NightAttackType::Carrier => {
+            NightAttackType::Aerial => {
                 let night_aerial_power = attacker.night_aerial_power(anti_inst)?;
 
                 AttackPowerParams {

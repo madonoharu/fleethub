@@ -1,6 +1,5 @@
-import styled from "@emotion/styled";
 import { FhMap, MapNode } from "@fh/utils";
-import { Tooltip } from "@mui/material";
+import { css, styled, Tooltip } from "@mui/material";
 import { Group } from "@visx/group";
 import { Graph } from "@visx/network";
 import { ScaleSVG } from "@visx/responsive";
@@ -27,6 +26,7 @@ const NauticalChartNode: React.FC<{
         point={node.point}
         d={node.d}
         cursor="pointer"
+        aria-label={node.point}
         onClick={handleClick}
       />
     </Tooltip>
@@ -72,6 +72,7 @@ const getViewBox = ({ nodes }: FhMap) => {
 
 type Props = {
   map: FhMap;
+  activeNode?: string;
   onClick?: (node: MapNode) => void;
 };
 
@@ -112,4 +113,12 @@ const NauticalChart: React.FCX<Props> = ({ className, map, onClick }) => {
   );
 };
 
-export default styled(NauticalChart)``;
+export default styled(NauticalChart)(
+  ({ activeNode }) =>
+    activeNode &&
+    css`
+      g[aria-label="${activeNode}"] {
+        outline: solid;
+      }
+    `
+);

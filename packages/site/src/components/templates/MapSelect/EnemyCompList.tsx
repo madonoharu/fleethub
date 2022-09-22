@@ -30,6 +30,7 @@ const toFormation = (id: number) => FORMATION_MAP[id];
 type EnemyCompListItem = {
   enemy: MapEnemyComp;
   lbas?: boolean;
+  disableFormationClick: boolean;
   onSelect?: (enemy: MapEnemyComp, formation: Formation) => void;
 };
 
@@ -37,6 +38,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
   className,
   enemy,
   lbas,
+  disableFormationClick,
   onSelect,
 }) => {
   const { t } = useTranslation("common");
@@ -95,7 +97,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
         <EnemyCompScreen enemy={enemy} />
       </Modal>
 
-      <Flexbox gap={1}>
+      <Flexbox gap={1} mt={1}>
         {enemy.formations
           .map(toFormation)
           .filter(nonNullable)
@@ -103,7 +105,9 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
             <Button
               key={formation}
               size="small"
-              variant="outlined"
+              disabled={disableFormationClick}
+              color="primary"
+              variant="contained"
               onClick={() => onSelect?.(enemy, formation)}
             >
               {t(`Formation.${formation}`)}
@@ -117,6 +121,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
 type EnemyCompListProps = {
   node: MapNode;
   difficulty?: number;
+  disableFormationClick: boolean;
   onSelect?: (enemy: MapEnemyComp, formation: Formation) => void;
 };
 
@@ -124,6 +129,7 @@ const EnemyCompList: React.FCX<EnemyCompListProps> = ({
   className,
   node,
   difficulty,
+  disableFormationClick,
   onSelect,
 }) => {
   return (
@@ -138,6 +144,7 @@ const EnemyCompList: React.FCX<EnemyCompListProps> = ({
             key={index}
             enemy={enemy}
             lbas={node.d !== undefined}
+            disableFormationClick={disableFormationClick}
             onSelect={onSelect}
           />
         ))}

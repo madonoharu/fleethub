@@ -115,6 +115,7 @@
   "AreYouSure": "よろしいですか？",
   "ShowAllForms": "全改造表示",
   "DamageCalculator": "ダメージ計算機",
+  "PleaseSelectTheEnemyComp": "敵編成を選択してください",
   "InputFromMap": "マップから入力",
   "AttackPower": "攻撃力",
   "BasicAttackPower": "基本攻撃力",
@@ -328,13 +329,13 @@
     "AntiLand": "対地",
     "Aerial": "航空"
   },
-  "ShellingType": { "Normal": "通常", "Carrier": "航空" },
+  "ShellingType": { "Normal": "通常", "Aerial": "航空" },
   "NightAttackType": {
     "Normal": "通常",
     "Swordfish": "Swordfish",
-    "Carrier": "航空"
+    "Aerial": "航空"
   },
-  "AswAttackType": { "DepthCharge": "爆雷", "Aircraft": "航空" },
+  "AswAttackType": { "DepthCharge": "爆雷", "Aerial": "航空" },
   "ContactRank": {
     "Rank1": "命中1以下",
     "Rank2": "命中2",

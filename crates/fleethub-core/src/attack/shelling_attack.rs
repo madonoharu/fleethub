@@ -50,7 +50,7 @@ impl ShellingAttackParams<'_> {
         let mut aerial_power_ibonus = 0.0;
         let mut proficiency_mods = None;
 
-        if style.attack_type == ShellingType::Carrier {
+        if style.attack_type == ShellingType::Aerial {
             let day_cutin = style.as_day_cutin();
             let anti_inst = target.is_installation();
 

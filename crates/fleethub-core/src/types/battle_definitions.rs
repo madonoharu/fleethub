@@ -10,8 +10,8 @@ use tsify::Tsify;
 use crate::member::BattleMemberRef;
 
 use super::{
-    AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, HistoricalParams, NightCutin,
-    NightCutinLike, NodeState, ShipConditions,
+    AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, NightCutin, NightCutinLike,
+    NodeState, ShipConditions,
 };
 
 #[serde_as]
@@ -190,6 +190,23 @@ impl HistoricalBonusDef {
             && (!self.debuff || self.debuff == node_state.debuff)
             && (self.ship.is_empty() || self.ship.matches(&mut ship.ns()))
             && (self.enemy.is_empty() || self.enemy.matches(&mut enemy.ns()))
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, Tsify)]
+pub struct HistoricalParams {
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+    pub target_evasion_mod: f64,
+}
+
+impl Default for HistoricalParams {
+    fn default() -> Self {
+        Self {
+            power_mod: 1.0,
+            accuracy_mod: 1.0,
+            target_evasion_mod: 1.0,
+        }
     }
 }
 

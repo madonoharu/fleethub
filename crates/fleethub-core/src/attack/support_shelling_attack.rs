@@ -43,7 +43,7 @@ impl SupportShellingAttackParams<'_> {
         let mut aerial_power = None;
         let mut aerial_power_ebonus = 0.0;
 
-        if self.attack_type.0 == ShellingType::Carrier {
+        if self.attack_type.0 == ShellingType::Aerial {
             let anti_inst = target.is_installation();
 
             aerial_power = Some(attacker.aerial_power(anti_inst) as f64);

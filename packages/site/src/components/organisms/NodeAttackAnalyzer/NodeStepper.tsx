@@ -1,5 +1,5 @@
 import { nonNullable } from "@fh/utils";
-import { Stack, Tabs, Tab, Button } from "@mui/material";
+import { Stack, Tabs, Tab, Button, Alert } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -82,6 +82,11 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
 
   return (
     <Stack flexDirection="row" gap={1}>
+      {!activeStep && (
+        <Alert sx={{ p: "1px 16px" }} severity="info">
+          {t("PleaseSelectTheEnemyComp")}
+        </Alert>
+      )}
       <Tabs
         value={activeStep?.id}
         onChange={handleTabChange}
