@@ -146,6 +146,10 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
             label={t("postcap_mod")}
             mod={custom_mods.postcap_mod}
           />
+          <AttackPowerModifierLabel
+            label={t("historical_mod")}
+            mod={custom_mods.historical_mod}
+          />
         </>
       )}
     </div>

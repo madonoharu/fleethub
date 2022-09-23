@@ -8,9 +8,9 @@ import React from "react";
 import { useAppDispatch, useModal } from "../../../hooks";
 import { shipsSlice } from "../../../store";
 
-import CustomPowerModifiersForm from "./CustomPowerModifiersForm";
-
-const KEYS = ["basic_power_mod", "precap_mod", "postcap_mod"] as const;
+import CustomPowerModifiersForm, {
+  CUSTOM_POWER_MODIFIERS_KEYS,
+} from "./CustomPowerModifiersForm";
 
 function hasMod(
   mod: AttackPowerModifier | undefined
@@ -58,14 +58,14 @@ const CustomPowerModifiersDialog: React.FCX<
       >
         {visibleMods ? (
           <Stack>
-            {KEYS.map((key) => {
+            {CUSTOM_POWER_MODIFIERS_KEYS.map((key) => {
               const mod = mods[key];
 
               if (!hasMod(mod)) {
                 return null;
               }
 
-              const label = t(key as keyof CustomPowerModifiers);
+              const label = t(key);
 
               return (
                 <span key={key}>{`${label} x${mod.a ?? "1.0"} +${
