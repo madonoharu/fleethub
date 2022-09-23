@@ -125,7 +125,10 @@ impl AttackPowerParams {
 
         // https://twitter.com/hedgehog_hasira/status/1569717081016520704
         postcap = postcap_general_mod.apply(postcap);
-        postcap *= self.historical_mod;
+        // https://twitter.com/agosdufovj/status/1545099167835762688
+        postcap = AttackPowerModifier::new(self.historical_mod, 0.0)
+            .compose(self.custom_mods.historical_mod)
+            .apply(postcap);
 
         let normal = postcap;
         let critical = (normal * 1.5 * self.proficiency_critical_mod).floor();

@@ -92,4 +92,5 @@ pub struct CustomPowerModifiers {
     pub precap_mod: AttackPowerModifier,
     pub postcap_mod: AttackPowerModifier,
     pub basic_power_mod: AttackPowerModifier,
+    pub historical_mod: AttackPowerModifier,
 }
