@@ -680,7 +680,7 @@ __metadata:
     equipment-bonus: "npm:latest"
     fast-json-stable-stringify: ^2.1.0
     fleethub-core: "npm:latest"
-    gkcoi: ^1.4.3
+    gkcoi: ^1.4.4
     http-status-codes: ^2.2.0
     immer: ^9.0.15
     literal-case: ^1.0.0
@@ -694,7 +694,7 @@ __metadata:
     react-dnd: ^16.0.1
     react-dnd-html5-backend: ^16.0.1
     react-dom: 18.2.0
-    react-redux: ^8.0.2
+    react-redux: ^8.0.4
     recharts: 2.1.12
     redux: ^4.2.0
     redux-persist: ^6.0.0
@@ -1899,126 +1899,126 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core-android-arm-eabi@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-android-arm-eabi@npm:1.3.2"
+"@swc/core-android-arm-eabi@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-android-arm-eabi@npm:1.3.3"
   dependencies:
     "@swc/wasm": 1.2.122
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-android-arm64@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-android-arm64@npm:1.3.2"
+"@swc/core-android-arm64@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-android-arm64@npm:1.3.3"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-arm64@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-darwin-arm64@npm:1.3.2"
+"@swc/core-darwin-arm64@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-darwin-arm64@npm:1.3.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-x64@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-darwin-x64@npm:1.3.2"
+"@swc/core-darwin-x64@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-darwin-x64@npm:1.3.3"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-freebsd-x64@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-freebsd-x64@npm:1.3.2"
+"@swc/core-freebsd-x64@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-freebsd-x64@npm:1.3.3"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm-gnueabihf@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.2"
+"@swc/core-linux-arm-gnueabihf@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.3"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-gnu@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.2"
+"@swc/core-linux-arm64-gnu@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.3"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-musl@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-linux-arm64-musl@npm:1.3.2"
+"@swc/core-linux-arm64-musl@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-linux-arm64-musl@npm:1.3.3"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-gnu@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-linux-x64-gnu@npm:1.3.2"
+"@swc/core-linux-x64-gnu@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-linux-x64-gnu@npm:1.3.3"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-musl@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-linux-x64-musl@npm:1.3.2"
+"@swc/core-linux-x64-musl@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-linux-x64-musl@npm:1.3.3"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-win32-arm64-msvc@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.2"
+"@swc/core-win32-arm64-msvc@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.3"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-ia32-msvc@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.2"
+"@swc/core-win32-ia32-msvc@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.3"
   dependencies:
     "@swc/wasm": 1.2.130
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@swc/core-win32-x64-msvc@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core-win32-x64-msvc@npm:1.3.2"
+"@swc/core-win32-x64-msvc@npm:1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core-win32-x64-msvc@npm:1.3.3"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core@npm:^1.3.2":
-  version: 1.3.2
-  resolution: "@swc/core@npm:1.3.2"
+"@swc/core@npm:^1.3.3":
+  version: 1.3.3
+  resolution: "@swc/core@npm:1.3.3"
   dependencies:
-    "@swc/core-android-arm-eabi": 1.3.2
-    "@swc/core-android-arm64": 1.3.2
-    "@swc/core-darwin-arm64": 1.3.2
-    "@swc/core-darwin-x64": 1.3.2
-    "@swc/core-freebsd-x64": 1.3.2
-    "@swc/core-linux-arm-gnueabihf": 1.3.2
-    "@swc/core-linux-arm64-gnu": 1.3.2
-    "@swc/core-linux-arm64-musl": 1.3.2
-    "@swc/core-linux-x64-gnu": 1.3.2
-    "@swc/core-linux-x64-musl": 1.3.2
-    "@swc/core-win32-arm64-msvc": 1.3.2
-    "@swc/core-win32-ia32-msvc": 1.3.2
-    "@swc/core-win32-x64-msvc": 1.3.2
+    "@swc/core-android-arm-eabi": 1.3.3
+    "@swc/core-android-arm64": 1.3.3
+    "@swc/core-darwin-arm64": 1.3.3
+    "@swc/core-darwin-x64": 1.3.3
+    "@swc/core-freebsd-x64": 1.3.3
+    "@swc/core-linux-arm-gnueabihf": 1.3.3
+    "@swc/core-linux-arm64-gnu": 1.3.3
+    "@swc/core-linux-arm64-musl": 1.3.3
+    "@swc/core-linux-x64-gnu": 1.3.3
+    "@swc/core-linux-x64-musl": 1.3.3
+    "@swc/core-win32-arm64-msvc": 1.3.3
+    "@swc/core-win32-ia32-msvc": 1.3.3
+    "@swc/core-win32-x64-msvc": 1.3.3
   dependenciesMeta:
     "@swc/core-android-arm-eabi":
       optional: true
@@ -2048,7 +2048,7 @@ __metadata:
       optional: true
   bin:
     swcx: run_swcx.js
-  checksum: c2c83d0e6b4c56d65fb3723aa0be5e777823a6efe5b12702d4d44827a6c6dd8fac3c5dec7ff45222c7b22b4084bffc846f8497d697e61a1706817977256a65dc
+  checksum: bead8463cd7c11e2cd87d3835045e4a245e755409e912a40c575026a0475cc0010fa6ef48936ea5f7e62c84cdc63c21a83d61755813f2ba9b565d397fad7c5f5
   languageName: node
   linkType: hard
 
@@ -3543,14 +3543,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chart.js@npm:^3.8.0":
+"chart.js@npm:^3.9.1":
   version: 3.9.1
   resolution: "chart.js@npm:3.9.1"
   checksum: 9ab0c0ac01215af0b3f020f2e313030fd6e347b48ed17d5484ee9c4e8ead45e78ae71bea16c397621c386b409ce0b14bf17f9f6c2492cd15b56c0f433efdfff6
   languageName: node
   linkType: hard
 
-"chartjs-plugin-datalabels@npm:^2.0.0":
+"chartjs-plugin-datalabels@npm:^2.1.0":
   version: 2.1.0
   resolution: "chartjs-plugin-datalabels@npm:2.1.0"
   peerDependencies:
@@ -5092,11 +5092,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.10.6
-  resolution: "fleethub-core@npm:1.10.6"
+  version: 1.10.7
+  resolution: "fleethub-core@npm:1.10.7"
   dependencies:
     equipment-bonus: "*"
-  checksum: aca600dccf47f9246082b2b28b93d8cdcc8a9e2bb36029a6e8bf2696f173a6445b78181c8b91671a77e0f7ae11204e78dc9fca9c02e8d6a1472d504b4feff336
+  checksum: ff8ee81f13c0af05d2554b54b4c09b3b79b54b68c6b1cd80c815d586e7e77cafb65db2bc5f97f747eabbe55b28c4dd4cccce8923b3a67b8dcafb86b63b4db68b
   languageName: node
   linkType: hard
 
@@ -5115,7 +5115,7 @@ __metadata:
     "@fh/admin": "workspace:*"
     "@fh/utils": "workspace:*"
     "@next/eslint-plugin-next": ^12.3.1
-    "@swc/core": ^1.3.2
+    "@swc/core": ^1.3.3
     "@testing-library/jest-dom": ^5.16.5
     "@testing-library/react": ^13.4.0
     "@types/fs-extra": ^9.0.13
@@ -5409,15 +5409,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gkcoi@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "gkcoi@npm:1.4.3"
+"gkcoi@npm:^1.4.4":
+  version: 1.4.4
+  resolution: "gkcoi@npm:1.4.4"
   dependencies:
-    chart.js: ^3.8.0
-    chartjs-plugin-datalabels: ^2.0.0
+    chart.js: ^3.9.1
+    chartjs-plugin-datalabels: ^2.1.0
     lzjs: ^1.3.0
     ts-steganography: ^3.0.2
-  checksum: 9fa51de70ed55d3ce6088d07636aa6d55a06761fbf95304010af8206c645763bff1a51caa47aeedf64b12a159618f8f0b3e93a644fad590b9f666b2a125e09ea
+  checksum: 30c45891956423a11cbf8c29f1ec4527d66d464ef65e68931c942df12acc2a56865209e75e43d9a47be3e59bf4d08d9c6ee8f517ef156e85105096f70135927b
   languageName: node
   linkType: hard
 
@@ -7147,7 +7147,7 @@ __metadata:
   resolution: "kcs@workspace:packages/kcs"
   dependencies:
     "@swc/cli": ^0.1.57
-    "@swc/core": ^1.3.2
+    "@swc/core": ^1.3.3
     fleethub-core: "npm:latest"
   languageName: unknown
   linkType: soft
@@ -8935,9 +8935,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:^8.0.2":
-  version: 8.0.2
-  resolution: "react-redux@npm:8.0.2"
+"react-redux@npm:^8.0.4":
+  version: 8.0.4
+  resolution: "react-redux@npm:8.0.4"
   dependencies:
     "@babel/runtime": ^7.12.1
     "@types/hoist-non-react-statics": ^3.3.1
@@ -8963,7 +8963,7 @@ __metadata:
       optional: true
     redux:
       optional: true
-  checksum: 44c1739c45dad04ecc65a290897c73828ff0bf43f2b7618ed5ef6d4ceecedae38e76cecd189a5ecedf579c28ead05427bc000fb45ad30b9fcd5c2be27cd3ac73
+  checksum: fd940de6a691c734ea975cb73a4413ee6beadb48434d6306fc2edbcf40c0c8c6432b0008663372d01b3578c9381b0acae7766d9f2f5f5f61a0cdaf7abc5eab7d
   languageName: node
   linkType: hard
 
