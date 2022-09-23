@@ -7,7 +7,12 @@ import { Divider } from "../../atoms";
 
 import AttackPowerModifierForm from "./AttackPowerModifierForm";
 
-const KEYS = ["basic_power_mod", "precap_mod", "postcap_mod"] as const;
+export const CUSTOM_POWER_MODIFIERS_KEYS = [
+  "basic_power_mod",
+  "precap_mod",
+  "postcap_mod",
+  "historical_mod",
+] as const;
 
 export type CustomPowerModifiersFormProps = {
   value: CustomPowerModifiers;
@@ -30,7 +35,7 @@ const CustomPowerModifiersForm: React.FCX<CustomPowerModifiersFormProps> = ({
 
   return (
     <Stack className={className} style={style} gap={1} mb={1}>
-      {KEYS.map((key) => (
+      {CUSTOM_POWER_MODIFIERS_KEYS.map((key) => (
         <React.Fragment key={key}>
           <Divider label={t(key)} />
           <AttackPowerModifierForm value={value[key]} onChange={bind(key)} />
