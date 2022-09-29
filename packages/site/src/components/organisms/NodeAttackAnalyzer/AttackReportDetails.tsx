@@ -7,6 +7,7 @@ import React from "react";
 
 import { useShipName } from "../../../hooks";
 import { numstr } from "../../../utils";
+import DamageStateDensityBarChart from "../AttackTable/DamageStateDensityBarChart";
 import DamageTable from "../DamageTable";
 
 interface Props {
@@ -77,6 +78,14 @@ const AttackReportDetails: React.FCX<Props> = ({
         <DamageTable report={report} />
       ) : (
         <Typography>{t("AttackTypeNone")}</Typography>
+      )}
+      {report.damage_state_density && (
+        <>
+          <Typography marginTop={1} variant="subtitle2">
+            {t("Distribution")}
+          </Typography>
+          <DamageStateDensityBarChart data={report.damage_state_density} />
+        </>
       )}
     </div>
   );
