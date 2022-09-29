@@ -418,7 +418,9 @@ impl Comp {
 
     /// 輸送物資量(TP)
     pub fn transport_point(&self) -> i32 {
-        self.ships().map(|ship| ship.transport_point()).sum()
+        self.members_by(FleetType::Main | FleetType::Escort)
+            .map(|ship| ship.transport_point())
+            .sum()
     }
 
     pub(crate) fn get_ship_position(&self, fleet_type: FleetType, index: usize) -> ShipPosition {

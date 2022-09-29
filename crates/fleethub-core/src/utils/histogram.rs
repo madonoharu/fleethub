@@ -12,7 +12,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(typescript_custom_section)]
 const TS_APPEND_CONTENT: &'static str = r#"
-export type Histogram<K, V> = Partial<Record<K, V>>;
+export type Histogram<K extends keyof any, V> = Partial<Record<K, V>>;
 "#;
 
 #[derive(Default, Clone, Serialize, Deserialize)]

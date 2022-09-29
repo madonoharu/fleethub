@@ -28,7 +28,7 @@ const DamageStateDensityBarChart: React.FCX<Props> = ({ className, data }) => {
   let total = 0;
 
   return (
-    <div className={className}>
+    <div className={className} css={{ maxWidth: 480 }}>
       <svg width={"100%"} height={height}>
         {domain.map((key) => {
           const rate = data[key];
