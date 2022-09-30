@@ -1,7 +1,7 @@
+import { measure } from "@fh/utils";
 import got from "got";
 import { Start2 } from "kc-tools";
 
-import { verifyGasIdToken } from "./auth";
 import { updateCloudinary } from "./cloudinary";
 import { createMasterData, MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
@@ -37,12 +37,16 @@ export async function createMasterDataBySpreadsheet() {
 export async function updateMasterDataBySpreadsheet(): Promise<void> {
   const spreadsheet = new MasterDataSpreadsheet();
 
-  const [start2, ctypeNames, tables, currentMd] = await Promise.all([
-    fetchStart2(),
-    fetchCtypeNames(),
-    spreadsheet.readTables(),
-    storage.readMasterData(),
-  ]);
+  const [start2, ctypeNames, currentMd, tables] = await measure(
+    "readTables",
+    () =>
+      Promise.all([
+        fetchStart2(),
+        fetchCtypeNames(),
+        storage.readMasterData(),
+        spreadsheet.readTables(),
+      ])
+  );
 
   const nextMd = createMasterData(start2, ctypeNames, tables);
   const updates = !storage.equalMasterData(currentMd, nextMd);
@@ -50,6 +54,11 @@ export async function updateMasterDataBySpreadsheet(): Promise<void> {
   if (updates) {
     await storage.writeMasterData(nextMd);
   }
+
+  // await Promise.all([
+  //   updates && storage.writeMasterData(nextMd),
+  //   spreadsheet.writeMasterData(tables, nextMd),
+  // ]);
 }
 
 export async function updateImages(): Promise<void> {
@@ -62,7 +71,7 @@ export async function updateImages(): Promise<void> {
 }
 
 export { isProjectMember } from "./auth";
-export { verifyGasIdToken, storage };
+export { storage };
 export * from "./spreadsheet";
 export * from "./credentials";
 export * from "./kcnav";
