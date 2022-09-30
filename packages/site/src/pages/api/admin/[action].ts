@@ -3,6 +3,7 @@ import {
   updateImages,
   updateMasterDataBySpreadsheet,
 } from "@fh/admin";
+import { measure } from "@fh/utils";
 import { getReasonPhrase, StatusCodes } from "http-status-codes";
 import { NextApiHandler } from "next";
 
@@ -21,7 +22,9 @@ const updateMasterData: NextApiHandler = async (req, res) => {
       .json({ error: getReasonPhrase(StatusCodes.BAD_REQUEST) });
   }
 
-  const login = await isProjectMember(idToken);
+  const login = await measure("isProjectMember", () =>
+    isProjectMember(idToken)
+  );
 
   if (!login) {
     return res
