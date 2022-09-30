@@ -148,6 +148,10 @@ export function createUpdateRowsRequests(
       const currentValue = get(currentRow, key);
       const nextValue: unknown = get(nextRow, key);
 
+      if (key === "historical_aircraft_group") {
+        return [];
+      }
+
       if (equalCellValue(currentValue, nextValue)) {
         return [];
       } else {
