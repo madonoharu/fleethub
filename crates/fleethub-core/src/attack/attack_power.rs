@@ -112,12 +112,10 @@ impl AttackPowerParams {
             ..
         } = &self.special_enemy_mods;
 
-        postcap = pt_mod
+        postcap = self
+            .postcap_mod
             .compose(self.custom_mods.postcap_mod)
-            .apply(postcap)
-            .floor();
-
-        postcap = self.postcap_mod.apply(postcap);
+            .apply(postcap);
 
         if let Some(v) = self.ap_shell_mod {
             postcap = (postcap * v).floor()
@@ -125,6 +123,8 @@ impl AttackPowerParams {
 
         // https://twitter.com/hedgehog_hasira/status/1569717081016520704
         postcap = postcap_general_mod.apply(postcap);
+        postcap = pt_mod.apply(postcap);
+
         // https://twitter.com/agosdufovj/status/1545099167835762688
         postcap = AttackPowerModifier::new(self.historical_mod, 0.0)
             .compose(self.custom_mods.historical_mod)
@@ -190,7 +190,7 @@ mod test {
 
         assert_eq!(
             postcap.normal,
-            ((180.0 + 20.0_f64.sqrt()).floor() * 1.3).floor() * 1.2
+            (180.0 + 20.0_f64.sqrt()).floor() * 1.3 * 1.2
         );
     }
 }
