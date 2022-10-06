@@ -52,7 +52,7 @@ export async function updateMasterDataBySpreadsheet(): Promise<void> {
   const updates = !storage.equalMasterData(currentMd, nextMd);
 
   if (updates) {
-    await storage.writeMasterData(nextMd);
+    await measure("writeMasterData", () => storage.writeMasterData(nextMd));
   }
 
   // await Promise.all([

@@ -19,11 +19,16 @@ export class ExprParser {
   ) {}
 
   parseGearName(str: string): string {
-    return this.start2.api_mst_slotitem.reduce(
-      (current, gear) =>
-        current.replaceAll(`"${gear.api_name}"`, gear.api_id.toString()),
-      str
-    );
+    const fn = (str: string) =>
+      this.start2.api_mst_slotitem.reduce(
+        (current, gear) =>
+          current.replaceAll(`"${gear.api_name}"`, gear.api_id.toString()),
+        str
+      );
+
+    return str
+      .replace(/gear_id (=|!)= "[^"]+"/g, fn)
+      .replace(/(gear_id_in|has|has_any)\(\s*("[^"]+"\s*,?\s*)+\)/gs, fn);
   }
 
   parseGearType(str: string): string {
@@ -103,10 +108,12 @@ export class ExprParser {
   parseHistoricalBonusesShip(str: string): string {
     str = this.parseGearName(str);
     str = this.parseGearType(str);
+
     str = this.parseShipName(str);
     str = this.parseShipType(str);
     str = this.parseShipClass(str);
     str = this.parseNationality(str);
+
     str = this.replaceHistoricalAircraftGroup(str);
     const result = str.replace(/\n/g, " ").replace(/\s{2,}/g, " ");
 
