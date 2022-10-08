@@ -1,0 +1,22 @@
+description = "夜戦色々混載徹甲弾あり"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "大和改二重"
+g1 = "51cm連装砲"
+g2 = { gear_id = "特二式内火艇", stars = 10 }
+g3 = { gear_id = "特二式内火艇", stars = 10 }
+g4 = "M4A1 DD"
+g5 = "九一式徹甲弾"
+
+
+# 防御艦設定
+[target]
+ship_id = 1815
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 2366
+damage.normal_damage_max = 2485
+damage.critical_damage_min = 3678
+damage.critical_damage_max = 3798

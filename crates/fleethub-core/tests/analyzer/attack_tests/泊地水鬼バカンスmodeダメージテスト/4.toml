@@ -1,0 +1,20 @@
+description = "昼戦M4A1 DD1"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "大和改二重"
+g1 = "51cm連装砲"
+g2 = "51cm連装砲"
+g3 = "M4A1 DD"
+
+
+# 防御艦設定
+[target]
+ship_id = 1815
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 411
+damage.normal_damage_max = 531
+damage.critical_damage_min = 746
+damage.critical_damage_max = 866

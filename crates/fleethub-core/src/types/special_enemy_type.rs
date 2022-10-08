@@ -24,6 +24,12 @@ pub enum SpecialEnemyType {
     BattleshipSummerPrincess,
     /// 重巡夏姫
     HeavyCruiserSummerPrincess,
+    /// 戦艦仏棲姫
+    FrenchBattleshipPrincess,
+    /// 泊地水鬼 バカンスmode
+    AnchorageWaterDemonVacationMode,
+    /// 船渠棲姫
+    DockPrincess,
 }
 
 impl SpecialEnemyType {

@@ -62,6 +62,27 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
         self.values().map(cb).sum()
     }
 
+    pub fn mean_by<F>(&self, mut cb: F) -> Option<f64>
+    where
+        F: FnMut(&T) -> Option<f64>,
+    {
+        let mut count: usize = 0;
+        let f = |arg: &T| {
+            let v = cb(arg);
+            if v.is_some() {
+                count += 1;
+            }
+            v.unwrap_or_default()
+        };
+        let total = self.sum_by(f);
+
+        if count == 0 {
+            None
+        } else {
+            Some(total / count as f64)
+        }
+    }
+
     pub fn has_by<F: FnMut(&T) -> bool>(&self, cb: F) -> bool {
         self.values().any(cb)
     }
@@ -91,11 +112,19 @@ mod test {
         let mut arr = OptionalArray::<i32, 6>::default();
 
         assert_eq!(arr.get(0), None);
+        assert_eq!(arr.mean_by(|&v| Some(v as f64)), None);
 
         arr.push(5);
         assert_eq!(arr.get(0), Some(&5));
 
         arr.push(6);
         assert_eq!(arr.sum_by(|&v| v), 5 + 6);
+
+        let arr: OptionalArray<Option<f64>, 6> = [Some(1.0), Some(2.0), None, Some(3.0), Some(4.0)]
+            .into_iter()
+            .map(Some)
+            .collect();
+
+        assert_eq!(arr.mean_by(|v| *v), Some(2.5));
     }
 }

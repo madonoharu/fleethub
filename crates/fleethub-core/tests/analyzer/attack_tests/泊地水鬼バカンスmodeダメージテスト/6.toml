@@ -1,0 +1,21 @@
+description = "昼戦WG42 (Wurfgerät 42)2"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "大和改二重"
+g1 = "51cm連装砲"
+g2 = "51cm連装砲"
+g3 = "WG42 (Wurfgerät 42)"
+g4 = "WG42 (Wurfgerät 42)"
+
+
+# 防御艦設定
+[target]
+ship_id = 1815
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 156
+damage.normal_damage_max = 275
+damage.critical_damage_min = 363
+damage.critical_damage_max = 483
