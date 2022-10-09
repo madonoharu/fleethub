@@ -44,12 +44,9 @@ impl DamageReport {
         let normal = get_damage(HitType::Normal);
         let critical = get_damage(HitType::Critical);
 
-        let miss_damage_min = miss.min();
-        let miss_damage_max = miss.max();
-        let normal_damage_min = normal.min();
-        let normal_damage_max = normal.max();
-        let critical_damage_min = critical.min();
-        let critical_damage_max = critical.max();
+        let (miss_damage_min, miss_damage_max) = miss.minmax();
+        let (normal_damage_min, normal_damage_max) = normal.minmax();
+        let (critical_damage_min, critical_damage_max) = critical.minmax();
 
         let normal_scratch_rate = normal.scratch_rate();
         let critical_scratch_rate = critical.scratch_rate();
