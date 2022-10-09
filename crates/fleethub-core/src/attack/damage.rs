@@ -178,25 +178,25 @@ impl Damage {
         }
     }
 
-    pub fn min(&self) -> u16 {
+    pub fn minmax(&self) -> (u16, u16) {
+        let min_defense_power = self.defense_power().min();
         let max_defense_power = self.defense_power().max();
-        let damage_type = self.calc_damage_type(max_defense_power);
 
-        match damage_type {
+        let d1 = match self.calc_damage_type(max_defense_power) {
             DamageType::Actual(value) => value,
             DamageType::Scratch => self.scratch_damage().min(),
             DamageType::OverkillProtection => self.overkill_protection_damage().min(),
-        }
-    }
-
-    pub fn max(&self) -> u16 {
-        let min_defense_power = self.defense_power().min();
-        let damage_type = self.calc_damage_type(min_defense_power);
-
-        match damage_type {
+        };
+        let d2 = match self.calc_damage_type(min_defense_power) {
             DamageType::Actual(value) => value,
             DamageType::Scratch => self.scratch_damage().max(),
             DamageType::OverkillProtection => self.overkill_protection_damage().max(),
+        };
+
+        if d1 <= d2 {
+            (d1, d2)
+        } else {
+            (d2, d1)
         }
     }
 

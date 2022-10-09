@@ -1,7 +1,7 @@
 use crate::{
     ship::Ship,
     types::{
-        gear_id, AttackType, GearAttr, GearType, NightAttackType, ShellingType, ShipType,
+        ctype, gear_id, AttackType, GearAttr, GearType, NightAttackType, ShellingType, ShipType,
         SpecialEnemyModifiers, SpecialEnemyType,
     },
 };
@@ -130,34 +130,147 @@ fn anti_pt_imp_modifiers(attacker: &Ship, attack_type: AttackType) -> SpecialEne
     mods
 }
 
+/// 戦艦夏姫
 fn anti_battleship_summer_princess_modifiers(
     attacker: &Ship,
     attack_type: AttackType,
 ) -> SpecialEnemyModifiers {
-    let mut mods = SpecialEnemyModifiers::new();
     if !matches!(attack_type, AttackType::Shelling(_) | AttackType::Night(_)) {
-        return mods;
+        return Default::default();
     }
 
-    let mut v = 1.0;
+    let mut mods = SpecialEnemyModifiers::new();
+    let gears = &attacker.gears;
 
-    if attacker.gears.has_by(|gear| {
+    let has_aa_shell = gears.has_type(GearType::ApShell);
+    apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.2);
+
+    let has_seaplane = gears.has_by(|gear| {
         matches!(
             gear.gear_type,
             GearType::SeaplaneBomber | GearType::SeaplaneFighter
         )
-    }) {
-        v *= 1.1;
-    }
-    if attacker.gears.has_type(GearType::ApShell) {
-        v *= 1.2;
+    });
+    apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.1);
+
+    let cb_swordfish_count = gears.count_attr(GearAttr::CbSwordfish);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        cb_swordfish_count,
+        [1.15, 1.15 * 1.05]
+    );
+
+    if matches!(
+        attacker.ctype,
+        ctype!("Bismarck級")
+            | ctype!("Admiral Hipper級")
+            | ctype!("Ark Royal級")
+            | ctype!("Gotland級")
+            | ctype!("Nelson級")
+    ) {
+        mods.postcap_general_mod.a *= 1.1
     }
 
-    mods.postcap_general_mod.a *= v;
     mods
 }
 
+/// 重巡夏姫
 fn anti_heavy_cruiser_summer_princess_modifiers(
+    attacker: &Ship,
+    attack_type: AttackType,
+) -> SpecialEnemyModifiers {
+    if !matches!(attack_type, AttackType::Shelling(_) | AttackType::Night(_)) {
+        return Default::default();
+    }
+
+    let mut mods = SpecialEnemyModifiers::new();
+    let gears = &attacker.gears;
+
+    let has_aa_shell = gears.has_type(GearType::ApShell);
+    apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.1);
+
+    let has_seaplane = gears.has_by(|gear| {
+        matches!(
+            gear.gear_type,
+            GearType::SeaplaneBomber | GearType::SeaplaneFighter
+        )
+    });
+    apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.15);
+
+    let cb_swordfish_count = gears.count_attr(GearAttr::CbSwordfish);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        cb_swordfish_count,
+        [1.15, 1.15 * 1.05]
+    );
+
+    if matches!(
+        attacker.ctype,
+        ctype!("Bismarck級")
+            | ctype!("Admiral Hipper級")
+            | ctype!("Ark Royal級")
+            | ctype!("Gotland級")
+            | ctype!("Nelson級")
+    ) {
+        mods.postcap_general_mod.a *= 1.1
+    }
+
+    mods
+}
+
+/// 戦艦仏棲姫
+fn anti_french_battleship_princess_modifiers(
+    attacker: &Ship,
+    attack_type: AttackType,
+) -> SpecialEnemyModifiers {
+    if !matches!(attack_type, AttackType::Shelling(_) | AttackType::Night(_)) {
+        return Default::default();
+    }
+
+    let gears = &attacker.gears;
+    let mut mods = SpecialEnemyModifiers::new();
+
+    let has_aa_shell = gears.has_type(GearType::ApShell);
+    apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.2);
+
+    let has_seaplane = gears.has_by(|gear| {
+        matches!(
+            gear.gear_type,
+            GearType::SeaplaneBomber | GearType::SeaplaneFighter
+        )
+    });
+    apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.1);
+
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        gears.has(gear_id!("Laté 298B")),
+        1.2
+    );
+
+    let dive_bomber_count =
+        gears.count_type(GearType::CbDiveBomber) + gears.count_type(GearType::JetFighterBomber);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dive_bomber_count,
+        [1.1, 1.1 * 1.15]
+    );
+
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        attacker.master.nationality == 34,
+        1.15
+    );
+
+    mods
+}
+
+/// 泊地水鬼 バカンスmode
+fn anti_anchorage_water_demon_vacation_mode_modifiers(
     attacker: &Ship,
     attack_type: AttackType,
 ) -> SpecialEnemyModifiers {
@@ -166,22 +279,186 @@ fn anti_heavy_cruiser_summer_princess_modifiers(
         return mods;
     }
 
-    let mut v = 1.0;
+    let gears = &attacker.gears;
 
-    if attacker.gears.has_by(|gear| {
+    let dive_bomber_count =
+        gears.count_type(GearType::CbDiveBomber) + gears.count_type(GearType::JetFighterBomber);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dive_bomber_count,
+        [1.4, 1.4 * 1.75]
+    );
+
+    let wg42_count = gears.count(gear_id!("WG42 (Wurfgerät 42)"));
+    apply_mod!(mods.postcap_general_mod, a, wg42_count, [1.2, 1.2 * 1.3]);
+
+    let type4_rocket_count = gears.count(gear_id!("艦載型 四式20cm対地噴進砲"));
+    let type4_rocket_cd_count = gears.count(gear_id!("四式20cm対地噴進砲 集中配備"));
+    let type4_rocket_group_count = type4_rocket_count + type4_rocket_cd_count;
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        type4_rocket_group_count,
+        [1.15, 1.15 * 1.4]
+    );
+
+    let mortar_count = gears.count(gear_id!("二式12cm迫撃砲改"));
+    let mortar_cd_count = gears.count(gear_id!("二式12cm迫撃砲改 集中配備"));
+    let mortar_group_count = mortar_count + mortar_cd_count;
+    apply_mod!(mods.postcap_general_mod, a, mortar_group_count, [1.1]);
+
+    let has_aa_shell = gears.has_type(GearType::AntiAirShell);
+    apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.45);
+
+    let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        t2_tank_count,
+        [2.4, 2.4 * 1.35]
+    );
+
+    let landing_craft_count = gears.count_type(GearType::LandingCraft);
+    apply_mod!(mods.postcap_general_mod, a, landing_craft_count, [1.4]);
+
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        gears.count(gear_id!("特大発動艇")),
+        [1.15]
+    );
+
+    let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
+    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
+    let t89_tank_or_honi1_count = t89_tank_count + honi1_count;
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        t89_tank_or_honi1_count,
+        [1.2, 1.2 * 1.4]
+    );
+
+    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
+    apply_mod!(mods.postcap_general_mod, a, m4a1dd_count, [1.8]);
+
+    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
+    let armed_count = gears.count(gear_id!("武装大発"));
+    let armored_boat_group_count = ab_count + armed_count;
+    apply_mod!(mods.postcap_general_mod, a, armored_boat_group_count, [1.2]);
+
+    let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
+    apply_mod!(mods.postcap_general_mod, a, panzer2_count, [1.2]);
+
+    let ibonuses = AntiInstIbonuses::new(attacker);
+    mods.postcap_general_mod.a *= ibonuses.landing_craft;
+    mods.postcap_general_mod.a *= ibonuses.amphibious_tank;
+
+    if attacker.ctype == ctype!("大和型") || attacker.ctype == ctype!("長門型") {
+        mods.postcap_general_mod.a *= 1.2;
+    }
+
+    mods
+}
+
+/// 船渠棲姫
+fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> SpecialEnemyModifiers {
+    if !matches!(
+        attack_type,
+        AttackType::Shelling(_) | AttackType::Night(_) | AttackType::Torpedo
+    ) {
+        return Default::default();
+    }
+
+    let gears = &attacker.gears;
+    let mut mods = SpecialEnemyModifiers::new();
+
+    let dive_bomber_count =
+        gears.count_type(GearType::CbDiveBomber) + gears.count_type(GearType::JetFighterBomber);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dive_bomber_count,
+        [1.1, 1.1 * 1.1]
+    );
+
+    let has_seaplane = gears.has_by(|gear| {
         matches!(
             gear.gear_type,
             GearType::SeaplaneBomber | GearType::SeaplaneFighter
         )
-    }) {
-        v *= 1.15;
-    }
-    if attacker.gears.has_type(GearType::ApShell) {
-        v *= 1.1;
-    }
+    });
+    apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.1);
 
-    mods.postcap_general_mod.a *= v;
+    let wg42_count = gears.count(gear_id!("WG42 (Wurfgerät 42)"));
+    apply_mod!(mods.postcap_general_mod, a, wg42_count, [1.1, 1.2]);
+
+    let has_aa_shell = gears.has_type(GearType::AntiAirShell);
+    apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.3);
+
+    let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
+    apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.2]);
+
+    let landing_craft_count = gears.count_type(GearType::LandingCraft);
+    apply_mod!(mods.postcap_general_mod, a, landing_craft_count, [1.1]);
+
+    let shikon_or_panzer3_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"))
+        + gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
+    apply_mod!(mods.postcap_general_mod, a, shikon_or_panzer3_count, [1.4]);
+
+    let t89_tank_or_honi1_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"))
+        + gears.count(gear_id!("特大発動艇+一式砲戦車"));
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        t89_tank_or_honi1_count,
+        [1.15, 1.15 * 1.15]
+    );
+
+    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
+    apply_mod!(mods.postcap_general_mod, a, m4a1dd_count, [1.1]);
+
+    let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        panzer2_count,
+        [1.15, 1.15 * 1.15]
+    );
+
+    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
+    let armed_count = gears.count(gear_id!("武装大発"));
+    let armored_boat_group_count = ab_count + armed_count;
+    apply_mod!(mods.postcap_general_mod, a, armored_boat_group_count, [1.1]);
+
+    let ibonuses = AntiInstIbonuses::new(attacker);
+    mods.postcap_general_mod.a *= ibonuses.landing_craft;
+    mods.postcap_general_mod.a *= ibonuses.amphibious_tank;
+
     mods
+}
+struct AntiInstIbonuses {
+    landing_craft: f64,
+    amphibious_tank: f64,
+}
+
+impl AntiInstIbonuses {
+    pub fn new(ship: &Ship) -> Self {
+        let gears = &ship.gears;
+
+        let landing_craft_stars_average = gears
+            .mean_by(|gear| (gear.gear_type == GearType::LandingCraft).then(|| gear.stars as f64))
+            .unwrap_or_default();
+
+        let amphibious_tank_stars_average = gears
+            .mean_by(|gear| (gear.gear_type == GearType::AmphibiousTank).then(|| gear.stars as f64))
+            .unwrap_or_default();
+
+        Self {
+            landing_craft: 1.0 + landing_craft_stars_average / 50.0,
+            amphibious_tank: 1.0 + amphibious_tank_stars_average / 30.0,
+        }
+    }
 }
 
 /// 特効補正
@@ -199,6 +476,15 @@ fn special_enemy_modifiers(
         }
         SpecialEnemyType::HeavyCruiserSummerPrincess => {
             return anti_heavy_cruiser_summer_princess_modifiers(attacker, attack_type);
+        }
+        SpecialEnemyType::AnchorageWaterDemonVacationMode => {
+            return anti_anchorage_water_demon_vacation_mode_modifiers(attacker, attack_type);
+        }
+        SpecialEnemyType::FrenchBattleshipPrincess => {
+            return anti_french_battleship_princess_modifiers(attacker, attack_type);
+        }
+        SpecialEnemyType::DockPrincess => {
+            return anti_dock_princess_modifiers(attacker, attack_type);
         }
         SpecialEnemyType::None => {
             return Default::default();
@@ -229,7 +515,6 @@ fn special_enemy_modifiers(
         )
     });
     let landing_craft_count = gears.count_type(GearType::LandingCraft);
-    let amphibious_tank_count = gears.count_type(GearType::AmphibiousTank);
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     let has_ap_shell = gears.has_type(GearType::ApShell);
 
@@ -252,49 +537,22 @@ fn special_enemy_modifiers(
 
     let toku_daihatsu_count = gears.count(gear_id!("特大発動艇"));
     let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
-    let africa_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
-    let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
+    let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
     let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
-    let honi_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
     let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
     let armed_count = gears.count(gear_id!("武装大発"));
     let armored_boat_group_count = ab_count + armed_count;
-    let toku_daihatsu_tank_count = shikon_count + honi_count;
-    let t89_tank_or_honi_count = t89_tank_count + honi_count;
+
+    let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
+    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
+    let panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
+    let toku_daihatsu_tank_count = shikon_count + honi1_count + panzer3_count;
+    let t89_tank_or_honi1_count = t89_tank_count + honi1_count;
 
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
 
     // 改修補正
-    let landing_craft_stars = gears.sum_by(|gear| {
-        if gear.gear_type == GearType::LandingCraft {
-            gear.stars
-        } else {
-            0
-        }
-    });
-
-    let amphibious_tank_stars = gears.sum_by(|gear| {
-        if gear.gear_type == GearType::AmphibiousTank {
-            gear.stars
-        } else {
-            0
-        }
-    });
-
-    let landing_craft_stars_average = if landing_craft_count > 0 {
-        (landing_craft_stars as f64) / (landing_craft_count as f64)
-    } else {
-        0.0
-    };
-
-    let amphibious_tank_average = if amphibious_tank_count > 0 {
-        (amphibious_tank_stars as f64) / (amphibious_tank_count as f64)
-    } else {
-        0.0
-    };
-
-    let landing_craft_ibonus = 1.0 + landing_craft_stars_average / 50.0;
-    let amphibious_tank_ibonus = 1.0 + amphibious_tank_average / 30.0;
+    let ibonuses = AntiInstIbonuses::new(attacker);
 
     // 集積地キャップ後補正
     if matches!(
@@ -303,15 +561,15 @@ fn special_enemy_modifiers(
     ) {
         let mut n = 1.0;
 
-        if t89_tank_or_honi_count > 0 {
+        if t89_tank_or_honi1_count > 0 {
             n += 1.0;
         }
-        if africa_count > 0 {
+        if panzer2_count > 0 {
             n += 1.0;
         }
 
-        mods.postcap_general_mod.a *= landing_craft_ibonus.powf(n);
-        mods.postcap_general_mod.a *= amphibious_tank_ibonus;
+        mods.postcap_general_mod.a *= ibonuses.landing_craft.powf(n);
+        mods.postcap_general_mod.a *= ibonuses.amphibious_tank;
 
         apply_mod!(mods.postcap_general_mod, a, wg42_count, [1.25, 1.25 * 1.3]);
         apply_mod!(
@@ -331,12 +589,12 @@ fn special_enemy_modifiers(
         apply_mod!(
             mods.postcap_general_mod,
             a,
-            t89_tank_or_honi_count,
+            t89_tank_or_honi1_count,
             [1.3, 1.3 * 1.6]
         );
         apply_mod!(mods.postcap_general_mod, a, m4a1dd_count, [1.2]);
         apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.7, 1.7 * 1.5]);
-        apply_mod!(mods.postcap_general_mod, a, africa_count, [1.3]);
+        apply_mod!(mods.postcap_general_mod, a, panzer2_count, [1.3]);
         apply_mod!(
             mods.postcap_general_mod,
             a,
@@ -349,7 +607,7 @@ fn special_enemy_modifiers(
         return mods;
     }
 
-    mods.precap_general_mod.a *= landing_craft_ibonus * amphibious_tank_ibonus;
+    mods.precap_general_mod.a *= ibonuses.landing_craft * ibonuses.amphibious_tank;
 
     apply_mod!(
         mods.precap_general_mod,
@@ -401,11 +659,11 @@ fn special_enemy_modifiers(
     }
 
     // 特大発動艇+一式砲戦車
-    if honi_count > 0 {
+    if honi1_count > 0 {
         mods.honi_mod.merge(1.3, 42.0);
     }
 
-    // 陸上共通 支援上陸用舟艇シナジー
+    // 上陸用舟艇シナジー
     let calc_landing_craft_synergy_bonuses = || {
         if armored_boat_group_count == 0 {
             return None;
@@ -417,8 +675,10 @@ fn special_enemy_modifiers(
 
         let daihatsu_count = gears.count(gear_id!("大発動艇"));
         let dlc_group1_count =
-            daihatsu_count + toku_daihatsu_count + t89_tank_count + africa_count + honi_count;
+            daihatsu_count + toku_daihatsu_count + t89_tank_count + panzer2_count + honi1_count;
         let dlc_group2_count = shikon_count + t2_tank_count;
+        // 上陸用舟艇シナジーも士魂と同じ挙動でよい？
+        // let dlc_group2_count = shikon_count + panzer3_count + t2_tank_count;
 
         if dlc_group1_count + dlc_group2_count == 0 {
             return None;
@@ -477,10 +737,10 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi_count,
+                t89_tank_or_honi1_count,
                 [1.5, 1.5 * 1.4]
             );
-            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]);
+            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.5]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [2.0]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
 
@@ -522,10 +782,10 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi_count,
+                t89_tank_or_honi1_count,
                 [1.2, 1.2 * 1.4]
             );
-            apply_mod!(mods.precap_general_mod, a, africa_count, [1.2]);
+            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.2]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [1.8]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
 
@@ -566,10 +826,10 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi_count,
+                t89_tank_or_honi1_count,
                 [1.6, 1.6 * 1.5]
             );
-            apply_mod!(mods.precap_general_mod, a, africa_count, [1.6]);
+            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.6]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [2.0]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.8]);
         }
@@ -594,10 +854,10 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi_count,
+                t89_tank_or_honi1_count,
                 [1.5, 1.5 * 1.3]
             );
-            apply_mod!(mods.precap_general_mod, a, africa_count, [1.5]);
+            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.5]);
             apply_mod!(mods.precap_general_mod, a, m4a1dd_count, [1.1]);
             apply_mod!(mods.precap_general_mod, a, t2_tank_count, [1.5, 1.5 * 1.2]);
 

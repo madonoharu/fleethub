@@ -1105,6 +1105,12 @@ impl Ship {
             BattleshipSummerPrincess
         } else if self.has_attr(ShipAttr::HeavyCruiserSummerPrincess) {
             HeavyCruiserSummerPrincess
+        } else if self.has_attr(ShipAttr::FrenchBattleshipPrincess) {
+            FrenchBattleshipPrincess
+        } else if self.has_attr(ShipAttr::AnchorageWaterDemonVacationMode) {
+            AnchorageWaterDemonVacationMode
+        } else if self.has_attr(ShipAttr::DockPrincess) {
+            DockPrincess
         } else {
             None
         }

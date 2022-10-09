@@ -11,7 +11,7 @@
     "@google-cloud/asset": "^4.4.0",
     "cloudinary": "^1.32.0",
     "dequal": "^2.0.3",
-    "firebase-admin": "^11.0.1",
+    "firebase-admin": "^11.1.0",
     "fleethub-core": "npm:latest",
     "googleapis": "^108.0.0",
     "got": "12.5.1"

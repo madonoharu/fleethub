@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
-import { Typography } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 import type { AttackAnalysis } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -79,13 +79,18 @@ const AttackReportDetails: React.FCX<Props> = ({
       ) : (
         <Typography>{t("AttackTypeNone")}</Typography>
       )}
-      {report.damage_state_density && (
+      {report.damage_state_density &&
+      Object.keys(report.damage_state_density).length ? (
         <>
-          <Typography marginTop={1} variant="subtitle2">
+          <Typography mt={1} variant="subtitle2">
             {t("Distribution")}
           </Typography>
           <DamageStateDensityBarChart data={report.damage_state_density} />
         </>
+      ) : (
+        <Alert severity="warning" sx={{ mt: 1 }}>
+          {t("Unknown")}
+        </Alert>
       )}
     </div>
   );
