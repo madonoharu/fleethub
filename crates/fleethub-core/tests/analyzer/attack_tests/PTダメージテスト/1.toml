@@ -1,0 +1,22 @@
+description = "PTダメージテスト1"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "Warspite改"
+g1 = "25mm三連装機銃 集中配備"
+g2 = "15m二重測距儀+21号電探改二"
+g3 = "15m二重測距儀+21号電探改二"
+g4 = "SG レーダー(初期型)"
+gx = "2cm 四連装FlaK 38"
+
+
+# 防御艦設定
+[target]
+ship_id = 1638
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 42
+damage.normal_damage_max = 59
+damage.critical_damage_min = 81
+damage.critical_damage_max = 98

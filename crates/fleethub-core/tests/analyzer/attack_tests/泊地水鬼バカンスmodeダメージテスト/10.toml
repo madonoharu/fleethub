@@ -1,0 +1,21 @@
+description = "夜戦雷装あり色々混載"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "最上改二特"
+g1 = { gear_id = "大発動艇(八九式中戦車&陸戦隊)", stars = 10 }
+g2 = { gear_id = "特二式内火艇", stars = 10 }
+g3 = { gear_id = "特二式内火艇", stars = 10 }
+g4 = "三式弾"
+
+
+# 防御艦設定
+[target]
+ship_id = 1815
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 2013
+damage.normal_damage_max = 2133
+damage.critical_damage_min = 3149
+damage.critical_damage_max = 3269
