@@ -402,12 +402,13 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     let landing_craft_count = gears.count_type(GearType::LandingCraft);
     apply_mod!(mods.postcap_general_mod, a, landing_craft_count, [1.1]);
 
-    let shikon_or_panzer3_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"))
-        + gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
-    apply_mod!(mods.postcap_general_mod, a, shikon_or_panzer3_count, [1.4]);
-
-    let t89_tank_or_honi1_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"))
-        + gears.count(gear_id!("特大発動艇+一式砲戦車"));
+    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
+    let toku_daihatsu_tank_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"))
+        + gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"))
+        + honi1_count;
+    let t89_tank_or_honi1_count =
+        gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)")) + honi1_count;
+    apply_mod!(mods.postcap_general_mod, a, toku_daihatsu_tank_count, [1.4]);
     apply_mod!(
         mods.postcap_general_mod,
         a,
@@ -434,6 +435,10 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     let ibonuses = AntiInstIbonuses::new(attacker);
     mods.postcap_general_mod.a *= ibonuses.landing_craft;
     mods.postcap_general_mod.a *= ibonuses.amphibious_tank;
+
+    if attacker.master.nationality == 31 {
+        mods.postcap_general_mod.a *= 1.1;
+    }
 
     mods
 }
