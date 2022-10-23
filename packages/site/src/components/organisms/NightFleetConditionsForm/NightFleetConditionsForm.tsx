@@ -18,6 +18,7 @@ type NightFleetConditionsFormProps = {
   value: NightFleetConditions | undefined;
   onChange?: (value: NightFleetConditions) => void;
   color?: "primary" | "secondary";
+  disabled?: boolean | undefined;
 };
 
 const NightFleetConditionsForm: React.FCX<NightFleetConditionsFormProps> = ({
@@ -26,6 +27,7 @@ const NightFleetConditionsForm: React.FCX<NightFleetConditionsFormProps> = ({
   value,
   onChange,
   color = "primary",
+  disabled,
 }) => {
   const { t } = useTranslation("common");
 
@@ -50,6 +52,7 @@ const NightFleetConditionsForm: React.FCX<NightFleetConditionsFormProps> = ({
           style={style}
           size="small"
           color={color}
+          disabled={disabled}
         >
           <Button
             onClick={ContactModal.show}
