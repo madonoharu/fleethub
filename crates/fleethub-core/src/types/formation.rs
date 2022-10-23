@@ -80,26 +80,6 @@ impl Formation {
     /// 第四警戒航行序列
     pub const CRUISING4: Self = Self::Combined(CombinedFormation::Cruising4);
 
-    /// 陣形相性
-    ///
-    /// 砲撃戦と対潜戦では攻撃側と防御側は以下の陣形条件を満たすなら命中補正は1.0となる
-    /// - 複縦 → 単横
-    /// - 単横 → 梯形
-    /// - 梯形 → 単縦
-    pub fn is_ineffective(self, other: Self) -> bool {
-        use SingleFormation::*;
-
-        match (self, other) {
-            (Self::Single(a), Self::Single(b)) => {
-                matches!(
-                    (a, b),
-                    (DoubleLine, LineAbreast) | (LineAbreast, Echelon) | (Echelon, LineAhead)
-                )
-            }
-            _ => false,
-        }
-    }
-
     pub fn is_combined(self) -> bool {
         matches!(self, Self::Combined(_))
     }
