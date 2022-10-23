@@ -1,4 +1,3 @@
-import { measure } from "@fh/utils";
 import got from "got";
 import { Start2 } from "kc-tools";
 
@@ -37,28 +36,20 @@ export async function createMasterDataBySpreadsheet() {
 export async function updateMasterDataBySpreadsheet(): Promise<void> {
   const spreadsheet = new MasterDataSpreadsheet();
 
-  const [start2, ctypeNames, currentMd, tables] = await measure(
-    "readTables",
-    () =>
-      Promise.all([
-        fetchStart2(),
-        fetchCtypeNames(),
-        storage.readMasterData(),
-        spreadsheet.readTables(),
-      ])
-  );
+  const [start2, ctypeNames, currentMd, tables] = await Promise.all([
+    fetchStart2(),
+    fetchCtypeNames(),
+    storage.readMasterData(),
+    spreadsheet.readTables(),
+  ]);
 
   const nextMd = createMasterData(start2, ctypeNames, tables);
   const updates = !storage.equalMasterData(currentMd, nextMd);
 
-  if (updates) {
-    await measure("writeMasterData", () => storage.writeMasterData(nextMd));
-  }
-
-  // await Promise.all([
-  //   updates && storage.writeMasterData(nextMd),
-  //   spreadsheet.writeMasterData(tables, nextMd),
-  // ]);
+  await Promise.all([
+    updates && storage.writeMasterData(nextMd),
+    spreadsheet.writeMasterData(tables, nextMd),
+  ]);
 }
 
 export async function updateImages(): Promise<void> {

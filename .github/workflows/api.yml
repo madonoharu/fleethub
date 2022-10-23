@@ -1,0 +1,27 @@
+name: API
+on:
+  workflow_dispatch:
+    inputs:
+      NAME:
+        required: true
+        type: string
+      ID_TOKEN:
+        type: string
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 📥 Monorepo install
+        uses: ./.github/actions/yarn-nm-install
+
+      - run: yarn ts scripts/dispatch.ts
+        env:
+          NAME: ${{ github.event.inputs.NAME }}
+          ID_TOKEN: ${{ github.event.inputs.ID_TOKEN }}
+          SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
