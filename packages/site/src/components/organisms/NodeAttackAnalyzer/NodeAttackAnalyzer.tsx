@@ -58,6 +58,7 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
 
   const base = activeStep?.config || {};
   const config: NodeAttackAnalyzerConfig = { node_state, ...base };
+  const disableConfig = !activeStep;
 
   const leftComp = leftOrg.create_comp();
   const [leftShipId, setLeftShipId] = useState(leftComp.first_ship_id());
@@ -114,19 +115,23 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
             value={leftOrg.route_sup}
             onChange={(route_sup) => updateLeftOrg({ route_sup })}
           />
+
           <AirStateSelect
             label={t("AirState.name")}
             value={config.air_state || "AirSupremacy"}
             onChange={(air_state) => handleConfigChange({ air_state })}
+            disabled={disableConfig}
           />
           <EngagementSelect
             label={t("Engagement.name")}
             value={config.engagement || "Parallel"}
             onChange={(engagement) => handleConfigChange({ engagement })}
+            disabled={disableConfig}
           />
           <NodeStateForm
             value={config.node_state}
             onChange={(node_state) => handleConfigChange({ node_state })}
+            disabled={disableConfig}
           />
         </Stack>
 
@@ -136,6 +141,7 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
           rightComp={rightComp}
           leftShipId={leftShipId}
           rightShipId={rightShipId}
+          disableConfig={disableConfig}
           onLeftShipChange={setLeftShipId}
           onRightShipChange={setRightShipId}
           onConfigChange={handleConfigChange}

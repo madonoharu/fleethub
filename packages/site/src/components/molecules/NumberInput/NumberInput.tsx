@@ -76,6 +76,7 @@ interface NumberInputAdornmentProps {
   onIncrease: () => void;
   onDecrease: () => void;
   onFinish: () => void;
+  disabled: boolean;
 }
 
 const NumberInputAdornment: React.FCX<NumberInputAdornmentProps> = ({
@@ -83,16 +84,25 @@ const NumberInputAdornment: React.FCX<NumberInputAdornmentProps> = ({
   onIncrease,
   onDecrease,
   onFinish,
+  disabled,
 }) => {
   const increaseHandlers = useLongPress({ onPress: onIncrease, onFinish });
   const decreaseHandlers = useLongPress({ onPress: onDecrease, onFinish });
 
   return (
     <StyledInputAdornment className={className} position="end">
-      <StyledButton aria-label="increase" {...increaseHandlers}>
+      <StyledButton
+        aria-label="increase"
+        disabled={disabled}
+        {...increaseHandlers}
+      >
         <ArrowDropUpIcon />
       </StyledButton>
-      <StyledButton aria-label="decrease" {...decreaseHandlers}>
+      <StyledButton
+        aria-label="decrease"
+        disabled={disabled}
+        {...decreaseHandlers}
+      >
         <ArrowDropDownIcon />
       </StyledButton>
     </StyledInputAdornment>
@@ -119,6 +129,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   InputProps,
   ...textFieldProps
 }) => {
+  const disabled = textFieldProps.disabled || InputProps?.disabled || false;
   const [inner, setInner] = useState(`${value ?? ""}`);
   const innerRef = useRef(inner);
   innerRef.current = inner;
@@ -182,6 +193,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         onIncrease={increase}
         onDecrease={decrease}
         onFinish={handleFinish}
+        disabled={disabled}
       />
     );
 
@@ -192,7 +204,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
       inputMode: "numeric",
       ...InputProps,
     };
-  }, [min, max, step, onChange, InputProps]);
+  }, [min, max, step, disabled, onChange, InputProps]);
 
   return (
     <Input

@@ -343,10 +343,10 @@ impl BattleDefinitions {
             }
         };
 
-        let is_ineffective = attacker.formation.is_ineffective(target.formation);
+        let cancels = cancels_formation_modifier(attack_type, attacker.formation, target.formation);
 
         let power_mod = attacker_mods.power_mod;
-        let accuracy_mod = if is_ineffective {
+        let accuracy_mod = if cancels {
             1.0
         } else {
             attacker_mods.accuracy_mod
@@ -415,5 +415,83 @@ impl From<&NightCutinDef> for SpecialAttackDef<NightCutinLike> {
             accuracy_mod: def.accuracy_mod.unwrap_or(1.0),
             hits: def.hits,
         }
+    }
+}
+
+/// 陣形相性
+///
+/// 砲撃戦と対潜戦では攻撃側と防御側は以下の陣形条件を満たすなら命中補正は1.0となる
+/// - 複縦 → 単横
+/// - 単横 → 梯形
+/// - 梯形 → 単縦
+fn cancels_formation_modifier(
+    attack_type: AttackType,
+    attacker_formation: Formation,
+    target_formation: Formation,
+) -> bool {
+    use super::SingleFormation::*;
+
+    if !matches!(
+        attack_type,
+        AttackType::Shelling(_) | AttackType::SupportShelling(_) | AttackType::Asw(_)
+    ) {
+        return false;
+    }
+
+    match (attacker_formation, target_formation) {
+        (Formation::Single(a), Formation::Single(b)) => {
+            matches!(
+                (a, b),
+                (DoubleLine, LineAbreast) | (LineAbreast, Echelon) | (Echelon, LineAhead)
+            )
+        }
+        _ => false,
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_cancels_formation_modifier() {
+        let attack_types = [
+            AttackType::Shelling(Default::default()),
+            AttackType::Asw(Default::default()),
+            AttackType::Night(Default::default()),
+            AttackType::Torpedo,
+            AttackType::SupportShelling(Default::default()),
+        ];
+
+        let ineffective_pairs = [
+            (Formation::DOUBLE_LINE, Formation::LINE_ABREAST),
+            (Formation::LINE_ABREAST, Formation::ECHELON),
+            (Formation::ECHELON, Formation::LINE_AHEAD),
+        ];
+
+        attack_types
+            .into_iter()
+            .flat_map(|ty| {
+                Formation::iter().flat_map(move |f1| Formation::iter().map(move |f2| (ty, f1, f2)))
+            })
+            .for_each(|(attack_type, f1, f2)| {
+                let expected = if attack_type.is_shelling()
+                    || attack_type.is_asw()
+                    || attack_type.is_support_shelling()
+                {
+                    ineffective_pairs
+                        .iter()
+                        .any(|pair| pair.0 == f1 && pair.1 == f2)
+                } else {
+                    false
+                };
+
+                assert_eq!(
+                    cancels_formation_modifier(attack_type, f1, f2),
+                    expected,
+                    "{:#?}",
+                    (attack_type, f1, f2)
+                )
+            });
     }
 }

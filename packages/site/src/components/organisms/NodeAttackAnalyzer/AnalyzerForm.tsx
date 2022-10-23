@@ -16,6 +16,7 @@ interface Props {
   rightShipId: string | undefined;
   leftComp: Comp | undefined;
   rightComp: Comp | undefined;
+  disableConfig?: boolean | undefined;
   onLeftShipChange: (id: string) => void;
   onRightShipChange: (id: string) => void;
   onConfigChange: (value: NodeAttackAnalyzerConfig) => void;
@@ -28,6 +29,7 @@ const AnalyzerForm: React.FCX<Props> = ({
   rightShipId,
   leftComp,
   rightComp,
+  disableConfig,
   onLeftShipChange,
   onRightShipChange,
   onConfigChange,
@@ -60,11 +62,13 @@ const AnalyzerForm: React.FCX<Props> = ({
               combined={leftComp.is_combined()}
               value={config.left?.formation || "LineAhead"}
               onChange={bind("left.formation")}
+              disabled={disableConfig}
             />
             <NightFleetConditionsForm
               color="primary"
               value={config.left}
               onChange={bind("left")}
+              disabled={disableConfig}
             />
           </Stack>
         </div>
@@ -83,11 +87,13 @@ const AnalyzerForm: React.FCX<Props> = ({
               combined={rightComp.is_combined()}
               value={config.right?.formation || "LineAhead"}
               onChange={bind("right.formation")}
+              disabled={disableConfig}
             />
             <NightFleetConditionsForm
               color="secondary"
               value={config.right}
               onChange={bind("right")}
+              disabled={disableConfig}
             />
           </Stack>
         </div>

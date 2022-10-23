@@ -9,9 +9,10 @@ import { NumberInput } from "../../molecules";
 interface Props {
   value: NodeState | undefined;
   onChange?: (value: NodeState) => void;
+  disabled?: boolean | undefined;
 }
 
-const NodeStateForm: React.FC<Props> = ({ value = {}, onChange }) => {
+const NodeStateForm: React.FC<Props> = ({ value = {}, onChange, disabled }) => {
   const { t } = useTranslation("common");
   const handlePhaseChange = (phase: number) => {
     onChange?.({ ...value, phase });
@@ -34,16 +35,19 @@ const NodeStateForm: React.FC<Props> = ({ value = {}, onChange }) => {
         min={0}
         max={4}
         onChange={handlePhaseChange}
+        disabled={disabled}
       />
       <Checkbox
         label={t("debuff")}
         checked={value?.debuff}
         onChange={handleDebuffChange}
+        disabled={disabled}
       />
       <Checkbox
         label={t("historical_mod")}
         checked={!value?.disable_historical_mod}
         onChange={handleDisableHistoricalModChange}
+        disabled={disabled}
       />
     </Stack>
   );

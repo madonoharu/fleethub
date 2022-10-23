@@ -10,7 +10,7 @@ type CheckboxProps = {
   checked?: boolean;
   onChange?: (value: boolean) => void;
   label?: FormControlLabelProps["label"];
-} & Pick<MuiCheckboxProps, "size" | "color">;
+} & Pick<MuiCheckboxProps, "size" | "color" | "disabled">;
 
 const Checkbox: React.FCX<CheckboxProps> = ({
   className,
@@ -19,6 +19,7 @@ const Checkbox: React.FCX<CheckboxProps> = ({
   label,
   size,
   color,
+  disabled,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     onChange?.(event.target.checked);
@@ -28,6 +29,7 @@ const Checkbox: React.FCX<CheckboxProps> = ({
       size={size}
       color={color}
       checked={checked}
+      disabled={disabled}
       onChange={handleChange}
     />
   );

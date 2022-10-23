@@ -3,8 +3,9 @@ use std::ops::Deref;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
 pub enum AswAttackType {
+    #[default]
     DepthCharge,
     Aerial,
 }
