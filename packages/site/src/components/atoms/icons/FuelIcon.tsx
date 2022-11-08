@@ -8,6 +8,7 @@ const FuelIcon: React.FCX = (props) => (
     width={20}
     height={20}
     src={"/icons/fuel.png"}
+    alt="fuel"
   />
 );
 

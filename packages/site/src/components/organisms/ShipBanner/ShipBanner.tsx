@@ -40,6 +40,7 @@ const ShipBanner = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
         width={width}
         height={height}
         src={`ships/${publicId}.png`}
+        alt={`${shipId}`}
         priority={true}
       />
     );
