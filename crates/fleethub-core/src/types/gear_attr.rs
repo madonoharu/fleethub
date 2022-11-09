@@ -7,8 +7,6 @@ use tsify::Tsify;
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearAttr {
     Unknown,
-    /// 深海
-    Abyssal,
     /// 高角砲
     HighAngleMount,
     /// 夜間戦闘機

@@ -14,7 +14,7 @@ use crate::{
     ship::Ship,
     types::{
         AirSquadronState, EBonuses, FleetState, GearAttr, GearState, GearType, GearVecState,
-        OrgState, OrgType, ShipAttr, ShipState, SlotSizeVec,
+        OrgState, OrgType, ShipState, SlotSizeVec,
     },
 };
 
@@ -233,7 +233,7 @@ impl Factory {
             .iter()
             .find(|ship| ship.ship_id == ship_id)?;
 
-        let state = if master_ship.has_attr(ShipAttr::Abyssal) {
+        let state = if master_ship.is_abyssal() {
             let stock = &master_ship.stock;
             let gears = GearVecState {
                 g1: stock.get(0).cloned(),
