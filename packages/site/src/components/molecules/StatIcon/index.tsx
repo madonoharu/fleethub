@@ -13,6 +13,7 @@ const StatIcon: React.FCX<Props> = ({ className, icon }) => {
       width={15}
       height={15}
       src={`/stats/${icon}.png`}
+      alt={icon}
     />
   );
 };

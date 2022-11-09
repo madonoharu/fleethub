@@ -8,6 +8,7 @@ const AmmoIcon: React.FCX = (props) => (
     width={20}
     height={20}
     src={"/icons/ammo.png"}
+    alt="ammo"
   />
 );
 

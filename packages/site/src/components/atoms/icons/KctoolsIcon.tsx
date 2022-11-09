@@ -9,6 +9,7 @@ const KctoolsIcon: React.FCX = (props) => (
     width={24}
     height={24}
     src={"/icons/kctools.png"}
+    alt="kctools"
   />
 );
 

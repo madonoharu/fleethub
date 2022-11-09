@@ -40,6 +40,8 @@ rules:
   react/display-name: off
   react/prop-types: off
   react/no-unknown-property: off
+  react/jsx-uses-react: off
+  react/react-in-jsx-scope: off
 
   import/order:
     - error

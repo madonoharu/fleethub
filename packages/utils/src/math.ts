@@ -26,3 +26,9 @@ function createRound(methodName: "round" | "floor") {
 
 export const round = createRound("round");
 export const floor = createRound("floor");
+
+const EXP_TABLE = [10, 25, 40, 55, 70, 85, 100];
+
+export function expToAce(exp: number): number {
+  return EXP_TABLE.filter((bound) => bound <= exp).length;
+}

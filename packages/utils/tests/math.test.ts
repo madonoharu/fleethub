@@ -1,4 +1,4 @@
-import { atLeastOne, round, floor } from "../src";
+import { atLeastOne, round, floor, expToAce } from "../src";
 
 describe("utils/math", () => {
   it("atLeastOne", () => {
@@ -27,5 +27,26 @@ describe("utils/math", () => {
 
     expect(floor(554, -1)).toBe(550);
     expect(floor(555, -1)).toBe(550);
+  });
+
+  it.each([
+    [0, 0],
+    [9, 0],
+    [10, 1],
+    [24, 1],
+    [25, 2],
+    [39, 2],
+    [40, 3],
+    [54, 3],
+    [55, 4],
+    [69, 4],
+    [70, 5],
+    [84, 5],
+    [85, 6],
+    [99, 6],
+    [100, 7],
+    [120, 7],
+  ])("expToAce", (exp, expected) => {
+    expect(expToAce(exp)).toBe(expected);
   });
 });

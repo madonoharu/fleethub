@@ -23,6 +23,7 @@ const GearIcon = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
         width={width}
         height={height}
         src={`gear_icons/${iconId}.png`}
+        alt={`${iconId}`}
       />
     </div>
   );
