@@ -13,6 +13,7 @@ const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
       height={18}
       width={48}
       src={`/filters/${icon}.png`}
+      alt={icon}
     />
   );
 };

@@ -45,8 +45,6 @@ const config = {
         : "data/master_data.json",
   },
   i18n,
-
-  swcMinify: true,
   reactStrictMode: true,
 
   experimental: {
