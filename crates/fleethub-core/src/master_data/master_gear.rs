@@ -110,8 +110,12 @@ impl MasterGear {
         self.attrs.contains(attr)
     }
 
+    pub fn is_abyssal(&self) -> bool {
+        self.gear_id > 1500
+    }
+
     pub fn default_exp(&self) -> u8 {
-        if self.has_attr(GearAttr::Abyssal) {
+        if self.is_abyssal() {
             return 0;
         }
 

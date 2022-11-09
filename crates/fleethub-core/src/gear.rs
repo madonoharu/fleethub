@@ -403,7 +403,7 @@ impl Gear {
     }
 
     pub fn is_abyssal(&self) -> bool {
-        self.has_attr(GearAttr::Abyssal)
+        self.gear_id > 1500
     }
 
     pub fn is_abyssal_cuttlefish_torpedo(&self) -> bool {
