@@ -976,7 +976,7 @@ impl Ship {
     }
 
     pub fn is_abyssal(&self) -> bool {
-        self.has_attr(ShipAttr::Abyssal)
+        self.master.is_abyssal()
     }
 
     pub fn is_submarine(&self) -> bool {

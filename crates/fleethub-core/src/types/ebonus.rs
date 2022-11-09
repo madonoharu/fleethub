@@ -123,7 +123,7 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
         0
     };
 
-    if ship.has_attr(ShipAttr::Abyssal) || !gears.has(gear_id!("改良型艦本式タービン")) {
+    if ship.is_abyssal() || !gears.has(gear_id!("改良型艦本式タービン")) {
         return sentaka_type_mod;
     }
 
