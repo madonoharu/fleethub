@@ -5101,11 +5101,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.10.13
-  resolution: "fleethub-core@npm:1.10.13"
+  version: 1.10.15
+  resolution: "fleethub-core@npm:1.10.15"
   dependencies:
     equipment-bonus: "npm:latest"
-  checksum: 6df84df2eb2aeb7fccc57b5a4603102ac969146ca123cc6674396c363b5ca42eb5441da0cc68b28b2c872f7e31e3b4b0f1f16c232df6b5feea53a5a210bdbd78
+  checksum: 93bfb893116917084eb63a841640f518a005bcbac5f04ef896a355a82c828372f9e53005fa54c9272a82ae045e56d587ab0ff1c7465f1f90bdf54094984ffa7f
   languageName: node
   linkType: hard
 
