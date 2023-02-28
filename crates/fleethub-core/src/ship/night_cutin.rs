@@ -82,6 +82,32 @@ impl Ship {
             }
         }
 
+        if matches!(
+            self.ship_type,
+            ShipType::CL | ShipType::CAV | ShipType::BBV | ShipType::AV
+        ) && main_gun_count >= 2
+        {
+            let night_zuiun_count = self.count_non_zero_slot_gear_by(|gear| {
+                gear.gear_id == gear_id!("試製 夜間瑞雲(攻撃装備)")
+            });
+
+            let has_surface_radar = gears.has_attr(GearAttr::SurfaceRadar);
+
+            if night_zuiun_count >= 2 {
+                if has_surface_radar {
+                    set.insert(NightCutin::NightZuiun2Radar);
+                }
+                set.insert(NightCutin::NightZuiun2);
+            }
+
+            if night_zuiun_count >= 1 {
+                if has_surface_radar {
+                    set.insert(NightCutin::NightZuiunRadar);
+                }
+                set.insert(NightCutin::NightZuiun);
+            }
+        }
+
         let late_model_bow_torpedo_count = if anti_inst {
             0
         } else {

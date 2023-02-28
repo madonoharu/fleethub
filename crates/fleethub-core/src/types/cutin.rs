@@ -66,6 +66,15 @@ pub enum NightCutin {
     Cvci1_18,
     /// 光電管彗星夜襲
     Photobomber,
+
+    /// 夜間瑞雲2電探CI
+    NightZuiun2Radar,
+    /// 夜間瑞雲2CI
+    NightZuiun2,
+    /// 夜間瑞雲電探CI
+    NightZuiunRadar,
+    /// 夜間瑞雲CI
+    NightZuiun,
 }
 
 #[allow(clippy::derive_hash_xor_eq)]
