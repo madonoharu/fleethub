@@ -280,7 +280,11 @@
     "TorpTsloTorp": "어견어컷인",
     "TorpTsloDrum": "어견드컷인",
     "SubRadarTorp": "어어전",
-    "SubTorpTorp": "어어어"
+    "SubTorpTorp": "어어어",
+    "NightZuiun2Radar": "야간 즈이운 CI 1.36",
+    "NightZuiun2": "야간 즈이운 CI 1.32",
+    "NightZuiunRadar": "야간 즈이운 CI 1.28",
+    "NightZuiun": "야간 즈이운 CI 1.24"
   },
   "FleetCutin": {
     "name": "함대 CI",

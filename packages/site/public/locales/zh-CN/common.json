@@ -280,7 +280,11 @@
     "TorpTsloTorp": "水雷瞭望鱼鱼CI",
     "TorpTsloDrum": "水雷瞭望鱼桶CI",
     "SubRadarTorp": "后期鱼潜水电",
-    "SubTorpTorp": "后期鱼后期鱼"
+    "SubTorpTorp": "后期鱼后期鱼",
+    "NightZuiun2Radar": "夜间瑞云夜战CI 1.36",
+    "NightZuiun2": "夜间瑞云夜战CI 1.32",
+    "NightZuiunRadar": "夜间瑞云夜战CI 1.28",
+    "NightZuiun": "夜间瑞云夜战CI 1.24"
   },
   "FleetCutin": {
     "name": "舰娘特殊攻击",
