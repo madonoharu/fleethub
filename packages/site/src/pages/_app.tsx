@@ -1,7 +1,7 @@
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { NextComponentType } from "next";
-import { appWithTranslation } from "next-i18next";
 import { AppContext, AppInitialProps, AppProps } from "next/app";
+import { appWithTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { persistStore } from "redux-persist";

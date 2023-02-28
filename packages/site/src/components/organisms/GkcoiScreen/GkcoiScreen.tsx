@@ -3,8 +3,8 @@ import { Dict } from "@fh/utils";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Paper, Button, Link } from "@mui/material";
 import { Org } from "fleethub-core";
-import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
+import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";

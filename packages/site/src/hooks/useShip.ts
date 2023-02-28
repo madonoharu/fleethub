@@ -27,7 +27,7 @@ export function useShipName(shipId: number, withId = false): string {
   if (i18n.resolvedLanguage === "ja") {
     displayName = defaultName || `${shipId}`;
   } else {
-    displayName = t(`${shipId}`, defaultName);
+    displayName = t(`${shipId}`, defaultName || `${shipId}`);
   }
 
   if (withId) {
