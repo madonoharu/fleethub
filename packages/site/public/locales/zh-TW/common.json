@@ -280,7 +280,11 @@
     "TorpTsloTorp": "水見雙雷",
     "TorpTsloDrum": "水見雷桶",
     "SubRadarTorp": "潛艇魚雷(晚期)+聲納加成",
-    "SubTorpTorp": "雙潛艇魚雷(晚期)加成"
+    "SubTorpTorp": "雙潛艇魚雷(晚期)加成",
+    "NightZuiun2Radar": "夜間瑞雲 1.36",
+    "NightZuiun2": "夜間瑞雲 1.32",
+    "NightZuiunRadar": "夜間瑞雲 1.28",
+    "NightZuiun": "夜間瑞雲 1.24"
   },
   "FleetCutin": {
     "name": "艦娘特殊攻擊",

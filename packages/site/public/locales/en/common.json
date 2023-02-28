@@ -280,7 +280,11 @@
     "TorpTsloTorp": "DD TSLO Torp CI",
     "TorpTsloDrum": "DD TSLO Drum CI",
     "SubRadarTorp": "Sub Radar",
-    "SubTorpTorp": "Sub LGTM"
+    "SubTorpTorp": "Sub LGTM",
+    "NightZuiun2Radar": "Night Zuiun CI 1.36",
+    "NightZuiun2": "Night Zuiun CI 1.32",
+    "NightZuiunRadar": "Night Zuiun CI 1.28",
+    "NightZuiun": "Night Zuiun CI 1.24"
   },
   "FleetCutin": {
     "name": "Fleet CI",
