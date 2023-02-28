@@ -18,7 +18,7 @@ class Cache extends Map<string, unknown> {
   }
 }
 
-const CURRENT_EVENT_ID: number | null = 55;
+const CURRENT_EVENT_ID: number | null = null;
 
 async function main() {
   const cache = new Cache();

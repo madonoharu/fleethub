@@ -26,16 +26,19 @@ declare module "@mui/system/createTheme" {
   }
 }
 
-declare module "react-i18next" {
+declare module "i18next" {
+  interface I18nNamespaces {
+    common: typeof import("../public/locales/en/common.json");
+    gear_types: string[];
+    stype: Record<string, string>;
+    ctype: Record<string, string>;
+    ships: Record<string, string>;
+    gears: Record<string, string>;
+  }
+
   interface CustomTypeOptions {
-    resources: {
-      common: typeof import("../public/locales/en/common.json");
-      gear_types: string[];
-      stype: Record<string, string>;
-      ctype: Record<string, string>;
-      ships: Record<string, string>;
-      gears: Record<string, string>;
-    };
+    defaultNS: "common";
+    resources: I18nNamespaces;
   }
 }
 

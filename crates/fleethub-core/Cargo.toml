@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.10.15"
+version = "1.10.16"
 authors = ["Madono <madonoharu@gmail.com>"]
 edition = "2021"
 description = "fleethub-core"
@@ -13,11 +13,11 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-wasm-bindgen = { version = "0.2.83" }
-js-sys = "0.3.60"
-serde = { version = "1.0.147", features = ["derive"] }
-serde_json = "1.0.87"
-serde_with = "2.0.1"
+wasm-bindgen = { version = "0.2.84" }
+js-sys = "0.3.61"
+serde = { version = "1.0.152", features = ["derive"] }
+serde_json = "1.0.93"
+serde_with = "2.2.0"
 rand = { version = "0.8.5", features = ["small_rng"] }
 getrandom = { version = "0.2.8", features = ["js"] }
 
@@ -27,31 +27,31 @@ getrandom = { version = "0.2.8", features = ["js"] }
 # code size when deploying.
 console_error_panic_hook = { version = "0.1.7", optional = true }
 
-anyhow = "1.0.66"
-thiserror = "1.0.37"
+anyhow = "1.0.69"
+thiserror = "1.0.38"
 arrayvec = { version = "0.7.2", features = ["serde"] }
-hashbrown = { version = "0.12.3", features = ["serde"] }
+hashbrown = { version = "0.13.2", features = ["serde"] }
 enumset = "1.0.12"
-enum-map = "2.4.1"
+enum-map = "2.4.2"
 num-traits = "0.2.15"
 num-derive = "0.3.3"
 strum = { version = "0.24.1", features = ["derive"] }
 itertools = "0.10.5"
-seq-macro = "0.3.1"
-paste = "1.0.9"
+seq-macro = "0.3.2"
+paste = "1.0.11"
 tsify = "0.4.3"
 fasteval = "0.2.4"
 ordered-float = { version = "3.4.0", features = ["serde"] }
-gloo-utils = { version = "0.1.5", features = ["serde"] }
+gloo-utils = { version = "0.1.6", features = ["serde"] }
 
 [dependencies.web-sys]
-version = "0.3.60"
+version = "0.3.61"
 features = ["console"]
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.33"
+wasm-bindgen-test = "0.3.34"
 criterion = "0.4.0"
-once_cell = "1.16.0"
+once_cell = "1.17.1"
 toml_edit = { version = "*", features = ["easy"] }
 assert-json-diff = "2.0.2"
 walkdir = "2"

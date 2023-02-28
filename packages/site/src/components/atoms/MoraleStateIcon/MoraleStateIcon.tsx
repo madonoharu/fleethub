@@ -6,10 +6,11 @@ import { styled, css, SvgIconProps } from "@mui/material";
 import { MoraleState } from "fleethub-core";
 import React from "react";
 
-const MoraleStateIcon: React.FC<SvgIconProps & { state: MoraleState }> = ({
-  state,
-  ...svgProps
-}) => {
+interface Props extends SvgIconProps {
+  state: MoraleState;
+}
+
+const MoraleStateIcon: React.FC<Props> = ({ state, ...svgProps }) => {
   switch (state) {
     case "Sparkle":
       return <FlareIcon {...svgProps} aria-label="Sparkle" />;

@@ -4,7 +4,7 @@ import NumberInput from "./NumberInput";
 
 function press(element: HTMLButtonElement, msToRun = 0) {
   fireEvent.mouseDown(element);
-  act(() => {
+  void act(() => {
     jest.advanceTimersByTime(msToRun);
   });
   fireEvent.mouseUp(element);
