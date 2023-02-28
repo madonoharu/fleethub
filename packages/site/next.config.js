@@ -54,7 +54,7 @@ const config = {
 
   webpack: (config, { isServer, dev }) => {
     config.experiments.asyncWebAssembly = true;
-    config.experiments.syncWebAssembly = true;
+    config.experiments.layers = true;
 
     if (!dev && isServer) {
       config.output.webassemblyModuleFilename = "chunks/[id].wasm";
