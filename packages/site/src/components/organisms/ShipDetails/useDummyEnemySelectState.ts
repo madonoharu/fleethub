@@ -15,7 +15,7 @@ export const useDummyEnemySelectState = () => {
       (shipId) => {
         const ship = core.create_ship_by_id(shipId);
         return {
-          label: t(`ships:${shipId}`, ship?.name),
+          label: t(`ships:${shipId}`, ship?.name || ""),
           ship: core.create_ship_by_id(shipId),
         };
       }
