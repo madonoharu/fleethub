@@ -10,10 +10,10 @@ export const GenerationMapContext = React.createContext<Dict<string, string>>(
   {}
 );
 
-export async function gcsFetcher<T>(
-  path: string,
-  generation?: string
-): Promise<T> {
+export async function gcsFetcher<T>([path, generation]: [
+  string,
+  string | undefined
+]): Promise<T> {
   const url = new URL(`${GCS_PREFIX_URL}/${path}`);
 
   if (generation) {

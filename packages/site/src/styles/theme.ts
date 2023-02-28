@@ -9,15 +9,6 @@ const muiTheme = createTheme({
   },
   palette,
   components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        "@global": {
-          body: {
-            overflowY: "hidden",
-          },
-        },
-      },
-    },
     MuiTypography: {
       defaultProps: {
         variant: "body2",

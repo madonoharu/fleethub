@@ -7,9 +7,9 @@ import type {
   SupportShellingStyle,
   TorpedoAttackStyle,
 } from "fleethub-core";
+import { TFunction } from "i18next";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { TFunction } from "react-i18next";
 
 type Tag =
   | ShellingStyle["tag"]

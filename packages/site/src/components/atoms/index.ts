@@ -10,3 +10,6 @@ export * from "./MenuList";
 export { default as Slider } from "./Slider";
 export { default as StarsLabel } from "./StarsLabel";
 export { default as ProficiencyIcon } from "./ProficiencyIcon";
+export { default as DamageStateIcon } from "./DamageStateIcon";
+export { default as MoraleStateIcon } from "./MoraleStateIcon";
+export { default as FileIcon } from "./FileIcon";
