@@ -1,8 +1,8 @@
 use crate::{
     ship::Ship,
     types::{
-        ctype, gear_id, AttackType, GearAttr, GearType, NightAttackType, ShellingType, ShipType,
-        SpecialEnemyModifiers, SpecialEnemyType,
+        ctype, gear_id, matches_gear_id, AttackPowerModifier, AttackType, GearAttr, GearType,
+        NightAttackType, ShellingType, ShipType, SpecialEnemyModifiers, SpecialEnemyType,
     },
 };
 
@@ -89,6 +89,8 @@ fn anti_pt_imp_modifiers(attacker: &Ship, attack_type: AttackType) -> SpecialEne
 
     match attack_type {
         AttackType::Shelling(_) | AttackType::Night(_) => {
+            let mut pt_mod = AttackPowerModifier::default();
+
             let small_gun_count = gears.count_type(GearType::SmallMainGun);
             let sec_gun_count = gears.count_type(GearType::SecondaryGun);
             let aa_gun_count = gears.count_type(GearType::AntiAirGun);
@@ -98,30 +100,42 @@ fn anti_pt_imp_modifiers(attacker: &Ship, attack_type: AttackType) -> SpecialEne
             let armed_count = gears.count(gear_id!("武装大発"));
             let armored_boat_group_count = ab_count + armed_count;
 
+            let armored_boat_group_stars_average = gears
+                .mean_by(|gear| {
+                    (matches_gear_id!(gear.gear_id, "装甲艇(AB艇)" | "武装大発"))
+                        .then(|| gear.stars as f64)
+                })
+                .unwrap_or_default();
+
             let cb_dive_bomber_count = gears.count_type(GearType::CbDiveBomber);
             let jet_fighter_bomber_count = gears.count_type(GearType::JetFighterBomber);
+            let has_seaplane = gears.has_type(GearType::SeaplaneBomber)
+                || gears.has_type(GearType::SeaplaneFighter);
 
-            mods.postcap_general_mod.merge(0.35, 15.0);
-
-            apply_mod!(mods.pt_mod, a, small_gun_count, [1.5, 1.5 * 1.4]);
-            apply_mod!(mods.pt_mod, a, sec_gun_count, [1.3]);
+            apply_mod!(pt_mod, a, small_gun_count, [1.5, 1.5 * 1.4]);
+            apply_mod!(pt_mod, a, sec_gun_count, [1.3]);
             apply_mod!(
-                mods.pt_mod,
+                pt_mod,
                 a,
                 cb_dive_bomber_count.max(jet_fighter_bomber_count),
                 [1.4, 1.4 * 1.3]
             );
-            apply_mod!(mods.pt_mod, a, aa_gun_count, [1.2, 1.2 * 1.2]);
-            apply_mod!(mods.pt_mod, a, lookouts_count, [1.1]);
-            apply_mod!(mods.pt_mod, a, armored_boat_group_count, [1.2, 1.2 * 1.1]);
+            apply_mod!(pt_mod, a, has_seaplane, 1.2);
+            apply_mod!(pt_mod, a, aa_gun_count, [1.2, 1.2 * 1.2]);
+            apply_mod!(pt_mod, a, lookouts_count, [1.1]);
+            apply_mod!(pt_mod, a, armored_boat_group_count, [1.2, 1.2 * 1.1]);
+
+            pt_mod.a *= 1.0 + armored_boat_group_stars_average / 50.0;
 
             if attack_type.is_night() {
-                mods.pt_mod.a *= 0.6;
+                pt_mod.a *= 0.6;
             }
+
+            mods.pt_mod = Some(pt_mod);
         }
 
         AttackType::Torpedo => {
-            mods.postcap_general_mod.merge(0.35, 15.0);
+            mods.pt_mod = Some(Default::default());
         }
 
         _ => (),

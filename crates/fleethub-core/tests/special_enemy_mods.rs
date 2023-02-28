@@ -125,13 +125,8 @@ fn test_special_enemy_mods_with_attack_type_torpedo() {
         );
     });
 
-    assert_eq!(
-        get_special_enemy_mods(SpecialEnemyType::PtImp, AttackType::Torpedo, vec![]),
-        SpecialEnemyModifiers {
-            postcap_general_mod: (0.35, 15.0).into(),
-            ..Default::default()
-        }
-    );
+    let mods = get_special_enemy_mods(SpecialEnemyType::PtImp, AttackType::Torpedo, vec![]);
+    assert!(mods.pt_mod.is_some());
 }
 
 #[test]

@@ -1,4 +1,4 @@
-description = "PTダメージテスト2"
+description = "PTダメージテスト3"
 
 # 攻撃艦設定
 [attacker]
@@ -7,7 +7,7 @@ g1 = "二式水戦改"
 g2 = "15.5cm三連装副砲改二"
 g3 = "7.7mm機銃"
 g4 = { gear_id = "武装大発", stars = 10 }
-g5 = "装甲艇(AB艇)"
+g5 = { gear_id = "装甲艇(AB艇)", stars = 10 }
 gx = "熟練見張員"
 
 # 防御艦設定
@@ -16,7 +16,7 @@ ship_id = 1639
 
 # 昼戦単発
 [expected.day.data.SingleAttack]
-damage.normal_damage_min = 187
-damage.normal_damage_max = 204
-damage.critical_damage_min = 298
-damage.critical_damage_max = 315
+damage.normal_damage_min = 211
+damage.normal_damage_max = 227
+damage.critical_damage_min = 334
+damage.critical_damage_max = 351
