@@ -105,7 +105,7 @@ impl<'a> ShipAirDefense<'a> {
             0.0
         };
 
-        let rate = (ship_adjusted_anti_air + 0.9 * luck) / 281.0
+        let rate = (ship_adjusted_anti_air * 2.0 + 0.9 * luck) / 281.0
             + (count as f64 - 1.0) * 0.15
             + ship_class_bonus;
 

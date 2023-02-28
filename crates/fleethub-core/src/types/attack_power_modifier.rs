@@ -76,7 +76,7 @@ pub struct SpecialEnemyModifiers {
     pub m4a1dd_mod: AttackPowerModifier,
     pub honi_mod: AttackPowerModifier,
     pub postcap_general_mod: AttackPowerModifier,
-    pub pt_mod: AttackPowerModifier,
+    pub pt_mod: Option<AttackPowerModifier>,
 }
 
 impl SpecialEnemyModifiers {

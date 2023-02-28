@@ -27,7 +27,7 @@ impl Factory {
     pub fn new(master_data: MasterData) -> Self {
         Self {
             master_data,
-            hash_builder: DefaultHashBuilder::new(),
+            hash_builder: DefaultHashBuilder::default(),
         }
     }
 
