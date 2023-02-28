@@ -280,7 +280,11 @@
     "TorpTsloTorp": "魚水魚CI",
     "TorpTsloDrum": "魚水ドCI",
     "SubRadarTorp": "後魚潜電",
-    "SubTorpTorp": "後魚後魚"
+    "SubTorpTorp": "後魚後魚",
+    "NightZuiun2Radar": "夜間瑞雲CI 1.36",
+    "NightZuiun2": "夜間瑞雲CI 1.32",
+    "NightZuiunRadar": "夜間瑞雲CI 1.28",
+    "NightZuiun": "夜間瑞雲CI 1.24"
   },
   "FleetCutin": {
     "name": "艦隊特殊攻撃",

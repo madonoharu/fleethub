@@ -12,7 +12,7 @@ const exec = promisify(child_process.exec);
 
 type Dictionary<K extends string = string> = Partial<Record<K, string>>;
 
-type LanguageCode = typeof languages[number]["code"];
+type LanguageCode = (typeof languages)[number]["code"];
 type Language = { code: LanguageCode; kc3?: string };
 
 type KC3Ships = Record<string, string>;
@@ -200,6 +200,10 @@ class LocaleUpdater {
       TorpTsloDrum: getNightCutin(10),
       SubRadarTorp: kc3Terms["CutinLateTorpRadar"],
       SubTorpTorp: kc3Terms["CutinLateTorpTorp"],
+      NightZuiun2Radar: `${getNightCutin(30)} 1.36`,
+      NightZuiun2: `${getNightCutin(30)} 1.32`,
+      NightZuiunRadar: `${getNightCutin(30)} 1.28`,
+      NightZuiun: `${getNightCutin(30)} 1.24`,
     };
 
     const FleetCutin: Dictionary<FleetCutin> = {
