@@ -18,6 +18,8 @@ pub enum ShipAttr {
     Kai2,
     /// タービン速力補正
     TurbineSpeedBonus,
+    /// 新型缶速力補正
+    NewModelBoilerSpeedBonus,
     /// 砲台小鬼
     Pillbox,
     /// 離島棲姫
