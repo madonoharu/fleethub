@@ -11,7 +11,7 @@ const StarsLabel: React.FCX<StarsLabelProps> = ({ stars, ...rest }) => {
   return (
     <span {...rest}>
       <span>★</span>
-      <span>{stars === 10 ? "M" : stars}</span>
+      <span data-testid="value">{stars === 10 ? "M" : stars}</span>
     </span>
   );
 };

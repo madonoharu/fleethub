@@ -12,7 +12,7 @@ export function mapValues<T, R>(
   return nextObj;
 }
 
-export function pick<T, K extends keyof T>(
+export function pick<T extends object, K extends keyof T>(
   obj: T,
   keys: readonly K[]
 ): Pick<T, K> {
