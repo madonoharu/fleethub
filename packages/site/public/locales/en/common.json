@@ -359,7 +359,8 @@
     "52": "Fall 2021",
     "53": "Winter 2022",
     "54": "Spring 2022",
-    "55": "Summer 2022"
+    "55": "Summer 2022",
+    "56": "Early Spring 2023"
   },
   "nodeType": {
     "Start": "Start",
@@ -378,6 +379,7 @@
     "Maelstrom": "Maelstrom",
     "FinishLine": "Finish Line",
     "LBAS": "LBAS",
-    "Unknown": "Unknown"
+    "Unknown": "Unknown",
+    "SubStrike": "Sub/Strike"
   }
 }
