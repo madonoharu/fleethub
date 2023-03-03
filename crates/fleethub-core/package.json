@@ -1,8 +1,7 @@
 {
   "name": "fleethub-core",
-  "version": "1.10.19",
+  "version": "1.10.20",
   "license": "UNLICENSED",
-  "sideEffects": false,
   "exports": {
     "import": "./pkg/fleethub_core.js",
     "node": "./node/fleethub_core.js"
