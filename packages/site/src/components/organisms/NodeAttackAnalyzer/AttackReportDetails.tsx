@@ -97,6 +97,5 @@ const AttackReportDetails: React.FCX<Props> = ({
 };
 
 export default styled(AttackReportDetails)`
-  min-height: 320px;
   min-width: 480px;
 `;
