@@ -42,7 +42,7 @@
   "41": "Agano Class",
   "43": "Taihou Class",
   "44": "Sentoku Class (I-400 Class)",
-  "45": "Amphibious Assault Ship",
+  "45": "Amphibious Assault Ship (Hei Class)",
   "46": "T3 Sub Transport Ship",
   "47": "Bismarck Class",
   "48": "Z1 Class",
@@ -116,6 +116,7 @@
   "116": "Independence Class",
   "117": "Ukuru Class",
   "118": "Ranger Class",
+  "119": "Amphibious Assault Ship (Type-M Hei Class)",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -238,5 +239,6 @@
   "2105": "Aircraft Carrier Princess B",
   "2109": "Modernized Battleship Princess",
   "2120": "Fast Light Carrier Water Demon",
-  "2132": "Incomplete Battleship Princess"
+  "2132": "Incomplete Battleship Princess",
+  "2146": "Remodeled Wartime Cargo Princess"
 }
