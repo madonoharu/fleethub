@@ -725,6 +725,8 @@
   "935": "Jean Bart",
   "938": "Massachusetts Kai",
   "941": "Heywood L. Edwards",
+  "943": "Kumano Maru",
+  "948": "Kumano Maru Kai",
   "1496": "Colorado Kai",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
@@ -1357,5 +1359,11 @@
   "2142": "$t(2138)",
   "2143": "$t(2139)",
   "2144": "$t(2138)",
-  "2145": "$t(2139)"
+  "2145": "$t(2139)",
+  "2146": "Remodeled Wartime Cargo Princess",
+  "2147": "$t(2146)",
+  "2148": "$t(2146)",
+  "2149": "Remodeled Wartime Cargo Princess (Damaged)",
+  "2150": "$t(2149)",
+  "2151": "$t(2149)"
 }
