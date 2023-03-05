@@ -1,10 +1,9 @@
 use fleethub_core::{comp::Comp, fleet::Fleet, ship::Ship};
-use toml_edit::easy::{toml, Value};
 
 use super::FH_CORE;
 
-fn walk<F: FnMut(&mut Value)>(input: &mut Value, f: &mut F) {
-    use Value::*;
+fn walk<F: FnMut(&mut toml::Value)>(input: &mut toml::Value, f: &mut F) {
+    use toml::Value::*;
 
     f(input);
 
@@ -15,7 +14,7 @@ fn walk<F: FnMut(&mut Value)>(input: &mut Value, f: &mut F) {
     }
 }
 
-fn set_ship_id(value: &mut Value) {
+fn set_ship_id(value: &mut toml::Value) {
     if let Some(name) = value.get("ship_id").and_then(|v| v.as_str()) {
         let id = FH_CORE
             .master_data()
@@ -28,10 +27,10 @@ fn set_ship_id(value: &mut Value) {
     }
 }
 
-fn set_gear_id(value: &mut Value) {
-    fn get_id(field: &Value) -> Option<i64> {
+fn set_gear_id(value: &mut toml::Value) {
+    fn get_id(field: &toml::Value) -> Option<i64> {
         match field {
-            Value::String(name) => {
+            toml::Value::String(name) => {
                 if name.is_empty() {
                     return Some(0);
                 }
@@ -46,16 +45,17 @@ fn set_gear_id(value: &mut Value) {
 
                 Some(id)
             }
-            &Value::Integer(id) => Some(id),
+            &toml::Value::Integer(id) => Some(id),
             _ => None,
         }
     }
 
     for key in ["g1", "g2", "g3", "g4", "g5", "gx"] {
         if let Some(id) = value.get(key).and_then(get_id) {
-            value[key] = toml! {
+            value[key] = toml::toml! {
                 gear_id = id
-            };
+            }
+            .into();
         }
     }
 
@@ -64,24 +64,26 @@ fn set_gear_id(value: &mut Value) {
     }
 }
 
-pub fn format_toml(input: &mut Value) {
-    walk(input, &mut set_ship_id);
-    walk(input, &mut set_gear_id);
+pub fn format_toml(value: &mut toml::Value) {
+    walk(value, &mut set_ship_id);
+    walk(value, &mut set_gear_id);
 }
 
-pub fn ship_from_toml(mut toml: Value) -> Ship {
-    format_toml(&mut toml);
-    let state = toml.try_into().unwrap();
+pub fn ship_from_toml<T: Into<toml::Value>>(toml: T) -> Ship {
+    let mut value = toml.into();
+    format_toml(&mut value);
+    let state = value.try_into().unwrap();
     FH_CORE.create_ship(Some(state)).unwrap()
 }
 
-pub fn fleet_from_toml(mut toml: Value) -> Fleet {
-    format_toml(&mut toml);
-    let state = toml.try_into().unwrap();
+pub fn fleet_from_toml<T: Into<toml::Value>>(toml: T) -> Fleet {
+    let mut value = toml.into();
+    format_toml(&mut value);
+    let state = value.try_into().unwrap();
     FH_CORE.create_fleet(Some(state))
 }
 
-pub fn comp_from_toml(mut toml: Value) -> Comp {
+pub fn comp_from_toml(mut toml: toml::Value) -> Comp {
     format_toml(&mut toml);
     let state = toml.try_into().unwrap();
     let org = FH_CORE.create_org(state).unwrap();
@@ -91,16 +93,17 @@ pub fn comp_from_toml(mut toml: Value) -> Comp {
 #[macro_export]
 macro_rules! gear {
     ($($toml:tt)+) => {{
-        let mut toml = toml_edit::easy::toml!($($toml)+);
-        $crate::common::format_toml(&mut toml);
-        let state = toml.try_into().unwrap();
+        let mut value = ::toml::Value::from(toml::toml!($($toml)+));
+        $crate::common::format_toml(&mut value);
+        let state = value.try_into().unwrap();
         $crate::common::FH_CORE.create_gear(state).unwrap()
     }};
 }
 
 #[macro_export]
 macro_rules! ship {
-    ($($toml:tt)+) => {
-        $crate::common::ship_from_toml(toml_edit::easy::toml!($($toml)+))
-    };
+    ($($toml:tt)+) => {{
+        let value = ::toml::Value::from(toml::toml!($($toml)+));
+        $crate::common::ship_from_toml(value)
+    }};
 }

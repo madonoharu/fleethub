@@ -13,9 +13,8 @@ use fleethub_core::{
 use once_cell::sync::Lazy;
 use rand::prelude::*;
 use serde::Deserialize;
-use toml_edit::easy::Value;
 
-pub use toml::*;
+pub use self::toml::*;
 
 pub fn rng(seed: u64) -> SmallRng {
     SmallRng::seed_from_u64(seed)
@@ -35,7 +34,7 @@ fn deserialize_ship<'de, D>(deserializer: D) -> Result<Ship, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
-    let toml = Value::deserialize(deserializer)?;
+    let toml = ::toml::Value::deserialize(deserializer)?;
     Ok(ship_from_toml(toml))
 }
 
