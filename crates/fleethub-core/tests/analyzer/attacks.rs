@@ -6,7 +6,7 @@ use fleethub_core::{
 };
 
 use serde::Deserialize;
-use toml_edit::easy::{from_slice, Value};
+use toml::{from_str, Value};
 
 use crate::*;
 
@@ -29,11 +29,11 @@ struct AttackTestCase {
 
 impl AttackTestCase {
     fn new(path: &Path) -> Self {
-        let contents = std::fs::read(path).unwrap();
+        let contents = std::fs::read_to_string(path).unwrap();
 
         Self {
             path: path.to_string_lossy().to_string(),
-            ..from_slice(&contents).unwrap()
+            ..from_str(&contents).unwrap()
         }
     }
 

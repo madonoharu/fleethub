@@ -5,10 +5,9 @@ use fleethub_core::{
     attack::{get_possible_fleet_cutin_effect_vec, FleetCutinEffect},
     types::{Engagement, FleetCutin, Formation, Time},
 };
-use toml_edit::easy::{toml, Value};
 
 fn assert_fleet_cutin(
-    value: Value,
+    value: toml::Table,
     formation: Formation,
     engagement: Engagement,
     time: Time,
@@ -31,7 +30,7 @@ fn assert_fleet_cutin(
 #[test]
 fn test_nelson_touch() {
     assert_fleet_cutin(
-        toml! {
+        toml::toml! {
             s1.ship_id = "Nelson"
             s2.ship_id = "睦月"
             s3.ship_id = "睦月"
@@ -48,7 +47,7 @@ fn test_nelson_touch() {
 
     // T不利補正 1.25
     assert_fleet_cutin(
-        toml! {
+        toml::toml! {
             s1.ship_id = "Nelson"
             s2.ship_id = "睦月"
             s3.ship_id = "睦月"
@@ -67,7 +66,7 @@ fn test_nelson_touch() {
 #[test]
 fn test_nagato_class_cutin() {
     assert_fleet_cutin(
-        toml! {
+        toml::toml! {
             s1.ship_id = "長門改二"
             s2.ship_id = "陸奥改二"
             s3.ship_id = "睦月"
@@ -83,7 +82,7 @@ fn test_nagato_class_cutin() {
     );
 
     assert_fleet_cutin(
-        toml! {
+        toml::toml! {
             s1.ship_id = "長門改二"
             s1.g1.gear_id = "22号対水上電探"
             s2.ship_id = "陸奥改二"
@@ -103,7 +102,7 @@ fn test_nagato_class_cutin() {
 #[test]
 fn test_colorado_class_cutin() {
     assert_fleet_cutin(
-        toml! {
+        toml::toml! {
             s1.ship_id = "Colorado"
             s2.ship_id = "長門"
             s3.ship_id = "陸奥"
@@ -122,7 +121,7 @@ fn test_colorado_class_cutin() {
 #[test]
 fn test_kongou_cutin() {
     assert_fleet_cutin(
-        toml! {
+        toml::toml! {
             s1.ship_id = "金剛改二丙"
             s2.ship_id = "比叡改二丙"
             s3.ship_id = "睦月"
@@ -141,7 +140,7 @@ fn test_kongou_cutin() {
 #[test]
 fn test_yamato_2ship_cutin() {
     assert_fleet_cutin(
-        toml! {
+        toml::toml! {
             s1.ship_id = "大和改二重"
             s2.ship_id = "武蔵改二"
             s3.ship_id = "睦月"
@@ -175,7 +174,7 @@ fn test_yamato_3ship_cutin() {
         };
 
         ({ $($toml:tt)+ }, $expected:expr) => {
-            let value = toml!($($toml)+);
+            let value = toml::toml!($($toml)+);
 
             assert_fleet_cutin(
                 value,

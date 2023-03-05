@@ -8,7 +8,7 @@ use crate::{
     gear::Gear,
     gear_array::GearArray,
     master_data::MasterShip,
-    types::{ctype, gear_id, ShipAttr, SpeedGroup},
+    types::{ctype, gear_id, ship_id, ShipAttr, SpeedGroup},
 };
 
 use super::GearTypeIdArray;
@@ -116,15 +116,17 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
     let speed_group = ship.speed_group;
     let new_model_boiler_count = gears.count(gear_id!("新型高温高圧缶"));
 
-    // 新型高速潜水艦補正
-    let sentaka_type_mod = if ship.ctype == ctype!("潜高型") && new_model_boiler_count >= 1 {
+    // 新型高温高圧缶補正
+    let new_model_boiler_mod = if new_model_boiler_count >= 1
+        && (ship.ctype == ctype!("潜高型") || ship.ship_id == ship_id!("鳳翔改二戦"))
+    {
         5
     } else {
         0
     };
 
     if ship.is_abyssal() || !gears.has(gear_id!("改良型艦本式タービン")) {
-        return sentaka_type_mod;
+        return new_model_boiler_mod;
     }
 
     let enhanced_boiler_count = gears.count(gear_id!("強化型艦本式缶"));
@@ -142,7 +144,7 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
         0
     };
 
-    sentaka_type_mod + turbine_bonus + synergy
+    new_model_boiler_mod + turbine_bonus + synergy
 }
 
 #[derive(Debug)]
