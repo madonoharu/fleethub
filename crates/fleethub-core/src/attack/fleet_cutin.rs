@@ -501,10 +501,49 @@ fn calc_nagato_cutin_rate(fleet: &Fleet) -> Option<f64> {
     Some((result / 100.0).min(1.0))
 }
 
+/// √一番艦Lv +√二番艦Lv+ √一番艦運 +√二番艦運+35+水上電探装備艦数補正10+大和旗艦補正2+大和or武蔵2番艦補正5
+fn calc_yamato2_ship_cutin_rate(fleet: &Fleet) -> Option<f64> {
+    let s1 = fleet.ships.get(0)?;
+    let s2 = fleet.ships.get(1)?;
+
+    let s1_level = s1.level as f64;
+    let s2_level = s2.level as f64;
+    let s1_luck = s1.luck()? as f64;
+    let s2_luck = s2.luck()? as f64;
+
+    let yamato_flagship_mod = if is_yamato_kai2(s1) { 2.0 } else { 0.0 };
+
+    let yamato_class_mod = if s1.ctype == ctype!("大和型") {
+        5.0
+    } else {
+        0.0
+    };
+
+    let mut surface_radar_ships_mod = 0.0;
+    if s1.gears.has_attr(GearAttr::SurfaceRadar) {
+        surface_radar_ships_mod += 10.0
+    }
+    if s2.gears.has_attr(GearAttr::SurfaceRadar) {
+        surface_radar_ships_mod += 10.0
+    }
+
+    let result = s1_level.sqrt()
+        + s2_level.sqrt()
+        + s1_luck.sqrt()
+        + s2_luck.sqrt()
+        + 35.0
+        + yamato_flagship_mod
+        + yamato_class_mod
+        + surface_radar_ships_mod;
+
+    Some(result)
+}
+
 pub fn calc_fleet_cutin_rate(fleet: &Fleet, cutin: FleetCutin) -> Option<f64> {
     match cutin {
         FleetCutin::NelsonTouch => calc_nelson_touch_rate(fleet),
         FleetCutin::NagatoClassCutin => calc_nagato_cutin_rate(fleet),
+        FleetCutin::Yamato2ShipCutin => calc_yamato2_ship_cutin_rate(fleet),
         _ => None,
     }
 }
