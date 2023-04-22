@@ -40,10 +40,13 @@ const AttackReportDetails: React.FCX<Props> = ({
   const targetColor = !attacker_is_player ? "primary.light" : "secondary.light";
 
   let historicalParamsText = "";
-  if (historical_params.power_mod !== 1) {
-    historicalParamsText += ` ${t("power_mod")} ${numstr(
-      historical_params.power_mod
-    )}`;
+  if (
+    historical_params.power_mod.a !== 1 ||
+    historical_params.power_mod.b !== 0
+  ) {
+    const mod = historical_params.power_mod;
+    const text = ` ${t("power_mod")} x${numstr(mod.a)} +${numstr(mod.b)}`;
+    historicalParamsText += text;
   }
   if (historical_params.accuracy_mod !== 1) {
     historicalParamsText += ` ${t("accuracy_mod")} ${numstr(

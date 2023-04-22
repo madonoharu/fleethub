@@ -10,8 +10,8 @@ use tsify::Tsify;
 use crate::member::BattleMemberRef;
 
 use super::{
-    AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, NightCutin, NightCutinLike,
-    NodeState, ShipConditions,
+    AttackPowerModifier, AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, NightCutin,
+    NightCutinLike, NodeState, ShipConditions,
 };
 
 #[serde_as]
@@ -160,6 +160,22 @@ impl DayCutinDef {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
+#[tsify(into_wasm_abi, from_wasm_abi)]
+enum F64OrAttackPowerModifier {
+    F64(f64),
+    AttackPowerModifier(AttackPowerModifier),
+}
+
+impl From<F64OrAttackPowerModifier> for AttackPowerModifier {
+    fn from(value: F64OrAttackPowerModifier) -> Self {
+        match value {
+            F64OrAttackPowerModifier::F64(a) => Self::new(a, 0.0),
+            F64OrAttackPowerModifier::AttackPowerModifier(v) => v,
+        }
+    }
+}
+
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 #[serde(default)]
 pub struct HistoricalBonusDef {
@@ -169,8 +185,7 @@ pub struct HistoricalBonusDef {
     debuff: bool,
     ship: CompiledEvaler,
     enemy: CompiledEvaler,
-    #[serde(default = "num_traits::one")]
-    pub power_mod: f64,
+    pub power_mod: AttackPowerModifier,
     #[serde(default = "num_traits::one")]
     pub accuracy_mod: f64,
     #[serde(default = "num_traits::one")]
@@ -195,7 +210,7 @@ impl HistoricalBonusDef {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Tsify)]
 pub struct HistoricalParams {
-    pub power_mod: f64,
+    pub power_mod: AttackPowerModifier,
     pub accuracy_mod: f64,
     pub target_evasion_mod: f64,
 }
@@ -203,7 +218,7 @@ pub struct HistoricalParams {
 impl Default for HistoricalParams {
     fn default() -> Self {
         Self {
-            power_mod: 1.0,
+            power_mod: AttackPowerModifier::default(),
             accuracy_mod: 1.0,
             target_evasion_mod: 1.0,
         }
@@ -236,7 +251,7 @@ impl NightCutinDef {
         let rate = if self.tag == NightCutin::DoubleAttack {
             109.0 / 110.0
         } else {
-            (cutin_term.ceil() / self.type_factor? as f64).min(1.)
+            (cutin_term.ceil() / self.type_factor? as f64).min(1.0)
         };
 
         Some(rate)
@@ -283,7 +298,7 @@ impl BattleDefinitions {
                 .iter()
                 .filter(|def| def.matches(node_state, attacker, target))
                 .for_each(|def| {
-                    params.power_mod *= def.power_mod;
+                    params.power_mod.merge(def.power_mod.a, def.power_mod.b);
                     params.accuracy_mod *= def.accuracy_mod;
                 })
         } else {
