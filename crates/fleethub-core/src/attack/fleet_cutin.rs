@@ -325,7 +325,9 @@ fn get_yamato_2ship_cutin(fleet: &Fleet, formation: Formation) -> Option<FleetCu
 
     if includes_musashi_kai2 {
         base.0 *= 1.1;
-        base.1 *= if s1_is_musashi_kai2 { 1.25 } else { 1.2 };
+
+        let s2_is_yamato_kai2_juu = s2.ship_id == ship_id!("大和改二重");
+        base.1 *= if s2_is_yamato_kai2_juu { 1.25 } else { 1.2 };
     }
 
     fn get_equipment_mod(ship: &Ship) -> f64 {

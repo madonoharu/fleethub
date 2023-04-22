@@ -154,6 +154,38 @@ fn test_yamato_2ship_cutin() {
         FleetCutin::Yamato2ShipCutin,
         [(0, 1.4 * 1.1), (0, 1.4 * 1.1), (1, 1.55 * 1.2)],
     );
+
+    assert_fleet_cutin(
+        toml::toml! {
+            s1.ship_id = "武蔵改二"
+            s2.ship_id = "大和改二"
+            s3.ship_id = "睦月"
+            s4.ship_id = "睦月"
+            s5.ship_id = "睦月"
+            s6.ship_id = "睦月"
+        },
+        Formation::ECHELON,
+        Engagement::Parallel,
+        Time::Day,
+        FleetCutin::Yamato2ShipCutin,
+        [(0, 1.4 * 1.1), (0, 1.4 * 1.1), (1, 1.55 * 1.2)],
+    );
+
+    assert_fleet_cutin(
+        toml::toml! {
+            s1.ship_id = "武蔵改二"
+            s2.ship_id = "大和改二重"
+            s3.ship_id = "睦月"
+            s4.ship_id = "睦月"
+            s5.ship_id = "睦月"
+            s6.ship_id = "睦月"
+        },
+        Formation::ECHELON,
+        Engagement::Parallel,
+        Time::Day,
+        FleetCutin::Yamato2ShipCutin,
+        [(0, 1.4 * 1.1), (0, 1.4 * 1.1), (1, 1.55 * 1.25)],
+    );
 }
 
 #[test]
