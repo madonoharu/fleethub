@@ -117,6 +117,8 @@
   "117": "Ukuru Class",
   "118": "Ranger Class",
   "119": "Amphibious Assault Ship (Type-M Hei Class)",
+  "120": "2nd Class Transporter",
+  "121": "New Orleans Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -240,5 +242,8 @@
   "2109": "Modernized Battleship Princess",
   "2120": "Fast Light Carrier Water Demon",
   "2132": "Incomplete Battleship Princess",
-  "2146": "Remodeled Wartime Cargo Princess"
+  "2146": "Remodeled Wartime Cargo Princess",
+  "2152": "Abyssal Heavy Cruiser Water Princess",
+  "2158": "Abyssal Stranded Landing Princess",
+  "2164": "Supply Depot Princess D"
 }

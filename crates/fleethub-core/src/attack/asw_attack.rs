@@ -49,7 +49,11 @@ impl AswAttackParams<'_> {
             Some(attacker.proficiency_modifiers(None))
         };
 
-        let armor_penetration = attacker.asw_armor_penetration();
+        let historical_power_mod = historical_params.power_mod;
+        let historical_armor_penetration = historical_params.armor_penetration;
+        let custom_power_mods = attacker.custom_power_mods();
+
+        let armor_penetration = attacker.asw_armor_penetration() + historical_armor_penetration;
 
         let calc_attack_power_params = || -> Option<AttackPowerParams> {
             let naked_asw = attacker.naked_asw()? as f64;
@@ -84,8 +88,6 @@ impl AswAttackParams<'_> {
                 .as_ref()
                 .map_or(1.0, |mods| mods.critical_power_mod);
 
-            let historical_mod = historical_params.power_mod;
-
             Some(AttackPowerParams {
                 basic,
                 cap: ASW_POWER_CAP,
@@ -97,8 +99,8 @@ impl AswAttackParams<'_> {
                 ap_shell_mod: None,
                 aerial_power: None,
                 special_enemy_mods: Default::default(),
-                historical_mod,
-                custom_mods: attacker.custom_power_mods(),
+                historical_mod: historical_power_mod,
+                custom_mods: custom_power_mods,
             })
         };
 

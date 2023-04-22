@@ -80,7 +80,7 @@ impl SupportShellingAttackParams<'_> {
             remaining_ammo_mod,
             armor_penetration: 0.0,
             special_enemy_mods,
-            historical_mod: 1.0,
+            historical_mod: Default::default(),
             custom_mods: attacker.custom_power_mods(),
         };
 

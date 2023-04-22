@@ -17,7 +17,7 @@ pub struct AttackPowerParams {
     pub armor_penetration: f64,
     pub remaining_ammo_mod: f64,
     pub special_enemy_mods: SpecialEnemyModifiers,
-    pub historical_mod: f64,
+    pub historical_mod: AttackPowerModifier,
     pub custom_mods: CustomPowerModifiers,
 }
 
@@ -123,7 +123,8 @@ impl AttackPowerParams {
 
         postcap = postcap_general_mod.apply(postcap);
 
-        let post_historical_power = AttackPowerModifier::new(self.historical_mod, 0.0)
+        let post_historical_power = self
+            .historical_mod
             .compose(self.custom_mods.historical_mod)
             .apply(postcap);
 
@@ -153,7 +154,7 @@ impl Default for AttackPowerParams {
             armor_penetration: 0.0,
             remaining_ammo_mod: 1.0,
             special_enemy_mods: Default::default(),
-            historical_mod: 1.0,
+            historical_mod: Default::default(),
             custom_mods: Default::default(),
         }
     }
