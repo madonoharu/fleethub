@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs");
 const { i18n } = require("./next-i18next.config");
-const withTM = require("next-transpile-modules")(["ts-norm"]);
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
@@ -46,6 +45,7 @@ const config = {
   },
   i18n,
   reactStrictMode: true,
+  transpilePackages: ["ts-norm"],
 
   experimental: {
     // https://github.com/vercel/next.js/issues/32314
@@ -80,4 +80,4 @@ const config = {
   },
 };
 
-module.exports = withBundleAnalyzer(withTM(config));
+module.exports = withBundleAnalyzer(config);
