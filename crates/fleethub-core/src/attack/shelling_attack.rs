@@ -90,7 +90,10 @@ impl ShellingAttackParams<'_> {
             let postcap_mod = AttackPowerModifier::new(a11, 0.0);
 
             let historical_mod = self.historical_params.power_mod;
+            let historical_armor_penetration = self.historical_params.armor_penetration;
             let custom_mods = attacker.custom_power_mods();
+
+            let armor_penetration = historical_armor_penetration;
 
             let params = AttackPowerParams {
                 basic,
@@ -101,7 +104,7 @@ impl ShellingAttackParams<'_> {
                 aerial_power,
                 proficiency_critical_mod,
                 remaining_ammo_mod,
-                armor_penetration: 0.0,
+                armor_penetration,
                 special_enemy_mods,
                 historical_mod,
                 custom_mods,

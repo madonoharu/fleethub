@@ -84,10 +84,10 @@ impl TorpedoAttackParams<'_> {
             ap_shell_mod: None,
             aerial_power: None,
             proficiency_critical_mod: 1.0,
-            armor_penetration: 0.0,
             remaining_ammo_mod: attacker.remaining_ammo_mod(),
             special_enemy_mods,
             historical_mod: self.historical_params.power_mod,
+            armor_penetration: self.historical_params.armor_penetration,
             custom_mods: attacker.custom_power_mods(),
         })
     }

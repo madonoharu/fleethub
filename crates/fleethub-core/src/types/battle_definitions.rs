@@ -160,22 +160,6 @@ impl DayCutinDef {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-enum F64OrAttackPowerModifier {
-    F64(f64),
-    AttackPowerModifier(AttackPowerModifier),
-}
-
-impl From<F64OrAttackPowerModifier> for AttackPowerModifier {
-    fn from(value: F64OrAttackPowerModifier) -> Self {
-        match value {
-            F64OrAttackPowerModifier::F64(a) => Self::new(a, 0.0),
-            F64OrAttackPowerModifier::AttackPowerModifier(v) => v,
-        }
-    }
-}
-
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 #[serde(default)]
 pub struct HistoricalBonusDef {
@@ -186,6 +170,7 @@ pub struct HistoricalBonusDef {
     ship: CompiledEvaler,
     enemy: CompiledEvaler,
     pub power_mod: AttackPowerModifier,
+    pub armor_penetration: f64,
     #[serde(default = "num_traits::one")]
     pub accuracy_mod: f64,
     #[serde(default = "num_traits::one")]
@@ -211,6 +196,7 @@ impl HistoricalBonusDef {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Tsify)]
 pub struct HistoricalParams {
     pub power_mod: AttackPowerModifier,
+    pub armor_penetration: f64,
     pub accuracy_mod: f64,
     pub target_evasion_mod: f64,
 }
@@ -218,7 +204,8 @@ pub struct HistoricalParams {
 impl Default for HistoricalParams {
     fn default() -> Self {
         Self {
-            power_mod: AttackPowerModifier::default(),
+            power_mod: Default::default(),
+            armor_penetration: 0.0,
             accuracy_mod: 1.0,
             target_evasion_mod: 1.0,
         }
@@ -299,6 +286,7 @@ impl BattleDefinitions {
                 .filter(|def| def.matches(node_state, attacker, target))
                 .for_each(|def| {
                     params.power_mod.merge(def.power_mod.a, def.power_mod.b);
+                    params.armor_penetration += def.armor_penetration;
                     params.accuracy_mod *= def.accuracy_mod;
                 })
         } else {

@@ -157,7 +157,10 @@ impl NightAttackParams<'_> {
         let special_enemy_mods =
             attacker.special_enemy_mods(target.special_enemy_type(), self.style.attack_type.into());
         let historical_mod = self.historical_params.power_mod;
+        let historical_armor_penetration = self.historical_params.armor_penetration;
         let custom_mods = attacker.custom_power_mods();
+
+        let armor_penetration = historical_armor_penetration;
 
         let base = AttackPowerParams {
             cap: NIGHT_POWER_CAP,
@@ -167,6 +170,7 @@ impl NightAttackParams<'_> {
             proficiency_critical_mod,
             special_enemy_mods,
             historical_mod,
+            armor_penetration,
             custom_mods,
             ..Default::default()
         };
