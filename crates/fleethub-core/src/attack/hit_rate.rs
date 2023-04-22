@@ -59,8 +59,8 @@ impl Distribution<HitType> for HitRate {
 impl HitRateParams {
     /// キャップ後命中率
     fn calc_capped(&self) -> f64 {
-        let value = (self.accuracy_term - self.evasion_term) * self.target_morale_mod;
-        value.clamp(10.0, 96.0)
+        let v = (self.accuracy_term - self.evasion_term).max(10.0);
+        (v * self.target_morale_mod).min(96.0)
     }
 
     pub fn calc(&self) -> HitRate {

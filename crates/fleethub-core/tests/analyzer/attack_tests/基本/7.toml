@@ -1,0 +1,33 @@
+description = "キラ補正命中テスト1"
+
+
+# 攻撃艦設定
+[attacker]
+ship_id = 1501
+
+
+# 防御艦設定
+[target]
+ship_id = "綾波改二"
+level = 175
+
+
+# 疲労度
+# デフォルトは49
+morale = 85
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+
+
+# 命中項
+hit_rate_params.accuracy_term = 72
+# 回避項
+hit_rate_params.evasion_term = 70
+
+
+# 命中率（通常命中率 + クリティカル率）
+hit_rate.total = 0.08
+# クリティカル率
+hit_rate.critical = 0.04
