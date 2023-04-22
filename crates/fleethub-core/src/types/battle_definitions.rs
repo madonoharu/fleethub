@@ -10,8 +10,8 @@ use tsify::Tsify;
 use crate::member::BattleMemberRef;
 
 use super::{
-    AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, NightCutin, NightCutinLike,
-    NodeState, ShipConditions,
+    AttackPowerModifier, AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, NightCutin,
+    NightCutinLike, NodeState, ShipConditions,
 };
 
 #[serde_as]
@@ -169,8 +169,8 @@ pub struct HistoricalBonusDef {
     debuff: bool,
     ship: CompiledEvaler,
     enemy: CompiledEvaler,
-    #[serde(default = "num_traits::one")]
-    pub power_mod: f64,
+    pub power_mod: AttackPowerModifier,
+    pub armor_penetration: f64,
     #[serde(default = "num_traits::one")]
     pub accuracy_mod: f64,
     #[serde(default = "num_traits::one")]
@@ -195,7 +195,8 @@ impl HistoricalBonusDef {
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Tsify)]
 pub struct HistoricalParams {
-    pub power_mod: f64,
+    pub power_mod: AttackPowerModifier,
+    pub armor_penetration: f64,
     pub accuracy_mod: f64,
     pub target_evasion_mod: f64,
 }
@@ -203,7 +204,8 @@ pub struct HistoricalParams {
 impl Default for HistoricalParams {
     fn default() -> Self {
         Self {
-            power_mod: 1.0,
+            power_mod: Default::default(),
+            armor_penetration: 0.0,
             accuracy_mod: 1.0,
             target_evasion_mod: 1.0,
         }
@@ -236,7 +238,7 @@ impl NightCutinDef {
         let rate = if self.tag == NightCutin::DoubleAttack {
             109.0 / 110.0
         } else {
-            (cutin_term.ceil() / self.type_factor? as f64).min(1.)
+            (cutin_term.ceil() / self.type_factor? as f64).min(1.0)
         };
 
         Some(rate)
@@ -283,7 +285,8 @@ impl BattleDefinitions {
                 .iter()
                 .filter(|def| def.matches(node_state, attacker, target))
                 .for_each(|def| {
-                    params.power_mod *= def.power_mod;
+                    params.power_mod.merge(def.power_mod.a, def.power_mod.b);
+                    params.armor_penetration += def.armor_penetration;
                     params.accuracy_mod *= def.accuracy_mod;
                 })
         } else {
@@ -343,9 +346,22 @@ impl BattleDefinitions {
             }
         };
 
+        // なぜか梯形vs連合では補正が古いものになる
+        let power_mod =
+            if attacker.formation == Formation::ECHELON && target.formation.is_combined() {
+                match attack_type {
+                    AttackType::Shelling(_) => 0.6,
+                    AttackType::Asw(_) => 1.0,
+                    AttackType::Night(_) => 1.0,
+                    AttackType::Torpedo => 0.6,
+                    AttackType::SupportShelling(_) => 0.6,
+                }
+            } else {
+                attacker_mods.power_mod
+            };
+
         let cancels = cancels_formation_modifier(attack_type, attacker.formation, target.formation);
 
-        let power_mod = attacker_mods.power_mod;
         let accuracy_mod = if cancels {
             1.0
         } else {
