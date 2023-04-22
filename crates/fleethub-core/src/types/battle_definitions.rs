@@ -346,9 +346,22 @@ impl BattleDefinitions {
             }
         };
 
+        // なぜか梯形vs連合では補正が古いものになる
+        let power_mod =
+            if attacker.formation == Formation::ECHELON && target.formation.is_combined() {
+                match attack_type {
+                    AttackType::Shelling(_) => 0.6,
+                    AttackType::Asw(_) => 1.0,
+                    AttackType::Night(_) => 1.0,
+                    AttackType::Torpedo => 0.6,
+                    AttackType::SupportShelling(_) => 0.6,
+                }
+            } else {
+                attacker_mods.power_mod
+            };
+
         let cancels = cancels_formation_modifier(attack_type, attacker.formation, target.formation);
 
-        let power_mod = attacker_mods.power_mod;
         let accuracy_mod = if cancels {
             1.0
         } else {
