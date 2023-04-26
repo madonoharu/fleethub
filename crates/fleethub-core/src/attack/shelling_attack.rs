@@ -63,6 +63,12 @@ impl ShellingAttackParams<'_> {
                 .sum_by(|gear| gear.ibonuses.shelling_aerial_power);
         }
 
+        let historical_mod = self.historical_params.power_mod;
+        let historical_armor_penetration = self.historical_params.armor_penetration;
+        let custom_mods = attacker.custom_power_mods();
+
+        let armor_penetration = historical_armor_penetration;
+
         let calc_attack_power_params = || -> Option<AttackPowerParams> {
             let firepower = attacker.firepower()? as f64;
             let ibonus = attacker.gears.sum_by(|gear| gear.ibonuses.shelling_power);
@@ -88,12 +94,6 @@ impl ShellingAttackParams<'_> {
 
             let precap_mod = AttackPowerModifier::new(a14, b14);
             let postcap_mod = AttackPowerModifier::new(a11, 0.0);
-
-            let historical_mod = self.historical_params.power_mod;
-            let historical_armor_penetration = self.historical_params.armor_penetration;
-            let custom_mods = attacker.custom_power_mods();
-
-            let armor_penetration = historical_armor_penetration;
 
             let params = AttackPowerParams {
                 basic,
@@ -173,12 +173,13 @@ impl ShellingAttackParams<'_> {
             })
         };
 
-        let armor_penetration = 0.0;
+        let attack_power_params = calc_attack_power_params();
+        let hit_rate_params = calc_hit_rate_params();
         let defense_params = DefenseParams::from_target(target, target_side, armor_penetration);
 
         AttackParams {
-            attack_power_params: calc_attack_power_params(),
-            hit_rate_params: calc_hit_rate_params(),
+            attack_power_params,
+            hit_rate_params,
             defense_params,
             is_cutin: style.is_cutin(),
             hits: style.hits,

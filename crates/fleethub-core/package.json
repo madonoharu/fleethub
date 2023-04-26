@@ -1,6 +1,6 @@
 {
   "name": "fleethub-core",
-  "version": "1.11.1",
+  "version": "1.11.3",
   "license": "UNLICENSED",
   "exports": {
     "import": "./pkg/fleethub_core.js",

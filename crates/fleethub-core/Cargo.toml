@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.11.1"
+version = "1.11.3"
 authors = ["Madono <madonoharu@gmail.com>"]
 edition = "2021"
 description = "fleethub-core"
@@ -41,7 +41,7 @@ seq-macro = "0.3.3"
 paste = "1.0.12"
 tsify = "0.4.3"
 fasteval = "0.2.4"
-ordered-float = { version = "3.6.0", features = ["serde"] }
+ordered-float = { version = "3.7.0", features = ["serde"] }
 gloo-utils = { version = "0.1.6", features = ["serde"] }
 
 [dependencies.web-sys]
