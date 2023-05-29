@@ -24,9 +24,9 @@ type Props = {
 const Form: React.FC<Props> = ({ value, onChange }) => {
   const set1 = React.useCallback(() => onChange(1), [onChange]);
   const set99 = React.useCallback(() => onChange(99), [onChange]);
-  const set175 = React.useCallback(() => onChange(175), [onChange]);
+  const set180 = React.useCallback(() => onChange(180), [onChange]);
 
-  const inputProps = { min: 1, max: 175, value, onChange };
+  const inputProps = { min: 1, max: 180, value, onChange };
 
   return (
     <DialogContent>
@@ -39,8 +39,8 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
         <StyledButton variant="outlined" onClick={set99}>
           Lv 99
         </StyledButton>
-        <StyledButton variant="outlined" onClick={set175}>
-          Lv 175
+        <StyledButton variant="outlined" onClick={set180}>
+          Lv 180
         </StyledButton>
       </SpaceBetween>
     </DialogContent>

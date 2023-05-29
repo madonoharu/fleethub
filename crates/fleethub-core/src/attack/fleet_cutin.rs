@@ -513,7 +513,7 @@ fn calc_yamato2_ship_cutin_rate(fleet: &Fleet) -> Option<f64> {
 
     let yamato_flagship_mod = if is_yamato_kai2(s1) { 2.0 } else { 0.0 };
 
-    let yamato_class_mod = if s1.ctype == ctype!("大和型") {
+    let yamato_class_mod = if s2.ctype == ctype!("大和型") {
         5.0
     } else {
         0.0
@@ -536,7 +536,7 @@ fn calc_yamato2_ship_cutin_rate(fleet: &Fleet) -> Option<f64> {
         + yamato_class_mod
         + surface_radar_ships_mod;
 
-    Some(result)
+    Some((result / 100.0).min(1.0))
 }
 
 pub fn calc_fleet_cutin_rate(fleet: &Fleet, cutin: FleetCutin) -> Option<f64> {
