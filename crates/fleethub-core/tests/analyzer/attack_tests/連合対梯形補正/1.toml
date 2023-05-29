@@ -1,0 +1,20 @@
+description = "連合対梯形補正テスト1"
+
+
+# 攻撃艦設定
+[attacker]
+ship_id = 1559
+formation = "Echelon" # 梯形陣
+
+
+# 防御艦設定
+[target]
+ship_id = "山汐丸改"
+org_type = "CarrierTaskForce" # 空母機動部隊
+role = "Escort"               # 第二艦隊
+formation = "Cruising4"
+
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+attack_power_params.precap_mod.a = 0.6
