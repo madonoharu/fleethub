@@ -4810,9 +4810,9 @@ __metadata:
   linkType: hard
 
 "equipment-bonus@npm:latest":
-  version: 7.3.0
-  resolution: "equipment-bonus@npm:7.3.0"
-  checksum: 3f7615cb74561884a7bc2823c1f3b6f611d1851118f9082e21fee8b3821017f1ac097e7d53f52890e5632fa02dbdd98d1b74adc9069af3e9679ca035c4ce637c
+  version: 7.4.0
+  resolution: "equipment-bonus@npm:7.4.0"
+  checksum: 920954b46c326e228b1236193e1a6b4119dd1e924595bb94e7ea8d09d7008fe8e36f956c100508bcba42b2c3904e48d1e32a5f3eaf219114940a6b93984d99a6
   languageName: node
   linkType: hard
 
@@ -5563,11 +5563,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.11.1
-  resolution: "fleethub-core@npm:1.11.1"
+  version: 1.11.5
+  resolution: "fleethub-core@npm:1.11.5"
   dependencies:
     equipment-bonus: "npm:latest"
-  checksum: dca9ad91aee154c2eb336061336d4bebf322e0660ef52ec3e5300f8b9231171aa2f3441177198813996c544b1cd858e542952059955c08509acb01897a733fee
+  checksum: d3e543f427fb65c0f45ee0e6fe41fb8062d71658311968bf63a93136db43d627e98aa475cfa1ad90a87524d5459630ee7dcdaea3984fffd5c1330da0933937f4
   languageName: node
   linkType: hard
 
