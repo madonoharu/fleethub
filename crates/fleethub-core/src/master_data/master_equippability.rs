@@ -1,3 +1,4 @@
+use hashbrown::HashMap;
 use serde::Deserialize;
 use tsify::Tsify;
 
@@ -23,8 +24,9 @@ pub struct MstEquipShip {
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MstEquipExslotShip {
-    pub api_slotitem_id: u16,
-    pub api_ship_ids: Vec<u16>,
+    pub api_ctypes: Option<HashMap<u16, u8>>,
+    pub api_ship_ids: Option<HashMap<u16, u8>>,
+    pub api_stypes: Option<HashMap<u8, u8>>,
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
@@ -32,7 +34,7 @@ pub struct MasterEquippability {
     pub equip_stype: Vec<EquipStype>,
     pub equip_exslot: Vec<u8>,
     pub equip_ship: Vec<MstEquipShip>,
-    pub equip_exslot_ship: Vec<MstEquipExslotShip>,
+    pub equip_exslot_ship: HashMap<u16, MstEquipExslotShip>,
     pub rules: Vec<EquippabilityRule>,
 }
 
@@ -72,8 +74,20 @@ impl MasterEquippability {
         let exslot_gear_ids = self
             .equip_exslot_ship
             .iter()
-            .filter(|ees| ees.api_ship_ids.contains(&ship.ship_id))
-            .map(|ees| ees.api_slotitem_id)
+            .filter(|(_, ees)| {
+                ees.api_ctypes
+                    .as_ref()
+                    .is_some_and(|m| m.contains_key(&ship.ctype))
+                    || ees
+                        .api_stypes
+                        .as_ref()
+                        .is_some_and(|m| m.contains_key(&ship.stype))
+                    || ees
+                        .api_ship_ids
+                        .as_ref()
+                        .is_some_and(|m| m.contains_key(&ship.ship_id))
+            })
+            .map(|(id, _)| *id)
             .collect();
 
         let mut ns = ship.ns();

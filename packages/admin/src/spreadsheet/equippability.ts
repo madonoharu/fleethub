@@ -28,7 +28,7 @@ export function createEquippability(
     };
 
     if (row.keys) {
-      rule.keys = String(row.keys).split(",");
+      rule.keys = String(row.keys).split(/\s*,\s*/);
     }
 
     if (row.include) {
