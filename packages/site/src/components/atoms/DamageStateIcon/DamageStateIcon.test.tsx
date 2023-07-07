@@ -9,7 +9,6 @@ describe("MoraleStateIcon", () => {
   it.each(DAMAGE_STATES)("%s", (state) => {
     renderWithProviders(<DamageStateIcon state={state} />);
     const svg = screen.getByLabelText<HTMLElement>(state);
-    console.log(svg);
     expect(svg).toBeTruthy();
   });
 });
