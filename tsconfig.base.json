@@ -16,7 +16,10 @@
     "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "paths": {
+      "got": ["./node_modules/got/dist/source"]
+    }
   },
   "include": ["packages"],
   "exclude": ["node_modules", "**/dist", "**/lib", "**/esm"]
