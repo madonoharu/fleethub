@@ -80,6 +80,7 @@ where
         let target_participant = self.round.target_participant();
 
         let attacker_side = attacker_position.side();
+        let node_state = self.node_state;
         let engagement = self.engagement;
         let air_state_rank = self.air_state.rank(attacker_side);
         let fleet_los_mod = self.fleet_los_mod(attacker_position);
@@ -150,6 +151,7 @@ where
             target: &target.as_ref(),
             formation_params,
             historical_params,
+            node_state,
         }
         .to_attack()
         .apply(self.rng, &mut target)

@@ -75,7 +75,7 @@ impl SupportShellingAttackParams<'_> {
             precap_mod,
             postcap_mod,
             ap_shell_mod: None,
-            aerial_power: aerial_power,
+            aerial_power,
             proficiency_critical_mod: 1.0,
             remaining_ammo_mod,
             armor_penetration: 0.0,

@@ -1,0 +1,39 @@
+description = "警戒陣砲撃回避テスト19"
+
+[node_state]
+map = 511
+node = "C"
+
+# 攻撃艦設定
+[attacker]
+ship_id = 1630
+g1 = "水上レーダ― Mark.I"
+g2 = "水上レーダ― Mark.I"
+g3 = "水上レーダ― Mark.I"
+
+# 防御艦設定
+[target]
+ship_id = "長良"
+level = 1
+
+# 警戒陣
+formation = "Vanguard"
+
+# 艦隊サイズ　7隻編成
+fleet_len = 7
+# 5 = 6番艦
+index = 5
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+
+# 命中項
+hit_rate_params.accuracy_term = 108
+# 回避項
+hit_rate_params.evasion_term = 43
+
+
+# 命中率（通常命中率 + クリティカル率）
+hit_rate.total = 0.66
+# クリティカル率
+hit_rate.critical = 0.11

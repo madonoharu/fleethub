@@ -466,11 +466,13 @@ impl AntiInstIbonuses {
         let gears = &ship.gears;
 
         let landing_craft_stars_average = gears
-            .mean_by(|gear| (gear.gear_type == GearType::LandingCraft).then(|| gear.stars as f64))
+            .mean_by(|gear| (gear.gear_type == GearType::LandingCraft).then_some(gear.stars as f64))
             .unwrap_or_default();
 
         let amphibious_tank_stars_average = gears
-            .mean_by(|gear| (gear.gear_type == GearType::AmphibiousTank).then(|| gear.stars as f64))
+            .mean_by(|gear| {
+                (gear.gear_type == GearType::AmphibiousTank).then_some(gear.stars as f64)
+            })
             .unwrap_or_default();
 
         Self {

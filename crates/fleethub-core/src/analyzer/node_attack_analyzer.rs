@@ -111,7 +111,7 @@ impl NodeAttackAnalyzer<'_> {
         let config = AttackAnalyzerConfig {
             air_state: self.config.air_state,
             engagement: self.config.engagement,
-            node_state: self.config.node_state.clone(),
+            node_state: self.config.node_state,
             attacker: attacker_config,
             target: target_config,
         };

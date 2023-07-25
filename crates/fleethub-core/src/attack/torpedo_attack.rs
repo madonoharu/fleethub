@@ -2,7 +2,7 @@ use crate::{
     member::BattleMemberRef,
     types::{
         AttackPowerModifier, Engagement, FleetFactors, FormationParams, HistoricalParams,
-        SpecialEnemyModifiers, TorpedoAttackType,
+        NodeState, SpecialEnemyModifiers, TorpedoAttackType,
     },
 };
 
@@ -20,6 +20,7 @@ pub struct TorpedoAttackParams<'a> {
     pub engagement: Engagement,
     pub formation_params: FormationParams,
     pub historical_params: HistoricalParams,
+    pub node_state: NodeState,
 }
 
 impl TorpedoAttackParams<'_> {
@@ -112,13 +113,58 @@ impl TorpedoAttackParams<'_> {
         let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, TorpedoAttackType);
         let historical_mod = self.historical_params.accuracy_mod;
 
+        // 警戒陣回避補正
+        let vanguard_mod = if target.formation.is_vanguard() {
+            if target.ship_type.is_destroyer() {
+                let is_event = self.node_state.is_event();
+
+                if is_event {
+                    match target.position.index {
+                        0 | 1 => 0.9,
+                        2 => 0.55,
+                        3 => 0.475,
+                        4 => 0.4,
+                        5 => 0.35,
+                        // 不明
+                        6 => 0.35,
+                        _ => 1.0,
+                    }
+                } else {
+                    match target.position.index {
+                        0 | 1 => 0.9,
+                        2 => 0.65,
+                        3 => 0.58,
+                        4 => 0.5,
+                        5 => 0.42,
+                        // 不明
+                        6 => 0.42,
+                        _ => 1.0,
+                    }
+                }
+            } else {
+                match target.position.index {
+                    0 | 1 => 0.9,
+                    2 => 0.77,
+                    3 => 0.67,
+                    4 => 0.64,
+                    5 => 0.55,
+                    6 => 0.51,
+                    _ => 1.0,
+                }
+            }
+        } else {
+            1.0
+        };
+
         // 乗算前に切り捨て
-        let multiplicand = (fleet_factor
+        let multiplicand = ((fleet_factor
             + basic_accuracy_term
             + equipment_accuracy
             + ibonus
             + attack_power_mod
             + innate_torpedo_accuracy)
+            .floor()
+            * vanguard_mod)
             .floor();
 
         let post_formation_mod =

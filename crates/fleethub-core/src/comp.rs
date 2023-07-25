@@ -233,7 +233,7 @@ impl Comp {
 
     pub fn planes(&self, escort_participates: bool) -> impl Iterator<Item = Plane> {
         let escort_planes = escort_participates
-            .then(|| self.escort.as_ref())
+            .then_some(self.escort.as_ref())
             .flatten()
             .into_iter()
             .flat_map(|fleet| fleet.ships.values());
@@ -247,7 +247,7 @@ impl Comp {
 
     pub fn planes_mut(&mut self, escort_participates: bool) -> impl Iterator<Item = PlaneMut> {
         let escort_planes = escort_participates
-            .then(|| self.escort.as_mut())
+            .then_some(self.escort.as_mut())
             .flatten()
             .into_iter()
             .flat_map(|fleet| fleet.ships.values_mut());

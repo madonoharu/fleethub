@@ -84,6 +84,10 @@ impl Formation {
         matches!(self, Self::Combined(_))
     }
 
+    pub fn is_vanguard(self) -> bool {
+        matches!(self, Self::Single(SingleFormation::Vanguard))
+    }
+
     pub fn iter() -> impl Iterator<Item = Self> {
         SingleFormation::iter()
             .map(Self::Single)

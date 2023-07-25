@@ -193,8 +193,8 @@ fn get_colorado_class_cutin(fleet: &Fleet, formation: Formation) -> Option<Fleet
 
     let big7_mod = (
         1.0,
-        is_big7(s2).then(|| 1.15).unwrap_or(1.0),
-        is_big7(s3).then(|| 1.17).unwrap_or(1.0),
+        if is_big7(s2) { 1.15 } else { 1.0 },
+        if is_big7(s3) { 1.17 } else { 1.0 },
     );
 
     fn get_equipment_mod(ship: &Ship) -> f64 {

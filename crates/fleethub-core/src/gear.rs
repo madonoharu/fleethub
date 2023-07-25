@@ -155,6 +155,7 @@ impl Gear {
 
 #[wasm_bindgen]
 impl Gear {
+    #[allow(clippy::should_implement_trait)]
     pub fn default() -> Self {
         Default::default()
     }
