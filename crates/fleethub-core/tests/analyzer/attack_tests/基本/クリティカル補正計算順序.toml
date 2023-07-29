@@ -1,0 +1,34 @@
+description = "クリティカル補正計算順序テスト"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "瑞鳳改二乙"
+level = 137
+
+formation = "LineAbreast" # 単横陣
+
+g1 = { gear_id = "流星改(一航戦/熟練)", exp = 120 }
+g2 = { gear_id = "F4U-7", exp = 120 }
+g3 = { gear_id = "AU-1", exp = 120 }
+
+# 防御艦設定
+[target]
+ship_id = 1530
+formation = "LineAbreast" # 単横陣
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+
+# 通常命中の最小ダメージ
+damage.normal_damage_min = 51
+# 通常命中の最大ダメージ
+damage.normal_damage_max = 55
+# クリティカルの最小ダメージ
+damage.critical_damage_min = 117
+# クリティカルの最大ダメージ
+damage.critical_damage_max = 121
+
+# 通常命中の最終攻撃力
+attack_power.normal = 60
+# クリティカルの最終攻撃力
+attack_power.critical = 126

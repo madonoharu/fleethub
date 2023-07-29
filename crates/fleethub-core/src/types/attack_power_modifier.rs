@@ -74,6 +74,8 @@ pub struct SpecialEnemyModifiers {
     pub toku_daihatsu_tank_mod: AttackPowerModifier,
     pub m4a1dd_mod: AttackPowerModifier,
     pub honi_mod: AttackPowerModifier,
+    pub toku_daihatsu_chiha_mod: AttackPowerModifier,
+    pub toku_daihatsu_chiha_kai_mod: AttackPowerModifier,
     pub postcap_general_mod: AttackPowerModifier,
     pub pt_mod: Option<AttackPowerModifier>,
 }

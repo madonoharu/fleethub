@@ -135,7 +135,9 @@ impl AttackPowerParams {
         };
 
         let normal = post_pt_power;
-        let critical = (normal * 1.5 * self.proficiency_critical_mod).floor();
+
+        // https://twitter.com/hedgehog_hasira/status/1630585333279784962
+        let critical = (normal * self.proficiency_critical_mod * 1.5).floor();
 
         (normal, critical)
     }

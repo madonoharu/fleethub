@@ -133,7 +133,7 @@ fn test_kongou_cutin() {
         Engagement::Parallel,
         Time::Night,
         FleetCutin::KongouClassCutin,
-        [(0, 2.2), (1, 2.2)],
+        [(0, 2.4), (1, 2.4)],
     );
 }
 
