@@ -188,7 +188,10 @@ fn get_colorado_class_cutin(fleet: &Fleet, formation: Formation) -> Option<Fleet
 
     fn is_big7(ship: &Ship) -> bool {
         // なぜか未改造はビッグセブン補正が適応されない
-        matches!(ship.ctype, ctype!("長門型") | ctype!("Nelson級")) && ship.remodel_rank() >= 2
+        matches!(
+            ship.ctype,
+            ctype!("長門型") | ctype!("Nelson級") | ctype!("Colorado級")
+        ) && ship.remodel_rank() >= 2
     }
 
     let big7_mod = (
