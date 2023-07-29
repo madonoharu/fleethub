@@ -89,7 +89,7 @@ impl NightAttackStyle {
                 .as_ref()
                 .and_then(|def| def.accuracy_mod)
                 .unwrap_or(1.0),
-            hits: cutin_def.as_ref().map(|def| def.hits as f64).unwrap_or(1.0),
+            hits: cutin_def.as_ref().map(|def| def.hits).unwrap_or(1.0),
         }
     }
 

@@ -64,7 +64,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
     fn target(&self) -> BattleMemberRef {
         let conditions = self.target_conditions;
         BattleMemberRef::new(
-            &self.target_ship,
+            self.target_ship,
             conditions.position,
             conditions.formation,
             conditions.amagiri_index,
@@ -78,6 +78,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
     ) -> FleetCutinReport<ShellingStyle> {
         let fleet_type = FleetType::Main;
         let fleet = &self.comp.main;
+        let node_state = self.node_state;
         let engagement = self.engagement;
 
         let cutin = effect.cutin;
@@ -110,11 +111,10 @@ impl<'a> FleetCutinAnalyzer<'a> {
                         attacker.conditions(),
                         target.conditions(),
                     ),
-                    historical_params: self.battle_defs.get_historical_params(
-                        self.node_state,
-                        &attacker,
-                        target,
-                    ),
+                    historical_params: self
+                        .battle_defs
+                        .get_historical_params(node_state, &attacker, target),
+                    node_state,
                 }
                 .calc_attack_params();
 

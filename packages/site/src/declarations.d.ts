@@ -29,7 +29,7 @@ declare module "@mui/system/createTheme" {
 declare module "i18next" {
   interface I18nNamespaces {
     common: typeof import("../public/locales/en/common.json");
-    gear_types: string[];
+    gear_types: Record<number, string>;
     stype: Record<string, string>;
     ctype: Record<string, string>;
     ships: Record<string, string>;

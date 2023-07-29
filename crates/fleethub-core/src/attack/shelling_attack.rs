@@ -2,7 +2,7 @@ use crate::{
     member::BattleMemberRef,
     types::{
         AttackPowerModifier, Engagement, FleetFactors, FormationParams, HistoricalParams,
-        ShellingStyle, ShellingType,
+        NodeState, ShellingStyle, ShellingType,
     },
 };
 
@@ -22,6 +22,7 @@ pub struct ShellingAttackParams<'a> {
     pub engagement: Engagement,
     pub formation_params: FormationParams,
     pub historical_params: HistoricalParams,
+    pub node_state: NodeState,
 }
 
 impl ShellingAttackParams<'_> {
@@ -129,10 +130,52 @@ impl ShellingAttackParams<'_> {
             let pt_mods = AntiPtImpAccuracyModifiers::new(attacker, target, style.attack_type);
             let historical_mod = self.historical_params.accuracy_mod;
 
+            // 警戒陣回避補正
+            let vanguard_mod = if target.formation.is_vanguard() {
+                if target.ship_type.is_destroyer() {
+                    let is_event = self.node_state.is_event();
+
+                    if is_event {
+                        match target.position.index {
+                            0 | 1 => 0.95,
+                            2 | 3 => 0.66,
+                            4 => 0.52,
+                            5 => 0.48,
+                            6 => 0.4,
+                            _ => 1.0,
+                        }
+                    } else {
+                        match target.position.index {
+                            0 | 1 => 0.95,
+                            2 | 3 => 0.8,
+                            4 => 0.69,
+                            5 => 0.64,
+                            6 => 0.64,
+                            _ => 1.0,
+                        }
+                    }
+                } else {
+                    match target.position.index {
+                        0..=3 => 0.95,
+                        4 => 0.86,
+                        5 => 0.8,
+                        6 => 0.7,
+                        _ => 1.0,
+                    }
+                }
+            } else {
+                1.0
+            };
+
             // 乗算前に切り捨て
-            let multiplicand =
-                (fleet_factor + basic_accuracy_term + ship_accuracy + ibonus + pt_mods.amagiri_mod)
-                    .floor();
+            let multiplicand = ((fleet_factor
+                + basic_accuracy_term
+                + ship_accuracy
+                + ibonus
+                + pt_mods.amagiri_mod)
+                .floor()
+                * vanguard_mod)
+                .floor();
 
             let post_formation_mod =
                 (multiplicand * formation_mod * morale_mod * pt_mods.multiplicative

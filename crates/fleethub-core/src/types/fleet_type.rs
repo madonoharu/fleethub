@@ -4,7 +4,6 @@ use tsify::Tsify;
 
 use super::Role;
 
-#[allow(clippy::derive_hash_xor_eq)]
 #[derive(Debug, Default, EnumSetType, Hash, PartialOrd, Ord, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum FleetType {

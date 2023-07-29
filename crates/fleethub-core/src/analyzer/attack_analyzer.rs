@@ -160,6 +160,7 @@ impl AttackAnalyzer<'_> {
         style: DayPhaseAttackStyle,
         proc_rate: Option<f64>,
     ) -> AttackReport<DayPhaseAttackStyle> {
+        let node_state = self.config.node_state;
         let formation_params = self.get_formation_params(style.to_attack_type());
         let historical_params = self.get_historical_params();
 
@@ -170,6 +171,7 @@ impl AttackAnalyzer<'_> {
             target: &self.target_combat_ship(),
             formation_params,
             historical_params,
+            node_state,
         }
         .calc_attack_params();
 
@@ -182,6 +184,7 @@ impl AttackAnalyzer<'_> {
         let attack_type = attacker.select_day_phase_attack_type(target);
         let attack_type = some_or_return!(attack_type, ActionReport::empty());
 
+        let node_state = self.config.node_state;
         let engagement = self.config.engagement;
         let formation_params = self.get_formation_params(attack_type);
         let historical_params = self.get_historical_params();
@@ -205,6 +208,7 @@ impl AttackAnalyzer<'_> {
                     target,
                     formation_params,
                     historical_params,
+                    node_state,
                 }
                 .calc_attack_params();
 
@@ -308,6 +312,7 @@ impl AttackAnalyzer<'_> {
         let attacker = &self.attacker_combat_ship();
         let target = &self.target_combat_ship();
         let engagement = self.config.engagement;
+        let node_state = self.config.node_state;
         let formation_params = self.get_formation_params(attack_type);
         let historical_params = self.get_historical_params();
 
@@ -321,6 +326,7 @@ impl AttackAnalyzer<'_> {
             engagement,
             formation_params,
             historical_params,
+            node_state,
         }
         .calc_attack_params();
 

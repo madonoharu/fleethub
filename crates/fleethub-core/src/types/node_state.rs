@@ -50,3 +50,9 @@ pub struct NodeState {
     pub debuff: bool,
     pub disable_historical_mod: bool,
 }
+
+impl NodeState {
+    pub fn is_event(self) -> bool {
+        self.map >= 100
+    }
+}

@@ -1,6 +1,8 @@
 use crate::{
     member::BattleMemberRef,
-    types::{AswPhase, DayPhaseAttackStyle, Engagement, FormationParams, HistoricalParams},
+    types::{
+        AswPhase, DayPhaseAttackStyle, Engagement, FormationParams, HistoricalParams, NodeState,
+    },
 };
 
 use super::{AswAttackParams, Attack, AttackParams, ShellingAttackParams};
@@ -12,6 +14,7 @@ pub struct DayPhaseAttackParams<'a> {
     pub target: &'a BattleMemberRef<'a>,
     pub formation_params: FormationParams,
     pub historical_params: HistoricalParams,
+    pub node_state: NodeState,
 }
 
 impl DayPhaseAttackParams<'_> {
@@ -26,6 +29,7 @@ impl DayPhaseAttackParams<'_> {
         let engagement = self.engagement;
         let formation_params = self.formation_params;
         let historical_params = self.historical_params;
+        let node_state = self.node_state;
 
         match style.clone() {
             DayPhaseAttackStyle::Shelling(style) => ShellingAttackParams {
@@ -35,6 +39,7 @@ impl DayPhaseAttackParams<'_> {
                 engagement,
                 formation_params,
                 historical_params,
+                node_state,
             }
             .calc_attack_params(),
             DayPhaseAttackStyle::Asw(style) => AswAttackParams {

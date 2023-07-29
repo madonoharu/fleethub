@@ -20,7 +20,7 @@ fn set_ship_id(value: &mut toml::Value) {
             .master_data()
             .ships
             .iter()
-            .find_map(|ship| (ship.name == name).then(|| ship.ship_id as u32))
+            .find_map(|ship| (ship.name == name).then_some(ship.ship_id as u32))
             .unwrap_or_else(|| panic!("\"{name}\" does not exist"));
 
         value["ship_id"] = id.into();
@@ -39,7 +39,7 @@ fn set_gear_id(value: &mut toml::Value) {
                     .master_data()
                     .gears
                     .iter()
-                    .find_map(|gear| (&gear.name == name).then(|| gear.gear_id))
+                    .find_map(|gear| (&gear.name == name).then_some(gear.gear_id))
                     .unwrap_or_else(|| panic!("\"{name}\" does not exist"))
                     as i64;
 

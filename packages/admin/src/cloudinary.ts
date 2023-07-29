@@ -96,7 +96,7 @@ export const updateShipBanners = async (start2: Start2) => {
   const exists = (id: number) => Boolean(banners[id]);
 
   for (const { api_id: id, api_name: name } of start2.api_mst_ship.map(
-    (ship) => ship
+    (ship) => ship,
   )) {
     if (exists(id)) continue;
 
@@ -114,9 +114,9 @@ export const updateShipBanners = async (start2: Start2) => {
 export const updateGearIcons = async () => {
   const commonIconWeaponUrl = getCommonIconWeaponUrl();
 
-  const { frames }: CommonIconWeapon = await got(
-    commonIconWeaponUrl.json
-  ).json();
+  const { frames } = await got(
+    commonIconWeaponUrl.json,
+  ).json<CommonIconWeapon>();
   const searchRes = (await cloudinary.v2.search
     .expression("gear_icons")
     .max_results(500)

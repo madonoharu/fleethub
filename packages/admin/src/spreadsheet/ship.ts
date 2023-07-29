@@ -55,7 +55,7 @@ const getDefaultSpeedGroup = ({
   ctype,
   speed,
 }: MasterShip): SpeedGroup => {
-  const isFastAV = stype == ShipType.AV && speed == 10;
+  const isFastAV = (stype as ShipType) == ShipType.AV && speed == 10;
 
   if (
     isFastAV ||
@@ -148,7 +148,7 @@ const getConvertibleShips = (ships: MasterShip[]) => {
 
 function createShips(
   parser: ExprParser,
-  table: SpreadsheetTable
+  table: SpreadsheetTable,
 ): MasterShip[] {
   const { start2, nationalityMap } = parser;
   const { headerValues, rows } = table;
@@ -220,7 +220,7 @@ function createShips(
     } else {
       const baseName = mst.api_name.replace(SUFFIX_RE, "");
       const abyssal_ctype = start2.api_mst_ship.find(
-        (s) => s.api_name === baseName
+        (s) => s.api_name === baseName,
       )?.api_id;
 
       return {
@@ -258,7 +258,7 @@ const createShipAttrs = (parser: ExprParser, table: SpreadsheetTable) => {
 
 export function createShipData(
   parser: ExprParser,
-  tables: Record<"ships" | "ship_attrs" | "nationalities", SpreadsheetTable>
+  tables: Record<"ships" | "ship_attrs" | "nationalities", SpreadsheetTable>,
 ): Pick<MasterData, "ships" | "ship_attrs"> {
   const ships = createShips(parser, tables.ships);
   const ship_attrs = createShipAttrs(parser, tables.ship_attrs);

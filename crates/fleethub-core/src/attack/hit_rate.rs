@@ -3,7 +3,6 @@ use rand::prelude::*;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[allow(clippy::derive_hash_xor_eq)]
 #[derive(Debug, Hash, EnumSetType)]
 pub enum HitType {
     Miss,
