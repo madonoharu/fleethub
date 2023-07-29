@@ -1,5 +1,3 @@
-#![allow(non_snake_case)]
-
 use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;

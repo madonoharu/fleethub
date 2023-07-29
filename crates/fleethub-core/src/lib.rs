@@ -1,4 +1,4 @@
-#![allow(clippy::let_and_return)]
+#![allow(non_snake_case, clippy::let_and_return)]
 
 pub mod air_squadron;
 pub mod analyzer;

@@ -1,5 +1,3 @@
-#![allow(non_snake_case)]
-
 use enumset::EnumSetType;
 use num_derive::FromPrimitive;
 use serde::{Deserialize, Serialize};

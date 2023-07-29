@@ -1,5 +1,3 @@
-#![allow(non_snake_case)]
-
 use enumset::{EnumSet, EnumSetType};
 use rand::prelude::*;
 use serde::{Deserialize, Serialize};
