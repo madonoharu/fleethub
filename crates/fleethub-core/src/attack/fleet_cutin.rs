@@ -587,15 +587,15 @@ fn calc_kongou_class_cutin_rate(fleet: &Fleet) -> Option<f64> {
         }
     };
 
-    Some(
-        (6.0 * s1_level.sqrt()
-            + 3.0 * s2_level.sqrt()
-            + 1.2 * s1_luck.sqrt()
-            + 0.6 * s2_luck
-            + equipment_mod
-            - 55.0)
-            .floor(),
-    )
+    let percent = (6.0 * s1_level.sqrt()
+        + 3.0 * s2_level.sqrt()
+        + 1.2 * s1_luck.sqrt()
+        + 0.6 * s2_luck.sqrt()
+        + equipment_mod
+        - 55.0)
+        .floor();
+
+    Some((percent / 100.0).min(1.0))
 }
 
 pub fn calc_fleet_cutin_rate(fleet: &Fleet, cutin: FleetCutin) -> Option<f64> {
