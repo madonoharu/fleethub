@@ -31,7 +31,7 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
     if (point) {
       return node.point === point;
     } else {
-      return node.type === MapNodeType.Boss;
+      return (node.type as MapNodeType) === MapNodeType.Boss;
     }
   });
 

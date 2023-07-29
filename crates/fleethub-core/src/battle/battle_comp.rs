@@ -79,7 +79,7 @@ impl BattleComp {
                     }
                     Participant::Both => true,
                 }
-                .then(|| BattleMemberRef {
+                .then_some(BattleMemberRef {
                     ship,
                     formation,
                     amagiri_index,

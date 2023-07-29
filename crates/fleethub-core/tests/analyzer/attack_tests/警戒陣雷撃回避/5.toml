@@ -1,0 +1,35 @@
+description = "警戒陣雷撃回避テスト5"
+
+[node_state]
+map = 11
+node = "A"
+
+# 攻撃艦設定
+[attacker]
+ship_id = 1576
+
+# 防御艦設定
+[target]
+ship_id = "睦月"
+level = 1
+
+# 警戒陣
+formation = "Vanguard"
+
+# 艦隊サイズ　6隻編成
+fleet_len = 6
+# 4 = 5番艦
+index = 4
+
+# 閉幕雷撃
+[expected.closing_torpedo.data.SingleAttack]
+
+# 命中項
+hit_rate_params.accuracy_term = 82
+# 回避項
+hit_rate_params.evasion_term = 43
+
+# 命中率（通常命中率 + クリティカル率）
+hit_rate.total = 0.4
+# クリティカル率
+hit_rate.critical = 0.1

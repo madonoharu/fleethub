@@ -188,13 +188,16 @@ fn get_colorado_class_cutin(fleet: &Fleet, formation: Formation) -> Option<Fleet
 
     fn is_big7(ship: &Ship) -> bool {
         // なぜか未改造はビッグセブン補正が適応されない
-        matches!(ship.ctype, ctype!("長門型") | ctype!("Nelson級")) && ship.remodel_rank() >= 2
+        matches!(
+            ship.ctype,
+            ctype!("長門型") | ctype!("Nelson級") | ctype!("Colorado級")
+        ) && ship.remodel_rank() >= 2
     }
 
     let big7_mod = (
         1.0,
-        is_big7(s2).then(|| 1.15).unwrap_or(1.0),
-        is_big7(s3).then(|| 1.17).unwrap_or(1.0),
+        if is_big7(s2) { 1.15 } else { 1.0 },
+        if is_big7(s3) { 1.17 } else { 1.0 },
     );
 
     fn get_equipment_mod(ship: &Ship) -> f64 {
@@ -244,11 +247,16 @@ fn get_kongou_class_cutin(
 
     let is_kongou_fleet = match s1.ship_id {
         ship_id!("金剛改二丙") => {
-            matches_ship_id!(s2.ship_id, "比叡改二丙" | "榛名改二")
-                || s2.ctype == ctype!("Queen Elizabeth級")
+            matches_ship_id!(
+                s2.ship_id,
+                "比叡改二丙" | "榛名改二" | "榛名改二乙" | "榛名改二丙" | "霧島改二"
+            ) || s2.ctype == ctype!("Queen Elizabeth級")
         }
         ship_id!("比叡改二丙") => {
             matches_ship_id!(s2.ship_id, "金剛改二丙" | "霧島改二")
+        }
+        ship_id!("榛名改二乙") | ship_id!("榛名改二丙") => {
+            matches_ship_id!(s2.ship_id, "金剛改二丙" | "比叡改二丙")
         }
         _ => false,
     };
@@ -269,8 +277,8 @@ fn get_kongou_class_cutin(
         return None;
     }
 
-    // 2022/6/8に上方修正
-    let base = 2.2;
+    // 23/5/1に上方修正
+    let base = 2.4;
 
     let engagement_mod = match engagement {
         Engagement::GreenT => 1.25,
@@ -539,11 +547,63 @@ fn calc_yamato2_ship_cutin_rate(fleet: &Fleet) -> Option<f64> {
     Some((result / 100.0).min(1.0))
 }
 
+fn calc_kongou_class_cutin_rate(fleet: &Fleet) -> Option<f64> {
+    let s1 = fleet.ships.get(0)?;
+    let s2 = fleet.ships.get(1)?;
+
+    let s1_level = s1.level as f64;
+    let s2_level = s2.level as f64;
+    let s1_luck = s1.luck()? as f64;
+    let s2_luck = s2.luck()? as f64;
+
+    let equipment_mod = {
+        let has_surface_radar = s1.gears.has_attr(GearAttr::SurfaceRadar);
+        let has_large_searchlight = s1.gears.has_type(GearType::LargeSearchlight);
+
+        match s1.ship_id {
+            ship_id!("金剛改二丙") => {
+                (if has_surface_radar { 31.0 } else { 0.0 })
+                    + if has_large_searchlight { 10.0 } else { 0.0 }
+            }
+            ship_id!("比叡改二丙") => {
+                (if has_large_searchlight { 31.0 } else { 0.0 })
+                    + if has_surface_radar { 10.0 } else { 0.0 }
+            }
+            ship_id!("榛名改二乙") => {
+                if has_surface_radar {
+                    16.0
+                } else {
+                    0.0
+                }
+            }
+            ship_id!("榛名改二丙") => {
+                if has_surface_radar {
+                    21.0
+                } else {
+                    0.0
+                }
+            }
+            _ => 0.0,
+        }
+    };
+
+    Some(
+        (6.0 * s1_level.sqrt()
+            + 3.0 * s2_level.sqrt()
+            + 1.2 * s1_luck.sqrt()
+            + 0.6 * s2_luck
+            + equipment_mod
+            - 55.0)
+            .floor(),
+    )
+}
+
 pub fn calc_fleet_cutin_rate(fleet: &Fleet, cutin: FleetCutin) -> Option<f64> {
     match cutin {
         FleetCutin::NelsonTouch => calc_nelson_touch_rate(fleet),
         FleetCutin::NagatoClassCutin => calc_nagato_cutin_rate(fleet),
         FleetCutin::Yamato2ShipCutin => calc_yamato2_ship_cutin_rate(fleet),
+        FleetCutin::KongouClassCutin => calc_kongou_class_cutin_rate(fleet),
         _ => None,
     }
 }

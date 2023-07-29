@@ -8,5 +8,5 @@ fn main() {
     .unwrap();
 
     let string = res.into_string().unwrap();
-    std::fs::write(path, &string).unwrap();
+    std::fs::write(path, string).unwrap();
 }

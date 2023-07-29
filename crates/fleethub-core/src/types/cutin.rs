@@ -2,7 +2,6 @@ use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[allow(clippy::derive_hash_xor_eq)]
 #[derive(Debug, Default, Hash, EnumSetType, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum DayCutin {
@@ -29,7 +28,6 @@ pub enum DayCutin {
     BA,
 }
 
-#[allow(clippy::derive_hash_xor_eq)]
 #[derive(Debug, Default, Hash, EnumSetType, Serialize, Deserialize, Tsify)]
 pub enum NightCutin {
     /// 主魚電
@@ -77,7 +75,6 @@ pub enum NightCutin {
     Photobomber,
 }
 
-#[allow(clippy::derive_hash_xor_eq)]
 #[derive(Debug, EnumSetType, Hash, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum FleetCutin {

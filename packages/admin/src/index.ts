@@ -8,15 +8,15 @@ import * as storage from "./storage";
 export function fetchStart2(): Promise<Start2> {
   return got
     .get(
-      "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json"
+      "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json",
     )
-    .json();
+    .json<Start2>();
 }
 
 export function fetchCtypeNames(): Promise<string[]> {
   return got
     .get(
-      "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json"
+      "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json",
     )
     .json();
 }

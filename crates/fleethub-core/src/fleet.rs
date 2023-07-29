@@ -240,6 +240,6 @@ impl Fleet {
     pub(crate) fn amagiri_index(&self) -> Option<usize> {
         self.ships
             .iter()
-            .find_map(|(index, ship)| ship.is_amagiri().then(|| index))
+            .find_map(|(index, ship)| ship.is_amagiri().then_some(index))
     }
 }

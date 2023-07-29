@@ -68,7 +68,8 @@ impl Org {
         [&self.f1, &self.f2, &self.f3, &self.f4]
             .iter()
             .flat_map(|fleet| fleet.ships.values())
-            .find_map(|ship| Some(ship.id.clone()))
+            .next()
+            .map(|ship| ship.id.clone())
     }
 
     pub fn get_ship_mid(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<u16> {

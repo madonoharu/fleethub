@@ -50,6 +50,7 @@ where
 
     fn try_attack(&mut self, attacker_position: ShipPosition) -> anyhow::Result<()> {
         let attacker_side = attacker_position.side();
+        let node_state = self.node_state;
         let engagement = self.engagement;
 
         let (attacker_comp, target_comp) = if attacker_side.is_player() {
@@ -90,6 +91,7 @@ where
             engagement,
             formation_params,
             historical_params,
+            node_state,
         }
         .to_attack();
 

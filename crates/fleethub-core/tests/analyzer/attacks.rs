@@ -41,7 +41,7 @@ impl AttackTestCase {
         AttackAnalyzerConfig {
             air_state: self.air_state,
             engagement: self.engagement,
-            node_state: self.node_state.clone(),
+            node_state: self.node_state,
             attacker: self.attacker.config.clone(),
             target: self.target.config.clone(),
         }

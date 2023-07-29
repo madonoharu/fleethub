@@ -123,14 +123,14 @@ impl AirSquadron {
     pub fn radius(&self) -> u8 {
         let min_radius = self
             .gears_with_slot_size()
-            .filter_map(|(_, gear, slot_size)| (slot_size.unwrap_or_default() > 0).then(|| gear))
+            .filter_map(|(_, gear, slot_size)| (slot_size.unwrap_or_default() > 0).then_some(gear))
             .map(|gear| gear.radius)
             .min()
             .unwrap_or_default();
 
         let recon_max_radius = self
             .gears_with_slot_size()
-            .filter_map(|(_, gear, slot_size)| (slot_size.unwrap_or_default() > 0).then(|| gear))
+            .filter_map(|(_, gear, slot_size)| (slot_size.unwrap_or_default() > 0).then_some(gear))
             .filter(|gear| gear.has_attr(GearAttr::Recon))
             .map(|gear| gear.radius)
             .max()

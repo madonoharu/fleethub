@@ -266,7 +266,7 @@ impl Ship {
             .filter_map(|(index, (gear, &slot_size))| {
                 let gear = gear.as_ref()?;
 
-                gear.has_proficiency().then(|| Plane {
+                gear.has_proficiency().then_some(Plane {
                     index,
                     gear,
                     slot_size,
@@ -283,7 +283,7 @@ impl Ship {
             .filter_map(|(index, (gear, slot_size))| {
                 let gear = gear.as_mut()?;
 
-                gear.has_proficiency().then(|| PlaneMut {
+                gear.has_proficiency().then_some(PlaneMut {
                     index,
                     gear,
                     slot_size,
@@ -527,7 +527,7 @@ impl Ship {
 
             if matches!(self.ship_type, CAV | CVL | BBV | AV | LHA) {
                 if !is_abyssal {
-                    return has_anti_sub_aircraft().then(|| AswAttackType::Aerial);
+                    return has_anti_sub_aircraft().then_some(AswAttackType::Aerial);
                 }
 
                 if has_anti_sub_aircraft() {
@@ -554,7 +554,7 @@ impl Ship {
                 || is_abyssal
         };
 
-        is_anti_sub_ship.then(|| AswAttackType::DepthCharge)
+        is_anti_sub_ship.then_some(AswAttackType::DepthCharge)
     }
 
     pub fn select_day_phase_attack_type(&self, target: &Ship) -> Option<DayPhaseAttackType> {
@@ -602,7 +602,7 @@ impl Ship {
             Some(NightAttackType::Swordfish)
         } else {
             self.can_do_normal_night_attack()
-                .then(|| NightAttackType::Normal)
+                .then_some(NightAttackType::Normal)
         };
 
         attack_type.map(NightPhaseAttackType::Night)
@@ -766,6 +766,7 @@ impl Ship {
 
 #[wasm_bindgen]
 impl Ship {
+    #[allow(clippy::should_implement_trait)]
     pub fn default() -> Self {
         Default::default()
     }
