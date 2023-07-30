@@ -107,7 +107,11 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
     let count_20_3cm_group = gears.count_by(|gear| {
         matches_gear_id!(
             gear.gear_id,
-            "20.3cm連装砲" | "20.3cm(3号)連装砲" | "20.3cm(2号)連装砲" | "203mm/53 連装砲"
+            "20.3cm連装砲"
+                | "20.3cm(3号)連装砲"
+                | "20.3cm(2号)連装砲"
+                | "203mm/53 連装砲"
+                | "SKC34 20.3cm連装砲"
         )
     }) as f64;
 
@@ -327,6 +331,8 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
                 | "35.6cm連装砲改二"
                 | "38cm連装砲"
                 | "38cm連装砲改"
+                | "35.6cm連装砲改三(ダズル迷彩仕様)"
+                | "35.6cm連装砲改四"
         )
     }) as f64;
 
