@@ -760,7 +760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app-types@npm:*, @firebase/app-types@npm:0.9.0":
+"@firebase/app-types@npm:0.9.0":
   version: 0.9.0
   resolution: "@firebase/app-types@npm:0.9.0"
   checksum: e79bd3c4a8d6b911326fe83fddca8d8922ea5880fcb3ad72d3561b51e3d01f22669cdc6d61d2ec48ac9c5e763e3d44b7b6736cadf36a0827d7f62447bde4b12e
@@ -5393,13 +5393,13 @@ __metadata:
   linkType: hard
 
 "fast-xml-parser@npm:^4.2.2":
-  version: 4.2.6
-  resolution: "fast-xml-parser@npm:4.2.6"
+  version: 4.2.7
+  resolution: "fast-xml-parser@npm:4.2.7"
   dependencies:
     strnum: ^1.0.5
   bin:
     fxparser: src/cli/cli.js
-  checksum: 1628e4b2c5ae01fe35eb920f09c6def7e29fd455f307fc44c3372c78114504643f34b28e87c13a4f1657c10498dbb6729a341507044dc7cba498e457e8fe2573
+  checksum: d8b0c9e04756f6c43fa0399428f30149acadae21350e42e26e8fe98e24e6afa6b9b00aa554453795036b00e9fee974a1b556fe2ba18be391d51a9bf1ab790e7c
   languageName: node
   linkType: hard
 
@@ -5554,11 +5554,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.11.9
-  resolution: "fleethub-core@npm:1.11.9"
+  version: 1.11.11
+  resolution: "fleethub-core@npm:1.11.11"
   dependencies:
     equipment-bonus: "npm:latest"
-  checksum: 2e6a85ec85df66647216f9316a5d2095788ae1c07b067e4e908afb8542c359afdd284a78a3be19a9a89aba89e54cd306e124fd4d041ad5a805f507285a177d3c
+  checksum: ac654fc5a837c94a40945b8b5553b56c23d589f2f6624474dccaf0b28944d060503e0f769b0505af32cb0f68d8c2883c0e75b259c2a96ec5e8ffaf902fd58b2b
   languageName: node
   linkType: hard
 
@@ -9192,7 +9192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.5.10, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.10, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:

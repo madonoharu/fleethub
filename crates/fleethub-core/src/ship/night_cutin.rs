@@ -157,15 +157,13 @@ impl Ship {
             value += 18.0
         }
 
-        if self.gears.has(gear_id!("熟練見張員")) {
-            value += 5.0
-        }
-
         // https://twitter.com/Divinity__123/status/1479343022974324739
         if self.gears.has(gear_id!("水雷戦隊 熟練見張員"))
             && (self.ship_type.is_destroyer() || self.ship_type.is_light_cruiser())
         {
             value += 9.0
+        } else if self.gears.has(gear_id!("熟練見張員")) {
+            value += 5.0
         }
 
         if params.attacker_searchlight {
