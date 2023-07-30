@@ -706,7 +706,7 @@ __metadata:
     fleethub-core: "npm:latest"
     gkcoi: ^1.4.9
     http-status-codes: ^2.2.0
-    i18next: =23.3.0
+    i18next: ^23.4.1
     immer: ^10.0.2
     literal-case: ^1.0.0
     localforage: ^1.10.0
@@ -720,7 +720,7 @@ __metadata:
     react-dnd-html5-backend: ^16.0.1
     react-dom: 18.2.0
     react-i18next: ^13.0.2
-    react-redux: ^8.1.1
+    react-redux: ^8.1.2
     recharts: 2.7.2
     redux: ^4.2.1
     redux-persist: ^6.0.0
@@ -760,7 +760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app-types@npm:*, @firebase/app-types@npm:0.9.0":
+"@firebase/app-types@npm:0.9.0":
   version: 0.9.0
   resolution: "@firebase/app-types@npm:0.9.0"
   checksum: e79bd3c4a8d6b911326fe83fddca8d8922ea5880fcb3ad72d3561b51e3d01f22669cdc6d61d2ec48ac9c5e763e3d44b7b6736cadf36a0827d7f62447bde4b12e
@@ -5048,9 +5048,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.33.0":
-  version: 7.33.0
-  resolution: "eslint-plugin-react@npm:7.33.0"
+"eslint-plugin-react@npm:^7.33.1":
+  version: 7.33.1
+  resolution: "eslint-plugin-react@npm:7.33.1"
   dependencies:
     array-includes: ^3.1.6
     array.prototype.flatmap: ^1.3.1
@@ -5069,7 +5069,7 @@ __metadata:
     string.prototype.matchall: ^4.0.8
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: f3ce2978322efd3c698b802dabfad070109dd1935c4e468545992b82b5fb8257ea3ad56732330bb46643182a09560129a259b436952b3e2aa426947d3abd2b1a
+  checksum: 0427bd24acb87422b7298686203167123ba289ba563384983f3d99fad7817eae7f63157fd2e9b868bdcf0760719c319ab1e22a44764a98302034b0c844763e57
   languageName: node
   linkType: hard
 
@@ -5554,11 +5554,11 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.11.8
-  resolution: "fleethub-core@npm:1.11.8"
+  version: 1.11.9
+  resolution: "fleethub-core@npm:1.11.9"
   dependencies:
     equipment-bonus: "npm:latest"
-  checksum: 1fe4d82ef48edc49e466afd1fad4b0a42e3e795a4b954705b48c06ce7e36d24112841a4de910b1694bd01f47154bc32cf10b63d31979030d99d2fbcf12c92cd6
+  checksum: 2e6a85ec85df66647216f9316a5d2095788ae1c07b067e4e908afb8542c359afdd284a78a3be19a9a89aba89e54cd306e124fd4d041ad5a805f507285a177d3c
   languageName: node
   linkType: hard
 
@@ -5590,7 +5590,7 @@ __metadata:
     eslint: ^8.46.0
     eslint-config-prettier: ^8.9.0
     eslint-plugin-import: ^2.28.0
-    eslint-plugin-react: ^7.33.0
+    eslint-plugin-react: ^7.33.1
     eslint-plugin-react-hooks: ^4.6.0
     fleethub-core: "npm:latest"
     fs-extra: ^11.1.1
@@ -6375,12 +6375,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:=23.3.0":
-  version: 23.3.0
-  resolution: "i18next@npm:23.3.0"
+"i18next@npm:^23.4.1":
+  version: 23.4.1
+  resolution: "i18next@npm:23.4.1"
   dependencies:
     "@babel/runtime": ^7.22.5
-  checksum: 4f9d135b0b75f3050c68cfd2a1a50e33c3e7aaa20a08c304b122d8bdfdce5bbef3f4929830d732968145be710af4259da19af990e06bbccc24ba18abbda9a688
+  checksum: d9283d3de5e4ea2e55f61bd8ada98b5aef1b7db35a69c8ccf193367c5cbee6f795a67c5cd8a7af511e56c12b021b91d97253863b6c2336726925d20518fb02cc
   languageName: node
   linkType: hard
 
@@ -9192,7 +9192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.5.10, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.10, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -9461,9 +9461,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "react-redux@npm:8.1.1"
+"react-redux@npm:^8.1.2":
+  version: 8.1.2
+  resolution: "react-redux@npm:8.1.2"
   dependencies:
     "@babel/runtime": ^7.12.1
     "@types/hoist-non-react-statics": ^3.3.1
@@ -9489,7 +9489,7 @@ __metadata:
       optional: true
     redux:
       optional: true
-  checksum: 370676330727764d78f35e9c5a0ed0591d79482fe9b70fffcab4aa6bcccc6194e4f1ebd818b4b390351dea5557e70d3bd4d95d7a0ac9baa1f45d6bf2230ee713
+  checksum: 4d5976b0f721e4148475871fcabce2fee875cc7f70f9a292f3370d63b38aa1dd474eb303c073c5555f3e69fc732f3bac05303def60304775deb28361e3f4b7cc
   languageName: node
   linkType: hard
 

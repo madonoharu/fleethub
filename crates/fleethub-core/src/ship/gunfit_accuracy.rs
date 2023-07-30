@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-use crate::types::{ctype, gear_id, matches_gear_id, ship_id, ShipType};
+use crate::types::{ctype, gear_id, matches_gear_id, ship_id, GearType, ShipType};
 
 use super::Ship;
 
@@ -52,6 +52,10 @@ fn destroyer_bonus(ship: &Ship) -> f64 {
 
 /// 軽巡フィット補正
 fn light_cruiser_bonus(ship: &Ship) -> f64 {
+    if ship.is_abyssal() {
+        return -3.0 * ship.gears.count_type(GearType::MediumMainGun) as f64;
+    }
+
     let mut r = 0.0;
     let gears = &ship.gears;
     let ctype = ship.ctype;
