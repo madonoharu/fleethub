@@ -4,7 +4,9 @@ use crate::{
     attack::SupportShellingAttackParams,
     battle::target_picker::TargetPicker,
     error::SHIP_NOT_FOUND,
-    types::{BattleDefinitions, Engagement, FleetType, ShipPosition, SupportShellingType},
+    types::{
+        BattleDefinitions, Engagement, FleetType, NodeState, ShipPosition, SupportShellingType,
+    },
 };
 
 use super::battle_comp::BattleComp;
@@ -16,6 +18,7 @@ where
     pub rng: &'a mut R,
     pub battle_defs: &'a BattleDefinitions,
     pub engagement: Engagement,
+    pub node_state: NodeState,
     pub player_comp: &'a mut BattleComp,
     pub enemy_comp: &'a mut BattleComp,
 }
@@ -77,6 +80,7 @@ where
             attacker: &attacker,
             target: &target.as_ref(),
             formation_params,
+            node_state: self.node_state,
         }
         .to_attack()
         .apply(self.rng, &mut target)

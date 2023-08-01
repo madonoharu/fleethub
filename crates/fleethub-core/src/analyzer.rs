@@ -113,6 +113,7 @@ impl Analyzer {
             &mut player,
             &mut enemy,
             config.engagement,
+            config.node_state,
         );
 
         simulator

@@ -386,6 +386,7 @@ impl AttackAnalyzer<'_> {
             target,
             engagement: self.config.engagement,
             formation_params,
+            node_state: self.config.node_state,
         }
         .calc_attack_params();
 

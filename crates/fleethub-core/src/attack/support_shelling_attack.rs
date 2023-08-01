@@ -2,7 +2,10 @@
 
 use crate::{
     member::BattleMemberRef,
-    types::{AttackPowerModifier, Engagement, FormationParams, ShellingType, SupportShellingType},
+    types::{
+        AttackPowerModifier, Engagement, FormationParams, NodeState, ShellingType,
+        SupportShellingType,
+    },
 };
 
 use super::{Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams};
@@ -17,6 +20,7 @@ pub struct SupportShellingAttackParams<'a> {
     pub target: &'a BattleMemberRef<'a>,
     pub engagement: Engagement,
     pub formation_params: FormationParams,
+    pub node_state: NodeState,
 }
 
 impl SupportShellingAttackParams<'_> {
@@ -89,14 +93,54 @@ impl SupportShellingAttackParams<'_> {
 
     fn calc_accuracy_term(&self) -> Option<f64> {
         let attacker = self.attacker;
+        let target = self.target;
         let basic_accuracy_term = attacker.basic_accuracy_term()?;
         let gears_accuracy = attacker.gears.sum_by(|gear| gear.accuracy) as f64;
         let morale_mod = attacker.morale_state().common_accuracy_mod();
         let formation_mod = self.formation_params.accuracy_mod;
 
+        // 警戒陣回避補正
+        let vanguard_mod = if target.formation.is_vanguard() {
+            if target.ship_type.is_destroyer() {
+                let is_event = self.node_state.is_event();
+
+                if is_event {
+                    match target.position.index {
+                        0 | 1 => 0.95,
+                        2 | 3 => 0.66,
+                        4 => 0.52,
+                        5 => 0.48,
+                        6 => 0.4,
+                        _ => 1.0,
+                    }
+                } else {
+                    match target.position.index {
+                        0 | 1 => 0.95,
+                        2 | 3 => 0.8,
+                        4 => 0.69,
+                        5 => 0.64,
+                        6 => 0.64,
+                        _ => 1.0,
+                    }
+                }
+            } else {
+                match target.position.index {
+                    0..=3 => 0.95,
+                    4 => 0.86,
+                    5 => 0.8,
+                    6 => 0.7,
+                    _ => 1.0,
+                }
+            }
+        } else {
+            1.0
+        };
+
         // 乗算前に切り捨て
         let multiplicand =
-            (SUPPORT_SHELLING_ACCURACY_CONSTANT + basic_accuracy_term + gears_accuracy).floor();
+            ((SUPPORT_SHELLING_ACCURACY_CONSTANT + basic_accuracy_term + gears_accuracy).floor()
+                * vanguard_mod)
+                .floor();
 
         let accuracy_term = (multiplicand * formation_mod * morale_mod).floor();
 
