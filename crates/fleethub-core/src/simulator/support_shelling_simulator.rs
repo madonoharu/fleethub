@@ -5,7 +5,7 @@ use tsify::Tsify;
 
 use crate::{
     battle::{support_shelling_phase::SupportShellingPhase, BattleComp},
-    types::{BattleDefinitions, Engagement, Formation},
+    types::{BattleDefinitions, Engagement, Formation, NodeState},
 };
 
 use super::{BattleLogger, SimulatorResult};
@@ -18,6 +18,7 @@ pub struct SupportShellingSimulatorParams {
     #[serde(default)]
     target_formation: Formation,
     engagement: Engagement,
+    node_state: NodeState,
 }
 
 pub struct SupportShellingSimulator<'a, R>
@@ -37,11 +38,13 @@ where
         player_comp: &'a mut BattleComp,
         enemy_comp: &'a mut BattleComp,
         engagement: Engagement,
+        node_state: NodeState,
     ) -> Self {
         let phase = SupportShellingPhase {
             rng,
             battle_defs,
             engagement,
+            node_state,
             player_comp,
             enemy_comp,
         };

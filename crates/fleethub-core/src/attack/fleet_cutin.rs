@@ -249,11 +249,14 @@ fn get_kongou_class_cutin(
         ship_id!("金剛改二丙") => {
             matches_ship_id!(
                 s2.ship_id,
-                "比叡改二丙" | "榛名改二" | "榛名改二乙" | "榛名改二丙" | "霧島改二"
+                "比叡改二丙" | "榛名改二" | "榛名改二乙" | "榛名改二丙"
             ) || s2.ctype == ctype!("Queen Elizabeth級")
         }
         ship_id!("比叡改二丙") => {
-            matches_ship_id!(s2.ship_id, "金剛改二丙" | "霧島改二")
+            matches_ship_id!(
+                s2.ship_id,
+                "金剛改二丙" | "榛名改二乙" | "榛名改二丙" | "霧島改二"
+            )
         }
         ship_id!("榛名改二乙") | ship_id!("榛名改二丙") => {
             matches_ship_id!(s2.ship_id, "金剛改二丙" | "比叡改二丙")
@@ -557,27 +560,29 @@ fn calc_kongou_class_cutin_rate(fleet: &Fleet) -> Option<f64> {
     let s2_luck = s2.luck()? as f64;
 
     let equipment_mod = {
-        let has_surface_radar = s1.gears.has_attr(GearAttr::SurfaceRadar);
+        let has_radar = s1
+            .gears
+            .has_by(|g| g.has_attr(GearAttr::Radar) && g.los >= 8);
         let has_large_searchlight = s1.gears.has_type(GearType::LargeSearchlight);
 
         match s1.ship_id {
             ship_id!("金剛改二丙") => {
-                (if has_surface_radar { 31.0 } else { 0.0 })
+                (if has_radar { 31.0 } else { 0.0 })
                     + if has_large_searchlight { 10.0 } else { 0.0 }
             }
             ship_id!("比叡改二丙") => {
                 (if has_large_searchlight { 31.0 } else { 0.0 })
-                    + if has_surface_radar { 10.0 } else { 0.0 }
+                    + if has_radar { 10.0 } else { 0.0 }
             }
             ship_id!("榛名改二乙") => {
-                if has_surface_radar {
+                if has_radar {
                     16.0
                 } else {
                     0.0
                 }
             }
             ship_id!("榛名改二丙") => {
-                if has_surface_radar {
+                if has_radar {
                     21.0
                 } else {
                     0.0

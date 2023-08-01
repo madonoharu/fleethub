@@ -780,9 +780,9 @@ fn special_enemy_modifiers(
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
             apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
 
-            apply_mod!(mods.postcap_general_mod, a, t89_tank_or_honi1_count, [1.5]);
+            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.5]);
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 t89_tank_or_honi1_count >= 2
                     || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
@@ -791,7 +791,7 @@ fn special_enemy_modifiers(
                 1.4
             );
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 m4a1dd_count + toku_daihatsu_chiha_kai_count,
                 [2.0]
@@ -836,9 +836,9 @@ fn special_enemy_modifiers(
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
             apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
 
-            apply_mod!(mods.postcap_general_mod, a, t89_tank_or_honi1_count, [1.2]);
+            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.2]);
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 t89_tank_or_honi1_count >= 2
                     || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
@@ -847,7 +847,7 @@ fn special_enemy_modifiers(
                 1.4
             );
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 m4a1dd_count + toku_daihatsu_chiha_kai_count,
                 [1.8]
@@ -891,9 +891,9 @@ fn special_enemy_modifiers(
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.7]);
             apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.2]);
 
-            apply_mod!(mods.postcap_general_mod, a, t89_tank_or_honi1_count, [1.6]);
+            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.6]);
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 t89_tank_or_honi1_count >= 2
                     || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
@@ -902,7 +902,7 @@ fn special_enemy_modifiers(
                 1.5
             );
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 m4a1dd_count + toku_daihatsu_chiha_kai_count,
                 [2.0]
@@ -930,9 +930,9 @@ fn special_enemy_modifiers(
             apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.4]);
             apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
 
-            apply_mod!(mods.postcap_general_mod, a, t89_tank_or_honi1_count, [1.5]);
+            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.5]);
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 t89_tank_or_honi1_count >= 2
                     || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
@@ -941,7 +941,7 @@ fn special_enemy_modifiers(
                 1.3
             );
             apply_mod!(
-                mods.postcap_general_mod,
+                mods.precap_general_mod,
                 a,
                 m4a1dd_count + toku_daihatsu_chiha_kai_count,
                 [1.1]
