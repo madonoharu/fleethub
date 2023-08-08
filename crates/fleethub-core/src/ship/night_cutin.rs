@@ -135,19 +135,26 @@ impl Ship {
         set
     }
 
-    pub fn calc_night_cutin_term(&self, params: NightCutinTermParams) -> Option<f64> {
+    fn basic_night_cutin_term(&self) -> Option<f64> {
         let level = self.level as f64;
         let luck = self.luck()? as f64;
-        let damage_state = params
-            .damage_state_override
-            .unwrap_or_else(|| self.damage_state());
 
-        let mut value = if luck < 50.0 {
+        let value = if luck < 50.0 {
             luck + 15.0 + 0.75 * level.sqrt()
         } else {
             (luck - 50.0).sqrt() + 65.0 + 0.8 * level.sqrt()
         }
         .floor();
+
+        Some(value)
+    }
+
+    pub fn calc_night_cutin_term(&self, params: NightCutinTermParams) -> Option<f64> {
+        let mut value = self.basic_night_cutin_term()?;
+
+        let damage_state = params
+            .damage_state_override
+            .unwrap_or_else(|| self.damage_state());
 
         if params.is_flagship {
             value += 15.0
@@ -179,6 +186,36 @@ impl Ship {
         }
 
         if params.target_starshell {
+            value += -10.0
+        }
+
+        Some(value)
+    }
+
+    pub fn calc_night_zuiun_cutin_term(&self, params: NightCutinTermParams) -> Option<f64> {
+        let mut value = self.basic_night_cutin_term()?;
+
+        let damage_state = params
+            .damage_state_override
+            .unwrap_or_else(|| self.damage_state());
+
+        if params.is_flagship {
+            value += 15.0
+        }
+
+        if damage_state == DamageState::Chuuha {
+            value += 18.0
+        }
+
+        if self.gears.has(gear_id!("熟練見張員")) {
+            value += 8.0
+        }
+
+        if params.attacker_searchlight {
+            value += -10.0
+        }
+
+        if params.attacker_starshell {
             value += -10.0
         }
 
