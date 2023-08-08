@@ -3,7 +3,10 @@ use tsify::Tsify;
 
 use crate::{
     analyzer::AttackReport,
-    attack::{calc_fleet_cutin_rate, get_possible_fleet_cutin_effect_vec, FleetCutinEffect},
+    attack::{
+        calc_fleet_cutin_rate, get_possible_fleet_cutin_effect_vec, FleetCutinAttackParams,
+        FleetCutinEffect,
+    },
     attack::{NightAttackParams, ShellingAttackParams},
     comp::Comp,
     member::BattleMemberRef,
@@ -87,7 +90,13 @@ impl<'a> FleetCutinAnalyzer<'a> {
         let attacks = effect
             .attacks
             .into_iter()
-            .map(|(index, power_mod)| {
+            .map(|params| {
+                let FleetCutinAttackParams {
+                    index,
+                    power_mod,
+                    accuracy_mod,
+                } = params;
+
                 let attacker = self
                     .comp
                     .get_battle_member_by_index(formation, fleet_type, index)
@@ -97,7 +106,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
                     attack_type: ShellingType::Normal,
                     cutin: Some(DayCutinLike::FleetCutin(cutin)),
                     power_mod,
-                    accuracy_mod: 1.0,
+                    accuracy_mod,
                     hits: 1.0,
                 };
 
@@ -150,7 +159,13 @@ impl<'a> FleetCutinAnalyzer<'a> {
         let attacks = effect
             .attacks
             .into_iter()
-            .map(|(index, power_mod)| {
+            .map(|params| {
+                let FleetCutinAttackParams {
+                    index,
+                    power_mod,
+                    accuracy_mod,
+                } = params;
+
                 let attacker = self
                     .comp
                     .get_battle_member_by_index(formation, fleet_type, index)
@@ -163,6 +178,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
                     attack_type,
                     cutin: Some(cutin.into()),
                     power_mod,
+                    accuracy_mod,
                     ..Default::default()
                 };
 

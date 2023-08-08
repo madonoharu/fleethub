@@ -10,9 +10,26 @@ use crate::{
 };
 
 #[derive(Debug, PartialEq)]
+pub struct FleetCutinAttackParams {
+    pub index: usize,
+    pub power_mod: f64,
+    pub accuracy_mod: f64,
+}
+
+impl FleetCutinAttackParams {
+    pub fn new(index: usize, power_mod: f64, accuracy_mod: f64) -> Self {
+        Self {
+            index,
+            power_mod,
+            accuracy_mod,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq)]
 pub struct FleetCutinEffect {
     pub cutin: FleetCutin,
-    pub attacks: ArrayVec<(usize, f64), 3>,
+    pub attacks: ArrayVec<FleetCutinAttackParams, 3>,
 }
 
 pub fn get_possible_fleet_cutin_effect_vec(
@@ -81,7 +98,12 @@ fn get_nelson_touch_mod(
 
     Some(FleetCutinEffect {
         cutin: FleetCutin::NelsonTouch,
-        attacks: [(0, v), (2, v), (4, v)].into(),
+        attacks: [
+            FleetCutinAttackParams::new(0, v, 1.05),
+            FleetCutinAttackParams::new(2, v, 1.05),
+            FleetCutinAttackParams::new(4, v, 1.05),
+        ]
+        .into(),
     })
 }
 
@@ -151,7 +173,12 @@ fn get_nagato_class_cutin(fleet: &Fleet, formation: Formation) -> Option<FleetCu
 
     Some(FleetCutinEffect {
         cutin: FleetCutin::NagatoClassCutin,
-        attacks: [(0, s1_mod), (0, s1_mod), (1, s2_mod)].into(),
+        attacks: [
+            FleetCutinAttackParams::new(0, s1_mod, 1.0),
+            FleetCutinAttackParams::new(0, s1_mod, 1.0),
+            FleetCutinAttackParams::new(1, s2_mod, 1.0),
+        ]
+        .into(),
     })
 }
 
@@ -226,7 +253,12 @@ fn get_colorado_class_cutin(fleet: &Fleet, formation: Formation) -> Option<Fleet
 
     Some(FleetCutinEffect {
         cutin: FleetCutin::ColoradoClassCutin,
-        attacks: [(0, s1_mod), (1, s2_mod), (2, s3_mod)].into(),
+        attacks: [
+            FleetCutinAttackParams::new(0, s1_mod, 1.0),
+            FleetCutinAttackParams::new(1, s2_mod, 1.0),
+            FleetCutinAttackParams::new(2, s3_mod, 1.0),
+        ]
+        .into(),
     })
 }
 
@@ -293,7 +325,12 @@ fn get_kongou_class_cutin(
 
     Some(FleetCutinEffect {
         cutin: FleetCutin::KongouClassCutin,
-        attacks: [(0, v), (1, v)].into_iter().collect(),
+        attacks: [
+            FleetCutinAttackParams::new(0, v, 1.4),
+            FleetCutinAttackParams::new(1, v, 1.4),
+        ]
+        .into_iter()
+        .collect(),
     })
 }
 
@@ -368,7 +405,12 @@ fn get_yamato_2ship_cutin(fleet: &Fleet, formation: Formation) -> Option<FleetCu
 
     Some(FleetCutinEffect {
         cutin: FleetCutin::Yamato2ShipCutin,
-        attacks: [(0, s1_mod), (0, s1_mod), (1, s2_mod)].into(),
+        attacks: [
+            FleetCutinAttackParams::new(0, s1_mod, 1.0),
+            FleetCutinAttackParams::new(0, s1_mod, 1.0),
+            FleetCutinAttackParams::new(1, s2_mod, 1.0),
+        ]
+        .into(),
     })
 }
 
@@ -460,7 +502,12 @@ fn get_yamato_3ship_cutin(fleet: &Fleet, formation: Formation) -> Option<FleetCu
 
     Some(FleetCutinEffect {
         cutin: FleetCutin::Yamato3ShipCutin,
-        attacks: [(0, s1_mod), (1, s2_mod), (2, s3_mod)].into(),
+        attacks: [
+            FleetCutinAttackParams::new(0, s1_mod, 1.0),
+            FleetCutinAttackParams::new(1, s2_mod, 1.0),
+            FleetCutinAttackParams::new(2, s3_mod, 1.0),
+        ]
+        .into(),
     })
 }
 

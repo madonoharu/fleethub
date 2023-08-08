@@ -2,7 +2,7 @@ mod common;
 
 use common::fleet_from_toml;
 use fleethub_core::{
-    attack::{get_possible_fleet_cutin_effect_vec, FleetCutinEffect},
+    attack::{get_possible_fleet_cutin_effect_vec, FleetCutinAttackParams, FleetCutinEffect},
     types::{Engagement, FleetCutin, Formation, Time},
 };
 
@@ -16,7 +16,14 @@ fn assert_fleet_cutin(
 ) {
     let expected_effect = FleetCutinEffect {
         cutin,
-        attacks: expected.into_iter().collect(),
+        attacks: expected
+            .into_iter()
+            .map(|(index, power_mod)| FleetCutinAttackParams {
+                index,
+                power_mod,
+                accuracy_mod: 1.0,
+            })
+            .collect(),
     };
 
     let result =
