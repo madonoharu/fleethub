@@ -75,6 +75,15 @@ pub enum NightCutin {
     Photobomber,
 }
 
+impl NightCutin {
+    pub fn is_night_zuiun_cutin(self) -> bool {
+        matches!(
+            self,
+            Self::NightZuiun | Self::NightZuiun2 | Self::NightZuiunRadar | Self::NightZuiun2Radar
+        )
+    }
+}
+
 #[derive(Debug, EnumSetType, Hash, Serialize, Deserialize, Tsify)]
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum FleetCutin {

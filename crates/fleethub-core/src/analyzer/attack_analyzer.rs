@@ -266,7 +266,15 @@ impl AttackAnalyzer<'_> {
         let anti_inst = target.is_installation();
         let night_cutin_set = attacker.get_possible_night_cutin_set(anti_inst);
         let cutin_defs = self.battle_defs.get_night_cutin_defs(night_cutin_set);
-        let cutin_term = self.calc_night_cutin_term();
+
+        let cutin_term = if night_cutin_set
+            .into_iter()
+            .any(|ci| ci.is_night_zuiun_cutin())
+        {
+            self.calc_night_zuiun_cutin_term()
+        } else {
+            self.calc_night_cutin_term()
+        };
 
         let mut data = cutin_defs
             .scan(0.0, |total, def| {
@@ -303,6 +311,18 @@ impl AttackAnalyzer<'_> {
         );
 
         attacker.calc_night_cutin_term(params)
+    }
+
+    pub fn calc_night_zuiun_cutin_term(&self) -> Option<f64> {
+        let attacker = self.attacker_combat_ship();
+
+        let params = NightCutinTermParams::new(
+            attacker.is_flagship(),
+            attacker.side(),
+            &self.config.night_conditions(),
+        );
+
+        attacker.calc_night_zuiun_cutin_term(params)
     }
 
     fn analyze_torpedo(&self) -> ActionReport<TorpedoAttackStyle> {
