@@ -430,13 +430,15 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
             r += 2.0 * count_35_6cm_group.sqrt();
         }
         ctype!("Nelson級") => {
-            r += -7.0 * m * count_46cm_triple_kai.sqrt();
-            r += -7.0 * m * count_46cm_triple.sqrt();
-            r += -3.0 * m * count_proto_46cm.sqrt();
-            r += 2.0 * m * count_381mm_group.sqrt();
-            r += 2.0 * count_16inch_mk7_group.sqrt();
-            r += 2.0 * count_41cm_group.sqrt();
-            r += 2.0 * count_35_6cm_group.sqrt();
+            if ship_id == ship_id!("Nelson") {
+                r += -7.0 * m * count_46cm_triple_kai.sqrt();
+                r += -7.0 * m * count_46cm_triple.sqrt();
+                r += -3.0 * m * count_proto_46cm.sqrt();
+                r += 2.0 * m * count_381mm_group.sqrt();
+                r += 2.0 * count_16inch_mk7_group.sqrt();
+                r += 2.0 * count_41cm_group.sqrt();
+                r += 2.0 * count_35_6cm_group.sqrt();
+            }
         }
         ctype!("大和型") => match ship_id {
             ship_id!("大和改二") => {
