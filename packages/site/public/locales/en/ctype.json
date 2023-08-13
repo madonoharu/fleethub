@@ -119,6 +119,8 @@
   "119": "Amphibious Assault Ship (Type-M Hei Class)",
   "120": "2nd Class Transporter",
   "121": "New Orleans Class",
+  "122": "Salmon Class",
+  "123": "Kai Shikishima Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -245,5 +247,6 @@
   "2146": "Remodeled Wartime Cargo Princess",
   "2152": "Abyssal Heavy Cruiser Water Princess",
   "2158": "Abyssal Stranded Landing Princess",
-  "2164": "Supply Depot Princess D"
+  "2164": "Supply Depot Princess D",
+  "2172": "Abyssal Kushiro Cloud Princess"
 }

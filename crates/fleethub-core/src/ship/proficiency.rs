@@ -54,6 +54,21 @@ impl Ship {
                         m / 200.0
                     }
                 })
+                .sum::<f64>()
+            + 
+            // 隼の熟練度補正よくわからない
+            self
+                .planes()
+                .filter(|plane| plane.remains() && plane.is_hayabusa_20th_squadron())
+                .map(|plane| {
+                    let num4 = get_num4(plane.exp);
+                    let m = ((plane.exp as f64).sqrt().floor() + num4 - 4.0).max(0.0);
+                    if plane.index == 0 {
+                        m / 100.0
+                    } else {
+                        m / 200.0
+                    }
+                })
                 .sum::<f64>();
 
         let critical_percentage_bonus = planes
