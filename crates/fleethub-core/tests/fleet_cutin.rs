@@ -18,10 +18,18 @@ fn assert_fleet_cutin(
         cutin,
         attacks: expected
             .into_iter()
-            .map(|(index, power_mod)| FleetCutinAttackParams {
-                index,
-                power_mod,
-                accuracy_mod: 1.0,
+            .map(|(index, power_mod)| {
+                let accuracy_mod = match cutin {
+                    FleetCutin::NelsonTouch => 1.05,
+                    FleetCutin::KongouClassCutin => 1.4,
+                    _ => 1.0,
+                };
+
+                FleetCutinAttackParams {
+                    index,
+                    power_mod,
+                    accuracy_mod,
+                }
             })
             .collect(),
     };

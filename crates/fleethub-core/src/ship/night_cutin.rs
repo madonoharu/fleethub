@@ -168,7 +168,7 @@ impl Ship {
         if self.gears.has(gear_id!("水雷戦隊 熟練見張員"))
             && (self.ship_type.is_destroyer() || self.ship_type.is_light_cruiser())
         {
-            value += 9.0
+            value += 8.0
         } else if self.gears.has(gear_id!("熟練見張員")) {
             value += 5.0
         }

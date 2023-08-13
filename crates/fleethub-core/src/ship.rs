@@ -411,6 +411,7 @@ impl Ship {
             let bombing = self.gears.sum_by(|gear| {
                 if gear.has_attr(GearAttr::AntiInstDiveBomber)
                     || gear.gear_type == GearType::CbTorpedoBomber
+                    || gear.is_hayabusa_20th_squadron()
                 {
                     gear.bombing
                 } else {

@@ -6,20 +6,24 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     master_data::{IBonuses, MasterGear},
-    types::{gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypeIdArray},
+    types::{
+        gear_id, matches_gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType,
+        GearTypeIdArray,
+    },
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 enum ProficiencyType {
     Fighter,
     SeaplaneBomber,
+    AntiSubPatrolAircraft,
     Other,
 }
 
 impl ProficiencyType {
     fn fighter_power_ace_modifier(&self, ace: u8) -> i32 {
         match self {
-            ProficiencyType::Fighter => match ace {
+            ProficiencyType::Fighter | ProficiencyType::AntiSubPatrolAircraft => match ace {
                 7 => 22,
                 6 | 5 => 14,
                 4 => 9,
@@ -33,7 +37,7 @@ impl ProficiencyType {
                 4 | 3 | 2 => 1,
                 _ => 0,
             },
-            _ => 0,
+            ProficiencyType::Other => 0,
         }
     }
 }
@@ -230,8 +234,17 @@ impl Gear {
         )
     }
 
+    pub fn is_hayabusa_20th_squadron(&self) -> bool {
+        matches_gear_id!(
+            self.gear_id,
+            "一式戦 隼II型改(20戦隊)" | "一式戦 隼III型改(熟練/20戦隊)"
+        )
+    }
+
     fn get_proficiency_type(&self) -> ProficiencyType {
-        if self.has_attr(GearAttr::Fighter) {
+        if self.is_hayabusa_20th_squadron() {
+            ProficiencyType::AntiSubPatrolAircraft
+        } else if self.has_attr(GearAttr::Fighter) {
             ProficiencyType::Fighter
         } else if self.gear_type == GearType::SeaplaneBomber {
             ProficiencyType::SeaplaneBomber
@@ -245,6 +258,7 @@ impl Gear {
             || self.has_attr(GearAttr::Seaplane)
             || self.has_attr(GearAttr::JetAircraft)
             || self.has_attr(GearAttr::LbAircraft)
+            || self.is_hayabusa_20th_squadron()
     }
 
     pub fn max_exp_eq_120(&self) -> bool {
