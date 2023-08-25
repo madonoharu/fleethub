@@ -8,7 +8,7 @@ use crate::{
     gear::Gear,
     gear_array::GearArray,
     master_data::MasterShip,
-    types::{ctype, gear_id, ship_id, ShipAttr, SpeedGroup},
+    types::{ctype, gear_id, ShipAttr, SpeedGroup},
 };
 
 use super::GearTypeIdArray;
@@ -142,7 +142,8 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
 
     // 新型高温高圧缶補正
     let new_model_boiler_mod = if new_model_boiler_count >= 1
-        && (ship.ctype == ctype!("潜高型") || ship.ship_id == ship_id!("鳳翔改二戦"))
+        && (ship.ctype == ctype!("潜高型")
+            || (ship.ctype == ctype!("鳳翔型") && ship.remodel_rank() >= 6))
     {
         5
     } else {

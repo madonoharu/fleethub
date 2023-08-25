@@ -811,8 +811,9 @@ impl Ship {
         self.master.sort_id
     }
 
+    #[wasm_bindgen(getter)]
     pub fn remodel_rank(&self) -> u16 {
-        self.sort_id() % 10
+        self.master.remodel_rank()
     }
 
     #[wasm_bindgen(getter)]
