@@ -421,8 +421,8 @@ impl Ship {
 
             (torpedo, bombing)
         } else {
-            let torpedo = self.gears.sum_by(|gear| gear.torpedo);
-            let bombing = self.gears.sum_by(|gear| gear.bombing);
+            let torpedo = self.gears.sum_by(|gear| gear.torpedo) + self.ebonuses.torpedo;
+            let bombing = self.gears.sum_by(|gear| gear.bombing) + self.ebonuses.bombing;
 
             (torpedo, bombing)
         };
