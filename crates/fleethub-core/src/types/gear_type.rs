@@ -112,8 +112,12 @@ pub enum GearType {
     TransportationMaterial = 50,
     /// 潜水艦装備
     SubmarineEquipment = 51,
+    /// 陸戦部隊
+    LandingForce = 52,
     /// 大型陸上機
     LargeLbAircraft = 53,
+    /// 水上艦装備
+    SurfaceEquipment = 54,
     /// 噴式戦闘機
     JetFighter = 56,
     /// 噴式戦闘爆撃機

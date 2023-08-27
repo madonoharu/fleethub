@@ -421,8 +421,8 @@ impl Ship {
 
             (torpedo, bombing)
         } else {
-            let torpedo = self.gears.sum_by(|gear| gear.torpedo);
-            let bombing = self.gears.sum_by(|gear| gear.bombing);
+            let torpedo = self.gears.sum_by(|gear| gear.torpedo) + self.ebonuses.torpedo;
+            let bombing = self.gears.sum_by(|gear| gear.bombing) + self.ebonuses.bombing;
 
             (torpedo, bombing)
         };
@@ -811,8 +811,9 @@ impl Ship {
         self.master.sort_id
     }
 
+    #[wasm_bindgen(getter)]
     pub fn remodel_rank(&self) -> u16 {
-        self.sort_id() % 10
+        self.master.remodel_rank()
     }
 
     #[wasm_bindgen(getter)]

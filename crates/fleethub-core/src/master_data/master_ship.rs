@@ -123,4 +123,8 @@ impl MasterShip {
             1
         }
     }
+
+    pub fn remodel_rank(&self) -> u16 {
+        self.sort_id % 10
+    }
 }

@@ -8,12 +8,12 @@
   },
   "dependencies": {
     "@fh/utils": "workspace:*",
-    "@google-cloud/asset": "^5.0.0",
+    "@google-cloud/asset": "^5.0.1",
     "cloudinary": "^1.40.0",
     "dequal": "^2.0.3",
     "firebase-admin": "^11.10.1",
     "fleethub-core": "npm:latest",
-    "googleapis": "^123.0.0",
+    "googleapis": "^126.0.1",
     "got": "13.0.0"
   }
 }
