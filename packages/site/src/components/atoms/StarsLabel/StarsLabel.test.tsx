@@ -1,5 +1,6 @@
 import { renderWithProviders } from "../../../test-utils";
 
+import "@testing-library/jest-dom";
 import StarsLabel from "./StarsLabel";
 
 describe("StarsLabel", () => {

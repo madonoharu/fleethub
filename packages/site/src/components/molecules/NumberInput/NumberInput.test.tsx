@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 
+import "@testing-library/jest-dom";
 import NumberInput from "./NumberInput";
 
 function press(element: HTMLButtonElement, msToRun = 0) {

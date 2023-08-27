@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 
 import ProficiencyIcon from "./ProficiencyIcon";
+import "@testing-library/jest-dom";
 
 describe("ProficiencyIcon", () => {
   it.each([

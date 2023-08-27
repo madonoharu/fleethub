@@ -1,5 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 
+import "@testing-library/jest-dom";
 import Checkbox from "./Checkbox";
 
 describe("Checkbox", () => {
@@ -22,7 +23,7 @@ describe("Checkbox", () => {
   it("`checked={false}`", () => {
     const mockFn = jest.fn<void, [boolean]>();
     const { getByRole } = render(
-      <Checkbox checked={false} onChange={mockFn} />
+      <Checkbox checked={false} onChange={mockFn} />,
     );
     const checkbox = getByRole("checkbox");
     expect(checkbox).toHaveProperty("checked", false);
