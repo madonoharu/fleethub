@@ -1,0 +1,19 @@
+description = "熟練甲板要員+航空整備員ダメージテスト2"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "千代田航改二"
+
+g1 = { gear_id = "九九式艦爆", exp = 0 }
+g2 = { gear_id = "熟練甲板要員+航空整備員", stars = 10 }
+
+# 防御艦設定
+[target]
+ship_id = 1501
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 136
+damage.normal_damage_max = 138
+damage.critical_damage_min = 207
+damage.critical_damage_max = 209
