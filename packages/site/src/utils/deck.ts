@@ -8,7 +8,10 @@ import {
   GEAR_KEYS,
   ShipKey,
   SHIP_KEYS,
+  nonNullable,
+  sumBy,
 } from "@fh/utils";
+import { GearInput, createEquipmentBonuses } from "equipment-bonus";
 import {
   Fleet,
   FleetState,
@@ -39,7 +42,7 @@ function toNumber(input: MaybeNumber): number | undefined {
 }
 
 const DeckItemKeys = ["i1", "i2", "i3", "i4", "i5", "ix"] as const;
-type DeckItemKey = typeof DeckItemKeys[number];
+type DeckItemKey = (typeof DeckItemKeys)[number];
 
 export type MaybeDeckGear = {
   id?: MaybeNumber;
@@ -113,7 +116,7 @@ function createGearState(deck: MaybeDeckGear): GearState {
 
 function createGearStateDict(
   items: MaybeDeckItems,
-  slotnum?: number
+  slotnum?: number,
 ): Dict<GearKey, GearState> {
   const result: Dict<GearKey, GearState> = {};
 
@@ -159,12 +162,12 @@ const calcCurrentLevelMaxHp = ([l, r]: StatInterval, level: number) => {
 
 function createShipState(
   master: MasterData,
-  deck: MaybeDeckShip
+  deck: MaybeDeckShip,
 ): ShipState | undefined {
   const ship_id = Number(deck.id);
 
   const masterShip = master.ships.find(
-    (masterShip) => masterShip.ship_id === ship_id
+    (masterShip) => masterShip.ship_id === ship_id,
   );
 
   if (!masterShip) return;
@@ -188,16 +191,25 @@ function createShipState(
   if (hp && hp > 0) {
     const currentLevelMaxHp = calcCurrentLevelMaxHp(
       masterShip.max_hp,
-      base.level || 99
+      base.level || 99,
     );
     base.max_hp_mod = hp - (currentLevelMaxHp || 0);
   }
   if (asw && asw > 0) {
-    const currentLevelAsw = calcCurrentLevelAsw(
-      masterShip.asw,
-      base.level || 99
-    );
-    base.asw_mod = asw - (currentLevelAsw || 0);
+    const currentLevelAsw =
+      calcCurrentLevelAsw(masterShip.asw, base.level || 99) || 0;
+
+    const gearInputs: GearInput[] = Object.values(deck.items || {})
+      .map((item): GearInput | undefined => {
+        const mg = master.gears.find((mg) => mg.gear_id === toNumber(item.id));
+        return mg && { ...mg, stars: toNumber(item.rf) };
+      })
+      .filter(nonNullable);
+
+    const gearsAsw = sumBy(gearInputs, (g) => g.asw || 0);
+    const ebonuses = createEquipmentBonuses(masterShip, gearInputs);
+
+    base.asw_mod = asw - currentLevelAsw - gearsAsw - ebonuses.asw;
   }
 
   return base;
@@ -205,7 +217,7 @@ function createShipState(
 
 function createFleetState(
   master: MasterData,
-  deck: MaybeDeckFleet
+  deck: MaybeDeckFleet,
 ): FleetState {
   const fleet: FleetState = {};
 
@@ -221,7 +233,7 @@ function createFleetState(
 
 export function createOrgStateByDeck(
   master: MasterData,
-  deck: MaybeDeck
+  deck: MaybeDeck,
 ): OrgState {
   const org: OrgState = {
     hq_level: toNumber(deck.hqlv),
