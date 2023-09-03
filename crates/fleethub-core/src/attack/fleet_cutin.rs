@@ -96,12 +96,20 @@ fn get_nelson_touch_mod(
 
     let v = base * engagement_mod;
 
+    let (s1_mod, s3_mod, s5_mod) = if s3.ctype == ctype!("Nelson級") {
+        (1.15, 1.2, 1.0)
+    } else if s5.ctype == ctype!("Nelson級") {
+        (1.15, 1.0, 1.2)
+    } else {
+        (1.0, 1.0, 1.0)
+    };
+
     Some(FleetCutinEffect {
         cutin: FleetCutin::NelsonTouch,
         attacks: [
-            FleetCutinAttackParams::new(0, v, 1.05),
-            FleetCutinAttackParams::new(2, v, 1.05),
-            FleetCutinAttackParams::new(4, v, 1.05),
+            FleetCutinAttackParams::new(0, v * s1_mod, 1.05),
+            FleetCutinAttackParams::new(2, v * s3_mod, 1.05),
+            FleetCutinAttackParams::new(4, v * s5_mod, 1.05),
         ]
         .into(),
     })
