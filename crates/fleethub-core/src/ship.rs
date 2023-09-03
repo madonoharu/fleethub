@@ -1114,6 +1114,8 @@ impl Ship {
             AnchorageWaterDemonVacationMode
         } else if self.has_attr(ShipAttr::DockPrincess) {
             DockPrincess
+        } else if self.has_attr(ShipAttr::SummerAircraftCarrierDemon) {
+            SummerAircraftCarrierDemon
         } else {
             None
         }

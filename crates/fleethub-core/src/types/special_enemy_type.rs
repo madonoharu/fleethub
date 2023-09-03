@@ -30,6 +30,8 @@ pub enum SpecialEnemyType {
     AnchorageWaterDemonVacationMode,
     /// 船渠棲姫
     DockPrincess,
+    /// 空母夏鬼
+    SummerAircraftCarrierDemon,
 }
 
 impl SpecialEnemyType {
