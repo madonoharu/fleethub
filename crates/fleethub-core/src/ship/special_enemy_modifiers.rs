@@ -283,6 +283,60 @@ fn anti_french_battleship_princess_modifiers(
     mods
 }
 
+/// 空母夏鬼
+fn anti_summer_aircraft_carrier_demon_modifiers(
+    attacker: &Ship,
+    attack_type: AttackType,
+) -> SpecialEnemyModifiers {
+    if !matches!(attack_type, AttackType::Shelling(_) | AttackType::Night(_)) {
+        return Default::default();
+    }
+
+    let gears = &attacker.gears;
+    let mut mods = SpecialEnemyModifiers::new();
+
+    let has_aa_shell = gears.has_type(GearType::ApShell);
+    apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.1);
+
+    let has_seaplane = gears.has_by(|gear| {
+        matches!(
+            gear.gear_type,
+            GearType::SeaplaneBomber | GearType::SeaplaneFighter
+        )
+    });
+    apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.1);
+
+    let dive_bomber_count =
+        gears.count_type(GearType::CbDiveBomber) + gears.count_type(GearType::JetFighterBomber);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dive_bomber_count,
+        [1.1, 1.1 * 1.1]
+    );
+
+    let cb_swordfish_count = gears.count_attr(GearAttr::CbSwordfish);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        cb_swordfish_count,
+        [1.1, 1.1 * 1.1]
+    );
+
+    if matches!(
+        attacker.ctype,
+        ctype!("Bismarck級")
+            | ctype!("Admiral Hipper級")
+            | ctype!("Ark Royal級")
+            | ctype!("Gotland級")
+            | ctype!("Nelson級")
+    ) {
+        mods.postcap_general_mod.a *= 1.1
+    }
+
+    mods
+}
+
 /// 泊地水鬼 バカンスmode
 fn anti_anchorage_water_demon_vacation_mode_modifiers(
     attacker: &Ship,
@@ -477,6 +531,7 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
 
     mods
 }
+
 struct AntiInstIbonuses {
     landing_craft: f64,
     amphibious_tank: f64,
@@ -527,6 +582,9 @@ fn special_enemy_modifiers(
         }
         SpecialEnemyType::DockPrincess => {
             return anti_dock_princess_modifiers(attacker, attack_type);
+        }
+        SpecialEnemyType::SummerAircraftCarrierDemon => {
+            return anti_summer_aircraft_carrier_demon_modifiers(attacker, attack_type)
         }
         SpecialEnemyType::None => {
             return Default::default();

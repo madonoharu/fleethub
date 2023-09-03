@@ -15,7 +15,7 @@ export class ExprParser {
   constructor(
     public start2: Start2,
     public ctypeNames: string[],
-    public nationalityMap: NationalityMap
+    public nationalityMap: NationalityMap,
   ) {}
 
   parseGearName(str: string): string {
@@ -23,19 +23,19 @@ export class ExprParser {
       this.start2.api_mst_slotitem.reduce(
         (current, gear) =>
           current.replaceAll(`"${gear.api_name}"`, gear.api_id.toString()),
-        str
+        str,
       );
 
     return str
       .replace(/gear_id (=|!)= "[^"]+"/g, fn)
-      .replace(/(gear_id_in|has|has_any)\(\s*("[^"]+"\s*,?\s*)+\)/gs, fn);
+      .replace(/(gear_id_in|has|has_any|count)\(\s*("[^"]+"\s*,?\s*)+\)/gs, fn);
   }
 
   parseGearType(str: string): string {
     return this.start2.api_mst_slotitem_equiptype.reduce(
       (current, type) =>
         current.replaceAll(`"${type.api_name}"`, type.api_id.toString()),
-      str
+      str,
     );
   }
 
@@ -43,7 +43,7 @@ export class ExprParser {
     return this.start2.api_mst_ship.reduce(
       (current, ship) =>
         current.replaceAll(`"${ship.api_name}"`, ship.api_id.toString()),
-      str
+      str,
     );
   }
 
@@ -51,7 +51,7 @@ export class ExprParser {
     return this.start2.api_mst_stype.reduce(
       (current, stype) =>
         current.replaceAll(`"${stype.api_name}"`, stype.api_id.toString()),
-      str
+      str,
     );
   }
 
@@ -59,7 +59,7 @@ export class ExprParser {
     return this.ctypeNames.reduce(
       (current, shipClassName, id) =>
         current.replaceAll(`"${shipClassName}"`, id.toString()),
-      str
+      str,
     );
   }
 
@@ -101,7 +101,7 @@ export class ExprParser {
 
   replaceHistoricalAircraftGroup(str: string): string {
     return str.replace(/"([A-Z]\d)"/g, (_, s: string) =>
-      parseHistoricalAircraftGroup(s).toString()
+      parseHistoricalAircraftGroup(s).toString(),
     );
   }
 
