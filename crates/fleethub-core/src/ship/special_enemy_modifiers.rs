@@ -379,55 +379,59 @@ fn anti_anchorage_water_demon_vacation_mode_modifiers(
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.45);
 
+    let landing_craft_count = gears.count_type(GearType::LandingCraft);
+    let toku_dlc_count = gears.count(gear_id!("特大発動艇"));
+    let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
+    let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
+    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
+    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
+    let armed_count = gears.count(gear_id!("武装大発"));
+    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
+    let toku_dlc_panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
+    let toku_dlc_panzer3_j_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車J型"));
+    let chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
+    let chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
+
+    let dlc_group_a_count = landing_craft_count;
+    let dlc_group_b_count = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+    let dlc_group_c_count = t89_tank_count
+        + honi1_count
+        + toku_dlc_panzer3_count
+        + toku_dlc_panzer3_j_count
+        + chiha_count
+        + chiha_kai_count;
+    let dlc_group_e_count = panzer2_count;
+    let dlc_group_g_count = ab_count + armed_count;
+    let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
+
+    apply_mod!(mods.postcap_general_mod, a, dlc_group_a_count, [1.4]);
+    apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.15]);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_c_count,
+        [1.2, 1.2 * 1.4]
+    );
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_e_count,
+        [1.2, 1.2 * 1.4]
+    );
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_g_count,
+        [1.2, 1.2 * 1.1]
+    );
+    apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.8]);
     apply_mod!(
         mods.postcap_general_mod,
         a,
         t2_tank_count,
         [2.4, 2.4 * 1.35]
     );
-
-    let landing_craft_count = gears.count_type(GearType::LandingCraft);
-    apply_mod!(mods.postcap_general_mod, a, landing_craft_count, [1.4]);
-
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        gears.count(gear_id!("特大発動艇")),
-        [1.15]
-    );
-
-    let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
-    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
-    let toku_daihatsu_chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
-    let toku_daihatsu_chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
-    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
-    let t89_tank_or_honi1_count = t89_tank_count + honi1_count;
-
-    apply_mod!(mods.postcap_general_mod, a, t89_tank_or_honi1_count, [1.2]);
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        t89_tank_or_honi1_count >= 2
-            || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
-            || (t89_tank_or_honi1_count >= 1
-                && toku_daihatsu_chiha_count + toku_daihatsu_chiha_kai_count >= 1),
-        1.4
-    );
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        m4a1dd_count + toku_daihatsu_chiha_kai_count,
-        [1.8]
-    );
-
-    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
-    let armed_count = gears.count(gear_id!("武装大発"));
-    let armored_boat_group_count = ab_count + armed_count;
-    apply_mod!(mods.postcap_general_mod, a, armored_boat_group_count, [1.2]);
-
-    let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
-    apply_mod!(mods.postcap_general_mod, a, panzer2_count, [1.2]);
 
     let ibonuses = AntiInstIbonuses::new(attacker);
     mods.postcap_general_mod.a *= ibonuses.landing_craft;
@@ -475,51 +479,58 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.3);
 
-    let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
-    apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.2]);
-
     let landing_craft_count = gears.count_type(GearType::LandingCraft);
-    apply_mod!(mods.postcap_general_mod, a, landing_craft_count, [1.1]);
-
-    let panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
-    apply_mod!(mods.postcap_general_mod, a, panzer3_count, [1.4]);
-
+    let toku_dlc_count = gears.count(gear_id!("特大発動艇"));
     let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
-    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
-    let toku_daihatsu_chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
-    let toku_daihatsu_chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
-    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
-    let t89_tank_or_honi1_count = t89_tank_count + honi1_count;
-
-    apply_mod!(mods.postcap_general_mod, a, t89_tank_or_honi1_count, [1.15]);
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        t89_tank_or_honi1_count >= 2
-            || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
-            || (t89_tank_or_honi1_count >= 1
-                && toku_daihatsu_chiha_count + toku_daihatsu_chiha_kai_count >= 1),
-        1.15
-    );
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        m4a1dd_count + toku_daihatsu_chiha_kai_count,
-        [1.1]
-    );
-
     let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        panzer2_count,
-        [1.15, 1.15 * 1.15]
-    );
-
+    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
     let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
     let armed_count = gears.count(gear_id!("武装大発"));
-    let armored_boat_group_count = ab_count + armed_count;
-    apply_mod!(mods.postcap_general_mod, a, armored_boat_group_count, [1.1]);
+    let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
+    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
+    let toku_dlc_panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
+    let toku_dlc_panzer3_j_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車J型"));
+    let chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
+    let chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
+    let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
+
+    let dlc_group_a_count = landing_craft_count;
+    let dlc_group_b_count = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+    let dlc_group_c_count = t89_tank_count
+        + honi1_count
+        + toku_dlc_panzer3_count
+        + toku_dlc_panzer3_j_count
+        + chiha_count
+        + chiha_kai_count;
+    let dlc_group_e_count = panzer2_count;
+    let dlc_group_g_count = ab_count + armed_count;
+    let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
+    let dlc_group_j_count =
+        shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+
+    apply_mod!(mods.postcap_general_mod, a, dlc_group_a_count, [1.1]);
+    apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.15]);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_c_count,
+        [1.15, 1.15 * 1.15]
+    );
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_e_count,
+        [1.15, 1.15 * 1.15]
+    );
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_g_count,
+        [1.1, 1.1 * 1.1]
+    );
+    apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.1]);
+    apply_mod!(mods.postcap_general_mod, a, dlc_group_j_count, [1.4]);
+    apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.2, 1.2 * 1.2]);
 
     let ibonuses = AntiInstIbonuses::new(attacker);
     mods.postcap_general_mod.a *= ibonuses.landing_craft;
@@ -614,7 +625,6 @@ fn special_enemy_modifiers(
             GearType::SeaplaneBomber | GearType::SeaplaneFighter
         )
     });
-    let landing_craft_count = gears.count_type(GearType::LandingCraft);
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     let has_ap_shell = gears.has_type(GearType::ApShell);
 
@@ -635,24 +645,39 @@ fn special_enemy_modifiers(
     let mortar_cd_count = gears.count(gear_id!("二式12cm迫撃砲改 集中配備"));
     let mortar_group_count = mortar_count + mortar_cd_count;
 
-    let toku_daihatsu_count = gears.count(gear_id!("特大発動艇"));
+    let landing_craft_count = gears.count_type(GearType::LandingCraft);
+    let toku_dlc_count = gears.count(gear_id!("特大発動艇"));
     let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
     let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
     let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
     let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
     let armed_count = gears.count(gear_id!("武装大発"));
-    let armored_boat_group_count = ab_count + armed_count;
-
     let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
     let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
-    let panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
-    let toku_daihatsu_tank_count = shikon_count + honi1_count + panzer3_count;
-    let t89_tank_or_honi1_count = t89_tank_count + honi1_count;
-
-    let toku_daihatsu_chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
-    let toku_daihatsu_chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
-
+    let toku_dlc_panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
+    let toku_dlc_panzer3_j_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車J型"));
+    let chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
+    let chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
+
+    let dlc_group_a_count = landing_craft_count;
+    let dlc_group_b_count = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+    let dlc_group_c_count = t89_tank_count
+        + honi1_count
+        + toku_dlc_panzer3_count
+        + toku_dlc_panzer3_j_count
+        + chiha_count
+        + chiha_kai_count;
+    let dlc_group_e_count = panzer2_count;
+    let dlc_group_g_count = ab_count + armed_count;
+    let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
+
+    let dlc_group_1_count =
+        shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+    let dlc_group_2_count = m4a1dd_count;
+    let dlc_group_3_count = honi1_count;
+    let dlc_group_4_count = chiha_count;
+    let dlc_group_5_count = chiha_kai_count;
 
     // 改修補正
     let ibonuses = AntiInstIbonuses::new(attacker);
@@ -664,10 +689,10 @@ fn special_enemy_modifiers(
     ) {
         let mut n = 1.0;
 
-        if t89_tank_or_honi1_count > 0 {
+        if t89_tank_count + honi1_count >= 1 {
             n += 1.0;
         }
-        if panzer2_count > 0 {
+        if panzer2_count >= 1 {
             n += 1.0;
         }
 
@@ -687,36 +712,24 @@ fn special_enemy_modifiers(
             mortar_group_count,
             [1.15, 1.15 * 1.2]
         );
-        apply_mod!(mods.postcap_general_mod, a, landing_craft_count, [1.7]);
-        apply_mod!(mods.postcap_general_mod, a, toku_daihatsu_count, [1.2]);
 
-        apply_mod!(mods.postcap_general_mod, a, t89_tank_or_honi1_count, [1.3]);
-
+        apply_mod!(mods.postcap_general_mod, a, dlc_group_a_count, [1.7]);
+        apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.2]);
         apply_mod!(
             mods.postcap_general_mod,
             a,
-            t89_tank_or_honi1_count >= 2
-                || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
-                || (t89_tank_or_honi1_count >= 1
-                    && toku_daihatsu_chiha_count + toku_daihatsu_chiha_kai_count >= 1),
-            1.6
+            dlc_group_c_count,
+            [1.3, 1.3 * 1.6]
         );
-
         apply_mod!(
             mods.postcap_general_mod,
             a,
-            m4a1dd_count + toku_daihatsu_chiha_kai_count,
-            [1.2]
+            dlc_group_e_count,
+            [1.3, 1.3 * 1.6]
         );
+        apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.2]);
 
         apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.7, 1.7 * 1.5]);
-        apply_mod!(mods.postcap_general_mod, a, panzer2_count, [1.3]);
-        apply_mod!(
-            mods.postcap_general_mod,
-            a,
-            armored_boat_group_count,
-            [1.5, 1.5 * 1.1]
-        );
     }
 
     if special_enemy_type == SpecialEnemyType::NewSupplyDepot {
@@ -764,27 +777,27 @@ fn special_enemy_modifiers(
         30.0
     );
 
-    // 特大発戦車補正
-    if toku_daihatsu_tank_count >= 1 {
-        mods.toku_daihatsu_tank_mod.merge(1.8, 25.0);
-    }
+    // 特殊上陸艇補正
+    {
+        if dlc_group_1_count >= 1 {
+            mods.toku_daihatsu_tank_mod.merge(1.8, 25.0);
+        }
 
-    // M4A1DD
-    if m4a1dd_count >= 1 {
-        mods.m4a1dd_mod.merge(1.4, 35.0);
-    }
+        if dlc_group_2_count >= 1 {
+            mods.m4a1dd_mod.merge(1.4, 35.0);
+        }
 
-    // 特大発動艇+一式砲戦車
-    if honi1_count >= 1 {
-        mods.honi_mod.merge(1.3, 42.0);
-    }
+        if dlc_group_3_count >= 1 {
+            mods.honi_mod.merge(1.3, 42.0);
+        }
 
-    if toku_daihatsu_chiha_count >= 1 {
-        mods.toku_daihatsu_chiha_mod.merge(1.4, 28.0);
-    }
+        if dlc_group_4_count >= 1 {
+            mods.toku_daihatsu_chiha_mod.merge(1.4, 28.0);
+        }
 
-    if toku_daihatsu_chiha_kai_count >= 1 {
-        mods.toku_daihatsu_chiha_kai_mod.merge(1.5, 33.0);
+        if dlc_group_5_count >= 1 {
+            mods.toku_daihatsu_chiha_kai_mod.merge(1.5, 33.0);
+        }
     }
 
     // 上陸用舟艇シナジー
@@ -792,12 +805,9 @@ fn special_enemy_modifiers(
         let daihatsu_count = gears.count(gear_id!("大発動艇"));
         let a = armed_count;
         let b = ab_count;
-        let c = daihatsu_count + toku_daihatsu_count + t89_tank_count + panzer2_count + honi1_count;
-        let d = shikon_count
-            + t2_tank_count
-            + panzer3_count
-            + toku_daihatsu_chiha_count
-            + toku_daihatsu_chiha_kai_count;
+        let c = daihatsu_count + toku_dlc_count + t89_tank_count + panzer2_count + honi1_count;
+        let d =
+            shikon_count + toku_dlc_panzer3_count + chiha_count + chiha_kai_count + t2_tank_count;
 
         match (a, b, c, d) {
             (1, 0, _, _) | (0, 1, _, _) if c + d >= 1 => Some((1.2, 10.0)),
@@ -835,40 +845,28 @@ fn special_enemy_modifiers(
                 dive_bomber_count,
                 [1.5, 1.5 * 2.0]
             );
-            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
-            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
-
-            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.5]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.8]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_c_count, [1.5, 1.4]);
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi1_count >= 2
-                    || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
-                    || (t89_tank_or_honi1_count >= 1
-                        && toku_daihatsu_chiha_count + toku_daihatsu_chiha_kai_count >= 1),
-                1.4
+                dlc_group_e_count,
+                [1.5, 1.5 * 1.4]
             );
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                m4a1dd_count + toku_daihatsu_chiha_kai_count,
-                [2.0]
-            );
-
-            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
-            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.5]);
-
-            let ship_is_dd_or_cl = matches!(attacker.ship_type, ShipType::DD | ShipType::CL);
-            apply_mod!(mods.precap_general_mod, a, ship_is_dd_or_cl, 1.4);
-
             if attack_type.is_shelling() {
                 apply_mod!(
                     mods.precap_general_mod,
                     a,
-                    armored_boat_group_count,
+                    dlc_group_g_count,
                     [1.3, 1.3 * 1.2]
                 );
             }
+            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [2.0]);
+            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
+
+            let ship_is_dd_or_cl = matches!(attacker.ship_type, ShipType::DD | ShipType::CL);
+            apply_mod!(mods.precap_general_mod, a, ship_is_dd_or_cl, 1.4);
         }
         SpecialEnemyType::IsolatedIsland => {
             apply_mod!(mods.precap_general_mod, a, has_aa_shell, 1.75);
@@ -891,37 +889,30 @@ fn special_enemy_modifiers(
                 dive_bomber_count,
                 [1.4, 1.4 * 1.75]
             );
-            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.8]);
-            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
 
-            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.2]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.8]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi1_count >= 2
-                    || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
-                    || (t89_tank_or_honi1_count >= 1
-                        && toku_daihatsu_chiha_count + toku_daihatsu_chiha_kai_count >= 1),
-                1.4
+                dlc_group_c_count,
+                [1.2, 1.2 * 1.4]
             );
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                m4a1dd_count + toku_daihatsu_chiha_kai_count,
-                [1.8]
+                dlc_group_e_count,
+                [1.2, 1.2 * 1.4]
             );
-
-            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
-            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.2]);
-
             if attack_type.is_shelling() {
                 apply_mod!(
                     mods.precap_general_mod,
                     a,
-                    armored_boat_group_count,
+                    dlc_group_g_count,
                     [1.3, 1.3 * 1.1]
                 );
             }
+            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [1.8]);
         }
         SpecialEnemyType::HarbourSummerPrincess => {
             apply_mod!(mods.precap_general_mod, a, has_aa_shell, 1.75);
@@ -946,28 +937,30 @@ fn special_enemy_modifiers(
                 dive_bomber_count,
                 [1.3, 1.3 * 1.2]
             );
-            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.7]);
-            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.2]);
 
-            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.6]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.7]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.2]);
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi1_count >= 2
-                    || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
-                    || (t89_tank_or_honi1_count >= 1
-                        && toku_daihatsu_chiha_count + toku_daihatsu_chiha_kai_count >= 1),
-                1.5
+                dlc_group_c_count,
+                [1.6, 1.6 * 1.5]
             );
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                m4a1dd_count + toku_daihatsu_chiha_kai_count,
-                [2.0]
+                dlc_group_e_count,
+                [1.6, 1.6 * 1.5]
             );
-
-            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.8]);
-            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.6]);
+            if attack_type.is_shelling() {
+                apply_mod!(
+                    mods.precap_general_mod,
+                    a,
+                    dlc_group_g_count,
+                    [1.5, 1.5 * 1.1]
+                );
+            }
+            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [2.0]);
         }
         SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => {
             apply_mod!(mods.precap_general_mod, a, has_aa_shell, 2.5);
@@ -985,37 +978,30 @@ fn special_enemy_modifiers(
                 [1.2, 1.2 * 1.3]
             );
             apply_mod!(mods.precap_general_mod, a, has_seaplane, 1.2);
-            apply_mod!(mods.precap_general_mod, a, landing_craft_count, [1.4]);
-            apply_mod!(mods.precap_general_mod, a, toku_daihatsu_count, [1.15]);
 
-            apply_mod!(mods.precap_general_mod, a, t89_tank_or_honi1_count, [1.5]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.4]);
+            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                t89_tank_or_honi1_count >= 2
-                    || (toku_daihatsu_chiha_count >= 1 && toku_daihatsu_chiha_kai_count >= 1)
-                    || (t89_tank_or_honi1_count >= 1
-                        && toku_daihatsu_chiha_count + toku_daihatsu_chiha_kai_count >= 1),
-                1.3
+                dlc_group_c_count,
+                [1.5, 1.5 * 1.3]
             );
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                m4a1dd_count + toku_daihatsu_chiha_kai_count,
-                [1.1]
+                dlc_group_e_count,
+                [1.5, 1.5 * 1.3]
             );
-
-            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [1.5, 1.5 * 1.2]);
-            apply_mod!(mods.precap_general_mod, a, panzer2_count, [1.5]);
-
             if attack_type.is_shelling() {
                 apply_mod!(
                     mods.precap_general_mod,
                     a,
-                    armored_boat_group_count,
+                    dlc_group_g_count,
                     [1.1, 1.1 * 1.1]
                 );
             }
+            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [1.1]);
         }
         _ => (),
     }
