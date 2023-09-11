@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import TreeItem from "@mui/lab/TreeItem";
-import TreeView from "@mui/lab/TreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import { TreeView } from "@mui/x-tree-view/TreeView";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -27,7 +27,7 @@ const Explorer: React.FCX = ({ className }) => {
   const dispatch = useAppDispatch();
 
   const { rootIds, tempIds, entities } = useRootSelector(
-    (root) => root.entities.files
+    (root) => root.entities.files,
   );
 
   const [expanded, setExpanded] = React.useState<string[]>(["root", "temp"]);

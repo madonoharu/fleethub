@@ -17,7 +17,3 @@ ship_id = 2164
 
 # 夜戦単発
 [expected.night.data.SingleAttack]
-damage.normal_damage_min = 1053
-damage.normal_damage_max = 1061
-damage.critical_damage_min = 1589
-damage.critical_damage_max = 1597

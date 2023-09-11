@@ -847,7 +847,12 @@ fn special_enemy_modifiers(
             );
             apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.8]);
             apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
-            apply_mod!(mods.precap_general_mod, a, dlc_group_c_count, [1.5, 1.4]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                dlc_group_c_count,
+                [1.5, 1.5 * 1.4]
+            );
             apply_mod!(
                 mods.precap_general_mod,
                 a,

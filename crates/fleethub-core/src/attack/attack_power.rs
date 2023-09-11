@@ -135,20 +135,19 @@ impl AttackPowerParams {
             postcap *= self.balloon_mod;
         }
 
-        postcap = postcap_general_mod.apply(postcap);
+        let pre_pt = postcap_general_mod.apply(postcap);
 
-        let post_historical_power = self
-            .historical_mod
-            .compose(self.custom_mods.historical_mod)
-            .apply(postcap);
-
-        let post_pt_power = if let Some(pt_mod) = pt_mod {
-            pt_mod.apply(post_historical_power * 0.3 + post_historical_power.sqrt() + 10.0)
+        // https://twitter.com/yukicacoon/status/1701044223028670699
+        let post_pt = if let Some(pt_mod) = pt_mod {
+            pt_mod.apply(pre_pt * 0.3 + pre_pt.sqrt() + 10.0)
         } else {
-            post_historical_power
+            pre_pt
         };
 
-        let normal = post_pt_power;
+        let normal = self
+            .historical_mod
+            .compose(self.custom_mods.historical_mod)
+            .apply(post_pt);
 
         // https://twitter.com/hedgehog_hasira/status/1630585333279784962
         let critical = (normal * self.proficiency_critical_mod * 1.5).floor();
