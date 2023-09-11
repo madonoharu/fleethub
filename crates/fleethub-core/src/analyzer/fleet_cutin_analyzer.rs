@@ -83,6 +83,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
         let fleet = &self.comp.main;
         let node_state = self.node_state;
         let engagement = self.engagement;
+        let balloons = self.comp.balloons();
 
         let cutin = effect.cutin;
         let rate = calc_fleet_cutin_rate(fleet, cutin);
@@ -124,6 +125,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
                         .battle_defs
                         .get_historical_params(node_state, &attacker, target),
                     node_state,
+                    balloons,
                 }
                 .calc_attack_params();
 

@@ -127,6 +127,7 @@
   "accuracy_mod": "命中補正",
   "type_factor": "种别系數",
   "ap_shell_mod": "徹甲彈補正",
+  "balloon_mod": "氣球補正",
   "aerial_power": "空母補正",
   "proficiency_critical_mod": "熟練度爆擊補正",
   "armor_penetration": "裝甲減少補正",
@@ -196,6 +197,7 @@
   "day_gunfit_accuracy": "晝戰適重補正",
   "night_gunfit_accuracy": "夜戰適重補正",
   "debuff": "削甲",
+  "landing_battle": "登陸戰",
   "FleetType": {
     "Main": "主力",
     "Escort": "護衛",

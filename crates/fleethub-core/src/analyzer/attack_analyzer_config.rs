@@ -11,6 +11,7 @@ use crate::types::{
 pub struct AttackAnalyzerShipConfig {
     #[serde(flatten)]
     pub conditions: ShipConditions,
+    pub balloons: usize,
     pub fleet_los_mod: Option<f64>,
     #[serde(flatten)]
     pub night_fleet_conditions: NightFleetConditions,

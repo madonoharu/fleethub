@@ -152,6 +152,8 @@ where
             formation_params,
             historical_params,
             node_state,
+            // todo
+            balloons: 0,
         }
         .to_attack()
         .apply(self.rng, &mut target)
