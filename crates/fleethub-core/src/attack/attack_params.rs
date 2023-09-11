@@ -58,11 +58,16 @@ pub struct AttackParams {
     pub attack_power_params: Option<AttackPowerParams>,
     pub hit_rate_params: Option<HitRateParams>,
     pub defense_params: Option<DefenseParams>,
-    pub is_cutin: bool,
     pub hits: f64,
 }
 
 impl AttackParams {
+    pub fn is_cutin(&self) -> bool {
+        self.attack_power_params
+            .as_ref()
+            .map_or(false, |p| p.is_cutin)
+    }
+
     pub fn calc_attack_power(&self) -> Option<AttackPower> {
         self.attack_power_params.as_ref().map(|p| p.calc())
     }
@@ -76,17 +81,18 @@ impl AttackParams {
             attack_power: self.calc_attack_power(),
             hit_rate: self.calc_hit_rate(),
             defense_params: self.defense_params.clone(),
-            is_cutin: self.is_cutin,
+            is_cutin: self.is_cutin(),
             hits: self.hits,
         }
     }
 
     pub fn into_attack(self) -> Attack {
+        let is_cutin = self.is_cutin();
         Attack {
             attack_power: self.calc_attack_power(),
             hit_rate: self.calc_hit_rate(),
             defense_params: self.defense_params,
-            is_cutin: self.is_cutin,
+            is_cutin,
             hits: self.hits,
         }
     }

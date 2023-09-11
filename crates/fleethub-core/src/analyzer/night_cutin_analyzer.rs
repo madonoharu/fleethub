@@ -54,7 +54,7 @@ impl NightCutinAnalyzer<'_> {
                 attacker: AttackAnalyzerShipConfig {
                     conditions: ship.conditions(),
                     night_fleet_conditions: self.config.left_night_fleet_conditions.clone(),
-                    fleet_los_mod: None,
+                    ..Default::default()
                 },
                 target: AttackAnalyzerShipConfig {
                     night_fleet_conditions: self.config.right_night_fleet_conditions.clone(),

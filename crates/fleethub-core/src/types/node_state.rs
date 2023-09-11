@@ -49,6 +49,7 @@ pub struct NodeState {
     pub phase: u8,
     pub debuff: bool,
     pub disable_historical_mod: bool,
+    pub landing_battle: bool,
 }
 
 impl NodeState {

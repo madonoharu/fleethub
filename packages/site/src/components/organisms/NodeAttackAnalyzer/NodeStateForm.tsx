@@ -26,6 +26,10 @@ const NodeStateForm: React.FC<Props> = ({ value = {}, onChange, disabled }) => {
     onChange?.({ ...value, disable_historical_mod: !checked });
   };
 
+  const handleLandingBattleChange = (checked: boolean) => {
+    onChange?.({ ...value, landing_battle: checked });
+  };
+
   return (
     <Stack flexDirection="row" gap={2}>
       <NumberInput
@@ -47,6 +51,12 @@ const NodeStateForm: React.FC<Props> = ({ value = {}, onChange, disabled }) => {
         label={t("historical_mod")}
         checked={!value?.disable_historical_mod}
         onChange={handleDisableHistoricalModChange}
+        disabled={disabled}
+      />
+      <Checkbox
+        label={t("landing_battle")}
+        checked={value?.landing_battle}
+        onChange={handleLandingBattleChange}
         disabled={disabled}
       />
     </Stack>

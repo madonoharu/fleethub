@@ -458,6 +458,12 @@ impl Comp {
     pub fn fleet_los_mod(&self, fleet_type: FleetType) -> Option<f64> {
         self.get_fleet(fleet_type)?.fleet_los_mod()
     }
+
+    pub fn balloons(&self) -> usize {
+        self.members_by(FleetType::Main | FleetType::Escort)
+            .filter(|ship| ship.gears.has_by(|g| g.is_balloon()))
+            .count()
+    }
 }
 
 struct FleetTypeQuery(EnumSet<FleetType>);

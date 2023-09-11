@@ -68,7 +68,6 @@ pub fn create_airstrike_params<P: PlaneImpl, R: Rng + ?Sized>(
         attack_power_params,
         hit_rate_params,
         defense_params,
-        is_cutin: false,
         hits: 1.0,
     }
 }

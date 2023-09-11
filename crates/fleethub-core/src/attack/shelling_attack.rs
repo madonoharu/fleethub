@@ -23,6 +23,7 @@ pub struct ShellingAttackParams<'a> {
     pub formation_params: FormationParams,
     pub historical_params: HistoricalParams,
     pub node_state: NodeState,
+    pub balloons: usize,
 }
 
 impl ShellingAttackParams<'_> {
@@ -96,7 +97,14 @@ impl ShellingAttackParams<'_> {
             let precap_mod = AttackPowerModifier::new(a14, b14);
             let postcap_mod = AttackPowerModifier::new(a11, 0.0);
 
+            let balloon_mod = if self.node_state.landing_battle {
+                1.0 + 0.02 * (self.balloons.max(3) as f64)
+            } else {
+                1.0
+            };
+
             let params = AttackPowerParams {
+                is_cutin: style.is_cutin(),
                 basic,
                 cap: SHELLING_POWER_CAP,
                 precap_mod,
@@ -106,6 +114,7 @@ impl ShellingAttackParams<'_> {
                 proficiency_critical_mod,
                 remaining_ammo_mod,
                 armor_penetration,
+                balloon_mod,
                 special_enemy_mods,
                 historical_mod,
                 custom_mods,
@@ -224,7 +233,6 @@ impl ShellingAttackParams<'_> {
             attack_power_params,
             hit_rate_params,
             defense_params,
-            is_cutin: style.is_cutin(),
             hits: style.hits,
         }
     }

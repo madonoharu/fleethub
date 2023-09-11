@@ -1,0 +1,18 @@
+description = "特大発動艇+Ⅲ号戦車(北アフリカ仕様)ダメージテスト9"
+
+
+# 攻撃艦設定
+[attacker]
+ship_id = "Commandant Teste改"
+
+
+g1 = "特大発動艇+Ⅲ号戦車(北アフリカ仕様)"
+
+
+# 防御艦設定　集積地
+[target]
+ship_id = 2164
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]

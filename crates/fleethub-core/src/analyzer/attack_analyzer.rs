@@ -172,6 +172,7 @@ impl AttackAnalyzer<'_> {
             formation_params,
             historical_params,
             node_state,
+            balloons: self.config.attacker.balloons,
         }
         .calc_attack_params();
 
@@ -209,6 +210,7 @@ impl AttackAnalyzer<'_> {
                     formation_params,
                     historical_params,
                     node_state,
+                    balloons: self.config.attacker.balloons,
                 }
                 .calc_attack_params();
 
