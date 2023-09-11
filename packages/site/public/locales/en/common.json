@@ -127,6 +127,7 @@
   "accuracy_mod": "Accuracy Mod",
   "type_factor": "Type Factor",
   "ap_shell_mod": "AP Shell Modifier",
+  "balloon_mod": "Balloon Modifier",
   "aerial_power": "Carrier Modifier",
   "proficiency_critical_mod": "Proficiency Critical Modifier",
   "armor_penetration": "Armor Penetration",
@@ -196,6 +197,7 @@
   "day_gunfit_accuracy": "Day Gunfit Bonus",
   "night_gunfit_accuracy": "Night Gunfit Bonus",
   "debuff": "Debuff",
+  "landing_battle": "Landing Battle",
   "FleetType": {
     "Main": "Main",
     "Escort": "Escort",

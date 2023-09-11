@@ -70,7 +70,7 @@ impl DayCutinAnalyzer<'_> {
                 attacker: AttackAnalyzerShipConfig {
                     conditions: ship.conditions(),
                     fleet_los_mod,
-                    night_fleet_conditions: Default::default(),
+                    ..Default::default()
                 },
                 target: AttackAnalyzerShipConfig::dummy_enemy(),
             },

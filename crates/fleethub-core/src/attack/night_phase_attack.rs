@@ -106,7 +106,6 @@ impl NightAttackParams<'_> {
             attack_power_params,
             hit_rate_params,
             defense_params,
-            is_cutin: style.is_cutin(),
             hits,
         }
     }
@@ -163,6 +162,7 @@ impl NightAttackParams<'_> {
         let armor_penetration = historical_armor_penetration;
 
         let base = AttackPowerParams {
+            is_cutin: style.is_cutin(),
             cap: NIGHT_POWER_CAP,
             precap_mod,
             postcap_mod,

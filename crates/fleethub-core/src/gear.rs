@@ -453,6 +453,10 @@ impl Gear {
     pub fn can_be_deployed_to_land_base(&self) -> bool {
         self.has_proficiency()
     }
+
+    pub fn is_balloon(&self) -> bool {
+        self.icon_id() == 55
+    }
 }
 
 impl Gear {

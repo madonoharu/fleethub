@@ -7,6 +7,7 @@ use super::HitType;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackPowerParams {
+    pub is_cutin: bool,
     pub basic: f64,
     pub cap: f64,
     pub precap_mod: AttackPowerModifier,
@@ -16,6 +17,7 @@ pub struct AttackPowerParams {
     pub proficiency_critical_mod: f64,
     pub armor_penetration: f64,
     pub remaining_ammo_mod: f64,
+    pub balloon_mod: f64,
     pub special_enemy_mods: SpecialEnemyModifiers,
     pub historical_mod: AttackPowerModifier,
     pub custom_mods: CustomPowerModifiers,
@@ -117,24 +119,35 @@ impl AttackPowerParams {
             .compose(self.custom_mods.postcap_mod)
             .apply(postcap);
 
-        if let Some(v) = self.ap_shell_mod {
-            postcap = (postcap * v).floor()
+        // https://twitter.com/yukicacoon/status/1698563969106202886
+        // なんで???
+        if self.is_cutin {
+            postcap *= self.balloon_mod;
+
+            if let Some(v) = self.ap_shell_mod {
+                postcap = (postcap * v).floor()
+            }
+        } else {
+            if let Some(v) = self.ap_shell_mod {
+                postcap = (postcap * v).floor()
+            }
+
+            postcap *= self.balloon_mod;
         }
 
-        postcap = postcap_general_mod.apply(postcap);
+        let pre_pt = postcap_general_mod.apply(postcap);
 
-        let post_historical_power = self
-            .historical_mod
-            .compose(self.custom_mods.historical_mod)
-            .apply(postcap);
-
-        let post_pt_power = if let Some(pt_mod) = pt_mod {
-            pt_mod.apply(post_historical_power * 0.3 + post_historical_power.sqrt() + 10.0)
+        // https://twitter.com/yukicacoon/status/1701044223028670699
+        let post_pt = if let Some(pt_mod) = pt_mod {
+            pt_mod.apply(pre_pt * 0.3 + pre_pt.sqrt() + 10.0)
         } else {
-            post_historical_power
+            pre_pt
         };
 
-        let normal = post_pt_power;
+        let normal = self
+            .historical_mod
+            .compose(self.custom_mods.historical_mod)
+            .apply(post_pt);
 
         // https://twitter.com/hedgehog_hasira/status/1630585333279784962
         let critical = (normal * self.proficiency_critical_mod * 1.5).floor();
@@ -146,6 +159,7 @@ impl AttackPowerParams {
 impl Default for AttackPowerParams {
     fn default() -> Self {
         Self {
+            is_cutin: false,
             basic: 0.0,
             cap: f64::MAX,
             precap_mod: Default::default(),
@@ -155,6 +169,7 @@ impl Default for AttackPowerParams {
             proficiency_critical_mod: 1.0,
             armor_penetration: 0.0,
             remaining_ammo_mod: 1.0,
+            balloon_mod: 1.0,
             special_enemy_mods: Default::default(),
             historical_mod: Default::default(),
             custom_mods: Default::default(),

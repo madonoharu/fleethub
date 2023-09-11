@@ -1,0 +1,23 @@
+description = "特大発動艇+Ⅲ号戦車J型ダメージテスト2"
+
+
+# 攻撃艦設定
+[attacker]
+ship_id = "神州丸改"
+
+
+g1 = "特大発動艇+Ⅲ号戦車J型"
+g2 = "M4A1 DD"
+
+
+# 防御艦設定　港湾棲姫（ソフトスキン）
+[target]
+ship_id = 1573
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 162
+damage.normal_damage_max = 242
+damage.critical_damage_min = 330
+damage.critical_damage_max = 410

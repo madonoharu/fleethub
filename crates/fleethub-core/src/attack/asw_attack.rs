@@ -92,15 +92,12 @@ impl AswAttackParams<'_> {
                 basic,
                 cap: ASW_POWER_CAP,
                 precap_mod,
-                postcap_mod: Default::default(),
                 proficiency_critical_mod,
                 armor_penetration,
                 remaining_ammo_mod: attacker.remaining_ammo_mod(),
-                ap_shell_mod: None,
-                aerial_power: None,
-                special_enemy_mods: Default::default(),
                 historical_mod: historical_power_mod,
                 custom_mods: custom_power_mods,
+                ..Default::default()
             })
         };
 
@@ -176,7 +173,6 @@ impl AswAttackParams<'_> {
             hit_rate_params,
             defense_params,
             hits: 1.0,
-            is_cutin: false,
         }
     }
 

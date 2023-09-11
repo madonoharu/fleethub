@@ -38,18 +38,14 @@ trait AttackTrait {
 
         let attack_params = self.calc_attack_params();
 
+        let is_cutin = attack_params.is_cutin();
         let attack_power = attack_params.attack_power_params.context("context")?.calc();
         let hit_rate = attack_params.hit_rate_params.context("context")?.calc();
         let defense_params = attack_params.defense_params.context("context")?;
 
         let hit_type = hit_rate.sample(rng);
 
-        let damage = damage::Damage::new(
-            hit_type,
-            attack_power,
-            defense_params,
-            attack_params.is_cutin,
-        );
+        let damage = damage::Damage::new(hit_type, attack_power, defense_params, is_cutin);
 
         let value = damage.sample(rng);
         target.take_damage(value);

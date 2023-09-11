@@ -1,0 +1,25 @@
+description = "特大発動艇+Ⅲ号戦車(北アフリカ仕様)ダメージテスト8"
+
+
+# 攻撃艦設定
+[attacker]
+ship_id = "Commandant Teste改"
+
+
+g1 = "特大発動艇+Ⅲ号戦車(北アフリカ仕様)"
+g2 = "大発動艇(八九式中戦車&陸戦隊)"
+g3 = "特大発動艇"
+g4 = "特大発動艇+戦車第11連隊"
+
+
+# 防御艦設定　離島棲鬼
+[target]
+ship_id = 1574
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 163
+damage.normal_damage_max = 253
+damage.critical_damage_min = 342
+damage.critical_damage_max = 432

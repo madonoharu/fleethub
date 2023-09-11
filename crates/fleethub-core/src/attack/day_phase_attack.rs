@@ -15,6 +15,7 @@ pub struct DayPhaseAttackParams<'a> {
     pub formation_params: FormationParams,
     pub historical_params: HistoricalParams,
     pub node_state: NodeState,
+    pub balloons: usize,
 }
 
 impl DayPhaseAttackParams<'_> {
@@ -40,6 +41,7 @@ impl DayPhaseAttackParams<'_> {
                 formation_params,
                 historical_params,
                 node_state,
+                balloons: self.balloons,
             }
             .calc_attack_params(),
             DayPhaseAttackStyle::Asw(style) => AswAttackParams {

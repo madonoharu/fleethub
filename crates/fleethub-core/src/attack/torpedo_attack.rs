@@ -49,7 +49,6 @@ impl TorpedoAttackParams<'_> {
             hit_rate_params,
             defense_params,
             hits: 1.0,
-            is_cutin: false,
         }
     }
 
@@ -78,6 +77,7 @@ impl TorpedoAttackParams<'_> {
         }
 
         Some(AttackPowerParams {
+            is_cutin: false,
             basic,
             cap: TORPEDO_POWER_CAP,
             precap_mod,
@@ -89,6 +89,7 @@ impl TorpedoAttackParams<'_> {
             special_enemy_mods,
             historical_mod: self.historical_params.power_mod,
             armor_penetration: self.historical_params.armor_penetration,
+            balloon_mod: 1.0,
             custom_mods: attacker.custom_power_mods(),
         })
     }

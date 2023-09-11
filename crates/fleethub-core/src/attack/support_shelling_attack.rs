@@ -35,7 +35,6 @@ impl SupportShellingAttackParams<'_> {
             attack_power_params: self.calc_attack_power_params(),
             hit_rate_params: self.calc_hit_rate_params(),
             defense_params,
-            is_cutin: false,
             hits: 1.0,
         }
     }
@@ -74,6 +73,7 @@ impl SupportShellingAttackParams<'_> {
             attacker.special_enemy_mods(self.target.special_enemy_type(), self.attack_type.into());
 
         let params = AttackPowerParams {
+            is_cutin: false,
             basic,
             cap: SUPPORT_SHELLING_POWER_CAP,
             precap_mod,
@@ -83,6 +83,7 @@ impl SupportShellingAttackParams<'_> {
             proficiency_critical_mod: 1.0,
             remaining_ammo_mod,
             armor_penetration: 0.0,
+            balloon_mod: 1.0,
             special_enemy_mods,
             historical_mod: Default::default(),
             custom_mods: attacker.custom_power_mods(),

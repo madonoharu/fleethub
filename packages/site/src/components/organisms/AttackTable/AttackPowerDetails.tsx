@@ -13,7 +13,7 @@ import { numstr } from "../../../utils";
 import { LabeledValue, Divider } from "../../atoms";
 
 function hasMod(
-  mod: AttackPowerModifier | undefined
+  mod: AttackPowerModifier | undefined,
 ): mod is AttackPowerModifier {
   if (!mod) {
     return false;
@@ -71,6 +71,12 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
         label={t("BasicAttackPower")}
         value={numstr(params.basic) || "-"}
       />
+      {params.balloon_mod !== 1 && (
+        <LabeledValue
+          label={t("balloon_mod")}
+          value={numstr(params.balloon_mod) || "-"}
+        />
+      )}
       {params.ap_shell_mod && (
         <LabeledValue
           label={t("ap_shell_mod")}
