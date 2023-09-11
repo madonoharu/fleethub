@@ -33,4 +33,3 @@ hit_rate_params.evasion_term = 43
 hit_rate.total = 0.68
 # クリティカル率
 hit_rate.critical = 0.13
-
