@@ -93,6 +93,10 @@ impl FhCore {
         self.factory.create_org(input)
     }
 
+    pub fn create_ship_state_by_id(&self, ship_id: u16) -> Option<ShipState> {
+        self.factory.create_ship_state_by_id(ship_id)
+    }
+
     pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {
         self.factory.create_ship_by_id(ship_id)
     }

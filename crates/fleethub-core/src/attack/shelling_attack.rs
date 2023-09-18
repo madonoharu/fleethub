@@ -98,7 +98,7 @@ impl ShellingAttackParams<'_> {
             let postcap_mod = AttackPowerModifier::new(a11, 0.0);
 
             let balloon_mod = if self.node_state.landing_battle {
-                1.0 + 0.02 * (self.balloons.max(3) as f64)
+                1.0 + 0.02 * (self.balloons.min(3) as f64)
             } else {
                 1.0
             };

@@ -1,4 +1,4 @@
-use fleethub_core::{comp::Comp, fleet::Fleet, ship::Ship};
+use fleethub_core::{comp::Comp, fleet::Fleet, ship::Ship, types::ShipState};
 
 use super::FH_CORE;
 
@@ -72,8 +72,19 @@ pub fn format_toml(value: &mut toml::Value) {
 pub fn ship_from_toml<T: Into<toml::Value>>(toml: T) -> Ship {
     let mut value = toml.into();
     format_toml(&mut value);
-    let state = value.try_into().unwrap();
-    FH_CORE.create_ship(Some(state)).unwrap()
+    let state: ShipState = value.try_into().unwrap();
+
+    if state.ship_id > 1500 && state.gears.iter().all(|g| g.is_none()) {
+        let gears = FH_CORE
+            .create_ship_state_by_id(state.ship_id)
+            .unwrap()
+            .gears;
+        FH_CORE
+            .create_ship(Some(ShipState { gears, ..state }))
+            .unwrap()
+    } else {
+        FH_CORE.create_ship(Some(state)).unwrap()
+    }
 }
 
 pub fn fleet_from_toml<T: Into<toml::Value>>(toml: T) -> Fleet {

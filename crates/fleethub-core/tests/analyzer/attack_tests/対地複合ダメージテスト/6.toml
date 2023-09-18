@@ -1,0 +1,26 @@
+description = "対地複合ダメージテスト6"
+
+
+# 攻撃艦設定　特務宗谷
+[attacker]
+ship_id = 699
+# 現在HP
+current_hp = 11
+
+
+g1 = { gear_id = "特大発動艇+一式砲戦車", stars = 10 }
+g2 = { gear_id = "特大発動艇+チハ改", stars = 10 }
+g3 = { gear_id = "特大発動艇+Ⅲ号戦車J型", stars = 10 }
+
+
+# 防御艦設定　トーチカ姫
+[target]
+ship_id = 2188
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 278
+damage.normal_damage_max = 324
+damage.critical_damage_min = 467
+damage.critical_damage_max = 513

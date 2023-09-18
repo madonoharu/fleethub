@@ -320,7 +320,7 @@ fn anti_summer_aircraft_carrier_demon_modifiers(
         mods.postcap_general_mod,
         a,
         cb_swordfish_count,
-        [1.1, 1.1 * 1.1]
+        [1.1, 1.1 * 1.2]
     );
 
     if matches!(
@@ -348,6 +348,7 @@ fn anti_anchorage_water_demon_vacation_mode_modifiers(
     }
 
     let gears = &attacker.gears;
+    let ibonuses = AntiInstIbonuses::new(attacker);
 
     let dive_bomber_count =
         gears.count_type(GearType::CbDiveBomber) + gears.count_type(GearType::JetFighterBomber);
@@ -405,7 +406,12 @@ fn anti_anchorage_water_demon_vacation_mode_modifiers(
     let dlc_group_g_count = ab_count + armed_count;
     let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
 
-    apply_mod!(mods.postcap_general_mod, a, dlc_group_a_count, [1.4]);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_a_count,
+        [1.4 * ibonuses.landing_craft]
+    );
     apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.15]);
     apply_mod!(
         mods.postcap_general_mod,
@@ -430,12 +436,11 @@ fn anti_anchorage_water_demon_vacation_mode_modifiers(
         mods.postcap_general_mod,
         a,
         t2_tank_count,
-        [2.4, 2.4 * 1.35]
+        [
+            2.4 * ibonuses.amphibious_tank,
+            2.4 * 1.35 * ibonuses.amphibious_tank
+        ]
     );
-
-    let ibonuses = AntiInstIbonuses::new(attacker);
-    mods.postcap_general_mod.a *= ibonuses.landing_craft;
-    mods.postcap_general_mod.a *= ibonuses.amphibious_tank;
 
     if attacker.ctype == ctype!("大和型") || attacker.ctype == ctype!("長門型") {
         mods.postcap_general_mod.a *= 1.2;
@@ -454,6 +459,7 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     }
 
     let gears = &attacker.gears;
+    let ibonuses = AntiInstIbonuses::new(attacker);
     let mut mods = SpecialEnemyModifiers::new();
 
     let dive_bomber_count =
@@ -508,7 +514,12 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     let dlc_group_j_count =
         shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
 
-    apply_mod!(mods.postcap_general_mod, a, dlc_group_a_count, [1.1]);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        dlc_group_a_count,
+        [1.1 * ibonuses.landing_craft]
+    );
     apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.15]);
     apply_mod!(
         mods.postcap_general_mod,
@@ -530,11 +541,15 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     );
     apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.1]);
     apply_mod!(mods.postcap_general_mod, a, dlc_group_j_count, [1.4]);
-    apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.2, 1.2 * 1.2]);
-
-    let ibonuses = AntiInstIbonuses::new(attacker);
-    mods.postcap_general_mod.a *= ibonuses.landing_craft;
-    mods.postcap_general_mod.a *= ibonuses.amphibious_tank;
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        t2_tank_count,
+        [
+            1.2 * ibonuses.amphibious_tank,
+            1.2 * 1.2 * ibonuses.amphibious_tank
+        ]
+    );
 
     if attacker.master.nationality == 31 {
         mods.postcap_general_mod.a *= 1.1;
@@ -672,12 +687,12 @@ fn special_enemy_modifiers(
     let dlc_group_g_count = ab_count + armed_count;
     let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
 
-    let dlc_group_1_count =
+    let dlc_sp1_count =
         shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
-    let dlc_group_2_count = m4a1dd_count;
-    let dlc_group_3_count = honi1_count;
-    let dlc_group_4_count = chiha_count;
-    let dlc_group_5_count = chiha_kai_count;
+    let dlc_sp2_count = m4a1dd_count;
+    let dlc_sp3_count = honi1_count;
+    let dlc_sp4_count = chiha_count;
+    let dlc_sp5_count = chiha_kai_count;
 
     // 改修補正
     let ibonuses = AntiInstIbonuses::new(attacker);
@@ -687,18 +702,6 @@ fn special_enemy_modifiers(
         special_enemy_type,
         SpecialEnemyType::SupplyDepot | SpecialEnemyType::NewSupplyDepot
     ) {
-        let mut n = 1.0;
-
-        if t89_tank_count + honi1_count >= 1 {
-            n += 1.0;
-        }
-        if panzer2_count >= 1 {
-            n += 1.0;
-        }
-
-        mods.postcap_general_mod.a *= ibonuses.landing_craft.powf(n);
-        mods.postcap_general_mod.a *= ibonuses.amphibious_tank;
-
         apply_mod!(mods.postcap_general_mod, a, wg42_count, [1.25, 1.25 * 1.3]);
         apply_mod!(
             mods.postcap_general_mod,
@@ -713,60 +716,82 @@ fn special_enemy_modifiers(
             [1.15, 1.15 * 1.2]
         );
 
-        apply_mod!(mods.postcap_general_mod, a, dlc_group_a_count, [1.7]);
+        apply_mod!(
+            mods.postcap_general_mod,
+            a,
+            dlc_group_a_count,
+            [1.7 * ibonuses.landing_craft]
+        );
         apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.2]);
         apply_mod!(
             mods.postcap_general_mod,
             a,
             dlc_group_c_count,
-            [1.3, 1.3 * 1.6]
+            [
+                1.3 * ibonuses.landing_craft,
+                1.3 * 1.6 * ibonuses.landing_craft
+            ]
         );
         apply_mod!(
             mods.postcap_general_mod,
             a,
             dlc_group_e_count,
-            [1.3, 1.3 * 1.6]
+            [
+                1.3 * ibonuses.landing_craft,
+                1.3 * 1.6 * ibonuses.landing_craft
+            ]
+        );
+        apply_mod!(
+            mods.postcap_general_mod,
+            a,
+            dlc_group_g_count,
+            [1.5, 1.5 * 1.1]
         );
         apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.2]);
-
-        apply_mod!(mods.postcap_general_mod, a, t2_tank_count, [1.7, 1.7 * 1.5]);
+        apply_mod!(
+            mods.postcap_general_mod,
+            a,
+            t2_tank_count,
+            [
+                1.7 * ibonuses.amphibious_tank,
+                1.7 * 1.5 * ibonuses.amphibious_tank
+            ]
+        );
     }
 
     if special_enemy_type == SpecialEnemyType::NewSupplyDepot {
         return mods;
     }
 
-    mods.precap_general_mod.a *= ibonuses.landing_craft * ibonuses.amphibious_tank;
-
     apply_mod!(
         mods.precap_general_mod,
         b,
         wg42_count,
-        [75.0, 110.0, 140.0, 160.0, 160.0]
+        [75.0, 110.0, 140.0, 160.0]
     );
     apply_mod!(
         mods.precap_general_mod,
         b,
         mortar_count,
-        [30.0, 55.0, 75.0, 90.0, 90.0]
+        [30.0, 55.0, 75.0, 90.0]
     );
     apply_mod!(
         mods.precap_general_mod,
         b,
         mortar_cd_count,
-        [60.0, 110.0, 150.0, 150.0, 150.0]
+        [60.0, 110.0, 150.0, 180.0]
     );
     apply_mod!(
         mods.precap_general_mod,
         b,
         type4_rocket_count,
-        [55.0, 115.0, 160.0, 190.0, 190.0]
+        [55.0, 115.0, 160.0, 190.0]
     );
     apply_mod!(
         mods.precap_general_mod,
         b,
         type4_rocket_cd_count,
-        [80.0, 170.0, 170.0, 170.0, 170.0]
+        [80.0, 170.0, 230.0, 260.0]
     );
 
     // 艦種補正
@@ -779,23 +804,23 @@ fn special_enemy_modifiers(
 
     // 特殊上陸艇補正
     {
-        if dlc_group_1_count >= 1 {
+        if dlc_sp1_count >= 1 {
             mods.toku_daihatsu_tank_mod.merge(1.8, 25.0);
         }
 
-        if dlc_group_2_count >= 1 {
+        if dlc_sp2_count >= 1 {
             mods.m4a1dd_mod.merge(1.4, 35.0);
         }
 
-        if dlc_group_3_count >= 1 {
+        if dlc_sp3_count >= 1 {
             mods.honi_mod.merge(1.3, 42.0);
         }
 
-        if dlc_group_4_count >= 1 {
+        if dlc_sp4_count >= 1 {
             mods.toku_daihatsu_chiha_mod.merge(1.4, 28.0);
         }
 
-        if dlc_group_5_count >= 1 {
+        if dlc_sp5_count >= 1 {
             mods.toku_daihatsu_chiha_kai_mod.merge(1.5, 33.0);
         }
     }
@@ -845,7 +870,13 @@ fn special_enemy_modifiers(
                 dive_bomber_count,
                 [1.5, 1.5 * 2.0]
             );
-            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.8]);
+
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                dlc_group_a_count,
+                [1.8 * ibonuses.landing_craft]
+            );
             apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
             apply_mod!(
                 mods.precap_general_mod,
@@ -868,7 +899,15 @@ fn special_enemy_modifiers(
                 );
             }
             apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [2.0]);
-            apply_mod!(mods.precap_general_mod, a, t2_tank_count, [2.4, 2.4 * 1.35]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t2_tank_count,
+                [
+                    2.4 * ibonuses.amphibious_tank,
+                    2.4 * 1.35 * ibonuses.amphibious_tank
+                ]
+            );
 
             let ship_is_dd_or_cl = matches!(attacker.ship_type, ShipType::DD | ShipType::CL);
             apply_mod!(mods.precap_general_mod, a, ship_is_dd_or_cl, 1.4);
@@ -895,7 +934,12 @@ fn special_enemy_modifiers(
                 [1.4, 1.4 * 1.75]
             );
 
-            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.8]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                dlc_group_a_count,
+                [1.8 * ibonuses.landing_craft]
+            );
             apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
             apply_mod!(
                 mods.precap_general_mod,
@@ -918,6 +962,15 @@ fn special_enemy_modifiers(
                 );
             }
             apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [1.8]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t2_tank_count,
+                [
+                    2.4 * ibonuses.amphibious_tank,
+                    2.4 * 1.35 * ibonuses.amphibious_tank
+                ]
+            );
         }
         SpecialEnemyType::HarbourSummerPrincess => {
             apply_mod!(mods.precap_general_mod, a, has_aa_shell, 1.75);
@@ -943,7 +996,12 @@ fn special_enemy_modifiers(
                 [1.3, 1.3 * 1.2]
             );
 
-            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.7]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                dlc_group_a_count,
+                [1.7 * ibonuses.landing_craft]
+            );
             apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.2]);
             apply_mod!(
                 mods.precap_general_mod,
@@ -966,6 +1024,15 @@ fn special_enemy_modifiers(
                 );
             }
             apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [2.0]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t2_tank_count,
+                [
+                    2.8 * ibonuses.amphibious_tank,
+                    2.8 * 1.5 * ibonuses.amphibious_tank
+                ]
+            );
         }
         SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => {
             apply_mod!(mods.precap_general_mod, a, has_aa_shell, 2.5);
@@ -984,7 +1051,12 @@ fn special_enemy_modifiers(
             );
             apply_mod!(mods.precap_general_mod, a, has_seaplane, 1.2);
 
-            apply_mod!(mods.precap_general_mod, a, dlc_group_a_count, [1.4]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                dlc_group_a_count,
+                [1.4 * ibonuses.landing_craft]
+            );
             apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
             apply_mod!(
                 mods.precap_general_mod,
@@ -1007,6 +1079,15 @@ fn special_enemy_modifiers(
                 );
             }
             apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [1.1]);
+            apply_mod!(
+                mods.precap_general_mod,
+                a,
+                t2_tank_count,
+                [
+                    1.5 * ibonuses.amphibious_tank,
+                    1.5 * 1.2 * ibonuses.amphibious_tank
+                ]
+            );
         }
         _ => (),
     }

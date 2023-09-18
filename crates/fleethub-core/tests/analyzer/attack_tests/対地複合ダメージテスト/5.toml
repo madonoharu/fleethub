@@ -1,0 +1,26 @@
+description = "対地複合ダメージテスト5"
+
+
+# 攻撃艦設定　神州丸改
+[attacker]
+ship_id = 626
+# 現在HP
+current_hp = 19
+
+
+g1 = { gear_id = "大発動艇(八九式中戦車&陸戦隊)", stars = 10 }
+g2 = { gear_id = "大発動艇(II号戦車/北アフリカ仕様)", stars = 10 }
+g3 = { gear_id = "特二式内火艇", stars = 10 }
+
+
+# 防御艦設定　集積地
+[target]
+ship_id = 2164
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 2749
+damage.normal_damage_max = 2757
+damage.critical_damage_min = 4133
+damage.critical_damage_max = 4141

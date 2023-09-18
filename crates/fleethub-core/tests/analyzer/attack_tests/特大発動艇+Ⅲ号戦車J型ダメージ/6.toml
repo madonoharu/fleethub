@@ -17,3 +17,7 @@ ship_id = 2023
 
 # 夜戦単発
 [expected.night.data.SingleAttack]
+damage.normal_damage_min = 361
+damage.normal_damage_max = 369
+damage.critical_damage_min = 550
+damage.critical_damage_max = 558

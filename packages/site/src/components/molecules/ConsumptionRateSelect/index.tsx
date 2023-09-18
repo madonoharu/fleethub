@@ -18,6 +18,10 @@ const BATTLE_COST_DATA = [
     ammoCeil: true,
   },
   {
+    fuel: 0.12,
+    ammo: 0.06,
+  },
+  {
     fuel: 0.1,
     ammo: 0.1,
   },

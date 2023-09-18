@@ -1,5 +1,4 @@
 description = "PTダメージテスト1"
-
 # 攻撃艦設定
 [attacker]
 ship_id = "大和改二重"
@@ -10,11 +9,9 @@ g4 = "武装大発"
 g5 = "装甲艇(AB艇)"
 gx = "熟練見張員"
 
-
 # 防御艦設定
 [target]
 ship_id = 1639
-
 
 # 昼戦単発
 [expected.day.data.SingleAttack]

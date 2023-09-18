@@ -1,0 +1,11 @@
+description = "シンプルな昼戦のダメージテスト"
+[attacker]
+ship_id = "長門改二"
+[target]
+ship_id = "駆逐イ級"
+
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 117
+damage.normal_damage_max = 119
+damage.critical_damage_min = 178
+damage.critical_damage_max = 180

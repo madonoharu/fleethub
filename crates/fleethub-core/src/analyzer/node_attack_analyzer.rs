@@ -90,7 +90,7 @@ impl NodeAttackAnalyzer<'_> {
         let attack_analyzer_ship_config = AttackAnalyzerShipConfig {
             conditions,
             fleet_los_mod,
-            balloons: config.balloons,
+            balloons: comp.balloons(),
             night_fleet_conditions: config.night_fleet_conditions.clone(),
         };
 
@@ -158,7 +158,6 @@ impl NodeAttackAnalyzerConfig {
 #[serde(default)]
 pub struct NodeAttackAnalyzerShipConfig {
     pub formation: Formation,
-    pub balloons: usize,
     #[serde(flatten)]
     pub night_fleet_conditions: NightFleetConditions,
 }

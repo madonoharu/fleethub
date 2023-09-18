@@ -80,6 +80,8 @@ impl AttackPowerParams {
             toku_daihatsu_tank_mod,
             m4a1dd_mod,
             honi_mod,
+            toku_daihatsu_chiha_mod,
+            toku_daihatsu_chiha_kai_mod,
             ..
         } = &self.special_enemy_mods;
 
@@ -88,6 +90,8 @@ impl AttackPowerParams {
         precap = toku_daihatsu_tank_mod.apply(precap);
         precap = m4a1dd_mod.apply(precap);
         precap = honi_mod.apply(precap);
+        precap = toku_daihatsu_chiha_mod.apply(precap);
+        precap = toku_daihatsu_chiha_kai_mod.apply(precap);
         precap = landing_craft_synergy_mod.apply(precap);
         precap += precap_general_mod.b;
 
