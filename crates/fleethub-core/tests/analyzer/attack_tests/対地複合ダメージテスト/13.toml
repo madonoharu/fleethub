@@ -1,0 +1,24 @@
+description = "対地複合ダメージテスト13"
+
+
+# 攻撃艦設定　特務宗谷
+[attacker]
+ship_id = 699
+
+
+g1 = { gear_id = "武装大発", stars = 10 }
+g2 = { gear_id = "装甲艇(AB艇)", stars = 10 }
+g3 = { gear_id = "特大発動艇+Ⅲ号戦車(北アフリカ仕様)", stars = 10 }
+
+
+# 防御艦設定　離島棲姫
+[target]
+ship_id = 1670
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 21
+damage.normal_damage_max = 111
+damage.critical_damage_min = 129
+damage.critical_damage_max = 219

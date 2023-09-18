@@ -1,0 +1,26 @@
+description = "対地複合ダメージテスト21"
+
+
+# 攻撃艦設定　大和改二重
+[attacker]
+ship_id = 916
+
+
+g1 = { gear_id = "特大発動艇+チハ改", stars = 10 }
+g2 = { gear_id = "特大発動艇+Ⅲ号戦車J型", stars = 10 }
+g3 = { gear_id = "特大発動艇+一式砲戦車", stars = 10 }
+g4 = { gear_id = "装甲艇(AB艇)", stars = 10 }
+g5 = { gear_id = "特二式内火艇", stars = 10 }
+
+
+# 防御艦設定　泊地水鬼バカンス
+[target]
+ship_id = 1815
+
+
+# 夜戦単発
+[expected.night.data.SingleAttack]
+damage.normal_damage_min = 4398
+damage.normal_damage_max = 4517
+damage.critical_damage_min = 6726
+damage.critical_damage_max = 6846
