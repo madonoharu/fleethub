@@ -74,7 +74,7 @@ pub fn ship_from_toml<T: Into<toml::Value>>(toml: T) -> Ship {
     format_toml(&mut value);
     let state: ShipState = value.try_into().unwrap();
 
-    if state.ship_id > 1500 {
+    if state.ship_id > 1500 && state.gears.iter().all(|g| g.is_none()) {
         let gears = FH_CORE
             .create_ship_state_by_id(state.ship_id)
             .unwrap()

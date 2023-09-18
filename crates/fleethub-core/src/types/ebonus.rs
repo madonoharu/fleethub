@@ -134,7 +134,8 @@ fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
         improved_new_model_boiler_count,
     );
 
-    let turbine_bonus = if synergy == 0 && ship.has_attr(ShipAttr::TurbineSpeedBonus) {
+    let turbine_bonus = if synergy == 0 && has_turbine && ship.has_attr(ShipAttr::TurbineSpeedBonus)
+    {
         5
     } else {
         0
