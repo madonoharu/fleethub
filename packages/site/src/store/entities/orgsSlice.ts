@@ -1,5 +1,10 @@
 import { AirSquadronKey, FleetKey } from "@fh/utils";
-import { createSlice, EntityState, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  EntityId,
+  EntityState,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 import { getSliceName, ormAdapters } from "./base";
 import { SwapPayload } from "./entitiesSlice";
@@ -19,9 +24,9 @@ export type AirSquadronPosition = {
 };
 
 const setChildId = (
-  state: EntityState<OrgEntity>,
+  state: EntityState<OrgEntity, EntityId>,
   position: FleetPosition | AirSquadronPosition,
-  id: string | undefined
+  id: string | undefined,
 ) => {
   const entity = state.entities[position.org];
 
@@ -31,8 +36,8 @@ const setChildId = (
 };
 
 const swapPosition = (
-  state: EntityState<OrgEntity>,
-  payload: SwapPayload<FleetPosition | AirSquadronPosition>
+  state: EntityState<OrgEntity, EntityId>,
+  payload: SwapPayload<FleetPosition | AirSquadronPosition>,
 ) => {
   const { drag, drop } = payload;
   const dragId = state.entities[drag.org]?.[drag.key];
@@ -47,14 +52,14 @@ export const orgsSlice = createSlice({
   reducers: {
     swapFleet: (
       state,
-      { payload }: PayloadAction<SwapPayload<FleetPosition>>
+      { payload }: PayloadAction<SwapPayload<FleetPosition>>,
     ) => {
       swapPosition(state, payload);
     },
 
     swapAirSquadron: (
       state,
-      { payload }: PayloadAction<SwapPayload<AirSquadronPosition>>
+      { payload }: PayloadAction<SwapPayload<AirSquadronPosition>>,
     ) => {
       swapPosition(state, payload);
     },

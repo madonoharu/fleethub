@@ -18,19 +18,19 @@ import {
 type OrmState<T extends AnyEntitySchema[]> = UnionToIntersection<
   T extends (infer E)[]
     ? E extends EntitySchema<any, infer Key, any, any, any>
-      ? Record<Key, EntityState<EntityType<E & AnyEntitySchema>>>
+      ? Record<Key, EntityState<EntityType<E & AnyEntitySchema>, EntityId>>
       : never
     : never
 >;
 
 type EntitiesState<T extends Record<string, AnyEntitySchema>> = {
-  [P in keyof T]: EntityState<EntityType<T[P]>>;
+  [P in keyof T]: EntityState<EntityType<T[P]>, EntityId>;
 };
 
 export type OrmAdapter<T extends AnyEntitySchema[]> = UnionToIntersection<
   T extends (infer E)[]
     ? E extends EntitySchema<any, infer Key, any, any, any>
-      ? Record<Key, EntityAdapter<EntityType<E>>>
+      ? Record<Key, EntityAdapter<EntityType<E>, EntityId>>
       : never
     : never
 > & {
@@ -39,7 +39,7 @@ export type OrmAdapter<T extends AnyEntitySchema[]> = UnionToIntersection<
 
 export function createStateOperator<
   V extends Record<string, AnyEntitySchema>,
-  R
+  R,
 >(mutator: (arg: R, state: EntitiesState<V>) => void) {
   return function operation<S extends EntitiesState<V>>(state: S, arg: R): S {
     const runMutator = (draft: EntitiesState<V>) => {
@@ -58,22 +58,25 @@ export function createStateOperator<
 export function createOrmAdapters<T extends AnyEntitySchema[]>(
   ...args: T
 ): OrmAdapter<T> {
-  const entityAdapters: Record<string, EntityAdapter<unknown> | undefined> = {};
+  const entityAdapters: Record<
+    string,
+    EntityAdapter<unknown, EntityId> | undefined
+  > = {};
 
   args.forEach((schema) => {
     const { key, idAttribute } = schema;
 
     const selectId = (entity: unknown) => {
-      const id = (entity as Record<string, unknown>)[idAttribute];
-      return id as EntityId;
+      const id = (entity as Record<string, EntityId>)[idAttribute];
+      return id;
     };
 
     entityAdapters[key] = createEntityAdapter({ selectId });
   });
 
   const setEntities = (
-    state: Record<string, EntityState<unknown>>,
-    entities: Entities
+    state: Record<string, EntityState<unknown, EntityId>>,
+    entities: Entities,
   ) => {
     Object.entries(entities).forEach(([key, dict]) => {
       const entityAdapter = entityAdapters[key];

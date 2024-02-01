@@ -4,7 +4,7 @@ import RestorePageIcon from "@mui/icons-material/RestorePage";
 import { Alert, AlertTitle, Button, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { useRef, useState } from "react";
-import { RehydrateAction, REHYDRATE, FLUSH } from "redux-persist";
+import { REHYDRATE, FLUSH } from "redux-persist";
 
 import { useAppDispatch, useSnackbar } from "../../../hooks";
 import { persistConfig } from "../../../store";
@@ -65,7 +65,7 @@ const BackupScreen: React.FC = () => {
       .then((text) => JSON.parse(text) as unknown)
       .then((data) => {
         if (isBackupData(data)) {
-          const action: RehydrateAction = {
+          const action = {
             type: REHYDRATE,
             key: persistConfig.key,
             payload: data,
@@ -91,7 +91,7 @@ const BackupScreen: React.FC = () => {
   };
 
   const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
+    event,
   ) => {
     const file = event.currentTarget.files?.item(0) || undefined;
     setFile(file);

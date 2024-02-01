@@ -1,4 +1,5 @@
 use crate::{
+    attack::LandingCraftModifiers,
     ship::Ship,
     types::{
         ctype, gear_id, matches_gear_id, AttackPowerModifier, AttackType, GearAttr, GearType,
@@ -347,6 +348,13 @@ fn anti_anchorage_water_demon_vacation_mode_modifiers(
         return mods;
     }
 
+    let dlc_mods = LandingCraftModifiers::new(
+        attacker,
+        attack_type,
+        SpecialEnemyType::AnchorageWaterDemonVacationMode,
+    );
+    mods.postcap_general_mod.a *= dlc_mods.postcap;
+
     let gears = &attacker.gears;
     let ibonuses = AntiInstIbonuses::new(attacker);
 
@@ -380,58 +388,7 @@ fn anti_anchorage_water_demon_vacation_mode_modifiers(
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.45);
 
-    let landing_craft_count = gears.count_type(GearType::LandingCraft);
-    let toku_dlc_count = gears.count(gear_id!("特大発動艇"));
-    let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
-    let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
-    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
-    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
-    let armed_count = gears.count(gear_id!("武装大発"));
-    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
-    let toku_dlc_panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
-    let toku_dlc_panzer3_j_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車J型"));
-    let chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
-    let chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
-
-    let dlc_group_a_count = landing_craft_count;
-    let dlc_group_b_count = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
-    let dlc_group_c_count = t89_tank_count
-        + honi1_count
-        + toku_dlc_panzer3_count
-        + toku_dlc_panzer3_j_count
-        + chiha_count
-        + chiha_kai_count;
-    let dlc_group_e_count = panzer2_count;
-    let dlc_group_g_count = ab_count + armed_count;
-    let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
-
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_a_count,
-        [1.4 * ibonuses.landing_craft]
-    );
-    apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.15]);
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_c_count,
-        [1.2, 1.2 * 1.4]
-    );
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_e_count,
-        [1.2, 1.2 * 1.4]
-    );
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_g_count,
-        [1.2, 1.2 * 1.1]
-    );
-    apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.8]);
     apply_mod!(
         mods.postcap_general_mod,
         a,
@@ -459,8 +416,11 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     }
 
     let gears = &attacker.gears;
-    let ibonuses = AntiInstIbonuses::new(attacker);
     let mut mods = SpecialEnemyModifiers::new();
+
+    let dlc_mods =
+        LandingCraftModifiers::new(attacker, attack_type, SpecialEnemyType::DockPrincess);
+    mods.postcap_general_mod.a *= dlc_mods.postcap;
 
     let dive_bomber_count =
         gears.count_type(GearType::CbDiveBomber) + gears.count_type(GearType::JetFighterBomber);
@@ -485,62 +445,8 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     let has_aa_shell = gears.has_type(GearType::AntiAirShell);
     apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.3);
 
-    let landing_craft_count = gears.count_type(GearType::LandingCraft);
-    let toku_dlc_count = gears.count(gear_id!("特大発動艇"));
-    let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
-    let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
-    let m4a1dd_count = gears.count(gear_id!("M4A1 DD"));
-    let ab_count = gears.count(gear_id!("装甲艇(AB艇)"));
-    let armed_count = gears.count(gear_id!("武装大発"));
-    let shikon_count = gears.count(gear_id!("特大発動艇+戦車第11連隊"));
-    let honi1_count = gears.count(gear_id!("特大発動艇+一式砲戦車"));
-    let toku_dlc_panzer3_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車(北アフリカ仕様)"));
-    let toku_dlc_panzer3_j_count = gears.count(gear_id!("特大発動艇+Ⅲ号戦車J型"));
-    let chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
-    let chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
-
-    let dlc_group_a_count = landing_craft_count;
-    let dlc_group_b_count = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
-    let dlc_group_c_count = t89_tank_count
-        + honi1_count
-        + toku_dlc_panzer3_count
-        + toku_dlc_panzer3_j_count
-        + chiha_count
-        + chiha_kai_count;
-    let dlc_group_e_count = panzer2_count;
-    let dlc_group_g_count = ab_count + armed_count;
-    let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
-    let dlc_group_j_count =
-        shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
-
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_a_count,
-        [1.1 * ibonuses.landing_craft]
-    );
-    apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.15]);
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_c_count,
-        [1.15, 1.15 * 1.15]
-    );
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_e_count,
-        [1.15, 1.15 * 1.15]
-    );
-    apply_mod!(
-        mods.postcap_general_mod,
-        a,
-        dlc_group_g_count,
-        [1.1, 1.1 * 1.1]
-    );
-    apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.1]);
-    apply_mod!(mods.postcap_general_mod, a, dlc_group_j_count, [1.4]);
+    let ibonuses = AntiInstIbonuses::new(attacker);
     apply_mod!(
         mods.postcap_general_mod,
         a,
@@ -559,17 +465,12 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
 }
 
 struct AntiInstIbonuses {
-    landing_craft: f64,
     amphibious_tank: f64,
 }
 
 impl AntiInstIbonuses {
     pub fn new(ship: &Ship) -> Self {
         let gears = &ship.gears;
-
-        let landing_craft_stars_average = gears
-            .mean_by(|gear| (gear.gear_type == GearType::LandingCraft).then_some(gear.stars as f64))
-            .unwrap_or_default();
 
         let amphibious_tank_stars_average = gears
             .mean_by(|gear| {
@@ -578,7 +479,6 @@ impl AntiInstIbonuses {
             .unwrap_or_default();
 
         Self {
-            landing_craft: 1.0 + landing_craft_stars_average / 50.0,
             amphibious_tank: 1.0 + amphibious_tank_stars_average / 30.0,
         }
     }
@@ -631,6 +531,9 @@ fn special_enemy_modifiers(
     }
 
     let mut mods = SpecialEnemyModifiers::new();
+    let dlc_mods = LandingCraftModifiers::new(attacker, attack_type, special_enemy_type);
+    mods.precap_general_mod.a *= dlc_mods.precap;
+    mods.postcap_general_mod.a *= dlc_mods.postcap;
 
     let gears = &attacker.gears;
 
@@ -660,7 +563,6 @@ fn special_enemy_modifiers(
     let mortar_cd_count = gears.count(gear_id!("二式12cm迫撃砲改 集中配備"));
     let mortar_group_count = mortar_count + mortar_cd_count;
 
-    let landing_craft_count = gears.count_type(GearType::LandingCraft);
     let toku_dlc_count = gears.count(gear_id!("特大発動艇"));
     let t89_tank_count = gears.count(gear_id!("大発動艇(八九式中戦車&陸戦隊)"));
     let panzer2_count = gears.count(gear_id!("大発動艇(II号戦車/北アフリカ仕様)"));
@@ -674,18 +576,6 @@ fn special_enemy_modifiers(
     let chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
     let chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
-
-    let dlc_group_a_count = landing_craft_count;
-    let dlc_group_b_count = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
-    let dlc_group_c_count = t89_tank_count
-        + honi1_count
-        + toku_dlc_panzer3_count
-        + toku_dlc_panzer3_j_count
-        + chiha_count
-        + chiha_kai_count;
-    let dlc_group_e_count = panzer2_count;
-    let dlc_group_g_count = ab_count + armed_count;
-    let dlc_group_i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
 
     let dlc_sp1_count =
         shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
@@ -716,38 +606,6 @@ fn special_enemy_modifiers(
             [1.15, 1.15 * 1.2]
         );
 
-        apply_mod!(
-            mods.postcap_general_mod,
-            a,
-            dlc_group_a_count,
-            [1.7 * ibonuses.landing_craft]
-        );
-        apply_mod!(mods.postcap_general_mod, a, dlc_group_b_count, [1.2]);
-        apply_mod!(
-            mods.postcap_general_mod,
-            a,
-            dlc_group_c_count,
-            [
-                1.3 * ibonuses.landing_craft,
-                1.3 * 1.6 * ibonuses.landing_craft
-            ]
-        );
-        apply_mod!(
-            mods.postcap_general_mod,
-            a,
-            dlc_group_e_count,
-            [
-                1.3 * ibonuses.landing_craft,
-                1.3 * 1.6 * ibonuses.landing_craft
-            ]
-        );
-        apply_mod!(
-            mods.postcap_general_mod,
-            a,
-            dlc_group_g_count,
-            [1.5, 1.5 * 1.1]
-        );
-        apply_mod!(mods.postcap_general_mod, a, dlc_group_i_count, [1.2]);
         apply_mod!(
             mods.postcap_general_mod,
             a,
@@ -874,34 +732,6 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                dlc_group_a_count,
-                [1.8 * ibonuses.landing_craft]
-            );
-            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_c_count,
-                [1.5, 1.5 * 1.4]
-            );
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_e_count,
-                [1.5, 1.5 * 1.4]
-            );
-            if attack_type.is_shelling() {
-                apply_mod!(
-                    mods.precap_general_mod,
-                    a,
-                    dlc_group_g_count,
-                    [1.3, 1.3 * 1.2]
-                );
-            }
-            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [2.0]);
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
                 t2_tank_count,
                 [
                     2.4 * ibonuses.amphibious_tank,
@@ -934,34 +764,6 @@ fn special_enemy_modifiers(
                 [1.4, 1.4 * 1.75]
             );
 
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_a_count,
-                [1.8 * ibonuses.landing_craft]
-            );
-            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_c_count,
-                [1.2, 1.2 * 1.4]
-            );
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_e_count,
-                [1.2, 1.2 * 1.4]
-            );
-            if attack_type.is_shelling() {
-                apply_mod!(
-                    mods.precap_general_mod,
-                    a,
-                    dlc_group_g_count,
-                    [1.3, 1.3 * 1.1]
-                );
-            }
-            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [1.8]);
             apply_mod!(
                 mods.precap_general_mod,
                 a,
@@ -999,34 +801,6 @@ fn special_enemy_modifiers(
             apply_mod!(
                 mods.precap_general_mod,
                 a,
-                dlc_group_a_count,
-                [1.7 * ibonuses.landing_craft]
-            );
-            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.2]);
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_c_count,
-                [1.6, 1.6 * 1.5]
-            );
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_e_count,
-                [1.6, 1.6 * 1.5]
-            );
-            if attack_type.is_shelling() {
-                apply_mod!(
-                    mods.precap_general_mod,
-                    a,
-                    dlc_group_g_count,
-                    [1.5, 1.5 * 1.1]
-                );
-            }
-            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [2.0]);
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
                 t2_tank_count,
                 [
                     2.8 * ibonuses.amphibious_tank,
@@ -1051,34 +825,6 @@ fn special_enemy_modifiers(
             );
             apply_mod!(mods.precap_general_mod, a, has_seaplane, 1.2);
 
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_a_count,
-                [1.4 * ibonuses.landing_craft]
-            );
-            apply_mod!(mods.precap_general_mod, a, dlc_group_b_count, [1.15]);
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_c_count,
-                [1.5, 1.5 * 1.3]
-            );
-            apply_mod!(
-                mods.precap_general_mod,
-                a,
-                dlc_group_e_count,
-                [1.5, 1.5 * 1.3]
-            );
-            if attack_type.is_shelling() {
-                apply_mod!(
-                    mods.precap_general_mod,
-                    a,
-                    dlc_group_g_count,
-                    [1.1, 1.1 * 1.1]
-                );
-            }
-            apply_mod!(mods.precap_general_mod, a, dlc_group_i_count, [1.1]);
             apply_mod!(
                 mods.precap_general_mod,
                 a,

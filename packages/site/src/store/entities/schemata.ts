@@ -74,7 +74,7 @@ const gear = schema<GearState>().entity(
   {},
   {
     idGenerator,
-  }
+  },
 );
 
 const ship = schema<ShipState>().entity("ships", record(GEAR_KEYS, gear), {
@@ -90,18 +90,18 @@ const airSquadron = schema<AirSquadronState>().entity(
   record(GEAR_KEYS, gear),
   {
     idGenerator,
-  }
+  },
 );
 
 const org = schema<OrgState>().entity(
   "orgs",
   Object.assign(
     record(FLEET_KEYS, fleet),
-    record(AIR_SQUADRON_KEYS, airSquadron)
+    record(AIR_SQUADRON_KEYS, airSquadron),
   ),
   {
     idGenerator,
-  }
+  },
 );
 
 const preset = schema<Preset>().entity("presets", record(GEAR_KEYS, gear), {
@@ -118,7 +118,7 @@ const file = schema<FileState>()
     {},
     {
       idGenerator,
-    }
+    },
   )
   .define((self) => ({
     org,
@@ -141,7 +141,7 @@ const obj = {
 export const schemata = Object.assign(Object.values(obj), obj);
 export const schemaKeys = schemata.map((schema) => schema.key);
 
-export type SchemaKey = typeof schemaKeys[number];
+export type SchemaKey = (typeof schemaKeys)[number];
 
 export type GearEntity = EntityType<typeof gear>;
 export type ShipEntity = EntityType<typeof ship>;

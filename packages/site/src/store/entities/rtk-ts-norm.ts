@@ -3,7 +3,7 @@
 import { nonNullable } from "@fh/utils";
 import { createCachedSelector, LruMapCache } from "re-reselect";
 import { shallowEqual } from "react-redux";
-import { createSelectorCreator, defaultMemoize } from "reselect";
+import { createSelectorCreator, lruMemoize } from "reselect";
 import {
   isObject,
   isEntitySchema,
@@ -24,8 +24,8 @@ function getAffectedEntitiesImpl(
   setEntity: (
     id: EntityId,
     entity: object | undefined,
-    schema: AnyEntitySchema
-  ) => void
+    schema: AnyEntitySchema,
+  ) => void,
 ): void {
   if (isEntitySchema(schema)) {
     if (!isEntityId(input)) {
@@ -72,7 +72,7 @@ function getAffectedEntitiesImpl(
 export function getAffectedEntities(
   input: unknown,
   schema: AnySchema,
-  entities: Entities
+  entities: Entities,
 ): Entities {
   const result: Entities = {};
 
@@ -90,7 +90,7 @@ function cloneAffectedEntitiesImpl<T>(
   schema: AnySchema,
   entities: Entities,
   cloned: Entities,
-  idGenerator: () => string
+  idGenerator: () => string,
 ): T {
   if (isEntitySchema(schema)) {
     if (!isEntityId(input)) {
@@ -109,7 +109,7 @@ function cloneAffectedEntitiesImpl<T>(
       schema.definition,
       entities,
       cloned,
-      idGenerator
+      idGenerator,
     );
 
     if (clonedEntity) {
@@ -132,8 +132,8 @@ function cloneAffectedEntitiesImpl<T>(
         localSchema,
         entities,
         cloned,
-        idGenerator
-      )
+        idGenerator,
+      ),
     ) as unknown as T;
   } else {
     if (!isObject(input)) {
@@ -151,7 +151,7 @@ function cloneAffectedEntitiesImpl<T>(
           localSchema,
           entities,
           cloned,
-          idGenerator
+          idGenerator,
         );
       }
     });
@@ -164,7 +164,7 @@ export function cloneAffectedEntities<T>(
   input: T,
   schema: AnySchema,
   entities: Entities,
-  idGenerator: () => string
+  idGenerator: () => string,
 ): {
   result: T;
   entities: Entities;
@@ -175,7 +175,7 @@ export function cloneAffectedEntities<T>(
     schema,
     entities,
     cloned,
-    idGenerator
+    idGenerator,
   );
 
   return {
@@ -184,9 +184,8 @@ export function cloneAffectedEntities<T>(
   };
 }
 
-type SchemaInputType<S extends AnySchema> = S extends Schema<infer T>
-  ? T
-  : never;
+type SchemaInputType<S extends AnySchema> =
+  S extends Schema<infer T> ? T : never;
 type DenormalizeInput<S extends AnySchema> = NormalizedSchemaResult<
   SchemaInputType<S>,
   S
@@ -194,12 +193,12 @@ type DenormalizeInput<S extends AnySchema> = NormalizedSchemaResult<
 
 type DenormalizeSelector<T, S extends AnySchema> = (
   state: T,
-  input: DenormalizeInput<S>
+  input: DenormalizeInput<S>,
 ) => SchemaInputType<S> | undefined;
 
 export function getEntitySchemata(
   schema: AnySchema,
-  result: AnyEntitySchema[] = []
+  result: AnyEntitySchema[] = [],
 ) {
   if (isEntitySchema(schema)) {
     if (result.includes(schema)) {
@@ -221,7 +220,7 @@ export function getEntitySchemata(
 
 export function createDenormalizeSelector<T, S extends AnySchema>(
   schema: S,
-  entitiesSelector: (state: T) => Entities
+  entitiesSelector: (state: T) => Entities,
 ): DenormalizeSelector<T, S> {
   type Args = [DenormalizeInput<S>, Entities];
 
@@ -229,7 +228,7 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
 
   const equalityCheck = (
     [_, prevEntities]: Args,
-    [nextInput, nextEntities]: Args
+    [nextInput, nextEntities]: Args,
   ) => {
     if (
       prevEntities === nextEntities ||
@@ -243,7 +242,7 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
     return keys.every((key) => shallowEqual(prevEntities[key], affected[key]));
   };
 
-  const selectorCreator = createSelectorCreator(defaultMemoize, equalityCheck);
+  const selectorCreator = createSelectorCreator(lruMemoize, equalityCheck);
 
   return createCachedSelector(
     (state: T, input: DenormalizeInput<S>): Args => [
@@ -252,7 +251,7 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
     ],
     ([input, entities]) => {
       return denormalize(input, schema, entities as never);
-    }
+    },
   )({
     keySelector: (state, input) => input,
     selectorCreator,

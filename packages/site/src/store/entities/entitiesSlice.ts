@@ -1,10 +1,11 @@
 import { GearKey, GEAR_KEYS, MapNode, pick, ShipKey } from "@fh/utils";
 import {
+  nanoid,
   createSlice,
   PayloadAction,
   combineReducers,
   EntityStateAdapter,
-  nanoid,
+  EntityId,
 } from "@reduxjs/toolkit";
 import { Formation, GearState, OrgState, ShipState } from "fleethub-core";
 import xor from "lodash/xor";
@@ -109,7 +110,7 @@ export type ImportPayload = {
 const setGearPosition = (
   state: State,
   position: GearPosition,
-  id: string | undefined
+  id: string | undefined,
 ): void => {
   const { tag, key, id: pid } = position;
   const entity = state[tag].entities[pid];
@@ -131,7 +132,7 @@ function shipPositionExists(state: State, position: ShipPosition): boolean {
 const setShipPosition = (
   state: State,
   position: ShipPosition,
-  id: string | undefined
+  id: string | undefined,
 ): void => {
   if (position.tag === "shipDetails") {
     return;
@@ -154,7 +155,7 @@ export function getEntities(state: State): Entities {
 
 function addEntities(state: State, entities: Entities): void {
   schemaKeys.forEach((key) => {
-    const adapter: EntityStateAdapter<unknown> = ormAdapters[key];
+    const adapter: EntityStateAdapter<unknown, EntityId> = ormAdapters[key];
     const dict = entities[key];
     if (dict) {
       adapter.addMany(state[key], dict);
@@ -189,7 +190,7 @@ export const entitiesSlice = createSlice({
       }: PayloadAction<{
         preset: string;
         position: Omit<GearPosition, "key">;
-      }>
+      }>,
     ) => {
       const presetEntity = state.presets.entities[payload.preset];
 
@@ -275,7 +276,7 @@ export const entitiesSlice = createSlice({
 
     swapGear: (
       state,
-      { payload: { drag, drop } }: PayloadAction<SwapGearPayload>
+      { payload: { drag, drop } }: PayloadAction<SwapGearPayload>,
     ) => {
       setGearPosition(state, drag.position, drop.id);
       setGearPosition(state, drop.position, drag.id);
@@ -283,7 +284,7 @@ export const entitiesSlice = createSlice({
 
     swapShip: (
       state,
-      { payload: { drag, drop } }: PayloadAction<SwapShipPayload>
+      { payload: { drag, drop } }: PayloadAction<SwapShipPayload>,
     ) => {
       if (
         shipPositionExists(state, drag.position) &&
@@ -343,7 +344,7 @@ export const entitiesSlice = createSlice({
       action: PayloadAction<{
         position: Omit<GearPosition, "key">;
         name: string;
-      }>
+      }>,
     ) => {
       const { position, name } = action.payload;
 
@@ -383,13 +384,13 @@ export const entitiesSlice = createSlice({
         sourceId,
         schemata.file,
         entities,
-        nanoid
+        nanoid,
       );
 
       let to: string | undefined;
       if (isFolder(state.files.entities[sourceId])) {
         const parentId = Object.values(state.files.entities).find(
-          (file) => isFolder(file) && file.children.includes(sourceId)
+          (file) => isFolder(file) && file.children.includes(sourceId),
         )?.id;
         if (parentId) {
           to = parentId;
@@ -421,7 +422,7 @@ export const entitiesSlice = createSlice({
       const affectedEntities = getAffectedEntities(
         state.files.rootIds,
         [schemata.file],
-        entities
+        entities,
       );
 
       const presetGearIds = Object.values(state.presets.entities)
@@ -431,7 +432,7 @@ export const entitiesSlice = createSlice({
       schemaKeys.forEach((key) => {
         const dict = affectedEntities[key] || {};
         const allowlist = Object.keys(dict);
-        const adapter: EntityStateAdapter<unknown> = ormAdapters[key];
+        const adapter: EntityStateAdapter<unknown, EntityId> = ormAdapters[key];
 
         if (key === "gears") {
           allowlist.push(...presetGearIds);

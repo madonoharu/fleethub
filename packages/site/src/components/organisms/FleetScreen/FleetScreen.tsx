@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { Update } from "@reduxjs/toolkit";
+import { EntityId, Update } from "@reduxjs/toolkit";
 import { Comp, DamageState, Fleet, MoraleState } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
@@ -86,15 +86,15 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
         ids.map((id) => ({
           id,
           changes: { morale },
-        }))
-      )
+        })),
+      ),
     );
   };
 
   const handleCurrentHpChange = (state: DamageState) => {
     const ids = fleet.ship_ids();
 
-    const payload: Update<ShipEntity>[] = ids.map((id) => {
+    const payload: Update<ShipEntity, EntityId>[] = ids.map((id) => {
       const current_hp =
         state == "Normal" ? undefined : fleet.get_damage_bound(id, state);
       return {
@@ -111,12 +111,12 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
   const handleConsumptionRateSelect = (value: ConsumptionRate) => {
     const ids = fleet.ship_ids();
 
-    const payload: Update<ShipEntity>[] = ids.map((id) => {
+    const payload: Update<ShipEntity, EntityId>[] = ids.map((id) => {
       const fuel = fleet.get_remaining_fuel(id, value.fuel, false);
       const ammo = fleet.get_remaining_ammo(
         id,
         value.ammo,
-        value.ammoCeil || false
+        value.ammoCeil || false,
       );
 
       return { id, changes: { fuel, ammo } };
@@ -128,7 +128,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
   const handleConsumptionReset = () => {
     const ids = fleet.ship_ids();
 
-    const payload: Update<ShipEntity>[] = ids.map((id) => ({
+    const payload: Update<ShipEntity, EntityId>[] = ids.map((id) => ({
       id,
       changes: { fuel: undefined, ammo: undefined },
     }));
@@ -206,7 +206,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
 const Memoized = React.memo(
   FleetScreen,
   ({ fleet: prevFleet, ...prevRest }, { fleet: nextFleet, ...nextRest }) =>
-    prevFleet.hash === nextFleet.hash && shallowEqual(prevRest, nextRest)
+    prevFleet.hash === nextFleet.hash && shallowEqual(prevRest, nextRest),
 );
 
 export default Memoized;
