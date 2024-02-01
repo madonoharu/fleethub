@@ -1,7 +1,7 @@
 {
   "name": "kcs",
   "scripts": {
-    "build": "yarn swc src/index.ts -d lib"
+    "build": "yarn swc src/index.ts -o lib/index.js"
   },
   "devDependencies": {
     "@swc/cli": "^0.3.5",
