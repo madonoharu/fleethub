@@ -6,14 +6,16 @@ import useSWRImmutable from "swr/immutable";
 
 import { GCS_PREFIX_URL, MASTER_DATA_PATH } from "../firebase";
 
+type FetcherArg = readonly [string, string | undefined];
+
 export const GenerationMapContext = React.createContext<Dict<string, string>>(
-  {}
+  {},
 );
 
-export async function gcsFetcher<T>([path, generation]: [
-  string,
-  string | undefined
-]): Promise<T> {
+export async function gcsFetcher<T>([
+  path,
+  generation,
+]: FetcherArg): Promise<T> {
   const url = new URL(`${GCS_PREFIX_URL}/${path}`);
 
   if (generation) {
@@ -32,7 +34,9 @@ export async function gcsFetcher<T>([path, generation]: [
 
 export function useGcs<T>(path: string): SWRResponse<T, Error> {
   const generationMap = React.useContext(GenerationMapContext);
-  return useSWRImmutable<T, Error>([path, generationMap[path]], gcsFetcher);
+  const key: FetcherArg = [path, generationMap[path]];
+
+  return useSWRImmutable<T, Error, FetcherArg>(key, gcsFetcher);
 }
 
 export function useMasterData(): SWRResponse<MasterData, Error> {

@@ -1,0 +1,25 @@
+description = "大和改二重フィット命中テスト1"
+
+# 攻撃艦設定
+[attacker]
+ship_id = "大和改二重"
+g1 = "51cm連装砲"
+g2 = "46cm三連装砲改"
+
+level = 99
+
+# 防御艦設定
+[target]
+ship_id = 1592
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+# 命中項
+hit_rate_params.accuracy_term = 115
+# 回避項
+hit_rate_params.evasion_term = 63
+
+# 命中率（通常命中率 + クリティカル率）
+hit_rate.total = 0.53
+# クリティカル率
+hit_rate.critical = 0.1

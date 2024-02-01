@@ -430,7 +430,7 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
             r += 2.0 * count_35_6cm_group.sqrt();
         }
         ctype!("Nelson級") => {
-            if ship_id == ship_id!("Nelson") {
+            if ship_id != ship_id!("Nelson改") {
                 r += -7.0 * m * count_46cm_triple_kai.sqrt();
                 r += -7.0 * m * count_46cm_triple.sqrt();
                 r += -3.0 * m * count_proto_46cm.sqrt();
@@ -455,9 +455,9 @@ fn battleship_bonus(ship: &Ship, is_night: bool) -> f64 {
                 r += 4.0 * count_35_6cm_group.sqrt();
             }
             ship_id!("大和改二重") => {
-                r += -8.0 * m * count_51cm_group.sqrt();
-                r += -8.0 * m * count_46cm_triple_kai.sqrt();
-                r += -8.0 * m * count_46cm_triple.sqrt();
+                r += -8.0
+                    * m
+                    * (count_51cm_group + count_46cm_triple_kai + count_46cm_triple).sqrt();
                 r += -5.0 * m * count_proto_46cm.sqrt();
                 r += 2.0 * m * count_381mm_group.sqrt();
                 r += 7.0 * count_46cm_triple_kai.sqrt();

@@ -1,7 +1,7 @@
 import { round } from "@fh/utils";
 import { shallowEqual, deepEqual } from "fast-equals";
 import { Draft } from "immer";
-import { createSelectorCreator, defaultMemoize } from "reselect";
+import { createSelectorCreator, lruMemoize } from "reselect";
 
 export type Recipe<T> = (draft: Draft<T>) => void;
 export type Update<T> = (recipe: Recipe<T>) => void;
@@ -51,13 +51,13 @@ export function getRangeAbbr(v: number | undefined | null) {
 }
 
 export const createShallowEqualSelector = createSelectorCreator(
-  defaultMemoize,
-  shallowEqual
+  lruMemoize,
+  shallowEqual,
 );
 
 export const createDeepEqualSelector = createSelectorCreator(
-  defaultMemoize,
-  deepEqual
+  lruMemoize,
+  deepEqual,
 );
 
 export * from "./cloudinary";

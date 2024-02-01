@@ -55,11 +55,9 @@ impl Ship {
                     }
                 })
                 .sum::<f64>()
-            + 
-            // 隼の熟練度補正よくわからない
-            self
+            + self
                 .planes()
-                .filter(|plane| plane.remains() && plane.is_hayabusa_20th_squadron())
+                .filter(|plane| plane.remains() && plane.is_hayabusa_20th_squadron()) // 隼の熟練度補正よくわからない
                 .map(|plane| {
                     let num4 = get_num4(plane.exp);
                     let m = ((plane.exp as f64).sqrt().floor() + num4 - 4.0).max(0.0);
