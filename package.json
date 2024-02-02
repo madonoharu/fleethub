@@ -15,6 +15,7 @@
     "build:site": "yarn workspace @fh/site build",
     "build:utils": "yarn workspace @fh/utils build",
     "dev": "yarn workspace @fh/site dev",
+    "dispatch": "yarn run tsx scripts/dispatch",
     "dispatch-locally": "act -r workflow_dispatch --secret-file .env -e payload.json",
     "postinstall": "husky install & yarn setup",
     "lint": "eslint --cache packages && yarn tsc --incremental --noEmit",
