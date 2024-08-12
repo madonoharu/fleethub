@@ -31,7 +31,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json}": "prettier --cache --write",
-    "*.{js,jsx,ts,tsx}": "eslint . --ext .ts,.tsx --cache --fix"
+    "*.{js,jsx,ts,tsx}": "eslint --ext .ts,.tsx --cache --fix"
   },
   "devDependencies": {
     "@fh/admin": "workspace:*",
