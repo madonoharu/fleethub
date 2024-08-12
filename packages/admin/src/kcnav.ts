@@ -1,5 +1,5 @@
 import { MapNodeType } from "@fh/utils";
-import got, { Got, OptionsOfTextResponseBody } from "got";
+import ky, { KyInstance, Options } from "ky";
 
 type MapKey = string;
 
@@ -21,7 +21,7 @@ type KcnavEdge = [
   source: MapKey | null,
   target: MapKey,
   type: MapNodeType,
-  event: KcnavNodeEvent
+  event: KcnavNodeEvent,
 ];
 
 type KcnavSpot = [x: number, y: number, start: "Start" | null];
@@ -87,21 +87,18 @@ function getKey(id: number): string {
 }
 
 export class KcnavClient {
-  private client: Got;
+  private client: KyInstance;
 
   constructor(
     private currentEventId: number | null,
-    private cache?: Map<unknown, unknown>
+    private cache?: Map<unknown, unknown>,
   ) {
-    this.client = got.extend({
+    this.client = ky.extend({
       prefixUrl: `https://tsunkit.net/api/routing/maps`,
     });
   }
 
-  private async get<T>(
-    url: string,
-    options?: OptionsOfTextResponseBody
-  ): Promise<T> {
+  private async get<T>(url: string, options?: Options): Promise<T> {
     const cached = this.cache?.get(url);
     if (cached) {
       console.log(url, "cached");

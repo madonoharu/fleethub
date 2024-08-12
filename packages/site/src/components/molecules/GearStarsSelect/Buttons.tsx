@@ -16,9 +16,9 @@ const GearStarsSelect: React.FCX<GearStarsSelectProps> = ({
   const handleChange: React.MouseEventHandler<HTMLButtonElement> =
     React.useCallback(
       (event) => {
-        onChange && onChange(Number(event.currentTarget.value));
+        onChange?.(Number(event.currentTarget.value));
       },
-      [onChange]
+      [onChange],
     );
 
   return (

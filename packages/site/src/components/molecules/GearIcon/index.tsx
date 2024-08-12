@@ -18,7 +18,6 @@ const GearIcon = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <div ref={ref} css={{ width, height }} {...rest}>
       <Image
-        layout="fixed"
         loader={cloudinaryLoader}
         width={width}
         height={height}

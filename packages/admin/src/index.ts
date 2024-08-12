@@ -1,12 +1,12 @@
-import got from "got";
 import { Start2 } from "kc-tools";
+import ky from "ky";
 
 import { updateCloudinary } from "./cloudinary";
 import { createMasterData, MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
 
 export function fetchStart2(): Promise<Start2> {
-  return got
+  return ky
     .get(
       "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json",
     )
@@ -14,7 +14,7 @@ export function fetchStart2(): Promise<Start2> {
 }
 
 export function fetchCtypeNames(): Promise<string[]> {
-  return got
+  return ky
     .get(
       "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json",
     )

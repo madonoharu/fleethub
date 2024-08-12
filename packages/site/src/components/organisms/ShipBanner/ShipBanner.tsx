@@ -35,7 +35,6 @@ const ShipBanner = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   } else if (publicId) {
     inner = (
       <Image
-        layout="fixed"
         loader={cloudinaryLoader}
         width={width}
         height={height}

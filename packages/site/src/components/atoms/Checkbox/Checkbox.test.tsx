@@ -15,9 +15,9 @@ describe("Checkbox", () => {
     const checkbox = getByRole("checkbox");
     expect(checkbox).toHaveProperty("checked", true);
     fireEvent.click(checkbox);
-    expect(mockFn).lastCalledWith(false);
+    expect(mockFn).toHaveBeenLastCalledWith(false);
     fireEvent.click(checkbox);
-    expect(mockFn).lastCalledWith(false);
+    expect(mockFn).toHaveBeenLastCalledWith(false);
   });
 
   it("`checked={false}`", () => {
@@ -28,8 +28,8 @@ describe("Checkbox", () => {
     const checkbox = getByRole("checkbox");
     expect(checkbox).toHaveProperty("checked", false);
     fireEvent.click(checkbox);
-    expect(mockFn).lastCalledWith(true);
+    expect(mockFn).toHaveBeenLastCalledWith(true);
     fireEvent.click(checkbox);
-    expect(mockFn).lastCalledWith(true);
+    expect(mockFn).toHaveBeenLastCalledWith(true);
   });
 });
