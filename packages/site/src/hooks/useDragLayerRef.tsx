@@ -32,10 +32,11 @@ const DragLayerBox = styled.div(
     backdrop-filter: blur(4px);
     transition: transform 50ms linear;
     width: transition;
-    box-shadow: 0px 0px 2px 2px ${theme.palette.primary.light},
+    box-shadow:
+      0px 0px 2px 2px ${theme.palette.primary.light},
       ${theme.shadows[12]};
     border-radius: 4px;
-  `
+  `,
 );
 const getStyle = throttle(
   (monitor: DragLayerMonitor): React.CSSProperties | undefined => {
@@ -47,7 +48,7 @@ const getStyle = throttle(
       transform: `translate(${offset.x}px, ${offset.y}px)`,
     };
   },
-  wait
+  wait,
 );
 
 const DragLayer: React.FC = () => {

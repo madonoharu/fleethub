@@ -34,7 +34,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
   const Popover = usePopover();
 
   const handleChange: React.MouseEventHandler = (event) => {
-    onChange && onChange(Number(event.currentTarget.id));
+    onChange?.(Number(event.currentTarget.id));
     Popover.hide();
   };
 

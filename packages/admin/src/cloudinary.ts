@@ -1,5 +1,4 @@
 import cloudinary from "cloudinary";
-import got from "got";
 import {
   CommonIconWeapon,
   getCommonIconWeaponUrl,
@@ -114,9 +113,10 @@ export const updateShipBanners = async (start2: Start2) => {
 export const updateGearIcons = async () => {
   const commonIconWeaponUrl = getCommonIconWeaponUrl();
 
-  const { frames } = await got(
-    commonIconWeaponUrl.json,
-  ).json<CommonIconWeapon>();
+  const { frames } = (await (
+    await fetch(commonIconWeaponUrl.json)
+  ).json()) as CommonIconWeapon;
+
   const searchRes = (await cloudinary.v2.search
     .expression("gear_icons")
     .max_results(500)

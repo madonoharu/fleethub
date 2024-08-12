@@ -19,16 +19,15 @@ class WasmChunksFixPlugin {
             const name = pathname.split("/")[1];
             const info = compilation.assetsInfo.get(pathname);
             compilation.emitAsset(name, source, info);
-          })
+          }),
       );
     });
   }
 }
 
-const CORE_VERSION = require(path.join(
-  require.resolve("fleethub-core"),
-  "../../package.json"
-)).version;
+const CORE_VERSION = require(
+  path.join(require.resolve("fleethub-core"), "../../package.json"),
+).version;
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -55,6 +54,14 @@ const config = {
   webpack: (config, { isServer, dev }) => {
     config.experiments.asyncWebAssembly = true;
     config.experiments.layers = true;
+
+    // fix warnings for async functions in the browser (https://github.com/vercel/next.js/issues/64792)
+    if (!isServer) {
+      config.output.environment = {
+        ...config.output.environment,
+        asyncFunction: true,
+      };
+    }
 
     if (!dev && isServer) {
       config.output.webassemblyModuleFilename = "chunks/[id].wasm";

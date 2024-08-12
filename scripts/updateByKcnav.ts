@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 import { updateByKcnav } from "@fh/admin/src";
 import fs from "fs-extra";
 
@@ -18,7 +16,7 @@ class Cache extends Map<string, unknown> {
   }
 }
 
-const CURRENT_EVENT_ID: number | null = 57;
+const CURRENT_EVENT_ID: number | null = 59;
 
 async function main() {
   const cache = new Cache();

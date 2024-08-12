@@ -41,6 +41,7 @@ function toNumber(input: MaybeNumber): number | undefined {
   return undefined;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DeckItemKeys = ["i1", "i2", "i3", "i4", "i5", "ix"] as const;
 type DeckItemKey = (typeof DeckItemKeys)[number];
 

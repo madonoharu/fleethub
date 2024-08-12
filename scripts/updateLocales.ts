@@ -5,7 +5,7 @@ import { storage } from "@fh/admin/src";
 import { nonNullable, uniq } from "@fh/utils/src";
 import { DayCutin, FleetCutin, MasterData, NightCutin } from "fleethub-core";
 import fs from "fs-extra";
-import got from "got";
+import ky from "ky";
 import mergeWith from "lodash/mergeWith";
 
 const exec = promisify(child_process.exec);
@@ -70,21 +70,24 @@ const languages = [
 ] as const;
 
 class LocaleUpdater {
-  private kc3: typeof got;
-  private tsun: typeof got;
+  private kc3: typeof ky;
+  private tsun: typeof ky;
   private code: LanguageCode;
   private path: string;
 
-  constructor(private md: MasterData, private language: Language) {
+  constructor(
+    private md: MasterData,
+    private language: Language,
+  ) {
     this.code = language.code;
 
-    this.kc3 = got.extend({
+    this.kc3 = ky.extend({
       prefixUrl: `https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/${
         language.kc3 || this.code
       }`,
     });
 
-    this.tsun = got.extend({
+    this.tsun = ky.extend({
       prefixUrl: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${this.code}`,
     });
 
@@ -126,7 +129,7 @@ class LocaleUpdater {
         }
 
         return;
-      })
+      }),
     );
   }
 
@@ -230,8 +233,8 @@ class LocaleUpdater {
     const [kc3Ships, kc3ShipAffixes, kc3Ctype] = await Promise.all([
       this.getKC3Json<KC3Ships>("ships.json"),
       this.getKC3Json<KC3ShipAffix>("ship_affix.json"),
-      got(
-        "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json"
+      ky(
+        "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json",
       ).json<string[]>(),
     ]);
 
@@ -247,7 +250,7 @@ class LocaleUpdater {
         const suffix = name.replace(baseName, "");
 
         const translatedBaseName = Object.entries(kc3Ships).find(
-          ([key]) => key === baseName
+          ([key]) => key === baseName,
         )?.[1];
 
         if (!translatedBaseName) return undefined;
@@ -257,7 +260,7 @@ class LocaleUpdater {
           if (suffix) {
             translatedSuffix = translatedSuffix.replace(
               key,
-              suffix.replace("{ -}?", "")
+              suffix.replace("{ -}?", ""),
             );
           }
         });
@@ -330,7 +333,7 @@ class LocaleUpdater {
 const updateLocales = async () => {
   const md: MasterData = await storage.readMasterData();
   const promises = languages.map((lang) =>
-    new LocaleUpdater(md, lang).update()
+    new LocaleUpdater(md, lang).update(),
   );
 
   await Promise.all(promises);

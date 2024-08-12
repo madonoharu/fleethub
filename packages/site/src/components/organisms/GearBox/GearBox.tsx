@@ -29,11 +29,15 @@ const useGearActions = (id?: string) => {
 
   return useMemo(() => {
     const update = (changes: Partial<GearEntity>) => {
-      id && dispatch(gearsSlice.actions.update({ id, changes }));
+      if (id) {
+        dispatch(gearsSlice.actions.update({ id, changes }));
+      }
     };
 
     const remove = () => {
-      id && dispatch(gearsSlice.actions.remove(id));
+      if (id) {
+        dispatch(gearsSlice.actions.remove(id));
+      }
     };
 
     const swap = (payload: SwapGearPayload) => {
@@ -102,5 +106,5 @@ export default styled(GearBox)(
     height: ${size === "small" ? 24 : 28}px;
     width: 100%;
     line-height: initial;
-  `
+  `,
 );

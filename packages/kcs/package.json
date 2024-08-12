@@ -4,8 +4,8 @@
     "build": "yarn swc src/index.ts -o lib/index.js"
   },
   "devDependencies": {
-    "@swc/cli": "^0.3.5",
-    "@swc/core": "^1.3.107",
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "^1.7.10",
     "fleethub-core": "npm:latest"
   }
 }

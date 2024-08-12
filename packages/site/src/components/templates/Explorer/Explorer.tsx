@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import { TreeView } from "@mui/x-tree-view/TreeView";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
@@ -20,7 +20,7 @@ import ExplorerHeader from "./ExplorerHeader";
 import FolderLabel from "./FolderLabel";
 import PlanLabel from "./PlanLabel";
 
-const TransitionProps = { timeout: 150 };
+const groupTransition = { timeout: 150 };
 
 const Explorer: React.FCX = ({ className }) => {
   const { t } = useTranslation("common");
@@ -36,12 +36,18 @@ const Explorer: React.FCX = ({ className }) => {
   const toggleExplorerOpen = () =>
     dispatch(appSlice.actions.toggleExplorerOpen());
 
-  const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]) => {
-    setExpanded(nodeIds);
+  const handleSelectedItemsChange = (
+    _: React.SyntheticEvent,
+    id: string | null,
+  ) => {
+    setSelected(id || "");
   };
 
-  const handleSelect = (e: React.SyntheticEvent, id: string) => {
-    setSelected(id);
+  const handleExpandedItemsChange = (
+    _: React.SyntheticEvent,
+    itemIds: string[],
+  ) => {
+    setExpanded(itemIds);
   };
 
   const handlePlanCreate = () => {
@@ -73,9 +79,9 @@ const Explorer: React.FCX = ({ className }) => {
     return (
       <TreeItem
         key={file.id}
-        nodeId={file.id}
+        itemId={file.id}
         label={label}
-        TransitionProps={TransitionProps}
+        slotProps={{ groupTransition }}
       >
         {children}
       </TreeItem>
@@ -90,32 +96,34 @@ const Explorer: React.FCX = ({ className }) => {
         onClose={toggleExplorerOpen}
       />
 
-      <TreeView
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-        expanded={expanded}
-        selected={selected}
-        onNodeToggle={handleToggle}
-        onNodeSelect={handleSelect}
+      <SimpleTreeView<false>
+        slots={{
+          collapseIcon: ExpandMoreIcon,
+          expandIcon: ChevronRightIcon,
+        }}
+        expandedItems={expanded}
+        selectedItems={selected}
+        onSelectedItemsChange={handleSelectedItemsChange}
+        onExpandedItemsChange={handleExpandedItemsChange}
       >
         <TreeItem
           key="root"
-          nodeId="root"
+          itemId="root"
           label={"root"}
-          TransitionProps={TransitionProps}
+          slotProps={{ groupTransition }}
         >
           {rootIds.map(renderFile)}
           <FileDropZone css={{ height: 8 * 5 }} onDrop={handleRootDrop} />
         </TreeItem>
         <TreeItem
           key="temp"
-          nodeId="temp"
+          itemId="temp"
           label={t("Temp")}
-          TransitionProps={TransitionProps}
+          slotProps={{ groupTransition }}
         >
           {tempIds.map(renderFile)}
         </TreeItem>
-      </TreeView>
+      </SimpleTreeView>
     </div>
   );
 };
@@ -127,6 +135,10 @@ export default styled(Explorer)`
 
   .MuiTreeView-root {
     overflow: scroll;
+  }
+
+  .MuiTreeItem-content {
+    padding: 0;
   }
 
   .MuiTreeItem-label {
