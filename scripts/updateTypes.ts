@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 import child_process from "child_process";
 import path from "path";
 import { promisify } from "util";
@@ -10,7 +8,7 @@ import fs from "fs-extra";
 import { Start2 } from "kc-tools";
 
 const CTYPE_NAMES_PATH = path.resolve(
-  "packages/site/public/locales/ja/ctype.json"
+  "packages/site/public/locales/ja/ctype.json",
 );
 
 const FLEETHUB_CORE_SRC_PREFIX = path.resolve("crates/fleethub-core/src");
@@ -19,7 +17,7 @@ const exec = promisify(child_process.exec);
 
 const ENUM_NAMES = ["GearType", "GearAttr", "ShipType", "ShipAttr"] as const;
 
-type EnumName = typeof ENUM_NAMES[number];
+type EnumName = (typeof ENUM_NAMES)[number];
 
 type EnumItem = {
   tag: string;
@@ -69,7 +67,7 @@ async function updateFile(
 function replaceMacro(
   src: string,
   macroName: string,
-  entries: [string, string | number][]
+  entries: [string, string | number][],
 ): string {
   const inner = entries
     .map(([key, value]) => `    ("${key}") => { ${value} };`)
@@ -83,7 +81,7 @@ function replaceMacro(
 async function updateRs(
   start2: Start2,
   ctypeNames: Record<string, string>,
-  configs: Record<EnumName, EnumConfig>
+  configs: Record<EnumName, EnumConfig>,
 ) {
   const updateShipId = (src: string): string => {
     const inner = start2.api_mst_ship
@@ -95,7 +93,7 @@ async function updateRs(
 
   const updateGearId = (src: string): string => {
     const inner = uniqBy(start2.api_mst_slotitem, (gear) => gear.api_name).map(
-      (gear): [string, number] => [gear.api_name, gear.api_id]
+      (gear): [string, number] => [gear.api_name, gear.api_id],
     );
 
     return replaceMacro(src, "gear_id", inner);
@@ -103,7 +101,7 @@ async function updateRs(
 
   const updateCtype = (src: string): string => {
     const inner = Object.entries(ctypeNames).map(
-      ([id, name]): [string, string] => [name, id]
+      ([id, name]): [string, string] => [name, id],
     );
 
     return replaceMacro(src, "ctype", inner);
@@ -111,29 +109,29 @@ async function updateRs(
 
   await updateFile(
     path.resolve(FLEETHUB_CORE_SRC_PREFIX, "types/gear_type.rs"),
-    replaceEnum(configs.GearType)
+    replaceEnum(configs.GearType),
   );
 
   await updateFile(
     path.resolve(FLEETHUB_CORE_SRC_PREFIX, "types/gear_attr.rs"),
-    replaceEnum(configs.GearAttr)
+    replaceEnum(configs.GearAttr),
   );
 
   await updateFile(
     path.resolve(FLEETHUB_CORE_SRC_PREFIX, "types/ship_type.rs"),
-    replaceEnum(configs.ShipType)
+    replaceEnum(configs.ShipType),
   );
 
   await updateFile(
     path.resolve(FLEETHUB_CORE_SRC_PREFIX, "types/ship_attr.rs"),
-    replaceEnum(configs.ShipAttr)
+    replaceEnum(configs.ShipAttr),
   );
 
   await updateFile(
     path.resolve(FLEETHUB_CORE_SRC_PREFIX, "types/const_id.rs"),
     updateShipId,
     updateGearId,
-    updateCtype
+    updateCtype,
   );
 
   await exec(`rustfmt ${FLEETHUB_CORE_SRC_PREFIX}/*.rs`);
@@ -194,7 +192,7 @@ async function main() {
     tables.ship_classes,
     Object.entries(ctypeNames)
       .map(([key, name]) => ({ id: Number(key), name }))
-      .filter((obj) => obj.id < 1000)
+      .filter((obj) => obj.id < 1000),
   );
 }
 

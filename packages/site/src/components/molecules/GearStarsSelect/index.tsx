@@ -24,7 +24,7 @@ const GearStarsSelect: React.FCX<GearStarsSelectProps> = ({
   const Popover = usePopover();
 
   const handleChange = (value: number) => {
-    onChange && onChange(value);
+    onChange?.(value);
     Popover.hide();
   };
 

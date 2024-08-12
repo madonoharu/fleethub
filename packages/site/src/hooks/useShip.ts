@@ -19,7 +19,7 @@ export function useShipName(shipId: number, withId = false): string {
   const { masterData } = useFhCore();
 
   const defaultName = masterData.ships.find(
-    (ship) => ship.ship_id === shipId
+    (ship) => ship.ship_id === shipId,
   )?.name;
 
   let displayName: string;
@@ -46,12 +46,14 @@ export function useShipActions(id?: string) {
         entitiesSlice.actions.createShip({
           input: ship.state(),
           position,
-        })
+        }),
       );
     };
 
     const update = (changes: Partial<ShipEntity>) => {
-      id && dispatch(shipsSlice.actions.update({ id, changes }));
+      if (id) {
+        dispatch(shipsSlice.actions.update({ id, changes }));
+      }
     };
 
     const reselect = () => {
@@ -61,7 +63,9 @@ export function useShipActions(id?: string) {
     };
 
     const remove = () => {
-      id && dispatch(shipsSlice.actions.remove(id));
+      if (id) {
+        dispatch(shipsSlice.actions.remove(id));
+      }
     };
 
     return {
@@ -82,7 +86,7 @@ export function useShip(id?: string): Ship | undefined {
       const state = selectShipState(root, id);
       return state && core.create_ship(state);
     },
-    (a, b) => a?.hash === b?.hash
+    (a, b) => a?.hash === b?.hash,
   );
 
   return ship;

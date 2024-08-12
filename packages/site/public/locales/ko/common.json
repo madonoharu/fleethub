@@ -294,7 +294,7 @@
     "name": "함대 CI",
     "NelsonTouch": "넬슨 터치",
     "NagatoClassCutin": "나가토 일제사격",
-    "ColoradoClassCutin": "콜로라도 CI",
+    "ColoradoClassCutin": "콜로라도급 CI",
     "KongouClassCutin": "콩고급 야전 공격",
     "Yamato2ShipCutin": "야마토 전력 일제사격",
     "Yamato3ShipCutin": "야마토 3척돌격"
@@ -365,7 +365,9 @@
     "54": "2022년 봄",
     "55": "2022년 여름",
     "56": "2023년 봄",
-    "57": "2023년 여름"
+    "57": "2023년 여름",
+    "58": "2024년 봄",
+    "59": "2024년 여름"
   },
   "nodeType": {
     "Start": "출발점",

@@ -2,8 +2,7 @@
 import type {} from "@emotion/react/types/css-prop";
 
 declare module "react" {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  type FCX<P = {}> = FC<P & { className?: string; style?: CSSProperties }>;
+  type FCX<P = object> = FC<P & { className?: string; style?: CSSProperties }>;
 }
 
 declare module "redux-persist" {
@@ -14,11 +13,12 @@ declare module "redux-persist" {
 
 declare module "@emotion/react" {
   type MyTheme = import("./styles").Theme;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface Theme extends MyTheme {}
 }
 
 declare module "@mui/system/createTheme" {
-  type Colors = typeof import("./styles/colors")["colors"];
+  type Colors = (typeof import("./styles/colors"))["colors"];
 
   interface Theme {
     colors: Colors;
