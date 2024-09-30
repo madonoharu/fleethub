@@ -1,6 +1,6 @@
 use crate::{
     ship::Ship,
-    types::{gear_id, AttackType, GearType, SpecialEnemyType},
+    types::{gear_id, matches_gear_id, AttackType, GearType, SpecialEnemyType},
 };
 
 pub struct LandingCraftModifiers {
@@ -19,6 +19,7 @@ struct Multipliers {
     hh: f64,
     i: f64,
     j: f64,
+    t2: (f64, f64),
 }
 
 impl Default for Multipliers {
@@ -34,6 +35,7 @@ impl Default for Multipliers {
             hh: 1.0,
             i: 1.0,
             j: 1.0,
+            t2: (1.0, 1.0),
         }
     }
 }
@@ -43,10 +45,23 @@ impl LandingCraftModifiers {
         let is_day = attack_type.is_shelling();
         let gears = &attacker.gears;
 
-        let stars_average = gears
+        let landing_craft_stars_average = gears
             .mean_by(|gear| (gear.gear_type == GearType::LandingCraft).then_some(gear.stars as f64))
             .unwrap_or_default();
-        let ibonus = 1.0 + stars_average / 50.0;
+
+        let t4_tank_group_stars_average = gears
+            .mean_by(|gear| {
+                matches_gear_id!(gear.gear_id, "特四式内火艇" | "特四式内火艇改")
+                    .then_some(gear.stars as f64)
+            })
+            .unwrap_or_default();
+
+        let t2_tank_stars_average = gears
+            .mean_by(|gear| (gear.gear_id == gear_id!("特二式内火艇")).then_some(gear.stars as f64))
+            .unwrap_or_default();
+
+        let ibonus1 = 1.0 + landing_craft_stars_average / 50.0 + t4_tank_group_stars_average / 50.0;
+        let ibonus2 = 1.0 + t2_tank_stars_average / 30.0;
 
         let landing_craft_count = gears.count_type(GearType::LandingCraft);
         let toku_dlc_count = gears.count(gear_id!("特大発動艇"));
@@ -62,22 +77,34 @@ impl LandingCraftModifiers {
         let chiha_count = gears.count(gear_id!("特大発動艇+チハ"));
         let chiha_kai_count = gears.count(gear_id!("特大発動艇+チハ改"));
 
-        let a_count = landing_craft_count;
-        let b_count = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+        let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
+        let t4_tank_count = gears.count(gear_id!("特四式内火艇"));
+        let t4_tank_kai_count = gears.count(gear_id!("特四式内火艇改"));
+        let t4_tank_group_count = t4_tank_count + t4_tank_kai_count;
+
+        let cond_a = landing_craft_count + t4_tank_group_count >= 1;
+        let cond_b = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count >= 1;
+
         let c_count =
             t89_tank_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
-        let dd_count = c_count + chiha_count + chiha_kai_count;
+        let cond_c = c_count >= 1;
+        let cond_dd = c_count + chiha_count + chiha_kai_count >= 2;
+
         let e_count = panzer2_count;
-        let ff_count = e_count;
+        let cond_e = e_count >= 1;
+        let cond_ff = e_count >= 2;
+
         let g_count = ab_count + armed_count;
-        let hh_count = g_count;
-        let i_count = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count;
-        let j_count =
-            shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+        let cond_g = g_count >= 1;
+        let cond_hh = g_count >= 2 || t4_tank_group_count >= 2;
+
+        let cond_i = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count >= 1;
+        let cond_j =
+            shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count >= 1;
 
         let precap_ms = match target_type {
             SpecialEnemyType::Pillbox => Multipliers {
-                a: 1.8 * ibonus,
+                a: 1.8 * ibonus1 * ibonus2,
                 b: 1.15,
                 c: 1.5,
                 dd: 1.4,
@@ -87,9 +114,10 @@ impl LandingCraftModifiers {
                 hh: 1.2,
                 i: 2.0,
                 j: 1.0,
+                t2: (2.4, 1.35),
             },
             SpecialEnemyType::IsolatedIsland => Multipliers {
-                a: 1.8 * ibonus,
+                a: 1.8 * ibonus1 * ibonus2,
                 b: 1.15,
                 c: 1.2,
                 dd: 1.4,
@@ -99,9 +127,10 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.8,
                 j: 1.0,
+                t2: (2.4, 1.35),
             },
             SpecialEnemyType::HarbourSummerPrincess => Multipliers {
-                a: 1.7 * ibonus,
+                a: 1.7 * ibonus1 * ibonus2,
                 b: 1.2,
                 c: 1.6,
                 dd: 1.5,
@@ -111,9 +140,10 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 2.0,
                 j: 1.0,
+                t2: (2.8, 1.5),
             },
             SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => Multipliers {
-                a: 1.4 * ibonus,
+                a: 1.4 * ibonus1 * ibonus2,
                 b: 1.15,
                 c: 1.5,
                 dd: 1.3,
@@ -123,25 +153,27 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.1,
                 j: 1.0,
+                t2: (1.5, 1.2),
             },
             _ => Default::default(),
         };
 
         let postcap_ms = match target_type {
             SpecialEnemyType::SupplyDepot | SpecialEnemyType::NewSupplyDepot => Multipliers {
-                a: 1.7 * ibonus,
+                a: 1.7 * ibonus1 * ibonus2,
                 b: 1.2,
-                c: 1.3 * ibonus,
+                c: 1.3 * ibonus1,
                 dd: 1.6,
-                e: 1.3 * ibonus,
+                e: 1.3 * ibonus1,
                 ff: 1.6,
                 g: 1.5,
                 hh: 1.1,
                 i: 1.2,
                 j: 1.0,
+                t2: (1.7, 1.5),
             },
             SpecialEnemyType::AnchorageWaterDemonVacationMode => Multipliers {
-                a: 1.4 * ibonus,
+                a: 1.4 * ibonus1 * ibonus2,
                 b: 1.15,
                 c: 1.2,
                 dd: 1.4,
@@ -151,9 +183,10 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.8,
                 j: 1.0,
+                t2: (2.4, 1.35),
             },
             SpecialEnemyType::DockPrincess => Multipliers {
-                a: 1.1 * ibonus,
+                a: 1.1 * ibonus1 * ibonus2,
                 b: 1.15,
                 c: 1.15,
                 dd: 1.15,
@@ -163,44 +196,55 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.1,
                 j: 1.4,
+                t2: (1.2, 1.2),
             },
             _ => Default::default(),
         };
 
         let precap = {
-            let a = if a_count >= 1 { precap_ms.a } else { 1.0 };
-            let b = if b_count >= 1 { precap_ms.b } else { 1.0 };
-            let c = if c_count >= 1 { precap_ms.c } else { 1.0 };
-            let dd = if dd_count >= 2 { precap_ms.dd } else { 1.0 };
-            let e = if e_count >= 1 { precap_ms.e } else { 1.0 };
-            let ff = if ff_count >= 2 { precap_ms.ff } else { 1.0 };
-            let g = if is_day && g_count >= 1 {
-                precap_ms.g
-            } else {
-                1.0
-            };
-            let hh = if is_day && hh_count >= 2 {
-                precap_ms.hh
-            } else {
-                1.0
-            };
-            let i = if i_count >= 1 { precap_ms.i } else { 1.0 };
-            let j = if j_count >= 1 { precap_ms.j } else { 1.0 };
-            a * b * c * dd * e * ff * g * hh * i * j
+            let a = if cond_a { precap_ms.a } else { 1.0 };
+            let b = if cond_b { precap_ms.b } else { 1.0 };
+            let c = if cond_c { precap_ms.c } else { 1.0 };
+            let dd = if cond_dd { precap_ms.dd } else { 1.0 };
+            let e = if cond_e { precap_ms.e } else { 1.0 };
+            let ff = if cond_ff { precap_ms.ff } else { 1.0 };
+            let g = if is_day && cond_g { precap_ms.g } else { 1.0 };
+            let hh = if is_day && cond_hh { precap_ms.hh } else { 1.0 };
+            let i = if cond_i { precap_ms.i } else { 1.0 };
+            let j = if cond_j { precap_ms.j } else { 1.0 };
+
+            let mut t2 = 1.0;
+            if t2_tank_count >= 1 {
+                t2 *= precap_ms.t2.0;
+            }
+            if t2_tank_count >= 2 || t4_tank_kai_count >= 1 {
+                t2 *= precap_ms.t2.1;
+            }
+
+            a * b * c * dd * e * ff * g * hh * i * j * t2
         };
 
         let postcap = {
-            let a = if a_count >= 1 { postcap_ms.a } else { 1.0 };
-            let b = if b_count >= 1 { postcap_ms.b } else { 1.0 };
-            let c = if c_count >= 1 { postcap_ms.c } else { 1.0 };
-            let dd = if dd_count >= 2 { postcap_ms.dd } else { 1.0 };
-            let e = if e_count >= 1 { postcap_ms.e } else { 1.0 };
-            let ff = if ff_count >= 2 { postcap_ms.ff } else { 1.0 };
-            let g = if g_count >= 1 { postcap_ms.g } else { 1.0 };
-            let hh = if hh_count >= 2 { postcap_ms.hh } else { 1.0 };
-            let i = if i_count >= 1 { postcap_ms.i } else { 1.0 };
-            let j = if j_count >= 1 { postcap_ms.j } else { 1.0 };
-            a * b * c * dd * e * ff * g * hh * i * j
+            let a = if cond_a { postcap_ms.a } else { 1.0 };
+            let b = if cond_b { postcap_ms.b } else { 1.0 };
+            let c = if cond_c { postcap_ms.c } else { 1.0 };
+            let dd = if cond_dd { postcap_ms.dd } else { 1.0 };
+            let e = if cond_e { postcap_ms.e } else { 1.0 };
+            let ff = if cond_ff { postcap_ms.ff } else { 1.0 };
+            let g = if cond_g { postcap_ms.g } else { 1.0 };
+            let hh = if cond_hh { postcap_ms.hh } else { 1.0 };
+            let i = if cond_i { postcap_ms.i } else { 1.0 };
+            let j = if cond_j { postcap_ms.j } else { 1.0 };
+
+            let mut t2 = 1.0;
+            if t2_tank_count >= 1 {
+                t2 *= postcap_ms.t2.0;
+            }
+            if t2_tank_count >= 2 || t4_tank_kai_count >= 1 {
+                t2 *= postcap_ms.t2.1;
+            }
+
+            a * b * c * dd * e * ff * g * hh * i * j * t2
         };
 
         Self { precap, postcap }

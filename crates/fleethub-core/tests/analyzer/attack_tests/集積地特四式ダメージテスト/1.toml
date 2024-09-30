@@ -1,0 +1,22 @@
+description = "特四式単体ダメージテスト"
+
+
+# 攻撃艦設定　大和改二重
+[attacker]
+ship_id = 916
+
+
+g1 = "特四式内火艇"
+
+
+# 防御艦設定　集積地
+[target]
+ship_id = 2164
+
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 370
+damage.normal_damage_max = 378
+damage.critical_damage_min = 564
+damage.critical_damage_max = 572

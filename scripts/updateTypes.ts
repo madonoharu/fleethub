@@ -15,6 +15,7 @@ const FLEETHUB_CORE_SRC_PREFIX = path.resolve("crates/fleethub-core/src");
 
 const exec = promisify(child_process.exec);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ENUM_NAMES = ["GearType", "GearAttr", "ShipType", "ShipAttr"] as const;
 
 type EnumName = (typeof ENUM_NAMES)[number];
@@ -29,9 +30,15 @@ type EnumConfig = {
   name: string;
   items: EnumItem[];
   unknown?: null | number;
+  deriveDefault?: boolean;
 };
 
-function createEnum({ name, items, unknown }: EnumConfig): string {
+function createEnum({
+  name,
+  items,
+  unknown,
+  deriveDefault,
+}: EnumConfig): string {
   const lines = items.map(({ id, tag, name }) => {
     const line = id === undefined ? tag : `${tag} = ${id}`;
     return name ? `\n/// ${name}\n${line}` : line;
@@ -41,6 +48,10 @@ function createEnum({ name, items, unknown }: EnumConfig): string {
     lines.unshift(`Unknown`);
   } else if (typeof unknown === "number") {
     lines.unshift(`Unknown = ${unknown}`);
+  }
+
+  if (deriveDefault) {
+    lines[0] = "#[default]\n" + lines[0];
   }
 
   return `enum ${name} {${lines.join(",")}}\n`;
@@ -169,6 +180,7 @@ async function main() {
       name: "GearType",
       items: tables.gear_types.rows.map(createEnumItem),
       unknown: 0,
+      deriveDefault: true,
     },
     GearAttr: {
       name: "GearAttr",

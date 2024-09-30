@@ -82,16 +82,21 @@ impl AttackPowerParams {
             honi_mod,
             toku_daihatsu_chiha_mod,
             toku_daihatsu_chiha_kai_mod,
+            t4_tank_group_mod,
+            t4_tank_kai_mod,
             ..
         } = &self.special_enemy_mods;
 
         precap = stype_mod.apply(precap);
         precap *= precap_general_mod.a;
+
         precap = toku_daihatsu_tank_mod.apply(precap);
         precap = m4a1dd_mod.apply(precap);
         precap = honi_mod.apply(precap);
         precap = toku_daihatsu_chiha_mod.apply(precap);
         precap = toku_daihatsu_chiha_kai_mod.apply(precap);
+        precap = t4_tank_group_mod.apply(precap);
+        precap = t4_tank_kai_mod.apply(precap);
         precap = landing_craft_synergy_mod.apply(precap);
         precap += precap_general_mod.b;
 

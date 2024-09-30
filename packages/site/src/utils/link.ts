@@ -4,7 +4,7 @@ import { createDeck } from "./deck";
 
 const MAX_LENGTH = 7350;
 
-const getPredeckUrl = (base: string, org?: Org | undefined) => {
+const getPredeckUrl = (base: string, org?: Org) => {
   const url = new URL(base);
   const deck = createDeck(org);
 
@@ -19,7 +19,7 @@ const getPredeckUrl = (base: string, org?: Org | undefined) => {
   return url.href;
 };
 
-const getHashPredeckUrl = (base: string, org?: Org | undefined) => {
+const getHashPredeckUrl = (base: string, org?: Org) => {
   const url = new URL(base);
   const deck = createDeck(org);
 
@@ -27,12 +27,12 @@ const getHashPredeckUrl = (base: string, org?: Org | undefined) => {
   return url.href;
 };
 
-export const openKctools = (org?: Org | undefined) => {
+export const openKctools = (org?: Org) => {
   const url = getHashPredeckUrl("https://noro6.github.io/kc-web/", org);
   window.open(url, "_blank", "noreferrer");
 };
 
-export const openDeckbuilder = (org?: Org | undefined) => {
+export const openDeckbuilder = (org?: Org) => {
   const url = getPredeckUrl("http://kancolle-calc.net/deckbuilder.html", org);
   window.open(url, "_blank", "noreferrer");
 };
