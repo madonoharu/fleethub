@@ -30,8 +30,7 @@ export const batchUndoable = (cb: () => void, group = nanoid()) => {
   batchGroupBy.end(group);
 };
 
-const groupBy: GroupByFunction = () =>
-  groupSet.keys().next().value as string | undefined;
+const groupBy: GroupByFunction = () => groupSet.keys().next().value;
 
 const IGNORE_ACTIONS: string[] = [];
 

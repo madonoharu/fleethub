@@ -1,0 +1,26 @@
+description = "特四式改混載ダメージテスト"
+
+
+# 攻撃艦設定　大和改二重
+[attacker]
+ship_id = 916
+
+
+g1 = "大発動艇(八九式中戦車&陸戦隊)"
+g2 = "装甲艇(AB艇)"
+g3 = "特二式内火艇"
+g4 = "特大発動艇+Ⅲ号戦車J型"
+g5 = "特四式内火艇改"
+
+
+# 防御艦設定　集積地
+[target]
+ship_id = 2164
+
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 5337
+damage.normal_damage_max = 5345
+damage.critical_damage_min = 8014
+damage.critical_damage_max = 8022

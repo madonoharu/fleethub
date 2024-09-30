@@ -1,0 +1,26 @@
+description = "特四式改☆10混載ダメージテスト"
+
+
+# 攻撃艦設定　大和改二重
+[attacker]
+ship_id = 916
+
+
+g1 = { gear_id = "大発動艇(八九式中戦車&陸戦隊)", stars = 10 }
+g2 = { gear_id = "装甲艇(AB艇)", stars = 10 }
+g3 = { gear_id = "特二式内火艇", stars = 10 }
+g4 = { gear_id = "特大発動艇+Ⅲ号戦車J型", stars = 10 }
+g5 = { gear_id = "特四式内火艇改", stars = 10 }
+
+
+# 防御艦設定　集積地
+[target]
+ship_id = 2164
+
+
+# 昼戦単発
+[expected.day.data.SingleAttack]
+damage.normal_damage_min = 15199
+damage.normal_damage_max = 15208
+damage.critical_damage_min = 22808
+damage.critical_damage_max = 22816

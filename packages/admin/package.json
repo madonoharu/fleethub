@@ -9,11 +9,11 @@
   "dependencies": {
     "@fh/utils": "workspace:*",
     "@google-cloud/asset": "^5.7.0",
-    "cloudinary": "^2.4.0",
+    "cloudinary": "^2.5.0",
     "dequal": "^2.0.3",
-    "firebase-admin": "^12.3.1",
+    "firebase-admin": "^12.5.0",
     "fleethub-core": "npm:latest",
-    "googleapis": "^140.0.1",
-    "ky": "^1.5.0"
+    "googleapis": "^144.0.0",
+    "ky": "^1.7.2"
   }
 }
