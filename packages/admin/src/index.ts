@@ -5,12 +5,12 @@ import { updateCloudinary } from "./cloudinary";
 import { createMasterData, MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
 
-export function fetchStart2(): Promise<Start2> {
-  return ky
-    .get(
-      "https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json",
-    )
-    .json<Start2>();
+const START2_URL =
+  "https://raw.githubusercontent.com/shiro-sh39/api_start2/main/START2.json";
+
+export async function fetchStart2(): Promise<Start2> {
+  const { api_data } = await ky.get(START2_URL).json<{ api_data: Start2 }>();
+  return api_data;
 }
 
 export function fetchCtypeNames(): Promise<string[]> {
