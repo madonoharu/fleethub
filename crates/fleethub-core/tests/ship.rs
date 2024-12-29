@@ -1,4 +1,4 @@
-use fleethub_core::types::Side;
+use fleethub_core::{ship::NightCutinTermParams, types::Side};
 
 mod common;
 
@@ -67,4 +67,20 @@ fn test_ship_adjusted_anti_air() {
 
     assert!(ebonus > 0.0);
     assert_eq!(ship.ship_adjusted_anti_air(Side::Player), Some(expected));
+}
+
+#[test]
+fn test_ship_calc_night_cutin_term() {
+    let ship = ship! {
+        ship_id = "時雨改三"
+        current_hp = 17
+    };
+
+    let term = ship.calc_night_cutin_term(NightCutinTermParams {
+        is_flagship: true,
+        attacker_searchlight: true,
+        ..Default::default()
+    });
+
+    assert_eq!(term, Some(114.0));
 }
