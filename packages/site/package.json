@@ -25,14 +25,14 @@
     "@mui/system": "^5.16.7",
     "@mui/x-tree-view": "^7.18.0",
     "@reduxjs/toolkit": "^2.2.7",
-    "@visx/legend": "^3.10.3",
-    "@visx/network": "^3.3.0",
-    "@visx/responsive": "^3.10.2",
-    "@visx/shape": "^3.5.0",
-    "@visx/tooltip": "^3.3.0",
+    "@visx/legend": "^3.12.0",
+    "@visx/network": "^3.12.0",
+    "@visx/responsive": "^3.12.0",
+    "@visx/shape": "^3.12.0",
+    "@visx/tooltip": "^3.12.0",
     "clsx": "^2.1.1",
     "constate": "^3.3.2",
-    "core-js": "^3.38.1",
+    "core-js": "^3.39.0",
     "equipment-bonus": "npm:latest",
     "fast-json-stable-stringify": "^2.1.0",
     "fleethub-core": "npm:latest",
@@ -60,10 +60,10 @@
     "reselect": "^5.1.1",
     "sharp": "^0.33.5",
     "simple-evaluate": "^1.4.6",
-    "swr": "^2.2.5",
+    "swr": "^2.3.0",
     "ts-norm": "^0.4.0",
-    "use-debounce": "^10.0.3",
-    "use-immer": "^0.10.0",
+    "use-debounce": "^10.0.4",
+    "use-immer": "^0.11.0",
     "xxhashjs": "^0.2.2"
   },
   "devDependencies": {
@@ -74,6 +74,6 @@
     "@types/xxhashjs": "^0.2.4",
     "next-transpile-modules": "^10.0.1",
     "tilg": "^0.1.1",
-    "typescript": "5.6.2"
+    "typescript": "5.7.2"
   }
 }
