@@ -202,9 +202,10 @@ fn heavy_cruiser_bonus(ship: &Ship, is_night: bool) -> f64 {
     let ctype = ship.ctype;
 
     if is_night {
-        if gears.has(gear_id!("20.3cm連装砲")) || gears.has(gear_id!("20.3cm(2号)連装砲")) {
+        if gears.has(gear_id!("20.3cm連装砲")) {
             result += 10.0
-        } else if gears.has(gear_id!("20.3cm(3号)連装砲"))
+        } else if gears.has(gear_id!("20.3cm(2号)連装砲"))
+            || gears.has(gear_id!("20.3cm(3号)連装砲"))
             || gears.has(gear_id!("試製20.3cm(4号)連装砲"))
         {
             result += 15.0

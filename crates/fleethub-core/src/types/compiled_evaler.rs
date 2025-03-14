@@ -1,4 +1,4 @@
-use fasteval::{eval_compiled_ref, Compiler, EvalNamespace, Evaler, Instruction, Parser, Slab};
+use fasteval::{Compiler, EvalNamespace, Evaler, Instruction, Parser, Slab};
 use serde::Deserialize;
 use wasm_bindgen::prelude::*;
 
@@ -41,7 +41,7 @@ impl CompiledEvaler {
     }
 
     pub fn eval<T: EvalNamespace>(&self, ns: &mut T) -> Result<f64, fasteval::Error> {
-        Ok(eval_compiled_ref!(&self.instruction, &self.slab, ns))
+        self.instruction.eval(&self.slab, ns)
     }
 
     pub fn matches<T: EvalNamespace>(&self, ns: &mut T) -> bool {

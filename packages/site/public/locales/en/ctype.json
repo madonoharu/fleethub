@@ -127,6 +127,8 @@
   "127": "Junsen B Class Kai一",
   "128": "La Galissonnière Class",
   "129": "Mogador Class",
+  "130": "Ootomari Class",
+  "131": "Kirov Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -270,5 +272,10 @@
   "2237": "French Light Cruiser Princess",
   "2243": "Harbour Princess Holiday Mode",
   "2247": "Pacific Airfield Princess",
-  "2256": "Abyssal Coral Sea Water Demon"
+  "2256": "Abyssal Coral Sea Water Demon",
+  "2262": "駆逐ラ級(初期型)",
+  "2263": "Ra-Class Destroyer",
+  "2268": "輸送ワ級II(揚陸中)",
+  "2276": "Submarine Seerfish Water Demon",
+  "2282": "Non-Treaty Cruiser Water Princess"
 }
