@@ -114,6 +114,14 @@ where
                 "count" => self.gears.count(*args.first()? as u16) as f64,
                 "count_gear_type" => self.gears.count_type((*args.first()?).into()) as f64,
 
+                "count_by_stars" => {
+                    let gear_id = *args.first()? as u16;
+                    let stars = *args.get(1)? as u8;
+                    self.gears
+                        .count_by(|gear| gear.gear_id == gear_id && gear.stars >= stars)
+                        as f64
+                }
+
                 "has_historical_aircraft" => {
                     let arg = *args.first()?;
                     let result = self

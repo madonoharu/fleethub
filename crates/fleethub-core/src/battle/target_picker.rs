@@ -46,7 +46,7 @@ where
             main_slice
         } else if main_slice.is_empty() {
             escort_slice
-        } else if rng.gen() {
+        } else if rng.r#gen() {
             main_slice
         } else {
             escort_slice

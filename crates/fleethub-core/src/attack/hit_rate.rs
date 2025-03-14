@@ -43,7 +43,7 @@ impl HitRate {
 
 impl Distribution<HitType> for HitRate {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> HitType {
-        let x: f64 = rng.gen();
+        let x: f64 = rng.r#gen();
 
         if x < self.critical {
             HitType::Critical

@@ -142,7 +142,7 @@ impl Ship {
         let value = if luck < 50.0 {
             luck + 15.0 + 0.75 * level.sqrt()
         } else {
-            (luck - 50.0).sqrt() + 65.0 + 0.8 * level.sqrt()
+            (luck - 50.0).sqrt().floor() + 65.0 + 0.8 * level.sqrt()
         }
         .floor();
 
@@ -169,7 +169,9 @@ impl Ship {
             && (self.ship_type.is_destroyer() || self.ship_type.is_light_cruiser())
         {
             value += 8.0
-        } else if self.gears.has(gear_id!("熟練見張員")) {
+        }
+
+        if self.gears.has(gear_id!("熟練見張員")) {
             value += 5.0
         }
 
@@ -223,6 +225,7 @@ impl Ship {
     }
 }
 
+#[derive(Default)]
 pub struct NightCutinTermParams {
     pub is_flagship: bool,
     pub attacker_starshell: bool,

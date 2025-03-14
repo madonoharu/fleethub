@@ -27,6 +27,7 @@ pub use shelling_attack::*;
 pub use support_shelling_attack::*;
 pub use torpedo_attack::*;
 
+#[allow(dead_code)]
 trait AttackTrait {
     fn calc_attack_params(&self) -> AttackParams;
 

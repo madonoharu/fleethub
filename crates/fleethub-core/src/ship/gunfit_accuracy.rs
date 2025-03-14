@@ -110,6 +110,7 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
             "20.3cm連装砲"
                 | "20.3cm(3号)連装砲"
                 | "20.3cm(2号)連装砲"
+                | "試製20.3cm(4号)連装砲"
                 | "203mm/53 連装砲"
                 | "SKC34 20.3cm連装砲"
         )
@@ -201,9 +202,12 @@ fn heavy_cruiser_bonus(ship: &Ship, is_night: bool) -> f64 {
     let ctype = ship.ctype;
 
     if is_night {
-        if gears.has(gear_id!("20.3cm連装砲")) || gears.has(gear_id!("20.3cm(2号)連装砲")) {
+        if gears.has(gear_id!("20.3cm連装砲")) {
             result += 10.0
-        } else if gears.has(gear_id!("20.3cm(3号)連装砲")) {
+        } else if gears.has(gear_id!("20.3cm(2号)連装砲"))
+            || gears.has(gear_id!("20.3cm(3号)連装砲"))
+            || gears.has(gear_id!("試製20.3cm(4号)連装砲"))
+        {
             result += 15.0
         }
     }
@@ -243,6 +247,7 @@ fn seaplane_tender_bonus(ship: &Ship) -> f64 {
             "20.3cm連装砲"
                 | "20.3cm(3号)連装砲"
                 | "20.3cm(2号)連装砲"
+                | "試製20.3cm(4号)連装砲"
                 | "203mm/53 連装砲"
                 | "152mm/55 三連装速射砲"
                 | "152mm/55 三連装速射砲改"
