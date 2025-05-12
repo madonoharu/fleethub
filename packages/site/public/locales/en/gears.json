@@ -116,6 +116,8 @@
   "61cm五連装(酸素)魚雷": "61cm Quintuple (Oxygen) Torpedo Mount",
   "零式水上観測機": "Type 0 Observation Seaplane",
   "零式艦戦62型(爆戦)": "Type 0 Fighter Model 62 (Fighter-bomber)",
+  "零式艦戦62型改(夜間爆戦)": "Type 0 Fighter Model 62 (Night Fighter-bomber)",
+  "零式艦戦62型改(熟練/夜間爆戦)": "Type 0 Fighter Model 62 (Skilled / Night Fighter-bomber)",
   "零式艦戦64型(制空戦闘機仕様)": "Type 0 Fighter Model 64 (Air Superiority Fighter Specification)",
   "零式艦戦64型(熟練爆戦)": "Type 0 Fighter Model 64 (Skilled Fighter-bomber)",
   "二式艦上偵察機": "Type 2 Reconnaissance Aircraft",
@@ -704,6 +706,6 @@
   "深海不屈艦爆 Mk.II": "Abyssal Dauntless Dive Bomber Mk.II",
   "深海打撃艦攻 Mk.II": "Abyssal Devastation Torpedo Bomber Mk.II",
   "深海5inch連装砲 Mk.30+GFCS": "Abyssal 5inch Twin Gun Mount Mk.30 + GFCS",
-  "深海18cm三連装砲+深海SG": "Abyssal 18cm Twin Gun Mount + Abyssal SG",
+  "深海18cm三連装砲+深海SG": "Abyssal 18cm Triple Gun Mount + Abyssal SG",
   "dummy": "forNoComma"
 }

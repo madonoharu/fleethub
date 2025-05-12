@@ -129,6 +129,7 @@
   "129": "Mogador Class",
   "130": "Ootomari Class",
   "131": "Kirov Class",
+  "132": "Special 1TL Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -277,5 +278,12 @@
   "2263": "Ra-Class Destroyer",
   "2268": "輸送ワ級II(揚陸中)",
   "2276": "Submarine Seerfish Water Demon",
-  "2282": "Non-Treaty Cruiser Water Princess"
+  "2282": "Non-Treaty Cruiser Water Princess",
+  "2288": "駆逐ラ級γ(初期型)",
+  "2289": "Ra-Class Destroyer Gamma",
+  "2291": "駆逐ラ級δ(初期型)",
+  "2292": "Ra-Class Destroyer Delta",
+  "2294": "Ra-Class Destroyer Zeta",
+  "2307": "Occupied Airfield Princess",
+  "2311": "New Heavy Cruiser Princess"
 }

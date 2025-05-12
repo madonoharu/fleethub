@@ -5280,9 +5280,9 @@ __metadata:
   linkType: hard
 
 "equipment-bonus@npm:latest":
-  version: 7.13.11
-  resolution: "equipment-bonus@npm:7.13.11"
-  checksum: 10c0/0f9c0991e4829f3e8fc812cb39f79bf6108f7a3fd21dd81812d878b2315bb7203782cda10ee5c848b74aceb1b89fb3ce339b16f8abb1ec35f041c0c95978efac
+  version: 7.13.13
+  resolution: "equipment-bonus@npm:7.13.13"
+  checksum: 10c0/b0c65f31ff95eba310cb3490b573c46604fb6191f24ab347b8a282252afe9431696ee63aed5005d4425b03289d015d2eb43bce3788597d880fe811040e770977
   languageName: node
   linkType: hard
 

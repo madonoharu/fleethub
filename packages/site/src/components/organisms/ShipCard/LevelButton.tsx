@@ -21,12 +21,14 @@ type Props = {
   onChange: (value: number) => void;
 };
 
+const MAX_LEVEL = 185;
+
 const Form: React.FC<Props> = ({ value, onChange }) => {
   const set1 = React.useCallback(() => onChange(1), [onChange]);
   const set99 = React.useCallback(() => onChange(99), [onChange]);
-  const set180 = React.useCallback(() => onChange(180), [onChange]);
+  const setMax = React.useCallback(() => onChange(MAX_LEVEL), [onChange]);
 
-  const inputProps = { min: 1, max: 180, value, onChange };
+  const inputProps = { min: 1, max: MAX_LEVEL, value, onChange };
 
   return (
     <DialogContent>
@@ -39,8 +41,8 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
         <StyledButton variant="outlined" onClick={set99}>
           Lv 99
         </StyledButton>
-        <StyledButton variant="outlined" onClick={set180}>
-          Lv 180
+        <StyledButton variant="outlined" onClick={setMax}>
+          Lv {MAX_LEVEL}
         </StyledButton>
       </SpaceBetween>
     </DialogContent>
