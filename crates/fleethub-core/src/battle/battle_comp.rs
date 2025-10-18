@@ -44,7 +44,7 @@ impl BattleComp {
     pub fn members_by(
         &self,
         query: impl Into<EnumSet<FleetType>>,
-    ) -> impl Iterator<Item = BattleMemberRef> {
+    ) -> impl Iterator<Item = BattleMemberRef<'_>> {
         let formation = self.formation;
 
         self.comp.members_by(query).map(move |ship| {
@@ -58,7 +58,7 @@ impl BattleComp {
         })
     }
 
-    pub fn members(&self, participant: Participant) -> impl Iterator<Item = BattleMemberRef> {
+    pub fn members(&self, participant: Participant) -> impl Iterator<Item = BattleMemberRef<'_>> {
         let formation = self.formation;
         let is_combined = self.comp.is_combined();
 
@@ -87,11 +87,11 @@ impl BattleComp {
             })
     }
 
-    pub fn get_ship(&self, position: ShipPosition) -> Option<BattleMemberRef> {
+    pub fn get_ship(&self, position: ShipPosition) -> Option<BattleMemberRef<'_>> {
         self.comp.get_battle_member(self.formation, position)
     }
 
-    pub fn get_ship_mut(&mut self, position: ShipPosition) -> Option<BattleMemberMut> {
+    pub fn get_ship_mut(&mut self, position: ShipPosition) -> Option<BattleMemberMut<'_>> {
         self.comp.get_battle_member_mut(self.formation, position)
     }
 
@@ -105,12 +105,12 @@ impl BattleComp {
         self.members(participant).any(|ship| ship.is_installation())
     }
 
-    pub fn order_by_range<R: Rng + ?Sized>(
+    pub fn order_by_range<'a, R: Rng + ?Sized>(
         &self,
         rng: &mut R,
         participant: Participant,
         anti_inst: bool,
-    ) -> impl Iterator<Item = ShipPosition> {
+    ) -> impl Iterator<Item = ShipPosition> + 'a {
         let mut group = self
             .members(participant)
             .filter(|ship| ship.participates_in_day_combat(anti_inst))

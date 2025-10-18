@@ -65,7 +65,7 @@ impl AttackAnalyzer<'_> {
         }
     }
 
-    fn attacker_combat_ship(&self) -> BattleMemberRef {
+    fn attacker_combat_ship(&self) -> BattleMemberRef<'_> {
         let conditions = self.config.attacker.conditions;
         BattleMemberRef::new(
             self.attacker,
@@ -75,7 +75,7 @@ impl AttackAnalyzer<'_> {
         )
     }
 
-    fn target_combat_ship(&self) -> BattleMemberRef {
+    fn target_combat_ship(&self) -> BattleMemberRef<'_> {
         let conditions = self.config.target.conditions;
         BattleMemberRef::new(
             self.target,

@@ -1,6 +1,7 @@
 use serde::Serialize;
 use tsify::Tsify;
 
+#[allow(dead_code)]
 #[derive(Debug, Tsify)]
 #[serde(transparent)]
 pub struct FhResult<T> {

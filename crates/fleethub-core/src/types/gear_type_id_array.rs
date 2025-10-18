@@ -32,7 +32,7 @@ impl FromWasmAbi for GearTypeIdArray {
     type Abi = <Vec<u8> as FromWasmAbi>::Abi;
 
     unsafe fn from_abi(js: Self::Abi) -> Self {
-        let vec = <Vec<u8> as FromWasmAbi>::from_abi(js);
+        let vec = unsafe { <Vec<u8> as FromWasmAbi>::from_abi(js) };
         Self::from(vec)
     }
 }
