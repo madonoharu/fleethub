@@ -59,7 +59,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "kc-tools": "^1.6.1",
+    "kc-tools": "^1.6.2",
     "ky": "^1.7.4",
     "lint-staged": "^15.3.0",
     "listr2": "^8.2.5",

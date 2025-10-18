@@ -37,14 +37,18 @@ pub enum MstEquipShipValue {
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
-pub struct MstEquipShip(HashMap<u8, MstEquipShipValue>);
+pub struct MstEquipShip {
+    api_equip_type: HashMap<u8, MstEquipShipValue>,
+}
 
 impl MstEquipShip {
     fn contains(&self, gear: &Gear) -> bool {
-        self.0.get(&gear.gear_type_id()).is_some_and(|v| match v {
-            MstEquipShipValue::Null => true,
-            MstEquipShipValue::GearIds(ids) => ids.contains(&gear.gear_id),
-        })
+        self.api_equip_type
+            .get(&gear.gear_type_id())
+            .is_some_and(|v| match v {
+                MstEquipShipValue::Null => true,
+                MstEquipShipValue::GearIds(ids) => ids.contains(&gear.gear_id),
+            })
     }
 }
 
@@ -103,7 +107,9 @@ impl MasterEquippability {
                         },
                     );
 
-                    MstEquipShip(map)
+                    MstEquipShip {
+                        api_equip_type: map,
+                    }
                 });
 
         let exslot_gear_ids = self
