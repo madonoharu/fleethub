@@ -6148,9 +6148,9 @@ __metadata:
   linkType: hard
 
 "fleethub-core@npm:latest":
-  version: 1.12.9
-  resolution: "fleethub-core@npm:1.12.9"
-  checksum: 10c0/2f23d1d492d15cdc124546f93e656e43fc6969048584e391f5fb4c25e8bfe9b79ea11377b2a7b68e3757f9376287496f1c2382de9aa8ef2b172a33fbca5ad624
+  version: 1.12.10
+  resolution: "fleethub-core@npm:1.12.10"
+  checksum: 10c0/0e5e12802e103872378319cd160bae8e2ac01c38938cc2dab39cf14cf04198ecc05bd7de6a6d2755e2933e22e7b13e26a6cca9e3f425090f2d98cfdbed22aef0
   languageName: node
   linkType: hard
 
@@ -6189,7 +6189,7 @@ __metadata:
     identity-obj-proxy: "npm:^3.0.0"
     jest: "npm:^29.7.0"
     jest-environment-jsdom: "npm:^29.7.0"
-    kc-tools: "npm:^1.6.1"
+    kc-tools: "npm:^1.6.2"
     ky: "npm:^1.7.4"
     lint-staged: "npm:^15.3.0"
     listr2: "npm:^8.2.5"
@@ -8226,10 +8226,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kc-tools@npm:^1.6.1":
-  version: 1.6.1
-  resolution: "kc-tools@npm:1.6.1"
-  checksum: 10c0/075b4deaadedad9f20334b0e075680f6f6a440e186f08b1532d11beaba424fbcc2727d977196186708130f81813e9d1b63198dc324d2540a30985575ab98c3c1
+"kc-tools@npm:^1.6.2":
+  version: 1.6.2
+  resolution: "kc-tools@npm:1.6.2"
+  checksum: 10c0/db9bbc09af7f24c1e60e186ea197cf919cbb38bce487be44240ecd89e0d4b410baf1f8ae496e95e42fde1e9a5fe9b5754db3079de439a375f01cac7030bd773a
   languageName: node
   linkType: hard
 
