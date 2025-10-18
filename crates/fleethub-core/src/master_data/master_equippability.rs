@@ -5,21 +5,47 @@ use tsify::Tsify;
 use crate::{
     gear::Gear,
     gear_array::gear_key_to_index,
-    types::{gear_id, CompiledEvaler},
+    types::{CompiledEvaler, gear_id},
 };
 
 use super::MasterShip;
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
-pub struct EquipStype {
-    pub id: u8,
-    pub equip_type: Vec<u8>,
+pub struct MstStype {
+    pub api_id: u8,
+    pub api_equip_type: HashMap<u8, u8>,
+}
+
+impl From<serde_json::Value> for MstEquipShipValue {
+    fn from(value: serde_json::Value) -> Self {
+        use serde_json::Value;
+
+        match value {
+            Value::Null => Self::Null,
+            Value::Array(_) => Self::GearIds(serde_json::from_value(value).unwrap()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Tsify)]
+#[serde(from = "serde_json::Value", untagged)]
+pub enum MstEquipShipValue {
+    #[tsify(type = "null")]
+    Null,
+    GearIds(Vec<u16>),
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
-pub struct MstEquipShip {
-    pub api_ship_id: u16,
-    pub api_equip_type: Vec<u8>,
+pub struct MstEquipShip(HashMap<u8, MstEquipShipValue>);
+
+impl MstEquipShip {
+    fn contains(&self, gear: &Gear) -> bool {
+        self.0.get(&gear.gear_type_id()).is_some_and(|v| match v {
+            MstEquipShipValue::Null => true,
+            MstEquipShipValue::GearIds(ids) => ids.contains(&gear.gear_id),
+        })
+    }
 }
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
@@ -31,9 +57,9 @@ pub struct MstEquipExslotShip {
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterEquippability {
-    pub equip_stype: Vec<EquipStype>,
+    pub equip_stype: Vec<MstStype>,
     pub equip_exslot: Vec<u8>,
-    pub equip_ship: Vec<MstEquipShip>,
+    pub equip_ship: HashMap<u16, MstEquipShip>,
     pub equip_exslot_ship: HashMap<u16, MstEquipExslotShip>,
     pub rules: Vec<EquippabilityRule>,
 }
@@ -55,21 +81,30 @@ impl MasterEquippability {
             return ShipEquippability::abyssal();
         }
 
-        let equip_ship = self
-            .equip_ship
-            .iter()
-            .find(|es| es.api_ship_id == ship.ship_id)
-            .map(|es| &es.api_equip_type);
+        let equip_ship =
+            self.equip_ship
+                .get(&ship.ship_id)
+                .cloned()
+                .unwrap_or_else(|| {
+                    let mst_stype = self
+                        .equip_stype
+                        .iter()
+                        .find(|es| es.api_id == ship.stype)
+                        .unwrap();
 
-        let types = equip_ship
-            .or_else(|| {
-                self.equip_stype
-                    .iter()
-                    .find(|es| es.id == ship.stype)
-                    .map(|es| &es.equip_type)
-            })
-            .cloned()
-            .unwrap_or_default();
+                    let map = mst_stype.api_equip_type.iter().fold(
+                        HashMap::new(),
+                        |mut map, (id, flag)| {
+                            if *flag == 1 {
+                                map.insert(*id, MstEquipShipValue::Null);
+                            }
+
+                            map
+                        },
+                    );
+
+                    MstEquipShip(map)
+                });
 
         let exslot_gear_ids = self
             .equip_exslot_ship
@@ -116,7 +151,7 @@ impl MasterEquippability {
             });
 
         ShipEquippability {
-            types,
+            equip_ship,
             exslot_gear_ids,
             exslot_types: self.equip_exslot.clone(),
             slotnum: ship.slotnum,
@@ -142,7 +177,7 @@ impl EquippabilityPattern {
 
 #[derive(Debug, Default, Clone)]
 pub struct ShipEquippability {
-    pub types: Vec<u8>,
+    pub equip_ship: MstEquipShip,
     pub exslot_types: Vec<u8>,
     pub exslot_gear_ids: Vec<u16>,
     pub slotnum: usize,
@@ -168,7 +203,7 @@ impl ShipEquippability {
             return true;
         }
 
-        if !self.types.contains(&gear.special_type) {
+        if !self.equip_ship.contains(gear) {
             return false;
         }
 

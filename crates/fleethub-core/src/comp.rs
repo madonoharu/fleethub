@@ -69,7 +69,7 @@ impl Comp {
         &self,
         formation: Formation,
         position: ShipPosition,
-    ) -> Option<BattleMemberRef> {
+    ) -> Option<BattleMemberRef<'_>> {
         let fleet = self.get_fleet(position.fleet_type)?;
         let ship = fleet.ships.get(position.index)?;
         let amagiri_index = fleet.amagiri_index();
@@ -86,7 +86,7 @@ impl Comp {
         &mut self,
         formation: Formation,
         position: ShipPosition,
-    ) -> Option<BattleMemberMut> {
+    ) -> Option<BattleMemberMut<'_>> {
         let fleet = self.get_fleet_mut(position.fleet_type)?;
         let amagiri_index = fleet.amagiri_index();
         let ship = fleet.ships.get_mut(position.index)?;
@@ -104,7 +104,7 @@ impl Comp {
         formation: Formation,
         fleet_type: FleetType,
         index: usize,
-    ) -> Option<BattleMemberRef> {
+    ) -> Option<BattleMemberRef<'_>> {
         let fleet = self.get_fleet(fleet_type)?;
         let ship = fleet.ships.get(index)?;
         let position = self.get_ship_position(fleet_type, index);
@@ -179,7 +179,7 @@ impl Comp {
     pub fn members_by(
         &self,
         query: impl Into<EnumSet<FleetType>>,
-    ) -> impl Iterator<Item = CompMemberRef> {
+    ) -> impl Iterator<Item = CompMemberRef<'_>> {
         let org_type = self.org_type;
 
         self.fleet_entries(query)
@@ -201,7 +201,7 @@ impl Comp {
     pub fn members_mut_by(
         &mut self,
         query: impl Into<EnumSet<FleetType>>,
-    ) -> impl Iterator<Item = CompMemberMut> {
+    ) -> impl Iterator<Item = CompMemberMut<'_>> {
         let org_type = self.org_type;
 
         self.fleet_entries_mut(query)
@@ -223,15 +223,15 @@ impl Comp {
             })
     }
 
-    pub fn all_members(&self) -> impl Iterator<Item = CompMemberRef> {
+    pub fn all_members(&self) -> impl Iterator<Item = CompMemberRef<'_>> {
         self.members_by(EnumSet::all())
     }
 
-    pub fn members_mut(&mut self) -> impl Iterator<Item = CompMemberMut> {
+    pub fn members_mut(&mut self) -> impl Iterator<Item = CompMemberMut<'_>> {
         self.members_mut_by(FleetType::Main | FleetType::Escort)
     }
 
-    pub fn planes(&self, escort_participates: bool) -> impl Iterator<Item = Plane> {
+    pub fn planes(&self, escort_participates: bool) -> impl Iterator<Item = Plane<'_>> {
         let escort_planes = escort_participates
             .then_some(self.escort.as_ref())
             .flatten()
@@ -245,7 +245,7 @@ impl Comp {
             .flat_map(|ship| ship.planes())
     }
 
-    pub fn planes_mut(&mut self, escort_participates: bool) -> impl Iterator<Item = PlaneMut> {
+    pub fn planes_mut(&mut self, escort_participates: bool) -> impl Iterator<Item = PlaneMut<'_>> {
         let escort_planes = escort_participates
             .then_some(self.escort.as_mut())
             .flatten()
@@ -466,6 +466,7 @@ impl Comp {
     }
 }
 
+#[allow(dead_code)]
 struct FleetTypeQuery(EnumSet<FleetType>);
 
 impl From<FleetType> for FleetTypeQuery {

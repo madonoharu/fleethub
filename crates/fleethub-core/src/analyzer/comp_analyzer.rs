@@ -111,7 +111,7 @@ impl<'a> CompAnalyzer<'a> {
         }
     }
 
-    fn fleet_cutin_analyzer(&self) -> FleetCutinAnalyzer {
+    fn fleet_cutin_analyzer(&self) -> FleetCutinAnalyzer<'_> {
         FleetCutinAnalyzer::new(
             self.battle_defs,
             NodeState::default(),

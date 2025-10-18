@@ -1,6 +1,6 @@
 {
   "name": "fleethub-core",
-  "version": "1.12.6",
+  "version": "1.12.9",
   "license": "UNLICENSED",
   "exports": {
     "import": "./pkg/fleethub_core.js",
@@ -14,8 +14,5 @@
   ],
   "collaborators": [
     "まどの <madonoharu@gmail.com>"
-  ],
-  "dependencies": {
-    "equipment-bonus": "npm:latest"
-  }
+  ]
 }

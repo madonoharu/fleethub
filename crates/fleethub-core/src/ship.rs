@@ -257,7 +257,7 @@ impl Ship {
         ship
     }
 
-    pub fn planes(&self) -> impl Iterator<Item = Plane> {
+    pub fn planes(&self) -> impl Iterator<Item = Plane<'_>> {
         self.gears
             .0
             .iter()
@@ -274,7 +274,7 @@ impl Ship {
             })
     }
 
-    pub fn planes_mut(&mut self) -> impl Iterator<Item = PlaneMut> {
+    pub fn planes_mut(&mut self) -> impl Iterator<Item = PlaneMut<'_>> {
         self.gears
             .0
             .iter_mut()

@@ -235,11 +235,11 @@ impl<T: PlaneImpl> FromIterator<T> for PlaneVec<T> {
 }
 
 impl<T: PlaneImpl> PlaneVec<T> {
-    pub fn iter(&self) -> std::slice::Iter<T> {
+    pub fn iter(&self) -> std::slice::Iter<'_, T> {
         self.vec.iter()
     }
 
-    pub fn iter_mut(&mut self) -> std::slice::IterMut<T> {
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<'_, T> {
         self.vec.iter_mut()
     }
 

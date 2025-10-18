@@ -1,8 +1,4 @@
-import {
-  EquippabilityRule,
-  MasterEquippability,
-  MstEquipExslotShip,
-} from "fleethub-core";
+import { EquippabilityRule, MasterEquippability } from "fleethub-core";
 
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { ExprParser } from "./parser";
@@ -10,25 +6,13 @@ import { toCellString } from "./utils";
 
 export function createEquippability(
   parser: ExprParser,
-  table: SpreadsheetTable
+  table: SpreadsheetTable,
 ): MasterEquippability {
   const start2 = parser.start2;
+  const equip_stype = start2.api_mst_stype;
   const equip_exslot = start2.api_mst_equip_exslot;
   const equip_ship = start2.api_mst_equip_ship;
-  const equip_exslot_ship =
-    start2.api_mst_equip_exslot_ship as unknown as Record<
-      number,
-      MstEquipExslotShip
-    >;
-
-  const equip_stype = start2.api_mst_stype.map((stype) => {
-    const id = stype.api_id;
-    const equip_type = Object.entries(stype.api_equip_type)
-      .filter(([, equippable]) => equippable === 1)
-      .map(([type]) => Number(type));
-
-    return { id, equip_type };
-  });
+  const equip_exslot_ship = start2.api_mst_equip_exslot_ship;
 
   const rules = table.rows.map((row) => {
     const rule: EquippabilityRule = {
