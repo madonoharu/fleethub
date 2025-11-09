@@ -355,7 +355,9 @@ impl Ship {
     }
 
     pub fn is_ao_carrier(&self) -> bool {
-        self.ship_id == ship_id!("速吸改") || self.ctype == ctype!("特2TL型")
+        self.ship_id == ship_id!("速吸改")
+            || self.ctype == ctype!("特2TL型")
+            || self.ctype == ctype!("特1TL型")
     }
 
     pub fn is_carrier_like(&self) -> bool {
