@@ -2,8 +2,8 @@ use crate::{
     attack::LandingCraftModifiers,
     ship::Ship,
     types::{
-        ctype, gear_id, matches_gear_id, AttackPowerModifier, AttackType, GearAttr, GearType,
-        NightAttackType, ShellingType, ShipType, SpecialEnemyModifiers, SpecialEnemyType,
+        AttackPowerModifier, AttackType, GearAttr, GearType, NightAttackType, ShellingType,
+        ShipType, SpecialEnemyModifiers, SpecialEnemyType, ctype, gear_id, matches_gear_id,
     },
 };
 
@@ -218,7 +218,7 @@ fn anti_heavy_cruiser_summer_princess_modifiers(
         mods.postcap_general_mod,
         a,
         cb_swordfish_count,
-        [1.15, 1.15 * 1.05]
+        [1.1, 1.1 * 1.1]
     );
 
     if matches!(
@@ -440,6 +440,51 @@ fn anti_dock_princess_modifiers(attacker: &Ship, attack_type: AttackType) -> Spe
     mods
 }
 
+/// 欧州水姫
+fn anti_european_water_princess_modifiers(
+    attacker: &Ship,
+    attack_type: AttackType,
+) -> SpecialEnemyModifiers {
+    if !matches!(attack_type, AttackType::Shelling(_) | AttackType::Night(_)) {
+        return Default::default();
+    }
+
+    let mut mods = SpecialEnemyModifiers::new();
+    let gears = &attacker.gears;
+
+    let has_aa_shell = gears.has_type(GearType::ApShell);
+    apply_mod!(mods.postcap_general_mod, a, has_aa_shell, 1.15);
+
+    let has_seaplane = gears.has_by(|gear| {
+        matches!(
+            gear.gear_type,
+            GearType::SeaplaneBomber | GearType::SeaplaneFighter
+        )
+    });
+    apply_mod!(mods.postcap_general_mod, a, has_seaplane, 1.1);
+
+    let cb_swordfish_count = gears.count_attr(GearAttr::CbSwordfish);
+    apply_mod!(
+        mods.postcap_general_mod,
+        a,
+        cb_swordfish_count,
+        [1.2, 1.2 * 1.3]
+    );
+
+    if matches!(
+        attacker.ctype,
+        ctype!("Bismarck級")
+            | ctype!("Admiral Hipper級")
+            | ctype!("Ark Royal級")
+            | ctype!("Gotland級")
+            | ctype!("Nelson級")
+    ) {
+        mods.postcap_general_mod.a *= 1.15
+    }
+
+    mods
+}
+
 /// 特効補正
 fn special_enemy_modifiers(
     attacker: &Ship,
@@ -466,7 +511,10 @@ fn special_enemy_modifiers(
             return anti_dock_princess_modifiers(attacker, attack_type);
         }
         SpecialEnemyType::SummerAircraftCarrierDemon => {
-            return anti_summer_aircraft_carrier_demon_modifiers(attacker, attack_type)
+            return anti_summer_aircraft_carrier_demon_modifiers(attacker, attack_type);
+        }
+        SpecialEnemyType::EuropeanWaterPrincess => {
+            return anti_european_water_princess_modifiers(attacker, attack_type);
         }
         SpecialEnemyType::None => {
             return Default::default();

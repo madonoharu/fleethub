@@ -12,15 +12,15 @@ use wasm_bindgen::prelude::*;
 
 use crate::{
     gear::Gear,
-    gear_array::{into_gear_key, GearArray},
+    gear_array::{GearArray, into_gear_key},
     master_data::{MasterShip, ShipEquippability},
     plane::{Plane, PlaneImpl, PlaneMut},
     types::{
-        ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, AirStateRank, AirWaveType,
-        AswAttackType, AswPhase, CustomPowerModifiers, DamageState, DayPhaseAttackType,
-        DefensePower, EBonuses, GearAttr, GearType, MoraleState, NightAttackType,
-        NightPhaseAttackType, ShellingType, ShipAttr, ShipCategory, ShipMeta, ShipState, ShipType,
-        Side, SlotSizeVec, SpecialEnemyType,
+        AirStateRank, AirWaveType, AswAttackType, AswPhase, CustomPowerModifiers, DamageState,
+        DayPhaseAttackType, DefensePower, EBonuses, GearAttr, GearType, MoraleState,
+        NightAttackType, NightPhaseAttackType, ShellingType, ShipAttr, ShipCategory, ShipMeta,
+        ShipState, ShipType, Side, SlotSizeVec, SpecialEnemyType, ctype, gear_id, matches_gear_id,
+        matches_ship_id, ship_id,
     },
 };
 
@@ -491,11 +491,7 @@ impl Ship {
 
         let base = if total == 1 { 1.25 } else { 1.4 };
 
-        if k3_count > 0 {
-            base * 1.05
-        } else {
-            base
-        }
+        if k3_count > 0 { base * 1.05 } else { base }
     }
 
     pub fn is_escort_light_carrier(&self) -> bool {
@@ -708,11 +704,7 @@ impl Ship {
         };
 
         let new_mod = if has_additional_depth_charge && has_depth_charge_projector {
-            if has_sonar {
-                1.25
-            } else {
-                1.1
-            }
+            if has_sonar { 1.25 } else { 1.1 }
         } else {
             1.0
         };
@@ -1116,6 +1108,8 @@ impl Ship {
             DockPrincess
         } else if self.has_attr(ShipAttr::SummerAircraftCarrierDemon) {
             SummerAircraftCarrierDemon
+        } else if self.has_attr(ShipAttr::EuropeanWaterPrincess) {
+            EuropeanWaterPrincess
         } else {
             None
         }

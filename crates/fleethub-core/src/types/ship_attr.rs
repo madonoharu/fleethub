@@ -44,6 +44,8 @@ pub enum ShipAttr {
     DockPrincess,
     /// 空母夏鬼
     SummerAircraftCarrierDemon,
+    /// 欧州水姫
+    EuropeanWaterPrincess,
 }
 
 impl Default for ShipAttr {
