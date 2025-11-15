@@ -130,6 +130,10 @@
   "130": "Ootomari Class",
   "131": "Kirov Class",
   "132": "Special 1TL Class",
+  "133": "Norge Class",
+  "134": "Courageous Class",
+  "135": "Glorious Class",
+  "136": "Nosaki Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -285,5 +289,11 @@
   "2292": "Ra-Class Destroyer Delta",
   "2294": "Ra-Class Destroyer Zeta",
   "2307": "Occupied Airfield Princess",
-  "2311": "New Heavy Cruiser Princess"
+  "2311": "New Heavy Cruiser Princess",
+  "2317": "Mu-Class Light Cruiser",
+  "2323": "Fjord Princesses",
+  "2329": "Abyssal Landing Imp",
+  "2332": "Solitary Fjord Princess",
+  "2338": "Battlecruiser Water Princess",
+  "2344": "Abyssal Aircraft Carrier Wasp Princess"
 }
