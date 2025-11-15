@@ -32,7 +32,7 @@ function isShellingStyle(attack: UnknownAttackStyle): attack is ShellingStyle {
 }
 
 function isNightAttackStyle(
-  attack: UnknownAttackStyle
+  attack: UnknownAttackStyle,
 ): attack is NightAttackStyle {
   return attack.tag === "NightAttackStyle";
 }
@@ -90,6 +90,8 @@ const FLEET_CUTINS = [
   "NagatoClassCutin",
   "ColoradoClassCutin",
   "KongouClassCutin",
+  "QueenElizabethClassCutin",
+  "RichelieuClassCutin",
   "Yamato2ShipCutin",
   "Yamato3ShipCutin",
 ] as const;
@@ -103,7 +105,7 @@ const AttackTypeChip = React.forwardRef<HTMLDivElement, Props>(
     return (
       <Chip ref={ref} variant="outlined" size="small" label={label} {...rest} />
     );
-  }
+  },
 );
 
 type AttackColorKey = "Shelling" | "Night" | "Asw" | "Torpedo";

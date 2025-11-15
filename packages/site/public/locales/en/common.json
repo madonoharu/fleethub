@@ -299,7 +299,9 @@
     "ColoradoClassCutin": "Colorado-class CI",
     "KongouClassCutin": "Kongou-class CI",
     "Yamato2ShipCutin": "Yamato-class CI",
-    "Yamato3ShipCutin": "Yamato 3-ship CI"
+    "Yamato3ShipCutin": "Yamato 3-ship CI",
+    "QueenElizabethClassCutin": "Richelieu-class CI",
+    "RichelieuClassCutin": "Queen Elizabeth CI"
   },
   "SpeedRank": {
     "name": "t$(speed)",

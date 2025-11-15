@@ -299,7 +299,9 @@
     "ColoradoClassCutin": "Colorado CI",
     "KongouClassCutin": "僚艦夜戦突撃",
     "Yamato2ShipCutin": "大和全力斉射",
-    "Yamato3ShipCutin": "大和三隻突撃"
+    "Yamato3ShipCutin": "大和三隻突撃",
+    "QueenElizabethClassCutin": "Richelieu圧倒CI",
+    "RichelieuClassCutin": "姉妹艦連携砲撃"
   },
   "SpeedRank": {
     "name": "t$(speed)",

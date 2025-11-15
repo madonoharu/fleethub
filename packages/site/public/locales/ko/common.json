@@ -299,7 +299,9 @@
     "ColoradoClassCutin": "콜로라도급 CI",
     "KongouClassCutin": "콩고급 요함야전돌격",
     "Yamato2ShipCutin": "야마토 전력 일제사격",
-    "Yamato3ShipCutin": "야마토 3척돌격"
+    "Yamato3ShipCutin": "야마토 3척돌격",
+    "QueenElizabethClassCutin": "리슐리외 압도 CI",
+    "RichelieuClassCutin": "퀸 엘리자베스급 CI"
   },
   "SpeedRank": {
     "name": "t$(speed)",

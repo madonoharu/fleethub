@@ -214,6 +214,8 @@ class LocaleUpdater {
       NagatoClassCutin: getDayCutin(21),
       ColoradoClassCutin: getDayCutin(23),
       KongouClassCutin: getNightCutin(24),
+      QueenElizabethClassCutin: getDayCutin(25),
+      RichelieuClassCutin: getDayCutin(26),
       Yamato2ShipCutin: getDayCutin(51),
       Yamato3ShipCutin: getDayCutin(50),
     };

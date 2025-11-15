@@ -299,7 +299,9 @@
     "ColoradoClassCutin": "科羅拉多特殊攻擊",
     "KongouClassCutin": "金剛級改二丙特殊攻擊",
     "Yamato2ShipCutin": "大和 2 艦特殊攻擊",
-    "Yamato3ShipCutin": "大和 3 艦特殊攻擊"
+    "Yamato3ShipCutin": "大和 3 艦特殊攻擊",
+    "QueenElizabethClassCutin": "",
+    "RichelieuClassCutin": ""
   },
   "SpeedRank": {
     "name": "t$(speed)",
