@@ -93,6 +93,8 @@ pub enum FleetCutin {
     KongouClassCutin,
     Yamato2ShipCutin,
     Yamato3ShipCutin,
+    QueenElizabethClassCutin,
+    RichelieuClassCutin,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
