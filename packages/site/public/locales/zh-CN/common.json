@@ -300,8 +300,8 @@
     "KongouClassCutin": "僚舰夜战突击",
     "Yamato2ShipCutin": "大和全力齐射",
     "Yamato3ShipCutin": "大和三舰突击",
-    "QueenElizabethClassCutin": "黎塞留CI",
-    "RichelieuClassCutin": "伊丽莎白女王CI"
+    "QueenElizabethClassCutin": "伊丽莎白女王CI",
+    "RichelieuClassCutin": "黎塞留CI"
   },
   "SpeedRank": {
     "name": "t$(speed)",

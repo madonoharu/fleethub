@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.12.12"
+version = "1.12.13"
 authors = ["Madono <madonoharu@gmail.com>"]
 edition = "2024"
 description = "fleethub-core"
