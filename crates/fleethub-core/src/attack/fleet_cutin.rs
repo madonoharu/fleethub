@@ -578,7 +578,7 @@ fn get_Queen_Elizabeth_class_cutin(
     let partner_mod = if s2.ship_id == ship_id!("Warspite改") {
         (1.2, 1.24)
     } else {
-        (1.2, 1.2)
+        (1.24, 1.24)
     };
 
     fn get_equipment_mod(ship: &Ship) -> f64 {
