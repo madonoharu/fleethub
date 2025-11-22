@@ -582,6 +582,10 @@ fn special_enemy_modifiers(
     let t2_tank_count = gears.count(gear_id!("特二式内火艇"));
     let t4_tank_count = gears.count(gear_id!("特四式内火艇"));
     let t4_tank_kai_count = gears.count(gear_id!("特四式内火艇改"));
+    let army_infantry_count = gears.count(gear_id!("陸軍歩兵部隊"));
+    let t97_tank_chiha_count = gears.count(gear_id!("九七式中戦車(チハ)"));
+    let t97_tank_chiha_kai_count = gears.count(gear_id!("九七式中戦車 新砲塔(チハ改)"));
+    let army_infantry_chiha_kai_count = gears.count(gear_id!("陸軍歩兵部隊+チハ改"));
 
     let dlc_sp1_count =
         shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
@@ -589,6 +593,10 @@ fn special_enemy_modifiers(
     let dlc_sp3_count = honi1_count;
     let dlc_sp4_count = chiha_count;
     let dlc_sp5_count = chiha_kai_count;
+    let landing_forces_count = army_infantry_count
+        + t97_tank_chiha_count
+        + t97_tank_chiha_kai_count
+        + army_infantry_chiha_kai_count;
 
     // 集積地キャップ後補正
     if matches!(
@@ -673,6 +681,48 @@ fn special_enemy_modifiers(
 
         if dlc_sp5_count >= 1 {
             mods.toku_daihatsu_chiha_kai_mod.merge(1.5, 33.0);
+        }
+
+        if army_infantry_count + army_infantry_chiha_kai_count >= 1 {
+            mods.army_infantry_mod.merge(1.2, 60.0);
+        }
+
+        if t97_tank_chiha_count + t97_tank_chiha_kai_count >= 1 {
+            mods.t97_tank_chiha_mod.merge(1.5, 70.0);
+        }
+
+        if t97_tank_chiha_kai_count >= 1 {
+            mods.t97_tank_chiha_kai_mod.merge(1.5, 50.0);
+        }
+
+        if army_infantry_chiha_kai_count >= 1 {
+            mods.army_infantry_chiha_kai_mod.merge(1.6, 70.0);
+        }
+
+        if landing_forces_count >= 2 {
+            mods.landing_forces_mod.merge(2.0, 100.0);
+        }
+
+        if landing_forces_count >= 2 {
+            if army_infantry_chiha_kai_count >= 1
+                || army_infantry_count
+                    + t97_tank_chiha_count
+                    + t97_tank_chiha_kai_count
+                    + t2_tank_count
+                    + t4_tank_count
+                    + t4_tank_kai_count
+                    >= 3
+            {
+                mods.landing_forces_group_mod.merge(3.0, 150.0);
+            }
+        }
+
+        if landing_forces_count >= 2 || t4_tank_count >= 1 {
+            mods.landing_forces_t4_mod.merge(1.0, 100.0);
+        }
+
+        if landing_forces_count >= 2 || t4_tank_kai_count >= 1 {
+            mods.landing_forces_t4kai_mod.merge(1.0, 172.0);
         }
 
         if t4_tank_count + t4_tank_kai_count >= 1 {

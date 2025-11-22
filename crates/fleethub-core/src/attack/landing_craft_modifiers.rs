@@ -1,6 +1,6 @@
 use crate::{
     ship::Ship,
-    types::{gear_id, matches_gear_id, AttackType, GearType, SpecialEnemyType},
+    types::{AttackType, GearType, SpecialEnemyType, gear_id, matches_gear_id},
 };
 
 pub struct LandingCraftModifiers {
@@ -20,6 +20,7 @@ struct Multipliers {
     i: f64,
     j: f64,
     t2: (f64, f64),
+    lf: (f64, f64, f64),
 }
 
 impl Default for Multipliers {
@@ -36,6 +37,7 @@ impl Default for Multipliers {
             i: 1.0,
             j: 1.0,
             t2: (1.0, 1.0),
+            lf: (1.0, 1.0, 1.0),
         }
     }
 }
@@ -82,13 +84,36 @@ impl LandingCraftModifiers {
         let t4_tank_kai_count = gears.count(gear_id!("特四式内火艇改"));
         let t4_tank_group_count = t4_tank_count + t4_tank_kai_count;
 
-        let cond_a = landing_craft_count + t4_tank_group_count >= 1;
-        let cond_b = toku_dlc_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count >= 1;
+        let army_infantry_count = gears.count(gear_id!("陸軍歩兵部隊"));
+        let t97_tank_chiha_count = gears.count(gear_id!("九七式中戦車(チハ)"));
+        let t97_tank_chiha_kai_count = gears.count(gear_id!("九七式中戦車 新砲塔(チハ改)"));
+        let army_infantry_chiha_kai_count = gears.count(gear_id!("陸軍歩兵部隊+チハ改"));
+        let landing_forces_count = army_infantry_count
+            + t97_tank_chiha_count
+            + t97_tank_chiha_kai_count
+            + army_infantry_chiha_kai_count;
 
-        let c_count =
-            t89_tank_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
+        let cond_a = landing_craft_count + t4_tank_group_count + landing_forces_count >= 1;
+        let cond_b = toku_dlc_count
+            + toku_dlc_panzer3_count
+            + toku_dlc_panzer3_j_count
+            + army_infantry_count
+            + army_infantry_chiha_kai_count
+            >= 1;
+
+        let c_count = t89_tank_count
+            + honi1_count
+            + toku_dlc_panzer3_count
+            + toku_dlc_panzer3_j_count
+            + army_infantry_count
+            + army_infantry_chiha_kai_count;
         let cond_c = c_count >= 1;
-        let cond_dd = c_count + chiha_count + chiha_kai_count >= 2;
+        let cond_dd = c_count
+            + chiha_count
+            + chiha_kai_count
+            + t97_tank_chiha_count
+            + t97_tank_chiha_kai_count
+            >= 2;
 
         let e_count = panzer2_count;
         let cond_e = e_count >= 1;
@@ -98,7 +123,12 @@ impl LandingCraftModifiers {
         let cond_g = g_count >= 1;
         let cond_hh = g_count >= 2 || t4_tank_group_count >= 2;
 
-        let cond_i = m4a1dd_count + chiha_kai_count + toku_dlc_panzer3_j_count >= 1;
+        let cond_i = m4a1dd_count
+            + chiha_kai_count
+            + toku_dlc_panzer3_j_count
+            + t97_tank_chiha_kai_count
+            + army_infantry_chiha_kai_count
+            >= 1;
         let cond_j =
             shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count >= 1;
 
@@ -115,6 +145,7 @@ impl LandingCraftModifiers {
                 i: 2.0,
                 j: 1.0,
                 t2: (2.4, 1.35),
+                lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::IsolatedIsland => Multipliers {
                 a: 1.8 * ibonus1 * ibonus2,
@@ -128,6 +159,7 @@ impl LandingCraftModifiers {
                 i: 1.8,
                 j: 1.0,
                 t2: (2.4, 1.35),
+                lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::HarbourSummerPrincess => Multipliers {
                 a: 1.7 * ibonus1 * ibonus2,
@@ -141,6 +173,7 @@ impl LandingCraftModifiers {
                 i: 2.0,
                 j: 1.0,
                 t2: (2.8, 1.5),
+                lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => Multipliers {
                 a: 1.4 * ibonus1 * ibonus2,
@@ -154,6 +187,7 @@ impl LandingCraftModifiers {
                 i: 1.1,
                 j: 1.0,
                 t2: (1.5, 1.2),
+                lf: (1.4, 1.2, 1.1),
             },
             _ => Default::default(),
         };
@@ -171,6 +205,7 @@ impl LandingCraftModifiers {
                 i: 1.2,
                 j: 1.0,
                 t2: (1.7, 1.5),
+                lf: (1.85, 1.45, 1.2),
             },
             SpecialEnemyType::AnchorageWaterDemonVacationMode => Multipliers {
                 a: 1.4 * ibonus1 * ibonus2,
@@ -184,6 +219,7 @@ impl LandingCraftModifiers {
                 i: 1.8,
                 j: 1.0,
                 t2: (2.4, 1.35),
+                lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::DockPrincess => Multipliers {
                 a: 1.1 * ibonus1 * ibonus2,
@@ -197,6 +233,7 @@ impl LandingCraftModifiers {
                 i: 1.1,
                 j: 1.4,
                 t2: (1.2, 1.2),
+                lf: (1.0, 1.0, 1.0),
             },
             _ => Default::default(),
         };
@@ -221,7 +258,18 @@ impl LandingCraftModifiers {
                 t2 *= precap_ms.t2.1;
             }
 
-            a * b * c * dd * e * ff * g * hh * i * j * t2
+            let mut lf = 1.0;
+            if landing_forces_count >= 1 {
+                lf *= precap_ms.lf.0;
+            }
+            if landing_forces_count >= 2 {
+                lf *= precap_ms.lf.1;
+            }
+            if landing_forces_count >= 3 {
+                lf *= precap_ms.lf.2;
+            }
+
+            a * b * c * dd * e * ff * g * hh * i * j * t2 * lf
         };
 
         let postcap = {
@@ -244,7 +292,18 @@ impl LandingCraftModifiers {
                 t2 *= postcap_ms.t2.1;
             }
 
-            a * b * c * dd * e * ff * g * hh * i * j * t2
+            let mut lf = 1.0;
+            if landing_forces_count >= 1 {
+                lf *= postcap_ms.lf.0;
+            }
+            if landing_forces_count >= 2 {
+                lf *= postcap_ms.lf.1;
+            }
+            if landing_forces_count >= 3 {
+                lf *= postcap_ms.lf.2;
+            }
+
+            a * b * c * dd * e * ff * g * hh * i * j * t2 * lf
         };
 
         Self { precap, postcap }
