@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { ValueOf } from "@fh/utils";
 import { Typography } from "@mui/material";
 import {
   AttackPowerParams,
@@ -13,7 +14,7 @@ import { numstr } from "../../../utils";
 import { LabeledValue, Divider } from "../../atoms";
 
 function hasMod(
-  mod: AttackPowerModifier | undefined,
+  mod: AttackPowerModifier | undefined | null,
 ): mod is AttackPowerModifier {
   if (!mod) {
     return false;
@@ -24,7 +25,7 @@ function hasMod(
 
 const AttackPowerModifierLabel: React.FC<{
   label: string;
-  mod: AttackPowerModifier | undefined;
+  mod: AttackPowerModifier | undefined | null;
 }> = ({ label, mod }) => {
   if (!hasMod(mod)) {
     return null;
@@ -124,7 +125,7 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
             <AttackPowerModifierLabel
               key={key}
               label={t(key as keyof SpecialEnemyModifiers)}
-              mod={mod as AttackPowerModifier}
+              mod={mod as ValueOf<SpecialEnemyModifiers>}
             />
           ))}
         </>
