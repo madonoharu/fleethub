@@ -69,10 +69,10 @@ pub enum NightCutin {
     Cvci1_25,
     /// 夜襲1.20
     Cvci1_20,
-    /// 夜襲1.18
-    Cvci1_18,
     /// 光電管彗星夜襲
     Photobomber,
+    /// 夜襲1.18
+    Cvci1_18,
 }
 
 impl NightCutin {

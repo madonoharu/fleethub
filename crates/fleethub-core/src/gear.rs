@@ -1,14 +1,14 @@
 use std::str::FromStr;
 
 use enumset::EnumSet;
-use fasteval::{bool_to_f64, EvalNamespace};
+use fasteval::{EvalNamespace, bool_to_f64};
 use wasm_bindgen::prelude::*;
 
 use crate::{
     master_data::{IBonuses, MasterGear},
     types::{
-        gear_id, matches_gear_id, AirStateRank, GearAttr, GearCategory, GearState, GearType,
-        GearTypeIdArray,
+        AirStateRank, GearAttr, GearCategory, GearState, GearType, GearTypeIdArray, gear_id,
+        matches_gear_id,
     },
 };
 
@@ -365,9 +365,14 @@ impl Gear {
         self.has_attr(GearAttr::NightFighter)
     }
 
+    pub fn is_night_bomber(&self) -> bool {
+        self.has_attr(GearAttr::NightBomber)
+    }
+
     pub fn is_night_plane(&self) -> bool {
         self.is_night_attacker()
             || self.is_night_fighter()
+            || self.is_night_bomber()
             || self.has_attr(GearAttr::SemiNightPlane)
     }
 
@@ -388,12 +393,14 @@ impl Gear {
             self.firepower as f64 + bombing + torpedo
         };
 
-        let (a, b) =
-            if self.has_attr(GearAttr::NightAttacker) || self.has_attr(GearAttr::NightFighter) {
-                (3.0, 0.45)
-            } else {
-                (0.0, 0.3)
-            };
+        let (a, b) = if self.has_attr(GearAttr::NightAttacker)
+            || self.has_attr(GearAttr::NightFighter)
+            || self.has_attr(GearAttr::NightBomber)
+        {
+            (3.0, 0.45)
+        } else {
+            (0.0, 0.3)
+        };
 
         let ss = slot_size as f64;
         let gear_multiplier = (self.firepower + self.torpedo + self.bombing + self.asw) as f64;

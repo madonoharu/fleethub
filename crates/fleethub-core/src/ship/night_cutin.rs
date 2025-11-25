@@ -1,7 +1,7 @@
 use enumset::EnumSet;
 
 use crate::types::{
-    gear_id, DamageState, GearAttr, GearType, NightConditions, NightCutin, ShipType, Side,
+    DamageState, GearAttr, GearType, NightConditions, NightCutin, ShipType, Side, gear_id,
 };
 
 use super::Ship;
@@ -16,6 +16,10 @@ impl Ship {
                 self.count_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::NightFighter));
             let night_attacker_count =
                 self.count_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::NightAttacker));
+            let night_bomber_count =
+                self.count_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::NightBomber));
+            let has_fuze_bomber =
+                self.has_non_zero_slot_gear(gear_id!("彗星一二型(三一号光電管爆弾搭載機)"));
 
             if night_fighter_count >= 2 && night_attacker_count >= 1 {
                 set.insert(NightCutin::Cvci1_25);
@@ -25,10 +29,10 @@ impl Ship {
                 set.insert(NightCutin::Cvci1_20);
             }
 
-            let has_fuze_bomber =
-                self.has_non_zero_slot_gear(gear_id!("彗星一二型(三一号光電管爆弾搭載機)"));
-
-            if has_fuze_bomber && night_fighter_count + night_attacker_count >= 1 {
+            if (has_fuze_bomber
+                && night_fighter_count + night_attacker_count + night_bomber_count >= 1)
+                || (night_bomber_count >= 1 && night_fighter_count + night_attacker_count >= 1)
+            {
                 set.insert(NightCutin::Photobomber);
             }
 
@@ -40,7 +44,7 @@ impl Ship {
                 self.count_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::SemiNightPlane));
 
             if night_fighter_count + semi_night_plane_count >= 3
-                || night_attacker_count + semi_night_plane_count >= 2
+                || night_attacker_count + night_bomber_count + semi_night_plane_count >= 2
             {
                 set.insert(NightCutin::Cvci1_18);
             }

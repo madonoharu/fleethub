@@ -433,7 +433,9 @@ impl Ship {
     }
 
     pub fn is_night_carrier(&self) -> bool {
-        if !matches!(self.ship_type, ShipType::CVL | ShipType::CV | ShipType::CVB) {
+        if !matches!(self.ship_type, ShipType::CVL | ShipType::CV | ShipType::CVB)
+            || self.ship_id == ship_id!("しまね丸改")
+        {
             return false;
         }
 
@@ -493,7 +495,13 @@ impl Ship {
 
         let base = if total == 1 { 1.25 } else { 1.4 };
 
-        if k3_count > 0 { base * 1.05 } else { base }
+        if k3_count == 1 {
+            base * 1.05
+        } else if k3_count >= 2 {
+            base * 1.1
+        } else {
+            base
+        }
     }
 
     pub fn is_escort_light_carrier(&self) -> bool {

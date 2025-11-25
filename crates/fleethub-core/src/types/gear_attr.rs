@@ -17,6 +17,8 @@ pub enum GearAttr {
     HeavyBomber,
     /// 夜間偵察機
     NightRecon,
+    /// 夜間爆撃機
+    NightBomber,
     /// 主砲
     MainGun,
     /// 電探
