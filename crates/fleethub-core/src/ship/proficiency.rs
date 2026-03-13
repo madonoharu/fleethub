@@ -104,6 +104,14 @@ impl Ship {
                         plane.gear_type,
                         GearType::CbDiveBomber | GearType::CbTorpedoBomber
                     ),
+                    DayCutin::JFJB | DayCutin::JFJBJB => matches!(
+                        plane.gear_type,
+                        GearType::JetFighter | GearType::JetFighterBomber
+                    ),
+                    DayCutin::JFBA => matches!(
+                        plane.gear_type,
+                        GearType::JetFighter | GearType::CbDiveBomber | GearType::CbTorpedoBomber
+                    ),
                     _ => false,
                 }
             } else {

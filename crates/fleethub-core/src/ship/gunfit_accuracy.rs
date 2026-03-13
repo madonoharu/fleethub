@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-use crate::types::{ctype, gear_id, matches_gear_id, ship_id, GearType, ShipType};
+use crate::types::{GearType, ShipType, ctype, gear_id, matches_gear_id, ship_id};
 
 use super::Ship;
 
@@ -37,17 +37,51 @@ impl Ship {
 
 /// 駆逐フィット補正
 fn destroyer_bonus(ship: &Ship) -> f64 {
-    let mut result = 0.0;
+    let mut r = 0.0;
     let gears = &ship.gears;
     let ctype = ship.ctype;
+    let ship_id = ship.ship_id;
 
-    if ctype == ctype!("睦月型") {
-        let single_high_angle_mount_count =
-            gears.count(gear_id!("12.7cm単装高角砲(後期型)")) as f64;
-        result += 5.0 * single_high_angle_mount_count.sqrt();
+    let count_130mm_twin_group = gears.count(gear_id!("130mm B-13連装砲")) as f64;
+    let count_5inch_group = gears.count_by(|gear| {
+        matches_gear_id!(
+            gear.gear_id,
+            "5inch単装砲 Mk.30" | "5inch単装砲 Mk.30改" | "5inch単装砲 Mk.30改+GFCS Mk.37"
+        )
+    }) as f64;
+    let count_qf_group = gears.count(gear_id!("QF 4.7inch砲 Mk.XII改")) as f64;
+    let count_asdic_group = gears.count_by(|gear| {
+        matches_gear_id!(
+            gear.gear_id,
+            "Type124 ASDIC" | "Type144/147 ASDIC" | "HF/DF + Type144/147 ASDIC"
+        )
+    }) as f64;
+    let count_12cm_single_group = gears.count(gear_id!("12cm単装砲改二")) as f64;
+
+    match ctype {
+        ctype!("Ташкент級") => {
+            r += 5.0 * count_130mm_twin_group.sqrt();
+        }
+        ctype!("Fletcher級") => {
+            r += 4.0 * count_5inch_group.sqrt();
+        }
+        ctype!("John C.Butler級") => {
+            r += 4.0 * count_5inch_group.sqrt();
+        }
+        ctype!("J級") => {
+            r += 3.0 * count_qf_group.sqrt();
+            r += 3.0 * count_asdic_group.sqrt();
+        }
+        ctype!("睦月型") => {
+            r += 5.0 * count_12cm_single_group.sqrt();
+        }
+        _ => {}
+    };
+
+    if ship_id == ship_id!("Верный") {
+        r += 5.0 * count_130mm_twin_group.sqrt();
     }
-
-    result
+    r
 }
 
 /// 軽巡フィット補正
@@ -113,6 +147,7 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
                 | "試製20.3cm(4号)連装砲"
                 | "203mm/53 連装砲"
                 | "SKC34 20.3cm連装砲"
+                | "18cm/57 三連装主砲"
         )
     }) as f64;
 

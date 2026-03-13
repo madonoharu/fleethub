@@ -20,6 +20,12 @@ pub enum DayCutin {
     MainSec,
     /// 連撃
     DoubleAttack,
+    /// 戦爆連合 噴戦噴爆噴爆
+    JFJBJB,
+    /// 戦爆連合 噴戦噴爆
+    JFJB,
+    /// 戦爆連合 噴戦爆攻
+    JFBA,
     /// 戦爆連合 戦爆攻
     FBA,
     /// 戦爆連合 爆爆攻

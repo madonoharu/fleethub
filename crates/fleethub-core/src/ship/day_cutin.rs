@@ -1,6 +1,6 @@
 use enumset::EnumSet;
 
-use crate::types::{ctype, gear_id, DamageState, DayCutin, GearAttr, GearType, ShipAttr};
+use crate::types::{DamageState, DayCutin, GearAttr, GearType, ShipAttr, ctype, gear_id};
 
 use super::Ship;
 
@@ -27,18 +27,35 @@ impl Ship {
             let has_cb_fighter =
                 self.has_non_zero_slot_gear_by(|gear| gear.gear_type == GearType::CbFighter);
 
-            if cb_bomber_count == 0 || !has_cb_torpedo_bomber {
-                return set;
+            let has_jet_fighter =
+                self.has_non_zero_slot_gear_by(|gear| gear.gear_type == GearType::JetFighter);
+
+            let jet_fighter_bomber_count = self
+                .gears
+                .count_by(|g| g.gear_type == GearType::JetFighterBomber);
+
+            if cb_bomber_count >= 1 || has_cb_torpedo_bomber {
+                set.insert(DayCutin::BA);
             }
 
-            set.insert(DayCutin::BA);
-
-            if cb_bomber_count >= 2 {
+            if cb_bomber_count >= 2 || has_cb_torpedo_bomber {
                 set.insert(DayCutin::BBA);
             }
 
-            if has_cb_fighter {
+            if has_cb_fighter || cb_bomber_count >= 1 || has_cb_torpedo_bomber {
                 set.insert(DayCutin::FBA);
+            }
+
+            if has_jet_fighter || jet_fighter_bomber_count >= 2 {
+                set.insert(DayCutin::JFJBJB);
+            }
+
+            if has_jet_fighter || jet_fighter_bomber_count >= 1 {
+                set.insert(DayCutin::JFJB);
+            }
+
+            if has_jet_fighter || cb_bomber_count >= 1 || has_cb_torpedo_bomber {
+                set.insert(DayCutin::JFBA);
             }
 
             return set;
