@@ -717,11 +717,11 @@ fn special_enemy_modifiers(
             }
         }
 
-        if landing_forces_count >= 2 || t4_tank_count >= 1 {
+        if landing_forces_count >= 2 && t4_tank_count >= 1 {
             mods.landing_forces_t4_mod.merge(1.0, 100.0);
         }
 
-        if landing_forces_count >= 2 || t4_tank_kai_count >= 1 {
+        if landing_forces_count >= 2 && t4_tank_kai_count >= 1 {
             mods.landing_forces_t4kai_mod.merge(1.0, 172.0);
         }
 
