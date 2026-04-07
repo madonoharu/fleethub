@@ -276,7 +276,10 @@
     "BBA": "BBA",
     "BA": "BA",
     "Zuiun": "瑞雲立体CI",
-    "AirSea": "海空立体CI"
+    "AirSea": "海空立体CI",
+    "JFJBJB": "JFJBJB",
+    "JFJB": "JFJB",
+    "JFBA": "JFBA"
   },
   "NightCutin": {
     "name": "夜戦CI",

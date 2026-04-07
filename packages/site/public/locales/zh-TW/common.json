@@ -276,7 +276,10 @@
     "BBA": "BBA",
     "BA": "BA",
     "Zuiun": "雙瑞雲",
-    "AirSea": "雙彗星(六三四空)"
+    "AirSea": "雙彗星(六三四空)",
+    "JFJBJB": "JFJBJB",
+    "JFJB": "JFJB",
+    "JFBA": "JFBA"
   },
   "NightCutin": {
     "name": "夜戰CI",

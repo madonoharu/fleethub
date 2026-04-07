@@ -276,7 +276,10 @@
     "BBA": "BBA",
     "BA": "BA",
     "Zuiun": "Zuiun CI",
-    "AirSea": "Air/Sea CI"
+    "AirSea": "Air/Sea CI",
+    "JFJBJB": "JFJBJB",
+    "JFJB": "JFJB",
+    "JFBA": "JFBA"
   },
   "NightCutin": {
     "name": "Night CI",

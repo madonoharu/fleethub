@@ -175,6 +175,9 @@ class LocaleUpdater {
       FBA: "FBA",
       BBA: "BBA",
       BA: "BA",
+      JFJBJB: "JFJBJB",
+      JFJB: "JFJB",
+      JFBA: "JFBA",
       Zuiun: getDayCutin(30),
       AirSea: getDayCutin(31),
     };
