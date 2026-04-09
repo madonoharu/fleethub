@@ -34,27 +34,27 @@ impl Ship {
                 .gears
                 .count_by(|g| g.gear_type == GearType::JetFighterBomber);
 
-            if cb_bomber_count >= 1 || has_cb_torpedo_bomber {
+            if cb_bomber_count >= 1 && has_cb_torpedo_bomber {
                 set.insert(DayCutin::BA);
             }
 
-            if cb_bomber_count >= 2 || has_cb_torpedo_bomber {
+            if cb_bomber_count >= 2 && has_cb_torpedo_bomber {
                 set.insert(DayCutin::BBA);
             }
 
-            if has_cb_fighter || cb_bomber_count >= 1 || has_cb_torpedo_bomber {
+            if has_cb_fighter && cb_bomber_count >= 1 && has_cb_torpedo_bomber {
                 set.insert(DayCutin::FBA);
             }
 
-            if has_jet_fighter || jet_fighter_bomber_count >= 2 {
+            if has_jet_fighter && jet_fighter_bomber_count >= 2 {
                 set.insert(DayCutin::JFJBJB);
             }
 
-            if has_jet_fighter || jet_fighter_bomber_count >= 1 {
+            if has_jet_fighter && jet_fighter_bomber_count >= 1 {
                 set.insert(DayCutin::JFJB);
             }
 
-            if has_jet_fighter || cb_bomber_count >= 1 || has_cb_torpedo_bomber {
+            if has_jet_fighter && cb_bomber_count >= 1 && has_cb_torpedo_bomber {
                 set.insert(DayCutin::JFBA);
             }
 
