@@ -276,7 +276,10 @@
     "BBA": "BBA",
     "BA": "BA",
     "Zuiun": "즈이운 입체 CI",
-    "AirSea": "해상/공중 입체 CI"
+    "AirSea": "해상/공중 입체 CI",
+    "JFJBJB": "JFJBJB",
+    "JFJB": "JFJB",
+    "JFBA": "JFBA"
   },
   "NightCutin": {
     "name": "야간전 CI",
