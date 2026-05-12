@@ -61,7 +61,13 @@ impl Ship {
         let main_gun_count = gears.count_attr(GearAttr::MainGun);
         let sec_gun_count = gears.count_type(GearType::SecondaryGun);
 
-        if self.ship_type == ShipType::DD && torpedo_count >= 1 {
+        let dd_torpedo_count = if anti_inst && main_gun_count == 0 {
+            0
+        } else {
+            gears.count_type(GearType::Torpedo)
+        };
+
+        if self.ship_type == ShipType::DD && dd_torpedo_count >= 1 {
             let has_surface_radar = gears.has_attr(GearAttr::SurfaceRadar);
 
             let has_tslo = gears.has(gear_id!("水雷戦隊 熟練見張員"));
@@ -77,7 +83,7 @@ impl Ship {
             }
 
             if has_tslo {
-                if torpedo_count >= 2 {
+                if dd_torpedo_count >= 2 {
                     set.insert(NightCutin::TorpTsloTorp);
                 }
                 if gears.has(gear_id!("ドラム缶(輸送用)")) {
