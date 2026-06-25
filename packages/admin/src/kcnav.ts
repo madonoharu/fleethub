@@ -95,6 +95,7 @@ export class KcnavClient {
   ) {
     this.client = ky.extend({
       prefixUrl: `https://tsunkit.net/api/routing/maps`,
+      timeout: 60000,
     });
   }
 
