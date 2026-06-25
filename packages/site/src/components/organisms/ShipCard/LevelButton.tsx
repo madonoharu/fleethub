@@ -21,7 +21,7 @@ type Props = {
   onChange: (value: number) => void;
 };
 
-const MAX_LEVEL = 185;
+const MAX_LEVEL = 188;
 
 const Form: React.FC<Props> = ({ value, onChange }) => {
   const set1 = React.useCallback(() => onChange(1), [onChange]);

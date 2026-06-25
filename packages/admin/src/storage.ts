@@ -17,7 +17,7 @@ export type Metadata = {
   generation: string;
 };
 
-export const BUCKET_NAME = "kcfleethub.appspot.com";
+export const BUCKET_NAME = "kcfleethub";
 export const GCS_PREFIX_URL = `https://storage.googleapis.com/${BUCKET_NAME}`;
 export const MASTER_DATA_PATH =
   process.env["MASTER_DATA_PATH"] || "data/master_data.json";
@@ -25,9 +25,7 @@ export const MASTER_DATA_PATH =
 const getBucket = () => getApp().storage().bucket();
 
 export function readJson<T>(path: string): Promise<T> {
-  return got
-    .get(`https://storage.googleapis.com/kcfleethub.appspot.com/${path}`)
-    .json<T>();
+  return got.get(`https://storage.googleapis.com/kcfleethub/${path}`).json<T>();
 }
 
 export function exists(path: string): Promise<boolean> {
@@ -64,7 +62,7 @@ const createGcsSaveOptions = (options?: SaveOptions): GcsSaveOptions => {
 export const write = async (
   path: string,
   data: string | Buffer,
-  options?: SaveOptions
+  options?: SaveOptions,
 ) => {
   const file = getBucket().file(path);
 
@@ -78,7 +76,7 @@ export const write = async (
 export const writeJson = async <T extends object>(
   path: string,
   data: T,
-  options?: SaveOptions
+  options?: SaveOptions,
 ): Promise<T> => {
   await write(path, JSON.stringify(data), {
     contentType: "application/json",
@@ -92,7 +90,7 @@ export const writeJson = async <T extends object>(
 export async function updateJson<T extends object>(
   path: string,
   updater: (current: T | undefined) => T,
-  options?: SaveOptions
+  options?: SaveOptions,
 ): Promise<T> {
   let current: T | undefined;
   if (await exists(path)) {
@@ -120,7 +118,7 @@ export async function writeMasterData(data: MasterData): Promise<void> {
     {
       public: true,
       immutable: true,
-    }
+    },
   );
 }
 
@@ -133,7 +131,7 @@ export function equalMasterData(a: MasterData, b: MasterData): boolean {
 
 export async function mergeMasterData(
   target: MasterData,
-  source: Partial<MasterData>
+  source: Partial<MasterData>,
 ): Promise<MasterData> {
   const next: MasterData = { ...target, ...source };
 
@@ -162,7 +160,7 @@ export const fetchGenerationMap = async (): Promise<Record<string, string>> => {
   }).json<ListResponse>();
 
   const result = Object.fromEntries(
-    res.items.map((item) => [item.name, item.generation])
+    res.items.map((item) => [item.name, item.generation]),
   );
 
   return result;

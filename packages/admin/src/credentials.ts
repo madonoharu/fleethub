@@ -21,7 +21,7 @@ export const getApp = () => {
   if (admin.apps.length === 0) {
     return admin.initializeApp({
       credential: admin.credential.cert(getServiceAccount()),
-      storageBucket: "kcfleethub.appspot.com",
+      storageBucket: "kcfleethub",
     });
   }
 

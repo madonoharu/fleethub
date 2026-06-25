@@ -14,7 +14,7 @@ const firebaseConfig = {
   authDomain: "kcfleethub.firebaseapp.com",
   databaseURL: "https://kcfleethub.firebaseio.com",
   projectId: "kcfleethub",
-  storageBucket: "kcfleethub.appspot.com",
+  storageBucket: "kcfleethub",
   messagingSenderId: "154546542358",
   appId: "1:154546542358:web:be495b1b23c20c66c82237",
   measurementId: "G-9F914T0225",
@@ -26,14 +26,13 @@ if (typeof window !== "undefined") {
   getAnalytics();
 }
 
-export const GCS_PREFIX_URL =
-  "https://storage.googleapis.com/kcfleethub.appspot.com";
+export const GCS_PREFIX_URL = "https://storage.googleapis.com/kcfleethub";
 export const MASTER_DATA_PATH = process.env.MASTER_DATA_PATH;
 export const SHIP_BANNERS_PATH = "data/ship_banners.json";
 
 export const publicFileExists = (id: string) => {
   return fetch(`${GCS_PREFIX_URL}/public/${id}.json`, { method: "HEAD" }).then(
-    (res) => res.status === 200
+    (res) => res.status === 200,
   );
 };
 
@@ -61,7 +60,7 @@ export const shorten = async (url: string, domain: "fleethub") => {
       method: "POST",
       headers,
       body: JSON.stringify(body),
-    }
+    },
   );
   const json = (await res.json()) as
     | { previewLink: string; shortLink: string }
@@ -72,7 +71,7 @@ export const shorten = async (url: string, domain: "fleethub") => {
 export async function publish(
   name: string,
   input: string,
-  customMetadata?: Record<string, string>
+  customMetadata?: Record<string, string>,
 ) {
   const out = ref(storage, `public/${name}`);
   const metadata: UploadMetadata = {
