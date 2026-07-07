@@ -92,6 +92,8 @@ impl AttackPowerParams {
             landing_forces_t4kai_mod,
             t4_tank_group_mod,
             t4_tank_kai_mod,
+            panzer2_mod,
+            r35_french_mod,
             ..
         } = &self.special_enemy_mods;
 
@@ -113,6 +115,8 @@ impl AttackPowerParams {
         precap = landing_forces_t4kai_mod.apply(precap);
         precap = t4_tank_group_mod.apply(precap);
         precap = t4_tank_kai_mod.apply(precap);
+        precap = panzer2_mod.apply(precap);
+        precap = r35_french_mod.apply(precap);
         precap = landing_craft_synergy_mod.apply(precap);
         precap += precap_general_mod.b;
 

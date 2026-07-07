@@ -586,6 +586,7 @@ fn special_enemy_modifiers(
     let t97_tank_chiha_count = gears.count(gear_id!("九七式中戦車(チハ)"));
     let t97_tank_chiha_kai_count = gears.count(gear_id!("九七式中戦車 新砲塔(チハ改)"));
     let army_infantry_chiha_kai_count = gears.count(gear_id!("陸軍歩兵部隊+チハ改"));
+    let r35_french_count = gears.count(gear_id!("大発動艇(R35&フランス兵)"));
 
     let dlc_sp1_count =
         shikon_count + honi1_count + toku_dlc_panzer3_count + toku_dlc_panzer3_j_count;
@@ -732,6 +733,14 @@ fn special_enemy_modifiers(
         if t4_tank_kai_count >= 1 {
             mods.t4_tank_kai_mod.merge(1.1, 28.0);
         }
+
+        if panzer2_count >= 1 {
+            mods.panzer2_mod.merge(1.15, 15.0);
+        }
+
+        if r35_french_count >= 1 {
+            mods.r35_french_mod.merge(1.2, 20.0);
+        }
     }
 
     // 上陸用舟艇シナジー
@@ -745,7 +754,8 @@ fn special_enemy_modifiers(
             + panzer2_count
             + honi1_count
             + t4_tank_count
-            + t4_tank_kai_count;
+            + t4_tank_kai_count
+            + r35_french_count;
         let d =
             shikon_count + toku_dlc_panzer3_count + chiha_count + chiha_kai_count + t2_tank_count;
 

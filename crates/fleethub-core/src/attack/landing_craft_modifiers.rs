@@ -14,7 +14,8 @@ struct Multipliers {
     c: f64,
     dd: f64,
     e: f64,
-    ff: f64,
+    ee: f64,
+    f: f64,
     g: f64,
     hh: f64,
     i: f64,
@@ -31,7 +32,8 @@ impl Default for Multipliers {
             c: 1.0,
             dd: 1.0,
             e: 1.0,
-            ff: 1.0,
+            ee: 1.0,
+            f: 1.0,
             g: 1.0,
             hh: 1.0,
             i: 1.0,
@@ -93,6 +95,8 @@ impl LandingCraftModifiers {
             + t97_tank_chiha_kai_count
             + army_infantry_chiha_kai_count;
 
+        let r35_french_count = gears.count(gear_id!("大発動艇(R35&フランス兵)"));
+
         let cond_a = landing_craft_count + t4_tank_group_count + landing_forces_count >= 1;
         let cond_b = toku_dlc_count
             + toku_dlc_panzer3_count
@@ -117,7 +121,8 @@ impl LandingCraftModifiers {
 
         let e_count = panzer2_count;
         let cond_e = e_count >= 1;
-        let cond_ff = e_count >= 2;
+        let cond_ee = e_count >= 2;
+        let cond_f = r35_french_count >= 1;
 
         let g_count = ab_count + armed_count;
         let cond_g = g_count >= 1;
@@ -139,7 +144,8 @@ impl LandingCraftModifiers {
                 c: 1.5,
                 dd: 1.4,
                 e: 1.5,
-                ff: 1.4,
+                ee: 1.4,
+                f: 1.5,
                 g: 1.3,
                 hh: 1.2,
                 i: 2.0,
@@ -153,7 +159,8 @@ impl LandingCraftModifiers {
                 c: 1.2,
                 dd: 1.4,
                 e: 1.2,
-                ff: 1.4,
+                ee: 1.4,
+                f: 1.2,
                 g: 1.3,
                 hh: 1.1,
                 i: 1.8,
@@ -167,7 +174,8 @@ impl LandingCraftModifiers {
                 c: 1.6,
                 dd: 1.5,
                 e: 1.6,
-                ff: 1.5,
+                ee: 1.5,
+                f: 1.6,
                 g: 1.5,
                 hh: 1.1,
                 i: 2.0,
@@ -181,7 +189,8 @@ impl LandingCraftModifiers {
                 c: 1.5,
                 dd: 1.3,
                 e: 1.5,
-                ff: 1.3,
+                ee: 1.3,
+                f: 1.5,
                 g: 1.1,
                 hh: 1.1,
                 i: 1.1,
@@ -199,7 +208,8 @@ impl LandingCraftModifiers {
                 c: 1.3 * ibonus1,
                 dd: 1.6,
                 e: 1.3 * ibonus1,
-                ff: 1.6,
+                ee: 1.6,
+                f: 1.3 * ibonus1,
                 g: 1.5,
                 hh: 1.1,
                 i: 1.2,
@@ -213,7 +223,8 @@ impl LandingCraftModifiers {
                 c: 1.2,
                 dd: 1.4,
                 e: 1.2,
-                ff: 1.4,
+                ee: 1.4,
+                f: 1.2,
                 g: 1.2,
                 hh: 1.1,
                 i: 1.8,
@@ -227,7 +238,8 @@ impl LandingCraftModifiers {
                 c: 1.15,
                 dd: 1.15,
                 e: 1.15,
-                ff: 1.15,
+                ee: 1.15,
+                f: 1.15,
                 g: 1.1,
                 hh: 1.1,
                 i: 1.1,
@@ -244,7 +256,8 @@ impl LandingCraftModifiers {
             let c = if cond_c { precap_ms.c } else { 1.0 };
             let dd = if cond_dd { precap_ms.dd } else { 1.0 };
             let e = if cond_e { precap_ms.e } else { 1.0 };
-            let ff = if cond_ff { precap_ms.ff } else { 1.0 };
+            let ee = if cond_ee { precap_ms.ee } else { 1.0 };
+            let f = if cond_f { precap_ms.f } else { 1.0 };
             let g = if is_day && cond_g { precap_ms.g } else { 1.0 };
             let hh = if is_day && cond_hh { precap_ms.hh } else { 1.0 };
             let i = if cond_i { precap_ms.i } else { 1.0 };
@@ -269,7 +282,7 @@ impl LandingCraftModifiers {
                 lf *= precap_ms.lf.2;
             }
 
-            a * b * c * dd * e * ff * g * hh * i * j * t2 * lf
+            a * b * c * dd * e * ee * f * g * hh * i * j * t2 * lf
         };
 
         let postcap = {
@@ -278,7 +291,8 @@ impl LandingCraftModifiers {
             let c = if cond_c { postcap_ms.c } else { 1.0 };
             let dd = if cond_dd { postcap_ms.dd } else { 1.0 };
             let e = if cond_e { postcap_ms.e } else { 1.0 };
-            let ff = if cond_ff { postcap_ms.ff } else { 1.0 };
+            let ee = if cond_ee { postcap_ms.ee } else { 1.0 };
+            let f = if cond_f { postcap_ms.f } else { 1.0 };
             let g = if cond_g { postcap_ms.g } else { 1.0 };
             let hh = if cond_hh { postcap_ms.hh } else { 1.0 };
             let i = if cond_i { postcap_ms.i } else { 1.0 };
@@ -303,7 +317,7 @@ impl LandingCraftModifiers {
                 lf *= postcap_ms.lf.2;
             }
 
-            a * b * c * dd * e * ff * g * hh * i * j * t2 * lf
+            a * b * c * dd * e * ee * f * g * hh * i * j * t2 * lf
         };
 
         Self { precap, postcap }
