@@ -27,6 +27,7 @@
     "update:maps": "yarn run tsx --env-file=.env scripts/updateByKcnav",
     "update:storage": "yarn run tsx --env-file=.env scripts/updateStorage",
     "update:types": "yarn run tsx --env-file=.env scripts/updateTypes",
+    "redeploy": "yarn run tsx --env-file=.env scripts/redeploy",
     "utils": "yarn workspace @fh/utils"
   },
   "lint-staged": {
