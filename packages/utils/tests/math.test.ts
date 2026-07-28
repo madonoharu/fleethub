@@ -3,7 +3,7 @@ import { atLeastOne, round, floor, expToAce } from "../src";
 describe("utils/math", () => {
   it("atLeastOne", () => {
     expect(atLeastOne([0.1, 0.2, 0.3])).toBe(
-      1 - (1 - 0.1) * (1 - 0.2) * (1 - 0.3)
+      1 - (1 - 0.1) * (1 - 0.2) * (1 - 0.3),
     );
   });
 
@@ -30,6 +30,7 @@ describe("utils/math", () => {
   });
 
   it.each([
+    [-1, 0],
     [0, 0],
     [9, 0],
     [10, 1],
@@ -46,6 +47,7 @@ describe("utils/math", () => {
     [99, 6],
     [100, 7],
     [120, 7],
+    [Number.MAX_SAFE_INTEGER, 7],
   ])("expToAce", (exp, expected) => {
     expect(expToAce(exp)).toBe(expected);
   });

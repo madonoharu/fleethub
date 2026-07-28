@@ -2,8 +2,10 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import React from "react";
 
+import { FILTER_ICONS, FilterIconKey } from "../../../images/filters";
+
 type Props = {
-  icon: string;
+  icon: FilterIconKey;
 };
 
 const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
@@ -12,8 +14,9 @@ const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
       className={className}
       height={18}
       width={48}
-      src={`/filters/${icon}.png`}
+      src={FILTER_ICONS[icon]}
       alt={icon}
+      unoptimized
     />
   );
 };

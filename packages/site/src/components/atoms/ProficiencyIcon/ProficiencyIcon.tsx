@@ -4,6 +4,8 @@ import { Typography } from "@mui/material";
 import Image from "next/image";
 import React from "react";
 
+import { ACE_ICONS } from "../../../images/icons";
+
 const ExpLabel = styled(Typography)`
   position: absolute;
   font-size: 10px;
@@ -28,13 +30,14 @@ const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>(
         <Image
           height={24}
           width={18}
-          src={`/icons/ace${ace}.png`}
+          src={ACE_ICONS[ace]}
           alt={`ace${ace}`}
+          unoptimized
         />
         <ExpLabel aria-label="exp">{exp}</ExpLabel>
       </div>
     );
-  }
+  },
 );
 
 export default styled(ProficiencyIcon)`

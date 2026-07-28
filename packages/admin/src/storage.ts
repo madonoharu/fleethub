@@ -160,7 +160,9 @@ export const fetchGenerationMap = async (): Promise<Record<string, string>> => {
   }).json<ListResponse>();
 
   const result = Object.fromEntries(
-    res.items.map((item) => [item.name, item.generation]),
+    res.items
+      .map((item) => [item.name, item.generation] as const)
+      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
   );
 
   return result;

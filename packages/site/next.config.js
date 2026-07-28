@@ -46,6 +46,11 @@ const config = {
   reactStrictMode: true,
   transpilePackages: ["ts-norm"],
 
+  images: {
+    minimumCacheTTL: 2678400,
+    qualities: [75],
+  },
+
   experimental: {
     // https://github.com/vercel/next.js/issues/32314
     // esmExternals: false,
@@ -80,6 +85,16 @@ const config = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/favicon.ico",
+        locale: false,
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, stale-while-revalidate=86400",
           },
         ],
       },

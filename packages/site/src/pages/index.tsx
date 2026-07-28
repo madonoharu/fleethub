@@ -23,12 +23,11 @@ const AppContent = dynamic(() => import("../components/templates/AppContent"), {
 });
 
 interface PageProps {
-  createdAt: string;
   generationMap: Record<string, string>;
 }
 
 const Index: NextComponentType<NextPageContext, unknown, PageProps> = (
-  props
+  props,
 ) => {
   const { t } = useTranslation("common");
   const { generationMap } = props;
@@ -79,12 +78,9 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({
     ]),
   ]);
 
-  const createdAt = new Date().toISOString();
-
   return {
-    revalidate: 60,
+    revalidate: 3600,
     props: {
-      createdAt,
       generationMap,
       ...ssrConfig,
     },

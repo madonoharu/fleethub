@@ -2,8 +2,10 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import React from "react";
 
+import { STAT_ICONS, StatIconKey } from "../../../images/stats";
+
 interface Props {
-  icon: string;
+  icon: StatIconKey;
 }
 
 const StatIcon: React.FCX<Props> = ({ className, icon }) => {
@@ -12,8 +14,9 @@ const StatIcon: React.FCX<Props> = ({ className, icon }) => {
       className={className}
       width={15}
       height={15}
-      src={`/stats/${icon}.png`}
+      src={STAT_ICONS[icon]}
       alt={icon}
+      unoptimized
     />
   );
 };

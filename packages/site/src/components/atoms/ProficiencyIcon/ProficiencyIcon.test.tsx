@@ -1,7 +1,16 @@
 import { render, screen } from "@testing-library/react";
 
+import { ACE_ICONS } from "../../../images/icons";
+
 import ProficiencyIcon from "./ProficiencyIcon";
 import "@testing-library/jest-dom";
+
+describe("ACE_ICONS", () => {
+  it("covers every ace rank", () => {
+    expect(ACE_ICONS).toHaveLength(8);
+    expect(ACE_ICONS.every(Boolean)).toBe(true);
+  });
+});
 
 describe("ProficiencyIcon", () => {
   it.each([
@@ -29,6 +38,6 @@ describe("ProficiencyIcon", () => {
 
     expect(expLabel).toHaveTextContent(exp.toString());
     expect(image).toHaveAttribute("alt", `ace${ace}`);
-    expect(image.src).toContain(`ace${ace}.png`);
+    expect(image.src).not.toContain("/_next/image");
   });
 });

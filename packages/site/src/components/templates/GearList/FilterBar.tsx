@@ -8,7 +8,7 @@ import { SelectButtons } from "../../molecules";
 
 import FilterIcon from "./FilterIcon";
 
-const getFilterIcon = (key: string) => <FilterIcon icon={key} />;
+const getFilterIcon = (key: GearCategoryFilter) => <FilterIcon icon={key} />;
 
 const Right = styled(Flexbox)`
   margin-left: auto;
