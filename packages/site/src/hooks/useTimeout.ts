@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 export const useTimeout = <T>(cb: () => T, delay: number) => {
-  const cbRef = useRef<typeof cb>();
+  const cbRef = useRef<typeof cb | undefined>(undefined);
 
   useEffect(() => {
     cbRef.current = cb;

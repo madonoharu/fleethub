@@ -22,7 +22,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 
 import { KctoolsIcon } from "../../atoms";
 
-import { withIconButton } from "./withIconButton";
+import { withIconButton, WithIconButtonProps } from "./withIconButton";
 
 export const AddButton = withIconButton(AddIcon);
 export const BuildButton = withIconButton(BuildIcon);
@@ -49,9 +49,9 @@ export const TweetButton = styled(withIconButton(TwitterIcon))`
   color: #3ba9ee;
 `;
 
-export const KctoolsButton = withIconButton(KctoolsIcon);
-KctoolsButton.defaultProps = {
-  title: "制空権シミュレータで開く",
-};
+const KctoolsIconButton = withIconButton(KctoolsIcon);
+export const KctoolsButton = (props: WithIconButtonProps) => (
+  <KctoolsIconButton title="制空権シミュレータで開く" {...props} />
+);
 
 export * from "./withIconButton";

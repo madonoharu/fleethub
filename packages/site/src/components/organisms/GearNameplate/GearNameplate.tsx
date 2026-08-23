@@ -40,15 +40,11 @@ export const GearNameplate = React.forwardRef<HTMLDivElement, Props>(
         </Typography>
       </Flexbox>
     );
-  }
+  },
 );
 
-GearNameplate.defaultProps = {
-  equippable: true,
-};
-
 export default styled(GearNameplate)(
-  ({ equippable, theme }) => css`
+  ({ equippable = true, theme }) => css`
     max-width: 100%;
     color: ${!equippable && theme.palette.error.light};
 
@@ -56,5 +52,5 @@ export default styled(GearNameplate)(
       font-size: 0.75rem;
       line-height: 1.66;
     }
-  `
+  `,
 );

@@ -11,13 +11,13 @@ interface Options {
 }
 
 export function useLongPress({ onPress, onFinish }: Options) {
-  const ref = useRef<number>();
+  const ref = useRef<number | undefined>(undefined);
 
   useEffect(
     () => () => {
       reset(ref);
     },
-    []
+    [],
   );
 
   const start = useCallback(() => {
