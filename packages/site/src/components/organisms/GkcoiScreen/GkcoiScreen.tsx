@@ -22,7 +22,6 @@ const THEME_NAMES: Record<GkcoiTheme, string> = {
   "light-ex": "遠征 light-ex",
   white: "White",
   official: "公式 official",
-  flat: "Flat",
   "74lc": "七四式(大型) 74lc",
   "74mc": "七四式(中型) 74mc",
   "74sb": "七四式(小型) 74sb",
