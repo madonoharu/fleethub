@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
-    "build": "yarn up fleethub-core@npm:latest equipment-bonus@npm:latest && next build",
+    "build": "yarn up fleethub-core@npm:latest equipment-bonus@npm:latest gkcoi@npm:latest && next build",
     "dev": "next dev",
     "start": "next start"
   },
@@ -36,7 +36,7 @@
     "equipment-bonus": "npm:latest",
     "fast-json-stable-stringify": "^2.1.0",
     "fleethub-core": "npm:latest",
-    "gkcoi": "^1.5.2",
+    "gkcoi": "npm:latest",
     "http-status-codes": "^2.3.0",
     "i18next": "^23.15.1",
     "immer": "^10.1.1",

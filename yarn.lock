@@ -852,7 +852,7 @@ __metadata:
     equipment-bonus: "npm:latest"
     fast-json-stable-stringify: "npm:^2.1.0"
     fleethub-core: "npm:latest"
-    gkcoi: "npm:^1.5.2"
+    gkcoi: "npm:latest"
     http-status-codes: "npm:^2.3.0"
     i18next: "npm:^23.15.1"
     immer: "npm:^10.1.1"
@@ -3652,10 +3652,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aaci-prop@npm:^1.2.0":
-  version: 1.2.33
-  resolution: "aaci-prop@npm:1.2.33"
-  checksum: 10c0/97c5031c3fb77e8cef2bc9e553d79e8765e298a5e33735e79148f22a9f738fb15271b4c2ed8ad20f4f48b8c86634037505234047e65954befbd057f402c09e3e
+"aaci-prop@npm:^1.2.45":
+  version: 1.2.45
+  resolution: "aaci-prop@npm:1.2.45"
+  checksum: 10c0/dea37d9fd525d8a7dd08a7b545beb0976c574ea4dd2b844de807f5ed53cffbbd34784a6787692508b96a2d8b45085640c0244cb03efa4e0e6fe8e61ced7b8844
   languageName: node
   linkType: hard
 
@@ -5140,6 +5140,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^17.4.2":
+  version: 17.4.2
+  resolution: "dotenv@npm:17.4.2"
+  checksum: 10c0/164f8e77a646c8446867d5b588d26ea6005c8ea7c5eb41cf926f6113d23f2191355f6e0cfd95ea9bab98394a5b0a3f1e51a8399711b666fe55cc7b0bd745f942
+  languageName: node
+  linkType: hard
+
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "dunder-proto@npm:1.0.1"
@@ -6462,16 +6469,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gkcoi@npm:^1.5.2":
-  version: 1.5.2
-  resolution: "gkcoi@npm:1.5.2"
+"gkcoi@npm:latest":
+  version: 1.7.2
+  resolution: "gkcoi@npm:1.7.2"
   dependencies:
-    aaci-prop: "npm:^1.2.0"
+    aaci-prop: "npm:^1.2.45"
     chart.js: "npm:^3.9.1"
     chartjs-plugin-datalabels: "npm:^2.2.0"
-    lzjs: "npm:^1.3.1"
+    dotenv: "npm:^17.4.2"
+    lz-string: "npm:^1.5.0"
+    replicate: "npm:^1.4.0"
     ts-steganography: "npm:^3.0.2"
-  checksum: 10c0/e68a8c9f2e4f395119d53fa319ed7e9a364280b29c7a689283ab47e28ff5d02a9a54913670fe9a5a5c294c76a401944e64191be66757266c67c36a3b2a6681c4
+  checksum: 10c0/8c87c418892983424bcae1889c496b0fea1f5886064e16f21ce378b2a148e56e0a473994f50fd950510ab87c53c8407882ba7d89624333bbc44128bb14dc2d7e
   languageName: node
   linkType: hard
 
@@ -8550,15 +8559,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lzjs@npm:^1.3.1":
-  version: 1.3.1
-  resolution: "lzjs@npm:1.3.1"
-  bin:
-    lzjs: bin/lzjs
-  checksum: 10c0/e7d87511880fde0c58376f34b8fd07f1e09b6c1afc2abddd9c0fa2a49c33959a6b0ecb9a7cf455c016de365548809d7e0b6519404e6b07d3f72a4647ef4f270f
-  languageName: node
-  linkType: hard
-
 "make-dir@npm:^4.0.0":
   version: 4.0.0
   resolution: "make-dir@npm:4.0.0"
@@ -9877,6 +9877,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"readable-stream@npm:>=4.0.0, readable-stream@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "readable-stream@npm:4.7.0"
+  dependencies:
+    abort-controller: "npm:^3.0.0"
+    buffer: "npm:^6.0.3"
+    events: "npm:^3.3.0"
+    process: "npm:^0.11.10"
+    string_decoder: "npm:^1.3.0"
+  checksum: 10c0/fd86d068da21cfdb10f7a4479f2e47d9c0a9b0c862fc0c840a7e5360201580a55ac399c764b12a4f6fa291f8cee74d9c4b7562e0d53b3c4b2769f2c98155d957
+  languageName: node
+  linkType: hard
+
 "readable-stream@npm:^2.0.2":
   version: 2.3.8
   resolution: "readable-stream@npm:2.3.8"
@@ -9900,19 +9913,6 @@ __metadata:
     string_decoder: "npm:^1.1.1"
     util-deprecate: "npm:^1.0.1"
   checksum: 10c0/e37be5c79c376fdd088a45fa31ea2e423e5d48854be7a22a58869b4e84d25047b193f6acb54f1012331e1bcd667ffb569c01b99d36b0bd59658fb33f513511b7
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "readable-stream@npm:4.7.0"
-  dependencies:
-    abort-controller: "npm:^3.0.0"
-    buffer: "npm:^6.0.3"
-    events: "npm:^3.3.0"
-    process: "npm:^0.11.10"
-    string_decoder: "npm:^1.3.0"
-  checksum: 10c0/fd86d068da21cfdb10f7a4479f2e47d9c0a9b0c862fc0c840a7e5360201580a55ac399c764b12a4f6fa291f8cee74d9c4b7562e0d53b3c4b2769f2c98155d957
   languageName: node
   linkType: hard
 
@@ -10059,6 +10059,18 @@ __metadata:
     gopd: "npm:^1.2.0"
     set-function-name: "npm:^2.0.2"
   checksum: 10c0/83b88e6115b4af1c537f8dabf5c3744032cb875d63bc05c288b1b8c0ef37cbe55353f95d8ca817e8843806e3e150b118bc624e4279b24b4776b4198232735a77
+  languageName: node
+  linkType: hard
+
+"replicate@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "replicate@npm:1.4.0"
+  dependencies:
+    readable-stream: "npm:>=4.0.0"
+  dependenciesMeta:
+    readable-stream:
+      optional: true
+  checksum: 10c0/5def26152ca48ea2307b2487a1e688c7805090249d95da40b0e76da9b363d39dec3f7a92fd52b169a8669dfe5b98648e83b83961aff056b8e232de9fe3adc2b0
   languageName: node
   linkType: hard
 
