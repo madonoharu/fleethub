@@ -15,6 +15,77 @@ enum DamageType {
     OverkillProtection,
 }
 
+/// `(a * hp + b * v) as u16` (v ∈ [0, hp.max(1))) の値ごとの出現回数を昇順に返す。
+///
+/// 割合ダメージも撃沈保護ダメージも v に対して単調非減少なので、同じ値を取る v は
+/// 必ず連続する。その区間長を直接求めることで、v を全走査せずに
+/// 「異なる値の個数」に比例する計算量で数え上げる。
+/// 素朴に走査した場合と結果は完全に一致する。
+fn step_counts(hp: u16, a: f64, b: f64) -> Vec<(u16, usize)> {
+    debug_assert!(b > 0.0);
+
+    let n = hp.max(1) as u32;
+    let base = a * hp as f64;
+    let value_at = |v: u32| (base + v as f64 * b) as u16;
+
+    let mut out: Vec<(u16, usize)> = Vec::new();
+    let mut v = 0_u32;
+
+    while v < n {
+        let d = value_at(v);
+
+        // 値が d + 1 以上になる最初の v を見積もり、丸め誤差ぶんを実測で補正する。
+        let estimated = ((d as f64 + 1.0 - base) / b).ceil();
+        let mut next = if estimated.is_finite() && estimated > 0.0 {
+            (estimated as u32).clamp(v + 1, n)
+        } else {
+            v + 1
+        };
+
+        while next > v + 1 && value_at(next - 1) > d {
+            next -= 1;
+        }
+        while next < n && value_at(next) <= d {
+            next += 1;
+        }
+
+        out.push((d, (next - v) as usize));
+        v = next;
+    }
+
+    out
+}
+
+/// 密な確率配列の指定ダメージ値に加算する。必要なら配列を伸ばす。
+fn add_at(out: &mut Vec<f64>, value: u16, rate: f64) {
+    let index = value as usize;
+    if out.len() <= index {
+        out.resize(index + 1, 0.0);
+    }
+    out[index] += rate;
+}
+
+/// 出現回数を正規化して密な確率配列に加算する。
+fn add_counts(out: &mut Vec<f64>, counts: Vec<(u16, usize)>, weight: f64) {
+    let total: usize = counts.iter().map(|(_, count)| *count).sum();
+    let total = total as f64;
+
+    for (value, count) in counts {
+        add_at(out, value, count as f64 / total * weight);
+    }
+}
+
+/// 出現回数を確率に正規化する。
+fn counts_to_density(counts: Vec<(u16, usize)>) -> Histogram<u16, f64> {
+    let total: usize = counts.iter().map(|(_, count)| *count).sum();
+    let total = total as f64;
+
+    counts
+        .into_iter()
+        .map(|(value, count)| (value, count as f64 / total))
+        .collect()
+}
+
 struct ScratchDamage {
     current_hp: u16,
 }
@@ -36,6 +107,14 @@ impl ScratchDamage {
 
     fn max(&self) -> u16 {
         self.iter().next_back().unwrap_or_default()
+    }
+
+    fn counts(&self) -> Vec<(u16, usize)> {
+        step_counts(self.current_hp, 0.06, 0.08)
+    }
+
+    fn density(&self) -> Histogram<u16, f64> {
+        counts_to_density(self.counts())
     }
 }
 
@@ -60,6 +139,14 @@ impl OverkillProtectionDamage {
 
     fn max(&self) -> u16 {
         self.iter().next_back().unwrap_or_default()
+    }
+
+    fn counts(&self) -> Vec<(u16, usize)> {
+        step_counts(self.current_hp, 0.5, 0.3)
+    }
+
+    fn density(&self) -> Histogram<u16, f64> {
+        counts_to_density(self.counts())
     }
 }
 
@@ -242,6 +329,53 @@ impl Damage {
         }
     }
 
+    /// `density()` と同じ分布を、ダメージ値を添字とする密な配列へ `weight` 倍して加算する。
+    ///
+    /// 多段攻撃の畳み込みでは1回の解析につき数百回呼ばれるため、
+    /// 中間の `Histogram` を作らずに直接書き込む。
+    pub(crate) fn add_density_to(&self, out: &mut Vec<f64>, weight: f64) {
+        if weight == 0.0 {
+            return;
+        }
+
+        if self.hit_type == HitType::Miss {
+            if self.is_cutin {
+                add_counts(out, self.scratch_damage().counts(), weight);
+            } else {
+                add_at(out, 0, weight);
+            }
+            return;
+        }
+
+        // 中間の `Histogram<DamageType, f64>` を作らず、防御力サンプルを直接振り分ける。
+        // 判定は `calc_damage_type` のままなので分類規則は一箇所に保たれる。
+        let defense_power = self.defense_power();
+        let unit = weight / defense_power.iter().len() as f64;
+
+        let mut scratch = 0_usize;
+        let mut overkill_protection = 0_usize;
+
+        for value in defense_power.iter() {
+            match self.calc_damage_type(value) {
+                DamageType::Actual(value) => add_at(out, value, unit),
+                DamageType::Scratch => scratch += 1,
+                DamageType::OverkillProtection => overkill_protection += 1,
+            }
+        }
+
+        if scratch > 0 {
+            add_counts(out, self.scratch_damage().counts(), unit * scratch as f64);
+        }
+
+        if overkill_protection > 0 {
+            add_counts(
+                out,
+                self.overkill_protection_damage().counts(),
+                unit * overkill_protection as f64,
+            );
+        }
+    }
+
     pub fn density(&self) -> Histogram<u16, f64> {
         let damage_type_density = self.damage_type_density();
 
@@ -250,10 +384,8 @@ impl Damage {
             .map(|(damage_type, rate)| {
                 let current_density = match damage_type {
                     DamageType::Actual(value) => Some(value).density(),
-                    DamageType::Scratch => self.scratch_damage().iter().density(),
-                    DamageType::OverkillProtection => {
-                        self.overkill_protection_damage().iter().density()
-                    }
+                    DamageType::Scratch => self.scratch_damage().density(),
+                    DamageType::OverkillProtection => self.overkill_protection_damage().density(),
                 };
 
                 current_density * rate
@@ -267,6 +399,61 @@ mod test {
     use crate::{histogram, test::rng};
 
     use super::*;
+
+    /// 閉形式の数え上げが、v を全走査した場合と完全に一致すること。
+    #[test]
+    fn test_step_counts_matches_naive() {
+        fn naive(hp: u16, a: f64, b: f64) -> Vec<(u16, usize)> {
+            let mut counts: Vec<(u16, usize)> = Vec::new();
+            for v in 0..hp.max(1) {
+                let value = (a * hp as f64 + v as f64 * b) as u16;
+                match counts.last_mut() {
+                    Some((last, count)) if *last == value => *count += 1,
+                    _ => counts.push((value, 1)),
+                }
+            }
+            counts
+        }
+
+        let hps = (0..=300u16)
+            .chain([399, 400, 401, 999, 1000, 1550, 2000, 5999, 6000, 9800])
+            .collect::<Vec<_>>();
+
+        for hp in hps {
+            // 割合ダメージ
+            assert_eq!(
+                step_counts(hp, 0.06, 0.08),
+                naive(hp, 0.06, 0.08),
+                "scratch hp={hp}"
+            );
+            // 撃沈保護ダメージ
+            assert_eq!(
+                step_counts(hp, 0.5, 0.3),
+                naive(hp, 0.5, 0.3),
+                "overkill hp={hp}"
+            );
+        }
+    }
+
+    /// 閉形式から作った確率分布が、既存の `Density` 実装と一致すること。
+    #[test]
+    fn test_scratch_density_matches_iter() {
+        for hp in [0u16, 1, 2, 12, 99, 100, 400, 1550, 6000] {
+            let scratch = ScratchDamage { current_hp: hp };
+            assert_eq!(
+                scratch.density(),
+                scratch.iter().density(),
+                "scratch hp={hp}"
+            );
+
+            let overkill = OverkillProtectionDamage { current_hp: hp };
+            assert_eq!(
+                overkill.density(),
+                overkill.iter().density(),
+                "overkill hp={hp}"
+            );
+        }
+    }
 
     #[test]
     fn test_internal_scratch_damage() {

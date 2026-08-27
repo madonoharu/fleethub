@@ -14,7 +14,7 @@ impl DefensePower {
         }
     }
 
-    pub fn iter(&self) -> impl DoubleEndedIterator<Item = f64> {
+    pub fn iter(&self) -> impl DoubleEndedIterator<Item = f64> + ExactSizeIterator {
         let min = self.basic_defense_power * 0.7;
         let end = self.basic_defense_power as usize;
         (0..end).map(move |v| min + v as f64 * 0.6)
