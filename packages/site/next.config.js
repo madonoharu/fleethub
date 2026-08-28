@@ -46,6 +46,13 @@ const config = {
   reactStrictMode: true,
   transpilePackages: ["ts-norm"],
 
+  // next-i18next の翻訳 JSON は実行時に動的パスで読まれるため nft が追跡できない。
+  // ISR の再生成は Serverless Function 内で getStaticProps を再実行するので、
+  // 明示的に同梱しないと翻訳が空になりキー(英語)がそのまま表示される。
+  outputFileTracingIncludes: {
+    "/": ["./public/locales/**"],
+  },
+
   images: {
     minimumCacheTTL: 2678400,
     qualities: [75],
