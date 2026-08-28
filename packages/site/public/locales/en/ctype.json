@@ -135,6 +135,10 @@
   "135": "Glorious Class",
   "136": "Nosaki Class",
   "137": "Thonburi Class",
+  "138": "Algérie Class",
+  "139": "Aigle Class",
+  "140": "Visby Class",
+  "141": "Béarn Class",
   "1501": "I-Class Destroyer",
   "1502": "Ro-Class Destroyer",
   "1503": "Ha-Class Destroyer",
@@ -296,5 +300,13 @@
   "2329": "Abyssal Landing Imp",
   "2332": "Solitary Fjord Princess",
   "2338": "Battlecruiser Water Princess",
-  "2344": "Abyssal Aircraft Carrier Wasp Princess"
+  "2344": "Abyssal Aircraft Carrier Wasp Princess",
+  "2350": "Twilight Water Demon Eldest Daughter",
+  "2356": "Twilight Water Demon Second Daughter",
+  "2362": "New Anti-Air Cruiser Princess",
+  "2368": "Fast Light Carrier Head Demon",
+  "2374": "U-Class Light Cruiser",
+  "2380": "Wi-Class Heavy Cruiser",
+  "2386": "Tragic French Heavy Princess",
+  "2392": "Caged French Aircraft Carrier Princess"
 }
