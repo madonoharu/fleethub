@@ -98,7 +98,7 @@
   "Multiplicative": "乘算",
   "Additive": "加算",
   "Individual": "单独",
-  "Cumulative": "累积",
+  "Cumulative": "累计",
   "Distribution": "分布",
   "EnemyType": "敌方类型",
   "ImageGeneration": "图像生成",
@@ -260,6 +260,18 @@
     "Taiha": "大破",
     "Sunk": "轰沉"
   },
+  "DamageDistribution": {
+    "Toggle": "伤害分布",
+    "Probability": "发生概率",
+    "Cumulative": "累计概率",
+    "Median": "中位数",
+    "Upper5": "前5%",
+    "OrMore": "以上",
+    "Other": "其他",
+    "Scratch": "比例",
+    "Compare": "比较",
+    "NoCompare": "无"
+  },
   "MoraleState": {
     "name": "士气值",
     "Sparkle": "刷闪",
@@ -347,13 +359,19 @@
     "Asw": "先制对潜",
     "Torpedo": "雷击"
   },
-  "ShellingType": { "Normal": "普通攻击", "Aerial": "航空攻击" },
+  "ShellingType": {
+    "Normal": "普通攻击",
+    "Aerial": "航空攻击"
+  },
   "NightAttackType": {
     "Normal": "普通攻击",
     "Swordfish": "Swordfish",
     "Aerial": "航空攻击"
   },
-  "AswAttackType": { "DepthCharge": "爆雷", "Aerial": "航空攻击" },
+  "AswAttackType": {
+    "DepthCharge": "爆雷",
+    "Aerial": "航空攻击"
+  },
   "ContactRank": {
     "Rank1": "命中1以下",
     "Rank2": "命中2",

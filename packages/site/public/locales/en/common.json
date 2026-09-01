@@ -260,6 +260,18 @@
     "Taiha": "Taiha",
     "Sunk": "Sunk"
   },
+  "DamageDistribution": {
+    "Toggle": "Damage Distribution",
+    "Probability": "Probability",
+    "Cumulative": "Cumulative",
+    "Median": "Median",
+    "Upper5": "Top 5%",
+    "OrMore": "or more",
+    "Other": "Other",
+    "Scratch": "Scratch",
+    "Compare": "Compare",
+    "NoCompare": "None"
+  },
   "MoraleState": {
     "name": "Morale",
     "Sparkle": "Sparkle",
@@ -347,13 +359,19 @@
     "Asw": "Asw",
     "Torpedo": "ShTorp"
   },
-  "ShellingType": { "Normal": "Normal", "Aerial": "Aerial" },
+  "ShellingType": {
+    "Normal": "Normal",
+    "Aerial": "Aerial"
+  },
   "NightAttackType": {
     "Normal": "Normal",
     "Swordfish": "Swordfish",
     "Aerial": "Aerial"
   },
-  "AswAttackType": { "DepthCharge": "Depth Charge", "Aerial": "Aerial" },
+  "AswAttackType": {
+    "DepthCharge": "Depth Charge",
+    "Aerial": "Aerial"
+  },
   "ContactRank": {
     "Rank1": "Accuracy 1 or less",
     "Rank2": "Accuracy 2",

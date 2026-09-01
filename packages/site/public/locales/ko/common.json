@@ -260,6 +260,18 @@
     "Taiha": "대파",
     "Sunk": "굉침"
   },
+  "DamageDistribution": {
+    "Toggle": "데미지 분포",
+    "Probability": "발생 확률",
+    "Cumulative": "누적 확률",
+    "Median": "중앙값",
+    "Upper5": "상위 5%",
+    "OrMore": "이상",
+    "Other": "기타",
+    "Scratch": "비례",
+    "Compare": "비교",
+    "NoCompare": "없음"
+  },
   "MoraleState": {
     "name": "피로도",
     "Sparkle": "키라",
@@ -347,13 +359,19 @@
     "Asw": "대잠",
     "Torpedo": "뇌격"
   },
-  "ShellingType": { "Normal": "통상공격", "Aerial": "항공공격" },
+  "ShellingType": {
+    "Normal": "통상공격",
+    "Aerial": "항공공격"
+  },
   "NightAttackType": {
     "Normal": "통상공격",
     "Swordfish": "Swordfish",
     "Aerial": "항공공격"
   },
-  "AswAttackType": { "DepthCharge": "폭뢰", "Aerial": "항공공격" },
+  "AswAttackType": {
+    "DepthCharge": "폭뢰",
+    "Aerial": "항공공격"
+  },
   "ContactRank": {
     "Rank1": "명중 1이하",
     "Rank2": "명중 2",

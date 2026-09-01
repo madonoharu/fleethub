@@ -98,7 +98,7 @@
   "Multiplicative": "乗算",
   "Additive": "加算",
   "Individual": "個別",
-  "Cumulative": "累積",
+  "Cumulative": "累計",
   "Distribution": "分布",
   "EnemyType": "敵種別",
   "ImageGeneration": "画像生成",
@@ -260,6 +260,18 @@
     "Taiha": "大破",
     "Sunk": "轟沈"
   },
+  "DamageDistribution": {
+    "Toggle": "ダメージ分布",
+    "Probability": "ダメージ発生確率",
+    "Cumulative": "累計確率",
+    "Median": "中央値",
+    "Upper5": "上位5%",
+    "OrMore": "以上",
+    "Other": "その他",
+    "Scratch": "割合",
+    "Compare": "比較",
+    "NoCompare": "なし"
+  },
   "MoraleState": {
     "name": "疲労度",
     "Sparkle": "キラ",
@@ -354,13 +366,19 @@
     "AntiLand": "対地",
     "Aerial": "航空"
   },
-  "ShellingType": { "Normal": "通常", "Aerial": "航空" },
+  "ShellingType": {
+    "Normal": "通常",
+    "Aerial": "航空"
+  },
   "NightAttackType": {
     "Normal": "通常",
     "Swordfish": "Swordfish",
     "Aerial": "航空"
   },
-  "AswAttackType": { "DepthCharge": "爆雷", "Aerial": "航空" },
+  "AswAttackType": {
+    "DepthCharge": "爆雷",
+    "Aerial": "航空"
+  },
   "ContactRank": {
     "Rank1": "命中1以下",
     "Rank2": "命中2",
