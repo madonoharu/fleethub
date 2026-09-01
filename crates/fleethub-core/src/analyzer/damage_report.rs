@@ -3,7 +3,7 @@ use tsify::Tsify;
 
 use crate::{
     attack::{Attack, AttackPower, HitRate},
-    attack::{Damage, DefenseParams, HitType},
+    attack::{Damage, DefenseParams, DensityMode, HitType},
     types::DamageState,
     utils::Histogram,
 };
@@ -19,6 +19,13 @@ pub struct DamageReport {
     pub normal_scratch_rate: f64,
     pub critical_scratch_rate: f64,
     pub damage_density: Histogram<u16, f64>,
+    /// 全弾が割合ダメージ（カスダメ）だった場合の分布。総和はその確率なので 1 未満。
+    ///
+    /// `damage_density` から引けば、貫通が1発でも混ざった分と分けられる。
+    /// 割合ダメージを 0 ダメージ扱いにした分布との差では取り出せない。多段攻撃で
+    /// 「割合＋貫通」の結果が貫通ぶんだけ大きなダメージ値へ動くためで、
+    /// その位置まで割合として数えてしまう。
+    pub damage_density_scratch_only: Histogram<u16, f64>,
     pub damage_state_density: Histogram<DamageState, f64>,
 }
 
@@ -51,20 +58,26 @@ impl DamageReport {
         let normal_scratch_rate = normal.scratch_rate();
         let critical_scratch_rate = critical.scratch_rate();
 
-        let damage_density = attack
-            .hit_rate
-            .as_ref()
-            .map(|hit_rate| {
-                DamageAnalyzer {
-                    attack_power,
-                    defense_params,
-                    hit_rate,
-                    hits,
-                    is_cutin,
-                }
-                .density()
-            })
-            .unwrap_or_default();
+        let analyze = |mode: DensityMode| {
+            attack
+                .hit_rate
+                .as_ref()
+                .map(|hit_rate| {
+                    DamageAnalyzer {
+                        attack_power,
+                        defense_params,
+                        hit_rate,
+                        hits,
+                        is_cutin,
+                        mode,
+                    }
+                    .density()
+                })
+                .unwrap_or_default()
+        };
+
+        let damage_density = analyze(DensityMode::All);
+        let damage_density_scratch_only = analyze(DensityMode::ScratchOnly);
 
         let &DefenseParams {
             current_hp, max_hp, ..
@@ -90,9 +103,19 @@ impl DamageReport {
             normal_scratch_rate,
             critical_scratch_rate,
             damage_density,
+            damage_density_scratch_only,
             damage_state_density,
         })
     }
+}
+
+/// 1段ぶんの分布を何から書き出すか。
+#[derive(Debug, Clone, Copy)]
+enum StepSource {
+    /// 命中種別ごとに防御力サンプルを振り分ける。
+    HitRate,
+    /// 割合ダメージの値だけを、あらかじめ求めた確率で書き出す。
+    ScratchWeight(f64),
 }
 
 struct DamageAnalyzer<'a> {
@@ -101,6 +124,7 @@ struct DamageAnalyzer<'a> {
     defense_params: &'a DefenseParams,
     is_cutin: bool,
     hits: f64,
+    mode: DensityMode,
 }
 
 impl<'a> DamageAnalyzer<'a> {
@@ -117,24 +141,49 @@ impl<'a> DamageAnalyzer<'a> {
         }
     }
 
-    /// 1回ぶんの攻撃のダメージ分布を、ダメージ値を添字とする密な配列に書き出す。
-    ///
-    /// 多段攻撃では被弾するたびに残耐久が変わり、割合ダメージと撃沈保護ダメージが
-    /// 残耐久に比例するため、段ごとに引き直す必要がある。
-    fn once_dense(&self, current_hp: u16, out: &mut Vec<f64>) {
+    fn write_step(&self, current_hp: u16, out: &mut Vec<f64>, source: StepSource) {
         out.clear();
 
-        for (hit_type, rate) in self.hit_rate.iter() {
-            if rate == 0.0 {
-                continue;
+        match source {
+            StepSource::ScratchWeight(weight) => {
+                self.to_damage(HitType::Normal, current_hp)
+                    .add_scratch_density_to(out, weight);
             }
+            StepSource::HitRate => {
+                for (hit_type, rate) in self.hit_rate.iter() {
+                    if rate == 0.0 {
+                        continue;
+                    }
 
-            self.to_damage(hit_type, current_hp)
-                .add_density_to(out, rate);
+                    self.to_damage(hit_type, current_hp)
+                        .add_density_to(out, rate, self.mode);
+                }
+            }
+        }
+    }
+
+    fn scratch_weight(&self, current_hp: u16) -> f64 {
+        self.hit_rate
+            .iter()
+            .filter(|(_, rate)| *rate != 0.0)
+            .map(|(hit_type, rate)| rate * self.to_damage(hit_type, current_hp).scratch_rate())
+            .sum()
+    }
+
+    fn step_source(&self) -> StepSource {
+        match self.mode {
+            DensityMode::All => StepSource::HitRate,
+            DensityMode::ScratchOnly => {
+                StepSource::ScratchWeight(self.scratch_weight(self.defense_params.current_hp))
+            }
         }
     }
 
     fn density(&self) -> Histogram<u16, f64> {
+        self.density_from(self.step_source())
+    }
+
+    fn density_from(&self, source: StepSource) -> Histogram<u16, f64> {
         let hp1 = self.defense_params.current_hp;
 
         // 畳み込みはハッシュマップではなく密な配列で行う。ダメージ値をそのまま
@@ -146,12 +195,12 @@ impl<'a> DamageAnalyzer<'a> {
         // `calc_damage_type` の `as u16` で 65535 に飽和するため、配列長は
         // `ceil(hits) * 65536` (約 1.6MB) で頭打ちになる。
         let mut density1 = Vec::new();
-        self.once_dense(hp1, &mut density1);
+        self.write_step(hp1, &mut density1, source);
 
         if self.hits > 1.0 {
             let max_hits = self.hits.ceil() as usize;
             let max_hits_rate = self.hits.fract();
-            let mut once_buf = Vec::new();
+            let mut step_buf = Vec::new();
 
             for h in 1..max_hits {
                 let mut density2 = vec![0.0; density1.len()];
@@ -164,14 +213,14 @@ impl<'a> DamageAnalyzer<'a> {
                     }
 
                     let hp2 = hp1.saturating_sub(damage_value1 as u16);
-                    self.once_dense(hp2, &mut once_buf);
+                    self.write_step(hp2, &mut step_buf, source);
 
-                    let required = damage_value1 + once_buf.len();
+                    let required = damage_value1 + step_buf.len();
                     if density2.len() < required {
                         density2.resize(required, 0.0);
                     }
 
-                    for (damage_value2, rate2) in once_buf.iter().enumerate() {
+                    for (damage_value2, rate2) in step_buf.iter().enumerate() {
                         if *rate2 != 0.0 {
                             density2[damage_value1 + damage_value2] += rate1 * rate2;
                         }
@@ -238,6 +287,116 @@ mod test {
             }),
             hits,
             is_cutin: true,
+        }
+    }
+
+    /// 装甲を抜けたり抜けなかったりする攻撃。割合ダメージと実ダメージが混ざる。
+    fn mixed_attack(hits: f64, current_hp: u16) -> Attack {
+        Attack {
+            attack_power: Some(AttackPower {
+                normal: 550.0,
+                critical: 800.0,
+                remaining_ammo_mod: 1.0,
+                ..Default::default()
+            }),
+            defense_params: Some(DefenseParams {
+                basic_defense_power: 500.0,
+                current_hp,
+                max_hp: current_hp,
+                sinkable: true,
+                overkill_protection: false,
+            }),
+            hit_rate: Some(HitRate {
+                normal: 0.6,
+                critical: 0.1,
+                total: 0.7,
+            }),
+            hits,
+            is_cutin: false,
+        }
+    }
+
+    #[test]
+    fn test_damage_density_scratch_only() {
+        for hits in [1.0, 2.0, 1.65] {
+            for current_hp in [99u16, 50, 10] {
+                let report = DamageReport::new(&mixed_attack(hits, current_hp)).unwrap();
+                let all = &report.damage_density;
+                let scratch_only = &report.damage_density_scratch_only;
+
+                let label = format!("hits={hits} hp={current_hp}");
+                let probability = |h: &Histogram<u16, f64>| h.values().sum::<f64>();
+
+                assert!(report.normal_scratch_rate > 0.0, "{label}");
+
+                let all_scratch_probability = probability(scratch_only);
+                assert!(all_scratch_probability > 0.0, "{label}");
+                assert!(
+                    all_scratch_probability < probability(all) - 1e-12,
+                    "{label}"
+                );
+
+                // 図では合計の棒を割合ぶんで塗り分ける。食み出すと下の段が負になる。
+                for (damage, rate) in scratch_only.iter() {
+                    let total = all.get(damage).copied().unwrap_or(0.0);
+                    assert!(*rate <= total + 1e-12, "{label} damage={damage}");
+                }
+
+                let once_max = |hp: u16| (hp as f64 * 0.06 + (hp.max(1) - 1) as f64 * 0.08) as u16;
+
+                let mut all_scratch_max = 0_u16;
+                let mut hp = current_hp;
+                for _ in 0..hits.ceil() as usize {
+                    let step = once_max(hp);
+                    all_scratch_max += step;
+                    hp = hp.saturating_sub(step);
+                }
+
+                let max_damage = scratch_only.keys().copied().max().unwrap_or(0);
+                assert!(
+                    max_damage <= all_scratch_max,
+                    "{label} {max_damage} > {all_scratch_max}"
+                );
+
+                // 多段では「割合＋貫通」の結果がこの上限より右へ動く。だから合計を
+                // 上限で切っても割合は取り出せず、専用の分布が要る。
+                if hits > 1.0 {
+                    let moved_beyond = all
+                        .iter()
+                        .any(|(damage, rate)| *damage > all_scratch_max && *rate > 1e-12);
+
+                    assert!(moved_beyond, "{label}");
+                }
+            }
+        }
+    }
+
+    /// 割合ダメージの近道が、防御力サンプルを毎段走査する一般の経路と一致すること。
+    #[test]
+    fn test_scratch_only_shortcut_matches_general_path() {
+        for hits in [1.0, 2.0, 3.0, 1.65] {
+            for current_hp in [6000u16, 400, 99, 17, 10, 1] {
+                for is_cutin in [false, true] {
+                    let mut attack = mixed_attack(hits, current_hp);
+                    attack.is_cutin = is_cutin;
+
+                    let analyzer = DamageAnalyzer {
+                        attack_power: attack.attack_power.as_ref().unwrap(),
+                        defense_params: attack.defense_params.as_ref().unwrap(),
+                        hit_rate: attack.hit_rate.as_ref().unwrap(),
+                        hits,
+                        is_cutin,
+                        mode: DensityMode::ScratchOnly,
+                    };
+
+                    let label = format!("hits={hits} hp={current_hp} cutin={is_cutin}");
+                    assert_close(
+                        &analyzer.density_from(analyzer.step_source()),
+                        &analyzer.density_from(StepSource::HitRate),
+                        &label,
+                    );
+                }
+            }
         }
     }
 
@@ -344,32 +503,6 @@ mod test {
         }
     }
 
-    /// 装甲を抜けたり抜けなかったりする攻撃。割合ダメージと実ダメージが混ざる。
-    fn mixed_attack(hits: f64, current_hp: u16) -> Attack {
-        Attack {
-            attack_power: Some(AttackPower {
-                normal: 550.0,
-                critical: 800.0,
-                remaining_ammo_mod: 1.0,
-                ..Default::default()
-            }),
-            defense_params: Some(DefenseParams {
-                basic_defense_power: 500.0,
-                current_hp,
-                max_hp: current_hp,
-                sinkable: true,
-                overkill_protection: false,
-            }),
-            hit_rate: Some(HitRate {
-                normal: 0.6,
-                critical: 0.1,
-                total: 0.7,
-            }),
-            hits,
-            is_cutin: false,
-        }
-    }
-
     /// 密な配列による畳み込みが、素朴なハッシュマップ実装と一致すること。
     ///
     /// `add_density_to` は命中種別ごとに Actual / Scratch / OverkillProtection へ
@@ -412,6 +545,7 @@ mod test {
                 hit_rate: a.hit_rate.as_ref().unwrap(),
                 hits,
                 is_cutin: a.is_cutin,
+                mode: DensityMode::All,
             };
 
             let actual = analyzer.density();
@@ -518,6 +652,7 @@ mod test {
                 hit_rate: a.hit_rate.as_ref().unwrap(),
                 hits: a.hits,
                 is_cutin: a.is_cutin,
+                mode: DensityMode::All,
             };
 
             let points = analyzer.density().len();
@@ -542,6 +677,15 @@ mod test {
             let before = run("最適化前", &|| naive(&analyzer), 3);
             let after = run("最適化後", &|| analyzer.density(), 20);
             println!("    短縮率     {:>9.1} 倍", before / after);
+
+            // DamageReport::new は 2 モードぶん引くので、その内訳。
+            let with_mode = |mode: DensityMode| DamageAnalyzer { mode, ..analyzer };
+            run("うち All", &|| with_mode(DensityMode::All).density(), 20);
+            run(
+                "うち 割合のみ",
+                &|| with_mode(DensityMode::ScratchOnly).density(),
+                20,
+            );
         }
     }
 
