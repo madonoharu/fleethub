@@ -2,7 +2,7 @@ import { FLEET_KEYS, nonNullable, uppercase } from "@fh/utils";
 import { Paper, Stack } from "@mui/material";
 import type { NodeAttackAnalyzerConfig, NodeState, Org } from "fleethub-core";
 import { useTranslation } from "next-i18next";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import {
   useShip,
@@ -49,23 +49,31 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
     );
   });
 
-  const node_state: NodeState = {
-    map: activeStep?.map || 0,
-    node: activeStep?.node || "",
-    debuff: false,
-    phase: 0,
-  };
+  const stepMap = activeStep?.map || 0;
+  const stepNode = activeStep?.node || "";
+  const base = activeStep?.config;
 
-  const base = activeStep?.config || {};
-  const config: NodeAttackAnalyzerConfig = { node_state, ...base };
+  // config と comp は下流の analyze_node_attack の memo キーになるので、
+  // 毎レンダー作り直さない。
+  const config = useMemo<NodeAttackAnalyzerConfig>(() => {
+    const node_state: NodeState = {
+      map: stepMap,
+      node: stepNode,
+      debuff: false,
+      phase: 0,
+    };
+
+    return { node_state, ...base };
+  }, [stepMap, stepNode, base]);
+
   const disableConfig = !activeStep;
 
-  const leftComp = leftOrg.create_comp();
+  const leftComp = useMemo(() => leftOrg.create_comp(), [leftOrg]);
   const [leftShipId, setLeftShipId] = useState(leftComp.first_ship_id());
   const leftShip = useShip(leftShipId);
 
   const { org: rightOrg } = useOrg(activeStep?.org || "");
-  const rightComp = rightOrg?.create_comp();
+  const rightComp = useMemo(() => rightOrg?.create_comp(), [rightOrg]);
   const rightCompFirstShipId = rightComp?.first_ship_id();
   const [rightShipId, setRightShipId] = useState(rightCompFirstShipId);
   const rightShip = useShip(rightShipId);
@@ -88,7 +96,7 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
             ...value,
           },
         },
-      })
+      }),
     );
   };
 
