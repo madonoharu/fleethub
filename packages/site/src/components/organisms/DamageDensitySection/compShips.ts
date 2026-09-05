@@ -37,3 +37,8 @@ export function withCompShipOrder(
   if (!name) return name;
   return order === undefined ? name : `#${order} ${name}`;
 }
+
+/** 指定の eid の艦が編成に乗っているか。 */
+export function hasCompShip(comp: Comp, id: string): boolean {
+  return listCompShips(comp).some((ship) => ship.id === id);
+}
