@@ -1,10 +1,11 @@
 import { Tabs, Tab, Stack, Paper } from "@mui/material";
 import type { Comp, Ship, NodeAttackAnalyzerConfig } from "fleethub-core";
 import { useTranslation } from "next-i18next";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useFhCore, useShip, useShipName } from "../../../hooks";
 import { Checkbox, Flexbox } from "../../atoms";
+import { hasCompShip } from "../DamageDensitySection/compShips";
 
 import AttackReportDetails from "./AttackReportDetails";
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
@@ -48,7 +49,26 @@ const NodeAttackDetails: React.FC<Props> = ({
   const [compareShipId, setCompareShipId] = useState<string>();
   // 分布グラフは描画が重いので、既定では畳んでおく。
   const [showDensity, setShowDensity] = useState(false);
-  const compareShip = useShip(compareShipId);
+
+  // 比較艦は編成から外れることがある。CompShipNameSelect は選択欄の表示だけを
+  // 「比較なし」に戻すので、ここで所属を確かめないと、外れた艦を渡した比較解析と
+  // グラフの凡例だけが残る。
+  const compareShipIsGone = useMemo(
+    () =>
+      compareShipId !== undefined &&
+      leftComp !== undefined &&
+      !hasCompShip(leftComp, compareShipId),
+    [leftComp, compareShipId],
+  );
+
+  useEffect(() => {
+    if (compareShipIsGone) {
+      setCompareShipId(undefined);
+    }
+  }, [compareShipIsGone]);
+
+  const activeCompareShipId = compareShipIsGone ? undefined : compareShipId;
+  const compareShip = useShip(activeCompareShipId);
   const compareShipName = useShipName(compareShip?.ship_id ?? 0);
 
   // 対ボスでは1回 2ms 前後かかる。タブや比較艦の切り替えのたびに走らないよう memo する。
@@ -126,7 +146,7 @@ const NodeAttackDetails: React.FC<Props> = ({
           showDensity={showDensity}
           comp={leftComp}
           attackerShipId={leftShip.id}
-          compareShipId={compareShipId}
+          compareShipId={activeCompareShipId}
           compareAnalysis={compareResult?.left}
           compareShipName={compareShip ? compareShipName : undefined}
           onCompareShipChange={setCompareShipId}

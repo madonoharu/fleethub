@@ -36,3 +36,7 @@ export function withCompShipOrder(
   if (!name) return name;
   return order === undefined ? name : `#${order} ${name}`;
 }
+
+export function hasCompShip(comp: Comp, id: string): boolean {
+  return listCompShips(comp).some((ship) => ship.id === id);
+}
