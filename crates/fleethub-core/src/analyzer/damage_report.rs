@@ -151,7 +151,9 @@ impl<'a> DamageAnalyzer<'a> {
                 })
                 .collect::<Histogram<u16, f64>>();
 
-            if h == max_hits && max_hits_rate > 0.0 {
+            // hits が端数のときは、切り捨て回数と切り上げ回数を小数部の比率で混ぜる。
+            // 例: hits = 1.65 なら 1回が 35%、2回が 65%。最後の畳み込みでのみ行う。
+            if h == max_hits - 1 && max_hits_rate > 0.0 {
                 density1 = density1 * (1.0 - max_hits_rate) + density2 * max_hits_rate;
             } else {
                 density1 = density2
@@ -165,6 +167,83 @@ impl<'a> DamageAnalyzer<'a> {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    fn attack(hits: f64, current_hp: u16) -> Attack {
+        Attack {
+            attack_power: Some(AttackPower {
+                normal: 1000.0,
+                critical: 1500.0,
+                remaining_ammo_mod: 1.0,
+                ..Default::default()
+            }),
+            defense_params: Some(DefenseParams {
+                basic_defense_power: 500.0,
+                current_hp,
+                max_hp: current_hp,
+                sinkable: true,
+                overkill_protection: false,
+            }),
+            hit_rate: Some(HitRate {
+                normal: 0.2,
+                critical: 0.1,
+                total: 0.3,
+            }),
+            hits,
+            is_cutin: true,
+        }
+    }
+
+    fn density_of(hits: f64, current_hp: u16) -> Histogram<u16, f64> {
+        DamageReport::new(&attack(hits, current_hp))
+            .unwrap()
+            .damage_density
+    }
+
+    fn assert_close(left: &Histogram<u16, f64>, right: &Histogram<u16, f64>, label: &str) {
+        let keys = left.keys().chain(right.keys()).copied().collect::<Vec<_>>();
+
+        for key in keys {
+            let a = left.get(&key).copied().unwrap_or(0.0);
+            let b = right.get(&key).copied().unwrap_or(0.0);
+            assert!((a - b).abs() < 1e-12, "{label}: damage {key} で {a} != {b}");
+        }
+    }
+
+    /// 端数 hits は「切り捨て回数」と「切り上げ回数」の混合になること。
+    ///
+    /// 例えば主魚電カットイン (hits = 1.65) は 1回が 35%、2回が 65%。
+    /// 作戦室のチップも `1 (35%) ~ 2 (65%)` と表示している。
+    #[test]
+    fn test_fractional_hits_is_a_mixture() {
+        for (hits, lower, upper) in [(1.5, 1.0, 2.0), (1.65, 1.0, 2.0), (2.25, 2.0, 3.0)] {
+            let current_hp = 400;
+            let rate = hits - lower;
+
+            let actual = density_of(hits, current_hp);
+            let lower_density = density_of(lower, current_hp);
+            let upper_density = density_of(upper, current_hp);
+
+            let expected = lower_density.clone() * (1.0 - rate) + upper_density.clone() * rate;
+
+            assert_close(&actual, &expected, &format!("hits={hits}"));
+
+            // 回帰テスト: 端数が無視されて切り上げ回数だけで計算されていないこと。
+            let diff = lower_density
+                .keys()
+                .chain(upper_density.keys())
+                .map(|key| {
+                    let a = actual.get(key).copied().unwrap_or(0.0);
+                    let b = upper_density.get(key).copied().unwrap_or(0.0);
+                    (a - b).abs()
+                })
+                .fold(0.0_f64, f64::max);
+
+            assert!(
+                diff > 1e-9,
+                "hits={hits} の分布が {upper} 回ぶんと同一になっている (最大差 {diff})"
+            );
+        }
+    }
 
     #[test]
     fn test_damage_report() {
