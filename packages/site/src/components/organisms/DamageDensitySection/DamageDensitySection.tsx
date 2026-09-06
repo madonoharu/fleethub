@@ -2,8 +2,10 @@ import styled from "@emotion/styled";
 import { Alert } from "@mui/material";
 import type { ActionReport, Comp } from "fleethub-core";
 import { useTranslation } from "next-i18next";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
+import { useAppDispatch, useRootSelector } from "../../../hooks";
+import { appSlice } from "../../../store";
 import type { DensityKind } from "../../../utils";
 import {
   createDamageChartRows,
@@ -60,9 +62,12 @@ const DamageDensitySection: React.FCX<Props> = ({
   onCompareShipChange,
 }) => {
   const { t } = useTranslation("common");
-  // 外すと棒だけでなく累計・中央値・上位5%・下に並ぶ確率も「少なくとも1発貫通した
-  // 場合」の分布から作る。累計線が 100% に届かないぶんが貫通しなかった確率になる。
-  const [includeNoPenetration, setIncludeNoPenetration] = useState(true);
+  const dispatch = useAppDispatch();
+  // タブを移るとアンマウントされるので、読み方の好みは store に置く。
+  // 左右のパネルで食い違うと見比べられないため、値も共有する。
+  const includeNoPenetration = useRootSelector(
+    (root) => root.app.damageDensityIncludeNoPenetration ?? true,
+  );
 
   const kind: DensityKind = includeNoPenetration ? "all" : "penetration";
 
@@ -219,7 +224,11 @@ const DamageDensitySection: React.FCX<Props> = ({
           size="small"
           label={t("DamageDistribution.NoPenetration")}
           checked={includeNoPenetration}
-          onChange={setIncludeNoPenetration}
+          onChange={(checked) =>
+            dispatch(
+              appSlice.actions.setDamageDensityIncludeNoPenetration(checked),
+            )
+          }
         />
       </Flexbox>
 

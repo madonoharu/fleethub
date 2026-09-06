@@ -13,6 +13,8 @@ type AppState = {
   explorerOpen: boolean;
   /** ダメージ分布グラフを開くか。描画が重いので既定は閉じる。 */
   damageDensityOpen?: boolean;
+  /** 未設定は算入する。 */
+  damageDensityIncludeNoPenetration?: boolean;
   outputToTemp: boolean;
   gkcoiTheme: GkcoiTheme;
 };
@@ -46,6 +48,12 @@ export const appSlice = createSlice({
     },
     setDamageDensityOpen: (state, { payload }: PayloadAction<boolean>) => {
       state.damageDensityOpen = payload;
+    },
+    setDamageDensityIncludeNoPenetration: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => {
+      state.damageDensityIncludeNoPenetration = payload;
     },
     setOutputToTemp: (state, { payload }: PayloadAction<boolean>) => {
       state.outputToTemp = payload;

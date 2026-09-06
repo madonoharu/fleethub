@@ -25,9 +25,41 @@ jest.mock("recharts", () => {
 });
 
 // hooks バレルは react-dnd (ESM) を巻き込むため、使う分だけ差し替える。
+// 表示設定は store に置いてある。購読と dispatch だけを持つ最小の store で代える。
+const listeners = new Set<() => void>();
+let appState: { damageDensityIncludeNoPenetration?: boolean } = {};
+
+const dispatch = jest.fn((action: { type: string; payload: boolean }) => {
+  if (action.type === "app/setDamageDensityIncludeNoPenetration") {
+    appState = {
+      ...appState,
+      damageDensityIncludeNoPenetration: action.payload,
+    };
+    listeners.forEach((notify) => notify());
+  }
+});
+
 jest.mock("../../../hooks", () => ({
   useShipName: (shipId: number) => `ship${shipId}`,
+  useAppDispatch: () => dispatch,
+  useRootSelector: (selector: (root: unknown) => unknown) => {
+    const [, force] = React.useReducer((n: number) => n + 1, 0);
+
+    React.useEffect(() => {
+      listeners.add(force);
+      return () => {
+        listeners.delete(force);
+      };
+    }, [force]);
+
+    return selector({ app: appState });
+  },
 }));
+
+beforeEach(() => {
+  dispatch.mockClear();
+  appState = {};
+});
 
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({
@@ -1253,4 +1285,23 @@ it("両端の棒が縦軸の目盛にはみ出さない", () => {
     expect(left).toBeGreaterThanOrEqual(plotLeft);
     expect(right).toBeLessThanOrEqual(plotRight);
   });
+});
+
+it("貫通なしを算入するかはタブをまたいでも保つ", () => {
+  const noPenetrationCheckbox = () =>
+    screen.getByRole("checkbox", { name: /NoPenetration/ });
+
+  const { unmount } = renderSection();
+  expect(noPenetrationCheckbox()).toBeChecked();
+
+  fireEvent.click(noPenetrationCheckbox());
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "app/setDamageDensityIncludeNoPenetration",
+    payload: false,
+  });
+
+  // タブを移ってアンマウントされても、開き直したときに残っていること。
+  unmount();
+  renderSection();
+  expect(noPenetrationCheckbox()).not.toBeChecked();
 });
