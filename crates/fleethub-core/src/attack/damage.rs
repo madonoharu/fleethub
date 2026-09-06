@@ -8,6 +8,24 @@ use crate::{
 
 use super::{AttackPower, HitType};
 
+/// `add_density_to` が何を書き出すか。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum DensityMode {
+    /// そのまま。割合ダメージ（カスダメ）も実際のダメージ値で入る。
+    All,
+    /// 割合ダメージだった結果だけ。それ以外は書き出さないので総和は 1 未満になる。
+    ///
+    /// 多段攻撃で畳み込むと「全弾が割合ダメージだった場合」の分布になる。
+    /// `All` から差し引けば、貫通が1発でも混ざった分と分けられる。
+    ScratchOnly,
+}
+
+impl DensityMode {
+    fn keeps_penetration(self) -> bool {
+        self != Self::ScratchOnly
+    }
+}
+
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 enum DamageType {
     Actual(u16),
@@ -26,13 +44,22 @@ enum DamageType {
 /// 補正ループが末尾まで走る。実際の呼び出しは (0.06, 0.08) と (0.5, 0.3) の
 /// 2通りだけで、どちらも飽和しない。
 fn step_counts(hp: u16, a: f64, b: f64) -> Vec<(u16, usize)> {
+    let mut out = Vec::new();
+    for_each_step(hp, a, b, |value, count| out.push((value, count)));
+    out
+}
+
+/// `step_counts` と同じ刻みを、Vec を作らずに順に渡す。
+///
+/// 多段攻撃の畳み込みでは段ごとに残耐久が変わるので、この列挙が
+/// 1回の解析で数百回走る。そのたびに Vec を確保すると割に合わない。
+fn for_each_step(hp: u16, a: f64, b: f64, mut f: impl FnMut(u16, usize)) {
     debug_assert!(b > 0.0);
 
     let n = hp.max(1) as u32;
     let base = a * hp as f64;
     let value_at = |v: u32| (base + v as f64 * b) as u16;
 
-    let mut out: Vec<(u16, usize)> = Vec::new();
     let mut v = 0_u32;
 
     while v < n {
@@ -53,11 +80,20 @@ fn step_counts(hp: u16, a: f64, b: f64) -> Vec<(u16, usize)> {
             next += 1;
         }
 
-        out.push((d, (next - v) as usize));
+        f(d, (next - v) as usize);
         v = next;
     }
+}
 
-    out
+/// `for_each_step` の刻みを確率に直して密な配列へ加算する。
+///
+/// 出現回数の総和は必ず `hp.max(1)` なので、数え上げ直さない。
+fn add_steps(out: &mut Vec<f64>, hp: u16, a: f64, b: f64, weight: f64) {
+    let total = hp.max(1) as f64;
+
+    for_each_step(hp, a, b, |value, count| {
+        add_at(out, value, count as f64 / total * weight);
+    });
 }
 
 /// 密な確率配列の指定ダメージ値に加算する。必要なら配列を伸ばす。
@@ -70,15 +106,6 @@ fn add_at(out: &mut Vec<f64>, value: u16, rate: f64) {
 }
 
 /// 出現回数を正規化して密な確率配列に加算する。
-fn add_counts(out: &mut Vec<f64>, counts: Vec<(u16, usize)>, weight: f64) {
-    let total: usize = counts.iter().map(|(_, count)| *count).sum();
-    let total = total as f64;
-
-    for (value, count) in counts {
-        add_at(out, value, count as f64 / total * weight);
-    }
-}
-
 /// 出現回数を確率に正規化する。
 fn counts_to_density(counts: Vec<(u16, usize)>) -> Histogram<u16, f64> {
     let total: usize = counts.iter().map(|(_, count)| *count).sum();
@@ -302,6 +329,14 @@ impl Damage {
         }
     }
 
+    pub(crate) fn add_scratch_density_to(&self, out: &mut Vec<f64>, weight: f64) {
+        if weight == 0.0 {
+            return;
+        }
+
+        add_steps(out, self.current_hp, 0.06, 0.08, weight);
+    }
+
     pub fn scratch_rate(&self) -> f64 {
         let defense_power_vec = self.defense_power().to_vec();
 
@@ -333,19 +368,20 @@ impl Damage {
         }
     }
 
-    /// `density()` と同じ分布を、ダメージ値を添字とする密な配列へ `weight` 倍して加算する。
-    ///
-    /// 多段攻撃の畳み込みでは1回の解析につき数百回呼ばれるため、
-    /// 中間の `Histogram` を作らずに直接書き込む。
-    pub(crate) fn add_density_to(&self, out: &mut Vec<f64>, weight: f64) {
+    /// 分類は `calc_damage_type` を `density()` と共有しているが、割合ダメージと
+    /// 撃沈保護ダメージの振り分けは二重に書き下している。両者が一致することは
+    /// `analyzer::damage_report` の `test_density_matches_naive` が見ている。
+    pub(crate) fn add_density_to(&self, out: &mut Vec<f64>, weight: f64, mode: DensityMode) {
         if weight == 0.0 {
             return;
         }
 
+        let keeps_penetration = mode.keeps_penetration();
+
         if self.hit_type == HitType::Miss {
             if self.is_cutin {
-                add_counts(out, self.scratch_damage().counts(), weight);
-            } else {
+                self.add_scratch_density_to(out, weight);
+            } else if keeps_penetration {
                 add_at(out, 0, weight);
             }
             return;
@@ -361,20 +397,26 @@ impl Damage {
 
         for value in defense_power.iter() {
             match self.calc_damage_type(value) {
-                DamageType::Actual(value) => add_at(out, value, unit),
+                DamageType::Actual(value) => {
+                    if keeps_penetration {
+                        add_at(out, value, unit)
+                    }
+                }
                 DamageType::Scratch => scratch += 1,
                 DamageType::OverkillProtection => overkill_protection += 1,
             }
         }
 
         if scratch > 0 {
-            add_counts(out, self.scratch_damage().counts(), unit * scratch as f64);
+            self.add_scratch_density_to(out, unit * scratch as f64);
         }
 
-        if overkill_protection > 0 {
-            add_counts(
+        if overkill_protection > 0 && keeps_penetration {
+            add_steps(
                 out,
-                self.overkill_protection_damage().counts(),
+                self.current_hp,
+                0.5,
+                0.3,
                 unit * overkill_protection as f64,
             );
         }

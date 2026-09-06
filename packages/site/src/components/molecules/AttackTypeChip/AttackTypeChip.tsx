@@ -37,7 +37,7 @@ function isNightAttackStyle(
   return attack.tag === "NightAttackStyle";
 }
 
-function getAttackLabel(t: TFunction<"common">, attack: unknown) {
+export function getAttackLabel(t: TFunction<"common">, attack: unknown) {
   if (!isUnknownAttackStyle(attack)) {
     return t("Unknown");
   }
