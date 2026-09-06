@@ -1,5 +1,5 @@
 use fleethub_core::{
-    analyzer::{AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig},
+    analyzer::{AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig, DamageReport},
     types::{AirState, Engagement, NodeState, OrgType},
 };
 
@@ -50,19 +50,37 @@ fn test_fractional_hits_night_cutin() {
 
     let damage = cutin.damage.as_ref().expect("ダメージが計算されていない");
 
-    let min_damage = damage
-        .damage_density
-        .keys()
-        .copied()
-        .min()
-        .expect("分布が空");
+    let min_of = |report: &DamageReport| {
+        report
+            .damage_density
+            .keys()
+            .copied()
+            .min()
+            .expect("分布が空")
+    };
 
-    // 1発ぶんの最小ダメージ。2回で計算されているとその2倍が下限になる。
-    let per_hit_min = damage.normal_damage_min;
+    // 同じ攻撃者・対象で発動する2回カットイン。切り上げ (2回) で計算されていた場合の
+    // 分布はこれと同じ下限になる。割合ダメージの下限は攻撃力ではなく対象の耐久で
+    // 決まるので、マスタが変わっても両者の関係は保たれる。
+    let two_hits = analysis
+        .night
+        .data
+        .get("TorpTorpMain")
+        .expect("魚雷カットインが発動していない");
+
+    assert_eq!(two_hits.hits, 2.0, "比較対象の hits が想定と違う");
+
+    let two_hits_damage = two_hits
+        .damage
+        .as_ref()
+        .expect("比較対象のダメージが計算されていない");
+
+    let min_damage = min_of(damage);
+    let two_hits_min = min_of(two_hits_damage);
 
     assert!(
-        min_damage <= per_hit_min,
-        "分布の最小ダメージが {min_damage}。1発ぶんの最小 {per_hit_min} を超えており、\
-         端数 hits が無視されて2回ぶんで計算されている"
+        min_damage < two_hits_min,
+        "分布の最小ダメージが {min_damage} で、2回カットインの {two_hits_min} を下回っていない。\
+         端数 hits が無視されて2回ぶんだけで計算されている"
     );
 }

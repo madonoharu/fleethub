@@ -189,7 +189,7 @@ mod test {
                 total: 0.3,
             }),
             hits,
-            is_cutin: false,
+            is_cutin: true,
         }
     }
 
