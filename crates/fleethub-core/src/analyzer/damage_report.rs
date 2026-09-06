@@ -117,50 +117,98 @@ impl<'a> DamageAnalyzer<'a> {
         }
     }
 
-    fn once(&self, current_hp: u16) -> Histogram<u16, f64> {
-        self.hit_rate
-            .iter()
-            .map(|(hit_type, rate)| {
-                let damage = self.to_damage(hit_type, current_hp);
-                damage.density() * rate
-            })
-            .sum()
+    /// 1回ぶんの攻撃のダメージ分布を、ダメージ値を添字とする密な配列に書き出す。
+    ///
+    /// 多段攻撃では被弾するたびに残耐久が変わり、割合ダメージと撃沈保護ダメージが
+    /// 残耐久に比例するため、段ごとに引き直す必要がある。
+    fn once_dense(&self, current_hp: u16, out: &mut Vec<f64>) {
+        out.clear();
+
+        for (hit_type, rate) in self.hit_rate.iter() {
+            if rate == 0.0 {
+                continue;
+            }
+
+            self.to_damage(hit_type, current_hp)
+                .add_density_to(out, rate);
+        }
     }
 
     fn density(&self) -> Histogram<u16, f64> {
         let hp1 = self.defense_params.current_hp;
-        let mut density1 = self.once(hp1);
 
-        if self.hits <= 1.0 {
-            return density1;
-        }
+        // 畳み込みはハッシュマップではなく密な配列で行う。ダメージ値をそのまま
+        // 添字にできるので、要素ごとのハッシュ計算と再確保が要らない。
+        //
+        // 代わりにコストは非ゼロ要素の数ではなく `0..最大累積ダメージ` の長さに
+        // 比例する。実データのように分布が密であれば速くなるが、攻撃力だけが
+        // 極端に大きく分布が疎な場合は逆に遅くなる。1発あたりのダメージ値は
+        // `calc_damage_type` の `as u16` で 65535 に飽和するため、配列長は
+        // `ceil(hits) * 65536` (約 1.6MB) で頭打ちになる。
+        let mut density1 = Vec::new();
+        self.once_dense(hp1, &mut density1);
 
-        let max_hits = self.hits.ceil() as usize;
-        let max_hits_rate = self.hits.fract();
+        if self.hits > 1.0 {
+            let max_hits = self.hits.ceil() as usize;
+            let max_hits_rate = self.hits.fract();
+            let mut once_buf = Vec::new();
 
-        for h in 1..max_hits {
-            let density2 = density1
-                .iter()
-                .flat_map(|(&damage_value1, rate1)| {
-                    let hp2 = hp1.saturating_sub(damage_value1);
-                    let density2 = self.once(hp2);
+            for h in 1..max_hits {
+                let mut density2 = vec![0.0; density1.len()];
 
-                    density2.into_iter().map(move |(damage_value2, rate2)| {
-                        (damage_value1 + damage_value2, rate1 * rate2)
-                    })
-                })
-                .collect::<Histogram<u16, f64>>();
+                for damage_value1 in 0..density1.len() {
+                    let rate1 = density1[damage_value1];
 
-            // hits が端数のときは、切り捨て回数と切り上げ回数を小数部の比率で混ぜる。
-            // 例: hits = 1.65 なら 1回が 35%、2回が 65%。最後の畳み込みでのみ行う。
-            if h == max_hits - 1 && max_hits_rate > 0.0 {
-                density1 = density1 * (1.0 - max_hits_rate) + density2 * max_hits_rate;
-            } else {
-                density1 = density2
+                    if rate1 == 0.0 {
+                        continue;
+                    }
+
+                    let hp2 = hp1.saturating_sub(damage_value1 as u16);
+                    self.once_dense(hp2, &mut once_buf);
+
+                    let required = damage_value1 + once_buf.len();
+                    if density2.len() < required {
+                        density2.resize(required, 0.0);
+                    }
+
+                    for (damage_value2, rate2) in once_buf.iter().enumerate() {
+                        if *rate2 != 0.0 {
+                            density2[damage_value1 + damage_value2] += rate1 * rate2;
+                        }
+                    }
+                }
+
+                // hits が端数のときは、切り捨て回数と切り上げ回数を小数部の比率で混ぜる。
+                // 例: hits = 1.65 なら 1回が 35%、2回が 65%。
+                // ここは最後の畳み込みでのみ行う。
+                if h == max_hits - 1 && max_hits_rate > 0.0 {
+                    if density1.len() < density2.len() {
+                        density1.resize(density2.len(), 0.0);
+                    }
+
+                    for (index, rate) in density1.iter_mut().enumerate() {
+                        let fewer = *rate * (1.0 - max_hits_rate);
+                        let more = density2.get(index).copied().unwrap_or(0.0) * max_hits_rate;
+                        *rate = fewer + more;
+                    }
+                } else {
+                    density1 = density2;
+                }
             }
         }
 
         density1
+            .into_iter()
+            .enumerate()
+            .filter(|(_, rate)| *rate != 0.0)
+            .map(|(value, rate)| {
+                // 累積ダメージが u16 を超えるのはカスタム補正で極端な攻撃力を
+                // 入れた場合だけ。release では最適化前の `u16 + u16` も wrap
+                // していたので挙動は変えず、debug でだけ気付けるようにする。
+                debug_assert!(value <= u16::MAX as usize, "累積ダメージが u16 を超えた");
+                (value as u16, rate)
+            })
+            .collect()
     }
 }
 
@@ -209,6 +257,215 @@ mod test {
         }
     }
 
+    /// 最適化前の実装（ハッシュマップで畳み込む）。等価性の検証と速度比較に使う。
+    ///
+    /// 復元しているのは畳み込みの部分だけで、呼び出す `Damage::density()` は
+    /// 閉形式の数え上げを既に使っている。そちらが素朴な走査と一致することは
+    /// `attack::damage` の `test_step_counts_matches_naive` が見ている。
+    /// そのため `bench_density` の短縮率は畳み込みぶんだけで、最適化全体では
+    /// これより大きい。
+    fn naive(analyzer: &DamageAnalyzer) -> Histogram<u16, f64> {
+        let hp1 = analyzer.defense_params.current_hp;
+
+        let once = |current_hp: u16| -> Histogram<u16, f64> {
+            analyzer
+                .hit_rate
+                .iter()
+                .map(|(hit_type, rate)| analyzer.to_damage(hit_type, current_hp).density() * rate)
+                .sum()
+        };
+
+        let mut density1 = once(hp1);
+
+        if analyzer.hits <= 1.0 {
+            return density1;
+        }
+
+        let max_hits = analyzer.hits.ceil() as usize;
+        let max_hits_rate = analyzer.hits.fract();
+
+        for h in 1..max_hits {
+            let density2 = density1
+                .iter()
+                .flat_map(|(&damage_value1, rate1)| {
+                    let hp2 = hp1.saturating_sub(damage_value1);
+
+                    once(hp2).into_iter().map(move |(damage_value2, rate2)| {
+                        (damage_value1 + damage_value2, rate1 * rate2)
+                    })
+                })
+                .collect::<Histogram<u16, f64>>();
+
+            if h == max_hits - 1 && max_hits_rate > 0.0 {
+                density1 = density1 * (1.0 - max_hits_rate) + density2 * max_hits_rate;
+            } else {
+                density1 = density2;
+            }
+        }
+
+        density1
+    }
+
+    /// 実データから採取したパラメータ（大和改二重の連撃 → 各ボス）。
+    /// 最適化が効く規模なので、等価性の検証と速度比較の両方で使う。
+    const BOSS_CASES: [(&str, u16, f64, f64, f64); 3] = [
+        ("戦艦棲姫", 400, 118.0, 252.0, 378.0),
+        ("港湾夏姫II", 1550, 173.0, 252.0, 378.0),
+        ("集積地棲姫III-壊", 6000, 222.86, 252.0, 378.0),
+    ];
+
+    fn boss_attack(
+        current_hp: u16,
+        basic_defense_power: f64,
+        normal: f64,
+        critical: f64,
+    ) -> Attack {
+        Attack {
+            attack_power: Some(AttackPower {
+                normal,
+                critical,
+                remaining_ammo_mod: 1.0,
+                ..Default::default()
+            }),
+            defense_params: Some(DefenseParams {
+                basic_defense_power,
+                current_hp,
+                max_hp: current_hp,
+                sinkable: true,
+                overkill_protection: false,
+            }),
+            hit_rate: Some(HitRate {
+                normal: 0.63,
+                critical: 0.14,
+                total: 0.77,
+            }),
+            hits: 2.0,
+            is_cutin: false,
+        }
+    }
+
+    /// 装甲を抜けたり抜けなかったりする攻撃。割合ダメージと実ダメージが混ざる。
+    fn mixed_attack(hits: f64, current_hp: u16) -> Attack {
+        Attack {
+            attack_power: Some(AttackPower {
+                normal: 550.0,
+                critical: 800.0,
+                remaining_ammo_mod: 1.0,
+                ..Default::default()
+            }),
+            defense_params: Some(DefenseParams {
+                basic_defense_power: 500.0,
+                current_hp,
+                max_hp: current_hp,
+                sinkable: true,
+                overkill_protection: false,
+            }),
+            hit_rate: Some(HitRate {
+                normal: 0.6,
+                critical: 0.1,
+                total: 0.7,
+            }),
+            hits,
+            is_cutin: false,
+        }
+    }
+
+    /// 密な配列による畳み込みが、素朴なハッシュマップ実装と一致すること。
+    ///
+    /// `add_density_to` は命中種別ごとに Actual / Scratch / OverkillProtection へ
+    /// 振り分ける。どれか一つでも通らない条件があると、その経路が旧実装と
+    /// 比べられないままになるので、条件を組み合わせて全経路を通す。
+    #[test]
+    fn test_density_matches_naive() {
+        // 素朴な実装は残耐久に対しておよそ2乗で効くので、組み合わせを広げる側は
+        // 残耐久を小さくする。分岐を通すのに大きさは要らない。
+        let branch_cases = [(1.0, 30u16), (1.65, 30), (2.0, 30)];
+
+        // 貫通しかしない攻撃と、割合ダメージが混ざる攻撃の両方を通す。
+        type Builder = fn(f64, u16) -> Attack;
+        type Tweak = fn(&mut Attack);
+
+        let builders: [(&str, Builder); 2] = [("貫通", attack), ("混在", mixed_attack)];
+
+        let tweaks: [(&str, Tweak); 5] = [
+            ("既定", |_| {}),
+            // ミスが割合ダメージになる経路。
+            ("cutin", |a| a.is_cutin = true),
+            ("撃沈保護", |a| {
+                a.defense_params.as_mut().unwrap().overkill_protection = true;
+            }),
+            ("非撃沈", |a| {
+                a.defense_params.as_mut().unwrap().sinkable = false;
+            }),
+            // 命中率に 0 の成分があると、その種別を飛ばす分岐を通る。
+            ("クリ0", |a| {
+                let hit_rate = a.hit_rate.as_mut().unwrap();
+                hit_rate.normal += hit_rate.critical;
+                hit_rate.critical = 0.0;
+            }),
+        ];
+
+        let check = |a: &Attack, hits: f64, label: &str| {
+            let analyzer = DamageAnalyzer {
+                attack_power: a.attack_power.as_ref().unwrap(),
+                defense_params: a.defense_params.as_ref().unwrap(),
+                hit_rate: a.hit_rate.as_ref().unwrap(),
+                hits,
+                is_cutin: a.is_cutin,
+            };
+
+            let actual = analyzer.density();
+            let expected = naive(&analyzer);
+
+            // キー集合まで一致すること。密な配列側がゼロを残していないか。
+            let mut actual_keys = actual.keys().copied().collect::<Vec<_>>();
+            let mut expected_keys = expected.keys().copied().collect::<Vec<_>>();
+            actual_keys.sort_unstable();
+            expected_keys.sort_unstable();
+            assert_eq!(actual_keys, expected_keys, "{label}: キー集合が違う");
+
+            assert_close(&actual, &expected, label);
+        };
+
+        for (hits, current_hp) in branch_cases {
+            for (build_label, build) in builders {
+                for (tweak_label, tweak) in tweaks {
+                    let mut a = build(hits, current_hp);
+                    tweak(&mut a);
+                    check(
+                        &a,
+                        hits,
+                        &format!("{build_label}/{tweak_label} hits={hits}"),
+                    );
+                }
+            }
+        }
+
+        // 段数と残耐久を変えた素の比較。
+        for (hits, current_hp) in [
+            (1.0, 400u16),
+            (1.5, 99),
+            (1.65, 99),
+            (2.0, 99),
+            (2.5, 12),
+            (3.0, 12),
+        ] {
+            let a = attack(hits, current_hp);
+            check(&a, hits, &format!("hits={hits} hp={current_hp}"));
+        }
+
+        // 最適化が効く規模でも一致すること。分岐の網羅は上の小さいケースが見ている。
+        //
+        // 素朴な実装は残耐久に対しておよそ2乗で効くので、debug では残耐久 6000 だけで
+        // 分単位になる。そこは bench_density が同じ比較をしている。
+        for (name, current_hp, basic_defense_power, normal, critical) in
+            BOSS_CASES.into_iter().filter(|(_, hp, ..)| *hp <= 1550)
+        {
+            let a = boss_attack(current_hp, basic_defense_power, normal, critical);
+            check(&a, a.hits, name);
+        }
+    }
+
     /// 端数 hits は「切り捨て回数」と「切り上げ回数」の混合になること。
     ///
     /// 例えば主魚電カットイン (hits = 1.65) は 1回が 35%、2回が 65%。
@@ -228,6 +485,7 @@ mod test {
             assert_close(&actual, &expected, &format!("hits={hits}"));
 
             // 回帰テスト: 端数が無視されて切り上げ回数だけで計算されていないこと。
+            // 以前は混合の分岐が到達不能で、hits = 1.65 が hits = 2.0 と同じ分布になっていた。
             let diff = lower_density
                 .keys()
                 .chain(upper_density.keys())
@@ -242,6 +500,48 @@ mod test {
                 diff > 1e-9,
                 "hits={hits} の分布が {upper} 回ぶんと同一になっている (最大差 {diff})"
             );
+        }
+    }
+
+    /// 速度比較。`cargo test -p fleethub-core --release -- --ignored --nocapture` で実行する。
+    #[test]
+    #[ignore = "ベンチマーク"]
+    fn bench_density() {
+        use std::time::Instant;
+
+        for (name, current_hp, basic_defense_power, normal, critical) in BOSS_CASES {
+            let a = boss_attack(current_hp, basic_defense_power, normal, critical);
+
+            let analyzer = DamageAnalyzer {
+                attack_power: a.attack_power.as_ref().unwrap(),
+                defense_params: a.defense_params.as_ref().unwrap(),
+                hit_rate: a.hit_rate.as_ref().unwrap(),
+                hits: a.hits,
+                is_cutin: a.is_cutin,
+            };
+
+            let points = analyzer.density().len();
+
+            let run = |label: &str, f: &dyn Fn() -> Histogram<u16, f64>, times: u32| {
+                f();
+                let start = Instant::now();
+                for _ in 0..times {
+                    std::hint::black_box(f());
+                }
+                let ms = start.elapsed().as_secs_f64() * 1000.0 / times as f64;
+                println!("    {label:<10} {ms:>9.2} ms");
+                ms
+            };
+
+            println!("\n=== {name} (残耐久 {current_hp}, 点数 {points}) ===");
+
+            // 残耐久 6000 は debug では時間がかかりすぎて通常のテストに置けない。
+            // ここでは release で両方を引くので、ついでに一致も見ておく。
+            assert_close(&analyzer.density(), &naive(&analyzer), name);
+
+            let before = run("最適化前", &|| naive(&analyzer), 3);
+            let after = run("最適化後", &|| analyzer.density(), 20);
+            println!("    短縮率     {:>9.1} 倍", before / after);
         }
     }
 
