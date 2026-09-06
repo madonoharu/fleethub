@@ -11,6 +11,8 @@ type AppState = {
   fileId?: string;
   configOpen?: boolean;
   explorerOpen: boolean;
+  /** ダメージ分布グラフを開くか。描画が重いので既定は閉じる。 */
+  damageDensityOpen?: boolean;
   outputToTemp: boolean;
   gkcoiTheme: GkcoiTheme;
 };
@@ -41,6 +43,9 @@ export const appSlice = createSlice({
     },
     toggleExplorerOpen: (state) => {
       state.explorerOpen = !state.explorerOpen;
+    },
+    setDamageDensityOpen: (state, { payload }: PayloadAction<boolean>) => {
+      state.damageDensityOpen = payload;
     },
     setOutputToTemp: (state, { payload }: PayloadAction<boolean>) => {
       state.outputToTemp = payload;
@@ -80,5 +85,5 @@ export const initApp = createAsyncThunk(
     }
 
     thunkAPI.dispatch(ActionCreators.clearHistory());
-  }
+  },
 );

@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 
 import { ThemeProvider } from "../../../styles";
@@ -16,8 +16,14 @@ const analyzeNodeAttack = jest.fn((...args: unknown[]) => {
 });
 
 // hooks バレルは react-dnd (ESM) を巻き込むため、使う分だけ差し替える。
+const dispatch = jest.fn();
+let damageDensityOpen = false;
+
 jest.mock("../../../hooks", () => ({
   useFhCore: () => ({ analyzer: { analyze_node_attack: analyzeNodeAttack } }),
+  useAppDispatch: () => dispatch,
+  useRootSelector: (selector: (root: unknown) => unknown) =>
+    selector({ app: { damageDensityOpen } }),
   useShip: (id?: string) => (id ? { id, ship_id: 1 } : undefined),
   useShipName: (shipId: number) => `ship${shipId}`,
 }));
@@ -101,6 +107,8 @@ function renderWith(leftComp: never) {
 
 beforeEach(() => {
   analyzeNodeAttack.mockClear();
+  dispatch.mockClear();
+  damageDensityOpen = false;
   lastCompareShipId = undefined;
   onCompareShipChange = undefined;
 });
@@ -156,4 +164,22 @@ it("編成に居るあいだは比較解析を続ける", () => {
 
   expect(analyzedWith("b")).toBe(true);
   expect(leftReport()).toHaveTextContent("b");
+});
+
+it("分布グラフを開いたかどうかは store に置く", () => {
+  // タブを移るとアンマウントされるので、ローカル state だと既定に戻ってしまう。
+  const { unmount } = renderWith(comp(["a", "b"]));
+
+  // fireEvent は内部で act 済み。
+  fireEvent.click(screen.getByRole("checkbox", { name: /Toggle/ }));
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "app/setDamageDensityOpen",
+    payload: true,
+  });
+
+  unmount();
+  damageDensityOpen = true;
+  renderWith(comp(["a", "b"]));
+
+  expect(screen.getByRole("checkbox", { name: /Toggle/ })).toBeChecked();
 });

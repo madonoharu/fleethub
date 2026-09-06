@@ -3,7 +3,14 @@ import type { Comp, Ship, NodeAttackAnalyzerConfig } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { useFhCore, useShip, useShipName } from "../../../hooks";
+import {
+  useAppDispatch,
+  useFhCore,
+  useRootSelector,
+  useShip,
+  useShipName,
+} from "../../../hooks";
+import { appSlice } from "../../../store";
 import { Checkbox, Flexbox } from "../../atoms";
 import { hasCompShip } from "../DamageDensitySection/compShips";
 
@@ -45,10 +52,12 @@ const NodeAttackDetails: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation("common");
   const { analyzer } = useFhCore();
+  const dispatch = useAppDispatch();
   const [key, setKey] = useState<TabKey>("day");
   const [compareShipId, setCompareShipId] = useState<string>();
-  // 分布グラフは描画が重いので、既定では畳んでおく。
-  const [showDensity, setShowDensity] = useState(false);
+  // 分布グラフは描画が重いので、既定では畳んでおく。開いたかどうかは表示の好みなので、
+  // タブを移ってアンマウントされても失われないよう store に置く。
+  const showDensity = useRootSelector((root) => root.app.damageDensityOpen);
 
   // 比較艦は編成から外れることがある。CompShipNameSelect は選択欄の表示だけを
   // 「比較なし」に戻すので、ここで所属を確かめないと、外れた艦を渡した比較解析と
@@ -132,7 +141,9 @@ const NodeAttackDetails: React.FC<Props> = ({
           css={{ marginLeft: 8, flexShrink: 0 }}
           label={t("DamageDistribution.Toggle")}
           checked={showDensity}
-          onChange={setShowDensity}
+          onChange={(checked) =>
+            dispatch(appSlice.actions.setDamageDensityOpen(checked))
+          }
         />
       </Flexbox>
 
