@@ -2,8 +2,10 @@ import styled from "@emotion/styled";
 import { Alert } from "@mui/material";
 import type { ActionReport, Comp } from "fleethub-core";
 import { useTranslation } from "next-i18next";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
+import { useAppDispatch, useRootSelector } from "../../../hooks";
+import { appSlice } from "../../../store";
 import type { DensityKind } from "../../../utils";
 import {
   createDamageChartRows,
@@ -67,7 +69,12 @@ const DamageDensitySection: React.FCX<Props> = ({
    * 累計確率・中央値・上位5%・下に並ぶ確率も同じ分布から作る。総和は 1 未満に
    * なるので、累計線が 100% に届かないぶんが全弾割合だった確率にあたる。
    */
-  const [includeScratch, setIncludeScratch] = useState(true);
+  const dispatch = useAppDispatch();
+  // タブを移るとアンマウントされるので、読み方の好みは store に置く。
+  // 左右のパネルで食い違うと見比べられないため、値も共有する。
+  const includeScratch = useRootSelector(
+    (root) => root.app.damageDensityIncludeScratch ?? true,
+  );
 
   const kind: DensityKind = includeScratch ? "all" : "penetration";
 
@@ -228,7 +235,9 @@ const DamageDensitySection: React.FCX<Props> = ({
           size="small"
           label={t("DamageDistribution.Scratch")}
           checked={includeScratch}
-          onChange={setIncludeScratch}
+          onChange={(checked) =>
+            dispatch(appSlice.actions.setDamageDensityIncludeScratch(checked))
+          }
         />
       </Flexbox>
 

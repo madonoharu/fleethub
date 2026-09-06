@@ -13,6 +13,8 @@ type AppState = {
   explorerOpen: boolean;
   /** ダメージ分布グラフを開くか。描画が重いので既定は閉じる。 */
   damageDensityOpen?: boolean;
+  /** ダメージ分布に割合ダメージを算入するか。未設定は算入。 */
+  damageDensityIncludeScratch?: boolean;
   outputToTemp: boolean;
   gkcoiTheme: GkcoiTheme;
 };
@@ -46,6 +48,12 @@ export const appSlice = createSlice({
     },
     setDamageDensityOpen: (state, { payload }: PayloadAction<boolean>) => {
       state.damageDensityOpen = payload;
+    },
+    setDamageDensityIncludeScratch: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => {
+      state.damageDensityIncludeScratch = payload;
     },
     setOutputToTemp: (state, { payload }: PayloadAction<boolean>) => {
       state.outputToTemp = payload;
