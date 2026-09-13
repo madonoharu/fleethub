@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 use crate::{
-    attack::AttackParams,
     types::{AttackStyleKey, DamageState},
     utils::Histogram,
 };
@@ -24,11 +23,6 @@ impl<T: AttackStyleKey> ActionReport<T> {
             damage_state_density: None,
             is_active: false,
         }
-    }
-
-    pub fn one(style: T, params: AttackParams) -> Self {
-        let report = AttackReport::new(style, Some(1.0), params);
-        Self::new(vec![report])
     }
 
     pub fn new(vec: Vec<AttackReport<T>>) -> Self {

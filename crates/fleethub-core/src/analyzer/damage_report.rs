@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 use crate::{
-    attack::{add_at, Attack, AttackPower, HitRate},
+    attack::{Attack, AttackPower, HitRate, add_at},
     attack::{Damage, DefenseParams, DensityMode, HitType},
     types::DamageState,
     utils::Histogram,
