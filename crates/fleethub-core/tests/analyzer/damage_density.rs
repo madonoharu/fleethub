@@ -1,5 +1,7 @@
 use fleethub_core::{
-    analyzer::{AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig, DamageReport},
+    analyzer::{
+        AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig, DamageReport, DensityDetail,
+    },
     types::{AirState, Engagement, NodeState, OrgType},
 };
 
@@ -36,6 +38,7 @@ fn test_fractional_hits_night_cutin() {
         },
         attacker: &attacker,
         target: &target,
+        density_detail: DensityDetail::Total,
     };
 
     let analysis = analyzer.analyze();

@@ -12,7 +12,7 @@ use crate::{
 
 use super::{
     ActionReport, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig,
-    CompAnalyzerConfig,
+    CompAnalyzerConfig, DensityDetail,
 };
 
 #[derive(Serialize, Tsify)]
@@ -63,6 +63,7 @@ impl NightCutinAnalyzer<'_> {
             },
             attacker: &ship,
             target: self.dummy,
+            density_detail: DensityDetail::Total,
         };
 
         let cutin_term = attack_analyzer.calc_night_cutin_term();

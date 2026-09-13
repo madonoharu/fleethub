@@ -3,7 +3,7 @@ use tsify::Tsify;
 
 use crate::attack::{Attack, AttackParams, AttackPower, AttackPowerParams, HitRate, HitRateParams};
 
-use super::DamageReport;
+use super::{DamageReport, DensityDetail};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct AttackReport<T> {
@@ -19,8 +19,17 @@ pub struct AttackReport<T> {
 
 impl<T> AttackReport<T> {
     pub fn new(style: T, proc_rate: Option<f64>, params: AttackParams) -> Self {
+        Self::with_density_detail(style, proc_rate, params, DensityDetail::Total)
+    }
+
+    pub fn with_density_detail(
+        style: T,
+        proc_rate: Option<f64>,
+        params: AttackParams,
+        detail: DensityDetail,
+    ) -> Self {
         let attack = params.calc_attack();
-        let damage = DamageReport::new(&attack);
+        let damage = DamageReport::new(&attack, detail);
 
         let AttackParams {
             attack_power_params,

@@ -65,6 +65,7 @@ impl Analyzer {
             config,
             attacker,
             target,
+            density_detail: DensityDetail::Total,
         };
 
         analyzer.analyze()
@@ -77,6 +78,7 @@ impl Analyzer {
         left_ship: &Ship,
         right_comp: &Comp,
         right_ship: &Ship,
+        density_detail: Option<DensityDetail>,
     ) -> NodeAttackAnalysis {
         let analyzer = NodeAttackAnalyzer {
             battle_defs: &self.battle_defs,
@@ -85,6 +87,7 @@ impl Analyzer {
             left_ship,
             right_comp,
             right_ship,
+            density_detail: density_detail.unwrap_or_default(),
         };
 
         analyzer.analyze()

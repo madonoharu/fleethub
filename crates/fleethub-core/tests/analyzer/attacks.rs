@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use fleethub_core::{
-    analyzer::{AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig},
+    analyzer::{AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig, DensityDetail},
     types::{AirState, Engagement, NodeState},
 };
 
@@ -53,6 +53,7 @@ impl AttackTestCase {
             config: self.attack_analyzer_config(),
             attacker: &self.attacker.ship,
             target: &self.target.ship,
+            density_detail: DensityDetail::Total,
         };
 
         analyzer.analyze()

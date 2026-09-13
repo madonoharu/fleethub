@@ -11,7 +11,7 @@ use crate::{
 };
 
 use super::{
-    AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig,
+    AttackAnalysis, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig, DensityDetail,
     FleetCutinAnalyzer, FleetCutinReport,
 };
 
@@ -32,6 +32,7 @@ pub struct NodeAttackAnalyzer<'a> {
     pub left_ship: &'a Ship,
     pub right_comp: &'a Comp,
     pub right_ship: &'a Ship,
+    pub density_detail: DensityDetail,
 }
 
 impl NodeAttackAnalyzer<'_> {
@@ -122,6 +123,7 @@ impl NodeAttackAnalyzer<'_> {
             config,
             attacker: attacker_ship,
             target: target_ship,
+            density_detail: self.density_detail,
         }
         .analyze()
     }

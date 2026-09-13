@@ -2,11 +2,20 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 use crate::{
-    attack::{Attack, AttackPower, HitRate},
-    attack::{Damage, DefenseParams, HitType},
+    attack::{Attack, AttackPower, HitRate, add_at},
+    attack::{Damage, DefenseParams, DensityMode, HitType},
     types::DamageState,
     utils::Histogram,
 };
+
+/// `DamageReport` にどこまでの分布を持たせるか。
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, Tsify)]
+#[tsify(from_wasm_abi)]
+pub enum DensityDetail {
+    #[default]
+    Total,
+    WithNoPenetration,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 pub struct DamageReport {
@@ -19,11 +28,20 @@ pub struct DamageReport {
     pub normal_scratch_rate: f64,
     pub critical_scratch_rate: f64,
     pub damage_density: Histogram<u16, f64>,
+    /// 1発も装甲を貫通しなかった場合の分布。`damage_density` との差が
+    /// 「少なくとも1発貫通した場合」になる。
+    ///
+    /// 割合ダメージを 0 ダメージ扱いにした分布との差では代わりにならない。多段では
+    /// 「割合＋貫通」の結果が貫通ぶんだけ大きなダメージ値へ動くので、その位置まで
+    /// 割合として数えてしまう。
+    ///
+    /// 両者は加算順が違うため、差は丸め誤差の幅で負になり得る。
+    pub damage_density_no_penetration: Option<Histogram<u16, f64>>,
     pub damage_state_density: Histogram<DamageState, f64>,
 }
 
 impl DamageReport {
-    pub fn new(attack: &Attack) -> Option<Self> {
+    pub fn new(attack: &Attack, detail: DensityDetail) -> Option<Self> {
         let hits = attack.hits;
         let is_cutin = attack.is_cutin;
         let attack_power = attack.attack_power.as_ref()?;
@@ -51,20 +69,27 @@ impl DamageReport {
         let normal_scratch_rate = normal.scratch_rate();
         let critical_scratch_rate = critical.scratch_rate();
 
-        let damage_density = attack
-            .hit_rate
-            .as_ref()
-            .map(|hit_rate| {
-                DamageAnalyzer {
-                    attack_power,
-                    defense_params,
-                    hit_rate,
-                    hits,
-                    is_cutin,
-                }
-                .density()
-            })
-            .unwrap_or_default();
+        let analyze = |mode: DensityMode| {
+            attack
+                .hit_rate
+                .as_ref()
+                .map(|hit_rate| {
+                    DamageAnalyzer {
+                        attack_power,
+                        defense_params,
+                        hit_rate,
+                        hits,
+                        is_cutin,
+                        mode,
+                    }
+                    .density()
+                })
+                .unwrap_or_default()
+        };
+
+        let damage_density = analyze(DensityMode::All);
+        let damage_density_no_penetration = (detail == DensityDetail::WithNoPenetration)
+            .then(|| analyze(DensityMode::NoPenetration));
 
         let &DefenseParams {
             current_hp, max_hp, ..
@@ -90,9 +115,19 @@ impl DamageReport {
             normal_scratch_rate,
             critical_scratch_rate,
             damage_density,
+            damage_density_no_penetration,
             damage_state_density,
         })
     }
+}
+
+/// 1段ぶんの分布を何から書き出すか。
+#[derive(Debug, Clone, Copy)]
+enum StepSource {
+    /// 命中種別ごとに防御力サンプルを振り分ける。
+    HitRate,
+    /// 貫通しなかった結果を、命中種別をまとめた確率で書き出す。
+    NoPenetration { miss: f64, scratch: f64 },
 }
 
 struct DamageAnalyzer<'a> {
@@ -101,6 +136,7 @@ struct DamageAnalyzer<'a> {
     defense_params: &'a DefenseParams,
     is_cutin: bool,
     hits: f64,
+    mode: DensityMode,
 }
 
 impl<'a> DamageAnalyzer<'a> {
@@ -117,24 +153,57 @@ impl<'a> DamageAnalyzer<'a> {
         }
     }
 
-    /// 1回ぶんの攻撃のダメージ分布を、ダメージ値を添字とする密な配列に書き出す。
-    ///
-    /// 多段攻撃では被弾するたびに残耐久が変わり、割合ダメージと撃沈保護ダメージが
-    /// 残耐久に比例するため、段ごとに引き直す必要がある。
-    fn once_dense(&self, current_hp: u16, out: &mut Vec<f64>) {
+    fn write_step(&self, current_hp: u16, out: &mut Vec<f64>, source: StepSource) {
         out.clear();
 
-        for (hit_type, rate) in self.hit_rate.iter() {
-            if rate == 0.0 {
-                continue;
+        match source {
+            StepSource::NoPenetration { miss, scratch } => {
+                add_at(out, 0, miss);
+                self.to_damage(HitType::Normal, current_hp)
+                    .add_scratch_density_to(out, scratch);
             }
+            StepSource::HitRate => {
+                for (hit_type, rate) in self.hit_rate.iter() {
+                    if rate == 0.0 {
+                        continue;
+                    }
 
-            self.to_damage(hit_type, current_hp)
-                .add_density_to(out, rate);
+                    self.to_damage(hit_type, current_hp)
+                        .add_density_to(out, rate, self.mode);
+                }
+            }
+        }
+    }
+
+    fn no_penetration_source(&self) -> StepSource {
+        let current_hp = self.defense_params.current_hp;
+
+        let miss_rate = 1.0 - self.hit_rate.total;
+        let miss_scratch_rate = self.to_damage(HitType::Miss, current_hp).scratch_rate();
+        let miss = miss_rate * (1.0 - miss_scratch_rate);
+
+        let scratch = self
+            .hit_rate
+            .iter()
+            .filter(|(_, rate)| *rate != 0.0)
+            .map(|(hit_type, rate)| rate * self.to_damage(hit_type, current_hp).scratch_rate())
+            .sum();
+
+        StepSource::NoPenetration { miss, scratch }
+    }
+
+    fn step_source(&self) -> StepSource {
+        match self.mode {
+            DensityMode::All => StepSource::HitRate,
+            DensityMode::NoPenetration => self.no_penetration_source(),
         }
     }
 
     fn density(&self) -> Histogram<u16, f64> {
+        self.density_from(self.step_source())
+    }
+
+    fn density_from(&self, source: StepSource) -> Histogram<u16, f64> {
         let hp1 = self.defense_params.current_hp;
 
         // 畳み込みはハッシュマップではなく密な配列で行う。ダメージ値をそのまま
@@ -146,12 +215,12 @@ impl<'a> DamageAnalyzer<'a> {
         // `calc_damage_type` の `as u16` で 65535 に飽和するため、配列長は
         // `ceil(hits) * 65536` (約 1.6MB) で頭打ちになる。
         let mut density1 = Vec::new();
-        self.once_dense(hp1, &mut density1);
+        self.write_step(hp1, &mut density1, source);
 
         if self.hits > 1.0 {
             let max_hits = self.hits.ceil() as usize;
             let max_hits_rate = self.hits.fract();
-            let mut once_buf = Vec::new();
+            let mut step_buf = Vec::new();
 
             for h in 1..max_hits {
                 let mut density2 = vec![0.0; density1.len()];
@@ -164,14 +233,14 @@ impl<'a> DamageAnalyzer<'a> {
                     }
 
                     let hp2 = hp1.saturating_sub(damage_value1 as u16);
-                    self.once_dense(hp2, &mut once_buf);
+                    self.write_step(hp2, &mut step_buf, source);
 
-                    let required = damage_value1 + once_buf.len();
+                    let required = damage_value1 + step_buf.len();
                     if density2.len() < required {
                         density2.resize(required, 0.0);
                     }
 
-                    for (damage_value2, rate2) in once_buf.iter().enumerate() {
+                    for (damage_value2, rate2) in step_buf.iter().enumerate() {
                         if *rate2 != 0.0 {
                             density2[damage_value1 + damage_value2] += rate1 * rate2;
                         }
@@ -241,8 +310,171 @@ mod test {
         }
     }
 
+    /// 装甲を抜けたり抜けなかったりする攻撃。割合ダメージと実ダメージが混ざる。
+    fn mixed_attack(hits: f64, current_hp: u16) -> Attack {
+        Attack {
+            attack_power: Some(AttackPower {
+                normal: 550.0,
+                critical: 800.0,
+                remaining_ammo_mod: 1.0,
+                ..Default::default()
+            }),
+            defense_params: Some(DefenseParams {
+                basic_defense_power: 500.0,
+                current_hp,
+                max_hp: current_hp,
+                sinkable: true,
+                overkill_protection: false,
+            }),
+            hit_rate: Some(HitRate {
+                normal: 0.6,
+                critical: 0.1,
+                total: 0.7,
+            }),
+            hits,
+            is_cutin: false,
+        }
+    }
+
+    fn no_penetration_of(attack: &Attack) -> (Histogram<u16, f64>, Histogram<u16, f64>) {
+        let report = DamageReport::new(attack, DensityDetail::WithNoPenetration).unwrap();
+        (
+            report.damage_density,
+            report.damage_density_no_penetration.unwrap(),
+        )
+    }
+
+    #[test]
+    fn test_no_penetration_is_computed_only_on_request() {
+        let report = DamageReport::new(&mixed_attack(2.0, 99), DensityDetail::Total).unwrap();
+        assert!(report.damage_density_no_penetration.is_none());
+    }
+
+    #[test]
+    fn test_damage_density_no_penetration() {
+        for hits in [1.0, 2.0, 1.65] {
+            for current_hp in [99u16, 50, 10] {
+                let (all, no_penetration) = no_penetration_of(&mixed_attack(hits, current_hp));
+
+                let label = format!("hits={hits} hp={current_hp}");
+                let probability = |h: &Histogram<u16, f64>| h.values().sum::<f64>();
+
+                let no_penetration_probability = probability(&no_penetration);
+                assert!(no_penetration_probability > 0.0, "{label}");
+                assert!(
+                    no_penetration_probability < probability(&all) - 1e-12,
+                    "{label}"
+                );
+
+                // 図では合計の棒を貫通なしのぶんで塗り分ける。食み出すと下の段が負になる。
+                for (damage, rate) in no_penetration.iter() {
+                    let total = all.get(damage).copied().unwrap_or(0.0);
+                    assert!(*rate <= total + 1e-12, "{label} damage={damage}");
+                }
+
+                let once_max = |hp: u16| (hp as f64 * 0.06 + (hp.max(1) - 1) as f64 * 0.08) as u16;
+
+                let mut all_scratch_max = 0_u16;
+                let mut hp = current_hp;
+                for _ in 0..hits.ceil() as usize {
+                    let step = once_max(hp);
+                    all_scratch_max += step;
+                    hp = hp.saturating_sub(step);
+                }
+
+                let max_damage = no_penetration.keys().copied().max().unwrap_or(0);
+                assert!(
+                    max_damage <= all_scratch_max,
+                    "{label} {max_damage} > {all_scratch_max}"
+                );
+
+                // 多段では「割合＋貫通」の結果がこの上限より右へ動く。だから合計を
+                // 上限で切っても割合は取り出せず、専用の分布が要る。
+                if hits > 1.0 {
+                    let moved_beyond = all
+                        .iter()
+                        .any(|(damage, rate)| *damage > all_scratch_max && *rate > 1e-12);
+
+                    assert!(moved_beyond, "{label}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_no_penetration_equals_all_when_armor_is_never_penetrated() {
+        let attack = Attack {
+            attack_power: Some(AttackPower {
+                normal: 100.0,
+                critical: 100.0,
+                remaining_ammo_mod: 1.0,
+                ..Default::default()
+            }),
+            defense_params: Some(DefenseParams {
+                basic_defense_power: 500.0,
+                current_hp: 100,
+                max_hp: 100,
+                sinkable: true,
+                overkill_protection: false,
+            }),
+            hit_rate: Some(HitRate {
+                normal: 0.5,
+                critical: 0.0,
+                total: 0.5,
+            }),
+            hits: 1.0,
+            is_cutin: false,
+        };
+
+        let (all, no_penetration) = no_penetration_of(&attack);
+        assert_close(&no_penetration, &all, "ミスと割合ダメージしか起きない");
+    }
+
+    #[test]
+    fn test_no_penetration_keeps_plain_misses() {
+        let mut attack = attack(1.0, 400);
+        attack.is_cutin = false;
+
+        let miss_rate = 1.0 - attack.hit_rate.as_ref().unwrap().total;
+        let (_, no_penetration) = no_penetration_of(&attack);
+
+        assert_close(
+            &no_penetration,
+            &[(0, miss_rate)].into_iter().collect(),
+            "必ず貫通する攻撃では、ミスだけが残る",
+        );
+    }
+
+    #[test]
+    fn test_no_penetration_shortcut_matches_general_path() {
+        for hits in [1.0, 2.0, 3.0, 1.65] {
+            for current_hp in [6000u16, 400, 99, 17, 10, 1] {
+                for is_cutin in [false, true] {
+                    let mut attack = mixed_attack(hits, current_hp);
+                    attack.is_cutin = is_cutin;
+
+                    let analyzer = DamageAnalyzer {
+                        attack_power: attack.attack_power.as_ref().unwrap(),
+                        defense_params: attack.defense_params.as_ref().unwrap(),
+                        hit_rate: attack.hit_rate.as_ref().unwrap(),
+                        hits,
+                        is_cutin,
+                        mode: DensityMode::NoPenetration,
+                    };
+
+                    let label = format!("hits={hits} hp={current_hp} cutin={is_cutin}");
+                    assert_close(
+                        &analyzer.density_from(analyzer.step_source()),
+                        &analyzer.density_from(StepSource::HitRate),
+                        &label,
+                    );
+                }
+            }
+        }
+    }
+
     fn density_of(hits: f64, current_hp: u16) -> Histogram<u16, f64> {
-        DamageReport::new(&attack(hits, current_hp))
+        DamageReport::new(&attack(hits, current_hp), DensityDetail::Total)
             .unwrap()
             .damage_density
     }
@@ -344,32 +576,6 @@ mod test {
         }
     }
 
-    /// 装甲を抜けたり抜けなかったりする攻撃。割合ダメージと実ダメージが混ざる。
-    fn mixed_attack(hits: f64, current_hp: u16) -> Attack {
-        Attack {
-            attack_power: Some(AttackPower {
-                normal: 550.0,
-                critical: 800.0,
-                remaining_ammo_mod: 1.0,
-                ..Default::default()
-            }),
-            defense_params: Some(DefenseParams {
-                basic_defense_power: 500.0,
-                current_hp,
-                max_hp: current_hp,
-                sinkable: true,
-                overkill_protection: false,
-            }),
-            hit_rate: Some(HitRate {
-                normal: 0.6,
-                critical: 0.1,
-                total: 0.7,
-            }),
-            hits,
-            is_cutin: false,
-        }
-    }
-
     /// 密な配列による畳み込みが、素朴なハッシュマップ実装と一致すること。
     ///
     /// `add_density_to` は命中種別ごとに Actual / Scratch / OverkillProtection へ
@@ -412,6 +618,7 @@ mod test {
                 hit_rate: a.hit_rate.as_ref().unwrap(),
                 hits,
                 is_cutin: a.is_cutin,
+                mode: DensityMode::All,
             };
 
             let actual = analyzer.density();
@@ -518,6 +725,7 @@ mod test {
                 hit_rate: a.hit_rate.as_ref().unwrap(),
                 hits: a.hits,
                 is_cutin: a.is_cutin,
+                mode: DensityMode::All,
             };
 
             let points = analyzer.density().len();
@@ -542,6 +750,14 @@ mod test {
             let before = run("最適化前", &|| naive(&analyzer), 3);
             let after = run("最適化後", &|| analyzer.density(), 20);
             println!("    短縮率     {:>9.1} 倍", before / after);
+
+            let with_mode = |mode: DensityMode| DamageAnalyzer { mode, ..analyzer };
+            run("All", &|| with_mode(DensityMode::All).density(), 20);
+            run(
+                "貫通なし",
+                &|| with_mode(DensityMode::NoPenetration).density(),
+                20,
+            );
         }
     }
 
@@ -572,7 +788,7 @@ mod test {
             is_cutin: false,
         };
 
-        let result = DamageReport::new(&attack).unwrap();
+        let result = DamageReport::new(&attack, DensityDetail::Total).unwrap();
 
         assert!(result.damage_density.iter().count() < 3000);
 

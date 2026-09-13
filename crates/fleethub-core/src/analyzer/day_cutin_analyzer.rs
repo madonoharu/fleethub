@@ -11,7 +11,9 @@ use crate::{
     utils::some_or_return,
 };
 
-use super::{ActionReport, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig};
+use super::{
+    ActionReport, AttackAnalyzer, AttackAnalyzerConfig, AttackAnalyzerShipConfig, DensityDetail,
+};
 
 pub struct DayCutinAnalyzer<'a> {
     pub battle_defs: &'a BattleDefinitions,
@@ -76,6 +78,7 @@ impl DayCutinAnalyzer<'_> {
             },
             attacker: ship,
             target: self.dummy,
+            density_detail: DensityDetail::Total,
         };
 
         let observation_term = attack_analyzer.calc_observation_term();

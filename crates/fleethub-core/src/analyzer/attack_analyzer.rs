@@ -3,8 +3,8 @@ use tsify::Tsify;
 
 use crate::{
     attack::{
-        AswAttackParams, DayPhaseAttackParams, NightPhaseAttackParams, SupportShellingAttackParams,
-        TorpedoAttackParams,
+        AswAttackParams, AttackParams, DayPhaseAttackParams, NightPhaseAttackParams,
+        SupportShellingAttackParams, TorpedoAttackParams,
     },
     member::BattleMemberRef,
     ship::{NightCutinTermParams, Ship},
@@ -17,13 +17,14 @@ use crate::{
     utils::some_or_return,
 };
 
-use super::{ActionReport, AttackAnalyzerConfig, AttackReport};
+use super::{ActionReport, AttackAnalyzerConfig, AttackReport, DensityDetail};
 
 pub struct AttackAnalyzer<'a> {
     pub battle_defs: &'a BattleDefinitions,
     pub config: AttackAnalyzerConfig,
     pub attacker: &'a Ship,
     pub target: &'a Ship,
+    pub density_detail: DensityDetail,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
@@ -42,6 +43,10 @@ pub struct AttackAnalysis {
 }
 
 impl AttackAnalyzer<'_> {
+    fn report<T>(&self, style: T, proc_rate: Option<f64>, params: AttackParams) -> AttackReport<T> {
+        AttackReport::with_density_detail(style, proc_rate, params, self.density_detail)
+    }
+
     pub fn analyze(&self) -> AttackAnalysis {
         let day = self.analyze_day_phase_action();
         let night = self.analyze_night_phase_action();
@@ -176,7 +181,7 @@ impl AttackAnalyzer<'_> {
         }
         .calc_attack_params();
 
-        AttackReport::new(style, proc_rate, attack_params)
+        self.report(style, proc_rate, attack_params)
     }
 
     pub fn analyze_day_phase_action(&self) -> ActionReport<DayPhaseAttackStyle> {
@@ -214,7 +219,7 @@ impl AttackAnalyzer<'_> {
                 }
                 .calc_attack_params();
 
-                AttackReport::new(style, proc_rate, attack_params)
+                self.report(style, proc_rate, attack_params)
             })
             .collect();
 
@@ -252,7 +257,7 @@ impl AttackAnalyzer<'_> {
                     night_conditions,
                 }
                 .calc_attack_params();
-                AttackReport::new(style, proc_rate, attack_params)
+                self.report(style, proc_rate, attack_params)
             })
             .collect::<Vec<_>>();
 
@@ -352,7 +357,7 @@ impl AttackAnalyzer<'_> {
         }
         .calc_attack_params();
 
-        ActionReport::one(style, params)
+        ActionReport::new(vec![self.report(style, Some(1.0), params)])
     }
 
     fn analyze_opening_asw(&self) -> ActionReport<AswAttackStyle> {
@@ -385,7 +390,7 @@ impl AttackAnalyzer<'_> {
         }
         .calc_attack_params();
 
-        ActionReport::one(style, params)
+        ActionReport::new(vec![self.report(style, Some(1.0), params)])
     }
 
     fn analyze_support_shelling(&self) -> ActionReport<SupportShellingStyle> {
@@ -413,6 +418,6 @@ impl AttackAnalyzer<'_> {
         .calc_attack_params();
 
         let style = SupportShellingStyle { attack_type };
-        ActionReport::one(style, params)
+        ActionReport::new(vec![self.report(style, Some(1.0), params)])
     }
 }
