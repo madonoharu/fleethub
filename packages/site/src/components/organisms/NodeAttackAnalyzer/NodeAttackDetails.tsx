@@ -1,5 +1,10 @@
 import { Tabs, Tab, Stack, Paper } from "@mui/material";
-import type { Comp, Ship, NodeAttackAnalyzerConfig } from "fleethub-core";
+import type {
+  Comp,
+  DensityDetail,
+  Ship,
+  NodeAttackAnalyzerConfig,
+} from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -58,6 +63,9 @@ const NodeAttackDetails: React.FC<Props> = ({
   // 分布グラフは描画が重いので、既定では畳んでおく。開いたかどうかは表示の好みなので、
   // タブを移ってアンマウントされても失われないよう store に置く。
   const showDensity = useRootSelector((root) => root.app.damageDensityOpen);
+  const densityDetail: DensityDetail = showDensity
+    ? "WithNoPenetration"
+    : "Total";
 
   // 比較艦は編成から外れることがある。CompShipNameSelect は選択欄の表示だけを
   // 「比較なし」に戻すので、ここで所属を確かめないと、外れた艦を渡した比較解析と
@@ -90,9 +98,10 @@ const NodeAttackDetails: React.FC<Props> = ({
             leftShip,
             rightComp,
             rightShip,
+            densityDetail,
           )
         : undefined,
-    [analyzer, config, leftComp, leftShip, rightComp, rightShip],
+    [analyzer, config, leftComp, leftShip, rightComp, rightShip, densityDetail],
   );
 
   // 同一編成の別の艦（＝別の装備構成）との重ね合わせ比較用。
@@ -106,10 +115,20 @@ const NodeAttackDetails: React.FC<Props> = ({
               compareShip,
               rightComp,
               rightShip,
+              densityDetail,
             )
           : undefined
         : undefined,
-    [analyzer, config, leftComp, leftShip, rightComp, rightShip, compareShip],
+    [
+      analyzer,
+      config,
+      leftComp,
+      leftShip,
+      rightComp,
+      rightShip,
+      compareShip,
+      densityDetail,
+    ],
   );
 
   if (!leftComp || !leftShip || !rightComp || !rightShip || !result) {

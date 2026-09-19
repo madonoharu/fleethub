@@ -183,3 +183,15 @@ it("分布グラフを開いたかどうかは store に置く", () => {
 
   expect(screen.getByRole("checkbox", { name: /Toggle/ })).toBeChecked();
 });
+
+it("装甲貫通なしの内訳は分布グラフを開いているときだけ要求する", () => {
+  const requested = () => analyzeNodeAttack.mock.calls.map((call) => call[5]);
+
+  renderWith(comp(["a", "b"]));
+  expect(requested()).toEqual(["Total"]);
+
+  analyzeNodeAttack.mockClear();
+  damageDensityOpen = true;
+  renderWith(comp(["a", "b"]));
+  expect(requested()).toEqual(["WithNoPenetration"]);
+});
