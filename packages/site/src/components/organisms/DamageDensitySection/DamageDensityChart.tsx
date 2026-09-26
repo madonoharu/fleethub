@@ -172,13 +172,6 @@ const DamageDensityChart: React.FC<Props> = ({
       ? bodyMax
       : Math.max(bodyMax, axisPeak);
   const rateAxisMax = broken ? broken.axisMax : rateCap * AXIS_HEADROOM;
-  const rateTicks = useMemo(
-    () =>
-      broken
-        ? [...createRateAxisTicks(broken.cap), broken.gapTo, broken.axisMax]
-        : createRateAxisTicks(rateCap),
-    [broken, rateCap],
-  );
 
   // 棒はダメージ値を中心に描かれるので、両端の棒は半分がプロットの外へ出て
   // 縦軸の目盛と重なる。半ビンぶん内側に寄せて、棒が軸の領域へ出ないようにする。
@@ -311,6 +304,12 @@ const DamageDensityChart: React.FC<Props> = ({
   }, [broken, rows, hasBreakdown, breakdownItems, hidden]);
 
   const peakShown = rows[0] ? shownRate(rows[0]) : 0;
+  const reachesUpperTier =
+    broken !== null && shown(SERIES.main) && peakShown > broken.from;
+
+  const rateTicks = reachesUpperTier
+    ? [...createRateAxisTicks(broken.cap), broken.gapTo, broken.axisMax]
+    : createRateAxisTicks(rateCap);
 
   /** 頭打ちにした棒の実値。軸の座標と系列の色を添えて置く。 */
   const clipMarks = useMemo(() => {
@@ -321,7 +320,9 @@ const DamageDensityChart: React.FC<Props> = ({
         {
           id: SERIES.main,
           value: peakShown,
-          axis: toBrokenAxis(broken, peakShown),
+          axis: reachesUpperTier
+            ? toBrokenAxis(broken, peakShown)
+            : broken.axisMax,
           color: PENETRATION_COLOR,
         },
       ];
@@ -350,6 +351,7 @@ const DamageDensityChart: React.FC<Props> = ({
     hidden,
     peakMain,
     peakShown,
+    reachesUpperTier,
     peakCompare,
     rateAxisMax,
     rateCap,
@@ -615,7 +617,7 @@ const DamageDensityChart: React.FC<Props> = ({
 
           {/* 切れ目のぶんの透明な段と、その上に継ぐ棒の頭。
               分布と同じ積み上げに載せるので、棒の位置と幅がずれない。 */}
-          {broken && shown(SERIES.main) && headSegments.length > 0 && (
+          {reachesUpperTier && (
             <>
               {renderDistribution(
                 (row) => (row === rows[0] ? broken.gapTo - broken.cap : 0),
@@ -674,7 +676,7 @@ const DamageDensityChart: React.FC<Props> = ({
             </>
           )}
 
-          {broken && shown(SERIES.main) && (
+          {reachesUpperTier && (
             <ReferenceArea
               yAxisId="pmf"
               x1={domainMin}

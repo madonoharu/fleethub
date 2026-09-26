@@ -393,6 +393,59 @@ it("省略軸で積んでいるとき、凡例で消した種類は上段から�
   expect(mark()).toBeUndefined();
 });
 
+it("消して残った合計が上段の窓に届かなければ、二段軸をやめて実値を軸の上端に置く", () => {
+  // ダメージ0 の棒は Z 30% + Y 56%。上段の窓は 80%〜100%。
+  const typed = {
+    data: {
+      Z: {
+        proc_rate: 0.3,
+        style: { tag: "NightAttackStyle", attack_type: "Z" },
+        damage: { damage_density: { 0: 1 } },
+      },
+      Y: {
+        proc_rate: 0.7,
+        style: { tag: "NightAttackStyle", attack_type: "Y" },
+        damage: { damage_density: { 0: 0.8, 60: 0.2 } },
+      },
+    },
+  } as never;
+
+  const { container } = render(
+    <ThemeProvider>
+      <DamageDensitySection
+        report={typed}
+        targetMaxHp={99}
+        targetCurrentHp={99}
+      />
+    </ThemeProvider>,
+  );
+
+  const tickTexts = () =>
+    Array.from(
+      container.querySelectorAll(
+        ".recharts-yAxis .recharts-cartesian-axis-tick text",
+      ),
+    );
+  const waves = () =>
+    container.querySelectorAll(".recharts-reference-area g path").length;
+  const mark = () => container.querySelector(".recharts-reference-dot text");
+  const yOf = (el: Element | null | undefined) => Number(el?.getAttribute("y"));
+
+  expect(tickTexts().map((el) => el.textContent)).toContain("80%");
+  expect(waves()).toBe(2);
+  const axisTop = yOf(tickTexts().find((el) => el.textContent === "100%"));
+
+  // Z の 30% だけが残る。下段の天井は超えるが、上段の窓には届かない。
+  fireEvent.click(screen.getByText("NightAttackType.Y"));
+
+  expect(waves()).toBe(0);
+  expect(tickTexts().map((el) => el.textContent)).not.toContain("80%");
+  expect(firstBarStack(container).map((r) => r.fill)).not.toContain("none");
+
+  expect(mark()?.textContent).toBe("30.0%");
+  expect(yOf(mark())).toBeCloseTo(axisTop, 5);
+});
+
 it("比較していないときは攻撃種類で積む", () => {
   const styled = {
     data: {
