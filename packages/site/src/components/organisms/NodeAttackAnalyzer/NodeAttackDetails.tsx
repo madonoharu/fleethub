@@ -62,7 +62,9 @@ const NodeAttackDetails: React.FC<Props> = ({
   const [compareShipId, setCompareShipId] = useState<string>();
   // 分布グラフは描画が重いので、既定では畳んでおく。開いたかどうかは表示の好みなので、
   // タブを移ってアンマウントされても失われないよう store に置く。
-  const showDensity = useRootSelector((root) => root.app.damageDensityOpen);
+  const showDensity = useRootSelector(
+    (root) => root.app.damageDensityOpen ?? false,
+  );
   const densityDetail: DensityDetail = showDensity
     ? "WithNoPenetration"
     : "Total";

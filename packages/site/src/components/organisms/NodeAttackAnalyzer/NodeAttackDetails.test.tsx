@@ -17,7 +17,7 @@ const analyzeNodeAttack = jest.fn((...args: unknown[]) => {
 
 // hooks バレルは react-dnd (ESM) を巻き込むため、使う分だけ差し替える。
 const dispatch = jest.fn();
-let damageDensityOpen = false;
+let damageDensityOpen: boolean | undefined = false;
 
 jest.mock("../../../hooks", () => ({
   useFhCore: () => ({ analyzer: { analyze_node_attack: analyzeNodeAttack } }),
@@ -182,6 +182,18 @@ it("分布グラフを開いたかどうかは store に置く", () => {
   renderWith(comp(["a", "b"]));
 
   expect(screen.getByRole("checkbox", { name: /Toggle/ })).toBeChecked();
+});
+
+it("開閉を一度も保存していなくても、チェックは store の値に従う", () => {
+  // 未設定のまま MUI に渡すと非制御になり、store と食い違っても表示だけが切り替わる。
+  damageDensityOpen = undefined;
+  renderWith(comp(["a", "b"]));
+
+  const checkbox = screen.getByRole("checkbox", { name: /Toggle/ });
+  expect(checkbox).not.toBeChecked();
+
+  fireEvent.click(checkbox);
+  expect(checkbox).not.toBeChecked();
 });
 
 it("装甲貫通なしの内訳は分布グラフを開いているときだけ要求する", () => {
