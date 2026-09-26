@@ -63,6 +63,35 @@ describe("mergeDamageDensity", () => {
     expect(mergeDamageDensity({})).toBeNull();
   });
 
+  it("貫通なしの分布が無ければ null。合計で代用しない", () => {
+    const data = {
+      a: {
+        proc_rate: 1,
+        damage: { damage_density: { 0: 0.4, 8: 0.6 } },
+      },
+    } as unknown as DamageDensitySource;
+
+    expect(mergeDamageDensity(data, "penetration")).toBeNull();
+    expect(mergeDamageDensity(data, "noPenetration")).toBeNull();
+  });
+
+  it("引き算で消すのは負に振れたぶんだけ", () => {
+    const data = {
+      a: {
+        proc_rate: 1,
+        damage: {
+          damage_density: { 0: 0.9999999999, 80: 1e-10 },
+          damage_density_no_penetration: { 0: 0.9999999999 },
+        },
+      },
+    } as unknown as DamageDensitySource;
+
+    expect(mergeDamageDensity(data, "penetration")?.[80]).toBeCloseTo(
+      1e-10,
+      20,
+    );
+  });
+
   it("penetration は貫通しなかった質量を取り除く", () => {
     const data = {
       a: {
@@ -101,6 +130,16 @@ describe("mergeDamageDensity", () => {
 });
 
 describe("toDamageDensityStats", () => {
+  it("確率の合計が小さくても代表値は縮尺で変わらない", () => {
+    expect(toDamageDensityStats({ 80: 1e-10 })).toMatchObject({
+      median: 80,
+      upper5: 80,
+    });
+    expect(toDamageDensityStats({ 0: 1e-10, 80: 1e-10 })).toMatchObject({
+      upper5: 80,
+    });
+  });
+
   it("欠損したダメージ値を 0 で埋めて累計を計算する", () => {
     const stats = toDamageDensityStats({ 0: 0.25, 3: 0.75 });
 
@@ -349,6 +388,10 @@ describe("getClippedRateMax", () => {
 });
 
 describe("createRateAxisTicks", () => {
+  it("上限が極端に小さくても目盛の数は変わらない", () => {
+    expect(createRateAxisTicks(1e-15).length).toBeLessThanOrEqual(6);
+  });
+
   it("きりのいい刻みで置き、上限そのものには打たない", () => {
     expect(
       createRateAxisTicks(0.0151).map((v) => +(v * 100).toFixed(2)),

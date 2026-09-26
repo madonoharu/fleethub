@@ -79,17 +79,16 @@ function pickDensity(
   if (kind === "penetration") {
     const all = damage.damage_density;
     const noPenetration = damage.damage_density_no_penetration;
-    if (!all) return undefined;
-    if (!noPenetration) return all;
+    if (!all || !noPenetration) return undefined;
 
     const result: Record<number, number> = {};
 
     for (const [key, rate] of Object.entries(all)) {
       if (typeof rate !== "number") continue;
 
-      // 引き算なので、丸めで残る極小の負値は捨てる。
+      // 加算順が違うので、一致する値でも丸め誤差の幅で負に振れる。
       const value = rate - (noPenetration[Number(key) as never] ?? 0);
-      if (value > EPS) result[Number(key)] = value;
+      if (value > 0) result[Number(key)] = value;
     }
 
     return result;
@@ -231,7 +230,7 @@ function quantile(
   total: number,
   q: number,
 ): number {
-  const threshold = total * q - EPS;
+  const threshold = total * (q - EPS);
   const found = points.find((point) => point.cumulative >= threshold);
   return found ? found.damage : points[points.length - 1].damage;
 }
@@ -624,10 +623,7 @@ export function createRateAxisTicks(rateMax: number, divisions = 4): number[] {
     }
   });
 
-  const ticks: number[] = [];
-  for (let index = 0; index * step <= rateMax + EPS; index++) {
-    ticks.push(index * step);
-  }
+  const intervals = Math.floor(rateMax / step + EPS);
 
-  return ticks;
+  return Array.from({ length: intervals + 1 }, (_, index) => index * step);
 }
