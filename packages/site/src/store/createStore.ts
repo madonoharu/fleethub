@@ -9,7 +9,7 @@ import { persistReducer, Storage, PersistConfig } from "redux-persist";
 import { ThunkAction } from "redux-thunk";
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo";
 
-import { appSlice } from "./appSlice";
+import { appSlice, keepViewPreferences } from "./appSlice";
 import { configSlice } from "./configSlice";
 import { entitiesSlice } from "./entities";
 import { gearSelectSlice } from "./gearSelectSlice";
@@ -66,7 +66,29 @@ export const persistConfig: PersistConfig<RootState> = {
 
 const persistedReducer = persistReducer(persistConfig, persistedReducerBase);
 
-const rootReducer = undoable(persistedReducer, undoableOptions);
+const undoableReducer = undoable(persistedReducer, undoableOptions);
+
+const HISTORY_JUMPS: string[] = [
+  UndoableActionTypes.UNDO,
+  UndoableActionTypes.REDO,
+  UndoableActionTypes.JUMP,
+  UndoableActionTypes.JUMP_TO_PAST,
+  UndoableActionTypes.JUMP_TO_FUTURE,
+];
+
+const rootReducer: typeof undoableReducer = (state, action) => {
+  const next = undoableReducer(state, action);
+
+  if (!state || !HISTORY_JUMPS.includes(action.type)) return next;
+
+  return {
+    ...next,
+    present: {
+      ...next.present,
+      app: keepViewPreferences(next.present.app, state.present.app),
+    },
+  };
+};
 
 const extraArgument = undefined;
 

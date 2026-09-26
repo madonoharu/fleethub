@@ -76,6 +76,19 @@ export const appSlice = createSlice({
   },
 });
 
+/** 編成の操作とは別の表示の好みなので、undo / redo では戻さない。 */
+export function keepViewPreferences(
+  restored: AppState,
+  current: AppState,
+): AppState {
+  return {
+    ...restored,
+    damageDensityOpen: current.damageDensityOpen,
+    damageDensityIncludeNoPenetration:
+      current.damageDensityIncludeNoPenetration,
+  };
+}
+
 export const initApp = createAsyncThunk(
   "app/init",
   async (masterData: MasterData, thunkAPI) => {
