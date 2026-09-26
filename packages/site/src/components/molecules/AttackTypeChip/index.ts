@@ -1,1 +1,1 @@
-export { default } from "./AttackTypeChip";
+export { default, getAttackLabel } from "./AttackTypeChip";
