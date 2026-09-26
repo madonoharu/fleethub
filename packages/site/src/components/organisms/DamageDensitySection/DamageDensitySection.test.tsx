@@ -217,6 +217,31 @@ it("点数が多いときは棒ではなく1本のパスで描く", () => {
   expect(container.querySelectorAll(".recharts-area-area")).toHaveLength(1);
 });
 
+function rectOf(el: Element) {
+  const m = /M ([\d.]+),([\d.]+) h ([\d.]+) v ([\d.]+)/.exec(
+    el.getAttribute("d") ?? "",
+  );
+
+  return {
+    x: Number(m?.[1]),
+    y: Number(m?.[2]),
+    width: Number(m?.[3]),
+    height: Number(m?.[4]),
+    fill: el.getAttribute("fill"),
+  };
+}
+
+/** ダメージ0 の棒を作る段を、上から順に。 */
+function firstBarStack(container: HTMLElement) {
+  const rects = Array.from(
+    container.querySelectorAll(".recharts-bar-rectangle path"),
+  ).map(rectOf);
+
+  const left = Math.min(...rects.map((r) => r.x));
+
+  return rects.filter((r) => r.x === left).sort((a, b) => a.y - b.y);
+}
+
 it("ダメージ0 の棒が桁違いなら軸を二段に切り、頭だけ上段に逃がす", () => {
   const spiky = {
     data: {
@@ -266,26 +291,7 @@ it("ダメージ0 の棒が桁違いなら軸を二段に切り、頭だけ上�
   expect(waves.length).toBe(2);
 
   // ダメージ0 の棒。下から本体・切れ目（透明）・頭の3段。
-  const rectOf = (el: Element) => {
-    const m = /M ([\d.]+),([\d.]+) h ([\d.]+) v ([\d.]+)/.exec(
-      el.getAttribute("d") ?? "",
-    );
-
-    return {
-      x: Number(m?.[1]),
-      y: Number(m?.[2]),
-      width: Number(m?.[3]),
-      height: Number(m?.[4]),
-      fill: el.getAttribute("fill"),
-    };
-  };
-
-  const rects = Array.from(
-    container.querySelectorAll(".recharts-bar-rectangle path"),
-  ).map(rectOf);
-
-  const left = Math.min(...rects.map((r) => r.x));
-  const stack = rects.filter((r) => r.x === left).sort((a, b) => a.y - b.y);
+  const stack = firstBarStack(container);
 
   expect(stack).toHaveLength(3);
 
@@ -299,6 +305,60 @@ it("ダメージ0 の棒が桁違いなら軸を二段に切り、頭だけ上�
   expect(head.y + head.height).toBeCloseTo(gap.y, 5);
   expect(gap.y + gap.height).toBeCloseTo(bodyBar.y, 5);
   expect(gap.height).toBeGreaterThan(0);
+});
+
+it("省略軸で積んでいるとき、凡例で消した種類は上段からも消え、残りの高さで継ぐ", () => {
+  // 発動率の小さい Z が下の段。ダメージ0 の棒は Z 5% + Y 85.5% で、上段の窓は 80%〜100%。
+  const typed = {
+    data: {
+      Z: {
+        proc_rate: 0.05,
+        style: { tag: "NightAttackStyle", attack_type: "Z" },
+        damage: { damage_density: { 0: 1 } },
+      },
+      Y: {
+        proc_rate: 0.95,
+        style: { tag: "NightAttackStyle", attack_type: "Y" },
+        damage: { damage_density: { 0: 0.9, 60: 0.1 } },
+      },
+    },
+  } as never;
+
+  const { container } = render(
+    <ThemeProvider>
+      <DamageDensitySection
+        report={typed}
+        targetMaxHp={99}
+        targetCurrentHp={99}
+      />
+    </ThemeProvider>,
+  );
+
+  const [head, , body] = firstBarStack(container);
+  const bodyTop = body.y;
+  const mark = () =>
+    container.querySelector(".recharts-reference-dot text")?.textContent;
+
+  expect(mark()).toBe("90.5%");
+
+  // Z を消しても Y だけで 85.5% あり、上段の窓に届く。本体は下段の天井まで
+  // 伸びたままで、頭は 90.5% から 85.5% に下がる。
+  fireEvent.click(screen.getByText("NightAttackType.Z"));
+
+  const withoutZ = firstBarStack(container);
+  expect(withoutZ).toHaveLength(3);
+  expect(withoutZ[2].y).toBeCloseTo(bodyTop, 5);
+  expect(withoutZ[0].y).toBeGreaterThan(head.y + 1);
+  expect(mark()).toBe("85.5%");
+
+  // Y を消すと Z の 5% だけになり、下段に収まる。Y の頭も切れ目も残さない。
+  fireEvent.click(screen.getByText("NightAttackType.Z"));
+  fireEvent.click(screen.getByText("NightAttackType.Y"));
+
+  const withoutY = firstBarStack(container);
+  expect(withoutY.map((r) => r.fill)).not.toContain(head.fill);
+  expect(withoutY.map((r) => r.fill)).not.toContain("none");
+  expect(mark()).toBeUndefined();
 });
 
 it("比較していないときは攻撃種類で積む", () => {

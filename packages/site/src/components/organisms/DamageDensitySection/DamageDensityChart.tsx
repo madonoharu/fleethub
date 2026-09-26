@@ -254,13 +254,25 @@ const DamageDensityChart: React.FC<Props> = ({
 
   const noPenetrationLabel = t("DamageDistribution.NoPenetration");
 
+  const shownRate = (row: DamageChartRow) =>
+    hasBreakdown
+      ? (breakdownItems ?? []).reduce(
+          (sum, item, index) =>
+            shown(breakdownId(item.key))
+              ? sum + (row.breakdown[index] ?? 0)
+              : sum,
+          0,
+        )
+      : row.rate;
+
   /**
    * 積み上げでは系列ごとに切ると内訳の比率が壊れるので、
    * 合計が頭打ちを超える分だけ全系列を一様に縮める。
    */
   const cappedStack = (row: DamageChartRow, index: number) => {
     const value = row.breakdown[index] ?? 0;
-    return row.rate > rateCap ? (value * rateCap) / row.rate : value;
+    const rate = shownRate(row);
+    return rate > rateCap ? (value * rateCap) / rate : value;
   };
 
   /**
@@ -275,7 +287,9 @@ const DamageDensityChart: React.FC<Props> = ({
     if (!broken || !row) return [];
 
     const shares = hasBreakdown
-      ? (breakdownItems ?? []).map((_, index) => row.breakdown[index] ?? 0)
+      ? (breakdownItems ?? []).map((item, index) =>
+          hidden.has(breakdownId(item.key)) ? 0 : (row.breakdown[index] ?? 0),
+        )
       : [row.rate];
 
     let acc = 0;
@@ -286,6 +300,7 @@ const DamageDensityChart: React.FC<Props> = ({
         acc += share;
         return { index, from, to: acc };
       })
+      .filter((segment) => segment.to > segment.from)
       .filter((segment) => segment.to > broken.from)
       .map((segment) => ({
         index: segment.index,
@@ -293,18 +308,20 @@ const DamageDensityChart: React.FC<Props> = ({
           toBrokenAxis(broken, segment.to) -
           toBrokenAxis(broken, Math.max(segment.from, broken.from)),
       }));
-  }, [broken, rows, hasBreakdown, breakdownItems]);
+  }, [broken, rows, hasBreakdown, breakdownItems, hidden]);
+
+  const peakShown = rows[0] ? shownRate(rows[0]) : 0;
 
   /** 頭打ちにした棒の実値。軸の座標と系列の色を添えて置く。 */
   const clipMarks = useMemo(() => {
     if (broken) {
-      if (hidden.has(SERIES.main)) return [];
+      if (hidden.has(SERIES.main) || peakShown <= broken.cap) return [];
 
       return [
         {
           id: SERIES.main,
-          value: peakMain,
-          axis: toBrokenAxis(broken, peakMain),
+          value: peakShown,
+          axis: toBrokenAxis(broken, peakShown),
           color: PENETRATION_COLOR,
         },
       ];
@@ -327,7 +344,16 @@ const DamageDensityChart: React.FC<Props> = ({
         color: COMPARE_COLOR,
       },
     ].filter((mark) => mark.value > rateCap && !hidden.has(mark.id));
-  }, [broken, needsClip, hidden, peakMain, peakCompare, rateAxisMax, rateCap]);
+  }, [
+    broken,
+    needsClip,
+    hidden,
+    peakMain,
+    peakShown,
+    peakCompare,
+    rateAxisMax,
+    rateCap,
+  ]);
 
   // 線が1本のときだけ補色。2本並べると補色は相手の棒に寄ってしまう。
   const cumulativeColor = hasCompare ? CUMULATIVE_COLOR : SOLO_CUMULATIVE_COLOR;
@@ -588,7 +614,7 @@ const DamageDensityChart: React.FC<Props> = ({
 
           {/* 切れ目のぶんの透明な段と、その上に継ぐ棒の頭。
               分布と同じ積み上げに載せるので、棒の位置と幅がずれない。 */}
-          {broken && shown(SERIES.main) && (
+          {broken && shown(SERIES.main) && headSegments.length > 0 && (
             <>
               {renderDistribution(
                 (row) => (row === rows[0] ? broken.gapTo - broken.cap : 0),
