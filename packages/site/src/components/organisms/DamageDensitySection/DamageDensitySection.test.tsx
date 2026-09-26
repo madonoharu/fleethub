@@ -247,6 +247,24 @@ it("点数が多いときは棒ではなく1本のパスで描く", () => {
 
   expect(container.querySelectorAll(".recharts-bar-rectangle")).toHaveLength(0);
   expect(container.querySelectorAll(".recharts-area-area")).toHaveLength(1);
+
+  // 階段は各点から次の点まで水平に引くので、末尾のビンにも右端の点が要る。
+  // 無いと末尾のビンは幅 0 の縦線になり、面が図の右端まで届かない。
+  const xs = (el: Element | null) =>
+    Array.from((el?.getAttribute("d") ?? "").matchAll(/([\d.]+),[\d.]+/g)).map(
+      (m) => Number(m[1]),
+    );
+  // 損傷状態の帯は図の右端まで敷く。
+  const plotRight = Math.max(
+    ...Array.from(container.querySelectorAll(".recharts-reference-area path"))
+      .map(rectOf)
+      .map((r) => r.x + r.width),
+  );
+  const areaRight = Math.max(
+    ...xs(container.querySelector(".recharts-area-area")),
+  );
+
+  expect(areaRight).toBeCloseTo(plotRight, 5);
 });
 
 function rectOf(el: Element) {

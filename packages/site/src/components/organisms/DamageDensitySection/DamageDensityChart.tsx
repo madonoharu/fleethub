@@ -102,6 +102,8 @@ function breakdownId(key: string | null) {
   return `${SERIES.breakdown}:${key ?? "*"}`;
 }
 
+type PlotRow = DamageChartRow & { x: number };
+
 /** 分布・切れ目・頭を1本の棒として積むための識別子。 */
 const STACK_ID = "dist";
 /** 比較側は別の棒なので、積み上げも分ける。 */
@@ -211,6 +213,17 @@ const DamageDensityChart: React.FC<Props> = ({
   } as const;
 
   const useBars = rows.length <= BAR_LIMIT;
+
+  const isFirstBin = (row: DamageChartRow) => row.damage === rows[0]?.damage;
+
+  // 階段は各点から次の点まで水平に引く。末尾のビンには次の点が無く幅 0 になるので、
+  // 同じ値の点を図の右端に足す。ツールチップが拾っても末尾のビンとして読める。
+  const plotRows = useMemo<PlotRow[]>(() => {
+    const points = rows.map((row) => ({ ...row, x: row.damage }));
+    const last = rows.at(-1);
+
+    return useBars || !last ? points : [...points, { ...last, x: domainMax }];
+  }, [rows, useBars, domainMax]);
 
   const hasBreakdown = Boolean(breakdownItems?.length);
 
@@ -483,7 +496,7 @@ const DamageDensityChart: React.FC<Props> = ({
     <Box sx={{ width: "100%", height: HEIGHT }}>
       <ResponsiveContainer>
         <ComposedChart
-          data={rows}
+          data={plotRows}
           margin={{ top: MARGIN_TOP, right: 8, bottom: 0, left: 0 }}
           barGap={0}
         >
@@ -526,7 +539,7 @@ const DamageDensityChart: React.FC<Props> = ({
               見出しと帯とツールチップに任せる。 */}
           <XAxis
             {...axisProps}
-            dataKey="damage"
+            dataKey="x"
             type="number"
             domain={[domainMin, domainMax]}
             ticks={ticks}
@@ -620,7 +633,7 @@ const DamageDensityChart: React.FC<Props> = ({
           {reachesUpperTier && (
             <>
               {renderDistribution(
-                (row) => (row === rows[0] ? broken.gapTo - broken.cap : 0),
+                (row) => (isFirstBin(row) ? broken.gapTo - broken.cap : 0),
                 "",
                 "none",
                 0,
@@ -630,7 +643,7 @@ const DamageDensityChart: React.FC<Props> = ({
               {headSegments.map((segment) => (
                 <React.Fragment key={segment.index}>
                   {renderDistribution(
-                    (row) => (row === rows[0] ? segment.height : 0),
+                    (row) => (isFirstBin(row) ? segment.height : 0),
                     "",
                     hasBreakdown
                       ? stackFills[segment.index]
