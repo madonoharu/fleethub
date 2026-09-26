@@ -61,6 +61,7 @@ export const createDeepEqualSelector = createSelectorCreator(
 );
 
 export * from "./cloudinary";
+export * from "./damageDensity";
 export * from "./ebonuses";
 export * from "./link";
 export * from "./publish";
