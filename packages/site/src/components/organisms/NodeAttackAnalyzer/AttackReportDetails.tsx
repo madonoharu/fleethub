@@ -1,18 +1,30 @@
 import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Alert, Typography } from "@mui/material";
-import type { AttackAnalysis } from "fleethub-core";
+import type { AttackAnalysis, Comp } from "fleethub-core";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
 import { useShipName } from "../../../hooks";
 import { numstr } from "../../../utils";
 import DamageStateDensityBarChart from "../AttackTable/DamageStateDensityBarChart";
+import DamageDensitySection from "../DamageDensitySection";
 import DamageTable from "../DamageTable";
 
 interface Props {
   tag: "day" | "night" | "closing_torpedo" | "opening_asw" | "support_shelling";
   analysis: AttackAnalysis;
+  targetMaxHp: number | undefined;
+  targetCurrentHp: number | undefined;
+  /** 分布グラフを出すか。描画が重いので既定は off。 */
+  showDensity?: boolean | undefined;
+  /** 比較セレクタを出す場合のみ渡す（攻撃側が自軍のときだけ） */
+  comp?: Comp | undefined;
+  attackerShipId?: string | undefined;
+  compareShipId?: string | undefined;
+  compareAnalysis?: AttackAnalysis | undefined;
+  compareShipName?: string | undefined;
+  onCompareShipChange?: ((id: string | undefined) => void) | undefined;
 }
 
 const AttackReportDetails: React.FCX<Props> = ({
@@ -20,6 +32,15 @@ const AttackReportDetails: React.FCX<Props> = ({
   style,
   tag,
   analysis,
+  targetMaxHp,
+  targetCurrentHp,
+  showDensity,
+  comp,
+  attackerShipId,
+  compareShipId,
+  compareAnalysis,
+  compareShipName,
+  onCompareShipChange,
 }) => {
   const { t } = useTranslation("common");
 
@@ -50,17 +71,17 @@ const AttackReportDetails: React.FCX<Props> = ({
   }
   if (historical_params.armor_penetration !== 0) {
     historicalParamsText += ` ${t("armor_penetration")} ${numstr(
-      historical_params.armor_penetration
+      historical_params.armor_penetration,
     )}`;
   }
   if (historical_params.accuracy_mod !== 1) {
     historicalParamsText += ` ${t("accuracy_mod")} ${numstr(
-      historical_params.accuracy_mod
+      historical_params.accuracy_mod,
     )}`;
   }
   if (historical_params.target_evasion_mod !== 1) {
     historicalParamsText += ` ${t("evasion")} ${numstr(
-      historical_params.target_evasion_mod
+      historical_params.target_evasion_mod,
     )}`;
   }
 
@@ -94,6 +115,21 @@ const AttackReportDetails: React.FCX<Props> = ({
             {t("Distribution")}
           </Typography>
           <DamageStateDensityBarChart data={report.damage_state_density} />
+
+          {showDensity && (
+            <DamageDensitySection
+              report={report}
+              targetMaxHp={targetMaxHp}
+              targetCurrentHp={targetCurrentHp}
+              comp={comp}
+              attackerShipId={attackerShipId}
+              attackerShipName={attackerName}
+              compareShipId={compareShipId}
+              compareReport={compareAnalysis?.[tag]}
+              compareShipName={compareShipName}
+              onCompareShipChange={onCompareShipChange}
+            />
+          )}
         </>
       ) : (
         <Alert severity="warning" sx={{ mt: 1 }}>

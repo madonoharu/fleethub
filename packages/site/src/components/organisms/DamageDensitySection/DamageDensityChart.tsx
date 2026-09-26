@@ -102,6 +102,8 @@ function breakdownId(key: string | null) {
   return `${SERIES.breakdown}:${key ?? "*"}`;
 }
 
+type PlotRow = DamageChartRow & { x: number };
+
 /** 分布・切れ目・頭を1本の棒として積むための識別子。 */
 const STACK_ID = "dist";
 /** 比較側は別の棒なので、積み上げも分ける。 */
@@ -172,13 +174,6 @@ const DamageDensityChart: React.FC<Props> = ({
       ? bodyMax
       : Math.max(bodyMax, axisPeak);
   const rateAxisMax = broken ? broken.axisMax : rateCap * AXIS_HEADROOM;
-  const rateTicks = useMemo(
-    () =>
-      broken
-        ? [...createRateAxisTicks(broken.cap), broken.gapTo, broken.axisMax]
-        : createRateAxisTicks(rateCap),
-    [broken, rateCap],
-  );
 
   // 棒はダメージ値を中心に描かれるので、両端の棒は半分がプロットの外へ出て
   // 縦軸の目盛と重なる。半ビンぶん内側に寄せて、棒が軸の領域へ出ないようにする。
@@ -218,6 +213,17 @@ const DamageDensityChart: React.FC<Props> = ({
   } as const;
 
   const useBars = rows.length <= BAR_LIMIT;
+
+  const isFirstBin = (row: DamageChartRow) => row.damage === rows[0]?.damage;
+
+  // 階段は各点から次の点まで水平に引く。末尾のビンには次の点が無く幅 0 になるので、
+  // 同じ値の点を図の右端に足す。ツールチップが拾っても末尾のビンとして読める。
+  const plotRows = useMemo<PlotRow[]>(() => {
+    const points = rows.map((row) => ({ ...row, x: row.damage }));
+    const last = rows.at(-1);
+
+    return useBars || !last ? points : [...points, { ...last, x: domainMax }];
+  }, [rows, useBars, domainMax]);
 
   const hasBreakdown = Boolean(breakdownItems?.length);
 
@@ -311,6 +317,12 @@ const DamageDensityChart: React.FC<Props> = ({
   }, [broken, rows, hasBreakdown, breakdownItems, hidden]);
 
   const peakShown = rows[0] ? shownRate(rows[0]) : 0;
+  const reachesUpperTier =
+    broken !== null && shown(SERIES.main) && peakShown > broken.from;
+
+  const rateTicks = reachesUpperTier
+    ? [...createRateAxisTicks(broken.cap), broken.gapTo, broken.axisMax]
+    : createRateAxisTicks(rateCap);
 
   /** 頭打ちにした棒の実値。軸の座標と系列の色を添えて置く。 */
   const clipMarks = useMemo(() => {
@@ -321,7 +333,9 @@ const DamageDensityChart: React.FC<Props> = ({
         {
           id: SERIES.main,
           value: peakShown,
-          axis: toBrokenAxis(broken, peakShown),
+          axis: reachesUpperTier
+            ? toBrokenAxis(broken, peakShown)
+            : broken.axisMax,
           color: PENETRATION_COLOR,
         },
       ];
@@ -350,6 +364,7 @@ const DamageDensityChart: React.FC<Props> = ({
     hidden,
     peakMain,
     peakShown,
+    reachesUpperTier,
     peakCompare,
     rateAxisMax,
     rateCap,
@@ -464,23 +479,24 @@ const DamageDensityChart: React.FC<Props> = ({
 
   // 中央値と上位5% は線だけ引く。ラベルを付けると同じ段で互いに重なるうえ、
   // 値はツールチップで読めるので、図の中は線の位置だけを示す。
-  const renderMarkLine = (value: number, opacity: number) => (
-    <ReferenceLine
-      yAxisId="pmf"
-      // 縦線が指すのはダメージ量なので、縦軸を切っていても通しで引ける。
-      x={value}
-      stroke={theme.palette.text.primary}
-      strokeOpacity={opacity}
-      strokeWidth={1.25}
-      strokeDasharray="5 4"
-    />
-  );
+  const renderMarkLine = (value: number | null, opacity: number) =>
+    value !== null && (
+      <ReferenceLine
+        yAxisId="pmf"
+        // 縦線が指すのはダメージ量なので、縦軸を切っていても通しで引ける。
+        x={value}
+        stroke={theme.palette.text.primary}
+        strokeOpacity={opacity}
+        strokeWidth={1.25}
+        strokeDasharray="5 4"
+      />
+    );
 
   return (
     <Box sx={{ width: "100%", height: HEIGHT }}>
       <ResponsiveContainer>
         <ComposedChart
-          data={rows}
+          data={plotRows}
           margin={{ top: MARGIN_TOP, right: 8, bottom: 0, left: 0 }}
           barGap={0}
         >
@@ -523,7 +539,7 @@ const DamageDensityChart: React.FC<Props> = ({
               見出しと帯とツールチップに任せる。 */}
           <XAxis
             {...axisProps}
-            dataKey="damage"
+            dataKey="x"
             type="number"
             domain={[domainMin, domainMax]}
             ticks={ticks}
@@ -614,10 +630,10 @@ const DamageDensityChart: React.FC<Props> = ({
 
           {/* 切れ目のぶんの透明な段と、その上に継ぐ棒の頭。
               分布と同じ積み上げに載せるので、棒の位置と幅がずれない。 */}
-          {broken && shown(SERIES.main) && headSegments.length > 0 && (
+          {reachesUpperTier && (
             <>
               {renderDistribution(
-                (row) => (row === rows[0] ? broken.gapTo - broken.cap : 0),
+                (row) => (isFirstBin(row) ? broken.gapTo - broken.cap : 0),
                 "",
                 "none",
                 0,
@@ -627,7 +643,7 @@ const DamageDensityChart: React.FC<Props> = ({
               {headSegments.map((segment) => (
                 <React.Fragment key={segment.index}>
                   {renderDistribution(
-                    (row) => (row === rows[0] ? segment.height : 0),
+                    (row) => (isFirstBin(row) ? segment.height : 0),
                     "",
                     hasBreakdown
                       ? stackFills[segment.index]
@@ -673,7 +689,7 @@ const DamageDensityChart: React.FC<Props> = ({
             </>
           )}
 
-          {broken && shown(SERIES.main) && (
+          {reachesUpperTier && (
             <ReferenceArea
               yAxisId="pmf"
               x1={domainMin}

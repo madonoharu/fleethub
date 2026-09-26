@@ -11,6 +11,10 @@ type AppState = {
   fileId?: string;
   configOpen?: boolean;
   explorerOpen: boolean;
+  /** ダメージ分布グラフを開くか。描画が重いので既定は閉じる。 */
+  damageDensityOpen?: boolean;
+  /** 未設定は算入する。 */
+  damageDensityIncludeNoPenetration?: boolean;
   outputToTemp: boolean;
   gkcoiTheme: GkcoiTheme;
 };
@@ -42,6 +46,15 @@ export const appSlice = createSlice({
     toggleExplorerOpen: (state) => {
       state.explorerOpen = !state.explorerOpen;
     },
+    setDamageDensityOpen: (state, { payload }: PayloadAction<boolean>) => {
+      state.damageDensityOpen = payload;
+    },
+    setDamageDensityIncludeNoPenetration: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => {
+      state.damageDensityIncludeNoPenetration = payload;
+    },
     setOutputToTemp: (state, { payload }: PayloadAction<boolean>) => {
       state.outputToTemp = payload;
     },
@@ -63,6 +76,19 @@ export const appSlice = createSlice({
   },
 });
 
+/** 編成の操作とは別の表示の好みなので、undo / redo では戻さない。 */
+export function keepViewPreferences(
+  restored: AppState,
+  current: AppState,
+): AppState {
+  return {
+    ...restored,
+    damageDensityOpen: current.damageDensityOpen,
+    damageDensityIncludeNoPenetration:
+      current.damageDensityIncludeNoPenetration,
+  };
+}
+
 export const initApp = createAsyncThunk(
   "app/init",
   async (masterData: MasterData, thunkAPI) => {
@@ -80,5 +106,5 @@ export const initApp = createAsyncThunk(
     }
 
     thunkAPI.dispatch(ActionCreators.clearHistory());
-  }
+  },
 );

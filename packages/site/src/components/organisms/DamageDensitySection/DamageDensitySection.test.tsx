@@ -25,9 +25,41 @@ jest.mock("recharts", () => {
 });
 
 // hooks バレルは react-dnd (ESM) を巻き込むため、使う分だけ差し替える。
+// 表示設定は store に置いてある。購読と dispatch だけを持つ最小の store で代える。
+const listeners = new Set<() => void>();
+let appState: { damageDensityIncludeNoPenetration?: boolean } = {};
+
+const dispatch = jest.fn((action: { type: string; payload: boolean }) => {
+  if (action.type === "app/setDamageDensityIncludeNoPenetration") {
+    appState = {
+      ...appState,
+      damageDensityIncludeNoPenetration: action.payload,
+    };
+    listeners.forEach((notify) => notify());
+  }
+});
+
 jest.mock("../../../hooks", () => ({
   useShipName: (shipId: number) => `ship${shipId}`,
+  useAppDispatch: () => dispatch,
+  useRootSelector: (selector: (root: unknown) => unknown) => {
+    const [, force] = React.useReducer((n: number) => n + 1, 0);
+
+    React.useEffect(() => {
+      listeners.add(force);
+      return () => {
+        listeners.delete(force);
+      };
+    }, [force]);
+
+    return selector({ app: appState });
+  },
 }));
+
+beforeEach(() => {
+  dispatch.mockClear();
+  appState = {};
+});
 
 jest.mock("next-i18next", () => ({
   useTranslation: () => ({
@@ -215,6 +247,24 @@ it("点数が多いときは棒ではなく1本のパスで描く", () => {
 
   expect(container.querySelectorAll(".recharts-bar-rectangle")).toHaveLength(0);
   expect(container.querySelectorAll(".recharts-area-area")).toHaveLength(1);
+
+  // 階段は各点から次の点まで水平に引くので、末尾のビンにも右端の点が要る。
+  // 無いと末尾のビンは幅 0 の縦線になり、面が図の右端まで届かない。
+  const xs = (el: Element | null) =>
+    Array.from((el?.getAttribute("d") ?? "").matchAll(/([\d.]+),[\d.]+/g)).map(
+      (m) => Number(m[1]),
+    );
+  // 損傷状態の帯は図の右端まで敷く。
+  const plotRight = Math.max(
+    ...Array.from(container.querySelectorAll(".recharts-reference-area path"))
+      .map(rectOf)
+      .map((r) => r.x + r.width),
+  );
+  const areaRight = Math.max(
+    ...xs(container.querySelector(".recharts-area-area")),
+  );
+
+  expect(areaRight).toBeCloseTo(plotRight, 5);
 });
 
 function rectOf(el: Element) {
@@ -359,6 +409,59 @@ it("省略軸で積んでいるとき、凡例で消した種類は上段から�
   expect(withoutY.map((r) => r.fill)).not.toContain(head.fill);
   expect(withoutY.map((r) => r.fill)).not.toContain("none");
   expect(mark()).toBeUndefined();
+});
+
+it("消して残った合計が上段の窓に届かなければ、二段軸をやめて実値を軸の上端に置く", () => {
+  // ダメージ0 の棒は Z 30% + Y 56%。上段の窓は 80%〜100%。
+  const typed = {
+    data: {
+      Z: {
+        proc_rate: 0.3,
+        style: { tag: "NightAttackStyle", attack_type: "Z" },
+        damage: { damage_density: { 0: 1 } },
+      },
+      Y: {
+        proc_rate: 0.7,
+        style: { tag: "NightAttackStyle", attack_type: "Y" },
+        damage: { damage_density: { 0: 0.8, 60: 0.2 } },
+      },
+    },
+  } as never;
+
+  const { container } = render(
+    <ThemeProvider>
+      <DamageDensitySection
+        report={typed}
+        targetMaxHp={99}
+        targetCurrentHp={99}
+      />
+    </ThemeProvider>,
+  );
+
+  const tickTexts = () =>
+    Array.from(
+      container.querySelectorAll(
+        ".recharts-yAxis .recharts-cartesian-axis-tick text",
+      ),
+    );
+  const waves = () =>
+    container.querySelectorAll(".recharts-reference-area g path").length;
+  const mark = () => container.querySelector(".recharts-reference-dot text");
+  const yOf = (el: Element | null | undefined) => Number(el?.getAttribute("y"));
+
+  expect(tickTexts().map((el) => el.textContent)).toContain("80%");
+  expect(waves()).toBe(2);
+  const axisTop = yOf(tickTexts().find((el) => el.textContent === "100%"));
+
+  // Z の 30% だけが残る。下段の天井は超えるが、上段の窓には届かない。
+  fireEvent.click(screen.getByText("NightAttackType.Y"));
+
+  expect(waves()).toBe(0);
+  expect(tickTexts().map((el) => el.textContent)).not.toContain("80%");
+  expect(firstBarStack(container).map((r) => r.fill)).not.toContain("none");
+
+  expect(mark()?.textContent).toBe("30.0%");
+  expect(yOf(mark())).toBeCloseTo(axisTop, 5);
 });
 
 it("比較していないときは攻撃種類で積む", () => {
@@ -985,6 +1088,82 @@ it("貫通なしを外すと図全体がその分布に切り替わる", () => {
   expect(cumulativeEnd()).toBeGreaterThan(before.end);
 });
 
+it("1発も貫通しない艦は、貫通なしを外すと 0% の分布として描く", () => {
+  const neverPenetrates = {
+    data: {
+      a: {
+        proc_rate: 1,
+        style: { tag: "NightAttackStyle", attack_type: "SingleAttack" },
+        damage: {
+          damage_density: { 0: 0.4, 5: 0.6 },
+          damage_density_no_penetration: { 0: 0.4, 5: 0.6 },
+        },
+      },
+    },
+  } as never;
+
+  const { container } = render(
+    <ThemeProvider>
+      <DamageDensitySection
+        report={neverPenetrates}
+        targetMaxHp={99}
+        targetCurrentHp={99}
+      />
+    </ThemeProvider>,
+  );
+
+  fireEvent.click(screen.getByLabelText("DamageDistribution.NoPenetration"));
+
+  // データが無いのではなく、貫通する確率が 0。
+  expect(screen.queryByText("Unknown")).toBeNull();
+  expect(container.querySelector(".recharts-line-curve")).not.toBeNull();
+  // 代表値は無いので破線は引かない。
+  expect(container.querySelector(".recharts-reference-line")).toBeNull();
+});
+
+it("比較艦が1発も貫通しなくても、貫通なしを外したまま比較を続ける", () => {
+  const compareReport = {
+    data: {
+      a: {
+        proc_rate: 1,
+        damage: {
+          damage_density: { 0: 0.4, 5: 0.6 },
+          damage_density_no_penetration: { 0: 0.4, 5: 0.6 },
+        },
+      },
+    },
+  } as never;
+
+  const report = {
+    data: {
+      a: {
+        proc_rate: 1,
+        damage: {
+          damage_density: { 0: 0.3, 40: 0.7 },
+          damage_density_no_penetration: { 0: 0.3 },
+        },
+      },
+    },
+  } as never;
+
+  const { container } = render(
+    <ThemeProvider>
+      <DamageDensitySection
+        report={report}
+        targetMaxHp={99}
+        targetCurrentHp={99}
+        compareReport={compareReport}
+        compareShipName="B"
+      />
+    </ThemeProvider>,
+  );
+
+  fireEvent.click(screen.getByLabelText("DamageDistribution.NoPenetration"));
+
+  const legend = container.querySelector(".recharts-legend-wrapper");
+  expect(legend?.textContent).toContain("B");
+});
+
 it("貫通なしの算入を切り替えても軸は動かない", () => {
   const report = {
     data: {
@@ -1253,4 +1432,23 @@ it("両端の棒が縦軸の目盛にはみ出さない", () => {
     expect(left).toBeGreaterThanOrEqual(plotLeft);
     expect(right).toBeLessThanOrEqual(plotRight);
   });
+});
+
+it("貫通なしを算入するかはタブをまたいでも保つ", () => {
+  const noPenetrationCheckbox = () =>
+    screen.getByRole("checkbox", { name: /NoPenetration/ });
+
+  const { unmount } = renderSection();
+  expect(noPenetrationCheckbox()).toBeChecked();
+
+  fireEvent.click(noPenetrationCheckbox());
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "app/setDamageDensityIncludeNoPenetration",
+    payload: false,
+  });
+
+  // タブを移ってアンマウントされても、開き直したときに残っていること。
+  unmount();
+  renderSection();
+  expect(noPenetrationCheckbox()).not.toBeChecked();
 });
