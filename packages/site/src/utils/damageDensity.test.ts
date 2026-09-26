@@ -75,7 +75,22 @@ describe("mergeDamageDensity", () => {
     expect(mergeDamageDensity(data, "noPenetration")).toBeNull();
   });
 
-  it("引き算で消すのは負に振れたぶんだけ", () => {
+  it("同じ質量どうしの引き算で残る丸め誤差は消す", () => {
+    const data = {
+      a: {
+        proc_rate: 1,
+        damage: {
+          // 0.1 + 0.2 は 0.3 より 5.6e-17 大きい。
+          damage_density: { 0: 0.1 + 0.2 },
+          damage_density_no_penetration: { 0: 0.3 },
+        },
+      },
+    } as unknown as DamageDensitySource;
+
+    expect(mergeDamageDensity(data, "penetration")).toEqual({});
+  });
+
+  it("引き算で極小の確率そのものは消さない", () => {
     const data = {
       a: {
         proc_rate: 1,
@@ -159,7 +174,13 @@ describe("toDamageDensityStats", () => {
 
   it("空・null なら null", () => {
     expect(toDamageDensityStats(null)).toBeNull();
-    expect(toDamageDensityStats({})).toBeNull();
+    // 分布はあるが確率が 0。データが無い null とは分ける。
+    expect(toDamageDensityStats({})).toEqual({
+      points: [{ damage: 0, rate: 0, cumulative: 0 }],
+      total: 0,
+      median: null,
+      upper5: null,
+    });
   });
 
   it("中央値と上位5%", () => {

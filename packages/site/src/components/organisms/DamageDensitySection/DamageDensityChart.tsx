@@ -464,17 +464,18 @@ const DamageDensityChart: React.FC<Props> = ({
 
   // 中央値と上位5% は線だけ引く。ラベルを付けると同じ段で互いに重なるうえ、
   // 値はツールチップで読めるので、図の中は線の位置だけを示す。
-  const renderMarkLine = (value: number, opacity: number) => (
-    <ReferenceLine
-      yAxisId="pmf"
-      // 縦線が指すのはダメージ量なので、縦軸を切っていても通しで引ける。
-      x={value}
-      stroke={theme.palette.text.primary}
-      strokeOpacity={opacity}
-      strokeWidth={1.25}
-      strokeDasharray="5 4"
-    />
-  );
+  const renderMarkLine = (value: number | null, opacity: number) =>
+    value !== null && (
+      <ReferenceLine
+        yAxisId="pmf"
+        // 縦線が指すのはダメージ量なので、縦軸を切っていても通しで引ける。
+        x={value}
+        stroke={theme.palette.text.primary}
+        strokeOpacity={opacity}
+        strokeWidth={1.25}
+        strokeDasharray="5 4"
+      />
+    );
 
   return (
     <Box sx={{ width: "100%", height: HEIGHT }}>

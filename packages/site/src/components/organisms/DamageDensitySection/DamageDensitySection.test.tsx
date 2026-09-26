@@ -1017,6 +1017,82 @@ it("貫通なしを外すと図全体がその分布に切り替わる", () => {
   expect(cumulativeEnd()).toBeGreaterThan(before.end);
 });
 
+it("1発も貫通しない艦は、貫通なしを外すと 0% の分布として描く", () => {
+  const neverPenetrates = {
+    data: {
+      a: {
+        proc_rate: 1,
+        style: { tag: "NightAttackStyle", attack_type: "SingleAttack" },
+        damage: {
+          damage_density: { 0: 0.4, 5: 0.6 },
+          damage_density_no_penetration: { 0: 0.4, 5: 0.6 },
+        },
+      },
+    },
+  } as never;
+
+  const { container } = render(
+    <ThemeProvider>
+      <DamageDensitySection
+        report={neverPenetrates}
+        targetMaxHp={99}
+        targetCurrentHp={99}
+      />
+    </ThemeProvider>,
+  );
+
+  fireEvent.click(screen.getByLabelText("DamageDistribution.NoPenetration"));
+
+  // データが無いのではなく、貫通する確率が 0。
+  expect(screen.queryByText("Unknown")).toBeNull();
+  expect(container.querySelector(".recharts-line-curve")).not.toBeNull();
+  // 代表値は無いので破線は引かない。
+  expect(container.querySelector(".recharts-reference-line")).toBeNull();
+});
+
+it("比較艦が1発も貫通しなくても、貫通なしを外したまま比較を続ける", () => {
+  const compareReport = {
+    data: {
+      a: {
+        proc_rate: 1,
+        damage: {
+          damage_density: { 0: 0.4, 5: 0.6 },
+          damage_density_no_penetration: { 0: 0.4, 5: 0.6 },
+        },
+      },
+    },
+  } as never;
+
+  const report = {
+    data: {
+      a: {
+        proc_rate: 1,
+        damage: {
+          damage_density: { 0: 0.3, 40: 0.7 },
+          damage_density_no_penetration: { 0: 0.3 },
+        },
+      },
+    },
+  } as never;
+
+  const { container } = render(
+    <ThemeProvider>
+      <DamageDensitySection
+        report={report}
+        targetMaxHp={99}
+        targetCurrentHp={99}
+        compareReport={compareReport}
+        compareShipName="B"
+      />
+    </ThemeProvider>,
+  );
+
+  fireEvent.click(screen.getByLabelText("DamageDistribution.NoPenetration"));
+
+  const legend = container.querySelector(".recharts-legend-wrapper");
+  expect(legend?.textContent).toContain("B");
+});
+
 it("貫通なしの算入を切り替えても軸は動かない", () => {
   const report = {
     data: {

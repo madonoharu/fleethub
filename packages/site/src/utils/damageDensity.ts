@@ -20,9 +20,9 @@ export interface DamageDensityStats {
   /** 全確率質量。Σ proc_rate なので 1 未満になり得る。 */
   total: number;
   /** 中央値。P(ダメージ <= d) >= total/2 となる最小の d。 */
-  median: number;
+  median: number | null;
   /** 上位5%（95パーセンタイル） */
-  upper5: number;
+  upper5: number | null;
 }
 
 export interface DamageChartRow {
@@ -86,9 +86,9 @@ function pickDensity(
     for (const [key, rate] of Object.entries(all)) {
       if (typeof rate !== "number") continue;
 
-      // 加算順が違うので、一致する値でも丸め誤差の幅で負に振れる。
+      // 加算順が違うので、一致する値でも丸め誤差の幅で正にも負にも振れる。
       const value = rate - (noPenetration[Number(key) as never] ?? 0);
-      if (value > 0) result[Number(key)] = value;
+      if (value > rate * EPS) result[Number(key)] = value;
     }
 
     return result;
@@ -221,7 +221,8 @@ export function createDamageDensityBreakdown(
   // 発動率の小さいものほど下に積む。上へ行くほど太い帯になるので、
   // どれが主力かが厚みで読める。同率なら強いほうを下にする。
   return items.sort(
-    (a, b) => a.procRate - b.procRate || b.stats.median - a.stats.median,
+    (a, b) =>
+      a.procRate - b.procRate || (b.stats.median ?? 0) - (a.stats.median ?? 0),
   );
 }
 
@@ -250,7 +251,14 @@ export function toDamageDensityStats(
         entry[1] > 0,
     );
 
-  if (!entries.length) return null;
+  if (!entries.length) {
+    return {
+      points: [{ damage: 0, rate: 0, cumulative: 0 }],
+      total: 0,
+      median: null,
+      upper5: null,
+    };
+  }
 
   const max = entries.reduce((acc, [damage]) => Math.max(acc, damage), 0);
   const rates = new Float64Array(max + 1);
