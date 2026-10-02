@@ -110,40 +110,35 @@ const getDefaultSpeedGroup = ({
 };
 
 const getConvertibleShips = (ships: MasterShip[]) => {
-  const findNextShip = ({ next_id }: MasterShip) =>
-    next_id ? ships.find((s) => s.ship_id === next_id) : undefined;
+  const shipsById = new Map<number, MasterShip>();
+  for (const ship of ships) {
+    if (!shipsById.has(ship.ship_id)) shipsById.set(ship.ship_id, ship);
+  }
 
-  const convertibleShips: MasterShip[] = [];
-  const irreversibleShips: MasterShip[] = [];
+  const completed = new Set<MasterShip>();
+  const convertible = new Set<MasterShip>();
 
-  const isConvertible = (base: MasterShip): boolean => {
-    if (!base.next_id || irreversibleShips.includes(base)) return false;
-    if (convertibleShips.includes(base)) return true;
+  for (const base of ships) {
+    const path: MasterShip[] = [];
+    const indices = new Map<MasterShip, number>();
+    let current: MasterShip | undefined = base;
 
-    const remodelList: MasterShip[] = [];
-
-    const setRemodelList = (current: MasterShip): MasterShip | undefined => {
-      remodelList.push(current);
-      const next = findNextShip(current);
-      if (!next) return current;
-
-      const index = remodelList.findIndex((s) => s === next);
-      if (index < 0) {
-        return setRemodelList(next);
+    while (current && !completed.has(current)) {
+      const cycleStart = indices.get(current);
+      if (cycleStart !== undefined) {
+        path.slice(cycleStart).forEach((ship) => convertible.add(ship));
+        break;
       }
 
-      convertibleShips.push(...remodelList.slice(index));
-      irreversibleShips.push(...remodelList.slice(0, index));
+      indices.set(current, path.length);
+      path.push(current);
+      current = current.next_id ? shipsById.get(current.next_id) : undefined;
+    }
 
-      return;
-    };
+    path.forEach((ship) => completed.add(ship));
+  }
 
-    setRemodelList(base);
-
-    return convertibleShips.includes(base);
-  };
-
-  return ships.filter(isConvertible);
+  return ships.filter((ship) => convertible.has(ship));
 };
 
 function createShips(
