@@ -1,3 +1,4 @@
+use tsify::{Ts, Tsify};
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -12,6 +13,7 @@ pub struct AirSquadron {
     #[wasm_bindgen(getter_with_clone)]
     pub id: String,
     pub hash: u64,
+    #[wasm_bindgen(skip)]
     pub mode: AirSquadronMode,
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
@@ -23,6 +25,17 @@ pub struct AirSquadron {
 
 #[wasm_bindgen]
 impl AirSquadron {
+    #[wasm_bindgen(getter, js_name = mode)]
+    pub fn mode_js(&self) -> Result<Ts<AirSquadronMode>, JsError> {
+        Ok(self.mode.into_ts()?)
+    }
+
+    #[wasm_bindgen(setter, js_name = mode)]
+    pub fn set_mode_js(&mut self, mode: Ts<AirSquadronMode>) -> Result<(), JsError> {
+        self.mode = mode.to_rust()?;
+        Ok(())
+    }
+
     pub fn get_gear(&self, key: &str) -> Option<Gear> {
         self.gears.get_by_gear_key(key).cloned()
     }

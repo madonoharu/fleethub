@@ -106,7 +106,6 @@ pub struct SimulatorResultItem {
 }
 
 #[derive(Debug, Clone, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct SimulatorResult {
     pub items: Vec<SimulatorResultItem>,
     pub sunk_vec: Vec<(usize, f64, f64)>,

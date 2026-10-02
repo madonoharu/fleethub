@@ -5,7 +5,6 @@ use tsify::Tsify;
 use super::{AirSquadronState, FleetState, OrgType};
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct OrgState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -42,7 +41,6 @@ pub struct OrgState {
     Debug, Default, Clone, Copy, PartialEq, Eq, Hash, FromPrimitive, Serialize, Deserialize, Tsify,
 )]
 #[serde(rename_all = "lowercase")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum FleetKey {
     #[default]
     F1,

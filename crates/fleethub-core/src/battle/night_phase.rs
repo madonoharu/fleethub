@@ -93,7 +93,7 @@ where
                     .filter_map(|ci| self.battle_defs.night_cutin.get(&ci))
                     .find(|def| {
                         let p = def.rate(cutin_term).unwrap_or_default();
-                        self.rng.gen_bool(p)
+                        self.rng.random_bool(p)
                     });
 
                 NightPhaseAttackStyle::Night(NightAttackStyle::new(attack_type, cutin_def))

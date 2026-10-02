@@ -1876,16 +1876,20 @@ macro_rules! ctype {
 
 #[macro_export]
 macro_rules! matches_ship_id {
-    ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
-        matches!($expression, $($crate::types::ship_id!($pattern))|+)
-    }
+    ($expression: expr, $( $pattern: tt )|+ $(,)?) => {{
+        #[allow(clippy::manual_range_patterns)]
+        let matches = matches!($expression, $($crate::types::ship_id!($pattern))|+);
+        matches
+    }}
 }
 
 #[macro_export]
 macro_rules! matches_gear_id {
-    ($expression: expr, $( $pattern: tt )|+ $(,)?) => {
-        matches!($expression, $($crate::types::gear_id!($pattern))|+)
-    }
+    ($expression: expr, $( $pattern: tt )|+ $(,)?) => {{
+        #[allow(clippy::manual_range_patterns)]
+        let matches = matches!($expression, $($crate::types::gear_id!($pattern))|+);
+        matches
+    }}
 }
 
 pub use {ctype, gear_id, matches_gear_id, matches_ship_id, ship_id};

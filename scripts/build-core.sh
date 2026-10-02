@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 BUILD_PATH=crates/fleethub-core
+PACKAGE_PATH="$BUILD_PATH/package.json"
+PACKAGE_BACKUP=$(mktemp)
+cp "$PACKAGE_PATH" "$PACKAGE_BACKUP"
 
-VERSION=$(cargo metadata --format-version=1 --no-deps | jq '.packages[] | select(.name == "fleethub-core") | .version')
-cat $BUILD_PATH/package.json | jq ".version |= ${VERSION}" > $BUILD_PATH/package.json.tmp
+restore_package() {
+  cp "$PACKAGE_BACKUP" "$PACKAGE_PATH"
+  rm -f "$PACKAGE_BACKUP"
+}
+trap restore_package EXIT
+
+VERSION=$(cargo metadata --locked --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "fleethub-core") | .version')
+jq --arg version "$VERSION" '.version = $version' "$PACKAGE_BACKUP" > "$PACKAGE_PATH"
+cp "$PACKAGE_PATH" "$PACKAGE_BACKUP"
 # https://github.com/drager/wasm-pack/issues/1420#issuecomment-2593727112
-cat $BUILD_PATH/package.json.tmp | jq "del(.dependencies)" > $BUILD_PATH/package.json
+jq 'del(.dependencies)' "$PACKAGE_BACKUP" > "$PACKAGE_PATH"
 
-export WASM_BINDGEN_WEAKREF=1
-wasm-pack build $BUILD_PATH
-wasm-pack build $BUILD_PATH -t nodejs -d node
-yarn prettier -w $BUILD_PATH/{pkg,node}/fleethub_core.d.ts
+wasm-pack build "$BUILD_PATH" --target bundler -- --locked
+wasm-pack build "$BUILD_PATH" --target nodejs --out-dir node -- --locked
+yarn prettier -w "$BUILD_PATH"/{pkg,node}/fleethub_core.d.ts
 
-rm -rf $BUILD_PATH/{pkg,node}/{package.json,README.md,.gitignore}
-mv $BUILD_PATH/package.json.tmp $BUILD_PATH/package.json
+rm -f "$BUILD_PATH"/{pkg,node}/{package.json,README.md,.gitignore}

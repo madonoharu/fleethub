@@ -4,14 +4,13 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 use crate::{
-    battle::{support_shelling_phase::SupportShellingPhase, BattleComp},
+    battle::{BattleComp, support_shelling_phase::SupportShellingPhase},
     types::{BattleDefinitions, Engagement, Formation, NodeState},
 };
 
 use super::{BattleLogger, SimulatorResult};
 
 #[derive(Debug, Serialize, Deserialize, Tsify)]
-#[tsify(from_wasm_abi)]
 pub struct SupportShellingSimulatorParams {
     #[serde(default)]
     attacker_formation: Formation,

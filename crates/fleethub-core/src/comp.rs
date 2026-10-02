@@ -1,8 +1,9 @@
 use std::ops::Deref;
+use tsify::{Ts, Tsify};
 
 use enumset::EnumSet;
 use itertools::Itertools;
-use rand::Rng;
+use rand::{Rng, RngExt};
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -19,7 +20,7 @@ use crate::{
 #[wasm_bindgen]
 #[derive(Debug, Clone)]
 pub struct Comp {
-    #[wasm_bindgen(readonly)]
+    #[wasm_bindgen(skip)]
     pub org_type: OrgType,
     #[wasm_bindgen(readonly)]
     pub hq_level: u8,
@@ -281,7 +282,7 @@ impl Comp {
             .filter_map(|ship| {
                 let aaci_vec = ship.get_possible_anti_air_cutin_ids();
 
-                let r = rng.gen_range(0.0..1.0);
+                let r = rng.random_range(0.0..1.0);
 
                 let aaci = aaci_vec
                     .into_iter()
@@ -289,7 +290,7 @@ impl Comp {
                     .find(|aaci| {
                         let p = aaci.rate().unwrap_or_default();
                         if aaci.is_sequential() {
-                            rng.gen_bool(p)
+                            rng.random_bool(p)
                         } else {
                             p > r
                         }
@@ -311,8 +312,9 @@ impl Comp {
 
 #[wasm_bindgen]
 impl Comp {
-    pub fn side(&self) -> Side {
-        self.org_type.side()
+    #[wasm_bindgen(getter, js_name = org_type)]
+    pub fn org_type_js(&self) -> Result<Ts<OrgType>, JsError> {
+        Ok(self.org_type.into_ts()?)
     }
 
     pub fn is_combined(&self) -> bool {
@@ -343,36 +345,8 @@ impl Comp {
         }
     }
 
-    pub fn meta(&self) -> CompMeta {
-        let fleets = [FleetType::Main, FleetType::Escort, FleetType::RouteSup]
-            .into_iter()
-            .filter_map(|ft| {
-                let fleet = self.get_fleet(ft)?;
-                Some((ft, fleet.meta()))
-            })
-            .collect();
-
-        CompMeta { fleets }
-    }
-
-    pub fn get_fleet_id(&self, ft: FleetType) -> Option<String> {
-        self.get_fleet(ft).map(|f| f.id.clone())
-    }
-
-    pub fn get_ship_with_clone(&self, ft: FleetType, key: ShipKey) -> Option<Ship> {
-        Some(self.get_fleet(ft)?.ships.get_by_key(key)?.clone())
-    }
-
-    pub fn get_ship_entity_id(&self, ft: FleetType, key: ShipKey) -> Option<String> {
-        Some(self.get_fleet(ft)?.ships.get_by_key(key)?.id.clone())
-    }
-
     pub fn get_ship_by_eid_with_clone(&self, id: String) -> Option<Ship> {
         self.ships().find(|ship| ship.id == id).cloned()
-    }
-
-    pub fn default_formation(&self) -> Formation {
-        self.org_type.default_formation()
     }
 
     /// 艦隊防空値
@@ -388,18 +362,6 @@ impl Comp {
             post_floor / 1.3
         } else {
             post_floor
-        }
-    }
-
-    /// 制空値
-    pub fn fighter_power(&self, escort_participates: bool, air_type: AirWaveType) -> Option<i32> {
-        let main_fp = self.main.fighter_power(air_type)?;
-
-        if !escort_participates {
-            Some(main_fp)
-        } else {
-            let escort_fp = self.escort.as_ref()?.fighter_power(air_type)?;
-            Some(main_fp + escort_fp)
         }
     }
 
@@ -434,29 +396,6 @@ impl Comp {
 
     pub(crate) fn get_amagiri_index(&self, ft: FleetType) -> Option<usize> {
         self.get_fleet(ft)?.amagiri_index()
-    }
-
-    pub fn get_ship_conditions(&self, ship: &Ship, formation: Option<Formation>) -> ShipConditions {
-        let position = self
-            .all_members()
-            .find_map(|member| {
-                if member.ship == ship {
-                    Some(member.position)
-                } else {
-                    None
-                }
-            })
-            .unwrap_or_default();
-
-        ShipConditions {
-            position,
-            formation: formation.unwrap_or_else(|| self.org_type.default_formation()),
-            amagiri_index: self.get_amagiri_index(position.fleet_type),
-        }
-    }
-
-    pub fn fleet_los_mod(&self, fleet_type: FleetType) -> Option<f64> {
-        self.get_fleet(fleet_type)?.fleet_los_mod()
     }
 
     pub fn balloons(&self) -> usize {
@@ -494,6 +433,142 @@ impl Deref for FleetTypeQuery {
     type Target = EnumSet<FleetType>;
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl Comp {
+    pub fn side(&self) -> Side {
+        self.org_type.side()
+    }
+
+    pub fn meta(&self) -> CompMeta {
+        let fleets = [FleetType::Main, FleetType::Escort, FleetType::RouteSup]
+            .into_iter()
+            .filter_map(|ft| {
+                let fleet = self.get_fleet(ft)?;
+                Some((ft, fleet.meta()))
+            })
+            .collect();
+
+        CompMeta { fleets }
+    }
+
+    pub fn get_fleet_id(&self, ft: FleetType) -> Option<String> {
+        self.get_fleet(ft).map(|f| f.id.clone())
+    }
+
+    pub fn get_ship_with_clone(&self, ft: FleetType, key: ShipKey) -> Option<Ship> {
+        Some(self.get_fleet(ft)?.ships.get_by_key(key)?.clone())
+    }
+
+    pub fn get_ship_entity_id(&self, ft: FleetType, key: ShipKey) -> Option<String> {
+        Some(self.get_fleet(ft)?.ships.get_by_key(key)?.id.clone())
+    }
+
+    pub fn default_formation(&self) -> Formation {
+        self.org_type.default_formation()
+    }
+
+    /// 制空値
+    pub fn fighter_power(&self, escort_participates: bool, air_type: AirWaveType) -> Option<i32> {
+        let main_fp = self.main.fighter_power(air_type)?;
+
+        if !escort_participates {
+            Some(main_fp)
+        } else {
+            let escort_fp = self.escort.as_ref()?.fighter_power(air_type)?;
+            Some(main_fp + escort_fp)
+        }
+    }
+
+    pub fn get_ship_conditions(&self, ship: &Ship, formation: Option<Formation>) -> ShipConditions {
+        let position = self
+            .all_members()
+            .find_map(|member| {
+                if member.ship == ship {
+                    Some(member.position)
+                } else {
+                    None
+                }
+            })
+            .unwrap_or_default();
+
+        ShipConditions {
+            position,
+            formation: formation.unwrap_or_else(|| self.org_type.default_formation()),
+            amagiri_index: self.get_amagiri_index(position.fleet_type),
+        }
+    }
+
+    pub fn fleet_los_mod(&self, fleet_type: FleetType) -> Option<f64> {
+        self.get_fleet(fleet_type)?.fleet_los_mod()
+    }
+}
+
+#[wasm_bindgen]
+impl Comp {
+    #[wasm_bindgen(js_name = side)]
+    pub fn side_js(&self) -> Result<Ts<Side>, JsError> {
+        Ok(self.side().into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = meta)]
+    pub fn meta_js(&self) -> Result<Ts<CompMeta>, JsError> {
+        Ok(self.meta().into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = get_fleet_id)]
+    pub fn get_fleet_id_js(&self, ft: Ts<FleetType>) -> Result<Option<String>, JsError> {
+        Ok(self.get_fleet_id(ft.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = get_ship_with_clone)]
+    pub fn get_ship_with_clone_js(
+        &self,
+        ft: Ts<FleetType>,
+        key: Ts<ShipKey>,
+    ) -> Result<Option<Ship>, JsError> {
+        Ok(self.get_ship_with_clone(ft.to_rust()?, key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = get_ship_entity_id)]
+    pub fn get_ship_entity_id_js(
+        &self,
+        ft: Ts<FleetType>,
+        key: Ts<ShipKey>,
+    ) -> Result<Option<String>, JsError> {
+        Ok(self.get_ship_entity_id(ft.to_rust()?, key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = default_formation)]
+    pub fn default_formation_js(&self) -> Result<Ts<Formation>, JsError> {
+        Ok(self.default_formation().into_ts()?)
+    }
+
+    /// 制空値
+    #[wasm_bindgen(js_name = fighter_power)]
+    pub fn fighter_power_js(
+        &self,
+        escort_participates: bool,
+        air_type: Ts<AirWaveType>,
+    ) -> Result<Option<i32>, JsError> {
+        Ok(self.fighter_power(escort_participates, air_type.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = get_ship_conditions)]
+    pub fn get_ship_conditions_js(
+        &self,
+        ship: &Ship,
+        formation: Option<Ts<Formation>>,
+    ) -> Result<Ts<ShipConditions>, JsError> {
+        Ok(self
+            .get_ship_conditions(ship, formation.map(|value| value.to_rust()).transpose()?)
+            .into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = fleet_los_mod)]
+    pub fn fleet_los_mod_js(&self, fleet_type: Ts<FleetType>) -> Result<Option<f64>, JsError> {
+        Ok(self.fleet_los_mod(fleet_type.to_rust()?))
     }
 }
 

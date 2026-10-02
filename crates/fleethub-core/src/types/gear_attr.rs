@@ -4,7 +4,6 @@ use strum::EnumString;
 use tsify::Tsify;
 
 #[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearAttr {
     Unknown,
     /// 高角砲

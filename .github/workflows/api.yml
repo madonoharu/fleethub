@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install wasm-pack
+        run: cargo install wasm-pack --version 0.15.0 --locked
+
       - name: 📥 Monorepo install
         uses: ./.github/actions/yarn-nm-install
 

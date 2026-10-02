@@ -1,6 +1,6 @@
-use std::hash::Hasher;
+use std::hash::BuildHasher;
 
-use hashbrown::hash_map::DefaultHashBuilder;
+use hashbrown::DefaultHashBuilder;
 use seq_macro::seq;
 
 use crate::{
@@ -32,10 +32,7 @@ impl Factory {
     }
 
     fn make_hash<T: std::hash::Hash>(&self, val: &T) -> u64 {
-        use std::hash::BuildHasher;
-        let mut state = self.hash_builder.build_hasher();
-        val.hash(&mut state);
-        state.finish()
+        self.hash_builder.hash_one(val)
     }
 
     pub fn create_gear(&self, input: Option<GearState>) -> Option<Gear> {
@@ -236,7 +233,7 @@ impl Factory {
         let state = if master_ship.is_abyssal() {
             let stock = &master_ship.stock;
             let gears = GearVecState {
-                g1: stock.get(0).cloned(),
+                g1: stock.first().cloned(),
                 g2: stock.get(1).cloned(),
                 g3: stock.get(2).cloned(),
                 g4: stock.get(3).cloned(),

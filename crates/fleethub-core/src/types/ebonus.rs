@@ -1,26 +1,40 @@
 #![allow(dead_code)]
 
 use serde::{Deserialize, Serialize};
-use tsify::Tsify;
+use tsify::{Ts, Tsify};
 use wasm_bindgen::prelude::*;
 
 use crate::{
     gear::Gear,
     gear_array::GearArray,
     master_data::MasterShip,
-    types::{ctype, gear_id, ShipAttr, SpeedGroup},
+    types::{ShipAttr, SpeedGroup, ctype, gear_id},
 };
 
 use super::GearTypeIdArray;
 
 #[wasm_bindgen(module = "equipment-bonus")]
 extern "C" {
-    #[wasm_bindgen(js_name = createEquipmentBonuses)]
-    fn create_equipment_bonuses(ship: ShipInput, gears: GearVecInput) -> EBonuses;
+    #[wasm_bindgen(catch, js_name = createEquipmentBonuses)]
+    fn create_equipment_bonuses_js(
+        ship: &Ts<ShipInput>,
+        gears: &Ts<GearVecInput>,
+    ) -> Result<Ts<EBonuses>, JsValue>;
+}
+
+fn create_equipment_bonuses(ship: &ShipInput, gears: &GearVecInput) -> Result<EBonuses, JsValue> {
+    let ship = ship
+        .into_ts()
+        .map_err(|err| JsValue::from_str(&err.to_string()))?;
+    let gears = gears
+        .into_ts()
+        .map_err(|err| JsValue::from_str(&err.to_string()))?;
+    create_equipment_bonuses_js(&ship, &gears)?
+        .to_rust()
+        .map_err(|err| JsValue::from_str(&err.to_string()))
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct EBonuses {
     pub firepower: i16,
     pub torpedo: i16,
@@ -39,7 +53,6 @@ pub struct EBonuses {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 struct ShipInput {
     pub ship_id: u16,
     pub ctype: u16,
@@ -103,7 +116,6 @@ impl GearInput {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 struct GearVecInput(Vec<GearInput>);
 
 fn get_speed_bonus(ship: &MasterShip, gears: &GearArray) -> u8 {
@@ -243,7 +255,7 @@ fn get_speed_synergy(
     }
 }
 
-fn get_aerial_power(ship: &MasterShip, gears: &GearArray) -> i16 {
+fn get_aerial_power(ship: &MasterShip, gears: &GearArray) -> Result<i16, JsValue> {
     let ship_input = ShipInput::new(ship);
 
     let plane_bonuses = gears
@@ -251,9 +263,9 @@ fn get_aerial_power(ship: &MasterShip, gears: &GearArray) -> i16 {
         .filter(|gear| gear.has_proficiency())
         .map(|gear| {
             let gears_input = GearVecInput(vec![GearInput::new(gear)]);
-            create_equipment_bonuses(ship_input.clone(), gears_input)
+            create_equipment_bonuses(&ship_input, &gears_input)
         })
-        .collect::<Vec<_>>();
+        .collect::<Result<Vec<_>, _>>()?;
 
     let min_torpedo = plane_bonuses
         .iter()
@@ -275,22 +287,27 @@ fn get_aerial_power(ship: &MasterShip, gears: &GearArray) -> i16 {
         .map(GearInput::new)
         .collect::<Vec<_>>();
 
-    let other_bonus = create_equipment_bonuses(ship_input, GearVecInput(other));
+    let other_bonus = create_equipment_bonuses(&ship_input, &GearVecInput(other))?;
 
-    min_torpedo + min_bombing + other_bonus.torpedo + other_bonus.bombing
+    Ok(min_torpedo + min_bombing + other_bonus.torpedo + other_bonus.bombing)
 }
 
 impl EBonuses {
     #[cfg(target_arch = "wasm32")]
     pub fn new(ship: &MasterShip, gears: &GearArray) -> Self {
+        Self::try_new(ship, gears).expect("equipment-bonus calculation failed")
+    }
+
+    #[cfg(target_arch = "wasm32")]
+    pub fn try_new(ship: &MasterShip, gears: &GearArray) -> Result<Self, JsValue> {
         let ship_input = ShipInput::new(ship);
         let gears_input = GearVecInput(gears.values().map(GearInput::new).collect::<Vec<_>>());
 
-        let mut ebonuses = create_equipment_bonuses(ship_input, gears_input);
-        ebonuses.aerial_power = get_aerial_power(ship, gears);
+        let mut ebonuses = create_equipment_bonuses(&ship_input, &gears_input)?;
+        ebonuses.aerial_power = get_aerial_power(ship, gears)?;
         ebonuses.speed = get_speed_bonus(ship, gears);
 
-        ebonuses
+        Ok(ebonuses)
     }
 
     #[cfg(not(target_arch = "wasm32"))]

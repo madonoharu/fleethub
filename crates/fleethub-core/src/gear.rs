@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 use enumset::EnumSet;
 use fasteval::{EvalNamespace, bool_to_f64};
+use tsify::{Ts, Tsify};
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -34,7 +35,7 @@ impl ProficiencyType {
             ProficiencyType::SeaplaneBomber => match ace {
                 7 => 6,
                 6 | 5 => 3,
-                4 | 3 | 2 => 1,
+                2..=4 => 1,
                 _ => 0,
             },
             ProficiencyType::Other => 0,
@@ -67,7 +68,7 @@ pub struct Gear {
     #[wasm_bindgen(skip)]
     pub ibonuses: IBonuses,
 
-    #[wasm_bindgen(readonly)]
+    #[wasm_bindgen(skip)]
     pub gear_type: GearType,
     #[wasm_bindgen(skip)]
     pub special_type: u8,
@@ -159,6 +160,11 @@ impl Gear {
 
 #[wasm_bindgen]
 impl Gear {
+    #[wasm_bindgen(getter = gear_type)]
+    pub fn gear_type_js(&self) -> Result<Ts<GearType>, JsError> {
+        Ok(self.gear_type.into_ts()?)
+    }
+
     #[allow(clippy::should_implement_trait)]
     pub fn default() -> Self {
         Default::default()
@@ -179,12 +185,14 @@ impl Gear {
         self.types.icon_id()
     }
 
-    pub fn has_attr(&self, attr: GearAttr) -> bool {
-        self.attrs.contains(attr)
+    #[wasm_bindgen(js_name = has_attr)]
+    pub fn has_attr_js(&self, attr: Ts<GearAttr>) -> Result<bool, JsError> {
+        Ok(self.has_attr(attr.to_rust()?))
     }
 
-    pub fn category(&self) -> GearCategory {
-        self.gear_type.category()
+    #[wasm_bindgen(js_name = category)]
+    pub fn category_js(&self) -> Result<Ts<GearCategory>, JsError> {
+        Ok(self.category().into_ts()?)
     }
 
     #[wasm_bindgen(getter)]
@@ -219,7 +227,7 @@ impl Gear {
         }
     }
 
-    #[inline]
+    #[cfg_attr(not(target_arch = "wasm32"), inline)]
     pub fn is_high_angle_mount(&self) -> bool {
         self.has_attr(GearAttr::HighAngleMount)
     }
@@ -343,12 +351,9 @@ impl Gear {
         ((self.los as f64) * (slot_size as f64).sqrt()).floor()
     }
 
-    pub fn contact_selection_rate(&self, rank: AirStateRank) -> f64 {
-        let los = self.los as f64;
-        let ibonus = self.ibonuses.contact_selection;
-
-        let value = (los + ibonus).ceil() / (20.0 - 2.0 * rank.as_f64());
-        value.min(1.0)
+    #[wasm_bindgen(js_name = contact_selection_rate)]
+    pub fn contact_selection_rate_js(&self, rank: Ts<AirStateRank>) -> Result<f64, JsError> {
+        Ok(self.contact_selection_rate(rank.to_rust()?))
     }
 
     pub fn night_contact_rate(&self, level: u16) -> f64 {
@@ -495,9 +500,9 @@ impl Gear {
                     self.types.get(index)?.into()
                 }
 
-                "gear_id_in" => bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64)),
+                "gear_id_in" => bool_to_f64!(args.contains(&(self.gear_id as f64))),
                 "gear_type_in" => {
-                    bool_to_f64!(args.iter().any(|v| *v == self.types.gear_type_id() as f64))
+                    bool_to_f64!(args.contains(&(self.types.gear_type_id() as f64)))
                 }
 
                 _ => {
@@ -508,6 +513,24 @@ impl Gear {
 
             Some(result)
         }
+    }
+}
+
+impl Gear {
+    pub fn has_attr(&self, attr: GearAttr) -> bool {
+        self.attrs.contains(attr)
+    }
+
+    pub fn category(&self) -> GearCategory {
+        self.gear_type.category()
+    }
+
+    pub fn contact_selection_rate(&self, rank: AirStateRank) -> f64 {
+        let los = self.los as f64;
+        let ibonus = self.ibonuses.contact_selection;
+
+        let value = (los + ibonus).ceil() / (20.0 - 2.0 * rank.as_f64());
+        value.min(1.0)
     }
 }
 

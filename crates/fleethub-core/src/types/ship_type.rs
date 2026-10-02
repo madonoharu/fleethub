@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 
 pub enum ShipCategory {
     Battleship,
@@ -17,9 +16,9 @@ pub enum ShipCategory {
     AuxiliaryShip,
 }
 
-#[derive(Debug, EnumSetType, FromPrimitive, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
+#[derive(Debug, Default, EnumSetType, FromPrimitive, Serialize, Deserialize, Tsify)]
 pub enum ShipType {
+    #[default]
     Unknown = 0,
     /// 海防艦
     DE = 1,
@@ -65,12 +64,6 @@ pub enum ShipType {
     CT = 21,
     /// 補給艦
     AO = 22,
-}
-
-impl Default for ShipType {
-    fn default() -> Self {
-        Self::Unknown
-    }
 }
 
 impl From<u8> for ShipType {

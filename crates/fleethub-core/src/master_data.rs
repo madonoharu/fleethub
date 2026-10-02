@@ -4,8 +4,8 @@ mod master_gear;
 mod master_ibonus;
 mod master_ship;
 
-use serde::{de::DeserializeOwned, Deserialize};
-use serde_with::{serde_as, DefaultOnError};
+use serde::{Deserialize, de::DeserializeOwned};
+use serde_with::{DefaultOnError, serde_as};
 use tsify::Tsify;
 
 pub use master_battle_definitions::*;

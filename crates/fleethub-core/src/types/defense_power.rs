@@ -66,6 +66,16 @@ mod test {
         );
         assert_eq!(d10.min(), 7.0);
         assert_eq!(d10.max(), 12.399999999999999);
-        assert_eq!(d10.choose(&mut crate::test::rng(0)), 9.4);
+        let mut rng = crate::test::rng(0);
+        let values = d10.to_vec();
+        let mut counts = vec![0; values.len()];
+        for _ in 0..10000 {
+            let sampled = d10.choose(&mut rng);
+            let index = values.iter().position(|&value| value == sampled).unwrap();
+            counts[index] += 1;
+        }
+        for count in counts {
+            assert!((850..=1150).contains(&count));
+        }
     }
 }

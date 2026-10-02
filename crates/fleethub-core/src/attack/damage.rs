@@ -304,11 +304,7 @@ impl Damage {
             DamageType::OverkillProtection => self.overkill_protection_damage().max(),
         };
 
-        if d1 <= d2 {
-            (d1, d2)
-        } else {
-            (d2, d1)
-        }
+        if d1 <= d2 { (d1, d2) } else { (d2, d1) }
     }
 
     pub fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
@@ -513,8 +509,11 @@ mod test {
             ]
         );
 
-        assert_eq!(hp100_damage.choose(&mut rng(0)), 9);
-        assert_eq!(hp100_damage.choose(&mut rng(1)), 11);
+        let mut rng = rng(0);
+        let samples = (0..1000)
+            .map(|_| hp100_damage.choose(&mut rng))
+            .collect::<std::collections::BTreeSet<_>>();
+        assert_eq!(samples, (6..=13).collect());
     }
 
     #[test]
@@ -540,7 +539,11 @@ mod test {
             ]
         );
 
-        assert_eq!(hp100_damage.choose(&mut rng(0)), 63);
+        let mut rng = rng(0);
+        let samples = (0..1000)
+            .map(|_| hp100_damage.choose(&mut rng))
+            .collect::<std::collections::BTreeSet<_>>();
+        assert_eq!(samples, (50..=79).collect());
     }
 
     const BASE_DAMAGE: Damage = Damage {

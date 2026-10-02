@@ -8,7 +8,6 @@ use crate::{
 };
 
 #[derive(Debug, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct AntiAirReport {
     pub ship_id: u16,
     pub role: Role,
@@ -23,7 +22,6 @@ pub struct AntiAirReport {
 }
 
 #[derive(Debug, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct CompAntiAirAnalysis {
     pub fleet_adjusted_anti_air: f64,
     pub ships: Vec<AntiAirReport>,

@@ -43,7 +43,7 @@ impl HitRate {
 
 impl Distribution<HitType> for HitRate {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> HitType {
-        let x: f64 = rng.r#gen();
+        let x: f64 = rng.random();
 
         if x < self.critical {
             HitType::Critical
@@ -146,13 +146,15 @@ mod test {
             }
         );
 
+        let samples = 100000;
         let counts = (&hit_rate)
             .sample_iter(&mut crate::test::rng(0))
-            .take(1000)
+            .take(samples)
             .counts();
 
-        assert_eq!(counts[&HitType::Miss], 302);
-        assert_eq!(counts[&HitType::Normal], 479);
-        assert_eq!(counts[&HitType::Critical], 219);
+        for (hit_type, expected_rate) in hit_rate.iter() {
+            let observed_rate = counts[&hit_type] as f64 / samples as f64;
+            assert!((observed_rate - expected_rate).abs() < 0.01);
+        }
     }
 }

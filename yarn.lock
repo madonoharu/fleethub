@@ -812,7 +812,7 @@ __metadata:
     cloudinary: "npm:^2.5.1"
     dequal: "npm:^2.0.3"
     firebase-admin: "npm:^12.5.0"
-    fleethub-core: "npm:latest"
+    fleethub-core: "workspace:*"
     googleapis: "npm:^144.0.0"
     ky: "npm:^1.7.4"
   languageName: unknown
@@ -851,7 +851,7 @@ __metadata:
     core-js: "npm:^3.39.0"
     equipment-bonus: "npm:latest"
     fast-json-stable-stringify: "npm:^2.1.0"
-    fleethub-core: "npm:latest"
+    fleethub-core: "workspace:*"
     gkcoi: "npm:latest"
     http-status-codes: "npm:^2.3.0"
     i18next: "npm:^23.15.1"
@@ -6154,14 +6154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fleethub-core@npm:latest":
-  version: 1.12.19
-  resolution: "fleethub-core@npm:1.12.19"
-  checksum: 10c0/5245e9f0c943cd6f2a8d011adbc086f6271c8743ef11c94a4f02c9e2234dfea6cc7ae263a43462a3cc90ba31e72701728c3bb00562cc62bc95945e1eae787e9f
-  languageName: node
-  linkType: hard
-
-"fleethub-core@workspace:crates/fleethub-core":
+"fleethub-core@workspace:*, fleethub-core@workspace:crates/fleethub-core":
   version: 0.0.0-use.local
   resolution: "fleethub-core@workspace:crates/fleethub-core"
   languageName: unknown
@@ -6190,7 +6183,7 @@ __metadata:
     eslint-plugin-import: "npm:^2.30.0"
     eslint-plugin-react: "npm:^7.37.0"
     eslint-plugin-react-hooks: "npm:^4.6.2"
-    fleethub-core: "npm:latest"
+    fleethub-core: "workspace:*"
     fs-extra: "npm:^11.2.0"
     husky: "npm:^9.1.7"
     identity-obj-proxy: "npm:^3.0.0"
@@ -8248,7 +8241,7 @@ __metadata:
   dependencies:
     "@swc/cli": "npm:^0.4.1-nightly.20240914"
     "@swc/core": "npm:^1.7.28"
-    fleethub-core: "npm:latest"
+    fleethub-core: "workspace:*"
   languageName: unknown
   linkType: soft
 

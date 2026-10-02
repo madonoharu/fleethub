@@ -5,7 +5,6 @@ use tsify::Tsify;
 #[derive(
     Debug, Default, Clone, Copy, Hash, PartialEq, Eq, EnumIter, Serialize, Deserialize, Tsify,
 )]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum Engagement {
     /// T有利
     GreenT,

@@ -16,7 +16,6 @@ use super::{
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct FormationCombatModifiersDef {
     #[serde_as(as = "DefaultOnError")]
     #[serde(default = "num_traits::one")]
@@ -40,7 +39,6 @@ impl Default for FormationCombatModifiersDef {
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct FormationDef {
     pub tag: Formation,
     pub protection_rate: Option<f64>,
@@ -54,7 +52,6 @@ pub struct FormationDef {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
 #[serde(untagged)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum NestedFormationDef {
     Normal(FormationDef),
     Vanguard {
@@ -97,7 +94,6 @@ impl NestedFormationDef {
 
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AntiAirCutinDef {
     pub id: u8,
     #[serde_as(as = "DefaultOnError")]
@@ -121,7 +117,6 @@ impl AntiAirCutinDef {
 
 #[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
-#[tsify(from_wasm_abi)]
 pub struct DayCutinDef {
     pub tag: DayCutin,
     pub hits: u8,
@@ -155,7 +150,7 @@ impl DayCutinDef {
 
     pub fn gen_bool<R: Rng + ?Sized>(&self, observation_term: f64, rng: &mut R) -> bool {
         let type_factor = self.type_factor.unwrap_or_default();
-        let a = rng.gen_range(0..type_factor);
+        let a = rng.random_range(0..type_factor);
         observation_term > a as f64
     }
 }
@@ -214,7 +209,6 @@ impl Default for HistoricalParams {
 
 #[serde_as]
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
-#[tsify(from_wasm_abi)]
 pub struct NightCutinDef {
     pub tag: NightCutin,
     pub hits: f64,

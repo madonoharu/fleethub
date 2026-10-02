@@ -37,7 +37,6 @@ pub enum CombinedFormation {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 #[serde(untagged)]
 pub enum Formation {
     Single(SingleFormation),

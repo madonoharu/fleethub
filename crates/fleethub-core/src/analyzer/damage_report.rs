@@ -10,7 +10,6 @@ use crate::{
 
 /// `DamageReport` にどこまでの分布を持たせるか。
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, Tsify)]
-#[tsify(from_wasm_abi)]
 pub enum DensityDetail {
     #[default]
     Total,

@@ -16,7 +16,6 @@ use super::{
 };
 
 #[derive(Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct NodeAttackAnalysis {
     pub left: AttackAnalysis,
     pub right: AttackAnalysis,
@@ -131,7 +130,6 @@ impl NodeAttackAnalyzer<'_> {
 
 #[derive(Default, Serialize, Deserialize, Tsify)]
 #[serde(default)]
-#[tsify(from_wasm_abi)]
 pub struct NodeAttackAnalyzerConfig {
     pub air_state: AirState,
     pub engagement: Engagement,

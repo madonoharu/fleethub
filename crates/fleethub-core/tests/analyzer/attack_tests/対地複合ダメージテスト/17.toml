@@ -19,8 +19,9 @@ ship_id = 2023
 
 
 # 夜戦単発
+# 2026-10-02 のマスターデータで移行前の計算コードと照合済み。
 [expected.night.data.SingleAttack]
-damage.normal_damage_min = 364
-damage.normal_damage_max = 372
-damage.critical_damage_min = 555
-damage.critical_damage_max = 563
+damage.normal_damage_min = 367
+damage.normal_damage_max = 375
+damage.critical_damage_min = 559
+damage.critical_damage_max = 567

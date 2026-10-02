@@ -1,6 +1,10 @@
 [workspace]
 members = ["crates/*"]
-resolver = "2"
+resolver = "3"
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.99"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.

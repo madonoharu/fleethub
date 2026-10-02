@@ -6,7 +6,6 @@ use tsify::Tsify;
 #[derive(
     Debug, Default, EnumSetType, FromPrimitive, ToPrimitive, Serialize, Deserialize, Tsify,
 )]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearType {
     #[default]
     Unknown = 0,
@@ -142,7 +141,6 @@ impl From<f64> for GearType {
 }
 
 #[derive(Debug, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum GearCategory {
     Fighter,
     Bomber,

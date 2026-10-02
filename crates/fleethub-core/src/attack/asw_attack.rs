@@ -1,8 +1,8 @@
 use crate::{
     member::BattleMemberRef,
     types::{
-        matches_gear_id, AswAttackStyle, AswAttackType, AswPhase, AttackPowerModifier, Engagement,
-        FormationParams, GearAttr, GearType, HistoricalParams, ShipType,
+        AswAttackStyle, AswAttackType, AswPhase, AttackPowerModifier, Engagement, FormationParams,
+        GearAttr, GearType, HistoricalParams, ShipType, matches_gear_id,
     },
 };
 

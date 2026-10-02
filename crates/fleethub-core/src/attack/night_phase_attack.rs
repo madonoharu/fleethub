@@ -8,8 +8,8 @@ use crate::{
 };
 
 use super::{
-    anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers, AswAttackParams, Attack, AttackParams,
-    AttackPowerParams, DefenseParams, HitRateParams,
+    AswAttackParams, Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams,
+    anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers,
 };
 
 const NIGHT_POWER_CAP: f64 = 360.0;

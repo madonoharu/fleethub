@@ -65,7 +65,7 @@ impl AttackParams {
     pub fn is_cutin(&self) -> bool {
         self.attack_power_params
             .as_ref()
-            .map_or(false, |p| p.is_cutin)
+            .is_some_and(|p| p.is_cutin)
     }
 
     pub fn calc_attack_power(&self) -> Option<AttackPower> {

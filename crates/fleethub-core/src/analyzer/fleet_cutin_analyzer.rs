@@ -4,8 +4,8 @@ use tsify::Tsify;
 use crate::{
     analyzer::AttackReport,
     attack::{
-        calc_fleet_cutin_rate, get_possible_fleet_cutin_effect_vec, FleetCutinAttackParams,
-        FleetCutinEffect,
+        FleetCutinAttackParams, FleetCutinEffect, calc_fleet_cutin_rate,
+        get_possible_fleet_cutin_effect_vec,
     },
     attack::{NightAttackParams, ShellingAttackParams},
     comp::Comp,

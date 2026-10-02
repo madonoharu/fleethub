@@ -3,17 +3,11 @@ use tsify::Tsify;
 
 use super::{GearVecState, SlotSizeVecState};
 
-#[derive(Debug, Clone, Copy, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
+#[derive(Debug, Default, Clone, Copy, Hash, Serialize, Deserialize, Tsify)]
 pub enum AirSquadronMode {
+    #[default]
     Sortie,
     AirDefense,
-}
-
-impl Default for AirSquadronMode {
-    fn default() -> Self {
-        Self::Sortie
-    }
 }
 
 impl AirSquadronMode {
@@ -23,7 +17,6 @@ impl AirSquadronMode {
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct AirSquadronState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,

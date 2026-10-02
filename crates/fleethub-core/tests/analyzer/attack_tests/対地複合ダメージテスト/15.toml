@@ -19,8 +19,9 @@ ship_id = 1670
 
 
 # 夜戦単発
+# 2026-10-02 のマスターデータで移行前の計算コードと照合済み。
 [expected.night.data.SingleAttack]
-damage.normal_damage_min = 128
-damage.normal_damage_max = 218
-damage.critical_damage_min = 289
-damage.critical_damage_max = 379
+damage.normal_damage_min = 169
+damage.normal_damage_max = 259
+damage.critical_damage_min = 351
+damage.critical_damage_max = 441

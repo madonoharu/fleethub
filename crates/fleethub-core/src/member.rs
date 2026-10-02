@@ -7,7 +7,7 @@ use crate::{
     error::CalculationError,
     plane::PlaneMut,
     ship::Ship,
-    types::{ctype, gear_id, AntiAirCutinDef, OrgType, Role, ShipType},
+    types::{AntiAirCutinDef, OrgType, Role, ShipType, ctype, gear_id},
 };
 
 pub use battle_member::*;
@@ -122,14 +122,14 @@ impl<'a> ShipAirDefense<'a> {
         let ship_aa_resist = plane.gear.ship_anti_air_resist;
         let fleet_aa_resist = plane.gear.fleet_anti_air_resist;
 
-        let proportional_shotdown_rate = if rng.gen_bool(0.5) {
+        let proportional_shotdown_rate = if rng.random_bool(0.5) {
             self.proportional_shotdown_rate(ship_aa_resist)
                 .ok_or(CalculationError::UnknownValue)?
         } else {
             0.0
         };
 
-        let fixed_shotdown = if rng.gen_bool(0.5) {
+        let fixed_shotdown = if rng.random_bool(0.5) {
             self.fixed_shotdown_number(ship_aa_resist, fleet_aa_resist)
                 .ok_or(CalculationError::UnknownValue)?
         } else {

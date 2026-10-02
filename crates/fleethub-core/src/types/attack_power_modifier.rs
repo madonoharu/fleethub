@@ -99,7 +99,6 @@ impl SpecialEnemyModifiers {
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi)]
 #[serde(default)]
 pub struct CustomPowerModifiers {
     pub precap_mod: AttackPowerModifier,

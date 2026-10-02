@@ -7,7 +7,6 @@ use super::{AttackAnalyzerConfig, AttackAnalyzerShipConfig};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
 #[serde(default)]
-#[tsify(from_wasm_abi)]
 pub struct ShipAnalyzerConfig {
     pub air_state: AirState,
     pub engagement: Engagement,

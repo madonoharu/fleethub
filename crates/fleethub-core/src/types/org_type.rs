@@ -4,7 +4,6 @@ use tsify::Tsify;
 use super::{Formation, Side};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum OrgType {
     /// 通常艦隊
     #[default]

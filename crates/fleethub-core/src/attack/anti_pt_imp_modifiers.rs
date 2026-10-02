@@ -1,7 +1,7 @@
 use crate::{
     member::BattleMemberRef,
     ship::Ship,
-    types::{gear_id, AttackType, GearType, ShipType},
+    types::{AttackType, GearType, ShipType, gear_id},
 };
 
 pub struct AntiPtImpAccuracyModifiers {

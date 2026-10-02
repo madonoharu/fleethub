@@ -3,7 +3,6 @@ use tsify::Tsify;
 
 /// 特殊敵種別
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum SpecialEnemyType {
     None,
     /// ソフトスキン

@@ -2,7 +2,7 @@ mod common;
 
 use common::fleet_from_toml;
 use fleethub_core::{
-    attack::{get_possible_fleet_cutin_effect_vec, FleetCutinAttackParams, FleetCutinEffect},
+    attack::{FleetCutinAttackParams, FleetCutinEffect, get_possible_fleet_cutin_effect_vec},
     types::{Engagement, FleetCutin, Formation, Time},
 };
 

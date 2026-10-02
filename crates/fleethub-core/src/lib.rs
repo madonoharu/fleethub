@@ -24,7 +24,8 @@ pub mod types;
 pub mod utils;
 
 use gloo_utils::format::JsValueSerdeExt;
-use wasm_bindgen::{prelude::*, JsCast};
+use tsify::{Ts, Tsify};
+use wasm_bindgen::{JsCast, prelude::*};
 
 use air_squadron::AirSquadron;
 use analyzer::Analyzer;
@@ -58,20 +59,6 @@ impl FhCore {
     pub fn master_data(&self) -> &MasterData {
         &self.factory.master_data
     }
-}
-
-#[wasm_bindgen]
-impl FhCore {
-    #[wasm_bindgen(constructor)]
-    pub fn new(js_master: <MasterData as tsify::Tsify>::JsType) -> Result<FhCore, JsValue> {
-        let master_data = js_master
-            .into_serde::<MasterData>()
-            .map_err(|err| JsValue::from(err.to_string()))?;
-
-        let factory = Factory::new(master_data);
-
-        Ok(Self { factory })
-    }
 
     pub fn create_gear(&self, input: Option<GearState>) -> Option<Gear> {
         self.factory.create_gear(input)
@@ -95,6 +82,60 @@ impl FhCore {
 
     pub fn create_ship_state_by_id(&self, ship_id: u16) -> Option<ShipState> {
         self.factory.create_ship_state_by_id(ship_id)
+    }
+}
+
+#[wasm_bindgen]
+impl FhCore {
+    #[wasm_bindgen(constructor)]
+    pub fn new(js_master: <MasterData as tsify::Tsify>::JsType) -> Result<FhCore, JsValue> {
+        let master_data = js_master
+            .into_serde::<MasterData>()
+            .map_err(|err| JsValue::from(err.to_string()))?;
+
+        let factory = Factory::new(master_data);
+
+        Ok(Self { factory })
+    }
+
+    #[wasm_bindgen(js_name = create_gear)]
+    pub fn create_gear_js(&self, input: Option<Ts<GearState>>) -> Result<Option<Gear>, JsError> {
+        Ok(self.create_gear(input.as_ref().map(Ts::to_rust).transpose()?))
+    }
+
+    #[wasm_bindgen(js_name = create_ship)]
+    pub fn create_ship_js(&self, input: Option<Ts<ShipState>>) -> Result<Option<Ship>, JsError> {
+        Ok(self.create_ship(input.as_ref().map(Ts::to_rust).transpose()?))
+    }
+
+    #[wasm_bindgen(js_name = create_air_squadron)]
+    pub fn create_air_squadron_js(
+        &self,
+        input: Option<Ts<AirSquadronState>>,
+    ) -> Result<AirSquadron, JsError> {
+        Ok(self.create_air_squadron(input.as_ref().map(Ts::to_rust).transpose()?))
+    }
+
+    #[wasm_bindgen(js_name = create_fleet)]
+    pub fn create_fleet_js(&self, input: Option<Ts<FleetState>>) -> Result<Fleet, JsError> {
+        Ok(self.create_fleet(input.as_ref().map(Ts::to_rust).transpose()?))
+    }
+
+    #[wasm_bindgen(js_name = create_org)]
+    pub fn create_org_js(&self, input: Option<Ts<OrgState>>) -> Result<Option<Org>, JsError> {
+        Ok(self.create_org(input.as_ref().map(Ts::to_rust).transpose()?))
+    }
+
+    #[wasm_bindgen(js_name = create_ship_state_by_id)]
+    pub fn create_ship_state_by_id_js(
+        &self,
+        ship_id: u16,
+    ) -> Result<Option<Ts<ShipState>>, JsError> {
+        Ok(self
+            .create_ship_state_by_id(ship_id)
+            .as_ref()
+            .map(Tsify::into_ts)
+            .transpose()?)
     }
 
     pub fn create_ship_by_id(&self, ship_id: u16) -> Option<Ship> {

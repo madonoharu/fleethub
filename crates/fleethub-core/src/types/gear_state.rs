@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct GearState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -15,7 +14,6 @@ pub struct GearState {
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct GearVecState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub g1: Option<GearState>,

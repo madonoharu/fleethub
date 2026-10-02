@@ -1,11 +1,11 @@
 use std::str::FromStr;
 
 use enumset::EnumSet;
-use fasteval::{bool_to_f64, EvalNamespace};
+use fasteval::{EvalNamespace, bool_to_f64};
 use serde::Deserialize;
 use tsify::Tsify;
 
-use crate::types::{gear_id, GearAttr, GearType, GearTypeIdArray};
+use crate::types::{GearAttr, GearType, GearTypeIdArray, gear_id};
 
 #[derive(Debug, Default, Clone, Deserialize, Tsify)]
 pub struct MasterGear {
@@ -86,9 +86,9 @@ impl MasterGear {
                     self.types.get(index)?.into()
                 }
 
-                "gear_id_in" => bool_to_f64!(args.iter().any(|v| *v == self.gear_id as f64)),
+                "gear_id_in" => bool_to_f64!(args.contains(&(self.gear_id as f64))),
                 "gear_type_in" => {
-                    bool_to_f64!(args.iter().any(|v| *v == self.types.gear_type_id() as f64))
+                    bool_to_f64!(args.contains(&(self.types.gear_type_id() as f64)))
                 }
 
                 _ => {

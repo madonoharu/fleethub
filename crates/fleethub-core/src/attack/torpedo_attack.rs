@@ -7,8 +7,8 @@ use crate::{
 };
 
 use super::{
-    anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers, Attack, AttackParams, AttackPowerParams,
-    DefenseParams, HitRateParams,
+    Attack, AttackParams, AttackPowerParams, DefenseParams, HitRateParams,
+    anti_pt_imp_modifiers::AntiPtImpAccuracyModifiers,
 };
 
 const TORPEDO_POWER_CAP: f64 = 180.0;

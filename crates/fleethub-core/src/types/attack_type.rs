@@ -58,7 +58,6 @@ impl From<ShellingType> for SupportShellingType {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
 #[serde(tag = "t", content = "c")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum AttackType {
     Asw(AswAttackType),
     Shelling(ShellingType),
@@ -146,7 +145,6 @@ impl From<SupportShellingType> for AttackType {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
 #[serde(tag = "t", content = "c")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum DayPhaseAttackType {
     Shelling(ShellingType),
     Asw(AswAttackType),
@@ -176,7 +174,6 @@ impl From<AswAttackType> for DayPhaseAttackType {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Tsify)]
 #[serde(tag = "t", content = "c")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum NightPhaseAttackType {
     Night(NightAttackType),
     Asw(AswAttackType),

@@ -7,7 +7,6 @@ use super::Side;
 #[derive(
     Debug, Default, Clone, Copy, PartialEq, Eq, Hash, EnumIter, Serialize, Deserialize, Tsify,
 )]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum AirState {
     /// 制空確保
     #[default]
@@ -83,7 +82,6 @@ impl AirState {
 #[derive(
     Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, Tsify,
 )]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum AirStateRank {
     /// 喪失時の味方 | 確保時の敵 | 均衡
     #[default]

@@ -28,7 +28,6 @@ pub struct AttackAnalyzer<'a> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct AttackAnalysis {
     pub attacker_is_player: bool,
     pub attacker_ship_id: u16,

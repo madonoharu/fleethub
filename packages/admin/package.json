@@ -12,7 +12,7 @@
     "cloudinary": "^2.5.1",
     "dequal": "^2.0.3",
     "firebase-admin": "^12.5.0",
-    "fleethub-core": "npm:latest",
+    "fleethub-core": "workspace:*",
     "googleapis": "^144.0.0",
     "ky": "^1.7.4"
   }

@@ -18,7 +18,6 @@ struct DayContactChance {
 }
 
 #[derive(Debug, Clone, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct ContactAnalysis {
     single: Option<Vec<DayContactChance>>,
     combined: Option<Vec<DayContactChance>>,

@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use arrayvec::ArrayVec;
 use enumset::EnumSet;
-use fasteval::{bool_to_f64, EvalNamespace};
+use fasteval::{EvalNamespace, bool_to_f64};
 use serde::Deserialize;
 use tsify::Tsify;
 

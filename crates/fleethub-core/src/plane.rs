@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
 use itertools::Itertools;
-use rand::{distributions::uniform::SampleRange, prelude::*};
+use rand::prelude::*;
 
 use crate::{
     error::CalculationError,
@@ -199,13 +199,12 @@ impl<'a> PlaneMut<'a> {
                 let min = constant as f64 / 4.0;
                 let high = constant * 100 / 3;
 
-                min + rng.gen_range(0..=high) as f64 / 100.0
+                min + rng.random_range(0..=high) as f64 / 100.0
             }
             Side::Enemy => {
                 let high = 11 - constant;
 
-                0.35 * (0..=high).sample_single(rng) as f64
-                    + 0.65 * (0..=high).sample_single(rng) as f64
+                0.35 * rng.random_range(0..=high) as f64 + 0.65 * rng.random_range(0..=high) as f64
             }
         };
 
@@ -273,7 +272,7 @@ impl<T: PlaneImpl> PlaneVec<T> {
             .trigger_rate(air_state_rank)
             .ok_or(CalculationError::UnknownValue)?;
 
-        if rng.gen_bool(trigger_rate) {
+        if rng.random_bool(trigger_rate) {
             for plane in self
                 .iter()
                 .filter(|plane| plane.is_contact_selection_plane() && plane.remains())
@@ -281,7 +280,7 @@ impl<T: PlaneImpl> PlaneVec<T> {
             {
                 let selection_rate = plane.contact_selection_rate(air_state_rank);
 
-                if rng.gen_bool(selection_rate) {
+                if rng.random_bool(selection_rate) {
                     return Ok(Some(plane.contact_rank()));
                 }
             }

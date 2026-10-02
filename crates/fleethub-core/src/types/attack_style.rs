@@ -96,7 +96,7 @@ impl NightAttackStyle {
     pub fn has_model_d_small_gun_mod(&self) -> bool {
         self.cutin
             .as_ref()
-            .map_or(false, |cutin| cutin.has_model_d_small_gun_mod())
+            .is_some_and(|cutin| cutin.has_model_d_small_gun_mod())
     }
 
     pub fn is_cutin(&self) -> bool {

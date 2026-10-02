@@ -12,6 +12,7 @@ mod night_cutin_analyzer;
 mod node_attack_analyzer;
 mod ship_analyzer;
 
+use tsify::{Ts, Tsify};
 use wasm_bindgen::prelude::*;
 
 pub use action_report::*;
@@ -43,7 +44,6 @@ impl Analyzer {
     }
 }
 
-#[wasm_bindgen]
 impl Analyzer {
     pub fn analyze_ship_attack(
         &self,
@@ -106,7 +106,7 @@ impl Analyzer {
     ) -> Result<SimulatorResult, JsValue> {
         use rand::prelude::*;
 
-        let mut rng = SmallRng::from_entropy();
+        let mut rng = rand::make_rng::<SmallRng>();
         let mut player = BattleComp::new(player_comp.clone(), config.left.formation);
         let mut enemy = BattleComp::new(enemy_comp.clone(), config.right.formation);
 
@@ -122,5 +122,68 @@ impl Analyzer {
         simulator
             .run(times)
             .map_err(|err| JsValue::from(&err.to_string()))
+    }
+}
+
+#[wasm_bindgen]
+impl Analyzer {
+    #[wasm_bindgen(js_name = analyze_ship_attack)]
+    pub fn analyze_ship_attack_js(
+        &self,
+        config: Ts<ShipAnalyzerConfig>,
+        left: &Ship,
+        right: &Ship,
+        attacker_is_left: bool,
+    ) -> Result<Ts<AttackAnalysis>, JsError> {
+        Ok(self
+            .analyze_ship_attack(config.to_rust()?, left, right, attacker_is_left)
+            .into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = analyze_node_attack)]
+    pub fn analyze_node_attack_js(
+        &self,
+        config: Ts<NodeAttackAnalyzerConfig>,
+        left_comp: &Comp,
+        left_ship: &Ship,
+        right_comp: &Comp,
+        right_ship: &Ship,
+        density_detail: Option<Ts<DensityDetail>>,
+    ) -> Result<Ts<NodeAttackAnalysis>, JsError> {
+        Ok(self
+            .analyze_node_attack(
+                config.to_rust()?,
+                left_comp,
+                left_ship,
+                right_comp,
+                right_ship,
+                density_detail.as_ref().map(Ts::to_rust).transpose()?,
+            )
+            .into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = analyze_comp)]
+    pub fn analyze_comp_js(
+        &self,
+        comp: &Comp,
+        config: Ts<CompAnalyzerConfig>,
+    ) -> Result<Ts<CompAnalysis>, JsError> {
+        Ok(self.analyze_comp(comp, config.to_rust()?).into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = simulate_support_shelling)]
+    pub fn simulate_support_shelling_js(
+        &self,
+        player_comp: &Comp,
+        enemy_comp: &Comp,
+        config: Ts<NodeAttackAnalyzerConfig>,
+        times: usize,
+    ) -> Result<Ts<SimulatorResult>, JsValue> {
+        let config = config
+            .to_rust()
+            .map_err(|err| JsValue::from_str(&err.to_string()))?;
+        self.simulate_support_shelling(player_comp, enemy_comp, config, times)?
+            .into_ts()
+            .map_err(|err| JsValue::from_str(&err.to_string()))
     }
 }

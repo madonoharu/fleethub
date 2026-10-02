@@ -6,7 +6,7 @@ use fleethub_core::{
 };
 
 use serde::Deserialize;
-use toml::{from_str, Value};
+use toml::{Value, from_str};
 
 use crate::*;
 

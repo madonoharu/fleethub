@@ -6,12 +6,12 @@ use super::Ship;
 
 #[wasm_bindgen]
 impl Ship {
-    #[inline]
+    #[cfg_attr(not(target_arch = "wasm32"), inline)]
     pub fn state_day_gunfit_accuracy(&self) -> Option<f64> {
         self.state.day_gunfit_accuracy.map(|v| v.into())
     }
 
-    #[inline]
+    #[cfg_attr(not(target_arch = "wasm32"), inline)]
     pub fn state_night_gunfit_accuracy(&self) -> Option<f64> {
         self.state.night_gunfit_accuracy.map(|v| v.into())
     }
@@ -184,7 +184,7 @@ fn light_cruiser_bonus(ship: &Ship) -> f64 {
             if count_15_2cm_twin_group >= 1.0 {
                 r += m1
             };
-            r += m2 * -1.0 * count_15_5cm_group.sqrt();
+            r += -m2 * count_15_5cm_group.sqrt();
             r += m2 * -3.0 * count_15_2cm_triple_group.sqrt();
             r += m2 * -3.0 * count_5inch_group.sqrt();
             r += m2 * -5.0 * count_20_3cm_group.sqrt();

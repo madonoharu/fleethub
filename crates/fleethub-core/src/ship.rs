@@ -8,6 +8,7 @@ mod special_enemy_modifiers;
 use std::hash::Hash;
 
 use paste::paste;
+use tsify::{Ts, Tsify};
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -46,12 +47,12 @@ pub struct Ship {
     #[wasm_bindgen(readonly)]
     pub fuel: u16,
 
-    #[wasm_bindgen(readonly)]
+    #[wasm_bindgen(skip)]
     pub ship_type: ShipType,
     #[wasm_bindgen(readonly)]
     pub ctype: u16,
 
-    #[wasm_bindgen(getter_with_clone)]
+    #[wasm_bindgen(skip)]
     pub slots: SlotSizeVec,
     #[wasm_bindgen(skip)]
     pub gears: GearArray,
@@ -769,6 +770,22 @@ impl Ship {
 
 #[wasm_bindgen]
 impl Ship {
+    #[wasm_bindgen(getter = ship_type)]
+    pub fn ship_type_js(&self) -> Result<Ts<ShipType>, JsError> {
+        Ok(self.ship_type.into_ts()?)
+    }
+
+    #[wasm_bindgen(getter = slots)]
+    pub fn slots_js(&self) -> Result<Ts<SlotSizeVec>, JsError> {
+        Ok(self.slots.into_ts()?)
+    }
+
+    #[wasm_bindgen(setter = slots)]
+    pub fn set_slots_js(&mut self, slots: Ts<SlotSizeVec>) -> Result<(), JsError> {
+        self.slots = slots.to_rust()?;
+        Ok(())
+    }
+
     #[allow(clippy::should_implement_trait)]
     pub fn default() -> Self {
         Default::default()
@@ -778,19 +795,19 @@ impl Ship {
         self.id.eq(id)
     }
 
-    pub fn state(&self) -> ShipState {
-        self.state.clone()
+    #[wasm_bindgen(js_name = state)]
+    pub fn state_js(&self) -> Result<Ts<ShipState>, JsError> {
+        Ok(self.state().into_ts()?)
     }
 
-    pub fn custom_power_mods(&self) -> CustomPowerModifiers {
-        self.state.custom_power_mods.clone()
+    #[wasm_bindgen(js_name = custom_power_mods)]
+    pub fn custom_power_mods_js(&self) -> Result<Ts<CustomPowerModifiers>, JsError> {
+        Ok(self.custom_power_mods().into_ts()?)
     }
 
-    pub fn meta(&self) -> ShipMeta {
-        ShipMeta {
-            id: self.id.clone(),
-            ship_id: self.ship_id,
-        }
+    #[wasm_bindgen(js_name = meta)]
+    pub fn meta_js(&self) -> Result<Ts<ShipMeta>, JsError> {
+        Ok(self.meta().into_ts()?)
     }
 
     #[wasm_bindgen(getter)]
@@ -833,20 +850,24 @@ impl Ship {
         self.master.useful
     }
 
-    pub fn damage_state(&self) -> DamageState {
-        DamageState::new(self.max_hp().unwrap_or_default(), self.current_hp)
+    #[wasm_bindgen(js_name = damage_state)]
+    pub fn damage_state_js(&self) -> Result<Ts<DamageState>, JsError> {
+        Ok(self.damage_state().into_ts()?)
     }
 
-    pub fn morale_state(&self) -> MoraleState {
-        MoraleState::new(self.morale)
+    #[wasm_bindgen(js_name = morale_state)]
+    pub fn morale_state_js(&self) -> Result<Ts<MoraleState>, JsError> {
+        Ok(self.morale_state().into_ts()?)
     }
 
-    pub fn category(&self) -> ShipCategory {
-        self.ship_type.category()
+    #[wasm_bindgen(js_name = category)]
+    pub fn category_js(&self) -> Result<Ts<ShipCategory>, JsError> {
+        Ok(self.category().into_ts()?)
     }
 
-    pub fn has_attr(&self, attr: ShipAttr) -> bool {
-        self.master.attrs.contains(attr)
+    #[wasm_bindgen(js_name = has_attr)]
+    pub fn has_attr_js(&self, attr: Ts<ShipAttr>) -> Result<bool, JsError> {
+        Ok(self.has_attr(attr.to_rust()?))
     }
 
     pub fn gear_keys(&self) -> Vec<js_sys::JsString> {
@@ -867,9 +888,9 @@ impl Ship {
         self.gears.get_by_gear_key(key).cloned()
     }
 
-    pub fn get_damage_bound(&self, state: DamageState) -> Option<u16> {
-        let max_hp = self.max_hp()?;
-        Some(state.bound(max_hp))
+    #[wasm_bindgen(js_name = get_damage_bound)]
+    pub fn get_damage_bound_js(&self, state: Ts<DamageState>) -> Result<Option<u16>, JsError> {
+        Ok(self.get_damage_bound(state.to_rust()?))
     }
 
     pub fn get_remaining_fuel(&self, rate: f64, ceil: bool) -> u16 {
@@ -1084,45 +1105,14 @@ impl Ship {
         self.has_attr(ShipAttr::Installation)
     }
 
-    #[inline]
+    #[cfg_attr(not(target_arch = "wasm32"), inline)]
     pub fn is_pt_imp(&self) -> bool {
         self.has_attr(ShipAttr::PtImp)
     }
 
-    pub fn special_enemy_type(&self) -> SpecialEnemyType {
-        use SpecialEnemyType::*;
-
-        if self.has_attr(ShipAttr::Pillbox) {
-            Pillbox
-        } else if self.has_attr(ShipAttr::IsolatedIsland) {
-            IsolatedIsland
-        } else if self.has_attr(ShipAttr::HarbourSummerPrincess) {
-            HarbourSummerPrincess
-        } else if self.has_attr(ShipAttr::NewSupplyDepot) {
-            NewSupplyDepot
-        } else if self.has_attr(ShipAttr::SupplyDepot) {
-            SupplyDepot
-        } else if self.is_installation() {
-            SoftSkinned
-        } else if self.is_pt_imp() {
-            PtImp
-        } else if self.has_attr(ShipAttr::BattleshipSummerPrincess) {
-            BattleshipSummerPrincess
-        } else if self.has_attr(ShipAttr::HeavyCruiserSummerPrincess) {
-            HeavyCruiserSummerPrincess
-        } else if self.has_attr(ShipAttr::FrenchBattleshipPrincess) {
-            FrenchBattleshipPrincess
-        } else if self.has_attr(ShipAttr::AnchorageWaterDemonVacationMode) {
-            AnchorageWaterDemonVacationMode
-        } else if self.has_attr(ShipAttr::DockPrincess) {
-            DockPrincess
-        } else if self.has_attr(ShipAttr::SummerAircraftCarrierDemon) {
-            SummerAircraftCarrierDemon
-        } else if self.has_attr(ShipAttr::EuropeanWaterPrincess) {
-            EuropeanWaterPrincess
-        } else {
-            None
-        }
+    #[wasm_bindgen(js_name = special_enemy_type)]
+    pub fn special_enemy_type_js(&self) -> Result<Ts<SpecialEnemyType>, JsError> {
+        Ok(self.special_enemy_type().into_ts()?)
     }
 
     pub fn is_attackable_by_torpedo(&self) -> bool {
@@ -1163,11 +1153,9 @@ impl Ship {
         75_u16.saturating_sub(percent) as f64
     }
 
-    pub fn fighter_power(&self, air_type: AirWaveType) -> Option<i32> {
-        self.planes()
-            .filter(|plane| plane.participates_in_fighter_combat(air_type))
-            .map(|plane| plane.fighter_power())
-            .sum()
+    #[wasm_bindgen(js_name = fighter_power)]
+    pub fn fighter_power_js(&self, air_type: Ts<AirWaveType>) -> Result<Option<i32>, JsError> {
+        Ok(self.fighter_power(air_type.to_rust()?))
     }
 
     pub fn fleet_los_factor(&self) -> Option<f64> {
@@ -1192,25 +1180,9 @@ impl Ship {
     }
 
     /// 加重対空
-    pub fn ship_adjusted_anti_air(&self, side: Side) -> Option<f64> {
-        let ebonus = self.ebonuses.anti_air as f64;
-        let total = self.gears.sum_by(|g| g.ship_anti_air_mod());
-
-        if side.is_enemy() {
-            let anti_air = self.anti_air()? as f64;
-            return Some(anti_air.sqrt().floor() + total);
-        }
-
-        let naked_anti_air = self.naked_anti_air()? as f64;
-        let pre_floor = naked_anti_air / 2.0 + total + ebonus * 0.75;
-
-        let result = if self.gears.iter().count() == 0 {
-            pre_floor
-        } else {
-            pre_floor.floor()
-        };
-
-        Some(result)
+    #[wasm_bindgen(js_name = ship_adjusted_anti_air)]
+    pub fn ship_adjusted_anti_air_js(&self, side: Ts<Side>) -> Result<Option<f64>, JsError> {
+        Ok(self.ship_adjusted_anti_air(side.to_rust()?))
     }
 
     /// 艦隊対空補正
@@ -1356,6 +1328,108 @@ impl Ship {
         let max_hp = self.max_hp().unwrap_or_default();
         let bound = damage_state.bound(max_hp);
         self.current_hp = bound;
+    }
+}
+
+impl Ship {
+    pub fn state(&self) -> ShipState {
+        self.state.clone()
+    }
+
+    pub fn custom_power_mods(&self) -> CustomPowerModifiers {
+        self.state.custom_power_mods.clone()
+    }
+
+    pub fn meta(&self) -> ShipMeta {
+        ShipMeta {
+            id: self.id.clone(),
+            ship_id: self.ship_id,
+        }
+    }
+
+    pub fn damage_state(&self) -> DamageState {
+        DamageState::new(self.max_hp().unwrap_or_default(), self.current_hp)
+    }
+
+    pub fn morale_state(&self) -> MoraleState {
+        MoraleState::new(self.morale)
+    }
+
+    pub fn category(&self) -> ShipCategory {
+        self.ship_type.category()
+    }
+
+    pub fn special_enemy_type(&self) -> SpecialEnemyType {
+        use SpecialEnemyType::*;
+
+        if self.has_attr(ShipAttr::Pillbox) {
+            Pillbox
+        } else if self.has_attr(ShipAttr::IsolatedIsland) {
+            IsolatedIsland
+        } else if self.has_attr(ShipAttr::HarbourSummerPrincess) {
+            HarbourSummerPrincess
+        } else if self.has_attr(ShipAttr::NewSupplyDepot) {
+            NewSupplyDepot
+        } else if self.has_attr(ShipAttr::SupplyDepot) {
+            SupplyDepot
+        } else if self.is_installation() {
+            SoftSkinned
+        } else if self.is_pt_imp() {
+            PtImp
+        } else if self.has_attr(ShipAttr::BattleshipSummerPrincess) {
+            BattleshipSummerPrincess
+        } else if self.has_attr(ShipAttr::HeavyCruiserSummerPrincess) {
+            HeavyCruiserSummerPrincess
+        } else if self.has_attr(ShipAttr::FrenchBattleshipPrincess) {
+            FrenchBattleshipPrincess
+        } else if self.has_attr(ShipAttr::AnchorageWaterDemonVacationMode) {
+            AnchorageWaterDemonVacationMode
+        } else if self.has_attr(ShipAttr::DockPrincess) {
+            DockPrincess
+        } else if self.has_attr(ShipAttr::SummerAircraftCarrierDemon) {
+            SummerAircraftCarrierDemon
+        } else if self.has_attr(ShipAttr::EuropeanWaterPrincess) {
+            EuropeanWaterPrincess
+        } else {
+            None
+        }
+    }
+
+    pub fn has_attr(&self, attr: ShipAttr) -> bool {
+        self.master.attrs.contains(attr)
+    }
+
+    pub fn get_damage_bound(&self, state: DamageState) -> Option<u16> {
+        let max_hp = self.max_hp()?;
+        Some(state.bound(max_hp))
+    }
+
+    pub fn fighter_power(&self, air_type: AirWaveType) -> Option<i32> {
+        self.planes()
+            .filter(|plane| plane.participates_in_fighter_combat(air_type))
+            .map(|plane| plane.fighter_power())
+            .sum()
+    }
+
+    pub fn ship_adjusted_anti_air(&self, side: Side) -> Option<f64> {
+        let ebonus = self.ebonuses.anti_air as f64;
+        let total = self.gears.sum_by(|g| g.ship_anti_air_mod());
+
+        if side.is_enemy() {
+            let anti_air = self.anti_air()? as f64;
+            return Some(anti_air.sqrt().floor() + total);
+        }
+
+        let naked_anti_air = self.naked_anti_air()? as f64;
+        let pre_floor = naked_anti_air / 2.0 + total + ebonus * 0.75;
+
+        let result = if self.gears.iter().count() == 0 {
+            pre_floor
+        } else {
+            pre_floor.floor()
+        };
+
+        Some(result)
     }
 }
 

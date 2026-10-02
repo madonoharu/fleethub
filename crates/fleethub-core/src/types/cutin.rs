@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 #[derive(Debug, Default, Hash, EnumSetType, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum DayCutin {
     /// 瑞雲立体攻撃
     Zuiun,
@@ -91,7 +90,6 @@ impl NightCutin {
 }
 
 #[derive(Debug, EnumSetType, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum FleetCutin {
     NelsonTouch,
     NagatoClassCutin,
@@ -104,7 +102,6 @@ pub enum FleetCutin {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 #[serde(untagged)]
 pub enum DayCutinLike {
     DayCutin(DayCutin),

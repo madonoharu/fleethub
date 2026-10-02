@@ -1,9 +1,10 @@
 use js_sys::JsString;
+use tsify::{Ts, Tsify};
 use wasm_bindgen::prelude::*;
 
 use crate::{
     ship::Ship,
-    types::{gear_id, ship_id, AirWaveType, DamageState, FleetMeta, GearType, ShipKey},
+    types::{AirWaveType, DamageState, FleetMeta, GearType, ShipKey, gear_id, ship_id},
     utils::OptionalArray,
 };
 
@@ -30,22 +31,6 @@ pub struct Fleet {
 
 #[wasm_bindgen]
 impl Fleet {
-    pub fn meta(&self) -> FleetMeta {
-        let ships = (0..self.len)
-            .map(|i| {
-                let key = format!("s{}", i + 1);
-                let meta = self.ships.get(i).map(|s| s.meta());
-                (key, meta)
-            })
-            .collect();
-
-        FleetMeta {
-            id: self.id.clone(),
-            len: self.len,
-            ships,
-        }
-    }
-
     pub fn ship_keys(&self) -> Vec<JsString> {
         (0..self.len)
             .map(|i| format!("s{}", i + 1).into())
@@ -77,11 +62,6 @@ impl Fleet {
             .collect::<Vec<_>>()
     }
 
-    pub fn get_damage_bound(&self, id: String, state: DamageState) -> Option<u16> {
-        let ship = self.ships.values().find(|ship| ship.id == id)?;
-        ship.get_damage_bound(state)
-    }
-
     pub fn get_remaining_fuel(&self, id: String, rate: f64, ceil: bool) -> Option<u16> {
         let ship = self.ships.values().find(|ship| ship.id == id)?;
         Some(ship.get_remaining_fuel(rate, ceil))
@@ -96,10 +76,6 @@ impl Fleet {
         self.ships.values().count()
     }
 
-    pub fn get_ship(&self, key: ShipKey) -> Option<Ship> {
-        self.ships.get_by_key(key).cloned()
-    }
-
     #[wasm_bindgen(getter)]
     pub fn fleet_los_mod(&self) -> Option<f64> {
         self.ships
@@ -107,13 +83,6 @@ impl Fleet {
             .map(|ship| ship.fleet_los_factor())
             .sum::<Option<f64>>()
             .map(|base| (base.sqrt() + 0.1 * base).floor())
-    }
-
-    pub fn fighter_power(&self, air_type: AirWaveType) -> Option<i32> {
-        self.ships
-            .values()
-            .map(|ship| ship.fighter_power(air_type))
-            .sum()
     }
 
     /// マップ索敵
@@ -241,5 +210,66 @@ impl Fleet {
         self.ships
             .iter()
             .find_map(|(index, ship)| ship.is_amagiri().then_some(index))
+    }
+}
+
+impl Fleet {
+    pub fn meta(&self) -> FleetMeta {
+        let ships = (0..self.len)
+            .map(|i| {
+                let key = format!("s{}", i + 1);
+                let meta = self.ships.get(i).map(|s| s.meta());
+                (key, meta)
+            })
+            .collect();
+
+        FleetMeta {
+            id: self.id.clone(),
+            len: self.len,
+            ships,
+        }
+    }
+
+    pub fn get_damage_bound(&self, id: String, state: DamageState) -> Option<u16> {
+        let ship = self.ships.values().find(|ship| ship.id == id)?;
+        ship.get_damage_bound(state)
+    }
+
+    pub fn get_ship(&self, key: ShipKey) -> Option<Ship> {
+        self.ships.get_by_key(key).cloned()
+    }
+
+    pub fn fighter_power(&self, air_type: AirWaveType) -> Option<i32> {
+        self.ships
+            .values()
+            .map(|ship| ship.fighter_power(air_type))
+            .sum()
+    }
+}
+
+#[wasm_bindgen]
+impl Fleet {
+    #[wasm_bindgen(js_name = meta)]
+    pub fn meta_js(&self) -> Result<Ts<FleetMeta>, JsError> {
+        Ok(self.meta().into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = get_damage_bound)]
+    pub fn get_damage_bound_js(
+        &self,
+        id: String,
+        state: Ts<DamageState>,
+    ) -> Result<Option<u16>, JsError> {
+        Ok(self.get_damage_bound(id, state.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = get_ship)]
+    pub fn get_ship_js(&self, key: Ts<ShipKey>) -> Result<Option<Ship>, JsError> {
+        Ok(self.get_ship(key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = fighter_power)]
+    pub fn fighter_power_js(&self, air_type: Ts<AirWaveType>) -> Result<Option<i32>, JsError> {
+        Ok(self.fighter_power(air_type.to_rust()?))
     }
 }

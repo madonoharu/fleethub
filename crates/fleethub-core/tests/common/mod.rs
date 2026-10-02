@@ -3,11 +3,11 @@
 mod toml;
 
 use fleethub_core::{
+    FhCore,
     analyzer::AttackAnalyzerShipConfig,
     master_data::MasterData,
     ship::Ship,
     types::{BattleDefinitions, OrgType, Side},
-    FhCore,
 };
 
 use once_cell::sync::Lazy;

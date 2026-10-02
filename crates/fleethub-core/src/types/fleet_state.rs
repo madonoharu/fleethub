@@ -4,7 +4,6 @@ use tsify::Tsify;
 use super::ShipState;
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct FleetState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,

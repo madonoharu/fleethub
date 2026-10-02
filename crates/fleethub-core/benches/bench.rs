@@ -1,22 +1,17 @@
-#![allow(unused)]
+use std::hint::black_box;
 
-use std::hash::{Hash, Hasher};
+use criterion::{Criterion, criterion_group, criterion_main};
+use fleethub_core::types::DefensePower;
+use rand::{SeedableRng, rngs::SmallRng};
 
-use criterion::{criterion_group, criterion_main, Criterion};
-use fleethub_core::types::{Role, ShipState};
-use rand::prelude::*;
+fn bench_defense_power(c: &mut Criterion) {
+    let defense_power = DefensePower::new(100.0);
+    let mut rng = SmallRng::seed_from_u64(0);
 
-fn bm1(c: &mut Criterion) {
-    todo!()
+    c.bench_function("defense_power_choose", |b| {
+        b.iter(|| black_box(defense_power.choose(&mut rng)));
+    });
 }
 
-fn config() -> Criterion {
-    Criterion::default().sample_size(10000)
-}
-
-criterion_group! {
-    name = benches;
-    config = config();
-    targets = bm1
-}
+criterion_group!(benches, bench_defense_power);
 criterion_main!(benches);

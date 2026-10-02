@@ -1,6 +1,6 @@
 use js_sys::JsString;
 use serde::Serialize;
-use tsify::Tsify;
+use tsify::{Ts, Tsify};
 use wasm_bindgen::prelude::*;
 
 use crate::{
@@ -37,13 +37,13 @@ pub struct Org {
 
     #[wasm_bindgen(readonly)]
     pub hq_level: u8,
-    #[wasm_bindgen(readonly)]
+    #[wasm_bindgen(skip)]
     pub org_type: OrgType,
-    #[wasm_bindgen(readonly)]
+    #[wasm_bindgen(skip)]
     pub sortie: FleetKey,
-    #[wasm_bindgen(readonly)]
+    #[wasm_bindgen(skip)]
     pub route_sup: Option<FleetKey>,
-    #[wasm_bindgen(readonly)]
+    #[wasm_bindgen(skip)]
     pub boss_sup: Option<FleetKey>,
 }
 
@@ -64,25 +64,32 @@ impl Org {
 
 #[wasm_bindgen]
 impl Org {
+    #[wasm_bindgen(getter, js_name = org_type)]
+    pub fn org_type_js(&self) -> Result<Ts<OrgType>, JsError> {
+        Ok(self.org_type.into_ts()?)
+    }
+
+    #[wasm_bindgen(getter, js_name = sortie)]
+    pub fn sortie_js(&self) -> Result<Ts<FleetKey>, JsError> {
+        Ok(self.sortie.into_ts()?)
+    }
+
+    #[wasm_bindgen(getter, js_name = route_sup)]
+    pub fn route_sup_js(&self) -> Result<Option<Ts<FleetKey>>, JsError> {
+        Ok(self.route_sup.map(|key| key.into_ts()).transpose()?)
+    }
+
+    #[wasm_bindgen(getter, js_name = boss_sup)]
+    pub fn boss_sup_js(&self) -> Result<Option<Ts<FleetKey>>, JsError> {
+        Ok(self.boss_sup.map(|key| key.into_ts()).transpose()?)
+    }
+
     pub fn first_ship_id(&self) -> Option<String> {
         [&self.f1, &self.f2, &self.f3, &self.f4]
             .iter()
             .flat_map(|fleet| fleet.ships.values())
             .next()
             .map(|ship| ship.id.clone())
-    }
-
-    pub fn get_ship_mid(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<u16> {
-        self.get_ship(fleet_key, ship_key).map(|ship| ship.ship_id)
-    }
-
-    pub fn get_ship_eid(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<String> {
-        self.get_ship(fleet_key, ship_key)
-            .map(|ship| ship.id.clone())
-    }
-
-    pub fn get_fleet_id(&self, key: FleetKey) -> String {
-        self.get_fleet(key).id.clone()
     }
 
     pub fn air_squadron_ids(&self) -> Vec<JsString> {
@@ -100,14 +107,6 @@ impl Org {
         self.f2.ships.values().map(|ship| ship.ship_id).collect()
     }
 
-    pub fn clone_fleet(&self, key: FleetKey) -> Fleet {
-        self.get_fleet(key).clone()
-    }
-
-    pub fn clone_ship(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<Ship> {
-        self.get_ship(fleet_key, ship_key).cloned()
-    }
-
     pub fn get_ship_by_id(&self, id: &str) -> Option<Ship> {
         let fleets = [&self.f1, &self.f2, &self.f3, &self.f4];
 
@@ -118,44 +117,8 @@ impl Org {
         ship.cloned()
     }
 
-    pub fn ship_keys(&self, key: FleetKey) -> Vec<JsString> {
-        self.get_fleet(key).ship_keys()
-    }
-
     pub fn create_comp(&self) -> Comp {
         self.create_comp_by_key(self.sortie)
-    }
-
-    pub fn create_comp_by_key(&self, key: FleetKey) -> Comp {
-        let org_type = self.org_type;
-        let enable_escort = org_type.is_combined() && matches!(key, FleetKey::F1 | FleetKey::F2);
-
-        let main = if enable_escort {
-            &self.f1
-        } else {
-            self.get_fleet(key)
-        }
-        .clone();
-
-        let escort = enable_escort.then(|| self.f2.clone());
-
-        let (route_sup, boss_sup) = if org_type.is_player() {
-            let route_sup = self.route_sup.map(|key| self.get_fleet(key).clone());
-            let boss_sup = self.boss_sup.map(|key| self.get_fleet(key).clone());
-
-            (route_sup, boss_sup)
-        } else {
-            (None, None)
-        };
-
-        Comp {
-            hq_level: self.hq_level,
-            org_type,
-            main,
-            escort,
-            route_sup,
-            boss_sup,
-        }
     }
 
     pub fn get_air_squadron(&self, key: &str) -> Result<AirSquadron, JsValue> {
@@ -166,7 +129,7 @@ impl Org {
             _ => {
                 return Err(JsValue::from_str(
                     r#"get_air_squadron() argument must be "a1", "a2" or "a3""#,
-                ))
+                ));
             }
         };
 
@@ -189,10 +152,6 @@ impl Org {
             .filter(|gear| gear.has_proficiency())
             .map(|gear| JsString::from(gear.id.clone()))
             .collect()
-    }
-
-    pub fn side(&self) -> Side {
-        self.org_type.side()
     }
 
     pub fn is_player(&self) -> bool {
@@ -256,6 +215,75 @@ impl Org {
 
         (interception_power as f64 * modifier).floor() as i32
     }
+}
+
+#[derive(Debug, Serialize, Tsify)]
+pub struct MoveShipPayload {
+    current: (String, String, ShipKey),
+    target: (Option<String>, String, ShipKey),
+}
+
+impl Org {
+    pub fn get_ship_mid(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<u16> {
+        self.get_ship(fleet_key, ship_key).map(|ship| ship.ship_id)
+    }
+
+    pub fn get_ship_eid(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<String> {
+        self.get_ship(fleet_key, ship_key)
+            .map(|ship| ship.id.clone())
+    }
+
+    pub fn get_fleet_id(&self, key: FleetKey) -> String {
+        self.get_fleet(key).id.clone()
+    }
+
+    pub fn clone_fleet(&self, key: FleetKey) -> Fleet {
+        self.get_fleet(key).clone()
+    }
+
+    pub fn clone_ship(&self, fleet_key: FleetKey, ship_key: ShipKey) -> Option<Ship> {
+        self.get_ship(fleet_key, ship_key).cloned()
+    }
+
+    pub fn ship_keys(&self, key: FleetKey) -> Vec<JsString> {
+        self.get_fleet(key).ship_keys()
+    }
+
+    pub fn create_comp_by_key(&self, key: FleetKey) -> Comp {
+        let org_type = self.org_type;
+        let enable_escort = org_type.is_combined() && matches!(key, FleetKey::F1 | FleetKey::F2);
+
+        let main = if enable_escort {
+            &self.f1
+        } else {
+            self.get_fleet(key)
+        }
+        .clone();
+
+        let escort = enable_escort.then(|| self.f2.clone());
+
+        let (route_sup, boss_sup) = if org_type.is_player() {
+            let route_sup = self.route_sup.map(|key| self.get_fleet(key).clone());
+            let boss_sup = self.boss_sup.map(|key| self.get_fleet(key).clone());
+
+            (route_sup, boss_sup)
+        } else {
+            (None, None)
+        };
+
+        Comp {
+            hq_level: self.hq_level,
+            org_type,
+            main,
+            escort,
+            route_sup,
+            boss_sup,
+        }
+    }
+
+    pub fn side(&self) -> Side {
+        self.org_type.side()
+    }
 
     pub fn create_move_ship_payload(&self, id: &str, x: i8, y: i8) -> Option<MoveShipPayload> {
         let (current_fleet_key, current_index) = FleetKey::iter().find_map(|key| {
@@ -310,9 +338,78 @@ impl Org {
     }
 }
 
-#[derive(Debug, Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
-pub struct MoveShipPayload {
-    current: (String, String, ShipKey),
-    target: (Option<String>, String, ShipKey),
+#[wasm_bindgen]
+impl Org {
+    #[wasm_bindgen(js_name = get_ship_mid)]
+    pub fn get_ship_mid_js(
+        &self,
+        fleet_key: Ts<FleetKey>,
+        ship_key: Ts<ShipKey>,
+    ) -> Result<Option<u16>, JsError> {
+        Ok(self.get_ship_mid(fleet_key.to_rust()?, ship_key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = get_ship_eid)]
+    pub fn get_ship_eid_js(
+        &self,
+        fleet_key: Ts<FleetKey>,
+        ship_key: Ts<ShipKey>,
+    ) -> Result<Option<String>, JsError> {
+        Ok(self.get_ship_eid(fleet_key.to_rust()?, ship_key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = get_fleet_id)]
+    pub fn get_fleet_id_js(&self, key: Ts<FleetKey>) -> Result<String, JsError> {
+        Ok(self.get_fleet_id(key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = clone_fleet)]
+    pub fn clone_fleet_js(&self, key: Ts<FleetKey>) -> Result<Fleet, JsError> {
+        Ok(self.clone_fleet(key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = clone_ship)]
+    pub fn clone_ship_js(
+        &self,
+        fleet_key: Ts<FleetKey>,
+        ship_key: Ts<ShipKey>,
+    ) -> Result<Option<Ship>, JsError> {
+        Ok(self.clone_ship(fleet_key.to_rust()?, ship_key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = ship_keys)]
+    pub fn ship_keys_js(&self, key: Ts<FleetKey>) -> Result<Vec<JsString>, JsError> {
+        Ok(self.ship_keys(key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = create_comp_by_key)]
+    pub fn create_comp_by_key_js(&self, key: Ts<FleetKey>) -> Result<Comp, JsError> {
+        Ok(self.create_comp_by_key(key.to_rust()?))
+    }
+
+    #[wasm_bindgen(js_name = side)]
+    pub fn side_js(&self) -> Result<Ts<Side>, JsError> {
+        Ok(self.side().into_ts()?)
+    }
+
+    #[wasm_bindgen(js_name = create_move_ship_payload)]
+    pub fn create_move_ship_payload_js(
+        &self,
+        id: &str,
+        x: i8,
+        y: i8,
+    ) -> Result<Option<Ts<MoveShipPayload>>, JsError> {
+        Ok(self
+            .create_move_ship_payload(id, x, y)
+            .map(|value| value.into_ts())
+            .transpose()?)
+    }
+
+    #[wasm_bindgen(js_name = get_fleet_type)]
+    pub fn get_fleet_type_js(&self, key: Ts<FleetKey>) -> Result<Option<Ts<FleetType>>, JsError> {
+        Ok(self
+            .get_fleet_type(key.to_rust()?)
+            .map(|value| value.into_ts())
+            .transpose()?)
+    }
 }

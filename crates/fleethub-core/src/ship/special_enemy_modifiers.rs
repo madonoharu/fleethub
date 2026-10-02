@@ -704,18 +704,17 @@ fn special_enemy_modifiers(
             mods.landing_forces_mod.merge(2.0, 100.0);
         }
 
-        if landing_forces_count >= 2 {
-            if army_infantry_chiha_kai_count >= 1
+        if landing_forces_count >= 2
+            && (army_infantry_chiha_kai_count >= 1
                 || army_infantry_count
                     + t97_tank_chiha_count
                     + t97_tank_chiha_kai_count
                     + t2_tank_count
                     + t4_tank_count
                     + t4_tank_kai_count
-                    >= 3
-            {
-                mods.landing_forces_group_mod.merge(3.0, 150.0);
-            }
+                    >= 3)
+        {
+            mods.landing_forces_group_mod.merge(3.0, 150.0);
         }
 
         if landing_forces_count >= 2 && t4_tank_count >= 1 {

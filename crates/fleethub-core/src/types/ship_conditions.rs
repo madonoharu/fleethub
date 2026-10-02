@@ -33,7 +33,6 @@ impl From<ShipConditionsDef> for ShipConditions {
 
 #[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, Tsify)]
 #[serde(default, from = "ShipConditionsDef")]
-#[tsify(from_wasm_abi, into_wasm_abi)]
 pub struct ShipConditions {
     #[serde(flatten)]
     pub position: ShipPosition,

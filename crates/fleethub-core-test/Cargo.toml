@@ -1,7 +1,8 @@
 [package]
 name = "fleethub-core-test"
 version = "0.1.0"
-edition = "2021"
+edition.workspace = true
+rust-version.workspace = true
 
 [build-dependencies]
-ureq = { version = "2.10.1", features = ["brotli"] }
+ureq = { version = "3.4.2", features = ["brotli"] }

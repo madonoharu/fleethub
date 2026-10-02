@@ -6,7 +6,6 @@ use tsify::Tsify;
 use super::{CustomPowerModifiers, GearVecState};
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct SlotSizeVecState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ss1: Option<u8>,
@@ -30,7 +29,6 @@ impl IntoIterator for SlotSizeVecState {
 }
 
 #[derive(Debug, Default, Clone, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct ShipState {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -85,7 +83,6 @@ pub struct ShipState {
     Debug, Default, Clone, Copy, PartialEq, Eq, Hash, FromPrimitive, Serialize, Deserialize, Tsify,
 )]
 #[serde(rename_all = "lowercase")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 pub enum ShipKey {
     #[default]
     S1,

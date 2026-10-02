@@ -1,4 +1,4 @@
-use std::{fmt::Debug, iter::Sum, ops::Index, slice::SliceIndex, usize};
+use std::{fmt::Debug, iter::Sum, ops::Index, slice::SliceIndex};
 
 use arrayvec::ArrayVec;
 

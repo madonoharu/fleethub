@@ -11,15 +11,14 @@ use crate::{
 };
 
 use super::{
+    FleetCutinAnalyzer, FleetCutinReport,
     anti_air_analyzer::{AntiAirAnalyzer, CompAntiAirAnalysis},
     contact_analyzer::ContactAnalysis,
     day_cutin_analyzer::{CompDayCutinAnalysis, DayCutinAnalyzer},
     night_cutin_analyzer::{CompNightCutinAnalysis, NightCutinAnalyzer},
-    FleetCutinAnalyzer, FleetCutinReport,
 };
 
 #[derive(Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct CompAnalysis {
     pub day: CompDayAnalysis,
     pub night: CompNightAnalysis,
@@ -28,7 +27,6 @@ pub struct CompAnalysis {
 }
 
 #[derive(Serialize, Tsify)]
-#[tsify(into_wasm_abi)]
 pub struct CompDayAnalysis {
     pub day_cutin: CompDayCutinAnalysis,
     pub fleet_cutin: Vec<FleetCutinReport<ShellingStyle>>,
@@ -41,7 +39,6 @@ pub struct CompNightAnalysis {
 }
 
 #[derive(Deserialize, Tsify)]
-#[tsify(from_wasm_abi)]
 pub struct CompAnalyzerConfig {
     pub engagement: Engagement,
     pub formation: Formation,

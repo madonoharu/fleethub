@@ -1,8 +1,8 @@
 use crate::{
     gear::Gear,
     types::{
-        ctype, gear_id, matches_gear_id, matches_ship_id, ship_id, GearAttr, GearType, ShipAttr,
-        ShipType,
+        GearAttr, GearType, ShipAttr, ShipType, ctype, gear_id, matches_gear_id, matches_ship_id,
+        ship_id,
     },
 };
 

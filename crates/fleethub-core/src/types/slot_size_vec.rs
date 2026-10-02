@@ -7,7 +7,6 @@ use tsify::Tsify;
 const SLOT_SIZE_VEC_CAPACITY: usize = 5;
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
 #[serde(transparent)]
 pub struct SlotSizeVec {
     #[tsify(type = "(number | null)[]")]

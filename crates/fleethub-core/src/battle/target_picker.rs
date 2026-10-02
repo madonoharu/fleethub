@@ -46,7 +46,7 @@ where
             main_slice
         } else if main_slice.is_empty() {
             escort_slice
-        } else if rng.r#gen() {
+        } else if rng.random() {
             main_slice
         } else {
             escort_slice
@@ -71,12 +71,12 @@ where
         };
 
         let flagship_protection =
-            picked.position.is_main_flagship() && rng.gen_bool(self.flagship_protection_rate);
+            picked.position.is_main_flagship() && rng.random_bool(self.flagship_protection_rate);
 
-        if flagship_protection {
-            if let Some(protector) = target_slice.iter().filter(|c| c.is_protector).choose(rng) {
-                picked = protector
-            }
+        if flagship_protection
+            && let Some(protector) = target_slice.iter().filter(|c| c.is_protector).choose(rng)
+        {
+            picked = protector
         }
 
         Some(picked.clone())

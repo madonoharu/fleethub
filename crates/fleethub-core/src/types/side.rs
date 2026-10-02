@@ -3,18 +3,13 @@ use std::ops::Not;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
-#[tsify(into_wasm_abi, from_wasm_abi)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Tsify)]
 pub enum Side {
+    #[default]
     Player,
     Enemy,
 }
 
-impl Default for Side {
-    fn default() -> Self {
-        Self::Player
-    }
-}
 impl Not for Side {
     type Output = Self;
 
