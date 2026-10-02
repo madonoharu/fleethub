@@ -1,6 +1,6 @@
 # Bun と Next.js の移行計画と実施結果
 
-2026年10月2日時点の npm レジストリの安定版を基準に、Yarn 4、Next.js 15、React 18 のワークスペースを Bun と Next.js の現行版へ移行した。lint は Oxlint、型チェックは TypeScript、DOM テストは Node.js 上の Jest を使用する。
+2026年10月2日時点の npm レジストリの安定版を基準に、Yarn 4、Next.js 15、React 18 のワークスペースを Bun と Next.js の現行版へ移行した。lint は Oxlint、型チェックは TypeScript、ユニット・DOM テストは Bun test、DOM は Happy DOM、ブラウザテストは Playwright を使用する。
 
 ## 計画と実装
 
@@ -8,8 +8,9 @@
 2. Yarn の設定とロックファイルを Bun に置き換え、`bun.lock` と `packageManager` でバージョンを固定した。インストールと Wasm ビルドを分離し、`setup` を依存順に実行する。
 3. npm の直接依存を最新安定版へ更新した。暗黙の推移依存を明示し、未使用の ESLint・SWC CLI・tsx・Next.js 旧プラグインを削除した。
 4. React、MUI、Tree View、Recharts、next-i18next、Ky、Firebase Admin の API 変更に対応した。MUI の system props は `sx`、入力設定は `slotProps` に移した。
-5. CI と開発手順を更新した。frozen install、Rust、Oxlint、型チェック、Jest、本番ビルド、配布成果物の検証を実行する。
+5. CI と開発手順を更新した。frozen install、Rust、Oxlint、型チェック、Bun test、本番ビルド、配布成果物の検証、Chromium の E2E を実行する。
 6. クリーンな worktree、本番 Chromium、配布ファイルだけを使う ISR の検証と、Astra xhigh の独立レビューで変更を確認した。
+7. ユニットとブラウザのテスト用 worktree を分け、回帰テストを並列に追加した。既存テストは明示的な `bun:test` import に移し、Jest 本体・型・設定を削除した。モジュールモックを使うため、テストファイルごとの隔離を必須にした。
 
 | 対象              | 採用バージョン |
 | ----------------- | -------------- |
@@ -21,9 +22,10 @@
 | MUI / Tree View   | 9.4.0 / 9.14.0 |
 | Recharts          | 3.10.1         |
 | next-i18next      | 16.3.1         |
-| Jest              | 30.5.2         |
+| Happy DOM         | 20.14.5        |
+| Playwright        | 1.63.0         |
 
-その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。最終監査で6 manifestの直接依存96件・89種類すべてが公式 npm レジストリの latest と一致した。Rust は既存の 1.99.0 と Cargo.lock を維持した。Node.js 24 LTS を開発ツールと CI に使用し、Volta のルート設定では24.14.0を指定した。各 workspace の `volta.extends` でルート設定を継承する。
+その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。依存更新時の監査では6 manifestの直接依存96件・89種類すべてが公式 npm レジストリの latest と一致した。その後、Jest の削除とテスト環境の追加を行い、追加パッケージも同日の latest を確認した。Rust は既存の 1.99.0 と Cargo.lock を維持した。Node.js 24 LTS を開発ツールと CI に使用し、Volta のルート設定では24.14.0を指定した。各 workspace の `volta.extends` でルート設定を継承する。
 
 ## 実行と配布の方針
 
@@ -37,16 +39,29 @@ Wasm の npm 依存は `raw_module` で直接参照し、依存管理は Bun に
 
 ISR の配布成果物には全言語の翻訳 JSON と `next-i18next.config.js` を明示的に同梱する。`verify:build` は Next.js の trace に含まれるファイルだけを一時ディレクトリへコピーし、Wasm 初期化と5言語の `getStaticProps` を実行する。元のワークスペースからのモジュール読み込みを検出し、翻訳・設定ファイルの欠落を CI で防ぐ。
 
-## 検証
+## 初回の依存関係・Next.js 移行時の検証
 
 - 移行前の Jest は18スイート・157件が成功した。
 - 生成物のない worktree で frozen install、Wasm を含む setup、Oxlint、TypeScript、Jest を順番に実行し、すべて成功した。`.next` がない状態の型チェックも成功した。
-- 移行後の Jest は19スイート・162件が成功した。生成済みテストを対象から除外し、重複実行を防いだ。
+- 初回移行後の Jest は19スイート・162件が成功した。この既存ケースを維持して Bun test に移した。生成済みテストを対象から除外し、重複実行を防いだ。
 - Rust は72件成功・1件 ignore。ベンチマークのテスト実行も成功した。
 - 本番ビルドは成功し、Bun の本番サーバーで5言語・実データ・クライアント Wasm・フォルダと編成の作成／名前変更／ツリー操作・数値入力・再読み込み後の永続化を確認した。未処理のブラウザエラーは0件。
 - 独立レビューではサーバーの Wasm パスと ISR の翻訳設定欠落を検出し、修正した。配布ファイルだけの隔離環境で全6翻訳 namespace と5言語の再生成を確認した。
 - 元の develop で本番ビルド、`verify:build`、Oxlint、型チェック、Jest、Rust を最終実行し、すべて成功した。`verify:build` は6ページの trace から2511パスを隔離して確認した。
 - 最終コードの別 worktree でも frozen install と共有 Cargo キャッシュからの setup が成功した。Bun の開発サーバーで5言語、開発用実データ、Wasm、入力とツリー操作、保存復元を確認し、未処理のブラウザエラーは0件。検証用サーバーは停止済み。
+
+## Bun test と自動回帰テストへの移行
+
+Jest 本体・環境パッケージ・型定義・設定を削除し、24ファイルの既存テストと追加テストを `bun:test` に移した。Bun のモジュールモックは `mock.restore()` だけでは元に戻らないため、通常のテストは `--isolate --parallel=2` で実行する。Happy DOM を preload で登録してから Testing Library と DOM matcher を読み込み、明示的な cleanup と時計・spy の復元を行う。DOM matcher のライブラリは `@testing-library/jest-dom/matchers` を利用し、Jest の実行系は使用しない。ブラウザの解析通信はユニットテストで SDK 境界を差し替える。
+
+- Bun test は183件・24ファイルが成功した。既存162件に管理 API・ストレージ・状態の回帰18件と、編成の配置3件を追加した。
+- seed 1472 のランダム実行でも183件が成功した。React StrictMode の数値入力、長押し・確定・値の制限・空入力の復元を維持した。
+- 開発サーバーの Playwright 9件が成功した。5言語の初回 SSR・Wasm とメニュー切り替え、実際の艦選択と Rust の索敵計算、上下限、ツリーのキーボード操作、IndexedDB 保存後の再読み込みを検証する。
+- ブラウザテストが、フォルダを選んで作成した編成がルートへ入る不具合を検出した。`createPlan` の保存先を reducer が挿入処理へ渡すように修正し、フォルダ内・同じ親の編成の直後・ルートへの追加を回帰テストで確認した。
+- 本番ビルドと本番サーバーの Playwright 9件も成功した。ブラウザ例外・コンソールエラー・予期しない外部通信は0件で、検証用サーバーは停止した。
+- ビルド成果物の Bun test は18件が成功した。コピーする trace の合成12件、実際の5言語再生成1件と、設定・翻訳・Wasm をコピー側から除いた3つの失敗検証、実際の Cargo Wasm metadata と過去のパス依存を再現する対照2件を含む。`verify:build` も6 manifest・2511パスの隔離環境で成功した。
+- Astra xhigh の独立実行でも183件の通常・ランダム実行と、最新のビルド成果物18件がすべて成功した。
+- Oxlint の型を使った解析、TypeScript、frozen install は成功した。CI に Bun test、ビルド成果物テスト、Chromium の本番 E2E を組み込んだ。
 
 ## 再現用コマンド
 
@@ -57,13 +72,17 @@ bun install --frozen-lockfile
 bun run setup
 bun run lint
 bun run typecheck
-bun run test --ci --runInBand
+bun run test
 cargo test --workspace --all-targets --locked
 bun run build
 bun run verify:build
+bun run test:build
+bun run playwright install --with-deps chromium
+bun run test:e2e
+E2E_WORKERS=1 bun run test:e2e:dev
 bun run dev
 ```
 
-`build` は setup を含む。`lint`、型チェック、Jest の前には setup が必要。Wasm 最適化と型チェックはメモリを多く使うため、メモリが限られる環境では同時実行を避ける。
+`build` は setup を含む。`lint`、型チェック、ユニットテストの前には setup が必要。Wasm 最適化、型チェック、DOM テスト、Next.js 開発サーバーはメモリを多く使うため、メモリが限られる環境では同時実行を避ける。ブラウザの workers は `E2E_WORKERS` で調整できる。
 
 ビルドと配布成果物検証は公開 GCS データを読み取るため、ネットワーク接続が必要。ブラウザ確認は公開バケットの CORS が許可する `http://localhost:3000` で行う。配布成果物検証は実際の再生成関数を確認し、ホスティングサービスの HTTP キャッシュ機構は検証しない。デプロイと外部データの更新はこの移行に含めない。

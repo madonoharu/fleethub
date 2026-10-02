@@ -34,7 +34,8 @@ test("the real traced build regenerates all five locales and initializes externa
 const missingArtifacts = [
   {
     file: "packages/site/next-i18next.config.js",
-    error: /Cannot find module.*next-i18next\.config\.js/s,
+    error:
+      /error: next-i18next was unable to find a user config at [^\r\n]*next-i18next\.config\.js/,
   },
   {
     file: "packages/site/public/locales/ja/common.json",

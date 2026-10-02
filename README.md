@@ -8,7 +8,7 @@
 
 ## Developing
 
-依存関係の管理と Next.js の実行には [Bun](https://bun.com/docs/installation) を使用します。Bun のバージョンはルートの `package.json` の `packageManager` に固定し、`bun.lock` をコミットします。Jest などの開発ツール用に Node.js 24 LTS も用意してください。Volta を使う環境では、ルートの Node.js 24.14.0 設定を各 workspace に継承し、リポジトリ内で同じバージョンを使用します。
+依存関係の管理と Next.js の実行には [Bun](https://bun.com/docs/installation) を使用します。Bun のバージョンはルートの `package.json` の `packageManager` に固定し、`bun.lock` をコミットします。Git hooks や Playwright などの開発ツール用に Node.js 24 LTS も用意してください。Volta を使う環境では、ルートの Node.js 24.14.0 設定を各 workspace に継承し、リポジトリ内で同じバージョンを使用します。
 
 リポジトリを clone し、作業用の branch を作成したら、ルートディレクトリで依存関係をインストールします。
 
@@ -35,7 +35,10 @@ bun run dev
 | `bun run start`                                 | 本番ビルドを起動                                    |
 | `bun run lint`                                  | Oxlint で静的解析                                   |
 | `bun run typecheck`                             | TypeScript の型チェック                             |
-| `bun run test --ci --runInBand`                 | Node.js 上の Jest でアプリのテストを実行            |
+| `bun run test`                                  | Bun test でユニット・DOM テストを隔離して並列実行   |
+| `bun run test:build`                            | ビルド成果物・Wasm・翻訳の同梱と欠落時の失敗を検証  |
+| `bun run test:e2e`                              | 本番ビルドを Chromium で検証                        |
+| `bun run test:e2e:dev`                          | 開発サーバーを Chromium で検証                      |
 | `cargo test --workspace --all-targets --locked` | Rust ワークスペースのテストを実行                   |
 | `bun run build:core`                            | Wasm と TypeScript 型定義を再生成                   |
 
@@ -43,8 +46,12 @@ bun run dev
 
 Next.js は既存の Pages Router を使用し、Wasm のバンドルに対応する Webpack でビルドします。
 
+テストランナーは Bun test を使用し、DOM は Happy DOM、操作と検証は Testing Library を使用します。`bun run test` は `bun test --isolate --parallel=2 ./packages` を実行します。ブラウザ・ビルド成果物のテストと生成済みファイルは通常のユニットテストから除外します。
+
+ブラウザテストの初回は `bun run playwright install --with-deps chromium` を実行してください。本番テストの前には `bun run build` が必要です。ブラウザのデータは公開データの固定 fixture を使用します。詳しい実行手順は [tests/e2e/README.md](tests/e2e/README.md) を参照してください。メモリが少ない環境では `E2E_WORKERS=1 bun run test:e2e:dev` で実行できます。
+
 ## CI とホスティング
 
-CI は `bun install --frozen-lockfile` と `bun run setup` を分けて実行し、Rust テスト、Oxlint、型チェック、Jest、本番ビルドを確認します。データ更新用の API workflow もワークスペースをビルドしてから更新スクリプトを実行します。
+CI は `bun install --frozen-lockfile` と `bun run setup` を分けて実行し、Rust テスト、Oxlint、型チェック、Bun test、本番ビルド、配布成果物テスト、Chromium での E2E を確認します。データ更新用の API workflow もワークスペースをビルドしてから更新スクリプトを実行します。
 
 ホスティング環境ではリポジトリルートで依存関係をインストールし、`packages/site` を Next.js アプリとして使用してください。アプリの `build` スクリプトがワークスペースを準備するため、ビルド環境にも Rustup と wasm-pack が必要です。依存関係を変更した場合は `bun install` で `bun.lock` を更新し、変更した `package.json` と一緒にコミットしてください。
