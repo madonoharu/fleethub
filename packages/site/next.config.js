@@ -64,6 +64,12 @@ const config = {
     config.experiments.asyncWebAssembly = true;
     config.experiments.layers = true;
 
+    if (isServer) {
+      // Workspace symlinks resolve outside node_modules, so Next's package
+      // externalization misses this wrapper. Preserve __dirname for its Wasm.
+      config.externals.unshift({ "fleethub-core": "commonjs fleethub-core" });
+    }
+
     // fix warnings for async functions in the browser (https://github.com/vercel/next.js/issues/64792)
     if (!isServer) {
       config.output.environment = {

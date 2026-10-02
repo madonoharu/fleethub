@@ -105,8 +105,10 @@ const NumberInputAdornment: React.FCX<NumberInputAdornmentProps> = ({
   );
 };
 
-export interface NumberInputProps
-  extends Omit<InputProps, "type" | "onChange" | "onInput"> {
+export interface NumberInputProps extends Omit<
+  InputProps,
+  "type" | "onChange" | "onInput"
+> {
   value: number | null;
   onChange?: (value: number) => void;
   min?: number;
@@ -145,14 +147,15 @@ const NumberInput: React.FC<NumberInputProps> = ({
     }
   }, [value]);
 
+  const inputSlotProps = slotProps?.input;
   const mergedInputProps = useMemo<
     NonNullable<NonNullable<InputProps["slotProps"]>["input"]>
   >(
     () => (ownerState) => {
       const inputProps =
-        typeof slotProps?.input === "function"
-          ? slotProps.input(ownerState)
-          : slotProps?.input;
+        typeof inputSlotProps === "function"
+          ? inputSlotProps(ownerState)
+          : inputSlotProps;
       const disabled = textFieldProps.disabled || inputProps?.disabled || false;
       const update = (value: string) => {
         const num = evaluate(value);
@@ -207,7 +210,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         ...inputProps,
       };
     },
-    [min, max, step, textFieldProps.disabled, onChange, slotProps?.input],
+    [min, max, step, textFieldProps.disabled, onChange, inputSlotProps],
   );
 
   return (

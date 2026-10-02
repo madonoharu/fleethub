@@ -2,6 +2,11 @@
   "name": "@fh/admin",
   "license": "UNLICENSED",
   "main": "esm/index.js",
+  "exports": {
+    ".": "./esm/index.js",
+    "./storage": "./esm/storage.js",
+    "./src": "./src/index.ts"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc -m esnext --outDir esm"

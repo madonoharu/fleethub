@@ -1,4 +1,4 @@
-import { storage } from "@fh/admin";
+import { fetchGenerationMap } from "@fh/admin/storage";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -67,7 +67,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async ({
   locale = "",
 }) => {
   const [generationMap, ssrConfig] = await Promise.all([
-    storage.fetchGenerationMap(),
+    fetchGenerationMap(),
     serverSideTranslations(locale, [
       "common",
       "gears",
