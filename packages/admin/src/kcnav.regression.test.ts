@@ -1,31 +1,47 @@
-/** @jest-environment node */
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  mock,
+  spyOn,
+} from "bun:test";
 
 import { KcnavClient } from "./kcnav";
 
 const graph = { route: {}, spots: {} };
+const lbasdistance: Awaited<ReturnType<KcnavClient["getLbasdistance"]>> = {
+  A: [],
+};
 const enemycomps = { entries: [] };
+let originalEnvironment: NodeJS.ProcessEnv;
+
+function respond(result: unknown) {
+  return spyOn(globalThis, "fetch")
+    .mockRejectedValue(new Error("Unexpected network request"))
+    .mockResolvedValueOnce(Response.json({ result }));
+}
 
 beforeEach(() => {
-  jest.replaceProperty(process, "env", {
+  originalEnvironment = process.env;
+  process.env = {
     NODE_ENV: "test",
     KCS_SCRIPT: "",
     SITE_VERSION: "test",
     CORE_VERSION: "test",
     MASTER_DATA_PATH: "data/master_data.json",
-  });
+  };
 });
 
 afterEach(() => {
-  jest.restoreAllMocks();
+  process.env = originalEnvironment;
+  mock.restore();
 });
 
 describe("Kcnav requests with real Ky", () => {
   it("joins the maps prefix and parses map keys returned by the all endpoint", async () => {
-    const fetch = jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async () =>
-        Response.json({ result: ["1-1", "74-3"] }),
-      );
+    const fetch = respond(["1-1", "74-3"]);
 
     await expect(new KcnavClient(null).all()).resolves.toEqual([11, 743]);
     const request = fetch.mock.calls[0][0] as Request;
@@ -35,13 +51,11 @@ describe("Kcnav requests with real Ky", () => {
 
   it.each([
     ["getGraph", "74-3", graph],
-    ["getLbasdistance", "74-3/lbasdistance", { A: [] }],
+    ["getLbasdistance", "74-3/lbasdistance", lbasdistance],
   ] as const)(
     "%s requests the map-specific endpoint and unwraps the result",
     async (method, suffix, result) => {
-      const fetch = jest
-        .spyOn(globalThis, "fetch")
-        .mockImplementation(async () => Response.json({ result }));
+      const fetch = respond(result);
 
       await expect(new KcnavClient(null)[method](743)).resolves.toEqual(result);
       const request = fetch.mock.calls[0][0] as Request;
@@ -52,9 +66,9 @@ describe("Kcnav requests with real Ky", () => {
   );
 
   it("requires a token for enemy compositions before making a request", () => {
-    const fetch = jest
-      .spyOn(globalThis, "fetch")
-      .mockRejectedValue(new Error("Unexpected network request"));
+    const fetch = spyOn(globalThis, "fetch").mockRejectedValue(
+      new Error("Unexpected network request"),
+    );
 
     expect(() => new KcnavClient(null).getEnemycomps(743)).toThrow(
       "Token not found",
@@ -67,9 +81,9 @@ describe("Kcnav requests with real Ky", () => {
     const cache = new Map<unknown, unknown>([
       ["74-3/nodes/all/enemycomps", { entries: [{ stale: true }] }],
     ]);
-    const fetch = jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async () => Response.json({ result: enemycomps }));
+    const fetch = respond(enemycomps).mockResolvedValueOnce(
+      Response.json({ result: enemycomps }),
+    );
     const client = new KcnavClient(74, cache);
 
     await expect(client.getEnemycomps(743)).resolves.toEqual(enemycomps);
@@ -85,10 +99,8 @@ describe("Kcnav requests with real Ky", () => {
   });
 
   it("reuses historical graph results without a second network request", async () => {
-    const fetch = jest
-      .spyOn(globalThis, "fetch")
-      .mockImplementation(async () => Response.json({ result: graph }));
-    jest.spyOn(console, "log").mockImplementation(() => {});
+    const fetch = respond(graph);
+    spyOn(console, "log").mockImplementation(() => {});
     const client = new KcnavClient(null, new Map());
 
     await expect(client.getGraph(11)).resolves.toEqual(graph);

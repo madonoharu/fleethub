@@ -1,3 +1,5 @@
+import { describe, expect, it } from "bun:test";
+
 import { includes, sumBy, uniq, groupBy } from "../src";
 
 describe("utils/array", () => {
@@ -22,7 +24,7 @@ describe("utils/array", () => {
         { name: "bar", value: 1 },
         { name: "baz", value: 2 },
       ],
-      (item) => item.value
+      (item) => item.value,
     );
 
     expect(result).toEqual({

@@ -1,13 +1,21 @@
-/** @jest-environment node */
-
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  mock,
+} from "bun:test";
 import type { App, Credential } from "firebase-admin/app";
 
-jest.mock("firebase-admin/app", () => ({
-  cert: jest.fn(),
-  getApp: jest.fn(),
-  getApps: jest.fn(() => []),
-  initializeApp: jest.fn(),
-}));
+const sdk = {
+  cert: mock<typeof import("firebase-admin/app").cert>(),
+  getApp: mock<typeof import("firebase-admin/app").getApp>(),
+  getApps: mock<() => App[]>(() => []),
+  initializeApp: mock<typeof import("firebase-admin/app").initializeApp>(),
+};
+await mock.module("firebase-admin/app", () => sdk);
 
 const defaultApp = { name: "[DEFAULT]" } as App;
 const credential: Credential = {
@@ -18,28 +26,44 @@ const credential: Credential = {
 };
 
 function load(apps: App[] = []) {
-  const sdk = jest.mocked(
-    jest.requireMock<typeof import("firebase-admin/app")>("firebase-admin/app"),
-  );
   sdk.getApps.mockReturnValue(apps);
-  const credentials =
-    require("./credentials") as typeof import("./credentials");
   return { sdk, ...credentials };
 }
 
+const testEnvironment: NodeJS.ProcessEnv = {
+  NODE_ENV: "test",
+  KCS_SCRIPT: "",
+  SITE_VERSION: "test",
+  CORE_VERSION: "test",
+  MASTER_DATA_PATH: "data/master_data.json",
+};
+let originalEnvironment: NodeJS.ProcessEnv;
+let credentials: typeof import("./credentials");
+
+beforeAll(async () => {
+  const environment = process.env;
+  process.env = { ...testEnvironment };
+  sdk.getApps.mockReturnValue([{ name: "another-app" } as App]);
+  try {
+    credentials = await import("./credentials");
+    expect(sdk.getApps).not.toHaveBeenCalled();
+    expect(sdk.cert).not.toHaveBeenCalled();
+    expect(sdk.initializeApp).not.toHaveBeenCalled();
+  } finally {
+    process.env = environment;
+  }
+});
+
 beforeEach(() => {
-  jest.resetModules();
-  jest.replaceProperty(process, "env", {
-    NODE_ENV: "test",
-    KCS_SCRIPT: "",
-    SITE_VERSION: "test",
-    CORE_VERSION: "test",
-    MASTER_DATA_PATH: "data/master_data.json",
-  });
+  for (const method of Object.values(sdk)) method.mockReset();
+  sdk.getApps.mockReturnValue([]);
+  originalEnvironment = process.env;
+  process.env = { ...testEnvironment };
 });
 
 afterEach(() => {
-  jest.restoreAllMocks();
+  process.env = originalEnvironment;
+  mock.restore();
 });
 
 describe("lazy Firebase credentials", () => {

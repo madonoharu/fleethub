@@ -1,3 +1,5 @@
+import { describe, expect, it } from "bun:test";
+
 import { atLeastOne, round, floor, expToAce } from "../src";
 
 describe("utils/math", () => {

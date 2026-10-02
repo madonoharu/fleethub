@@ -1,19 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import { entitiesSlice } from "./entitiesSlice";
+import { expect, it, mock } from "bun:test";
+import * as toolkit from "@reduxjs/toolkit";
 
-jest.mock("@reduxjs/toolkit", () => {
-  const originalModule =
-    jest.requireActual<typeof import("@reduxjs/toolkit")>("@reduxjs/toolkit");
+const originalModule = { ...toolkit };
+let count = 0;
+await mock.module("@reduxjs/toolkit", () => ({
+  ...originalModule,
+  nanoid: () => `${count++}`,
+}));
 
-  let count = 0;
-  const nanoid = () => `${count++}`;
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    nanoid,
-  };
-});
+const { entitiesSlice } = await import("./entitiesSlice");
 
 it("entitiesSlice", () => {
   const initialState = entitiesSlice.getInitialState();

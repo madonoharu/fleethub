@@ -1,8 +1,12 @@
+import { expect, it, mock } from "bun:test";
+
 import { ActionCreators } from "redux-undo";
 
-import { appSlice } from "./appSlice";
-import { configSlice } from "./configSlice";
-import { createStore } from "./createStore";
+await mock.module("@firebase/analytics", () => ({ getAnalytics: mock() }));
+
+const { appSlice } = await import("./appSlice");
+const { configSlice } = await import("./configSlice");
+const { createStore } = await import("./createStore");
 
 function setup() {
   const store = createStore();

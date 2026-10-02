@@ -1,49 +1,69 @@
-/** @jest-environment node */
-
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  mock,
+} from "bun:test";
 import type { App } from "firebase-admin/app";
 
-jest.mock("firebase-admin/app", () => ({
-  cert: jest.fn(),
-  getApp: jest.fn(),
-  getApps: jest.fn(() => []),
-  initializeApp: jest.fn(),
-}));
-jest.mock("firebase-admin/storage", () => ({ getStorage: jest.fn() }));
-jest.mock("got", () => ({
-  __esModule: true,
-  default: { get: jest.fn() },
-}));
+const app = {
+  cert: mock<typeof import("firebase-admin/app").cert>(),
+  getApp: mock<typeof import("firebase-admin/app").getApp>(),
+  getApps: mock<() => App[]>(() => []),
+  initializeApp: mock<typeof import("firebase-admin/app").initializeApp>(),
+};
+const storage = {
+  getStorage: mock<typeof import("firebase-admin/storage").getStorage>(),
+};
+const got = { get: mock<typeof import("got").default.get>() };
+await mock.module("firebase-admin/app", () => app);
+await mock.module("firebase-admin/storage", () => storage);
+await mock.module("got", () => ({ default: got }));
 
 function load(apps: App[] = []) {
-  const app = jest.mocked(
-    jest.requireMock<typeof import("firebase-admin/app")>("firebase-admin/app"),
-  );
   app.getApps.mockReturnValue(apps);
-  const storage = jest.mocked(
-    jest.requireMock<typeof import("firebase-admin/storage")>(
-      "firebase-admin/storage",
-    ),
-  );
-  const got = jest.mocked(
-    jest.requireMock<typeof import("got")>("got").default,
-  );
-  const operations = require("./storage") as typeof import("./storage");
   return { app, storage, got, operations };
 }
 
+const testEnvironment: NodeJS.ProcessEnv = {
+  NODE_ENV: "test",
+  KCS_SCRIPT: "",
+  SITE_VERSION: "test",
+  CORE_VERSION: "test",
+  MASTER_DATA_PATH: "data/master_data.json",
+};
+let originalEnvironment: NodeJS.ProcessEnv;
+let operations: typeof import("./storage");
+
+beforeAll(async () => {
+  const environment = process.env;
+  process.env = { ...testEnvironment };
+  app.getApps.mockReturnValue([{ name: "another-app" } as App]);
+  try {
+    operations = await import("./storage");
+    expect(app.getApps).not.toHaveBeenCalled();
+    expect(app.initializeApp).not.toHaveBeenCalled();
+    expect(storage.getStorage).not.toHaveBeenCalled();
+  } finally {
+    process.env = environment;
+  }
+});
+
 beforeEach(() => {
-  jest.resetModules();
-  jest.replaceProperty(process, "env", {
-    NODE_ENV: "test",
-    KCS_SCRIPT: "",
-    SITE_VERSION: "test",
-    CORE_VERSION: "test",
-    MASTER_DATA_PATH: "data/master_data.json",
-  });
+  for (const method of Object.values(app)) method.mockReset();
+  app.getApps.mockReturnValue([]);
+  storage.getStorage.mockReset();
+  got.get.mockReset();
+  originalEnvironment = process.env;
+  process.env = { ...testEnvironment };
 });
 
 afterEach(() => {
-  jest.restoreAllMocks();
+  process.env = originalEnvironment;
+  mock.restore();
 });
 
 describe("storage authentication boundary", () => {
@@ -52,7 +72,7 @@ describe("storage authentication boundary", () => {
       { name: "another-app" } as App,
     ]);
     const data = { revision: 7 };
-    const json = jest.fn().mockResolvedValue(data);
+    const json = mock().mockResolvedValue(data);
     got.get.mockReturnValue({ json } as unknown as ReturnType<typeof got.get>);
 
     expect(app.getApps).not.toHaveBeenCalled();
@@ -84,9 +104,9 @@ describe("storage authentication boundary", () => {
     const defaultApp = { name: "[DEFAULT]" } as App;
     app.getApps.mockReturnValue([defaultApp]);
     app.getApp.mockReturnValue(defaultApp);
-    const exists = jest.fn().mockResolvedValue([true]);
-    const file = jest.fn(() => ({ exists }));
-    const bucket = jest.fn(() => ({ file }));
+    const exists = mock().mockResolvedValue([true]);
+    const file = mock(() => ({ exists }));
+    const bucket = mock(() => ({ file }));
     storage.getStorage.mockReturnValue({
       bucket,
     } as unknown as ReturnType<typeof storage.getStorage>);
@@ -114,8 +134,8 @@ describe("storage authentication boundary", () => {
       apps.push(defaultApp);
       return defaultApp;
     });
-    const save = jest.fn().mockResolvedValue(undefined);
-    const file = jest.fn(() => ({ save }));
+    const save = mock().mockResolvedValue(undefined);
+    const file = mock(() => ({ save }));
     storage.getStorage.mockReturnValue({
       bucket: () => ({ file }),
     } as unknown as ReturnType<typeof storage.getStorage>);

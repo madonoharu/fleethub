@@ -1,3 +1,5 @@
+import { describe, expect, it } from "bun:test";
+
 import { nonNullable, range } from "../src";
 
 describe("utils/misc", () => {

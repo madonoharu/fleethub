@@ -1,3 +1,5 @@
+import { describe, expect, it } from "bun:test";
+
 import { intoCellValue } from "./SpreadsheetTable";
 
 describe("spreadsheet cell conversion", () => {
