@@ -45,3 +45,6 @@ jobs:
         run: bun run build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+
+      - name: Verify deployment artifacts and ISR translations
+        run: bun run verify:build

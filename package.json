@@ -28,7 +28,8 @@
     "update:storage": "bun --env-file=.env scripts/updateStorage.ts",
     "update:types": "bun --env-file=.env scripts/updateTypes.ts",
     "redeploy": "bun --env-file=.env scripts/redeploy.ts",
-    "lint:fix": "bun run lint --fix"
+    "lint:fix": "bun run lint --fix",
+    "verify:build": "bun scripts/verify-build-traces.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json}": "prettier --cache --write",
@@ -65,7 +66,6 @@
     "node": ">=22.22.1"
   },
   "trustedDependencies": [
-    "@swc/core",
     "sharp"
   ]
 }

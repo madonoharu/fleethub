@@ -12,6 +12,11 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   watchPathIgnorePatterns: "/target/debug/",
+  testPathIgnorePatterns: [
+    "<rootDir>/target/",
+    "<rootDir>/packages/[^/]+/(?:esm|lib|cjs|dist)/",
+    "<rootDir>/crates/[^/]+/(?:pkg|node)/",
+  ],
   testEnvironment: "jest-environment-jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 };
