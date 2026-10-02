@@ -9,9 +9,11 @@ import enemy from "./fixtures/enemy-1501.json";
 import mapData from "./fixtures/map-11.json";
 import baseMasterData from "./fixtures/master-data.json";
 
-const masterData = JSON.stringify({
-  ...baseMasterData,
-  ships: [...baseMasterData.ships, enemy],
+test.use({
+  masterDataJSON: JSON.stringify({
+    ...baseMasterData,
+    ships: [...baseMasterData.ships, enemy],
+  }),
 });
 
 test("damage distribution renders real Wasm analysis and finite D3 geometry", async ({
@@ -27,19 +29,6 @@ test("damage distribution renders real Wasm analysis and finite D3 geometry", as
         contentType: "image/svg+xml",
         body: '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>',
       }),
-  );
-  await page.route(
-    (url) =>
-      url.origin === "https://storage.googleapis.com" &&
-      /^\/kcfleethub\/data\/master_data(?:\.dev)?\.json$/.test(url.pathname),
-    async (route) => {
-      runtime.masterDataPaths.push(new URL(route.request().url()).pathname);
-      await route.fulfill({
-        contentType: "application/json",
-        headers: { "access-control-allow-origin": "*" },
-        body: masterData,
-      });
-    },
   );
   await page.route(
     (url) =>

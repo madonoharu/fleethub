@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 import { test as base, expect, type Page } from "@playwright/test";
 
-const masterData = readFileSync(
+const defaultMasterDataJSON = readFileSync(
   resolve(import.meta.dirname, "fixtures/master-data.json"),
   "utf8",
 );
@@ -46,11 +46,16 @@ type BrowserRuntime = {
   masterDataPaths: string[];
 };
 
+type BrowserOptions = {
+  masterDataJSON: string;
+};
+
 type WasmWindow = Window & { __fleethubWasmInstantiations: number };
 
-export const test = base.extend<{ runtime: BrowserRuntime }>({
+export const test = base.extend<BrowserOptions & { runtime: BrowserRuntime }>({
+  masterDataJSON: [defaultMasterDataJSON, { option: true }],
   runtime: [
-    async ({ context, page, baseURL }, use) => {
+    async ({ context, page, baseURL, masterDataJSON }, use) => {
       const runtime: BrowserRuntime = {
         wasmResponses: [],
         masterDataPaths: [],
@@ -126,7 +131,7 @@ export const test = base.extend<{ runtime: BrowserRuntime }>({
           return route.fulfill({
             contentType: "application/json",
             headers: corsHeaders,
-            body: masterData,
+            body: masterDataJSON,
           });
         }
         if (
