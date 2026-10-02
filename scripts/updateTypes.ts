@@ -147,7 +147,7 @@ function createEnumItem(row: Dict<string, unknown>): EnumItem {
   return { tag, id, name };
 }
 
-async function main() {
+export async function main() {
   const spreadsheet = new MasterDataSpreadsheet();
   const [tables, start2, ctypeNames] = await Promise.all([
     spreadsheet.readTables([
@@ -172,16 +172,19 @@ async function main() {
       name: "GearAttr",
       items: tables.gear_attrs.rows.map(createEnumItem),
       unknown: null,
+      deriveDefault: true,
     },
     ShipType: {
       name: "ShipType",
       items: tables.ship_types.rows.map(createEnumItem),
       unknown: 0,
+      deriveDefault: true,
     },
     ShipAttr: {
       name: "ShipAttr",
       items: tables.ship_attrs.rows.map(createEnumItem),
       unknown: null,
+      deriveDefault: true,
     },
   };
 
@@ -194,4 +197,6 @@ async function main() {
   );
 }
 
-main().catch((err) => console.error(err));
+if (import.meta.main) {
+  main().catch((err) => console.error(err));
+}
