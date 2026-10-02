@@ -8,7 +8,7 @@
 
 ## Developing
 
-依存関係の管理と Next.js の実行には [Bun](https://bun.com/docs/installation) を使用します。Bun のバージョンはルートの `package.json` の `packageManager` に固定し、`bun.lock` をコミットします。Jest などの開発ツール用に Node.js 24 LTS も用意してください。
+依存関係の管理と Next.js の実行には [Bun](https://bun.com/docs/installation) を使用します。Bun のバージョンはルートの `package.json` の `packageManager` に固定し、`bun.lock` をコミットします。Jest などの開発ツール用に Node.js 24 LTS も用意してください。Volta を使う環境では、リポジトリ内で Node.js 24.14.0 を使用する設定にしています。
 
 リポジトリを clone し、作業用の branch を作成したら、ルートディレクトリで依存関係をインストールします。
 
