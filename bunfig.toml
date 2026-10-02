@@ -1,0 +1,15 @@
+[test]
+preload = ["./tests/test-setup.ts"]
+pathIgnorePatterns = [
+  "tests/e2e/**",
+  "tests/build/**",
+  "**/esm/**",
+  "**/lib/**",
+  "**/cjs/**",
+  "**/dist/**",
+  "**/.next/**",
+  "target/**",
+  "node_modules/**",
+  "crates/fleethub-core/pkg/**",
+  "crates/fleethub-core/node/**",
+]

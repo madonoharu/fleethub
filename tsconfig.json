@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "allowJs": false,
+    "allowImportingTsExtensions": true,
     "rootDir": ".",
-    "types": ["node", "jest"]
+    "types": ["node", "bun"]
   },
   "extends": "./tsconfig.base.json",
-  "include": ["packages", "scripts", "crates"],
+  "include": ["packages", "scripts", "crates", "tests", "playwright.config.ts"],
   "exclude": ["node_modules", "**/dist", "**/lib", "**/esm", "**/.next"]
 }
