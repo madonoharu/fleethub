@@ -8,15 +8,8 @@ import { REHYDRATE, FLUSH } from "redux-persist";
 
 import { useAppDispatch, useSnackbar } from "../../../hooks";
 import { persistConfig } from "../../../store";
+import { InvalidBackupError, parseBackupData } from "../../../store/backup";
 import { Dialog } from "../../organisms";
-
-interface BackupData {
-  _persist: object;
-}
-
-function isBackupData(data: unknown): data is BackupData {
-  return isUnknownRecord(data) && "_persist" in data;
-}
 
 const BackupScreen: React.FC = () => {
   const { t } = useTranslation("common");
@@ -40,11 +33,11 @@ const BackupScreen: React.FC = () => {
     Promise.all(results)
       .then((array) => {
         const data = array[0];
-        if (isBackupData(data)) {
-          download(data, filename);
-        } else {
+        // Keep export available even when existing data needs to be repaired.
+        if (!isUnknownRecord(data) || !("_persist" in data)) {
           throw new Error("flushResult is unknown");
         }
+        download(data, filename);
       })
       .catch((error) => {
         console.error(error);
@@ -63,29 +56,19 @@ const BackupScreen: React.FC = () => {
     file
       ?.text()
       .then((text) => JSON.parse(text) as unknown)
-      .then((data) => {
-        if (isBackupData(data)) {
-          const action = {
-            type: REHYDRATE,
-            key: persistConfig.key,
-            payload: data,
-          };
-
-          dispatch(action);
-          handleFileRemove();
-          Snackbar.show({
-            severity: "success",
-            message: "success",
-          });
-        } else {
-          throw Error("データが適合しません");
-        }
+      .then(parseBackupData)
+      .then((payload) => {
+        dispatch({ type: REHYDRATE, key: persistConfig.key, payload });
+        handleFileRemove();
+        Snackbar.show({ severity: "success", message: "success" });
       })
       .catch((error) => {
-        console.error(error);
+        const invalidInput = error instanceof InvalidBackupError || error instanceof SyntaxError;
+        if (!invalidInput) console.error(error);
+        if (invalidInput) handleFileRemove();
         Snackbar.show({
           severity: "error",
-          message: String(error),
+          message: invalidInput ? "データが適合しません" : String(error),
         });
       });
   };

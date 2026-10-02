@@ -49,6 +49,10 @@ assert exact Rust-generated LOS scores after changing HQ level, including both
 numeric bounds, and after selecting a real ship. The persistence test creates a folder and plan, uses tree
 keyboard navigation, waits for the actual IndexedDB save, and reloads.
 
+Backup tests download a real backup, restore edited plan data and reload to
+verify persistence. A damaged backup with missing entity tables must show an
+error while preserving the existing plans in both the UI and IndexedDB.
+
 Tailwind styles are verified in Chromium with the application's generated CSS.
 The selection tests check initial focus, immediate search input, Escape and
 focus restoration, search-clear visibility before/after hover, and the dialog's
