@@ -28,6 +28,7 @@ module.exports = async () => {
 
   const esmPatterns = [
     "got",
+    "ky",
     "p-cancelable",
     "@szmarczak/http-timer",
     "lowercase-keys",
