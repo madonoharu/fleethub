@@ -1,7 +1,7 @@
 import { Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import { Comp, Fleet } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { CompProvider, useCompContext } from "../../../hooks";

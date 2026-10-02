@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useFile } from "../../../hooks";

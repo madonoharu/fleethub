@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo, useState } from "react";
 import {
   Area,

@@ -8,7 +8,7 @@ import { LabeledValue } from "../../atoms";
 
 const displayWithFloor = (
   v: number | null | undefined,
-  fractionDigits = 3
+  fractionDigits = 3,
 ): string => {
   if (v === null || v === undefined) return "";
   if (Number.isInteger(v)) return v.toString();
@@ -24,7 +24,13 @@ const MiscScreen: React.FC<Props> = ({ fleet, comp }) => {
   const tp = comp.transport_point();
 
   return (
-    <Stack width="fit-content" ml={5} divider={<Divider />}>
+    <Stack
+      divider={<Divider />}
+      sx={{
+        width: "fit-content",
+        ml: 5,
+      }}
+    >
       <LabeledValue variant="body1" label="TP(S勝利)" value={tp} />
       <LabeledValue
         variant="body1"

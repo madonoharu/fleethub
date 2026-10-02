@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { MasterShip, SlotSizeVec, StatInterval } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useRootSelector, useMasterData } from "../../../hooks";
@@ -80,19 +80,19 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
           changes: {
             [key]: value,
           },
-        })
+        }),
       );
     };
 
   const handleStatIntervalChange =
-    (key: typeof STAT_INTERVAL_KEYS[number]) => (stat: StatInterval) => {
+    (key: (typeof STAT_INTERVAL_KEYS)[number]) => (stat: StatInterval) => {
       dispatch(
         configSlice.actions.updateMasterShip({
           id: shipId,
           changes: {
             [key]: stat,
           },
-        })
+        }),
       );
     };
 
@@ -101,12 +101,17 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
       configSlice.actions.updateMasterShip({
         id: shipId,
         changes: { slots },
-      })
+      }),
     );
   };
 
   return (
-    <Stack className={className} gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
       <ShipNameplate shipId={ship.ship_id} />
 
       {STAT_INTERVAL_KEYS.map((key) => (

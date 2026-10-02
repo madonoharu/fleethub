@@ -1,7 +1,7 @@
 import { FLEET_KEYS, nonNullable, uppercase } from "@fh/utils";
 import { Paper, Stack } from "@mui/material";
 import type { NodeAttackAnalyzerConfig, NodeState, Org } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo, useState } from "react";
 
 import {
@@ -105,11 +105,21 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
   };
 
   return (
-    <Stack gap={1} sx={{ pt: 2 }}>
+    <Stack
+      sx={{
+        gap: 1,
+        pt: 2,
+      }}
+    >
       <NodeStepper file={file} activeStep={activeStep} />
 
       <Paper sx={{ p: 1 }}>
-        <Stack direction="row" gap={1}>
+        <Stack
+          direction="row"
+          sx={{
+            gap: 1,
+          }}
+        >
           <Select
             css={{ width: 80 }}
             label={t("Sortie")}
@@ -156,15 +166,35 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
         />
       </Paper>
 
-      <Stack direction="row" gap={1} flexWrap="wrap">
+      <Stack
+        direction="row"
+        sx={{
+          gap: 1,
+          flexWrap: "wrap",
+        }}
+      >
         {leftShip && (
-          <Stack gap={1} flexBasis={1} flexGrow={1} minWidth={0}>
+          <Stack
+            sx={{
+              gap: 1,
+              flexBasis: 1,
+              flexGrow: 1,
+              minWidth: 0,
+            }}
+          >
             <ShipCard ship={leftShip} comp={leftComp} visibleMiscStats />
             <CustomModifiersDialog ship={leftShip} />
           </Stack>
         )}
         {rightShip && (
-          <Stack gap={1} flexBasis={1} flexGrow={1} minWidth={0}>
+          <Stack
+            sx={{
+              gap: 1,
+              flexBasis: 1,
+              flexGrow: 1,
+              minWidth: 0,
+            }}
+          >
             <ShipCard ship={rightShip} comp={rightComp} visibleMiscStats />
             <CustomModifiersDialog ship={rightShip} />
           </Stack>

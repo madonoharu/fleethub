@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import { AirState } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 const Label = styled.span`
@@ -14,7 +14,7 @@ const FighterPowerValue = styled.span<{ airState: AirState }>(
   ({ theme, airState }) => css`
     color: ${theme.colors[airState]};
     margin-left: 8px;
-  `
+  `,
 );
 
 type EnemyFighterPowerProps = {

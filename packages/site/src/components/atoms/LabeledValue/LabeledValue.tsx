@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
 import { Typography, StyledComponentProps } from "@mui/material";
-import { Variant } from "@mui/material/styles/createTypography";
+import { TypographyVariant } from "@mui/material/styles";
 import React from "react";
 
 type LabeledValueProps = StyledComponentProps<"label" | "value"> & {
   label: React.ReactNode;
   value: React.ReactNode;
-  variant?: Variant | undefined;
+  variant?: TypographyVariant | undefined;
 };
 
 const LabeledValue: React.FCX<LabeledValueProps> = ({
@@ -19,10 +19,12 @@ const LabeledValue: React.FCX<LabeledValueProps> = ({
   <div className={className}>
     <Typography
       className={classes?.label}
-      mr={1}
       color="textSecondary"
       variant={variant}
       component="div"
+      sx={{
+        mr: 1,
+      }}
     >
       {label}
     </Typography>

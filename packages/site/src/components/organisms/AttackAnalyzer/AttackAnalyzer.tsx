@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Typography } from "@mui/material";
 import type { ShipAnalyzerConfig, OrgType, Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -43,7 +43,11 @@ const AttackAnalyzer: React.FCX<Props> = ({
         severity="error"
       >
         <AlertTitle>
-          <Typography alignItems="center">
+          <Typography
+            sx={{
+              alignItems: "center",
+            }}
+          >
             {attackerText}と{targetText}は戦闘できません
           </Typography>
         </AlertTitle>
@@ -55,7 +59,7 @@ const AttackAnalyzer: React.FCX<Props> = ({
     config,
     left,
     right,
-    attacker_is_left
+    attacker_is_left,
   );
 
   return (

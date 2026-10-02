@@ -1,6 +1,6 @@
 import { isUnknownRecord } from "@fh/utils";
 import { css, Tooltip, Typography } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { numstr, toPercent } from "../../../utils";
@@ -52,7 +52,7 @@ interface Props {
 }
 
 function hasCutin(
-  attack: unknown
+  attack: unknown,
 ): attack is Record<string, unknown> & { cutin: string } {
   return isUnknownRecord(attack) && typeof attack.cutin === "string";
 }

@@ -4,7 +4,7 @@ import type {
   NightAttackStyle,
   NightCutinDef,
 } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
@@ -25,7 +25,7 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
 
   const cutin = def.tag;
   const current = useRootSelector(
-    (root) => root.config.masterData?.night_cutin?.[cutin]
+    (root) => root.config.masterData?.night_cutin?.[cutin],
   );
 
   const attack: Pick<NightAttackStyle, "tag" | "cutin"> = {
@@ -51,7 +51,7 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
                 configSlice.actions.updateNightCutin({
                   id: cutin,
                   changes: { [key]: v },
-                })
+                }),
               );
             }}
           />
@@ -63,7 +63,11 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
 
 const NightCutinMenu: React.FC<{ data: MasterData }> = ({ data }) => {
   return (
-    <Stack gap={1}>
+    <Stack
+      sx={{
+        gap: 1,
+      }}
+    >
       {data.night_cutin.map((def) => (
         <Paper key={def.tag} sx={{ p: 1 }}>
           <NightCutinForm def={def} />

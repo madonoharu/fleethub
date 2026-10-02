@@ -1,7 +1,7 @@
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { Button } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { Flexbox } from "../../atoms";

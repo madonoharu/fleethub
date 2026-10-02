@@ -75,7 +75,13 @@ const PresetList: React.FCX<PresetListProps> = ({
 
   return (
     <div className={className}>
-      <Stack overflow="scroll" height={400} gap={1}>
+      <Stack
+        sx={{
+          overflow: "scroll",
+          height: 400,
+          gap: 1,
+        }}
+      >
         {visiblePresets.map((item, i) => (
           <PresetListItem
             key={item.id}

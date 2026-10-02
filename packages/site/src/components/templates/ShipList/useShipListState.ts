@@ -1,6 +1,6 @@
 import { Ship, ShipCategory } from "fleethub-core";
 import { TFunction } from "i18next";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useState } from "react";
 import { shallowEqual } from "react-redux";
 
@@ -45,7 +45,7 @@ const searchById = (ships: Ship[], searchValue: string) => {
 const searchShip = (
   t: TFunction<"ships">,
   ships: Ship[],
-  searchValue: string
+  searchValue: string,
 ) => {
   const idFound = searchById(ships, searchValue);
 

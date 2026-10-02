@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { Fab, Tooltip } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";

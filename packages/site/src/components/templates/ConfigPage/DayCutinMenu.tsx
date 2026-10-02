@@ -1,6 +1,6 @@
 import { Stack, Paper } from "@mui/material";
 import type { DayCutinDef, MasterData, ShellingStyle } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
@@ -20,7 +20,7 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
   const current = useRootSelector(
-    (root) => root.config.masterData?.day_cutin?.[cutin]
+    (root) => root.config.masterData?.day_cutin?.[cutin],
   );
 
   const attack: Pick<ShellingStyle, "tag" | "cutin"> = {
@@ -46,7 +46,7 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
                 configSlice.actions.updateDayCutin({
                   id: cutin,
                   changes: { [key]: v },
-                })
+                }),
               );
             }}
           />
@@ -58,7 +58,11 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
 
 const DayCutinMenu: React.FC<{ data: MasterData }> = ({ data }) => {
   return (
-    <Stack gap={1}>
+    <Stack
+      sx={{
+        gap: 1,
+      }}
+    >
       {data.day_cutin.map((def) => (
         <DayCutinForm key={def.tag} def={def} />
       ))}

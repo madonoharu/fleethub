@@ -1,6 +1,6 @@
 import { styled, css, Stack, Tooltip, Typography } from "@mui/material";
 import { AttackReport } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { toPercent } from "../../../utils";
@@ -50,10 +50,12 @@ const DamageRange: React.FCX<DamageRangeProps> = ({
   return (
     <Typography
       variant="inherit"
-      display="flex"
-      justifyContent="flex-end"
-      gap={1}
       color={isCapped ? "secondary" : undefined}
+      sx={{
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1,
+      }}
     >
       {inner}
     </Typography>
@@ -77,9 +79,11 @@ const DamageCell: React.FC<DamageCellProps> = ({ stats }) => {
   return (
     <Stack
       direction="row"
-      alignItems="center"
-      justifyContent="flex-end"
-      gap={1}
+      sx={{
+        alignItems: "center",
+        justifyContent: "flex-end",
+        gap: 1,
+      }}
     >
       <div
         css={css`

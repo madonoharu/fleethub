@@ -1,6 +1,6 @@
 import { Tooltip, TooltipProps, Typography } from "@mui/material";
 import type { Gear, EBonuses } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import GearNameplate from "../GearNameplate";

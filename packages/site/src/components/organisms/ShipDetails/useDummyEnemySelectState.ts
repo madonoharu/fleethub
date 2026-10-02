@@ -1,5 +1,5 @@
 import { Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import { useMemo, useState } from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -18,7 +18,7 @@ export const useDummyEnemySelectState = () => {
           label: t(`ships:${shipId}`, ship?.name || ""),
           ship: core.create_ship_by_id(shipId),
         };
-      }
+      },
     );
 
     const dummyEnemies = [
@@ -33,7 +33,7 @@ export const useDummyEnemySelectState = () => {
     ];
 
     return dummyEnemies.filter((item): item is DummyEnemySelectValue =>
-      Boolean(item.ship)
+      Boolean(item.ship),
     );
   }, [core, t]);
 

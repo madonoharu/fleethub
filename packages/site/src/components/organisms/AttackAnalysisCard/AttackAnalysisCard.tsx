@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Paper, Typography } from "@mui/material";
 import type { AttackAnalysis } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useShipName } from "../../../hooks";
@@ -64,7 +64,13 @@ const AttackAnalysisCard: React.FCX<Props> = ({
 
   return (
     <Paper className={className} style={style}>
-      <Typography alignItems="center" display="flex" gap={1}>
+      <Typography
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          gap: 1,
+        }}
+      >
         <Typography variant="inherit" component="span" color={attackerColor}>
           {attackerName}
         </Typography>

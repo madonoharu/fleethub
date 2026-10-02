@@ -1,7 +1,7 @@
 import ConnectingAirportsIcon from "@mui/icons-material/ConnectingAirports";
 import { styled } from "@mui/system";
 import { Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { getRangeAbbr, getSpeedRank } from "../../../utils";

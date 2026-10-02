@@ -2,7 +2,7 @@ import { isUnknownRecord, download } from "@fh/utils";
 import DownloadIcon from "@mui/icons-material/Download";
 import RestorePageIcon from "@mui/icons-material/RestorePage";
 import { Alert, AlertTitle, Button, Stack } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useRef, useState } from "react";
 import { REHYDRATE, FLUSH } from "redux-persist";
 
@@ -106,7 +106,12 @@ const BackupScreen: React.FC = () => {
   };
 
   return (
-    <Stack direction="row" gap={1}>
+    <Stack
+      direction="row"
+      sx={{
+        gap: 1,
+      }}
+    >
       <Button
         variant="contained"
         color="primary"
@@ -136,12 +141,23 @@ const BackupScreen: React.FC = () => {
 
       {file && (
         <Dialog open={true} onClose={handleFileRemove}>
-          <Stack m={1} gap={1}>
+          <Stack
+            sx={{
+              m: 1,
+              gap: 1,
+            }}
+          >
             <Alert severity="warning" icon={<RestorePageIcon />}>
               <AlertTitle>{t("Restore")}</AlertTitle>
               {file.name}
             </Alert>
-            <Stack direction="row" justifyContent="flex-end" gap={1}>
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: "flex-end",
+                gap: 1,
+              }}
+            >
               <Button
                 color="secondary"
                 variant="contained"

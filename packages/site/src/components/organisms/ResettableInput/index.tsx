@@ -1,5 +1,5 @@
 import { styled } from "@mui/system";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { NumberInput, RestartAltButton } from "../../molecules";
@@ -40,7 +40,7 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
   return (
     <div className={className}>
       <NumberInput
-        InputLabelProps={INPUT_LABEL_PROPS}
+        slotProps={{ inputLabel: INPUT_LABEL_PROPS }}
         color={color}
         focused={hasValue}
         label={label}

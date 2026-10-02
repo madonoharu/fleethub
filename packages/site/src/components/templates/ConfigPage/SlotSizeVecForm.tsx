@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { MasterShip, SlotSizeVec } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { MasterShipOverrides } from "../../../store";

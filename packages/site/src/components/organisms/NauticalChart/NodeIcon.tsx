@@ -32,10 +32,12 @@ export const NodeCircle = React.forwardRef<SVGGElement, NodeCircleProps>(
 
         <Typography
           component="text"
-          fontWeight="bold"
           fill={typeStyle.color}
           textAnchor="middle"
           dominantBaseline="central"
+          sx={{
+            fontWeight: "bold",
+          }}
         >
           {point}
         </Typography>
@@ -55,7 +57,7 @@ export const NodeCircle = React.forwardRef<SVGGElement, NodeCircleProps>(
         )}
       </Group>
     );
-  }
+  },
 );
 
 type NodeIconProps = BaseProps &
@@ -66,7 +68,7 @@ const NodeIcon = React.forwardRef<SVGSVGElement, NodeIconProps>(
     <svg ref={ref} width={c1 * 2} height={c1 * 2} {...rest}>
       <NodeCircle type={type} point={point} d={d} />
     </svg>
-  )
+  ),
 );
 
 export default NodeIcon;

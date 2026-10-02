@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { FleetType } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useShipName } from "../../../hooks";
@@ -29,23 +29,44 @@ const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <Flexbox ref={ref} gap={1} {...rest}>
       {fleetType && (
-        <Typography variant="caption" display="block">
+        <Typography
+          variant="caption"
+          sx={{
+            display: "block",
+          }}
+        >
           {t(`FleetType.${fleetType}`)}
         </Typography>
       )}
       {typeof index === "number" && (
-        <Typography variant="caption" display="block">
+        <Typography
+          variant="caption"
+          sx={{
+            display: "block",
+          }}
+        >
           {index + 1}
         </Typography>
       )}
       <StyledShipBanner shipId={shipId} />
       <div>
         {visibleId && (
-          <Typography variant="caption" display="block">
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+            }}
+          >
             ID:{shipId}
           </Typography>
         )}
-        <Typography noWrap variant="caption" display="block">
+        <Typography
+          noWrap
+          variant="caption"
+          sx={{
+            display: "block",
+          }}
+        >
           {displayName}
         </Typography>
       </div>

@@ -61,20 +61,22 @@ const ShipPositioner: React.FC<Props> = ({ org, id, onShipClick }) => {
             key: payload.target[2],
           },
         },
-      })
+      }),
     );
   };
 
   return (
     <Stack
       direction="row"
-      alignItems="flex-end"
-      gap={1}
       onKeyDown={(event) => {
         if (event.key.startsWith("Arrow")) {
           handleMove(event.key.replace("Arrow", "") as Direction);
         }
         event.preventDefault();
+      }}
+      sx={{
+        alignItems: "flex-end",
+        gap: 1,
       }}
     >
       <OrgShipList org={org} selectedShip={id} onShipClick={onShipClick} />

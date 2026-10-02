@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Org, OrgType } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { Flexbox, FileIcon } from "../../atoms";

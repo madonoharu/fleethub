@@ -1,5 +1,5 @@
 import { Button, Paper, Stack } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useState } from "react";
 import { shallowEqual } from "react-redux";
 
@@ -21,13 +21,17 @@ const ShipsMenu: React.FC = () => {
 
   const shipIds = useRootSelector((root) => {
     return Object.keys(root.config.masterData?.ships || {}).map((v) =>
-      Number(v)
+      Number(v),
     );
   }, shallowEqual);
 
   return (
     <div>
-      <Stack gap={1}>
+      <Stack
+        sx={{
+          gap: 1,
+        }}
+      >
         <Button
           sx={{ width: "fit-content" }}
           variant="contained"

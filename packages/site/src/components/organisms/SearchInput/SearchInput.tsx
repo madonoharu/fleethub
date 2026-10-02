@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import HelpIcon from "@mui/icons-material/HelpOutline";
+import HelpIcon from "@mui/icons-material/HelpOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { Tooltip } from "@mui/material";
 import React from "react";
@@ -27,7 +27,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         )}
       </Flexbox>
     );
-  }
+  },
 );
 
 export default SearchInput;

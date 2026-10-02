@@ -2,11 +2,7 @@ import styled from "@emotion/styled";
 import { round } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import {
-  Button,
-  InputAdornment,
-  InputProps as MuiInputProps,
-} from "@mui/material";
+import { Button, InputAdornment } from "@mui/material";
 import React, {
   useCallback,
   useEffect,
@@ -34,7 +30,7 @@ function evaluate(str: string): number | null {
 
 function toHalf(str: string): string {
   return str.replace(/[\uff10-\uff19]/g, (s) =>
-    String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+    String.fromCharCode(s.charCodeAt(0) - 0xfee0),
   );
 }
 
@@ -110,7 +106,7 @@ const NumberInputAdornment: React.FCX<NumberInputAdornmentProps> = ({
 };
 
 export interface NumberInputProps
-  extends Omit<InputProps, "type" | "inputProps" | "onChange" | "onInput"> {
+  extends Omit<InputProps, "type" | "onChange" | "onInput"> {
   value: number | null;
   onChange?: (value: number) => void;
   min?: number;
@@ -126,10 +122,9 @@ const NumberInput: React.FC<NumberInputProps> = ({
   max,
   step = 1,
   variant,
-  InputProps,
+  slotProps,
   ...textFieldProps
 }) => {
-  const disabled = textFieldProps.disabled || InputProps?.disabled || false;
   const [inner, setInner] = useState(`${value ?? ""}`);
   const innerRef = useRef(inner);
   innerRef.current = inner;
@@ -150,68 +145,86 @@ const NumberInput: React.FC<NumberInputProps> = ({
     }
   }, [value]);
 
-  const mergedInputProps: MuiInputProps = useMemo(() => {
-    const update = (value: string) => {
-      const num = evaluate(value);
-      if (onChange && num !== null) {
-        onChange(clamp(num, min, max));
-      }
-    };
+  const mergedInputProps = useMemo<
+    NonNullable<NonNullable<InputProps["slotProps"]>["input"]>
+  >(
+    () => (ownerState) => {
+      const inputProps =
+        typeof slotProps?.input === "function"
+          ? slotProps.input(ownerState)
+          : slotProps?.input;
+      const disabled = textFieldProps.disabled || inputProps?.disabled || false;
+      const update = (value: string) => {
+        const num = evaluate(value);
+        if (onChange && num !== null) {
+          onChange(clamp(num, min, max));
+        }
+      };
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = format(event.currentTarget.value);
-      setInner(value);
-      update(value);
-    };
+      const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = format(event.currentTarget.value);
+        setInner(value);
+        update(value);
+      };
 
-    const increase = () => {
-      setInner((current) => {
-        const currentNum = evaluate(current) || 0;
-        const nextNum = stepValue(currentNum, step);
-        return clamp(nextNum, min, max).toString();
-      });
-    };
+      const increase = () => {
+        setInner((current) => {
+          const currentNum = evaluate(current) || 0;
+          const nextNum = stepValue(currentNum, step);
+          return clamp(nextNum, min, max).toString();
+        });
+      };
 
-    const decrease = () => {
-      setInner((current) => {
-        const currentNum = evaluate(current) || 0;
-        const nextNum = stepValue(currentNum, -step);
-        return clamp(nextNum, min, max).toString();
-      });
-    };
+      const decrease = () => {
+        setInner((current) => {
+          const currentNum = evaluate(current) || 0;
+          const nextNum = stepValue(currentNum, -step);
+          return clamp(nextNum, min, max).toString();
+        });
+      };
 
-    const handleFinish = () => {
-      update(innerRef.current);
-    };
+      const handleFinish = () => {
+        update(innerRef.current);
+      };
 
-    const onCompositionEnd = () => {
-      setInner(toHalf);
-    };
+      const onCompositionEnd = () => {
+        setInner(toHalf);
+      };
 
-    const endAdornment = (
-      <NumberInputAdornment
-        onIncrease={increase}
-        onDecrease={decrease}
-        onFinish={handleFinish}
-        disabled={disabled}
-      />
-    );
+      const endAdornment = (
+        <NumberInputAdornment
+          onIncrease={increase}
+          onDecrease={decrease}
+          onFinish={handleFinish}
+          disabled={disabled}
+        />
+      );
 
-    return {
-      onChange: handleChange,
-      onCompositionEnd,
-      endAdornment,
-      inputMode: "numeric",
-      ...InputProps,
-    };
-  }, [min, max, step, disabled, onChange, InputProps]);
+      return {
+        onChange: handleChange,
+        onCompositionEnd,
+        endAdornment,
+        ...inputProps,
+      };
+    },
+    [min, max, step, textFieldProps.disabled, onChange, slotProps?.input],
+  );
 
   return (
     <Input
       className={className}
       value={inner}
       onBlur={handleBlur}
-      InputProps={mergedInputProps}
+      slotProps={{
+        ...slotProps,
+        input: mergedInputProps,
+        htmlInput: (ownerState) => ({
+          inputMode: "numeric",
+          ...(typeof slotProps?.htmlInput === "function"
+            ? slotProps.htmlInput(ownerState)
+            : slotProps?.htmlInput),
+        }),
+      }}
       variant={variant}
       {...textFieldProps}
     />

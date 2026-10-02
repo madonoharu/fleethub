@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Alert } from "@mui/material";
 import type { ActionReport, Comp } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";

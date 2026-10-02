@@ -1,7 +1,7 @@
 import { GEAR_KEYS } from "@fh/utils";
 import { Typography, Stack } from "@mui/material";
 import { Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useShipName } from "../../../hooks";
@@ -30,7 +30,12 @@ const MasterShipDetails: React.FCX<Props> = ({ className, ship }) => {
 
       <div css={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
         <span>{t("common:slots")}</span>
-        <Stack direction="row" gap={1}>
+        <Stack
+          direction="row"
+          sx={{
+            gap: 1,
+          }}
+        >
           {ship.slots.map((v, i) => (
             <span key={i}>{`${v ?? "?"}`}</span>
           ))}

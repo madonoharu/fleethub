@@ -1,6 +1,6 @@
 import { Stack, Paper, Typography } from "@mui/material";
 import { AntiAirCutinDef, MasterData } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
@@ -20,12 +20,17 @@ const AntiAirCutinForm: React.FC<AntiAirCutinFormProps> = ({ def }) => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
   const current = useRootSelector(
-    (root) => root.config.masterData?.anti_air_cutin?.[id]
+    (root) => root.config.masterData?.anti_air_cutin?.[id],
   );
 
   return (
     <Paper sx={{ p: 1 }}>
-      <Typography variant="subtitle2" mb={1}>
+      <Typography
+        variant="subtitle2"
+        sx={{
+          mb: 1,
+        }}
+      >
         {id}
       </Typography>
       <Flexbox gap={1}>
@@ -42,7 +47,7 @@ const AntiAirCutinForm: React.FC<AntiAirCutinFormProps> = ({ def }) => {
                 configSlice.actions.updateAntiAirCutin({
                   id,
                   changes: { [key]: v },
-                })
+                }),
               );
             }}
           />
@@ -54,7 +59,11 @@ const AntiAirCutinForm: React.FC<AntiAirCutinFormProps> = ({ def }) => {
 
 const AntiAirCutinMenu: React.FC<{ data: MasterData }> = ({ data }) => {
   return (
-    <Stack gap={1}>
+    <Stack
+      sx={{
+        gap: 1,
+      }}
+    >
       {data.anti_air_cutin.map((def) => (
         <AntiAirCutinForm key={def.id} def={def} />
       ))}

@@ -61,7 +61,14 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
         onChange={(level) => onUpdate?.({ level })}
       />
 
-      <Typography marginLeft="4px" marginRight="auto" noWrap variant="body2">
+      <Typography
+        noWrap
+        variant="body2"
+        sx={{
+          marginLeft: "4px",
+          marginRight: "auto",
+        }}
+      >
         {displayName}
       </Typography>
 

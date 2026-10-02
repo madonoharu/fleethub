@@ -1,7 +1,7 @@
 import { FLEET_KEYS, ShipKey, SHIP_KEYS, uniq } from "@fh/utils";
 import { styled, css, Typography } from "@mui/material";
 import { Org, FleetKey } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch } from "../../../hooks";
@@ -95,7 +95,7 @@ const OrgShipList: React.FCX<Props> = ({
       {keys.flatMap((fleetKey) =>
         org
           .ship_keys(fleetKey)
-          .map((shipKey) => renderShip(fleetKey, shipKey as ShipKey))
+          .map((shipKey) => renderShip(fleetKey, shipKey as ShipKey)),
       )}
     </div>
   );
@@ -111,12 +111,11 @@ export default styled(OrgShipList)(({ org }) => {
     gap: 4px;
 
     ${fleetKeys.map(
-      (key, i) =>
-        css`
-          .${key} {
-            grid-column: ${i + 1};
-          }
-        `
+      (key, i) => css`
+        .${key} {
+          grid-column: ${i + 1};
+        }
+      `,
     )}
 
     > h6 {
@@ -124,12 +123,11 @@ export default styled(OrgShipList)(({ org }) => {
     }
 
     ${SHIP_KEYS.map(
-      (key, i) =>
-        css`
-          .${key} {
-            grid-row: ${i + 2};
-          }
-        `
+      (key, i) => css`
+        .${key} {
+          grid-row: ${i + 2};
+        }
+      `,
     )}
   `;
 });

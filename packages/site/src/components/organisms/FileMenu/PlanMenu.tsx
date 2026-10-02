@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import LinkIcon from "@mui/icons-material/Link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Button, Link } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAsyncOnPublish, useOrg } from "../../../hooks";
@@ -70,7 +70,9 @@ const PlanMenu: React.FCX<Props> = ({ className, file }) => {
         value={predeck}
         fullWidth
         margin="normal"
-        InputProps={{ endAdornment: <CopyTextButton value={predeck} /> }}
+        slotProps={{
+          input: { endAdornment: <CopyTextButton value={predeck} /> },
+        }}
       />
 
       <Snackbar />

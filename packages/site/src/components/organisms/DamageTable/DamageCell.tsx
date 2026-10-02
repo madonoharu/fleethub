@@ -1,6 +1,6 @@
 import { styled, css, Tooltip, Typography } from "@mui/material";
 import { AttackReport } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { toPercent } from "../../../utils";
@@ -47,10 +47,12 @@ const DamageRange: React.FCX<DamageRangeProps> = ({
   return (
     <Typography
       variant="inherit"
-      display="flex"
-      justifyContent="flex-end"
-      gap={1}
       color={isCapped ? "secondary.light" : undefined}
+      sx={{
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1,
+      }}
     >
       {inner}
     </Typography>

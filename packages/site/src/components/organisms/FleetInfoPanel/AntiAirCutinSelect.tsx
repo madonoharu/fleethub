@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { AntiAirCutinDef } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -46,11 +46,13 @@ const AntiAirCutinSelect: React.FCX<Props> = ({
 
         return (
           <Typography
-            width="100%"
             align="right"
-            display="grid"
-            gridTemplateColumns="1fr 1fr 30px"
-            gap={1}
+            sx={{
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 30px",
+              gap: 1,
+            }}
           >
             <span>{def.id}種</span>
             <span>x{def.multiplier || "?"}</span>

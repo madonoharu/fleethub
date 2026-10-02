@@ -6,9 +6,8 @@ import type {
   NodeAttackAnalyzerConfig,
   SimulatorResult,
 } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
-import useTilg from "tilg";
 
 import { useFhCore } from "../../../hooks";
 import { toPercent } from "../../../utils";
@@ -33,7 +32,6 @@ const SimulatorResultTable: React.FCX<Props> = ({
   const { t } = useTranslation("common");
   const { analyzer } = useFhCore();
 
-  useTilg();
   if (!leftComp || !rightComp) {
     return null;
   }
@@ -55,12 +53,18 @@ const SimulatorResultTable: React.FCX<Props> = ({
       leftComp,
       rightComp,
       config,
-      times
+      times,
     );
     const endTime = performance.now();
 
     executionTime = (
-      <Typography variant="body2" display="flex" gap={1}>
+      <Typography
+        variant="body2"
+        sx={{
+          display: "flex",
+          gap: 1,
+        }}
+      >
         <span>回数: {times}</span>
         <span>実行時間: {round((endTime - startTime) / 1000, 3)}秒</span>
       </Typography>

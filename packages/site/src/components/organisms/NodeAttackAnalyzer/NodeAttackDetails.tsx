@@ -5,7 +5,7 @@ import type {
   Ship,
   NodeAttackAnalyzerConfig,
 } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useEffect, useMemo, useState } from "react";
 
 import {
@@ -168,7 +168,12 @@ const NodeAttackDetails: React.FC<Props> = ({
         />
       </Flexbox>
 
-      <Stack gap={1} mt={1}>
+      <Stack
+        sx={{
+          gap: 1,
+          mt: 1,
+        }}
+      >
         <AttackReportDetails
           css={{ flexBasis: 1, flexGrow: 1 }}
           tag={key}

@@ -2,7 +2,7 @@ import { ShipKey, SHIP_KEYS } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { styled, css } from "@mui/system";
 import { Comp, FleetType, FleetMeta, ShipMeta } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch } from "../../../hooks";
@@ -30,7 +30,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
   const meta = comp.meta();
 
   const handleShipSelect: React.MouseEventHandler<HTMLButtonElement> = (
-    event
+    event,
   ) => {
     onShipClick(event.currentTarget.value);
   };
@@ -43,7 +43,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
     ft: FleetType,
     fleetMeta: FleetMeta,
     key: ShipKey,
-    ship: ShipMeta | null
+    ship: ShipMeta | null,
   ) => {
     const className = `${ft} ${key}`;
     const position: ShipPosition = {
@@ -80,7 +80,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
           {t(`FleetType.${ft}`)}
         </Typography>
         {fleetMeta.ships.map(([key, ship]) =>
-          renderShip(ft, fleetMeta, key as ShipKey, ship)
+          renderShip(ft, fleetMeta, key as ShipKey, ship),
         )}
       </>
     );
@@ -124,7 +124,7 @@ export default styled(CompShipList)(({ comp }) => {
         .${key} {
           grid-row: ${i + 2};
         }
-      `
+      `,
     )}
   `;
 });

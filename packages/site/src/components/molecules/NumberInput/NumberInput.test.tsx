@@ -5,7 +5,7 @@ import NumberInput from "./NumberInput";
 
 function press(element: HTMLButtonElement, msToRun = 0) {
   fireEvent.mouseDown(element);
-  void act(() => {
+  act(() => {
     jest.advanceTimersByTime(msToRun);
   });
   fireEvent.mouseUp(element);
@@ -36,6 +36,34 @@ describe("NumberInput", () => {
     press(decreaseButton, 399);
     expect(input).toHaveValue("13");
     expect(mockFn).toHaveBeenLastCalledWith(13);
+  });
+
+  it("preserves adornments and native input props when using slots", () => {
+    render(
+      <NumberInput
+        value={2}
+        startLabel="Lv"
+        slotProps={{ htmlInput: { "aria-label": "level" } }}
+      />,
+    );
+
+    const input = screen.getByRole("textbox", { name: "level" });
+    expect(input).toHaveAttribute("inputmode", "numeric");
+    expect(screen.getByText("Lv")).toBeInTheDocument();
+    expect(screen.getByLabelText("increase")).toBeEnabled();
+  });
+
+  it("disables both the field and step buttons through input slot props", () => {
+    render(
+      <NumberInput
+        value={2}
+        slotProps={{ input: () => ({ disabled: true }) }}
+      />,
+    );
+
+    expect(screen.getByRole("textbox")).toBeDisabled();
+    expect(screen.getByLabelText("increase")).toBeDisabled();
+    expect(screen.getByLabelText("decrease")).toBeDisabled();
   });
 
   it("null", () => {
@@ -71,7 +99,7 @@ describe("NumberInput", () => {
     const input = screen.getByRole<HTMLInputElement>("textbox");
 
     fireEvent.change(input, { target: { value: "*+-1.3" } });
-    expect(mockFn).not.toBeCalled();
+    expect(mockFn).not.toHaveBeenCalled();
 
     fireEvent.change(input, {
       target: { value: "-1.2 * -1.3 - 1.42 + 5 / 2" },
@@ -86,25 +114,25 @@ describe("NumberInput", () => {
 
     fireEvent.change(input, { target: { value: "3" } });
     expect(input).toHaveValue("3");
-    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(1);
     expect(mockFn).toHaveBeenLastCalledWith(3);
 
     fireEvent.change(input, { target: { value: "" } });
     expect(input).toHaveValue("");
-    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(1);
 
     fireEvent.blur(input);
     expect(input).toHaveValue("2");
-    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(1);
 
     fireEvent.change(input, { target: { value: "０.１２３４５６７８９" } });
     expect(input).toHaveValue("０.１２３４５６７８９");
-    expect(mockFn).toBeCalledTimes(2);
+    expect(mockFn).toHaveBeenCalledTimes(2);
     expect(mockFn).toHaveBeenLastCalledWith(0.123456789);
 
     fireEvent.blur(input);
     expect(input).toHaveValue("0.123456789");
-    expect(mockFn).toBeCalledTimes(2);
+    expect(mockFn).toHaveBeenCalledTimes(2);
   });
 
   it("compositionEnd", () => {
@@ -114,16 +142,16 @@ describe("NumberInput", () => {
 
     fireEvent.change(input, { target: { value: "１２３" } });
     expect(input).toHaveValue("１２３");
-    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(1);
     expect(mockFn).toHaveBeenLastCalledWith(123);
 
     fireEvent.compositionEnd(input);
     expect(input).toHaveValue("123");
-    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(1);
 
     fireEvent.change(input, { target: { value: "" } });
     fireEvent.compositionEnd(input);
     expect(input).toHaveValue("");
-    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledTimes(1);
   });
 });

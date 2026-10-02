@@ -4,7 +4,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import { Paper, Button, Link } from "@mui/material";
 import { Org } from "fleethub-core";
 import dynamic from "next/dynamic";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";

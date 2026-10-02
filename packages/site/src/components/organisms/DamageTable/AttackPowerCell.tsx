@@ -1,6 +1,6 @@
 import { styled, Typography, Tooltip } from "@mui/material";
 import type { AttackReport } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { numstr } from "../../../utils";

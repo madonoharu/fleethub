@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import type { DamageState } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import type { DamageDensityStats as Stats } from "../../../utils";
@@ -39,7 +39,9 @@ const DamageDensityStats: React.FCX<Props> = ({
       <Typography
         className={className}
         variant="caption"
-        color="text.secondary"
+        sx={{
+          color: "text.secondary",
+        }}
       >
         {t("Unknown")}
       </Typography>

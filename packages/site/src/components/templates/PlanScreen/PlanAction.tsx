@@ -1,7 +1,7 @@
 import SaveIcon from "@mui/icons-material/Save";
 import { Fab } from "@mui/material";
 import { Org } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAsyncOnPublish, useFile, useModal } from "../../../hooks";
@@ -33,7 +33,7 @@ const PlanAction: React.FCX<PlanActionProps> = ({
   const { t } = useTranslation("common");
   const MenuModal = useModal();
   const { asyncOnPublish, onUrlCopy, onTweet, Snackbar } = useAsyncOnPublish(
-    file.id
+    file.id,
   );
 
   return (

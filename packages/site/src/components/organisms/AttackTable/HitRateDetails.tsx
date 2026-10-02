@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { HitRateParams, HitRate } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { numstr, toPercent } from "../../../utils";

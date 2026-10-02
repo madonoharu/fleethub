@@ -8,7 +8,7 @@ import {
   Slider,
   Tooltip,
 } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -98,21 +98,24 @@ const SlotSizeButton: React.FCX<Props> = ({
   );
 };
 
-export default styled(SlotSizeButton)(
-  ({ theme, current = 0, max = 0, disabled }) => {
-    const { palette } = theme;
-    let color = palette.text.primary;
-    if (current === 0 || disabled) {
-      color = palette.action.disabled;
-    } else if (current > max) {
-      color = palette.secondary.light;
-    }
-
-    return css`
-      justify-content: flex-end;
-      padding: 0 4px;
-      width: 24px;
-      color: ${color};
-    `;
+export default styled(SlotSizeButton)(({
+  theme,
+  current = 0,
+  max = 0,
+  disabled,
+}) => {
+  const { palette } = theme;
+  let color = palette.text.primary;
+  if (current === 0 || disabled) {
+    color = palette.action.disabled;
+  } else if (current > max) {
+    color = palette.secondary.light;
   }
-);
+
+  return css`
+    justify-content: flex-end;
+    padding: 0 4px;
+    width: 24px;
+    color: ${color};
+  `;
+});

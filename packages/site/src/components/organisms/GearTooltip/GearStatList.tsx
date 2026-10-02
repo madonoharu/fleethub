@@ -1,7 +1,7 @@
 import { nonNullable } from "@fh/utils";
 import { css, styled, Typography } from "@mui/material";
 import type { EBonuses, Gear } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { getRangeAbbr, withSign } from "../../../utils";
@@ -24,7 +24,7 @@ const STAT_KEYS = [
   "radius",
 ] as const;
 
-type StatKey = typeof STAT_KEYS[number];
+type StatKey = (typeof STAT_KEYS)[number];
 
 const StatLabel: React.FCX<{ statKey: StatKey }> = ({ className, statKey }) => {
   const { t } = useTranslation("common");
@@ -50,7 +50,7 @@ const Value = styled("span")`
 const Bonus = styled(Value)(
   ({ theme }) => css`
     color: ${theme.colors.bonus};
-  `
+  `,
 );
 
 export type Props = {

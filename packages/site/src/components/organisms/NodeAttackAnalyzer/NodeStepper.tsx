@@ -1,6 +1,6 @@
 import { nonNullable } from "@fh/utils";
 import { Stack, Tabs, Tab, Button, Alert } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
@@ -27,7 +27,12 @@ const NodeStep: React.FC<NodeStepProps> = ({ step }) => {
   };
 
   return (
-    <Stack flexDirection="row" alignItems="center">
+    <Stack
+      sx={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
       <span>{step.name}</span>
       <ClearButton sx={{ ml: 1 }} size="tiny" onClick={handleRemove} />
     </Stack>
@@ -55,7 +60,7 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
         filesSlice.actions.update({
           id: file.id,
           changes: { activeStep: id },
-        })
+        }),
       );
     }
   };
@@ -66,7 +71,7 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
         createStep: true,
         position: file.id,
         multiple: false,
-      })
+      }),
     );
   };
 
@@ -76,12 +81,17 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
         createStep: true,
         position: file.id,
         multiple: true,
-      })
+      }),
     );
   };
 
   return (
-    <Stack flexDirection="row" gap={1}>
+    <Stack
+      sx={{
+        flexDirection: "row",
+        gap: 1,
+      }}
+    >
       {!activeStep && (
         <Alert sx={{ p: "1px 16px" }} severity="info">
           {t("PleaseSelectTheEnemyComp")}

@@ -3,7 +3,7 @@ import { styled, Stack } from "@mui/material";
 import type { Comp, NodeAttackAnalyzerConfig } from "fleethub-core";
 import { produce } from "immer";
 import set from "lodash/set";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import CompShipList from "../CompShipList";
@@ -55,7 +55,12 @@ const AnalyzerForm: React.FCX<Props> = ({
             selectedShip={leftShipId}
             onShipClick={onLeftShipChange}
           />
-          <Stack direction="row" gap={1}>
+          <Stack
+            direction="row"
+            sx={{
+              gap: 1,
+            }}
+          >
             <FormationSelect
               color="primary"
               label={t("Formation.name")}
@@ -80,7 +85,12 @@ const AnalyzerForm: React.FCX<Props> = ({
             selectedShip={rightShipId}
             onShipClick={onRightShipChange}
           />
-          <Stack direction="row" gap={1}>
+          <Stack
+            direction="row"
+            sx={{
+              gap: 1,
+            }}
+          >
             <FormationSelect
               label={t("Formation.name")}
               color="secondary"

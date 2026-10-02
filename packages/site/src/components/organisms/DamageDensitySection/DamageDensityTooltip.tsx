@@ -1,9 +1,9 @@
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Chip, Typography } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
-import type { TooltipProps } from "recharts";
+import type { TooltipContentProps } from "recharts";
 
 import type { DamageChartRow } from "../../../utils";
 import { toPercent } from "../../../utils";
@@ -51,7 +51,7 @@ const OtherChip = styled(Chip)`
   color: ${({ theme }) => theme.colors.Unknown};
 `;
 
-interface Props extends TooltipProps<number, string> {
+interface Props extends Partial<TooltipContentProps<number, string>> {
   /** 系列の見出し。全系列が「ダメージ発生確率」なので、艦名だけを出す。 */
   mainName?: string | undefined;
   compareName?: string | undefined;
@@ -101,11 +101,13 @@ const DamageDensityTooltip: React.FCX<Props> = ({
       <Typography
         variant="inherit"
         component="div"
-        fontWeight="bold"
         style={{
           color: row.state
             ? theme.colors[`Damage${row.state}` as const]
             : undefined,
+        }}
+        sx={{
+          fontWeight: "bold",
         }}
       >
         {t("Damage")} {damageText}

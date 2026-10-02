@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { round } from "@fh/utils";
 import { CompAntiAirAnalysis } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useCompContext } from "../../../hooks";

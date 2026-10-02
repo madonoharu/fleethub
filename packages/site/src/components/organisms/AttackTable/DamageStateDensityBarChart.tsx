@@ -3,7 +3,7 @@ import { Stack } from "@mui/material";
 import { LegendOrdinal, LegendItem, LegendLabel } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { DamageState, Histogram } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { toPercent } from "../../../utils";
@@ -51,7 +51,13 @@ const DamageStateDensityBarChart: React.FCX<Props> = ({ className, data }) => {
 
       <LegendOrdinal scale={ordinalColorScale}>
         {(labels) => (
-          <Stack flexDirection="row" flexWrap="wrap" fontSize="0.875rem">
+          <Stack
+            sx={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              fontSize: "0.875rem",
+            }}
+          >
             {labels.map((label) => {
               const rate = data[label.datum];
               if (!rate) return null;

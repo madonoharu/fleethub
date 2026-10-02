@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { Button, Container, Stack } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useFile } from "../../../hooks";
@@ -46,7 +46,13 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
           onRemove={actions.remove}
         />
 
-        <Stack direction="row" gap={1} mt={1}>
+        <Stack
+          direction="row"
+          sx={{
+            gap: 1,
+            mt: 1,
+          }}
+        >
           <Button
             variant="contained"
             color="primary"

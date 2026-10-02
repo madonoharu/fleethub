@@ -20,7 +20,11 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
   if (!enemy) return null;
 
   return (
-    <Stack gap={1}>
+    <Stack
+      sx={{
+        gap: 1,
+      }}
+    >
       <Divider />
       <ShipCard
         ship={enemy}
@@ -64,7 +68,12 @@ const ShipDetailsEnemyList: React.FCX<ShipDetailsEnemyListProps> = ({
   state,
 }) => {
   return (
-    <Stack className={className} gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
       {state.enemies.map((id) => (
         <EnemyListItem key={id} id={id} state={state} ship={ship} />
       ))}

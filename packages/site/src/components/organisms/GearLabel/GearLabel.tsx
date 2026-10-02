@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Gear } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 import { shallowEqual } from "react-redux";
 
@@ -93,7 +93,7 @@ const GearLabel: React.FCX<GearLabelProps> = ({
 const Memoized = React.memo(
   GearLabel,
   ({ gear: prevGear, ...prevRest }, { gear: nextGear, ...nextRest }) =>
-    shallowEqual(prevRest, nextRest) && prevGear.hash === nextGear.hash
+    shallowEqual(prevRest, nextRest) && prevGear.hash === nextGear.hash,
 );
 
 const Styled = styled(Memoized)(
@@ -120,7 +120,7 @@ const Styled = styled(Memoized)(
         display: none;
       }
     }
-  `
+  `,
 );
 
 export default Styled;

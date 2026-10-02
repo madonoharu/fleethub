@@ -8,7 +8,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useContext } from "react";
 
 import { GenerationMapContext, useModal } from "../../../hooks";
@@ -128,10 +128,12 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, onChange }) => {
   return (
     <Stack
       className={className}
-      flexDirection="row"
-      alignItems="flex-start"
-      flexWrap="wrap"
-      gap={2}
+      sx={{
+        flexDirection: "row",
+        alignItems: "flex-start",
+        flexWrap: "wrap",
+        gap: 2,
+      }}
     >
       <AreaList areas={normalAreas} onClick={handleClick} />
       <EventAreaList areas={eventAreas} onClick={handleClick} />

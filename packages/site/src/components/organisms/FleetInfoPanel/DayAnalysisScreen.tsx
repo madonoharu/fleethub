@@ -1,6 +1,6 @@
 import { styled, Stack, Typography } from "@mui/material";
 import { CompDayAnalysis, DayCutinReport } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useCompContext } from "../../../hooks";
@@ -39,7 +39,13 @@ const DayCutinReportCell: React.FCX<{ report: DayCutinReport }> = ({
   entries.sort((a, b) => (b[1].proc_rate ?? 0) - (a[1].proc_rate ?? 0));
 
   return (
-    <Stack className={className} direction="row" gap={1}>
+    <Stack
+      className={className}
+      direction="row"
+      sx={{
+        gap: 1,
+      }}
+    >
       <GridContainer1>
         {entries.map(([key, attack]) => (
           <React.Fragment key={key}>
@@ -92,15 +98,24 @@ const DayAnalysisScreen: React.FC<Props> = ({ combined, analysis }) => {
   let fleetLosText: string;
   if (combined) {
     fleetLosText = `${t("fleet_los_mod")}: ${t(
-      `FleetType.Main`
+      `FleetType.Main`,
     )} ${mainFleetLos} ${t(`FleetType.Escort`)} ${escortFleetLos}`;
   } else {
     fleetLosText = `${t("fleet_los_mod")}: ${mainFleetLos}`;
   }
 
   return (
-    <Stack gap={1}>
-      <Stack direction="row" gap={1}>
+    <Stack
+      sx={{
+        gap: 1,
+      }}
+    >
+      <Stack
+        direction="row"
+        sx={{
+          gap: 1,
+        }}
+      >
         <Typography>{fleetLosText}</Typography>
         <EngagementSelect
           sx={{ ml: "auto" }}

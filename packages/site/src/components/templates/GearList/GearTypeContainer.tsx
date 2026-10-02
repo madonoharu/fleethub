@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import type { Gear, EBonuses } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { Divider } from "../../atoms";

@@ -1,7 +1,7 @@
 import { Tooltip, Button, ButtonGroup } from "@mui/material";
 import { styled } from "@mui/system";
 import { ContactRank, NightFleetConditions } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";

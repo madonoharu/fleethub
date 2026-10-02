@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -18,13 +18,13 @@ const maybeNumber = (v: number | undefined) => v ?? "?";
 const BonusText = styled.span(
   ({ theme }) => css`
     color: ${theme.colors.bonus};
-  `
+  `,
 );
 
 const ModText = styled.span(
   ({ theme }) => css`
     color: ${theme.colors.diff};
-  `
+  `,
 );
 
 type StatProps = {
@@ -69,8 +69,10 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
       <Typography
         variant="subtitle1"
         component="div"
-        display="flex"
-        alignItems="center"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+        }}
       >
         <StatIcon css={{ paddingTop: 1 }} icon={statKey} />
         <span css={{ marginLeft: 8 }}>{t(`${statKey}`)}</span>

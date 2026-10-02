@@ -1,6 +1,6 @@
 import { colors } from "@mui/material";
 import React from "react";
-import { Cell, Label, Pie, PieChart } from "recharts";
+import { Cell, Label, Pie, PieChart, PieLabelRenderProps } from "recharts";
 
 import { toPercent } from "../../../utils";
 
@@ -50,8 +50,8 @@ const AntiAirCutinChanceChart: React.FCX<Props> = ({
     color: colors.grey[300],
   });
 
-  const renderLabel = (datum: typeof data[number]) =>
-    `${datum.name}: ${toPercent(datum.rate)}`;
+  const renderLabel = ({ name, value }: PieLabelRenderProps) =>
+    `${name}: ${toPercent(Number(value))}`;
 
   return (
     <PieChart className={className} width={width} height={height}>

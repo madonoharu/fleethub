@@ -20,7 +20,13 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ title, error, sx }) => {
   return (
     <Alert severity="error" sx={sx}>
       {title ? <AlertTitle>{title}</AlertTitle> : null}
-      <Typography variant="body2" display="block" whiteSpace="pre-wrap">
+      <Typography
+        variant="body2"
+        sx={{
+          display: "block",
+          whiteSpace: "pre-wrap",
+        }}
+      >
         {message}
       </Typography>
     </Alert>

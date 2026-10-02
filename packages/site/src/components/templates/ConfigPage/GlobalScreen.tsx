@@ -1,6 +1,6 @@
 import { Alert, AlertTitle, Button, Stack } from "@mui/material";
 import localforage from "localforage";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -20,7 +20,11 @@ const GlobalScreen: React.FC = () => {
   const Modal = useModal();
 
   return (
-    <Stack gap={1}>
+    <Stack
+      sx={{
+        gap: 1,
+      }}
+    >
       <Divider label={t("Backup")} />
       <BackupScreen />
 
@@ -40,7 +44,13 @@ const GlobalScreen: React.FC = () => {
           {t("AreYouSure")}
         </Alert>
 
-        <Stack direction="row" justifyContent="flex-end" gap={1}>
+        <Stack
+          direction="row"
+          sx={{
+            justifyContent: "flex-end",
+            gap: 1,
+          }}
+        >
           <Button color="primary" variant="contained" onClick={Modal.hide}>
             CANCEL
           </Button>

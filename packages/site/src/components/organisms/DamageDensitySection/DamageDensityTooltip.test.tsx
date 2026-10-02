@@ -7,7 +7,7 @@ import type { DamageChartRow } from "../../../utils";
 
 import DamageDensityTooltip from "./DamageDensityTooltip";
 
-jest.mock("next-i18next", () => ({
+jest.mock("next-i18next/pages", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
     i18n: { resolvedLanguage: "ja" },
@@ -127,7 +127,7 @@ it("積み上げの内訳は他所と同じ攻撃種類の Chip で出す", () =
   ]);
 
   // 種類のある行は AttackTypeChip と同じ色枠。
-  expect(getComputedStyle(chips[0]).borderColor).toBe(muiColors.indigo[200]);
+  expect(chips[0]).toHaveStyle({ borderColor: muiColors.indigo[200] });
   expect(root.textContent).toContain("0.80%");
   expect(root.textContent).toContain("0.40%");
 });

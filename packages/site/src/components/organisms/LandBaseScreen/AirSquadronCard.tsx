@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { GEAR_KEYS, SlotSizeKey } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
 import { AirSquadron, AirSquadronMode } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 import { shallowEqual } from "react-redux";
 
@@ -106,13 +106,13 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
         </PresetModal>
       </Paper>
     );
-  }
+  },
 );
 
 const Memoized = React.memo(
   AirSquadronCard,
   ({ airSquadron: prev, ...prevRest }, { airSquadron: next, ...nextRest }) =>
-    prev.hash === next.hash && shallowEqual(prevRest, nextRest)
+    prev.hash === next.hash && shallowEqual(prevRest, nextRest),
 );
 
 export default styled(Memoized)`

@@ -1,6 +1,6 @@
 import PaletteIcon from "@mui/icons-material/Palette";
 import { Button, Stack } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAsyncOnPublish, useModal } from "../../../hooks";
@@ -49,8 +49,18 @@ const FileForm: React.FCX<FileFormProps> = ({
   };
 
   return (
-    <Stack className={className} gap={1}>
-      <Stack direction="row" gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
+      <Stack
+        direction="row"
+        sx={{
+          gap: 1,
+        }}
+      >
         <TextField
           placeholder="name"
           fullWidth

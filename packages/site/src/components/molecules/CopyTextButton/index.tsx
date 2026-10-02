@@ -1,6 +1,6 @@
 import { copy } from "@fh/utils";
 import Assignment from "@mui/icons-material/Assignment";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useSnackbar } from "../../../hooks";

@@ -1,6 +1,6 @@
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Button, Stack } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";
@@ -72,7 +72,12 @@ const ConsumptionRateSelect: React.FCX<ConsumptionRateSelectProps> = ({
       </Button>
 
       <Modal>
-        <Stack gap={1} m={1}>
+        <Stack
+          sx={{
+            gap: 1,
+            m: 1,
+          }}
+        >
           {BATTLE_COST_DATA.map((value, index) => (
             <Button
               key={index}

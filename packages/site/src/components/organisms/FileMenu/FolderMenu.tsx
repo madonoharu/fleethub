@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import LinkIcon from "@mui/icons-material/Link";
 import { Button, Link } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAsyncOnPublish } from "../../../hooks";

@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import type { ActionReport, AttackReport } from "fleethub-core";
 import { TFunction } from "i18next";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { numstr, toPercent } from "../../../utils";
@@ -50,7 +50,7 @@ const createDamageColumns = (t: TFn): ColumnProps<AttackReport<unknown>>[] => [
 ];
 
 const createAttackPowerColumns = (
-  t: TFn
+  t: TFn,
 ): ColumnProps<AttackReport<unknown>>[] => [
   {
     label: t("Normal"),
@@ -100,7 +100,7 @@ const createAttackPowerColumns = (
 
 export function createAttackTableColumns(
   t: TFn,
-  disableDamage: boolean
+  disableDamage: boolean,
 ): ColumnProps<AttackReport<unknown>>[] {
   const columns = disableDamage
     ? createAttackPowerColumns(t)
@@ -152,7 +152,12 @@ const AttackTable: React.FCX<AttackTableProps> = ({
 
       {damage_state_density && !disableDamage && (
         <>
-          <Typography marginTop={1} variant="subtitle2">
+          <Typography
+            variant="subtitle2"
+            sx={{
+              marginTop: 1,
+            }}
+          >
             命中ダメージ分布
           </Typography>
           <DamageStateDensityBarChart data={damage_state_density} />

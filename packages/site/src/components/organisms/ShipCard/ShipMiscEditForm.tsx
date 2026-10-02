@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { DAMAGE_STATES, MORALE_STATES } from "@fh/utils";
 import { Stack, Typography } from "@mui/material";
 import { DamageState, MoraleState, Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useShipName } from "../../../hooks";
@@ -131,7 +131,12 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
       />
 
       <Divider label={`${t("Override")}`} />
-      <Stack direction="row" gap={1}>
+      <Stack
+        direction="row"
+        sx={{
+          gap: 1,
+        }}
+      >
         <ResettableInput
           css={{ flexGrow: 1 }}
           label={`${t("day_gunfit_accuracy")}`}

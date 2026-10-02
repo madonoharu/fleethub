@@ -17,13 +17,24 @@ export type InputProps = MuiTextFieldProps & {
   startLabel?: React.ReactNode;
 };
 
-const Input: React.FC<InputProps> = ({ startLabel, InputProps, ...rest }) => {
+const Input: React.FC<InputProps> = ({ startLabel, slotProps, ...rest }) => {
   const startAdornment = startLabel && (
     <StartInputAdornment position="start">{startLabel}</StartInputAdornment>
   );
 
   return (
-    <MuiTextField InputProps={{ startAdornment, ...InputProps }} {...rest} />
+    <MuiTextField
+      {...rest}
+      slotProps={{
+        ...slotProps,
+        input: (ownerState) => ({
+          startAdornment,
+          ...(typeof slotProps?.input === "function"
+            ? slotProps.input(ownerState)
+            : slotProps?.input),
+        }),
+      }}
+    />
   );
 };
 

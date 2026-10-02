@@ -1,7 +1,7 @@
 import { Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import type { Ship, FhCore } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -33,7 +33,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
     state,
     ship,
     dummyEnemySelectState.value.ship,
-    true
+    true,
   );
 
   const { day, closing_torpedo, night, support_shelling } = analysis;

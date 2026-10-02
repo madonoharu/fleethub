@@ -57,19 +57,21 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
-        InputProps={{
-          endAdornment: (
-            <ClearButton
-              className="ClearButton"
-              size="tiny"
-              onClick={handleClear}
-            />
-          ),
+        slotProps={{
+          input: {
+            endAdornment: (
+              <ClearButton
+                className="ClearButton"
+                size="tiny"
+                onClick={handleClear}
+              />
+            ),
+          },
         }}
         {...rest}
       />
     );
-  }
+  },
 );
 
 export default styled(TextField)`

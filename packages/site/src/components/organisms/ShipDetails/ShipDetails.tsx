@@ -3,7 +3,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import { Alert, AlertTitle, Button, Stack } from "@mui/material";
 import type { Comp, Ship, ShipConditions } from "fleethub-core";
 import { produce } from "immer";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useEffect } from "react";
 
 import {
@@ -32,7 +32,7 @@ import ShipDetailsEnemyList from "./ShipDetailsEnemyList";
 function initShipDetailsState(
   current: ShipDetailsState,
   conditions: ShipConditions,
-  fleet_los_mod: number | undefined
+  fleet_los_mod: number | undefined,
 ): ShipDetailsState {
   const next = produce(current, (draft) => {
     draft.left ||= {};
@@ -86,7 +86,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
       shipSelectSlice.actions.create({
         abyssal: true,
         position: { tag: "shipDetails" },
-      })
+      }),
     );
   };
 
@@ -95,7 +95,7 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
 
     const conditions = comp.get_ship_conditions(
       ship,
-      state.left?.formation
+      state.left?.formation,
     ) as Required<ShipConditions>;
     const fleet_los_mod = comp.fleet_los_mod(conditions.fleet_type);
     const payload = initShipDetailsState(state, conditions, fleet_los_mod);
@@ -104,7 +104,12 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
   }, []);
 
   return (
-    <Stack className={className} gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
       <Flexbox gap={1}>
         <EngagementSelect
           value={state.engagement || "Parallel"}
@@ -145,8 +150,18 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
         />
       </RightConfigModal>
 
-      <Stack gap={1} flexDirection="row">
-        <Stack gap={1} flexBasis="100%">
+      <Stack
+        sx={{
+          gap: 1,
+          flexDirection: "row",
+        }}
+      >
+        <Stack
+          sx={{
+            gap: 1,
+            flexBasis: "100%",
+          }}
+        >
           <ShipCard
             ship={ship}
             comp={comp}

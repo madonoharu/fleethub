@@ -10,7 +10,7 @@ const KcsScript: React.FC = () => {
     <TextField
       fullWidth
       value={str}
-      InputProps={{ endAdornment: <CopyTextButton value={str} /> }}
+      slotProps={{ input: { endAdornment: <CopyTextButton value={str} /> } }}
     />
   );
 };

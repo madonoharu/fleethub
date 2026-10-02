@@ -1,6 +1,6 @@
 import { MapEnemyComp, uncapitalize } from "@fh/utils";
 import { Comp, Role } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 
 import { useFhCore } from "../../../hooks";
@@ -24,7 +24,7 @@ const EnemyCompScreen: React.FCX<{ enemy: MapEnemyComp }> = ({ enemy }) => {
   const comp = useMemo(() => {
     return core.create_comp_by_map_enemy(
       Uint16Array.from(enemy.main),
-      enemy.escort && Uint16Array.from(enemy.escort)
+      enemy.escort && Uint16Array.from(enemy.escort),
     );
   }, [core, enemy]);
 

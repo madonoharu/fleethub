@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { EntityId, Update } from "@reduxjs/toolkit";
 import { Comp, DamageState, Fleet, MoraleState } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 import { shallowEqual } from "react-redux";
 

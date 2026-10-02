@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import type { NodeState } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { Checkbox } from "../../atoms";
@@ -31,7 +31,12 @@ const NodeStateForm: React.FC<Props> = ({ value = {}, onChange, disabled }) => {
   };
 
   return (
-    <Stack flexDirection="row" gap={2}>
+    <Stack
+      sx={{
+        flexDirection: "row",
+        gap: 2,
+      }}
+    >
       <NumberInput
         sx={{ width: 64 }}
         label="Phase"

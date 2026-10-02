@@ -44,7 +44,13 @@ const PresetCard: React.FCX<PresetCardProps> = ({ preset }) => {
 
           return (
             <Flexbox key={key}>
-              <Typography width={16}>{key.replace("g", "")}</Typography>
+              <Typography
+                sx={{
+                  width: 16,
+                }}
+              >
+                {key.replace("g", "")}
+              </Typography>
               <GearBox
                 position={{
                   tag: "presets",

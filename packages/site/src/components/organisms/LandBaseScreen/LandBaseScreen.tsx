@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { AIR_SQUADRON_KEYS } from "@fh/utils";
 import { Paper, Stack } from "@mui/material";
 import { Org } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { SwapEvent, useAppDispatch, useModal } from "../../../hooks";
@@ -36,7 +36,7 @@ const LandBaseScreen: React.FCX<LandBaseScreenProps> = ({ className, org }) => {
 
   const id = org.id;
   const airSquadrons = AIR_SQUADRON_KEYS.map((key) =>
-    org.get_air_squadron(key)
+    org.get_air_squadron(key),
   );
 
   const handleSwap = (event: SwapEvent<AirSquadronPosition>) => {
@@ -97,7 +97,11 @@ const LandBaseScreen: React.FCX<LandBaseScreenProps> = ({ className, org }) => {
         })}
       </GridContainer>
 
-      <Stack display="inline-flex">
+      <Stack
+        sx={{
+          display: "inline-flex",
+        }}
+      >
         <LabeledValue
           label={t("InterceptionPower")}
           value={org.interception_power()}

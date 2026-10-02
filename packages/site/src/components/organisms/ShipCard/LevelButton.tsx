@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Button, DialogContent, Tooltip } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";

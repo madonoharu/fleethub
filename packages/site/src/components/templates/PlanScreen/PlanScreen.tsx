@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Container, Paper, Alert } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { OrgContext, PlanContext, useFile, useOrg } from "../../../hooks";
@@ -11,10 +11,9 @@ import PlanScreenHeader from "./PlanScreenHeader";
 import PlanTabs from "./PlanTabs";
 
 const StyledContainer = styled(Container)(
-  ({ theme }) =>
-    css`
-      min-width: ${theme.breakpoints.values.md}px;
-    `
+  ({ theme }) => css`
+    min-width: ${theme.breakpoints.values.md}px;
+  `,
 );
 
 type PlanScreenProps = {
@@ -25,7 +24,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
   const { t } = useTranslation("common");
   const { file, actions: fileActions, isTemp } = useFile(id);
   const { org, actions: orgActions } = useOrg(
-    file?.type === "plan" ? file.org : ""
+    file?.type === "plan" ? file.org : "",
   );
 
   if (file?.type !== "plan") {

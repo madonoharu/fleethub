@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { MapNode } from "@fh/utils";
 import { Typography } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { getNodeTypeStyle } from "../../../styles";

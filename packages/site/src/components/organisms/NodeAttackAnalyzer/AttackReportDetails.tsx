@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Alert, Typography } from "@mui/material";
 import type { AttackAnalysis, Comp } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useShipName } from "../../../hooks";
@@ -87,7 +87,14 @@ const AttackReportDetails: React.FCX<Props> = ({
 
   return (
     <div className={className} style={style}>
-      <Typography alignItems="center" display="flex" gap={1} mb={1}>
+      <Typography
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          gap: 1,
+          mb: 1,
+        }}
+      >
         <Typography variant="inherit" component="span" color={attackerColor}>
           {attackerName}
         </Typography>
@@ -111,7 +118,12 @@ const AttackReportDetails: React.FCX<Props> = ({
       {report.damage_state_density &&
       Object.keys(report.damage_state_density).length ? (
         <>
-          <Typography mt={1} variant="subtitle2">
+          <Typography
+            variant="subtitle2"
+            sx={{
+              mt: 1,
+            }}
+          >
             {t("Distribution")}
           </Typography>
           <DamageStateDensityBarChart data={report.damage_state_density} />

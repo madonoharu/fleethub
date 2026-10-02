@@ -2,7 +2,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import { Button, Stack } from "@mui/material";
 import { styled } from "@mui/system";
 import { AttackPowerModifier, CustomPowerModifiers, Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useModal } from "../../../hooks";
@@ -13,7 +13,7 @@ import CustomPowerModifiersForm, {
 } from "./CustomPowerModifiersForm";
 
 function hasMod(
-  mod: AttackPowerModifier | undefined
+  mod: AttackPowerModifier | undefined,
 ): mod is AttackPowerModifier {
   if (!mod) {
     return false;
@@ -42,7 +42,7 @@ const CustomPowerModifiersDialog: React.FCX<
       shipsSlice.actions.update({
         id: ship.id,
         changes: { custom_power_mods: value },
-      })
+      }),
     );
   };
 

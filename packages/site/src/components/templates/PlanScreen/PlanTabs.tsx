@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { FleetKey, FLEET_KEYS } from "@fh/utils";
 import { Org } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { CompContext, useAppDispatch } from "../../../hooks";
@@ -55,7 +55,7 @@ const PlanTabs: React.FCX<PlanTabsProps> = ({ className, org, file }) => {
   const dispatch = useAppDispatch();
 
   const handleFleetSwap = (
-    event: Parameters<typeof orgsSlice.actions.swapFleet>[0]
+    event: Parameters<typeof orgsSlice.actions.swapFleet>[0],
   ) => {
     dispatch(orgsSlice.actions.swapFleet(event));
   };

@@ -15,11 +15,11 @@ import {
   Link,
   css,
   List,
-  ListItem,
+  ListItemButton,
   ListItemText,
   ListItemIcon,
 } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useModal } from "../../../hooks";
@@ -47,7 +47,7 @@ const WelcomePage: React.FCX = () => {
       },
       {
         once: true,
-      }
+      },
     );
 
     window.open("https://kcjervis.github.io/jervis/#/transfer");
@@ -55,9 +55,23 @@ const WelcomePage: React.FCX = () => {
 
   return (
     <Container maxWidth="md" sx={{ pt: 5 }}>
-      <Stack gap={1}>
-        <Stack gap={2}>
-          <Stack direction="row" alignItems="flex-end" gap={1}>
+      <Stack
+        sx={{
+          gap: 1,
+        }}
+      >
+        <Stack
+          sx={{
+            gap: 2,
+          }}
+        >
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: "flex-end",
+              gap: 1,
+            }}
+          >
             <Typography variant="h4">
               {t("meta.title")} v{process.env.SITE_VERSION}
             </Typography>
@@ -70,13 +84,15 @@ const WelcomePage: React.FCX = () => {
             <Typography>{t("AboutLocalization")}</Typography>
           </div>
           <Stack
-            gap={1}
-            mr="auto"
             css={css`
               > button {
                 justify-content: flex-start;
               }
             `}
+            sx={{
+              gap: 1,
+              mr: "auto",
+            }}
           >
             <Button
               startIcon={<NoteAddIcon />}
@@ -105,12 +121,17 @@ const WelcomePage: React.FCX = () => {
           </Stack>
         </Stack>
 
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           Special Thanks
         </Typography>
         <Divider />
         <List dense>
-          <ListItem button component={Link} href="https://tsunkit.net/nav">
+          <ListItemButton component={Link} href="https://tsunkit.net/nav">
             <ListItemIcon>
               <OpenInNewIcon />
             </ListItemIcon>
@@ -118,9 +139,8 @@ const WelcomePage: React.FCX = () => {
               primary="KCNav"
               secondary={t("SpecialThanksToKcnav")}
             />
-          </ListItem>
-          <ListItem
-            button
+          </ListItemButton>
+          <ListItemButton
             component={Link}
             href="https://github.com/Nishisonic/gkcoi"
           >
@@ -131,9 +151,8 @@ const WelcomePage: React.FCX = () => {
               primary="gkcoi"
               secondary={t("SpecialThanksToGkcoi")}
             />
-          </ListItem>
-          <ListItem
-            button
+          </ListItemButton>
+          <ListItemButton
             component={Link}
             href="https://github.com/KC3Kai/kc3-translations"
           >
@@ -144,61 +163,83 @@ const WelcomePage: React.FCX = () => {
               primary="kc3-translations"
               secondary={t("SpecialThanksToKc3")}
             />
-          </ListItem>
+          </ListItemButton>
         </List>
 
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           Author
         </Typography>
         <Divider />
-        <Stack gap={1}>
+        <Stack
+          sx={{
+            gap: 1,
+          }}
+        >
           <Typography variant="body1">Madono</Typography>
 
           <Link
             variant="body1"
-            display="flex"
-            alignItems="center"
-            gap={1}
             color="inherit"
             href="https://twitter.com/madonoharu"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
           >
             <TwitterIcon color="primary" />
             @madonoharu
           </Link>
           <Link
             variant="body1"
-            display="flex"
-            alignItems="center"
-            gap={1}
             color="inherit"
             href="https://marshmallow-qa.com/madonoharu"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
           >
             <QuestionAnswerIcon color="secondary" />
             マシュマロ(匿名でメッセージを送る)
           </Link>
           <Link
             variant="body1"
-            display="flex"
-            alignItems="center"
-            gap={1}
             color="inherit"
             href="mailto:madonoharu@gmail.com"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
           >
             <MailIcon />
             madonoharu@gmail.com
           </Link>
           <Typography
             variant="body1"
-            display="flex"
-            alignItems="center"
-            gap={1}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
           >
             <span>Discord</span>
             <span>mad#4138</span>
           </Typography>
         </Stack>
 
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           Contributor
         </Typography>
         <Divider />
@@ -209,7 +250,12 @@ const WelcomePage: React.FCX = () => {
           </Link>
         </Typography>
 
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           Maintainers
         </Typography>
         <Divider />
@@ -228,21 +274,36 @@ const WelcomePage: React.FCX = () => {
           </div>
           <span>ゆーる</span>
         </Typography>
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           Tips
         </Typography>
         <Divider />
         <Typography>
           デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
         </Typography>
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           免責事項
         </Typography>
         <Divider />
         <Typography>
           当サイトに表示される情報は仮説式等を多く使用しているため、その正確性については保障しません。また、当サイトの計算結果によって発生した損害について一切の責任を負いません。
         </Typography>
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           プライバシーポリシー
         </Typography>
         <Divider />
@@ -255,7 +316,12 @@ const WelcomePage: React.FCX = () => {
           </Link>
           をご覧ください。
         </Typography>
-        <Typography variant="h5" mt={4}>
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 4,
+          }}
+        >
           知的財産権
         </Typography>
         <Divider />

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import { Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useContext } from "react";
 import { shallowEqual } from "react-redux";
 
@@ -35,7 +35,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
         shipSelectSlice.actions.create({
           position,
           id,
-        })
+        }),
       );
     }
   };
@@ -73,7 +73,7 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
 const Memoized = React.memo(
   ShipBox,
   ({ ship: prevShip, ...prevRest }, { ship: nextShip, ...nextRest }) =>
-    prevShip?.hash === nextShip?.hash && shallowEqual(prevRest, nextRest)
+    prevShip?.hash === nextShip?.hash && shallowEqual(prevRest, nextRest),
 );
 
 const Styled = styled(Memoized)`

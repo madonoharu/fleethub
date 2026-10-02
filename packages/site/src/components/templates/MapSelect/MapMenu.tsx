@@ -79,7 +79,13 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
         />
         <Typography variant="h6" sx={{ ml: "auto" }}>
           <span>from</span>
-          <Link ml={1} variant="inherit" href="https://tsunkit.net/nav">
+          <Link
+            variant="inherit"
+            href="https://tsunkit.net/nav"
+            sx={{
+              ml: 1,
+            }}
+          >
             KCNav
           </Link>
         </Typography>

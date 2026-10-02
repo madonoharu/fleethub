@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Button } from "@mui/material";
 import { Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { toPercent } from "../../../utils";

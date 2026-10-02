@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import { ContactAnalysis, DayContactChance } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { toPercent } from "../../../utils";

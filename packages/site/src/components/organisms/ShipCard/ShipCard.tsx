@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { GearKey, SlotSizeKey } from "@fh/utils";
 import { Tooltip, Paper, IconButton, Button } from "@mui/material";
 import { Comp, Ship } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal, useShipActions } from "../../../hooks";
@@ -138,7 +138,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
           {visibleDamageState && (
             <Tooltip
               title={`${t("DamageState.name")} ${t(
-                `DamageState.${damageState}`
+                `DamageState.${damageState}`,
               )}`}
             >
               <TinyIconButton onClick={EditModal.show}>
@@ -149,7 +149,7 @@ const ShipCard: React.FCX<ShipCardProps> = ({
           {visibleMoraleState && (
             <Tooltip
               title={`${t("MoraleState.name")} ${t(
-                `MoraleState.${moraleState}`
+                `MoraleState.${moraleState}`,
               )}`}
             >
               <TinyIconButton onClick={EditModal.show}>

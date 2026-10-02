@@ -61,7 +61,7 @@ beforeEach(() => {
   appState = {};
 });
 
-jest.mock("next-i18next", () => ({
+jest.mock("next-i18next/pages", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
     i18n: { resolvedLanguage: "ja" },
@@ -156,7 +156,9 @@ it("残耐久に応じて損傷状態の帯と目盛が動く", () => {
   );
 
   const ticks = Array.from(
-    container.querySelectorAll(".recharts-xAxis .recharts-cartesian-axis-tick"),
+    container.querySelectorAll(
+      ".recharts-xAxis-tick-labels .recharts-cartesian-axis-tick-value",
+    ),
   ).map((el) => el.textContent);
 
   // 耐久99・残耐久40 はすでに中破。大破ライン24 まで16、撃沈まで40。
@@ -216,7 +218,9 @@ it("X軸の目盛を損傷状態の境界値に置く", () => {
   const { container } = renderSection();
 
   const ticks = Array.from(
-    container.querySelectorAll(".recharts-xAxis .recharts-cartesian-axis-tick"),
+    container.querySelectorAll(
+      ".recharts-xAxis-tick-labels .recharts-cartesian-axis-tick-value",
+    ),
   ).map((el) => el.textContent);
 
   // 小破25 / 中破50 / 大破75 / 撃沈99 に必要なダメージ。90 は分布の右端。
@@ -264,7 +268,9 @@ it("点数が多いときは棒ではなく1本のパスで描く", () => {
     ...xs(container.querySelector(".recharts-area-area")),
   );
 
-  expect(areaRight).toBeCloseTo(plotRight, 5);
+  // SVG のシリアライザが面と矩形で丸める桁を変えるので、描画に影響しない
+  // 0.001px 未満の差は許容する。
+  expect(areaRight).toBeCloseTo(plotRight, 3);
 });
 
 function rectOf(el: Element) {
@@ -314,7 +320,7 @@ it("ダメージ0 の棒が桁違いなら軸を二段に切り、頭だけ上�
 
   const ticks = Array.from(
     container.querySelectorAll(
-      ".recharts-yAxis .recharts-cartesian-axis-tick text",
+      ".recharts-yAxis-tick-labels .recharts-cartesian-axis-tick-value",
     ),
   );
 
@@ -441,7 +447,7 @@ it("消して残った合計が上段の窓に届かなければ、二段軸を�
   const tickTexts = () =>
     Array.from(
       container.querySelectorAll(
-        ".recharts-yAxis .recharts-cartesian-axis-tick text",
+        ".recharts-yAxis-tick-labels .recharts-cartesian-axis-tick-value",
       ),
     );
   const waves = () =>
@@ -677,6 +683,7 @@ it("比較しているときは貫通なしを塗り分けず、段としては�
   const withNoPenetration = (noPenetration: number) =>
     ({
       proc_rate: 1,
+
       damage: {
         damage_density: { 0: 0.4, 8: noPenetration, 60: 0.6 - noPenetration },
         damage_density_no_penetration: { 8: noPenetration },
@@ -1192,7 +1199,9 @@ it("貫通なしの算入を切り替えても軸は動かない", () => {
 
   const ticksOf = (selector: string) =>
     Array.from(
-      container.querySelectorAll(`${selector} .recharts-cartesian-axis-tick`),
+      container.querySelectorAll(
+        `${selector}-tick-labels .recharts-cartesian-axis-tick-value`,
+      ),
     ).map((el) => el.textContent);
 
   const before = {

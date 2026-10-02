@@ -56,7 +56,12 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
   const setShipIndex = (i: number) => bind("index")(i);
 
   return (
-    <Stack className={className} gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
       <Divider label="編成設定" />
       <Flexbox gap={1}>
         <OrgTypeSelect

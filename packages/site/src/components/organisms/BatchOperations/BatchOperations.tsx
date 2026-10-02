@@ -2,7 +2,7 @@ import { DAMAGE_STATES, GEAR_EXP_TABLE, MORALE_STATES, range } from "@fh/utils";
 import { Button, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { DamageState, MoraleState } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import {
@@ -21,7 +21,7 @@ const expTable = GEAR_EXP_TABLE.concat().reverse();
 
 const createHandler =
   (
-    fn?: (value: number | undefined) => void
+    fn?: (value: number | undefined) => void,
   ): React.MouseEventHandler<HTMLButtonElement> =>
   (event) => {
     const value = event.currentTarget.value;
@@ -67,7 +67,7 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
   const handleExpClick = createHandler(onExpSelect);
 
   return (
-    <Stack gap={1} {...rest}>
+    <Stack {...rest} sx={{ gap: 1 }}>
       <Typography variant="subtitle1">{t("BatchOperation")}</Typography>
 
       <Divider label={t("Stars")} />

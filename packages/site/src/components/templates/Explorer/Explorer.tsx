@@ -3,7 +3,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
@@ -37,14 +37,14 @@ const Explorer: React.FCX = ({ className }) => {
     dispatch(appSlice.actions.toggleExplorerOpen());
 
   const handleSelectedItemsChange = (
-    _: React.SyntheticEvent,
+    _: React.SyntheticEvent | null,
     id: string | null,
   ) => {
     setSelected(id || "");
   };
 
   const handleExpandedItemsChange = (
-    _: React.SyntheticEvent,
+    _: React.SyntheticEvent | null,
     itemIds: string[],
   ) => {
     setExpanded(itemIds);
@@ -97,6 +97,7 @@ const Explorer: React.FCX = ({ className }) => {
       />
 
       <SimpleTreeView<false>
+        itemChildrenIndentation={12}
         slots={{
           collapseIcon: ExpandMoreIcon,
           expandIcon: ChevronRightIcon,
@@ -133,20 +134,18 @@ export default styled(Explorer)`
   flex-direction: column;
   height: 100%;
 
-  .MuiTreeView-root {
+  .MuiSimpleTreeView-root {
     overflow: scroll;
   }
 
   .MuiTreeItem-content {
-    padding: 0;
+    padding-block: 0;
+    padding-right: 0;
+    padding-left: calc(12px * var(--TreeView-itemDepth));
   }
 
   .MuiTreeItem-label {
     min-width: 0;
     flex-shrink: 1;
-  }
-
-  .MuiTreeItem-group {
-    margin-left: 12px;
   }
 `;

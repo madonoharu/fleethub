@@ -2,7 +2,7 @@ import { MapEnemyComp, MapNode, nonNullable } from "@fh/utils";
 import { Button, Paper, Stack } from "@mui/material";
 import { css } from "@mui/system";
 import { Formation } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useFhCore, useModal } from "../../../hooks";
@@ -84,11 +84,25 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
         />
       </div>
 
-      <Stack gap={0.5}>
-        <Stack direction="row" gap={0.5}>
+      <Stack
+        sx={{
+          gap: 0.5,
+        }}
+      >
+        <Stack
+          direction="row"
+          sx={{
+            gap: 0.5,
+          }}
+        >
           {enemy.main.map(renderShipBanner)}
         </Stack>
-        <Stack direction="row" gap={0.5}>
+        <Stack
+          direction="row"
+          sx={{
+            gap: 0.5,
+          }}
+        >
           {enemy.escort?.map(renderShipBanner)}
         </Stack>
       </Stack>
@@ -133,11 +147,16 @@ const EnemyCompList: React.FCX<EnemyCompListProps> = ({
   onSelect,
 }) => {
   return (
-    <Stack className={className} gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
       <NodeLabel name={node.point} type={node.type} d={node.d} />
       {node.enemies
         ?.filter(
-          (enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty
+          (enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty,
         )
         .map((enemy, index) => (
           <EnemyCompListItem

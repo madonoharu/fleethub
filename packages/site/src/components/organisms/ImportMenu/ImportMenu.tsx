@@ -1,6 +1,6 @@
 import { styled, Link, Typography, Stack } from "@mui/material";
 import dynamic from "next/dynamic";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React, { useRef } from "react";
 import { useAsyncCallback } from "react-async-hook";
 
@@ -55,7 +55,7 @@ const ImportForm: React.FCX<ImportFormProps> = ({ onSuccess, onError }) => {
     {
       onSuccess,
       onError,
-    }
+    },
   );
 
   return (
@@ -94,7 +94,12 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   };
 
   return (
-    <Stack className={className} gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
       <Typography variant="subtitle1">{t("ImportComps")}</Typography>
 
       <Checkbox

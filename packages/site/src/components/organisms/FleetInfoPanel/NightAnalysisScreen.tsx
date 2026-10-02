@@ -1,6 +1,6 @@
 import { styled, Typography, Stack, Tooltip } from "@mui/material";
 import { CompNightAnalysis, NightCutinActionReport } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useCompContext } from "../../../hooks";
@@ -44,7 +44,12 @@ const NightCutinActionReportCell: React.FC<{
   entries.sort((a, b) => (b[1].proc_rate ?? 0) - (a[1].proc_rate ?? 0));
 
   return (
-    <Stack direction="row" gap={2}>
+    <Stack
+      direction="row"
+      sx={{
+        gap: 2,
+      }}
+    >
       <GridContainer1>
         {entries.map(([key, attack]) => (
           <React.Fragment key={key}>
@@ -95,7 +100,12 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
   const targetColor = comp.is_enemy() ? "primary" : "secondary";
 
   return (
-    <Stack className={className} gap={1}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 1,
+      }}
+    >
       <Flexbox gap={1}>
         {([1, 2, 3] as const).map((n) => {
           const rate = night_cutin.night_contact_chance[`rank${n}`];
@@ -110,10 +120,12 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
             <Tooltip key={n} title={title}>
               <Typography
                 variant="body2"
-                display="flex"
-                alignItems="center"
                 component="div"
-                gap={1}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
               >
                 <ContactRankIcon rank={`Rank${n}`} />
                 <span>{toPercent(rate)}</span>
@@ -122,14 +134,26 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
           );
         })}
 
-        <Typography ml={5}>攻撃側</Typography>
+        <Typography
+          sx={{
+            ml: 5,
+          }}
+        >
+          攻撃側
+        </Typography>
         <NightFleetConditionsForm
           value={config.left_night_fleet_conditions}
           onChange={bind("left_night_fleet_conditions")}
           color={attackerColor}
         />
 
-        <Typography ml={5}>相手側</Typography>
+        <Typography
+          sx={{
+            ml: 5,
+          }}
+        >
+          相手側
+        </Typography>
         <NightFleetConditionsForm
           value={config.right_night_fleet_conditions}
           onChange={bind("right_night_fleet_conditions")}

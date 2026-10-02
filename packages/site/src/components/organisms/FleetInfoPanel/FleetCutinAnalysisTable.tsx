@@ -1,6 +1,6 @@
 import { Typography, Stack } from "@mui/material";
 import { FleetCutinReport } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { numstr, toPercent } from "../../../utils";
@@ -22,7 +22,12 @@ const FleetCutinAnalysisTable: React.FCX<Props> = ({ className, data }) => {
   const baseColumns = createAttackTableColumns(t, true);
 
   return (
-    <Stack className={className} gap={2}>
+    <Stack
+      className={className}
+      sx={{
+        gap: 2,
+      }}
+    >
       {data.map((report) => (
         <div key={`${report.cutin}-${report.formation}`}>
           <Typography variant="subtitle1">

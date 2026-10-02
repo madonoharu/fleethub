@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import { CustomPowerModifiers } from "fleethub-core";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { Divider } from "../../atoms";
@@ -34,7 +34,14 @@ const CustomPowerModifiersForm: React.FCX<CustomPowerModifiersFormProps> = ({
     };
 
   return (
-    <Stack className={className} style={style} gap={1} mb={1}>
+    <Stack
+      className={className}
+      style={style}
+      sx={{
+        gap: 1,
+        mb: 1,
+      }}
+    >
       {CUSTOM_POWER_MODIFIERS_KEYS.map((key) => (
         <React.Fragment key={key}>
           <Divider label={t(key)} />
