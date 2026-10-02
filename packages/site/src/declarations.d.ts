@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import type {} from "@emotion/react/types/css-prop";
+import type {} from "react";
 
 declare module "react" {
   type FCX<P = object> = FC<P & { className?: string; style?: CSSProperties }>;
@@ -22,7 +22,6 @@ declare module "@mui/system/createTheme" {
 
   interface Theme {
     colors: Colors;
-    styles: import("./styles").ThemeStyles;
   }
 }
 

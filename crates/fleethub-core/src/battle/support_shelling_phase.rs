@@ -57,9 +57,7 @@ where
         let mut picker =
             TargetPicker::<SupportShellingType>::new(self.battle_defs, &attacker, target_comp);
 
-        let picked = if let Some(picked) = picker.choose(self.rng) {
-            picked
-        } else {
+        let Some(picked) = picker.choose(self.rng) else {
             return Ok(());
         };
 

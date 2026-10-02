@@ -1,31 +1,20 @@
-import styled from "@emotion/styled";
 import BuildIcon from "@mui/icons-material/Build";
-import { Alert, AlertTitle, Button, Stack } from "@mui/material";
+import { Alert, AlertTitle, Button } from "@mui/material";
 import type { Comp, Ship, ShipConditions } from "fleethub-core";
 import { produce } from "immer";
 import { useTranslation } from "next-i18next/pages";
 import React, { useEffect } from "react";
 
-import {
-  useAppDispatch,
-  useRootSelector,
-  useFhCore,
-  useModal,
-} from "../../../hooks";
-import {
-  shipDetailsSlice,
-  ShipDetailsState,
-  shipSelectSlice,
-} from "../../../store";
+import { cn } from "../../../styles/cn";
+import { useAppDispatch, useRootSelector, useFhCore, useModal } from "../../../hooks";
+import { shipDetailsSlice, ShipDetailsState, shipSelectSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
 import AirStateSelect from "../AirStateSelect";
 import CustomModifiersDialog from "../CustomModifiersDialog";
 import EngagementSelect from "../EngagementSelect";
 import ShipCard from "../ShipCard";
 
-import AttackAnalyzerShipConfigForm, {
-  toSide,
-} from "./AttackAnalyzerShipConfigForm";
+import AttackAnalyzerShipConfigForm, { toSide } from "./AttackAnalyzerShipConfigForm";
 import AttackPowerAnalyzer from "./AttackPowerAnalyzer";
 import ShipDetailsEnemyList from "./ShipDetailsEnemyList";
 
@@ -62,11 +51,7 @@ type ShipDetailsProps = {
   comp?: Comp;
 };
 
-const ShipDetails: React.FCX<ShipDetailsProps> = ({
-  className,
-  ship,
-  comp,
-}) => {
+const ShipDetails: React.FCX<ShipDetailsProps> = ({ className, ship, comp }) => {
   const { core } = useFhCore();
 
   const { t } = useTranslation("common");
@@ -104,13 +89,13 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
   }, []);
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
+    <div
+      className={cn(
+        "flex min-h-[80vh] flex-col gap-2 pb-[400px] [&_.MuiAlert-message]:w-full",
+        className,
+      )}
     >
-      <Flexbox gap={1}>
+      <Flexbox className="gap-2">
         <EngagementSelect
           value={state.engagement || "Parallel"}
           onChange={(engagement) => update({ engagement })}
@@ -150,18 +135,8 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
         />
       </RightConfigModal>
 
-      <Stack
-        sx={{
-          gap: 1,
-          flexDirection: "row",
-        }}
-      >
-        <Stack
-          sx={{
-            gap: 1,
-            flexBasis: "100%",
-          }}
-        >
+      <div className="flex gap-2">
+        <div className="flex basis-full flex-col gap-2">
           <ShipCard
             ship={ship}
             comp={comp}
@@ -171,34 +146,20 @@ const ShipDetails: React.FCX<ShipDetailsProps> = ({
             visibleRemove={false}
           />
           <CustomModifiersDialog ship={ship} />
-        </Stack>
-        <AttackPowerAnalyzer
-          css={{ flexBasis: "100%" }}
-          core={core}
-          state={state}
-          ship={ship}
-        />
-      </Stack>
+        </div>
+        <AttackPowerAnalyzer className="basis-full" core={core} state={state} ship={ship} />
+      </div>
 
       <Alert severity="error">
-        <AlertTitle>
-          廃止予定です。{t("DamageCalculator")}を使用してください
-        </AlertTitle>
+        <AlertTitle>廃止予定です。{t("DamageCalculator")}を使用してください</AlertTitle>
 
         <Button variant="contained" color="primary" onClick={handleEnemySelect}>
           敵を追加して攻撃力を計算する
         </Button>
         <ShipDetailsEnemyList state={state} ship={ship} />
       </Alert>
-    </Stack>
+    </div>
   );
 };
 
-export default styled(ShipDetails)`
-  min-height: 80vh;
-  padding-bottom: 400px;
-
-  .MuiAlert-message {
-    width: 100%;
-  }
-`;
+export default ShipDetails;

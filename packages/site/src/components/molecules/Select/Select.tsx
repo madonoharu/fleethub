@@ -36,7 +36,7 @@ export type SelectComponent<P = Record<string, unknown>> = {
 
 export type SelectInputProps = Omit<
   InputProps,
-  keyof SelectComponentProps<unknown>
+  Exclude<keyof SelectComponentProps<unknown>, "className">
 >;
 
 const Select: SelectComponent<SelectInputProps> = (props) => {
@@ -51,16 +51,9 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
   } = props;
 
   const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) =>
-      onChange?.(options[Number(event.target.value)]),
-    [options, onChange]
+    (event: React.ChangeEvent<HTMLInputElement>) => onChange?.(options[Number(event.target.value)]),
+    [options, onChange],
   );
-
-  const getSx = (option: typeof value) => {
-    const visible = itemFilter ? itemFilter(option) : true;
-    if (visible) return;
-    return { display: "none" };
-  };
 
   const index = options.indexOf(value);
 
@@ -69,15 +62,13 @@ const Select: SelectComponent<SelectInputProps> = (props) => {
   }
 
   return (
-    <Input
-      value={index}
-      variant={variant}
-      onChange={handleChange}
-      select
-      {...muiProps}
-    >
+    <Input value={index} variant={variant} onChange={handleChange} select {...muiProps}>
       {options.map((option, i) => (
-        <MenuItem key={i} value={i} sx={getSx(option)}>
+        <MenuItem
+          key={i}
+          value={i}
+          className={itemFilter && !itemFilter(option) ? "hidden" : undefined}
+        >
           {getOptionLabel(option)}
         </MenuItem>
       ))}

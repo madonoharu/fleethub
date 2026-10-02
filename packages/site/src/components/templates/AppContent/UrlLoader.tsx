@@ -18,7 +18,7 @@ const UrlLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, [bootstrapped]);
 
   if (!initialized) {
-    return <CircularProgress size={80} sx={{ m: 2 }} />;
+    return <CircularProgress size={80} className="m-4" />;
   }
 
   return <>{children}</>;

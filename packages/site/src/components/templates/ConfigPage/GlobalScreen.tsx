@@ -20,37 +20,22 @@ const GlobalScreen: React.FC = () => {
   const Modal = useModal();
 
   return (
-    <Stack
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className="gap-2">
       <Divider label={t("Backup")} />
       <BackupScreen />
 
-      <Divider label={t("DeleteAllData")} sx={{ mt: 5 }} />
-      <Button
-        variant="contained"
-        color="error"
-        sx={{ mr: "auto" }}
-        onClick={Modal.show}
-      >
+      <Divider label={t("DeleteAllData")} className="mt-10" />
+      <Button variant="contained" color="error" className="mr-auto" onClick={Modal.show}>
         {t("DeleteAllData")}
       </Button>
 
       <Modal>
-        <Alert severity="error" sx={{ mt: 2, mb: 1 }}>
+        <Alert severity="error" className="mt-4 mb-2">
           <AlertTitle> {t("DeleteAllData")}</AlertTitle>
           {t("AreYouSure")}
         </Alert>
 
-        <Stack
-          direction="row"
-          sx={{
-            justifyContent: "flex-end",
-            gap: 1,
-          }}
-        >
+        <Stack direction="row" className="justify-end gap-2">
           <Button color="primary" variant="contained" onClick={Modal.hide}>
             CANCEL
           </Button>

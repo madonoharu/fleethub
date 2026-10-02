@@ -1,8 +1,8 @@
 import { FleetKey, FLEET_KEYS, uppercase } from "@fh/utils";
-import { styled } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { Select } from "../../molecules";
 
 const OPTIONS = [undefined, ...FLEET_KEYS];
@@ -22,7 +22,7 @@ const SupSelect: React.FCX<Props> = ({ className, label, value, onChange }) => {
 
   return (
     <Select
-      className={className}
+      className={cn("w-[96px]", className)}
       label={label}
       options={OPTIONS}
       value={value}
@@ -32,6 +32,4 @@ const SupSelect: React.FCX<Props> = ({ className, label, value, onChange }) => {
   );
 };
 
-export default styled(SupSelect)`
-  width: 96px;
-`;
+export default SupSelect;

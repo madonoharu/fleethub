@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
 import { Link } from "@mui/material";
 import React from "react";
 
 import { useAppDispatch } from "../../../hooks";
 import { appSlice, FileEntity } from "../../../store";
+import { cn } from "../../../styles";
 
 interface FileLinkProps {
   file: FileEntity;
@@ -23,8 +23,6 @@ const FileLink: React.FCX<FileLinkProps> = ({ className, file }) => {
   );
 };
 
-export default styled(FileLink)`
-  display: block;
-  max-width: 120px;
-  cursor: pointer;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof FileLink>) => (
+  <FileLink {...props} className={cn("block max-w-30 cursor-pointer", className)} />
+);

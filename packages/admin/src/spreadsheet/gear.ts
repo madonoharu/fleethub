@@ -1,11 +1,5 @@
 import { nonNullable } from "@fh/utils";
-import {
-  GearAttr,
-  MasterAttrRule,
-  MasterData,
-  MasterGear,
-  MasterIBonuses,
-} from "fleethub-core";
+import { GearAttr, MasterAttrRule, MasterData, MasterGear, MasterIBonuses } from "fleethub-core";
 import { Start2 } from "kc-tools";
 
 import { SpreadsheetTable } from "./SpreadsheetTable";
@@ -42,9 +36,7 @@ function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
       special_type: Number(row?.special_type),
       ship_anti_air_resist: Number(row?.ship_anti_air_resist),
       fleet_anti_air_resist: Number(row?.fleet_anti_air_resist),
-      historical_aircraft_group: parseHistoricalAircraftGroup(
-        row?.historical_aircraft_group
-      ),
+      historical_aircraft_group: parseHistoricalAircraftGroup(row?.historical_aircraft_group),
     };
 
     deleteFalsyValues(next);
@@ -55,10 +47,7 @@ function createGears(table: SpreadsheetTable, start2: Start2): MasterGear[] {
   return gears;
 }
 
-function createGearAttrs(
-  table: SpreadsheetTable,
-  parser: ExprParser
-): MasterAttrRule<GearAttr>[] {
+function createGearAttrs(table: SpreadsheetTable, parser: ExprParser): MasterAttrRule<GearAttr>[] {
   return table.rows.map((row) => {
     const expr = parser.parseGear(toCellString(row.expr));
 
@@ -92,7 +81,7 @@ const IBONUS_KEYS: (keyof MasterIBonuses)[] = [
 
 function createMasterIBonuses(
   tables: Record<keyof MasterIBonuses, SpreadsheetTable>,
-  parser: ExprParser
+  parser: ExprParser,
 ): MasterIBonuses {
   const result = {} as MasterIBonuses;
 
@@ -120,10 +109,7 @@ function createMasterIBonuses(
 
 export function createGearData(
   parser: ExprParser,
-  tables: Record<
-    "gears" | "gear_attrs" | keyof MasterIBonuses,
-    SpreadsheetTable
-  >
+  tables: Record<"gears" | "gear_attrs" | keyof MasterIBonuses, SpreadsheetTable>,
 ): Pick<MasterData, "gears" | "gear_attrs" | "ibonuses"> {
   const gears = createGears(tables.gears, parser.start2);
   const gear_attrs = createGearAttrs(tables.gear_attrs, parser);

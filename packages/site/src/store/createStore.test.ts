@@ -10,13 +10,10 @@ const { createStore } = await import("./createStore");
 
 function setup() {
   const store = createStore();
-  const shipOverride = () =>
-    store.getState().present.config.masterData?.ships?.[1];
+  const shipOverride = () => store.getState().present.config.masterData?.ships?.[1];
 
   const editConfig = () =>
-    store.dispatch(
-      configSlice.actions.updateMasterShip({ id: 1, changes: {} }),
-    );
+    store.dispatch(configSlice.actions.updateMasterShip({ id: 1, changes: {} }));
 
   return { store, shipOverride, editConfig };
 }
@@ -32,9 +29,7 @@ it("undo でダメージ分布の表示の設定は戻さない", () => {
 
   expect(shipOverride()).toBeUndefined();
   expect(store.getState().present.app.damageDensityOpen).toBe(true);
-  expect(store.getState().present.app.damageDensityIncludeNoPenetration).toBe(
-    false,
-  );
+  expect(store.getState().present.app.damageDensityIncludeNoPenetration).toBe(false);
 });
 
 it("redo でもダメージ分布の表示の設定は戻さない", () => {

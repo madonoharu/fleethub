@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Paper, Typography } from "@mui/material";
 import type { AttackAnalysis } from "fleethub-core";
@@ -8,16 +7,13 @@ import React from "react";
 import { useShipName } from "../../../hooks";
 import { Tabs, TabItem } from "../../molecules";
 import AttackTable from "../AttackTable";
+import { cn } from "../../../styles";
 
 interface Props {
   analysis: AttackAnalysis;
 }
 
-const AttackAnalysisCard: React.FCX<Props> = ({
-  className,
-  style,
-  analysis,
-}) => {
+const AttackAnalysisCard: React.FCX<Props> = ({ className, style, analysis }) => {
   const { t } = useTranslation("common");
 
   const {
@@ -57,25 +53,17 @@ const AttackAnalysisCard: React.FCX<Props> = ({
   const attackerName = useShipName(attacker_ship_id, attacker_ship_id > 1500);
   const targetName = useShipName(target_ship_id, target_ship_id > 1500);
 
-  const attackerColor = attacker_is_player
-    ? "primary.light"
-    : "secondary.light";
-  const targetColor = !attacker_is_player ? "primary.light" : "secondary.light";
+  const attackerClassName = attacker_is_player ? "text-primary-light" : "text-secondary-light";
+  const targetClassName = attacker_is_player ? "text-secondary-light" : "text-primary-light";
 
   return (
     <Paper className={className} style={style}>
-      <Typography
-        sx={{
-          alignItems: "center",
-          display: "flex",
-          gap: 1,
-        }}
-      >
-        <Typography variant="inherit" component="span" color={attackerColor}>
+      <Typography className="items-center flex gap-2">
+        <Typography variant="inherit" component="span" className={attackerClassName}>
           {attackerName}
         </Typography>
         <ArrowForward fontSize="inherit" />
-        <Typography variant="inherit" component="span" color={targetColor}>
+        <Typography variant="inherit" component="span" className={targetClassName}>
           {targetName}
         </Typography>
       </Typography>
@@ -85,8 +73,6 @@ const AttackAnalysisCard: React.FCX<Props> = ({
   );
 };
 
-export default styled(AttackAnalysisCard)`
-  padding: 8px;
-  min-height: 320px;
-  min-width: 480px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof AttackAnalysisCard>) => (
+  <AttackAnalysisCard {...props} className={cn("p-2 min-h-80 min-w-120", className)} />
+);

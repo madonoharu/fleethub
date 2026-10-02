@@ -3,13 +3,7 @@ import { google } from "googleapis";
 
 import { getServiceAccount } from "../credentials";
 
-import {
-  getKey,
-  getSheetId,
-  SheetKey,
-  SHEET_DATA,
-  SpreadsheetTable,
-} from "./SpreadsheetTable";
+import { getKey, getSheetId, SheetKey, SHEET_DATA, SpreadsheetTable } from "./SpreadsheetTable";
 import { SpreadsheetClient } from "./client";
 import { createUpdateRowsRequests } from "./utils";
 
@@ -32,23 +26,15 @@ export class MasterDataSpreadsheet {
     return tables[0];
   }
 
-  async readTables(): Promise<
-    Record<Exclude<SheetKey, "ship_classes">, SpreadsheetTable>
-  >;
-  async readTables<K extends SheetKey>(
-    keys: K[]
-  ): Promise<Record<K, SpreadsheetTable>>;
-  async readTables(
-    arg?: SheetKey[]
-  ): Promise<Record<SheetKey, SpreadsheetTable>> {
+  async readTables(): Promise<Record<Exclude<SheetKey, "ship_classes">, SpreadsheetTable>>;
+  async readTables<K extends SheetKey>(keys: K[]): Promise<Record<K, SpreadsheetTable>>;
+  async readTables(arg?: SheetKey[]): Promise<Record<SheetKey, SpreadsheetTable>> {
     let keys: SheetKey[];
 
     if (arg) {
       keys = arg;
     } else {
-      keys = SHEET_DATA.map((sheet) => sheet.key).filter(
-        (key) => key !== "ship_classes"
-      );
+      keys = SHEET_DATA.map((sheet) => sheet.key).filter((key) => key !== "ship_classes");
     }
 
     const sheetIds = keys.map(getSheetId);
@@ -71,10 +57,7 @@ export class MasterDataSpreadsheet {
     }
   }
 
-  async writeMasterData(
-    tables: Record<"ships" | "gears", SpreadsheetTable>,
-    md: MasterData
-  ) {
+  async writeMasterData(tables: Record<"ships" | "gears", SpreadsheetTable>, md: MasterData) {
     const keys = ["ships", "gears"] as const;
 
     const requests = keys.flatMap((key) => {

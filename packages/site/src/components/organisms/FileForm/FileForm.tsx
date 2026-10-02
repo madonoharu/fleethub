@@ -6,15 +6,10 @@ import React from "react";
 import { useAsyncOnPublish, useModal } from "../../../hooks";
 import { FileEntity } from "../../../store";
 import { FileIcon } from "../../atoms";
-import {
-  FileCopyButton,
-  DeleteButton,
-  SaveButton,
-  TextField,
-  LinkButton,
-} from "../../molecules";
+import { FileCopyButton, DeleteButton, SaveButton, TextField, LinkButton } from "../../molecules";
 
 import ColorPicker from "./ColorPicker";
+import { cn } from "../../../styles";
 
 type FileFormProps = {
   file: FileEntity;
@@ -49,18 +44,8 @@ const FileForm: React.FCX<FileFormProps> = ({
   };
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
-    >
-      <Stack
-        direction="row"
-        sx={{
-          gap: 1,
-        }}
-      >
+    <Stack className={cn("gap-2", className)}>
+      <Stack className="gap-2" direction="row">
         <TextField
           placeholder="name"
           fullWidth
@@ -77,9 +62,7 @@ const FileForm: React.FCX<FileFormProps> = ({
         <FileCopyButton size="medium" title={t("Copy")} onClick={onCopy} />
         <DeleteButton size="medium" title={t("Remove")} onClick={onRemove} />
 
-        {isTemp && (
-          <SaveButton size="medium" title={t("Save")} onClick={onSave} />
-        )}
+        {isTemp && <SaveButton size="medium" title={t("Save")} onClick={onSave} />}
       </Stack>
 
       <TextField
@@ -93,10 +76,10 @@ const FileForm: React.FCX<FileFormProps> = ({
       />
 
       <Button
+        className="w-fit"
         variant="outlined"
         startIcon={<PaletteIcon />}
         onClick={ColorPickerModal.show}
-        sx={{ width: "fit-content" }}
       >
         {t("ChangeIconColor")}
       </Button>

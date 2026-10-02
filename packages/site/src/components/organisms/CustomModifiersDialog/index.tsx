@@ -1,6 +1,6 @@
 import BuildIcon from "@mui/icons-material/Build";
 import { Button, Stack } from "@mui/material";
-import { styled } from "@mui/system";
+
 import { AttackPowerModifier, CustomPowerModifiers, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -8,13 +8,10 @@ import React from "react";
 import { useAppDispatch, useModal } from "../../../hooks";
 import { shipsSlice } from "../../../store";
 
-import CustomPowerModifiersForm, {
-  CUSTOM_POWER_MODIFIERS_KEYS,
-} from "./CustomPowerModifiersForm";
+import CustomPowerModifiersForm, { CUSTOM_POWER_MODIFIERS_KEYS } from "./CustomPowerModifiersForm";
+import { cn } from "../../../styles";
 
-function hasMod(
-  mod: AttackPowerModifier | undefined,
-): mod is AttackPowerModifier {
+function hasMod(mod: AttackPowerModifier | undefined): mod is AttackPowerModifier {
   if (!mod) {
     return false;
   }
@@ -26,9 +23,11 @@ type CustomPowerModifiersDialogProps = {
   ship: Ship;
 };
 
-const CustomPowerModifiersDialog: React.FCX<
-  CustomPowerModifiersDialogProps
-> = ({ className, style, ship }) => {
+const CustomPowerModifiersDialog: React.FCX<CustomPowerModifiersDialogProps> = ({
+  className,
+  style,
+  ship,
+}) => {
   const { t } = useTranslation("common");
   const Modal = useModal();
 
@@ -49,12 +48,11 @@ const CustomPowerModifiersDialog: React.FCX<
   return (
     <div>
       <Button
-        className={className}
+        className={cn("justify-start", className)}
         style={style}
         variant="outlined"
         startIcon={<BuildIcon />}
         onClick={Modal.show}
-        sx={{ justifyContent: "flex-start" }}
       >
         {visibleMods ? (
           <Stack>
@@ -67,11 +65,7 @@ const CustomPowerModifiersDialog: React.FCX<
 
               const label = t(key);
 
-              return (
-                <span key={key}>{`${label} x${mod.a ?? "1.0"} +${
-                  mod.b ?? "0"
-                }`}</span>
-              );
+              return <span key={key}>{`${label} x${mod.a ?? "1.0"} +${mod.b ?? "0"}`}</span>;
             })}
           </Stack>
         ) : (
@@ -86,8 +80,15 @@ const CustomPowerModifiersDialog: React.FCX<
   );
 };
 
-export default styled(CustomPowerModifiersDialog)`
-  display: grid;
-  grid-template-columns: max-content auto;
-  gap: 8px;
-`;
+export default ({
+  className,
+  ...props
+}: React.ComponentProps<typeof CustomPowerModifiersDialog>) => (
+  <CustomPowerModifiersDialog
+    {...props}
+    className={cn(
+      "grid [grid-template-columns:max-content_auto] gap-2 [&_.MuiButton-startIcon]:inline-flex",
+      className,
+    )}
+  />
+);

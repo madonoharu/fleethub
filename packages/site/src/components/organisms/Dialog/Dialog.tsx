@@ -1,23 +1,9 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
-import {
-  Dialog as MuiDialog,
-  DialogProps as MuiDialogProps,
-} from "@mui/material";
+import { Dialog as MuiDialog, DialogProps as MuiDialogProps } from "@mui/material";
+import { mergeSlotProps } from "@mui/material/utils";
 import React from "react";
 
 import { CloseButton } from "../../molecules";
-
-const StyledCloseButton = styled(CloseButton)`
-  position: absolute;
-  top: 0px;
-  right: 0px;
-`;
-
-const ScrollContainer = styled.div`
-  padding-left: 2px;
-  overflow-y: scroll;
-`;
+import { cn } from "../../../styles";
 
 export type DialogProps = Partial<MuiDialogProps> & {
   full?: boolean;
@@ -27,25 +13,31 @@ export type DialogProps = Partial<MuiDialogProps> & {
 const Dialog: React.FC<DialogProps> = ({
   children,
   full,
-  fullHeight: _,
+  fullHeight,
+  className,
+  slotProps,
   ...rest
 }) => (
-  <MuiDialog open={false} transitionDuration={100} fullWidth={full} {...rest}>
-    <StyledCloseButton
+  <MuiDialog
+    className={className}
+    slotProps={{
+      ...slotProps,
+      paper: mergeSlotProps(slotProps?.paper, {
+        className: cn("p-2", (full || fullHeight) && "h-[calc(100vh-64px)]"),
+      }),
+    }}
+    open={false}
+    transitionDuration={100}
+    fullWidth={full}
+    {...rest}
+  >
+    <CloseButton
+      className="absolute top-0 right-0 z-10"
       size="tiny"
       onClick={(event) => rest.onClose?.(event, "backdropClick")}
     />
-    <ScrollContainer>{children}</ScrollContainer>
+    <div className="pl-0.5 overflow-y-scroll">{children}</div>
   </MuiDialog>
 );
 
-export default styled(Dialog)`
-  .MuiDialog-paper {
-    padding: 8px;
-    ${(props) =>
-      (props.full || props.fullHeight) &&
-      css`
-        height: calc(100vh - 64px);
-      `}
-  }
-`;
+export default Dialog;

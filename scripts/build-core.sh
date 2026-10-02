@@ -17,6 +17,6 @@ rm -f "$BUILD_PATH"/{pkg,node}/package.json
 
 wasm-pack build "$BUILD_PATH" --target bundler -- --locked
 wasm-pack build "$BUILD_PATH" --target nodejs --out-dir node -- --locked
-bun run prettier --write "$BUILD_PATH"/{pkg,node}/fleethub_core.d.ts
+bun run oxfmt "$BUILD_PATH"/{pkg,node}/fleethub_core.d.ts
 
 rm -f "$BUILD_PATH"/{pkg,node}/{package.json,README.md,.gitignore}

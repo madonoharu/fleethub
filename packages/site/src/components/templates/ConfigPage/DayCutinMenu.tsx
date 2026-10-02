@@ -19,9 +19,7 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
   const cutin = def.tag;
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
-  const current = useRootSelector(
-    (root) => root.config.masterData?.day_cutin?.[cutin],
-  );
+  const current = useRootSelector((root) => root.config.masterData?.day_cutin?.[cutin]);
 
   const attack: Pick<ShellingStyle, "tag" | "cutin"> = {
     tag: "ShellingStyle",
@@ -29,10 +27,10 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
   };
 
   return (
-    <Paper sx={{ p: 1 }}>
-      <AttackTypeChip sx={{ mb: 2 }} attack={attack} />
+    <Paper className="p-2">
+      <AttackTypeChip className="mb-4" attack={attack} />
 
-      <Flexbox gap={1}>
+      <Flexbox className="gap-2">
         {KEYS.map((key) => (
           <ResettableInput
             key={key}
@@ -58,11 +56,7 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
 
 const DayCutinMenu: React.FC<{ data: MasterData }> = ({ data }) => {
   return (
-    <Stack
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className="gap-2">
       {data.day_cutin.map((def) => (
         <DayCutinForm key={def.tag} def={def} />
       ))}

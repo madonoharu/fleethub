@@ -68,9 +68,7 @@ function setup(fetchData: () => Promise<Response>) {
         <Provider store={store}>
           <SWRConfig value={swrConfig}>
             <DataRefresh generation={generation} />
-            <GenerationMapContext.Provider
-              value={{ [MASTER_DATA_PATH]: generation }}
-            >
+            <GenerationMapContext.Provider value={{ [MASTER_DATA_PATH]: generation }}>
               <AppWrapper>
                 <Probe label={label} />
               </AppWrapper>
@@ -87,8 +85,7 @@ function setup(fetchData: () => Promise<Response>) {
     fetchMasterData,
     context: () => current,
     revalidate: () => revalidate(),
-    rerender: (label: string, generation = "1") =>
-      view.rerender(tree(label, generation)),
+    rerender: (label: string, generation = "1") => view.rerender(tree(label, generation)),
   };
 }
 
@@ -149,9 +146,7 @@ describe("AppWrapper master-data lifecycle", () => {
       view.store.dispatch(configSlice.actions.removeMasterShip(277));
     });
     expect(view.context()?.core).not.toBe(refreshed?.core);
-    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(
-      100,
-    );
+    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(100);
     expect(view.context()?.core.create_ship_by_id(277)?.naked_armor).toBe(90);
   });
 
@@ -172,9 +167,7 @@ describe("AppWrapper master-data lifecycle", () => {
     });
 
     await view.findByText("initial child");
-    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(
-      200,
-    );
+    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(200);
   });
 
   it("renders fetch errors and recovers when a new master-data generation succeeds", async () => {
@@ -182,9 +175,7 @@ describe("AppWrapper master-data lifecycle", () => {
     const logError = spyOn(console, "error").mockImplementation(() => {});
     const view = setup(() => Promise.reject(failure));
     await view.findByText("データ取得に失敗しました");
-    expect(view.getByRole("alert")).toHaveTextContent(
-      "Master-data transport failed",
-    );
+    expect(view.getByRole("alert")).toHaveTextContent("Master-data transport failed");
     expect(logError).toHaveBeenCalledWith(failure);
     expect(view.context()).toBeUndefined();
     expect(view.queryByText("initial child")).not.toBeInTheDocument();
@@ -192,12 +183,8 @@ describe("AppWrapper master-data lifecycle", () => {
     view.fetchMasterData.mockResolvedValue(response());
     view.rerender("recovered child", "2");
     await view.findByText("recovered child");
-    await waitFor(() =>
-      expect(view.queryByRole("alert")).not.toBeInTheDocument(),
-    );
-    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(
-      200,
-    );
+    await waitFor(() => expect(view.queryByRole("alert")).not.toBeInTheDocument());
+    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(200);
   });
 
   it("shows a refresh error instead of children backed by stale data and recovers on retry", async () => {
@@ -212,9 +199,7 @@ describe("AppWrapper master-data lifecycle", () => {
       await view.revalidate();
     });
 
-    expect(view.getByRole("alert")).toHaveTextContent(
-      "Master-data refresh failed",
-    );
+    expect(view.getByRole("alert")).toHaveTextContent("Master-data refresh failed");
     expect(view.queryByText("initial child")).not.toBeInTheDocument();
     expect(logError).toHaveBeenCalledWith(failure);
     expect(initial?.core.create_ship_by_id(277)?.naked_firepower).toBe(200);
@@ -226,8 +211,6 @@ describe("AppWrapper master-data lifecycle", () => {
 
     await view.findByText("initial child");
     expect(view.queryByRole("alert")).not.toBeInTheDocument();
-    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(
-      200,
-    );
+    expect(view.context()?.core.create_ship_by_id(277)?.naked_firepower).toBe(200);
   });
 });

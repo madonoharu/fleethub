@@ -1,11 +1,12 @@
 import { nonNullable } from "@fh/utils";
-import { css, styled, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import type { EBonuses, Gear } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { getRangeAbbr, withSign } from "../../../utils";
 import { StatIcon } from "../../molecules";
+import { cn } from "../../../styles";
 
 const STAT_KEYS = [
   "firepower",
@@ -29,28 +30,19 @@ type StatKey = (typeof STAT_KEYS)[number];
 const StatLabel: React.FCX<{ statKey: StatKey }> = ({ className, statKey }) => {
   const { t } = useTranslation("common");
   return (
-    <div
-      className={className}
-      css={css`
-        display: flex;
-        align-items: center;
-      `}
-    >
+    <div className={cn("flex items-center", className)}>
       <StatIcon icon={statKey} />
-      <span css={{ marginLeft: 8 }}>{t(statKey)}</span>
+      <span className="ml-2">{t(statKey)}</span>
     </div>
   );
 };
 
-const Value = styled("span")`
-  text-align: right;
-  margin-left: 8px;
-`;
+const Value = ({ className, ...props }: React.ComponentProps<"span">) => (
+  <span {...props} className={cn("text-right ml-2", className)} />
+);
 
-const Bonus = styled(Value)(
-  ({ theme }) => css`
-    color: ${theme.colors.bonus};
-  `,
+const Bonus = ({ className, ...props }: React.ComponentProps<typeof Value>) => (
+  <Value {...props} className={cn("text-bonus", className)} />
 );
 
 export type Props = {
@@ -103,8 +95,12 @@ const GearStatList: React.FCX<Props> = ({ className, gear, ebonuses }) => {
   );
 };
 
-export default styled(GearStatList)`
-  display: grid;
-  grid-gap: 4px;
-  grid-template-columns: max-content min-content min-content;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof GearStatList>) => (
+  <GearStatList
+    {...props}
+    className={cn(
+      "grid [grid-gap:4px] [grid-template-columns:max-content_min-content_min-content]",
+      className,
+    )}
+  />
+);

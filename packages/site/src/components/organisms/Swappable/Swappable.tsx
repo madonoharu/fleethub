@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { SwapSpec, useSwap } from "../../../hooks";
 
 type SwappableProps<T extends Record<string, unknown>> = SwapSpec<T> & {
@@ -11,9 +11,7 @@ type SwappableProps<T extends Record<string, unknown>> = SwapSpec<T> & {
 };
 
 type SwappableComponentType = {
-  <T extends Record<string, unknown>>(
-    props: SwappableProps<T>
-  ): React.ReactElement;
+  <T extends Record<string, unknown>>(props: SwappableProps<T>): React.ReactElement;
 };
 
 const Swappable: SwappableComponentType = ({
@@ -27,7 +25,7 @@ const Swappable: SwappableComponentType = ({
   children,
 }) => {
   const elem = (
-    <div className={className} style={style}>
+    <div className={cn("swappable", className)} style={style}>
       {children}
     </div>
   );
@@ -43,8 +41,4 @@ const Swappable: SwappableComponentType = ({
   return React.cloneElement(elem, { ref });
 };
 
-const Styled = styled(Swappable)(
-  ({ theme }) => theme.styles.swappable
-) as SwappableComponentType;
-
-export default Styled;
+export default Swappable;

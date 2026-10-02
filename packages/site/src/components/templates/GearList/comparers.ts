@@ -23,34 +23,16 @@ const reverse =
   (left, right) =>
     comparer(right, left);
 
-const gunComparer = createComparer(
-  "firepower",
-  "torpedo",
-  "accuracy",
-  "armor",
-  "evasion"
-);
-const torpedoComparer = createComparer(
-  "torpedo",
-  "firepower",
-  "accuracy",
-  "armor",
-  "evasion"
-);
-const seaplaneComparer = createComparer(
-  "los",
-  "firepower",
-  "accuracy",
-  "armor",
-  "evasion"
-);
+const gunComparer = createComparer("firepower", "torpedo", "accuracy", "armor", "evasion");
+const torpedoComparer = createComparer("torpedo", "firepower", "accuracy", "armor", "evasion");
+const seaplaneComparer = createComparer("los", "firepower", "accuracy", "armor", "evasion");
 const fighterComparer = createComparer(
   "anti_air",
   "los",
   "firepower",
   "accuracy",
   "armor",
-  "evasion"
+  "evasion",
 );
 const attackerComparer = createComparer(
   "torpedo",
@@ -59,7 +41,7 @@ const attackerComparer = createComparer(
   "anti_air",
   "accuracy",
   "armor",
-  "evasion"
+  "evasion",
 );
 const bomberComparer = createComparer(
   "bombing",
@@ -68,7 +50,7 @@ const bomberComparer = createComparer(
   "anti_air",
   "accuracy",
   "armor",
-  "evasion"
+  "evasion",
 );
 
 export const defaultComparer: Comparer = (left, right) => {
@@ -86,6 +68,4 @@ export const defaultComparer: Comparer = (left, right) => {
   return gunComparer(left, right);
 };
 
-export const idComparer = reverse(
-  createComparer("gear_type_id", "icon_id", "gear_id")
-);
+export const idComparer = reverse(createComparer("gear_type_id", "icon_id", "gear_id"));

@@ -1,17 +1,15 @@
+import { cn } from "../../../styles/cn";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { styled, Button, SvgIconProps, ButtonProps } from "@mui/material";
+import { Button, SvgIconProps, ButtonProps } from "@mui/material";
 import React from "react";
 
 const DIRECTIONS = ["Up", "Left", "Down", "Right"] as const;
-export type Direction = typeof DIRECTIONS[number];
+export type Direction = (typeof DIRECTIONS)[number];
 
-const ArrowIcon: React.FC<{ direction: Direction } & SvgIconProps> = ({
-  direction,
-  ...rest
-}) => {
+const ArrowIcon: React.FC<{ direction: Direction } & SvgIconProps> = ({ direction, ...rest }) => {
   switch (direction) {
     case "Down":
       return <KeyboardArrowDownIcon {...rest} />;
@@ -30,18 +28,13 @@ interface Props {
   onClick?: (direction: Direction) => void;
 }
 
-const ArrowButtons: React.FCX<Props> = ({
-  className,
-  color = "primary",
-  disabled,
-  onClick,
-}) => {
+const ArrowButtons: React.FCX<Props> = ({ className, color = "primary", disabled, onClick }) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event.currentTarget["ariaLabel"] as Direction);
   };
 
   return (
-    <div className={className}>
+    <div className={cn("grid gap-1 auto-cols-[36px] auto-rows-[36px]", className)}>
       {DIRECTIONS.map((direction) => (
         <Button
           key={direction}
@@ -50,7 +43,12 @@ const ArrowButtons: React.FCX<Props> = ({
           variant="contained"
           aria-label={direction}
           onClick={handleClick}
-          className={direction}
+          className={cn(direction, {
+            "row-start-1 col-start-2": direction === "Up",
+            "row-start-2 col-start-2": direction === "Down",
+            "row-start-2 col-start-3": direction === "Right",
+            "row-start-2": direction === "Left",
+          })}
         >
           <ArrowIcon direction={direction} />
         </Button>
@@ -59,25 +57,4 @@ const ArrowButtons: React.FCX<Props> = ({
   );
 };
 
-export default styled(ArrowButtons)`
-  display: grid;
-  gap: 4px;
-  grid-auto-columns: 36px;
-  grid-auto-rows: 36px;
-
-  .Up {
-    grid-row: 1;
-    grid-column: 2;
-  }
-  .Down {
-    grid-row: 2;
-    grid-column: 2;
-  }
-  .Right {
-    grid-row: 2;
-    grid-column: 3;
-  }
-  .Left {
-    grid-row: 2;
-  }
-`;
+export default ArrowButtons;

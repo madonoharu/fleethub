@@ -20,13 +20,7 @@ const AirStateSelect: React.FC<Props> = ({ value, onChange, ...rest }) => {
   const { t } = useTranslation("common", { keyPrefix: "AirState" });
 
   return (
-    <Select
-      options={AIR_STATES}
-      value={value}
-      onChange={onChange}
-      getOptionLabel={t}
-      {...rest}
-    />
+    <Select options={AIR_STATES} value={value} onChange={onChange} getOptionLabel={t} {...rest} />
   );
 };
 

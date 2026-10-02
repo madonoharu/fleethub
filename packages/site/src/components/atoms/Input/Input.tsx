@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import {
   InputAdornment,
   TextField as MuiTextField,
@@ -6,20 +5,15 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const StartInputAdornment = styled(InputAdornment)`
-  p {
-    font-size: 0.75rem;
-    margin-bottom: -1px;
-  }
-`;
-
 export type InputProps = MuiTextFieldProps & {
   startLabel?: React.ReactNode;
 };
 
 const Input: React.FC<InputProps> = ({ startLabel, slotProps, ...rest }) => {
   const startAdornment = startLabel && (
-    <StartInputAdornment position="start">{startLabel}</StartInputAdornment>
+    <InputAdornment position="start" className="[&_p]:text-[length:0.75rem] [&_p]:-mb-px">
+      {startLabel}
+    </InputAdornment>
   );
 
   return (

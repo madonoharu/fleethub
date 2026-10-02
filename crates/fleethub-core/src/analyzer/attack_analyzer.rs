@@ -14,7 +14,6 @@ use crate::{
         NightPhaseAttackStyle, NightPhaseAttackType, ShellingStyle, ShellingType,
         SupportShellingStyle, SupportShellingType, TorpedoAttackStyle, TorpedoAttackType,
     },
-    utils::some_or_return,
 };
 
 use super::{ActionReport, AttackAnalyzerConfig, AttackReport, DensityDetail};
@@ -187,7 +186,9 @@ impl AttackAnalyzer<'_> {
         let attacker = &self.attacker_combat_ship();
         let target = &self.target_combat_ship();
         let attack_type = attacker.select_day_phase_attack_type(target);
-        let attack_type = some_or_return!(attack_type, ActionReport::empty());
+        let Some(attack_type) = attack_type else {
+            return ActionReport::empty();
+        };
 
         let node_state = self.config.node_state;
         let engagement = self.config.engagement;
@@ -229,7 +230,9 @@ impl AttackAnalyzer<'_> {
         let attacker = &self.attacker_combat_ship();
         let target = &self.target_combat_ship();
         let attack_type = attacker.select_night_phase_attack_type(target);
-        let attack_type = some_or_return!(attack_type, ActionReport::empty());
+        let Some(attack_type) = attack_type else {
+            return ActionReport::empty();
+        };
 
         let engagement = self.config.engagement;
         let formation_params = self.get_formation_params(attack_type);
@@ -368,10 +371,9 @@ impl AttackAnalyzer<'_> {
         }
 
         let phase = AswPhase::Opening;
-        let attack_type = some_or_return!(
-            attacker.select_asw_attack_type(phase),
-            ActionReport::empty()
-        );
+        let Some(attack_type) = attacker.select_asw_attack_type(phase) else {
+            return ActionReport::empty();
+        };
         let style = AswAttackStyle { attack_type };
 
         let engagement = self.config.engagement;

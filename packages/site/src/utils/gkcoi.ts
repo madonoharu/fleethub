@@ -51,10 +51,7 @@ export type GkcoiOptions = Partial<Pick<GkcoiDeck, "theme" | "lang" | "cmt">>;
 
 const defaultOptions = { lang: "jp", theme: "dark" } as const;
 
-export const createGkcoiDeck = (
-  org: Org,
-  options?: GkcoiOptions
-): GkcoiDeck => {
+export const createGkcoiDeck = (org: Org, options?: GkcoiOptions): GkcoiDeck => {
   const deck: Mutable<GkcoiDeck> = {
     hqlv: org.hq_level,
     ...defaultOptions,

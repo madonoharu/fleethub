@@ -25,17 +25,14 @@ const SimulateButton: React.FC<Props> = (props) => {
   const disabled = !leftComp.has_route_sup();
 
   return (
-    <Stack
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className="gap-2">
       <Divider label="砲撃支援シミュレータ" />
 
       <Alert severity="info">
         <AlertTitle>多分そのうち別の形で実装を直します</AlertTitle>
         <Button
-          css={{ width: "fit-content" }}
+          className="w-fit"
+
           color="primary"
           variant="contained"
           disabled={disabled}

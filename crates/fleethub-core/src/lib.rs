@@ -1,4 +1,4 @@
-#![allow(non_snake_case, clippy::let_and_return)]
+#![allow(non_snake_case)]
 
 pub mod air_squadron;
 pub mod analyzer;
@@ -23,7 +23,6 @@ pub mod simulator;
 pub mod types;
 pub mod utils;
 
-use gloo_utils::format::JsValueSerdeExt;
 use tsify::{Ts, Tsify};
 use wasm_bindgen::{JsCast, prelude::*};
 
@@ -89,9 +88,8 @@ impl FhCore {
 impl FhCore {
     #[wasm_bindgen(constructor)]
     pub fn new(js_master: <MasterData as tsify::Tsify>::JsType) -> Result<FhCore, JsValue> {
-        let master_data = js_master
-            .into_serde::<MasterData>()
-            .map_err(|err| JsValue::from(err.to_string()))?;
+        let master_data =
+            MasterData::from_js(js_master).map_err(|err| JsValue::from(err.to_string()))?;
 
         let factory = Factory::new(master_data);
 

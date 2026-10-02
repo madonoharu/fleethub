@@ -12,7 +12,7 @@ import { createShipData } from "./ship";
 export function createMasterData(
   start2: Start2,
   ctypeNames: string[],
-  tables: Record<Exclude<SheetKey, "ship_classes">, SpreadsheetTable>
+  tables: Record<Exclude<SheetKey, "ship_classes">, SpreadsheetTable>,
 ): MasterData {
   const nationalityMap = new NationalityMap(tables.nationalities);
   const parser = new ExprParser(start2, ctypeNames, nationalityMap);

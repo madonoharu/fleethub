@@ -1,10 +1,9 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { Chip, Tooltip, Typography } from "@mui/material";
 import { AntiAirCutinDef } from "fleethub-core";
 import React from "react";
 
 import { LabeledValue } from "../../atoms";
+import { cn } from "../../../styles";
 
 type Props = {
   antiAirCutin: AntiAirCutinDef;
@@ -21,20 +20,13 @@ const AntiAirCutinChip: React.FCX<Props> = ({ className, antiAirCutin }) => (
       </>
     }
   >
-    <Chip
-      className={className}
-      label={antiAirCutin.id}
-      size="small"
-      variant="outlined"
-    />
+    <Chip className={className} label={antiAirCutin.id} size="small" variant="outlined" />
   </Tooltip>
 );
 
-export default styled(AntiAirCutinChip)(
-  ({ theme }) => css`
-    width: 48px;
-    border-radius: 4px;
-    color: ${theme.colors.anti_air};
-    border-color: ${theme.colors.anti_air};
-  `
+export default ({ className, ...props }: React.ComponentProps<typeof AntiAirCutinChip>) => (
+  <AntiAirCutinChip
+    {...props}
+    className={cn("w-12 rounded-[4px] text-anti-air border-anti-air", className)}
+  />
 );

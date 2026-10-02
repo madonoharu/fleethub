@@ -1,16 +1,10 @@
 import { uniq } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import {
-  styled,
-  Button,
-  Stack,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import { Button, Stack, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React, { useContext } from "react";
 
+import { cn } from "../../../styles/cn";
 import { GenerationMapContext, useModal } from "../../../hooks";
 import { Divider } from "../../atoms";
 
@@ -19,12 +13,7 @@ interface WorldAreaButtonsProps extends AreaListProps {
   world: number;
 }
 
-const WorldAreaButtons: React.FCX<WorldAreaButtonsProps> = ({
-  world,
-  latest,
-  areas,
-  onClick,
-}) => {
+const WorldAreaButtons: React.FCX<WorldAreaButtonsProps> = ({ world, latest, areas, onClick }) => {
   const { t } = useTranslation("common");
 
   return (
@@ -33,12 +22,7 @@ const WorldAreaButtons: React.FCX<WorldAreaButtonsProps> = ({
       {areas
         .filter((id) => Math.floor(id / 10) === world)
         .map((id) => (
-          <Button
-            key={id}
-            component="button"
-            value={id.toString()}
-            onClick={onClick}
-          >
+          <Button key={id} component="button" value={id.toString()} onClick={onClick}>
             {latest ? "E" : world}-{id % 10}
           </Button>
         ))}
@@ -51,11 +35,7 @@ interface AreaListProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const EventAreaList: React.FCX<AreaListProps> = ({
-  className,
-  areas,
-  onClick,
-}) => {
+const EventAreaList: React.FCX<AreaListProps> = ({ className, areas, onClick }) => {
   const worlds = uniq(areas.map((id) => Math.floor(id / 10))).reverse();
 
   if (worlds.length === 0) {
@@ -64,22 +44,14 @@ const EventAreaList: React.FCX<AreaListProps> = ({
 
   return (
     <div className={className}>
-      <WorldAreaButtons
-        latest
-        world={worlds[0]}
-        areas={areas}
-        onClick={onClick}
-      />
-      <Accordion css={{ borderRadius: 4, overflow: "hidden" }} disableGutters>
-        <AccordionSummary>Past Events</AccordionSummary>
-        <AccordionDetails sx={{ maxHeight: 256, overflowY: "scroll" }}>
+      <WorldAreaButtons latest world={worlds[0]} areas={areas} onClick={onClick} />
+      <Accordion className="rounded-[4px] overflow-hidden" disableGutters>
+        <AccordionSummary className="text-[1rem] leading-[1.5] font-normal">
+          Past Events
+        </AccordionSummary>
+        <AccordionDetails className="max-h-[256px] overflow-y-scroll">
           {worlds.map((world) => (
-            <WorldAreaButtons
-              key={world}
-              world={world}
-              areas={areas}
-              onClick={onClick}
-            />
+            <WorldAreaButtons key={world} world={world} areas={areas} onClick={onClick} />
           ))}
         </AccordionDetails>
       </Accordion>
@@ -93,12 +65,7 @@ const AreaList: React.FCX<AreaListProps> = ({ className, areas, onClick }) => {
   return (
     <div className={className}>
       {worlds.map((world) => (
-        <WorldAreaButtons
-          key={world}
-          world={world}
-          areas={areas}
-          onClick={onClick}
-        />
+        <WorldAreaButtons key={world} world={world} areas={areas} onClick={onClick} />
       ))}
     </div>
   );
@@ -126,27 +93,12 @@ const AreaMenu: React.FCX<AreaMenuProps> = ({ className, onChange }) => {
   };
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        flexDirection: "row",
-        alignItems: "flex-start",
-        flexWrap: "wrap",
-        gap: 2,
-      }}
-    >
+    <Stack className={cn("flex-row items-start flex-wrap gap-4", className)}>
       <AreaList areas={normalAreas} onClick={handleClick} />
       <EventAreaList areas={eventAreas} onClick={handleClick} />
     </Stack>
   );
 };
-
-const StyledButton = styled(Button)`
-  height: 40px;
-  .MuiButton-endIcon {
-    font-size: 1.5rem;
-  }
-`;
 
 type AreaSelectProps = {
   value: number;
@@ -164,15 +116,16 @@ const AreaSelect: React.FCX<AreaSelectProps> = ({ value, onChange }) => {
 
   return (
     <>
-      <StyledButton
+      <Button
+        className="h-10 [&_.MuiButton-endIcon]:text-[1.5rem]"
         onClick={Modal.show}
         variant="contained"
         color="primary"
         endIcon={<ArrowDropDownIcon />}
       >
         {t("Map")} {Math.floor(value / 10)}-{value % 10}
-      </StyledButton>
-      <Modal sx={{ m: 1 }}>
+      </Button>
+      <Modal className="m-2">
         <AreaMenu onChange={handleChange} />
       </Modal>
     </>

@@ -1,6 +1,6 @@
 export function mapValues<T, R>(
   obj: T,
-  fn: (value: T[keyof T], key: keyof T) => R
+  fn: (value: T[keyof T], key: keyof T) => R,
 ): Record<keyof T, R> {
   const nextObj = {} as Record<keyof T, R>;
 
@@ -12,10 +12,7 @@ export function mapValues<T, R>(
   return nextObj;
 }
 
-export function pick<T extends object, K extends keyof T>(
-  obj: T,
-  keys: readonly K[]
-): Pick<T, K> {
+export function pick<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> {
   const result = {} as Pick<T, K>;
 
   keys.forEach((key) => {
@@ -28,17 +25,13 @@ export function pick<T extends object, K extends keyof T>(
 }
 
 export async function promiseAllValues<K extends string, V>(
-  obj: Record<K, Promise<V>>
+  obj: Record<K, Promise<V>>,
 ): Promise<Record<K, V>> {
-  const promises = Object.entries<Promise<V>>(obj).map(([k, p]) =>
-    p.then((v) => [k, v] as const)
-  );
+  const promises = Object.entries<Promise<V>>(obj).map(([k, p]) => p.then((v) => [k, v] as const));
 
   return Object.fromEntries(await Promise.all(promises)) as Record<K, V>;
 }
 
-export function isUnknownRecord(
-  value: unknown
-): value is Record<string, unknown> {
+export function isUnknownRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }

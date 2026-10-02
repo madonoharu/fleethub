@@ -1,11 +1,7 @@
 import { round } from "@fh/utils";
 import { Alert, Paper, TableContainer, Typography } from "@mui/material";
-import { styled } from "@mui/system";
-import type {
-  Comp,
-  NodeAttackAnalyzerConfig,
-  SimulatorResult,
-} from "fleethub-core";
+
+import type { Comp, NodeAttackAnalyzerConfig, SimulatorResult } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
@@ -14,6 +10,7 @@ import { toPercent } from "../../../utils";
 import DamageStateDensityBarChart from "../AttackTable/DamageStateDensityBarChart";
 import ShipBanner from "../ShipBanner";
 import Table from "../Table";
+import { cn } from "../../../styles";
 
 interface Props {
   leftComp?: Comp;
@@ -49,22 +46,11 @@ const SimulatorResultTable: React.FCX<Props> = ({
 
   try {
     const startTime = performance.now();
-    simResult = analyzer.simulate_support_shelling(
-      leftComp,
-      rightComp,
-      config,
-      times,
-    );
+    simResult = analyzer.simulate_support_shelling(leftComp, rightComp, config, times);
     const endTime = performance.now();
 
     executionTime = (
-      <Typography
-        variant="body2"
-        sx={{
-          display: "flex",
-          gap: 1,
-        }}
-      >
+      <Typography className="flex gap-2" variant="body2">
         <span>回数: {times}</span>
         <span>実行時間: {round((endTime - startTime) / 1000, 3)}秒</span>
       </Typography>
@@ -116,8 +102,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
           columns={[
             {
               label: "index",
-              getValue: (item) =>
-                `${t(`FleetType.${item.fleet_type}`)} ${item.index + 1}`,
+              getValue: (item) => `${t(`FleetType.${item.fleet_type}`)} ${item.index + 1}`,
             },
             {
               label: t("Ship"),
@@ -128,9 +113,7 @@ const SimulatorResultTable: React.FCX<Props> = ({
             },
             {
               label: t("DamageState.name"),
-              getValue: (item) => (
-                <DamageStateDensityBarChart data={item.damage_state_map} />
-              ),
+              getValue: (item) => <DamageStateDensityBarChart data={item.damage_state_map} />,
             },
           ]}
         />
@@ -139,14 +122,14 @@ const SimulatorResultTable: React.FCX<Props> = ({
   );
 };
 
-const Styled = styled(SimulatorResultTable)`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  tbody tr:last-of-type td {
-    border-bottom-color: transparent;
-  }
-`;
+const Styled = ({ className, ...props }: React.ComponentProps<typeof SimulatorResultTable>) => (
+  <SimulatorResultTable
+    {...props}
+    className={cn(
+      "flex flex-col gap-2 [&_tbody_tr:last-of-type_td]:[border-bottom-color:transparent]",
+      className,
+    )}
+  />
+);
 
 export default React.memo(Styled);

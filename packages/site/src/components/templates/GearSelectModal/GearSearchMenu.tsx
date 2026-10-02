@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import { Gear } from "fleethub-core";
 import React, { useState } from "react";
@@ -20,15 +19,8 @@ const searchGears = (gears: Gear[], searchValue: string) => {
     return [idFound];
   }
 
-  return gears.filter((gear) =>
-    gear.name.toUpperCase().includes(searchValue.toUpperCase())
-  );
+  return gears.filter((gear) => gear.name.toUpperCase().includes(searchValue.toUpperCase()));
 };
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-`;
 
 type GearSearchResultProps = {
   searchValue: string;
@@ -36,11 +28,7 @@ type GearSearchResultProps = {
   onSelect?: (gear: Gear) => void;
 };
 
-const GearSearchResult: React.FC<GearSearchResultProps> = ({
-  searchValue,
-  gears,
-  onSelect,
-}) => {
+const GearSearchResult: React.FC<GearSearchResultProps> = ({ searchValue, gears, onSelect }) => {
   return (
     <div>
       <Typography>{`"${searchValue}"の検索結果`}</Typography>
@@ -48,7 +36,7 @@ const GearSearchResult: React.FC<GearSearchResultProps> = ({
       {gears.length === 0 ? (
         <Typography>見つかりませんでした</Typography>
       ) : (
-        <Grid>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
           {gears.map((gear) => (
             <GearButton
               key={`gear-${gear.gear_id}`}
@@ -56,7 +44,7 @@ const GearSearchResult: React.FC<GearSearchResultProps> = ({
               onClick={() => onSelect && onSelect(gear)}
             />
           ))}
-        </Grid>
+        </div>
       )}
     </div>
   );
@@ -67,19 +55,12 @@ type GearSearchMenuProps = {
   onSelect?: (gear: Gear) => void;
 };
 
-const GearSearchMenu: React.FCX<GearSearchMenuProps> = ({
-  gears,
-  onSelect,
-}) => {
+const GearSearchMenu: React.FCX<GearSearchMenuProps> = ({ gears, onSelect }) => {
   const [searchValue, setSearchValue] = useState("");
 
   return (
     <div>
-      <SearchInput
-        value={searchValue}
-        onChange={setSearchValue}
-        autoFocus={true}
-      />
+      <SearchInput value={searchValue} onChange={setSearchValue} autoFocus={true} />
 
       {searchValue && (
         <GearSearchResult

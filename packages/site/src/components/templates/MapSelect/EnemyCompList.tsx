@@ -1,10 +1,10 @@
 import { MapEnemyComp, MapNode, nonNullable } from "@fh/utils";
 import { Button, Paper, Stack } from "@mui/material";
-import { css } from "@mui/system";
 import { Formation } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useFhCore, useModal } from "../../../hooks";
 import { Flexbox } from "../../atoms";
 import { InfoButton, NodeLabel } from "../../molecules";
@@ -61,48 +61,25 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
   };
 
   return (
-    <Paper className={className} sx={{ p: 1 }}>
-      <div
-        css={css`
-          display: grid;
-          grid-template-columns: 1fr auto;
-        `}
-      >
+    <Paper className={cn("p-2", className)}>
+      <div className="grid grid-cols-[1fr_auto]">
         <EnemyFighterPower label={t("FighterPower")} fp={enemy.fp} />
         {lbas ? (
-          <EnemyFighterPower
-            css={{ gridColumn: "1", gridRow: "2" }}
-            label="基地戦"
-            fp={enemy.lbasFp}
-          />
+          <EnemyFighterPower className="col-start-1 row-start-2" label="基地戦" fp={enemy.lbasFp} />
         ) : null}
         <InfoButton
           size="medium"
-          css={{ gridColumn: "2", gridRow: "1 / span 2" }}
+          className="col-start-2 row-start-1 row-span-2"
           title={t("Details")}
           onClick={Modal.show}
         />
       </div>
 
-      <Stack
-        sx={{
-          gap: 0.5,
-        }}
-      >
-        <Stack
-          direction="row"
-          sx={{
-            gap: 0.5,
-          }}
-        >
+      <Stack className="gap-1">
+        <Stack direction="row" className="gap-1">
           {enemy.main.map(renderShipBanner)}
         </Stack>
-        <Stack
-          direction="row"
-          sx={{
-            gap: 0.5,
-          }}
-        >
+        <Stack direction="row" className="gap-1">
           {enemy.escort?.map(renderShipBanner)}
         </Stack>
       </Stack>
@@ -111,7 +88,7 @@ const EnemyCompListItem: React.FCX<EnemyCompListItem> = ({
         <EnemyCompScreen enemy={enemy} />
       </Modal>
 
-      <Flexbox gap={1} mt={1}>
+      <Flexbox className="mt-2 gap-2">
         {enemy.formations
           .map(toFormation)
           .filter(nonNullable)
@@ -147,17 +124,10 @@ const EnemyCompList: React.FCX<EnemyCompListProps> = ({
   onSelect,
 }) => {
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className={cn("gap-2", className)}>
       <NodeLabel name={node.point} type={node.type} d={node.d} />
       {node.enemies
-        ?.filter(
-          (enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty,
-        )
+        ?.filter((enemy) => !difficulty || !enemy.diff || enemy.diff === difficulty)
         .map((enemy, index) => (
           <EnemyCompListItem
             key={index}

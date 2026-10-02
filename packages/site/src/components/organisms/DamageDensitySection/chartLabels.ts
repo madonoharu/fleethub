@@ -15,8 +15,7 @@ export function estimateTextWidth(text: string): number {
   let width = 0;
 
   for (const char of text) {
-    width +=
-      char.charCodeAt(0) > 0x2e80 ? LABEL_FONT_SIZE : LABEL_FONT_SIZE * 0.55;
+    width += char.charCodeAt(0) > 0x2e80 ? LABEL_FONT_SIZE : LABEL_FONT_SIZE * 0.55;
   }
 
   return width;

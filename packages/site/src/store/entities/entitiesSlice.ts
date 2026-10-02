@@ -19,14 +19,7 @@ import { gearsSlice } from "./gearsSlice";
 import { orgsSlice } from "./orgsSlice";
 import { presetsSlice } from "./presetsSlice";
 import { cloneAffectedEntities, getAffectedEntities } from "./rtk-ts-norm";
-import {
-  Plan,
-  PresetEntity,
-  schemaKeys,
-  schemata,
-  Step,
-  FileEntity,
-} from "./schemata";
+import { Plan, PresetEntity, schemaKeys, schemata, Step, FileEntity } from "./schemata";
 import { shipsSlice } from "./shipsSlice";
 import { stepsSlice } from "./stepsSlice";
 
@@ -64,8 +57,7 @@ export type GearPosition =
   | { tag: "airSquadrons"; id: string; key: GearKey }
   | { tag: "presets"; id: string; key: GearKey };
 
-export type ShipPosition =
-  { tag: "fleets"; id: string; key: ShipKey } | { tag: "shipDetails" };
+export type ShipPosition = { tag: "fleets"; id: string; key: ShipKey } | { tag: "shipDetails" };
 
 export type SwapPayload<T> = {
   drag: T;
@@ -106,11 +98,7 @@ export type ImportPayload = {
   to?: string;
 };
 
-const setGearPosition = (
-  state: State,
-  position: GearPosition,
-  id: string | undefined,
-): void => {
+const setGearPosition = (state: State, position: GearPosition, id: string | undefined): void => {
   const { tag, key, id: pid } = position;
   const entity = state[tag].entities[pid];
   if (entity) {
@@ -128,11 +116,7 @@ function shipPositionExists(state: State, position: ShipPosition): boolean {
   return Boolean(entity);
 }
 
-const setShipPosition = (
-  state: State,
-  position: ShipPosition,
-  id: string | undefined,
-): void => {
+const setShipPosition = (state: State, position: ShipPosition, id: string | undefined): void => {
   if (position.tag === "shipDetails") {
     return;
   }
@@ -273,32 +257,20 @@ export const entitiesSlice = createSlice({
       }
     },
 
-    swapGear: (
-      state,
-      { payload: { drag, drop } }: PayloadAction<SwapGearPayload>,
-    ) => {
+    swapGear: (state, { payload: { drag, drop } }: PayloadAction<SwapGearPayload>) => {
       setGearPosition(state, drag.position, drop.id);
       setGearPosition(state, drop.position, drag.id);
     },
 
-    swapShip: (
-      state,
-      { payload: { drag, drop } }: PayloadAction<SwapShipPayload>,
-    ) => {
-      if (
-        shipPositionExists(state, drag.position) &&
-        shipPositionExists(state, drop.position)
-      ) {
+    swapShip: (state, { payload: { drag, drop } }: PayloadAction<SwapShipPayload>) => {
+      if (shipPositionExists(state, drag.position) && shipPositionExists(state, drop.position)) {
         setShipPosition(state, drag.position, drop.id);
         setShipPosition(state, drop.position, drag.id);
       }
     },
 
     createPlan: {
-      reducer: (
-        state,
-        { payload }: PayloadAction<{ input: Plan; to?: string }>,
-      ) => {
+      reducer: (state, { payload }: PayloadAction<{ input: Plan; to?: string }>) => {
         const { input, to } = payload;
 
         if (!input.name) {
@@ -382,12 +354,7 @@ export const entitiesSlice = createSlice({
       const sourceId = action.payload;
       const entities = getEntities(state);
 
-      const cloned = cloneAffectedEntities(
-        sourceId,
-        schemata.file,
-        entities,
-        nanoid,
-      );
+      const cloned = cloneAffectedEntities(sourceId, schemata.file, entities, nanoid);
 
       let to: string | undefined;
       if (isFolder(state.files.entities[sourceId])) {
@@ -406,8 +373,7 @@ export const entitiesSlice = createSlice({
     },
 
     import: (state, { payload }: PayloadAction<ImportPayload>) => {
-      const entity = payload.entities["files"]?.[payload.result] as
-        FileEntity | undefined;
+      const entity = payload.entities["files"]?.[payload.result] as FileEntity | undefined;
 
       if (isPlan(entity) && !entity.name) {
         entity.name = getPlanDefaultName(state);
@@ -420,11 +386,7 @@ export const entitiesSlice = createSlice({
     sweep: (state) => {
       const entities = getEntities(state);
 
-      const affectedEntities = getAffectedEntities(
-        state.files.rootIds,
-        [schemata.file],
-        entities,
-      );
+      const affectedEntities = getAffectedEntities(state.files.rootIds, [schemata.file], entities);
 
       const presetGearIds = Object.values(state.presets.entities)
         .flatMap((preset) => GEAR_KEYS.map((key) => preset?.[key]))

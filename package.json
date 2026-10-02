@@ -4,8 +4,7 @@
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru) <madonoharu@gmail.com>",
   "workspaces": [
-    "packages/*",
-    "crates/fleethub-core"
+    "packages/*"
   ],
   "scripts": {
     "build": "bun run build:site",
@@ -17,13 +16,15 @@
     "dev": "bun run --cwd packages/site dev",
     "dispatch": "bun scripts/dispatch.ts",
     "dispatch-locally": "act -r workflow_dispatch --secret-file .env -e payload.json",
-    "prepare": "bun --bun husky",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "lint": "oxlint --type-aware packages scripts tests playwright.config.mts",
     "typecheck": "tsc --noEmit",
-    "setup": "bun run build:core && bun run build:utils && bun run build:kcs && bun run build:admin",
+    "setup": "bun run build:utils && bun run build:kcs && bun run build:admin",
     "start": "bun run --cwd packages/site start",
     "test": "bun test --isolate --parallel=2 ./packages",
     "test:build": "bun test --isolate --path-ignore-patterns 'tests/e2e/**' ./tests/build",
+    "test:core": "bun test --isolate --path-ignore-patterns 'tests/e2e/**' ./tests/core",
     "test:e2e": "playwright test",
     "test:e2e:dev": "E2E_MODE=dev playwright test",
     "update:locales": "bun scripts/updateLocales.ts",
@@ -34,38 +35,33 @@
     "lint:fix": "bun run lint --fix",
     "verify:build": "bun scripts/verify-build-traces.ts"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,mts,json}": "bun --bun prettier --cache --write",
-    "*.{js,jsx,ts,tsx,mts}": "bun --bun oxlint --fix"
-  },
   "devDependencies": {
-    "@playwright/test": "1.63.0",
     "@fh/admin": "workspace:*",
     "@fh/utils": "workspace:*",
+    "@happy-dom/global-registrator": "20.14.5",
+    "@playwright/test": "1.63.0",
     "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "14.6.7",
+    "@types/bun": "1.4.2",
     "@types/fs-extra": "11.0.4",
     "@types/node": "26.6.4",
-    "fleethub-core": "workspace:*",
+    "equipment-bonus": "latest",
+    "es-toolkit": "1.52.0",
+    "fleethub-core": "latest",
     "fs-extra": "11.4.1",
-    "husky": "9.1.7",
     "kc-tools": "1.6.2",
     "ky": "2.1.0",
-    "lint-staged": "17.6.0",
-    "prettier": "3.9.9",
-    "typescript": "7.0.2",
+    "oxfmt": "0.71.0",
     "oxlint": "1.86.0",
     "oxlint-tsgolint": "7.0.2003",
-    "@happy-dom/global-registrator": "20.14.5",
-    "@types/bun": "1.4.2",
-    "es-toolkit": "1.52.0"
+    "typescript": "7.0.2"
   },
-  "packageManager": "bun@1.4.2",
   "engines": {
     "bun": ">=1.4.2"
   },
+  "packageManager": "bun@1.4.2",
   "trustedDependencies": [
     "sharp"
   ]

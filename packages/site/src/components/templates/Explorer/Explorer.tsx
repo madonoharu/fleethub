@@ -1,52 +1,41 @@
-import styled from "@emotion/styled";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
-import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import { TreeItem, type TreeItemProps } from "@mui/x-tree-view/TreeItem";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useAppDispatch, useRootSelector } from "../../../hooks";
-import {
-  appSlice,
-  FileEntity,
-  filesSlice,
-  isFolder,
-  entitiesSlice,
-} from "../../../store";
+import { appSlice, FileEntity, filesSlice, isFolder, entitiesSlice } from "../../../store";
 import { FileDropZone } from "../../organisms";
 
 import ExplorerHeader from "./ExplorerHeader";
 import FolderLabel from "./FolderLabel";
 import PlanLabel from "./PlanLabel";
 
-const groupTransition = { timeout: 150 };
+const treeItemSlotProps: TreeItemProps["slotProps"] = {
+  content: { className: "p-0" },
+  groupTransition: { className: "pl-3", timeout: 150 },
+  label: { className: "min-w-0 shrink overflow-visible" },
+};
 
 const Explorer: React.FCX = ({ className }) => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
 
-  const { rootIds, tempIds, entities } = useRootSelector(
-    (root) => root.entities.files,
-  );
+  const { rootIds, tempIds, entities } = useRootSelector((root) => root.entities.files);
 
   const [expanded, setExpanded] = React.useState<string[]>(["root", "temp"]);
   const [selected, setSelected] = React.useState<string>("");
 
-  const toggleExplorerOpen = () =>
-    dispatch(appSlice.actions.toggleExplorerOpen());
+  const toggleExplorerOpen = () => dispatch(appSlice.actions.toggleExplorerOpen());
 
-  const handleSelectedItemsChange = (
-    _: React.SyntheticEvent | null,
-    id: string | null,
-  ) => {
+  const handleSelectedItemsChange = (_: React.SyntheticEvent | null, id: string | null) => {
     setSelected(id || "");
   };
 
-  const handleExpandedItemsChange = (
-    _: React.SyntheticEvent | null,
-    itemIds: string[],
-  ) => {
+  const handleExpandedItemsChange = (_: React.SyntheticEvent | null, itemIds: string[]) => {
     setExpanded(itemIds);
   };
 
@@ -77,19 +66,14 @@ const Explorer: React.FCX = ({ className }) => {
     const children = isFolder(file) ? file.children.map(renderFile) : null;
 
     return (
-      <TreeItem
-        key={file.id}
-        itemId={file.id}
-        label={label}
-        slotProps={{ groupTransition }}
-      >
+      <TreeItem key={file.id} itemId={file.id} label={label} slotProps={treeItemSlotProps}>
         {children}
       </TreeItem>
     );
   };
 
   return (
-    <div className={className}>
+    <div className={cn("flex h-full flex-col", className)}>
       <ExplorerHeader
         onPlanCreate={handlePlanCreate}
         onFolderCreate={handleFolderCreate}
@@ -97,6 +81,9 @@ const Explorer: React.FCX = ({ className }) => {
       />
 
       <SimpleTreeView<false>
+        // MUI also adds MuiSimpleTreeView-root to each TreeItem. Apply scrolling
+        // directly to this element so individual rows never become scroll areas.
+        className="min-h-0 overflow-auto"
         itemChildrenIndentation={12}
         slots={{
           collapseIcon: ExpandMoreIcon,
@@ -107,21 +94,11 @@ const Explorer: React.FCX = ({ className }) => {
         onSelectedItemsChange={handleSelectedItemsChange}
         onExpandedItemsChange={handleExpandedItemsChange}
       >
-        <TreeItem
-          key="root"
-          itemId="root"
-          label={"root"}
-          slotProps={{ groupTransition }}
-        >
+        <TreeItem key="root" itemId="root" label={"root"} slotProps={treeItemSlotProps}>
           {rootIds.map(renderFile)}
-          <FileDropZone css={{ height: 8 * 5 }} onDrop={handleRootDrop} />
+          <FileDropZone className="h-[40px]" onDrop={handleRootDrop} />
         </TreeItem>
-        <TreeItem
-          key="temp"
-          itemId="temp"
-          label={t("Temp")}
-          slotProps={{ groupTransition }}
-        >
+        <TreeItem key="temp" itemId="temp" label={t("Temp")} slotProps={treeItemSlotProps}>
           {tempIds.map(renderFile)}
         </TreeItem>
       </SimpleTreeView>
@@ -129,23 +106,4 @@ const Explorer: React.FCX = ({ className }) => {
   );
 };
 
-export default styled(Explorer)`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-
-  .MuiSimpleTreeView-root {
-    overflow: scroll;
-  }
-
-  .MuiTreeItem-content {
-    padding-block: 0;
-    padding-right: 0;
-    padding-left: calc(12px * var(--TreeView-itemDepth));
-  }
-
-  .MuiTreeItem-label {
-    min-width: 0;
-    flex-shrink: 1;
-  }
-`;
+export default Explorer;

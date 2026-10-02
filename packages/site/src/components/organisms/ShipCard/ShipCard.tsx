@@ -1,19 +1,13 @@
-import styled from "@emotion/styled";
 import { GearKey, SlotSizeKey } from "@fh/utils";
 import { Tooltip, Paper, IconButton, Button } from "@mui/material";
 import { Comp, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useModal, useShipActions } from "../../../hooks";
 import { toPercent } from "../../../utils";
-import {
-  AmmoIcon,
-  DamageStateIcon,
-  Flexbox,
-  FuelIcon,
-  MoraleStateIcon,
-} from "../../atoms";
+import { AmmoIcon, DamageStateIcon, Flexbox, FuelIcon, MoraleStateIcon } from "../../atoms";
 import GearSlot from "../GearSlot";
 import PresetMenu from "../PresetMenu";
 import ShipBanner from "../ShipBanner";
@@ -22,37 +16,6 @@ import ShipDetails from "../ShipDetails";
 import ShipCardHeader from "./ShipCardHeader";
 import ShipMiscEditForm from "./ShipMiscEditForm";
 import ShipStats from "./ShipStats";
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TinyIconButton = styled(IconButton)`
-  padding: 3px;
-  line-height: 0;
-  svg {
-    font-size: 1rem;
-  }
-`;
-
-const TinyButton = styled(Button)`
-  padding: 0 4px;
-
-  .MuiButton-startIcon {
-    margin-right: 4px;
-    margin-left: 0;
-  }
-`;
-
-const StyledShipBanner = styled(ShipBanner)`
-  margin-left: 4px;
-`;
-
-const GearList = styled.div`
-  flex-grow: 1;
-  flex-shrink: 1;
-`;
 
 type ShipCardProps = {
   ship: Ship;
@@ -95,7 +58,12 @@ const ShipCard: React.FCX<ShipCardProps> = ({
   const readonly = id === "";
 
   return (
-    <Paper className={className}>
+    <Paper
+      className={cn(
+        "grid h-[192px] min-w-[360px] grid-cols-[160px_calc(100%_-_160px)] grid-rows-[24px_auto] [&>div:nth-of-type(1)]:col-span-2 [&>div:nth-of-type(1)]:row-start-1 [&>div:nth-of-type(1)_svg]:invisible [&>div:nth-of-type(2)]:col-start-1 [&>div:nth-of-type(2)]:row-start-2 [&>div:nth-of-type(3)]:col-start-2 [&>div:nth-of-type(3)]:row-start-2 [&:hover>div:nth-of-type(1)_svg]:visible",
+        className,
+      )}
+    >
       <ShipCardHeader
         ship={ship}
         onUpdate={actions.update}
@@ -109,13 +77,13 @@ const ShipCard: React.FCX<ShipCardProps> = ({
         visibleUpdate={visibleUpdate}
         visibleRemove={visibleRemove}
       />
-      <Column>
-        <StyledShipBanner shipId={ship.ship_id} size="medium" />
+      <div className="flex flex-col">
+        <ShipBanner className="ml-1" shipId={ship.ship_id} size="medium" />
         <ShipStats ship={ship} onUpdate={actions.update} />
-      </Column>
+      </div>
 
-      <Column>
-        <GearList>
+      <div className="flex flex-col">
+        <div className="grow shrink">
           {(ship.gear_keys() as GearKey[]).map((key, i) => {
             const gear = ship.get_gear(key);
             return (
@@ -132,51 +100,54 @@ const ShipCard: React.FCX<ShipCardProps> = ({
               />
             );
           })}
-        </GearList>
+        </div>
 
         <Flexbox>
           {visibleDamageState && (
-            <Tooltip
-              title={`${t("DamageState.name")} ${t(
-                `DamageState.${damageState}`,
-              )}`}
-            >
-              <TinyIconButton onClick={EditModal.show}>
+            <Tooltip title={`${t("DamageState.name")} ${t(`DamageState.${damageState}`)}`}>
+              <IconButton
+                className="p-[3px] leading-[0] [&_svg]:text-[1rem]"
+                onClick={EditModal.show}
+              >
                 <DamageStateIcon state={damageState} />
-              </TinyIconButton>
+              </IconButton>
             </Tooltip>
           )}
           {visibleMoraleState && (
-            <Tooltip
-              title={`${t("MoraleState.name")} ${t(
-                `MoraleState.${moraleState}`,
-              )}`}
-            >
-              <TinyIconButton onClick={EditModal.show}>
+            <Tooltip title={`${t("MoraleState.name")} ${t(`MoraleState.${moraleState}`)}`}>
+              <IconButton
+                className="p-[3px] leading-[0] [&_svg]:text-[1rem]"
+                onClick={EditModal.show}
+              >
                 <MoraleStateIcon state={moraleState} />
-              </TinyIconButton>
+              </IconButton>
             </Tooltip>
           )}
           {visibleFuel && (
             <Tooltip title={t("fuel")}>
-              <TinyButton
+              <Button
+                className="px-1 py-0 [&_.MuiButton-startIcon]:mr-1 [&_.MuiButton-startIcon]:ml-0"
                 onClick={EditModal.show}
                 startIcon={<FuelIcon />}
                 size="small"
               >
                 {toPercent(fuelRate, 0)}
-              </TinyButton>
+              </Button>
             </Tooltip>
           )}
           {visibleAmmo && (
             <Tooltip title={t("ammo")}>
-              <TinyButton onClick={EditModal.show} startIcon={<AmmoIcon />}>
+              <Button
+                className="px-1 py-0 [&_.MuiButton-startIcon]:mr-1 [&_.MuiButton-startIcon]:ml-0"
+                onClick={EditModal.show}
+                startIcon={<AmmoIcon />}
+              >
                 {toPercent(ammoRate, 0)}
-              </TinyButton>
+              </Button>
             </Tooltip>
           )}
         </Flexbox>
-      </Column>
+      </div>
 
       <EditModal>
         <ShipMiscEditForm ship={ship} onChange={actions.update} />
@@ -199,32 +170,4 @@ const ShipCard: React.FCX<ShipCardProps> = ({
   );
 };
 
-const Styled = styled(ShipCard)`
-  min-width: 360px;
-  height: ${24 * 8}px;
-  display: grid;
-  grid-template-columns: 160px calc(100% - 160px);
-  grid-template-rows: 24px auto;
-  grid-template-areas:
-    "a a"
-    "b c";
-
-  > div:nth-of-type(1) {
-    grid-area: a;
-    svg {
-      visibility: hidden;
-    }
-  }
-  > div:nth-of-type(2) {
-    grid-area: b;
-  }
-  > div:nth-of-type(3) {
-    grid-area: c;
-  }
-
-  :hover > div:nth-of-type(1) svg {
-    visibility: visible;
-  }
-`;
-
-export default Styled;
+export default ShipCard;

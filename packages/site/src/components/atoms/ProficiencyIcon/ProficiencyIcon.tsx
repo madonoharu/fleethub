@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { expToAce } from "@fh/utils";
 import { Typography } from "@mui/material";
 import Image from "next/image";
@@ -6,41 +6,29 @@ import React from "react";
 
 import { ACE_ICONS } from "../../../images/icons";
 
-const ExpLabel = styled(Typography)`
-  position: absolute;
-  font-size: 10px;
-  bottom: 0;
-  right: 0;
-  line-height: 1;
-  background: rgba(128, 64, 64, 0.6);
-  border-radius: 2px;
-`;
-
 interface ProficiencyIconProps extends React.ComponentProps<"div"> {
   exp: number;
 }
 
-const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>(
-  (props, ref) => {
-    const { exp, ...rest } = props;
-    const ace = expToAce(exp);
+const ProficiencyIcon = React.forwardRef<HTMLDivElement, ProficiencyIconProps>((props, ref) => {
+  const { exp, className, ...rest } = props;
+  const ace = expToAce(exp);
 
-    return (
-      <div ref={ref} {...rest}>
-        <Image
-          height={24}
-          width={18}
-          src={ACE_ICONS[ace]}
-          alt={`ace${ace}`}
-          unoptimized
-        />
-        <ExpLabel aria-label="exp">{exp}</ExpLabel>
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className={cn("h-6 [filter:brightness(110%)_contrast(110%)_saturate(100%)]", className)}
+    >
+      <Image height={24} width={18} src={ACE_ICONS[ace]} alt={`ace${ace}`} unoptimized />
+      <Typography
+        className="absolute right-0 bottom-0 rounded-[2px] bg-[rgba(128,64,64,0.6)] text-[length:10px] leading-none"
+        aria-label="exp"
+      >
+        {exp}
+      </Typography>
+    </div>
+  );
+});
 
-export default styled(ProficiencyIcon)`
-  height: 24px;
-  filter: brightness(110%) contrast(110%) saturate(100%);
-`;
+export default ProficiencyIcon;

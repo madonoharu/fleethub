@@ -68,8 +68,7 @@ await mock.module("next-i18next/pages", () => ({
   }),
 }));
 
-const { default: DamageDensitySection } =
-  await import("./DamageDensitySection");
+const { default: DamageDensitySection } = await import("./DamageDensitySection");
 
 // 比較していないときは攻撃種類で積むので、種類名が凡例に出る。
 const report = {
@@ -90,14 +89,41 @@ const report = {
 function renderSection() {
   return render(
     <ThemeProvider>
+      <DamageDensitySection report={report} targetMaxHp={99} targetCurrentHp={99} />
+    </ThemeProvider>,
+  );
+}
+
+it("整数目盛でも半ビンの表示範囲を丸めず、棒とホバー位置を維持する", () => {
+  const { container } = render(
+    <ThemeProvider>
       <DamageDensitySection
-        report={report}
+        report={
+          {
+            data: {
+              a: {
+                proc_rate: 1,
+                damage: { damage_density: { 0: 0.5, 5: 0.5 } },
+              },
+            },
+          } as never
+        }
         targetMaxHp={99}
         targetCurrentHp={99}
       />
     </ThemeProvider>,
   );
-}
+
+  const tickPositions = Array.from(
+    container.querySelectorAll(".recharts-xAxis .recharts-cartesian-axis-tick-line"),
+    (tick) => Number(tick.getAttribute("x1")),
+  );
+  // 本番と同じ [-0.5, 5.5] の範囲。600px の図では 0 と 5 の目盛が 86px / 506px。
+  // Recharts 3 が上限を 6 に丸めると、表示位置とツールチップの切り替え境界がずれる。
+  expect(tickPositions).toHaveLength(2);
+  expect(tickPositions[0]).toBeCloseTo(86);
+  expect(tickPositions[1]).toBeCloseTo(506);
+});
 
 it("中央値と上位5%は数値ではなく破線だけで示す", () => {
   const { container } = renderSection();
@@ -106,9 +132,9 @@ it("中央値と上位5%は数値ではなく破線だけで示す", () => {
   expect(container.textContent).not.toContain("DamageDistribution.Median");
   expect(container.textContent).not.toContain("DamageDistribution.Upper5");
 
-  const dashed = Array.from(
-    container.querySelectorAll(".recharts-reference-line line"),
-  ).filter((el) => el.getAttribute("stroke-dasharray"));
+  const dashed = Array.from(container.querySelectorAll(".recharts-reference-line line")).filter(
+    (el) => el.getAttribute("stroke-dasharray"),
+  );
 
   expect(dashed).toHaveLength(2);
 });
@@ -119,9 +145,9 @@ it("損傷状態以上になる確率を損傷状態の色つきで並べる", (
   // 撃沈行がそのまま撃破率にあたる。
   expect(container.textContent).toContain("DamageState.Sunk");
 
-  const dots = Array.from(
-    container.querySelectorAll("span[style*='background']"),
-  ).filter((el) => (el as HTMLElement).style.background);
+  const dots = Array.from(container.querySelectorAll("span[style*='background']")).filter(
+    (el) => (el as HTMLElement).style.background,
+  );
 
   const colors = [
     muiColors.yellow[500],
@@ -144,18 +170,12 @@ function fillsOf(container: HTMLElement, selector: string) {
 it("残耐久に応じて損傷状態の帯と目盛が動く", () => {
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={report}
-        targetMaxHp={99}
-        targetCurrentHp={40}
-      />
+      <DamageDensitySection report={report} targetMaxHp={99} targetCurrentHp={40} />
     </ThemeProvider>,
   );
 
   const ticks = Array.from(
-    container.querySelectorAll(
-      ".recharts-xAxis-tick-labels .recharts-cartesian-axis-tick-value",
-    ),
+    container.querySelectorAll(".recharts-xAxis-tick-labels .recharts-cartesian-axis-tick-value"),
   ).map((el) => el.textContent);
 
   // 耐久99・残耐久40 はすでに中破。大破ライン24 まで16、撃沈まで40。
@@ -185,9 +205,7 @@ it("損傷状態を背景の帯で示す", () => {
 it("損傷状態の名前は帯の中央に置き、帯の範囲に罫を引く", () => {
   const { container } = renderSection();
 
-  const zones = Array.from(
-    container.querySelectorAll(".recharts-reference-area"),
-  );
+  const zones = Array.from(container.querySelectorAll(".recharts-reference-area"));
 
   expect(zones.length).toBeGreaterThan(0);
 
@@ -215,9 +233,7 @@ it("X軸の目盛を損傷状態の境界値に置く", () => {
   const { container } = renderSection();
 
   const ticks = Array.from(
-    container.querySelectorAll(
-      ".recharts-xAxis-tick-labels .recharts-cartesian-axis-tick-value",
-    ),
+    container.querySelectorAll(".recharts-xAxis-tick-labels .recharts-cartesian-axis-tick-value"),
   ).map((el) => el.textContent);
 
   // 小破25 / 中破50 / 大破75 / 撃沈99 に必要なダメージ。90 は分布の右端。
@@ -238,11 +254,7 @@ it("点数が多いときは棒ではなく1本のパスで描く", () => {
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={wide}
-        targetMaxHp={400}
-        targetCurrentHp={400}
-      />
+      <DamageDensitySection report={wide} targetMaxHp={400} targetCurrentHp={400} />
     </ThemeProvider>,
   );
 
@@ -252,18 +264,14 @@ it("点数が多いときは棒ではなく1本のパスで描く", () => {
   // 階段は各点から次の点まで水平に引くので、末尾のビンにも右端の点が要る。
   // 無いと末尾のビンは幅 0 の縦線になり、面が図の右端まで届かない。
   const xs = (el: Element | null) =>
-    Array.from((el?.getAttribute("d") ?? "").matchAll(/([\d.]+),[\d.]+/g)).map(
-      (m) => Number(m[1]),
-    );
+    Array.from((el?.getAttribute("d") ?? "").matchAll(/([\d.]+),[\d.]+/g)).map((m) => Number(m[1]));
   // 損傷状態の帯は図の右端まで敷く。
   const plotRight = Math.max(
     ...Array.from(container.querySelectorAll(".recharts-reference-area path"))
       .map(rectOf)
       .map((r) => r.x + r.width),
   );
-  const areaRight = Math.max(
-    ...xs(container.querySelector(".recharts-area-area")),
-  );
+  const areaRight = Math.max(...xs(container.querySelector(".recharts-area-area")));
 
   // SVG のシリアライザが面と矩形で丸める桁を変えるので、描画に影響しない
   // 0.001px 未満の差は許容する。
@@ -271,9 +279,7 @@ it("点数が多いときは棒ではなく1本のパスで描く", () => {
 });
 
 function rectOf(el: Element) {
-  const m = /M ([\d.]+),([\d.]+) h ([\d.]+) v ([\d.]+)/.exec(
-    el.getAttribute("d") ?? "",
-  );
+  const m = /M ([\d.]+),([\d.]+) h ([\d.]+) v ([\d.]+)/.exec(el.getAttribute("d") ?? "");
 
   return {
     x: Number(m?.[1]),
@@ -286,9 +292,7 @@ function rectOf(el: Element) {
 
 /** ダメージ0 の棒を作る段を、上から順に。 */
 function firstBarStack(container: HTMLElement) {
-  const rects = Array.from(
-    container.querySelectorAll(".recharts-bar-rectangle path"),
-  ).map(rectOf);
+  const rects = Array.from(container.querySelectorAll(".recharts-bar-rectangle path")).map(rectOf);
 
   const left = Math.min(...rects.map((r) => r.x));
 
@@ -307,18 +311,12 @@ it("ダメージ0 の棒が桁違いなら軸を二段に切り、頭だけ上�
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={spiky}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={spiky} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   const ticks = Array.from(
-    container.querySelectorAll(
-      ".recharts-yAxis-tick-labels .recharts-cartesian-axis-tick-value",
-    ),
+    container.querySelectorAll(".recharts-yAxis-tick-labels .recharts-cartesian-axis-tick-value"),
   );
 
   // 下段はダメージ0 の 80% ではなく、それを除いたピーク 15% に合わせる。
@@ -379,18 +377,13 @@ it("省略軸で積んでいるとき、凡例で消した種類は上段から�
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={typed}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={typed} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   const [head, , body] = firstBarStack(container);
   const bodyTop = body.y;
-  const mark = () =>
-    container.querySelector(".recharts-reference-dot text")?.textContent;
+  const mark = () => container.querySelector(".recharts-reference-dot text")?.textContent;
 
   expect(mark()).toBe("90.5%");
 
@@ -433,22 +426,15 @@ it("消して残った合計が上段の窓に届かなければ、二段軸を�
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={typed}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={typed} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   const tickTexts = () =>
     Array.from(
-      container.querySelectorAll(
-        ".recharts-yAxis-tick-labels .recharts-cartesian-axis-tick-value",
-      ),
+      container.querySelectorAll(".recharts-yAxis-tick-labels .recharts-cartesian-axis-tick-value"),
     );
-  const waves = () =>
-    container.querySelectorAll(".recharts-reference-area g path").length;
+  const waves = () => container.querySelectorAll(".recharts-reference-area g path").length;
   const mark = () => container.querySelector(".recharts-reference-dot text");
   const yOf = (el: Element | null | undefined) => Number(el?.getAttribute("y"));
 
@@ -485,20 +471,14 @@ it("比較していないときは攻撃種類で積む", () => {
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={styled}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={styled} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   // 種類ぶんの系列になり、青の明度ランプで塗り分ける。
   // 2段なのでランプの両端を使う。
   const fills = fillsOf(container, ".recharts-bar-rectangle path");
-  expect(new Set(fills)).toEqual(
-    new Set([muiColors.lightBlue[800], muiColors.lightBlue[400]]),
-  );
+  expect(new Set(fills)).toEqual(new Set([muiColors.lightBlue[800], muiColors.lightBlue[400]]));
 
   // 凡例に種類名と累計線が並ぶ。
   const legend = container.querySelector(".recharts-legend-wrapper");
@@ -508,13 +488,7 @@ it("比較していないときは攻撃種類で積む", () => {
 });
 
 it("種類が多いときは「その他」をランプから外して積む", () => {
-  const attacks = [
-    "SingleAttack",
-    "DoubleAttack",
-    "MainMain",
-    "MainRadar",
-    "MainAp",
-  ];
+  const attacks = ["SingleAttack", "DoubleAttack", "MainMain", "MainRadar", "MainAp"];
 
   const many = {
     data: Object.fromEntries(
@@ -532,19 +506,13 @@ it("種類が多いときは「その他」をランプから外して積む", (
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={many}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={many} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   // 軸の切れ目ぶんの透明な段は色ではないので除く。
   const fills = new Set(
-    fillsOf(container, ".recharts-bar-rectangle path").filter(
-      (fill) => fill !== "none",
-    ),
+    fillsOf(container, ".recharts-bar-rectangle path").filter((fill) => fill !== "none"),
   );
 
   // まとめた「その他」をランプの中に置くと明るさの順が壊れるので、
@@ -581,18 +549,12 @@ it("段が増えても端の色は変わらず、間だけが割り当てられ�
   const fillsFor = (count: number) => {
     const { container, unmount } = render(
       <ThemeProvider>
-        <DamageDensitySection
-          report={typed(count)}
-          targetMaxHp={99}
-          targetCurrentHp={99}
-        />
+        <DamageDensitySection report={typed(count)} targetMaxHp={99} targetCurrentHp={99} />
       </ThemeProvider>,
     );
 
     const found = new Set(
-      fillsOf(container, ".recharts-bar-rectangle path").filter(
-        (fill) => fill !== "none",
-      ),
+      fillsOf(container, ".recharts-bar-rectangle path").filter((fill) => fill !== "none"),
     );
     unmount();
 
@@ -619,15 +581,11 @@ it("損傷状態の名前は図の外、罫は境界に重ねる", () => {
 
   // 損傷帯の矩形の上辺がプロット領域の上端＝境界。
   const zone = container.querySelector(".recharts-reference-area path");
-  const plotTop = Number(
-    /M\s*[\d.]+,([\d.]+)/.exec(zone?.getAttribute("d") ?? "")?.[1],
-  );
+  const plotTop = Number(/M\s*[\d.]+,([\d.]+)/.exec(zone?.getAttribute("d") ?? "")?.[1]);
 
   expect(plotTop).toBeGreaterThan(0);
 
-  const zoneNames = Array.from(
-    container.querySelectorAll(".recharts-reference-area text"),
-  );
+  const zoneNames = Array.from(container.querySelectorAll(".recharts-reference-area text"));
 
   expect(zoneNames.length).toBeGreaterThan(0);
 
@@ -637,9 +595,7 @@ it("損傷状態の名前は図の外、罫は境界に重ねる", () => {
   });
 
   // 罫は境界そのものに重ねる。
-  Array.from(
-    container.querySelectorAll(".recharts-reference-area g line"),
-  ).forEach((el) => {
+  Array.from(container.querySelectorAll(".recharts-reference-area g line")).forEach((el) => {
     expect(Number(el.getAttribute("y1"))).toBeCloseTo(plotTop, 5);
   });
 });
@@ -657,23 +613,16 @@ it("単系列でも凡例を出す", () => {
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={single}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={single} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
-  const rows = Array.from(
-    container.querySelectorAll(".recharts-legend-wrapper span"),
-  ).map((el) => el.textContent);
+  const rows = Array.from(container.querySelectorAll(".recharts-legend-wrapper span")).map(
+    (el) => el.textContent,
+  );
 
   // 棒と線が何を指すかは、系列が1つでも図からは分からない。
-  expect(rows).toEqual([
-    "NightAttackType.SingleAttack",
-    "DamageDistribution.Cumulative",
-  ]);
+  expect(rows).toEqual(["NightAttackType.SingleAttack", "DamageDistribution.Cumulative"]);
 });
 
 it("比較しているときは貫通なしを塗り分けず、段としては残す", () => {
@@ -700,21 +649,18 @@ it("比較しているときは貫通なしを塗り分けず、段としては�
     </ThemeProvider>,
   );
 
-  const rows = Array.from(
-    container.querySelectorAll(".recharts-legend-wrapper span"),
-  ).map((el) => el.textContent);
+  const rows = Array.from(container.querySelectorAll(".recharts-legend-wrapper span")).map(
+    (el) => el.textContent,
+  );
 
   // 塗り分けていないので、凡例に出しても示す色がない。艦名だけを並べる。
   expect(rows).toEqual(["ship1", "ship2"]);
 
-  const fills = () =>
-    new Set(fillsOf(container, ".recharts-bar-rectangle path"));
+  const fills = () => new Set(fillsOf(container, ".recharts-bar-rectangle path"));
 
   // 棒が2本並んでいるところをさらに塗り分けると、どちらの艦の段か読めなくなる。
   // 艦の色のまま積むので、図に出る色は艦の数だけ。
-  expect(fills()).toEqual(
-    new Set([muiColors.lightBlue[700], muiColors.pink[400]]),
-  );
+  expect(fills()).toEqual(new Set([muiColors.lightBlue[700], muiColors.pink[400]]));
 
   const bars = () => fillsOf(container, ".recharts-bar-rectangle path").length;
   const before = bars();
@@ -723,9 +669,7 @@ it("比較しているときは貫通なしを塗り分けず、段としては�
   fireEvent.click(screen.getByLabelText("DamageDistribution.NoPenetration"));
 
   expect(bars()).toBeLessThan(before);
-  expect(fills()).toEqual(
-    new Set([muiColors.lightBlue[700], muiColors.pink[400]]),
-  );
+  expect(fills()).toEqual(new Set([muiColors.lightBlue[700], muiColors.pink[400]]));
 });
 
 it("比較を選ぶと積み上げをやめて艦ごとの2本にする", () => {
@@ -752,20 +696,13 @@ it("比較を選ぶと積み上げをやめて艦ごとの2本にする", () => 
 
   const { container, rerender } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={styled}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={styled} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
-  const fills = () =>
-    new Set(fillsOf(container, ".recharts-bar-rectangle path"));
+  const fills = () => new Set(fillsOf(container, ".recharts-bar-rectangle path"));
 
-  expect(fills()).toEqual(
-    new Set([muiColors.lightBlue[800], muiColors.lightBlue[400]]),
-  );
+  expect(fills()).toEqual(new Set([muiColors.lightBlue[800], muiColors.lightBlue[400]]));
 
   rerender(
     <ThemeProvider>
@@ -779,9 +716,7 @@ it("比較を選ぶと積み上げをやめて艦ごとの2本にする", () => 
   );
 
   // 積み上げと重ね合わせ比較は同じ棒を取り合う。艦の青と赤だけになる。
-  expect(fills()).toEqual(
-    new Set([muiColors.lightBlue[700], muiColors.pink[400]]),
-  );
+  expect(fills()).toEqual(new Set([muiColors.lightBlue[700], muiColors.pink[400]]));
 });
 
 it("比較の有無で操作が入れ替わらない", () => {
@@ -793,18 +728,13 @@ it("比較の有無で操作が入れ替わらない", () => {
 
   const { rerender } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={report}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={report} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   // 操作は「比較」と「装甲貫通なし」だけ。比較を選んでも出入りしないので、
   // 切り替えるたびに図が上下に動くことがない。
-  const noPenetrationCheckbox = () =>
-    screen.getByLabelText("DamageDistribution.NoPenetration");
+  const noPenetrationCheckbox = () => screen.getByLabelText("DamageDistribution.NoPenetration");
 
   expect(noPenetrationCheckbox()).toHaveProperty("checked", true);
 
@@ -846,23 +776,15 @@ it("凡例は1行で、項目が増えても図の高さを変えない", () => 
 
   const { container, rerender } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={report}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={report} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
-  const legend = () =>
-    container.querySelector(".recharts-legend-wrapper > div") as HTMLElement;
+  const legend = () => container.querySelector(".recharts-legend-wrapper > div") as HTMLElement;
   const plotHeight = () =>
-    container
-      .querySelector(".recharts-cartesian-grid line")
-      ?.getAttribute("y1");
+    container.querySelector(".recharts-cartesian-grid line")?.getAttribute("y1");
 
-  expect(legend().style.flexWrap).toBe("nowrap");
-  expect(legend().style.height).toBe("22px");
+  // 凡例の nowrap / 22px は Tailwind CSS を読み込むブラウザーテストで検証する。
 
   const before = { rows: legend().children.length, plot: plotHeight() };
   expect(before.rows).toBe(3);
@@ -880,15 +802,13 @@ it("凡例は1行で、項目が増えても図の高さを変えない", () => 
 
   // 項目数が変わっても、凡例の高さは同じなので図が伸び縮みしない。
   expect(legend().children.length).not.toBe(before.rows);
-  expect(legend().style.height).toBe("22px");
   expect(plotHeight()).toBe(before.plot);
 });
 
 it("凡例を押すとその系列を消せる", () => {
   const { container } = renderSection();
 
-  const bars = () =>
-    container.querySelectorAll(".recharts-bar-rectangle path").length;
+  const bars = () => container.querySelectorAll(".recharts-bar-rectangle path").length;
   const lines = () => container.querySelectorAll(".recharts-line-curve").length;
 
   expect(bars()).toBeGreaterThan(0);
@@ -927,9 +847,7 @@ it("比較しているときは凡例を艦名で分ける", () => {
   );
 
   const legend = container.querySelector(".recharts-legend-wrapper");
-  const rows = Array.from(legend?.querySelectorAll("span") ?? []).map(
-    (el) => el.textContent,
-  );
+  const rows = Array.from(legend?.querySelectorAll("span") ?? []).map((el) => el.textContent);
 
   // 既定の凡例だと「艦A / 艦B / 累計確率 / 累計確率(艦B)」の4項目になる。
   // 分布（塗り）と累計（線）は艦ごとに1項目へまとめ、見出しは艦名だけにする。
@@ -956,26 +874,21 @@ it("累計確率の線は自分の棒と同じ色相にし、どちらも実線�
     </ThemeProvider>,
   );
 
-  const lines = Array.from(
-    container.querySelectorAll(".recharts-line-curve"),
-  ).map((el) => ({
+  const lines = Array.from(container.querySelectorAll(".recharts-line-curve")).map((el) => ({
     stroke: el.getAttribute("stroke"),
     dash: el.getAttribute("stroke-dasharray"),
   }));
 
   // 色相はどちらの艦か、明るさは棒か線かを表す。
   // 補色を当てると相手の棒のほうが近くなり、襷掛けに見えてしまう。
-  expect(lines.map((line) => line.stroke)).toEqual([
-    muiColors.lightBlue[200],
-    muiColors.pink[200],
-  ]);
+  expect(lines.map((line) => line.stroke)).toEqual([muiColors.lightBlue[200], muiColors.pink[200]]);
 
   // 色で分かれるので、破線にはしない。
   expect(lines.map((line) => line.dash)).toEqual([null, null]);
 
-  const strokes = Array.from(
-    container.querySelectorAll(".recharts-legend-wrapper line"),
-  ).map((el) => el.getAttribute("stroke"));
+  const strokes = Array.from(container.querySelectorAll(".recharts-legend-wrapper line")).map(
+    (el) => el.getAttribute("stroke"),
+  );
 
   expect(strokes).toEqual([muiColors.lightBlue[200], muiColors.pink[200]]);
 });
@@ -985,9 +898,9 @@ it("比較していないときの累計線は棒の補色にする", () => {
 
   // 線が1本なら、どちらの艦かを示す必要がない。棒の系統から離して
   // 「確率の量ではなく右軸の補助線」だと分かるようにする。
-  const strokes = Array.from(
-    container.querySelectorAll(".recharts-line-curve"),
-  ).map((el) => el.getAttribute("stroke"));
+  const strokes = Array.from(container.querySelectorAll(".recharts-line-curve")).map((el) =>
+    el.getAttribute("stroke"),
+  );
 
   expect(strokes).toEqual([muiColors.orange[300]]);
 });
@@ -1009,29 +922,22 @@ it("貫通なしを外すと、その質量だけ棒が低くなる", () => {
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={report}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={report} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   const heightAt = (x: number) => {
-    const rects = Array.from(
-      container.querySelectorAll(".recharts-bar-rectangle path"),
-    ).map((el) => {
-      const m = /M ([\d.]+),[\d.]+ h [\d.]+ v ([\d.]+)/.exec(
-        el.getAttribute("d") ?? "",
-      );
-      return { x: Number(m?.[1]), height: Number(m?.[2]) };
-    });
+    const rects = Array.from(container.querySelectorAll(".recharts-bar-rectangle path")).map(
+      (el) => {
+        const m = /M ([\d.]+),[\d.]+ h [\d.]+ v ([\d.]+)/.exec(el.getAttribute("d") ?? "");
+        return { x: Number(m?.[1]), height: Number(m?.[2]) };
+      },
+    );
 
     return rects.sort((a, b) => a.x - b.x)[x]?.height ?? 0;
   };
 
-  const noPenetrationCheckbox = () =>
-    screen.getByLabelText("DamageDistribution.NoPenetration");
+  const noPenetrationCheckbox = () => screen.getByLabelText("DamageDistribution.NoPenetration");
 
   // 既定は算入。ダメージ8 の棒は 0.2 ぶん。
   expect(noPenetrationCheckbox()).toHaveProperty("checked", true);
@@ -1061,24 +967,17 @@ it("貫通なしを外すと図全体がその分布に切り替わる", () => {
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={report}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={report} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   // 中央値の破線。棒だけでなく代表値も同じ分布から作る。
   const medianX = () =>
-    container
-      .querySelector(".recharts-reference-line line")
-      ?.getAttribute("x1");
+    container.querySelector(".recharts-reference-line line")?.getAttribute("x1");
 
   // 累計線の右端。算入しないと総和が 1 未満になるので 100% に届かない。
   const cumulativeEnd = () => {
-    const d =
-      container.querySelector(".recharts-line-curve")?.getAttribute("d") ?? "";
+    const d = container.querySelector(".recharts-line-curve")?.getAttribute("d") ?? "";
     return Number(/([\d.]+)$/.exec(d)?.[1]);
   };
 
@@ -1108,11 +1007,7 @@ it("1発も貫通しない艦は、貫通なしを外すと 0% の分布とし�
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={neverPenetrates}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={neverPenetrates} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
@@ -1186,19 +1081,13 @@ it("貫通なしの算入を切り替えても軸は動かない", () => {
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={report}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={report} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   const ticksOf = (selector: string) =>
     Array.from(
-      container.querySelectorAll(
-        `${selector}-tick-labels .recharts-cartesian-axis-tick-value`,
-      ),
+      container.querySelectorAll(`${selector}-tick-labels .recharts-cartesian-axis-tick-value`),
     ).map((el) => el.textContent);
 
   const before = {
@@ -1233,20 +1122,12 @@ it("凡例の on/off は攻撃種類で覚える", () => {
   // 積む順は発動率の小さいものから。T0 が下、T1 が上。
   const { container, rerender } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={typed([0.3, 0.7])}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={typed([0.3, 0.7])} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
   const fillsNow = () =>
-    new Set(
-      fillsOf(container, ".recharts-bar-rectangle path").filter(
-        (fill) => fill !== "none",
-      ),
-    );
+    new Set(fillsOf(container, ".recharts-bar-rectangle path").filter((fill) => fill !== "none"));
 
   fireEvent.click(screen.getByText("NightAttackType.T0"));
   expect(fillsNow().size).toBe(1);
@@ -1255,17 +1136,13 @@ it("凡例の on/off は攻撃種類で覚える", () => {
   // 消したはずの T0 ではなく T1 が消えたままになる。
   rerender(
     <ThemeProvider>
-      <DamageDensitySection
-        report={typed([0.7, 0.3])}
-        targetMaxHp={99}
-        targetCurrentHp={99}
-      />
+      <DamageDensitySection report={typed([0.7, 0.3])} targetMaxHp={99} targetCurrentHp={99} />
     </ThemeProvider>,
   );
 
-  const hiddenLabel = Array.from(
-    container.querySelectorAll(".recharts-legend-wrapper > div > *"),
-  ).find((el) => (el as HTMLElement).style.opacity === "0.35")?.textContent;
+  const hiddenLabel = container.querySelector(
+    '.recharts-legend-wrapper [role="button"][aria-pressed="false"]',
+  )?.textContent;
 
   expect(hiddenLabel).toBe("NightAttackType.T0");
 });
@@ -1309,9 +1186,7 @@ it("凡例の艦名に編成順を添える", () => {
   );
 
   const legend = container.querySelector(".recharts-legend-wrapper");
-  const rows = Array.from(legend?.querySelectorAll("span") ?? []).map(
-    (el) => el.textContent,
-  );
+  const rows = Array.from(legend?.querySelectorAll("span") ?? []).map((el) => el.textContent);
 
   // 空き枠も数えて、画面上の「何番艦」と一致させる。
   expect(rows).toEqual(["#1 ship1", "#3 ship1"]);
@@ -1327,11 +1202,7 @@ it("点が多くてパスで描くとき、継ぎ足した段の輪郭を残さ�
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={many}
-        targetMaxHp={999}
-        targetCurrentHp={999}
-      />
+      <DamageDensitySection report={many} targetMaxHp={999} targetCurrentHp={999} />
     </ThemeProvider>,
   );
 
@@ -1377,19 +1248,13 @@ it("重ねているときは軸を切らず、実値を系列の色で並べる"
 
   // 2本の棒が同じビンを分け合うので、上段に頭を継ぎ足すとどちらの続きか
   // 分からなくなる。切らずに、実値だけを系列の色で並べる。
-  const marks = Array.from(
-    container.querySelectorAll(".recharts-reference-dot text"),
-  );
+  const marks = Array.from(container.querySelectorAll(".recharts-reference-dot text"));
 
   expect(marks.map((el) => el.textContent)).toEqual(["80.0%", "70.0%"]);
   expect(marks[0].getAttribute("fill")).not.toBe(marks[1].getAttribute("fill"));
-  expect(Number(marks[0].getAttribute("y"))).toBeLessThan(
-    Number(marks[1].getAttribute("y")),
-  );
+  expect(Number(marks[0].getAttribute("y"))).toBeLessThan(Number(marks[1].getAttribute("y")));
 
-  expect(
-    container.querySelectorAll(".recharts-reference-area g path").length,
-  ).toBe(0);
+  expect(container.querySelectorAll(".recharts-reference-area g path").length).toBe(0);
 });
 
 it("両端の棒が縦軸の目盛にはみ出さない", () => {
@@ -1407,25 +1272,17 @@ it("両端の棒が縦軸の目盛にはみ出さない", () => {
 
   const { container } = render(
     <ThemeProvider>
-      <DamageDensitySection
-        report={narrow}
-        targetMaxHp={99}
-        targetCurrentHp={40}
-      />
+      <DamageDensitySection report={narrow} targetMaxHp={99} targetCurrentHp={40} />
     </ThemeProvider>,
   );
 
-  const grid = container.querySelector(
-    ".recharts-cartesian-grid-horizontal line",
-  );
+  const grid = container.querySelector(".recharts-cartesian-grid-horizontal line");
   const plotLeft = Number(grid?.getAttribute("x1"));
   const plotRight = Number(grid?.getAttribute("x2"));
 
   expect(plotLeft).toBeGreaterThan(0);
 
-  const bars = Array.from(
-    container.querySelectorAll(".recharts-bar-rectangle path"),
-  ).map((el) => {
+  const bars = Array.from(container.querySelectorAll(".recharts-bar-rectangle path")).map((el) => {
     const d = el.getAttribute("d") ?? "";
     const left = Number(/M\s*([\d.]+),/.exec(d)?.[1]);
     const width = Number(/h\s*([\d.]+)/.exec(d)?.[1]);
@@ -1441,8 +1298,7 @@ it("両端の棒が縦軸の目盛にはみ出さない", () => {
 });
 
 it("貫通なしを算入するかはタブをまたいでも保つ", () => {
-  const noPenetrationCheckbox = () =>
-    screen.getByRole("checkbox", { name: /NoPenetration/ });
+  const noPenetrationCheckbox = () => screen.getByRole("checkbox", { name: /NoPenetration/ });
 
   const { unmount } = renderSection();
   expect(noPenetrationCheckbox()).toBeChecked();

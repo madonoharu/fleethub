@@ -1,6 +1,6 @@
 import { DAMAGE_STATES, GEAR_EXP_TABLE, MORALE_STATES, range } from "@fh/utils";
 import { Button, Stack, Typography } from "@mui/material";
-import { styled } from "@mui/system";
+
 import { DamageState, MoraleState } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -14,15 +14,14 @@ import {
   DamageStateIcon,
 } from "../../atoms";
 import { ConsumptionRate, ConsumptionRateSelect } from "../../molecules";
+import { cn } from "../../../styles";
 
 const starsTable = range(11).reverse();
 
 const expTable = GEAR_EXP_TABLE.concat().reverse();
 
 const createHandler =
-  (
-    fn?: (value: number | undefined) => void,
-  ): React.MouseEventHandler<HTMLButtonElement> =>
+  (fn?: (value: number | undefined) => void): React.MouseEventHandler<HTMLButtonElement> =>
   (event) => {
     const value = event.currentTarget.value;
     if (value === "") {
@@ -42,16 +41,15 @@ type BatchOperationProps = {
   onSlotSizeReset?: () => void;
 };
 
-const GridContainer = styled("div")`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  > * {
-    min-width: fit-content;
-  }
-`;
+const GridContainer = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div
+    {...props}
+    className={cn("grid [grid-template-columns:repeat(4,_1fr)] gap-2 [&_>_*]:min-w-fit", className)}
+  />
+);
 
 const BatchOperations: React.FCX<BatchOperationProps> = ({
+  className,
   onStarsSelect,
   onExpSelect,
   onMoraleStateSelect,
@@ -67,15 +65,16 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
   const handleExpClick = createHandler(onExpSelect);
 
   return (
-    <Stack {...rest} sx={{ gap: 1 }}>
+    <Stack {...rest} className={cn("gap-2", className)}>
       <Typography variant="subtitle1">{t("BatchOperation")}</Typography>
 
       <Divider label={t("Stars")} />
       <Flexbox>
         {starsTable.map((n) => (
           <Button
+            className="grow"
             key={n}
-            css={{ flexGrow: 1 }}
+
             value={n}
             onClick={handleStarsClick}
           >
@@ -91,8 +90,9 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
       <Flexbox>
         {expTable.map((exp) => (
           <Button
+            className="grow"
             key={exp}
-            css={{ flexGrow: 1 }}
+
             value={exp}
             onClick={handleExpClick}
           >
@@ -168,4 +168,4 @@ const BatchOperations: React.FCX<BatchOperationProps> = ({
   );
 };
 
-export default styled(BatchOperations)``;
+export default BatchOperations;

@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import type { Comp } from "fleethub-core";
 import React, { useMemo } from "react";
 
@@ -6,6 +5,7 @@ import { useShipName } from "../../../hooks";
 import { Select } from "../../molecules";
 
 import { listCompShips } from "./compShips";
+import { cn } from "../../../styles";
 
 const NONE = "";
 
@@ -45,10 +45,7 @@ const CompShipNameSelect: React.FCX<Props> = ({
     [comp, excludeId],
   );
 
-  const options = useMemo(
-    () => [NONE, ...ships.map((ship) => ship.id)],
-    [ships],
-  );
+  const options = useMemo(() => [NONE, ...ships.map((ship) => ship.id)], [ships]);
   const current = value && options.includes(value) ? value : NONE;
 
   return (
@@ -61,11 +58,7 @@ const CompShipNameSelect: React.FCX<Props> = ({
       getOptionLabel={(id) => {
         if (id === NONE) return noneLabel;
         const ship = ships.find((v) => v.id === id);
-        return ship ? (
-          <ShipNameLabel order={ship.order} shipId={ship.ship_id} />
-        ) : (
-          id
-        );
+        return ship ? <ShipNameLabel order={ship.order} shipId={ship.ship_id} /> : id;
       }}
     />
   );
@@ -75,13 +68,12 @@ const CompShipNameSelect: React.FCX<Props> = ({
  * 艦名の長さで幅が変わると、選び直すたびに右にある操作が左右へ動く。
  * 幅は固定して、収まらない名前は末尾を省く。
  */
-export default styled(CompShipNameSelect)`
-  flex: none;
-  width: 200px;
-
-  .MuiSelect-select {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof CompShipNameSelect>) => (
+  <CompShipNameSelect
+    {...props}
+    className={cn(
+      "[flex:none] w-50 [&_.MuiSelect-select]:overflow-hidden [&_.MuiSelect-select]:text-ellipsis [&_.MuiSelect-select]:whitespace-nowrap",
+      className,
+    )}
+  />
+);

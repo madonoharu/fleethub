@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { useForkRef } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -9,77 +9,69 @@ type TextFieldPropsBase = {
   onChange?: (value: string) => void;
 };
 
-export type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> &
-  TextFieldPropsBase;
+export type TextFieldProps = Omit<InputProps, keyof TextFieldPropsBase> & TextFieldPropsBase;
 
-const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
-  (props, ref) => {
-    const { className, value = "", onChange, onBlur, variant, ...rest } = props;
+const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
+  const { className, value = "", onChange, onBlur, variant, ...rest } = props;
 
-    const [str, setStr] = useState(value);
+  const [str, setStr] = useState(value);
 
-    const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-      if (str !== value) setStr(value);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value]);
+  useEffect(() => {
+    // Restore the requested initial focus when Strict Mode replays the
+    // surrounding dialog's focus trap effects.
+    if (rest.autoFocus) inputRef.current?.focus();
+  }, [rest.autoFocus]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setStr(event.currentTarget.value);
-    };
+  useEffect(() => {
+    if (str !== value) setStr(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "Enter" && !rest.multiline) {
-        inputRef.current?.blur();
-      }
-    };
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStr(event.currentTarget.value);
+  };
 
-    const handleClear = () => {
-      setStr("");
-      if ("" !== value) onChange?.("");
-    };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" && !rest.multiline) {
+      inputRef.current?.blur();
+    }
+  };
 
-    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-      onBlur?.(event);
-      const current = event.currentTarget.value;
-      if (current !== value) onChange?.(current);
-    };
+  const handleClear = () => {
+    setStr("");
+    if ("" !== value) onChange?.("");
+  };
 
-    const handleRef = useForkRef(inputRef, ref);
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    onBlur?.(event);
+    const current = event.currentTarget.value;
+    if (current !== value) onChange?.(current);
+  };
 
-    return (
-      <Input
-        inputRef={handleRef}
-        className={className}
-        value={str}
-        variant={variant}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <ClearButton
-                className="ClearButton"
-                size="tiny"
-                onClick={handleClear}
-              />
-            ),
-          },
-        }}
-        {...rest}
-      />
-    );
-  },
-);
+  const handleRef = useForkRef(inputRef, ref);
 
-export default styled(TextField)`
-  .ClearButton {
-    visibility: hidden;
-  }
+  return (
+    <Input
+      inputRef={handleRef}
+      className={cn(
+        "[&_.ClearButton]:invisible [&:hover_.ClearButton]:visible [@media(hover:none)]:[&:focus-within_.ClearButton]:visible",
+        className,
+      )}
+      value={str}
+      variant={variant}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      onBlur={handleBlur}
+      slotProps={{
+        input: {
+          endAdornment: <ClearButton className="ClearButton" size="tiny" onClick={handleClear} />,
+        },
+      }}
+      {...rest}
+    />
+  );
+});
 
-  :hover .ClearButton {
-    visibility: visible;
-  }
-`;
+export default TextField;

@@ -28,7 +28,7 @@ export const publishFile = createAsyncThunk<
     fileId,
     schemata.file,
     getEntities(root.entities),
-    idGenerator
+    idGenerator,
   );
 
   const url = await publishFileData(data);

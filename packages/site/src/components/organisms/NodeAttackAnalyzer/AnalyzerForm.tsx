@@ -1,5 +1,5 @@
 import { Path, PathValue } from "@fh/utils";
-import { styled, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import type { Comp, NodeAttackAnalyzerConfig } from "fleethub-core";
 import { produce } from "immer";
 import set from "es-toolkit/compat/set";
@@ -9,6 +9,7 @@ import React from "react";
 import CompShipList from "../CompShipList";
 import FormationSelect from "../FormationSelect";
 import NightFleetConditionsForm from "../NightFleetConditionsForm";
+import { cn } from "../../../styles";
 
 interface Props {
   config: NodeAttackAnalyzerConfig;
@@ -50,17 +51,8 @@ const AnalyzerForm: React.FCX<Props> = ({
     <div className={className}>
       {leftComp && (
         <div>
-          <CompShipList
-            comp={leftComp}
-            selectedShip={leftShipId}
-            onShipClick={onLeftShipChange}
-          />
-          <Stack
-            direction="row"
-            sx={{
-              gap: 1,
-            }}
-          >
+          <CompShipList comp={leftComp} selectedShip={leftShipId} onShipClick={onLeftShipChange} />
+          <Stack className="gap-2" direction="row">
             <FormationSelect
               color="primary"
               label={t("Formation.name")}
@@ -85,12 +77,7 @@ const AnalyzerForm: React.FCX<Props> = ({
             selectedShip={rightShipId}
             onShipClick={onRightShipChange}
           />
-          <Stack
-            direction="row"
-            sx={{
-              gap: 1,
-            }}
-          >
+          <Stack className="gap-2" direction="row">
             <FormationSelect
               label={t("Formation.name")}
               color="secondary"
@@ -112,9 +99,6 @@ const AnalyzerForm: React.FCX<Props> = ({
   );
 };
 
-export default styled(AnalyzerForm)`
-  display: flex;
-  > * {
-    flex-basis: 100%;
-  }
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof AnalyzerForm>) => (
+  <AnalyzerForm {...props} className={cn("flex [&_>_*]:[flex-basis:100%]", className)} />
+);

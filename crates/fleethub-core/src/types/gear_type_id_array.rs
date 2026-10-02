@@ -39,7 +39,7 @@ impl FromWasmAbi for GearTypeIdArray {
 
 impl GearTypeIdArray {
     pub fn get(&self, index: usize) -> Option<u8> {
-        self.array.get(index).cloned()
+        self.array.get(index).copied()
     }
 
     pub fn gear_type_id(&self) -> u8 {
@@ -71,14 +71,33 @@ impl From<GearTypeIdArray> for Vec<u8> {
 
 impl From<Vec<u8>> for GearTypeIdArray {
     fn from(input: Vec<u8>) -> Self {
-        let array = input
-            .into_iter()
-            .enumerate()
-            .fold([0_u8; 5], |mut acc, (i, v)| {
-                acc[i] = v;
-                acc
-            });
+        let mut array = [0; 5];
+        array[..input.len()].copy_from_slice(&input);
 
         array.into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::GearTypeIdArray;
+
+    #[test]
+    fn pads_short_inputs_and_preserves_five_type_ids() {
+        for (input, expected) in [
+            (vec![], [0; 5]),
+            (vec![1, 2, 3], [1, 2, 3, 0, 0]),
+            (vec![1, 2, 3, 4, 5], [1, 2, 3, 4, 5]),
+        ] {
+            let result = GearTypeIdArray::from(input);
+
+            assert_eq!(Vec::from(result), expected);
+        }
+    }
+
+    #[test]
+    #[should_panic]
+    fn rejects_more_than_five_type_ids() {
+        let _ = GearTypeIdArray::from(vec![1, 2, 3, 4, 5, 6]);
     }
 }

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { Typography, StyledComponentProps } from "@mui/material";
 import { TypographyVariant } from "@mui/material/styles";
 import React from "react";
@@ -16,15 +16,12 @@ const LabeledValue: React.FCX<LabeledValueProps> = ({
   value,
   variant = "body2",
 }) => (
-  <div className={className}>
+  <div className={cn("flex items-center justify-between", className)}>
     <Typography
-      className={classes?.label}
+      className={cn("mr-2", classes?.label)}
       color="textSecondary"
       variant={variant}
       component="div"
-      sx={{
-        mr: 1,
-      }}
     >
       {label}
     </Typography>
@@ -34,8 +31,4 @@ const LabeledValue: React.FCX<LabeledValueProps> = ({
   </div>
 );
 
-export default styled(LabeledValue)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+export default LabeledValue;

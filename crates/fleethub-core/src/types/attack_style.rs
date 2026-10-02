@@ -32,16 +32,10 @@ impl ShellingStyle {
     pub fn new(attack_type: ShellingType, cutin_def: Option<&DayCutinDef>) -> Self {
         Self {
             attack_type,
-            cutin: cutin_def.as_ref().map(|def| def.tag.into()),
-            power_mod: cutin_def
-                .as_ref()
-                .and_then(|def| def.power_mod)
-                .unwrap_or(1.0),
-            accuracy_mod: cutin_def
-                .as_ref()
-                .and_then(|def| def.accuracy_mod)
-                .unwrap_or(1.0),
-            hits: cutin_def.as_ref().map(|def| def.hits as f64).unwrap_or(1.0),
+            cutin: cutin_def.map(|def| def.tag.into()),
+            power_mod: cutin_def.and_then(|def| def.power_mod).unwrap_or(1.0),
+            accuracy_mod: cutin_def.and_then(|def| def.accuracy_mod).unwrap_or(1.0),
+            hits: cutin_def.map_or(1.0, |def| def.hits as f64),
         }
     }
 
@@ -80,16 +74,10 @@ impl NightAttackStyle {
     pub fn new(attack_type: NightAttackType, cutin_def: Option<&NightCutinDef>) -> Self {
         Self {
             attack_type,
-            cutin: cutin_def.as_ref().map(|def| def.tag.into()),
-            power_mod: cutin_def
-                .as_ref()
-                .and_then(|def| def.power_mod)
-                .unwrap_or(1.0),
-            accuracy_mod: cutin_def
-                .as_ref()
-                .and_then(|def| def.accuracy_mod)
-                .unwrap_or(1.0),
-            hits: cutin_def.as_ref().map(|def| def.hits).unwrap_or(1.0),
+            cutin: cutin_def.map(|def| def.tag.into()),
+            power_mod: cutin_def.and_then(|def| def.power_mod).unwrap_or(1.0),
+            accuracy_mod: cutin_def.and_then(|def| def.accuracy_mod).unwrap_or(1.0),
+            hits: cutin_def.map_or(1.0, |def| def.hits),
         }
     }
 

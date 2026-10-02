@@ -6,8 +6,7 @@ export const useGearListState = () => {
   const state = useRootSelector((root) => root.gearSelect);
   const { category, abyssal } = state;
 
-  const setAbyssal = (abyssal: boolean) =>
-    dispatch(gearSelectSlice.actions.update({ abyssal }));
+  const setAbyssal = (abyssal: boolean) => dispatch(gearSelectSlice.actions.update({ abyssal }));
   const setCategory = (category: GearCategoryFilter) =>
     dispatch(gearSelectSlice.actions.update({ category }));
 

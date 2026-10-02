@@ -8,9 +8,7 @@ export const ormAdapters = createOrmAdapters(...schemata);
 
 export const ENTITIES_SLICE_NAME = "entities";
 
-export function getSliceName<K extends string>(
-  key: K,
-): `${typeof ENTITIES_SLICE_NAME}/${K}` {
+export function getSliceName<K extends string>(key: K): `${typeof ENTITIES_SLICE_NAME}/${K}` {
   return `${ENTITIES_SLICE_NAME}/${key}`;
 }
 

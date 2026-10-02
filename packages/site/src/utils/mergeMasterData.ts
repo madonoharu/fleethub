@@ -8,10 +8,7 @@ function keepDefaultOnNull(current: unknown, override: unknown): unknown {
   return override === null ? current : undefined;
 }
 
-export function mergeMasterData(
-  source: MasterData,
-  overrides: MasterDataOverrides,
-): MasterData {
+export function mergeMasterData(source: MasterData, overrides: MasterDataOverrides): MasterData {
   return produce(source, (draft) => {
     draft.ships.forEach((ship) => {
       const changes = overrides.ships?.[ship.ship_id];

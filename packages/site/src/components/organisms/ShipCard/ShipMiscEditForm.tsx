@@ -1,37 +1,18 @@
-import styled from "@emotion/styled";
 import { DAMAGE_STATES, MORALE_STATES } from "@fh/utils";
-import { Stack, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { DamageState, MoraleState, Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useShipName } from "../../../hooks";
 import { ShipEntity } from "../../../store";
-import {
-  DamageStateIcon,
-  Divider,
-  Flexbox,
-  MoraleStateIcon,
-} from "../../atoms";
+import { DamageStateIcon, Divider, Flexbox, MoraleStateIcon } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
 import CustomPowerModifiersForm from "../CustomModifiersDialog/CustomPowerModifiersForm";
 import ResettableInput from "../ResettableInput";
 
 import FuelAmmoForm from "./FuelAmmoForm";
-
-const StyledNumberInput = styled(NumberInput)`
-  width: 128px;
-`;
-
-const StartIcon = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-
-  svg {
-    font-size: 20px;
-  }
-`;
 
 type ShipMiscEditFormProps = {
   ship: Ship;
@@ -75,13 +56,14 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
   };
 
   return (
-    <div className={className} style={style}>
+    <div className={cn("[&>:not(.MuiTypography-root)]:mb-2", className)} style={style}>
       <Typography variant="subtitle1">{displayName}</Typography>
 
       <Divider label={t("DamageState.name")} />
 
-      <Flexbox gap={1}>
-        <StyledNumberInput
+      <Flexbox className="gap-2">
+        <NumberInput
+          className="w-[128px]"
           startLabel="HP"
           value={ship.current_hp}
           max={ship.max_hp || 0}
@@ -93,17 +75,18 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           value={ship.damage_state()}
           onChange={setDamageState}
           getOptionLabel={(state) => (
-            <StartIcon>
+            <div className="flex items-center gap-2 [&_svg]:text-[20px]">
               <DamageStateIcon state={state} />
               <span>{t(`DamageState.${state}`)}</span>
-            </StartIcon>
+            </div>
           )}
         />
       </Flexbox>
 
       <Divider label={t("MoraleState.name")} />
-      <Flexbox gap={1}>
-        <StyledNumberInput
+      <Flexbox className="gap-2">
+        <NumberInput
+          className="w-[128px]"
           value={ship.morale}
           max={100}
           min={0}
@@ -114,10 +97,10 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           value={ship.morale_state()}
           onChange={setMoraleState}
           getOptionLabel={(state) => (
-            <StartIcon>
+            <div className="flex items-center gap-2 [&_svg]:text-[20px]">
               <MoraleStateIcon state={state} />
               <span>{t(`MoraleState.${state}`)}</span>
-            </StartIcon>
+            </div>
           )}
         />
       </Flexbox>
@@ -131,14 +114,9 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
       />
 
       <Divider label={`${t("Override")}`} />
-      <Stack
-        direction="row"
-        sx={{
-          gap: 1,
-        }}
-      >
+      <div className="flex gap-2">
         <ResettableInput
-          css={{ flexGrow: 1 }}
+          className="grow"
           label={`${t("day_gunfit_accuracy")}`}
           defaultValue={null}
           value={ship.state_day_gunfit_accuracy()}
@@ -147,7 +125,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
           }}
         />
         <ResettableInput
-          css={{ flexGrow: 1 }}
+          className="grow"
           label={`${t("night_gunfit_accuracy")}`}
           defaultValue={null}
           value={ship.state_night_gunfit_accuracy()}
@@ -155,13 +133,9 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
             onChange?.({ night_gunfit_accuracy: v ?? undefined });
           }}
         />
-      </Stack>
+      </div>
     </div>
   );
 };
 
-export default styled(ShipMiscEditForm)`
-  > * {
-    margin-bottom: 8px;
-  }
-`;
+export default ShipMiscEditForm;

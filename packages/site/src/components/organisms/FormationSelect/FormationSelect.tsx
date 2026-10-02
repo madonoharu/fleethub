@@ -20,15 +20,10 @@ const COMBINED_FORMATIONS: CombinedFormation[] = [
   "Cruising4",
 ];
 
-const FORMATIONS = Array<Formation>().concat(
-  SINGLE_FORMATIONS,
-  COMBINED_FORMATIONS
-);
+const FORMATIONS = Array<Formation>().concat(SINGLE_FORMATIONS, COMBINED_FORMATIONS);
 
-const isSingleFormation = (f: Formation) =>
-  (SINGLE_FORMATIONS as Formation[]).includes(f);
-const isCombinedFormation = (f: Formation) =>
-  (COMBINED_FORMATIONS as Formation[]).includes(f);
+const isSingleFormation = (f: Formation) => (SINGLE_FORMATIONS as Formation[]).includes(f);
+const isCombinedFormation = (f: Formation) => (COMBINED_FORMATIONS as Formation[]).includes(f);
 
 type Props = SelectInputProps & {
   value: Formation;
@@ -36,12 +31,7 @@ type Props = SelectInputProps & {
   combined: boolean;
 };
 
-const FormationSelect: React.FC<Props> = ({
-  value,
-  onChange,
-  combined,
-  ...rest
-}) => {
+const FormationSelect: React.FC<Props> = ({ value, onChange, combined, ...rest }) => {
   const { t } = useTranslation("common", { keyPrefix: "Formation" });
 
   const itemFilter = combined ? isCombinedFormation : isSingleFormation;

@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { GEAR_KEYS, SlotSizeKey } from "@fh/utils";
 import { Paper, Typography } from "@mui/material";
 import { AirSquadron, AirSquadronMode } from "fleethub-core";
@@ -12,6 +11,7 @@ import { Flexbox, LabeledValue } from "../../atoms";
 import { BusinessCenterButton, SelectedMenu } from "../../molecules";
 import GearSlot from "../GearSlot";
 import PresetMenu from "../PresetMenu";
+import { cn } from "../../../styles";
 
 const AIR_SQUADRON_MODES: AirSquadronMode[] = ["Sortie", "AirDefense"];
 
@@ -30,9 +30,9 @@ const useAirSquadronActions = (id: string) => {
   }, [id, dispatch]);
 };
 
-const StyledLabeledValue = styled(LabeledValue)`
-  margin-right: 8px;
-`;
+const StyledLabeledValue = ({ className, ...props }: React.ComponentProps<typeof LabeledValue>) => (
+  <LabeledValue {...props} className={cn("mr-2", className)} />
+);
 
 interface Props {
   className?: string;
@@ -52,8 +52,9 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
         <Flexbox>
           <Typography variant="subtitle2">{label}</Typography>
           <BusinessCenterButton
+            className="ml-auto"
             size="medium"
-            sx={{ ml: "auto" }}
+
             title={t("Presets")}
             onClick={PresetModal.show}
           />
@@ -65,20 +66,11 @@ const AirSquadronCard = React.forwardRef<HTMLDivElement, Props>(
           />
         </Flexbox>
 
-        <Flexbox gap={1}>
+        <Flexbox className="gap-2">
           <Typography variant="body2">{t("FighterPower")}</Typography>
-          <StyledLabeledValue
-            label={t("Sortie")}
-            value={airSquadron.fighter_power()}
-          />
-          <StyledLabeledValue
-            label={t("AirDefense")}
-            value={airSquadron.interception_power()}
-          />
-          <StyledLabeledValue
-            label={t("radius")}
-            value={airSquadron.radius()}
-          />
+          <StyledLabeledValue label={t("Sortie")} value={airSquadron.fighter_power()} />
+          <StyledLabeledValue label={t("AirDefense")} value={airSquadron.interception_power()} />
+          <StyledLabeledValue label={t("radius")} value={airSquadron.radius()} />
         </Flexbox>
 
         {GEAR_KEYS.filter((_, i) => i < 4).map((key, i) => {
@@ -115,10 +107,6 @@ const Memoized = React.memo(
     prev.hash === next.hash && shallowEqual(prevRest, nextRest),
 );
 
-export default styled(Memoized)`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px 8px 24px;
-  min-width: 160px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof Memoized>) => (
+  <Memoized {...props} className={cn("flex flex-col gap-2 p-[8px_8px_24px] min-w-40", className)} />
+);

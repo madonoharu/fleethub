@@ -177,7 +177,7 @@ pub struct EquippabilityPattern {
 impl EquippabilityPattern {
     pub fn matches(&self, key: &str, gear: &Gear) -> bool {
         (self.keys.is_empty() || self.keys.iter().any(|k| k == key))
-            && (self.gear.eval(&mut gear.ns()).ok().unwrap_or_default() == 1.0)
+            && self.gear.matches(&mut gear.ns())
     }
 }
 

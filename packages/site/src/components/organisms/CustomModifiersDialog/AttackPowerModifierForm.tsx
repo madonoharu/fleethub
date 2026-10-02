@@ -1,9 +1,9 @@
-import { styled } from "@mui/system";
 import { AttackPowerModifier } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import ResettableInput from "../ResettableInput";
+import { cn } from "../../../styles";
 
 type AttackPowerModifierFormProps = {
   value: AttackPowerModifier | undefined;
@@ -39,7 +39,6 @@ const AttackPowerModifierForm: React.FCX<AttackPowerModifierFormProps> = ({
   );
 };
 
-export default styled(AttackPowerModifierForm)`
-  display: flex;
-  gap: 8px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof AttackPowerModifierForm>) => (
+  <AttackPowerModifierForm {...props} className={cn("flex gap-2", className)} />
+);

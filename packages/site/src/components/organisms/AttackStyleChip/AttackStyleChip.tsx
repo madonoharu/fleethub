@@ -1,5 +1,5 @@
 import { isUnknownRecord } from "@fh/utils";
-import { css, Tooltip, Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
@@ -26,15 +26,11 @@ const CutinDetails: React.FC<CutinDetailsProps> = ({ attack }) => {
 
   return (
     <>
-      <AttackTypeChip attack={attack} sx={{ mb: 1 }} />
+      <AttackTypeChip className="mb-2" attack={attack} />
       <Typography
+        className="grid [grid-template-columns:auto_auto] gap-[0_8px]"
         component="div"
         variant="body2"
-        css={css`
-          display: grid;
-          grid-template-columns: auto auto;
-          gap: 0 8px;
-        `}
       >
         <span>{t("power_mod")}</span>
         <span>{numstr(attack.power_mod) || "?"}</span>
@@ -51,9 +47,7 @@ interface Props {
   attack: unknown;
 }
 
-function hasCutin(
-  attack: unknown,
-): attack is Record<string, unknown> & { cutin: string } {
+function hasCutin(attack: unknown): attack is Record<string, unknown> & { cutin: string } {
   return isUnknownRecord(attack) && typeof attack.cutin === "string";
 }
 

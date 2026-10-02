@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import LinkIcon from "@mui/icons-material/Link";
 import { Button, Link } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
@@ -7,14 +6,15 @@ import React from "react";
 import { useAsyncOnPublish } from "../../../hooks";
 import { FolderEntity } from "../../../store";
 import { Divider } from "../../atoms";
+import { cn } from "../../../styles";
 
-const StyledDivider = styled(Divider)`
-  margin-top: 8px;
-`;
+const StyledDivider = ({ className, ...props }: React.ComponentProps<typeof Divider>) => (
+  <Divider {...props} className={cn("mt-2", className)} />
+);
 
-const StyledButton = styled(Button)`
-  justify-content: flex-start;
-`;
+const StyledButton = ({ className, ...props }: React.ComponentProps<typeof Button>) => (
+  <Button {...props} className={cn("justify-start", className)} />
+);
 
 type Props = {
   file: FolderEntity;

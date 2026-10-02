@@ -1,6 +1,6 @@
 import { ShipKey, SHIP_KEYS } from "@fh/utils";
 import { Typography } from "@mui/material";
-import { styled, css } from "@mui/system";
+
 import { Comp, FleetType, FleetMeta, ShipMeta } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -9,6 +9,7 @@ import { useAppDispatch } from "../../../hooks";
 import { entitiesSlice, ShipPosition, SwapShipPayload } from "../../../store";
 
 import CompShipButton from "./CompShipButton";
+import { cn } from "../../../styles";
 
 type CompShipListProps = {
   comp: Comp;
@@ -29,9 +30,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
   const color = isEnemy ? "secondary" : "primary";
   const meta = comp.meta();
 
-  const handleShipSelect: React.MouseEventHandler<HTMLButtonElement> = (
-    event,
-  ) => {
+  const handleShipSelect: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     onShipClick(event.currentTarget.value);
   };
 
@@ -39,12 +38,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
     dispatch(entitiesSlice.actions.swapShip(payload));
   };
 
-  const renderShip = (
-    ft: FleetType,
-    fleetMeta: FleetMeta,
-    key: ShipKey,
-    ship: ShipMeta | null,
-  ) => {
+  const renderShip = (ft: FleetType, fleetMeta: FleetMeta, key: ShipKey, ship: ShipMeta | null) => {
     const className = `${ft} ${key}`;
     const position: ShipPosition = {
       tag: "fleets",
@@ -57,6 +51,7 @@ const CompShipList: React.FCX<CompShipListProps> = ({
       <CompShipButton
         key={className}
         className={className}
+        style={{ gridRow: SHIP_KEYS.indexOf(key) + 2 }}
         position={position}
         meta={ship}
         color={color}
@@ -79,15 +74,21 @@ const CompShipList: React.FCX<CompShipListProps> = ({
         <Typography key={ft} className={ft} variant="subtitle2">
           {t(`FleetType.${ft}`)}
         </Typography>
-        {fleetMeta.ships.map(([key, ship]) =>
-          renderShip(ft, fleetMeta, key as ShipKey, ship),
-        )}
+        {fleetMeta.ships.map(([key, ship]) => renderShip(ft, fleetMeta, key as ShipKey, ship))}
       </>
     );
   };
 
   return (
-    <div className={className}>
+    <div
+      className={cn(
+        "grid auto-cols-[128px] auto-rows-8 grid-rows-[repeat(8,32px)] gap-1 [&_.RouteSup]:col-start-3 [&>h6]:row-start-1",
+        isEnemy
+          ? "[&_.Main]:col-start-2 [&_.Escort]:col-start-1"
+          : "[&_.Main]:col-start-1 [&_.Escort]:col-start-2",
+        className,
+      )}
+    >
       {renderFleet("Main")}
       {renderFleet("Escort")}
       {renderFleet("RouteSup")}
@@ -95,36 +96,4 @@ const CompShipList: React.FCX<CompShipListProps> = ({
   );
 };
 
-export default styled(CompShipList)(({ comp }) => {
-  const isEnemy = comp.is_enemy();
-
-  return css`
-    display: grid;
-    grid-auto-columns: 128px;
-    grid-auto-rows: 32px;
-    grid-template-rows: repeat(8, 32px);
-    gap: 4px;
-
-    .Main {
-      grid-column: ${isEnemy ? 2 : 1};
-    }
-    .Escort {
-      grid-column: ${isEnemy ? 1 : 2};
-    }
-    .RouteSup {
-      grid-column: 3;
-    }
-
-    > h6 {
-      grid-row: 1;
-    }
-
-    ${SHIP_KEYS.map(
-      (key, i) => css`
-        .${key} {
-          grid-row: ${i + 2};
-        }
-      `,
-    )}
-  `;
-});
+export default CompShipList;

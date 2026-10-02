@@ -15,8 +15,7 @@ import DamageCell from "./DamageCell";
 
 type ItemType = AttackReport<unknown>;
 
-type AttackReportType = Partial<ActionReport<unknown>> &
-  Pick<ActionReport<unknown>, "data">;
+type AttackReportType = Partial<ActionReport<unknown>> & Pick<ActionReport<unknown>, "data">;
 
 type DamageTableProps = {
   report: AttackReportType;
@@ -30,14 +29,12 @@ const DamageTable: React.FCX<DamageTableProps> = ({ className, report }) => {
   const columns: ColumnProps<ItemType>[] = [
     {
       label: t("Type"),
-      getValue: (item) => (
-        <AttackStyleChip attack={item.style} css={{ width: "100%" }} />
-      ),
+      getValue: (item) => <AttackStyleChip className="w-full" attack={item.style} />,
     },
 
     {
       label: t("ProcRate"),
-      getValue: (item) => <ProcRateCell sx={{ ml: 1 }} item={item} />,
+      getValue: (item) => <ProcRateCell className="ml-2" item={item} />,
     },
     {
       label: t("AttackPower"),
@@ -52,26 +49,19 @@ const DamageTable: React.FCX<DamageTableProps> = ({ className, report }) => {
     {
       label: `${t("hit_rate")} (${t("CriticalAbbr")})`,
       getValue: (item) => (
-        <Flexbox gap={1}>
+        <Flexbox className="gap-2">
           <span>{toPercent(item.hit_rate?.total)}</span>
           <span>({toPercent(item.hit_rate?.critical)})</span>
           <InfoButton
             size="tiny"
-            title={
-              <HitRateDetails
-                hitRate={item.hit_rate}
-                params={item.hit_rate_params}
-              />
-            }
+            title={<HitRateDetails hitRate={item.hit_rate} params={item.hit_rate_params} />}
           />
         </Flexbox>
       ),
     },
   ];
 
-  return (
-    <Table className={className} data={data} padding="none" columns={columns} />
-  );
+  return <Table className={className} data={data} padding="none" columns={columns} />;
 };
 
 export default DamageTable;

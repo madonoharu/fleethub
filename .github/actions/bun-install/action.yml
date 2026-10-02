@@ -1,6 +1,12 @@
 name: "Toolchain and Bun install"
 description: "Install the mise toolchain and locked workspace dependencies"
 
+inputs:
+  tools:
+    description: "Tools to install from mise.toml; Rust jobs opt into the core toolchain"
+    default: "bun"
+    required: false
+
 runs:
   using: "composite"
   steps:
@@ -8,6 +14,7 @@ runs:
       uses: jdx/mise-action@v5
       with:
         version: "2026.10.0"
+        install_args: --locked ${{ inputs.tools }}
         cache: ${{ !env.ACT }}
 
     - name: Restore Bun package cache
@@ -22,5 +29,3 @@ runs:
     - name: Install dependencies
       shell: bash
       run: bun install --frozen-lockfile
-      env:
-        HUSKY: "0"

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import AddIcon from "@mui/icons-material/Add";
 import BuildIcon from "@mui/icons-material/Build";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
@@ -45,9 +45,10 @@ export const StarButton = withIconButton(StarIcon);
 export const ImportButton = withIconButton(SaveAltIcon);
 export const UpdateButton = withIconButton(CachedIcon);
 
-export const TweetButton = styled(withIconButton(TwitterIcon))`
-  color: #3ba9ee;
-`;
+const TwitterIconButton = withIconButton(TwitterIcon);
+export const TweetButton = ({ className, ...props }: WithIconButtonProps) => (
+  <TwitterIconButton {...props} className={cn("enabled:text-[#3ba9ee]", className)} />
+);
 
 const KctoolsIconButton = withIconButton(KctoolsIcon);
 export const KctoolsButton = (props: WithIconButtonProps) => (

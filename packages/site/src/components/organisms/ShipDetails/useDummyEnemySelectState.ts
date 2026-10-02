@@ -11,15 +11,13 @@ export const useDummyEnemySelectState = () => {
   const { t } = useTranslation(["ships", "common"]);
 
   const options = useMemo(() => {
-    const specialEnemies = [1665, 1668, 1653, 1699, 1637, 1696, 1705].map(
-      (shipId) => {
-        const ship = core.create_ship_by_id(shipId);
-        return {
-          label: t(`ships:${shipId}`, ship?.name || ""),
-          ship: core.create_ship_by_id(shipId),
-        };
-      },
-    );
+    const specialEnemies = [1665, 1668, 1653, 1699, 1637, 1696, 1705].map((shipId) => {
+      const ship = core.create_ship_by_id(shipId);
+      return {
+        label: t(`ships:${shipId}`, ship?.name || ""),
+        ship: core.create_ship_by_id(shipId),
+      };
+    });
 
     const dummyEnemies = [
       { label: t("common:None"), ship: core.create_default_ship() },
@@ -32,9 +30,7 @@ export const useDummyEnemySelectState = () => {
       ...specialEnemies,
     ];
 
-    return dummyEnemies.filter((item): item is DummyEnemySelectValue =>
-      Boolean(item.ship),
-    );
+    return dummyEnemies.filter((item): item is DummyEnemySelectValue => Boolean(item.ship));
   }, [core, t]);
 
   const [value, onChange] = useState(options[0]);

@@ -172,17 +172,11 @@ impl Org {
 
     /// 防空時の基地制空値
     pub fn interception_power(&self) -> i32 {
-        let as_vec = [&self.a1, &self.a2, &self.a3]
+        [&self.a1, &self.a2, &self.a3]
             .into_iter()
             .filter(|air_squadron| air_squadron.mode.is_air_defense())
-            .collect::<Vec<_>>();
-
-        let interception_power = as_vec
-            .iter()
             .map(|air_squadron| air_squadron.interception_power())
-            .sum::<i32>();
-
-        interception_power
+            .sum()
     }
 
     /// 高高度迎撃時の基地制空値

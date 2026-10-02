@@ -50,13 +50,7 @@ describe("master data spreadsheet updates", () => {
   it("appends array paths, literal dotted keys, and false-valued cells", () => {
     const table: SpreadsheetTable = {
       sheetId: 7,
-      headerValues: [
-        "ship_id",
-        "stock[0].gear_id",
-        "max_hp[1]",
-        "meta.label",
-        "enabled",
-      ],
+      headerValues: ["ship_id", "stock[0].gear_id", "max_hp[1]", "meta.label", "enabled"],
       rows: [],
     };
     const data = [
@@ -104,9 +98,7 @@ describe("master data spreadsheet updates", () => {
       rows: [{ ship_id: 1, "stats.armor": 3 }],
     };
 
-    expect(
-      createUpdateRowsRequests(table, [{ ship_id: 1, stats: {} }]),
-    ).toEqual([
+    expect(createUpdateRowsRequests(table, [{ ship_id: 1, stats: {} }])).toEqual([
       {
         updateCells: {
           start: { sheetId: 7, rowIndex: 1, columnIndex: 1 },

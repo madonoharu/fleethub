@@ -1,5 +1,6 @@
-import { styled, ButtonBase, colors } from "@mui/material";
+import { ButtonBase, colors } from "@mui/material";
 import React from "react";
+import { cn } from "../../../styles";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Color {
@@ -38,15 +39,12 @@ const hues = [
   "deepOrange",
 ] as const;
 
-const StyledButton = styled(ButtonBase)`
-  height: 24px;
-  width: 24px;
-  border-radius: 4px;
-
-  &:hover {
-    outline: solid 1px white;
-  }
-`;
+const StyledButton = ({ className, ...props }: React.ComponentProps<typeof ButtonBase>) => (
+  <ButtonBase
+    {...props}
+    className={cn("h-6 w-6 rounded-[4px] [&:hover]:[outline:solid_1px_white]", className)}
+  />
+);
 
 // eslint-disable-next-line import/namespace
 const COLORS = hues.map((hue) => colors[hue][400]);
@@ -69,9 +67,7 @@ const ColorPicker: React.FCX<Props> = ({ className, color, onChange }) => {
       {COLORS.map((color) => (
         <StyledButton
           key={color}
-          css={{
-            backgroundColor: color,
-          }}
+          style={{ backgroundColor: color }}
           value={color}
           onClick={handleClick}
         />
@@ -80,9 +76,9 @@ const ColorPicker: React.FCX<Props> = ({ className, color, onChange }) => {
   );
 };
 
-export default styled(ColorPicker)`
-  display: grid;
-  grid-template-columns: repeat(4, 24px);
-  gap: 8px;
-  padding: 8px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof ColorPicker>) => (
+  <ColorPicker
+    {...props}
+    className={cn("grid [grid-template-columns:repeat(4,_24px)] gap-2 p-2", className)}
+  />
+);

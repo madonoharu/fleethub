@@ -8,7 +8,6 @@ use crate::{
         AirState, BattleDefinitions, Engagement, NightAttackStyle, NightConditions,
         NightPhaseAttackStyle, NightPhaseAttackType, NodeState, Participant, ShipPosition,
     },
-    utils::some_or_return,
 };
 
 use super::{battle_comp::BattleComp, target_picker::TargetPicker};
@@ -60,7 +59,9 @@ where
             None,
         );
 
-        let picked = some_or_return!(picker.choose(self.rng), Ok(()));
+        let Some(picked) = picker.choose(self.rng) else {
+            return Ok(());
+        };
 
         let attack_type = picked.attack_type;
         let mut target = target_comp

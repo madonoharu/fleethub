@@ -4,9 +4,7 @@ import { atLeastOne, round, floor, expToAce } from "../src";
 
 describe("utils/math", () => {
   it("atLeastOne", () => {
-    expect(atLeastOne([0.1, 0.2, 0.3])).toBe(
-      1 - (1 - 0.1) * (1 - 0.2) * (1 - 0.3),
-    );
+    expect(atLeastOne([0.1, 0.2, 0.3])).toBe(1 - (1 - 0.1) * (1 - 0.2) * (1 - 0.3));
   });
 
   it("round", () => {

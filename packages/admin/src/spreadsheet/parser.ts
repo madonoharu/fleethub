@@ -5,13 +5,9 @@ import { NationalityMap } from "./nationality";
 
 type NamedMaster = { api_name: string; api_id: number };
 
-function replaceMasterNames(
-  str: string,
-  masters: readonly NamedMaster[],
-): string {
+function replaceMasterNames(str: string, masters: readonly NamedMaster[]): string {
   return masters.reduce(
-    (current, master) =>
-      current.replaceAll(`"${master.api_name}"`, master.api_id.toString()),
+    (current, master) => current.replaceAll(`"${master.api_name}"`, master.api_id.toString()),
     str,
   );
 }
@@ -42,8 +38,7 @@ export class ExprParser {
   ) {}
 
   parseGearName(str: string): string {
-    const fn = (str: string) =>
-      replaceMasterNames(str, this.start2.api_mst_slotitem);
+    const fn = (str: string) => replaceMasterNames(str, this.start2.api_mst_slotitem);
 
     return str
       .replace(/gear_id (=|!)= "[^"]+"/g, fn)
@@ -64,8 +59,7 @@ export class ExprParser {
 
   parseShipClass(str: string): string {
     return this.ctypeNames.reduce(
-      (current, shipClassName, id) =>
-        current.replaceAll(`"${shipClassName}"`, id.toString()),
+      (current, shipClassName, id) => current.replaceAll(`"${shipClassName}"`, id.toString()),
       str,
     );
   }

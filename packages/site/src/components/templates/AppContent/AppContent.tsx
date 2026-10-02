@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import React from "react";
 
 import { useRootSelector } from "../../../hooks";
@@ -13,10 +12,6 @@ import ExplorerDrawer from "./ExplorerDrawer";
 import FileViewer from "./FileViewer";
 import UrlLoader from "./UrlLoader";
 
-const Bottom = styled.div`
-  height: 400px;
-`;
-
 const AppContent: React.FC = () => {
   const configOpen = useRootSelector((root) => root.app.configOpen);
   const explorerOpen = useRootSelector((root) => root.app.explorerOpen);
@@ -26,7 +21,7 @@ const AppContent: React.FC = () => {
       <AppBar />
       <ExplorerDrawer open={explorerOpen}>
         <UrlLoader>{configOpen ? <ConfigPage /> : <FileViewer />}</UrlLoader>
-        <Bottom />
+        <div className="h-[400px]" />
       </ExplorerDrawer>
 
       <ShipSelectModal />

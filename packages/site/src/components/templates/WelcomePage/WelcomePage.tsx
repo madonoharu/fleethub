@@ -13,7 +13,6 @@ import {
   Typography,
   Stack,
   Link,
-  css,
   List,
   ListItemButton,
   ListItemText,
@@ -54,46 +53,20 @@ const WelcomePage: React.FCX = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ pt: 5 }}>
-      <Stack
-        sx={{
-          gap: 1,
-        }}
-      >
-        <Stack
-          sx={{
-            gap: 2,
-          }}
-        >
-          <Stack
-            direction="row"
-            sx={{
-              alignItems: "flex-end",
-              gap: 1,
-            }}
-          >
+    <Container maxWidth="md" className="pt-10">
+      <Stack className="gap-2">
+        <Stack className="gap-4">
+          <Stack direction="row" className="items-end gap-2">
             <Typography variant="h4">
               {t("meta.title")} v{process.env.SITE_VERSION}
             </Typography>
-            <Link href="https://github.com/madonoharu/fleethub/releases">
-              {t("Changelog")}
-            </Link>
+            <Link href="https://github.com/madonoharu/fleethub/releases">{t("Changelog")}</Link>
           </Stack>
           <div>
             <Typography>{t("meta.description")}</Typography>
             <Typography>{t("AboutLocalization")}</Typography>
           </div>
-          <Stack
-            css={css`
-              > button {
-                justify-content: flex-start;
-              }
-            `}
-            sx={{
-              gap: 1,
-              mr: "auto",
-            }}
-          >
+          <Stack className="mr-auto gap-2 [&>button]:justify-start">
             <Button
               startIcon={<NoteAddIcon />}
               variant="contained"
@@ -121,12 +94,7 @@ const WelcomePage: React.FCX = () => {
           </Stack>
         </Stack>
 
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           Special Thanks
         </Typography>
         <Divider />
@@ -135,62 +103,34 @@ const WelcomePage: React.FCX = () => {
             <ListItemIcon>
               <OpenInNewIcon />
             </ListItemIcon>
-            <ListItemText
-              primary="KCNav"
-              secondary={t("SpecialThanksToKcnav")}
-            />
+            <ListItemText primary="KCNav" secondary={t("SpecialThanksToKcnav")} />
           </ListItemButton>
-          <ListItemButton
-            component={Link}
-            href="https://github.com/Nishisonic/gkcoi"
-          >
+          <ListItemButton component={Link} href="https://github.com/Nishisonic/gkcoi">
             <ListItemIcon>
               <GitHubIcon />
             </ListItemIcon>
-            <ListItemText
-              primary="gkcoi"
-              secondary={t("SpecialThanksToGkcoi")}
-            />
+            <ListItemText primary="gkcoi" secondary={t("SpecialThanksToGkcoi")} />
           </ListItemButton>
-          <ListItemButton
-            component={Link}
-            href="https://github.com/KC3Kai/kc3-translations"
-          >
+          <ListItemButton component={Link} href="https://github.com/KC3Kai/kc3-translations">
             <ListItemIcon>
               <GitHubIcon />
             </ListItemIcon>
-            <ListItemText
-              primary="kc3-translations"
-              secondary={t("SpecialThanksToKc3")}
-            />
+            <ListItemText primary="kc3-translations" secondary={t("SpecialThanksToKc3")} />
           </ListItemButton>
         </List>
 
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           Author
         </Typography>
         <Divider />
-        <Stack
-          sx={{
-            gap: 1,
-          }}
-        >
+        <Stack className="gap-2">
           <Typography variant="body1">Madono</Typography>
 
           <Link
             variant="body1"
             color="inherit"
             href="https://twitter.com/madonoharu"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
+            className="flex items-center gap-2"
           >
             <TwitterIcon color="primary" />
             @madonoharu
@@ -199,11 +139,7 @@ const WelcomePage: React.FCX = () => {
             variant="body1"
             color="inherit"
             href="https://marshmallow-qa.com/madonoharu"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
+            className="flex items-center gap-2"
           >
             <QuestionAnswerIcon color="secondary" />
             マシュマロ(匿名でメッセージを送る)
@@ -212,98 +148,62 @@ const WelcomePage: React.FCX = () => {
             variant="body1"
             color="inherit"
             href="mailto:madonoharu@gmail.com"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
+            className="flex items-center gap-2"
           >
             <MailIcon />
             madonoharu@gmail.com
           </Link>
-          <Typography
-            variant="body1"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
+          <Typography variant="body1" className="flex items-center gap-2">
             <span>Discord</span>
             <span>mad#4138</span>
           </Typography>
         </Stack>
 
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           Contributor
         </Typography>
         <Divider />
         <Typography variant="body1" component="div">
           <span>にしくま</span>
-          <Link sx={{ ml: 1 }} href="https://twitter.com/nishikkuma">
+          <Link className="ml-2" href="https://twitter.com/nishikkuma">
             @nishikkuma
           </Link>
         </Typography>
 
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           Maintainers
         </Typography>
         <Divider />
         <Typography variant="body1" component="div">
           <div>
             <span>白</span>
-            <Link sx={{ ml: 1 }} href="https://twitter.com/shiro_sh39">
+            <Link className="ml-2" href="https://twitter.com/shiro_sh39">
               @shiro_sh39
             </Link>
           </div>
           <div>
             <span>ダイコン</span>
-            <Link sx={{ ml: 1 }} href="https://twitter.com/panmodoki10">
+            <Link className="ml-2" href="https://twitter.com/panmodoki10">
               @panmodoki10
             </Link>
           </div>
           <span>ゆーる</span>
         </Typography>
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           Tips
         </Typography>
         <Divider />
         <Typography>
           デッキビルダー形式をURLに?predeck=...で埋め込めば編成を読み込めます。
         </Typography>
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           免責事項
         </Typography>
         <Divider />
         <Typography>
           当サイトに表示される情報は仮説式等を多く使用しているため、その正確性については保障しません。また、当サイトの計算結果によって発生した損害について一切の責任を負いません。
         </Typography>
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           プライバシーポリシー
         </Typography>
         <Divider />
@@ -311,17 +211,10 @@ const WelcomePage: React.FCX = () => {
           当サイトでは、Googleの提供するアクセス解析サービス「Google
           Analytics」を使用しています。これにはデータ収集のためにCookieを使用しておりますが、このデータは匿名で収集されており、個人を特定するものではありません。
           詳しくは
-          <Link href="https://policies.google.com/technologies/partner-sites">
-            こちら
-          </Link>
+          <Link href="https://policies.google.com/technologies/partner-sites">こちら</Link>
           をご覧ください。
         </Typography>
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 4,
-          }}
-        >
+        <Typography variant="h5" className="mt-8">
           知的財産権
         </Typography>
         <Divider />

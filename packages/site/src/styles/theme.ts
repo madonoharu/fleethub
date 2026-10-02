@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { createTheme } from "@mui/material/styles";
 
 import { colors, palette } from "./colors";
@@ -130,48 +129,6 @@ const muiTheme = createTheme({
   },
 });
 
-const acrylic = css`
-  background: rgba(60, 60, 70, 0.95) !important;
-
-  @supports (backdrop-filter: blur(8px)) {
-    background: rgba(60, 60, 70, 0.6) !important;
-    backdrop-filter: blur(8px);
-  }
-`;
-
-const darkAcrylic = css`
-  background: rgba(30, 30, 35, 0.98);
-
-  @supports (backdrop-filter: blur(8px)) {
-    background: rgba(30, 30, 35, 0.85) !important;
-    backdrop-filter: blur(8px);
-  }
-`;
-
-const swappable = css`
-  border-radius: 4px;
-  cursor: grab;
-
-  img {
-    pointer-events: none;
-  }
-
-  &.droppable {
-    box-shadow: 0px 0px 2px 2px ${colors.droppable};
-  }
-
-  &.dragging {
-    opacity: 0.3;
-  }
-`;
-
-const styles = {
-  acrylic,
-  darkAcrylic,
-  swappable,
-};
-
-export const theme = { ...muiTheme, colors, styles };
+export const theme = { ...muiTheme, colors };
 
 export type Theme = typeof theme;
-export type ThemeStyles = typeof styles;

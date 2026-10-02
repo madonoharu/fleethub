@@ -6,10 +6,7 @@ export function mergeLocaleMessages(
   incoming: Readonly<Record<string, unknown>>,
 ): Record<string, unknown> {
   const keepExisting = (existing: unknown, downloaded: unknown) => {
-    if (
-      existing &&
-      (downloaded === "" || downloaded === " " || downloaded === null)
-    ) {
+    if (existing && (downloaded === "" || downloaded === " " || downloaded === null)) {
       return existing;
     }
     return undefined;

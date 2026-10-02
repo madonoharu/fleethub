@@ -19,15 +19,10 @@ import {
 
 type Entry = Pick<AttackReport<unknown>, "proc_rate" | "damage">;
 
-function entry(
-  proc_rate: number | null,
-  damage_density: DamageDensity | null,
-): Entry {
+function entry(proc_rate: number | null, damage_density: DamageDensity | null): Entry {
   return {
     proc_rate,
-    damage: damage_density
-      ? ({ damage_density } as unknown as NonNullable<Entry["damage"]>)
-      : null,
+    damage: damage_density ? ({ damage_density } as unknown as NonNullable<Entry["damage"]>) : null,
   };
 }
 
@@ -102,10 +97,7 @@ describe("mergeDamageDensity", () => {
       },
     } as unknown as DamageDensitySource;
 
-    expect(mergeDamageDensity(data, "penetration")?.[80]).toBeCloseTo(
-      1e-10,
-      20,
-    );
+    expect(mergeDamageDensity(data, "penetration")?.[80]).toBeCloseTo(1e-10, 20);
   });
 
   it("penetration は貫通しなかった質量を取り除く", () => {
@@ -161,9 +153,7 @@ describe("toDamageDensityStats", () => {
 
     expect(stats?.points.map((p) => p.damage)).toEqual([0, 1, 2, 3]);
     expect(stats?.points.map((p) => p.rate)).toEqual([0.25, 0, 0, 0.75]);
-    expect(stats?.points.map((p) => p.cumulative)).toEqual([
-      0.25, 0.25, 0.25, 1,
-    ]);
+    expect(stats?.points.map((p) => p.cumulative)).toEqual([0.25, 0.25, 0.25, 1]);
     expect(stats?.total).toBeCloseTo(1, 12);
   });
 
@@ -352,11 +342,7 @@ describe("createDamageStateZones", () => {
   it("分布が届かない帯は落とす", () => {
     const zones = createDamageStateZones(99, 99, 60);
 
-    expect(zones.map((zone) => zone.state)).toEqual([
-      "Normal",
-      "Shouha",
-      "Chuuha",
-    ]);
+    expect(zones.map((zone) => zone.state)).toEqual(["Normal", "Shouha", "Chuuha"]);
     // 最後の帯は軸の右端で止める。
     expect(zones.at(-1)).toEqual({ state: "Chuuha", from: 50, to: 61 });
   });
@@ -415,19 +401,15 @@ describe("createRateAxisTicks", () => {
   });
 
   it("きりのいい刻みで置き、上限そのものには打たない", () => {
-    expect(
-      createRateAxisTicks(0.0151).map((v) => +(v * 100).toFixed(2)),
-    ).toEqual([0, 0.5, 1, 1.5]);
-    expect(createRateAxisTicks(0.3).map((v) => +(v * 100).toFixed(2))).toEqual([
-      0, 10, 20, 30,
-    ]);
+    expect(createRateAxisTicks(0.0151).map((v) => +(v * 100).toFixed(2))).toEqual([0, 0.5, 1, 1.5]);
+    expect(createRateAxisTicks(0.3).map((v) => +(v * 100).toFixed(2))).toEqual([0, 10, 20, 30]);
   });
 
   it("区間数が4に近くなる刻みを選ぶ", () => {
     // 0.2% 刻みだと7区間、0.5% 刻みだと2区間。0.25% 刻みの5区間がいちばん近い。
-    expect(
-      createRateAxisTicks(0.0145).map((v) => +(v * 100).toFixed(2)),
-    ).toEqual([0, 0.25, 0.5, 0.75, 1, 1.25]);
+    expect(createRateAxisTicks(0.0145).map((v) => +(v * 100).toFixed(2))).toEqual([
+      0, 0.25, 0.5, 0.75, 1, 1.25,
+    ]);
   });
 
   it("上限が0以下なら目盛は0だけ", () => {
@@ -472,9 +454,7 @@ describe("createDamageDensityBreakdown", () => {
       b: { proc_rate: 0.3, damage: { damage_density: { 80: 1 } } },
     } as unknown as DamageDensitySource;
 
-    expect(
-      createDamageDensityBreakdown(uneven)!.map((item) => item.stats.median),
-    ).toEqual([80, 0]);
+    expect(createDamageDensityBreakdown(uneven)!.map((item) => item.stats.median)).toEqual([80, 0]);
   });
 
   it("系列が多いときは発動率の小さいものをその他にまとめる", () => {

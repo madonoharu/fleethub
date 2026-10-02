@@ -11,9 +11,7 @@ interface Props {
 
 const ShipTooltip: React.FC<Props> = ({ ship, children }) => {
   return (
-    <Tooltip title={<MasterShipDetails ship={ship} css={{ width: 200 }} />}>
-      {children}
-    </Tooltip>
+    <Tooltip title={<MasterShipDetails ship={ship} className="w-[200px]" />}>{children}</Tooltip>
   );
 };
 

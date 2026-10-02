@@ -3,12 +3,9 @@ import { MasterShip, SlotSizeVec, StatInterval } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useAppDispatch, useRootSelector, useMasterData } from "../../../hooks";
-import {
-  configSlice,
-  MasterShipOverrides,
-  STAT_INTERVAL_KEYS,
-} from "../../../store";
+import { configSlice, MasterShipOverrides, STAT_INTERVAL_KEYS } from "../../../store";
 import { Flexbox } from "../../atoms";
 import { StatIcon } from "../../molecules";
 import { ShipNameplate } from "../../organisms";
@@ -24,17 +21,12 @@ interface StatFormProps {
   onChange: (value: number | null) => void;
 }
 
-const StatForm: React.FC<StatFormProps> = ({
-  statKey,
-  ship,
-  config,
-  onChange,
-}) => {
+const StatForm: React.FC<StatFormProps> = ({ statKey, ship, config, onChange }) => {
   const { t } = useTranslation("common");
 
   return (
     <div>
-      <Flexbox gap={1}>
+      <Flexbox className="gap-2">
         {statKey === "range" && <StatIcon icon={statKey} />}
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>
@@ -55,10 +47,7 @@ interface MasterShipEditorProps {
 
 const initialConfig: MasterShipOverrides = {};
 
-const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
-  className,
-  shipId,
-}) => {
+const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({ className, shipId }) => {
   const { data } = useMasterData();
 
   const dispatch = useAppDispatch();
@@ -72,17 +61,16 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
     return null;
   }
 
-  const handleChange =
-    (key: StatFormProps["statKey"]) => (value: number | null) => {
-      dispatch(
-        configSlice.actions.updateMasterShip({
-          id: shipId,
-          changes: {
-            [key]: value,
-          },
-        }),
-      );
-    };
+  const handleChange = (key: StatFormProps["statKey"]) => (value: number | null) => {
+    dispatch(
+      configSlice.actions.updateMasterShip({
+        id: shipId,
+        changes: {
+          [key]: value,
+        },
+      }),
+    );
+  };
 
   const handleStatIntervalChange =
     (key: (typeof STAT_INTERVAL_KEYS)[number]) => (stat: StatInterval) => {
@@ -106,12 +94,7 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
   };
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className={cn("gap-2", className)}>
       <ShipNameplate shipId={ship.ship_id} />
 
       {STAT_INTERVAL_KEYS.map((key) => (
@@ -123,12 +106,7 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
           onChange={handleStatIntervalChange(key)}
         />
       ))}
-      <StatForm
-        statKey="range"
-        ship={ship}
-        config={config}
-        onChange={handleChange("range")}
-      />
+      <StatForm statKey="range" ship={ship} config={config} onChange={handleChange("range")} />
       <StatForm
         statKey="torpedo_accuracy"
         ship={ship}
@@ -141,11 +119,7 @@ const MasterShipEditor: React.FCX<MasterShipEditorProps> = ({
         config={config}
         onChange={handleChange("basic_evasion_term")}
       />
-      <SlotSizeVecForm
-        ship={ship}
-        config={config}
-        onChange={handleSlotSizeChange}
-      />
+      <SlotSizeVecForm ship={ship} config={config} onChange={handleSlotSizeChange} />
     </Stack>
   );
 };

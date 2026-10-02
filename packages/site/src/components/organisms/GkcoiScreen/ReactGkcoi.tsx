@@ -1,5 +1,5 @@
 import murmurhash from "@emotion/hash";
-import styled from "@emotion/styled";
+
 import { CircularProgress } from "@mui/material";
 import stringify from "fast-json-stable-stringify";
 import { DeckBuilder, generate } from "gkcoi";
@@ -9,11 +9,14 @@ import useSWRImmutable from "swr/immutable";
 import { ErrorAlert } from "../../molecules";
 
 import CanvasViewer from "./CanvasViewer";
+import { cn } from "../../../styles";
 
-const StyledCircularProgress = styled(CircularProgress)`
-  display: block;
-  margin: auto;
-`;
+const StyledCircularProgress = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof CircularProgress>) => (
+  <CircularProgress {...props} className={cn("block m-auto", className)} />
+);
 
 type Props = {
   deck: DeckBuilder;
@@ -22,11 +25,10 @@ type Props = {
 const ReactGkcoi: React.FCX<Props> = ({ className, deck }) => {
   const hash = useMemo(() => murmurhash(stringify(deck)), [deck]);
 
-  const { data, error } = useSWRImmutable<
-    HTMLCanvasElement,
-    unknown,
-    [string, string]
-  >(["gkcoi", hash], () => generate(deck));
+  const { data, error } = useSWRImmutable<HTMLCanvasElement, unknown, [string, string]>(
+    ["gkcoi", hash],
+    () => generate(deck),
+  );
 
   if (error) {
     return <ErrorAlert title="画像生成に失敗しました" error={error} />;

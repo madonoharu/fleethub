@@ -1,16 +1,9 @@
-import {
-  cert,
-  getApp as getFirebaseApp,
-  getApps,
-  initializeApp,
-} from "firebase-admin/app";
+import { cert, getApp as getFirebaseApp, getApps, initializeApp } from "firebase-admin/app";
 import type { CredentialBody } from "google-auth-library";
 
 export const getServiceAccount = () => {
-  const {
-    SERVICE_ACCOUNT_CLIENT_EMAIL: client_email,
-    SERVICE_ACCOUNT_PRIVATE_KEY: private_key,
-  } = process.env;
+  const { SERVICE_ACCOUNT_CLIENT_EMAIL: client_email, SERVICE_ACCOUNT_PRIVATE_KEY: private_key } =
+    process.env;
 
   if (!client_email) throw Error("client_emailが存在しません");
   if (!private_key) throw Error("private_keyが存在しません");

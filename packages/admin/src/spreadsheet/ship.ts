@@ -1,11 +1,5 @@
 import { ShipClass, ShipType } from "@fh/utils";
-import {
-  MasterAttrRule,
-  MasterData,
-  MasterShip,
-  ShipAttr,
-  SpeedGroup,
-} from "fleethub-core";
+import { MasterAttrRule, MasterData, MasterShip, ShipAttr, SpeedGroup } from "fleethub-core";
 import { MstPlayerShip, MstShip } from "kc-tools";
 import { set } from "es-toolkit/compat";
 
@@ -45,16 +39,9 @@ const SUFFIXES = [
 
 const SUFFIX_RE = RegExp(`(${SUFFIXES.join("|")})+$`);
 
-const isPlayerShip = (ship: MstShip): ship is MstPlayerShip =>
-  "api_houg" in ship;
+const isPlayerShip = (ship: MstShip): ship is MstPlayerShip => "api_houg" in ship;
 
-const getDefaultSpeedGroup = ({
-  name,
-  yomi,
-  stype,
-  ctype,
-  speed,
-}: MasterShip): SpeedGroup => {
+const getDefaultSpeedGroup = ({ name, yomi, stype, ctype, speed }: MasterShip): SpeedGroup => {
   const isFastAV = (stype as ShipType) == ShipType.AV && speed == 10;
 
   if (
@@ -141,10 +128,7 @@ const getConvertibleShips = (ships: MasterShip[]) => {
   return ships.filter((ship) => convertible.has(ship));
 };
 
-function createShips(
-  parser: ExprParser,
-  table: SpreadsheetTable,
-): MasterShip[] {
+function createShips(parser: ExprParser, table: SpreadsheetTable): MasterShip[] {
   const { start2, nationalityMap } = parser;
   const { headerValues, rows } = table;
 
@@ -214,9 +198,7 @@ function createShips(
       return ship;
     } else {
       const baseName = mst.api_name.replace(SUFFIX_RE, "");
-      const abyssal_ctype = start2.api_mst_ship.find(
-        (s) => s.api_name === baseName,
-      )?.api_id;
+      const abyssal_ctype = start2.api_mst_ship.find((s) => s.api_name === baseName)?.api_id;
 
       return {
         ...base,

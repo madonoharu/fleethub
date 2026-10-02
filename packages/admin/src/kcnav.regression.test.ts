@@ -1,12 +1,4 @@
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  mock,
-  spyOn,
-} from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
 
 import { KcnavClient } from "./kcnav";
 
@@ -59,9 +51,7 @@ describe("Kcnav requests with real Ky", () => {
 
       expect(await new KcnavClient(null)[method](743)).toEqual(result);
       const request = fetch.mock.calls[0][0] as Request;
-      expect(request.url).toBe(
-        `https://tsunkit.net/api/routing/maps/${suffix}`,
-      );
+      expect(request.url).toBe(`https://tsunkit.net/api/routing/maps/${suffix}`);
     },
   );
 
@@ -70,9 +60,7 @@ describe("Kcnav requests with real Ky", () => {
       new Error("Unexpected network request"),
     );
 
-    expect(() => new KcnavClient(null).getEnemycomps(743)).toThrow(
-      "Token not found",
-    );
+    expect(() => new KcnavClient(null).getEnemycomps(743)).toThrow("Token not found");
     expect(fetch).not.toHaveBeenCalled();
   });
 
@@ -81,9 +69,7 @@ describe("Kcnav requests with real Ky", () => {
     const cache = new Map<unknown, unknown>([
       ["74-3/nodes/all/enemycomps", { entries: [{ stale: true }] }],
     ]);
-    const fetch = respond(enemycomps).mockResolvedValueOnce(
-      Response.json({ result: enemycomps }),
-    );
+    const fetch = respond(enemycomps).mockResolvedValueOnce(Response.json({ result: enemycomps }));
     const client = new KcnavClient(74, cache);
 
     expect(await client.getEnemycomps(743)).toEqual(enemycomps);
@@ -91,9 +77,7 @@ describe("Kcnav requests with real Ky", () => {
     expect(fetch).toHaveBeenCalledTimes(2);
     for (const [input] of fetch.mock.calls) {
       const request = input as Request;
-      expect(request.url).toBe(
-        "https://tsunkit.net/api/routing/maps/74-3/nodes/all/enemycomps",
-      );
+      expect(request.url).toBe("https://tsunkit.net/api/routing/maps/74-3/nodes/all/enemycomps");
       expect(request.headers.get("Authorization")).toBe("Bearer test-token");
     }
   });

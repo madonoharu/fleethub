@@ -1,10 +1,10 @@
-use strum::Display;
 use thiserror::Error;
 
 pub const SHIP_NOT_FOUND: &str = "Ship not found";
 
-#[derive(Debug, Display, Error)]
+#[derive(Debug, Error)]
 pub enum CalculationError {
+    #[error("UnknownValue")]
     UnknownValue,
 }
 

@@ -86,9 +86,7 @@ const leftReport = () => screen.getAllByTestId("report")[0];
 
 /** analyze_node_attack の第3引数が攻撃艦。比較艦ぶんの呼び出しがあったか。 */
 const analyzedWith = (id: string) =>
-  analyzeNodeAttack.mock.calls.some(
-    (call) => (call[2] as { id?: string } | undefined)?.id === id,
-  );
+  analyzeNodeAttack.mock.calls.some((call) => (call[2] as { id?: string } | undefined)?.id === id);
 
 const ship = (id: string) => ({ id, ship_id: 1, max_hp: 99, current_hp: 99 });
 

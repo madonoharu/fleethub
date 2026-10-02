@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Org, OrgType } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -8,12 +7,6 @@ import { NumberInput, TextField } from "../../molecules";
 import { OrgTypeSelect } from "../../organisms";
 
 import PlanAction, { PlanActionProps } from "./PlanAction";
-
-const LevelInput = styled(NumberInput)`
-  input {
-    width: 26px;
-  }
-`;
 
 type PlanScreenHeaderProps = PlanActionProps & {
   org: Org;
@@ -36,14 +29,15 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
 
   return (
     <div className={className}>
-      <Flexbox gap={1}>
+      <Flexbox className="gap-2">
         <TextField
           placeholder="name"
           startLabel={<FileIcon type={file.type} color={file.color} />}
           value={file.name}
           onChange={onNameChange}
         />
-        <LevelInput
+        <NumberInput
+          className="[&_input]:w-[26px]"
           startLabel={t("HQAdmiralLv")}
           value={org.hq_level}
           min={1}

@@ -7,9 +7,7 @@ export function useCompShipSelection(comp: SelectableComp | undefined) {
   const firstShipId = comp?.first_ship_id();
   const [selectedShipId, setSelectedShipId] = useState(firstShipId);
   const selectionIsPresent =
-    comp !== undefined &&
-    selectedShipId !== undefined &&
-    comp.has_ship_eid(selectedShipId);
+    comp !== undefined && selectedShipId !== undefined && comp.has_ship_eid(selectedShipId);
   const shipId = selectionIsPresent ? selectedShipId : firstShipId;
 
   // Remember selection across an empty/absent comp, but commit the fallback

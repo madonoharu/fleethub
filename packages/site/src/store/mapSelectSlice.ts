@@ -34,10 +34,7 @@ export const mapSelectSlice = createSlice({
     update: (state, { payload }: PayloadAction<Partial<MapSelectState>>) => {
       Object.assign(state, payload);
     },
-    show: (
-      state,
-      { payload }: PayloadAction<Partial<MapSelectState> | undefined>
-    ) => {
+    show: (state, { payload }: PayloadAction<Partial<MapSelectState> | undefined>) => {
       if (payload) {
         Object.assign(state, payload);
       }

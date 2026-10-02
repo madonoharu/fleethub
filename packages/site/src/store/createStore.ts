@@ -1,9 +1,4 @@
-import {
-  combineReducers,
-  configureStore,
-  Reducer,
-  UnknownAction,
-} from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Reducer, UnknownAction } from "@reduxjs/toolkit";
 import localforage from "localforage";
 import { persistReducer, Storage, PersistConfig } from "redux-persist";
 import { ThunkAction } from "redux-thunk";
@@ -43,9 +38,7 @@ const combinedReducer = combineReducers({
 const persistedReducerBase: typeof combinedReducer = (...args) => {
   const next = combinedReducer(...args);
 
-  if (
-    [UndoableActionTypes.UNDO, UndoableActionTypes.REDO].includes(args[1].type)
-  )
+  if ([UndoableActionTypes.UNDO, UndoableActionTypes.REDO].includes(args[1].type))
     return { ...next };
   return next;
 };
@@ -109,9 +102,4 @@ export const createStore = () => {
 type AppStore = ReturnType<typeof createStore>;
 export type RootStateWithHistory = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
-export type AppThunk = ThunkAction<
-  void,
-  RootStateWithHistory,
-  typeof extraArgument,
-  UnknownAction
->;
+export type AppThunk = ThunkAction<void, RootStateWithHistory, typeof extraArgument, UnknownAction>;

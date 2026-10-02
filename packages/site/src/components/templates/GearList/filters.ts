@@ -19,14 +19,10 @@ const BASIC_FILTER_NAMES = [
   "Misc",
 ] as const;
 
-export const getVisibleCategories = (
-  gears: Gear[]
-): (GearCategory | "All")[] => {
+export const getVisibleCategories = (gears: Gear[]): (GearCategory | "All")[] => {
   const categories = uniq(gears.map((g) => g.category()));
 
-  return BASIC_FILTER_NAMES.filter(
-    (name) => name === "All" || categories.includes(name)
-  );
+  return BASIC_FILTER_NAMES.filter((name) => name === "All" || categories.includes(name));
 };
 
 export const getFilter = (name: GearCategory | "All"): GearFilterFn => {

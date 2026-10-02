@@ -38,18 +38,8 @@ const AxisBreak: React.FC<Props> = ({ box, color }) => {
 
   return (
     <g>
-      <path
-        d={wavePath(left, right, top)}
-        fill="none"
-        stroke={color}
-        strokeWidth={1}
-      />
-      <path
-        d={wavePath(left, right, bottom)}
-        fill="none"
-        stroke={color}
-        strokeWidth={1}
-      />
+      <path d={wavePath(left, right, top)} fill="none" stroke={color} strokeWidth={1} />
+      <path d={wavePath(left, right, bottom)} fill="none" stroke={color} strokeWidth={1} />
     </g>
   );
 };

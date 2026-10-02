@@ -1,10 +1,5 @@
-import { Palette } from "@mui/material";
-import { css, styled } from "@mui/system";
 import React from "react";
-
-const StatValue = styled("div")`
-  text-align: right;
-`;
+import { cn } from "../../../styles/cn";
 
 interface Props {
   icon?: React.ReactElement;
@@ -14,23 +9,17 @@ interface Props {
 
 const StatChip: React.FCX<Props> = ({ className, icon, left, right }) => {
   return (
-    <div className={className}>
-      <div css={{ display: "flex", alignItems: "center", fontSize: 15 }}>
-        {icon}
-      </div>
-      <StatValue>{left}</StatValue>
-      <StatValue>{right}</StatValue>
+    <div
+      className={cn(
+        "grid grid-cols-[15px_1fr_1fr] gap-2 rounded border border-solid border-action-selected px-1 py-0",
+        className,
+      )}
+    >
+      <div className="flex items-center text-[15px]">{icon}</div>
+      <div className="text-right">{left}</div>
+      <div className="text-right">{right}</div>
     </div>
   );
 };
 
-export default styled(StatChip)(
-  ({ theme }) => css`
-    display: grid;
-    grid-template-columns: 15px 1fr 1fr;
-    gap: 8px;
-    padding: 0 4px;
-    border: 1px solid ${(theme.palette as Palette).action.selected};
-    border-radius: 4px;
-  `
-);
+export default StatChip;

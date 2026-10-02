@@ -1,8 +1,8 @@
-import { styled } from "@mui/material";
 import type { AttackReport } from "fleethub-core";
 import React from "react";
 
 import { toPercent } from "../../../utils";
+import { cn } from "../../../styles";
 
 interface Props {
   item: AttackReport<unknown>;
@@ -31,9 +31,9 @@ const ProcRateCell: React.FCX<Props> = ({ className, item }) => {
   );
 };
 
-export default styled(ProcRateCell)`
-  width: 64px;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  text-align: right;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof ProcRateCell>) => (
+  <ProcRateCell
+    {...props}
+    className={cn("w-16 grid [grid-template-columns:auto_1fr] text-right", className)}
+  />
+);

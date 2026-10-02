@@ -1,9 +1,9 @@
 import ConnectingAirportsIcon from "@mui/icons-material/ConnectingAirports";
-import { styled } from "@mui/system";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { getRangeAbbr, getSpeedRank } from "../../../utils";
 import { StatIcon } from "../../molecules";
 
@@ -33,7 +33,7 @@ const MasterShipStats: React.FCX<Props> = ({ className, ship }) => {
   const abyssal = ship.is_abyssal();
 
   return (
-    <div className={className}>
+    <div className={cn("grid grid-cols-[1fr_1fr] gap-1 text-[0.75rem]", className)}>
       {SHIP_STAT_KEYS.map((key) => {
         if (key === "fighter_power") {
           return (
@@ -48,16 +48,12 @@ const MasterShipStats: React.FCX<Props> = ({ className, ship }) => {
           const rank = getSpeedRank(ship.speed);
           const text = rank ? t(`SpeedRank.${rank}`) : "?";
 
-          return (
-            <StatChip key={key} icon={<StatIcon icon={key} />} left={text} />
-          );
+          return <StatChip key={key} icon={<StatIcon icon={key} />} left={text} />;
         } else if (key === "range") {
           const abbr = getRangeAbbr(ship.range);
           const text = abbr ? t(`RangeAbbr.${abbr}`) : "?";
 
-          return (
-            <StatChip key={key} icon={<StatIcon icon={key} />} left={text} />
-          );
+          return <StatChip key={key} icon={<StatIcon icon={key} />} left={text} />;
         }
 
         if (abyssal) {
@@ -75,23 +71,11 @@ const MasterShipStats: React.FCX<Props> = ({ className, ship }) => {
         } else {
           const left = ship.get_stat_interval_left(key) ?? "?";
           const right = ship.get_stat_interval_right(key) ?? "?";
-          return (
-            <StatChip
-              key={key}
-              icon={<StatIcon icon={key} />}
-              left={left}
-              right={right}
-            />
-          );
+          return <StatChip key={key} icon={<StatIcon icon={key} />} left={left} right={right} />;
         }
       })}
     </div>
   );
 };
 
-export default styled(MasterShipStats)`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  font-size: 0.75rem;
-  gap: 4px;
-`;
+export default MasterShipStats;

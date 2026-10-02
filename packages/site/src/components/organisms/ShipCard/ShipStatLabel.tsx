@@ -1,10 +1,9 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useModal } from "../../../hooks";
 import { ShipEntity } from "../../../store";
 import { withSign, getRangeAbbr, getSpeedRank } from "../../../utils";
@@ -14,18 +13,6 @@ import { NumberInput, StatIcon } from "../../molecules";
 import { ShipStatKey } from "./ShipStats";
 
 const maybeNumber = (v: number | undefined) => v ?? "?";
-
-const BonusText = styled.span(
-  ({ theme }) => css`
-    color: ${theme.colors.bonus};
-  `,
-);
-
-const ModText = styled.span(
-  ({ theme }) => css`
-    color: ${theme.colors.diff};
-  `,
-);
 
 type StatProps = {
   statKey: ShipStatKey;
@@ -52,8 +39,8 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
   const minStat = (stat || 0) - (naked || 0);
   const minMod = (mod || 0) - (naked || 0);
 
-  const ebonusText = ebonus ? <BonusText>{withSign(ebonus)}</BonusText> : "-";
-  const modText = mod ? <ModText>{withSign(mod)}</ModText> : "-";
+  const ebonusText = ebonus ? <span className="text-bonus">{withSign(ebonus)}</span> : "-";
+  const modText = mod ? <span className="text-diff">{withSign(mod)}</span> : "-";
 
   const handleDefaultClick = () => {
     onModChange?.(undefined);
@@ -65,17 +52,10 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
   };
 
   return (
-    <div css={{ margin: 8 }}>
-      <Typography
-        variant="subtitle1"
-        component="div"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <StatIcon css={{ paddingTop: 1 }} icon={statKey} />
-        <span css={{ marginLeft: 8 }}>{t(`${statKey}`)}</span>
+    <div className="m-2">
+      <Typography variant="subtitle1" component="div" className="flex items-center">
+        <StatIcon className="pt-px" icon={statKey} />
+        <span className="ml-2">{t(`${statKey}`)}</span>
       </Typography>
       <div>
         <LabeledValue label={t("ShipStatsCurrent")} value={maybeNumber(stat)} />
@@ -86,7 +66,7 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
 
       {onModChange && (
         <NumberInput
-          css={{ width: 120, marginTop: 8 }}
+          className="mt-2 w-[120px]"
           label={t("ShipStatsCurrent")}
           value={stat || 0}
           onChange={handleStatChange}
@@ -96,20 +76,16 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
       )}
 
       {onModChange && (
-        <Flexbox mt={1}>
+        <Flexbox className="mt-2">
           <NumberInput
-            css={{ width: 120 }}
+            className="w-[120px]"
             label={t("Increase")}
             value={mod || 0}
             onChange={onModChange}
             max={30000}
             min={minMod}
           />
-          <Button
-            css={{ marginLeft: 8, height: 40 }}
-            variant="outlined"
-            onClick={handleDefaultClick}
-          >
+          <Button className="ml-2 h-10" variant="outlined" onClick={handleDefaultClick}>
             {t("Reset")}
           </Button>
         </Flexbox>
@@ -118,24 +94,13 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
   );
 };
 
-const ValueText = styled.span`
-  min-width: 24px;
-  text-align: right;
-  white-space: nowrap;
-`;
-
 type ShipStatLabelProps = {
   statKey: ShipStatKey;
   ship: Ship;
   onUpdate?: (state: Partial<ShipEntity>) => void;
 };
 
-const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
-  className,
-  statKey,
-  ship,
-  onUpdate,
-}) => {
+const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({ className, statKey, ship, onUpdate }) => {
   const stat = ship[statKey];
   const naked = ship.get_naked_stat(statKey);
   const mod = ship.get_stat_mod(statKey);
@@ -146,10 +111,7 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
 
   let handleModChange: ShipStatEditorProps["onModChange"] = undefined;
 
-  if (
-    onUpdate &&
-    !(statKey == "speed" || statKey == "range" || statKey == "accuracy")
-  ) {
+  if (onUpdate && !(statKey == "speed" || statKey == "range" || statKey == "accuracy")) {
     handleModChange = (value: number | undefined) => {
       const key: keyof ShipEntity = `${statKey}_mod`;
       onUpdate({ [key]: value || undefined });
@@ -161,28 +123,34 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
   if (statKey === "range") {
     const abbr = getRangeAbbr(stat);
     const label = abbr ? t(`RangeAbbr.${abbr}`) : "?";
-    text = <span css={{ marginLeft: 8 }}>{label}</span>;
+    text = <span className="ml-2">{label}</span>;
   } else if (statKey === "speed") {
     const rank = getSpeedRank(stat);
     const label = rank ? t(`SpeedRank.${rank}`) : "?";
-    text = <span css={{ marginLeft: 8 }}>{label}</span>;
+    text = <span className="ml-2">{label}</span>;
   } else if (typeof stat === "number") {
-    text = <ValueText>{stat}</ValueText>;
+    text = <span className="min-w-[24px] text-right whitespace-nowrap">{stat}</span>;
   } else {
-    text = <ValueText>?</ValueText>;
+    text = <span className="min-w-[24px] text-right whitespace-nowrap">?</span>;
   }
 
   return (
     <>
       <Tooltip title={t(statKey)}>
-        <Button onClick={Modal.show} className={className}>
+        <Button
+          onClick={Modal.show}
+          className={cn(
+            "justify-start px-1 py-0 text-[0.75rem] leading-[0] [&>*]:block [&>*]:shrink-0",
+            className,
+          )}
+        >
           <StatIcon icon={statKey} />
           {text}
           {Boolean(ebonus || mod) && (
             <>
-              <span css={{ marginLeft: 2 }}>(</span>
-              {ebonus ? <BonusText>{withSign(ebonus)}</BonusText> : null}
-              {mod ? <ModText>{withSign(mod)}</ModText> : null}
+              <span className="ml-0.5">(</span>
+              {ebonus ? <span className="text-bonus">{withSign(ebonus)}</span> : null}
+              {mod ? <span className="text-diff">{withSign(mod)}</span> : null}
               <span>)</span>
             </>
           )}
@@ -203,14 +171,4 @@ const ShipStatLabel: React.FCX<ShipStatLabelProps> = ({
   );
 };
 
-export default styled(ShipStatLabel)`
-  justify-content: flex-start;
-  font-size: 0.75rem;
-  line-height: 0;
-  padding: 0 4px;
-
-  > * {
-    display: block;
-    flex-shrink: 0;
-  }
-`;
+export default ShipStatLabel;

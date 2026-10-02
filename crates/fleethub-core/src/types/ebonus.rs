@@ -327,15 +327,21 @@ impl EBonuses {
             "#
         );
 
-        let stdout = std::process::Command::new("bun")
+        let output = std::process::Command::new("bun")
             .current_dir(env!("CARGO_MANIFEST_DIR"))
             .arg("-e")
             .arg(code)
             .output()
-            .unwrap()
-            .stdout;
+            .expect("failed to start Bun for equipment-bonus calculation");
 
-        serde_json::from_slice(&stdout).unwrap()
+        assert!(
+            output.status.success(),
+            "equipment-bonus calculation failed ({}): {}",
+            output.status,
+            String::from_utf8_lossy_owned(output.stderr)
+        );
+
+        serde_json::from_slice(&output.stdout).expect("equipment-bonus returned invalid JSON")
     }
 }
 

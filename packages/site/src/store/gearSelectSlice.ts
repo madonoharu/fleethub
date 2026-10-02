@@ -45,6 +45,5 @@ export const gearSelectSlice = createSlice({
     hide,
   },
 
-  extraReducers: (builder) =>
-    builder.addCase(entitiesSlice.actions.createGear, hide),
+  extraReducers: (builder) => builder.addCase(entitiesSlice.actions.createGear, hide),
 });

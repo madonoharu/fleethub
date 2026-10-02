@@ -1,10 +1,10 @@
-import styled from "@emotion/styled";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
-import { Stack, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { cn } from "../../../styles/cn";
 import { useShipName } from "../../../hooks";
 import { ShipEntity } from "../../../store";
 import { numstr } from "../../../utils";
@@ -55,26 +55,16 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
   const displayName = useShipName(ship.ship_id, ship.is_abyssal());
 
   return (
-    <div className={className}>
-      <LevelButton
-        value={ship.level}
-        onChange={(level) => onUpdate?.({ level })}
-      />
+    <div className={cn("flex items-center", className)}>
+      <LevelButton value={ship.level} onChange={(level) => onUpdate?.({ level })} />
 
-      <Typography
-        noWrap
-        variant="body2"
-        sx={{
-          marginLeft: "4px",
-          marginRight: "auto",
-        }}
-      >
+      <Typography noWrap variant="body2" className="ml-1 mr-auto">
         {displayName}
       </Typography>
 
       <AnalyticsButton
         title={
-          <Stack>
+          <div className="flex flex-col">
             <LabeledValue
               label={t("day_gunfit_accuracy")}
               value={numstr(ship.gunfit_accuracy(false))}
@@ -87,42 +77,24 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
               label={t("basic_accuracy_term")}
               value={numstr(ship.basic_accuracy_term(), 2)}
             />
-            <LabeledValue
-              label="単縦回避項"
-              value={numstr(ship.evasion_term(1, 0, 1))}
-            />
-            <LabeledValue
-              label="艦隊索敵因子"
-              value={numstr(ship.fleet_los_factor())}
-            />
+            <LabeledValue label="単縦回避項" value={numstr(ship.evasion_term(1, 0, 1))} />
+            <LabeledValue label="艦隊索敵因子" value={numstr(ship.fleet_los_factor())} />
             <LabeledValue
               label={t("torpedo_accuracy")}
               value={numstr(ship.innate_torpedo_accuracy)}
             />
-          </Stack>
+          </div>
         }
         size="tiny"
       />
-      {!readonly && (
-        <EditButton
-          size="tiny"
-          title={t("EditMiscStats")}
-          onClick={onEditClick}
-        />
-      )}
+      {!readonly && <EditButton size="tiny" title={t("EditMiscStats")} onClick={onEditClick} />}
       {!readonly && visibleDetails && (
         <InfoButton size="tiny" title={t("Details")} onClick={onDetailClick} />
       )}
       {!readonly && visibleUpdate && (
         <UpdateButton size="tiny" title={t("Change")} onClick={onReselect} />
       )}
-      {!readonly && (
-        <BusinessCenterButton
-          size="tiny"
-          title={t("Presets")}
-          onClick={onPreset}
-        />
-      )}
+      {!readonly && <BusinessCenterButton size="tiny" title={t("Presets")} onClick={onPreset} />}
       {!readonly && visibleRemove && (
         <ClearButton size="tiny" title={t("Remove")} onClick={onRemove} />
       )}
@@ -130,7 +102,4 @@ const ShipHeader: React.FCX<ShipHeaderProps> = ({
   );
 };
 
-export default styled(ShipHeader)`
-  display: flex;
-  align-items: center;
-`;
+export default ShipHeader;

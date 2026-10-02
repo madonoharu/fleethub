@@ -18,8 +18,7 @@ function setup() {
   const parent = createFolder();
   const child = createFolder(parent.id);
   const sibling = createFolder();
-  const file = (id: string) =>
-    store.getState().present.entities.files.entities[id];
+  const file = (id: string) => store.getState().present.entities.files.entities[id];
   const hook = renderHook(() => useFileCanDrop(child.id), {
     wrapper: ({ children }: { children: ReactNode }) => (
       <Provider store={store}>{children}</Provider>
@@ -27,9 +26,7 @@ function setup() {
   });
   const rename = (id: string) =>
     act(() => {
-      store.dispatch(
-        filesSlice.actions.update({ id, changes: { name: "Renamed" } }),
-      );
+      store.dispatch(filesSlice.actions.update({ id, changes: { name: "Renamed" } }));
     });
   return { parent, child, sibling, file, hook, rename };
 }

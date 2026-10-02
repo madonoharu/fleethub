@@ -1,15 +1,9 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { round } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Button, InputAdornment } from "@mui/material";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import simpleEvaluate from "simple-evaluate";
 
 import { Input, InputProps } from "../../atoms";
@@ -29,9 +23,7 @@ function evaluate(str: string): number | null {
 }
 
 function toHalf(str: string): string {
-  return str.replace(/[\uff10-\uff19]/g, (s) =>
-    String.fromCharCode(s.charCodeAt(0) - 0xfee0),
-  );
+  return str.replace(/[\uff10-\uff19]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0));
 }
 
 function format(str: string): string {
@@ -56,18 +48,6 @@ function clamp(value: number, min?: number, max?: number): number {
   return r;
 }
 
-const StyledButton = styled(Button)`
-  display: flex;
-  height: 20px;
-  width: 32px;
-`;
-
-const StyledInputAdornment = styled(InputAdornment)`
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 0;
-`;
-
 interface NumberInputAdornmentProps {
   onIncrease: () => void;
   onDecrease: () => void;
@@ -86,29 +66,28 @@ const NumberInputAdornment: React.FCX<NumberInputAdornmentProps> = ({
   const decreaseHandlers = useLongPress({ onPress: onDecrease, onFinish });
 
   return (
-    <StyledInputAdornment className={className} position="end">
-      <StyledButton
+    <InputAdornment className={cn("flex-col justify-center ml-0", className)} position="end">
+      <Button
+        className="flex h-5 w-8"
         aria-label="increase"
         disabled={disabled}
         {...increaseHandlers}
       >
         <ArrowDropUpIcon />
-      </StyledButton>
-      <StyledButton
+      </Button>
+      <Button
+        className="flex h-5 w-8"
         aria-label="decrease"
         disabled={disabled}
         {...decreaseHandlers}
       >
         <ArrowDropDownIcon />
-      </StyledButton>
-    </StyledInputAdornment>
+      </Button>
+    </InputAdornment>
   );
 };
 
-export interface NumberInputProps extends Omit<
-  InputProps,
-  "type" | "onChange" | "onInput"
-> {
+export interface NumberInputProps extends Omit<InputProps, "type" | "onChange" | "onInput"> {
   value: number | null;
   onChange?: (value: number) => void;
   min?: number;
@@ -148,14 +127,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
   }, [value]);
 
   const inputSlotProps = slotProps?.input;
-  const mergedInputProps = useMemo<
-    NonNullable<NonNullable<InputProps["slotProps"]>["input"]>
-  >(
+  const mergedInputProps = useMemo<NonNullable<NonNullable<InputProps["slotProps"]>["input"]>>(
     () => (ownerState) => {
       const inputProps =
-        typeof inputSlotProps === "function"
-          ? inputSlotProps(ownerState)
-          : inputSlotProps;
+        typeof inputSlotProps === "function" ? inputSlotProps(ownerState) : inputSlotProps;
       const disabled = textFieldProps.disabled || inputProps?.disabled || false;
       const update = (value: string) => {
         const num = evaluate(value);
@@ -215,7 +190,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
   return (
     <Input
-      className={className}
+      className={cn(
+        "[&_.MuiInputAdornment-positionEnd]:invisible [&:hover_.MuiInputAdornment-positionEnd]:visible [@media(hover:none)]:[&:focus-within_.MuiInputAdornment-positionEnd]:visible [&_.MuiInputLabel-root]:whitespace-nowrap [&_.MuiOutlinedInput-root]:pr-0",
+        className,
+      )}
       value={inner}
       onBlur={handleBlur}
       slotProps={{
@@ -234,19 +212,4 @@ const NumberInput: React.FC<NumberInputProps> = ({
   );
 };
 
-export default styled(NumberInput)`
-  .MuiInputAdornment-positionEnd {
-    visibility: hidden;
-  }
-
-  :hover .MuiInputAdornment-positionEnd {
-    visibility: visible;
-  }
-
-  .MuiInputLabel-root {
-    white-space: nowrap;
-  }
-  .MuiOutlinedInput-root {
-    padding-right: 0;
-  }
-`;
+export default NumberInput;

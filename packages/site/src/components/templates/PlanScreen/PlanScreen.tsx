@@ -1,5 +1,3 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { Container, Paper, Alert } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -10,12 +8,6 @@ import { TextField } from "../../molecules";
 import PlanScreenHeader from "./PlanScreenHeader";
 import PlanTabs from "./PlanTabs";
 
-const StyledContainer = styled(Container)(
-  ({ theme }) => css`
-    min-width: ${theme.breakpoints.values.md}px;
-  `,
-);
-
 type PlanScreenProps = {
   id: string;
 };
@@ -23,9 +15,7 @@ type PlanScreenProps = {
 const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
   const { t } = useTranslation("common");
   const { file, actions: fileActions, isTemp } = useFile(id);
-  const { org, actions: orgActions } = useOrg(
-    file?.type === "plan" ? file.org : "",
-  );
+  const { org, actions: orgActions } = useOrg(file?.type === "plan" ? file.org : "");
 
   if (file?.type !== "plan") {
     return null;
@@ -40,7 +30,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
   }
 
   return (
-    <StyledContainer>
+    <Container className="min-w-[900px]">
       <PlanContext.Provider value={file}>
         <OrgContext.Provider value={org}>
           <PlanScreenHeader
@@ -54,7 +44,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
           />
           <PlanTabs org={org} file={file} />
 
-          <Paper sx={{ p: 1, mt: 1 }}>
+          <Paper className="p-2 mt-2">
             <TextField
               label={t("Description")}
               fullWidth
@@ -65,7 +55,7 @@ const PlanScreen: React.FCX<PlanScreenProps> = ({ id }) => {
           </Paper>
         </OrgContext.Provider>
       </PlanContext.Provider>
-    </StyledContainer>
+    </Container>
   );
 };
 

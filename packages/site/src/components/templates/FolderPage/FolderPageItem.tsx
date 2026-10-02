@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
 import { ListItemIcon, ListItemText, ListItemButton } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useFile, useModal, useOrg } from "../../../hooks";
 import { FileEntity, FolderEntity, PlanEntity } from "../../../store";
 import { Flexbox, FileIcon } from "../../atoms";
@@ -24,12 +24,7 @@ const PlanItem: React.FC<{ file: PlanEntity }> = ({ file }) => {
       <ListItemText
         disableTypography
         primary={<FileItemPrimary file={file} />}
-        secondary={
-          <ShipBannerGroup
-            main={org.main_ship_ids()}
-            escort={org.escort_ship_ids()}
-          />
-        }
+        secondary={<ShipBannerGroup main={org.main_ship_ids()} escort={org.escort_ship_ids()} />}
       />
     </>
   );
@@ -41,20 +36,10 @@ const FolderItem: React.FC<{ file: FolderEntity }> = ({ file }) => {
       <ListItemIcon>
         <FileIcon type={file.type} color={file.color} />
       </ListItemIcon>
-      <ListItemText
-        disableTypography
-        primary={<FileItemPrimary file={file} />}
-      />
+      <ListItemText disableTypography primary={<FileItemPrimary file={file} />} />
     </>
   );
 };
-
-const FileAction = styled(Flexbox)`
-  margin-left: auto;
-  > * {
-    height: 40px;
-  }
-`;
 
 const renderFile = (file: FileEntity) => {
   if (file.type === "plan") return <PlanItem file={file} />;
@@ -80,17 +65,20 @@ const FolderPageItem: React.FCX<FolderPageItemProps> = ({
 
   return (
     <>
-      <ListItemButton className={className} divider onClick={onOpen}>
+      <ListItemButton
+        className={cn(
+          "min-h-14 px-2 py-0 [&_.MuiIconButton-root]:hidden [&:hover_.MuiIconButton-root]:[display:initial] [&.dragging]:opacity-30 [&.droppable]:border-b [&.droppable]:border-solid [&.droppable]:border-b-current",
+          className,
+        )}
+        divider
+        onClick={onOpen}
+      >
         {renderFile(file)}
-        <FileAction onClick={(e) => e.stopPropagation()}>
+        <Flexbox className="ml-auto [&>*]:h-10" onClick={(e) => e.stopPropagation()}>
           <FileCopyButton size="medium" title={t("Copy")} onClick={onCopy} />
           <DeleteButton size="medium" title={t("Remove")} onClick={onRemove} />
-          <MoreVertButton
-            size="medium"
-            title="メニューを開く"
-            onClick={MenuModal.show}
-          />
-        </FileAction>
+          <MoreVertButton size="medium" title="メニューを開く" onClick={MenuModal.show} />
+        </Flexbox>
       </ListItemButton>
 
       <MenuModal>
@@ -99,26 +87,6 @@ const FolderPageItem: React.FCX<FolderPageItemProps> = ({
     </>
   );
 };
-
-const StyledFolderPageItem = styled(FolderPageItem)`
-  min-height: 56px;
-  padding: 0 8px;
-
-  .MuiIconButton-root {
-    display: none;
-  }
-  :hover .MuiIconButton-root {
-    display: initial;
-  }
-
-  &.dragging {
-    opacity: 0.3;
-  }
-
-  &.droppable {
-    border-bottom: solid 1px;
-  }
-`;
 
 type ConnectedProps = {
   id: string;
@@ -132,7 +100,7 @@ const FolderPageItemConnected: React.FC<ConnectedProps> = ({ id }) => {
 
   return (
     <DraggableFile file={file} canDrop={canDrop} onDrop={actions.drop}>
-      <StyledFolderPageItem
+      <FolderPageItem
         file={file}
         onOpen={actions.open}
         onCopy={actions.copy}

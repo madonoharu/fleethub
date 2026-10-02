@@ -3,18 +3,8 @@ import { Button, Divider } from "@mui/material";
 import React, { useState } from "react";
 import { shallowEqual } from "react-redux";
 
-import {
-  useAppDispatch,
-  useRootSelector,
-  useFhCore,
-  useShip,
-} from "../../../hooks";
-import {
-  entitiesSlice,
-  GearPosition,
-  Preset,
-  selectPreset,
-} from "../../../store";
+import { useAppDispatch, useRootSelector, useFhCore, useShip } from "../../../hooks";
+import { entitiesSlice, GearPosition, Preset, selectPreset } from "../../../store";
 import { Checkbox, Flexbox } from "../../atoms";
 
 import PresetList from "./PresetList";
@@ -30,9 +20,7 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
 
   const presets = useRootSelector((root) => {
     const ids = root.entities.presets.ids;
-    return ids
-      .map((id) => selectPreset(root, id as string))
-      .filter(nonNullable);
+    return ids.map((id) => selectPreset(root, id as string)).filter(nonNullable);
   }, shallowEqual);
 
   const dispatch = useAppDispatch();
@@ -78,7 +66,7 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
         entitiesSlice.actions.createPreset({
           name,
           position,
-        })
+        }),
       );
     }
   };
@@ -92,7 +80,7 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
       entitiesSlice.actions.createGearsByPreset({
         preset: preset.id,
         position,
-      })
+      }),
     );
     onEquip?.();
   };
@@ -100,12 +88,7 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
   return (
     <>
       <Flexbox>
-        <Button
-          sx={{ mr: "auto" }}
-          variant="contained"
-          color="primary"
-          onClick={handleRegister}
-        >
+        <Button className="mr-auto" variant="contained" color="primary" onClick={handleRegister}>
           現在の装備をプリセットに登録
         </Button>
         <Checkbox
@@ -114,7 +97,7 @@ const PresetMenu: React.FCX<PresetMenuProps> = ({ position, onEquip }) => {
           onChange={setAllVisible}
         />
       </Flexbox>
-      <Divider sx={{ my: 1 }} />
+      <Divider className="my-2" />
       <PresetList
         presets={presets}
         onEquip={handleEquip}

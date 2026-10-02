@@ -43,12 +43,8 @@ describe("spreadsheet expressions", () => {
   it("leaves equipment names outside recognized gear expressions unresolved", () => {
     const parser = createParser();
 
-    expect(parser.parseGearName('note == "彗星" && has("彗星")')).toBe(
-      'note == "彗星" && has(24)',
-    );
-    expect(() => parser.parseGear('note == "彗星"')).toThrow(
-      'Syntax error: note == "彗星"',
-    );
+    expect(parser.parseGearName('note == "彗星" && has("彗星")')).toBe('note == "彗星" && has(24)');
+    expect(() => parser.parseGear('note == "彗星"')).toThrow('Syntax error: note == "彗星"');
   });
 
   it("resolves ship name, type, class and nationality while retaining surrounding whitespace", () => {

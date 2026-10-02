@@ -19,9 +19,7 @@ export function useShipName(shipId: number, withId = false): string {
   const { t, i18n } = useTranslation("ships");
   const { masterData } = useFhCore();
 
-  const defaultName = masterData.ships.find(
-    (ship) => ship.ship_id === shipId,
-  )?.name;
+  const defaultName = masterData.ships.find((ship) => ship.ship_id === shipId)?.name;
 
   let displayName: string;
 
@@ -83,19 +81,12 @@ export function useShip(id?: string): Ship | undefined {
 
   const createShip = useMemo(
     () =>
-      lruMemoize(
-        (state: ShipState | undefined) => state && core.create_ship(state),
-        {
-          resultEqualityCheck: (
-            previous: Ship | undefined,
-            next: Ship | undefined,
-          ) => previous?.hash === next?.hash,
-        },
-      ),
+      lruMemoize((state: ShipState | undefined) => state && core.create_ship(state), {
+        resultEqualityCheck: (previous: Ship | undefined, next: Ship | undefined) =>
+          previous?.hash === next?.hash,
+      }),
     [core],
   );
 
-  return useRootSelector((root) =>
-    createShip(id ? selectShipState(root, id) : undefined),
-  );
+  return useRootSelector((root) => createShip(id ? selectShipState(root, id) : undefined));
 }

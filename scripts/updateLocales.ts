@@ -99,14 +99,10 @@ class LocaleUpdater {
   }
 
   private async getKcnavJson() {
-    const kcnav = await this.tsun
-      .get("kcnav.json")
-      .json<Record<string, string>>();
+    const kcnav = await this.tsun.get("kcnav.json").json<Record<string, string>>();
 
     Object.entries(kcnav).forEach(([key, value]) => {
-      kcnav[key] = value
-        .replace(/\[\[(.+)\]\]/, (_, p: string) => kcnav[p])
-        .trim();
+      kcnav[key] = value.replace(/\[\[(.+)\]\]/, (_, p: string) => kcnav[p]).trim();
     });
 
     return kcnav;
@@ -240,19 +236,14 @@ class LocaleUpdater {
         const baseName = name.replace(re, "");
         const suffix = name.replace(baseName, "");
 
-        const translatedBaseName = Object.entries(kc3Ships).find(
-          ([key]) => key === baseName,
-        )?.[1];
+        const translatedBaseName = Object.entries(kc3Ships).find(([key]) => key === baseName)?.[1];
 
         if (!translatedBaseName) return undefined;
 
         let translatedSuffix = suffix;
         Object.entries(kc3ShipAffixes.suffixes).forEach(([key, suffix]) => {
           if (suffix) {
-            translatedSuffix = translatedSuffix.replace(
-              key,
-              suffix.replace("{ -}?", ""),
-            );
+            translatedSuffix = translatedSuffix.replace(key, suffix.replace("{ -}?", ""));
           }
         });
 
@@ -288,9 +279,7 @@ class LocaleUpdater {
         if (ctype <= 1500) {
           translated = ctypeBase[ctype];
         } else {
-          translated =
-            ships[ctype] ||
-            this.md.ships.find((ship) => ship.ship_id === ctype)?.name;
+          translated = ships[ctype] || this.md.ships.find((ship) => ship.ship_id === ctype)?.name;
         }
 
         return translated ? [ctype, translated] : undefined;
@@ -323,12 +312,10 @@ class LocaleUpdater {
 
 const updateLocales = async () => {
   const md: MasterData = await storage.readMasterData();
-  const promises = languages.map((lang) =>
-    new LocaleUpdater(md, lang).update(),
-  );
+  const promises = languages.map((lang) => new LocaleUpdater(md, lang).update());
 
   await Promise.all(promises);
-  await exec("bun run prettier --write packages/site/public/locales");
+  await exec("bun run oxfmt packages/site/public/locales");
 };
 
 updateLocales().catch((err) => console.error(err));

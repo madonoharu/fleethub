@@ -1,16 +1,12 @@
 import { Typography } from "@mui/material";
-import { styled } from "@mui/system";
 import { FleetType } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useShipName } from "../../../hooks";
 import { Flexbox } from "../../atoms";
 import ShipBanner from "../ShipBanner";
-
-const StyledShipBanner = styled(ShipBanner)`
-  flex-shrink: 0;
-`;
 
 type Props = {
   className?: string;
@@ -20,53 +16,32 @@ type Props = {
 };
 
 const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { shipId, fleetType, index, ...rest } = props;
+  const { shipId, fleetType, index, className, ...rest } = props;
   const displayName = useShipName(shipId);
   const { t } = useTranslation("common");
 
   const visibleId = shipId > 1500;
 
   return (
-    <Flexbox ref={ref} gap={1} {...rest}>
+    <Flexbox ref={ref} className={cn("w-full gap-2 text-start", className)} {...rest}>
       {fleetType && (
-        <Typography
-          variant="caption"
-          sx={{
-            display: "block",
-          }}
-        >
+        <Typography variant="caption" className="block">
           {t(`FleetType.${fleetType}`)}
         </Typography>
       )}
       {typeof index === "number" && (
-        <Typography
-          variant="caption"
-          sx={{
-            display: "block",
-          }}
-        >
+        <Typography variant="caption" className="block">
           {index + 1}
         </Typography>
       )}
-      <StyledShipBanner shipId={shipId} />
+      <ShipBanner className="shrink-0" shipId={shipId} />
       <div>
         {visibleId && (
-          <Typography
-            variant="caption"
-            sx={{
-              display: "block",
-            }}
-          >
+          <Typography variant="caption" className="block">
             ID:{shipId}
           </Typography>
         )}
-        <Typography
-          noWrap
-          variant="caption"
-          sx={{
-            display: "block",
-          }}
-        >
+        <Typography noWrap variant="caption" className="block">
           {displayName}
         </Typography>
       </div>
@@ -74,7 +49,4 @@ const ShipNameplate = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
   );
 });
 
-export default styled(ShipNameplate)`
-  text-align: start;
-  width: 100%;
-`;
+export default ShipNameplate;

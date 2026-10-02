@@ -1,5 +1,5 @@
 import { GEAR_KEYS } from "@fh/utils";
-import { Stack, Typography, Paper } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 import React from "react";
 
 import { useAppDispatch, useFhCore } from "../../../hooks";
@@ -27,30 +27,20 @@ const PresetCard: React.FCX<PresetCardProps> = ({ preset }) => {
   };
 
   return (
-    <Paper sx={{ p: 1, width: "100%", height: "auto" }}>
+    <Paper className="h-auto w-full p-2">
       <Flexbox>
-        <TextField
-          label="Name"
-          value={preset.name || ""}
-          onChange={handleNameChange}
-        />
-        <DeleteButton size="small" sx={{ ml: "auto" }} onClick={handleRemove} />
+        <TextField label="Name" value={preset.name || ""} onChange={handleNameChange} />
+        <DeleteButton size="small" className="ml-auto" onClick={handleRemove} />
       </Flexbox>
 
-      <Stack>
+      <div className="flex flex-col">
         {GEAR_KEYS.map((key) => {
           const gearState = preset[key];
           const gear = gearState && core.create_gear(gearState);
 
           return (
             <Flexbox key={key}>
-              <Typography
-                sx={{
-                  width: 16,
-                }}
-              >
-                {key.replace("g", "")}
-              </Typography>
+              <Typography className="w-4">{key.replace("g", "")}</Typography>
               <GearBox
                 position={{
                   tag: "presets",
@@ -62,7 +52,7 @@ const PresetCard: React.FCX<PresetCardProps> = ({ preset }) => {
             </Flexbox>
           );
         })}
-      </Stack>
+      </div>
     </Paper>
   );
 };

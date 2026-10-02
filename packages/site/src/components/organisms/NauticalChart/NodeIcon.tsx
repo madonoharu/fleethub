@@ -7,8 +7,7 @@ import { getNodeTypeStyle } from "../../../styles";
 
 type BaseProps = Pick<MapNode, "type" | "point" | "d">;
 
-type NodeCircleProps = BaseProps &
-  Omit<React.SVGProps<SVGGElement>, keyof BaseProps>;
+type NodeCircleProps = BaseProps & Omit<React.SVGProps<SVGGElement>, keyof BaseProps>;
 
 const r1 = 15;
 const strokeWidth = 4;
@@ -31,13 +30,11 @@ export const NodeCircle = React.forwardRef<SVGGElement, NodeCircleProps>(
         />
 
         <Typography
+          className="font-bold"
           component="text"
           fill={typeStyle.color}
           textAnchor="middle"
           dominantBaseline="central"
-          sx={{
-            fontWeight: "bold",
-          }}
         >
           {point}
         </Typography>
@@ -60,8 +57,7 @@ export const NodeCircle = React.forwardRef<SVGGElement, NodeCircleProps>(
   },
 );
 
-type NodeIconProps = BaseProps &
-  Omit<React.SVGProps<SVGSVGElement>, keyof BaseProps>;
+type NodeIconProps = BaseProps & Omit<React.SVGProps<SVGSVGElement>, keyof BaseProps>;
 
 const NodeIcon = React.forwardRef<SVGSVGElement, NodeIconProps>(
   ({ type, point, d, ...rest }, ref) => (

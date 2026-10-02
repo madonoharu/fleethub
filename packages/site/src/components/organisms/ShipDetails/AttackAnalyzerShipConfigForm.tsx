@@ -1,14 +1,10 @@
-import { Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import { parse_ship_conditions } from "fleethub-core";
-import type {
-  OrgType,
-  Side,
-  AttackAnalyzerShipConfig,
-  ShipConditions,
-} from "fleethub-core";
+import type { OrgType, Side, AttackAnalyzerShipConfig, ShipConditions } from "fleethub-core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { cn } from "../../../styles/cn";
 import { Divider, Flexbox } from "../../atoms";
 import { NumberInput, Select } from "../../molecules";
 import FormationSelect from "../FormationSelect";
@@ -30,14 +26,11 @@ interface Props {
   onChange: (value: AttackAnalyzerShipConfig) => void;
 }
 
-const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
-  className,
-  value,
-  onChange,
-}) => {
+const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({ className, value, onChange }) => {
   const { t } = useTranslation("common");
-  const { org_type, fleet_type, fleet_len, index, formation } =
-    parse_ship_conditions(value) as Required<ShipConditions>;
+  const { org_type, fleet_type, fleet_len, index, formation } = parse_ship_conditions(
+    value,
+  ) as Required<ShipConditions>;
 
   const side = toSide(org_type);
   const fleet_los_mod = value.fleet_los_mod || 0;
@@ -56,20 +49,10 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
   const setShipIndex = (i: number) => bind("index")(i);
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
-    >
+    <div className={cn("flex flex-col gap-2", className)}>
       <Divider label="編成設定" />
-      <Flexbox gap={1}>
-        <OrgTypeSelect
-          color={color}
-          side={side}
-          value={org_type}
-          onChange={bind("org_type")}
-        />
+      <Flexbox className="gap-2">
+        <OrgTypeSelect color={color} side={side} value={org_type} onChange={bind("org_type")} />
 
         <RoleSelect
           color={color}
@@ -79,9 +62,7 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
 
         <FormationSelect
           color={color}
-          combined={
-            value.org_type !== "Single" && value.org_type !== "EnemySingle"
-          }
+          combined={value.org_type !== "Single" && value.org_type !== "EnemySingle"}
           value={formation}
           onChange={bind("formation")}
         />
@@ -89,7 +70,7 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
         <Select
           color={color}
           label="艦隊の艦数"
-          css={{ minWidth: 120 }}
+          className="min-w-[120px]"
           options={[1, 2, 3, 4, 5, 6, 7]}
           value={fleet_len}
           onChange={bind("fleet_len")}
@@ -97,11 +78,11 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
       </Flexbox>
 
       <Divider label="艦の設定" />
-      <Flexbox gap={1}>
+      <Flexbox className="gap-2">
         <Select
           color={color}
           label="艦の位置"
-          css={{ minWidth: 120 }}
+          className="min-w-[120px]"
           options={[1, 2, 3, 4, 5, 6, 7]}
           value={index + 1}
           onChange={(i) => setShipIndex(i - 1)}
@@ -112,9 +93,7 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
         </Button>
         <Button
           variant="outlined"
-          onClick={() =>
-            setShipIndex(Math.max(Math.floor(fleet_len / 2) - 1, 0))
-          }
+          onClick={() => setShipIndex(Math.max(Math.floor(fleet_len / 2) - 1, 0))}
         >
           上半分に設定
         </Button>
@@ -133,12 +112,8 @@ const AttackAnalyzerShipConfigForm: React.FCX<Props> = ({
       </Flexbox>
 
       <Divider label="夜戦設定" />
-      <NightFleetConditionsForm
-        color={color}
-        value={value}
-        onChange={onChange}
-      />
-    </Stack>
+      <NightFleetConditionsForm color={color} value={value} onChange={onChange} />
+    </div>
   );
 };
 

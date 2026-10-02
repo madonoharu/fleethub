@@ -69,11 +69,7 @@ describe("entity sweep", () => {
     expect(result.orgs.ids).toEqual(["root-org"]);
     expect(result.fleets.ids).toEqual(["root-fleet"]);
     expect(result.ships.ids).toEqual(["root-ship"]);
-    expect(result.gears.ids).toEqual([
-      "shared-gear",
-      "root-gear",
-      "preset-gear",
-    ]);
+    expect(result.gears.ids).toEqual(["shared-gear", "root-gear", "preset-gear"]);
     expect(result.presets).toEqual(state.presets);
     expect(result.gears.entities["shared-gear"]).toEqual({
       id: "shared-gear",
@@ -81,8 +77,6 @@ describe("entity sweep", () => {
     });
     expect(state.files.ids).toContain("orphan-plan");
     expect(state.gears.ids).toContain("orphan-gear");
-    expect(
-      entitiesSlice.reducer(result, entitiesSlice.actions.sweep()),
-    ).toEqual(result);
+    expect(entitiesSlice.reducer(result, entitiesSlice.actions.sweep())).toEqual(result);
   });
 });

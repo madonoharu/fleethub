@@ -8,9 +8,7 @@ const locate: NextApiHandler = async (req, res) => {
     return;
   }
 
-  const kcjUrl = (await fetch(url, { redirect: "manual" })).headers.get(
-    "location"
-  );
+  const kcjUrl = (await fetch(url, { redirect: "manual" })).headers.get("location");
 
   res.statusCode = 200;
   res.json({ url: kcjUrl });

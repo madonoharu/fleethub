@@ -46,7 +46,7 @@ const GearSelectMenu: React.FCX<Props> = ({ className, gears }) => {
       entitiesSlice.actions.createGear({
         input,
         position,
-      })
+      }),
     );
   };
 

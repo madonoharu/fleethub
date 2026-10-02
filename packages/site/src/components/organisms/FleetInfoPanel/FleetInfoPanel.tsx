@@ -1,5 +1,5 @@
 import { Paper } from "@mui/material";
-import { styled } from "@mui/system";
+
 import { Comp, Fleet } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -12,6 +12,7 @@ import ContactAnalysisScreen from "./ContactAnalysisScreen";
 import DayAnalysisScreen from "./DayAnalysisScreen";
 import MiscScreen from "./MiscScreen";
 import NightAnalysisScreen from "./NightAnalysisScreen";
+import { cn } from "../../../styles";
 
 const Inner: React.FCX<{ fleet: Fleet }> = ({ fleet }) => {
   const { t } = useTranslation("common");
@@ -22,12 +23,7 @@ const Inner: React.FCX<{ fleet: Fleet }> = ({ fleet }) => {
   const list: TabsProps["list"] = [
     {
       label: t("Day"),
-      panel: (
-        <DayAnalysisScreen
-          analysis={result.day}
-          combined={comp.is_combined()}
-        />
-      ),
+      panel: <DayAnalysisScreen analysis={result.day} combined={comp.is_combined()} />,
     },
     {
       label: t("Night"),
@@ -62,7 +58,6 @@ const FleetInfoPanel: React.FCX<Props> = ({ className, comp, fleet }) => {
   );
 };
 
-export default styled(FleetInfoPanel)`
-  padding: 8px;
-  min-height: 480px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof FleetInfoPanel>) => (
+  <FleetInfoPanel {...props} className={cn("p-2 min-h-120", className)} />
+);

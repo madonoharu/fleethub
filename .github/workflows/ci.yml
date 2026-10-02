@@ -20,14 +20,11 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/bun-install
 
-      - name: Cache Rust builds
-        uses: Swatinem/rust-cache@v2
-
-      - name: Test Rust workspace
-        run: cargo test --workspace --all-targets --locked
-
       - name: Build workspace dependencies
         run: bun run setup
+
+      - name: Check formatting
+        run: bun run format:check
 
       - name: Lint
         run: bun run lint
@@ -54,3 +51,31 @@ jobs:
 
       - name: Test production application in Chromium
         run: bun run test:e2e
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install core toolchain and dependencies
+        uses: ./.github/actions/bun-install
+        with:
+          tools: bun rust github:wasm-bindgen/wasm-pack
+
+      - name: Cache Rust builds
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check Rust formatting
+        run: cargo fmt --all -- --check
+
+      - name: Lint Rust workspace
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Test Rust workspace
+        run: cargo test --workspace --all-targets --locked
+
+      - name: Build local Wasm package
+        run: bun run build:core
+
+      - name: Test local Wasm build metadata
+        run: bun run test:core

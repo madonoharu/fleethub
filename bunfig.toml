@@ -6,6 +6,7 @@ preload = ["./tests/test-setup.ts"]
 pathIgnorePatterns = [
   "tests/e2e/**",
   "tests/build/**",
+  "tests/core/**",
   "**/esm/**",
   "**/lib/**",
   "**/cjs/**",

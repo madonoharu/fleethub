@@ -7,12 +7,6 @@
     "types": ["node", "bun"]
   },
   "extends": "./tsconfig.base.json",
-  "include": [
-    "packages",
-    "scripts",
-    "crates",
-    "tests",
-    "playwright.config.mts"
-  ],
+  "include": ["packages", "scripts", "crates", "tests", "playwright.config.mts"],
   "exclude": ["node_modules", "**/dist", "**/lib", "**/esm", "**/.next"]
 }

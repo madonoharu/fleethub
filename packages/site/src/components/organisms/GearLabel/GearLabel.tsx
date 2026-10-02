@@ -1,5 +1,3 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { Gear } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -7,24 +5,14 @@ import { shallowEqual } from "react-redux";
 
 import { GearEntity } from "../../../store";
 import { Flexbox } from "../../atoms";
-import {
-  ClearButton,
-  GearExpSelect,
-  GearStarsSelect,
-  UpdateButton,
-} from "../../molecules";
+import { ClearButton, GearExpSelect, GearStarsSelect, UpdateButton } from "../../molecules";
 import GearNameplate from "../GearNameplate";
 import GearTooltip from "../GearTooltip";
+import { cn } from "../../../styles";
 
-const GearLabelAction = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  > * {
-    height: 100%;
-  }
-`;
+const GearLabelAction = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div {...props} className={cn("h-full flex items-center ml-auto [&_>_*]:h-full", className)} />
+);
 
 type GearLabelProps = {
   gear: Gear;
@@ -63,6 +51,7 @@ const GearLabel: React.FCX<GearLabelProps> = ({
     <Flexbox className={className}>
       <GearTooltip gear={gear}>
         <GearNameplate
+          className="min-w-0"
           equippable={equippable}
           iconId={gear.icon_id}
           name={gear.name}
@@ -81,9 +70,7 @@ const GearLabel: React.FCX<GearLabelProps> = ({
       />
 
       <GearLabelAction>
-        {gear.has_proficiency() && (
-          <GearExpSelect exp={gear.exp} onChange={handleExpChange} />
-        )}
+        {gear.has_proficiency() && <GearExpSelect exp={gear.exp} onChange={handleExpChange} />}
         <GearStarsSelect stars={gear.stars} onChange={handleStarsChange} />
       </GearLabelAction>
     </Flexbox>
@@ -96,31 +83,15 @@ const Memoized = React.memo(
     shallowEqual(prevRest, nextRest) && prevGear.hash === nextGear.hash,
 );
 
-const Styled = styled(Memoized)(
-  ({ size, theme }) => css`
-    height: ${size === "small" ? 24 : 28}px;
-    width: 100%;
-    transition: 250ms;
-    padding-left: 4px;
-
-    > :not(div:first-of-type) {
-      flex-shrink: 0;
-    }
-
-    .MuiIconButton-root {
-      display: none;
-    }
-
-    :hover {
-      background: ${theme.palette.action.hover};
-      .MuiIconButton-root {
-        display: block;
-      }
-      > div:first-of-type p {
-        display: none;
-      }
-    }
-  `,
+export default ({ className, ...props }: React.ComponentProps<typeof Memoized>) => (
+  <Memoized
+    {...props}
+    className={cn(
+      "w-full [transition:250ms] pl-1 [&>:not(div:first-of-type)]:shrink-0 [&_.MuiIconButton-root]:hidden [&:hover]:bg-action-hover",
+      "[@media(hover:hover)]:[&:hover_.MuiIconButton-root]:block [@media(hover:hover)]:[&:hover>div:first-of-type_p]:hidden",
+      "[@media(hover:none)]:[&_.MuiIconButton-root]:block",
+      props.size === "small" ? "h-6" : "h-7",
+      className,
+    )}
+  />
 );
-
-export default Styled;

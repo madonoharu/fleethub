@@ -1,7 +1,7 @@
-import { styled } from "@mui/system";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { NumberInput, RestartAltButton } from "../../molecules";
 
 interface ResettableInputProps {
@@ -38,7 +38,7 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
   };
 
   return (
-    <div className={className}>
+    <div className={cn("flex w-[160px] items-center", className)}>
       <NumberInput
         slotProps={{ inputLabel: INPUT_LABEL_PROPS }}
         color={color}
@@ -50,18 +50,9 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
         max={max}
         step={step}
       />
-      <RestartAltButton
-        size="medium"
-        title={t("Reset")}
-        sx={{ ml: 1 }}
-        onClick={handleReset}
-      />
+      <RestartAltButton size="medium" title={t("Reset")} className="ml-2" onClick={handleReset} />
     </div>
   );
 };
 
-export default styled(ResettableInput)`
-  width: 160px;
-  display: flex;
-  align-items: center;
-`;
+export default ResettableInput;

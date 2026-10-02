@@ -3,17 +3,11 @@
   "compilerOptions": {
     "noEmit": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "jsxImportSource": "@emotion/react",
+    "jsx": "react-jsx",
     "resolveJsonModule": true,
     "incremental": true,
     "types": ["node", "bun"]
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "../../tests/dom-matchers.d.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../../tests/dom-matchers.d.ts"],
   "exclude": ["node_modules"]
 }

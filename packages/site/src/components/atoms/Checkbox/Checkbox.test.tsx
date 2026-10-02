@@ -22,9 +22,7 @@ describe("Checkbox", () => {
 
   it("`checked={false}`", () => {
     const mockFn = mock<(value: boolean) => void>();
-    const { getByRole } = render(
-      <Checkbox checked={false} onChange={mockFn} />,
-    );
+    const { getByRole } = render(<Checkbox checked={false} onChange={mockFn} />);
     const checkbox = getByRole("checkbox");
     expect(checkbox).toHaveProperty("checked", false);
     fireEvent.click(checkbox);

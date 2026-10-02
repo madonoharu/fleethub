@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
 import Image from "next/image";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { FILTER_ICONS, FilterIconKey } from "../../../images/filters";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
   return (
     <Image
-      className={className}
+      className={cn("brightness-120", className)}
       height={18}
       width={48}
       src={FILTER_ICONS[icon]}
@@ -21,6 +21,4 @@ const FilterIcon: React.FCX<Props> = ({ className, icon }) => {
   );
 };
 
-export default styled(FilterIcon)`
-  filter: brightness(120%);
-`;
+export default FilterIcon;

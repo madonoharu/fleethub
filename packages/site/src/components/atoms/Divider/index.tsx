@@ -1,12 +1,7 @@
 import { nonNullable } from "@fh/utils";
 import { Divider as MuiDivider, DividerProps, Typography } from "@mui/material";
-import { styled } from "@mui/system";
+import { cn } from "../../../styles/cn";
 import React from "react";
-
-const StyledDivider = styled(MuiDivider)`
-  flex-grow: 1;
-  margin-left: 8px;
-`;
 
 type Props = Omit<DividerProps, "sx"> & {
   label?: React.ReactNode;
@@ -14,19 +9,15 @@ type Props = Omit<DividerProps, "sx"> & {
 
 const Divider: React.FCX<Props> = ({ className, label, ...muiProps }) => {
   return (
-    <div className={className}>
+    <div className={cn("flex w-full items-center", className)}>
       {nonNullable(label) && (
         <Typography variant="caption" color="textSecondary">
           {label}
         </Typography>
       )}
-      <StyledDivider {...muiProps} />
+      <MuiDivider className="ml-2 grow" {...muiProps} />
     </div>
   );
 };
 
-export default styled(Divider)`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`;
+export default Divider;

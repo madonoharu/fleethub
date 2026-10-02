@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import React from "react";
 
 import { useRootSelector } from "../../../hooks";
@@ -7,11 +6,6 @@ import { DirectoryBreadcrumbs } from "../../organisms";
 import FolderPage from "../FolderPage";
 import PlanScreen from "../PlanScreen";
 import WelcomePage from "../WelcomePage";
-
-const StyledDirectoryBreadcrumbs = styled(DirectoryBreadcrumbs)`
-  margin-left: 8px;
-  min-height: 24px;
-`;
 
 const FileViewer: React.FC = () => {
   const file = useRootSelector((root) => {
@@ -24,12 +18,8 @@ const FileViewer: React.FC = () => {
 
   return (
     <>
-      <StyledDirectoryBreadcrumbs file={file} />
-      {file.type === "plan" ? (
-        <PlanScreen id={file.id} />
-      ) : (
-        <FolderPage id={file.id} />
-      )}
+      <DirectoryBreadcrumbs className="ml-2 min-h-6" file={file} />
+      {file.type === "plan" ? <PlanScreen id={file.id} /> : <FolderPage id={file.id} />}
     </>
   );
 };

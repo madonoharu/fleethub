@@ -1,30 +1,20 @@
-import { styled, Link, Typography, Stack } from "@mui/material";
+import { Link, Typography, Stack } from "@mui/material";
 import dynamic from "next/dynamic";
 import { useTranslation } from "next-i18next/pages";
 import React, { useRef } from "react";
 import { useAsyncCallback } from "react-async-hook";
 
-import {
-  useAppDispatch,
-  useFhCore,
-  useSnackbar,
-  useRootSelector,
-} from "../../../hooks";
-import {
-  appSlice,
-  parseDeckStr,
-  parseUrl,
-  entitiesSlice,
-  PublicFile,
-} from "../../../store";
+import { useAppDispatch, useFhCore, useSnackbar, useRootSelector } from "../../../hooks";
+import { appSlice, parseDeckStr, parseUrl, entitiesSlice, PublicFile } from "../../../store";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
 import { ImportButton, TextField } from "../../molecules";
+import { cn } from "../../../styles";
 
 const KcsScript = dynamic(() => import("./KcsScript"));
 
-const StyledDivider = styled(Divider)`
-  margin-top: 8px;
-`;
+const StyledDivider = ({ className, ...props }: React.ComponentProps<typeof Divider>) => (
+  <Divider {...props} className={cn("mt-2", className)} />
+);
 
 interface ImportFormProps {
   onSuccess: (file: PublicFile) => void;
@@ -59,7 +49,7 @@ const ImportForm: React.FCX<ImportFormProps> = ({ onSuccess, onError }) => {
   );
 
   return (
-    <Flexbox gap={1}>
+    <Flexbox className="gap-2">
       <TextField ref={ref} fullWidth />
       <ImportButton
         size="medium"
@@ -94,12 +84,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   };
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className={cn("gap-2", className)}>
       <Typography variant="subtitle1">{t("ImportComps")}</Typography>
 
       <Checkbox
@@ -127,9 +112,7 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
 
       <StyledDivider label="編成を直接読み込むJavaScriptコード" />
       <Typography variant="body2">
-        <Link href="https://noro6.github.io/kc-web/#/manager">
-          制空権シミュレータの艦娘管理
-        </Link>
+        <Link href="https://noro6.github.io/kc-web/#/manager">制空権シミュレータの艦娘管理</Link>
         での反映と同じ手順で編成を直接読み込めます
       </Typography>
       <KcsScript />
@@ -139,7 +122,6 @@ const ImportMenu: React.FCX<Props> = ({ className, onClose }) => {
   );
 };
 
-export default styled(ImportMenu)`
-  padding: 8px;
-  width: 320px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof ImportMenu>) => (
+  <ImportMenu {...props} className={cn("p-2 w-80", className)} />
+);

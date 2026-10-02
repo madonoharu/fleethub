@@ -1,4 +1,4 @@
-import { styled, css, Stack, Tooltip, Typography } from "@mui/material";
+import { Stack, Tooltip, Typography } from "@mui/material";
 import { AttackReport } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -7,11 +7,11 @@ import { toPercent } from "../../../utils";
 import { InfoButton } from "../../molecules";
 
 import AttackPowerDetails from "./AttackPowerDetails";
+import { cn } from "../../../styles";
 
-const DamageValue = styled("span")`
-  display: inline-block;
-  min-width: 24px;
-`;
+const DamageValue = ({ className, ...props }: React.ComponentProps<"span">) => (
+  <span {...props} className={cn("[display:inline-block] min-w-6", className)} />
+);
 
 type DamageRangeProps = {
   min: number;
@@ -20,18 +20,10 @@ type DamageRangeProps = {
   isCapped?: boolean | null;
 };
 
-const DamageRange: React.FCX<DamageRangeProps> = ({
-  min,
-  max,
-  scratchRate,
-  isCapped,
-}) => {
+const DamageRange: React.FCX<DamageRangeProps> = ({ min, max, scratchRate, isCapped }) => {
   const { t } = useTranslation("common");
 
-  const left =
-    scratchRate > 0
-      ? `${t("ScratchDamage")} ${toPercent(scratchRate, 0)}`
-      : min;
+  const left = scratchRate > 0 ? `${t("ScratchDamage")} ${toPercent(scratchRate, 0)}` : min;
 
   let inner: React.ReactNode;
 
@@ -49,13 +41,9 @@ const DamageRange: React.FCX<DamageRangeProps> = ({
 
   return (
     <Typography
+      className="flex justify-end gap-2"
       variant="inherit"
       color={isCapped ? "secondary" : undefined}
-      sx={{
-        display: "flex",
-        justifyContent: "flex-end",
-        gap: 1,
-      }}
     >
       {inner}
     </Typography>
@@ -77,21 +65,8 @@ const DamageCell: React.FC<DamageCellProps> = ({ stats }) => {
   }
 
   return (
-    <Stack
-      direction="row"
-      sx={{
-        alignItems: "center",
-        justifyContent: "flex-end",
-        gap: 1,
-      }}
-    >
-      <div
-        css={css`
-          display: grid;
-          grid-template-columns: auto 1fr;
-          gap: 0 16px;
-        `}
-      >
+    <Stack className="items-center justify-end gap-2" direction="row">
+      <div className="grid [grid-template-columns:auto_1fr] gap-[0_16px]">
         <Tooltip title={t("Normal")}>
           <span>N</span>
         </Tooltip>
@@ -115,10 +90,7 @@ const DamageCell: React.FC<DamageCellProps> = ({ stats }) => {
         size="tiny"
         title={
           attack_power && attack_power_params ? (
-            <AttackPowerDetails
-              power={attack_power}
-              params={attack_power_params}
-            />
+            <AttackPowerDetails power={attack_power} params={attack_power_params} />
           ) : (
             "?"
           )

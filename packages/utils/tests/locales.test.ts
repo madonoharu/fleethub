@@ -16,9 +16,9 @@ describe("downloaded locale messages", () => {
   );
 
   it("keeps new untranslated keys when no existing message is available", () => {
-    expect(
-      mergeLocaleMessages({}, { DayCutin: { DoubleAttack: "", FBA: null } }),
-    ).toEqual({ DayCutin: { DoubleAttack: "", FBA: null } });
+    expect(mergeLocaleMessages({}, { DayCutin: { DoubleAttack: "", FBA: null } })).toEqual({
+      DayCutin: { DoubleAttack: "", FBA: null },
+    });
   });
 
   it("accepts new translations and preserves the exact single-space rule", () => {

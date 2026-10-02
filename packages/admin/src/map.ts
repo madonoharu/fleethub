@@ -1,25 +1,11 @@
-import {
-  nonNullable,
-  FhMap,
-  MapEnemyComp,
-  MapNode,
-  MapNodeType,
-} from "@fh/utils";
+import { nonNullable, FhMap, MapEnemyComp, MapNode, MapNodeType } from "@fh/utils";
 import { isEqual } from "es-toolkit";
 
-import {
-  KcnavClient,
-  KcnavEnemyComp,
-  KcnavEnemycomps,
-  KcnavEnemyShip,
-  KcnavMap,
-} from "./kcnav";
+import { KcnavClient, KcnavEnemyComp, KcnavEnemycomps, KcnavEnemyShip, KcnavMap } from "./kcnav";
 import { MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
 
-function getFp(
-  kcnavAirpower: [number, number, number, number],
-): [number, number, number, number] {
+function getFp(kcnavAirpower: [number, number, number, number]): [number, number, number, number] {
   const fp = kcnavAirpower[3] / 3;
 
   if (!fp) return [0, 0, 0, 0];
@@ -41,9 +27,7 @@ function getEnemyComp({
   lbasAirpower,
 }: KcnavEnemyComp): MapEnemyComp {
   const main = mainFleet.map((ship) => ship.id);
-  const escort = escortFleet.length
-    ? escortFleet.map((ship) => ship.id)
-    : undefined;
+  const escort = escortFleet.length ? escortFleet.map((ship) => ship.id) : undefined;
 
   const formations = [formation];
 
@@ -57,10 +41,7 @@ function getEnemyComp({
   };
 }
 
-function getEnemies(
-  enemycomps: KcnavEnemycomps,
-  point: string,
-): MapEnemyComp[] {
+function getEnemies(enemycomps: KcnavEnemycomps, point: string): MapEnemyComp[] {
   const enemies: MapEnemyComp[] = [];
 
   enemycomps.entries
@@ -93,18 +74,12 @@ function getEnemies(
 
 function createFhMap({ id, graph, lbasdistance, enemycomps }: KcnavMap): FhMap {
   const links = Object.values(graph.route)
-    .map(([source, target]): [string, string] | null =>
-      source ? [source, target] : null,
-    )
+    .map(([source, target]): [string, string] | null => (source ? [source, target] : null))
     .filter(nonNullable);
 
   const nodes = Object.entries(graph.spots).map(([point, [x, y]]): MapNode => {
-    const edgeEntries = Object.entries(graph.route).filter(
-      (entry) => entry[1][1] === point,
-    );
-    const type = edgeEntries.length
-      ? edgeEntries[0][1][2]
-      : MapNodeType.Unknown;
+    const edgeEntries = Object.entries(graph.route).filter((entry) => entry[1][1] === point);
+    const type = edgeEntries.length ? edgeEntries[0][1][2] : MapNodeType.Unknown;
 
     return {
       point,
@@ -135,15 +110,11 @@ function uniqById(ships: KcnavEnemyShip[]): KcnavEnemyShip[] {
 
 async function updateShips(maps: KcnavMap[]): Promise<void> {
   const spreadsheet = new MasterDataSpreadsheet();
-  const [md, table] = await Promise.all([
-    storage.readMasterData(),
-    spreadsheet.readTable("ships"),
-  ]);
+  const [md, table] = await Promise.all([storage.readMasterData(), spreadsheet.readTable("ships")]);
 
   const masterShips = md.ships.map((ship) => ({ ...ship }));
 
-  const findMasterShip = (id: number) =>
-    masterShips.find((ship) => ship.ship_id === id);
+  const findMasterShip = (id: number) => masterShips.find((ship) => ship.ship_id === id);
 
   const ships = maps
     .sort((a, b) => a.id - b.id)

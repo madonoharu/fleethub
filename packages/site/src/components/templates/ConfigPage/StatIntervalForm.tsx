@@ -15,12 +15,7 @@ interface StatIntervalFormProps {
   onChange: (value: StatInterval) => void;
 }
 
-const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
-  statKey,
-  ship,
-  config,
-  onChange,
-}) => {
+const StatIntervalForm: React.FC<StatIntervalFormProps> = ({ statKey, ship, config, onChange }) => {
   const { t } = useTranslation("common");
 
   const abyssal = ship.ship_id > 1500;
@@ -51,7 +46,7 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
     };
 
     elem = (
-      <Flexbox gap={2}>
+      <Flexbox className="gap-4">
         <ResettableInput
           defaultValue={s0}
           value={configInterval[0]}
@@ -72,7 +67,7 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({
 
   return (
     <div>
-      <Flexbox gap={1}>
+      <Flexbox className="gap-2">
         <StatIcon icon={statKey} />
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>

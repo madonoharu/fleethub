@@ -1,20 +1,11 @@
-import styled from "@emotion/styled";
 import { Button, DialogContent, Tooltip } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useModal } from "../../../hooks";
 import { Slider } from "../../atoms";
 import { NumberInput } from "../../molecules";
-
-const StyledButton = styled(Button)`
-  width: 80px;
-`;
-
-const SpaceBetween = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
 
 type Props = {
   value: number;
@@ -34,17 +25,17 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
     <DialogContent>
       <NumberInput startLabel="Lv" fullWidth {...inputProps} />
       <Slider {...inputProps} />
-      <SpaceBetween>
-        <StyledButton variant="outlined" onClick={set1}>
+      <div className="flex justify-between">
+        <Button className="w-[80px]" variant="outlined" onClick={set1}>
           Lv 1
-        </StyledButton>
-        <StyledButton variant="outlined" onClick={set99}>
+        </Button>
+        <Button className="w-[80px]" variant="outlined" onClick={set99}>
           Lv 99
-        </StyledButton>
-        <StyledButton variant="outlined" onClick={setMax}>
+        </Button>
+        <Button className="w-[80px]" variant="outlined" onClick={setMax}>
           Lv {MAX_LEVEL}
-        </StyledButton>
-      </SpaceBetween>
+        </Button>
+      </div>
     </DialogContent>
   );
 };
@@ -56,7 +47,7 @@ const Component: React.FCX<Props> = ({ className, value, onChange }) => {
   return (
     <>
       <Tooltip title={t("Change")}>
-        <Button className={className} onClick={Modal.show}>
+        <Button className={cn("h-full w-[48px] justify-start", className)} onClick={Modal.show}>
           Lv{value}
         </Button>
       </Tooltip>
@@ -68,10 +59,4 @@ const Component: React.FCX<Props> = ({ className, value, onChange }) => {
   );
 };
 
-const StyledComponent = styled(Component)`
-  height: 100%;
-  justify-content: flex-start;
-  width: 48px;
-`;
-
-export default StyledComponent;
+export default Component;

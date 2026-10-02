@@ -13,7 +13,7 @@ pub struct MasterIBonusRule {
 
 impl MasterIBonusRule {
     fn eval(&self, gear: &MasterGear, stars: u8) -> Option<f64> {
-        if self.expr.eval(&mut gear.ns()).unwrap_or_default() == 1.0 {
+        if self.expr.matches(&mut gear.ns()) {
             let mut ns = |name: &str, args: Vec<f64>| match name {
                 "x" => Some(stars as f64),
                 "sqrt" => args.first().map(|v| v.sqrt()),
@@ -41,7 +41,7 @@ macro_rules! impl_ibonuses {
 
         impl MasterIBonuses {
             pub fn eval(&self, gear: &MasterGear, stars: u8) -> IBonuses {
-                let calc = |rules: &Vec<MasterIBonusRule>| {
+                let calc = |rules: &[MasterIBonusRule]| {
                     rules
                         .iter()
                         .find_map(|rule| rule.eval(gear, stars))

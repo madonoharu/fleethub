@@ -49,13 +49,7 @@ export interface DamageChartRow {
 }
 
 /** 損傷が軽いほうから順に並べた損傷状態。ダメージ軸の左から右の順でもある。 */
-const DAMAGE_STATES: DamageState[] = [
-  "Normal",
-  "Shouha",
-  "Chuuha",
-  "Taiha",
-  "Sunk",
-];
+const DAMAGE_STATES: DamageState[] = ["Normal", "Shouha", "Chuuha", "Taiha", "Sunk"];
 
 const EPS = 1e-9;
 
@@ -163,8 +157,7 @@ export function createDamageDensityBreakdown(
   maxSeries = DEFAULT_MAX_BREAKDOWN_SERIES,
   kind: DensityKind = "all",
 ): DamageDensityBreakdownItem[] | null {
-  const weighted: { key: string; procRate: number; density: DamageDensity }[] =
-    [];
+  const weighted: { key: string; procRate: number; density: DamageDensity }[] = [];
 
   for (const [key, report] of Object.entries(data)) {
     const procRate = report.proc_rate;
@@ -221,16 +214,11 @@ export function createDamageDensityBreakdown(
   // 発動率の小さいものほど下に積む。上へ行くほど太い帯になるので、
   // どれが主力かが厚みで読める。同率なら強いほうを下にする。
   return items.sort(
-    (a, b) =>
-      a.procRate - b.procRate || (b.stats.median ?? 0) - (a.stats.median ?? 0),
+    (a, b) => a.procRate - b.procRate || (b.stats.median ?? 0) - (a.stats.median ?? 0),
   );
 }
 
-function quantile(
-  points: DamageDensityPoint[],
-  total: number,
-  q: number,
-): number {
+function quantile(points: DamageDensityPoint[], total: number, q: number): number {
   const threshold = total * (q - EPS);
   const found = points.find((point) => point.cumulative >= threshold);
   return found ? found.damage : points[points.length - 1].damage;
@@ -245,10 +233,7 @@ export function toDamageDensityStats(
     .map(([key, rate]) => [Number(key), rate] as const)
     .filter(
       (entry): entry is readonly [number, number] =>
-        Number.isFinite(entry[0]) &&
-        entry[0] >= 0 &&
-        typeof entry[1] === "number" &&
-        entry[1] > 0,
+        Number.isFinite(entry[0]) && entry[0] >= 0 && typeof entry[1] === "number" && entry[1] > 0,
     );
 
   if (!entries.length) {
@@ -322,18 +307,11 @@ export function getDamageState(maxHp: number, currentHp: number): DamageState {
   return "Normal";
 }
 
-export function getRequiredDamage(
-  state: DamageState,
-  maxHp: number,
-  currentHp: number,
-): number {
+export function getRequiredDamage(state: DamageState, maxHp: number, currentHp: number): number {
   return Math.max(currentHp - getDamageStateBound(state, maxHp), 0);
 }
 
-function readPoint(
-  points: DamageDensityPoint[],
-  index: number,
-): DamageDensityPoint | undefined {
+function readPoint(points: DamageDensityPoint[], index: number): DamageDensityPoint | undefined {
   return points[index];
 }
 
@@ -401,21 +379,16 @@ export function createDamageChartRows({
       rate += readPoint(main.points, i)?.rate ?? 0;
       noPenetration += readPoint(mainNoPenetration?.points ?? [], i)?.rate ?? 0;
       compareRate += readPoint(compare?.points ?? [], i)?.rate ?? 0;
-      compareNoPenetrationRate +=
-        readPoint(compareNoPenetration?.points ?? [], i)?.rate ?? 0;
+      compareNoPenetrationRate += readPoint(compareNoPenetration?.points ?? [], i)?.rate ?? 0;
       axisMainRate += readPoint(axisMain?.points ?? main.points, i)?.rate ?? 0;
-      axisCompareRate +=
-        readPoint(axisCompare?.points ?? compare?.points ?? [], i)?.rate ?? 0;
+      axisCompareRate += readPoint(axisCompare?.points ?? compare?.points ?? [], i)?.rate ?? 0;
 
       breakdown?.forEach((item, index) => {
         breakdownRates[index] += readPoint(item.stats.points, i)?.rate ?? 0;
       });
     }
 
-    const mainLast = readPoint(
-      main.points,
-      Math.min(end, main.points.length - 1),
-    );
+    const mainLast = readPoint(main.points, Math.min(end, main.points.length - 1));
     const compareLast = compare
       ? readPoint(compare.points, Math.min(end, compare.points.length - 1))
       : undefined;
@@ -430,14 +403,10 @@ export function createDamageChartRows({
       rate,
       cumulative: mainLast?.cumulative ?? main.total,
       compareRate: compare ? compareRate : null,
-      compareCumulative: compare
-        ? (compareLast?.cumulative ?? compare.total)
-        : null,
+      compareCumulative: compare ? (compareLast?.cumulative ?? compare.total) : null,
       breakdown: breakdownRates,
       noPenetration: Math.min(noPenetration, rate),
-      compareNoPenetration: compare
-        ? Math.min(compareNoPenetrationRate, compareRate)
-        : null,
+      compareNoPenetration: compare ? Math.min(compareNoPenetrationRate, compareRate) : null,
       axisRate: Math.max(axisMainRate, axisCompareRate),
     });
   }
@@ -477,13 +446,8 @@ export function createDamageStateZones(
  * X軸の目盛。等間隔ではなく損傷状態の境界値そのものを置く。
  * 「あと何ダメージ欲しいか」が軸から直接読めるようにするため。
  */
-export function createDamageAxisTicks(
-  zones: DamageStateZone[],
-  maxDamage: number,
-): number[] {
-  const boundaries = zones
-    .map((zone) => zone.from)
-    .filter((value) => value <= maxDamage);
+export function createDamageAxisTicks(zones: DamageStateZone[], maxDamage: number): number[] {
+  const boundaries = zones.map((zone) => zone.from).filter((value) => value <= maxDamage);
 
   const ticks = Array.from(new Set([0, ...boundaries])).sort((a, b) => a - b);
 
@@ -568,10 +532,7 @@ function niceStep(target: number): number {
  *
  * 窓が下段の天井まで下りてしまうときは切れないので null を返す。
  */
-export function createBrokenRateAxis(
-  cap: number,
-  peak: number,
-): BrokenRateAxis | null {
+export function createBrokenRateAxis(cap: number, peak: number): BrokenRateAxis | null {
   const step = niceStep(peak * 0.15);
 
   let from = Math.floor(peak / step + EPS) * step;
@@ -612,9 +573,7 @@ export function createRateAxisTicks(rateMax: number, divisions = 4): number[] {
   if (!(rateMax > 0)) return [0];
 
   const magnitude = 10 ** Math.floor(Math.log10(rateMax));
-  const steps = [0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10].map(
-    (factor) => factor * magnitude,
-  );
+  const steps = [0.1, 0.2, 0.25, 0.5, 1, 2, 2.5, 5, 10].map((factor) => factor * magnitude);
 
   let step = steps[steps.length - 1];
   let best = Infinity;

@@ -8,13 +8,7 @@ import {
   SlotSizeKey,
   SLOT_SIZE_KEYS,
 } from "@fh/utils";
-import {
-  AirSquadronState,
-  FleetState,
-  GearState,
-  OrgState,
-  ShipState,
-} from "fleethub-core";
+import { AirSquadronState, FleetState, GearState, OrgState, ShipState } from "fleethub-core";
 
 export type JorGearState = {
   masterId: number;
@@ -81,7 +75,7 @@ const createGear = (input: JorGearState): GearState => {
 
 const createGearDict = (
   input: (JorGearState | undefined)[],
-  slotnum?: number
+  slotnum?: number,
 ): Dict<GearKey, GearState> => {
   const result: Dict<GearKey, GearState> = {};
 

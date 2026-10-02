@@ -4,6 +4,6 @@
     "build": "bun build src/index.ts --target browser --minify --outfile lib/index.js"
   },
   "devDependencies": {
-    "fleethub-core": "workspace:*"
+    "fleethub-core": "latest"
   }
 }

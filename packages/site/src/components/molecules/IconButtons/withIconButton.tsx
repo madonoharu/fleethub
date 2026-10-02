@@ -1,37 +1,31 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Tooltip, { TooltipProps } from "@mui/material/Tooltip";
 import React from "react";
 
-const tinyStyle = css`
-  padding: 3px;
-  line-height: 0;
-`;
-
-export interface WithIconButtonProps
-  extends Omit<IconButtonProps, "size" | "title"> {
+export interface WithIconButtonProps extends Omit<IconButtonProps, "size" | "title"> {
   label?: string;
   title?: TooltipProps["title"];
   size?: "tiny" | "small" | "medium";
   tooltipProps?: Omit<TooltipProps, "title">;
 }
 
-export const withIconButton = (WrappedIcon: React.FC) => {
+export const withIconButton = (WrappedIcon: React.ComponentType<{ className?: string }>) => {
   const WithIconButton: React.FC<WithIconButtonProps> = ({
     title,
     label,
     tooltipProps,
     size = "tiny",
+    className,
     ...iconButtonProps
   }) => {
     const WrappedButton = (
       <IconButton
         size={size === "tiny" || size === "small" ? "small" : undefined}
-        css={size === "tiny" && tinyStyle}
+        className={cn(size === "tiny" && "p-[3px] leading-0", className)}
         {...iconButtonProps}
       >
-        <WrappedIcon css={{ display: "block", fontSize: "inherit" }} />
+        <WrappedIcon className="block text-[length:inherit]" />
         {label}
       </IconButton>
     );
@@ -47,9 +41,7 @@ export const withIconButton = (WrappedIcon: React.FC) => {
     return WrappedButton;
   };
 
-  WithIconButton.displayName = `WithIconButton(${
-    WrappedIcon.displayName || WrappedIcon.name
-  })`;
+  WithIconButton.displayName = `WithIconButton(${WrappedIcon.displayName || WrappedIcon.name})`;
 
-  return styled(WithIconButton)``;
+  return WithIconButton;
 };

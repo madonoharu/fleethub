@@ -28,14 +28,9 @@ const NodeStep: React.FC<NodeStepProps> = ({ step }) => {
   };
 
   return (
-    <Stack
-      sx={{
-        flexDirection: "row",
-        alignItems: "center",
-      }}
-    >
+    <Stack className="flex-row items-center">
       <span>{step.name}</span>
-      <ClearButton sx={{ ml: 1 }} size="tiny" onClick={handleRemove} />
+      <ClearButton className="ml-2" size="tiny" onClick={handleRemove} />
     </Stack>
   );
 };
@@ -50,10 +45,7 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
   const dispatch = useAppDispatch();
 
   const steps = useRootSelector(
-    (root) =>
-      file.steps
-        .map((id) => stepsSelectors.selectById(root, id))
-        .filter(nonNullable),
+    (root) => file.steps.map((id) => stepsSelectors.selectById(root, id)).filter(nonNullable),
     shallowEqual,
   );
 
@@ -89,18 +81,14 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
   };
 
   return (
-    <Stack
-      sx={{
-        flexDirection: "row",
-        gap: 1,
-      }}
-    >
+    <Stack className="flex-row gap-2">
       {!activeStep && (
-        <Alert sx={{ p: "1px 16px" }} severity="info">
+        <Alert className="p-[1px_16px]" severity="info">
           {t("PleaseSelectTheEnemyComp")}
         </Alert>
       )}
       <Tabs
+        className="h-8 min-h-0"
         value={activeStep?.id}
         onChange={handleTabChange}
         variant="scrollable"
@@ -108,7 +96,8 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
       >
         {steps.map((step) => (
           <Tab
-            sx={{ pl: 0, pr: 0 }}
+            className="h-8 min-h-0 pl-0 pr-0"
+
             disableRipple
             key={step.id}
             value={step.id}
@@ -118,7 +107,8 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
         ))}
       </Tabs>
       <Button
-        css={{ flexShrink: 0 }}
+        className="shrink-0"
+
         variant="contained"
         color="primary"
         onClick={showMapMenu}
@@ -126,7 +116,8 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
         {t("InputFromMap")}
       </Button>
       <Button
-        css={{ flexShrink: 0 }}
+        className="shrink-0"
+
         variant="contained"
         color="primary"
         onClick={showMapMenuWithMultiple}

@@ -3,9 +3,7 @@ import { useDebugValue, useEffect, useRef } from "react";
 export const useRenderCount = () => {
   const renderCountRef = useRef(0);
 
-  useDebugValue(
-    `このコンポーネントは${renderCountRef.current}回再描画されました`
-  );
+  useDebugValue(`このコンポーネントは${renderCountRef.current}回再描画されました`);
 
   useEffect(() => {
     renderCountRef.current++;

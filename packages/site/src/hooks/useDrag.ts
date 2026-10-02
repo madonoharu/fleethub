@@ -4,11 +4,7 @@ import { getEmptyImage } from "react-dnd-html5-backend";
 
 import { useDragLayerRef } from "./useDragLayerRef";
 
-export type DragSpec<DragObject> = DragSourceHookSpec<
-  DragObject,
-  unknown,
-  boolean
-> & {
+export type DragSpec<DragObject> = DragSourceHookSpec<DragObject, unknown, boolean> & {
   dragLayer?: React.ReactNode;
 };
 
@@ -53,7 +49,7 @@ export const useDrag = <DragObject>({
       dragRef(instance);
       ref.current = instance;
     },
-    [dragRef]
+    [dragRef],
   );
 
   return handleRef;

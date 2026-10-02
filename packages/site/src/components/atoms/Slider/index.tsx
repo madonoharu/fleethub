@@ -13,7 +13,7 @@ const Slider = React.forwardRef<HTMLSpanElement, Props>((props, ref) => {
     (event: Event, value: number | number[]) => {
       if (typeof value === "number" && onChange) onChange(value);
     },
-    [onChange]
+    [onChange],
   );
 
   return <MuiSlider ref={ref} {...rest} onChange={handleChange} />;

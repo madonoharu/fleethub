@@ -20,32 +20,21 @@ function treeItem(page: Page, name: string) {
     .last();
 }
 
-test("folder and plan tree navigation survives a saved-state reload", async ({
-  page,
-  runtime,
-}) => {
+test("folder and plan tree navigation survives a saved-state reload", async ({ page, runtime }) => {
   const text = translations("ja");
   await page.goto("/");
   await expectLoaded(page, languages[0], runtime);
-  await page
-    .getByRole("button", { name: text.CreateFolder, exact: true })
-    .first()
-    .click();
+  await page.getByRole("button", { name: text.CreateFolder, exact: true }).first().click();
 
   const folder = treeItem(page, "Folder 1");
   await folder.hover();
-  await folder
-    .getByRole("button", { name: text.OpenFolderPage, exact: true })
-    .click();
+  await folder.getByRole("button", { name: text.OpenFolderPage, exact: true }).click();
   const nameInput = page.getByPlaceholder("name", { exact: true });
   await nameInput.fill(folderName);
   await nameInput.press("Tab");
   await expect(treeItem(page, folderName)).toBeVisible();
 
-  await page
-    .getByRole("button", { name: text.CreateComp, exact: true })
-    .last()
-    .click();
+  await page.getByRole("button", { name: text.CreateComp, exact: true }).last().click();
   await nameInput.fill(planName);
   await nameInput.press("Tab");
   await setHqLevel(page, "100");
@@ -63,6 +52,22 @@ test("folder and plan tree navigation survives a saved-state reload", async ({
   await treeItem(page, planName).getByText(planName, { exact: true }).click();
   await expect(nameInput).toHaveValue(planName);
 
+  // Indent the selectable row itself so its highlight and hit area follow
+  // the folder hierarchy, as well as the file icon and label.
+  await expect
+    .poll(async () => {
+      const folderBounds = await savedFolder.locator(".MuiTreeItem-content").first().boundingBox();
+      const planBounds = await treeItem(page, planName)
+        .locator(".MuiTreeItem-content")
+        .boundingBox();
+      if (!folderBounds || !planBounds) return null;
+      return {
+        indent: planBounds.x - folderBounds.x,
+        widthReduction: folderBounds.width - planBounds.width,
+      };
+    })
+    .toEqual({ indent: 12, widthReduction: 12 });
+
   // redux-persist writes through localforage asynchronously. Observe the actual
   // IndexedDB record before reloading; there is no timing-based delay here.
   await expect
@@ -75,9 +80,7 @@ test("folder and plan tree navigation survives a saved-state reload", async ({
             open.onsuccess = () => {
               const db = open.result;
               const transaction = db.transaction("keyvaluepairs", "readonly");
-              const request = transaction
-                .objectStore("keyvaluepairs")
-                .get("persist:root");
+              const request = transaction.objectStore("keyvaluepairs").get("persist:root");
               request.onsuccess = () => resolve(request.result);
               request.onerror = () => reject(request.error);
               transaction.oncomplete = () => db.close();

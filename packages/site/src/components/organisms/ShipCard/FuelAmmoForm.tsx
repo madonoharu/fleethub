@@ -1,28 +1,19 @@
-import styled from "@emotion/styled";
 import { Button } from "@mui/material";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { toPercent } from "../../../utils";
 import { Flexbox, FuelIcon, AmmoIcon } from "../../atoms";
 import { NumberInput, ConsumptionRateSelect } from "../../molecules";
-
-const StyledNumberInput = styled(NumberInput)`
-  width: 128px;
-`;
 
 type FuelAmmoFormProps = {
   ship: Ship;
   onChange: (changes: { fuel?: number; ammo?: number }) => void;
 };
 
-const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
-  className,
-  style,
-  ship,
-  onChange,
-}) => {
+const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({ className, style, ship, onChange }) => {
   const { t } = useTranslation("common");
 
   const { fuel, ammo, max_fuel, max_ammo } = ship;
@@ -47,8 +38,9 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
   };
 
   return (
-    <Flexbox className={className} style={style} gap={1}>
-      <StyledNumberInput
+    <Flexbox className={cn("gap-2", className)} style={style}>
+      <NumberInput
+        className="w-[128px]"
         startLabel={<FuelIcon />}
         label={`${t("fuel")} ${toPercent(fuelRate, 0)}`}
         value={fuel}
@@ -56,7 +48,8 @@ const FuelAmmoForm: React.FCX<FuelAmmoFormProps> = ({
         max={max_fuel}
         onChange={setFuel}
       />
-      <StyledNumberInput
+      <NumberInput
+        className="w-[128px]"
         startLabel={<AmmoIcon />}
         label={`${t("ammo")} ${toPercent(ammoRate, 0)}`}
         value={ammo}

@@ -20,7 +20,8 @@ const ContactRankMenu: React.FC<ContactRankMenuProps> = ({ onClick }) => {
         const key = rank ? (`ContactRank.${rank}` as const) : "None";
         return (
           <Button
-            css={{ justifyContent: "flex-start" }}
+            className="justify-start"
+
             key={key}
             startIcon={<ContactRankIcon rank={rank} />}
             onClick={() => {

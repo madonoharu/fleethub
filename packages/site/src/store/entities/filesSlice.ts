@@ -19,14 +19,12 @@ const initialState = adapter.getInitialState<{
 export type FilesState = typeof initialState;
 
 export function isFolder(
-  entity: FileEntity | undefined
+  entity: FileEntity | undefined,
 ): entity is FileEntity & { type: "folder" } {
   return entity?.type === "folder";
 }
 
-export function isPlan(
-  entity: FileEntity | undefined
-): entity is FileEntity & { type: "plan" } {
+export function isPlan(entity: FileEntity | undefined): entity is FileEntity & { type: "plan" } {
   return entity?.type === "plan";
 }
 
@@ -61,9 +59,7 @@ function getFolderChildren(state: FilesState, id: string): string[] {
 }
 
 const getTopFiles = (files: FileEntity[]) => {
-  const allChildren = files
-    .filter(isFolder)
-    .flatMap((folder) => folder.children);
+  const allChildren = files.filter(isFolder).flatMap((folder) => folder.children);
 
   return files.filter((file) => !allChildren.includes(file.id));
 };
@@ -77,15 +73,13 @@ const addFiles = (state: FilesState, files: FileEntity[], to = "") => {
   children.push(...topFileIds);
 };
 
-const getAllFiles = (state: FilesState) =>
-  Object.values(state.entities).filter(nonNullable);
+const getAllFiles = (state: FilesState) => Object.values(state.entities).filter(nonNullable);
 
 const unlink = (state: FilesState, ids: string[]) => {
   const excludedSet = new Set(ids);
   const allIdSet = new Set(state.ids);
 
-  const filterFn = (child: string) =>
-    !excludedSet.has(child) && allIdSet.has(child);
+  const filterFn = (child: string) => !excludedSet.has(child) && allIdSet.has(child);
 
   state.rootIds = state.rootIds.filter(filterFn);
   state.tempIds = state.tempIds.filter(filterFn);
@@ -123,8 +117,7 @@ export const filesSlice = createSlice({
 
     createFolder: (state, { payload }: PayloadAction<string | undefined>) => {
       const count =
-        Object.values(state.entities).filter((file) => file?.type === "folder")
-          .length + 1;
+        Object.values(state.entities).filter((file) => file?.type === "folder").length + 1;
 
       const newFolder: FileEntity = {
         id: nanoid(),
@@ -140,10 +133,7 @@ export const filesSlice = createSlice({
     update: adapter.updateOne,
 
     move: {
-      reducer: (
-        state,
-        { payload: { id, to } }: PayloadAction<{ id: string; to?: string }>
-      ) => {
+      reducer: (state, { payload: { id, to } }: PayloadAction<{ id: string; to?: string }>) => {
         unlink(state, [id]);
         insert(state, id, to);
       },

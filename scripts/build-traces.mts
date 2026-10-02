@@ -25,9 +25,7 @@ function inside(base: string, file: string) {
 
 function walk(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) =>
-    entry.isDirectory()
-      ? walk(join(directory, entry.name))
-      : [join(directory, entry.name)],
+    entry.isDirectory() ? walk(join(directory, entry.name)) : [join(directory, entry.name)],
   );
 }
 
@@ -53,8 +51,7 @@ export async function withIsolatedBuildTraces<T>(
       files: unknown;
     };
     assert(
-      Array.isArray(trace.files) &&
-        trace.files.every((file) => typeof file === "string"),
+      Array.isArray(trace.files) && trace.files.every((file) => typeof file === "string"),
       `Invalid trace: ${manifest}`,
     );
     // Next removes fully static page modules after emitting their localized HTML.
@@ -62,9 +59,7 @@ export async function withIsolatedBuildTraces<T>(
     if (existsSync(entrypoint)) files.add(entrypoint);
     for (const file of trace.files) files.add(resolve(dirname(manifest), file));
   }
-  const isolated = realpathSync(
-    mkdtempSync(join(tmpdir(), "fleethub-traces-")),
-  );
+  const isolated = realpathSync(mkdtempSync(join(tmpdir(), "fleethub-traces-")));
   try {
     const entries = [...files].sort().map((source) => {
       inside(root, source);
@@ -75,9 +70,7 @@ export async function withIsolatedBuildTraces<T>(
         stat: lstatSync(source),
       };
     });
-    for (const { source, target } of entries.filter((entry) =>
-      entry.stat.isSymbolicLink(),
-    )) {
+    for (const { source, target } of entries.filter((entry) => entry.stat.isSymbolicLink())) {
       const link = readlinkSync(source);
       assert(!isAbsolute(link), `Absolute traced symlink: ${source}`);
       inside(root, resolve(dirname(source), link));

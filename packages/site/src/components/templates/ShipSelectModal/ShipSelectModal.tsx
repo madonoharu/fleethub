@@ -18,7 +18,7 @@ function selectShip(ship: Ship, id?: string): AppThunk {
         position: state.position,
         id: id || state.id,
         reselect: state.reselect,
-      })
+      }),
     );
   };
 }

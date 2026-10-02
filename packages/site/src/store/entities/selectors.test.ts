@@ -46,12 +46,8 @@ describe("denormalized entity dependencies", () => {
     const org = selectOrgState(before, "org");
     const otherShip = selectShipState(before, "other-ship");
 
-    store.dispatch(
-      shipsSlice.actions.update({ id: "other-ship", changes: { level: 70 } }),
-    );
-    store.dispatch(
-      gearsSlice.actions.update({ id: "other-gear", changes: { stars: 5 } }),
-    );
+    store.dispatch(shipsSlice.actions.update({ id: "other-ship", changes: { level: 70 } }));
+    store.dispatch(gearsSlice.actions.update({ id: "other-gear", changes: { stars: 5 } }));
     const after = store.getState().present;
 
     expect(selectShipState(after, "ship")).toBe(ship);
@@ -66,18 +62,14 @@ describe("denormalized entity dependencies", () => {
   it("invalidates nested equipment and changed links while preserving previous states", () => {
     const store = setup();
     const original = selectOrgState(store.getState().present, "org");
-    store.dispatch(
-      gearsSlice.actions.update({ id: "gear", changes: { stars: 7 } }),
-    );
+    store.dispatch(gearsSlice.actions.update({ id: "gear", changes: { stars: 7 } }));
     const updated = selectOrgState(store.getState().present, "org");
 
     expect(updated).not.toBe(original);
     expect(updated?.f1?.s1?.g1).toMatchObject({ gear_id: 24, stars: 7 });
     expect(original?.f1?.s1?.g1?.stars).toBeUndefined();
 
-    store.dispatch(
-      shipsSlice.actions.update({ id: "ship", changes: { g1: "other-gear" } }),
-    );
+    store.dispatch(shipsSlice.actions.update({ id: "ship", changes: { g1: "other-gear" } }));
     const relinked = selectOrgState(store.getState().present, "org");
     expect(relinked?.f1?.s1?.g1).toMatchObject({ gear_id: 16 });
     expect(relinked).not.toBe(updated);
@@ -126,14 +118,10 @@ describe("denormalized entity dependencies", () => {
     if (!gearId) throw new Error("Preset setup must contain equipment");
     const original = selectPreset(root, presetId);
 
-    store.dispatch(
-      gearsSlice.actions.update({ id: "other-gear", changes: { stars: 3 } }),
-    );
+    store.dispatch(gearsSlice.actions.update({ id: "other-gear", changes: { stars: 3 } }));
     expect(selectPreset(store.getState().present, presetId)).toBe(original);
 
-    store.dispatch(
-      gearsSlice.actions.update({ id: gearId, changes: { stars: 9 } }),
-    );
+    store.dispatch(gearsSlice.actions.update({ id: gearId, changes: { stars: 9 } }));
     const updated = selectPreset(store.getState().present, presetId);
     expect(updated).not.toBe(original);
     expect(updated?.g1).toMatchObject({ gear_id: 24, stars: 9 });

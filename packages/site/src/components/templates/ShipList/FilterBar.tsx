@@ -43,7 +43,7 @@ const FilterBar: React.FCX<Props> = (props) => {
   return (
     <Flexbox className={className}>
       <SelectButtons
-        css={{ marginRight: "auto" }}
+        className="mr-auto"
         options={SHIP_CATEGORY_OPTIONS}
         value={filterState.category}
         onChange={handleCategoryChange}

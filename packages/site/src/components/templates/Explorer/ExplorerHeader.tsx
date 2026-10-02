@@ -28,12 +28,7 @@ const ExplorerHeader: React.FCX<ExplorerHeaderProps> = ({
       <Button onClick={onFolderCreate} startIcon={<CreateNewFolderIcon />}>
         {t("CreateFolder")}
       </Button>
-      <ClearButton
-        css={{ marginLeft: "auto" }}
-        title={t("Close")}
-        size="small"
-        onClick={onClose}
-      />
+      <ClearButton className="ml-auto" title={t("Close")} size="small" onClick={onClose} />
     </Flexbox>
   );
 };

@@ -8,14 +8,9 @@ import { GCS_PREFIX_URL, MASTER_DATA_PATH } from "../firebase";
 
 type FetcherArg = readonly [string, string | undefined];
 
-export const GenerationMapContext = React.createContext<Dict<string, string>>(
-  {},
-);
+export const GenerationMapContext = React.createContext<Dict<string, string>>({});
 
-export async function gcsFetcher<T>([
-  path,
-  generation,
-]: FetcherArg): Promise<T> {
+export async function gcsFetcher<T>([path, generation]: FetcherArg): Promise<T> {
   const url = new URL(`${GCS_PREFIX_URL}/${path}`);
 
   if (generation) {

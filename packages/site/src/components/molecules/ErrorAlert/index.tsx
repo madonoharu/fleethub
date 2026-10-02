@@ -1,13 +1,13 @@
-import { Alert, AlertTitle, SxProps, Typography } from "@mui/material";
+import { Alert, AlertTitle, Typography } from "@mui/material";
 import React from "react";
 
 interface ErrorAlertProps {
   title?: string;
   error: unknown;
-  sx?: SxProps;
+  className?: string;
 }
 
-const ErrorAlert: React.FC<ErrorAlertProps> = ({ title, error, sx }) => {
+const ErrorAlert: React.FC<ErrorAlertProps> = ({ title, error, className }) => {
   console.error(error);
 
   let message: string;
@@ -18,15 +18,9 @@ const ErrorAlert: React.FC<ErrorAlertProps> = ({ title, error, sx }) => {
     message = String(error);
   }
   return (
-    <Alert severity="error" sx={sx}>
+    <Alert severity="error" className={className}>
       {title ? <AlertTitle>{title}</AlertTitle> : null}
-      <Typography
-        variant="body2"
-        sx={{
-          display: "block",
-          whiteSpace: "pre-wrap",
-        }}
-      >
+      <Typography variant="body2" className="block whitespace-pre-wrap">
         {message}
       </Typography>
     </Alert>

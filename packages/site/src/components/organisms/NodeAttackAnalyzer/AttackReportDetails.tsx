@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Alert, Typography } from "@mui/material";
 import type { AttackAnalysis, Comp } from "fleethub-core";
@@ -10,6 +9,7 @@ import { numstr } from "../../../utils";
 import DamageStateDensityBarChart from "../AttackTable/DamageStateDensityBarChart";
 import DamageDensitySection from "../DamageDensitySection";
 import DamageTable from "../DamageTable";
+import { cn } from "../../../styles";
 
 interface Props {
   tag: "day" | "night" | "closing_torpedo" | "opening_asw" | "support_shelling";
@@ -45,26 +45,16 @@ const AttackReportDetails: React.FCX<Props> = ({
   const { t } = useTranslation("common");
 
   const report = analysis[tag];
-  const {
-    attacker_is_player,
-    attacker_ship_id,
-    target_ship_id,
-    historical_params,
-  } = analysis;
+  const { attacker_is_player, attacker_ship_id, target_ship_id, historical_params } = analysis;
 
   const attackerName = useShipName(attacker_ship_id, attacker_ship_id > 1500);
   const targetName = useShipName(target_ship_id, target_ship_id > 1500);
 
-  const attackerColor = attacker_is_player
-    ? "primary.light"
-    : "secondary.light";
-  const targetColor = !attacker_is_player ? "primary.light" : "secondary.light";
+  const attackerClassName = attacker_is_player ? "text-primary-light" : "text-secondary-light";
+  const targetClassName = attacker_is_player ? "text-secondary-light" : "text-primary-light";
 
   let historicalParamsText = "";
-  if (
-    historical_params.power_mod.a !== 1 ||
-    historical_params.power_mod.b !== 0
-  ) {
+  if (historical_params.power_mod.a !== 1 || historical_params.power_mod.b !== 0) {
     const mod = historical_params.power_mod;
     const text = ` ${t("power_mod")} x${numstr(mod.a)} +${numstr(mod.b)}`;
     historicalParamsText += text;
@@ -75,31 +65,20 @@ const AttackReportDetails: React.FCX<Props> = ({
     )}`;
   }
   if (historical_params.accuracy_mod !== 1) {
-    historicalParamsText += ` ${t("accuracy_mod")} ${numstr(
-      historical_params.accuracy_mod,
-    )}`;
+    historicalParamsText += ` ${t("accuracy_mod")} ${numstr(historical_params.accuracy_mod)}`;
   }
   if (historical_params.target_evasion_mod !== 1) {
-    historicalParamsText += ` ${t("evasion")} ${numstr(
-      historical_params.target_evasion_mod,
-    )}`;
+    historicalParamsText += ` ${t("evasion")} ${numstr(historical_params.target_evasion_mod)}`;
   }
 
   return (
     <div className={className} style={style}>
-      <Typography
-        sx={{
-          alignItems: "center",
-          display: "flex",
-          gap: 1,
-          mb: 1,
-        }}
-      >
-        <Typography variant="inherit" component="span" color={attackerColor}>
+      <Typography className="items-center flex gap-2 mb-2">
+        <Typography variant="inherit" component="span" className={attackerClassName}>
           {attackerName}
         </Typography>
         <ArrowForward fontSize="inherit" />
-        <Typography variant="inherit" component="span" color={targetColor}>
+        <Typography variant="inherit" component="span" className={targetClassName}>
           {targetName}
         </Typography>
       </Typography>
@@ -115,15 +94,9 @@ const AttackReportDetails: React.FCX<Props> = ({
       ) : (
         <Typography>{t("AttackTypeNone")}</Typography>
       )}
-      {report.damage_state_density &&
-      Object.keys(report.damage_state_density).length ? (
+      {report.damage_state_density && Object.keys(report.damage_state_density).length ? (
         <>
-          <Typography
-            variant="subtitle2"
-            sx={{
-              mt: 1,
-            }}
-          >
+          <Typography className="mt-2" variant="subtitle2">
             {t("Distribution")}
           </Typography>
           <DamageStateDensityBarChart data={report.damage_state_density} />
@@ -144,7 +117,7 @@ const AttackReportDetails: React.FCX<Props> = ({
           )}
         </>
       ) : (
-        <Alert severity="warning" sx={{ mt: 1 }}>
+        <Alert className="mt-2" severity="warning">
           {t("Unknown")}
         </Alert>
       )}
@@ -152,6 +125,6 @@ const AttackReportDetails: React.FCX<Props> = ({
   );
 };
 
-export default styled(AttackReportDetails)`
-  min-width: 480px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof AttackReportDetails>) => (
+  <AttackReportDetails {...props} className={cn("min-w-120", className)} />
+);

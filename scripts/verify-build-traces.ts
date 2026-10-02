@@ -7,13 +7,8 @@ import { withIsolatedBuildTraces } from "./build-traces.mts";
 
 assert(process.versions["bun"], "Run this verifier with Bun");
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-await withIsolatedBuildTraces(
-  root,
-  ({ directory, pathCount, manifestCount }) => {
-    console.log(
-      `Verifying ${pathCount} trace paths from ${manifestCount} page manifests`,
-    );
-    const result = probeBuildRuntime(directory, "inherit");
-    process.exitCode = result.status ?? 1;
-  },
-);
+await withIsolatedBuildTraces(root, ({ directory, pathCount, manifestCount }) => {
+  console.log(`Verifying ${pathCount} trace paths from ${manifestCount} page manifests`);
+  const result = probeBuildRuntime(directory, "inherit");
+  process.exitCode = result.status ?? 1;
+});

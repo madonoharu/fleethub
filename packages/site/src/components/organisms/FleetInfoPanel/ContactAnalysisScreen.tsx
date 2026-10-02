@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Typography } from "@mui/material";
 import { ContactAnalysis, DayContactChance } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
@@ -6,17 +5,14 @@ import React from "react";
 
 import { toPercent } from "../../../utils";
 import Table from "../Table";
+import { cn } from "../../../styles";
 
 type ContactChanceTableProps = {
   data: DayContactChance[];
   label: string;
 };
 
-const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({
-  className,
-  data,
-  label,
-}) => {
+const ContactChanceTable: React.FCX<ContactChanceTableProps> = ({ className, data, label }) => {
   const { t } = useTranslation("common");
 
   return (
@@ -68,21 +64,15 @@ interface Props {
 const ContactAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
   return (
     <div className={className}>
-      {analysis.single && (
-        <ContactChanceTable label="対通常戦" data={analysis.single} />
-      )}
-      {analysis.combined && (
-        <ContactChanceTable label="対連合戦" data={analysis.combined} />
-      )}
+      {analysis.single && <ContactChanceTable label="対通常戦" data={analysis.single} />}
+      {analysis.combined && <ContactChanceTable label="対連合戦" data={analysis.combined} />}
     </div>
   );
 };
 
-export default styled(ContactAnalysisScreen)`
-  width: fit-content;
-  margin-right: auto;
-  margin-left: auto;
-  > * {
-    margin-bottom: 16px;
-  }
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof ContactAnalysisScreen>) => (
+  <ContactAnalysisScreen
+    {...props}
+    className={cn("w-fit mr-auto ml-auto [&_>_*]:mb-4", className)}
+  />
+);

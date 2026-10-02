@@ -13,11 +13,7 @@ interface SlotSizeVecFormProps {
   onChange: (value: SlotSizeVec) => void;
 }
 
-const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({
-  ship,
-  config,
-  onChange,
-}) => {
+const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({ ship, config, onChange }) => {
   const { t } = useTranslation("common");
   const current = config.slots || [];
 
@@ -30,7 +26,7 @@ const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({
   return (
     <>
       <Typography variant="subtitle2">{t("slots")}</Typography>
-      <Flexbox gap={1} flexWrap="wrap">
+      <Flexbox className="flex-wrap gap-2">
         {ship.slots.map((defaultValue, i) => {
           return (
             <ResettableInput

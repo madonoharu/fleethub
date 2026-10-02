@@ -25,7 +25,7 @@ export const useModal = (initialOpen = false) => {
 
   const Modal: React.FC<DialogProps> = useCallback(
     (props) => <Dialog open={isOpen} onClose={hide} {...props} />,
-    [isOpen, hide]
+    [isOpen, hide],
   );
 
   return Object.assign(Modal, {

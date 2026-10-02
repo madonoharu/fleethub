@@ -1,34 +1,12 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { nonNullable } from "@fh/utils";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Button, ButtonProps, Menu, MenuItem, MenuList } from "@mui/material";
 import React from "react";
 
-import {
-  getDefaultOptionLabel,
-  SelectComponent,
-  SelectComponentProps,
-} from "../Select";
+import { getDefaultOptionLabel, SelectComponent, SelectComponentProps } from "../Select";
 
-const StyledButton = styled(Button)`
-  .MuiButton-endIcon {
-    margin-left: 0;
-  }
-`;
-
-const Label = styled.span`
-  margin-right: 4px;
-`;
-
-const StyledMenuItem = styled(MenuItem)`
-  min-width: 80px;
-  justify-content: center;
-`;
-
-type SelectedMenuProps = Omit<
-  ButtonProps,
-  keyof SelectComponentProps<unknown>
-> & {
+type SelectedMenuProps = Omit<ButtonProps, keyof SelectComponentProps<unknown>> & {
   label?: React.ReactNode;
 };
 
@@ -38,6 +16,7 @@ const SelectedMenu: SelectComponent<SelectedMenuProps> = ({
   onChange,
   getOptionLabel = getDefaultOptionLabel,
   label,
+  className,
   ...buttonProps
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -51,19 +30,21 @@ const SelectedMenu: SelectComponent<SelectedMenuProps> = ({
 
   return (
     <>
-      <StyledButton
+      <Button
         onClick={handleClick}
         endIcon={<ArrowDropDownIcon />}
         {...buttonProps}
+        className={cn("[&_.MuiButton-endIcon]:ml-0", className)}
       >
-        {nonNullable(label) && <Label>{label}</Label>}
+        {nonNullable(label) && <span className="mr-1">{label}</span>}
         {getOptionLabel(value)}
-      </StyledButton>
+      </Button>
 
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuList dense>
           {options.map((option, index) => (
-            <StyledMenuItem
+            <MenuItem
+              className="min-w-20 justify-center"
               key={index}
               value={index}
               onClick={() => {
@@ -72,7 +53,7 @@ const SelectedMenu: SelectComponent<SelectedMenuProps> = ({
               }}
             >
               {getOptionLabel(option)}
-            </StyledMenuItem>
+            </MenuItem>
           ))}
         </MenuList>
       </Menu>

@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useSelectState = <T>(
-  options: readonly T[],
-  defaultOption: T = options[0]
-) => {
+export const useSelectState = <T>(options: readonly T[], defaultOption: T = options[0]) => {
   const [value, onChange] = useState(defaultOption);
 
   useEffect(() => {

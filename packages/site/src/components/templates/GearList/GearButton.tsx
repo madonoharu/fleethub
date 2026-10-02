@@ -1,8 +1,8 @@
 import { Button } from "@mui/material";
-import { css, styled } from "@mui/system";
 import type { Gear, EBonuses } from "fleethub-core";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { GearNameplate, GearTooltip } from "../../organisms";
 
 type Props = {
@@ -11,20 +11,17 @@ type Props = {
   ebonuses?: EBonuses;
 };
 
-const GearButton: React.FCX<Props> = ({
-  className,
-  gear,
-  onClick,
-  ebonuses,
-}) => {
+const GearButton: React.FCX<Props> = ({ className, gear, onClick, ebonuses }) => {
   return (
-    <GearTooltip
-      gear={gear}
-      ebonuses={ebonuses}
-      enterDelay={300}
-      enterNextDelay={300}
-    >
-      <Button className={className} onClick={onClick}>
+    <GearTooltip gear={gear} ebonuses={ebonuses} enterDelay={300} enterNextDelay={300}>
+      <Button
+        className={cn(
+          "h-9 justify-start",
+          hasBonus(ebonuses) && "box-border border border-solid border-bonus",
+          className,
+        )}
+        onClick={onClick}
+      >
         <GearNameplate name={gear.name} iconId={gear.icon_id} />
       </Button>
     </GearTooltip>
@@ -32,19 +29,7 @@ const GearButton: React.FCX<Props> = ({
 };
 
 function hasBonus(bonuses?: EBonuses): boolean {
-  return Boolean(
-    bonuses && Object.values(bonuses).some((value) => value !== 0)
-  );
+  return Boolean(bonuses && Object.values(bonuses).some((value) => value !== 0));
 }
 
-export default styled(GearButton)(
-  ({ theme, ebonuses }) => css`
-    justify-content: flex-start;
-    height: 36px;
-    ${hasBonus(ebonuses) &&
-    css`
-      box-sizing: border-box;
-      border: 1px solid ${theme.colors.bonus};
-    `}
-  `
-);
+export default GearButton;

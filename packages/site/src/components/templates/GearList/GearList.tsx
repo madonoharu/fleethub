@@ -38,12 +38,7 @@ type GearListProps = {
   getNextEbonuses?: (gear: Gear) => EBonuses;
 };
 
-const GearList: React.FC<GearListProps> = ({
-  gears,
-  canEquip,
-  onSelect,
-  getNextEbonuses,
-}) => {
+const GearList: React.FC<GearListProps> = ({ gears, canEquip, onSelect, getNextEbonuses }) => {
   const { abyssal, category, setAbyssal, setCategory } = useGearListState();
 
   const handleSelect = (gear: Gear) => onSelect?.(gear);

@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { ValueOf } from "@fh/utils";
 import { Typography } from "@mui/material";
 import {
@@ -13,9 +12,7 @@ import React from "react";
 import { numstr } from "../../../utils";
 import { LabeledValue, Divider } from "../../atoms";
 
-function hasMod(
-  mod: AttackPowerModifier | undefined | null,
-): mod is AttackPowerModifier {
+function hasMod(mod: AttackPowerModifier | undefined | null): mod is AttackPowerModifier {
   if (!mod) {
     return false;
   }
@@ -41,11 +38,7 @@ type AttackPowerDetailsProps = {
   params: AttackPowerParams | null;
 };
 
-const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
-  className,
-  power,
-  params,
-}) => {
+const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({ className, power, params }) => {
   const { t } = useTranslation("common");
 
   if (!power || !params) {
@@ -68,27 +61,15 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
         value={numstr(power.critical) || "-"}
       />
 
-      <LabeledValue
-        label={t("BasicAttackPower")}
-        value={numstr(params.basic) || "-"}
-      />
+      <LabeledValue label={t("BasicAttackPower")} value={numstr(params.basic) || "-"} />
       {params.balloon_mod !== 1 && (
-        <LabeledValue
-          label={t("balloon_mod")}
-          value={numstr(params.balloon_mod) || "-"}
-        />
+        <LabeledValue label={t("balloon_mod")} value={numstr(params.balloon_mod) || "-"} />
       )}
       {params.ap_shell_mod && (
-        <LabeledValue
-          label={t("ap_shell_mod")}
-          value={numstr(params.ap_shell_mod) || "-"}
-        />
+        <LabeledValue label={t("ap_shell_mod")} value={numstr(params.ap_shell_mod) || "-"} />
       )}
       {params.aerial_power && (
-        <LabeledValue
-          label={t("aerial_power")}
-          value={numstr(params.aerial_power) || "-"}
-        />
+        <LabeledValue label={t("aerial_power")} value={numstr(params.aerial_power) || "-"} />
       )}
       {params.proficiency_critical_mod !== 1 && (
         <LabeledValue
@@ -109,14 +90,8 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
         />
       )}
 
-      <AttackPowerModifierLabel
-        label={t("precap_mod")}
-        mod={params.precap_mod}
-      />
-      <AttackPowerModifierLabel
-        label={t("postcap_mod")}
-        mod={params.postcap_mod}
-      />
+      <AttackPowerModifierLabel label={t("precap_mod")} mod={params.precap_mod} />
+      <AttackPowerModifierLabel label={t("postcap_mod")} mod={params.postcap_mod} />
 
       {hasSpecial && (
         <>
@@ -131,10 +106,7 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
         </>
       )}
 
-      <AttackPowerModifierLabel
-        label={t("historical_mod")}
-        mod={params.historical_mod}
-      />
+      <AttackPowerModifierLabel label={t("historical_mod")} mod={params.historical_mod} />
 
       {hasCustom && (
         <>
@@ -143,22 +115,13 @@ const AttackPowerDetails: React.FCX<AttackPowerDetailsProps> = ({
             label={t("basic_power_mod")}
             mod={custom_mods.basic_power_mod}
           />
-          <AttackPowerModifierLabel
-            label={t("precap_mod")}
-            mod={custom_mods.precap_mod}
-          />
-          <AttackPowerModifierLabel
-            label={t("postcap_mod")}
-            mod={custom_mods.postcap_mod}
-          />
-          <AttackPowerModifierLabel
-            label={t("historical_mod")}
-            mod={custom_mods.historical_mod}
-          />
+          <AttackPowerModifierLabel label={t("precap_mod")} mod={custom_mods.precap_mod} />
+          <AttackPowerModifierLabel label={t("postcap_mod")} mod={custom_mods.postcap_mod} />
+          <AttackPowerModifierLabel label={t("historical_mod")} mod={custom_mods.historical_mod} />
         </>
       )}
     </div>
   );
 };
 
-export default styled(AttackPowerDetails)``;
+export default AttackPowerDetails;

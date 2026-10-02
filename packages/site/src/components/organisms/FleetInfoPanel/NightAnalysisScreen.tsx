@@ -1,4 +1,4 @@
-import { styled, Typography, Stack, Tooltip } from "@mui/material";
+import { Typography, Stack, Tooltip } from "@mui/material";
 import { CompNightAnalysis, NightCutinActionReport } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -15,18 +15,21 @@ import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
+import { cn } from "../../../styles";
 
-const GridContainer1 = styled("div")`
-  display: grid;
-  grid-template-columns: auto auto 48px;
-  justify-content: end;
-  align-content: start;
-  gap: 8px;
-`;
+const GridContainer1 = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div
+    {...props}
+    className={cn(
+      "grid [grid-template-columns:auto_auto_48px] [justify-content:end] [align-content:start] gap-2",
+      className,
+    )}
+  />
+);
 
-const GridContainer2 = styled(GridContainer1)`
-  grid-template-columns: auto 48px;
-`;
+const GridContainer2 = ({ className, ...props }: React.ComponentProps<typeof GridContainer1>) => (
+  <GridContainer1 {...props} className={cn("[grid-template-columns:auto_48px]", className)} />
+);
 
 const NightCutinActionReportCell: React.FC<{
   report: NightCutinActionReport;
@@ -44,12 +47,7 @@ const NightCutinActionReportCell: React.FC<{
   entries.sort((a, b) => (b[1].proc_rate ?? 0) - (a[1].proc_rate ?? 0));
 
   return (
-    <Stack
-      direction="row"
-      sx={{
-        gap: 2,
-      }}
-    >
+    <Stack className="gap-4" direction="row">
       <GridContainer1>
         {entries.map(([key, attack]) => (
           <React.Fragment key={key}>
@@ -100,13 +98,8 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
   const targetColor = comp.is_enemy() ? "primary" : "secondary";
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
-    >
-      <Flexbox gap={1}>
+    <Stack className={cn("gap-2", className)}>
+      <Flexbox className="gap-2">
         {([1, 2, 3] as const).map((n) => {
           const rate = night_cutin.night_contact_chance[`rank${n}`];
 
@@ -118,15 +111,7 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
 
           return (
             <Tooltip key={n} title={title}>
-              <Typography
-                variant="body2"
-                component="div"
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
+              <Typography className="flex items-center gap-2" variant="body2" component="div">
                 <ContactRankIcon rank={`Rank${n}`} />
                 <span>{toPercent(rate)}</span>
               </Typography>
@@ -134,26 +119,14 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
           );
         })}
 
-        <Typography
-          sx={{
-            ml: 5,
-          }}
-        >
-          攻撃側
-        </Typography>
+        <Typography className="ml-10">攻撃側</Typography>
         <NightFleetConditionsForm
           value={config.left_night_fleet_conditions}
           onChange={bind("left_night_fleet_conditions")}
           color={attackerColor}
         />
 
-        <Typography
-          sx={{
-            ml: 5,
-          }}
-        >
-          相手側
-        </Typography>
+        <Typography className="ml-10">相手側</Typography>
         <NightFleetConditionsForm
           value={config.right_night_fleet_conditions}
           onChange={bind("right_night_fleet_conditions")}
@@ -162,27 +135,22 @@ const NightAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
       </Flexbox>
 
       <Table
-        sx={{ mb: 2 }}
+        className="mb-4"
+
         data={night_cutin.ships}
         columns={[
           {
             label: "艦娘",
-            getValue: (ship) => (
-              <ShipNameplate shipId={ship.ship_id} index={ship.index} />
-            ),
+            getValue: (ship) => <ShipNameplate shipId={ship.ship_id} index={ship.index} />,
             width: 160,
           },
           {
             label: "小破以上",
-            getValue: (ship) => (
-              <NightCutinActionReportCell report={ship.normal} />
-            ),
+            getValue: (ship) => <NightCutinActionReportCell report={ship.normal} />,
           },
           {
             label: "中破",
-            getValue: (ship) => (
-              <NightCutinActionReportCell report={ship.chuuha} />
-            ),
+            getValue: (ship) => <NightCutinActionReportCell report={ship.chuuha} />,
           },
         ]}
       />

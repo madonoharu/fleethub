@@ -1,12 +1,4 @@
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  mock,
-} from "bun:test";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, mock } from "bun:test";
 import { brotliDecompressSync } from "node:zlib";
 import type { SaveOptions as GcsSaveOptions } from "@google-cloud/storage";
 import type { App } from "firebase-admin/app";
@@ -72,18 +64,14 @@ afterEach(() => {
 
 describe("storage authentication boundary", () => {
   it("imports and reads public JSON without initializing authenticated storage", async () => {
-    const { app, storage, got, operations } = load([
-      { name: "another-app" } as App,
-    ]);
+    const { app, storage, got, operations } = load([{ name: "another-app" } as App]);
     const data = { revision: 7 };
     const json = mock().mockResolvedValue(data);
     got.get.mockReturnValue({ json } as unknown as ReturnType<typeof got.get>);
 
     expect(app.getApps).not.toHaveBeenCalled();
     expect(storage.getStorage).not.toHaveBeenCalled();
-    expect(await operations.readJson<typeof data>("data/public.json")).toEqual(
-      data,
-    );
+    expect(await operations.readJson<typeof data>("data/public.json")).toEqual(data);
     expect(got.get).toHaveBeenCalledTimes(1);
     expect(got.get).toHaveBeenCalledWith(
       "https://storage.googleapis.com/kcfleethub/data/public.json",
@@ -96,9 +84,7 @@ describe("storage authentication boundary", () => {
   it("requires credentials before the first authenticated storage operation", () => {
     const { app, storage, operations } = load();
 
-    expect(() => operations.exists("data/private.json")).toThrow(
-      "client_emailが存在しません",
-    );
+    expect(() => operations.exists("data/private.json")).toThrow("client_emailが存在しません");
     expect(app.initializeApp).not.toHaveBeenCalled();
     expect(storage.getStorage).not.toHaveBeenCalled();
   });
@@ -170,9 +156,9 @@ describe("storage upload options", () => {
     app.getApps.mockReturnValue([defaultApp]);
     app.getApp.mockReturnValue(defaultApp);
     const save =
-      mock<
-        (data: string | Buffer, options: GcsSaveOptions) => Promise<void>
-      >().mockResolvedValue(undefined);
+      mock<(data: string | Buffer, options: GcsSaveOptions) => Promise<void>>().mockResolvedValue(
+        undefined,
+      );
     storage.getStorage.mockReturnValue({
       bucket: () => ({ file: () => ({ save }) }),
     } as unknown as ReturnType<typeof storage.getStorage>);
@@ -217,9 +203,7 @@ describe("storage upload options", () => {
     ]);
     const [compressed, compressedOptions] = save.mock.calls[1]!;
     expect(compressed).toBeInstanceOf(Buffer);
-    expect(brotliDecompressSync(compressed as Buffer).toString()).toBe(
-      "brotli",
-    );
+    expect(brotliDecompressSync(compressed as Buffer).toString()).toBe("brotli");
     expect(compressedOptions).toEqual({
       ...options,
       gzip: false,
@@ -240,14 +224,10 @@ describe("storage upload options", () => {
     });
     const data = { value: 0, enabled: false };
 
-    expect(await operations.writeJson("data/frozen.json", data, options)).toBe(
-      data,
-    );
+    expect(await operations.writeJson("data/frozen.json", data, options)).toBe(data);
     const [compressed, uploadedOptions] = save.mock.calls[0]!;
     expect(compressed).toBeInstanceOf(Buffer);
-    expect(
-      JSON.parse(brotliDecompressSync(compressed as Buffer).toString()),
-    ).toEqual(data);
+    expect(JSON.parse(brotliDecompressSync(compressed as Buffer).toString())).toEqual(data);
     expect(uploadedOptions).toEqual({
       contentType: "application/vnd.fleethub+json",
       gzip: false,
@@ -277,11 +257,7 @@ describe("storage upload options", () => {
       };
 
       expect(
-        await operations.writeJson(
-          "data/uncompressed.json",
-          data,
-          options as SaveOptions,
-        ),
+        await operations.writeJson("data/uncompressed.json", data, options as SaveOptions),
       ).toBe(data);
       expect(save).toHaveBeenCalledWith(JSON.stringify(data), {
         contentType: "application/vnd.fleethub+json",

@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Gear } from "fleethub-core";
 import React from "react";
 
@@ -6,6 +5,7 @@ import { GearPosition } from "../../../store";
 import GearBox from "../GearBox";
 
 import SlotSizeButton from "./SlotSizeButton";
+import { cn } from "../../../styles";
 
 type Props = {
   gear?: Gear;
@@ -48,14 +48,9 @@ const GearSlot: React.FCX<Props> = ({
   );
 };
 
-export default styled(GearSlot)`
-  display: flex;
-
-  > .SlotSizeButton {
-    flex-shrink: 0;
-  }
-
-  > .GearBox {
-    min-width: 0;
-  }
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof GearSlot>) => (
+  <GearSlot
+    {...props}
+    className={cn("flex [&_>_.SlotSizeButton]:shrink-0 [&_>_.GearBox]:min-w-0", className)}
+  />
+);

@@ -34,7 +34,7 @@ impl NightPhaseAttackParams<'_> {
         let historical_params = self.historical_params;
         let night_conditions = self.night_conditions;
 
-        let attack_params = match self.style.clone() {
+        match self.style.clone() {
             NightPhaseAttackStyle::Night(style) => NightAttackParams {
                 style,
                 attacker,
@@ -54,9 +54,7 @@ impl NightPhaseAttackParams<'_> {
                 historical_params,
             }
             .calc_attack_params(),
-        };
-
-        attack_params
+        }
     }
 
     pub fn to_attack(&self) -> Attack {

@@ -1,4 +1,4 @@
-import { styled, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { CompDayAnalysis, DayCutinReport } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -14,23 +14,23 @@ import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
 
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
+import { cn } from "../../../styles";
 
-const GridContainer1 = styled("div")`
-  display: grid;
-  grid-template-columns: auto auto 48px;
-  justify-content: end;
-  align-content: start;
-  gap: 8px;
-`;
+const GridContainer1 = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div
+    {...props}
+    className={cn(
+      "grid [grid-template-columns:auto_auto_48px] [justify-content:end] [align-content:start] gap-2",
+      className,
+    )}
+  />
+);
 
-const GridContainer2 = styled(GridContainer1)`
-  grid-template-columns: auto 48px;
-`;
+const GridContainer2 = ({ className, ...props }: React.ComponentProps<typeof GridContainer1>) => (
+  <GridContainer1 {...props} className={cn("[grid-template-columns:auto_48px]", className)} />
+);
 
-const DayCutinReportCell: React.FCX<{ report: DayCutinReport }> = ({
-  className,
-  report,
-}) => {
+const DayCutinReportCell: React.FCX<{ report: DayCutinReport }> = ({ className, report }) => {
   const { t } = useTranslation("common");
   const singleRate = report.data["SingleAttack"]?.proc_rate;
   const total = typeof singleRate === "number" ? 1 - singleRate : null;
@@ -39,13 +39,7 @@ const DayCutinReportCell: React.FCX<{ report: DayCutinReport }> = ({
   entries.sort((a, b) => (b[1].proc_rate ?? 0) - (a[1].proc_rate ?? 0));
 
   return (
-    <Stack
-      className={className}
-      direction="row"
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className={cn("gap-2", className)} direction="row">
       <GridContainer1>
         {entries.map(([key, attack]) => (
           <React.Fragment key={key}>
@@ -105,20 +99,12 @@ const DayAnalysisScreen: React.FC<Props> = ({ combined, analysis }) => {
   }
 
   return (
-    <Stack
-      sx={{
-        gap: 1,
-      }}
-    >
-      <Stack
-        direction="row"
-        sx={{
-          gap: 1,
-        }}
-      >
+    <Stack className="gap-2">
+      <Stack className="gap-2" direction="row">
         <Typography>{fleetLosText}</Typography>
         <EngagementSelect
-          sx={{ ml: "auto" }}
+          className="ml-auto"
+
           value={config.engagement}
           onChange={bind("engagement")}
         />
@@ -129,7 +115,8 @@ const DayAnalysisScreen: React.FC<Props> = ({ combined, analysis }) => {
         />
       </Stack>
       <Table
-        sx={{ mb: 2 }}
+        className="mb-4"
+
         data={day_cutin.ships}
         columns={[
           {

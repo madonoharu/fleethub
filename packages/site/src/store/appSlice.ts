@@ -49,10 +49,7 @@ export const appSlice = createSlice({
     setDamageDensityOpen: (state, { payload }: PayloadAction<boolean>) => {
       state.damageDensityOpen = payload;
     },
-    setDamageDensityIncludeNoPenetration: (
-      state,
-      { payload }: PayloadAction<boolean>,
-    ) => {
+    setDamageDensityIncludeNoPenetration: (state, { payload }: PayloadAction<boolean>) => {
       state.damageDensityIncludeNoPenetration = payload;
     },
     setOutputToTemp: (state, { payload }: PayloadAction<boolean>) => {
@@ -77,34 +74,27 @@ export const appSlice = createSlice({
 });
 
 /** 編成の操作とは別の表示の好みなので、undo / redo では戻さない。 */
-export function keepViewPreferences(
-  restored: AppState,
-  current: AppState,
-): AppState {
+export function keepViewPreferences(restored: AppState, current: AppState): AppState {
   return {
     ...restored,
     damageDensityOpen: current.damageDensityOpen,
-    damageDensityIncludeNoPenetration:
-      current.damageDensityIncludeNoPenetration,
+    damageDensityIncludeNoPenetration: current.damageDensityIncludeNoPenetration,
   };
 }
 
-export const initApp = createAsyncThunk(
-  "app/init",
-  async (masterData: MasterData, thunkAPI) => {
-    if (typeof window === "undefined") {
-      return;
-    }
+export const initApp = createAsyncThunk("app/init", async (masterData: MasterData, thunkAPI) => {
+  if (typeof window === "undefined") {
+    return;
+  }
 
-    const url = new URL(location.href);
-    window.history.replaceState(null, "", location.pathname);
+  const url = new URL(location.href);
+  window.history.replaceState(null, "", location.pathname);
 
-    const payload = await parseUrl(masterData, url);
+  const payload = await parseUrl(masterData, url);
 
-    if (payload) {
-      thunkAPI.dispatch(entitiesSlice.actions.import(payload));
-    }
+  if (payload) {
+    thunkAPI.dispatch(entitiesSlice.actions.import(payload));
+  }
 
-    thunkAPI.dispatch(ActionCreators.clearHistory());
-  },
-);
+  thunkAPI.dispatch(ActionCreators.clearHistory());
+});

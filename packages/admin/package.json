@@ -1,29 +1,29 @@
 {
   "name": "@fh/admin",
   "license": "UNLICENSED",
+  "type": "module",
   "main": "esm/index.js",
   "exports": {
     ".": "./esm/index.js",
     "./storage": "./esm/storage.js",
     "./src": "./src/index.ts"
   },
-  "type": "module",
   "scripts": {
     "build": "bun --bun tsc -m esnext --outDir esm"
   },
   "dependencies": {
     "@fh/utils": "workspace:*",
     "@google-cloud/asset": "7.1.1",
+    "@google-cloud/storage": "8.2.0",
     "cloudinary": "2.11.0",
     "dequal": "2.0.3",
+    "es-toolkit": "1.52.0",
     "firebase-admin": "14.5.0",
-    "fleethub-core": "workspace:*",
-    "googleapis": "182.0.0",
-    "ky": "2.1.0",
-    "got": "16.0.0",
+    "fleethub-core": "latest",
     "google-auth-library": "11.1.0",
-    "@google-cloud/storage": "8.2.0",
+    "googleapis": "182.0.0",
+    "got": "16.0.0",
     "kc-tools": "1.6.2",
-    "es-toolkit": "1.52.0"
+    "ky": "2.1.0"
   }
 }

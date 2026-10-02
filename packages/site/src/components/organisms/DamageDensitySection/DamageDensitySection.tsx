@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Alert } from "@mui/material";
 import type { ActionReport, Comp } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
@@ -21,6 +20,7 @@ import DamageDensityChart from "./DamageDensityChart";
 import DamageDensityStats from "./DamageDensityStats";
 import type { DamageBreakdownItem } from "./DamageDensityTooltip";
 import { listCompShips, withCompShipOrder } from "./compShips";
+import { cn } from "../../../styles";
 
 type ReportLike = Pick<ActionReport<unknown>, "data">;
 
@@ -76,16 +76,11 @@ const DamageDensitySection: React.FCX<Props> = ({
    *
    * 切り替えるたびに縦軸が伸び縮みすると、算入あり・なしを見比べられない。
    */
-  const statsAll = useMemo(
-    () => toDamageDensityStats(selectDensity(report, "all")),
-    [report],
-  );
+  const statsAll = useMemo(() => toDamageDensityStats(selectDensity(report, "all")), [report]);
 
   const statsPenetration = useMemo(
     () =>
-      includeNoPenetration
-        ? null
-        : toDamageDensityStats(selectDensity(report, "penetration")),
+      includeNoPenetration ? null : toDamageDensityStats(selectDensity(report, "penetration")),
     [report, includeNoPenetration],
   );
 
@@ -93,9 +88,7 @@ const DamageDensitySection: React.FCX<Props> = ({
 
   const statsNoPenetration = useMemo(
     () =>
-      includeNoPenetration
-        ? toDamageDensityStats(selectDensity(report, "noPenetration"))
-        : null,
+      includeNoPenetration ? toDamageDensityStats(selectDensity(report, "noPenetration")) : null,
     [report, includeNoPenetration],
   );
 
@@ -112,9 +105,7 @@ const DamageDensitySection: React.FCX<Props> = ({
     [compareReport, includeNoPenetration],
   );
 
-  const compareStats = includeNoPenetration
-    ? compareStatsAll
-    : compareStatsPenetration;
+  const compareStats = includeNoPenetration ? compareStatsAll : compareStatsPenetration;
 
   const compareStatsNoPenetration = useMemo(
     () =>
@@ -130,10 +121,7 @@ const DamageDensitySection: React.FCX<Props> = ({
   const stacked = !hasCompare;
 
   const breakdown = useMemo(
-    () =>
-      stacked
-        ? createDamageDensityBreakdown(report.data, undefined, kind)
-        : null,
+    () => (stacked ? createDamageDensityBreakdown(report.data, undefined, kind) : null),
     [report, stacked, kind],
   );
 
@@ -146,10 +134,7 @@ const DamageDensitySection: React.FCX<Props> = ({
 
         return {
           key,
-          label:
-            key === null
-              ? t("DamageDistribution.Other")
-              : String(getAttackLabel(t, style)),
+          label: key === null ? t("DamageDistribution.Other") : String(getAttackLabel(t, style)),
           style,
         };
       }),
@@ -186,8 +171,7 @@ const DamageDensitySection: React.FCX<Props> = ({
 
   // 同じ艦を複数積んでいると艦名だけでは区別できないので、編成順を添える。
   const shipOrders = useMemo(
-    () =>
-      comp && new Map(listCompShips(comp).map((ship) => [ship.id, ship.order])),
+    () => comp && new Map(listCompShips(comp).map((ship) => [ship.id, ship.order])),
     [comp],
   );
   const nameOf = (id: string | undefined, name: string | undefined) =>
@@ -208,7 +192,7 @@ const DamageDensitySection: React.FCX<Props> = ({
 
   return (
     <div className={className}>
-      <Flexbox gap={2} flexWrap="wrap" mb={1}>
+      <Flexbox className="gap-4 flex-wrap mb-2">
         {comp && onCompareShipChange && (
           <CompShipNameSelect
             label={t("DamageDistribution.Compare")}
@@ -225,9 +209,7 @@ const DamageDensitySection: React.FCX<Props> = ({
           label={t("DamageDistribution.NoPenetration")}
           checked={includeNoPenetration}
           onChange={(checked) =>
-            dispatch(
-              appSlice.actions.setDamageDensityIncludeNoPenetration(checked),
-            )
+            dispatch(appSlice.actions.setDamageDensityIncludeNoPenetration(checked))
           }
         />
       </Flexbox>
@@ -258,6 +240,6 @@ const DamageDensitySection: React.FCX<Props> = ({
   );
 };
 
-export default styled(DamageDensitySection)`
-  margin-top: 16px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof DamageDensitySection>) => (
+  <DamageDensitySection {...props} className={cn("mt-4", className)} />
+);

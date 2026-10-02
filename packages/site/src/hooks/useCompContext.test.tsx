@@ -24,9 +24,7 @@ describe("fleet analyzer config binding", () => {
     });
     const leftUpdated = result.current.config;
     act(() => {
-      result.current.bind(
-        "right_night_fleet_conditions.activates_large_searchlight",
-      )(false);
+      result.current.bind("right_night_fleet_conditions.activates_large_searchlight")(false);
     });
 
     expect(result.current.config.left_night_fleet_conditions).toEqual({

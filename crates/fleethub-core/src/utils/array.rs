@@ -39,11 +39,11 @@ impl<T: Debug + Default + Clone, const N: usize> OptionalArray<T, N> {
     }
 
     pub fn values(&self) -> impl Iterator<Item = &T> {
-        self.0.iter().filter_map(|item| item.as_ref())
+        self.0.iter().flatten()
     }
 
     pub fn values_mut(&mut self) -> impl Iterator<Item = &mut T> {
-        self.0.iter_mut().filter_map(|item| item.as_mut())
+        self.0.iter_mut().flatten()
     }
 
     pub fn push(&mut self, value: T) {
@@ -97,9 +97,7 @@ where
     T: Debug + Default + Clone,
 {
     fn from_iter<I: IntoIterator<Item = Option<T>>>(iter: I) -> Self {
-        let mut array = ArrayVec::new();
-        array.extend(iter);
-        Self(array)
+        Self(iter.into_iter().collect())
     }
 }
 

@@ -1,18 +1,12 @@
-import styled from "@emotion/styled";
 import CheckIcon from "@mui/icons-material/Check";
-import { Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { Preset } from "../../../store";
 import { Flexbox } from "../../atoms";
 
 import PresetCard from "./PresetCard";
-
-const StyledButton = styled(Button)`
-  height: 100%;
-  width: 100%;
-  justify-content: flex-start;
-`;
 
 type PresetListItemProps = {
   preset: Preset;
@@ -36,14 +30,15 @@ const PresetListItem: React.FCX<PresetListItemProps> = ({
   const color = equippable === false ? "error" : "primary";
 
   return (
-    <Flexbox gap={1}>
-      <StyledButton
+    <Flexbox className="gap-2">
+      <Button
+        className="h-full w-full justify-start"
         variant={selected ? "contained" : "outlined"}
         color={selected ? color : "inherit"}
         onClick={onSelect}
       >
         {preset.name || ""}
-      </StyledButton>
+      </Button>
 
       <Button variant="contained" color={color} onClick={handleEquip}>
         <CheckIcon />
@@ -66,45 +61,31 @@ const PresetList: React.FCX<PresetListProps> = ({
   canEquip,
   allVisible,
 }) => {
-  const [index, setIndex] = React.useState(0);
+  const [selectedId, setSelectedId] = React.useState<string>();
 
   const equippablePresets = canEquip ? presets.filter(canEquip) : presets;
   const visiblePresets = allVisible ? presets : equippablePresets;
 
-  const current = visiblePresets.at(index);
+  const current = visiblePresets.find((preset) => preset.id === selectedId) ?? visiblePresets[0];
 
   return (
-    <div className={className}>
-      <Stack
-        sx={{
-          overflow: "scroll",
-          height: 400,
-          gap: 1,
-        }}
-      >
-        {visiblePresets.map((item, i) => (
+    <div className={cn("flex w-[800px] gap-2 [&>*]:basis-1/2", className)}>
+      <div className="flex h-[400px] flex-col gap-2 overflow-scroll">
+        {visiblePresets.map((item) => (
           <PresetListItem
             key={item.id}
             preset={item}
-            selected={index === i}
+            selected={current?.id === item.id}
             equippable={equippablePresets.includes(item)}
-            onSelect={() => setIndex(i)}
+            onSelect={() => setSelectedId(item.id)}
             onEquip={onEquip}
           />
         ))}
-      </Stack>
+      </div>
 
       {current && <PresetCard preset={current} />}
     </div>
   );
 };
 
-export default styled(PresetList)`
-  display: flex;
-  width: 800px;
-  gap: 8px;
-
-  > * {
-    flex-basis: 50%;
-  }
-`;
+export default PresetList;

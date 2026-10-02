@@ -1,4 +1,3 @@
-import { styled } from "@mui/system";
 import dynamic from "next/dynamic";
 import React from "react";
 
@@ -6,12 +5,6 @@ import { useAppDispatch, useRootSelector } from "../../../hooks";
 import { entitiesSlice, mapSelectSlice, MapSelectState } from "../../../store";
 import { AddStepPayload } from "../../../store/entities/entitiesSlice";
 import { Dialog } from "../../organisms";
-
-const StyledDialog = styled(Dialog)`
-  .MuiDialog-paper {
-    min-width: 664px;
-  }
-`;
 
 const MapMenu = dynamic(() => import("./MapMenu"));
 
@@ -36,19 +29,19 @@ const MapSelect: React.FCX = ({ className }) => {
       entitiesSlice.actions.addStep({
         file: state.position,
         ...payload,
-      })
+      }),
     );
   };
 
   return (
-    <StyledDialog fullHeight open={state.open} onClose={handleClose}>
-      <MapMenu
-        className={className}
-        state={state}
-        update={update}
-        onEnemySelect={handleSelect}
-      />
-    </StyledDialog>
+    <Dialog
+      slotProps={{ paper: { className: "min-w-[664px]" } }}
+      fullHeight
+      open={state.open}
+      onClose={handleClose}
+    >
+      <MapMenu className={className} state={state} update={update} onEnemySelect={handleSelect} />
+    </Dialog>
   );
 };
 

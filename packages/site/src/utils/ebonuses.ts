@@ -1,10 +1,5 @@
 import { GEAR_KEYS, GearKey, mapValues, nonNullable } from "@fh/utils";
-import {
-  createEquipmentBonuses,
-  EquipmentBonuses,
-  GearInput,
-  ShipInput,
-} from "equipment-bonus";
+import { createEquipmentBonuses, EquipmentBonuses, GearInput, ShipInput } from "equipment-bonus";
 import { Gear, Ship } from "fleethub-core";
 
 const toGearInput = (gear: Gear): GearInput => ({
@@ -45,10 +40,8 @@ const getGears = (ship: Ship, excludedKey?: GearKey) =>
     return data;
   }).filter(nonNullable);
 
-const subtract = (
-  left: EquipmentBonuses,
-  right: EquipmentBonuses
-): EquipmentBonuses => mapValues(left, (value, key) => value - right[key]);
+const subtract = (left: EquipmentBonuses, right: EquipmentBonuses): EquipmentBonuses =>
+  mapValues(left, (value, key) => value - right[key]);
 
 export const makeGetNextEbonuses = (ship: Ship, excludedKey: GearKey) => {
   const filtered = getGears(ship, excludedKey);
@@ -58,10 +51,7 @@ export const makeGetNextEbonuses = (ship: Ship, excludedKey: GearKey) => {
   const current = createEquipmentBonuses(ShipInput, filtered);
 
   return (gear: Gear) => {
-    const next = createEquipmentBonuses(ShipInput, [
-      ...filtered,
-      toGearInput(gear),
-    ]);
+    const next = createEquipmentBonuses(ShipInput, [...filtered, toGearInput(gear)]);
     return subtract(next, current);
   };
 };

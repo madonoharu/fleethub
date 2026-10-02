@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import React from "react";
 
 import { useFile } from "../../../hooks";
@@ -6,6 +5,7 @@ import FileForm from "../FileForm";
 
 import FolderMenu from "./FolderMenu";
 import PlanMenu from "./PlanMenu";
+import { cn } from "../../../styles";
 
 type Props = {
   id: string;
@@ -45,17 +45,11 @@ const FileMenu: React.FCX<Props> = ({ className, id, onClose }) => {
         onColorChange={actions.setColor}
       />
 
-      {file.type === "folder" ? (
-        <FolderMenu file={file} />
-      ) : (
-        <PlanMenu file={file} />
-      )}
+      {file.type === "folder" ? <FolderMenu file={file} /> : <PlanMenu file={file} />}
     </div>
   );
 };
 
-export default styled(FileMenu)`
-  min-height: 400px;
-  width: 400px;
-  padding: 8px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof FileMenu>) => (
+  <FileMenu {...props} className={cn("min-h-100 w-100 p-2", className)} />
+);

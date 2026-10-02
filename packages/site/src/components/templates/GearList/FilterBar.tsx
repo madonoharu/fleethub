@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { GearCategoryFilter } from "../../../store";
 import { Flexbox, Checkbox } from "../../atoms";
 import { SelectButtons } from "../../molecules";
@@ -9,11 +9,6 @@ import { SelectButtons } from "../../molecules";
 import FilterIcon from "./FilterIcon";
 
 const getFilterIcon = (key: GearCategoryFilter) => <FilterIcon icon={key} />;
-
-const Right = styled(Flexbox)`
-  margin-left: auto;
-  margin-bottom: -2px;
-`;
 
 type Props = {
   abyssal?: boolean;
@@ -35,28 +30,24 @@ const FilterBar: React.FCX<Props> = ({
   const { t } = useTranslation("common");
   return (
     <>
-      <div className={className}>
+      <div className={cn("flex h-10 items-center", className)}>
         <SelectButtons
           value={category}
           options={visibleCategories}
           onChange={onCategoryChange}
           getOptionLabel={getFilterIcon}
         />
-        <Right>
+        <Flexbox className="ml-auto -mb-0.5">
           <Checkbox
             label={t("Abyssal")}
             size="small"
             checked={abyssal || false}
             onChange={onAbyssalChange}
           />
-        </Right>
+        </Flexbox>
       </div>
     </>
   );
 };
 
-export default styled(FilterBar)`
-  height: 40px;
-  display: flex;
-  align-items: center;
-`;
+export default FilterBar;

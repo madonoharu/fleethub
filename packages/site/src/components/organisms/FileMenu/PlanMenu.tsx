@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import LinkIcon from "@mui/icons-material/Link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Button, Link } from "@mui/material";
@@ -10,15 +9,15 @@ import { PlanEntity } from "../../../store";
 import { createDeck, openDeckbuilder, openKctools } from "../../../utils";
 import { Divider, KctoolsIcon } from "../../atoms";
 import { CopyTextButton, TextField } from "../../molecules";
+import { cn } from "../../../styles";
 
-const StyledDivider = styled(Divider)`
-  margin-top: 8px;
-`;
+const StyledDivider = ({ className, ...props }: React.ComponentProps<typeof Divider>) => (
+  <Divider {...props} className={cn("mt-2", className)} />
+);
 
-const StyledButton = styled(Button)`
-  width: 100%;
-  justify-content: flex-start;
-`;
+const StyledButton = ({ className, ...props }: React.ComponentProps<typeof Button>) => (
+  <Button {...props} className={cn("w-full justify-start", className)} />
+);
 
 type Props = {
   file: PlanEntity;
@@ -37,11 +36,7 @@ const PlanMenu: React.FCX<Props> = ({ className, file }) => {
     <div className={className}>
       <StyledDivider label="Share" />
 
-      <StyledButton
-        startIcon={<LinkIcon />}
-        onClick={onUrlCopy}
-        disabled={asyncOnPublish.loading}
-      >
+      <StyledButton startIcon={<LinkIcon />} onClick={onUrlCopy} disabled={asyncOnPublish.loading}>
         {t("CopySharedLinkToClipboard")}
       </StyledButton>
 
@@ -51,17 +46,11 @@ const PlanMenu: React.FCX<Props> = ({ className, file }) => {
         </Link>
       )}
 
-      <StyledButton
-        startIcon={<KctoolsIcon />}
-        onClick={() => openKctools(org)}
-      >
+      <StyledButton startIcon={<KctoolsIcon />} onClick={() => openKctools(org)}>
         制空権シミュレータで開く
       </StyledButton>
 
-      <StyledButton
-        startIcon={<OpenInNewIcon />}
-        onClick={() => openDeckbuilder(org)}
-      >
+      <StyledButton startIcon={<OpenInNewIcon />} onClick={() => openDeckbuilder(org)}>
         デッキビルダーで開く
       </StyledButton>
 

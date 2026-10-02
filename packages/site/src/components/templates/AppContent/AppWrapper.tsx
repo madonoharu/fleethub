@@ -3,12 +3,7 @@ import React, { useMemo } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import {
-  useRootSelector,
-  useMasterData,
-  FhCoreContext,
-  DragLayerProvider,
-} from "../../../hooks";
+import { useRootSelector, useMasterData, FhCoreContext, DragLayerProvider } from "../../../hooks";
 import { mergeMasterData } from "../../../utils/mergeMasterData";
 import ErrorAlert from "../../molecules/ErrorAlert";
 
@@ -39,7 +34,7 @@ const Inner: React.FC<InnerProps> = ({ data, children }) => {
   }, [data]);
 
   if ("error" in value) {
-    return <ErrorAlert sx={{ m: 2 }} error={value.error} />;
+    return <ErrorAlert className="m-4" error={value.error} />;
   }
 
   return (
@@ -59,21 +54,12 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   const { data, error } = useMasterData();
   const masterDataConfig = useRootSelector((root) => root.config.masterData);
   const merged = useMemo(
-    () =>
-      data && !error
-        ? mergeMasterData(data, masterDataConfig || {})
-        : undefined,
+    () => (data && !error ? mergeMasterData(data, masterDataConfig || {}) : undefined),
     [data, error, masterDataConfig],
   );
 
   if (error) {
-    return (
-      <ErrorAlert
-        sx={{ m: 2 }}
-        title="データ取得に失敗しました"
-        error={error}
-      />
-    );
+    return <ErrorAlert className="m-4" title="データ取得に失敗しました" error={error} />;
   }
 
   if (!merged) {

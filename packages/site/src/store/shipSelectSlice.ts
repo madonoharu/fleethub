@@ -45,6 +45,5 @@ export const shipSelectSlice = createSlice({
     },
   },
 
-  extraReducers: (builder) =>
-    builder.addCase(entitiesSlice.actions.createShip, hide),
+  extraReducers: (builder) => builder.addCase(entitiesSlice.actions.createShip, hide),
 });

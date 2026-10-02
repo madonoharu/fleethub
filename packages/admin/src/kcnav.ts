@@ -17,12 +17,7 @@ enum KcnavNodeEvent {
   EmergencyAnchorageRepair = 10,
 }
 
-type KcnavEdge = [
-  source: MapKey | null,
-  target: MapKey,
-  type: MapNodeType,
-  event: KcnavNodeEvent,
-];
+type KcnavEdge = [source: MapKey | null, target: MapKey, type: MapNodeType, event: KcnavNodeEvent];
 
 type KcnavSpot = [x: number, y: number, start: "Start" | null];
 
@@ -106,9 +101,7 @@ export class KcnavClient {
       return cached as T;
     }
 
-    const { result } = await this.client
-      .get(url, options)
-      .json<{ result: T }>();
+    const { result } = await this.client.get(url, options).json<{ result: T }>();
 
     this.cache?.set(url, result);
 

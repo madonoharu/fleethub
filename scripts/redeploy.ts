@@ -98,14 +98,10 @@ async function findLatestDeployment(token: string): Promise<ListedDeployment> {
     query.app = PROJECT;
   }
 
-  const res = await request<{ deployments?: ListedDeployment[] }>(
-    "GET",
-    "/v7/deployments",
-    {
-      token,
-      query,
-    },
-  );
+  const res = await request<{ deployments?: ListedDeployment[] }>("GET", "/v7/deployments", {
+    token,
+    query,
+  });
   const deployment = res.deployments?.[0];
   if (deployment === undefined) {
     throw new VercelError(
@@ -115,11 +111,7 @@ async function findLatestDeployment(token: string): Promise<ListedDeployment> {
   return deployment;
 }
 
-async function redeploy(
-  token: string,
-  name: string,
-  deploymentId: string,
-): Promise<Deployment> {
+async function redeploy(token: string, name: string, deploymentId: string): Promise<Deployment> {
   const body: Record<string, unknown> = {
     name, // 必須: デプロイ URL に使われるプロジェクト名
     deploymentId, // これを渡すと既存デプロイの再デプロイになる
@@ -138,22 +130,15 @@ async function redeploy(
   });
 }
 
-async function waitForReady(
-  token: string,
-  deploymentId: string,
-): Promise<Deployment> {
+async function waitForReady(token: string, deploymentId: string): Promise<Deployment> {
   const deadline = Date.now() + TIMEOUT_MS;
   let lastState: string | undefined;
 
   for (;;) {
-    const res = await request<Deployment>(
-      "GET",
-      `/v13/deployments/${deploymentId}`,
-      {
-        token,
-        query: { teamId: TEAM },
-      },
-    );
+    const res = await request<Deployment>("GET", `/v13/deployments/${deploymentId}`, {
+      token,
+      query: { teamId: TEAM },
+    });
     const state = res.readyState;
     if (state !== lastState) {
       console.log(`  state: ${state}`);
@@ -161,9 +146,7 @@ async function waitForReady(
     }
     if (state !== undefined && TERMINAL_STATES.has(state)) return res;
     if (Date.now() >= deadline) {
-      throw new VercelError(
-        `${TIMEOUT_MS / 1000}s 以内に完了しませんでした (state=${state})`,
-      );
+      throw new VercelError(`${TIMEOUT_MS / 1000}s 以内に完了しませんでした (state=${state})`);
     }
     await sleep(INTERVAL_MS);
   }
@@ -183,8 +166,7 @@ async function main(): Promise<number> {
   const res = await redeploy(token, source.name, source.uid);
   console.log(`再デプロイを開始しました: ${res.id}`);
   if (res.url !== undefined) console.log(`  url: https://${res.url}`);
-  if (res.inspectorUrl !== undefined)
-    console.log(`  inspector: ${res.inspectorUrl}`);
+  if (res.inspectorUrl !== undefined) console.log(`  inspector: ${res.inspectorUrl}`);
 
   if (!WAIT) return 0;
 

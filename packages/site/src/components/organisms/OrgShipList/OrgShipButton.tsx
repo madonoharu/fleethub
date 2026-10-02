@@ -1,13 +1,15 @@
 import AddIcon from "@mui/icons-material/Add";
-import { styled, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useAppDispatch, useSwap } from "../../../hooks";
 import { ShipPosition, shipSelectSlice, SwapShipPayload } from "../../../store";
 import ShipBanner from "../ShipBanner";
 
 interface Props {
   className?: string;
+  style?: React.CSSProperties;
   position: ShipPosition;
   id: string | undefined;
   shipId: number | undefined;
@@ -55,7 +57,7 @@ const OrgShipButton: React.FCX<Props> = (props) => {
   const { id, position, onSwap } = props;
 
   const item = { id, position };
-  const elem = <Memoized {...props} />;
+  const elem = <Memoized {...props} className={cn("swappable", props.className)} />;
 
   const ref = useSwap({
     type: "ship",
@@ -68,4 +70,4 @@ const OrgShipButton: React.FCX<Props> = (props) => {
   return React.cloneElement(elem, { ref });
 };
 
-export default styled(OrgShipButton)(({ theme }) => theme.styles.swappable);
+export default OrgShipButton;

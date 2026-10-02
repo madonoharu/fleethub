@@ -42,11 +42,7 @@ const searchById = (ships: Ship[], searchValue: string) => {
   return ships.find((ship) => ship.ship_id === id);
 };
 
-const searchShip = (
-  t: TFunction<"ships">,
-  ships: Ship[],
-  searchValue: string,
-) => {
+const searchShip = (t: TFunction<"ships">, ships: Ship[], searchValue: string) => {
   const idFound = searchById(ships, searchValue);
 
   if (idFound) {
@@ -57,8 +53,7 @@ const searchShip = (
     const name = t(`${ship.ship_id}`, ship.name);
 
     return (
-      name.toUpperCase().includes(searchValue.toUpperCase()) ||
-      ship.yomi.includes(searchValue)
+      name.toUpperCase().includes(searchValue.toUpperCase()) || ship.yomi.includes(searchValue)
     );
   });
 };

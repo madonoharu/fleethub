@@ -4,16 +4,16 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import NumberInput from "./NumberInput";
 
 async function press(element: HTMLButtonElement, msToRun = 0) {
-  // MUI mounts its ripple asynchronously. Flush each phase before mouseUp
+  // Flush each phase before pointerUp
   // commits the value produced by the long press.
   await act(async () => {
-    fireEvent.mouseDown(element);
+    fireEvent.pointerDown(element, { pointerId: 1, button: 0 });
   });
   await act(async () => {
     timers.advanceTimersByTime(msToRun);
   });
   await act(async () => {
-    fireEvent.mouseUp(element);
+    fireEvent.pointerUp(element, { pointerId: 1 });
   });
 }
 
@@ -56,12 +56,7 @@ describe("NumberInput", () => {
   });
 
   it("disables both the field and step buttons through input slot props", () => {
-    render(
-      <NumberInput
-        value={2}
-        slotProps={{ input: () => ({ disabled: true }) }}
-      />,
-    );
+    render(<NumberInput value={2} slotProps={{ input: () => ({ disabled: true }) }} />);
 
     expect(screen.getByRole("textbox")).toBeDisabled();
     expect(screen.getByLabelText("increase")).toBeDisabled();
@@ -80,12 +75,12 @@ describe("NumberInput", () => {
 
     expect(input).toHaveValue("");
     await act(async () => {
-      fireEvent.mouseDown(increaseButton);
+      fireEvent.pointerDown(increaseButton, { pointerId: 1, button: 0 });
     });
     expect(input).toHaveValue("1");
 
     await act(async () => {
-      fireEvent.mouseDown(decreaseButton);
+      fireEvent.pointerDown(decreaseButton, { pointerId: 2, button: 0 });
     });
     expect(input).toHaveValue("0");
   });

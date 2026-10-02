@@ -1,36 +1,15 @@
-import { css } from "@emotion/react";
-import styled, { CSSObject } from "@emotion/styled";
+import React from "react";
 
-type FlexboxProps = Pick<
-  CSSObject,
-  "alignItems" | "justifyContent" | "flexDirection" | "flexWrap"
-> & {
-  gap?: number | undefined;
-  mt?: number | undefined;
-  mb?: number | undefined;
-};
+import { cn } from "../../../styles/cn";
 
-export default styled.div<FlexboxProps>(
-  ({
-    alignItems,
-    justifyContent,
-    flexDirection,
-    flexWrap,
-    gap,
-    mt,
-    mb,
-    theme,
-  }) => css`
-    display: flex;
-    align-items: ${alignItems || "center"};
-    justify-content: ${justifyContent};
-    flex-direction: ${flexDirection};
-    flex-wrap: ${flexWrap};
-    gap: ${gap && theme.spacing(gap)};
-    margin-top: ${mt && theme.spacing(mt)};
-    margin-bottom: ${mb && theme.spacing(mb)};
-    > * {
-      min-width: 0;
-    }
-  `
+const Flexbox = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<"div">>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      {...props}
+      className={cn("flex items-center [:where(&)>*]:min-w-0", className)}
+    />
+  ),
 );
+
+export default Flexbox;

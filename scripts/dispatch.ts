@@ -1,8 +1,4 @@
-import {
-  isProjectMember,
-  updateImages,
-  updateMasterDataBySpreadsheet,
-} from "@fh/admin";
+import { isProjectMember, updateImages, updateMasterDataBySpreadsheet } from "@fh/admin";
 
 async function main() {
   if (process.env["CI"] && !process.env["ACT"]) {

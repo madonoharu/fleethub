@@ -1,4 +1,6 @@
-import { CacheProvider, EmotionCache } from "@emotion/react";
+import type { EmotionCache } from "@emotion/react";
+import GlobalStyles from "@mui/material/GlobalStyles";
+import { AppCacheProvider } from "@mui/material-nextjs/v16-pagesRouter";
 import { NextComponentType } from "next";
 import { AppContext, AppInitialProps, AppProps } from "next/app";
 import { appWithTranslation } from "next-i18next/pages";
@@ -11,7 +13,7 @@ import { BootstrappedContext } from "../hooks";
 import { createStore, entitiesSlice } from "../store";
 import { createEmotionCache, ThemeProvider } from "../styles";
 
-import "core-js/features/array/at";
+import "../styles/globals.css";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -39,7 +41,8 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, MyAppProps> = ({
   };
 
   return (
-    <CacheProvider value={emotionCache}>
+    <AppCacheProvider emotionCache={emotionCache}>
+      <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
       <ThemeProvider>
         <ReduxProvider store={store}>
           <PersistGate persistor={persistor} onBeforeLift={handleBeforeLift}>
@@ -51,7 +54,7 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, MyAppProps> = ({
           </PersistGate>
         </ReduxProvider>
       </ThemeProvider>
-    </CacheProvider>
+    </AppCacheProvider>
   );
 };
 

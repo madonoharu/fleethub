@@ -542,7 +542,7 @@ dependencies = [
 
 [[package]]
 name = "fleethub-core"
-version = "1.12.20"
+version = "1.12.21"
 dependencies = [
  "anyhow",
  "arrayvec",
@@ -554,13 +554,11 @@ dependencies = [
  "fasteval",
  "fleethub-core-test",
  "getrandom 0.4.3",
- "gloo-utils 0.3.0",
  "hashbrown 0.17.1",
  "itertools 0.15.0",
  "js-sys",
  "num-derive",
  "num-traits",
- "once_cell",
  "ordered-float",
  "paste",
  "rand 0.10.3",
@@ -651,19 +649,6 @@ name = "gloo-utils"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b5555354113b18c547c1d3a98fbf7fb32a9ff4f6fa112ce823a21641a0ba3aa"
-dependencies = [
- "js-sys",
- "serde",
- "serde_json",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
-name = "gloo-utils"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4202275d95a142fa209a1e35e91c250a710c5600731372cd3464a39ed01573d6"
 dependencies = [
  "js-sys",
  "serde",
@@ -1564,7 +1549,7 @@ version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea3af6b48c5c5624f7eb3c2f578d1335fadac433321980cae0063e8eb0acaa44"
 dependencies = [
- "gloo-utils 0.2.0",
+ "gloo-utils",
  "serde",
  "serde_json",
  "tsify-macros",

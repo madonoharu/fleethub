@@ -4,20 +4,9 @@ import type { NodeAttackAnalyzerConfig, NodeState, Org } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 
-import {
-  useShip,
-  useAppDispatch,
-  useRootSelector,
-  useOrg,
-} from "../../../hooks";
+import { useShip, useAppDispatch, useRootSelector, useOrg } from "../../../hooks";
 import { useCompShipSelection } from "../../../hooks/useCompShipSelection";
-import {
-  OrgEntity,
-  orgsSlice,
-  PlanEntity,
-  stepsSelectors,
-  stepsSlice,
-} from "../../../store";
+import { OrgEntity, orgsSlice, PlanEntity, stepsSelectors, stepsSlice } from "../../../store";
 import { Select } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import CustomModifiersDialog from "../CustomModifiersDialog";
@@ -97,23 +86,14 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
   };
 
   return (
-    <Stack
-      sx={{
-        gap: 1,
-        pt: 2,
-      }}
-    >
+    <Stack className="gap-2 pt-4">
       <NodeStepper file={file} activeStep={activeStep} />
 
-      <Paper sx={{ p: 1 }}>
-        <Stack
-          direction="row"
-          sx={{
-            gap: 1,
-          }}
-        >
+      <Paper className="p-2">
+        <Stack className="gap-2" direction="row">
           <Select
-            css={{ width: 80 }}
+            className="w-20"
+
             label={t("Sortie")}
             options={FLEET_KEYS}
             value={leftOrg.sortie}
@@ -158,35 +138,15 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
         />
       </Paper>
 
-      <Stack
-        direction="row"
-        sx={{
-          gap: 1,
-          flexWrap: "wrap",
-        }}
-      >
+      <Stack className="gap-2 flex-wrap" direction="row">
         {leftShip && (
-          <Stack
-            sx={{
-              gap: 1,
-              flexBasis: 1,
-              flexGrow: 1,
-              minWidth: 0,
-            }}
-          >
+          <Stack className="gap-2 [flex-basis:1px] grow min-w-0">
             <ShipCard ship={leftShip} comp={leftComp} visibleMiscStats />
             <CustomModifiersDialog ship={leftShip} />
           </Stack>
         )}
         {rightShip && (
-          <Stack
-            sx={{
-              gap: 1,
-              flexBasis: 1,
-              flexGrow: 1,
-              minWidth: 0,
-            }}
-          >
+          <Stack className="gap-2 [flex-basis:1px] grow min-w-0">
             <ShipCard ship={rightShip} comp={rightComp} visibleMiscStats />
             <CustomModifiersDialog ship={rightShip} />
           </Stack>
@@ -201,12 +161,7 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
         rightShip={rightShip}
       />
 
-      <SimulateButton
-        leftComp={leftComp}
-        rightComp={rightComp}
-        config={config}
-        times={10000}
-      />
+      <SimulateButton leftComp={leftComp} rightComp={rightComp} config={config} times={10000} />
     </Stack>
   );
 };

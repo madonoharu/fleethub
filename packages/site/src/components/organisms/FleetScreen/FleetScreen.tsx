@@ -6,19 +6,9 @@ import React from "react";
 import { shallowEqual } from "react-redux";
 
 import { useAppDispatch, useModal } from "../../../hooks";
-import {
-  fleetsSlice,
-  gearsSlice,
-  ShipEntity,
-  shipsSlice,
-} from "../../../store";
+import { fleetsSlice, gearsSlice, ShipEntity, shipsSlice } from "../../../store";
 import { Flexbox } from "../../atoms";
-import {
-  DeleteButton,
-  BuildButton,
-  SelectedMenu,
-  ConsumptionRate,
-} from "../../molecules";
+import { DeleteButton, BuildButton, SelectedMenu, ConsumptionRate } from "../../molecules";
 import BatchOperations from "../BatchOperations";
 import ElosLabel from "../ElosLabel";
 import FleetInfoPanel from "../FleetInfoPanel";
@@ -32,11 +22,7 @@ type FleetScreenProps = {
   fleet: Fleet;
 };
 
-const FleetScreen: React.FCX<FleetScreenProps> = ({
-  className,
-  comp,
-  fleet,
-}) => {
+const FleetScreen: React.FCX<FleetScreenProps> = ({ className, comp, fleet }) => {
   const dispatch = useAppDispatch();
   const BatchOperationsModal = useModal();
   const { t } = useTranslation("common");
@@ -95,8 +81,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
     const ids = fleet.ship_ids();
 
     const payload: Update<ShipEntity, EntityId>[] = ids.map((id) => {
-      const current_hp =
-        state == "Normal" ? undefined : fleet.get_damage_bound(id, state);
+      const current_hp = state == "Normal" ? undefined : fleet.get_damage_bound(id, state);
       return {
         id,
         changes: {
@@ -113,11 +98,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
 
     const payload: Update<ShipEntity, EntityId>[] = ids.map((id) => {
       const fuel = fleet.get_remaining_fuel(id, value.fuel, false);
-      const ammo = fleet.get_remaining_ammo(
-        id,
-        value.ammo,
-        value.ammoCeil || false,
-      );
+      const ammo = fleet.get_remaining_ammo(id, value.ammo, value.ammoCeil || false);
 
       return { id, changes: { fuel, ammo } };
     });
@@ -155,7 +136,7 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
 
   return (
     <div className={className}>
-      <Flexbox gap={1} mb={0.5}>
+      <Flexbox className="gap-2 mb-1">
         <Typography variant="body2">{fpText}</Typography>
         {[1, 2, 3, 4].map((factor) => (
           <ElosLabel key={factor} factor={factor} elos={comp.elos(factor)} />
@@ -164,7 +145,8 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
         {fleetId && (
           <>
             <SelectedMenu
-              sx={{ ml: "auto" }}
+              className="ml-auto"
+
               label="艦数"
               options={FLEET_LENS}
               value={fleet.len}
@@ -175,18 +157,14 @@ const FleetScreen: React.FCX<FleetScreenProps> = ({
               size="small"
               onClick={BatchOperationsModal.show}
             />
-            <DeleteButton
-              title="この艦隊の艦娘を削除"
-              size="small"
-              onClick={handleRemoveShips}
-            />
+            <DeleteButton title="この艦隊の艦娘を削除" size="small" onClick={handleRemoveShips} />
           </>
         )}
       </Flexbox>
 
       <FleetShipList fleet={fleet} />
 
-      <FleetInfoPanel sx={{ mt: 1 }} comp={comp} fleet={fleet} />
+      <FleetInfoPanel className="mt-2" comp={comp} fleet={fleet} />
 
       <BatchOperationsModal>
         <BatchOperations

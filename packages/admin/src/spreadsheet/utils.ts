@@ -3,9 +3,7 @@ import { get } from "es-toolkit/compat";
 
 import { CellValue, intoCellValue, SpreadsheetTable } from "./SpreadsheetTable";
 
-type Requests = NonNullable<
-  sheets_v4.Schema$BatchUpdateSpreadsheetRequest["requests"]
->;
+type Requests = NonNullable<sheets_v4.Schema$BatchUpdateSpreadsheetRequest["requests"]>;
 
 export function toCellString(cellValue: CellValue): string {
   switch (typeof cellValue) {
@@ -122,10 +120,7 @@ function createUpdateCellRequests(
   ];
 }
 
-export function createUpdateRowsRequests(
-  table: SpreadsheetTable,
-  data: object[],
-): Requests {
+export function createUpdateRowsRequests(table: SpreadsheetTable, data: object[]): Requests {
   const { sheetId, headerValues, rows: currentRows } = table;
   const idAttribute = headerValues[0];
 
@@ -155,12 +150,7 @@ export function createUpdateRowsRequests(
       if (equalCellValue(currentValue, nextValue)) {
         return [];
       } else {
-        return createUpdateCellRequests(
-          sheetId,
-          rowIndex,
-          columnIndex,
-          nextValue,
-        );
+        return createUpdateCellRequests(sheetId, rowIndex, columnIndex, nextValue);
       }
     });
   });
@@ -170,11 +160,7 @@ export function createUpdateRowsRequests(
     const id = getId(next);
     return !currentIds.includes(id);
   });
-  const appendRowsRequests = createAppendRowsRequests(
-    sheetId,
-    headerValues,
-    newRows,
-  );
+  const appendRowsRequests = createAppendRowsRequests(sheetId, headerValues, newRows);
 
   return [...updateCellRequests, ...appendRowsRequests];
 }

@@ -19,6 +19,7 @@ export const languages = [
 export type Language = (typeof languages)[number];
 
 type Translation = {
+  Close: string;
   CreateComp: string;
   CreateFolder: string;
   OpenFolderPage: string;
@@ -30,12 +31,7 @@ type Translation = {
 export function translations(locale: Language["locale"]): Translation {
   return JSON.parse(
     readFileSync(
-      resolve(
-        import.meta.dirname,
-        "../../packages/site/public/locales",
-        locale,
-        "common.json",
-      ),
+      resolve(import.meta.dirname, "../../packages/site/public/locales", locale, "common.json"),
       "utf8",
     ),
   ) as Translation;
@@ -87,9 +83,7 @@ export const test = base.extend<BrowserOptions & { runtime: BrowserRuntime }>({
         const runtimeWindow = window as unknown as WasmWindow;
         runtimeWindow.__fleethubWasmInstantiations = 0;
         const instantiate = WebAssembly.instantiate;
-        WebAssembly.instantiate = ((
-          ...args: Parameters<typeof WebAssembly.instantiate>
-        ) =>
+        WebAssembly.instantiate = ((...args: Parameters<typeof WebAssembly.instantiate>) =>
           instantiate(...args).then((result) => {
             runtimeWindow.__fleethubWasmInstantiations += 1;
             return result;
@@ -100,11 +94,8 @@ export const test = base.extend<BrowserOptions & { runtime: BrowserRuntime }>({
           source: Response | PromiseLike<Response>,
           imports?: WebAssembly.Imports,
         ) => Promise<WebAssembly.WebAssemblyInstantiatedSource>;
-        const instantiateStreaming: BrowserStreaming =
-          WebAssembly.instantiateStreaming;
-        WebAssembly.instantiateStreaming = ((
-          ...args: Parameters<BrowserStreaming>
-        ) =>
+        const instantiateStreaming: BrowserStreaming = WebAssembly.instantiateStreaming;
+        WebAssembly.instantiateStreaming = ((...args: Parameters<BrowserStreaming>) =>
           instantiateStreaming(...args).then((result) => {
             runtimeWindow.__fleethubWasmInstantiations += 1;
             return result;
@@ -147,16 +138,10 @@ export const test = base.extend<BrowserOptions & { runtime: BrowserRuntime }>({
 
         // Satisfy analytics initialization without contacting or writing to a
         // service. Aborted requests would create unrelated browser errors.
-        if (
-          /(^|\.)(google-analytics\.com|googletagmanager\.com)$/.test(
-            url.hostname,
-          )
-        ) {
+        if (/(^|\.)(google-analytics\.com|googletagmanager\.com)$/.test(url.hostname)) {
           return route.fulfill({
             status: request.method() === "OPTIONS" ? 204 : 200,
-            contentType: url.pathname.endsWith("/js")
-              ? "application/javascript"
-              : "text/plain",
+            contentType: url.pathname.endsWith("/js") ? "application/javascript" : "text/plain",
             headers: corsHeaders,
             body: "",
           });
@@ -199,15 +184,9 @@ export const test = base.extend<BrowserOptions & { runtime: BrowserRuntime }>({
 
       await use(runtime);
 
-      expect(
-        unexpectedExternalRequests,
-        "unhandled external browser requests",
-      ).toEqual([]);
+      expect(unexpectedExternalRequests, "unhandled external browser requests").toEqual([]);
       expect(errors, "uncaught exceptions and console errors").toEqual([]);
-      expect(
-        unstableSelectorWarnings,
-        "unstable Redux selector warnings",
-      ).toEqual([]);
+      expect(unstableSelectorWarnings, "unstable Redux selector warnings").toEqual([]);
     },
     { auto: true },
   ],
@@ -215,35 +194,23 @@ export const test = base.extend<BrowserOptions & { runtime: BrowserRuntime }>({
 
 export { expect };
 
-export async function expectLoaded(
-  page: Page,
-  language: Language,
-  runtime: BrowserRuntime,
-) {
+export async function expectLoaded(page: Page, language: Language, runtime: BrowserRuntime) {
   const text = translations(language.locale);
-  await expect(
-    page.getByRole("button", { name: language.label, exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: language.label, exact: true })).toBeVisible();
   await expect(
     page.getByRole("button", { name: text.CreateComp, exact: true }).first(),
   ).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", language.locale);
   await expect(page).toHaveTitle(new RegExp(escapeRegExp(text.meta.title)));
   await expect
-    .poll(() =>
-      page.evaluate(
-        () => (window as unknown as WasmWindow).__fleethubWasmInstantiations,
-      ),
-    )
+    .poll(() => page.evaluate(() => (window as unknown as WasmWindow).__fleethubWasmInstantiations))
     .toBeGreaterThan(0);
   expect(runtime.wasmResponses).toContain(200);
   const expectedMasterDataPath =
     process.env.E2E_MODE === "dev"
       ? "/kcfleethub/data/master_data.dev.json"
       : "/kcfleethub/data/master_data.json";
-  expect(new Set(runtime.masterDataPaths)).toEqual(
-    new Set([expectedMasterDataPath]),
-  );
+  expect(new Set(runtime.masterDataPaths)).toEqual(new Set([expectedMasterDataPath]));
 }
 
 function escapeRegExp(value: string) {

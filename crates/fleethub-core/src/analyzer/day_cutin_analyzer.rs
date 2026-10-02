@@ -8,7 +8,6 @@ use crate::{
     types::{
         AirState, BattleDefinitions, DayPhaseAttackStyle, Engagement, FleetType, Formation, Role,
     },
-    utils::some_or_return,
 };
 
 use super::{
@@ -114,7 +113,9 @@ impl DayCutinAnalyzer<'_> {
     }
 
     fn analyze_fleet(&self, fleet_type: FleetType) -> Vec<ShipDayCutinAnalysis> {
-        let fleet = some_or_return!(self.comp.get_fleet(fleet_type), vec![]);
+        let Some(fleet) = self.comp.get_fleet(fleet_type) else {
+            return Vec::new();
+        };
         let fleet_los_mod = fleet.fleet_los_mod();
 
         fleet

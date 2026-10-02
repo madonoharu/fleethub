@@ -16,9 +16,9 @@ import { cloneAffectedEntities } from "./entities/rtk-ts-norm";
 import { FileState, schemata } from "./entities/schemata";
 
 async function readJorShortUrl(short: URL) {
-  const res = (await fetch(
-    `/api/locate?url=${encodeURIComponent(short.toString())}`
-  ).then((res) => res.json())) as { url?: string };
+  const res = (await fetch(`/api/locate?url=${encodeURIComponent(short.toString())}`).then((res) =>
+    res.json(),
+  )) as { url?: string };
 
   if (typeof res.url !== "string") return;
 
@@ -33,9 +33,9 @@ async function readJorShortUrl(short: URL) {
 
   const path = long.searchParams.get("operation-path");
   if (path) {
-    jorState = (await fetch(
-      `https://storage.googleapis.com/jervis-6f57c.appspot.com/${path}`
-    ).then((res) => res.json())) as JorOrgState;
+    jorState = (await fetch(`https://storage.googleapis.com/jervis-6f57c.appspot.com/${path}`).then(
+      (res) => res.json(),
+    )) as JorOrgState;
   }
 
   if (!jorState) return;
@@ -81,18 +81,13 @@ export function parseDeckStr(masterData: MasterData, str: string) {
 
 export async function parseUrl(
   masterData: MasterData,
-  url: URL
+  url: URL,
 ): Promise<ImportPayload | undefined> {
   const publicId = getPublicId(url);
   if (publicId) {
     const res = await readPublicFile(publicId);
 
-    const cloned = cloneAffectedEntities(
-      res.result,
-      schemata.file,
-      res.entities,
-      nanoid
-    );
+    const cloned = cloneAffectedEntities(res.result, schemata.file, res.entities, nanoid);
 
     return cloned;
   }

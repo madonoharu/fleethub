@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
@@ -27,16 +26,8 @@ const FolderLabel: React.FCX<Props> = ({ className, file }) => {
       onDrop={actions.drop}
       action={
         <>
-          <OpenInNewButton
-            size="tiny"
-            title={t("OpenFolderPage")}
-            onClick={actions.open}
-          />
-          <DeleteButton
-            size="tiny"
-            title={t("Remove")}
-            onClick={actions.remove}
-          />
+          <OpenInNewButton size="tiny" title={t("OpenFolderPage")} onClick={actions.open} />
+          <DeleteButton size="tiny" title={t("Remove")} onClick={actions.remove} />
           <MoreVertButton size="tiny" title="メニュー" onClick={Modal.show} />
 
           <Modal>
@@ -48,4 +39,4 @@ const FolderLabel: React.FCX<Props> = ({ className, file }) => {
   );
 };
 
-export default styled(FolderLabel)``;
+export default FolderLabel;

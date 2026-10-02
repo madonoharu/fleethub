@@ -14,8 +14,7 @@ import { useShip } from "./useShip";
 function createCoreState(firepower?: number): FhCoreState {
   const fixture: unknown = structuredClone(masterDataFixture);
   const masterData = fixture as MasterData;
-  if (firepower !== undefined)
-    masterData.ships[0].firepower = [firepower, firepower];
+  if (firepower !== undefined) masterData.ships[0].firepower = [firepower, firepower];
   const core = new FhCore(masterData);
   return { core, masterData, analyzer: core.create_analyzer(), allShips: [] };
 }
@@ -47,9 +46,7 @@ function setup() {
       initialProps: { id: "ship" as string | undefined },
       wrapper: ({ children }: PropsWithChildren) => (
         <Provider store={store}>
-          <FhCoreContext.Provider value={context}>
-            {children}
-          </FhCoreContext.Provider>
+          <FhCoreContext.Provider value={context}>{children}</FhCoreContext.Provider>
         </Provider>
       ),
     },
@@ -77,12 +74,8 @@ describe("useShip with the real Wasm factory", () => {
 
     act(() => {
       store.dispatch(appSlice.actions.toggleExplorerOpen());
-      store.dispatch(
-        shipsSlice.actions.update({ id: "other-ship", changes: { level: 70 } }),
-      );
-      store.dispatch(
-        gearsSlice.actions.update({ id: "other-gear", changes: { stars: 5 } }),
-      );
+      store.dispatch(shipsSlice.actions.update({ id: "other-ship", changes: { level: 70 } }));
+      store.dispatch(gearsSlice.actions.update({ id: "other-gear", changes: { stars: 5 } }));
     });
 
     expect(createShip).not.toHaveBeenCalled();
@@ -95,9 +88,7 @@ describe("useShip with the real Wasm factory", () => {
     const original = result.current;
 
     act(() => {
-      store.dispatch(
-        gearsSlice.actions.update({ id: "gear", changes: { stars: 7 } }),
-      );
+      store.dispatch(gearsSlice.actions.update({ id: "gear", changes: { stars: 7 } }));
     });
     const upgraded = result.current;
     expect(upgraded).not.toBe(original);
@@ -128,10 +119,7 @@ describe("useShip with the real Wasm factory", () => {
     });
 
     expect(createShip).toHaveBeenCalled();
-    expect(createShip.mock.results[0]?.value).toHaveProperty(
-      "hash",
-      ship?.hash,
-    );
+    expect(createShip.mock.results[0]?.value).toHaveProperty("hash", ship?.hash);
     expect(result.current).toBe(ship);
     expect(renderCount()).toBe(renders);
   });
@@ -160,19 +148,18 @@ describe("useShip with the real Wasm factory", () => {
     const replacement = createCoreState(200);
     const createShip = replacement.core.create_ship.bind(replacement.core);
     let replacementShip: Ship | undefined;
-    const replacementFactory = spyOn(
-      replacement.core,
-      "create_ship",
-    ).mockImplementation((state) => {
-      replacementShip = createShip(state);
-      if (replacementShip) {
-        // Simulate coincident cache metadata while keeping the real Wasm calculations.
-        Object.defineProperty(replacementShip, "hash", {
-          value: original.hash,
-        });
-      }
-      return replacementShip;
-    });
+    const replacementFactory = spyOn(replacement.core, "create_ship").mockImplementation(
+      (state) => {
+        replacementShip = createShip(state);
+        if (replacementShip) {
+          // Simulate coincident cache metadata while keeping the real Wasm calculations.
+          Object.defineProperty(replacementShip, "hash", {
+            value: original.hash,
+          });
+        }
+        return replacementShip;
+      },
+    );
 
     replaceCore(replacement);
 

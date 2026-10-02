@@ -34,9 +34,7 @@ function getFormationDefs(table: SpreadsheetTable): FormationDef[] {
   const rec: Record<string, FormationDef> = {};
 
   table.rows.forEach((row) => {
-    const def = createDefinition<
-      Omit<NestedFormationDef, "tag"> & { tag: string }
-    >(table, row);
+    const def = createDefinition<Omit<NestedFormationDef, "tag"> & { tag: string }>(table, row);
     const tag = row.tag as string;
 
     def.tag = tag.replace(/\.(top_half|bottom_half)/, "") as Formation;
@@ -46,10 +44,7 @@ function getFormationDefs(table: SpreadsheetTable): FormationDef[] {
   return Object.values(rec);
 }
 
-function getHistoricalBonusDefs(
-  parser: ExprParser,
-  table: SpreadsheetTable,
-): HistoricalBonusDef[] {
+function getHistoricalBonusDefs(parser: ExprParser, table: SpreadsheetTable): HistoricalBonusDef[] {
   const { headerValues, rows } = table;
 
   return rows
@@ -84,9 +79,6 @@ export function createBattleDefinitions(
     day_cutin: getDefinitions<DayCutinDef>(tables.day_cutin),
     night_cutin: getDefinitions<NightCutinDef>(tables.night_cutin),
     formation: getFormationDefs(tables.formation),
-    historical_bonuses: getHistoricalBonusDefs(
-      parser,
-      tables.historical_bonuses,
-    ),
+    historical_bonuses: getHistoricalBonusDefs(parser, tables.historical_bonuses),
   };
 }

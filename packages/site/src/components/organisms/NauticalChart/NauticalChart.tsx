@@ -1,5 +1,5 @@
 import { FhMap, MapNode } from "@fh/utils";
-import { css, styled, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { Group } from "@visx/group";
 import { Graph } from "@visx/network";
 import { ScaleSVG } from "@visx/responsive";
@@ -12,31 +12,28 @@ import { NodeCircle } from "./NodeIcon";
 const NauticalChartNode: React.FC<{
   node: MapNode;
   onClick?: (node: MapNode) => void;
-}> = ({ node, onClick }) => {
+  active?: boolean;
+}> = ({ node, onClick, active }) => {
   const handleClick = () => {
     onClick?.(node);
   };
 
   return (
-    <Tooltip
-      title={<NodeLabel name={node.point} type={node.type} d={node.d} />}
-    >
+    <Tooltip title={<NodeLabel name={node.point} type={node.type} d={node.d} />}>
       <NodeCircle
         type={node.type}
         point={node.point}
         d={node.d}
         cursor="pointer"
         aria-label={node.point}
+        className={active ? "[outline:solid]" : undefined}
         onClick={handleClick}
       />
     </Tooltip>
   );
 };
 
-const NauticalChartEdge: React.FC<{ node1?: MapNode; node2?: MapNode }> = ({
-  node1,
-  node2,
-}) => {
+const NauticalChartEdge: React.FC<{ node1?: MapNode; node2?: MapNode }> = ({ node1, node2 }) => {
   if (!node1 || !node2) return null;
 
   return (
@@ -76,9 +73,8 @@ type Props = {
   onClick?: (node: MapNode) => void;
 };
 
-const NauticalChart: React.FCX<Props> = ({ className, map, onClick }) => {
-  const getNode = (name: string) =>
-    map.nodes.find((node) => node.point === name);
+const NauticalChart: React.FCX<Props> = ({ className, map, onClick, activeNode }) => {
+  const getNode = (name: string) => map.nodes.find((node) => node.point === name);
 
   return (
     <ScaleSVG {...getViewBox(map)}>
@@ -99,13 +95,14 @@ const NauticalChart: React.FCX<Props> = ({ className, map, onClick }) => {
         <Graph
           graph={map}
           linkComponent={({ link }) => (
-            <NauticalChartEdge
-              node1={getNode(link[0])}
-              node2={getNode(link[1])}
-            />
+            <NauticalChartEdge node1={getNode(link[0])} node2={getNode(link[1])} />
           )}
           nodeComponent={(props) => (
-            <NauticalChartNode {...props} onClick={onClick} />
+            <NauticalChartNode
+              {...props}
+              onClick={onClick}
+              active={props.node.point === activeNode}
+            />
           )}
         />
       </Group>
@@ -113,12 +110,4 @@ const NauticalChart: React.FCX<Props> = ({ className, map, onClick }) => {
   );
 };
 
-export default styled(NauticalChart)(
-  ({ activeNode }) =>
-    activeNode &&
-    css`
-      g[aria-label="${activeNode}"] {
-        outline: solid;
-      }
-    `
-);
+export default NauticalChart;

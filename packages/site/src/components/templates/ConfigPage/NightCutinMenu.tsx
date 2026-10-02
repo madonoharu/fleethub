@@ -1,9 +1,5 @@
 import { Stack, Paper } from "@mui/material";
-import type {
-  MasterData,
-  NightAttackStyle,
-  NightCutinDef,
-} from "fleethub-core";
+import type { MasterData, NightAttackStyle, NightCutinDef } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
@@ -24,9 +20,7 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
   const dispatch = useAppDispatch();
 
   const cutin = def.tag;
-  const current = useRootSelector(
-    (root) => root.config.masterData?.night_cutin?.[cutin],
-  );
+  const current = useRootSelector((root) => root.config.masterData?.night_cutin?.[cutin]);
 
   const attack: Pick<NightAttackStyle, "tag" | "cutin"> = {
     tag: "NightAttackStyle",
@@ -35,9 +29,9 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
 
   return (
     <div>
-      <AttackTypeChip sx={{ mb: 2 }} attack={attack} />
+      <AttackTypeChip className="mb-4" attack={attack} />
 
-      <Flexbox gap={1} alignItems="flex-end">
+      <Flexbox className="items-end gap-2">
         {KEYS.map((key) => (
           <ResettableInput
             key={key}
@@ -63,13 +57,9 @@ const NightCutinForm: React.FC<NightCutinFormProps> = ({ def }) => {
 
 const NightCutinMenu: React.FC<{ data: MasterData }> = ({ data }) => {
   return (
-    <Stack
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack className="gap-2">
       {data.night_cutin.map((def) => (
-        <Paper key={def.tag} sx={{ p: 1 }}>
+        <Paper key={def.tag} className="p-2">
           <NightCutinForm def={def} />
         </Paper>
       ))}

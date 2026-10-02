@@ -1,3 +1,4 @@
+import { cn } from "../../../styles/cn";
 import Image from "next/image";
 import React from "react";
 
@@ -9,14 +10,14 @@ interface Props {
 }
 
 const GearIcon = React.forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { iconId, ...rest } = props;
+  const { iconId, className, ...rest } = props;
   if (!iconId) return null;
 
   const width = 24;
   const height = 24;
 
   return (
-    <div ref={ref} css={{ width, height }} {...rest}>
+    <div ref={ref} className={cn("size-6", className)} {...rest}>
       <Image
         loader={cloudinaryLoader}
         width={width}

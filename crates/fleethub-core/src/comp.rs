@@ -284,7 +284,7 @@ impl Comp {
 
                 let r = rng.random_range(0.0..1.0);
 
-                let aaci = aaci_vec
+                aaci_vec
                     .into_iter()
                     .filter_map(|id| battle_defs.anti_air_cutin.get(&id))
                     .find(|aaci| {
@@ -294,9 +294,7 @@ impl Comp {
                         } else {
                             p > r
                         }
-                    });
-
-                aaci
+                    })
             })
             .sorted_by(|a, b| a.id.cmp(&b.id).reverse())
             .next()

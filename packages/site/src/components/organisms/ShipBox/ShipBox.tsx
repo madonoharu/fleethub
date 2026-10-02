@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
 import { Ship } from "fleethub-core";
@@ -6,13 +5,9 @@ import { useTranslation } from "next-i18next/pages";
 import React, { useContext } from "react";
 import { shallowEqual } from "react-redux";
 
+import { cn } from "../../../styles/cn";
 import { useAppDispatch, CompContext } from "../../../hooks";
-import {
-  ShipPosition,
-  shipSelectSlice,
-  entitiesSlice,
-  SwapShipPayload,
-} from "../../../store";
+import { ShipPosition, shipSelectSlice, entitiesSlice, SwapShipPayload } from "../../../store";
 import ShipCard from "../ShipCard";
 import Swappable from "../Swappable";
 
@@ -23,6 +18,7 @@ export type ShipBoxProps = {
 
 const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
   const { t } = useTranslation("common");
+  const rootClassName = cn("h-[192px] [&>*]:h-full [&>*]:w-full", className);
 
   const dispatch = useAppDispatch();
   const comp = useContext(CompContext);
@@ -53,12 +49,12 @@ const ShipBox: React.FCX<ShipBoxProps> = ({ className, ship, position }) => {
   );
 
   if (!position) {
-    return <div className={className}>{element}</div>;
+    return <div className={rootClassName}>{element}</div>;
   }
 
   return (
     <Swappable
-      className={className}
+      className={rootClassName}
       type="ship"
       item={{ id, position }}
       onSwap={handleSwap}
@@ -76,13 +72,4 @@ const Memoized = React.memo(
     prevShip?.hash === nextShip?.hash && shallowEqual(prevRest, nextRest),
 );
 
-const Styled = styled(Memoized)`
-  height: ${24 * 8}px;
-
-  > * {
-    width: 100%;
-    height: 100%;
-  }
-`;
-
-export default Styled;
+export default Memoized;

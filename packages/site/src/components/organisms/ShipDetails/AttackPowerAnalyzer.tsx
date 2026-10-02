@@ -1,9 +1,9 @@
 import { Paper, Typography } from "@mui/material";
-import { styled } from "@mui/system";
 import type { Ship, FhCore } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React, { useMemo } from "react";
 
+import { cn } from "../../../styles/cn";
 import { useFhCore } from "../../../hooks";
 import { ShipDetailsState } from "../../../store";
 import { Flexbox } from "../../atoms";
@@ -38,8 +38,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
 
   const { day, closing_torpedo, night, support_shelling } = analysis;
 
-  const aswAnalysis =
-    submarine && analyzer.analyze_ship_attack(state, ship, submarine, true);
+  const aswAnalysis = submarine && analyzer.analyze_ship_attack(state, ship, submarine, true);
   const dayAsw = aswAnalysis?.day;
   const openingAsw = aswAnalysis?.opening_asw;
 
@@ -71,7 +70,7 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   ];
 
   return (
-    <Paper className={className} style={style} sx={{ paddingX: 1 }}>
+    <Paper className={cn("min-h-[192px] px-2", className)} style={style}>
       <Flexbox>
         <Typography variant="subtitle2">{t("AttackPower")}</Typography>
         <SelectedMenu label={t("EnemyType")} {...dummyEnemySelectState} />
@@ -82,6 +81,4 @@ const AttackPowerAnalyzer: React.FCX<AttackPowerAnalyzerProps> = ({
   );
 };
 
-export default styled(AttackPowerAnalyzer)`
-  min-height: ${24 * 8}px;
-`;
+export default AttackPowerAnalyzer;

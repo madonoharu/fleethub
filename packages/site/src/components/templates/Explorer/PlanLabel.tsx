@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useFileActions, useFileCanDrop, useModal } from "../../../hooks";
 import { PlanEntity } from "../../../store";
 import { FileCopyButton, MoreVertButton, DeleteButton } from "../../molecules";
@@ -23,7 +23,7 @@ const PlanLabel: React.FCX<Props> = ({ className, file }) => {
   return (
     <>
       <FileLabel
-        className={className}
+        className={cn("relative", className)}
         file={file}
         text={file.name}
         onClick={actions.open}
@@ -31,21 +31,9 @@ const PlanLabel: React.FCX<Props> = ({ className, file }) => {
         onDrop={actions.drop}
         action={
           <>
-            <FileCopyButton
-              size="tiny"
-              title={t("Copy")}
-              onClick={actions.copy}
-            />
-            <DeleteButton
-              size="tiny"
-              title={t("Remove")}
-              onClick={actions.remove}
-            />
-            <MoreVertButton
-              size="tiny"
-              title="メニュー"
-              onClick={MenuModal.show}
-            />
+            <FileCopyButton size="tiny" title={t("Copy")} onClick={actions.copy} />
+            <DeleteButton size="tiny" title={t("Remove")} onClick={actions.remove} />
+            <MoreVertButton size="tiny" title="メニュー" onClick={MenuModal.show} />
           </>
         }
       />
@@ -57,6 +45,4 @@ const PlanLabel: React.FCX<Props> = ({ className, file }) => {
   );
 };
 
-export default styled(PlanLabel)`
-  position: relative;
-`;
+export default PlanLabel;

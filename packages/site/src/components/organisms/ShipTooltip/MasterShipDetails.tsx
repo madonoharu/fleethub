@@ -1,5 +1,5 @@
 import { GEAR_KEYS } from "@fh/utils";
-import { Typography, Stack } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Ship } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -28,18 +28,13 @@ const MasterShipDetails: React.FCX<Props> = ({ className, ship }) => {
       <Typography variant="subtitle2">{displayName}</Typography>
       <MasterShipStats ship={ship} />
 
-      <div css={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+      <div className="grid grid-cols-[1fr_1fr]">
         <span>{t("common:slots")}</span>
-        <Stack
-          direction="row"
-          sx={{
-            gap: 1,
-          }}
-        >
+        <div className="flex gap-2">
           {ship.slots.map((v, i) => (
             <span key={i}>{`${v ?? "?"}`}</span>
           ))}
-        </Stack>
+        </div>
 
         {abyssal && (
           <>
@@ -56,11 +51,7 @@ const MasterShipDetails: React.FCX<Props> = ({ className, ship }) => {
       {abyssal &&
         GEAR_KEYS.map((key) => {
           const gear = ship.get_gear(key);
-          return (
-            gear && (
-              <GearNameplate key={key} iconId={gear.icon_id} name={gear.name} />
-            )
-          );
+          return gear && <GearNameplate key={key} iconId={gear.icon_id} name={gear.name} />;
         })}
     </Typography>
   );

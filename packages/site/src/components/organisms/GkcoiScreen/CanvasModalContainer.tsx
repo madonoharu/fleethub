@@ -1,21 +1,5 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import React, { useState } from "react";
-
-const Container = styled.div<{ $zoom: boolean }>`
-  canvas {
-    cursor: zoom-out;
-  }
-
-  ${(props) =>
-    !props.$zoom &&
-    css`
-      canvas {
-        width: 100%;
-        cursor: zoom-in;
-      }
-    `}
-`;
+import { cn } from "../../../styles";
 
 const CanvasModalContainer: React.FCX<{ children: React.ReactNode }> = ({
   className,
@@ -26,9 +10,15 @@ const CanvasModalContainer: React.FCX<{ children: React.ReactNode }> = ({
   const handleToggle = () => setZoom((value) => !value);
 
   return (
-    <Container className={className} $zoom={zoom} onClick={handleToggle}>
+    <div
+      className={cn(
+        zoom ? "[&_canvas]:cursor-zoom-out" : "[&_canvas]:w-full [&_canvas]:cursor-zoom-in",
+        className,
+      )}
+      onClick={handleToggle}
+    >
       {children}
-    </Container>
+    </div>
   );
 };
 

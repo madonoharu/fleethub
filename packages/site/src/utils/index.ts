@@ -50,15 +50,9 @@ export function getRangeAbbr(v: number | undefined | null) {
   return "ExtremeLong";
 }
 
-export const createShallowEqualSelector = createSelectorCreator(
-  lruMemoize,
-  shallowEqual,
-);
+export const createShallowEqualSelector = createSelectorCreator(lruMemoize, shallowEqual);
 
-export const createDeepEqualSelector = createSelectorCreator(
-  lruMemoize,
-  deepEqual,
-);
+export const createDeepEqualSelector = createSelectorCreator(lruMemoize, deepEqual);
 
 export * from "./cloudinary";
 export * from "./damageDensity";

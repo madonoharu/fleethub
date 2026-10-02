@@ -24,6 +24,80 @@ function ControlledNumberInput({
 }
 
 describe("controlled NumberInput under React StrictMode", () => {
+  it("commits one step for a touch tap followed by compatibility mouse events", async () => {
+    timers.useFakeTimers();
+    const onChange = mock();
+    render(<ControlledNumberInput initialValue={99} onChange={onChange} />);
+    const input = screen.getByRole("textbox");
+    const increase = screen.getByLabelText("increase");
+    const touch = { pointerId: 7, pointerType: "touch", button: 0 };
+
+    await act(async () => {
+      fireEvent.pointerDown(increase, touch);
+      fireEvent.touchStart(increase, {
+        touches: [{ identifier: 7, target: increase, clientX: 10, clientY: 10 }],
+      });
+    });
+    expect(input).toHaveValue("100");
+    expect(onChange).not.toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.pointerUp(increase, touch);
+      fireEvent.touchEnd(increase);
+    });
+    await act(async () => {
+      fireEvent.mouseDown(increase);
+      fireEvent.mouseUp(increase);
+      fireEvent.click(increase);
+    });
+    expect(input).toHaveValue("100");
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith(100);
+  });
+
+  it.each(["pointerCancel", "pointerLeave", "lostPointerCapture"] as const)(
+    "stops a long press and commits once on %s",
+    async (cancelEvent) => {
+      timers.useFakeTimers();
+      const onChange = mock();
+      render(<ControlledNumberInput initialValue={10} onChange={onChange} />);
+      const input = screen.getByRole("textbox");
+      const increase = screen.getByLabelText("increase");
+      const pointer = { pointerId: 7, pointerType: "touch", button: 0 };
+
+      await act(async () => {
+        fireEvent.pointerDown(increase, pointer);
+      });
+      await act(async () => {
+        timers.advanceTimersByTime(500);
+      });
+      expect(input).toHaveValue("14");
+      expect(onChange).not.toHaveBeenCalled();
+      await act(async () => {
+        fireEvent[cancelEvent](increase, pointer);
+      });
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenLastCalledWith(14);
+      await act(async () => {
+        timers.advanceTimersByTime(1000);
+        fireEvent.pointerUp(increase, pointer);
+      });
+      expect(input).toHaveValue("14");
+      expect(onChange).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it("does not start a pointer press on a disabled step button", async () => {
+    const onChange = mock();
+    render(<ControlledNumberInput initialValue={10} disabled onChange={onChange} />);
+    const increase = screen.getByLabelText("increase");
+    await act(async () => {
+      fireEvent.pointerDown(increase, { pointerId: 1, button: 0 });
+      fireEvent.pointerUp(increase, { pointerId: 1 });
+    });
+    expect(screen.getByRole("textbox")).toHaveValue("10");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it("commits a step only when the press finishes and uses the parent value for the next step", async () => {
     timers.useFakeTimers();
     const user = userEvent.setup({
@@ -34,12 +108,7 @@ describe("controlled NumberInput under React StrictMode", () => {
     const onChange = mock();
     render(
       <StrictMode>
-        <ControlledNumberInput
-          initialValue={119}
-          min={1}
-          max={120}
-          onChange={onChange}
-        />
+        <ControlledNumberInput initialValue={119} min={1} max={120} onChange={onChange} />
       </StrictMode>,
     );
     const input = screen.getByRole("textbox");

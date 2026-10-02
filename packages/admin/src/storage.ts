@@ -20,8 +20,7 @@ export type Metadata = {
 
 export const BUCKET_NAME = "kcfleethub";
 export const GCS_PREFIX_URL = `https://storage.googleapis.com/${BUCKET_NAME}`;
-export const MASTER_DATA_PATH =
-  process.env["MASTER_DATA_PATH"] || "data/master_data.json";
+export const MASTER_DATA_PATH = process.env["MASTER_DATA_PATH"] || "data/master_data.json";
 
 const getBucket = () => getStorage(getApp()).bucket();
 
@@ -57,11 +56,7 @@ const createGcsSaveOptions = (options?: SaveOptions): GcsSaveOptions => {
   return { ...result, metadata: nextMetadata };
 };
 
-export const write = async (
-  path: string,
-  data: string | Buffer,
-  options?: SaveOptions,
-) => {
+export const write = async (path: string, data: string | Buffer, options?: SaveOptions) => {
   const file = getBucket().file(path);
 
   if (options?.brotli) {

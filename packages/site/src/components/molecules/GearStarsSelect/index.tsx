@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { Button, Tooltip } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -16,6 +16,7 @@ type GearStarsSelectProps = {
 const anchorOrigin = { vertical: "bottom", horizontal: "center" } as const;
 
 const GearStarsSelect: React.FCX<GearStarsSelectProps> = ({
+  className,
   stars,
   onChange,
   ...rest
@@ -31,7 +32,7 @@ const GearStarsSelect: React.FCX<GearStarsSelectProps> = ({
   return (
     <>
       <Tooltip title={t("Stars")}>
-        <Button onClick={Popover.show} {...rest}>
+        <Button onClick={Popover.show} {...rest} className={cn("px-0.5 py-0", className)}>
           <StarsLabel stars={stars} disabled={!stars} />
         </Button>
       </Tooltip>
@@ -43,6 +44,4 @@ const GearStarsSelect: React.FCX<GearStarsSelectProps> = ({
   );
 };
 
-export default styled(GearStarsSelect)`
-  padding: 0 2px;
-`;
+export default GearStarsSelect;

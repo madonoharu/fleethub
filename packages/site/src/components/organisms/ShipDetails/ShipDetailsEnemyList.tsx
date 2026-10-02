@@ -1,7 +1,8 @@
-import { Divider, Stack } from "@mui/material";
+import { Divider } from "@mui/material";
 import type { Ship } from "fleethub-core";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useShip } from "../../../hooks";
 import { ShipDetailsState } from "../../../store";
 import { Flexbox } from "../../atoms";
@@ -20,40 +21,19 @@ const EnemyListItem: React.FCX<EnemyListItemProps> = ({ id, state, ship }) => {
   if (!enemy) return null;
 
   return (
-    <Stack
-      sx={{
-        gap: 1,
-      }}
-    >
+    <div className="flex flex-col gap-2">
       <Divider />
       <ShipCard
         ship={enemy}
-        css={{ maxWidth: 1178 / 2 - 4 }}
+        className="max-w-[585px]"
         visibleDetails={false}
         visibleUpdate={false}
       />
-      <Flexbox
-        gap={1}
-        css={{
-          "> *": {
-            width: "50%",
-          },
-        }}
-      >
-        <AttackAnalyzer
-          config={state}
-          left={ship}
-          right={enemy}
-          attacker_is_left={true}
-        />
-        <AttackAnalyzer
-          config={state}
-          left={ship}
-          right={enemy}
-          attacker_is_left={false}
-        />
+      <Flexbox className="gap-2 [&>*]:w-1/2">
+        <AttackAnalyzer config={state} left={ship} right={enemy} attacker_is_left={true} />
+        <AttackAnalyzer config={state} left={ship} right={enemy} attacker_is_left={false} />
       </Flexbox>
-    </Stack>
+    </div>
   );
 };
 
@@ -62,22 +42,13 @@ type ShipDetailsEnemyListProps = {
   state: ShipDetailsState;
 };
 
-const ShipDetailsEnemyList: React.FCX<ShipDetailsEnemyListProps> = ({
-  className,
-  ship,
-  state,
-}) => {
+const ShipDetailsEnemyList: React.FCX<ShipDetailsEnemyListProps> = ({ className, ship, state }) => {
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 1,
-      }}
-    >
+    <div className={cn("flex flex-col gap-2", className)}>
       {state.enemies.map((id) => (
         <EnemyListItem key={id} id={id} state={state} ship={ship} />
       ))}
-    </Stack>
+    </div>
   );
 };
 

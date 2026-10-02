@@ -3,8 +3,9 @@ use serde::{Deserialize, Serialize};
 use strum::EnumString;
 use tsify::Tsify;
 
-#[derive(Debug, EnumSetType, EnumString, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Default, EnumSetType, EnumString, Serialize, Deserialize, Tsify)]
 pub enum GearAttr {
+    #[default]
     Unknown,
     /// 高角砲
     HighAngleMount,
@@ -64,13 +65,6 @@ pub enum GearAttr {
     SemiNightPlane,
     /// 高高度迎撃機
     HighAltitudeInterceptor,
-}
-
-impl Default for GearAttr {
-    #[inline]
-    fn default() -> Self {
-        Self::Unknown
-    }
 }
 
 #[cfg(test)]

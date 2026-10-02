@@ -1,6 +1,7 @@
+import { colors } from "../../../styles/colors";
 import DescriptionIcon from "@mui/icons-material/Description";
 import MuiFolderIcon from "@mui/icons-material/Folder";
-import { styled, css, SvgIconProps } from "@mui/material";
+import { SvgIconProps } from "@mui/material";
 import React from "react";
 
 import { FileType } from "../../../store";
@@ -11,7 +12,14 @@ interface Props extends Omit<SvgIconProps, "color"> {
 }
 
 const FileIcon = React.forwardRef<SVGSVGElement, Props>((props, ref) => {
-  const { type, color: _color, ...rest } = props;
+  const { type, color, style, ...other } = props;
+  const rest = {
+    ...other,
+    style: {
+      color: color || (type === "folder" ? colors.folder : colors.planFile),
+      ...style,
+    },
+  };
 
   return type === "folder" ? (
     <MuiFolderIcon ref={ref} {...rest} />
@@ -20,10 +28,4 @@ const FileIcon = React.forwardRef<SVGSVGElement, Props>((props, ref) => {
   );
 });
 
-export default styled(FileIcon)(({ theme, type, color }) => {
-  const defaultColor =
-    type === "folder" ? theme.colors.folder : theme.colors.planFile;
-  return css`
-    color: ${color || defaultColor};
-  `;
-});
+export default FileIcon;

@@ -1,23 +1,8 @@
-import styled from "@emotion/styled";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { Flexbox, FileIcon } from "../../atoms";
 import { DraggableFile, DraggableFileProps } from "../../organisms";
-
-const FileLabelAction = styled.div`
-  flex-shrink: 0;
-  display: none;
-`;
-
-const FileLabelText = styled.span`
-  flex-shrink: 1;
-  flex-grow: 1;
-  margin: 0 8px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-`;
 
 export type FileLabelProps = {
   text: React.ReactNode;
@@ -38,19 +23,17 @@ const FileLabel: React.FCX<FileLabelProps> = ({
 }) => {
   return (
     <DraggableFile file={file} canDrop={canDrop} onDrop={onDrop}>
-      <Flexbox className={className} onClick={onClick}>
+      <Flexbox className={cn("h-6 [&:hover>div:last-of-type]:block", className)} onClick={onClick}>
         <FileIcon fontSize="small" type={file.type} color={file.color} />
-        <FileLabelText>{text}</FileLabelText>
-        <FileLabelAction onClick={handleActionClick}>{action}</FileLabelAction>
+        <span className="mx-2 grow shrink overflow-hidden text-[0.75rem] text-ellipsis whitespace-nowrap">
+          {text}
+        </span>
+        <div className="hidden shrink-0" onClick={handleActionClick}>
+          {action}
+        </div>
       </Flexbox>
     </DraggableFile>
   );
 };
 
-export default styled(FileLabel)`
-  height: 24px;
-
-  :hover > div:last-of-type {
-    display: block;
-  }
-`;
+export default FileLabel;

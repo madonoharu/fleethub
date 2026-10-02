@@ -1,12 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import {
-  AIR_SQUADRON_KEYS,
-  FLEET_KEYS,
-  GearKey,
-  GEAR_KEYS,
-  MapNode,
-  SHIP_KEYS,
-} from "@fh/utils";
+import { AIR_SQUADRON_KEYS, FLEET_KEYS, GearKey, GEAR_KEYS, MapNode, SHIP_KEYS } from "@fh/utils";
 import { nanoid } from "@reduxjs/toolkit";
 import {
   AirSquadronState,
@@ -85,20 +78,13 @@ const fleet = schema<FleetState>().entity("fleets", record(SHIP_KEYS, ship), {
   idGenerator,
 });
 
-const airSquadron = schema<AirSquadronState>().entity(
-  "airSquadrons",
-  record(GEAR_KEYS, gear),
-  {
-    idGenerator,
-  },
-);
+const airSquadron = schema<AirSquadronState>().entity("airSquadrons", record(GEAR_KEYS, gear), {
+  idGenerator,
+});
 
 const org = schema<OrgState>().entity(
   "orgs",
-  Object.assign(
-    record(FLEET_KEYS, fleet),
-    record(AIR_SQUADRON_KEYS, airSquadron),
-  ),
+  Object.assign(record(FLEET_KEYS, fleet), record(AIR_SQUADRON_KEYS, airSquadron)),
   {
     idGenerator,
   },

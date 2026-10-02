@@ -1,29 +1,6 @@
 const path = require("path");
 const fs = require("fs");
 const { i18n } = require("./next-i18next.config");
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
-  enabled: process.env.ANALYZE === "true",
-});
-
-// https://github.com/vercel/next.js/issues/29362#issuecomment-971377869
-class WasmChunksFixPlugin {
-  apply(compiler) {
-    compiler.hooks.thisCompilation.tap("WasmChunksFixPlugin", (compilation) => {
-      compilation.hooks.processAssets.tap(
-        { name: "WasmChunksFixPlugin" },
-        (assets) =>
-          Object.entries(assets).forEach(([pathname, source]) => {
-            if (!pathname.match(/\.wasm$/)) return;
-            compilation.deleteAsset(pathname);
-
-            const name = pathname.split("/")[1];
-            const info = compilation.assetsInfo.get(pathname);
-            compilation.emitAsset(name, source, info);
-          }),
-      );
-    });
-  }
-}
 
 const CORE_VERSION = require(
   path.join(require.resolve("fleethub-core"), "../../package.json"),
@@ -32,9 +9,7 @@ const CORE_VERSION = require(
 /** @type {import("next").NextConfig} */
 const config = {
   env: {
-    KCS_SCRIPT: fs
-      .readFileSync(require.resolve("../kcs/lib/index.js"))
-      .toString(),
+    KCS_SCRIPT: fs.readFileSync(require.resolve("../kcs/lib/index.js")).toString(),
     SITE_VERSION: `${require("./package.json").version}`,
     CORE_VERSION,
     MASTER_DATA_PATH:
@@ -44,7 +19,12 @@ const config = {
   },
   i18n,
   reactStrictMode: true,
-  transpilePackages: ["ts-norm"],
+  // Bundle MUI's document helpers with Next's page runtime so ISR does not
+  // load raw next/document with untraced vendored contexts.
+  transpilePackages: ["ts-norm", "@mui/material-nextjs"],
+
+  // Keep the npm package's CommonJS wrapper next to its Wasm at runtime.
+  serverExternalPackages: ["fleethub-core"],
 
   outputFileTracingRoot: path.resolve(__dirname, "../.."),
 
@@ -60,29 +40,25 @@ const config = {
     qualities: [75],
   },
 
-  webpack: (config, { isServer, dev }) => {
+  // gkcoi's Flat theme hardcodes /static URLs; its published assets omit
+  // that prefix and are not included in the npm package.
+  rewrites() {
+    return ["fonts", "flat"].map((directory) => ({
+      source: `/static/${directory}/:path*`,
+      destination: `https://gkcoi.vercel.app/${directory}/:path*`,
+    }));
+  },
+
+  // Bun currently fails to resolve Turbopack's external aliases created during
+  // dev (oven-sh/bun#25370). Production uses Turbopack; dev keeps Webpack.
+  webpack: (config, { isServer }) => {
     config.experiments.asyncWebAssembly = true;
-    config.experiments.layers = true;
-
-    if (isServer) {
-      // Workspace symlinks resolve outside node_modules, so Next's package
-      // externalization misses this wrapper. Preserve __dirname for its Wasm.
-      config.externals.unshift({ "fleethub-core": "commonjs fleethub-core" });
-    }
-
-    // fix warnings for async functions in the browser (https://github.com/vercel/next.js/issues/64792)
     if (!isServer) {
       config.output.environment = {
         ...config.output.environment,
         asyncFunction: true,
       };
     }
-
-    if (!dev && isServer) {
-      config.output.webassemblyModuleFilename = "chunks/[id].wasm";
-      config.plugins.push(new WasmChunksFixPlugin());
-    }
-
     return config;
   },
 
@@ -112,4 +88,4 @@ const config = {
   },
 };
 
-module.exports = withBundleAnalyzer(config);
+module.exports = config;

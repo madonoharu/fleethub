@@ -5,6 +5,7 @@ import React from "react";
 
 import { useFhCore } from "../../../hooks";
 import AttackAnalysisCard from "../AttackAnalysisCard";
+import { cn } from "../../../styles";
 
 export function isEnemy(type: OrgType): boolean {
   return type === "EnemySingle" || type === "EnemyCombined";
@@ -37,17 +38,13 @@ const AttackAnalyzer: React.FCX<Props> = ({
 
     return (
       <Alert
-        className={className}
+        className={cn("p-2 min-h-80", className)}
         style={style}
-        sx={{ p: 1, minHeight: 320 }}
+
         severity="error"
       >
         <AlertTitle>
-          <Typography
-            sx={{
-              alignItems: "center",
-            }}
-          >
+          <Typography className="items-center">
             {attackerText}と{targetText}は戦闘できません
           </Typography>
         </AlertTitle>
@@ -55,20 +52,9 @@ const AttackAnalyzer: React.FCX<Props> = ({
     );
   }
 
-  const analysis = analyzer.analyze_ship_attack(
-    config,
-    left,
-    right,
-    attacker_is_left,
-  );
+  const analysis = analyzer.analyze_ship_attack(config, left, right, attacker_is_left);
 
-  return (
-    <AttackAnalysisCard
-      className={className}
-      style={style}
-      analysis={analysis}
-    />
-  );
+  return <AttackAnalysisCard className={className} style={style} analysis={analysis} />;
 };
 
 export default AttackAnalyzer;

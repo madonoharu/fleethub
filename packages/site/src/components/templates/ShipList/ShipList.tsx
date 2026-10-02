@@ -38,41 +38,21 @@ type Props = {
 };
 
 const ShipList: React.FC<Props> = ({ ships, onSelect }) => {
-  const {
-    filterState,
-    visibleShips,
-    searchValue,
-    updateFilterState,
-    setSearchValue,
-  } = useShipListState(ships);
+  const { filterState, visibleShips, searchValue, updateFilterState, setSearchValue } =
+    useShipListState(ships);
 
   const { t } = useTranslation("ctype");
 
   const renderShip = (ship: Ship) => (
-    <ShipButton
-      key={`ship-${ship.ship_id}`}
-      ship={ship}
-      onClick={() => onSelect?.(ship)}
-    />
+    <ShipButton key={`ship-${ship.ship_id}`} ship={ship} onClick={() => onSelect?.(ship)} />
   );
 
   return (
     <>
-      <SearchInput
-        value={searchValue}
-        onChange={setSearchValue}
-        autoFocus={true}
-      />
-      <FilterBar
-        filterState={filterState}
-        updateFilterState={updateFilterState}
-      />
+      <SearchInput value={searchValue} onChange={setSearchValue} autoFocus={true} />
+      <FilterBar filterState={filterState} updateFilterState={updateFilterState} />
       {searchValue ? (
-        <ShipSearchResult
-          searchValue={searchValue}
-          ships={visibleShips}
-          renderShip={renderShip}
-        />
+        <ShipSearchResult searchValue={searchValue} ships={visibleShips} renderShip={renderShip} />
       ) : (
         getCtypeEntries(visibleShips).map(([ctype, ships]) => (
           <React.Fragment key={`ctype-${ctype}`}>

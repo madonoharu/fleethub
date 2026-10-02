@@ -1,4 +1,9 @@
 [tools]
 bun = "1.4.2"
-rust = { version = "1.99.0", profile = "minimal", components = ["rustfmt", "clippy"], targets = ["wasm32-unknown-unknown"] }
+rust = { version = "1.99.0", profile = "minimal", components = [
+  "rustfmt",
+  "clippy",
+], targets = [
+  "wasm32-unknown-unknown",
+] }
 "github:wasm-bindgen/wasm-pack" = { version = "0.15.0", matching = "wasm-pack-v" }

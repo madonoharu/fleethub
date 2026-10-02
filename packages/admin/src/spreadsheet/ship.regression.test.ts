@@ -55,13 +55,7 @@ describe("ship remodel classification", () => {
       undefined,
       undefined,
     ]);
-    expect(ships.map((ship) => ship.next_id)).toEqual([
-      2,
-      3,
-      undefined,
-      999,
-      undefined,
-    ]);
+    expect(ships.map((ship) => ship.next_id)).toEqual([2, 3, undefined, 999, undefined]);
   });
 
   it("marks only cycle members, preserving input order across separate cycles", () => {
@@ -73,9 +67,7 @@ describe("ship remodel classification", () => {
       [4, 3],
     ]);
 
-    expect(
-      ships.filter((ship) => ship.useful).map((ship) => ship.ship_id),
-    ).toEqual([9, 3, 4]);
+    expect(ships.filter((ship) => ship.useful).map((ship) => ship.ship_id)).toEqual([9, 3, 4]);
     expect(ships.map((ship) => ship.ship_id)).toEqual([2, 9, 3, 1, 4]);
   });
 
@@ -87,12 +79,7 @@ describe("ship remodel classification", () => {
       [1, 2],
     ]);
 
-    expect(ships.map((ship) => ship.useful)).toEqual([
-      true,
-      true,
-      undefined,
-      undefined,
-    ]);
+    expect(ships.map((ship) => ship.useful)).toEqual([true, true, undefined, undefined]);
   });
 
   it("resolves duplicate master IDs to the first row without merging object identities", () => {
@@ -103,12 +90,7 @@ describe("ship remodel classification", () => {
       [3, 2],
     ]);
 
-    expect(ships.map((ship) => ship.useful)).toEqual([
-      true,
-      true,
-      undefined,
-      undefined,
-    ]);
+    expect(ships.map((ship) => ship.useful)).toEqual([true, true, undefined, undefined]);
     expect(ships.map((ship) => ship.ship_id)).toEqual([1, 2, 2, 3]);
   });
 });

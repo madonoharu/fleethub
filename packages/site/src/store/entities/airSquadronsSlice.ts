@@ -14,7 +14,7 @@ export const airSquadronsSlice = createSlice({
     reset: (state, { payload }: PayloadAction<string[]>) => {
       adapter.setMany(
         state,
-        payload.map((id) => ({ id }))
+        payload.map((id) => ({ id })),
       );
     },
     resetSlotSize,

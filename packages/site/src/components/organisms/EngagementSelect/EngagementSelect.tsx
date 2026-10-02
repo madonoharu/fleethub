@@ -15,13 +15,7 @@ const EngagementSelect: React.FC<Props> = ({ value, onChange, ...rest }) => {
   const { t } = useTranslation("common", { keyPrefix: "Engagement" });
 
   return (
-    <Select
-      options={ENGAGEMENTS}
-      value={value}
-      onChange={onChange}
-      getOptionLabel={t}
-      {...rest}
-    />
+    <Select options={ENGAGEMENTS} value={value} onChange={onChange} getOptionLabel={t} {...rest} />
   );
 };
 

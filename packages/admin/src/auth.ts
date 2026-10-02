@@ -25,9 +25,7 @@ async function getMembers(): Promise<string[] | undefined> {
     .map((member) => member.toLowerCase());
 }
 
-async function verifyGasIdToken(
-  idToken: string
-): Promise<TokenPayload | undefined> {
+async function verifyGasIdToken(idToken: string): Promise<TokenPayload | undefined> {
   const client = new OAuth2Client();
 
   const ticket = await client.verifyIdToken({
@@ -39,10 +37,7 @@ async function verifyGasIdToken(
 }
 
 export async function isProjectMember(idToken: string): Promise<boolean> {
-  const [members, tokenPayload] = await Promise.all([
-    getMembers(),
-    verifyGasIdToken(idToken),
-  ]);
+  const [members, tokenPayload] = await Promise.all([getMembers(), verifyGasIdToken(idToken)]);
 
   const email = tokenPayload?.email;
 

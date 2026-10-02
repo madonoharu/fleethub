@@ -1,7 +1,4 @@
-import {
-  Popover as MuiPopover,
-  PopoverProps as MuiPopoverProps,
-} from "@mui/material";
+import { Popover as MuiPopover, PopoverProps as MuiPopoverProps } from "@mui/material";
 import React, { useCallback, useState } from "react";
 
 type PopoverProps = Partial<MuiPopoverProps>;
@@ -11,20 +8,15 @@ export const usePopover = () => {
 
   const show = useCallback(
     (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget),
-    []
+    [],
   );
   const hide = useCallback(() => setAnchorEl(null), []);
 
   const Popover: React.FC<PopoverProps> = useCallback(
     (props) => (
-      <MuiPopover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={hide}
-        {...props}
-      />
+      <MuiPopover open={Boolean(anchorEl)} anchorEl={anchorEl} onClose={hide} {...props} />
     ),
-    [anchorEl, hide]
+    [anchorEl, hide],
   );
 
   return Object.assign(Popover, {

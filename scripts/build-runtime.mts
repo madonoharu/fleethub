@@ -5,8 +5,16 @@ const probe = `
 const assert = require("node:assert/strict"), fs = require("node:fs"), path = require("node:path");
 const route = await require("./.next/server/pages/index.js");
 assert.equal(typeof route.getStaticProps, "function");
-const corePath = require.resolve("fleethub-core");
-assert.ok(require.cache[corePath], "The built page did not load its traced Wasm wrapper");
+// Turbopack traces a hashed external link instead of the bare package link.
+// Inspect the wrapper actually loaded by the page, independent of the bundler.
+const corePaths = Object.keys(require.cache).filter(file => path.basename(file) === "fleethub_core.js");
+assert.equal(corePaths.length, 1, "The built page must load exactly one traced Wasm wrapper");
+const corePath = corePaths[0];
+assert.ok(corePath.split(path.sep).includes("node_modules"), "The built page must use the installed npm Wasm package");
+const corePackage = JSON.parse(fs.readFileSync(path.join(path.dirname(corePath), "../package.json"), "utf8"));
+assert.equal(corePackage.name, "fleethub-core");
+const { FhCore } = require.cache[corePath].exports;
+assert.equal(typeof FhCore, "function", "The traced Wasm wrapper must export FhCore");
 for (const locale of ["ja", "en", "ko", "zh-CN", "zh-TW"]) {
   const result = await route.getStaticProps({ locale, revalidateReason: "stale" });
   assert.equal(result.revalidate, 3600);
@@ -22,7 +30,7 @@ for (const locale of ["ja", "en", "ko", "zh-CN", "zh-TW"]) {
 }
 const response = await fetch("https://storage.googleapis.com/kcfleethub/data/master_data.json");
 assert.ok(response.ok, "Could not read public master data");
-const core = new (require("fleethub-core").FhCore)(await response.json());
+const core = new FhCore(await response.json());
 assert.ok(core.create_all_ships().length > 0);
 const analyzer = core.create_analyzer();
 analyzer.free(); core.free();
@@ -34,10 +42,7 @@ console.log("Wasm initializes and all loaded modules stay inside the isolated tr
 `;
 
 /** Run the real built page under Bun without inheriting credentials or module paths. */
-export function probeBuildRuntime(
-  directory: string,
-  stdio: "inherit" | "pipe" = "pipe",
-) {
+export function probeBuildRuntime(directory: string, stdio: "inherit" | "pipe" = "pipe") {
   const runtimeEnv: Partial<NodeJS.ProcessEnv> = {
     PATH: process.env["PATH"] || "",
     NODE_ENV: "production",

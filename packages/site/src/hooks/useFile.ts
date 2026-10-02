@@ -15,9 +15,7 @@ import {
 import { useAppDispatch, useRootSelector } from "./rtk-hooks";
 
 const getParents = (files: FileEntity[], id: string): FileEntity[] => {
-  const parent = files.find(
-    (file) => isFolder(file) && file.children.includes(id)
-  );
+  const parent = files.find((file) => isFolder(file) && file.children.includes(id));
 
   if (!parent) return [];
 
@@ -28,7 +26,7 @@ const makeSelectParents = () =>
   createSelector(
     (state: RootState) => filesSelectors.selectAll(state),
     (state: RootState, id: string) => id,
-    (files, id) => getParents(files, id)
+    (files, id) => getParents(files, id),
   );
 
 export const useIsTemp = (id: string) =>
@@ -50,8 +48,7 @@ export function useFileActions(id: string) {
 
     const createFolder = () => dispatch(filesSlice.actions.createFolder(id));
 
-    const drop = (dragFile: FileEntity) =>
-      dispatch(filesSlice.actions.move(dragFile.id, id));
+    const drop = (dragFile: FileEntity) => dispatch(filesSlice.actions.move(dragFile.id, id));
 
     const setName = (name: string) => update({ name });
     const setDescription = (description: string) => update({ description });
@@ -64,8 +61,7 @@ export function useFileActions(id: string) {
       copy,
       remove,
       save,
-      createPlan: () =>
-        dispatch(entitiesSlice.actions.createPlan(undefined, id)),
+      createPlan: () => dispatch(entitiesSlice.actions.createPlan(undefined, id)),
       createFolder,
       setName,
       setDescription,
@@ -80,10 +76,7 @@ export function useFileCanDrop(id: string) {
   const entity = useRootSelector((root) => root.entities.files.entities[id]);
 
   const selectParents = useMemo(makeSelectParents, []);
-  const parents = useRootSelector(
-    (root) => selectParents(root, id),
-    shallowEqual
-  );
+  const parents = useRootSelector((root) => selectParents(root, id), shallowEqual);
 
   const canDrop = (dragFile: FileEntity) => {
     if (dragFile.id === id) return false;

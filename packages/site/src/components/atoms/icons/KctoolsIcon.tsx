@@ -1,12 +1,13 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import Image from "next/image";
 import React from "react";
 
 import kctools from "../../../images/icons/kctools.png";
 
-const KctoolsIcon: React.FCX = (props) => (
+const KctoolsIcon: React.FCX = ({ className, ...props }) => (
   <Image
     {...props}
+    className={cn("rounded-full", className)}
     width={24}
     height={24}
     src={kctools}
@@ -15,6 +16,4 @@ const KctoolsIcon: React.FCX = (props) => (
   />
 );
 
-export default styled(KctoolsIcon)`
-  border-radius: 50%;
-`;
+export default KctoolsIcon;

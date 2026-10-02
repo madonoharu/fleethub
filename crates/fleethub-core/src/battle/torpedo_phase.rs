@@ -69,12 +69,12 @@ where
             Participant::Both,
         );
 
-        let picked = picker.choose(self.rng);
-        let mut target = if let Some(t) = picked {
-            target_comp.get_ship_mut(t.position).expect(SHIP_NOT_FOUND)
-        } else {
+        let Some(picked) = picker.choose(self.rng) else {
             return Ok(());
         };
+        let mut target = target_comp
+            .get_ship_mut(picked.position)
+            .expect(SHIP_NOT_FOUND);
 
         let formation_params = self.battle_defs.get_formation_params(
             AttackType::Torpedo,

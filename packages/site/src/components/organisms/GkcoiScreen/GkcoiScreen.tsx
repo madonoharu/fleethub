@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Dict } from "@fh/utils";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Paper, Button, Link } from "@mui/material";
@@ -12,6 +11,7 @@ import { appSlice } from "../../../store";
 import { createGkcoiDeck, GkcoiLang, GkcoiTheme } from "../../../utils";
 import { Flexbox } from "../../atoms";
 import { Select } from "../../molecules";
+import { cn } from "../../../styles";
 
 const ReactGkcoi = dynamic(() => import("./ReactGkcoi"), { ssr: false });
 
@@ -44,20 +44,13 @@ type GkcoiScreenProps = {
   org: Org;
 };
 
-const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
-  className,
-  style,
-  org,
-}) => {
+const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({ className, style, org }) => {
   const dispatch = useAppDispatch();
   const theme = useRootSelector((root) => root.app.gkcoiTheme);
   const { i18n } = useTranslation();
   const lang = GKCOI_LANGS[i18n.language] || "jp";
 
-  const deck = useMemo(
-    () => createGkcoiDeck(org, { theme, lang }),
-    [org, theme, lang],
-  );
+  const deck = useMemo(() => createGkcoiDeck(org, { theme, lang }), [org, theme, lang]);
 
   const handleThemeChange = (theme: GkcoiTheme) => {
     dispatch(appSlice.actions.setGkcoiTheme(theme));
@@ -65,7 +58,7 @@ const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
 
   return (
     <Paper className={className} style={style}>
-      <Flexbox gap={1} mb={1}>
+      <Flexbox className="gap-2 mb-2">
         <Select
           label="theme"
           options={GKCOI_THEMES}
@@ -86,6 +79,6 @@ const GkcoiScreen: React.FCX<GkcoiScreenProps> = ({
   );
 };
 
-export default styled(GkcoiScreen)`
-  padding: 8px;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof GkcoiScreen>) => (
+  <GkcoiScreen {...props} className={cn("p-2", className)} />
+);

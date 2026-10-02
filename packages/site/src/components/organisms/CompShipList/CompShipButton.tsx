@@ -1,12 +1,13 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
-import { styled } from "@mui/system";
+
 import { ShipMeta } from "fleethub-core";
 import React from "react";
 
 import { useAppDispatch, useSwap } from "../../../hooks";
 import { ShipPosition, shipSelectSlice, SwapShipPayload } from "../../../store";
 import ShipBanner from "../ShipBanner";
+import { cn } from "../../../styles";
 
 interface Props {
   className?: string;
@@ -47,7 +48,7 @@ const Inner = React.forwardRef<HTMLButtonElement, Props>(
         </Button>
       );
     }
-  }
+  },
 );
 
 const Memoized = React.memo(Inner);
@@ -70,4 +71,6 @@ const CompShipButton: React.FCX<Props> = (props) => {
   return React.cloneElement(elem, { ref });
 };
 
-export default styled(CompShipButton)(({ theme }) => theme.styles.swappable);
+export default ({ className, ...props }: React.ComponentProps<typeof CompShipButton>) => (
+  <CompShipButton {...props} className={cn("swappable", className)} />
+);

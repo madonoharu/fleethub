@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import React from "react";
 
 type StarsLabelProps = {
@@ -7,23 +6,20 @@ type StarsLabelProps = {
   disabled?: boolean;
 };
 
-const StarsLabel: React.FCX<StarsLabelProps> = ({ stars, ...rest }) => {
+const StarsLabel: React.FCX<StarsLabelProps> = ({ stars, disabled, className, ...rest }) => {
   return (
-    <span {...rest}>
+    <span
+      {...rest}
+      className={cn(
+        "flex w-7 justify-start [&>*]:basis-full",
+        disabled ? "text-action-disabled" : "text-stars",
+        className,
+      )}
+    >
       <span>★</span>
       <span data-testid="value">{stars === 10 ? "M" : stars}</span>
     </span>
   );
 };
 
-export default styled(StarsLabel)(
-  ({ theme, disabled }) => css`
-    display: flex;
-    justify-content: flex-start;
-    color: ${disabled ? theme.palette.action.disabled : theme.colors.stars};
-    width: 28px;
-    > * {
-      flex-basis: 100%;
-    }
-  `
-);
+export default StarsLabel;

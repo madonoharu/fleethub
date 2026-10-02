@@ -6,11 +6,7 @@ import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import React from "react";
 
-import {
-  GCS_PREFIX_URL,
-  MASTER_DATA_PATH,
-  SHIP_BANNERS_PATH,
-} from "../firebase";
+import { GCS_PREFIX_URL, MASTER_DATA_PATH, SHIP_BANNERS_PATH } from "../firebase";
 import { GenerationMapContext } from "../hooks";
 
 if (typeof window !== "undefined") {
@@ -26,9 +22,7 @@ interface PageProps {
   generationMap: Record<string, string>;
 }
 
-const Index: NextComponentType<NextPageContext, unknown, PageProps> = (
-  props,
-) => {
+const Index: NextComponentType<NextPageContext, unknown, PageProps> = (props) => {
   const { t } = useTranslation("common");
   const { generationMap } = props;
 
@@ -63,19 +57,10 @@ const Index: NextComponentType<NextPageContext, unknown, PageProps> = (
   );
 };
 
-export const getStaticProps: GetStaticProps<PageProps> = async ({
-  locale = "",
-}) => {
+export const getStaticProps: GetStaticProps<PageProps> = async ({ locale = "" }) => {
   const [generationMap, ssrConfig] = await Promise.all([
     fetchGenerationMap(),
-    serverSideTranslations(locale, [
-      "common",
-      "gears",
-      "gear_types",
-      "ships",
-      "stype",
-      "ctype",
-    ]),
+    serverSideTranslations(locale, ["common", "gears", "gear_types", "ships", "stype", "ctype"]),
   ]);
 
   return {

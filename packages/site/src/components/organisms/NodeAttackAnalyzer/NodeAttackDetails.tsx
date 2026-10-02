@@ -1,20 +1,9 @@
 import { Tabs, Tab, Stack, Paper } from "@mui/material";
-import type {
-  Comp,
-  DensityDetail,
-  Ship,
-  NodeAttackAnalyzerConfig,
-} from "fleethub-core";
+import type { Comp, DensityDetail, Ship, NodeAttackAnalyzerConfig } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React, { useEffect, useMemo, useState } from "react";
 
-import {
-  useAppDispatch,
-  useFhCore,
-  useRootSelector,
-  useShip,
-  useShipName,
-} from "../../../hooks";
+import { useAppDispatch, useFhCore, useRootSelector, useShip, useShipName } from "../../../hooks";
 import { appSlice } from "../../../store";
 import { Checkbox, Flexbox } from "../../atoms";
 import { hasCompShip } from "../DamageDensitySection/compShips";
@@ -22,13 +11,7 @@ import { hasCompShip } from "../DamageDensitySection/compShips";
 import AttackReportDetails from "./AttackReportDetails";
 import FleetCutinAnalysisTable from "./FleetCutinAnalysisTable";
 
-const KEYS = [
-  "day",
-  "night",
-  "closing_torpedo",
-  "opening_asw",
-  "support_shelling",
-] as const;
+const KEYS = ["day", "night", "closing_torpedo", "opening_asw", "support_shelling"] as const;
 
 type TabKey = (typeof KEYS)[number];
 
@@ -62,12 +45,8 @@ const NodeAttackDetails: React.FC<Props> = ({
   const [compareShipId, setCompareShipId] = useState<string>();
   // 分布グラフは描画が重いので、既定では畳んでおく。開いたかどうかは表示の好みなので、
   // タブを移ってアンマウントされても失われないよう store に置く。
-  const showDensity = useRootSelector(
-    (root) => root.app.damageDensityOpen ?? false,
-  );
-  const densityDetail: DensityDetail = showDensity
-    ? "WithNoPenetration"
-    : "Total";
+  const showDensity = useRootSelector((root) => root.app.damageDensityOpen ?? false);
+  const densityDetail: DensityDetail = showDensity ? "WithNoPenetration" : "Total";
 
   // 比較艦は編成から外れることがある。CompShipNameSelect は選択欄の表示だけを
   // 「比較なし」に戻すので、ここで所属を確かめないと、外れた艦を渡した比較解析と
@@ -121,16 +100,7 @@ const NodeAttackDetails: React.FC<Props> = ({
             )
           : undefined
         : undefined,
-    [
-      analyzer,
-      config,
-      leftComp,
-      leftShip,
-      rightComp,
-      rightShip,
-      compareShip,
-      densityDetail,
-    ],
+    [analyzer, config, leftComp, leftShip, rightComp, rightShip, compareShip, densityDetail],
   );
 
   if (!leftComp || !leftShip || !rightComp || !rightShip || !result) {
@@ -142,40 +112,34 @@ const NodeAttackDetails: React.FC<Props> = ({
   };
 
   return (
-    <Paper sx={{ p: 1 }}>
+    <Paper className="p-2">
       <Flexbox>
-        <Tabs value={key} onChange={handleChange}>
+        <Tabs className="h-8 min-h-0" value={key} onChange={handleChange}>
           {KEYS.map((key) => (
             <Tab
+              className="h-8 min-h-0"
               key={key}
               label={t(labelMap[key])}
               value={key}
-              disabled={
-                !result.left[key].is_active && !result.right[key].is_active
-              }
+              disabled={!result.left[key].is_active && !result.right[key].is_active}
             />
           ))}
         </Tabs>
 
         {/* 装甲破砕・史実補正・着上陸戦と同じ切り替え。 */}
         <Checkbox
-          css={{ marginLeft: 8, flexShrink: 0 }}
+          className="ml-2 shrink-0"
+
           label={t("DamageDistribution.Toggle")}
           checked={showDensity}
-          onChange={(checked) =>
-            dispatch(appSlice.actions.setDamageDensityOpen(checked))
-          }
+          onChange={(checked) => dispatch(appSlice.actions.setDamageDensityOpen(checked))}
         />
       </Flexbox>
 
-      <Stack
-        sx={{
-          gap: 1,
-          mt: 1,
-        }}
-      >
+      <Stack className="gap-2 mt-2">
         <AttackReportDetails
-          css={{ flexBasis: 1, flexGrow: 1 }}
+          className="[flex-basis:1px] grow"
+
           tag={key}
           analysis={result.left}
           targetMaxHp={rightShip.max_hp}
@@ -189,7 +153,8 @@ const NodeAttackDetails: React.FC<Props> = ({
           onCompareShipChange={setCompareShipId}
         />
         <AttackReportDetails
-          css={{ flexBasis: 1, flexGrow: 1 }}
+          className="[flex-basis:1px] grow"
+
           tag={key}
           analysis={result.right}
           targetMaxHp={leftShip.max_hp}
@@ -198,12 +163,8 @@ const NodeAttackDetails: React.FC<Props> = ({
         />
       </Stack>
 
-      {key === "day" && (
-        <FleetCutinAnalysisTable data={result.shelling_fleet_cutin} />
-      )}
-      {key === "night" && (
-        <FleetCutinAnalysisTable data={result.night_fleet_cutin} />
-      )}
+      {key === "day" && <FleetCutinAnalysisTable data={result.shelling_fleet_cutin} />}
+      {key === "night" && <FleetCutinAnalysisTable data={result.night_fleet_cutin} />}
     </Paper>
   );
 };

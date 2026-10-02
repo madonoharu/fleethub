@@ -18,9 +18,7 @@ export class SpreadsheetClient {
 
   batchUpdate(
     requestBody: sheets_v4.Schema$BatchUpdateSpreadsheetRequest,
-  ): Promise<
-    Common.GaxiosResponseWithHTTP2<sheets_v4.Schema$BatchUpdateSpreadsheetResponse>
-  > {
+  ): Promise<Common.GaxiosResponseWithHTTP2<sheets_v4.Schema$BatchUpdateSpreadsheetResponse>> {
     return this.inner.batchUpdate({
       spreadsheetId: this.spreadsheetId,
       requestBody,

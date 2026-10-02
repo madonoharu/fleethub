@@ -48,10 +48,7 @@ function fixture() {
 
 test("copies only traced files, deduplicates manifests, and accepts prerendered pages", async () => {
   const { root, write, trace } = fixture();
-  const translation = write(
-    "packages/site/public/locales/ja/common.json",
-    '{"title":"作戦室"}',
-  );
+  const translation = write("packages/site/public/locales/ja/common.json", '{"title":"作戦室"}');
   write("packages/site/.next/server/pages/index.js", "module.exports = {};");
   write("untraced.txt", "not deployed");
   trace([translation, translation]);
@@ -62,18 +59,12 @@ test("copies only traced files, deduplicates manifests, and accepts prerendered 
     assert.equal(build.pathCount, 2);
     assert.equal(build.manifestCount, 2);
     assert.equal(
-      readFileSync(
-        join(copied, "packages/site/public/locales/ja/common.json"),
-        "utf8",
-      ),
+      readFileSync(join(copied, "packages/site/public/locales/ja/common.json"), "utf8"),
       '{"title":"作戦室"}',
     );
     assert(!existsSync(join(copied, "untraced.txt")));
     await Promise.resolve();
-    assert(
-      existsSync(copied),
-      "The copy was cleaned before asynchronous verification finished",
-    );
+    assert(existsSync(copied), "The copy was cleaned before asynchronous verification finished");
   });
   assert(!existsSync(copied));
   assert(existsSync(root), "Verification must leave source artifacts intact");
@@ -85,10 +76,7 @@ test("preserves workspace links and a real module's adjacent Wasm", async () => 
     "packages/site/.next/server/pages/index.js",
     'module.exports = require("core");',
   );
-  const metadata = write(
-    "packages/core/package.json",
-    '{"main":"node/index.js"}',
-  );
+  const metadata = write("packages/core/package.json", '{"main":"node/index.js"}');
   const wrapper = write(
     "packages/core/node/index.js",
     'const fs = require("node:fs"), path = require("node:path"); const wasm = new WebAssembly.Module(fs.readFileSync(path.join(__dirname,"core.wasm"))); module.exports = {answer: new WebAssembly.Instance(wasm).exports.answer(), file: __filename};',
@@ -96,8 +84,8 @@ test("preserves workspace links and a real module's adjacent Wasm", async () => 
   const wasm = write(
     "packages/core/node/core.wasm",
     Uint8Array.from([
-      0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 127, 3, 2, 1, 0, 7, 10, 1,
-      6, 97, 110, 115, 119, 101, 114, 0, 0, 10, 6, 1, 4, 0, 65, 42, 11,
+      0, 97, 115, 109, 1, 0, 0, 0, 1, 5, 1, 96, 0, 1, 127, 3, 2, 1, 0, 7, 10, 1, 6, 97, 110, 115,
+      119, 101, 114, 0, 0, 10, 6, 1, 4, 0, 65, 42, 11,
     ]),
   );
   mkdirSync(join(root, "node_modules"));
@@ -107,10 +95,7 @@ test("preserves workspace links and a real module's adjacent Wasm", async () => 
   await withIsolatedBuildTraces(root, ({ directory }) => {
     const result = spawnSync(
       process.execPath,
-      [
-        "--eval",
-        'console.log(JSON.stringify(require("./.next/server/pages/index.js")))',
-      ],
+      ["--eval", 'console.log(JSON.stringify(require("./.next/server/pages/index.js")))'],
       {
         cwd: join(directory, "packages/site"),
         encoding: "utf8",
@@ -144,14 +129,9 @@ test("removes the isolated copy and propagates verification failures", async () 
 for (const files of [null, {}, ["asset.txt", 42]]) {
   test(`rejects a malformed trace files value: ${JSON.stringify(files)}`, async () => {
     const { root, write } = fixture();
-    write(
-      "packages/site/.next/server/pages/index.js.nft.json",
-      JSON.stringify({ files }),
-    );
+    write("packages/site/.next/server/pages/index.js.nft.json", JSON.stringify({ files }));
     await assert.rejects(
-      withIsolatedBuildTraces(root, () =>
-        assert.fail("Must not verify invalid trace"),
-      ),
+      withIsolatedBuildTraces(root, () => assert.fail("Must not verify invalid trace")),
       /Invalid trace:/,
     );
   });
@@ -161,9 +141,7 @@ test("rejects a missing traced target", async () => {
   const { root, trace } = fixture();
   trace([join(root, "missing.wasm")]);
   await assert.rejects(
-    withIsolatedBuildTraces(root, () =>
-      assert.fail("Must not verify incomplete copy"),
-    ),
+    withIsolatedBuildTraces(root, () => assert.fail("Must not verify incomplete copy")),
     /ENOENT.*missing\.wasm/,
   );
 });
@@ -174,9 +152,7 @@ test("rejects trace paths that escape the workspace", async () => {
   writeFileSync(outside, "outside");
   trace([outside]);
   await assert.rejects(
-    withIsolatedBuildTraces(root, () =>
-      assert.fail("Must not copy outside files"),
-    ),
+    withIsolatedBuildTraces(root, () => assert.fail("Must not copy outside files")),
     /Path escapes trace tree:/,
   );
 });
@@ -188,9 +164,7 @@ test("rejects absolute symlinks even when their target is inside the workspace",
   symlinkSync(target, link);
   trace([target, link]);
   await assert.rejects(
-    withIsolatedBuildTraces(root, () =>
-      assert.fail("Must reject nonportable links"),
-    ),
+    withIsolatedBuildTraces(root, () => assert.fail("Must reject nonportable links")),
     /Absolute traced symlink:/,
   );
 });
@@ -202,9 +176,7 @@ test("rejects an escaping symlink chain", async () => {
   symlinkSync("second.txt", join(root, "first.txt"));
   trace([join(root, "first.txt")]);
   await assert.rejects(
-    withIsolatedBuildTraces(root, () =>
-      assert.fail("Must reject link-chain escapes"),
-    ),
+    withIsolatedBuildTraces(root, () => assert.fail("Must reject link-chain escapes")),
     /Path escapes trace tree:/,
   );
 });
@@ -223,9 +195,7 @@ test("rejects directories in a file trace", async () => {
 test("reports a missing build instead of succeeding without checks", async () => {
   const { root } = fixture();
   await assert.rejects(
-    withIsolatedBuildTraces(root, () =>
-      assert.fail("Must reject absent manifests"),
-    ),
+    withIsolatedBuildTraces(root, () => assert.fail("Must reject absent manifests")),
     /Build Next\.js before verifying/,
   );
 });

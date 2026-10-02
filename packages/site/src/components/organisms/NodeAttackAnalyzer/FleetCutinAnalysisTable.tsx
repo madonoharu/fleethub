@@ -8,6 +8,7 @@ import { createAttackTableColumns } from "../AttackTable/AttackTable";
 import DamageStateDensityBarChart from "../AttackTable/DamageStateDensityBarChart";
 import ShipNameplate from "../ShipNameplate";
 import Table from "../Table";
+import { cn } from "../../../styles";
 
 interface Props {
   data: FleetCutinReport<unknown>[];
@@ -23,17 +24,11 @@ const FleetCutinAnalysisTable: React.FCX<Props> = ({ className, data }) => {
   const baseColumns = createAttackTableColumns(t, false);
 
   return (
-    <Stack
-      className={className}
-      sx={{
-        gap: 2,
-      }}
-    >
+    <Stack className={cn("gap-4", className)}>
       {data.map((report) => (
         <div key={`${report.cutin}-${report.formation}`}>
           <Typography variant="subtitle1">
-            {t(`FleetCutin.${report.cutin}`)}{" "}
-            {t(`Formation.${report.formation}`)} {t(`ProcRate`)}{" "}
+            {t(`FleetCutin.${report.cutin}`)} {t(`Formation.${report.formation}`)} {t(`ProcRate`)}{" "}
             {toPercent(report.rate)}
           </Typography>
           <Table

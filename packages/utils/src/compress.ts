@@ -31,5 +31,4 @@ export async function compress(input: string): Promise<ArrayBuffer> {
   return new Response(cs.readable).arrayBuffer();
 }
 
-compress.supports =
-  typeof window !== "undefined" && "CompressionStream" in window;
+compress.supports = typeof window !== "undefined" && "CompressionStream" in window;

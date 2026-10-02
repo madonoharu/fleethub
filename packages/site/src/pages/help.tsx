@@ -10,7 +10,7 @@ const Help: NextComponentType<NextPageContext> = () => (
       <title>Help</title>
     </Head>
 
-    <Container sx={{ mt: 5 }}>
+    <Container className="mt-10">
       <Button
         size="large"
         variant="outlined"

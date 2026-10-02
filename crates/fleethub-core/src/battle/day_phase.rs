@@ -102,9 +102,7 @@ where
             target_participant,
         );
 
-        let picked = if let Some(picked) = picker.choose(self.rng) {
-            picked
-        } else {
+        let Some(picked) = picker.choose(self.rng) else {
             return Ok(());
         };
 

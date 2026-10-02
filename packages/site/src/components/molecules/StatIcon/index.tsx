@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import Image from "next/image";
 import React from "react";
 
@@ -11,7 +11,7 @@ interface Props {
 const StatIcon: React.FCX<Props> = ({ className, icon }) => {
   return (
     <Image
-      className={className}
+      className={cn("contrast-[1.8]", className)}
       width={15}
       height={15}
       src={STAT_ICONS[icon]}
@@ -21,6 +21,4 @@ const StatIcon: React.FCX<Props> = ({ className, icon }) => {
   );
 };
 
-export default styled(StatIcon)`
-  filter: contrast(1.8);
-`;
+export default StatIcon;

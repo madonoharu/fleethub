@@ -1,10 +1,5 @@
 import cloudinary from "cloudinary";
-import {
-  CommonIconWeapon,
-  getCommonIconWeaponUrl,
-  getResourceUrl,
-  Start2,
-} from "kc-tools";
+import { CommonIconWeapon, getCommonIconWeaponUrl, getResourceUrl, Start2 } from "kc-tools";
 
 cloudinary.v2.config({
   cloud_name: "djg1epjdj",
@@ -56,18 +51,13 @@ type SearchApiResponse = {
 };
 
 export const getBannerIds = async () => {
-  const search = cloudinary.v2.search
-    .expression("ship")
-    .with_field("tags")
-    .max_results(500);
+  const search = cloudinary.v2.search.expression("ship").with_field("tags").max_results(500);
 
   let res = (await search.execute()) as SearchApiResponse;
   const resources = res.resources;
 
   while (res.next_cursor) {
-    res = (await search
-      .next_cursor(res.next_cursor)
-      .execute()) as SearchApiResponse;
+    res = (await search.next_cursor(res.next_cursor).execute()) as SearchApiResponse;
     resources.push(...res.resources);
   }
 
@@ -94,9 +84,7 @@ export const updateShipBanners = async (start2: Start2) => {
 
   const exists = (id: number) => Boolean(banners[id]);
 
-  for (const { api_id: id, api_name: name } of start2.api_mst_ship.map(
-    (ship) => ship,
-  )) {
+  for (const { api_id: id, api_name: name } of start2.api_mst_ship.map((ship) => ship)) {
     if (exists(id)) continue;
 
     const res = await uploadShipBanner(id);
@@ -113,17 +101,14 @@ export const updateShipBanners = async (start2: Start2) => {
 export const updateGearIcons = async () => {
   const commonIconWeaponUrl = getCommonIconWeaponUrl();
 
-  const { frames } = (await (
-    await fetch(commonIconWeaponUrl.json)
-  ).json()) as CommonIconWeapon;
+  const { frames } = (await (await fetch(commonIconWeaponUrl.json)).json()) as CommonIconWeapon;
 
   const searchRes = (await cloudinary.v2.search
     .expression("gear_icons")
     .max_results(500)
     .execute()) as SearchApiResponse;
 
-  const exists = (id: string) =>
-    searchRes.resources.some((resource) => resource.filename === id);
+  const exists = (id: string) => searchRes.resources.some((resource) => resource.filename === id);
 
   for (const [key, value] of Object.entries(frames)) {
     const id = key.replace("common_icon_weapon_id_", "");
@@ -151,9 +136,6 @@ export const updateGearIcons = async () => {
 };
 
 export const updateCloudinary = async (start2: Start2) => {
-  const [bannerIds] = await Promise.all([
-    updateShipBanners(start2),
-    updateGearIcons(),
-  ]);
+  const [bannerIds] = await Promise.all([updateShipBanners(start2), updateGearIcons()]);
   return bannerIds;
 };

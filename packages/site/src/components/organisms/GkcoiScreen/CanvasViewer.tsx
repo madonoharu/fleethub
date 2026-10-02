@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { Fab, Tooltip } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
@@ -7,13 +6,11 @@ import React from "react";
 import { useModal } from "../../../hooks";
 
 import CanvasModalContainer from "./CanvasModalContainer";
+import { cn } from "../../../styles";
 
-const CanvasContainer = styled.div`
-  canvas {
-    width: 100%;
-    cursor: zoom-in;
-  }
-`;
+const CanvasContainer = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div {...props} className={cn("[&_canvas]:w-full [&_canvas]:[cursor:zoom-in]", className)} />
+);
 
 type Props = {
   canvas: HTMLCanvasElement;
@@ -39,7 +36,7 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
     <div className={className}>
       <Tooltip title={t("Download")}>
         <Fab
-          css={{ position: "absolute", top: -32, right: -40 }}
+          className="absolute -top-8 -right-10"
           color="secondary"
           component="a"
           href={dataUrl}
@@ -57,6 +54,6 @@ const CanvasViewer: React.FCX<Props> = ({ className, canvas }) => {
   );
 };
 
-export default styled(CanvasViewer)`
-  position: relative;
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof CanvasViewer>) => (
+  <CanvasViewer {...props} className={cn("relative", className)} />
+);

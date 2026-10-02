@@ -20,39 +20,25 @@ const ShipsMenu: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const shipIds = useRootSelector((root) => {
-    return Object.keys(root.config.masterData?.ships || {}).map((v) =>
-      Number(v),
-    );
+    return Object.keys(root.config.masterData?.ships || {}).map((v) => Number(v));
   }, shallowEqual);
 
   return (
     <div>
-      <Stack
-        sx={{
-          gap: 1,
-        }}
-      >
-        <Button
-          sx={{ width: "fit-content" }}
-          variant="contained"
-          color="primary"
-          onClick={() => setOpen(true)}
-        >
+      <Stack className="gap-2">
+        <Button className="w-fit" variant="contained" color="primary" onClick={() => setOpen(true)}>
           {t("AddShipConfig")}
         </Button>
 
         {shipIds.map((id) => (
-          <Paper
-            key={id}
-            css={{ display: "flex", maxWidth: 400, alignItems: "center" }}
-          >
+          <Paper key={id} className="flex max-w-[400px] items-center">
             <Button
-              css={{ flexGrow: 1 }}
+              className="grow"
               onClick={() => {
                 setSelectedId(id);
               }}
             >
-              <ShipNameplate shipId={id} sx={{ height: 40 }} />
+              <ShipNameplate shipId={id} className="h-[40px]" />
             </Button>
             <DeleteButton
               size="medium"

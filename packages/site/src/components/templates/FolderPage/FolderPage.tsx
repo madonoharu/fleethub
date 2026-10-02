@@ -1,18 +1,14 @@
-import styled from "@emotion/styled";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import { Button, Container, Stack } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useFile } from "../../../hooks";
 import { FileDropZone, FileForm } from "../../organisms";
 
 import FolderPageItem from "./FolderPageItem";
-
-const ListContainer = styled.div`
-  margin-top: 16px;
-`;
 
 type FolderPageProps = {
   id: string;
@@ -33,7 +29,7 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
   };
 
   return (
-    <FileDropZone className={className} onDrop={actions.drop} canDrop={canDrop}>
+    <FileDropZone className={cn("h-full", className)} onDrop={actions.drop} canDrop={canDrop}>
       <Container>
         <FileForm
           file={file}
@@ -46,13 +42,7 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
           onRemove={actions.remove}
         />
 
-        <Stack
-          direction="row"
-          sx={{
-            gap: 1,
-            mt: 1,
-          }}
-        >
+        <Stack direction="row" className="gap-2 mt-2">
           <Button
             variant="contained"
             color="primary"
@@ -71,16 +61,14 @@ const FolderPage: React.FCX<FolderPageProps> = ({ className, id }) => {
           </Button>
         </Stack>
 
-        <ListContainer>
+        <div className="mt-4">
           {file.children.map((id) => (
             <FolderPageItem key={id} id={id} parent={id} />
           ))}
-        </ListContainer>
+        </div>
       </Container>
     </FileDropZone>
   );
 };
 
-export default styled(FolderPage)`
-  height: 100%;
-`;
+export default FolderPage;

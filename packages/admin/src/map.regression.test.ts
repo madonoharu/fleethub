@@ -1,13 +1,4 @@
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  mock,
-  spyOn,
-} from "bun:test";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
 import { brotliDecompressSync } from "node:zlib";
 import type { SaveOptions } from "@google-cloud/storage";
 import type { App } from "firebase-admin/app";
@@ -59,8 +50,7 @@ const testEnvironment: NodeJS.ProcessEnv = {
   SERVICE_ACCOUNT_CLIENT_EMAIL: "test@example.invalid",
   SERVICE_ACCOUNT_PRIVATE_KEY: "test-key",
 };
-const uploads: { path: string; data: string | Buffer; options: SaveOptions }[] =
-  [];
+const uploads: { path: string; data: string | Buffer; options: SaveOptions }[] = [];
 let originalEnvironment: NodeJS.ProcessEnv;
 let operations: typeof import("./map");
 
@@ -109,9 +99,7 @@ function createMasterData(): MasterData {
   };
 }
 
-function createEnemyShip(
-  overrides: Partial<KcnavEnemyShip> = {},
-): KcnavEnemyShip {
+function createEnemyShip(overrides: Partial<KcnavEnemyShip> = {}): KcnavEnemyShip {
   return {
     id: 1501,
     name: "駆逐イ級",
@@ -151,8 +139,7 @@ function prepareUpstream(current: MasterData, ships: KcnavEnemyShip[]) {
         "https://tsunkit.net/api/routing/maps/all": ["1-1"],
         "https://tsunkit.net/api/routing/maps/1-1": graph,
         "https://tsunkit.net/api/routing/maps/1-1/lbasdistance": {},
-        "https://tsunkit.net/api/routing/maps/1-1/nodes/all/enemycomps":
-          enemycomps,
+        "https://tsunkit.net/api/routing/maps/1-1/nodes/all/enemycomps": enemycomps,
       };
       if (!(url in results)) throw new Error(`Unexpected fetch: ${url}`);
       return Response.json({ result: results[url] });
@@ -188,13 +175,7 @@ function prepareUpstream(current: MasterData, ships: KcnavEnemyShip[]) {
           dataFilters: [{ gridRange: { sheetId: 2088927150 } }],
           valueRange: {
             values: [
-              [
-                "ship_id",
-                "max_hp[0]",
-                "firepower[0]",
-                "stock[0].gear_id",
-                "stock[1].gear_id",
-              ],
+              ["ship_id", "max_hp[0]", "firepower[0]", "stock[0].gear_id", "stock[1].gear_id"],
               ...current.ships.map((ship) => [
                 ship.ship_id,
                 ship.max_hp[0],
@@ -211,9 +192,7 @@ function prepareUpstream(current: MasterData, ships: KcnavEnemyShip[]) {
 }
 
 function uploadedMasterData(): MasterData {
-  expect(uploads.map((upload) => upload.path)).toEqual([
-    "data/master_data.json",
-  ]);
+  expect(uploads.map((upload) => upload.path)).toEqual(["data/master_data.json"]);
   const upload = uploads[0]!;
   expect(upload.data).toBeInstanceOf(Buffer);
   expect(upload.options).toEqual({
@@ -225,9 +204,7 @@ function uploadedMasterData(): MasterData {
       contentEncoding: "br",
     },
   });
-  return JSON.parse(
-    brotliDecompressSync(upload.data as Buffer).toString(),
-  ) as MasterData;
+  return JSON.parse(brotliDecompressSync(upload.data as Buffer).toString()) as MasterData;
 }
 
 describe("Kcnav master-data synchronization", () => {
@@ -266,37 +243,29 @@ describe("Kcnav master-data synchronization", () => {
   it.each([
     [[0, 0, 0, 0, 0], []],
     [[24, 0, -1, 0, 0], [{ gear_id: 24 }]],
-  ] as const)(
-    "uploads authoritative equipment removal (%j)",
-    async (equips, stock) => {
-      const current = createMasterData();
-      const before = structuredClone(current);
-      prepareUpstream(current, [createEnemyShip({ equips: [...equips] })]);
+  ] as const)("uploads authoritative equipment removal (%j)", async (equips, stock) => {
+    const current = createMasterData();
+    const before = structuredClone(current);
+    prepareUpstream(current, [createEnemyShip({ equips: [...equips] })]);
 
-      await operations.updateByKcnav(1);
+    await operations.updateByKcnav(1);
 
-      expect(uploadedMasterData().ships[0].stock).toEqual([...stock]);
-      expect(current).toEqual(before);
-      expect(sheets.write).toHaveBeenCalledTimes(1);
-    },
-  );
+    expect(uploadedMasterData().ships[0].stock).toEqual([...stock]);
+    expect(current).toEqual(before);
+    expect(sheets.write).toHaveBeenCalledTimes(1);
+  });
 
   it("keeps existing stats and equipment when the source has no hit points", async () => {
     const current = createMasterData();
     const before = structuredClone(current);
-    prepareUpstream(current, [
-      createEnemyShip({ hp: undefined, equips: [0, 0, 0, 0, 0] }),
-    ]);
+    prepareUpstream(current, [createEnemyShip({ hp: undefined, equips: [0, 0, 0, 0, 0] })]);
 
     await operations.updateByKcnav(1);
 
     expect(uploads).toEqual([]);
     expect(sheets.write).not.toHaveBeenCalled();
     expect(current).toEqual(before);
-    expect(console.warn).toHaveBeenCalledWith(
-      "[id:1501 駆逐イ級]",
-      "hp is None",
-    );
+    expect(console.warn).toHaveBeenCalledWith("[id:1501 駆逐イ級]", "hp is None");
   });
 
   it("uses the last duplicate enemy record and retains authoritative equipment order", async () => {

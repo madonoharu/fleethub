@@ -1,9 +1,6 @@
 import { DependencyList, useEffect, useState } from "react";
 
-type Result<T> =
-  | { status: "loading" }
-  | { status: "error" }
-  | { status: "success"; data: T };
+type Result<T> = { status: "loading" } | { status: "error" } | { status: "success"; data: T };
 
 export const useFetch = <T>(fn: () => Promise<T>, deps?: DependencyList) => {
   const [result, setResult] = useState<Result<T>>({ status: "loading" });

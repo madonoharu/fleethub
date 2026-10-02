@@ -1,10 +1,4 @@
-import type {
-  AirSquadronState,
-  FleetState,
-  GearState,
-  OrgState,
-  ShipState,
-} from "fleethub-core";
+import type { AirSquadronState, FleetState, GearState, OrgState, ShipState } from "fleethub-core";
 
 interface Slotitem {
   mstID: number;

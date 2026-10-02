@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { MapNode } from "@fh/utils";
 import { Typography } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
@@ -12,19 +12,17 @@ type NodeLabelProps = {
   d: MapNode["d"];
 };
 
-const NodeLabel: React.FCX<NodeLabelProps> = ({
-  className,
-  style,
-  name,
-  type,
-  d,
-}) => {
+const NodeLabel: React.FCX<NodeLabelProps> = ({ className, style, name, type, d }) => {
   const { t } = useTranslation("common");
   const distance = d && `${t("LbasDistance")}: ${d.join("→")}`;
   const typeName = getNodeTypeStyle(type).name;
 
   return (
-    <Typography className={className} style={style} variant="subtitle2">
+    <Typography
+      className={cn("flex gap-4 [&>*]:grow-0", className)}
+      style={style}
+      variant="subtitle2"
+    >
       <span>{name}</span>
       <span>{t(`nodeType.${typeName}`)}</span>
       <span>{distance}</span>
@@ -32,10 +30,4 @@ const NodeLabel: React.FCX<NodeLabelProps> = ({
   );
 };
 
-export default styled(NodeLabel)`
-  display: flex;
-  gap: 16px;
-  > * {
-    flex-grow: 0;
-  }
-`;
+export default NodeLabel;

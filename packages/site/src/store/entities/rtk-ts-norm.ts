@@ -21,11 +21,7 @@ function getAffectedEntitiesImpl(
   input: unknown,
   schema: AnySchema,
   entities: Entities,
-  setEntity: (
-    id: EntityId,
-    entity: object | undefined,
-    schema: AnyEntitySchema,
-  ) => void,
+  setEntity: (id: EntityId, entity: object | undefined, schema: AnyEntitySchema) => void,
 ): void {
   if (isEntitySchema(schema)) {
     if (!isEntityId(input)) {
@@ -33,8 +29,7 @@ function getAffectedEntitiesImpl(
     }
 
     const key = schema.key;
-    const entity = entities[key]?.[input] as
-      Record<string, unknown> | undefined;
+    const entity = entities[key]?.[input] as Record<string, unknown> | undefined;
 
     setEntity(input, entity, schema);
 
@@ -97,8 +92,7 @@ function cloneAffectedEntitiesImpl<T>(
     }
 
     const key = schema.key;
-    const entity = entities[key]?.[input] as
-      Record<string, unknown> | undefined;
+    const entity = entities[key]?.[input] as Record<string, unknown> | undefined;
 
     const nextId = idGenerator();
 
@@ -125,13 +119,7 @@ function cloneAffectedEntitiesImpl<T>(
     const localSchema = schema[0];
 
     return input.map((item) =>
-      cloneAffectedEntitiesImpl(
-        item,
-        localSchema,
-        entities,
-        cloned,
-        idGenerator,
-      ),
+      cloneAffectedEntitiesImpl(item, localSchema, entities, cloned, idGenerator),
     ) as unknown as T;
   } else {
     if (!isObject(input)) {
@@ -168,13 +156,7 @@ export function cloneAffectedEntities<T>(
   entities: Entities;
 } {
   const cloned: Entities = {};
-  const result = cloneAffectedEntitiesImpl(
-    input,
-    schema,
-    entities,
-    cloned,
-    idGenerator,
-  );
+  const result = cloneAffectedEntitiesImpl(input, schema, entities, cloned, idGenerator);
 
   return {
     result,
@@ -182,22 +164,15 @@ export function cloneAffectedEntities<T>(
   };
 }
 
-type SchemaInputType<S extends AnySchema> =
-  S extends Schema<infer T> ? T : never;
-type DenormalizeInput<S extends AnySchema> = NormalizedSchemaResult<
-  SchemaInputType<S>,
-  S
->;
+type SchemaInputType<S extends AnySchema> = S extends Schema<infer T> ? T : never;
+type DenormalizeInput<S extends AnySchema> = NormalizedSchemaResult<SchemaInputType<S>, S>;
 
 type DenormalizeSelector<T, S extends AnySchema> = (
   state: T,
   input: DenormalizeInput<S>,
 ) => SchemaInputType<S> | undefined;
 
-export function getEntitySchemata(
-  schema: AnySchema,
-  result: AnyEntitySchema[] = [],
-) {
+export function getEntitySchemata(schema: AnySchema, result: AnyEntitySchema[] = []) {
   if (isEntitySchema(schema)) {
     if (result.includes(schema)) {
       return result;
@@ -224,10 +199,7 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
 
   const keys = getEntitySchemata(schema).map((schema) => schema.key);
 
-  const equalityCheck = (
-    [prevInput, prevEntities]: Args,
-    [nextInput, nextEntities]: Args,
-  ) => {
+  const equalityCheck = ([prevInput, prevEntities]: Args, [nextInput, nextEntities]: Args) => {
     if (
       prevEntities === nextEntities ||
       keys.every((key) => shallowEqual(prevEntities[key], nextEntities[key]))
@@ -244,10 +216,7 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
   const selectorCreator = createSelectorCreator(lruMemoize, equalityCheck);
 
   return createCachedSelector(
-    (state: T, input: DenormalizeInput<S>): Args => [
-      input,
-      entitiesSelector(state),
-    ],
+    (state: T, input: DenormalizeInput<S>): Args => [input, entitiesSelector(state)],
     ([input, entities]) => {
       return denormalize(input, schema, entities as never);
     },

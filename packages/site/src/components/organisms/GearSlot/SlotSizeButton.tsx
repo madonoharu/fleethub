@@ -1,18 +1,11 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import BuildIcon from "@mui/icons-material/Build";
-import {
-  Button,
-  DialogContent,
-  DialogTitle,
-  Slider,
-  Tooltip,
-} from "@mui/material";
+import { Button, DialogContent, DialogTitle, Slider, Tooltip } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { useModal } from "../../../hooks";
 import { NumberInput } from "../../molecules";
+import { cn } from "../../../styles";
 
 type SlotSizeFormProps = {
   current?: number;
@@ -20,11 +13,7 @@ type SlotSizeFormProps = {
   onChange?: (value?: number) => void;
 };
 
-const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
-  current,
-  max,
-  onChange,
-}) => {
+const SlotSizeForm: React.FC<SlotSizeFormProps> = ({ current, max, onChange }) => {
   const { t } = useTranslation("common");
 
   const handleSliderChange = (event: unknown, value: number | number[]) => {
@@ -39,11 +28,7 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
     <>
       <DialogTitle>搭載数を変更</DialogTitle>
       <DialogContent>
-        <div
-          css={css`
-            display: flex;
-          `}
-        >
+        <div className="flex">
           <NumberInput
             variant="outlined"
             value={current || 0}
@@ -54,9 +39,7 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({
           <Button onClick={handleInit}>{t("Reset")}</Button>
         </div>
 
-        {max && (
-          <Slider value={current} max={max} onChange={handleSliderChange} />
-        )}
+        {max && <Slider value={current} max={max} onChange={handleSliderChange} />}
       </DialogContent>
     </>
   );
@@ -67,13 +50,7 @@ type Props = Partial<SlotSizeFormProps> & {
   exslot?: boolean;
 };
 
-const SlotSizeButton: React.FCX<Props> = ({
-  className,
-  current,
-  max,
-  exslot,
-  onChange,
-}) => {
+const SlotSizeButton: React.FCX<Props> = ({ className, current, max, exslot, onChange }) => {
   const Modal = useModal();
 
   if (exslot) {
@@ -98,24 +75,17 @@ const SlotSizeButton: React.FCX<Props> = ({
   );
 };
 
-export default styled(SlotSizeButton)(({
-  theme,
-  current = 0,
-  max = 0,
-  disabled,
-}) => {
-  const { palette } = theme;
-  let color = palette.text.primary;
-  if (current === 0 || disabled) {
-    color = palette.action.disabled;
-  } else if (current > max) {
-    color = palette.secondary.light;
-  }
-
-  return css`
-    justify-content: flex-end;
-    padding: 0 4px;
-    width: 24px;
-    color: ${color};
-  `;
-});
+export default ({ className, ...props }: React.ComponentProps<typeof SlotSizeButton>) => (
+  <SlotSizeButton
+    {...props}
+    className={cn(
+      "justify-end px-1 py-0 w-6",
+      !props.current || props.disabled
+        ? "text-action-disabled"
+        : props.current > (props.max ?? 0)
+          ? "text-secondary-light"
+          : "text-text-primary",
+      className,
+    )}
+  />
+);

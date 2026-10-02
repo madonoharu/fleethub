@@ -12,19 +12,14 @@ const cutinColors = [
   colors.pink,
   colors.purple,
 ].map((color) => color[300]);
-const getColor = (index: number): string =>
-  cutinColors[index % cutinColors.length];
+const getColor = (index: number): string => cutinColors[index % cutinColors.length];
 
 type Props = {
   label?: string;
   chance: [number, number][];
 };
 
-const AntiAirCutinChanceChart: React.FCX<Props> = ({
-  className,
-  label,
-  chance,
-}) => {
+const AntiAirCutinChanceChart: React.FCX<Props> = ({ className, label, chance }) => {
   const width = 360;
   const height = 240;
   const cx = width / 2;
@@ -38,9 +33,7 @@ const AntiAirCutinChanceChart: React.FCX<Props> = ({
       color: getColor(index),
     }));
 
-  const total = chance
-    .map(([_, rate]) => rate)
-    .reduce((acc, rate) => acc + rate, 0);
+  const total = chance.map(([_, rate]) => rate).reduce((acc, rate) => acc + rate, 0);
 
   const complement = 1 - total;
 
@@ -72,20 +65,9 @@ const AntiAirCutinChanceChart: React.FCX<Props> = ({
           <Cell key={index} fill={datum.color} />
         ))}
         {label && (
-          <Label
-            value={label}
-            dy={-10}
-            fontSize="0.75rem"
-            fill="white"
-            position="center"
-          />
+          <Label value={label} dy={-10} fontSize="0.75rem" fill="white" position="center" />
         )}
-        <Label
-          value={`合計 ${toPercent(total)}`}
-          dy={10}
-          fill="white"
-          position="center"
-        />
+        <Label value={`合計 ${toPercent(total)}`} dy={10} fill="white" position="center" />
       </Pie>
     </PieChart>
   );

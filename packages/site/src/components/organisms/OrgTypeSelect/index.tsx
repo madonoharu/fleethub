@@ -36,14 +36,7 @@ const OrgTypeSelect: React.FCX<OrgTypeSelectProps> = ({ side, ...rest }) => {
     }
   };
 
-  return (
-    <Select
-      {...rest}
-      options={OPTIONS}
-      getOptionLabel={t}
-      itemFilter={itemFilter}
-    />
-  );
+  return <Select {...rest} options={OPTIONS} getOptionLabel={t} itemFilter={itemFilter} />;
 };
 
 export default OrgTypeSelect;

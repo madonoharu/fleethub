@@ -1,12 +1,4 @@
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  mock,
-} from "bun:test";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, mock } from "bun:test";
 import type { App, Credential } from "firebase-admin/app";
 
 const sdk = {
@@ -78,21 +70,15 @@ describe("lazy Firebase credentials", () => {
 
   it.each([
     [{}, "client_emailが存在しません"],
-    [
-      { SERVICE_ACCOUNT_CLIENT_EMAIL: "test@example.invalid" },
-      "private_keyが存在しません",
-    ],
-  ])(
-    "reports missing credentials only when the app is requested",
-    (env, message) => {
-      Object.assign(process.env, env);
-      const { sdk, getApp } = load();
+    [{ SERVICE_ACCOUNT_CLIENT_EMAIL: "test@example.invalid" }, "private_keyが存在しません"],
+  ])("reports missing credentials only when the app is requested", (env, message) => {
+    Object.assign(process.env, env);
+    const { sdk, getApp } = load();
 
-      expect(() => getApp()).toThrow(message);
-      expect(sdk.cert).not.toHaveBeenCalled();
-      expect(sdk.initializeApp).not.toHaveBeenCalled();
-    },
-  );
+    expect(() => getApp()).toThrow(message);
+    expect(sdk.cert).not.toHaveBeenCalled();
+    expect(sdk.initializeApp).not.toHaveBeenCalled();
+  });
 
   it("initializes once, decodes escaped newlines, and reuses the default app", () => {
     process.env.SERVICE_ACCOUNT_CLIENT_EMAIL = "test@example.invalid";

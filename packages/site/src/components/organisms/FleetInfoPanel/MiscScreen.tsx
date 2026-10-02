@@ -6,10 +6,7 @@ import React from "react";
 import { toPercent } from "../../../utils";
 import { LabeledValue } from "../../atoms";
 
-const displayWithFloor = (
-  v: number | null | undefined,
-  fractionDigits = 3,
-): string => {
+const displayWithFloor = (v: number | null | undefined, fractionDigits = 3): string => {
   if (v === null || v === undefined) return "";
   if (Number.isInteger(v)) return v.toString();
   return floor(v, fractionDigits).toString();
@@ -24,19 +21,9 @@ const MiscScreen: React.FC<Props> = ({ fleet, comp }) => {
   const tp = comp.transport_point();
 
   return (
-    <Stack
-      divider={<Divider />}
-      sx={{
-        width: "fit-content",
-        ml: 5,
-      }}
-    >
+    <Stack className="w-fit ml-10" divider={<Divider />}>
       <LabeledValue variant="body1" label="TP(S勝利)" value={tp} />
-      <LabeledValue
-        variant="body1"
-        label="TP(A勝利)"
-        value={Math.floor(tp * 0.7)}
-      />
+      <LabeledValue variant="body1" label="TP(A勝利)" value={Math.floor(tp * 0.7)} />
       <LabeledValue
         variant="body1"
         label="航空索敵スコア"
@@ -47,31 +34,11 @@ const MiscScreen: React.FC<Props> = ({ fleet, comp }) => {
         label="遠征ボーナス"
         value={toPercent(fleet.expedition_bonus())}
       />
-      <LabeledValue
-        variant="body1"
-        label="合計レベル"
-        value={fleet.sum_ship_stat_by("level")}
-      />
-      <LabeledValue
-        variant="body1"
-        label="合計火力"
-        value={fleet.sum_ship_stat_by("firepower")}
-      />
-      <LabeledValue
-        variant="body1"
-        label="合計対空"
-        value={fleet.sum_ship_stat_by("anti_air")}
-      />
-      <LabeledValue
-        variant="body1"
-        label="合計対潜"
-        value={fleet.sum_ship_stat_by("asw")}
-      />
-      <LabeledValue
-        variant="body1"
-        label="合計索敵"
-        value={fleet.sum_ship_stat_by("los")}
-      />
+      <LabeledValue variant="body1" label="合計レベル" value={fleet.sum_ship_stat_by("level")} />
+      <LabeledValue variant="body1" label="合計火力" value={fleet.sum_ship_stat_by("firepower")} />
+      <LabeledValue variant="body1" label="合計対空" value={fleet.sum_ship_stat_by("anti_air")} />
+      <LabeledValue variant="body1" label="合計対潜" value={fleet.sum_ship_stat_by("asw")} />
+      <LabeledValue variant="body1" label="合計索敵" value={fleet.sum_ship_stat_by("los")} />
     </Stack>
   );
 };

@@ -1,4 +1,4 @@
-import { useTheme } from "@emotion/react";
+import { useTheme } from "@mui/material/styles";
 import { Stack } from "@mui/material";
 import { LegendOrdinal, LegendItem, LegendLabel } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
@@ -7,6 +7,7 @@ import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { toPercent } from "../../../utils";
+import { cn } from "../../../styles";
 
 const domain: DamageState[] = ["Normal", "Shouha", "Chuuha", "Taiha", "Sunk"];
 
@@ -28,7 +29,7 @@ const DamageStateDensityBarChart: React.FCX<Props> = ({ className, data }) => {
   let total = 0;
 
   return (
-    <div className={className} css={{ maxWidth: 480 }}>
+    <div className={cn("max-w-120", className)}>
       <svg width={"100%"} height={height}>
         {domain.map((key) => {
           const rate = data[key];
@@ -51,13 +52,7 @@ const DamageStateDensityBarChart: React.FCX<Props> = ({ className, data }) => {
 
       <LegendOrdinal scale={ordinalColorScale}>
         {(labels) => (
-          <Stack
-            sx={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              fontSize: "0.875rem",
-            }}
-          >
+          <Stack className="flex-row flex-wrap text-[0.875rem]">
             {labels.map((label) => {
               const rate = data[label.datum];
               if (!rate) return null;

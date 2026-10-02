@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { GEAR_EXP_TABLE } from "@fh/utils";
 import { Button, Tooltip } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
@@ -7,16 +7,6 @@ import React from "react";
 import { usePopover } from "../../../hooks";
 import { ProficiencyIcon } from "../../atoms";
 import NumberInput from "../NumberInput";
-
-const ColumnReverse = styled.div`
-  display: flex;
-  flex-direction: column-reverse;
-`;
-
-const StyledNumberInput = styled(NumberInput)`
-  width: 96px;
-  margin: 0 4px;
-`;
 
 const anchorOrigin = {
   vertical: "bottom",
@@ -39,23 +29,29 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
   };
 
   return (
-    <div className={className}>
+    <div
+      className={cn(
+        "[&_button]:w-7 [&_button]:flex [&_button]:px-[3px] [&_button]:py-0 [&_input]:w-16 [&_input]:mx-2 [&_input]:my-0",
+        className,
+      )}
+    >
       <Tooltip title={t("Proficiency")}>
-        <Button onClick={Popover.show} sx={{ height: "100%" }}>
+        <Button onClick={Popover.show} className="h-full">
           <ProficiencyIcon exp={exp} />
         </Button>
       </Tooltip>
 
       <Popover anchorOrigin={anchorOrigin}>
-        <ColumnReverse>
+        <div className="flex flex-col-reverse">
           {GEAR_EXP_TABLE.map((bound) => (
             <Button key={bound} id={bound.toString()} onClick={handleChange}>
               <ProficiencyIcon exp={bound} />
             </Button>
           ))}
-        </ColumnReverse>
+        </div>
 
-        <StyledNumberInput
+        <NumberInput
+          className="w-24 mx-1 my-0"
           label="内部熟練度"
           variant="outlined"
           value={exp}
@@ -68,14 +64,4 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
   );
 };
 
-export default styled(GearExpSelect)`
-  button {
-    width: 28px;
-    display: flex;
-    padding: 0 3px;
-  }
-  input {
-    width: 64px;
-    margin: 0 8px;
-  }
-`;
+export default GearExpSelect;

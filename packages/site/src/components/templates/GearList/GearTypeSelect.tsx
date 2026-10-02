@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { Select } from "../../molecules";
 import { GearNameplate } from "../../organisms";
 
@@ -11,7 +11,7 @@ type Props = {
   onChange: (value: number) => void;
 };
 
-const GearTypeSelect: React.FCX<Props> = (props) => {
+const GearTypeSelect: React.FCX<Props> = ({ className, ...props }) => {
   const { t } = useTranslation("gear_types");
 
   const getTypeLabel = (typeId: number) => {
@@ -21,10 +21,9 @@ const GearTypeSelect: React.FCX<Props> = (props) => {
     return <GearNameplate iconId={1} name={name} />;
   };
 
-  return <Select getOptionLabel={getTypeLabel} {...props} />;
+  return (
+    <Select className={cn("h-9 w-[140px]", className)} getOptionLabel={getTypeLabel} {...props} />
+  );
 };
 
-export default styled(GearTypeSelect)`
-  width: 140px;
-  height: 36px;
-`;
+export default GearTypeSelect;

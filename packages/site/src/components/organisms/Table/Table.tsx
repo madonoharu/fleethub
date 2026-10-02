@@ -20,19 +20,13 @@ type TableCellProps<Datum> = {
   column: ColumnProps<Datum>;
 };
 
-function TableCell<Datum>({
-  datum,
-  datumIndex,
-  column,
-}: TableCellProps<Datum>) {
+function TableCell<Datum>({ datum, datumIndex, column }: TableCellProps<Datum>) {
   const { label: _, getValue, ...rest } = column;
 
   return <MuiTableCell {...rest}>{getValue(datum, datumIndex)}</MuiTableCell>;
 }
 
-function TableHeadCell<Datum>({
-  column,
-}: Omit<TableCellProps<Datum>, "datum">) {
+function TableHeadCell<Datum>({ column }: Omit<TableCellProps<Datum>, "datum">) {
   const { label, getValue: _, ...rest } = column;
 
   return <MuiTableCell {...rest}>{label}</MuiTableCell>;
@@ -48,12 +42,7 @@ function TableRow<Datum>({ datum, columns, datumIndex }: TableRowProps<Datum>) {
   return (
     <MuiTableRow>
       {columns.map((column, index) => (
-        <TableCell
-          key={index}
-          datum={datum}
-          datumIndex={datumIndex}
-          column={column}
-        />
+        <TableCell key={index} datum={datum} datumIndex={datumIndex} column={column} />
       ))}
     </MuiTableRow>
   );
@@ -77,12 +66,7 @@ function Table<Datum>(props: TableProps<Datum>) {
       </MuiTableHead>
       <MuiTableBody>
         {data.map((datum, index) => (
-          <TableRow
-            key={index}
-            datum={datum}
-            datumIndex={index}
-            columns={columns}
-          />
+          <TableRow key={index} datum={datum} datumIndex={index} columns={columns} />
         ))}
       </MuiTableBody>
     </MuiTable>

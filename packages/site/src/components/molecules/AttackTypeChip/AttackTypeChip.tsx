@@ -1,5 +1,7 @@
+import { cn } from "../../../styles/cn";
+import { colors } from "../../../styles/colors";
 import { includes, isUnknownRecord } from "@fh/utils";
-import { Chip, styled, css } from "@mui/material";
+import { Chip } from "@mui/material";
 import type {
   AswAttackStyle,
   NightAttackStyle,
@@ -31,9 +33,7 @@ function isShellingStyle(attack: UnknownAttackStyle): attack is ShellingStyle {
   return attack.tag === "ShellingStyle";
 }
 
-function isNightAttackStyle(
-  attack: UnknownAttackStyle,
-): attack is NightAttackStyle {
+function isNightAttackStyle(attack: UnknownAttackStyle): attack is NightAttackStyle {
   return attack.tag === "NightAttackStyle";
 }
 
@@ -97,13 +97,22 @@ const FLEET_CUTINS = [
 ] as const;
 
 const AttackTypeChip = React.forwardRef<HTMLDivElement, Props>(
-  ({ attack, ...rest }, ref) => {
+  ({ attack, className, ...rest }, ref) => {
     const { t } = useTranslation("common");
 
     const label = getAttackLabel(t, attack);
+    const color = colors[getColorKey(attack) || "Unknown"];
 
     return (
-      <Chip ref={ref} variant="outlined" size="small" label={label} {...rest} />
+      <Chip
+        ref={ref}
+        variant="outlined"
+        size="small"
+        label={label}
+        {...rest}
+        className={cn("rounded-sm min-w-18", className)}
+        style={{ color, borderColor: color }}
+      />
     );
   },
 );
@@ -130,14 +139,4 @@ function getColorKey(value: unknown): AttackColorKey | null {
   }
 }
 
-export default styled(AttackTypeChip)(({ theme, attack }) => {
-  const key = getColorKey(attack);
-  const color = theme.colors[key || "Unknown"];
-
-  return css`
-    border-radius: 4px;
-    min-width: 72px;
-    border-color: ${color};
-    color: ${color};
-  `;
-});
+export default AttackTypeChip;

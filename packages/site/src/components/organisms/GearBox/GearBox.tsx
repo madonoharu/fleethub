@@ -1,5 +1,3 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { Gear } from "fleethub-core";
 import React, { useMemo } from "react";
 
@@ -16,6 +14,7 @@ import GearLabel from "../GearLabel";
 import Swappable from "../Swappable";
 
 import AddGearButton from "./AddGearButton";
+import { cn } from "../../../styles";
 
 type Props = {
   gear?: Gear;
@@ -48,13 +47,7 @@ const useGearActions = (id?: string) => {
   }, [id, dispatch]);
 };
 
-const GearBox: React.FCX<Props> = ({
-  className,
-  gear,
-  position,
-  size,
-  equippable,
-}) => {
+const GearBox: React.FCX<Props> = ({ className, gear, position, size, equippable }) => {
   const dispatch = useAppDispatch();
 
   const id = gear?.id;
@@ -101,10 +94,9 @@ const GearBox: React.FCX<Props> = ({
   );
 };
 
-export default styled(GearBox)(
-  ({ size }) => css`
-    height: ${size === "small" ? 24 : 28}px;
-    width: 100%;
-    line-height: initial;
-  `,
+export default ({ className, ...props }: React.ComponentProps<typeof GearBox>) => (
+  <GearBox
+    {...props}
+    className={cn("w-full leading-[initial]", props.size === "small" ? "h-6" : "h-7", className)}
+  />
 );

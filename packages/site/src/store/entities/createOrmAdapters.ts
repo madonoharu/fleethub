@@ -37,10 +37,9 @@ export type OrmAdapter<T extends AnyEntitySchema[]> = UnionToIntersection<
   setEntities(state: OrmState<T>, entities: Entities): OrmState<T>;
 };
 
-export function createStateOperator<
-  V extends Record<string, AnyEntitySchema>,
-  R,
->(mutator: (arg: R, state: EntitiesState<V>) => void) {
+export function createStateOperator<V extends Record<string, AnyEntitySchema>, R>(
+  mutator: (arg: R, state: EntitiesState<V>) => void,
+) {
   return function operation<S extends EntitiesState<V>>(state: S, arg: R): S {
     const runMutator = (draft: EntitiesState<V>) => {
       mutator(arg, draft);
@@ -55,13 +54,8 @@ export function createStateOperator<
   };
 }
 
-export function createOrmAdapters<T extends AnyEntitySchema[]>(
-  ...args: T
-): OrmAdapter<T> {
-  const entityAdapters: Record<
-    string,
-    EntityAdapter<unknown, EntityId> | undefined
-  > = {};
+export function createOrmAdapters<T extends AnyEntitySchema[]>(...args: T): OrmAdapter<T> {
+  const entityAdapters: Record<string, EntityAdapter<unknown, EntityId> | undefined> = {};
 
   args.forEach((schema) => {
     const { key, idAttribute } = schema;

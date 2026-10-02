@@ -16,32 +16,20 @@ function assertPortableBindings(binary: Uint8Array) {
     sections.length > 0,
     "Inspect Cargo's raw Wasm, before wasm-bindgen removes its binding metadata",
   );
-  const metadata = sections
-    .map((section) => Buffer.from(section).toString("utf8"))
-    .join("");
-  assert(
-    metadata.includes("equipment-bonus"),
-    "The actual npm binding must be covered",
-  );
-  assert(
-    !metadata.includes("package.json"),
-    "Wasm bindings embed a build-worktree manifest path",
-  );
+  const metadata = sections.map((section) => Buffer.from(section).toString("utf8")).join("");
+  assert(metadata.includes("equipment-bonus"), "The actual npm binding must be covered");
+  assert(!metadata.includes("package.json"), "Wasm bindings embed a build-worktree manifest path");
 }
 
-test("the real Cargo Wasm has no build-worktree manifest dependency", () => {
+test("the locally compiled Cargo Wasm has no build-worktree manifest dependency", () => {
   const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
   const cargo = JSON.parse(
-    execFileSync(
-      "cargo",
-      ["metadata", "--locked", "--format-version=1", "--no-deps"],
-      { cwd: root, encoding: "utf8" },
-    ),
+    execFileSync("cargo", ["metadata", "--locked", "--format-version=1", "--no-deps"], {
+      cwd: root,
+      encoding: "utf8",
+    }),
   ) as { target_directory: string };
-  const file = join(
-    cargo.target_directory,
-    "wasm32-unknown-unknown/release/fleethub_core.wasm",
-  );
+  const file = join(cargo.target_directory, "wasm32-unknown-unknown/release/fleethub_core.wasm");
   assertPortableBindings(readFileSync(file));
 });
 
@@ -56,8 +44,5 @@ test("the metadata check rejects the historical manifest-path regression", () =>
     Buffer.from([0, 97, 115, 109, 1, 0, 0, 0, 0, payload.length]),
     payload,
   ]);
-  assert.throws(
-    () => assertPortableBindings(binary),
-    /build-worktree manifest path/,
-  );
+  assert.throws(() => assertPortableBindings(binary), /build-worktree manifest path/);
 });

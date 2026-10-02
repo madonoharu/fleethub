@@ -2,8 +2,8 @@
   "name": "@fh/utils",
   "license": "UNLICENSED",
   "author": "madono (https://github.com/MadonoHaru)",
-  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
   "main": "esm/index.js",
   "scripts": {
     "build": "bun --bun tsc -m esnext --outDir esm"

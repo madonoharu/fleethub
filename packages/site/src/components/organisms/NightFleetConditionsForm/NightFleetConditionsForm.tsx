@@ -1,5 +1,5 @@
 import { Tooltip, Button, ButtonGroup } from "@mui/material";
-import { styled } from "@mui/system";
+
 import { ContactRank, NightFleetConditions } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -9,6 +9,7 @@ import { GearIcon } from "../../molecules";
 
 import ContactRankIcon from "./ContactRankIcon";
 import ContactRankMenu from "./ContactRankMenu";
+import { cn } from "../../../styles";
 
 function isSome(value: unknown): boolean {
   return value !== undefined && value !== null;
@@ -94,13 +95,12 @@ const NightFleetConditionsForm: React.FCX<NightFleetConditionsFormProps> = ({
   );
 };
 
-export default styled(NightFleetConditionsForm)`
-  img {
-    filter: saturate(1.6) contrast(1.6);
-  }
-  .MuiButton-contained {
-    img {
-      filter: saturate(1.6) contrast(1.6) drop-shadow(0 0 0 white);
-    }
-  }
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof NightFleetConditionsForm>) => (
+  <NightFleetConditionsForm
+    {...props}
+    className={cn(
+      "[&_img]:[filter:saturate(1.6)_contrast(1.6)] [&_.MuiButton-contained]:[&_img]:[filter:saturate(1.6)_contrast(1.6)_drop-shadow(0_0_0_white)]",
+      className,
+    )}
+  />
+);

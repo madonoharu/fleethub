@@ -25,17 +25,12 @@ const createDamageColumns = (t: TFn): ColumnProps<AttackReport<unknown>>[] => [
     label: `${t("hit_rate")} (${t("CriticalAbbr")})`,
     align: "right",
     getValue: (item) => (
-      <Flexbox gap={1} justifyContent="flex-end">
+      <Flexbox className="gap-2 justify-end">
         <span>{toPercent(item.hit_rate?.total)}</span>
         <span>({toPercent(item.hit_rate?.critical)})</span>
         <InfoButton
           size="tiny"
-          title={
-            <HitRateDetails
-              hitRate={item.hit_rate}
-              params={item.hit_rate_params}
-            />
-          }
+          title={<HitRateDetails hitRate={item.hit_rate} params={item.hit_rate_params} />}
         />
       </Flexbox>
     ),
@@ -49,17 +44,12 @@ const createDamageColumns = (t: TFn): ColumnProps<AttackReport<unknown>>[] => [
   },
 ];
 
-const createAttackPowerColumns = (
-  t: TFn,
-): ColumnProps<AttackReport<unknown>>[] => [
+const createAttackPowerColumns = (t: TFn): ColumnProps<AttackReport<unknown>>[] => [
   {
     label: t("Normal"),
     align: "right",
     getValue: (item) => (
-      <Typography
-        variant="inherit"
-        color={item.attack_power?.is_capped ? "secondary" : undefined}
-      >
+      <Typography variant="inherit" color={item.attack_power?.is_capped ? "secondary" : undefined}>
         {numstr(item.attack_power?.normal) || "?"}
       </Typography>
     ),
@@ -68,10 +58,7 @@ const createAttackPowerColumns = (
     label: t("CriticalAbbr"),
     align: "right",
     getValue: (item) => (
-      <Typography
-        variant="inherit"
-        color={item.attack_power?.is_capped ? "secondary" : undefined}
-      >
+      <Typography variant="inherit" color={item.attack_power?.is_capped ? "secondary" : undefined}>
         {numstr(item.attack_power?.critical) || "?"}
       </Typography>
     ),
@@ -86,12 +73,7 @@ const createAttackPowerColumns = (
       return (
         <InfoButton
           size="tiny"
-          title={
-            <AttackPowerDetails
-              power={attack_power}
-              params={attack_power_params}
-            />
-          }
+          title={<AttackPowerDetails power={attack_power} params={attack_power_params} />}
         />
       );
     },
@@ -102,27 +84,20 @@ export function createAttackTableColumns(
   t: TFn,
   disableDamage: boolean,
 ): ColumnProps<AttackReport<unknown>>[] {
-  const columns = disableDamage
-    ? createAttackPowerColumns(t)
-    : createDamageColumns(t);
+  const columns = disableDamage ? createAttackPowerColumns(t) : createDamageColumns(t);
   return columns;
 }
 
 type AttackTableVariant = "power" | "damage";
 
-type AttackReportType = Partial<ActionReport<unknown>> &
-  Pick<ActionReport<unknown>, "data">;
+type AttackReportType = Partial<ActionReport<unknown>> & Pick<ActionReport<unknown>, "data">;
 
 type AttackTableProps = {
   report: AttackReportType;
   variant?: AttackTableVariant;
 };
 
-const AttackTable: React.FCX<AttackTableProps> = ({
-  className,
-  report,
-  variant,
-}) => {
+const AttackTable: React.FCX<AttackTableProps> = ({ className, report, variant }) => {
   const { t } = useTranslation("common");
   const { damage_state_density } = report;
   const data = Object.values(report.data);
@@ -133,14 +108,12 @@ const AttackTable: React.FCX<AttackTableProps> = ({
   const columns: ColumnProps<ItemType>[] = [
     {
       label: t("Type"),
-      getValue: (item) => (
-        <AttackStyleChip attack={item.style} css={{ width: "100%" }} />
-      ),
+      getValue: (item) => <AttackStyleChip className="w-full" attack={item.style} />,
     },
 
     {
       label: t("ProcRate"),
-      getValue: (item) => <ProcRateCell sx={{ ml: 1 }} item={item} />,
+      getValue: (item) => <ProcRateCell className="ml-2" item={item} />,
     },
 
     ...createAttackTableColumns(t, disableDamage),
@@ -152,12 +125,7 @@ const AttackTable: React.FCX<AttackTableProps> = ({
 
       {damage_state_density && !disableDamage && (
         <>
-          <Typography
-            variant="subtitle2"
-            sx={{
-              marginTop: 1,
-            }}
-          >
+          <Typography className="mt-2" variant="subtitle2">
             命中ダメージ分布
           </Typography>
           <DamageStateDensityBarChart data={damage_state_density} />

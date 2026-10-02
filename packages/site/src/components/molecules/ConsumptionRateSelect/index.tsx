@@ -53,10 +53,7 @@ type ConsumptionRateSelectProps = {
   onSelect: (value: ConsumptionRate) => void;
 };
 
-const ConsumptionRateSelect: React.FCX<ConsumptionRateSelectProps> = ({
-  className,
-  onSelect,
-}) => {
+const ConsumptionRateSelect: React.FCX<ConsumptionRateSelectProps> = ({ className, onSelect }) => {
   const { t } = useTranslation("common");
   const Modal = useModal();
 
@@ -72,12 +69,7 @@ const ConsumptionRateSelect: React.FCX<ConsumptionRateSelectProps> = ({
       </Button>
 
       <Modal>
-        <Stack
-          sx={{
-            gap: 1,
-            m: 1,
-          }}
-        >
+        <Stack className="gap-2 m-2">
           {BATTLE_COST_DATA.map((value, index) => (
             <Button
               key={index}

@@ -2,6 +2,8 @@
 
 mod toml;
 
+use std::sync::LazyLock;
+
 use fleethub_core::{
     FhCore,
     analyzer::AttackAnalyzerShipConfig,
@@ -10,7 +12,6 @@ use fleethub_core::{
     types::{BattleDefinitions, OrgType, Side},
 };
 
-use once_cell::sync::Lazy;
 use rand::prelude::*;
 use serde::Deserialize;
 
@@ -20,7 +21,7 @@ pub fn rng(seed: u64) -> SmallRng {
     SmallRng::seed_from_u64(seed)
 }
 
-pub static FH_CORE: Lazy<FhCore> = Lazy::new(|| {
+pub static FH_CORE: LazyLock<FhCore> = LazyLock::new(|| {
     let master_data: MasterData =
         serde_json::from_str(fleethub_core_test::MASTER_DATA_STR).unwrap();
     FhCore::from_master_data(master_data)

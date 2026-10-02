@@ -4,20 +4,8 @@ import {
   Tabs as MuiTabs,
   TabsProps as MuiTabsProps,
 } from "@mui/material";
-import { styled, css } from "@mui/system";
+import { cn } from "../../../styles/cn";
 import React from "react";
-
-const smallStyle = css`
-  .MuiTabs-root {
-    height: 32px;
-    min-height: 0;
-
-    .MuiTab-root {
-      height: 32px;
-      min-height: 0;
-    }
-  }
-`;
 
 interface TabItemProps extends MuiTabProps {
   panel: React.ReactNode;
@@ -38,14 +26,7 @@ type TabsPropsBase = {
 
 export type TabsProps = Omit<MuiTabsProps, keyof TabsPropsBase> & TabsPropsBase;
 
-const Tabs: React.FC<TabsProps> = ({
-  className,
-  value,
-  onChange,
-  list,
-  size,
-  ...rest
-}) => {
+const Tabs: React.FC<TabsProps> = ({ className, value, onChange, list, size, ...rest }) => {
   const [inner, setInner] = React.useState(0);
   const entries = list
     .filter(isTabItemProps)
@@ -65,11 +46,23 @@ const Tabs: React.FC<TabsProps> = ({
   };
 
   return (
-    <div className={className} css={size === "small" && smallStyle}>
-      <MuiTabs value={index} onChange={handleChange} {...rest}>
+    <div className={className}>
+      <MuiTabs
+        className={cn("mb-2", size === "small" && "h-8 min-h-0")}
+        value={index}
+        onChange={handleChange}
+        {...rest}
+      >
         {entries.map(([index, item]) => {
-          const { panel: _, ...tabProps } = item;
-          return <MuiTab key={index} value={index} {...tabProps} />;
+          const { panel: _, className: tabClassName, ...tabProps } = item;
+          return (
+            <MuiTab
+              key={index}
+              value={index}
+              {...tabProps}
+              className={cn("min-w-auto", size === "small" && "h-8 min-h-0", tabClassName)}
+            />
+          );
         })}
       </MuiTabs>
 
@@ -78,11 +71,4 @@ const Tabs: React.FC<TabsProps> = ({
   );
 };
 
-export default styled(Tabs)`
-  > .MuiTabs-root {
-    margin-bottom: 8px;
-    .MuiTab-root {
-      min-width: auto;
-    }
-  }
-`;
+export default Tabs;

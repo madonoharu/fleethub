@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -7,21 +6,13 @@ import RedoIcon from "@mui/icons-material/Redo";
 import UndoIcon from "@mui/icons-material/Undo";
 import { AppBar as MuiAppBar, Button, Link, Tooltip } from "@mui/material";
 import React, { useMemo } from "react";
+
+import { cn } from "../../../styles/cn";
 import { useTranslation } from "react-i18next";
 import { ActionCreators } from "redux-undo";
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useRootSelector,
-  useModal,
-} from "../../../hooks";
-import {
-  shipSelectSlice,
-  gearSelectSlice,
-  mapSelectSlice,
-  appSlice,
-} from "../../../store";
+import { useAppDispatch, useAppSelector, useRootSelector, useModal } from "../../../hooks";
+import { shipSelectSlice, gearSelectSlice, mapSelectSlice, appSlice } from "../../../store";
 import { ImportButton, SettingsButton, withIconButton } from "../../molecules";
 import { ImportMenu } from "../../organisms";
 
@@ -43,7 +34,7 @@ const useUndo = () => {
       undo: () => dispatch(ActionCreators.undo()),
       redo: () => dispatch(ActionCreators.redo()),
     }),
-    [dispatch]
+    [dispatch],
   );
 
   return { canUndo, canRedo, ...actions };
@@ -80,35 +71,20 @@ const AppBar: React.FCX = ({ className }) => {
   };
 
   return (
-    <MuiAppBar className={className} position="sticky">
+    <MuiAppBar
+      className={cn("flex h-10 flex-row items-center [&_.MuiButton-root]:h-10", className)}
+      position="sticky"
+    >
       {explorerOpen ? (
-        <FolderOpenButton
-          size="small"
-          title="List"
-          onClick={toggleExplorerOpen}
-        />
+        <FolderOpenButton size="small" title="List" onClick={toggleExplorerOpen} />
       ) : (
         <FolderButton size="small" title="List" onClick={toggleExplorerOpen} />
       )}
 
       <HomeButton size="small" title="Home" onClick={handleHomeClick} />
-      <ImportButton
-        size="small"
-        title={t("ImportComps")}
-        onClick={ImportMenuModal.show}
-      />
-      <UndoButton
-        size="small"
-        title={t("Undo")}
-        disabled={!canUndo}
-        onClick={undo}
-      />
-      <RedoButton
-        size="small"
-        title={t("Redo")}
-        disabled={!canRedo}
-        onClick={redo}
-      />
+      <ImportButton size="small" title={t("ImportComps")} onClick={ImportMenuModal.show} />
+      <UndoButton size="small" title={t("Undo")} disabled={!canUndo} onClick={undo} />
+      <RedoButton size="small" title={t("Redo")} disabled={!canRedo} onClick={redo} />
       <SettingsButton
         size="small"
         title={t("Settings")}
@@ -117,7 +93,7 @@ const AppBar: React.FCX = ({ className }) => {
         }}
       />
 
-      <div css={{ marginLeft: "auto" }}>
+      <div className="ml-auto">
         <Tooltip title="GitHub repository">
           <Button
             startIcon={<GitHubIcon />}
@@ -142,13 +118,4 @@ const AppBar: React.FCX = ({ className }) => {
   );
 };
 
-export default styled(AppBar)`
-  height: 40px;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-
-  .MuiButton-root {
-    height: 40px;
-  }
-`;
+export default AppBar;

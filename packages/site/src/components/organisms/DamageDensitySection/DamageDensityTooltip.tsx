@@ -1,5 +1,5 @@
-import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
+import { useTheme } from "@mui/material/styles";
+
 import { Chip, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
@@ -10,6 +10,7 @@ import { toPercent } from "../../../utils";
 import { Flexbox } from "../../atoms";
 // バレル経由だと react-dnd (ESM) まで引き込んでしまうので直接読む。
 import AttackTypeChip from "../../molecules/AttackTypeChip";
+import { cn } from "../../../styles";
 
 export interface DamageBreakdownItem {
   /**
@@ -30,26 +31,20 @@ export interface DamageBreakdownItem {
  * 空のセルも必ず置くこと。1行あたりの列数がずれると次の行の頭が
  * 先頭列から始まらなくなる。
  */
-const SeriesGrid = styled.div`
-  display: grid;
-  grid-template-columns: auto auto auto auto auto auto;
-  gap: 0 6px;
-  align-items: baseline;
-  white-space: nowrap;
-
-  .num {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-  }
-`;
+const SeriesGrid = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div
+    {...props}
+    className={cn(
+      "grid [grid-template-columns:auto_auto_auto_auto_auto_auto] gap-[0_6px] items-baseline whitespace-nowrap [&_.num]:text-right [&_.num]:[font-variant-numeric:tabular-nums]",
+      className,
+    )}
+  />
+);
 
 /** 種類のない「その他」も、他の行と同じ枠と高さに揃える。 */
-const OtherChip = styled(Chip)`
-  border-radius: 4px;
-  min-width: 72px;
-  border-color: ${({ theme }) => theme.colors.Unknown};
-  color: ${({ theme }) => theme.colors.Unknown};
-`;
+const OtherChip = ({ className, ...props }: React.ComponentProps<typeof Chip>) => (
+  <Chip {...props} className={cn("rounded-[4px] min-w-0 border-unknown text-unknown", className)} />
+);
 
 interface Props extends Partial<TooltipContentProps<number, string>> {
   /** 系列の見出し。全系列が「ダメージ発生確率」なので、艦名だけを出す。 */
@@ -76,9 +71,7 @@ const DamageDensityTooltip: React.FCX<Props> = ({
   if (!row) return null;
 
   const damageText =
-    row.damage === row.damageEnd
-      ? `${row.damage}`
-      : `${row.damage} ~ ${row.damageEnd}`;
+    row.damage === row.damageEnd ? `${row.damage}` : `${row.damage} ~ ${row.damageEnd}`;
 
   const series = [
     {
@@ -99,15 +92,11 @@ const DamageDensityTooltip: React.FCX<Props> = ({
     <div className={className}>
       {/* 棒を単色にしたので、結果の損傷状態は数値そのものの色で示す。 */}
       <Typography
+        className="font-bold"
         variant="inherit"
         component="div"
         style={{
-          color: row.state
-            ? theme.colors[`Damage${row.state}` as const]
-            : undefined,
-        }}
-        sx={{
-          fontWeight: "bold",
+          color: row.state ? theme.colors[`Damage${row.state}` as const] : undefined,
         }}
       >
         {t("Damage")} {damageText}
@@ -116,13 +105,8 @@ const DamageDensityTooltip: React.FCX<Props> = ({
         {series.map((item, index) => (
           <React.Fragment key={index}>
             <span>{item.name}</span>
-            <span className="num">
-              {toPercent((item.rate ?? 0) - item.noPenetration, 2)}
-            </span>
-            <span>
-              {item.noPenetration > 0 &&
-                `/ ${t("DamageDistribution.NoPenetration")}`}
-            </span>
+            <span className="num">{toPercent((item.rate ?? 0) - item.noPenetration, 2)}</span>
+            <span>{item.noPenetration > 0 && `/ ${t("DamageDistribution.NoPenetration")}`}</span>
             <span className="num">
               {item.noPenetration > 0 && toPercent(item.noPenetration, 2)}
             </span>
@@ -138,9 +122,9 @@ const DamageDensityTooltip: React.FCX<Props> = ({
 
         return (
           // 種類名が重複しても壊れないよう添字を key にする。
-          <Flexbox key={index} gap={0.5} mt={0.5}>
+          <Flexbox key={index} className="gap-1 mt-1">
             {item.style ? (
-              <AttackTypeChip attack={item.style} />
+              <AttackTypeChip className="min-w-0" attack={item.style} />
             ) : (
               <OtherChip variant="outlined" size="small" label={item.label} />
             )}
@@ -155,13 +139,12 @@ const DamageDensityTooltip: React.FCX<Props> = ({
 };
 
 /** MuiTooltip の styleOverrides と同じ見た目にする。 */
-export default styled(DamageDensityTooltip)`
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  background: rgba(30, 20, 20, 0.85);
-
-  @supports (backdrop-filter: blur(8px)) {
-    backdrop-filter: blur(8px);
-  }
-`;
+export default ({ className, ...props }: React.ComponentProps<typeof DamageDensityTooltip>) => (
+  <DamageDensityTooltip
+    {...props}
+    className={cn(
+      "p-[4px_8px] rounded-[4px] text-[0.875rem] bg-[rgba(30,_20,_20,_0.85)] supports-[backdrop-filter:_blur(8px)]:[backdrop-filter:blur(8px)]",
+      className,
+    )}
+  />
+);

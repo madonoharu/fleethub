@@ -69,35 +69,21 @@ const MapMenu: React.FCX<MapMenuProps> = ({ state, update, onEnemySelect }) => {
 
   return (
     <div>
-      <Flexbox gap={1}>
+      <Flexbox className="gap-2">
         <AreaSelect value={mapId} onChange={handleAreaChange} />
         <DifficultySelect value={diff} onChange={handleDiffChange} />
-        <NodeSelect
-          options={data?.nodes}
-          value={activeNode}
-          onChange={handleNodeClick}
-        />
-        <Typography variant="h6" sx={{ ml: "auto" }}>
+        <NodeSelect options={data?.nodes} value={activeNode} onChange={handleNodeClick} />
+        <Typography variant="h6" className="ml-auto">
           <span>from</span>
-          <Link
-            variant="inherit"
-            href="https://tsunkit.net/nav"
-            sx={{
-              ml: 1,
-            }}
-          >
+          <Link variant="inherit" href="https://tsunkit.net/nav" className="ml-2">
             KCNav
           </Link>
         </Typography>
       </Flexbox>
 
-      <div css={{ width: 640 }}>
+      <div className="w-[640px]">
         {data && (
-          <NauticalChart
-            activeNode={activeNode?.point}
-            map={data}
-            onClick={handleNodeClick}
-          />
+          <NauticalChart activeNode={activeNode?.point} map={data} onClick={handleNodeClick} />
         )}
         {activeNode && (
           <EnemyCompList

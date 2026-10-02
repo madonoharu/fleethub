@@ -41,15 +41,10 @@ const actionTypeFilter: FilterFunction = (action) => {
     return false;
   }
 
-  return (
-    type.startsWith("entities") ||
-    type.startsWith("config") ||
-    type === REHYDRATE
-  );
+  return type.startsWith("entities") || type.startsWith("config") || type === REHYDRATE;
 };
 
-const filter: FilterFunction = (...args) =>
-  !undoableState.ignore && actionTypeFilter(...args);
+const filter: FilterFunction = (...args) => !undoableState.ignore && actionTypeFilter(...args);
 
 const undoableOptions: UndoableOptions = {
   filter,

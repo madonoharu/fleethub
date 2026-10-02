@@ -1,8 +1,9 @@
+import { colors } from "../../../styles/colors";
 import FlareIcon from "@mui/icons-material/Flare";
 import MoodBadIcon from "@mui/icons-material/MoodBad";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
-import { styled, css, SvgIconProps } from "@mui/material";
+import { SvgIconProps } from "@mui/material";
 import { MoraleState } from "fleethub-core";
 import React from "react";
 
@@ -10,7 +11,8 @@ interface Props extends SvgIconProps {
   state: MoraleState;
 }
 
-const MoraleStateIcon: React.FC<Props> = ({ state, ...svgProps }) => {
+const MoraleStateIcon: React.FC<Props> = ({ state, style, ...props }) => {
+  const svgProps = { ...props, style: { color: colors[state], ...style } };
   switch (state) {
     case "Sparkle":
       return <FlareIcon {...svgProps} aria-label="Sparkle" />;
@@ -23,8 +25,4 @@ const MoraleStateIcon: React.FC<Props> = ({ state, ...svgProps }) => {
   }
 };
 
-export default styled(MoraleStateIcon)(
-  ({ state, theme }) => css`
-    color: ${theme.colors[state]};
-  `
-);
+export default MoraleStateIcon;

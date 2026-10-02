@@ -1,4 +1,3 @@
-import { Stack } from "@mui/material";
 import type { Org } from "fleethub-core";
 import React from "react";
 
@@ -66,18 +65,14 @@ const ShipPositioner: React.FC<Props> = ({ org, id, onShipClick }) => {
   };
 
   return (
-    <Stack
-      direction="row"
+    <div
       onKeyDown={(event) => {
         if (event.key.startsWith("Arrow")) {
           handleMove(event.key.replace("Arrow", "") as Direction);
         }
         event.preventDefault();
       }}
-      sx={{
-        alignItems: "flex-end",
-        gap: 1,
-      }}
+      className="flex items-end gap-2"
     >
       <OrgShipList org={org} selectedShip={id} onShipClick={onShipClick} />
 
@@ -86,7 +81,7 @@ const ShipPositioner: React.FC<Props> = ({ org, id, onShipClick }) => {
         disabled={!id}
         onClick={handleMove}
       />
-    </Stack>
+    </div>
   );
 };
 

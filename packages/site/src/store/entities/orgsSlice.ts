@@ -1,10 +1,5 @@
 import { AirSquadronKey, FleetKey } from "@fh/utils";
-import {
-  createSlice,
-  EntityId,
-  EntityState,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, EntityId, EntityState, PayloadAction } from "@reduxjs/toolkit";
 
 import { getSliceName, ormAdapters } from "./base";
 import { SwapPayload } from "./entitiesSlice";
@@ -50,17 +45,11 @@ export const orgsSlice = createSlice({
   name: sliceName,
   initialState: adapter.getInitialState(),
   reducers: {
-    swapFleet: (
-      state,
-      { payload }: PayloadAction<SwapPayload<FleetPosition>>,
-    ) => {
+    swapFleet: (state, { payload }: PayloadAction<SwapPayload<FleetPosition>>) => {
       swapPosition(state, payload);
     },
 
-    swapAirSquadron: (
-      state,
-      { payload }: PayloadAction<SwapPayload<AirSquadronPosition>>,
-    ) => {
+    swapAirSquadron: (state, { payload }: PayloadAction<SwapPayload<AirSquadronPosition>>) => {
       swapPosition(state, payload);
     },
 

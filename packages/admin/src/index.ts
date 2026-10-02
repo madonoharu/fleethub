@@ -5,8 +5,7 @@ import { updateCloudinary } from "./cloudinary";
 import { createMasterData, MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
 
-const START2_URL =
-  "https://raw.githubusercontent.com/shiro-sh39/api_start2/main/START2.json";
+const START2_URL = "https://raw.githubusercontent.com/shiro-sh39/api_start2/main/START2.json";
 
 export async function fetchStart2(): Promise<Start2> {
   const { api_data } = await ky.get(START2_URL).json<{ api_data: Start2 }>();
@@ -15,9 +14,7 @@ export async function fetchStart2(): Promise<Start2> {
 
 export function fetchCtypeNames(): Promise<string[]> {
   return ky
-    .get(
-      "https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json",
-    )
+    .get("https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/en/ctype.json")
     .json();
 }
 

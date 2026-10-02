@@ -90,9 +90,7 @@ const BackupScreen: React.FC = () => {
       });
   };
 
-  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event,
-  ) => {
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const file = event.currentTarget.files?.item(0) || undefined;
     setFile(file);
   };
@@ -106,12 +104,7 @@ const BackupScreen: React.FC = () => {
   };
 
   return (
-    <Stack
-      direction="row"
-      sx={{
-        gap: 1,
-      }}
-    >
+    <Stack direction="row" className="gap-2">
       <Button
         variant="contained"
         color="primary"
@@ -131,7 +124,7 @@ const BackupScreen: React.FC = () => {
 
       <input
         ref={ref}
-        css={{ display: "none" }}
+        className="hidden"
         type="file"
         accept="application/json"
         onChange={handleFileChange}
@@ -141,36 +134,17 @@ const BackupScreen: React.FC = () => {
 
       {file && (
         <Dialog open={true} onClose={handleFileRemove}>
-          <Stack
-            sx={{
-              m: 1,
-              gap: 1,
-            }}
-          >
+          <Stack className="m-2 gap-2">
             <Alert severity="warning" icon={<RestorePageIcon />}>
               <AlertTitle>{t("Restore")}</AlertTitle>
               {file.name}
             </Alert>
-            <Stack
-              direction="row"
-              sx={{
-                justifyContent: "flex-end",
-                gap: 1,
-              }}
-            >
-              <Button
-                color="secondary"
-                variant="contained"
-                onClick={handleFileRemove}
-              >
+            <Stack direction="row" className="justify-end gap-2">
+              <Button color="secondary" variant="contained" onClick={handleFileRemove}>
                 CANCEL
               </Button>
 
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={handleRestore}
-              >
+              <Button color="primary" variant="contained" onClick={handleRestore}>
                 OK
               </Button>
             </Stack>

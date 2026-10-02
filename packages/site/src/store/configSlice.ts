@@ -20,17 +20,10 @@ export const STAT_INTERVAL_KEYS = [
   "luck",
 ] as const;
 
-export type StatIntervalKey = typeof STAT_INTERVAL_KEYS[number];
+export type StatIntervalKey = (typeof STAT_INTERVAL_KEYS)[number];
 
 export type MasterShipOverrides = Partial<
-  Pick<
-    MasterShip,
-    | StatIntervalKey
-    | "range"
-    | "torpedo_accuracy"
-    | "basic_evasion_term"
-    | "slots"
-  >
+  Pick<MasterShip, StatIntervalKey | "range" | "torpedo_accuracy" | "basic_evasion_term" | "slots">
 >;
 
 export interface MasterDataOverrides {
@@ -55,10 +48,7 @@ export const configSlice = createSlice({
   name: "config",
   initialState,
   reducers: {
-    updateMasterShip: (
-      state,
-      action: UpdateAction<number, MasterShipOverrides>
-    ) => {
+    updateMasterShip: (state, action: UpdateAction<number, MasterShipOverrides>) => {
       const { id, changes } = action.payload;
 
       state.masterData ||= {};
@@ -85,10 +75,7 @@ export const configSlice = createSlice({
       delete state?.masterData?.day_cutin?.[payload];
     },
 
-    updateNightCutin: (
-      state,
-      action: UpdateAction<NightCutin, NightCutinDef>
-    ) => {
+    updateNightCutin: (state, action: UpdateAction<NightCutin, NightCutinDef>) => {
       const { id, changes } = action.payload;
 
       state.masterData ||= {};

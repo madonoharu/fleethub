@@ -11,7 +11,7 @@ formation = "Echelon" # 梯形陣
 [target]
 ship_id = "山汐丸改"
 org_type = "CarrierTaskForce" # 空母機動部隊
-role = "Escort"               # 第二艦隊
+role = "Escort" # 第二艦隊
 formation = "Cruising4"
 
 

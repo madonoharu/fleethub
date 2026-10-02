@@ -115,10 +115,7 @@ function createGearState(deck: MaybeDeckGear): GearState {
   };
 }
 
-function createGearStateDict(
-  items: MaybeDeckItems,
-  slotnum?: number,
-): Dict<GearKey, GearState> {
+function createGearStateDict(items: MaybeDeckItems, slotnum?: number): Dict<GearKey, GearState> {
   const result: Dict<GearKey, GearState> = {};
 
   GEAR_KEYS.forEach((key, i) => {
@@ -161,20 +158,14 @@ const calcCurrentLevelMaxHp = ([l, r]: StatInterval, level: number) => {
   return Math.min(l + getMarriageBonus(l), r);
 };
 
-function createShipState(
-  master: MasterData,
-  deck: MaybeDeckShip,
-): ShipState | undefined {
+function createShipState(master: MasterData, deck: MaybeDeckShip): ShipState | undefined {
   const ship_id = Number(deck.id);
 
-  const masterShip = master.ships.find(
-    (masterShip) => masterShip.ship_id === ship_id,
-  );
+  const masterShip = master.ships.find((masterShip) => masterShip.ship_id === ship_id);
 
   if (!masterShip) return;
 
-  const gears =
-    deck.items && createGearStateDict(deck.items, masterShip.slotnum);
+  const gears = deck.items && createGearStateDict(deck.items, masterShip.slotnum);
 
   const base: ShipState = {
     ship_id,
@@ -190,15 +181,11 @@ function createShipState(
     base.luck_mod = luck - (masterShip.luck[0] || 0);
   }
   if (hp && hp > 0) {
-    const currentLevelMaxHp = calcCurrentLevelMaxHp(
-      masterShip.max_hp,
-      base.level || 99,
-    );
+    const currentLevelMaxHp = calcCurrentLevelMaxHp(masterShip.max_hp, base.level || 99);
     base.max_hp_mod = hp - (currentLevelMaxHp || 0);
   }
   if (asw && asw > 0) {
-    const currentLevelAsw =
-      calcCurrentLevelAsw(masterShip.asw, base.level || 99) || 0;
+    const currentLevelAsw = calcCurrentLevelAsw(masterShip.asw, base.level || 99) || 0;
 
     const gearInputs: GearInput[] = Object.values(deck.items || {})
       .map((item): GearInput | undefined => {
@@ -216,10 +203,7 @@ function createShipState(
   return base;
 }
 
-function createFleetState(
-  master: MasterData,
-  deck: MaybeDeckFleet,
-): FleetState {
+function createFleetState(master: MasterData, deck: MaybeDeckFleet): FleetState {
   const fleet: FleetState = {};
 
   SHIP_KEYS.forEach((key) => {
@@ -232,10 +216,7 @@ function createFleetState(
   return fleet;
 }
 
-export function createOrgStateByDeck(
-  master: MasterData,
-  deck: MaybeDeck,
-): OrgState {
+export function createOrgStateByDeck(master: MasterData, deck: MaybeDeck): OrgState {
   const org: OrgState = {
     hq_level: toNumber(deck.hqlv),
   };
@@ -253,9 +234,7 @@ export function createOrgStateByDeck(
   return org;
 }
 
-export function createDeckItems(obj: {
-  get_gear: (key: string) => Gear | undefined;
-}): DeckItems {
+export function createDeckItems(obj: { get_gear: (key: string) => Gear | undefined }): DeckItems {
   const result: DeckItems = {};
 
   GEAR_KEYS.forEach((key) => {

@@ -30,7 +30,13 @@ export const useSnackbar = () => {
       console.error(error);
       show({
         severity: "error",
-        message: String(error),
+        message:
+          typeof error === "object" &&
+          error !== null &&
+          "message" in error &&
+          typeof error.message === "string"
+            ? error.message
+            : String(error),
       });
     };
 
@@ -39,7 +45,7 @@ export const useSnackbar = () => {
 
   const Modal: React.FC<SnackbarProps> = useCallback(
     (props) => <Snackbar onClose={hide} {...state} {...props} />,
-    [state, hide]
+    [state, hide],
   );
 
   return Object.assign(Modal, {

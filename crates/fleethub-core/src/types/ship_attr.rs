@@ -4,8 +4,9 @@ use enumset::EnumSetType;
 use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
-#[derive(Debug, EnumSetType, Serialize, Deserialize, Tsify)]
+#[derive(Debug, Default, EnumSetType, Serialize, Deserialize, Tsify)]
 pub enum ShipAttr {
+    #[default]
     Unknown,
     /// 夜戦空母
     NightCarrier,
@@ -45,13 +46,6 @@ pub enum ShipAttr {
     SummerAircraftCarrierDemon,
     /// 欧州水姫
     EuropeanWaterPrincess,
-}
-
-impl Default for ShipAttr {
-    #[inline]
-    fn default() -> Self {
-        Self::Unknown
-    }
 }
 
 impl FromStr for ShipAttr {

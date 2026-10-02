@@ -1,16 +1,11 @@
-export const atLeastOne = (xs: number[]) =>
-  1 - xs.reduce((acc, x) => acc * (1 - x), 1);
+export const atLeastOne = (xs: number[]) => 1 - xs.reduce((acc, x) => acc * (1 - x), 1);
 
 function createRound(methodName: "round" | "floor") {
   const func = Math[methodName];
 
   return (number: number, precision?: number) => {
     precision =
-      precision == null
-        ? 0
-        : precision >= 0
-        ? Math.min(precision, 292)
-        : Math.max(precision, -292);
+      precision == null ? 0 : precision >= 0 ? Math.min(precision, 292) : Math.max(precision, -292);
     if (precision) {
       // Shift with exponential notation to avoid floating-point issues.
       // See [MDN](https://mdn.io/round#Examples) for more details.

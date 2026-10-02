@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { round } from "@fh/utils";
 import { CompAntiAirAnalysis } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
@@ -14,15 +13,13 @@ import Table from "../Table";
 
 import AntiAirCutinChanceChart from "./AntiAirCutinChanceChart";
 import AntiAirCutinSelect from "./AntiAirCutinSelect";
+import { cn } from "../../../styles";
 
 interface CutinChanceCellProps {
   rates: [number, number][];
 }
 
-const CutinChanceCell: React.FCX<CutinChanceCellProps> = ({
-  className,
-  rates,
-}) => {
+const CutinChanceCell: React.FCX<CutinChanceCellProps> = ({ className, rates }) => {
   return (
     <div className={className}>
       {rates.map(([id, rate]) => (
@@ -32,28 +29,30 @@ const CutinChanceCell: React.FCX<CutinChanceCellProps> = ({
   );
 };
 
-const Container = styled(Flexbox)`
-  align-items: flex-end;
-  margin-bottom: 8px;
-  gap: 8px;
+const Container = ({ className, ...props }: React.ComponentProps<typeof Flexbox>) => (
+  <Flexbox
+    {...props}
+    className={cn("items-end mb-2 gap-2 [&_>_div:first-of-type]:mr-auto", className)}
+  />
+);
 
-  > div:first-of-type {
-    margin-right: auto;
-  }
-`;
+const StyledChanceChart = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof AntiAirCutinChanceChart>) => (
+  <AntiAirCutinChanceChart {...props} className={cn("m-[0_auto]", className)} />
+);
 
-const StyledChanceChart = styled(AntiAirCutinChanceChart)`
-  margin: 0 auto;
-`;
+const StyledCutinChanceCell = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof CutinChanceCell>) => (
+  <CutinChanceCell {...props} className={cn("w-20 ml-auto", className)} />
+);
 
-const StyledCutinChanceCell = styled(CutinChanceCell)`
-  width: 80px;
-  margin-left: auto;
-`;
-
-const StyledNumberInput = styled(NumberInput)`
-  width: 120px;
-`;
+const StyledNumberInput = ({ className, ...props }: React.ComponentProps<typeof NumberInput>) => (
+  <NumberInput {...props} className={cn("w-30", className)} />
+);
 
 interface Props {
   analysis: CompAntiAirAnalysis;
@@ -106,17 +105,14 @@ const AntiAirAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
       </Container>
 
       <Table
+        className="w-fit m-auto"
         data={analysis.ships}
-        sx={{ width: "fit-content", m: "auto" }}
+
         columns={[
           {
             label: t("Ship"),
             getValue: (ship) => (
-              <ShipNameplate
-                shipId={ship.ship_id}
-                fleetType={ship.role}
-                index={ship.index}
-              />
+              <ShipNameplate shipId={ship.ship_id} fleetType={ship.role} index={ship.index} />
             ),
           },
           {
@@ -127,8 +123,7 @@ const AntiAirAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
           {
             label: t("proportional_shotdown_rate"),
             align: "right",
-            getValue: (ship) =>
-              ship.proportional_shotdown_rate?.toFixed(4) ?? "?",
+            getValue: (ship) => ship.proportional_shotdown_rate?.toFixed(4) ?? "?",
           },
           {
             label: t("fixed_shotdown_number"),
@@ -143,9 +138,7 @@ const AntiAirAnalysisScreen: React.FCX<Props> = ({ className, analysis }) => {
           {
             label: t("anti_air_cutin_chance"),
             align: "right",
-            getValue: (ship) => (
-              <StyledCutinChanceCell rates={ship.anti_air_cutin_chance} />
-            ),
+            getValue: (ship) => <StyledCutinChanceCell rates={ship.anti_air_cutin_chance} />,
           },
           {
             label: t("AntiAirPropellantBarrage"),

@@ -1,0 +1,156 @@
+/* MUI's CssBaseline owns the reset; Tailwind supplies tokens and utilities. */
+@layer theme, base, mui, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@source "../";
+
+@theme {
+  --color-error-light: #e57373;
+  --breakpoint-sm: 37.5rem;
+  --breakpoint-md: 56.25rem;
+  --breakpoint-lg: 75rem;
+  --breakpoint-xl: 96rem;
+  --color-firepower: #f06292;
+  --color-torpedo: #64b5f6;
+  --color-anti-air: #81c784;
+  --color-asw: #4dd0e1;
+  --color-bombing: #f06292;
+  --color-accuracy: #ffab91;
+  --color-evasion: #4fc3f7;
+  --color-anti-bomber: #ffab91;
+  --color-interception: #4fc3f7;
+  --color-los: #dce775;
+  --color-armor: #ffd54f;
+  --color-range: #ce93d8;
+  --color-radius: #aed581;
+  --color-max-hp: #fff;
+  --color-speed: #fff;
+  --color-luck: #fff176;
+  --color-stars: #26c6da;
+  --color-bonus: #4fc3f7;
+  --color-diff: rgb(239, 102, 148);
+  --color-air-supremacy: #81c784;
+  --color-air-superiority: #64b5f6;
+  --color-air-parity: #ffb74d;
+  --color-air-denial: #f06292;
+  --color-air-incapability: #e57373;
+  --color-damage-normal: #4caf50;
+  --color-damage-shouha: #ffeb3b;
+  --color-damage-chuuha: #ff9800;
+  --color-damage-taiha: #f44336;
+  --color-damage-sunk: #2196f3;
+  --color-sparkle: #ffeb3b;
+  --color-normal: #2196f3;
+  --color-orange: #ff9800;
+  --color-red: #f44336;
+  --color-scrollbar: #616161;
+  --color-droppable: #fff176;
+  --color-plan-file: #42a5f5;
+  --color-folder: #66bb6a;
+  --color-shelling: #ffa726;
+  --color-night: #9fa8da;
+  --color-unknown: rgba(255, 255, 255, 0.5);
+  --color-primary: #2196f3;
+  --color-primary-light: #64b5f6;
+  --color-primary-dark: #1976d2;
+  --color-primary-contrast-text: #fff;
+  --color-secondary: #ec407a;
+  --color-secondary-light: rgb(239, 102, 148);
+  --color-secondary-dark: rgb(165, 44, 85);
+  --color-secondary-contrast-text: #fff;
+  --color-text-primary: #fff;
+  --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --color-text-disabled: rgba(255, 255, 255, 0.5);
+  --color-text-icon: rgba(255, 255, 255, 0.5);
+  --color-action-active: #fff;
+  --color-action-hover: rgba(255, 255, 255, 0.08);
+  --color-action-selected: rgba(255, 255, 255, 0.16);
+  --color-action-disabled: rgba(255, 255, 255, 0.3);
+  --color-action-disabled-background: rgba(255, 255, 255, 0.12);
+  --color-action-focus: rgba(255, 255, 255, 0.12);
+  --color-background-paper: rgba(100, 100, 100, 0.1);
+  --color-background-default: #121212;
+  --color-divider: rgba(255, 255, 255, 0.12);
+}
+
+@utility acrylic {
+  background: rgba(60, 60, 70, 0.95) !important;
+  @supports (backdrop-filter: blur(8px)) {
+    background: rgba(60, 60, 70, 0.6) !important;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@utility dark-acrylic {
+  background: rgba(30, 30, 35, 0.98);
+  @supports (backdrop-filter: blur(8px)) {
+    background: rgba(30, 30, 35, 0.85) !important;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@utility swappable {
+  border-radius: 4px;
+  cursor: grab;
+  & img {
+    pointer-events: none;
+  }
+  &.droppable {
+    box-shadow: 0 0 2px 2px var(--color-droppable);
+  }
+  &.dragging {
+    opacity: 0.3;
+  }
+}
+
+@layer components {
+  :root {
+    --font-body:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+      Meiryo, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+  body {
+    background: #141e30;
+    scrollbar-color: var(--color-scrollbar) transparent;
+    scrollbar-width: thin;
+  }
+  p {
+    margin-block: 0;
+  }
+  ul {
+    margin-block: 0;
+  }
+  code {
+    font-family: Consolas, Menlo, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    background-color: rgba(102, 178, 255, 0.15);
+    direction: ltr;
+    display: inline-block;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    letter-spacing: 0px;
+    padding: 0px 5px;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar);
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  .MuiPopover-paper,
+  .MuiDialog-paper {
+    @apply acrylic;
+  }
+  .MuiTooltip-popper {
+    will-change: auto !important;
+  }
+  .MuiTooltip-tooltip {
+    @apply dark-acrylic;
+    font-size: 0.875rem;
+  }
+}

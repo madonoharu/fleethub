@@ -1,9 +1,10 @@
 import { FLEET_KEYS, ShipKey, SHIP_KEYS, uniq } from "@fh/utils";
-import { styled, css, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Org, FleetKey } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { useAppDispatch } from "../../../hooks";
 import { entitiesSlice, ShipPosition, SwapShipPayload } from "../../../store";
 
@@ -29,6 +30,7 @@ const OrgShipList: React.FCX<Props> = ({
   const { t } = useTranslation("common");
   const isEnemy = org.is_enemy();
   const isCombined = org.is_combined();
+  const fleetKeys = isEnemy ? FLEET_KEYS.concat().reverse() : FLEET_KEYS;
 
   const supKey = org.route_sup;
   const color = isEnemy ? "secondary" : "primary";
@@ -70,6 +72,10 @@ const OrgShipList: React.FCX<Props> = ({
       <OrgShipButton
         key={className}
         className={className}
+        style={{
+          gridColumn: fleetKeys.indexOf(fleetKey) + 1,
+          gridRow: SHIP_KEYS.indexOf(shipKey) + 2,
+        }}
         id={eid}
         shipId={mid}
         position={position}
@@ -82,52 +88,26 @@ const OrgShipList: React.FCX<Props> = ({
   };
 
   return (
-    <div className={className}>
+    <div className={cn("grid auto-cols-[120px] gap-1", className)}>
       {keys.map((key) => {
         const ft = org.get_fleet_type(key);
         return (
-          <Typography key={key} className={key} variant="subtitle2">
+          <Typography
+            key={key}
+            className={cn("row-start-1", key)}
+            style={{ gridColumn: fleetKeys.indexOf(key) + 1 }}
+            variant="subtitle2"
+          >
             {ft ? t(`FleetType.${ft}`) : key.toUpperCase()}
           </Typography>
         );
       })}
 
       {keys.flatMap((fleetKey) =>
-        org
-          .ship_keys(fleetKey)
-          .map((shipKey) => renderShip(fleetKey, shipKey as ShipKey)),
+        org.ship_keys(fleetKey).map((shipKey) => renderShip(fleetKey, shipKey as ShipKey)),
       )}
     </div>
   );
 };
 
-export default styled(OrgShipList)(({ org }) => {
-  const isEnemy = org.is_enemy();
-  const fleetKeys = isEnemy ? FLEET_KEYS.concat().reverse() : FLEET_KEYS;
-
-  return css`
-    display: grid;
-    grid-auto-columns: 120px;
-    gap: 4px;
-
-    ${fleetKeys.map(
-      (key, i) => css`
-        .${key} {
-          grid-column: ${i + 1};
-        }
-      `,
-    )}
-
-    > h6 {
-      grid-row: 1;
-    }
-
-    ${SHIP_KEYS.map(
-      (key, i) => css`
-        .${key} {
-          grid-row: ${i + 2};
-        }
-      `,
-    )}
-  `;
-});
+export default OrgShipList;

@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import React from "react";
+import { cn } from "../../../styles";
 
 export interface LegendRow {
   /** 表示の on/off を覚えるための名前。 */
@@ -18,17 +18,15 @@ export const LEGEND_HEIGHT = 22;
  * 凡例の1項目。押すとその系列を消せることが分かるよう、
  * ホバーで下線を出す。カーソルの形だけでは気付けない。
  */
-const LegendItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  border-bottom: 1px solid transparent;
-
-  :hover {
-    border-bottom-color: currentColor;
-  }
-`;
+const LegendItem = ({ className, ...props }: React.ComponentProps<"div">) => (
+  <div
+    {...props}
+    className={cn(
+      "flex items-center gap-1.5 cursor-pointer [border-bottom:1px_solid_transparent] [&:hover]:[border-bottom-color:currentColor]",
+      className,
+    )}
+  />
+);
 
 interface Props {
   rows: LegendRow[];
@@ -43,19 +41,7 @@ interface Props {
  * 折り返さず高さも固定する。押すとその系列を消せる。
  */
 const ChartLegend: React.FC<Props> = ({ rows, hidden, onToggle }) => (
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "nowrap",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 12,
-      height: LEGEND_HEIGHT,
-      overflow: "hidden",
-      fontSize: "0.75rem",
-      whiteSpace: "nowrap",
-    }}
-  >
+  <div className="flex flex-nowrap justify-center items-center gap-3 h-[22px] overflow-hidden text-[0.75rem] whitespace-nowrap">
     {rows.map((row) => (
       <LegendItem
         key={row.id}
@@ -66,19 +52,12 @@ const ChartLegend: React.FC<Props> = ({ rows, hidden, onToggle }) => (
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") onToggle(row.id);
         }}
-        style={{ opacity: hidden.has(row.id) ? 0.35 : 1 }}
+        className={hidden.has(row.id) ? "opacity-35" : "opacity-100"}
       >
         <svg width={row.line ? 22 : 10} height={10} aria-hidden>
           {row.fill && <rect width={10} height={10} fill={row.fill} />}
           {row.line && (
-            <line
-              x1={row.fill ? 12 : 0}
-              x2={22}
-              y1={5}
-              y2={5}
-              stroke={row.line}
-              strokeWidth={2}
-            />
+            <line x1={row.fill ? 12 : 0} x2={22} y1={5} y2={5} stroke={row.line} strokeWidth={2} />
           )}
         </svg>
         <span>{row.label}</span>

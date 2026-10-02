@@ -1,14 +1,10 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { DropTargetHookSpec, useDrop as useDndDrop } from "react-dnd";
 
-type DropSpec<DragObject, DropResult> = DropTargetHookSpec<
-  DragObject,
-  DropResult,
-  boolean
->;
+type DropSpec<DragObject, DropResult> = DropTargetHookSpec<DragObject, DropResult, boolean>;
 
 export const useDrop = <DragObject, DropResult>(
-  spec: DropSpec<DragObject, DropResult>
+  spec: DropSpec<DragObject, DropResult>,
 ): React.RefCallback<HTMLDivElement> => {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -33,6 +29,6 @@ export const useDrop = <DragObject, DropResult>(
       dropRef(instance);
       ref.current = instance;
     },
-    [dropRef]
+    [dropRef],
   );
 };

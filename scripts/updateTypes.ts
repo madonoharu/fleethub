@@ -7,9 +7,7 @@ import { Dict, uniqBy } from "@fh/utils/src";
 import fs from "fs-extra";
 import { Start2 } from "kc-tools";
 
-const CTYPE_NAMES_PATH = path.resolve(
-  "packages/site/public/locales/ja/ctype.json",
-);
+const CTYPE_NAMES_PATH = path.resolve("packages/site/public/locales/ja/ctype.json");
 
 const FLEETHUB_CORE_SRC_PREFIX = path.resolve("crates/fleethub-core/src");
 
@@ -33,12 +31,7 @@ type EnumConfig = {
   deriveDefault?: boolean;
 };
 
-function createEnum({
-  name,
-  items,
-  unknown,
-  deriveDefault,
-}: EnumConfig): string {
+function createEnum({ name, items, unknown, deriveDefault }: EnumConfig): string {
   const lines = items.map(({ id, tag, name }) => {
     const line = id === undefined ? tag : `${tag} = ${id}`;
     return name ? `\n/// ${name}\n${line}` : line;
@@ -66,10 +59,7 @@ function replaceEnum(config: EnumConfig): (src: string) => string {
   };
 }
 
-async function updateFile(
-  path: string,
-  ...updaters: ((src: string) => string)[]
-) {
+async function updateFile(path: string, ...updaters: ((src: string) => string)[]) {
   const src = (await fs.readFile(path)).toString();
   const out = updaters.reduce((current, fn) => fn(current), src);
   await fs.outputFile(path, out);
@@ -80,9 +70,7 @@ function replaceMacro(
   macroName: string,
   entries: [string, string | number][],
 ): string {
-  const inner = entries
-    .map(([key, value]) => `    ("${key}") => { ${value} };`)
-    .join("\n");
+  const inner = entries.map(([key, value]) => `    ("${key}") => { ${value} };`).join("\n");
 
   const macro = `macro_rules! ${macroName} {\n${inner}\n}`;
   const regex = RegExp(`macro_rules! ${macroName} .*?\\}(?!;)`, "s");
@@ -111,9 +99,7 @@ async function updateRs(
   };
 
   const updateCtype = (src: string): string => {
-    const inner = Object.entries(ctypeNames).map(
-      ([id, name]): [string, string] => [name, id],
-    );
+    const inner = Object.entries(ctypeNames).map(([id, name]): [string, string] => [name, id]);
 
     return replaceMacro(src, "ctype", inner);
   };

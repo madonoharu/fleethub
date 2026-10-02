@@ -13,8 +13,7 @@ await mock.module("next-i18next/pages", () => ({
   }),
 }));
 
-const { default: DamageDensityTooltip } =
-  await import("./DamageDensityTooltip");
+const { default: DamageDensityTooltip } = await import("./DamageDensityTooltip");
 
 const row: DamageChartRow = {
   damage: 30,
@@ -33,11 +32,7 @@ const row: DamageChartRow = {
 function renderTooltip(props: Record<string, unknown> = {}) {
   const { container } = render(
     <ThemeProvider>
-      <DamageDensityTooltip
-        active
-        payload={[{ payload: row }] as never}
-        {...props}
-      />
+      <DamageDensityTooltip active payload={[{ payload: row }] as never} {...props} />
     </ThemeProvider>,
   );
 
@@ -75,9 +70,7 @@ it("系列は「ダメージ発生確率」を省いて艦名から書き出す"
   const root = renderTooltip({
     mainName: "#1 ship1",
     compareName: "#3 ship1",
-    payload: [
-      { payload: { ...row, compareRate: 0.02, compareCumulative: 0.6 } },
-    ] as never,
+    payload: [{ payload: { ...row, compareRate: 0.02, compareCumulative: 0.6 } }] as never,
   });
 
   expect((root.children[0] as HTMLElement).textContent).toBe("Damage 30");
@@ -98,14 +91,7 @@ it("貫通したぶんと貫通しなかったぶんに分けて出す", () => {
 
   // 棒と同じ分け方。0.70% + 0.50% = 1.20% がそのダメージ量の発生確率。
   expect(seriesCells(root)).toEqual([
-    [
-      "#1 ship1",
-      "0.70%",
-      "/ DamageDistribution.NoPenetration",
-      "0.50%",
-      "/ Cumulative",
-      "40.0%",
-    ],
+    ["#1 ship1", "0.70%", "/ DamageDistribution.NoPenetration", "0.50%", "/ Cumulative", "40.0%"],
   ]);
 });
 
@@ -133,9 +119,5 @@ it("積み上げの内訳は他所と同じ攻撃種類の Chip で出す", () =
   expect(root.textContent).toContain("0.40%");
 });
 
-it("グラフの上でも読める背景を敷く", () => {
-  const root = renderTooltip();
-
-  // グラフに重なるので、background.paper（ほぼ透明）ではなく不透明な背景が要る。
-  expect(getComputedStyle(root).background).toContain("rgba(30, 20, 20, 0.85)");
-});
+// 背景色は Tailwind の生成 CSS が必要なので、tests/e2e/damage-chart.spec.ts で
+// 実際のグラフをホバーし、ブラウザーの計算済みスタイルを検証する。

@@ -14,10 +14,7 @@ export type FileDropZoneProps = {
   canDrop?: (dragFile: FileEntity) => boolean;
 };
 
-export const useFileDrop = ({
-  canDrop,
-  onDrop,
-}: Pick<FileDropZoneProps, "canDrop" | "onDrop">) => {
+export const useFileDrop = ({ canDrop, onDrop }: Pick<FileDropZoneProps, "canDrop" | "onDrop">) => {
   return useDrop({
     accept: "file",
     canDrop: canDrop && ((item: FileItem) => canDrop(item.file)),

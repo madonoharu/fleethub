@@ -1,14 +1,14 @@
-import { styled, css, Tooltip, Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import { AttackReport } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
 import { toPercent } from "../../../utils";
+import { cn } from "../../../styles";
 
-const DamageValue = styled("span")`
-  display: inline-block;
-  min-width: 24px;
-`;
+const DamageValue = ({ className, ...props }: React.ComponentProps<"span">) => (
+  <span {...props} className={cn("[display:inline-block] min-w-6", className)} />
+);
 
 type DamageRangeProps = {
   min: number;
@@ -17,18 +17,10 @@ type DamageRangeProps = {
   isCapped?: boolean | null;
 };
 
-const DamageRange: React.FCX<DamageRangeProps> = ({
-  min,
-  max,
-  scratchRate,
-  isCapped,
-}) => {
+const DamageRange: React.FCX<DamageRangeProps> = ({ min, max, scratchRate, isCapped }) => {
   const { t } = useTranslation("common");
 
-  const left =
-    scratchRate > 0
-      ? `${t("ScratchDamage")} ${toPercent(scratchRate, 0)}`
-      : min;
+  const left = scratchRate > 0 ? `${t("ScratchDamage")} ${toPercent(scratchRate, 0)}` : min;
 
   let inner: React.ReactNode;
 
@@ -46,13 +38,8 @@ const DamageRange: React.FCX<DamageRangeProps> = ({
 
   return (
     <Typography
+      className={cn("flex justify-end gap-2", isCapped && "text-secondary-light")}
       variant="inherit"
-      color={isCapped ? "secondary.light" : undefined}
-      sx={{
-        display: "flex",
-        justifyContent: "flex-end",
-        gap: 1,
-      }}
     >
       {inner}
     </Typography>
@@ -74,14 +61,7 @@ const DamageCell: React.FC<DamageCellProps> = ({ stats }) => {
   }
 
   return (
-    <div
-      css={css`
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 0 16px;
-        width: max-content;
-      `}
-    >
+    <div className="grid [grid-template-columns:auto_1fr] gap-[0_16px] w-max">
       <Tooltip title={t("Normal")}>
         <span>N</span>
       </Tooltip>

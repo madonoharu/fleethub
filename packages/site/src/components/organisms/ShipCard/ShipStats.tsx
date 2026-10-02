@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
 import { Ship } from "fleethub-core";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { ShipEntity } from "../../../store";
 
 import ShipStatLabel from "./ShipStatLabel";
@@ -21,7 +21,7 @@ const SHIP_STAT_KEYS = [
   "luck",
 ] as const;
 
-export type ShipStatKey = typeof SHIP_STAT_KEYS[number];
+export type ShipStatKey = (typeof SHIP_STAT_KEYS)[number];
 
 type Props = {
   ship: Ship;
@@ -30,22 +30,12 @@ type Props = {
 
 const ShipStats: React.FCX<Props> = ({ className, ship, onUpdate }) => {
   return (
-    <div className={className}>
+    <div className={cn("grid h-full grid-cols-[50%_50%] grid-rows-[repeat(6,1fr)]", className)}>
       {SHIP_STAT_KEYS.map((key) => (
-        <ShipStatLabel
-          key={key}
-          statKey={key}
-          ship={ship}
-          onUpdate={onUpdate}
-        />
+        <ShipStatLabel key={key} statKey={key} ship={ship} onUpdate={onUpdate} />
       ))}
     </div>
   );
 };
 
-export default styled(ShipStats)`
-  height: 100%;
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: repeat(6, 1fr);
-`;
+export default ShipStats;

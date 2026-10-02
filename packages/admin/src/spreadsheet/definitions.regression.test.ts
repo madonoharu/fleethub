@@ -17,9 +17,7 @@ const start2 = {
 } as unknown as Start2;
 const parser = new ExprParser(start2, [], new NationalityMap(emptyTable));
 
-function definitions(
-  tables: Partial<Record<keyof MasterBattleDefinitions, SpreadsheetTable>>,
-) {
+function definitions(tables: Partial<Record<keyof MasterBattleDefinitions, SpreadsheetTable>>) {
   return createBattleDefinitions(parser, {
     anti_air_cutin: emptyTable,
     day_cutin: emptyTable,
@@ -35,37 +33,17 @@ describe("spreadsheet master definitions", () => {
     const result = definitions({
       anti_air_cutin: {
         sheetId: 7,
-        headerValues: [
-          "id",
-          "type_factor",
-          "multiplier",
-          "guaranteed",
-          "sequential",
-        ],
+        headerValues: ["id", "type_factor", "multiplier", "guaranteed", "sequential"],
         rows: [{ id: 1, type_factor: 0, multiplier: 1.5, sequential: false }],
       },
       day_cutin: {
         sheetId: 8,
-        headerValues: [
-          "tag",
-          "hits",
-          "type_factor",
-          "power_mod",
-          "accuracy_mod",
-        ],
-        rows: [
-          { tag: "DoubleAttack", hits: 2, type_factor: 0, power_mod: 1.2 },
-        ],
+        headerValues: ["tag", "hits", "type_factor", "power_mod", "accuracy_mod"],
+        rows: [{ tag: "DoubleAttack", hits: 2, type_factor: 0, power_mod: 1.2 }],
       },
       night_cutin: {
         sheetId: 9,
-        headerValues: [
-          "tag",
-          "hits",
-          "type_factor",
-          "power_mod",
-          "accuracy_mod",
-        ],
+        headerValues: ["tag", "hits", "type_factor", "power_mod", "accuracy_mod"],
         rows: [{ tag: "MainMainMain", hits: 3, accuracy_mod: 0 }],
       },
     });

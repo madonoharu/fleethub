@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
 import { Button } from "@mui/material";
 import { Ship } from "fleethub-core";
 import React from "react";
 
+import { cn } from "../../../styles/cn";
 import { ShipNameplate, ShipTooltip } from "../../organisms";
 
 type Props = {
@@ -13,14 +13,11 @@ type Props = {
 const ShipButton: React.FCX<Props> = ({ className, ship, onClick }) => {
   return (
     <ShipTooltip ship={ship}>
-      <Button className={className} onClick={onClick}>
+      <Button className={cn("w-[232px] justify-start", className)} onClick={onClick}>
         <ShipNameplate shipId={ship.ship_id} />
       </Button>
     </ShipTooltip>
   );
 };
 
-export default styled(ShipButton)`
-  justify-content: flex-start;
-  width: 232px;
-`;
+export default ShipButton;

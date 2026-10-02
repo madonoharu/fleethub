@@ -1,13 +1,10 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { cn } from "../../../styles/cn";
 import { Button, ButtonProps } from "@mui/material";
 import React from "react";
 
 import { getDefaultOptionLabel, SelectComponent } from "../Select";
 
-const SelectButtons: SelectComponent<{ buttonProps?: ButtonProps }> = (
-  props
-) => {
+const SelectButtons: SelectComponent<{ buttonProps?: ButtonProps }> = (props) => {
   const {
     className,
     options,
@@ -17,7 +14,12 @@ const SelectButtons: SelectComponent<{ buttonProps?: ButtonProps }> = (
     buttonProps,
   } = props;
   return (
-    <div className={className}>
+    <div
+      className={cn(
+        "[&_button]:rounded-none [&_button]:box-border [&_button]:[border-block-end:2px_solid_transparent] [&_[aria-selected=true]]:[border-block-end-color:var(--color-primary)]",
+        className,
+      )}
+    >
       {options.map((option, index) => (
         <Button
           key={index}
@@ -32,15 +34,4 @@ const SelectButtons: SelectComponent<{ buttonProps?: ButtonProps }> = (
   );
 };
 
-export default styled(SelectButtons)(
-  ({ theme }) => css`
-    button {
-      border-radius: 0;
-      box-sizing: border-box;
-      border-block-end: solid 2px rgba(0, 0, 0, 0);
-    }
-    [aria-selected="true"] {
-      border-block-end: solid 2px ${theme.palette.primary.main};
-    }
-  `
-) as SelectComponent<{ buttonProps?: ButtonProps }>;
+export default SelectButtons;

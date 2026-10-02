@@ -8,9 +8,7 @@ import { useAppDispatch, useRootSelector } from "./rtk-hooks";
 import { useSnackbar } from "./useSnackbar";
 
 export const useAsyncOnPublish = (id: string) => {
-  const name = useRootSelector(
-    (root) => filesSelectors.selectById(root, id)?.name
-  );
+  const name = useRootSelector((root) => filesSelectors.selectById(root, id)?.name);
 
   const dispatch = useAppDispatch();
   const Snackbar = useSnackbar();
@@ -20,11 +18,6 @@ export const useAsyncOnPublish = (id: string) => {
     return url;
   });
 
-  const handleRejected = (error: unknown) => {
-    console.error(error);
-    Snackbar.show({ message: String(error), severity: "error" });
-  };
-
   const onUrlCopy = () => {
     asyncOnPublish
       .execute()
@@ -32,7 +25,7 @@ export const useAsyncOnPublish = (id: string) => {
         await copy(url);
         Snackbar.show({ message: "Success" });
       })
-      .catch(handleRejected);
+      .catch(Snackbar.error);
   };
 
   const onTweet = () => {
@@ -41,7 +34,7 @@ export const useAsyncOnPublish = (id: string) => {
       .then((url) => {
         tweet({ url, text: name || "" });
       })
-      .catch(handleRejected);
+      .catch(Snackbar.error);
   };
 
   const { loading, execute } = asyncOnPublish;

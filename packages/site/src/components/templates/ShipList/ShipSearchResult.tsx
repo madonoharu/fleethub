@@ -8,15 +8,10 @@ type Props = {
   renderShip: (ship: Ship) => React.ReactNode;
 };
 
-const ShipSearchResult: React.FC<Props> = ({
-  searchValue,
-  ships,
-  renderShip,
-}) => {
+const ShipSearchResult: React.FC<Props> = ({ searchValue, ships, renderShip }) => {
   const text = (
     <Typography>
-      &quot;{searchValue}&quot;の検索結果{" "}
-      {ships.length === 0 && "見つかりませんでした"}
+      &quot;{searchValue}&quot;の検索結果 {ships.length === 0 && "見つかりませんでした"}
     </Typography>
   );
   return (

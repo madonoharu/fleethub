@@ -1,16 +1,21 @@
 # Browser migration regressions
 
-Install mise, then use the repository's `mise.toml` to select Bun 1.4.2,
-Rust 1.99.0 and wasm-pack 0.15.0. Repository commands run Playwright, its
-test workers and Next.js with Bun. `mise exec --` works without shell activation.
+Use Bun 1.4.2 to run Playwright, its test workers and Next.js. The application
+uses the published npm Wasm package, so browser tests do not require Rust or
+wasm-pack. If using mise, install Bun and activate it in your shell first:
 
 ```sh
 mise trust
-mise install --locked bun rust github:wasm-bindgen/wasm-pack
-mise exec -- bun install --frozen-lockfile
-mise exec -- bun run playwright install --with-deps chromium
-mise exec -- bun run build
-mise exec -- bun run test:e2e
+mise install --locked bun
+```
+
+With Bun on PATH, run:
+
+```sh
+bun install --frozen-lockfile
+bun run playwright install --with-deps chromium
+bun run build
+bun run test:e2e
 ```
 
 The default configuration starts the existing production build with `bun run
@@ -23,14 +28,14 @@ natively. If invoking Playwright with `bunx`, use `bunx --bun playwright`.
 For a separate development checkout, run setup first:
 
 ```sh
-mise exec -- bun run setup
-mise exec -- bun run test:e2e:dev
+bun run setup
+bun run test:e2e:dev
 ```
 
 To test an already running server without starting another:
 
 ```sh
-E2E_BASE_URL=http://localhost:3000 mise exec -- bun run test:e2e
+E2E_BASE_URL=http://localhost:3000 bun run test:e2e
 ```
 
 When that external server is a development server, also set `E2E_MODE=dev`.
@@ -38,10 +43,31 @@ The suite asserts that production requests `master_data.json` and development
 requests `master_data.dev.json`.
 
 The five direct locale tests each initialize their own page, translations and
-Wasm runtime. Another test changes languages through the real menu. Fleet tests
+Wasm runtime. They also verify that MUI's SSR styles stay in the head and that
+Emotion hydrates the CSS layer-order rule. Another test changes languages through the real menu. Fleet tests
 assert exact Rust-generated LOS scores after changing HQ level, including both
 numeric bounds, and after selecting a real ship. The persistence test creates a folder and plan, uses tree
 keyboard navigation, waits for the actual IndexedDB save, and reloads.
+
+Tailwind styles are verified in Chromium with the application's generated CSS.
+The selection tests check initial focus, immediate search input, Escape and
+focus restoration, search-clear visibility before/after hover, and the dialog's
+desktop/narrow dimensions. Fleet tests check hover-only numeric controls; the
+persistence test checks the nested tree row's highlight/hit area. The damage
+test checks the custom-modifier button's icon alignment and the chart tooltip's
+readable background after hovering. These style assertions belong in browser
+tests because the DOM test runner does not load Next.js's generated CSS.
+
+The sidebar test creates enough folders to scroll, wheels the tree, and checks
+that individual rows and the toolbar do not become nested scroll containers.
+It also checks that the drop outline can extend beyond its label. The touch
+selection test uses a mobile context without a hover-capable pointer to verify
+that search clearing and one-step numeric adjustment remain usable.
+
+The preset test deletes the selected final row, verifies that the remaining
+preset stays editable, then deletes everything and registers another preset.
+The damage test also checks the nested tabs' 32px height and the ship details
+distribution headings' 8px gap below their tables.
 
 The damage-chart regression equips Akagi Kai with a Suisei bomber, imports a
 deterministic map containing enemy ship 1501, and opens the damage distribution.
