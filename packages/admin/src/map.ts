@@ -140,7 +140,7 @@ async function updateShips(maps: KcnavMap[]): Promise<void> {
     spreadsheet.readTable("ships"),
   ]);
 
-  const masterShips = md.ships;
+  const masterShips = md.ships.map((ship) => ({ ...ship }));
 
   const findMasterShip = (id: number) =>
     masterShips.find((ship) => ship.ship_id === id);
@@ -183,7 +183,10 @@ async function updateShips(maps: KcnavMap[]): Promise<void> {
     });
 
     const equips = kcnavShip.equips.filter((eq) => eq > 0);
-    if (!equips.every((eq, index) => eq === masterShip.stock[index]?.gear_id)) {
+    if (
+      equips.length !== masterShip.stock.length ||
+      !equips.every((eq, index) => eq === masterShip.stock[index]?.gear_id)
+    ) {
       const s1 = masterShip.stock.map((g) => g.gear_id).toString();
       const s2 = equips.toString();
       console.log(label, `gears ${s1} -> ${s2}`);
