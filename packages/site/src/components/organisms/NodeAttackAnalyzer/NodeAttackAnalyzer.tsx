@@ -2,7 +2,7 @@ import { FLEET_KEYS, nonNullable, uppercase } from "@fh/utils";
 import { Paper, Stack } from "@mui/material";
 import type { NodeAttackAnalyzerConfig, NodeState, Org } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 import {
   useShip,
@@ -10,6 +10,7 @@ import {
   useRootSelector,
   useOrg,
 } from "../../../hooks";
+import { useCompShipSelection } from "../../../hooks/useCompShipSelection";
 import {
   OrgEntity,
   orgsSlice,
@@ -69,22 +70,13 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
   const disableConfig = !activeStep;
 
   const leftComp = useMemo(() => leftOrg.create_comp(), [leftOrg]);
-  const [leftShipId, setLeftShipId] = useState(leftComp.first_ship_id());
+  const [leftShipId, setLeftShipId] = useCompShipSelection(leftComp);
   const leftShip = useShip(leftShipId);
 
   const { org: rightOrg } = useOrg(activeStep?.org || "");
   const rightComp = useMemo(() => rightOrg?.create_comp(), [rightOrg]);
-  const rightCompFirstShipId = rightComp?.first_ship_id();
-  const [rightShipId, setRightShipId] = useState(rightCompFirstShipId);
+  const [rightShipId, setRightShipId] = useCompShipSelection(rightComp);
   const rightShip = useShip(rightShipId);
-
-  if (
-    rightComp &&
-    rightCompFirstShipId &&
-    !rightComp.has_ship_eid(rightShipId || "")
-  ) {
-    setRightShipId(rightCompFirstShipId);
-  }
 
   const handleConfigChange = (value: Partial<NodeAttackAnalyzerConfig>) => {
     dispatch(
