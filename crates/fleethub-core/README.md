@@ -2,7 +2,7 @@
 
 艦隊・装備・戦闘分析のロジックを実装する Rust ライブラリです。Next.js アプリと管理スクリプトは、このワークスペースの WebAssembly パッケージを使用します。
 
-Rustup、wasm-pack 0.15.0、`jq`、Bun を用意してから、リポジトリルートで実行します。
+Rustup、wasm-pack 0.15.0、Bun を用意してから、リポジトリルートで実行します。
 
 ```sh
 bun install --frozen-lockfile

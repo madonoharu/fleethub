@@ -120,6 +120,14 @@ assert.ok(loaded.length > 0);
 assert.deepEqual(loaded.filter(file => !file.startsWith(base) || !fs.realpathSync(file).startsWith(base)), []);
 console.log("Wasm initializes and all loaded modules stay inside the isolated trace tree");
 `;
+  // The site's required ProcessEnv fields are inlined by Next at build time.
+  // This probe deliberately starts with only runtime variables, no credentials.
+  const runtimeEnv: Partial<NodeJS.ProcessEnv> = {
+    PATH: process.env["PATH"] || "",
+    NODE_ENV: "production",
+    NODE_PATH: "",
+    NEXT_TELEMETRY_DISABLED: "1",
+  };
   const result = spawnSync(
     process.execPath,
     ["--no-env-file", "--eval", probe],
@@ -127,12 +135,7 @@ console.log("Wasm initializes and all loaded modules stay inside the isolated tr
       cwd: join(isolated, "packages/site"),
       stdio: "inherit",
       timeout: 60_000,
-      env: {
-        PATH: process.env["PATH"] || "",
-        NODE_ENV: "production",
-        NODE_PATH: "",
-        NEXT_TELEMETRY_DISABLED: "1",
-      },
+      env: runtimeEnv as NodeJS.ProcessEnv,
     },
   );
   if (result.error) throw result.error;

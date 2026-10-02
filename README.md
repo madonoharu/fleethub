@@ -18,7 +18,7 @@ bun install --frozen-lockfile
 
 インストールでは Husky の Git hooks を設定します。Wasm やワークスペースのビルドは、次の `setup` で明示的に実行します。
 
-ビルドの前に [Rustup](https://www.rust-lang.org/tools/install)、[wasm-pack](https://rustwasm.github.io/wasm-pack/) 0.15.0、`jq` を用意してください。Rust は `rust-toolchain.toml` で 1.99.0 に固定しており、Rustup が必要なコンポーネントと `wasm32-unknown-unknown` ターゲットをインストールします。
+ビルドの前に [Rustup](https://www.rust-lang.org/tools/install)、[wasm-pack](https://rustwasm.github.io/wasm-pack/) 0.15.0 を用意してください。Rust は `rust-toolchain.toml` で 1.99.0 に固定しており、Rustup が必要なコンポーネントと `wasm32-unknown-unknown` ターゲットをインストールします。
 
 ```sh
 cargo install wasm-pack --version 0.15.0 --locked
@@ -47,4 +47,4 @@ Next.js は既存の Pages Router を使用し、Wasm のバンドルに対応�
 
 CI は `bun install --frozen-lockfile` と `bun run setup` を分けて実行し、Rust テスト、Oxlint、型チェック、Jest、本番ビルドを確認します。データ更新用の API workflow もワークスペースをビルドしてから更新スクリプトを実行します。
 
-ホスティング環境ではリポジトリルートで依存関係をインストールし、`packages/site` を Next.js アプリとして使用してください。アプリの `build` スクリプトがワークスペースを準備するため、ビルド環境にも Rustup、wasm-pack、`jq` が必要です。依存関係を変更した場合は `bun install` で `bun.lock` を更新し、変更した `package.json` と一緒にコミットしてください。
+ホスティング環境ではリポジトリルートで依存関係をインストールし、`packages/site` を Next.js アプリとして使用してください。アプリの `build` スクリプトがワークスペースを準備するため、ビルド環境にも Rustup と wasm-pack が必要です。依存関係を変更した場合は `bun install` で `bun.lock` を更新し、変更した `package.json` と一緒にコミットしてください。

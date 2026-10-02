@@ -13,7 +13,8 @@ use crate::{
 
 use super::GearTypeIdArray;
 
-#[wasm_bindgen(module = "equipment-bonus")]
+// Bun owns this dependency; avoid embedding a worktree's package.json path.
+#[wasm_bindgen(raw_module = "equipment-bonus")]
 extern "C" {
     #[wasm_bindgen(catch, js_name = createEquipmentBonuses)]
     fn create_equipment_bonuses_js(

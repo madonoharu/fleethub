@@ -33,6 +33,8 @@ Next.js は `bun --bun next` で実行する。Wasm の async WebAssembly を扱
 
 サーバーでは `fleethub-core` をバンドルせず、Node 用ラッパーと隣接する Wasm をパッケージから読む。クライアントは bundler 用 Wasm を使用する。管理用パッケージには storage の専用 export を追加し、ページが不要な管理 API を読み込まないようにした。管理スクリプトの `@fh/admin/src` も維持している。
 
+Wasm の npm 依存は `raw_module` で直接参照し、依存管理は Bun に任せる。これにより、共有 Cargo キャッシュに別 worktree の package.json パスが残る問題を防ぎ、ビルド時の元の package.json の書き換えも不要になった。
+
 ISR の配布成果物には全言語の翻訳 JSON と `next-i18next.config.js` を明示的に同梱する。`verify:build` は Next.js の trace に含まれるファイルだけを一時ディレクトリへコピーし、Wasm 初期化と5言語の `getStaticProps` を実行する。元のワークスペースからのモジュール読み込みを検出し、翻訳・設定ファイルの欠落を CI で防ぐ。
 
 ## 検証
@@ -46,7 +48,7 @@ ISR の配布成果物には全言語の翻訳 JSON と `next-i18next.config.js`
 
 ## 再現用コマンド
 
-Bun 1.4.2、Node.js 24 LTS、Rustup、wasm-pack 0.15.0、jq を用意する。
+Bun 1.4.2、Node.js 24 LTS、Rustup、wasm-pack 0.15.0 を用意する。
 
 ```sh
 bun install --frozen-lockfile
