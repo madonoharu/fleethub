@@ -42,22 +42,19 @@ export async function getMetadata(path: string): Promise<Metadata> {
 }
 
 const createGcsSaveOptions = (options?: SaveOptions): GcsSaveOptions => {
-  const result: SaveOptions = { ...options };
+  const { brotli, immutable, metadata, ...result } = options ?? {};
+  const nextMetadata = { ...metadata };
 
-  if (!result.metadata) {
-    result.metadata = {};
+  if (immutable) {
+    nextMetadata.cacheControl = "public, immutable, max-age=365000000";
   }
 
-  if (result.immutable) {
-    result.metadata.cacheControl = "public, immutable, max-age=365000000";
-  }
-
-  if (result.brotli) {
+  if (brotli) {
     result.gzip = false;
-    result.metadata.contentEncoding = "br";
+    nextMetadata.contentEncoding = "br";
   }
 
-  return result;
+  return { ...result, metadata: nextMetadata };
 };
 
 export const write = async (

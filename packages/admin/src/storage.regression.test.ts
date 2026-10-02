@@ -7,7 +7,11 @@ import {
   it,
   mock,
 } from "bun:test";
+import { brotliDecompressSync } from "node:zlib";
+import type { SaveOptions as GcsSaveOptions } from "@google-cloud/storage";
 import type { App } from "firebase-admin/app";
+
+import type { SaveOptions } from "./storage";
 
 const app = {
   cert: mock<typeof import("firebase-admin/app").cert>(),
@@ -158,4 +162,133 @@ describe("storage authentication boundary", () => {
     expect(save).toHaveBeenNthCalledWith(1, "first", { metadata: {} });
     expect(save).toHaveBeenNthCalledWith(2, "second", { metadata: {} });
   });
+});
+
+describe("storage upload options", () => {
+  function captureWrites() {
+    const defaultApp = { name: "[DEFAULT]" } as App;
+    app.getApps.mockReturnValue([defaultApp]);
+    app.getApp.mockReturnValue(defaultApp);
+    const save =
+      mock<
+        (data: string | Buffer, options: GcsSaveOptions) => Promise<void>
+      >().mockResolvedValue(undefined);
+    storage.getStorage.mockReturnValue({
+      bucket: () => ({ file: () => ({ save }) }),
+    } as unknown as ReturnType<typeof storage.getStorage>);
+    return save;
+  }
+
+  it("reuses caller metadata across immutable, Brotli and plain writes without leaking derived options", async () => {
+    const save = captureWrites();
+    const metadata = {
+      cacheControl: "private, max-age=60",
+      contentEncoding: "identity",
+      custom: "retained",
+    };
+    const options: SaveOptions = {
+      contentType: "text/plain",
+      resumable: false,
+      gzip: true,
+      metadata,
+    };
+    const before = structuredClone(options);
+
+    await operations.write("data/immutable.txt", "immutable", {
+      ...options,
+      immutable: true,
+    });
+    await operations.write("data/brotli.txt", "brotli", {
+      ...options,
+      brotli: true,
+    });
+    await operations.write("data/plain.txt", "plain", options);
+
+    expect(options).toEqual(before);
+    expect(save.mock.calls[0]).toEqual([
+      "immutable",
+      {
+        ...options,
+        metadata: {
+          ...metadata,
+          cacheControl: "public, immutable, max-age=365000000",
+        },
+      },
+    ]);
+    const [compressed, compressedOptions] = save.mock.calls[1]!;
+    expect(compressed).toBeInstanceOf(Buffer);
+    expect(brotliDecompressSync(compressed as Buffer).toString()).toBe(
+      "brotli",
+    );
+    expect(compressedOptions).toEqual({
+      ...options,
+      gzip: false,
+      metadata: { ...metadata, contentEncoding: "br" },
+    });
+    expect(save.mock.calls[2]).toEqual(["plain", before]);
+  });
+
+  it("accepts frozen metadata while retaining caller JSON content type and applying Brotli encoding", async () => {
+    const save = captureWrites();
+    const metadata = Object.freeze({ cacheControl: "private", custom: "kept" });
+    const options = Object.freeze({
+      metadata,
+      contentType: "application/vnd.fleethub+json",
+      brotli: true,
+      immutable: true,
+      gzip: true,
+    });
+    const data = { value: 0, enabled: false };
+
+    expect(await operations.writeJson("data/frozen.json", data, options)).toBe(
+      data,
+    );
+    const [compressed, uploadedOptions] = save.mock.calls[0]!;
+    expect(compressed).toBeInstanceOf(Buffer);
+    expect(
+      JSON.parse(brotliDecompressSync(compressed as Buffer).toString()),
+    ).toEqual(data);
+    expect(uploadedOptions).toEqual({
+      contentType: "application/vnd.fleethub+json",
+      gzip: false,
+      metadata: {
+        cacheControl: "public, immutable, max-age=365000000",
+        custom: "kept",
+        contentEncoding: "br",
+      },
+    });
+    expect(metadata).toEqual({ cacheControl: "private", custom: "kept" });
+  });
+
+  it.each([
+    [false, null],
+    [undefined, undefined],
+  ])(
+    "preserves explicit compression overrides and normalizes absent metadata (%s)",
+    async (brotli, metadata) => {
+      const save = captureWrites();
+      const data = { value: 0 };
+      const options = {
+        brotli,
+        immutable: false,
+        gzip: true,
+        contentType: "application/vnd.fleethub+json",
+        metadata,
+      };
+
+      expect(
+        await operations.writeJson(
+          "data/uncompressed.json",
+          data,
+          options as SaveOptions,
+        ),
+      ).toBe(data);
+      expect(save).toHaveBeenCalledWith(JSON.stringify(data), {
+        contentType: "application/vnd.fleethub+json",
+        gzip: true,
+        metadata: {},
+      });
+      expect(options.metadata).toBe(metadata);
+    },
+  );
 });
