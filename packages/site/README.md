@@ -2,7 +2,7 @@
 
 艦隊編成・戦闘分析を行う Next.js アプリです。Pages Router、React、MUI とワークスペース内の `fleethub-core` Wasm を使用します。
 
-開発はリポジトリルートから開始します。Bun、Node.js 24 LTS、Rustup、wasm-pack の準備については [ルートの README](../../README.md) を参照してください。
+開発はリポジトリルートから開始します。Bun、Rustup、wasm-pack の準備については [ルートの README](../../README.md) を参照してください。
 
 ```sh
 bun install --frozen-lockfile

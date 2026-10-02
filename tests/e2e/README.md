@@ -1,29 +1,33 @@
 # Browser migration regressions
 
-Use Node 24.14.0 (pinned in `package.json` for Volta) and Bun 1.4.2.
+Use Bun 1.4.2, Rustup and wasm-pack 0.15.0. Repository commands run
+Playwright, its test workers and Next.js with Bun.
 
 ```sh
 bun install --frozen-lockfile
-bunx playwright install --with-deps chromium
+bun run playwright install --with-deps chromium
 bun run build
-bunx playwright test
+bun run test:e2e
 ```
 
 The default configuration starts the existing production build with `bun run
 start` on `http://localhost:3000`; it never builds implicitly. Tests run in fresh
 browser contexts, with two workers by default. Set `E2E_WORKERS` to adjust this.
+The root `bunfig.toml` sets `[run] bun = true`. The `.mts` configuration and
+the ESM boundary in `tests/e2e/package.json` let Bun load the TypeScript tests
+natively. If invoking Playwright with `bunx`, use `bunx --bun playwright`.
 
 For a separate development checkout, run setup first:
 
 ```sh
 bun run setup
-E2E_MODE=dev bunx playwright test
+bun run test:e2e:dev
 ```
 
 To test an already running server without starting another:
 
 ```sh
-E2E_BASE_URL=http://localhost:3000 bunx playwright test
+E2E_BASE_URL=http://localhost:3000 bun run test:e2e
 ```
 
 When that external server is a development server, also set `E2E_MODE=dev`.

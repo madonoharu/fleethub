@@ -8,7 +8,7 @@
 
 ## Developing
 
-依存関係の管理と Next.js の実行には [Bun](https://bun.com/docs/installation) を使用します。Bun のバージョンはルートの `package.json` の `packageManager` に固定し、`bun.lock` をコミットします。Git hooks や Playwright などの開発ツール用に Node.js 24 LTS も用意してください。Volta を使う環境では、ルートの Node.js 24.14.0 設定を各 workspace に継承し、リポジトリ内で同じバージョンを使用します。
+JavaScript の実行と依存関係の管理には [Bun](https://bun.com/docs/installation) を使用します。必要なバージョンはルートの `package.json` の `packageManager` に固定し、`bun.lock` をコミットします。Next.js、Playwright、開発ツール、Git hooks も Bun で実行します。
 
 リポジトリを clone し、作業用の branch を作成したら、ルートディレクトリで依存関係をインストールします。
 
@@ -18,7 +18,7 @@ bun install --frozen-lockfile
 
 インストールでは Husky の Git hooks を設定します。Wasm やワークスペースのビルドは、次の `setup` で明示的に実行します。
 
-ビルドの前に [Rustup](https://www.rust-lang.org/tools/install)、[wasm-pack](https://rustwasm.github.io/wasm-pack/) 0.15.0 を用意してください。Rust は `rust-toolchain.toml` で 1.99.0 に固定しており、Rustup が必要なコンポーネントと `wasm32-unknown-unknown` ターゲットをインストールします。
+ビルドの前に [Rustup](https://www.rust-lang.org/tools/install)、[wasm-pack](https://github.com/wasm-bindgen/wasm-pack) 0.15.0 を用意してください。Rust は `rust-toolchain.toml` で 1.99.0 に固定しており、Rustup が必要なコンポーネントと `wasm32-unknown-unknown` ターゲットをインストールします。
 
 ```sh
 cargo install wasm-pack --version 0.15.0 --locked
@@ -45,6 +45,8 @@ bun run dev
 型チェックやテストの前には `bun run setup` を実行してください。Rust を変更した場合は `bun run build:core` で Wasm を再生成してから開発サーバーを再起動します。Rust のテストビルドでは最新のマスターデータを取得するためネットワーク接続が必要です。
 
 Next.js は既存の Pages Router を使用し、Wasm のバンドルに対応する Webpack でビルドします。
+
+ルートの `bunfig.toml` の `[run] bun = true` により、`bun run` で呼ぶ JavaScript CLI も Bun で起動します。直接 `bunx` を使う場合は `bunx --bun` を指定してください。配布する `fleethub-core` の Node.js 向け CommonJS ラッパーと Wasm は維持しており、パッケージ利用者の Node.js 互換性は継続します。
 
 テストランナーは Bun test を使用し、DOM は Happy DOM、操作と検証は Testing Library を使用します。`bun run test` は `bun test --isolate --parallel=2 ./packages` を実行します。ブラウザ・ビルド成果物のテストと生成済みファイルは通常のユニットテストから除外します。
 

@@ -11,6 +11,7 @@
 5. CI と開発手順を更新した。frozen install、Rust、Oxlint、型チェック、Bun test、本番ビルド、配布成果物の検証、Chromium の E2E を実行する。
 6. クリーンな worktree、本番 Chromium、配布ファイルだけを使う ISR の検証と、Astra xhigh の独立レビューで変更を確認した。
 7. ユニットとブラウザのテスト用 worktree を分け、回帰テストを並列に追加した。既存テストは明示的な `bun:test` import に移し、Jest 本体・型・設定を削除した。モジュールモックを使うため、テストファイルごとの隔離を必須にした。
+8. 開発ツール、Git hooks、Playwright の実行も Bun に統一した。ルートの `bunfig.toml` で `[run] bun = true` を指定し、Node.js のバージョン指定と Volta の設定、CI の setup-node を削除した。Playwright の設定は `.mts`、テストは専用ディレクトリの ESM 設定を使用する。
 
 | 対象              | 採用バージョン |
 | ----------------- | -------------- |
@@ -25,7 +26,9 @@
 | Happy DOM         | 20.14.5        |
 | Playwright        | 1.63.0         |
 
-その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。依存更新時の監査では6 manifestの直接依存96件・89種類すべてが公式 npm レジストリの latest と一致した。その後、Jest の削除とテスト環境の追加を行い、追加パッケージも同日の latest を確認した。Rust は既存の 1.99.0 と Cargo.lock を維持した。Node.js 24 LTS を開発ツールと CI に使用し、Volta のルート設定では24.14.0を指定した。各 workspace の `volta.extends` でルート設定を継承する。
+その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。Jest の削除とテスト環境の追加後の監査でも、npm の直接依存89種類すべてが公式レジストリの latest と一致した。Rust の直接依存32種類も最新安定版だった。Rust 1.99.0、Bun 1.4.2、wasm-pack 0.15.0 と CI Actions の採用 major は最新安定版を使用している。
+
+許容範囲内で更新できる推移依存9種類もロックファイルで更新した。D3 の型6種類、`d3-array`、`d3-format`、`google-logging-utils` が対象で、依存元がバージョンを固定する既存の解決結果は維持した。更新後の frozen install は成功した。
 
 ## 実行と配布の方針
 
@@ -33,7 +36,9 @@ Pages Router を継続し、翻訳の事前生成、ISR、Emotion の Document �
 
 Next.js は `bun --bun next` で実行する。Wasm の async WebAssembly を扱うため、開発・本番とも Webpack を明示する。Next.js 16 は標準で Turbopack を使うため、`--webpack` の指定が必要になる。[Next.js の移行ガイド](https://nextjs.org/docs/app/guides/upgrading/version-16)、[Bun の Next.js ガイド](https://bun.sh/guides/ecosystem/nextjs)
 
-サーバーでは `fleethub-core` をバンドルせず、Node 用ラッパーと隣接する Wasm をパッケージから読む。クライアントは bundler 用 Wasm を使用する。管理用パッケージには storage の専用 export を追加し、ページが不要な管理 API を読み込まないようにした。管理スクリプトの `@fh/admin/src` も維持している。
+`bun run` が呼ぶ CLI は `[run] bun = true` により Bun で起動する。Git hooks の CLI には `bun --bun` を明示し、CI でも `bun run` を使用する。直接 `bunx` を使う場合は `--bun` を指定する。GitHub Actions 自体の JavaScript 実行環境はホスト runner が用意する。
+
+サーバーでは `fleethub-core` をバンドルせず、Node.js と互換性のある CommonJS ラッパーと隣接する Wasm を Bun から読む。配布パッケージにはこのラッパーと Wasm を維持し、Node.js を使うパッケージ利用者との互換性を継続する。クライアントは bundler 用 Wasm を使用する。管理用パッケージには storage の専用 export を追加し、ページが不要な管理 API を読み込まないようにした。管理スクリプトの `@fh/admin/src` も維持している。
 
 Wasm の npm 依存は `raw_module` で直接参照し、依存管理は Bun に任せる。これにより、共有 Cargo キャッシュに別 worktree の package.json パスが残る問題を防ぎ、ビルド時の元の package.json の書き換えも不要になった。
 
@@ -63,9 +68,17 @@ Jest 本体・環境パッケージ・型定義・設定を削除し、24ファ�
 - Astra xhigh の独立実行でも183件の通常・ランダム実行と、最新のビルド成果物18件がすべて成功した。
 - Oxlint の型を使った解析、TypeScript、frozen install は成功した。CI に Bun test、ビルド成果物テスト、Chromium の本番 E2E を組み込んだ。
 
+## 開発ツールの Bun 統一時の検証
+
+Playwright 1.63.0 は CommonJS として TypeScript のテストを読み込む際、Bun 上では JavaScript の loader を割り当てていた。テストディレクトリを ESM にし、fixture のパス解決に `import.meta.dirname` を使用して、Bun が TypeScript を直接読み込むようにした。ルート設定も `playwright.config.mts` として ESM に揃えた。
+
+- Node.js の呼び出しを失敗させる PATH で `bun run test:e2e --list` を実行し、9件を収集した。
+- Bun 統一設定で本番の Playwright 9件が成功した。preload の記録で Playwright 本体、worker 2つ、Next.js 本番サーバーがすべて Bun 1.4.2 であることを確認した。ブラウザ例外・コンソールエラー・予期しない外部通信は0件で、サーバーは停止済み。
+- ユニット183件、ビルド成果物18件、開発 E2E 9件の結果は前節の移行時の検証に基づく。Bun 統一設定での開発 E2E の再検証は実施待ち。
+
 ## 再現用コマンド
 
-Bun 1.4.2、Node.js 24 LTS、Rustup、wasm-pack 0.15.0 を用意する。
+Bun 1.4.2、Rustup、wasm-pack 0.15.0 を用意する。Rust のネイティブテストも、生成した JavaScript ラッパーの検証に Bun を使用する。
 
 ```sh
 bun install --frozen-lockfile
