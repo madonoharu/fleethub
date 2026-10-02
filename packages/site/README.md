@@ -1,30 +1,22 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# @fh/site
 
-## Getting Started
+艦隊編成・戦闘分析を行う Next.js アプリです。Pages Router、React、MUI とワークスペース内の `fleethub-core` Wasm を使用します。
 
-First, run the development server:
+開発はリポジトリルートから開始します。Bun、Node.js 24 LTS、Rustup、wasm-pack、`jq` の準備については [ルートの README](../../README.md) を参照してください。
 
-```bash
-npm run dev
-# or
-yarn dev
+```sh
+bun install --frozen-lockfile
+bun run setup
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+開発サーバーは [http://localhost:3000](http://localhost:3000) で起動します。画面は `src/pages`、共通 UI は `src/components`、翻訳は `public/locales` にあります。
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```sh
+bun run build
+bun run start
+```
 
-## Learn More
+Next.js は Bun のランタイムで実行し、Wasm を扱うため Webpack を使用します。`packages/site` 内で `bun run build` を実行した場合も、ルートの `setup` で必要なワークスペースをビルドします。
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+ホスティングのインストールはリポジトリルートで `bun install --frozen-lockfile`、アプリのビルドは `packages/site` で `bun run build` を実行してください。ビルドには Rustup、wasm-pack、`jq` が必要です。

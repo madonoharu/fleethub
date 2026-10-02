@@ -1,0 +1,29 @@
+name: "Bun install"
+description: "Install locked workspace dependencies without building the application"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Node.js for development tools
+      uses: actions/setup-node@v7
+      with:
+        node-version: "24"
+        package-manager-cache: false
+
+    - name: Set up Bun from package.json
+      uses: oven-sh/setup-bun@v2
+
+    - name: Restore Bun package cache
+      uses: actions/cache@v6
+      if: ${{ !env.ACT }}
+      with:
+        path: ~/.bun/install/cache
+        key: ${{ runner.os }}-${{ runner.arch }}-bun-${{ hashFiles('bun.lock', 'package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ runner.arch }}-bun-
+
+    - name: Install dependencies
+      shell: bash
+      run: bun install --frozen-lockfile
+      env:
+        HUSKY: "0"

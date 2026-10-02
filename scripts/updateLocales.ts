@@ -342,7 +342,7 @@ const updateLocales = async () => {
   );
 
   await Promise.all(promises);
-  await exec("yarn prettier --write packages/site/public/locales");
+  await exec("bun run prettier --write packages/site/public/locales");
 };
 
 updateLocales().catch((err) => console.error(err));

@@ -8,19 +8,28 @@ on:
       ID_TOKEN:
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+
+      - name: Install dependencies
+        uses: ./.github/actions/bun-install
+
+      - name: Cache Rust builds
+        uses: Swatinem/rust-cache@v2
 
       - name: Install wasm-pack
         run: cargo install wasm-pack --version 0.15.0 --locked
 
-      - name: 📥 Monorepo install
-        uses: ./.github/actions/yarn-nm-install
+      - name: Build workspace dependencies
+        run: bun run setup
 
-      - run: yarn dispatch
+      - run: bun run dispatch
         env:
           NAME: ${{ github.event.inputs.NAME }}
           ID_TOKEN: ${{ github.event.inputs.ID_TOKEN }}
