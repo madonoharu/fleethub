@@ -13,6 +13,7 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   watchPathIgnorePatterns: "/target/debug/",
   testPathIgnorePatterns: [
+    "<rootDir>/tests/(?:e2e|build)/",
     "<rootDir>/target/",
     "<rootDir>/packages/[^/]+/(?:esm|lib|cjs|dist)/",
     "<rootDir>/crates/[^/]+/(?:pkg|node)/",

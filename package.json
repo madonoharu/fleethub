@@ -36,6 +36,7 @@
     "*.{js,jsx,ts,tsx}": "oxlint --fix"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@fh/admin": "workspace:*",
     "@fh/utils": "workspace:*",
     "@testing-library/dom": "10.4.2",
