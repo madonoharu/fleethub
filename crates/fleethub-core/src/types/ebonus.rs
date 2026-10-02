@@ -327,7 +327,8 @@ impl EBonuses {
             "#
         );
 
-        let stdout = std::process::Command::new("node")
+        let stdout = std::process::Command::new("bun")
+            .current_dir(env!("CARGO_MANIFEST_DIR"))
             .arg("-e")
             .arg(code)
             .output()
