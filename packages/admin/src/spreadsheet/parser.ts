@@ -3,6 +3,29 @@ import { Start2 } from "kc-tools";
 import { CellValue } from "./SpreadsheetTable";
 import { NationalityMap } from "./nationality";
 
+type NamedMaster = { api_name: string; api_id: number };
+
+function replaceMasterNames(
+  str: string,
+  masters: readonly NamedMaster[],
+): string {
+  return masters.reduce(
+    (current, master) =>
+      current.replaceAll(`"${master.api_name}"`, master.api_id.toString()),
+    str,
+  );
+}
+
+function normalizeExpression(str: string): string {
+  const result = str.replace(/\n/g, " ").replace(/\s{2,}/g, " ");
+
+  if (result.includes('"')) {
+    throw new Error(`Syntax error: ${result}`);
+  }
+
+  return result;
+}
+
 export function parseHistoricalAircraftGroup(value: CellValue): number {
   if (typeof value !== "string") {
     return 0;
@@ -20,11 +43,7 @@ export class ExprParser {
 
   parseGearName(str: string): string {
     const fn = (str: string) =>
-      this.start2.api_mst_slotitem.reduce(
-        (current, gear) =>
-          current.replaceAll(`"${gear.api_name}"`, gear.api_id.toString()),
-        str,
-      );
+      replaceMasterNames(str, this.start2.api_mst_slotitem);
 
     return str
       .replace(/gear_id (=|!)= "[^"]+"/g, fn)
@@ -32,27 +51,15 @@ export class ExprParser {
   }
 
   parseGearType(str: string): string {
-    return this.start2.api_mst_slotitem_equiptype.reduce(
-      (current, type) =>
-        current.replaceAll(`"${type.api_name}"`, type.api_id.toString()),
-      str,
-    );
+    return replaceMasterNames(str, this.start2.api_mst_slotitem_equiptype);
   }
 
   parseShipName(str: string): string {
-    return this.start2.api_mst_ship.reduce(
-      (current, ship) =>
-        current.replaceAll(`"${ship.api_name}"`, ship.api_id.toString()),
-      str,
-    );
+    return replaceMasterNames(str, this.start2.api_mst_ship);
   }
 
   parseShipType(str: string): string {
-    return this.start2.api_mst_stype.reduce(
-      (current, stype) =>
-        current.replaceAll(`"${stype.api_name}"`, stype.api_id.toString()),
-      str,
-    );
+    return replaceMasterNames(str, this.start2.api_mst_stype);
   }
 
   parseShipClass(str: string): string {
@@ -75,13 +82,7 @@ export class ExprParser {
     str = this.parseGearName(str);
     str = this.parseGearType(str);
 
-    const result = str.replace(/\n/g, " ").replace(/\s{2,}/g, " ");
-
-    if (result.includes('"')) {
-      throw new Error(`Syntax error: ${result}`);
-    }
-
-    return result;
+    return normalizeExpression(str);
   }
 
   parseShip(str: string): string {
@@ -90,13 +91,7 @@ export class ExprParser {
     str = this.parseShipClass(str);
     str = this.parseNationality(str);
 
-    const result = str.replace(/\n/g, " ").replace(/\s{2,}/g, " ");
-
-    if (result.includes('"')) {
-      throw new Error(`Syntax error: ${result}`);
-    }
-
-    return result;
+    return normalizeExpression(str);
   }
 
   replaceHistoricalAircraftGroup(str: string): string {
@@ -115,12 +110,6 @@ export class ExprParser {
     str = this.parseNationality(str);
 
     str = this.replaceHistoricalAircraftGroup(str);
-    const result = str.replace(/\n/g, " ").replace(/\s{2,}/g, " ");
-
-    if (result.includes('"')) {
-      throw new Error(`Syntax error: ${result}`);
-    }
-
-    return result;
+    return normalizeExpression(str);
   }
 }
