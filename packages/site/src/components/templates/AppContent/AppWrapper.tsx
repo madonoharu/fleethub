@@ -58,6 +58,13 @@ interface AppWrapperProps {
 const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
   const { data, error } = useMasterData();
   const masterDataConfig = useRootSelector((root) => root.config.masterData);
+  const merged = useMemo(
+    () =>
+      data && !error
+        ? mergeMasterData(data, masterDataConfig || {})
+        : undefined,
+    [data, error, masterDataConfig],
+  );
 
   if (error) {
     return (
@@ -69,11 +76,9 @@ const AppWrapper: React.FC<AppWrapperProps> = ({ children }) => {
     );
   }
 
-  if (!data) {
+  if (!merged) {
     return null;
   }
-
-  const merged = mergeMasterData(data, masterDataConfig || {});
 
   return <Inner data={merged}>{children}</Inner>;
 };
