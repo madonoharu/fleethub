@@ -86,7 +86,9 @@ test("selecting a real ship changes the Rust-generated fleet LOS", async ({
   await search.press("Tab");
   await selection.getByRole("button", { name: "赤城改", exact: true }).click();
   await expect(selection).not.toBeVisible();
-  await expect(page.getByText("赤城改", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("paragraph").filter({ hasText: /^赤城改$/ }),
+  ).toBeVisible();
 
   // The snapshot's Akagi Kai has naked LOS 89 at its default level 99.
   // All four factors produce sqrt(89) - 2 + 12 - ceil(0.4 * 100).

@@ -24,7 +24,6 @@ type Translation = {
   OpenFolderPage: string;
   FighterPower: string;
   Ship: string;
-  Gear: string;
   meta: { title: string };
 };
 
