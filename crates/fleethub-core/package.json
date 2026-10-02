@@ -1,10 +1,10 @@
 {
   "name": "fleethub-core",
-  "version": "1.12.19",
+  "version": "1.12.20",
   "license": "UNLICENSED",
   "exports": {
-    "import": "./pkg/fleethub_core.js",
-    "node": "./node/fleethub_core.js"
+    "node": "./node/fleethub_core.js",
+    "import": "./pkg/fleethub_core.js"
   },
   "main": "./node/fleethub_core.js",
   "types": "pkg/fleethub_core.d.ts",
@@ -12,6 +12,12 @@
     "pkg",
     "node"
   ],
+  "dependencies": {
+    "equipment-bonus": "7.13.26"
+  },
+  "engines": {
+    "node": ">=19"
+  },
   "collaborators": [
     "まどの <madonoharu@gmail.com>"
   ]

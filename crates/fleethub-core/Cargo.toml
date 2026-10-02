@@ -1,6 +1,6 @@
 [package]
 name = "fleethub-core"
-version = "1.12.19"
+version = "1.12.20"
 authors = ["Madono <madonoharu@gmail.com>"]
 edition.workspace = true
 rust-version.workspace = true

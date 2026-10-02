@@ -542,7 +542,7 @@ dependencies = [
 
 [[package]]
 name = "fleethub-core"
-version = "1.12.19"
+version = "1.12.20"
 dependencies = [
  "anyhow",
  "arrayvec",
