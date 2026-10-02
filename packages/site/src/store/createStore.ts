@@ -1,12 +1,14 @@
 import { combineReducers, configureStore, Reducer, UnknownAction } from "@reduxjs/toolkit";
 import localforage from "localforage";
 import { persistReducer, Storage, PersistConfig } from "redux-persist";
+import autoMergeLevel1 from "redux-persist/lib/stateReconciler/autoMergeLevel1";
 import { ThunkAction } from "redux-thunk";
 import undoable, { ActionTypes as UndoableActionTypes } from "redux-undo";
 
 import { appSlice, keepViewPreferences } from "./appSlice";
 import { configSlice } from "./configSlice";
 import { entitiesSlice } from "./entities";
+import { reconcileLegacyActiveSteps } from "./entities/reconcileLegacyActiveSteps";
 import { gearSelectSlice } from "./gearSelectSlice";
 import { gkcoiSlice } from "./gkcoiSlice";
 import { mapSelectSlice } from "./mapSelectSlice";
@@ -55,6 +57,11 @@ export const persistConfig: PersistConfig<RootState> = {
   serialize: false,
   deserialize: false,
   whitelist: ["app", "config", "entities"],
+  stateReconciler: (inbound, original, reduced, config) => {
+    const state = autoMergeLevel1(inbound, original, reduced, config);
+    const entities = reconcileLegacyActiveSteps(state.entities);
+    return entities === state.entities ? state : { ...state, entities };
+  },
 };
 
 const persistedReducer = persistReducer(persistConfig, persistedReducerBase);

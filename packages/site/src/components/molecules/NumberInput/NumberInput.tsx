@@ -93,6 +93,7 @@ export interface NumberInputProps extends Omit<InputProps, "type" | "onChange" |
   min?: number;
   max?: number;
   step?: number;
+  integer?: boolean;
 }
 
 const NumberInput: React.FC<NumberInputProps> = ({
@@ -102,6 +103,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   min,
   max,
   step = 1,
+  integer = false,
   variant,
   slotProps,
   ...textFieldProps
@@ -112,19 +114,22 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
   const handleBlur = useCallback(() => {
     setInner((str) => {
-      if (str === "") {
+      const num = evaluate(str);
+      if (num === null) {
         return `${value ?? ""}`;
-      } else {
-        return toHalf(str);
       }
+      const normalized = clamp(integer ? Math.trunc(num) : num, min, max);
+      return num === normalized ? toHalf(str) : String(normalized);
     });
-  }, [value]);
+  }, [value, min, max, integer]);
 
   useEffect(() => {
-    if (evaluate(innerRef.current) !== value) {
+    const num = evaluate(innerRef.current);
+    const committed = integer && num !== null ? Math.trunc(num) : num;
+    if (committed !== value) {
       setInner(`${value ?? ""}`);
     }
-  }, [value]);
+  }, [value, integer]);
 
   const inputSlotProps = slotProps?.input;
   const mergedInputProps = useMemo<NonNullable<NonNullable<InputProps["slotProps"]>["input"]>>(
@@ -132,10 +137,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
       const inputProps =
         typeof inputSlotProps === "function" ? inputSlotProps(ownerState) : inputSlotProps;
       const disabled = textFieldProps.disabled || inputProps?.disabled || false;
+      const normalize = (num: number) => clamp(integer ? Math.trunc(num) : num, min, max);
       const update = (value: string) => {
         const num = evaluate(value);
         if (onChange && num !== null) {
-          onChange(clamp(num, min, max));
+          onChange(normalize(num));
         }
       };
 
@@ -147,7 +153,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
       const increase = () => {
         setInner((current) => {
-          const currentNum = evaluate(current) || 0;
+          const currentNum = normalize(evaluate(current) || 0);
           const nextNum = stepValue(currentNum, step);
           return clamp(nextNum, min, max).toString();
         });
@@ -155,7 +161,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
       const decrease = () => {
         setInner((current) => {
-          const currentNum = evaluate(current) || 0;
+          const currentNum = normalize(evaluate(current) || 0);
           const nextNum = stepValue(currentNum, -step);
           return clamp(nextNum, min, max).toString();
         });
@@ -185,13 +191,13 @@ const NumberInput: React.FC<NumberInputProps> = ({
         ...inputProps,
       };
     },
-    [min, max, step, textFieldProps.disabled, onChange, inputSlotProps],
+    [min, max, step, integer, textFieldProps.disabled, onChange, inputSlotProps],
   );
 
   return (
     <Input
       className={cn(
-        "[&_.MuiInputAdornment-positionEnd]:invisible [&:hover_.MuiInputAdornment-positionEnd]:visible [@media(hover:none)]:[&:focus-within_.MuiInputAdornment-positionEnd]:visible [&_.MuiInputLabel-root]:whitespace-nowrap [&_.MuiOutlinedInput-root]:pr-0",
+        "[&_.MuiInputAdornment-positionEnd]:invisible [&:hover_.MuiInputAdornment-positionEnd]:visible [&:focus-within_.MuiInputAdornment-positionEnd]:visible [&_.MuiInputLabel-root]:whitespace-nowrap [&_.MuiOutlinedInput-root]:pr-0",
         className,
       )}
       value={inner}

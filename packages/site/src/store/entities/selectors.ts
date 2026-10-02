@@ -5,7 +5,7 @@ import type { RootState } from "../createStore";
 import { ormAdapters } from "./base";
 import { getEntities } from "./entitiesSlice";
 import { createDenormalizeSelector } from "./rtk-ts-norm";
-import { schemata } from "./schemata";
+import { PlanEntity, schemata } from "./schemata";
 
 const entitiesSelector = createSelector((root: RootState) => root.entities, getEntities);
 
@@ -24,3 +24,16 @@ export const filesSelectors = ormAdapters.files.getSelectors(
 export const stepsSelectors = ormAdapters.steps.getSelectors(
   (root: RootState) => root.entities.steps,
 );
+
+export function selectActiveStep(root: RootState, file: PlanEntity) {
+  const active = file.activeStep;
+  if (active && file.steps.includes(active)) {
+    const step = stepsSelectors.selectById(root, active);
+    if (step) return step;
+  }
+  for (const id of file.steps) {
+    const step = stepsSelectors.selectById(root, id);
+    if (step) return step;
+  }
+  return undefined;
+}

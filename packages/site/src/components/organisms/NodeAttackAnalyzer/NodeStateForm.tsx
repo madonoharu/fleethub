@@ -33,8 +33,8 @@ const NodeStateForm: React.FC<Props> = ({ value = {}, onChange, disabled }) => {
   return (
     <Stack className="flex-row gap-4">
       <NumberInput
+        integer
         className="w-16"
-
         label="Phase"
         value={value?.phase || 0}
         min={0}

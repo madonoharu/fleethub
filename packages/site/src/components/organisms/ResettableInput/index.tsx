@@ -12,6 +12,7 @@ interface ResettableInputProps {
   min?: number;
   max?: number;
   step?: number;
+  integer?: boolean;
 }
 
 const INPUT_LABEL_PROPS = {
@@ -27,6 +28,7 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
   min,
   max,
   step,
+  integer,
 }) => {
   const { t } = useTranslation("common");
 
@@ -49,6 +51,7 @@ const ResettableInput: React.FCX<ResettableInputProps> = ({
         min={min}
         max={max}
         step={step}
+        integer={integer}
       />
       <RestartAltButton size="medium" title={t("Reset")} className="ml-2" onClick={handleReset} />
     </div>

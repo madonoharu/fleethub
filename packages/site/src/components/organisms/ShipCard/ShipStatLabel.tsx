@@ -66,6 +66,7 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
 
       {onModChange && (
         <NumberInput
+          integer
           className="mt-2 w-[120px]"
           label={t("ShipStatsCurrent")}
           value={stat || 0}
@@ -78,6 +79,7 @@ const ShipStatEditor: React.FC<ShipStatEditorProps> = ({
       {onModChange && (
         <Flexbox className="mt-2">
           <NumberInput
+            integer
             className="w-[120px]"
             label={t("Increase")}
             value={mod || 0}

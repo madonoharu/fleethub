@@ -21,36 +21,25 @@ import {
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
-import { useAppDispatch, useModal } from "../../../hooks";
-import { entitiesSlice, migrateFromJor, JorData } from "../../../store";
+import { useAppDispatch, useModal, useSnackbar } from "../../../hooks";
+import { useJorTransfer } from "../../../hooks/useJorTransfer";
+import { entitiesSlice, migrateFromJor } from "../../../store";
 import { ImportMenu } from "../../organisms";
 
 const WelcomePage: React.FCX = () => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
   const ImportMenuModal = useModal();
+  const Snackbar = useSnackbar();
 
   const handleCreatePlan = () => {
     dispatch(entitiesSlice.actions.createPlan());
   };
 
-  const handleMigrate = () => {
-    window.addEventListener(
-      "message",
-      (ev) => {
-        if (ev.origin === "https://kcjervis.github.io") {
-          const data = ev.data as JorData;
-          const payload = migrateFromJor(data);
-          dispatch(entitiesSlice.actions.import(payload));
-        }
-      },
-      {
-        once: true,
-      },
-    );
-
-    window.open("https://kcjervis.github.io/jervis/#/transfer");
-  };
+  const handleMigrate = useJorTransfer(
+    (data) => dispatch(entitiesSlice.actions.import(migrateFromJor(data))),
+    () => Snackbar.show({ severity: "error", message: "データが適合しません" }),
+  );
 
   return (
     <Container maxWidth="md" className="pt-10">
@@ -226,6 +215,7 @@ const WelcomePage: React.FCX = () => {
       <ImportMenuModal>
         <ImportMenu onClose={ImportMenuModal.hide} />
       </ImportMenuModal>
+      <Snackbar />
     </Container>
   );
 };

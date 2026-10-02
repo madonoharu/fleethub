@@ -30,6 +30,7 @@ const SlotSizeForm: React.FC<SlotSizeFormProps> = ({ current, max, onChange }) =
       <DialogContent>
         <div className="flex">
           <NumberInput
+            integer
             variant="outlined"
             value={current || 0}
             min={0}
@@ -50,7 +51,14 @@ type Props = Partial<SlotSizeFormProps> & {
   exslot?: boolean;
 };
 
-const SlotSizeButton: React.FCX<Props> = ({ className, current, max, exslot, onChange }) => {
+const SlotSizeButton: React.FCX<Props> = ({
+  className,
+  current,
+  max,
+  exslot,
+  disabled,
+  onChange,
+}) => {
   const Modal = useModal();
 
   if (exslot) {
@@ -64,7 +72,7 @@ const SlotSizeButton: React.FCX<Props> = ({ className, current, max, exslot, onC
   return (
     <>
       <Tooltip title="搭載数を変更">
-        <Button className={className} size="small" onClick={Modal.show}>
+        <Button className={className} size="small" disabled={disabled} onClick={Modal.show}>
           {current ?? "?"}
         </Button>
       </Tooltip>

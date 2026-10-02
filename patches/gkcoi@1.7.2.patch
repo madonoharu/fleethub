@@ -1,0 +1,102 @@
+diff --git a/dist/index.js b/dist/index.js
+index 49cdb33ff18d6b158338aa65a01d7ce0744cb5cb..5eb56dfbf16fdf508f2dd313188e0a990ddb27e3 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -28,8 +28,7 @@ async function createAsync(deckbuilder, options, los, speed) {
+     const fimage = (0, iutils_1.stick)(await Promise.all(fleets
+         .filter((v, i) => ["dark-ex", "light-ex"].includes(theme) ? i === 0 : true)
+         .map(async ({ ships, name }, i) => {
+-        if (!los)
+-            los = {
++        const fleetLos = los ?? {
+                 1: (0, utils_1.getLoSValue)(ships, hqlv, 1),
+                 2: (0, utils_1.getLoSValue)(ships, hqlv, 2),
+                 3: (0, utils_1.getLoSValue)(ships, hqlv, 3),
+@@ -47,8 +46,7 @@ async function createAsync(deckbuilder, options, los, speed) {
+             min: 0,
+             max: 0,
+         });
+-        if (!speed)
+-            speed = ships
++        const fleetSpeed = speed ?? ships
+                 .filter((ship) => ship.id > 0)
+                 .map((ship) => ship.speed)
+                 .reduce((previous, speed) => (previous > speed ? speed : previous), 20);
+@@ -57,20 +55,20 @@ async function createAsync(deckbuilder, options, los, speed) {
+                 return await (0, white_1.generateWhiteFleetCanvasAsync)(i, ships, lang);
+             case "light":
+             case "light-ex":
+-                return await (0, light_1.generateLightFleetCanvasAsync)(i, ships, los, airPower, speed, lang);
++                return await (0, light_1.generateLightFleetCanvasAsync)(i, ships, fleetLos, airPower, fleetSpeed, lang);
+             case "dark":
+             case "dark-ex":
+-                return await (0, dark_1.generateDarkFleetCanvasAsync)(i, ships, los, airPower, speed, lang, deckbuilder?.options);
++                return await (0, dark_1.generateDarkFleetCanvasAsync)(i, ships, fleetLos, airPower, fleetSpeed, lang, deckbuilder?.options);
+             case "74lc":
+-                return await (0, _74eoLC_1.generate74eoLargeCardFleetCanvasAsync)(name, ships, los, airPower, lang);
++                return await (0, _74eoLC_1.generate74eoLargeCardFleetCanvasAsync)(name, ships, fleetLos, airPower, lang);
+             case "74mc":
+-                return await (0, _74eoMC_1.generate74eoMediumCutinFleetCanvasAsync)(name, ships, los, airPower, lang, has5slot);
++                return await (0, _74eoMC_1.generate74eoMediumCutinFleetCanvasAsync)(name, ships, fleetLos, airPower, lang, has5slot);
+             case "74sb":
+-                return await (0, _74eoSB_1.generate74eoSmallBannerFleetCanvasAsync)(name, ships, los, airPower, lang, has5slot);
++                return await (0, _74eoSB_1.generate74eoSmallBannerFleetCanvasAsync)(name, ships, fleetLos, airPower, lang, has5slot);
+             case "official":
+                 return await (0, official_1.generateOfficialFleetCanvasAsync)(ships, lang);
+             case "flat":
+-                return await (0, flat_1.generateFlatFleetCanvasAsync)(i, ships, los, airPower, speed, lang, deckbuilder?.options);
++                return await (0, flat_1.generateFlatFleetCanvasAsync)(i, ships, fleetLos, airPower, fleetSpeed, lang, deckbuilder?.options);
+         }
+     })), ["74lc", "74sb", "official"].includes(theme) ||
+         fleets.filter(({ ships }) => ships.length > 0).length > 2
+diff --git a/esm/index.js b/esm/index.js
+index 56fac137d9e955f45759d038b06b469e6a412836..529d4a174968b0d7f34c1185b16220b8d4540a05 100644
+--- a/esm/index.js
++++ b/esm/index.js
+@@ -21,8 +21,7 @@ async function createAsync(deckbuilder, options, los, speed) {
+     const fimage = stick(await Promise.all(fleets
+         .filter((v, i) => ["dark-ex", "light-ex"].includes(theme) ? i === 0 : true)
+         .map(async ({ ships, name }, i) => {
+-        if (!los)
+-            los = {
++        const fleetLos = los ?? {
+                 1: getLoSValue(ships, hqlv, 1),
+                 2: getLoSValue(ships, hqlv, 2),
+                 3: getLoSValue(ships, hqlv, 3),
+@@ -40,8 +39,7 @@ async function createAsync(deckbuilder, options, los, speed) {
+             min: 0,
+             max: 0,
+         });
+-        if (!speed)
+-            speed = ships
++        const fleetSpeed = speed ?? ships
+                 .filter((ship) => ship.id > 0)
+                 .map((ship) => ship.speed)
+                 .reduce((previous, speed) => (previous > speed ? speed : previous), 20);
+@@ -50,20 +48,20 @@ async function createAsync(deckbuilder, options, los, speed) {
+                 return await generateWhiteFleetCanvasAsync(i, ships, lang);
+             case "light":
+             case "light-ex":
+-                return await generateLightFleetCanvasAsync(i, ships, los, airPower, speed, lang);
++                return await generateLightFleetCanvasAsync(i, ships, fleetLos, airPower, fleetSpeed, lang);
+             case "dark":
+             case "dark-ex":
+-                return await generateDarkFleetCanvasAsync(i, ships, los, airPower, speed, lang, deckbuilder?.options);
++                return await generateDarkFleetCanvasAsync(i, ships, fleetLos, airPower, fleetSpeed, lang, deckbuilder?.options);
+             case "74lc":
+-                return await generate74eoLargeCardFleetCanvasAsync(name, ships, los, airPower, lang);
++                return await generate74eoLargeCardFleetCanvasAsync(name, ships, fleetLos, airPower, lang);
+             case "74mc":
+-                return await generate74eoMediumCutinFleetCanvasAsync(name, ships, los, airPower, lang, has5slot);
++                return await generate74eoMediumCutinFleetCanvasAsync(name, ships, fleetLos, airPower, lang, has5slot);
+             case "74sb":
+-                return await generate74eoSmallBannerFleetCanvasAsync(name, ships, los, airPower, lang, has5slot);
++                return await generate74eoSmallBannerFleetCanvasAsync(name, ships, fleetLos, airPower, lang, has5slot);
+             case "official":
+                 return await generateOfficialFleetCanvasAsync(ships, lang);
+             case "flat":
+-                return await generateFlatFleetCanvasAsync(i, ships, los, airPower, speed, lang, deckbuilder?.options);
++                return await generateFlatFleetCanvasAsync(i, ships, fleetLos, airPower, fleetSpeed, lang, deckbuilder?.options);
+         }
+     })), ["74lc", "74sb", "official"].includes(theme) ||
+         fleets.filter(({ ships }) => ships.length > 0).length > 2

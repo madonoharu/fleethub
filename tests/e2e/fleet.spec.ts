@@ -26,6 +26,9 @@ test("real Rust fleet LOS updates and HQ input clamps both bounds", async ({ pag
   await setHqLevel(page, "999");
   await expect(input).toHaveValue("120");
   await expect(page.getByText("-36.00", { exact: true })).toHaveCount(4);
+  // Tab leaves focus on the step button, which must stay visible for keyboard
+  // users. Move focus away before checking the idle hover-only appearance.
+  await page.getByPlaceholder("name", { exact: true }).focus();
   await page.mouse.move(0, 0);
   const increase = page.getByRole("button", { name: "increase", exact: true }).first();
   const decrease = page.getByRole("button", { name: "decrease", exact: true }).first();

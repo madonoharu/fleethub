@@ -30,6 +30,7 @@ const SlotSizeVecForm: React.FC<SlotSizeVecFormProps> = ({ ship, config, onChang
         {ship.slots.map((defaultValue, i) => {
           return (
             <ResettableInput
+              integer
               key={i}
               label={`${i + 1}`}
               defaultValue={defaultValue}

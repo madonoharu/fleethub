@@ -24,6 +24,110 @@ function ControlledNumberInput({
 }
 
 describe("controlled NumberInput under React StrictMode", () => {
+  it.each([" ", "Enter"])("commits a keyboard step once for %s", async (key) => {
+    const user = userEvent.setup();
+    const onChange = mock();
+    render(<ControlledNumberInput initialValue={99} integer onChange={onChange} />);
+    const increase = screen.getByLabelText("increase");
+    act(() => increase.focus());
+    await user.keyboard(key === " " ? " " : "{Enter}");
+    expect(screen.getByRole("textbox")).toHaveValue("100");
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith(100);
+  });
+
+  it("repeats a held keyboard step and commits on blur without leaving a timer running", async () => {
+    timers.useFakeTimers();
+    const onChange = mock();
+    render(<ControlledNumberInput initialValue={99} integer onChange={onChange} />);
+    const increase = screen.getByLabelText("increase");
+    fireEvent.keyDown(increase, { key: " " });
+    await act(async () => {
+      timers.advanceTimersByTime(500);
+    });
+    fireEvent.keyDown(increase, { key: " ", repeat: true });
+    expect(screen.getByRole("textbox")).toHaveValue("103");
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.blur(increase);
+    await act(async () => {
+      timers.advanceTimersByTime(1000);
+    });
+    fireEvent.keyUp(increase, { key: " " });
+    expect(screen.getByRole("textbox")).toHaveValue("103");
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenLastCalledWith(103);
+  });
+
+  it("normalizes integer input before dispatch and restores invalid or clamped text on blur", () => {
+    const onChange = mock();
+    render(
+      <ControlledNumberInput initialValue={120} integer min={1} max={120} onChange={onChange} />,
+    );
+    const input = screen.getByRole("textbox");
+    fireEvent.change(input, { target: { value: "999" } });
+    fireEvent.blur(input);
+    expect(input).toHaveValue("120");
+    expect(onChange).toHaveBeenLastCalledWith(120);
+
+    fireEvent.change(input, { target: { value: "12+" } });
+    fireEvent.blur(input);
+    expect(input).toHaveValue("120");
+    expect(onChange).toHaveBeenCalledTimes(1);
+
+    fireEvent.change(input, { target: { value: "99.5" } });
+    expect(onChange).toHaveBeenLastCalledWith(99);
+    fireEvent.blur(input);
+    expect(input).toHaveValue("99");
+
+    fireEvent.change(input, { target: { value: "99+0.5" } });
+    fireEvent.blur(input);
+    expect(input).toHaveValue("99");
+    expect(onChange).toHaveBeenLastCalledWith(99);
+
+    fireEvent.change(input, { target: { value: "９０+９" } });
+    fireEvent.blur(input);
+    expect(input).toHaveValue("90+9");
+    expect(onChange).toHaveBeenLastCalledWith(99);
+  });
+
+  it("keeps fractional values and arithmetic in controls that accept decimals", () => {
+    const onChange = mock();
+    render(<ControlledNumberInput initialValue={1.5} onChange={onChange} step={0.1} />);
+    const input = screen.getByRole("textbox");
+    fireEvent.change(input, { target: { value: "1.25+0.25" } });
+    fireEvent.blur(input);
+    expect(input).toHaveValue("1.25+0.25");
+    expect(onChange).toHaveBeenLastCalledWith(1.5);
+  });
+
+  it.each([
+    { initial: 99, typed: "99.5", button: "increase", expected: 100 },
+    { initial: 120, typed: "999", button: "decrease", expected: 119 },
+    { initial: 1, typed: "-99", button: "increase", expected: 2 },
+  ])(
+    "steps from the accepted integer value before $typed blurs",
+    async ({ initial, typed, button, expected }) => {
+      const user = userEvent.setup();
+      const onChange = mock();
+      render(
+        <ControlledNumberInput
+          initialValue={initial}
+          integer
+          min={1}
+          max={120}
+          onChange={onChange}
+        />,
+      );
+      const input = screen.getByRole("textbox");
+      await user.click(input);
+      fireEvent.change(input, { target: { value: typed } });
+      // Pointer down runs before the field's blur handler normalizes its text.
+      await user.click(screen.getByLabelText(button));
+      expect(input).toHaveValue(String(expected));
+      expect(onChange).toHaveBeenLastCalledWith(expected);
+    },
+  );
+
   it("commits one step for a touch tap followed by compatibility mouse events", async () => {
     timers.useFakeTimers();
     const onChange = mock();

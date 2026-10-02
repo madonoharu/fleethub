@@ -30,14 +30,15 @@ const FilterBar: React.FCX<Props> = ({
   const { t } = useTranslation("common");
   return (
     <>
-      <div className={cn("flex h-10 items-center", className)}>
+      <div className={cn("flex min-h-10 items-center", className)}>
         <SelectButtons
+          className="min-w-0"
           value={category}
           options={visibleCategories}
           onChange={onCategoryChange}
           getOptionLabel={getFilterIcon}
         />
-        <Flexbox className="ml-auto -mb-0.5">
+        <Flexbox className="ml-auto -mb-0.5 shrink-0 whitespace-nowrap">
           <Checkbox
             label={t("Abyssal")}
             size="small"

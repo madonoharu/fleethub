@@ -1,4 +1,11 @@
-import { MutableRefObject, PointerEvent, useCallback, useEffect, useRef } from "react";
+import {
+  KeyboardEvent,
+  MutableRefObject,
+  PointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 
 function reset(ref: MutableRefObject<number | undefined>): void {
   window.clearTimeout(ref.current);
@@ -13,30 +20,40 @@ interface Options {
 export function useLongPress({ onPress, onFinish }: Options) {
   const ref = useRef<number | undefined>(undefined);
   const pointer = useRef<number | undefined>(undefined);
+  const key = useRef<string | undefined>(undefined);
 
   useEffect(
     () => () => {
       reset(ref);
       pointer.current = undefined;
+      key.current = undefined;
     },
     [],
   );
 
+  const startHold = useCallback(() => {
+    onPress();
+
+    const fn = () => {
+      onPress();
+      ref.current = window.setTimeout(fn, 50);
+    };
+    ref.current = window.setTimeout(fn, 400);
+  }, [onPress]);
+
   const start = useCallback(
     (event: PointerEvent<HTMLButtonElement>) => {
-      if (event.button !== 0 || event.currentTarget.disabled || pointer.current !== undefined) {
+      if (
+        event.button !== 0 ||
+        event.currentTarget.disabled ||
+        pointer.current !== undefined ||
+        key.current !== undefined
+      )
         return;
-      }
       pointer.current = event.pointerId;
-      onPress();
-
-      const fn = () => {
-        onPress();
-        ref.current = window.setTimeout(fn, 50);
-      };
-      ref.current = window.setTimeout(fn, 400);
+      startHold();
     },
-    [onPress],
+    [startHold],
   );
 
   const cancel = useCallback(
@@ -49,6 +66,39 @@ export function useLongPress({ onPress, onFinish }: Options) {
     [onFinish],
   );
 
+  const finishKey = useCallback(() => {
+    if (key.current === undefined) return;
+    key.current = undefined;
+    reset(ref);
+    onFinish();
+  }, [onFinish]);
+
+  const startKey = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key !== " " && event.key !== "Enter") return;
+      event.preventDefault();
+      if (
+        event.repeat ||
+        event.currentTarget.disabled ||
+        key.current !== undefined ||
+        pointer.current !== undefined
+      )
+        return;
+      key.current = event.key;
+      startHold();
+    },
+    [startHold],
+  );
+
+  const cancelKey = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key !== key.current) return;
+      event.preventDefault();
+      finishKey();
+    },
+    [finishKey],
+  );
+
   return {
     // Touch also dispatches compatibility mouse events. Handle each physical
     // press through one event family so a tap cannot apply two steps.
@@ -57,5 +107,8 @@ export function useLongPress({ onPress, onFinish }: Options) {
     onPointerLeave: cancel,
     onPointerCancel: cancel,
     onLostPointerCapture: cancel,
+    onKeyDown: startKey,
+    onKeyUp: cancelKey,
+    onBlur: finishKey,
   };
 }

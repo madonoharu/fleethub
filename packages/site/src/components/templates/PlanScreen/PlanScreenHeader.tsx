@@ -37,6 +37,7 @@ const PlanScreenHeader: React.FCX<PlanScreenHeaderProps> = ({
           onChange={onNameChange}
         />
         <NumberInput
+          integer
           className="[&_input]:w-[26px]"
           startLabel={t("HQAdmiralLv")}
           value={org.hq_level}

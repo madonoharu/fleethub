@@ -1,0 +1,108 @@
+[
+  {
+    "gear_id": 1,
+    "types": [1, 1, 1, 1, 0],
+    "name": "12cm単装砲",
+    "firepower": 1,
+    "anti_air": 1,
+    "range": 1,
+    "improvable": true
+  },
+  {
+    "gear_id": 10,
+    "types": [1, 2, 4, 16, 0],
+    "name": "12.7cm連装高角砲",
+    "firepower": 2,
+    "anti_air": 4,
+    "accuracy": 1,
+    "range": 1,
+    "improvable": true
+  },
+  {
+    "gear_id": 13,
+    "types": [2, 3, 5, 5, 0],
+    "name": "61cm三連装魚雷",
+    "torpedo": 5,
+    "range": 1,
+    "improvable": true
+  },
+  {
+    "gear_id": 16,
+    "types": [3, 5, 8, 8, 1],
+    "name": "九七式艦攻",
+    "torpedo": 5,
+    "asw": 4,
+    "los": 1,
+    "radius": 4,
+    "cost": 5,
+    "improvable": true
+  },
+  {
+    "gear_id": 21,
+    "types": [3, 5, 6, 6, 12],
+    "name": "零式艦戦52型",
+    "anti_air": 6,
+    "radius": 6,
+    "cost": 5,
+    "improvable": true
+  },
+  {
+    "gear_id": 25,
+    "types": [5, 7, 10, 10, 2],
+    "name": "零式水上偵察機",
+    "bombing": 1,
+    "anti_air": 1,
+    "asw": 2,
+    "los": 5,
+    "accuracy": 1,
+    "radius": 7,
+    "cost": 5,
+    "improvable": true
+  },
+  {
+    "gear_id": 27,
+    "types": [5, 8, 12, 11, 0],
+    "name": "13号対空電探",
+    "anti_air": 2,
+    "los": 3,
+    "accuracy": 1,
+    "improvable": true
+  },
+  {
+    "gear_id": 44,
+    "types": [7, 32, 15, 17, 0],
+    "name": "九四式爆雷投射機",
+    "asw": 5,
+    "improvable": true
+  },
+  {
+    "gear_id": 42,
+    "types": [6, 30, 23, 14, 0],
+    "name": "応急修理要員"
+  },
+  {
+    "gear_id": 68,
+    "types": [8, 14, 24, 20, 0],
+    "name": "大発動艇",
+    "improvable": true
+  },
+  {
+    "gear_id": 145,
+    "types": [18, 34, 43, 34, 0],
+    "name": "戦闘糧食",
+    "improvable": true
+  },
+  {
+    "gear_id": 168,
+    "types": [21, 38, 47, 37, 4],
+    "name": "九六式陸攻",
+    "torpedo": 8,
+    "bombing": 10,
+    "anti_air": 1,
+    "asw": 2,
+    "los": 2,
+    "radius": 8,
+    "cost": 10,
+    "improvable": true
+  }
+]

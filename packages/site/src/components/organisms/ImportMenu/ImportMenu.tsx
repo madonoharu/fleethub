@@ -5,7 +5,7 @@ import React, { useRef } from "react";
 import { useAsyncCallback } from "react-async-hook";
 
 import { useAppDispatch, useFhCore, useSnackbar, useRootSelector } from "../../../hooks";
-import { appSlice, parseDeckStr, parseUrl, entitiesSlice, PublicFile } from "../../../store";
+import { appSlice, parseImportText, entitiesSlice, PublicFile } from "../../../store";
 import { Checkbox, Divider, Flexbox } from "../../atoms";
 import { ImportButton, TextField } from "../../molecules";
 import { cn } from "../../../styles";
@@ -25,28 +25,10 @@ const ImportForm: React.FCX<ImportFormProps> = ({ onSuccess, onError }) => {
   const { masterData } = useFhCore();
   const ref = useRef<HTMLInputElement>(null);
 
-  const asyncParse = useAsyncCallback(
-    async () => {
-      const str = ref.current?.value || "";
-
-      if (str.startsWith("{")) {
-        const parsed = parseDeckStr(masterData, str);
-        return parsed;
-      } else {
-        const data = await parseUrl(masterData, new URL(str));
-
-        if (!data) {
-          throw new Error("data is undefined");
-        }
-
-        return data;
-      }
-    },
-    {
-      onSuccess,
-      onError,
-    },
-  );
+  const asyncParse = useAsyncCallback(() => parseImportText(masterData, ref.current?.value || ""), {
+    onSuccess,
+    onError,
+  });
 
   return (
     <Flexbox className="gap-2">

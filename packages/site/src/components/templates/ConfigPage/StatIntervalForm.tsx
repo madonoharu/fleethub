@@ -31,6 +31,7 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({ statKey, ship, conf
 
     elem = (
       <ResettableInput
+        integer
         defaultValue={s0}
         value={configInterval[0]}
         min={0}
@@ -48,6 +49,7 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({ statKey, ship, conf
     elem = (
       <Flexbox className="gap-4">
         <ResettableInput
+          integer
           defaultValue={s0}
           value={configInterval[0]}
           min={0}
@@ -55,6 +57,7 @@ const StatIntervalForm: React.FC<StatIntervalFormProps> = ({ statKey, ship, conf
           onChange={handleChange(0)}
         />
         <ResettableInput
+          integer
           defaultValue={s1}
           value={configInterval[1]}
           min={0}

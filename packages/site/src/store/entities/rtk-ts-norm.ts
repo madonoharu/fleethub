@@ -85,6 +85,7 @@ function cloneAffectedEntitiesImpl<T>(
   entities: Entities,
   cloned: Entities,
   idGenerator: () => string,
+  identities: Map<string, Map<EntityId, { id: string; complete: boolean }>>,
 ): T {
   if (isEntitySchema(schema)) {
     if (!isEntityId(input)) {
@@ -92,9 +93,21 @@ function cloneAffectedEntitiesImpl<T>(
     }
 
     const key = schema.key;
+    let ids = identities.get(key);
+    if (!ids) {
+      ids = new Map();
+      identities.set(key, ids);
+    }
+    const existing = ids.get(input);
+    if (existing) {
+      if (!existing.complete) throw new Error("Cyclic entity references");
+      return existing.id as unknown as T;
+    }
     const entity = entities[key]?.[input] as Record<string, unknown> | undefined;
 
     const nextId = idGenerator();
+    const identity = { id: nextId, complete: false };
+    ids.set(input, identity);
 
     const clonedEntity = cloneAffectedEntitiesImpl(
       entity,
@@ -102,7 +115,9 @@ function cloneAffectedEntitiesImpl<T>(
       entities,
       cloned,
       idGenerator,
+      identities,
     );
+    identity.complete = true;
 
     if (clonedEntity) {
       clonedEntity[schema.idAttribute] = nextId;
@@ -119,7 +134,7 @@ function cloneAffectedEntitiesImpl<T>(
     const localSchema = schema[0];
 
     return input.map((item) =>
-      cloneAffectedEntitiesImpl(item, localSchema, entities, cloned, idGenerator),
+      cloneAffectedEntitiesImpl(item, localSchema, entities, cloned, idGenerator, identities),
     ) as unknown as T;
   } else {
     if (!isObject(input)) {
@@ -138,6 +153,7 @@ function cloneAffectedEntitiesImpl<T>(
           entities,
           cloned,
           idGenerator,
+          identities,
         );
       }
     });
@@ -156,7 +172,7 @@ export function cloneAffectedEntities<T>(
   entities: Entities;
 } {
   const cloned: Entities = {};
-  const result = cloneAffectedEntitiesImpl(input, schema, entities, cloned, idGenerator);
+  const result = cloneAffectedEntitiesImpl(input, schema, entities, cloned, idGenerator, new Map());
 
   return {
     result,

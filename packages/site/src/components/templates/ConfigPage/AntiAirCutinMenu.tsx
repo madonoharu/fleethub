@@ -29,11 +29,13 @@ const AntiAirCutinForm: React.FC<AntiAirCutinFormProps> = ({ def }) => {
       <Flexbox className="gap-2">
         {KEYS.map((key) => (
           <ResettableInput
+            integer={key !== "multiplier"}
             key={key}
             label={t(key)}
             defaultValue={def[key]}
             value={current?.[key]}
             min={0}
+            max={key !== "multiplier" ? 255 : undefined}
             step={key === "multiplier" ? 0.1 : 1.0}
             onChange={(v) => {
               dispatch(

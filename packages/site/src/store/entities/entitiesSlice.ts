@@ -18,6 +18,7 @@ import { fleetsSlice } from "./fleetsSlice";
 import { gearsSlice } from "./gearsSlice";
 import { orgsSlice } from "./orgsSlice";
 import { presetsSlice } from "./presetsSlice";
+import { reconcileLegacyActiveSteps } from "./reconcileLegacyActiveSteps";
 import { cloneAffectedEntities, getAffectedEntities } from "./rtk-ts-norm";
 import { Plan, PresetEntity, schemaKeys, schemata, Step, FileEntity } from "./schemata";
 import { shipsSlice } from "./shipsSlice";
@@ -351,6 +352,7 @@ export const entitiesSlice = createSlice({
     },
 
     cloneFile: (state, action: PayloadAction<string>) => {
+      state.files.entities = reconcileLegacyActiveSteps(state).files.entities;
       const sourceId = action.payload;
       const entities = getEntities(state);
 
@@ -381,6 +383,7 @@ export const entitiesSlice = createSlice({
 
       addEntities(state, payload.entities);
       insert(state.files, payload.result, payload.to || "temp");
+      state.files.entities = reconcileLegacyActiveSteps(state).files.entities;
     },
 
     sweep: (state) => {

@@ -33,11 +33,13 @@ const DayCutinForm: React.FC<DayCutinFormProps> = ({ def }) => {
       <Flexbox className="gap-2">
         {KEYS.map((key) => (
           <ResettableInput
+            integer={key === "type_factor"}
             key={key}
             label={t(key)}
             defaultValue={def[key]}
             value={current?.[key]}
             min={0}
+            max={key === "type_factor" ? 255 : undefined}
             step={key === "type_factor" ? 1.0 : 0.1}
             onChange={(v) => {
               dispatch(

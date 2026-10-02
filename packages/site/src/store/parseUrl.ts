@@ -122,3 +122,15 @@ export async function parseUrl(
 
   return;
 }
+
+export async function parseImportText(
+  masterData: MasterData,
+  text: string,
+): Promise<ImportPayload> {
+  const input = text.trim();
+  const data = input.startsWith("{")
+    ? parseDeckStr(masterData, input)
+    : await parseUrl(masterData, new URL(input));
+  if (!data) throw new Error("data is undefined");
+  return data;
+}

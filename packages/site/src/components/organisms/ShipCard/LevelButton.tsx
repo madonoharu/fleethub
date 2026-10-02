@@ -23,7 +23,7 @@ const Form: React.FC<Props> = ({ value, onChange }) => {
 
   return (
     <DialogContent>
-      <NumberInput startLabel="Lv" fullWidth {...inputProps} />
+      <NumberInput integer startLabel="Lv" fullWidth {...inputProps} />
       <Slider {...inputProps} />
       <div className="flex justify-between">
         <Button className="w-[80px]" variant="outlined" onClick={set1}>

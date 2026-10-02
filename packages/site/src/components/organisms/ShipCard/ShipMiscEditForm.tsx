@@ -63,6 +63,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
 
       <Flexbox className="gap-2">
         <NumberInput
+          integer
           className="w-[128px]"
           startLabel="HP"
           value={ship.current_hp}
@@ -86,6 +87,7 @@ const ShipMiscEditForm: React.FCX<ShipMiscEditFormProps> = ({
       <Divider label={t("MoraleState.name")} />
       <Flexbox className="gap-2">
         <NumberInput
+          integer
           className="w-[128px]"
           value={ship.morale}
           max={100}

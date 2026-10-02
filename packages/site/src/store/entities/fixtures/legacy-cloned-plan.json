@@ -1,0 +1,95 @@
+{
+  "result": "legacy-0",
+  "entities": {
+    "orgs": {
+      "legacy-1": {
+        "id": "legacy-1"
+      },
+      "legacy-3": {
+        "id": "legacy-3"
+      },
+      "legacy-5": {
+        "id": "legacy-5",
+        "f1": "legacy-6"
+      },
+      "legacy-9": {
+        "id": "legacy-9",
+        "f1": "legacy-10"
+      }
+    },
+    "steps": {
+      "legacy-2": {
+        "id": "legacy-2",
+        "map": 11,
+        "node": "A",
+        "name": "1-1 A",
+        "type": 4,
+        "org": "legacy-3",
+        "config": {
+          "right": {
+            "formation": "LineAhead"
+          }
+        }
+      },
+      "legacy-4": {
+        "id": "legacy-4",
+        "map": 11,
+        "node": "B",
+        "name": "1-1 B",
+        "type": 4,
+        "org": "legacy-5",
+        "config": {
+          "right": {
+            "formation": "LineAhead"
+          }
+        }
+      },
+      "legacy-8": {
+        "id": "legacy-8",
+        "map": 11,
+        "node": "B",
+        "name": "1-1 B",
+        "type": 4,
+        "org": "legacy-9",
+        "config": {
+          "right": {
+            "formation": "LineAbreast"
+          }
+        }
+      }
+    },
+    "ships": {
+      "legacy-7": {
+        "id": "legacy-7",
+        "ship_id": 1501,
+        "current_hp": 20
+      },
+      "legacy-11": {
+        "id": "legacy-11",
+        "ship_id": 1501,
+        "current_hp": 12
+      }
+    },
+    "fleets": {
+      "legacy-6": {
+        "id": "legacy-6",
+        "s1": "legacy-7"
+      },
+      "legacy-10": {
+        "id": "legacy-10",
+        "s1": "legacy-11"
+      }
+    },
+    "files": {
+      "legacy-0": {
+        "id": "legacy-0",
+        "type": "plan",
+        "name": "Legacy copy",
+        "description": "",
+        "org": "legacy-1",
+        "steps": ["legacy-2", "legacy-4"],
+        "activeStep": "legacy-8"
+      }
+    }
+  }
+}

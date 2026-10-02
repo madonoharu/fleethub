@@ -1,4 +1,4 @@
-import { FLEET_KEYS, nonNullable, uppercase } from "@fh/utils";
+import { FLEET_KEYS, uppercase } from "@fh/utils";
 import { Paper, Stack } from "@mui/material";
 import type { NodeAttackAnalyzerConfig, NodeState, Org } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
@@ -6,7 +6,7 @@ import React, { useMemo } from "react";
 
 import { useShip, useAppDispatch, useRootSelector, useOrg } from "../../../hooks";
 import { useCompShipSelection } from "../../../hooks/useCompShipSelection";
-import { OrgEntity, orgsSlice, PlanEntity, stepsSelectors, stepsSlice } from "../../../store";
+import { OrgEntity, orgsSlice, PlanEntity, selectActiveStep, stepsSlice } from "../../../store";
 import { Select } from "../../molecules";
 import AirStateSelect from "../AirStateSelect";
 import CustomModifiersDialog from "../CustomModifiersDialog";
@@ -29,15 +29,7 @@ const NodeAttackAnalyzer: React.FC<Props> = ({ org: leftOrg, file }) => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
 
-  const activeStep = useRootSelector((root) => {
-    return (
-      stepsSelectors.selectById(root, file.activeStep || "") ||
-      file.steps
-        .map((id) => stepsSelectors.selectById(root, id))
-        .filter(nonNullable)
-        .at(0)
-    );
-  });
+  const activeStep = useRootSelector((root) => selectActiveStep(root, file));
 
   const stepMap = activeStep?.map || 0;
   const stepNode = activeStep?.node || "";

@@ -51,6 +51,7 @@ const GearExpSelect: React.FC<Props> = ({ className, exp, onChange }) => {
         </div>
 
         <NumberInput
+          integer
           className="w-24 mx-1 my-0"
           label="内部熟練度"
           variant="outlined"

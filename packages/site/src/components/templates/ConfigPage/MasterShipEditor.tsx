@@ -31,10 +31,11 @@ const StatForm: React.FC<StatFormProps> = ({ statKey, ship, config, onChange }) 
         <Typography variant="subtitle2">{t(statKey)}</Typography>
       </Flexbox>
       <ResettableInput
+        integer={statKey !== "basic_evasion_term"}
         defaultValue={ship[statKey]}
         value={config[statKey]}
         min={0}
-        max={10000}
+        max={statKey === "range" ? 255 : 10000}
         onChange={onChange}
       />
     </div>
