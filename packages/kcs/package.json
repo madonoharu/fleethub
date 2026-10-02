@@ -5,5 +5,8 @@
   },
   "devDependencies": {
     "fleethub-core": "workspace:*"
+  },
+  "volta": {
+    "extends": "../../package.json"
   }
 }

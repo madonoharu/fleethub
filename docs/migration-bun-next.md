@@ -23,7 +23,7 @@
 | next-i18next      | 16.3.1         |
 | Jest              | 30.5.2         |
 
-その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。最終監査で6 manifestの直接依存96件・89種類すべてが公式 npm レジストリの latest と一致した。Rust は既存の 1.99.0 と Cargo.lock を維持した。Node.js 24 LTS を開発ツールと CI に使用し、Volta のリポジトリ設定では24.14.0を指定した。
+その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。最終監査で6 manifestの直接依存96件・89種類すべてが公式 npm レジストリの latest と一致した。Rust は既存の 1.99.0 と Cargo.lock を維持した。Node.js 24 LTS を開発ツールと CI に使用し、Volta のルート設定では24.14.0を指定した。各 workspace の `volta.extends` でルート設定を継承する。
 
 ## 実行と配布の方針
 

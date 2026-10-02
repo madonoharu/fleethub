@@ -20,5 +20,8 @@
   },
   "collaborators": [
     "まどの <madonoharu@gmail.com>"
-  ]
+  ],
+  "volta": {
+    "extends": "../../package.json"
+  }
 }
