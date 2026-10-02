@@ -21,7 +21,6 @@ export default class MyDocument extends Document<DocumentHeadTagsProps> {
     return (
       <Html lang={lang}>
         <Head>
-          <style>{"@layer theme, base, mui, components, utilities;"}</style>
           <DocumentHeadTags {...this.props} />
           <meta name="twitter:card" content="summary" />
           <meta name="twitter:creator" content="@MadonoHaru" />

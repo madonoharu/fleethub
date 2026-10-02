@@ -11,12 +11,6 @@ declare module "redux-persist" {
   }
 }
 
-declare module "@emotion/react" {
-  type MyTheme = import("./styles").Theme;
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  export interface Theme extends MyTheme {}
-}
-
 declare module "@mui/system/createTheme" {
   type Colors = (typeof import("./styles/colors"))["colors"];
 

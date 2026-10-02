@@ -130,5 +130,3 @@ const muiTheme = createTheme({
 });
 
 export const theme = { ...muiTheme, colors };
-
-export type Theme = typeof theme;

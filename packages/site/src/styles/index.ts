@@ -3,7 +3,6 @@ import { createEmotionCache as createMuiEmotionCache } from "@mui/material-nextj
 export function createEmotionCache() {
   return createMuiEmotionCache({
     key: "css",
-    prepend: true,
     enableCssLayer: true,
   });
 }
