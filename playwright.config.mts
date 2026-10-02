@@ -1,3 +1,4 @@
+// Keep ESM so Playwright lets Bun load TypeScript with its native loader.
 import { defineConfig, devices } from "@playwright/test";
 
 const externalBaseURL = process.env.E2E_BASE_URL;
