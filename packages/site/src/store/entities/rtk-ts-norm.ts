@@ -34,8 +34,7 @@ function getAffectedEntitiesImpl(
 
     const key = schema.key;
     const entity = entities[key]?.[input] as
-      | Record<string, unknown>
-      | undefined;
+      Record<string, unknown> | undefined;
 
     setEntity(input, entity, schema);
 
@@ -99,8 +98,7 @@ function cloneAffectedEntitiesImpl<T>(
 
     const key = schema.key;
     const entity = entities[key]?.[input] as
-      | Record<string, unknown>
-      | undefined;
+      Record<string, unknown> | undefined;
 
     const nextId = idGenerator();
 
@@ -227,7 +225,7 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
   const keys = getEntitySchemata(schema).map((schema) => schema.key);
 
   const equalityCheck = (
-    [_, prevEntities]: Args,
+    [prevInput, prevEntities]: Args,
     [nextInput, nextEntities]: Args,
   ) => {
     if (
@@ -237,9 +235,10 @@ export function createDenormalizeSelector<T, S extends AnySchema>(
       return true;
     }
 
-    const affected = getAffectedEntities(nextInput, schema, nextEntities);
+    const previous = getAffectedEntities(prevInput, schema, prevEntities);
+    const next = getAffectedEntities(nextInput, schema, nextEntities);
 
-    return keys.every((key) => shallowEqual(prevEntities[key], affected[key]));
+    return keys.every((key) => shallowEqual(previous[key], next[key]));
   };
 
   const selectorCreator = createSelectorCreator(lruMemoize, equalityCheck);
