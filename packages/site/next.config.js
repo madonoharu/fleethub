@@ -48,11 +48,11 @@ const config = {
 
   outputFileTracingRoot: path.resolve(__dirname, "../.."),
 
-  // next-i18next の翻訳 JSON は実行時に動的パスで読まれるため nft が追跡できない。
+  // next-i18next の翻訳 JSON と設定は動的パスで読まれ、nft が追跡できない。
   // ISR の再生成は Serverless Function 内で getStaticProps を再実行するので、
   // 明示的に同梱しないと翻訳が空になりキー(英語)がそのまま表示される。
   outputFileTracingIncludes: {
-    "/": ["./public/locales/**"],
+    "/": ["./public/locales/**", "./next-i18next.config.js"],
   },
 
   images: {
