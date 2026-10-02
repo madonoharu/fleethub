@@ -45,8 +45,9 @@ keyboard navigation, waits for the actual IndexedDB save, and reloads.
 
 The damage-chart regression equips Akagi Kai with a Suisei bomber, imports a
 deterministic map containing enemy ship 1501, and opens the damage distribution.
-It checks the real Wasm attack report through nonempty finite SVG geometry and
-numeric axes, then changes the no-penetration filter. Equipment icon requests
+It checks the real Wasm attack report's 146–148 normal and 267–269 critical
+damage ranges, nonempty finite SVG geometry and numeric axes, then asserts the
+no-penetration filter's changed checkbox state. Equipment icon requests
 on the specific Cloudinary `gear_icons` path receive an inert image. The chart
 and Rust analysis are not mocked.
 

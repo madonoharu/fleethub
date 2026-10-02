@@ -86,9 +86,18 @@ test("damage distribution renders real Wasm analysis and finite D3 geometry", as
   const map = page.getByRole("dialog");
   await map.getByRole("button", { name: "単縦陣", exact: true }).click();
   await expect(map).not.toBeVisible();
-  await page
-    .getByRole("checkbox", { name: "ダメージ分布", exact: true })
-    .check();
+
+  // This pinned ship/bomber/enemy setup produces these exact ranges in Rust.
+  // Assert the rendered report as well as successful Wasm instantiation.
+  await expect(page.getByText(/^146\s*~\s*148$/).first()).toBeVisible();
+  await expect(page.getByText(/^267\s*~\s*269$/).first()).toBeVisible();
+  const showDistribution = page.getByRole("checkbox", {
+    name: "ダメージ分布",
+    exact: true,
+  });
+  await expect(showDistribution).not.toBeChecked();
+  await showDistribution.check();
+  await expect(showDistribution).toBeChecked();
 
   const chart = page.locator(".recharts-wrapper").first();
   await expect(chart).toBeVisible();
@@ -121,10 +130,12 @@ test("damage distribution renders real Wasm analysis and finite D3 geometry", as
   expect(axisText.length).toBeGreaterThan(2);
   expect(axisText.join(" ")).not.toMatch(/NaN|Infinity/);
 
-  await page
+  const noPenetration = page
     .getByRole("checkbox", { name: "装甲貫通なし", exact: true })
-    .first()
-    .uncheck();
+    .first();
+  await expect(noPenetration).toBeChecked();
+  await noPenetration.uncheck();
+  await expect(noPenetration).not.toBeChecked();
   await expect(chart).toBeVisible();
   await expect.poll(() => distribution.count()).toBeGreaterThan(0);
 });
