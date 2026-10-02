@@ -15,7 +15,6 @@
         "@testing-library/user-event": "14.6.7",
         "@types/bun": "1.4.2",
         "@types/fs-extra": "11.0.4",
-        "@types/lodash": "4.17.25",
         "@types/node": "26.6.4",
         "es-toolkit": "1.52.0",
         "fleethub-core": "workspace:*",
@@ -24,7 +23,6 @@
         "kc-tools": "1.6.2",
         "ky": "2.1.0",
         "lint-staged": "17.6.0",
-        "lodash": "4.18.1",
         "oxlint": "1.86.0",
         "oxlint-tsgolint": "7.0.2003",
         "prettier": "3.9.9",
@@ -54,7 +52,6 @@
         "got": "16.0.0",
         "kc-tools": "1.6.2",
         "ky": "2.1.0",
-        "lodash": "4.18.1",
       },
     },
     "packages/kcs": {
@@ -104,7 +101,6 @@
         "immer": "11.1.18",
         "literal-case": "1.0.0",
         "localforage": "1.10.0",
-        "lodash": "4.18.1",
         "next": "16.3.8",
         "next-i18next": "16.3.1",
         "re-reselect": "5.1.1",
@@ -519,8 +515,6 @@
     "@types/jsonfile": ["@types/jsonfile@6.1.4", "", { "dependencies": { "@types/node": "*" } }, "sha512-D5qGUYwjvnNNextdU59/+fI+spnwtTFmyQP0h+PfIOSkNfpU6AOICUOkm4i0OnSk+NyjdPJrxCDro0sJsWlRpQ=="],
 
     "@types/jsonwebtoken": ["@types/jsonwebtoken@9.0.10", "", { "dependencies": { "@types/ms": "*", "@types/node": "*" } }, "sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA=="],
-
-    "@types/lodash": ["@types/lodash@4.17.25", "", {}, "sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ=="],
 
     "@types/ms": ["@types/ms@2.1.0", "", {}, "sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA=="],
 
