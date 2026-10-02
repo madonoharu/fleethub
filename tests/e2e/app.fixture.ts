@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { test as base, expect, type Page } from "@playwright/test";
 
 const masterData = readFileSync(
-  resolve(__dirname, "fixtures/master-data.json"),
+  resolve(import.meta.dirname, "fixtures/master-data.json"),
   "utf8",
 );
 
@@ -31,7 +31,7 @@ export function translations(locale: Language["locale"]): Translation {
   return JSON.parse(
     readFileSync(
       resolve(
-        __dirname,
+        import.meta.dirname,
         "../../packages/site/public/locales",
         locale,
         "common.json",
