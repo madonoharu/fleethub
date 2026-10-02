@@ -23,9 +23,6 @@ jobs:
       - name: Cache Rust builds
         uses: Swatinem/rust-cache@v2
 
-      - name: Install wasm-pack
-        run: cargo install wasm-pack --version 0.15.0 --locked
-
       - name: Test Rust workspace
         run: cargo test --workspace --all-targets --locked
 

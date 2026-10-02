@@ -12,6 +12,7 @@
 6. クリーンな worktree、本番 Chromium、配布ファイルだけを使う ISR の検証と、Astra xhigh の独立レビューで変更を確認した。
 7. ユニットとブラウザのテスト用 worktree を分け、回帰テストを並列に追加した。既存テストは明示的な `bun:test` import に移し、Jest 本体・型・設定を削除した。モジュールモックを使うため、テストファイルごとの隔離を必須にした。
 8. 開発ツール、Git hooks、Playwright の実行も Bun に統一した。ルートの `bunfig.toml` で `[run] bun = true` を指定し、Node.js のバージョン指定と Volta の設定、CI の setup-node を削除した。Playwright の設定は `.mts`、テストは専用ディレクトリの ESM 設定を使用する。
+9. Bun、Rust、wasm-pack のバージョンを `mise.toml` にまとめた。Rust の components と Wasm target も mise でインストールし、wasm-pack は公式 GitHub リリースのバイナリを使用する。CI と API workflow は `jdx/mise-action@v5` で同じ設定を読み、wasm-pack の重複インストールを削除した。
 
 | 対象              | 採用バージョン |
 | ----------------- | -------------- |
@@ -37,6 +38,8 @@ Pages Router を継続し、翻訳の事前生成、ISR、Emotion の Document �
 Next.js は `bun --bun next` で実行する。Wasm の async WebAssembly を扱うため、開発・本番とも Webpack を明示する。Next.js 16 は標準で Turbopack を使うため、`--webpack` の指定が必要になる。[Next.js の移行ガイド](https://nextjs.org/docs/app/guides/upgrading/version-16)、[Bun の Next.js ガイド](https://bun.sh/guides/ecosystem/nextjs)
 
 `bun run` が呼ぶ CLI は `[run] bun = true` により Bun で起動する。Git hooks の CLI には `bun --bun` を明示し、CI でも `bun run` を使用する。直接 `bunx` を使う場合は `--bun` を指定する。GitHub Actions 自体の JavaScript 実行環境はホスト runner が用意する。
+
+ツールは `mise.toml` に固定する。Rust は minimal profile と rustfmt、clippy、`wasm32-unknown-unknown` を指定する。Cargo・editor 向けの `rust-toolchain.toml` は同じ設定を保持し、Rust 更新時には両方を揃える。Bun の `packageManager` も mise のバージョンに揃える。wasm-pack は registry shorthand がないため、公式バイナリを取得する `github:wasm-bindgen/wasm-pack` を明示する。[mise の Rust 設定](https://mise.jdx.dev/lang/rust.html)、[GitHub backend](https://mise.jdx.dev/dev-tools/backends/github.html)
 
 サーバーでは `fleethub-core` をバンドルせず、Node.js と互換性のある CommonJS ラッパーと隣接する Wasm を Bun から読む。配布パッケージにはこのラッパーと Wasm を維持し、Node.js を使うパッケージ利用者との互換性を継続する。クライアントは bundler 用 Wasm を使用する。管理用パッケージには storage の専用 export を追加し、ページが不要な管理 API を読み込まないようにした。管理スクリプトの `@fh/admin/src` も維持している。
 
@@ -78,22 +81,24 @@ Playwright 1.63.0 は CommonJS として TypeScript のテストを読み込む�
 
 ## 再現用コマンド
 
-Bun 1.4.2、Rustup、wasm-pack 0.15.0 を用意する。Rust のネイティブテストも、生成した JavaScript ラッパーの検証に Bun を使用する。
+mise を用意し、リポジトリルートから実行する。Bun 1.4.2、Rust 1.99.0 と wasm-pack 0.15.0 は `mise.toml` で指定する。Rust のネイティブテストも、装備ボーナスの JavaScript 計算に Bun を使用する。
 
 ```sh
-bun install --frozen-lockfile
-bun run setup
-bun run lint
-bun run typecheck
-bun run test
-cargo test --workspace --all-targets --locked
-bun run build
-bun run verify:build
-bun run test:build
-bun run playwright install --with-deps chromium
-bun run test:e2e
-E2E_WORKERS=1 bun run test:e2e:dev
-bun run dev
+mise trust
+mise install
+mise exec -- bun install --frozen-lockfile
+mise exec -- bun run setup
+mise exec -- bun run lint
+mise exec -- bun run typecheck
+mise exec -- bun run test
+mise exec -- cargo test --workspace --all-targets --locked
+mise exec -- bun run build
+mise exec -- bun run verify:build
+mise exec -- bun run test:build
+mise exec -- bun run playwright install --with-deps chromium
+mise exec -- bun run test:e2e
+E2E_WORKERS=1 mise exec -- bun run test:e2e:dev
+mise exec -- bun run dev
 ```
 
 `build` は setup を含む。`lint`、型チェック、ユニットテストの前には setup が必要。Wasm 最適化、型チェック、DOM テスト、Next.js 開発サーバーはメモリを多く使うため、メモリが限られる環境では同時実行を避ける。ブラウザの workers は `E2E_WORKERS` で調整できる。

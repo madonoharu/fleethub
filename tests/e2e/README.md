@@ -1,13 +1,16 @@
 # Browser migration regressions
 
-Use Bun 1.4.2, Rustup and wasm-pack 0.15.0. Repository commands run
-Playwright, its test workers and Next.js with Bun.
+Install mise, then use the repository's `mise.toml` to select Bun 1.4.2,
+Rust 1.99.0 and wasm-pack 0.15.0. Repository commands run Playwright, its
+test workers and Next.js with Bun. `mise exec --` works without shell activation.
 
 ```sh
-bun install --frozen-lockfile
-bun run playwright install --with-deps chromium
-bun run build
-bun run test:e2e
+mise trust
+mise install
+mise exec -- bun install --frozen-lockfile
+mise exec -- bun run playwright install --with-deps chromium
+mise exec -- bun run build
+mise exec -- bun run test:e2e
 ```
 
 The default configuration starts the existing production build with `bun run
@@ -20,14 +23,14 @@ natively. If invoking Playwright with `bunx`, use `bunx --bun playwright`.
 For a separate development checkout, run setup first:
 
 ```sh
-bun run setup
-bun run test:e2e:dev
+mise exec -- bun run setup
+mise exec -- bun run test:e2e:dev
 ```
 
 To test an already running server without starting another:
 
 ```sh
-E2E_BASE_URL=http://localhost:3000 bun run test:e2e
+E2E_BASE_URL=http://localhost:3000 mise exec -- bun run test:e2e
 ```
 
 When that external server is a development server, also set `E2E_MODE=dev`.

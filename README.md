@@ -8,22 +8,23 @@
 
 ## Developing
 
-JavaScript の実行と依存関係の管理には [Bun](https://bun.com/docs/installation) を使用します。必要なバージョンはルートの `package.json` の `packageManager` に固定し、`bun.lock` をコミットします。Next.js、Playwright、開発ツール、Git hooks も Bun で実行します。
+開発ツールは [mise](https://mise.jdx.dev/installing-mise.html) で管理します。`mise.toml` に Bun 1.4.2、Rust 1.99.0、wasm-pack 0.15.0 を固定しています。JavaScript の実行と依存関係の管理には Bun を使用し、Next.js、Playwright、開発ツール、Git hooks も Bun で実行します。Bun の `packageManager` と `bun.lock` もコミットします。
 
-リポジトリを clone し、作業用の branch を作成したら、ルートディレクトリで依存関係をインストールします。
+mise をインストールしてリポジトリを clone したら、ルートディレクトリでツールと依存関係をインストールします。`mise exec --` は shell の activation 設定なしで使えます。
 
 ```sh
-bun install --frozen-lockfile
+mise trust
+mise install
+mise exec -- bun install --frozen-lockfile
 ```
 
 インストールでは Husky の Git hooks を設定します。Wasm やワークスペースのビルドは、次の `setup` で明示的に実行します。
 
-ビルドの前に [Rustup](https://www.rust-lang.org/tools/install)、[wasm-pack](https://github.com/wasm-bindgen/wasm-pack) 0.15.0 を用意してください。Rust は `rust-toolchain.toml` で 1.99.0 に固定しており、Rustup が必要なコンポーネントと `wasm32-unknown-unknown` ターゲットをインストールします。
+mise は Rustup を通じて Rust、rustfmt、clippy と `wasm32-unknown-unknown` ターゲットをインストールします。wasm-pack は公式 GitHub リリースのバイナリを使用します。Cargo と editor が直接参照する `rust-toolchain.toml` は `mise.toml` と同じ設定を保持するため、Rust 更新時には両方を揃えてください。Bun 更新時は `packageManager` も揃えます。
 
 ```sh
-cargo install wasm-pack --version 0.15.0 --locked
-bun run setup
-bun run dev
+mise exec -- bun run setup
+mise exec -- bun run dev
 ```
 
 [http://localhost:3000](http://localhost:3000) を開くとアプリを確認できます。`setup` は Wasm、共有ユーティリティ、艦これ API 型定義、管理用パッケージを依存関係の順にビルドします。
@@ -54,6 +55,6 @@ Next.js は既存の Pages Router を使用し、Wasm のバンドルに対応�
 
 ## CI とホスティング
 
-CI は `bun install --frozen-lockfile` と `bun run setup` を分けて実行し、Rust テスト、Oxlint、型チェック、Bun test、本番ビルド、配布成果物テスト、Chromium での E2E を確認します。データ更新用の API workflow もワークスペースをビルドしてから更新スクリプトを実行します。
+CI は `jdx/mise-action@v5` で同じ `mise.toml` を使い、Bun、Rust、wasm-pack をインストールします。その後、`bun install --frozen-lockfile` と `bun run setup` を分けて実行し、Rust テスト、Oxlint、型チェック、Bun test、本番ビルド、配布成果物テスト、Chromium での E2E を確認します。データ更新用の API workflow も同じツール設定でワークスペースをビルドしてから更新スクリプトを実行します。
 
-ホスティング環境ではリポジトリルートで依存関係をインストールし、`packages/site` を Next.js アプリとして使用してください。アプリの `build` スクリプトがワークスペースを準備するため、ビルド環境にも Rustup と wasm-pack が必要です。依存関係を変更した場合は `bun install` で `bun.lock` を更新し、変更した `package.json` と一緒にコミットしてください。
+ホスティング環境ではリポジトリルートの `mise install` でツールを用意し、`mise exec -- bun install --frozen-lockfile` で依存関係をインストールします。`packages/site` を Next.js アプリとして使用し、`mise exec -- bun run build` でワークスペースを準備してビルドしてください。依存関係を変更した場合は `mise exec -- bun install` で `bun.lock` を更新し、変更した `package.json` と一緒にコミットします。
