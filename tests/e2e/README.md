@@ -43,6 +43,13 @@ assert exact Rust-generated LOS scores after changing HQ level, including both
 numeric bounds, and after selecting a real ship. The persistence test creates a folder and plan, uses tree
 keyboard navigation, waits for the actual IndexedDB save, and reloads.
 
+The damage-chart regression equips Akagi Kai with a Suisei bomber, imports a
+deterministic map containing enemy ship 1501, and opens the damage distribution.
+It checks the real Wasm attack report through nonempty finite SVG geometry and
+numeric axes, then changes the no-penetration filter. Equipment icon requests
+on the specific Cloudinary `gear_icons` path receive an inert image. The chart
+and Rust analysis are not mocked.
+
 Browser master-data requests use the checked-in fixture below. Application
 JavaScript, locale bundles and Wasm are served by Next.js unchanged. Analytics
 requests receive inert successful responses; unexpected external requests and
@@ -66,3 +73,11 @@ data; no `.private` files or generated Rust download caches are used at runtime.
 
 The fixture makes these migration regressions deterministic. It does not verify
 compatibility with future changes to the live upstream master data.
+
+`fixtures/enemy-1501.json` retains the public snapshot's Destroyer I-class
+(駆逐イ級), with the same source, capture date, hash and `created_at` above. Its
+stock equipment is cleared so it needs no additional gear fixture.
+`fixtures/map-11.json` is a minimal synthetic map with one node and that enemy
+in Line Ahead formation. The chart test composes these fixtures with the
+existing master-data fixture; it does not duplicate the full snapshot or fetch
+a live map.

@@ -1,0 +1,23 @@
+{
+  "ship_id": 1501,
+  "name": "駆逐イ級",
+  "yomi": "-",
+  "sort_id": 0,
+  "stype": 2,
+  "ctype": 1501,
+  "slotnum": 2,
+  "speed": 10,
+  "max_hp": [20, 20],
+  "firepower": [5, 5],
+  "armor": [5, 5],
+  "torpedo": [15, 15],
+  "evasion": [14, 14],
+  "anti_air": [6, 6],
+  "asw": [25, 25],
+  "los": [3, 3],
+  "luck": [1, 1],
+  "slots": [0, 0],
+  "stock": [],
+  "torpedo_accuracy": 0,
+  "range": 1
+}
