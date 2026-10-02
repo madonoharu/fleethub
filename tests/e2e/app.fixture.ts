@@ -81,12 +81,20 @@ export const test = base.extend<{ runtime: BrowserRuntime }>({
             return result;
           })) as typeof instantiate;
 
-        const instantiateStreaming = WebAssembly.instantiateStreaming;
-        WebAssembly.instantiateStreaming = (...args) =>
+        // This callback runs in Chromium; keep Bun's additional Wasm overloads out.
+        type BrowserStreaming = (
+          source: Response | PromiseLike<Response>,
+          imports?: WebAssembly.Imports,
+        ) => Promise<WebAssembly.WebAssemblyInstantiatedSource>;
+        const instantiateStreaming: BrowserStreaming =
+          WebAssembly.instantiateStreaming;
+        WebAssembly.instantiateStreaming = ((
+          ...args: Parameters<BrowserStreaming>
+        ) =>
           instantiateStreaming(...args).then((result) => {
             runtimeWindow.__fleethubWasmInstantiations += 1;
             return result;
-          });
+          })) as typeof WebAssembly.instantiateStreaming;
       });
 
       await context.route("**/*", async (route) => {

@@ -1,6 +1,6 @@
+import { describe, it, expect, mock } from "bun:test";
 import { render, fireEvent } from "@testing-library/react";
 
-import "@testing-library/jest-dom";
 import Checkbox from "./Checkbox";
 
 describe("Checkbox", () => {
@@ -10,7 +10,7 @@ describe("Checkbox", () => {
   });
 
   it("`checked={true}`", () => {
-    const mockFn = jest.fn<void, [boolean]>();
+    const mockFn = mock<(value: boolean) => void>();
     const { getByRole } = render(<Checkbox checked={true} onChange={mockFn} />);
     const checkbox = getByRole("checkbox");
     expect(checkbox).toHaveProperty("checked", true);
@@ -21,7 +21,7 @@ describe("Checkbox", () => {
   });
 
   it("`checked={false}`", () => {
-    const mockFn = jest.fn<void, [boolean]>();
+    const mockFn = mock<(value: boolean) => void>();
     const { getByRole } = render(
       <Checkbox checked={false} onChange={mockFn} />,
     );

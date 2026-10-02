@@ -77,7 +77,9 @@ describe("storage authentication boundary", () => {
 
     expect(app.getApps).not.toHaveBeenCalled();
     expect(storage.getStorage).not.toHaveBeenCalled();
-    expect(await operations.readJson("data/public.json")).toEqual(data);
+    expect(await operations.readJson<typeof data>("data/public.json")).toEqual(
+      data,
+    );
     expect(got.get).toHaveBeenCalledTimes(1);
     expect(got.get).toHaveBeenCalledWith(
       "https://storage.googleapis.com/kcfleethub/data/public.json",

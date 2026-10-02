@@ -1,10 +1,9 @@
+import { beforeEach, it, expect, mock } from "bun:test";
 import { colors as muiColors } from "@mui/material";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 
 import { ThemeProvider } from "../../../styles";
-
-import DamageDensitySection from "./DamageDensitySection";
 
 class ResizeObserverStub {
   observe() {}
@@ -13,10 +12,9 @@ class ResizeObserverStub {
 }
 global.ResizeObserver = ResizeObserverStub as never;
 
-// ResponsiveContainer は jsdom では 0x0 になり中身を描画しないので固定サイズにする。
-jest.mock("recharts", () => {
-  const original = jest.requireActual<typeof import("recharts")>("recharts");
-
+// DOM エミュレータはレイアウトを計算しないので固定サイズにする。
+const original = await import("recharts");
+await mock.module("recharts", () => {
   return {
     ...original,
     ResponsiveContainer: ({ children }: { children: React.ReactElement }) =>
@@ -29,7 +27,7 @@ jest.mock("recharts", () => {
 const listeners = new Set<() => void>();
 let appState: { damageDensityIncludeNoPenetration?: boolean } = {};
 
-const dispatch = jest.fn((action: { type: string; payload: boolean }) => {
+const dispatch = mock((action: { type: string; payload: boolean }) => {
   if (action.type === "app/setDamageDensityIncludeNoPenetration") {
     appState = {
       ...appState,
@@ -39,7 +37,9 @@ const dispatch = jest.fn((action: { type: string; payload: boolean }) => {
   }
 });
 
-jest.mock("../../../hooks", () => ({
+const originalHooks = await import("../../../hooks");
+await mock.module("../../../hooks", () => ({
+  ...originalHooks,
   useShipName: (shipId: number) => `ship${shipId}`,
   useAppDispatch: () => dispatch,
   useRootSelector: (selector: (root: unknown) => unknown) => {
@@ -61,12 +61,15 @@ beforeEach(() => {
   appState = {};
 });
 
-jest.mock("next-i18next/pages", () => ({
+await mock.module("next-i18next/pages", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
     i18n: { resolvedLanguage: "ja" },
   }),
 }));
+
+const { default: DamageDensitySection } =
+  await import("./DamageDensitySection");
 
 // 比較していないときは攻撃種類で積むので、種類名が凡例に出る。
 const report = {
@@ -118,25 +121,19 @@ it("損傷状態以上になる確率を損傷状態の色つきで並べる", (
 
   const dots = Array.from(
     container.querySelectorAll("span[style*='background']"),
-  )
-    .map((el) => (el as HTMLElement).style.background)
-    .filter(Boolean);
+  ).filter((el) => (el as HTMLElement).style.background);
 
-  // jsdom は background を rgb() に正規化する。
-  expect(dots).toEqual(
-    [
-      muiColors.yellow[500],
-      muiColors.orange[500],
-      muiColors.red[500],
-      muiColors.blue[500],
-    ].map(toRgb),
-  );
+  const colors = [
+    muiColors.yellow[500],
+    muiColors.orange[500],
+    muiColors.red[500],
+    muiColors.blue[500],
+  ];
+  expect(dots).toHaveLength(colors.length);
+  dots.forEach((dot, index) => {
+    expect(dot).toHaveStyle({ background: colors[index] });
+  });
 });
-
-function toRgb(hex: string) {
-  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
-  return `rgb(${r}, ${g}, ${b})`;
-}
 
 function fillsOf(container: HTMLElement, selector: string) {
   return Array.from(container.querySelectorAll(selector))

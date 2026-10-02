@@ -39,7 +39,7 @@ jobs:
         run: bun run typecheck
 
       - name: Test application
-        run: bun run test --ci --runInBand
+        run: bun run test
 
       - name: Build Next.js application
         run: bun run build
@@ -48,3 +48,12 @@ jobs:
 
       - name: Verify deployment artifacts and ISR translations
         run: bun run verify:build
+
+      - name: Test deployment artifacts and missing-file failures
+        run: bun run test:build
+
+      - name: Install browser for end-to-end tests
+        run: bun run playwright install --with-deps chromium
+
+      - name: Test production application in Chromium
+        run: bun run test:e2e

@@ -1,5 +1,6 @@
+import { describe, it, expect, mock, vi as timers } from "bun:test";
 import { StrictMode, useState } from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import NumberInput, { NumberInputProps } from "./NumberInput";
@@ -22,15 +23,15 @@ function ControlledNumberInput({
   );
 }
 
-afterEach(() => {
-  jest.useRealTimers();
-});
-
 describe("controlled NumberInput under React StrictMode", () => {
   it("commits a step only when the press finishes and uses the parent value for the next step", async () => {
-    jest.useFakeTimers();
-    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
-    const onChange = jest.fn();
+    timers.useFakeTimers();
+    const user = userEvent.setup({
+      advanceTimers: async (milliseconds) => {
+        await act(() => timers.advanceTimersByTime(milliseconds));
+      },
+    });
+    const onChange = mock();
     render(
       <StrictMode>
         <ControlledNumberInput
@@ -61,8 +62,8 @@ describe("controlled NumberInput under React StrictMode", () => {
 
   it("keeps native slot events while updating controlled values, clamping, and restoring empty input on blur", async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
-    const onKeyDown = jest.fn();
+    const onChange = mock();
+    const onKeyDown = mock();
     render(
       <StrictMode>
         <ControlledNumberInput

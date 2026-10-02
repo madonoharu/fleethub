@@ -1,25 +1,27 @@
+import { describe, it, expect, mock, vi as timers } from "bun:test";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 
-import "@testing-library/jest-dom";
 import NumberInput from "./NumberInput";
 
-function press(element: HTMLButtonElement, msToRun = 0) {
-  fireEvent.mouseDown(element);
-  act(() => {
-    jest.advanceTimersByTime(msToRun);
+async function press(element: HTMLButtonElement, msToRun = 0) {
+  // MUI mounts its ripple asynchronously. Flush each phase before mouseUp
+  // commits the value produced by the long press.
+  await act(async () => {
+    fireEvent.mouseDown(element);
   });
-  fireEvent.mouseUp(element);
+  await act(async () => {
+    timers.advanceTimersByTime(msToRun);
+  });
+  await act(async () => {
+    fireEvent.mouseUp(element);
+  });
 }
 
-afterEach(() => {
-  jest.useRealTimers();
-});
-
 describe("NumberInput", () => {
-  it("increase and decrease", () => {
-    jest.useFakeTimers();
+  it("increase and decrease", async () => {
+    timers.useFakeTimers();
 
-    const mockFn = jest.fn<void, [number]>();
+    const mockFn = mock<(value: number) => void>();
 
     render(<NumberInput value={0} onChange={mockFn} />);
 
@@ -29,11 +31,11 @@ describe("NumberInput", () => {
 
     expect(input).toHaveValue("0");
 
-    press(increaseButton, 1000);
+    await press(increaseButton, 1000);
     expect(input).toHaveValue("14");
     expect(mockFn).toHaveBeenLastCalledWith(14);
 
-    press(decreaseButton, 399);
+    await press(decreaseButton, 399);
     expect(input).toHaveValue("13");
     expect(mockFn).toHaveBeenLastCalledWith(13);
   });
@@ -66,10 +68,10 @@ describe("NumberInput", () => {
     expect(screen.getByLabelText("decrease")).toBeDisabled();
   });
 
-  it("null", () => {
-    jest.useFakeTimers();
+  it("null", async () => {
+    timers.useFakeTimers();
 
-    const mockFn = jest.fn<void, [number]>();
+    const mockFn = mock<(value: number) => void>();
     render(<NumberInput value={null} onChange={mockFn} />);
 
     const input = screen.getByRole("textbox");
@@ -77,15 +79,19 @@ describe("NumberInput", () => {
     const decreaseButton = screen.getByLabelText("decrease");
 
     expect(input).toHaveValue("");
-    fireEvent.mouseDown(increaseButton);
+    await act(async () => {
+      fireEvent.mouseDown(increaseButton);
+    });
     expect(input).toHaveValue("1");
 
-    fireEvent.mouseDown(decreaseButton);
+    await act(async () => {
+      fireEvent.mouseDown(decreaseButton);
+    });
     expect(input).toHaveValue("0");
   });
 
   it("change value", () => {
-    const mockFn = jest.fn<void, [number]>();
+    const mockFn = mock<(value: number) => void>();
     const { rerender } = render(<NumberInput value={1} onChange={mockFn} />);
     rerender(<NumberInput value={2} onChange={mockFn} />);
 
@@ -94,7 +100,7 @@ describe("NumberInput", () => {
   });
 
   it("evaluate", () => {
-    const mockFn = jest.fn<void, [number]>();
+    const mockFn = mock<(value: number) => void>();
     render(<NumberInput value={1} onChange={mockFn} />);
     const input = screen.getByRole<HTMLInputElement>("textbox");
 
@@ -108,7 +114,7 @@ describe("NumberInput", () => {
   });
 
   it("blur", () => {
-    const mockFn = jest.fn<void, [number]>();
+    const mockFn = mock<(value: number) => void>();
     render(<NumberInput value={2} onChange={mockFn} />);
     const input = screen.getByRole<HTMLInputElement>("textbox");
 
@@ -136,7 +142,7 @@ describe("NumberInput", () => {
   });
 
   it("compositionEnd", () => {
-    const mockFn = jest.fn<void, [number]>();
+    const mockFn = mock<(value: number) => void>();
     render(<NumberInput value={1} onChange={mockFn} />);
     const input = screen.getByRole<HTMLInputElement>("textbox");
 

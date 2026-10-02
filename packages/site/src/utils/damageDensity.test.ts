@@ -1,3 +1,4 @@
+import { describe, it, expect } from "bun:test";
 import type { AttackReport, DamageState } from "fleethub-core";
 
 import {

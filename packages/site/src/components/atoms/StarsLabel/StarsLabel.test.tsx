@@ -1,6 +1,6 @@
+import { describe, it, expect } from "bun:test";
 import { renderWithProviders } from "../../../test-utils";
 
-import "@testing-library/jest-dom";
 import StarsLabel from "./StarsLabel";
 
 describe("StarsLabel", () => {

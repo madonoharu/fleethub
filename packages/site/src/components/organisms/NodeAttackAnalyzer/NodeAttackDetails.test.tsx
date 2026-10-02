@@ -1,11 +1,10 @@
+import { beforeEach, it, expect, mock } from "bun:test";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 
 import { ThemeProvider } from "../../../styles";
 
-import NodeAttackDetails from "./NodeAttackDetails";
-
-const analyzeNodeAttack = jest.fn((...args: unknown[]) => {
+const analyzeNodeAttack = mock((...args: unknown[]) => {
   void args;
   return {
     left: analysisStub(),
@@ -16,10 +15,10 @@ const analyzeNodeAttack = jest.fn((...args: unknown[]) => {
 });
 
 // hooks バレルは react-dnd (ESM) を巻き込むため、使う分だけ差し替える。
-const dispatch = jest.fn();
+const dispatch = mock();
 let damageDensityOpen: boolean | undefined = false;
 
-jest.mock("../../../hooks", () => ({
+await mock.module("../../../hooks", () => ({
   useFhCore: () => ({ analyzer: { analyze_node_attack: analyzeNodeAttack } }),
   useAppDispatch: () => dispatch,
   useRootSelector: (selector: (root: unknown) => unknown) =>
@@ -28,7 +27,7 @@ jest.mock("../../../hooks", () => ({
   useShipName: (shipId: number) => `ship${shipId}`,
 }));
 
-jest.mock("next-i18next/pages", () => ({
+await mock.module("next-i18next/pages", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
     i18n: { resolvedLanguage: "ja" },
@@ -39,7 +38,7 @@ jest.mock("next-i18next/pages", () => ({
 let lastCompareShipId: string | undefined;
 let onCompareShipChange: ((id: string | undefined) => void) | undefined;
 
-jest.mock("./AttackReportDetails", () => ({
+await mock.module("./AttackReportDetails", () => ({
   __esModule: true,
   default: (props: {
     compareShipId?: string | undefined;
@@ -53,10 +52,12 @@ jest.mock("./AttackReportDetails", () => ({
   },
 }));
 
-jest.mock("./FleetCutinAnalysisTable", () => ({
+await mock.module("./FleetCutinAnalysisTable", () => ({
   __esModule: true,
   default: () => null,
 }));
+
+const { default: NodeAttackDetails } = await import("./NodeAttackDetails");
 
 function analysisStub() {
   const report = { is_active: true, damage_state_density: {}, data: {} };

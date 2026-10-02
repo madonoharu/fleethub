@@ -1,3 +1,4 @@
+import { it, expect, mock } from "bun:test";
 import { colors as muiColors } from "@mui/material";
 import { render } from "@testing-library/react";
 import React from "react";
@@ -5,14 +6,15 @@ import React from "react";
 import { ThemeProvider } from "../../../styles";
 import type { DamageChartRow } from "../../../utils";
 
-import DamageDensityTooltip from "./DamageDensityTooltip";
-
-jest.mock("next-i18next/pages", () => ({
+await mock.module("next-i18next/pages", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
     i18n: { resolvedLanguage: "ja" },
   }),
 }));
+
+const { default: DamageDensityTooltip } =
+  await import("./DamageDensityTooltip");
 
 const row: DamageChartRow = {
   damage: 30,
@@ -64,9 +66,8 @@ it("損傷状態は名前ではなくダメージ値の色で示す", () => {
   // 状態名を添えると1行目が長くなるうえ、色で足りる。
   expect(root.textContent).not.toContain("DamageState.Chuuha");
 
-  // style 属性は jsdom が rgb() に正規化する。
   const heading = root.firstElementChild as HTMLElement;
-  expect(heading.style.color).toBe("rgb(255, 152, 0)");
+  expect(heading).toHaveStyle({ color: muiColors.orange[500] });
   expect(muiColors.orange[500]).toBe("#ff9800");
 });
 

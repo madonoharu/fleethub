@@ -1,9 +1,9 @@
+import { describe, it, expect } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
 import { ACE_ICONS } from "../../../images/icons";
 
 import ProficiencyIcon from "./ProficiencyIcon";
-import "@testing-library/jest-dom";
 
 describe("ACE_ICONS", () => {
   it("covers every ace rank", () => {
