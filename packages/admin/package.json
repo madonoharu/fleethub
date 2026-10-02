@@ -8,12 +8,17 @@
   },
   "dependencies": {
     "@fh/utils": "workspace:*",
-    "@google-cloud/asset": "^5.7.0",
-    "cloudinary": "^2.5.1",
-    "dequal": "^2.0.3",
-    "firebase-admin": "^12.5.0",
+    "@google-cloud/asset": "7.1.1",
+    "cloudinary": "2.11.0",
+    "dequal": "2.0.3",
+    "firebase-admin": "14.5.0",
     "fleethub-core": "workspace:*",
-    "googleapis": "^144.0.0",
-    "ky": "^1.7.4"
+    "googleapis": "182.0.0",
+    "ky": "2.1.0",
+    "got": "16.0.0",
+    "google-auth-library": "11.1.0",
+    "@google-cloud/storage": "8.2.0",
+    "kc-tools": "1.6.2",
+    "lodash": "4.18.1"
   }
 }

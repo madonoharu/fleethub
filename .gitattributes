@@ -1,4 +1,4 @@
 *.wasm binary
 *.png binary
-/.yarn/** linguist-vendored
-/packages/core/pkg/** linguist-generated
+/crates/fleethub-core/pkg/** linguist-generated
+/crates/fleethub-core/node/** linguist-generated

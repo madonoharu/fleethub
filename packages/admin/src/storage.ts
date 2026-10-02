@@ -2,6 +2,7 @@ import zlib from "zlib";
 
 import { SaveOptions as GcsSaveOptions } from "@google-cloud/storage";
 import { dequal } from "dequal";
+import { getStorage } from "firebase-admin/storage";
 import { MasterData } from "fleethub-core";
 import got from "got";
 
@@ -22,7 +23,7 @@ export const GCS_PREFIX_URL = `https://storage.googleapis.com/${BUCKET_NAME}`;
 export const MASTER_DATA_PATH =
   process.env["MASTER_DATA_PATH"] || "data/master_data.json";
 
-const getBucket = () => getApp().storage().bucket();
+const getBucket = () => getStorage(getApp()).bucket();
 
 export function readJson<T>(path: string): Promise<T> {
   return got.get(`https://storage.googleapis.com/kcfleethub/${path}`).json<T>();

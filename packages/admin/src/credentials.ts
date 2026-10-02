@@ -1,5 +1,10 @@
-import admin from "firebase-admin";
-import { CredentialBody } from "google-auth-library";
+import {
+  cert,
+  getApp as getFirebaseApp,
+  getApps,
+  initializeApp,
+} from "firebase-admin/app";
+import type { CredentialBody } from "google-auth-library";
 
 export const getServiceAccount = () => {
   const {
@@ -14,16 +19,22 @@ export const getServiceAccount = () => {
     project_id: "kcfleethub",
     client_email,
     private_key: private_key.replace(/\\n/g, "\n"),
-  } as CredentialBody & admin.ServiceAccount;
+  } satisfies CredentialBody & { project_id: string };
 };
 
 export const getApp = () => {
-  if (admin.apps.length === 0) {
-    return admin.initializeApp({
-      credential: admin.credential.cert(getServiceAccount()),
+  if (!getApps().some((app) => app.name === "[DEFAULT]")) {
+    const { project_id, client_email, private_key } = getServiceAccount();
+
+    return initializeApp({
+      credential: cert({
+        projectId: project_id,
+        clientEmail: client_email,
+        privateKey: private_key,
+      }),
       storageBucket: "kcfleethub",
     });
   }
 
-  return admin.app();
+  return getFirebaseApp();
 };

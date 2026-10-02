@@ -1,11 +1,9 @@
 {
   "name": "kcs",
   "scripts": {
-    "build": "yarn swc src/index.ts -o lib/index.js"
+    "build": "bun build src/index.ts --target browser --minify --outfile lib/index.js"
   },
   "devDependencies": {
-    "@swc/cli": "^0.4.1-nightly.20240914",
-    "@swc/core": "^1.7.28",
     "fleethub-core": "workspace:*"
   }
 }

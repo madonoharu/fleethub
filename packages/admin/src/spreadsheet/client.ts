@@ -1,4 +1,5 @@
 import { google, sheets_v4 } from "googleapis";
+import type { Common } from "googleapis";
 
 import { fromValueRange, SpreadsheetTable } from "./SpreadsheetTable";
 
@@ -7,7 +8,7 @@ export class SpreadsheetClient {
 
   constructor(
     public spreadsheetId: string,
-    public auth: sheets_v4.Options["auth"]
+    public auth: sheets_v4.Options["auth"],
   ) {
     this.inner = google.sheets({
       version: "v4",
@@ -15,7 +16,11 @@ export class SpreadsheetClient {
     }).spreadsheets;
   }
 
-  batchUpdate(requestBody: sheets_v4.Schema$BatchUpdateSpreadsheetRequest) {
+  batchUpdate(
+    requestBody: sheets_v4.Schema$BatchUpdateSpreadsheetRequest,
+  ): Promise<
+    Common.GaxiosResponseWithHTTP2<sheets_v4.Schema$BatchUpdateSpreadsheetResponse>
+  > {
     return this.inner.batchUpdate({
       spreadsheetId: this.spreadsheetId,
       requestBody,

@@ -1,0 +1,50 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "nextjs", "import", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2022": true
+  },
+  "settings": {
+    "next": {
+      "rootDir": "packages/site/"
+    }
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/lib/**",
+    "**/esm/**",
+    "**/cjs/**",
+    "**/pkg/**",
+    "**/node/**",
+    "**/.next/**",
+    "target/**"
+  ],
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-misused-promises": "off",
+    "typescript/unbound-method": "off",
+    "react/immutability": "off",
+    "react/static-components": "off",
+    "react/error-boundaries": "off",
+    "react/purity": "off",
+    "react/refs": "off",
+    "react/set-state-in-effect": "off",
+    "react/use-memo": "off"
+  }
+}

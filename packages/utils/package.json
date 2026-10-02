@@ -6,6 +6,6 @@
   "type": "module",
   "main": "esm/index.js",
   "scripts": {
-    "build": "run -T tsc -m esnext --outDir esm"
+    "build": "tsc -m esnext --outDir esm"
   }
 }

@@ -1,4 +1,8 @@
-const nextJest = require("next/jest");
+const nextJest = require(
+  require.resolve("next/jest", {
+    paths: [require("path").join(__dirname, "packages/site")],
+  }),
+);
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
@@ -28,7 +32,7 @@ module.exports = async () => {
     transformIgnorePatterns: [
       `/node_modules/(?!(${esmPatterns.join("|")})/)`,
       ...nextJestConfig.transformIgnorePatterns.filter(
-        (pattern) => pattern !== "/node_modules/"
+        (pattern) => pattern !== "/node_modules/",
       ),
     ],
   };

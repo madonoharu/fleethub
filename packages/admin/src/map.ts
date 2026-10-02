@@ -18,7 +18,7 @@ import { MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
 
 function getFp(
-  kcnavAirpower: [number, number, number, number]
+  kcnavAirpower: [number, number, number, number],
 ): [number, number, number, number] {
   const fp = kcnavAirpower[3] / 3;
 
@@ -59,7 +59,7 @@ function getEnemyComp({
 
 function getEnemies(
   enemycomps: KcnavEnemycomps,
-  point: string
+  point: string,
 ): MapEnemyComp[] {
   const enemies: MapEnemyComp[] = [];
 
@@ -72,7 +72,7 @@ function getEnemies(
         ({ main, escort, diff }) =>
           isEqual(formatted.main, main) &&
           isEqual(formatted.escort, escort) &&
-          formatted.diff === diff
+          formatted.diff === diff,
       );
 
       if (found?.formations.includes(formation)) {
@@ -86,7 +86,7 @@ function getEnemies(
       }
     });
 
-  enemies.forEach((enemy) => enemy.formations.sort());
+  enemies.forEach((enemy) => enemy.formations.sort((a, b) => a - b));
 
   return enemies;
 }
@@ -94,13 +94,13 @@ function getEnemies(
 function createFhMap({ id, graph, lbasdistance, enemycomps }: KcnavMap): FhMap {
   const links = Object.values(graph.route)
     .map(([source, target]): [string, string] | null =>
-      source ? [source, target] : null
+      source ? [source, target] : null,
     )
     .filter(nonNullable);
 
   const nodes = Object.entries(graph.spots).map(([point, [x, y]]): MapNode => {
     const edgeEntries = Object.entries(graph.route).filter(
-      (entry) => entry[1][1] === point
+      (entry) => entry[1][1] === point,
     );
     const type = edgeEntries.length
       ? edgeEntries[0][1][2]
@@ -213,7 +213,7 @@ async function updateMaps(kcnavMaps: KcnavMap[]): Promise<void> {
 
 export async function updateByKcnav(
   currentEventId: number | null,
-  cache?: Map<string, unknown>
+  cache?: Map<string, unknown>,
 ): Promise<void> {
   const client = new KcnavClient(currentEventId, cache);
   const ids = await client.all();

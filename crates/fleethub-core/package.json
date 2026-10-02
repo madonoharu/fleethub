@@ -13,7 +13,7 @@
     "node"
   ],
   "dependencies": {
-    "equipment-bonus": "7.13.26"
+    "equipment-bonus": "7.13.30"
   },
   "engines": {
     "node": ">=19"

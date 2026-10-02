@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "declaration": true
+    "declaration": true,
+    "rootDir": "src"
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "exclude": ["node_modules", "src/**/*.test.ts"]
 }

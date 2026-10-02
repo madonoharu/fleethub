@@ -2,8 +2,8 @@ import { storage } from "@fh/admin";
 import type { GetStaticProps, NextComponentType, NextPageContext } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next/pages";
+import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import React from "react";
 
 import {

@@ -6,7 +6,8 @@
     "jsx": "preserve",
     "jsxImportSource": "@emotion/react",
     "resolveJsonModule": true,
-    "incremental": true
+    "incremental": true,
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

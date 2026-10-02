@@ -1,22 +1,10 @@
 {
-  "ts-node": {
-    "swc": true,
-    "moduleTypes": {
-      "scripts/**/*": "esm"
-    },
-    "compilerOptions": {
-      "lib": ["es2020"],
-      "target": "es2020",
-
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true
-    }
-  },
   "compilerOptions": {
-    "allowJs": false
+    "allowJs": false,
+    "rootDir": ".",
+    "types": ["node", "jest"]
   },
   "extends": "./tsconfig.base.json",
-  "include": ["packages", "scripts", "crates"]
+  "include": ["packages", "scripts", "crates"],
+  "exclude": ["node_modules", "**/dist", "**/lib", "**/esm", "**/.next"]
 }

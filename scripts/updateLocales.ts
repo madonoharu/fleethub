@@ -82,13 +82,13 @@ class LocaleUpdater {
     this.code = language.code;
 
     this.kc3 = ky.extend({
-      prefixUrl: `https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/${
+      prefix: `https://raw.githubusercontent.com/KC3Kai/kc3-translations/master/data/${
         language.kc3 || this.code
       }`,
     });
 
     this.tsun = ky.extend({
-      prefixUrl: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${this.code}`,
+      prefix: `https://raw.githubusercontent.com/planetarian/TsunKitTranslations/main/${this.code}`,
     });
 
     this.path = `packages/site/public/locales/${this.code}`;

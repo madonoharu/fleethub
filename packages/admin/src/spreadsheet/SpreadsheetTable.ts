@@ -46,10 +46,10 @@ export const SHEET_DATA = [
   { sheetId: 1930975556, key: "formation" },
 ] as const;
 
-export type SheetKey = typeof SHEET_DATA[number]["key"];
+export type SheetKey = (typeof SHEET_DATA)[number]["key"];
 
 export function fromValueRange(
-  valueRange: sheets_v4.Schema$MatchedValueRange
+  valueRange: sheets_v4.Schema$MatchedValueRange,
 ): SpreadsheetTable {
   const sheetId = valueRange.dataFilters?.[0].gridRange?.sheetId;
 
@@ -60,7 +60,7 @@ export function fromValueRange(
   const values = valueRange.valueRange?.values || [];
   const [headerValues = [], ...restValues] = values as [
     string[] | undefined,
-    ...unknown[][]
+    ...unknown[][],
   ];
 
   const rows = restValues.map((rowValues) => {
@@ -90,9 +90,18 @@ export function intoCellValue(input: unknown): CellValue {
     case "string":
     case "boolean":
       return input;
+    case "bigint":
+    case "symbol":
+      return String(input);
   }
 
-  return String(input);
+  if (Array.isArray(input)) {
+    return input.map((value: unknown) => intoCellValue(value) ?? "").join(",");
+  }
+
+  throw new TypeError(
+    "Spreadsheet cells must contain primitive values or arrays",
+  );
 }
 
 export function getSheetId(key: SheetKey): number {
