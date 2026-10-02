@@ -32,14 +32,19 @@ module.exports = async () => {
     "p-cancelable",
     "@szmarczak/http-timer",
     "lowercase-keys",
+    ...require("./packages/site/next.config.js").transpilePackages,
+    "geist",
+    "next/(?:dist|src)/(?:client|shared/lib)",
   ];
 
   return {
     ...nextJestConfig,
     transformIgnorePatterns: [
-      `/node_modules/(?!(${esmPatterns.join("|")})/)`,
+      // Bun's isolated linker has outer and inner node_modules directories.
+      // All ignore patterns must allow ESM packages, including Next's defaults.
+      String.raw`/node_modules/(?!\.bun/|\.pnpm/|(?:${esmPatterns.join("|")})/)`,
       ...nextJestConfig.transformIgnorePatterns.filter(
-        (pattern) => pattern !== "/node_modules/",
+        (pattern) => !pattern.includes("node_modules"),
       ),
     ],
   };
