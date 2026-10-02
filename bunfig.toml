@@ -1,3 +1,6 @@
+[run]
+bun = true
+
 [test]
 preload = ["./tests/test-setup.ts"]
 pathIgnorePatterns = [

@@ -19,9 +19,6 @@
     "node": ">=19"
   },
   "collaborators": [
-    "まどの <madonoharu@gmail.com>"
-  ],
-  "volta": {
-    "extends": "../../package.json"
-  }
+    "\u307e\u3069\u306e <madonoharu@gmail.com>"
+  ]
 }

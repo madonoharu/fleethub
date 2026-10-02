@@ -80,8 +80,5 @@
     "@types/react-dom": "19.3.0",
     "@types/xxhashjs": "0.2.4",
     "typescript": "7.0.2"
-  },
-  "volta": {
-    "extends": "../../package.json"
   }
 }
