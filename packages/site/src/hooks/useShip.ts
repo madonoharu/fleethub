@@ -1,6 +1,7 @@
-import { Ship } from "fleethub-core";
+import { Ship, ShipState } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import { useMemo } from "react";
+import { lruMemoize } from "reselect";
 
 import {
   entitiesSlice,
@@ -80,14 +81,21 @@ export function useShipActions(id?: string) {
 export function useShip(id?: string): Ship | undefined {
   const { core } = useFhCore();
 
-  const ship = useRootSelector(
-    (root) => {
-      if (!id) return;
-      const state = selectShipState(root, id);
-      return state && core.create_ship(state);
-    },
-    (a, b) => a?.hash === b?.hash,
+  const createShip = useMemo(
+    () =>
+      lruMemoize(
+        (state: ShipState | undefined) => state && core.create_ship(state),
+        {
+          resultEqualityCheck: (
+            previous: Ship | undefined,
+            next: Ship | undefined,
+          ) => previous?.hash === next?.hash,
+        },
+      ),
+    [core],
   );
 
-  return ship;
+  return useRootSelector((root) =>
+    createShip(id ? selectShipState(root, id) : undefined),
+  );
 }
