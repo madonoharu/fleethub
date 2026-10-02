@@ -2,11 +2,10 @@ import child_process from "child_process";
 import { promisify } from "util";
 
 import { storage } from "@fh/admin/src";
-import { nonNullable, uniq } from "@fh/utils/src";
+import { mergeLocaleMessages, nonNullable, uniq } from "@fh/utils/src";
 import { DayCutin, FleetCutin, MasterData, NightCutin } from "fleethub-core";
 import fs from "fs-extra";
 import ky from "ky";
-import mergeWith from "lodash/mergeWith";
 
 const exec = promisify(child_process.exec);
 
@@ -117,20 +116,7 @@ class LocaleUpdater {
     const path = `${this.path}/${filename}`;
     const current = (await fs.readJSON(path)) as Record<string, unknown>;
 
-    await fs.outputJSON(
-      path,
-      mergeWith({}, current, data, (a: unknown, b: unknown) => {
-        if (!a) {
-          return;
-        }
-
-        if (b === "" || b === " " || b === null) {
-          return a;
-        }
-
-        return;
-      }),
-    );
+    await fs.outputJSON(path, mergeLocaleMessages(current, data));
   }
 
   private async output(filename: string, data: unknown) {

@@ -1,5 +1,5 @@
 import { sheets_v4 } from "googleapis";
-import get from "lodash/get";
+import { get } from "es-toolkit/compat";
 
 import { CellValue, intoCellValue, SpreadsheetTable } from "./SpreadsheetTable";
 
@@ -48,7 +48,7 @@ function equalCellValue(v1: unknown, v2: unknown): boolean {
 function createAppendRowsRequests(
   sheetId: number,
   headerValues: string[],
-  data: object[]
+  data: object[],
 ): Requests {
   if (!data.length) {
     return [];
@@ -97,7 +97,7 @@ function createUpdateCellRequests(
   sheetId: number,
   rowIndex: number,
   columnIndex: number,
-  value: unknown
+  value: unknown,
 ): Requests {
   return [
     {
@@ -124,7 +124,7 @@ function createUpdateCellRequests(
 
 export function createUpdateRowsRequests(
   table: SpreadsheetTable,
-  data: object[]
+  data: object[],
 ): Requests {
   const { sheetId, headerValues, rows: currentRows } = table;
   const idAttribute = headerValues[0];
@@ -159,7 +159,7 @@ export function createUpdateRowsRequests(
           sheetId,
           rowIndex,
           columnIndex,
-          nextValue
+          nextValue,
         );
       }
     });
@@ -173,7 +173,7 @@ export function createUpdateRowsRequests(
   const appendRowsRequests = createAppendRowsRequests(
     sheetId,
     headerValues,
-    newRows
+    newRows,
   );
 
   return [...updateCellRequests, ...appendRowsRequests];

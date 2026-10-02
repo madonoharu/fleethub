@@ -7,7 +7,7 @@ import {
   SpeedGroup,
 } from "fleethub-core";
 import { MstPlayerShip, MstShip } from "kc-tools";
-import set from "lodash/set";
+import { set } from "es-toolkit/compat";
 
 import { SpreadsheetTable } from "./SpreadsheetTable";
 import { ExprParser } from "./parser";

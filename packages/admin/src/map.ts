@@ -5,7 +5,7 @@ import {
   MapNode,
   MapNodeType,
 } from "@fh/utils";
-import isEqual from "lodash/isEqual";
+import { isEqual } from "es-toolkit";
 
 import {
   KcnavClient,

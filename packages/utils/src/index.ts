@@ -10,3 +10,4 @@ export * from "./download";
 export * from "./copy";
 export * from "./measure";
 export * from "./compress";
+export * from "./locales";
