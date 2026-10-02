@@ -1,0 +1,1665 @@
+{
+  "created_at": 1789858784283,
+  "ships": [
+    {
+      "nationality": 1,
+      "speed_group": "B2",
+      "ship_id": 277,
+      "name": "赤城改",
+      "yomi": "あかぎ",
+      "sort_id": 2012,
+      "stype": 11,
+      "ctype": 14,
+      "slotnum": 4,
+      "speed": 10,
+      "max_hp": [77, 92],
+      "firepower": [0, 55],
+      "armor": [40, 79],
+      "torpedo": [0, 0],
+      "evasion": [28, 69],
+      "anti_air": [35, 79],
+      "asw": [0, 0],
+      "los": [50, 89],
+      "luck": [12, 60],
+      "slots": [20, 20, 32, 10],
+      "stock": [
+        {
+          "gear_id": 21
+        },
+        {
+          "gear_id": 24
+        },
+        {
+          "gear_id": 16
+        }
+      ],
+      "range": 1,
+      "fuel": 75,
+      "ammo": 75,
+      "next_id": 594,
+      "next_level": 90
+    },
+    {
+      "nationality": 1,
+      "speed_group": "B2",
+      "ship_id": 599,
+      "name": "赤城改二戊",
+      "yomi": "あかぎ",
+      "sort_id": 2017,
+      "stype": 11,
+      "ctype": 14,
+      "slotnum": 5,
+      "speed": 10,
+      "max_hp": [81, 97],
+      "firepower": [0, 67],
+      "armor": [42, 81],
+      "torpedo": [0, 0],
+      "evasion": [33, 75],
+      "anti_air": [40, 84],
+      "asw": [0, 0],
+      "los": [50, 90],
+      "luck": [20, 77],
+      "slots": [16, 16, 40, 4, 2],
+      "stock": [],
+      "range": 2,
+      "useful": true,
+      "fuel": 95,
+      "ammo": 85,
+      "next_id": 594,
+      "next_level": 92
+    }
+  ],
+  "ship_attrs": [
+    {
+      "tag": "NightCarrier",
+      "name": "夜戦空母",
+      "expr": "ship_id_in( 545, 599, 610, 883, 1008 )"
+    },
+    {
+      "tag": "Installation",
+      "name": "陸上型",
+      "expr": "speed == 0"
+    },
+    {
+      "tag": "RoyalNavy",
+      "name": "イギリス海軍",
+      "expr": "nationality == 33"
+    },
+    {
+      "tag": "Kai2",
+      "name": "改二",
+      "expr": "sort_id % 10 >= 6 && sort_id % 10 < 9"
+    },
+    {
+      "tag": "TurbineSpeedBonus",
+      "name": "タービン速力補正",
+      "expr": "ship_id_in( 623, 561, 681 )"
+    },
+    {
+      "tag": "NewModelBoilerSpeedBonus",
+      "name": "新型缶速力補正",
+      "expr": "ship_id_in( 881, 719, 882, 887, 894, 899 )"
+    },
+    {
+      "tag": "Pillbox",
+      "name": "砲台小鬼",
+      "expr": "ship_id_in(1665, 1666, 1667, 2178, 2179, 2180, 2181, 2188, 2189, 2190, 2191, 2196, 2197, 2329, 2330, 2331)"
+    },
+    {
+      "tag": "IsolatedIsland",
+      "name": "離島棲姫",
+      "expr": "ship_id_in(1668, 1669, 1670, 1671, 1672)"
+    },
+    {
+      "tag": "HarbourSummerPrincess",
+      "name": "港湾夏姫",
+      "expr": "ship_id_in(1699, 1700, 1701, 1702, 1703, 1704, 2023, 2024, 2025, 2026, 2027, 2028, 2243, 2244, 2245, 2246)"
+    },
+    {
+      "tag": "SupplyDepot",
+      "name": "集積地",
+      "expr": "ship_id_in( 1653, 1654, 1655, 1656, 1657, 1658, 1809, 1810, 1811, 1812, 1813, 1814, 1921, 1922, 1923, 1924, 1925, 1926, 1933, 1934, 1935, 1936, 1937, 1938, 1994, 1995, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2084, 2085, 2086, 2087, 2088, 2089, 2164, 2165, 2166, 2167, 2168, 2169, 2170, 2171, 2250, 2251, 2252, 2253, 2254, 2255, 2301, 2302, 2303, 2304, 2305, 2306 )"
+    },
+    {
+      "tag": "NewSupplyDepot",
+      "name": "新集積地",
+      "expr": "ship_id >= 2138 && ship_id <= 2145"
+    },
+    {
+      "tag": "PtImp",
+      "name": "PT小鬼群",
+      "expr": "ship_id_in(1637, 1638, 1639, 1640, 2192, 2193, 2194)"
+    },
+    {
+      "tag": "BattleshipSummerPrincess",
+      "name": "戦艦夏姫",
+      "expr": "ship_id_in(1696, 1697, 1698)"
+    },
+    {
+      "tag": "HeavyCruiserSummerPrincess",
+      "name": "重巡夏姫",
+      "expr": "ship_id_in(1705, 1706, 1707)"
+    },
+    {
+      "tag": "AnchorageWaterDemonVacationMode",
+      "name": "泊地水鬼 バカンスmode",
+      "expr": "ship_id_in(1815, 1816, 1817, 1818, 1819, 1820)"
+    },
+    {
+      "tag": "FrenchBattleshipPrincess",
+      "name": "戦艦仏棲姫",
+      "expr": "ship_id_in( 1745, 1746, 1747, 1748, 1749, 1750, 1834, 1835, 1836, 1837, 1838, 1839 )"
+    },
+    {
+      "tag": "DockPrincess",
+      "name": "船渠棲姫",
+      "expr": "ship_id_in(1827, 1828, 1829, 1830, 1831, 1832)"
+    },
+    {
+      "tag": "SummerAircraftCarrierDemon",
+      "name": "空母夏鬼",
+      "expr": "ship_id_in(1751)"
+    },
+    {
+      "tag": "EuropeanWaterPrincess",
+      "name": "欧州水姫",
+      "expr": "ship_id_in(1840, 1841, 1842, 1843, 1844, 1845)"
+    }
+  ],
+  "gears": [
+    {
+      "gear_id": 16,
+      "types": [3, 5, 8, 8, 1],
+      "name": "九七式艦攻",
+      "torpedo": 5,
+      "asw": 4,
+      "los": 1,
+      "radius": 4,
+      "cost": 5,
+      "improvable": true
+    },
+    {
+      "gear_id": 21,
+      "types": [3, 5, 6, 6, 12],
+      "name": "零式艦戦52型",
+      "anti_air": 6,
+      "radius": 6,
+      "cost": 5,
+      "improvable": true
+    },
+    {
+      "gear_id": 24,
+      "types": [3, 5, 7, 7, 16],
+      "name": "彗星",
+      "bombing": 8,
+      "asw": 3,
+      "radius": 4,
+      "cost": 5,
+      "improvable": true
+    }
+  ],
+  "gear_attrs": [
+    {
+      "tag": "HighAngleMount",
+      "name": "高角砲",
+      "expr": "types[3] == 16"
+    },
+    {
+      "tag": "NightFighter",
+      "name": "夜間戦闘機",
+      "expr": "types[3] == 45"
+    },
+    {
+      "tag": "NightAttacker",
+      "name": "夜間攻撃機",
+      "expr": "types[3] == 46"
+    },
+    {
+      "tag": "HeavyBomber",
+      "name": "重爆撃機",
+      "expr": "types[3] == 49"
+    },
+    {
+      "tag": "NightRecon",
+      "name": "夜間偵察機",
+      "expr": "types[3] == 50"
+    },
+    {
+      "tag": "NightBomber",
+      "name": "夜間爆撃機",
+      "expr": "types[3] == 58"
+    },
+    {
+      "tag": "MainGun",
+      "name": "主砲",
+      "expr": "gear_type_in(1, 2, 3)"
+    },
+    {
+      "tag": "Radar",
+      "name": "電探",
+      "expr": "gear_type_in(12, 13)"
+    },
+    {
+      "tag": "SurfaceRadar",
+      "name": "水上電探",
+      "expr": "Radar && los >= 5"
+    },
+    {
+      "tag": "AirRadar",
+      "name": "対空電探",
+      "expr": "Radar && anti_air >= 2"
+    },
+    {
+      "tag": "DepthChargeProjector",
+      "name": "爆雷投射機",
+      "expr": "gear_id_in( 44, 45, 287, 288, 377, 472, 569 )"
+    },
+    {
+      "tag": "SynergisticDepthCharge",
+      "name": "シナジー爆雷",
+      "expr": "gear_id_in( 226, 227, 378, 439, 488 )"
+    },
+    {
+      "tag": "AntiSubMortar",
+      "name": "対潜迫撃砲",
+      "expr": "gear_id_in(346, 347)"
+    },
+    {
+      "tag": "AntiSubWeapon",
+      "name": "対潜兵器",
+      "expr": "gear_type_in( 14, 40, 15, 7, 8, 11, 25, 26 )"
+    },
+    {
+      "tag": "ApDepthCharge",
+      "name": "装甲貫通爆雷",
+      "expr": "gear_id_in( 226, 227, 377, 378, 439, 472, 488 )"
+    },
+    {
+      "tag": "AntiSubAircraft",
+      "name": "対潜航空機",
+      "expr": "asw > 0 && gear_type_in( 7, 8, 11, 25, 26, 41 )"
+    },
+    {
+      "tag": "LateModelBowTorpedo",
+      "name": "後期型艦首魚雷",
+      "expr": "gear_id_in( 213, 214, 383, 441, 443, 457, 461, 512 )"
+    },
+    {
+      "tag": "Seaplane",
+      "name": "水上機",
+      "expr": "gear_type_in( 10, 11, 41, 45 )"
+    },
+    {
+      "tag": "CbAircraft",
+      "name": "艦上機",
+      "expr": "gear_type_in( 6, 7, 8, 9 )"
+    },
+    {
+      "tag": "LbAircraft",
+      "name": "陸上機",
+      "expr": "gear_type_in( 47, 48, 49, 53 )"
+    },
+    {
+      "tag": "JetAircraft",
+      "name": "噴式機",
+      "expr": "gear_type_in( 56, 57, 58, 59 )"
+    },
+    {
+      "tag": "Fighter",
+      "name": "戦闘機",
+      "expr": "gear_type_in( 6, 45, 48, 56 )"
+    },
+    {
+      "tag": "Recon",
+      "name": "偵察機",
+      "expr": "gear_type_in( 9, 10, 41, 49, 59 )"
+    },
+    {
+      "tag": "ObservationSeaplane",
+      "name": "水上観測機",
+      "expr": "gear_type_in( 10, 11 )"
+    },
+    {
+      "tag": "CbFighterBomber",
+      "name": "艦上爆戦",
+      "expr": "gear_id_in( 60, 219, 154, 447, 487 )"
+    },
+    {
+      "tag": "AntiInstDiveBomber",
+      "name": "対地艦爆",
+      "expr": "gear_id_in( 64, 305, 306, 148, 233, 277, 319, 320, 391, 392, 420, 421, 474 )"
+    },
+    {
+      "tag": "CbSwordfish",
+      "name": "艦上Swordfish",
+      "expr": "gear_id_in( 242, 243, 244 )"
+    },
+    {
+      "tag": "SemiNightPlane",
+      "name": "準夜間機",
+      "expr": "CbSwordfish || gear_id_in( 154, 320 )"
+    },
+    {
+      "tag": "HighAltitudeInterceptor",
+      "name": "高高度迎撃機",
+      "expr": "gear_id_in( 351, 352, 350 )"
+    }
+  ],
+  "ibonuses": {
+    "shelling_power": [
+      {
+        "expr": "firepower > 12",
+        "formula": "1.5 * sqrt(x)"
+      },
+      {
+        "expr": "gear_id_in( 10, 66, 220, 275, 358, 464, 524, 565 )",
+        "formula": "0.2 * x"
+      },
+      {
+        "expr": "gear_id_in( 12, 234, 247, 467 )",
+        "formula": "0.3 * x"
+      },
+      {
+        "expr": "gear_type_in( 14, 40, 15 ) && !gear_id_in(226, 227, 378, 488)",
+        "formula": "0.75 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type_in( 1, 2, 3, 4, 18, 19, 21, 24, 29, 36, 37, 42, 46, 34, 39, 32, 35, 54 )",
+        "formula": "sqrt(x)"
+      }
+    ],
+    "shelling_accuracy": [
+      {
+        "expr": "SurfaceRadar",
+        "formula": "1.7 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type_in( 1, 2, 3, 4, 18, 19, 29, 36, 37, 42, 12, 13, 39 )",
+        "formula": "sqrt(x)"
+      },
+      {
+        "expr": "gear_type == 46",
+        "formula": "0.6 * sqrt(x)"
+      }
+    ],
+    "shelling_aerial_power": [
+      {
+        "expr": "gear_type == 8 || (!CbFighterBomber && gear_type == 7)",
+        "formula": "0.2 * x"
+      }
+    ],
+    "torpedo_power": [
+      {
+        "expr": "gear_type == 32",
+        "formula": "0.2 * x"
+      },
+      {
+        "expr": "gear_type_in( 5, 21 )",
+        "formula": "1.2 * sqrt(x)"
+      }
+    ],
+    "torpedo_accuracy": [
+      {
+        "expr": "gear_type_in( 5, 21 )",
+        "formula": "2 * sqrt(x)"
+      }
+    ],
+    "torpedo_evasion": [
+      {
+        "expr": "gear_type_in(14, 40)",
+        "formula": "1.5 * sqrt(x)"
+      }
+    ],
+    "night_power": [
+      {
+        "expr": "gear_type == 32 || gear_id_in( 10, 66, 220, 275, 358, 464, 524, 565 )",
+        "formula": "0.2 * x"
+      },
+      {
+        "expr": "gear_id_in( 12, 234, 247, 467 )",
+        "formula": "0.3 * x"
+      },
+      {
+        "expr": "gear_type_in( 1, 2, 3, 4, 5, 18, 19, 22, 24, 29, 36, 37, 42, 46, 34, 39, 35, 54 )",
+        "formula": "sqrt(x)"
+      }
+    ],
+    "night_accuracy": [
+      {
+        "expr": "Radar && accuracy >= 3",
+        "formula": "1.6 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type_in( 1, 2, 3, 4, 18, 19, 29, 42, 12, 13, 14, 22, 24, 39, 46, 34 )",
+        "formula": "1.3 * sqrt(x)"
+      }
+    ],
+    "night_aerial_power": [],
+    "asw_power": [
+      {
+        "expr": "gear_type == 25 && asw > 10 || gear_type == 26 && asw > 7",
+        "formula": "0.3 * x"
+      },
+      {
+        "expr": "gear_type_in( 25, 8, 26 ) || !CbFighterBomber && gear_type == 7 || gear_id_in(447, 487)",
+        "formula": "0.2 * x"
+      },
+      {
+        "expr": "gear_type_in( 14, 15, 40 )",
+        "formula": "sqrt(x)"
+      }
+    ],
+    "asw_accuracy": [
+      {
+        "expr": "gear_type_in( 14, 15 )",
+        "formula": "1.3 * sqrt(x)"
+      }
+    ],
+    "defense_power": [
+      {
+        "expr": "gear_type == 27",
+        "formula": "0.2 * x"
+      },
+      {
+        "expr": "gear_type == 28",
+        "formula": "0.3 * x"
+      }
+    ],
+    "contact_selection": [
+      {
+        "expr": "gear_type == 9 && los == 7",
+        "formula": "0.25 * x"
+      },
+      {
+        "expr": "gear_type == 9 && los == 11",
+        "formula": "0.4 * x"
+      },
+      {
+        "expr": "gear_type == 10 && los == 6",
+        "formula": "0.2 * x"
+      },
+      {
+        "expr": "gear_type == 10 && (los == 4 || los == 5)",
+        "formula": "0.14 * x"
+      },
+      {
+        "expr": "gear_type == 10 && los == 3",
+        "formula": "0.1 * x"
+      }
+    ],
+    "fighter_power": [
+      {
+        "expr": "gear_type_in( 6, 45, 48, 56 )",
+        "formula": "0.2 * x"
+      },
+      {
+        "expr": "CbFighterBomber",
+        "formula": "0.25 * x"
+      },
+      {
+        "expr": "gear_type_in( 47, 49 )",
+        "formula": "0.5 * sqrt(x)"
+      }
+    ],
+    "ship_anti_air": [
+      {
+        "expr": "gear_type == 21 && anti_air >= 8",
+        "formula": "3 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type == 21",
+        "formula": "2 * sqrt(x)"
+      },
+      {
+        "expr": "(gear_type == 36 || HighAngleMount) && anti_air >= 8",
+        "formula": "1.5 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type == 36 || HighAngleMount",
+        "formula": "sqrt(x)"
+      }
+    ],
+    "fleet_anti_air": [
+      {
+        "expr": "(gear_type == 36 || HighAngleMount) && anti_air >= 8",
+        "formula": "3 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type == 36 || HighAngleMount",
+        "formula": "2 * sqrt(x)"
+      },
+      {
+        "expr": "AirRadar",
+        "formula": "1.5 * sqrt(x)"
+      }
+    ],
+    "elos": [
+      {
+        "expr": "gear_type == 12",
+        "formula": "1.25 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type == 13",
+        "formula": "1.4 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type_in(9, 10, 41)",
+        "formula": "1.2 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type == 11",
+        "formula": "1.15 * sqrt(x)"
+      },
+      {
+        "expr": "gear_type == 26",
+        "formula": "sqrt(x)"
+      }
+    ]
+  },
+  "anti_air_cutin": [
+    {
+      "id": 1,
+      "guaranteed": 8,
+      "multiplier": 1.7,
+      "type_factor": 65,
+      "sequential": false
+    },
+    {
+      "id": 2,
+      "guaranteed": 7,
+      "multiplier": 1.7,
+      "type_factor": 58,
+      "sequential": false
+    },
+    {
+      "id": 3,
+      "guaranteed": 5,
+      "multiplier": 1.6,
+      "type_factor": 50,
+      "sequential": false
+    },
+    {
+      "id": 4,
+      "guaranteed": 7,
+      "multiplier": 1.5,
+      "type_factor": 52,
+      "sequential": false
+    },
+    {
+      "id": 5,
+      "guaranteed": 5,
+      "multiplier": 1.5,
+      "type_factor": 55,
+      "sequential": false
+    },
+    {
+      "id": 6,
+      "guaranteed": 5,
+      "multiplier": 1.45,
+      "type_factor": 40,
+      "sequential": false
+    },
+    {
+      "id": 7,
+      "guaranteed": 4,
+      "multiplier": 1.35,
+      "type_factor": 45,
+      "sequential": false
+    },
+    {
+      "id": 8,
+      "guaranteed": 5,
+      "multiplier": 1.4,
+      "type_factor": 50,
+      "sequential": false
+    },
+    {
+      "id": 9,
+      "guaranteed": 3,
+      "multiplier": 1.3,
+      "type_factor": 40,
+      "sequential": false
+    },
+    {
+      "id": 10,
+      "guaranteed": 9,
+      "multiplier": 1.65,
+      "type_factor": 60,
+      "sequential": false
+    },
+    {
+      "id": 11,
+      "guaranteed": 7,
+      "multiplier": 1.5,
+      "type_factor": 55,
+      "sequential": false
+    },
+    {
+      "id": 12,
+      "guaranteed": 4,
+      "multiplier": 1.25,
+      "type_factor": 45,
+      "sequential": false
+    },
+    {
+      "id": 13,
+      "guaranteed": 5,
+      "multiplier": 1.35,
+      "type_factor": 35,
+      "sequential": false
+    },
+    {
+      "id": 14,
+      "guaranteed": 5,
+      "multiplier": 1.45,
+      "type_factor": 63,
+      "sequential": false
+    },
+    {
+      "id": 15,
+      "guaranteed": 4,
+      "multiplier": 1.3,
+      "type_factor": 56,
+      "sequential": false
+    },
+    {
+      "id": 16,
+      "guaranteed": 5,
+      "multiplier": 1.4,
+      "type_factor": 62,
+      "sequential": false
+    },
+    {
+      "id": 17,
+      "guaranteed": 3,
+      "multiplier": 1.25,
+      "type_factor": 55,
+      "sequential": false
+    },
+    {
+      "id": 18,
+      "guaranteed": 3,
+      "multiplier": 1.2,
+      "type_factor": 60,
+      "sequential": false
+    },
+    {
+      "id": 19,
+      "guaranteed": 6,
+      "multiplier": 1.45,
+      "type_factor": 58,
+      "sequential": false
+    },
+    {
+      "id": 20,
+      "guaranteed": 4,
+      "multiplier": 1.25,
+      "type_factor": 65,
+      "sequential": false
+    },
+    {
+      "id": 21,
+      "guaranteed": 6,
+      "multiplier": 1.45,
+      "type_factor": 60,
+      "sequential": false
+    },
+    {
+      "id": 22,
+      "guaranteed": 3,
+      "multiplier": 1.2,
+      "type_factor": 59,
+      "sequential": false
+    },
+    {
+      "id": 23,
+      "guaranteed": 2,
+      "multiplier": 1.05,
+      "type_factor": 80,
+      "sequential": false
+    },
+    {
+      "id": 24,
+      "guaranteed": 4,
+      "multiplier": 1.25,
+      "type_factor": 54,
+      "sequential": false
+    },
+    {
+      "id": 25,
+      "guaranteed": 8,
+      "multiplier": 1.55,
+      "type_factor": 61,
+      "sequential": false
+    },
+    {
+      "id": 26,
+      "guaranteed": 7,
+      "multiplier": 1.4,
+      "type_factor": 60,
+      "sequential": false
+    },
+    {
+      "id": 27,
+      "guaranteed": 5,
+      "multiplier": 1.55,
+      "type_factor": 55,
+      "sequential": false
+    },
+    {
+      "id": 28,
+      "guaranteed": 5,
+      "multiplier": 1.4,
+      "type_factor": 55,
+      "sequential": false
+    },
+    {
+      "id": 29,
+      "guaranteed": 6,
+      "multiplier": 1.55,
+      "type_factor": 60,
+      "sequential": false
+    },
+    {
+      "id": 30,
+      "guaranteed": 4,
+      "multiplier": 1.3,
+      "type_factor": 44,
+      "sequential": false
+    },
+    {
+      "id": 31,
+      "guaranteed": 3,
+      "multiplier": 1.25,
+      "type_factor": 53,
+      "sequential": false
+    },
+    {
+      "id": 32,
+      "guaranteed": 4,
+      "multiplier": 1.2,
+      "type_factor": 37,
+      "sequential": false
+    },
+    {
+      "id": 33,
+      "guaranteed": 4,
+      "multiplier": 1.35,
+      "type_factor": 44,
+      "sequential": false
+    },
+    {
+      "id": 34,
+      "guaranteed": 8,
+      "multiplier": 1.6,
+      "type_factor": 60,
+      "sequential": true
+    },
+    {
+      "id": 35,
+      "guaranteed": 7,
+      "multiplier": 1.55,
+      "type_factor": 55,
+      "sequential": true
+    },
+    {
+      "id": 36,
+      "guaranteed": 7,
+      "multiplier": 1.55,
+      "type_factor": 55,
+      "sequential": true
+    },
+    {
+      "id": 37,
+      "guaranteed": 5,
+      "multiplier": 1.45,
+      "type_factor": 40,
+      "sequential": true
+    },
+    {
+      "id": 38,
+      "guaranteed": 11,
+      "multiplier": 1.85,
+      "type_factor": 62,
+      "sequential": true
+    },
+    {
+      "id": 39,
+      "guaranteed": 11,
+      "multiplier": 1.7,
+      "type_factor": 60,
+      "sequential": true
+    },
+    {
+      "id": 40,
+      "guaranteed": 11,
+      "multiplier": 1.7,
+      "type_factor": 56,
+      "sequential": true
+    },
+    {
+      "id": 41,
+      "guaranteed": 10,
+      "multiplier": 1.65,
+      "type_factor": 55,
+      "sequential": true
+    },
+    {
+      "id": 42,
+      "guaranteed": 11,
+      "multiplier": 1.65,
+      "type_factor": 65,
+      "sequential": false
+    },
+    {
+      "id": 43,
+      "guaranteed": 9,
+      "multiplier": 1.6,
+      "type_factor": 60,
+      "sequential": false
+    },
+    {
+      "id": 44,
+      "guaranteed": 7,
+      "multiplier": 1.6,
+      "type_factor": 55,
+      "sequential": false
+    },
+    {
+      "id": 45,
+      "guaranteed": 6,
+      "multiplier": 1.55,
+      "type_factor": 50,
+      "sequential": false
+    }
+  ],
+  "day_cutin": [
+    {
+      "tag": "MainMain",
+      "power_mod": 1.5,
+      "accuracy_mod": 1.2,
+      "type_factor": 150,
+      "hits": 1
+    },
+    {
+      "tag": "MainAp",
+      "power_mod": 1.3,
+      "accuracy_mod": 1.3,
+      "type_factor": 140,
+      "hits": 1
+    },
+    {
+      "tag": "MainRadar",
+      "power_mod": 1.2,
+      "accuracy_mod": 1.5,
+      "type_factor": 130,
+      "hits": 1
+    },
+    {
+      "tag": "MainSec",
+      "power_mod": 1.1,
+      "accuracy_mod": 1.3,
+      "type_factor": 120,
+      "hits": 1
+    },
+    {
+      "tag": "DoubleAttack",
+      "power_mod": 1.2,
+      "accuracy_mod": 1.1,
+      "type_factor": 130,
+      "hits": 2
+    },
+    {
+      "tag": "JFJBJB",
+      "power_mod": 1.35,
+      "accuracy_mod": 1.35,
+      "type_factor": 135,
+      "hits": 1
+    },
+    {
+      "tag": "JFJB",
+      "power_mod": 1.3,
+      "accuracy_mod": 1.35,
+      "type_factor": 125,
+      "hits": 1
+    },
+    {
+      "tag": "JFBA",
+      "power_mod": 1.27,
+      "accuracy_mod": 1.35,
+      "type_factor": 115,
+      "hits": 1
+    },
+    {
+      "tag": "FBA",
+      "power_mod": 1.25,
+      "accuracy_mod": 1.35,
+      "type_factor": 125,
+      "hits": 1
+    },
+    {
+      "tag": "BBA",
+      "power_mod": 1.2,
+      "accuracy_mod": 1.2,
+      "type_factor": 140,
+      "hits": 1
+    },
+    {
+      "tag": "BA",
+      "power_mod": 1.15,
+      "accuracy_mod": 1.18,
+      "type_factor": 155,
+      "hits": 1
+    },
+    {
+      "tag": "Zuiun",
+      "power_mod": 1.35,
+      "accuracy_mod": 1.2,
+      "type_factor": 120,
+      "hits": 1
+    },
+    {
+      "tag": "AirSea",
+      "power_mod": 1.3,
+      "accuracy_mod": 1.2,
+      "type_factor": 120,
+      "hits": 1
+    }
+  ],
+  "night_cutin": [
+    {
+      "tag": "DoubleAttack",
+      "power_mod": 1.2,
+      "accuracy_mod": 1.1,
+      "type_factor": 0,
+      "hits": 2
+    },
+    {
+      "tag": "TorpTorpMain",
+      "power_mod": 1.3,
+      "accuracy_mod": 1.5,
+      "type_factor": 115,
+      "hits": 2
+    },
+    {
+      "tag": "TorpTorpTorp",
+      "power_mod": 1.5,
+      "accuracy_mod": 1.65,
+      "type_factor": 122,
+      "hits": 2
+    },
+    {
+      "tag": "MainMainSec",
+      "power_mod": 1.75,
+      "accuracy_mod": 1.65,
+      "type_factor": 130,
+      "hits": 1
+    },
+    {
+      "tag": "MainMainMain",
+      "power_mod": 2,
+      "accuracy_mod": 1.5,
+      "type_factor": 140,
+      "hits": 1
+    },
+    {
+      "tag": "MainTorpRadar",
+      "power_mod": 1.3,
+      "accuracy_mod": 1.1,
+      "type_factor": 114,
+      "hits": 1.65
+    },
+    {
+      "tag": "TorpLookoutRadar",
+      "power_mod": 1.2,
+      "accuracy_mod": 1.65,
+      "type_factor": 140,
+      "hits": 1.5
+    },
+    {
+      "tag": "TorpTsloTorp",
+      "power_mod": 1.5,
+      "accuracy_mod": 1.65,
+      "type_factor": 126,
+      "hits": 1.875
+    },
+    {
+      "tag": "TorpTsloDrum",
+      "power_mod": 1.3,
+      "accuracy_mod": 1.5,
+      "type_factor": 122,
+      "hits": 1.55
+    },
+    {
+      "tag": "SubRadarTorp",
+      "power_mod": 1.75,
+      "accuracy_mod": 1.65,
+      "type_factor": 105,
+      "hits": 2
+    },
+    {
+      "tag": "SubTorpTorp",
+      "power_mod": 1.6,
+      "accuracy_mod": 1.65,
+      "type_factor": 110,
+      "hits": 2
+    },
+    {
+      "tag": "Cvci1_25",
+      "power_mod": 1.25,
+      "accuracy_mod": 1.25,
+      "type_factor": 105,
+      "hits": 1
+    },
+    {
+      "tag": "Cvci1_20",
+      "power_mod": 1.2,
+      "accuracy_mod": 1.2,
+      "type_factor": 115,
+      "hits": 1
+    },
+    {
+      "tag": "Cvci1_18",
+      "power_mod": 1.18,
+      "accuracy_mod": 1.2,
+      "type_factor": 125,
+      "hits": 1
+    },
+    {
+      "tag": "Photobomber",
+      "power_mod": 1.2,
+      "accuracy_mod": 1.2,
+      "type_factor": 115,
+      "hits": 1
+    },
+    {
+      "tag": "NightZuiun2Radar",
+      "power_mod": 1.36,
+      "accuracy_mod": 1.05,
+      "type_factor": 135,
+      "hits": 2
+    },
+    {
+      "tag": "NightZuiun2",
+      "power_mod": 1.32,
+      "accuracy_mod": 1.05,
+      "type_factor": 135,
+      "hits": 2
+    },
+    {
+      "tag": "NightZuiunRadar",
+      "power_mod": 1.28,
+      "accuracy_mod": 1.05,
+      "type_factor": 135,
+      "hits": 2
+    },
+    {
+      "tag": "NightZuiun",
+      "power_mod": 1.24,
+      "accuracy_mod": 1.05,
+      "type_factor": 135,
+      "hits": 2
+    }
+  ],
+  "formation": [
+    {
+      "tag": "LineAhead",
+      "protection_rate": 0.45,
+      "fleet_anti_air_mod": 1,
+      "shelling": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "torpedo": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "asw": {
+        "power_mod": 0.6,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "support_shelling": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      }
+    },
+    {
+      "tag": "DoubleLine",
+      "protection_rate": 0.6,
+      "fleet_anti_air_mod": 1.2,
+      "shelling": {
+        "power_mod": 0.8,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1
+      },
+      "torpedo": {
+        "power_mod": 0.8,
+        "accuracy_mod": 0.8,
+        "evasion_mod": 1
+      },
+      "asw": {
+        "power_mod": 0.8,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 0.9,
+        "evasion_mod": 1
+      },
+      "support_shelling": {
+        "power_mod": 0.8,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1
+      }
+    },
+    {
+      "tag": "Diamond",
+      "protection_rate": 0.75,
+      "fleet_anti_air_mod": 1.6,
+      "shelling": {
+        "power_mod": 0.7,
+        "accuracy_mod": 1,
+        "evasion_mod": 1.1
+      },
+      "torpedo": {
+        "power_mod": 0.7,
+        "accuracy_mod": 0.4,
+        "evasion_mod": 1.1
+      },
+      "asw": {
+        "power_mod": 1.2,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 0.7,
+        "evasion_mod": 1
+      },
+      "support_shelling": {
+        "power_mod": 0.7,
+        "accuracy_mod": 1,
+        "evasion_mod": 1.1
+      }
+    },
+    {
+      "tag": "Echelon",
+      "protection_rate": 0.6,
+      "fleet_anti_air_mod": 1,
+      "shelling": {
+        "power_mod": 0.75,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1.4
+      },
+      "torpedo": {
+        "power_mod": 0.6,
+        "accuracy_mod": 0.72,
+        "evasion_mod": 1.3
+      },
+      "asw": {
+        "power_mod": 1.1,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1.4
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 0.9,
+        "evasion_mod": 1.3
+      },
+      "support_shelling": {
+        "power_mod": 0.75,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1.2
+      }
+    },
+    {
+      "tag": "LineAbreast",
+      "protection_rate": 0.6,
+      "fleet_anti_air_mod": 1,
+      "shelling": {
+        "power_mod": 0.6,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1.3
+      },
+      "torpedo": {
+        "power_mod": 0.6,
+        "accuracy_mod": 0.3,
+        "evasion_mod": 1.4
+      },
+      "asw": {
+        "power_mod": 1.3,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1.1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 0.8,
+        "evasion_mod": 1.2
+      },
+      "support_shelling": {
+        "power_mod": 0.6,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1.3
+      }
+    },
+    {
+      "top_half": {
+        "tag": "Vanguard",
+        "protection_rate": 0.75,
+        "fleet_anti_air_mod": 1.1,
+        "shelling": {
+          "power_mod": 0.5,
+          "accuracy_mod": 0.8,
+          "evasion_mod": 1
+        },
+        "torpedo": {
+          "power_mod": 1,
+          "accuracy_mod": 0.75,
+          "evasion_mod": 1
+        },
+        "asw": {
+          "power_mod": 1,
+          "accuracy_mod": 1,
+          "evasion_mod": 1
+        },
+        "night": {
+          "power_mod": 0.5,
+          "accuracy_mod": 1,
+          "evasion_mod": 1
+        },
+        "support_shelling": {
+          "power_mod": 0.5,
+          "accuracy_mod": 0.8,
+          "evasion_mod": 1
+        }
+      },
+      "bottom_half": {
+        "tag": "Vanguard",
+        "protection_rate": 0.75,
+        "fleet_anti_air_mod": 1.1,
+        "shelling": {
+          "power_mod": 1,
+          "accuracy_mod": 1.2,
+          "evasion_mod": 1
+        },
+        "torpedo": {
+          "power_mod": 1,
+          "accuracy_mod": 0.95,
+          "evasion_mod": 1
+        },
+        "asw": {
+          "power_mod": 0.6,
+          "accuracy_mod": 1,
+          "evasion_mod": 1
+        },
+        "night": {
+          "power_mod": 1,
+          "accuracy_mod": 1,
+          "evasion_mod": 1
+        },
+        "support_shelling": {
+          "power_mod": 0.5,
+          "accuracy_mod": 0.8,
+          "evasion_mod": 1
+        }
+      }
+    },
+    {
+      "tag": "Cruising1",
+      "protection_rate": 0.6,
+      "fleet_anti_air_mod": 1.1,
+      "shelling": {
+        "power_mod": 0.8,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "torpedo": {
+        "power_mod": 0.7,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "asw": {
+        "power_mod": 1.3,
+        "accuracy_mod": 1.25,
+        "evasion_mod": 1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "support_shelling": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      }
+    },
+    {
+      "tag": "Cruising2",
+      "protection_rate": 0.6,
+      "fleet_anti_air_mod": 1,
+      "shelling": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1.3
+      },
+      "torpedo": {
+        "power_mod": 0.9,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "asw": {
+        "power_mod": 1.1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 0.9,
+        "evasion_mod": 1
+      },
+      "support_shelling": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      }
+    },
+    {
+      "tag": "Cruising3",
+      "protection_rate": 0.6,
+      "fleet_anti_air_mod": 1.5,
+      "shelling": {
+        "power_mod": 0.7,
+        "accuracy_mod": 0.8,
+        "evasion_mod": 1.1
+      },
+      "torpedo": {
+        "power_mod": 0.6,
+        "accuracy_mod": 0.5,
+        "evasion_mod": 1
+      },
+      "asw": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 0.7,
+        "evasion_mod": 1.1
+      },
+      "support_shelling": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      }
+    },
+    {
+      "tag": "Cruising4",
+      "protection_rate": 0.6,
+      "fleet_anti_air_mod": 1,
+      "shelling": {
+        "power_mod": 1.1,
+        "accuracy_mod": 1.1,
+        "evasion_mod": 1
+      },
+      "torpedo": {
+        "power_mod": 1,
+        "accuracy_mod": 1.2,
+        "evasion_mod": 1
+      },
+      "asw": {
+        "power_mod": 0.7,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "night": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      },
+      "support_shelling": {
+        "power_mod": 1,
+        "accuracy_mod": 1,
+        "evasion_mod": 1
+      }
+    }
+  ],
+  "historical_bonuses": [],
+  "equippability": {
+    "equip_stype": [
+      {
+        "api_id": 11,
+        "api_sortno": 11,
+        "api_name": "正規空母",
+        "api_scnt": 4,
+        "api_kcnt": 5,
+        "api_max_slotplus": 4,
+        "api_equip_type": {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 1,
+          "5": 0,
+          "6": 1,
+          "7": 1,
+          "8": 1,
+          "9": 1,
+          "10": 0,
+          "11": 0,
+          "12": 1,
+          "13": 1,
+          "14": 0,
+          "15": 0,
+          "16": 1,
+          "17": 1,
+          "18": 0,
+          "19": 0,
+          "20": 1,
+          "21": 1,
+          "22": 0,
+          "23": 1,
+          "24": 0,
+          "25": 0,
+          "26": 0,
+          "27": 0,
+          "28": 1,
+          "29": 0,
+          "30": 0,
+          "31": 0,
+          "32": 0,
+          "33": 0,
+          "34": 1,
+          "35": 1,
+          "36": 1,
+          "37": 0,
+          "38": 0,
+          "39": 0,
+          "40": 1,
+          "41": 0,
+          "42": 0,
+          "43": 1,
+          "44": 0,
+          "45": 0,
+          "46": 0,
+          "47": 0,
+          "48": 0,
+          "49": 0,
+          "50": 1,
+          "51": 0,
+          "52": 0,
+          "53": 0,
+          "54": 0,
+          "55": 0,
+          "56": 0,
+          "57": 0,
+          "58": 0,
+          "59": 0,
+          "60": 0,
+          "61": 0,
+          "62": 0,
+          "63": 0,
+          "64": 0,
+          "65": 0,
+          "66": 0,
+          "67": 0,
+          "68": 0,
+          "69": 0,
+          "70": 0,
+          "71": 0,
+          "72": 0,
+          "73": 0,
+          "74": 0,
+          "75": 0,
+          "76": 0,
+          "77": 0,
+          "78": 0,
+          "79": 0,
+          "80": 0,
+          "81": 0,
+          "82": 0,
+          "83": 0,
+          "84": 0,
+          "85": 0,
+          "86": 0,
+          "87": 0,
+          "88": 0,
+          "89": 0,
+          "90": 0,
+          "91": 0,
+          "92": 0,
+          "93": 0,
+          "94": 0,
+          "95": 1
+        }
+      }
+    ],
+    "equip_exslot": [16, 21, 23, 27, 28, 36, 39, 43, 44],
+    "equip_ship": {},
+    "equip_exslot_ship": {},
+    "rules": [
+      {
+        "ship": "ship_id_in(392, 724)",
+        "exclude": "gear_type == 11 && gear_id != 194"
+      },
+      {
+        "ship": "ship_class == 41 && sort_id % 10 >= 6",
+        "keys": ["g4"],
+        "exclude": "gear_type == 5"
+      },
+      {
+        "ship": "ship_class == 2 && sort_id % 10 >= 6",
+        "keys": ["g3", "g4", "g5"],
+        "exclude": "gear_type_in(2, 3)"
+      },
+      {
+        "ship": "ship_class == 34 && sort_id % 10 >= 6",
+        "keys": ["g4"],
+        "exclude": "gear_type_in(1, 2, 5, 22)"
+      },
+      {
+        "ship": "ship_class == 34 && sort_id % 10 >= 6",
+        "keys": ["g5"],
+        "exclude": "!gear_type_in(21, 12, 43)"
+      },
+      {
+        "ship": "ship_id == 166",
+        "exclude": "gear_type == 35 && gear_id != 402"
+      },
+      {
+        "ship": "ship_type_in(13, 14)",
+        "keys": ["gx"],
+        "include": "gear_id_in(442 , 443)"
+      },
+      {
+        "ship": "ship_type_in(7, 11, 18)",
+        "keys": ["gx"],
+        "include": "gear_id_in(477, 478)"
+      },
+      {
+        "ship": "ship_id == 699",
+        "exclude": "gear_type == 1 && gear_id != 48 "
+      },
+      {
+        "ship": "ship_id == 699",
+        "exclude": "gear_type == 4 && gear_id != 524 "
+      },
+      {
+        "ship": "ship_class == 60",
+        "exclude": "gear_type == 4 && gear_id != 524 "
+      },
+      {
+        "ship": "ship_class == 120",
+        "exclude": "gear_type == 1 && !gear_id_in(229, 379, 382)"
+      },
+      {
+        "ship": "ship_class == 120",
+        "exclude": "gear_type == 4 && !gear_id_in(66, 220)"
+      },
+      {
+        "ship": "ship_class == 120",
+        "keys": ["gx"],
+        "include": "gear_id == 524 "
+      },
+      {
+        "ship": "ship_id_in(179, 180)",
+        "exclude": "gear_type == 13 && gear_id != 124 "
+      },
+      {
+        "ship": "ship_id_in(968, 963)",
+        "keys": ["g4"],
+        "exclude": "gear_type_in(1, 5, 13)"
+      },
+      {
+        "ship": "ship_id_in(927, 733)",
+        "exclude": "gear_type == 11 && gear_id != 367"
+      },
+      {
+        "ship": "ship_id_in(100, 101, 574, 114, 290, 200, 511, 512, 513, 516, 395, 995, 1000, 1001, 1006)",
+        "exclude": "gear_type == 27 && gear_id != 268 "
+      },
+      {
+        "ship": "!ship_id_in(466, 467, 153, 156, 550, 885, 713)",
+        "exclude": "gear_id == 151 "
+      },
+      {
+        "ship": "ship_type_in(7, 11, 18)",
+        "exclude": "gear_id == 561 "
+      },
+      {
+        "ship": "ship_id == 961",
+        "keys": ["g4"],
+        "exclude": "gear_type_in(1, 5)"
+      },
+      {
+        "ship": "!ship_type_in(8, 9, 10)",
+        "exclude": "gear_id_in(142, 460)"
+      },
+      {
+        "ship": "ship_id_in(743, 744, 745)",
+        "keys": ["g4"],
+        "exclude": "!gear_type_in(21, 43)"
+      },
+      {
+        "ship": "ship_id == 1071",
+        "keys": ["g4", "g5"],
+        "exclude": "gear_type_in(5, 1, 2)"
+      },
+      {
+        "ship": "ship_id_in(748, 749)",
+        "keys": ["g4", "g5"],
+        "exclude": "!gear_type_in(11, 18, 19, 21, 43, 46)"
+      }
+    ]
+  }
+}
