@@ -56,12 +56,21 @@ export const test = base.extend<{ runtime: BrowserRuntime }>({
         masterDataPaths: [],
       };
       const errors: string[] = [];
+      const unstableSelectorWarnings: string[] = [];
       const unexpectedExternalRequests: string[] = [];
       const origin = new URL(baseURL!).origin;
 
       page.on("pageerror", (error) => errors.push(error.message));
       page.on("console", (message) => {
         if (message.type() === "error") errors.push(message.text());
+        if (
+          message.type() === "warning" &&
+          /Selector .+ returned a different result when called with the same parameters/.test(
+            message.text(),
+          )
+        ) {
+          unstableSelectorWarnings.push(message.text());
+        }
       });
       page.on("response", (response) => {
         if (new URL(response.url()).pathname.endsWith(".wasm")) {
@@ -190,6 +199,10 @@ export const test = base.extend<{ runtime: BrowserRuntime }>({
         "unhandled external browser requests",
       ).toEqual([]);
       expect(errors, "uncaught exceptions and console errors").toEqual([]);
+      expect(
+        unstableSelectorWarnings,
+        "unstable Redux selector warnings",
+      ).toEqual([]);
     },
     { auto: true },
   ],

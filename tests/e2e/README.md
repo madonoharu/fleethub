@@ -54,7 +54,8 @@ and Rust analysis are not mocked.
 Browser master-data requests use the checked-in fixture below. Application
 JavaScript, locale bundles and Wasm are served by Next.js unchanged. Analytics
 requests receive inert successful responses; unexpected external requests and
-browser errors fail the tests. Next.js build and server metadata generation
+browser errors fail the tests. React-Redux warnings about selectors returning
+different results for the same state also fail the tests. Next.js build and server metadata generation
 still use the application's public GCS generation-map request.
 
 ## Master-data fixture

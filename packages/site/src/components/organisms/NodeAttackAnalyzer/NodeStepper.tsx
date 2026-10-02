@@ -2,6 +2,7 @@ import { nonNullable } from "@fh/utils";
 import { Stack, Tabs, Tab, Button, Alert } from "@mui/material";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
+import { shallowEqual } from "react-redux";
 
 import { useAppDispatch, useRootSelector } from "../../../hooks";
 import {
@@ -48,11 +49,13 @@ const NodeList: React.FC<Props> = ({ file, activeStep }) => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
 
-  const steps = useRootSelector((root) => {
-    return file.steps
-      .map((id) => stepsSelectors.selectById(root, id))
-      .filter(nonNullable);
-  });
+  const steps = useRootSelector(
+    (root) =>
+      file.steps
+        .map((id) => stepsSelectors.selectById(root, id))
+        .filter(nonNullable),
+    shallowEqual,
+  );
 
   const handleTabChange = (event: unknown, id: unknown) => {
     if (typeof id === "string") {
