@@ -77,9 +77,7 @@ describe("storage authentication boundary", () => {
 
     expect(app.getApps).not.toHaveBeenCalled();
     expect(storage.getStorage).not.toHaveBeenCalled();
-    await expect(operations.readJson("data/public.json")).resolves.toEqual(
-      data,
-    );
+    expect(await operations.readJson("data/public.json")).toEqual(data);
     expect(got.get).toHaveBeenCalledTimes(1);
     expect(got.get).toHaveBeenCalledWith(
       "https://storage.googleapis.com/kcfleethub/data/public.json",
@@ -111,9 +109,9 @@ describe("storage authentication boundary", () => {
       bucket,
     } as unknown as ReturnType<typeof storage.getStorage>);
 
-    await expect(operations.exists("data/known.json")).resolves.toBe(true);
+    expect(await operations.exists("data/known.json")).toBe(true);
     exists.mockResolvedValue([false]);
-    await expect(operations.exists("data/missing.json")).resolves.toBe(false);
+    expect(await operations.exists("data/missing.json")).toBe(false);
     expect(storage.getStorage).toHaveBeenNthCalledWith(1, defaultApp);
     expect(storage.getStorage).toHaveBeenNthCalledWith(2, defaultApp);
     expect(file).toHaveBeenNthCalledWith(1, "data/known.json");

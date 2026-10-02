@@ -43,7 +43,7 @@ describe("Kcnav requests with real Ky", () => {
   it("joins the maps prefix and parses map keys returned by the all endpoint", async () => {
     const fetch = respond(["1-1", "74-3"]);
 
-    await expect(new KcnavClient(null).all()).resolves.toEqual([11, 743]);
+    expect(await new KcnavClient(null).all()).toEqual([11, 743]);
     const request = fetch.mock.calls[0][0] as Request;
     expect(request.url).toBe("https://tsunkit.net/api/routing/maps/all");
     expect(request.method).toBe("GET");
@@ -57,7 +57,7 @@ describe("Kcnav requests with real Ky", () => {
     async (method, suffix, result) => {
       const fetch = respond(result);
 
-      await expect(new KcnavClient(null)[method](743)).resolves.toEqual(result);
+      expect(await new KcnavClient(null)[method](743)).toEqual(result);
       const request = fetch.mock.calls[0][0] as Request;
       expect(request.url).toBe(
         `https://tsunkit.net/api/routing/maps/${suffix}`,
@@ -86,8 +86,8 @@ describe("Kcnav requests with real Ky", () => {
     );
     const client = new KcnavClient(74, cache);
 
-    await expect(client.getEnemycomps(743)).resolves.toEqual(enemycomps);
-    await expect(client.getEnemycomps(743)).resolves.toEqual(enemycomps);
+    expect(await client.getEnemycomps(743)).toEqual(enemycomps);
+    expect(await client.getEnemycomps(743)).toEqual(enemycomps);
     expect(fetch).toHaveBeenCalledTimes(2);
     for (const [input] of fetch.mock.calls) {
       const request = input as Request;
@@ -103,8 +103,8 @@ describe("Kcnav requests with real Ky", () => {
     spyOn(console, "log").mockImplementation(() => {});
     const client = new KcnavClient(null, new Map());
 
-    await expect(client.getGraph(11)).resolves.toEqual(graph);
-    await expect(client.getGraph(11)).resolves.toEqual(graph);
+    expect(await client.getGraph(11)).toEqual(graph);
+    expect(await client.getGraph(11)).toEqual(graph);
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 });
