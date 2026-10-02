@@ -2,7 +2,7 @@ import { Path, PathValue } from "@fh/utils";
 import { styled, Stack } from "@mui/material";
 import type { Comp, NodeAttackAnalyzerConfig } from "fleethub-core";
 import { produce } from "immer";
-import set from "lodash/set";
+import set from "es-toolkit/compat/set";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 

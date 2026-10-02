@@ -1,7 +1,7 @@
 import { Path, PathValue } from "@fh/utils";
 import constate from "constate";
 import { Comp, CompAnalyzerConfig } from "fleethub-core";
-import set from "lodash/set";
+import set from "es-toolkit/compat/set";
 import React, { useCallback } from "react";
 import { useImmer } from "use-immer";
 
@@ -33,7 +33,7 @@ const useComp = ({ comp }: Props) => {
         });
       };
     },
-    [updateConfig]
+    [updateConfig],
   );
 
   return {

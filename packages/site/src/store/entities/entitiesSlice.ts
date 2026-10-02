@@ -8,7 +8,7 @@ import {
   EntityId,
 } from "@reduxjs/toolkit";
 import { Formation, GearState, OrgState, ShipState } from "fleethub-core";
-import xor from "lodash/xor";
+import { xor } from "es-toolkit";
 import { Entities, nonNullable, normalize } from "ts-norm";
 
 import { airSquadronsSlice } from "./airSquadronsSlice";

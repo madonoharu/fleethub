@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import throttle from "lodash/throttle";
 import React, { createContext, useContext } from "react";
-import { DragLayerMonitor, useDragLayer } from "react-dnd";
+import { useDragLayer } from "react-dnd";
+
+import { createDragLayerStyle } from "./getDragLayerStyle";
 
 type DragLayerRef = {
   children?: React.ReactNode;
@@ -25,8 +26,6 @@ const DragLayerContainer = styled.div`
   height: 100%;
 `;
 
-const wait = 50;
-
 const DragLayerBox = styled.div(
   ({ theme }) => css`
     backdrop-filter: blur(4px);
@@ -38,18 +37,7 @@ const DragLayerBox = styled.div(
     border-radius: 4px;
   `,
 );
-const getStyle = throttle(
-  (monitor: DragLayerMonitor): React.CSSProperties | undefined => {
-    const offset = monitor.getSourceClientOffset();
-
-    if (!offset) return;
-
-    return {
-      transform: `translate(${offset.x}px, ${offset.y}px)`,
-    };
-  },
-  wait,
-);
+const getStyle = createDragLayerStyle();
 
 const DragLayer: React.FC = () => {
   const style = useDragLayer((monitor) => {
