@@ -13,6 +13,7 @@
 7. ユニットとブラウザのテスト用 worktree を分け、回帰テストを並列に追加した。既存テストは明示的な `bun:test` import に移し、Jest 本体・型・設定を削除した。モジュールモックを使うため、テストファイルごとの隔離を必須にした。
 8. 開発ツール、Git hooks、Playwright の実行も Bun に統一した。ルートの `bunfig.toml` で `[run] bun = true` を指定し、Node.js のバージョン指定と Volta の設定、CI の setup-node を削除した。Playwright の設定は `.mts`、テストは専用ディレクトリの ESM 設定を使用する。
 9. Bun、Rust、wasm-pack のバージョンを `mise.toml` にまとめた。Rust の components と Wasm target も mise でインストールし、wasm-pack は公式 GitHub リリースのバイナリを使用する。CI と API workflow は `jdx/mise-action@v5` で同じ設定を読み、wasm-pack の重複インストールを削除した。
+10. バックエンドと UI の worktree を分け、Lodash の全10 import を es-toolkit に置き換えた。翻訳・マスターデータのマージを純粋な関数へ分離し、共有の配列ヘルパーも整理した。回帰テスト30件を追加し、未使用になった直接依存を削除した。
 
 | 対象              | 採用バージョン |
 | ----------------- | -------------- |
@@ -26,8 +27,9 @@
 | next-i18next      | 16.3.1         |
 | Happy DOM         | 20.14.5        |
 | Playwright        | 1.63.0         |
+| es-toolkit        | 1.52.0         |
 
-その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。Jest の削除とテスト環境の追加後の監査でも、npm の直接依存89種類すべてが公式レジストリの latest と一致した。Rust の直接依存32種類も最新安定版だった。Rust 1.99.0、Bun 1.4.2、wasm-pack 0.15.0 と CI Actions の採用 major は最新安定版を使用している。
+その他の直接依存も固定バージョンで更新し、解決結果を `bun.lock` に記録した。es-toolkit への置換後、6 manifest の npm 直接依存96宣言・88種類を2026年10月2日の公式レジストリと照合し、すべて latest と一致した。非推奨の直接依存は0件だった。Rust の直接依存32種類も最新安定版だった。Rust 1.99.0、Bun 1.4.2、wasm-pack 0.15.0 と CI Actions の採用 major は最新安定版を使用している。
 
 許容範囲内で更新できる推移依存9種類もロックファイルで更新した。D3 の型6種類、`d3-array`、`d3-format`、`google-logging-utils` が対象で、依存元がバージョンを固定する既存の解決結果は維持した。更新後の frozen install は成功した。
 
@@ -82,6 +84,25 @@ Playwright 1.63.0 は CommonJS として TypeScript のテストを読み込む�
 - Node.js の呼び出しを失敗させ、既存の Bun を PATH に含めない環境で、`mise exec -- bun run test:e2e` の本番9件と `mise exec -- bun run test:e2e:dev` の開発9件が成功した。preload の記録で、Playwright 本体、test worker、Next.js 本体と子プロセス、開発時の型設定確認が、すべて mise の Bun 1.4.2 であることを確認した。
 - 追加の本番スモークでは、実際の艦娘と装備から敵艦へのダメージを Wasm で計算し、D3 を使う分布グラフの SVG geometry と軸の数値、装甲貫通なしの切り替えを確認した。
 - 本番・開発のブラウザ例外・コンソールエラー・予期しない外部通信は0件で、検証用サーバーは停止済み。開発サーバーの色設定とページデータサイズに関する警告は残る。
+
+## es-toolkit への置換と変換処理の整理
+
+ルート、admin、site、utils に es-toolkit 1.52.0 を明示し、自前ソースの Lodash import 10か所をすべて置換した。ルート・admin・site の直接依存 `lodash` とルートの `@types/lodash` は削除した。Cloudinary 2.11.0 が要求する推移依存の `lodash` 4.18.1 と、他の外部 SDK が使用する `lodash.*` は維持し、alias や override で置換していない。
+
+用途に合わせて native API と compat API を選んだ。
+
+- `isEqual`、`xor`、`mergeWith`、`uniq`、`uniqBy`、`sumBy` は native API を使う。共有の `groupBy` は既存の公開型を維持する薄い wrapper にした。型ガードの `includes`、継承プロパティも扱う `pick`・`mapValues` は既存の仕様を維持する。
+- 動的な dot・bracket・配列パスを使うスプレッドシートと UI の `get`・`set` は compat API を使う。スプレッドシートでは、文字どおりのドットを含む見出しを優先する既存の読み取りも維持する。
+- ドラッグ位置の `throttle` は同期的に直前の計算結果を返す compat API を使う。native API は `void` を返すため、この表示処理には適さない。継続した操作時の更新、結果の保持、終了時の `cancel` をアプリケーションの回帰テストで確認する。
+
+native `mergeWith` は source を1つ受け取るため、翻訳マージは2回に分けた。ネットワーク取得から独立した `mergeLocaleMessages` で、空文字・単一スペース・null の取得結果が既存の非空の訳を消さない処理と、ネスト・配列のマージ、入力を変更しない性質を維持する。UI の `mergeMasterData` も純粋な関数に分離し、ID に対応する変更だけを適用して null は既定値を残す。戦闘定義の読み取りは共通処理にまとめ、欠損値は null、0 と false は実際の値として扱う。
+
+追加した回帰テスト30件は、翻訳のフォールバックと非破壊マージ、スプレッドシートの実際のパスと batch payload、カットイン・陣形・艦の定義変換、装備名の重複とグループ化、マスターデータ上書き、ドラッグ位置の更新、ツリーの選択を検証する。
+
+- Node.js の呼び出しを失敗させる環境で、mise の Bun 1.4.2 による213件・32ファイル・675 assertions の通常実行と seed 1472 のランダム実行が成功した。
+- Oxlint、TypeScript、本番ビルドが成功した。配布検証は6ページの manifest から2890パスを隔離し、5言語・6翻訳 namespace の再生成と Wasm の初期化に成功した。ビルド成果物テスト18件も成功した。
+- 同じく Node.js の呼び出しを失敗させる環境で、本番 Playwright 10件が成功した。実際の Rust 計算による通常・装甲貫通なしのダメージ範囲と、有限の SVG geometry を含む D3 グラフを確認し、ブラウザ例外・コンソールエラー・予期しない外部通信は0件だった。
+- 本番 static JS の全16チャンク合計は、4,541,090 bytes から4,521,053 bytes へ減少した。gzip level 9 の合計は1,082,634 bytes から1,074,236 bytes になった。この測定の対象は全チャンクであり、ページごとの初回ダウンロード量は測定していない。
 
 ## 再現用コマンド
 
