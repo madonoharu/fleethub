@@ -33,7 +33,7 @@ Next.js の起動には `bun --bun next` を使用し、Bun をパッケージ�
 
 admin の最終 setup では追加されたテストの型がビルド対象に入っていたため、テストを emit 対象から除外した。Next.js 用 tsconfig にもテストの型を明示した。これらの最終設定変更は再起動後に検証する。
 
-残る作業は frozen install、setup、全体の Oxlint と型チェック、Jest 全体、Rust テスト、本番 Next.js ビルド、Bun サーバーと全言語のブラウザ確認、元ブランチへの反映。React Compiler は使用していないため、Oxlint の React Compiler 専用規則を無効化し、従来の Hooks 規則と型に基づく規則を適用する。
+Rust テストは停止直前に完了し、成功した。残る作業は frozen install、setup、全体の Oxlint と型チェック、Jest 全体、本番 Next.js ビルド、Bun サーバーと全言語のブラウザ確認、元ブランチへの反映。React Compiler は使用していないため、Oxlint の React Compiler 専用規則を無効化し、従来の Hooks 規則と型に基づく規則を適用する。
 
 再開時のコマンド:
 
