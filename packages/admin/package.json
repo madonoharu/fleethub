@@ -24,6 +24,7 @@
     "google-auth-library": "11.1.0",
     "@google-cloud/storage": "8.2.0",
     "kc-tools": "1.6.2",
-    "lodash": "4.18.1"
+    "lodash": "4.18.1",
+    "es-toolkit": "1.52.0"
   }
 }

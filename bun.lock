@@ -17,6 +17,7 @@
         "@types/fs-extra": "11.0.4",
         "@types/lodash": "4.17.25",
         "@types/node": "26.6.4",
+        "es-toolkit": "1.52.0",
         "fleethub-core": "workspace:*",
         "fs-extra": "11.4.1",
         "husky": "9.1.7",
@@ -45,6 +46,7 @@
         "@google-cloud/storage": "8.2.0",
         "cloudinary": "2.11.0",
         "dequal": "2.0.3",
+        "es-toolkit": "1.52.0",
         "firebase-admin": "14.5.0",
         "fleethub-core": "workspace:*",
         "google-auth-library": "11.1.0",
@@ -92,6 +94,7 @@
         "core-js": "3.50.0",
         "dequal": "2.0.3",
         "equipment-bonus": "7.13.30",
+        "es-toolkit": "1.52.0",
         "fast-equals": "6.0.4",
         "fast-json-stable-stringify": "2.1.0",
         "fleethub-core": "workspace:*",
@@ -138,6 +141,9 @@
     },
     "packages/utils": {
       "name": "@fh/utils",
+      "dependencies": {
+        "es-toolkit": "1.52.0",
+      },
     },
   },
   "trustedDependencies": [
