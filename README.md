@@ -8,13 +8,13 @@
 
 ## Developing
 
-開発ツールは [mise](https://mise.jdx.dev/installing-mise.html) で管理します。`mise.toml` に Bun 1.4.2、Rust 1.99.0、wasm-pack 0.15.0 を固定しています。JavaScript の実行と依存関係の管理には Bun を使用し、Next.js、Playwright、開発ツール、Git hooks も Bun で実行します。Bun の `packageManager` と `bun.lock` もコミットします。
+開発ツールは [mise](https://mise.jdx.dev/installing-mise.html) で管理します。`mise.toml` に Bun 1.4.2、Rust 1.99.0、wasm-pack 0.15.0 を固定し、バイナリの取得先と checksum を `mise.lock` に記録しています。JavaScript の実行と依存関係の管理には Bun を使用し、Next.js、Playwright、開発ツール、Git hooks も Bun で実行します。Bun の `packageManager` と `bun.lock` もコミットします。
 
 mise をインストールしてリポジトリを clone したら、ルートディレクトリでツールと依存関係をインストールします。`mise exec --` は shell の activation 設定なしで使えます。
 
 ```sh
 mise trust
-mise install
+mise install --locked bun rust github:wasm-bindgen/wasm-pack
 mise exec -- bun install --frozen-lockfile
 ```
 
@@ -22,12 +22,16 @@ mise exec -- bun install --frozen-lockfile
 
 mise は Rustup を通じて Rust、rustfmt、clippy と `wasm32-unknown-unknown` ターゲットをインストールします。wasm-pack は公式 GitHub リリースのバイナリを使用します。Cargo と editor が直接参照する `rust-toolchain.toml` は `mise.toml` と同じ設定を保持するため、Rust 更新時には両方を揃えてください。Bun 更新時は `packageManager` も揃えます。
 
+ツールのバージョンを更新したら `mise lock` で `mise.lock` も更新し、設定と一緒にコミットします。
+
 ```sh
 mise exec -- bun run setup
 mise exec -- bun run dev
 ```
 
 [http://localhost:3000](http://localhost:3000) を開くとアプリを確認できます。`setup` は Wasm、共有ユーティリティ、艦これ API 型定義、管理用パッケージを依存関係の順にビルドします。
+
+以下のコマンドも `mise exec --` を付けて実行します。mise を activation した shell では、そのまま実行できます。
 
 | コマンド                                        | 内容                                                |
 | ----------------------------------------------- | --------------------------------------------------- |
@@ -55,6 +59,6 @@ Next.js は既存の Pages Router を使用し、Wasm のバンドルに対応�
 
 ## CI とホスティング
 
-CI は `jdx/mise-action@v5` で同じ `mise.toml` を使い、Bun、Rust、wasm-pack をインストールします。その後、`bun install --frozen-lockfile` と `bun run setup` を分けて実行し、Rust テスト、Oxlint、型チェック、Bun test、本番ビルド、配布成果物テスト、Chromium での E2E を確認します。データ更新用の API workflow も同じツール設定でワークスペースをビルドしてから更新スクリプトを実行します。
+CI は `jdx/mise-action@v5` で同じ `mise.toml` と `mise.lock` を使い、Bun、Rust、wasm-pack を `mise install --locked` でインストールします。その後、`bun install --frozen-lockfile` と `bun run setup` を分けて実行し、Rust テスト、Oxlint、型チェック、Bun test、本番ビルド、配布成果物テスト、Chromium での E2E を確認します。データ更新用の API workflow も同じツール設定でワークスペースをビルドしてから更新スクリプトを実行します。
 
-ホスティング環境ではリポジトリルートの `mise install` でツールを用意し、`mise exec -- bun install --frozen-lockfile` で依存関係をインストールします。`packages/site` を Next.js アプリとして使用し、`mise exec -- bun run build` でワークスペースを準備してビルドしてください。依存関係を変更した場合は `mise exec -- bun install` で `bun.lock` を更新し、変更した `package.json` と一緒にコミットします。
+ホスティング環境ではリポジトリルートの `mise install --locked bun rust github:wasm-bindgen/wasm-pack` でツールを用意し、`mise exec -- bun install --frozen-lockfile` で依存関係をインストールします。`packages/site` を Next.js アプリとして使用し、`mise exec -- bun run build` でワークスペースを準備してビルドしてください。依存関係を変更した場合は `mise exec -- bun install` で `bun.lock` を更新し、変更した `package.json` と一緒にコミットします。

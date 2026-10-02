@@ -6,7 +6,7 @@
 
 ```sh
 mise trust
-mise install
+mise install --locked bun rust github:wasm-bindgen/wasm-pack
 mise exec -- bun install --frozen-lockfile
 mise exec -- bun run setup
 mise exec -- bun run dev
@@ -21,4 +21,4 @@ mise exec -- bun run start
 
 Next.js は Bun のランタイムで実行し、Wasm を扱うため Webpack を使用します。`packages/site` 内で `bun run build` を実行した場合も、ルートの `setup` で必要なワークスペースをビルドします。
 
-ホスティングではリポジトリルートで `mise install` と `mise exec -- bun install --frozen-lockfile`、アプリのビルドは `packages/site` で `mise exec -- bun run build` を実行してください。ビルドに必要な Rust と wasm-pack もルートの `mise.toml` で管理します。
+ホスティングではリポジトリルートで `mise install --locked bun rust github:wasm-bindgen/wasm-pack` と `mise exec -- bun install --frozen-lockfile`、アプリのビルドは `packages/site` で `mise exec -- bun run build` を実行してください。ビルドに必要な Rust と wasm-pack もルートの `mise.toml` と `mise.lock` で管理します。

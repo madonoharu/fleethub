@@ -41,6 +41,8 @@ Next.js は `bun --bun next` で実行する。Wasm の async WebAssembly を扱
 
 ツールは `mise.toml` に固定する。Rust は minimal profile と rustfmt、clippy、`wasm32-unknown-unknown` を指定する。Cargo・editor 向けの `rust-toolchain.toml` は同じ設定を保持し、Rust 更新時には両方を揃える。Bun の `packageManager` も mise のバージョンに揃える。wasm-pack は registry shorthand がないため、公式バイナリを取得する `github:wasm-bindgen/wasm-pack` を明示する。[mise の Rust 設定](https://mise.jdx.dev/lang/rust.html)、[GitHub backend](https://mise.jdx.dev/dev-tools/backends/github.html)
 
+`mise.lock` はツールのバージョン、バイナリの取得先と checksum を固定する。CI の mise-action はこのファイルを検出して `mise install --locked` を実行する。ツール更新時は設定と `mise lock` の結果を一緒にコミットする。
+
 サーバーでは `fleethub-core` をバンドルせず、Node.js と互換性のある CommonJS ラッパーと隣接する Wasm を Bun から読む。配布パッケージにはこのラッパーと Wasm を維持し、Node.js を使うパッケージ利用者との互換性を継続する。クライアントは bundler 用 Wasm を使用する。管理用パッケージには storage の専用 export を追加し、ページが不要な管理 API を読み込まないようにした。管理スクリプトの `@fh/admin/src` も維持している。
 
 Wasm の npm 依存は `raw_module` で直接参照し、依存管理は Bun に任せる。これにより、共有 Cargo キャッシュに別 worktree の package.json パスが残る問題を防ぎ、ビルド時の元の package.json の書き換えも不要になった。
@@ -76,8 +78,10 @@ Jest 本体・環境パッケージ・型定義・設定を削除し、24ファ�
 Playwright 1.63.0 は CommonJS として TypeScript のテストを読み込む際、Bun 上では JavaScript の loader を割り当てていた。テストディレクトリを ESM にし、fixture のパス解決に `import.meta.dirname` を使用して、Bun が TypeScript を直接読み込むようにした。ルート設定も `playwright.config.mts` として ESM に揃えた。
 
 - Node.js の呼び出しを失敗させる PATH で `bun run test:e2e --list` を実行し、9件を収集した。
-- Bun 統一設定で本番の Playwright 9件が成功した。preload の記録で Playwright 本体、worker 2つ、Next.js 本番サーバーがすべて Bun 1.4.2 であることを確認した。ブラウザ例外・コンソールエラー・予期しない外部通信は0件で、サーバーは停止済み。
-- ユニット183件、ビルド成果物18件、開発 E2E 9件の結果は前節の移行時の検証に基づく。Bun 統一設定での開発 E2E の再検証は実施待ち。
+- 元の develop でも mise のツールインストール、frozen install、実際の Git hook、Rust テスト72件とベンチマーク、本番ビルドが成功した。Oxlint、型チェック、ユニット183件、配布検証の6 manifest・2511パス、ビルド成果物18件も成功した。
+- Node.js の呼び出しを失敗させ、既存の Bun を PATH に含めない環境で、`mise exec -- bun run test:e2e` の本番9件と `mise exec -- bun run test:e2e:dev` の開発9件が成功した。preload の記録で、Playwright 本体、test worker、Next.js 本体と子プロセス、開発時の型設定確認が、すべて mise の Bun 1.4.2 であることを確認した。
+- 追加の本番スモークでは、実際の艦娘と装備から敵艦へのダメージを Wasm で計算し、D3 を使う分布グラフの SVG geometry と軸の数値、装甲貫通なしの切り替えを確認した。
+- 本番・開発のブラウザ例外・コンソールエラー・予期しない外部通信は0件で、検証用サーバーは停止済み。開発サーバーの色設定とページデータサイズに関する警告は残る。
 
 ## 再現用コマンド
 
@@ -85,7 +89,7 @@ mise を用意し、リポジトリルートから実行する。Bun 1.4.2、Rus
 
 ```sh
 mise trust
-mise install
+mise install --locked bun rust github:wasm-bindgen/wasm-pack
 mise exec -- bun install --frozen-lockfile
 mise exec -- bun run setup
 mise exec -- bun run lint

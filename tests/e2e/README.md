@@ -6,7 +6,7 @@ test workers and Next.js with Bun. `mise exec --` works without shell activation
 
 ```sh
 mise trust
-mise install
+mise install --locked bun rust github:wasm-bindgen/wasm-pack
 mise exec -- bun install --frozen-lockfile
 mise exec -- bun run playwright install --with-deps chromium
 mise exec -- bun run build
