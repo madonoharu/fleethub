@@ -86,11 +86,11 @@ export function useFileCanDrop(id: string) {
   );
 
   const canDrop = (dragFile: FileEntity) => {
-    if (dragFile === entity) return false;
+    if (dragFile.id === id) return false;
 
     if (isFolder(entity) && entity.children.includes(dragFile.id)) return false;
 
-    return !parents.includes(dragFile);
+    return !parents.some((parent) => parent.id === dragFile.id);
   };
 
   return { parents, canDrop };
