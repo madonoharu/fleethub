@@ -65,8 +65,7 @@ export type GearPosition =
   | { tag: "presets"; id: string; key: GearKey };
 
 export type ShipPosition =
-  | { tag: "fleets"; id: string; key: ShipKey }
-  | { tag: "shipDetails" };
+  { tag: "fleets"; id: string; key: ShipKey } | { tag: "shipDetails" };
 
 export type SwapPayload<T> = {
   drag: T;
@@ -296,8 +295,11 @@ export const entitiesSlice = createSlice({
     },
 
     createPlan: {
-      reducer: (state, { payload }: PayloadAction<{ input: Plan }>) => {
-        const { input } = payload;
+      reducer: (
+        state,
+        { payload }: PayloadAction<{ input: Plan; to?: string }>,
+      ) => {
+        const { input, to } = payload;
 
         if (!input.name) {
           input.name = getPlanDefaultName(state);
@@ -305,7 +307,7 @@ export const entitiesSlice = createSlice({
 
         const { result, entities } = normalize(input, schemata.file);
         addEntities(state, entities);
-        insert(state.files, result);
+        insert(state.files, result, to);
       },
       prepare: (input: Partial<Plan> = {}, to?: string) => {
         function getInitialPlan(): Plan {
@@ -405,8 +407,7 @@ export const entitiesSlice = createSlice({
 
     import: (state, { payload }: PayloadAction<ImportPayload>) => {
       const entity = payload.entities["files"]?.[payload.result] as
-        | FileEntity
-        | undefined;
+        FileEntity | undefined;
 
       if (isPlan(entity) && !entity.name) {
         entity.name = getPlanDefaultName(state);
