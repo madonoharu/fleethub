@@ -384,7 +384,7 @@ impl Ship {
                 true
             } else {
                 self.planes()
-                    .filter(|plane| plane.is_carrier_shelling_plane())
+                    .filter(|plane| plane.remains() && plane.is_carrier_shelling_plane())
                     .all(|plane| plane.gear_type == GearType::CbTorpedoBomber)
             }
         } else if self.ship_type.is_submarine() {
