@@ -730,23 +730,22 @@ impl Ship {
         old_mod * new_mod
     }
 
+    // https://x.com/syoukuretin/status/880259618819129344
     pub fn asw_armor_penetration(&self) -> f64 {
-        let total = self.gears.sum_by(|gear| {
-            if gear.has_attr(GearAttr::ApDepthCharge) {
-                let asw = gear.asw as f64;
-                (asw - 2.0).max(0.0).sqrt()
-            } else {
-                0.0
-            }
-        });
-
         let ship_type_bonus = if self.ship_type == ShipType::DE {
             1.0
         } else {
             0.0
         };
 
-        total + ship_type_bonus
+        self.gears.sum_by(|gear| {
+            if gear.has_attr(GearAttr::ApDepthCharge) {
+                let asw = gear.asw as f64;
+                (asw - 2.0).max(0.0).sqrt() + ship_type_bonus
+            } else {
+                0.0
+            }
+        })
     }
 
     pub fn calc_observation_term(
