@@ -57,7 +57,10 @@ impl ShellingAttackParams<'_> {
             let anti_inst = target.is_installation();
 
             aerial_power = Some(attacker.aerial_power(anti_inst) as f64);
-            aerial_power_ebonus = attacker.ebonuses.aerial_power as f64;
+            // 陸上型でない相手には、航空攻撃力がすでに装備ボーナスの雷装・爆装を含む。
+            if anti_inst {
+                aerial_power_ebonus = attacker.ebonuses.aerial_power as f64;
+            }
             proficiency_mods = Some(attacker.proficiency_modifiers(day_cutin));
 
             aerial_power_ibonus = attacker
