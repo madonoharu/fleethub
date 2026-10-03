@@ -164,19 +164,17 @@ impl AttackPowerParams {
             postcap *= self.balloon_mod;
         }
 
-        let pre_pt = postcap_general_mod.apply(postcap);
+        // https://x.com/agosdufovj/status/1819635605250187711
+        // https://docs.google.com/spreadsheets/d/1w-PsyPVGzEYESfhpBRsgNbVQnhDzKyTpqJSUsxv6CDw/edit?gid=0#gid=0
+        let historical_mod = self.historical_mod.compose(self.custom_mods.historical_mod);
+        let pre_pt = historical_mod.apply(postcap_general_mod.apply(postcap));
 
         // https://twitter.com/yukicacoon/status/1701044223028670699
-        let post_pt = if let Some(pt_mod) = pt_mod {
+        let normal = if let Some(pt_mod) = pt_mod {
             pt_mod.apply(pre_pt * 0.3 + pre_pt.sqrt() + 10.0)
         } else {
             pre_pt
         };
-
-        let normal = self
-            .historical_mod
-            .compose(self.custom_mods.historical_mod)
-            .apply(post_pt);
 
         // https://twitter.com/hedgehog_hasira/status/1630585333279784962
         let critical = (normal * self.proficiency_critical_mod * 1.5).floor();
