@@ -290,21 +290,25 @@ impl Damage {
     }
 
     pub fn minmax(&self) -> (u16, u16) {
-        let min_defense_power = self.defense_power().min();
-        let max_defense_power = self.defense_power().max();
+        self.damage_type_density()
+            .into_iter()
+            .map(|(damage_type, _)| self.damage_range(damage_type))
+            .reduce(|(min1, max1), (min2, max2)| (min1.min(min2), max1.max(max2)))
+            .unwrap_or_default()
+    }
 
-        let d1 = match self.calc_damage_type(max_defense_power) {
-            DamageType::Actual(value) => value,
-            DamageType::Scratch => self.scratch_damage().min(),
-            DamageType::OverkillProtection => self.overkill_protection_damage().min(),
-        };
-        let d2 = match self.calc_damage_type(min_defense_power) {
-            DamageType::Actual(value) => value,
-            DamageType::Scratch => self.scratch_damage().max(),
-            DamageType::OverkillProtection => self.overkill_protection_damage().max(),
-        };
-
-        if d1 <= d2 { (d1, d2) } else { (d2, d1) }
+    fn damage_range(&self, damage_type: DamageType) -> (u16, u16) {
+        match damage_type {
+            DamageType::Actual(value) => (value, value),
+            DamageType::Scratch => {
+                let scratch = self.scratch_damage();
+                (scratch.min(), scratch.max())
+            }
+            DamageType::OverkillProtection => {
+                let overkill_protection = self.overkill_protection_damage();
+                (overkill_protection.min(), overkill_protection.max())
+            }
+        }
     }
 
     pub fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> u16 {
@@ -614,6 +618,24 @@ mod test {
                 4 => 0.250620347394541,
             }
         );
+    }
+
+    #[test]
+    fn test_minmax_spans_penetration_and_scratch() {
+        let damage = Damage {
+            attack_term: 60.0,
+            current_hp: 1000,
+            basic_defense_power: 50.0,
+            ..BASE_DAMAGE
+        };
+
+        let density = damage.density();
+        let support = (
+            *density.keys().min().unwrap(),
+            *density.keys().max().unwrap(),
+        );
+
+        assert_eq!(damage.minmax(), support);
     }
 
     #[test]
