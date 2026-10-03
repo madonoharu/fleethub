@@ -1,7 +1,7 @@
 use crate::{
     member::BattleMemberRef,
     types::{
-        AttackPowerModifier, Engagement, FleetFactors, FormationParams, HistoricalParams,
+        AttackPowerModifier, Engagement, FleetFactors, FormationParams, GearType, HistoricalParams,
         NodeState, ShellingStyle, ShellingType,
     },
 };
@@ -63,9 +63,14 @@ impl ShellingAttackParams<'_> {
             }
             proficiency_mods = Some(attacker.proficiency_modifiers(day_cutin));
 
-            aerial_power_ibonus = attacker
-                .gears
-                .sum_by(|gear| gear.ibonuses.shelling_aerial_power);
+            // https://x.com/hedgehog_hasira/status/1584240077231702018
+            aerial_power_ibonus = attacker.gears.sum_by(|gear| {
+                if anti_inst && gear.gear_type == GearType::CbTorpedoBomber {
+                    0.0
+                } else {
+                    gear.ibonuses.shelling_aerial_power
+                }
+            });
         }
 
         let historical_mod = self.historical_params.power_mod;
