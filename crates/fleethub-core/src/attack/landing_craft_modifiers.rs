@@ -65,6 +65,7 @@ impl LandingCraftModifiers {
             .unwrap_or_default();
 
         let ibonus1 = 1.0 + landing_craft_stars_average / 50.0 + t4_tank_group_stars_average / 50.0;
+        // https://docs.google.com/document/d/1oOG7XxUxR_La3UHUeBO5eOVVaTCCVLDUqNmQRFIB17w/edit?tab=t.0#heading=h.vhfcimtl7ygt
         let ibonus2 = 1.0 + t2_tank_stars_average / 30.0;
 
         let landing_craft_count = gears.count_type(GearType::LandingCraft);
@@ -139,7 +140,7 @@ impl LandingCraftModifiers {
 
         let precap_ms = match target_type {
             SpecialEnemyType::Pillbox => Multipliers {
-                a: 1.8 * ibonus1 * ibonus2,
+                a: 1.8 * ibonus1,
                 b: 1.15,
                 c: 1.5,
                 dd: 1.4,
@@ -150,11 +151,11 @@ impl LandingCraftModifiers {
                 hh: 1.2,
                 i: 2.0,
                 j: 1.0,
-                t2: (2.4, 1.35),
+                t2: (2.4 * ibonus2, 1.35),
                 lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::IsolatedIsland => Multipliers {
-                a: 1.8 * ibonus1 * ibonus2,
+                a: 1.8 * ibonus1,
                 b: 1.15,
                 c: 1.2,
                 dd: 1.4,
@@ -165,11 +166,11 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.8,
                 j: 1.0,
-                t2: (2.4, 1.35),
+                t2: (2.4 * ibonus2, 1.35),
                 lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::HarbourSummerPrincess => Multipliers {
-                a: 1.7 * ibonus1 * ibonus2,
+                a: 1.7 * ibonus1,
                 b: 1.2,
                 c: 1.6,
                 dd: 1.5,
@@ -180,11 +181,11 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 2.0,
                 j: 1.0,
-                t2: (2.8, 1.5),
+                t2: (2.8 * ibonus2, 1.5),
                 lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::SoftSkinned | SpecialEnemyType::SupplyDepot => Multipliers {
-                a: 1.4 * ibonus1 * ibonus2,
+                a: 1.4 * ibonus1,
                 b: 1.15,
                 c: 1.5,
                 dd: 1.3,
@@ -195,7 +196,7 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.1,
                 j: 1.0,
-                t2: (1.5, 1.2),
+                t2: (1.5 * ibonus2, 1.2),
                 lf: (1.4, 1.2, 1.1),
             },
             _ => Default::default(),
@@ -203,7 +204,7 @@ impl LandingCraftModifiers {
 
         let postcap_ms = match target_type {
             SpecialEnemyType::SupplyDepot | SpecialEnemyType::NewSupplyDepot => Multipliers {
-                a: 1.7 * ibonus1 * ibonus2,
+                a: 1.7 * ibonus1,
                 b: 1.2,
                 c: 1.3 * ibonus1,
                 dd: 1.6,
@@ -214,11 +215,11 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.2,
                 j: 1.0,
-                t2: (1.7, 1.5),
+                t2: (1.7 * ibonus2, 1.5),
                 lf: (1.85, 1.45, 1.2),
             },
             SpecialEnemyType::AnchorageWaterDemonVacationMode => Multipliers {
-                a: 1.4 * ibonus1 * ibonus2,
+                a: 1.4 * ibonus1,
                 b: 1.15,
                 c: 1.2,
                 dd: 1.4,
@@ -229,11 +230,11 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.8,
                 j: 1.0,
-                t2: (2.4, 1.35),
+                t2: (2.4 * ibonus2, 1.35),
                 lf: (1.0, 1.0, 1.0),
             },
             SpecialEnemyType::DockPrincess => Multipliers {
-                a: 1.1 * ibonus1 * ibonus2,
+                a: 1.1 * ibonus1,
                 b: 1.15,
                 c: 1.15,
                 dd: 1.15,
@@ -244,7 +245,7 @@ impl LandingCraftModifiers {
                 hh: 1.1,
                 i: 1.1,
                 j: 1.4,
-                t2: (1.2, 1.2),
+                t2: (1.2 * ibonus2, 1.2),
                 lf: (1.0, 1.0, 1.0),
             },
             _ => Default::default(),
