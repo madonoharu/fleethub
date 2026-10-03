@@ -553,13 +553,20 @@ impl Ship {
             return None;
         }
 
+        // https://x.com/hedgehog_hasira/status/1542969503193018368
+        if self.ship_id == ship_id!("加賀改二護") {
+            return Some(if phase.is_night() {
+                AswAttackType::DepthCharge
+            } else {
+                AswAttackType::Aerial
+            });
+        }
+
         let is_anti_sub_ship = if self.is_escort_light_carrier() {
             // 夜戦砲撃を行う護衛空母は対潜攻撃が優先される？
             self.can_do_normal_night_attack()
         } else {
-            matches!(self.ship_type, DE | DD | CL | CLT | CT | AO)
-                || self.ship_id == ship_id!("加賀改二護")
-                || is_abyssal
+            matches!(self.ship_type, DE | DD | CL | CLT | CT | AO) || is_abyssal
         };
 
         is_anti_sub_ship.then_some(AswAttackType::DepthCharge)
