@@ -324,26 +324,53 @@ fn get_kongou_class_cutin(
         return None;
     }
 
-    if !(s1.damage_state() <= DamageState::Shouha && s2.damage_state() <= DamageState::Shouha) {
+    // https://x.com/KanColle_STAFF/status/2047390964264882233
+    if !(s1.damage_state() <= DamageState::Shouha && s2.damage_state() <= DamageState::Chuuha) {
         return None;
     }
 
-    // 23/5/1に上方修正
-    let base = 2.4;
+    // https://x.com/hedgehog_hasira/status/2047906206652813322
+    let update_mod = 1.06;
 
+    // https://x.com/Camellia_bb/status/1805918322061656272
     let engagement_mod = match engagement {
         Engagement::GreenT => 1.25,
-        Engagement::RedT => 0.75,
+        Engagement::RedT => 0.8,
         _ => 1.0,
     };
 
-    let v = base * engagement_mod;
+    let gun_mod = |ship: &Ship| {
+        let kai2_count = ship
+            .gears
+            .count(gear_id!("35.6cm連装砲改三(ダズル迷彩仕様)"))
+            + ship.gears.count(gear_id!("35.6cm連装砲改二"));
+        let kai4_count = ship.gears.count(gear_id!("35.6cm連装砲改三丙"))
+            + ship.gears.count(gear_id!("35.6cm連装砲改四"));
 
+        // https://x.com/CC_jabberwock/status/1840095203367235681
+        let kai2_mod = match kai2_count {
+            0 => 1.0,
+            1 => 1.05,
+            _ => 1.08,
+        };
+        // https://x.com/Camellia_bb/status/1805918322061656272
+        let kai4_mod = match kai4_count {
+            0 => 1.0,
+            1 => 1.11,
+            _ => 1.15,
+        };
+
+        kai2_mod * kai4_mod
+    };
+
+    let common_mod = update_mod * engagement_mod;
+
+    // https://x.com/hedgehog_hasira/status/1838951859605983678
     Some(FleetCutinEffect {
         cutin: FleetCutin::KongouClassCutin,
         attacks: [
-            FleetCutinAttackParams::new(0, v, 1.4),
-            FleetCutinAttackParams::new(1, v, 1.4),
+            FleetCutinAttackParams::new(0, 2.6 * common_mod * gun_mod(s1), 1.4),
+            FleetCutinAttackParams::new(1, 2.7 * common_mod * gun_mod(s2), 1.4),
         ]
         .into_iter()
         .collect(),

@@ -148,7 +148,25 @@ fn test_kongou_cutin() {
         Engagement::Parallel,
         Time::Night,
         FleetCutin::KongouClassCutin,
-        [(0, 2.4), (1, 2.4)],
+        [(0, 2.6 * 1.06), (1, 2.7 * 1.06)],
+    );
+
+    assert_fleet_cutin(
+        toml::toml! {
+            s1.ship_id = "金剛改二丙"
+            s1.g1.gear_id = "35.6cm連装砲改四"
+            s1.g2.gear_id = "35.6cm連装砲改二"
+            s2.ship_id = "比叡改二丙"
+            s3.ship_id = "睦月"
+            s4.ship_id = "睦月"
+            s5.ship_id = "睦月"
+            s6.ship_id = "睦月"
+        },
+        Formation::LINE_AHEAD,
+        Engagement::RedT,
+        Time::Night,
+        FleetCutin::KongouClassCutin,
+        [(0, 2.6 * 1.06 * 0.8 * 1.05 * 1.11), (1, 2.7 * 1.06 * 0.8)],
     );
 }
 
