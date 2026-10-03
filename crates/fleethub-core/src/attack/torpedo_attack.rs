@@ -70,10 +70,10 @@ impl TorpedoAttackParams<'_> {
         let precap_mod = AttackPowerModifier::new(a14, 0.0);
         let postcap_mod = Default::default();
 
-        // todo!
         let mut special_enemy_mods = SpecialEnemyModifiers::default();
+        // https://docs.google.com/spreadsheets/d/1w-PsyPVGzEYESfhpBRsgNbVQnhDzKyTpqJSUsxv6CDw/edit?gid=0#gid=0
         if self.target.is_pt_imp() {
-            special_enemy_mods.precap_general_mod.merge(0.35, 15.0);
+            special_enemy_mods.pt_mod = Some(Default::default());
         }
 
         Some(AttackPowerParams {
