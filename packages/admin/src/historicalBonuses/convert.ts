@@ -8,46 +8,45 @@ export type HistoricalBonusDef = PublishedHistoricalBonusDef & { aerial_only?: b
 const MAX_GEARS_PER_SHIP = 6;
 
 /**
- * 艦船IDから、その艦の未改造時のID (改造ツリーの根) を引けるようにする。
+ * 改造でつながる艦の ID を 1 つの系統にまとめる。
  *
  * KC3 の `shipBase` は未改造時のIDで艦を指定するため、
- * fleethub の `ship_id_in` に変換するには同じ改造ツリーのIDを全て列挙する必要がある。
+ * fleethub の `ship_id_in` に変換するには同じ系統のIDを全て列挙する必要がある。
+ * 改造の向きは見ずにつながりでまとめるので、改造元が 2 つある艦 (Fletcher、Glorious) や
+ * 改造が循環する艦 (宗谷) も、どの形から引いても同じ系統になる。
  */
 class RemodelTree {
-  private readonly baseIds = new Map<number, number[]>();
+  private readonly groups = new Map<number, number[]>();
 
   constructor(ships: MasterShip[]) {
-    const prevIds = new Map<number, number>();
+    const parents = new Map<number, number>();
+    const findRoot = (id: number): number => {
+      const parent = parents.get(id) ?? id;
+      if (parent === id) return id;
+
+      const root = findRoot(parent);
+      parents.set(id, root);
+      return root;
+    };
 
     ships.forEach(({ ship_id, next_id }) => {
-      if (next_id && !prevIds.has(next_id)) {
-        prevIds.set(next_id, ship_id);
+      if (next_id) {
+        parents.set(findRoot(ship_id), findRoot(next_id));
       }
     });
 
+    const groupsByRoot = new Map<number, number[]>();
     ships.forEach(({ ship_id }) => {
-      // 改造ツリーが循環していても止まるように、辿ったIDを覚えておく
-      const chain = new Set<number>([ship_id]);
-      let baseId = ship_id;
-
-      for (;;) {
-        const prevId = prevIds.get(baseId);
-        if (prevId === undefined || chain.has(prevId)) break;
-        chain.add(prevId);
-        baseId = prevId;
-      }
-
-      const group = this.baseIds.get(baseId);
-      if (group) {
-        group.push(ship_id);
-      } else {
-        this.baseIds.set(baseId, [ship_id]);
-      }
+      const root = findRoot(ship_id);
+      const group = groupsByRoot.get(root) ?? [];
+      group.push(ship_id);
+      groupsByRoot.set(root, group);
+      this.groups.set(ship_id, group);
     });
   }
 
-  expand(baseIds: number[]): number[] {
-    return baseIds.flatMap((baseId) => this.baseIds.get(baseId) || [baseId]);
+  expand(ids: number[]): number[] {
+    return [...new Set(ids.flatMap((id) => this.groups.get(id) ?? [id]))];
   }
 }
 

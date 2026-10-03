@@ -3,6 +3,41 @@ import { describe, expect, it } from "bun:test";
 import { convertKc3BonusFiles } from "./convert";
 import { Kc3Bonus } from "./kc3";
 
+describe("KC3 shipBase expansion", () => {
+  it("covers every form of a ship whose remodels form a cycle", () => {
+    const ships = [
+      { ship_id: 645, next_id: 650 },
+      { ship_id: 650, next_id: 699 },
+      { ship_id: 699, next_id: 645 },
+    ] as Parameters<typeof convertKc3BonusFiles>[1];
+
+    const [def] = convertKc3BonusFiles(
+      [{ world: 61, mapnum: 4, listBonus: [{ bonuses: [{ dmg: 1.22, shipBase: [699] }] }] }],
+      ships,
+    );
+
+    for (const id of [645, 650, 699]) {
+      expect(def.ship).toContain(String(id));
+    }
+  });
+
+  it("covers every form of a ship reached from two predecessors", () => {
+    const ships = [
+      { ship_id: 596, next_id: 692 },
+      { ship_id: 628, next_id: 629 },
+      { ship_id: 629, next_id: 628 },
+      { ship_id: 692, next_id: 628 },
+    ] as Parameters<typeof convertKc3BonusFiles>[1];
+
+    const [def] = convertKc3BonusFiles(
+      [{ world: 61, mapnum: 1, listBonus: [{ bonuses: [{ dmg: 1.1, shipBase: [596] }] }] }],
+      ships,
+    );
+
+    expect(def.ship).toBe("ship_id_in(596, 628, 629, 692)");
+  });
+});
+
 describe("KC3 plane bonuses", () => {
   const convert = (bonus: Kc3Bonus) =>
     convertKc3BonusFiles([{ world: 60, mapnum: 1, listBonus: [{ bonuses: [bonus] }] }], []);
