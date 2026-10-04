@@ -87,23 +87,4 @@ export class ExprParser {
 
     return normalizeExpression(str);
   }
-
-  replaceHistoricalAircraftGroup(str: string): string {
-    return str.replace(/"([A-Z]\d)"/g, (_, s: string) =>
-      parseHistoricalAircraftGroup(s).toString(),
-    );
-  }
-
-  parseHistoricalBonusesShip(str: string): string {
-    str = this.parseGearName(str);
-    str = this.parseGearType(str);
-
-    str = this.parseShipName(str);
-    str = this.parseShipType(str);
-    str = this.parseShipClass(str);
-    str = this.parseNationality(str);
-
-    str = this.replaceHistoricalAircraftGroup(str);
-    return normalizeExpression(str);
-  }
 }

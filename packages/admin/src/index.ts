@@ -2,6 +2,7 @@ import { Start2 } from "kc-tools";
 import ky from "ky";
 
 import { updateCloudinary } from "./cloudinary";
+import { fetchKc3BonusFiles } from "./historicalBonuses";
 import { createMasterData, MasterDataSpreadsheet } from "./spreadsheet";
 import * as storage from "./storage";
 
@@ -21,26 +22,28 @@ export function fetchCtypeNames(): Promise<string[]> {
 export async function createMasterDataBySpreadsheet() {
   const spreadsheet = new MasterDataSpreadsheet();
 
-  const [start2, ctypeNames, tables] = await Promise.all([
+  const [start2, ctypeNames, tables, kc3BonusFiles] = await Promise.all([
     fetchStart2(),
     fetchCtypeNames(),
     spreadsheet.readTables(),
+    fetchKc3BonusFiles(),
   ]);
 
-  return createMasterData(start2, ctypeNames, tables);
+  return createMasterData(start2, ctypeNames, tables, kc3BonusFiles);
 }
 
 export async function updateMasterDataBySpreadsheet(): Promise<void> {
   const spreadsheet = new MasterDataSpreadsheet();
 
-  const [start2, ctypeNames, currentMd, tables] = await Promise.all([
+  const [start2, ctypeNames, currentMd, tables, kc3BonusFiles] = await Promise.all([
     fetchStart2(),
     fetchCtypeNames(),
     storage.readMasterData(),
     spreadsheet.readTables(),
+    fetchKc3BonusFiles(),
   ]);
 
-  const nextMd = createMasterData(start2, ctypeNames, tables);
+  const nextMd = createMasterData(start2, ctypeNames, tables, kc3BonusFiles);
   const updates = !storage.equalMasterData(currentMd, nextMd);
 
   await Promise.all([
@@ -60,6 +63,7 @@ export async function updateImages(): Promise<void> {
 
 export { isProjectMember } from "./auth";
 export { storage };
+export * from "./historicalBonuses";
 export * from "./spreadsheet";
 export * from "./credentials";
 export * from "./kcnav";

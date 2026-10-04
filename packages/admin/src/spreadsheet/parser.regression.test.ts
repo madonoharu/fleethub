@@ -55,23 +55,12 @@ describe("spreadsheet expressions", () => {
     ).toBe(" ship_id == 277 && stype == 11 && ctype == 5 && nationality == 1 ");
   });
 
-  it("combines historical equipment, ship and aircraft-group references in resolution order", () => {
-    expect(
-      createParser().parseHistoricalBonusesShip(
-        'has("彗星") && ship_id == "赤城改" && stype == "正規空母" && ctype == "赤城型" && nationality == "日本"\n&& historical_aircraft_group == "A1"',
-      ),
-    ).toBe(
-      "has(24) && ship_id == 277 && stype == 11 && ctype == 5 && nationality == 1 && historical_aircraft_group == 161",
-    );
-  });
-
   it("reports unresolved names with normalized expression text for every entrypoint", () => {
     const parser = createParser();
 
     for (const parse of [
       (str: string) => parser.parseGear(str),
       (str: string) => parser.parseShip(str),
-      (str: string) => parser.parseHistoricalBonusesShip(str),
     ]) {
       expect(() => parse('id == "Unknown"\n\t&& true')).toThrow(
         'Syntax error: id == "Unknown" && true',

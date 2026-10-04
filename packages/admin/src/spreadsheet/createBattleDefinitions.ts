@@ -11,7 +11,6 @@ import {
 import { set } from "es-toolkit/compat";
 
 import { SpreadsheetRow, SpreadsheetTable } from "./SpreadsheetTable";
-import { ExprParser } from "./parser";
 
 function createDefinition<T extends object>(
   { headerValues }: SpreadsheetTable,
@@ -44,41 +43,15 @@ function getFormationDefs(table: SpreadsheetTable): FormationDef[] {
   return Object.values(rec);
 }
 
-function getHistoricalBonusDefs(parser: ExprParser, table: SpreadsheetTable): HistoricalBonusDef[] {
-  const { headerValues, rows } = table;
-
-  return rows
-    .map((row) => {
-      const def: HistoricalBonusDef = {};
-
-      headerValues.forEach((h) => {
-        const cellValue = row[h];
-        if (cellValue) {
-          set(def, h, cellValue);
-        }
-      });
-
-      if (def.ship) {
-        def.ship = parser.parseHistoricalBonusesShip(def.ship);
-      }
-      if (def.enemy) {
-        def.enemy = parser.parseHistoricalBonusesShip(def.enemy);
-      }
-
-      return def;
-    })
-    .filter((def) => Boolean(def.map));
-}
-
 export function createBattleDefinitions(
-  parser: ExprParser,
-  tables: Record<keyof MasterBattleDefinitions, SpreadsheetTable>,
+  tables: Record<Exclude<keyof MasterBattleDefinitions, "historical_bonuses">, SpreadsheetTable>,
+  historical_bonuses: HistoricalBonusDef[],
 ): MasterBattleDefinitions {
   return {
     anti_air_cutin: getDefinitions<AntiAirCutinDef>(tables.anti_air_cutin),
     day_cutin: getDefinitions<DayCutinDef>(tables.day_cutin),
     night_cutin: getDefinitions<NightCutinDef>(tables.night_cutin),
     formation: getFormationDefs(tables.formation),
-    historical_bonuses: getHistoricalBonusDefs(parser, tables.historical_bonuses),
+    historical_bonuses,
   };
 }
