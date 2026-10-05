@@ -756,8 +756,12 @@ fn special_enemy_modifiers(
             + t4_tank_count
             + t4_tank_kai_count
             + r35_french_count;
-        let d =
-            shikon_count + toku_dlc_panzer3_count + chiha_count + chiha_kai_count + t2_tank_count;
+        let d = shikon_count
+            + toku_dlc_panzer3_count
+            + toku_dlc_panzer3_j_count
+            + chiha_count
+            + chiha_kai_count
+            + t2_tank_count;
 
         match (a, b, c, d) {
             (1, 0, _, _) | (0, 1, _, _) if c + d >= 1 => Some((1.2, 10.0)),
