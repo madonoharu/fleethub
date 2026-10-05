@@ -526,6 +526,20 @@ impl Ship {
             return None;
         }
 
+        // https://x.com/KanColle_STAFF/status/2016477841656078794
+        // 第百一号輸送艦も同じく、爆雷の分類の装備を積むときだけ潜水艦を撃つ。
+        if self.ctype == ctype!("二等輸送艦")
+            || matches_ship_id!(
+                self.ship_id,
+                "明石改" | "朝日改" | "迅鯨改" | "長鯨改" | "平安丸改"
+            )
+        {
+            return self
+                .gears
+                .has_type(GearType::DepthCharge)
+                .then_some(AswAttackType::DepthCharge);
+        }
+
         if !phase.is_night() {
             let has_anti_sub_aircraft =
                 || self.has_non_zero_slot_gear_by(|gear| gear.has_attr(GearAttr::AntiSubAircraft));
