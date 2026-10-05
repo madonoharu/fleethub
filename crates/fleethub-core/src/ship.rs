@@ -518,13 +518,10 @@ impl Ship {
 
         let is_abyssal = self.is_abyssal();
 
-        // 改式では敵軽空母の場合flagshipのみ対潜に参加するが、ブラウザでは軽母ヌ級改eliteなどの例外が存在する。
-        // 深海攻撃哨戒鷹系統を所持している敵軽空母の場合、対戦に参加する？
-        // @see https://wikiwiki.jp/kancolle/敵艦船
+        // 軽母ヌ級 elite は深海攻撃哨戒鷹を積んでいても潜水艦を撃つ。
         if is_abyssal
             && self.ship_type == CVL
-            && (self.master.yomi.ne("flagship")
-                || self.has_non_zero_slot_gear_by(|gear| gear.is_abyssal_patrolling_attack_hawk()))
+            && !matches!(self.master.yomi.as_str(), "flagship" | "elite")
         {
             return None;
         }
