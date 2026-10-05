@@ -16,7 +16,7 @@ ship_id = 1639
 
 # 昼戦単発
 [expected.day.data.SingleAttack]
-damage.normal_damage_min = 211
-damage.normal_damage_max = 227
-damage.critical_damage_min = 334
-damage.critical_damage_max = 351
+damage.normal_damage_min = 260
+damage.normal_damage_max = 277
+damage.critical_damage_min = 408
+damage.critical_damage_max = 425

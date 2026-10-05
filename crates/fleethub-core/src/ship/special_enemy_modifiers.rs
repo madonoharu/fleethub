@@ -126,7 +126,8 @@ fn anti_pt_imp_modifiers(attacker: &Ship, attack_type: AttackType) -> SpecialEne
             apply_mod!(pt_mod, a, lookouts_count, [1.1]);
             apply_mod!(pt_mod, a, armored_boat_group_count, [1.2, 1.2 * 1.1]);
 
-            pt_mod.a *= 1.0 + armored_boat_group_stars_average / 50.0;
+            pt_mod.a *= (1.0 + armored_boat_group_stars_average / 50.0)
+                .powi(armored_boat_group_count.min(2) as i32);
 
             if attack_type.is_night() {
                 pt_mod.a *= 0.6;
