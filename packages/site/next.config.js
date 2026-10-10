@@ -19,6 +19,14 @@ const config = {
   },
   i18n,
   reactStrictMode: true,
+  experimental: {
+    // Fewer, larger client chunks cut first-visit requests by 25% for ~13% more
+    // bytes; CDN requests are the Vercel Hobby quota this site has exceeded.
+    turbopackChunking: {
+      minChunkSize: 1000000,
+      maxMergeChunkSize: 1000000,
+    },
+  },
   // Bundle MUI's document helpers with Next's page runtime so ISR does not
   // load raw next/document with untraced vendored contexts.
   transpilePackages: ["ts-norm", "@mui/material-nextjs"],
