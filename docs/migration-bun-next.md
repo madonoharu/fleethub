@@ -57,7 +57,7 @@ mise は開発環境の任意の管理手段とし、JS 開発では `mise insta
 
 `mise.lock` はツールのバージョン、バイナリの取得先と checksum を固定する。CI のアプリ検証 job と API workflow は共通 action の `install_args: --locked bun` で Bun のみを導入する。Rust は別 job に分け、全ツールを導入して `cargo test`、`build:core`、`test:core` を実行する。ツール更新時は設定と `mise lock` の結果を一緒にコミットする。
 
-Vercel の Root Directory は `packages/site` とし、`packages/site/vercel.json` の `bunVersion: "1.4.x"` を使用する。インストールとビルドのコマンドは `bunx bun@1.4.2` で固定版を起動する。ホスティング環境には Rust の導入・コンパイル処理を持ち込まない。[Vercel の Bun runtime](https://vercel.com/docs/functions/runtimes/bun)
+Vercel の Root Directory は `packages/site` とし、`packages/site/vercel.json` の `bunVersion: "1.4.x"` を使用する。Vercel はビルド時の Bun も `bun.lock` の生成版から 1.4 系を選ぶので、インストールとビルドはその `bun` をそのまま使う。ホスティング環境には Rust の導入・コンパイル処理を持ち込まない。[Vercel の Bun runtime](https://vercel.com/docs/functions/runtimes/bun)
 
 サーバーでは `fleethub-core` をバンドルせず、Node.js と互換性のある CommonJS ラッパーと隣接する Wasm を Bun から読む。配布パッケージにはこのラッパーと Wasm を維持し、Node.js を使うパッケージ利用者との互換性を継続する。クライアントは bundler 用 Wasm を使用する。管理用パッケージには storage の専用 export を追加し、ページが不要な管理 API を読み込まないようにした。管理スクリプトの `@fh/admin/src` も維持している。
 
