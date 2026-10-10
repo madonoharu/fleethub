@@ -866,7 +866,7 @@
 
     "firebase-admin": ["firebase-admin@14.5.0", "", { "dependencies": { "@fastify/busboy": "^3.0.0", "@firebase/database-compat": "^2.1.4", "@firebase/database-types": "^1.0.20", "fast-deep-equal": "^3.1.1", "google-auth-library": "^11.1.0", "jsonwebtoken": "^9.0.0", "jwks-rsa": "^4.0.1" }, "optionalDependencies": { "@google-cloud/firestore": "^9.1.0", "@google-cloud/storage": "^8.1.0" } }, "sha512-DElmgmaH9aPXu2dWXGQiDoan33UfTnbfAAKaue4fwEZxmpdaNrTk5DmuFn+vVDki2KZ6TiaC0IHRWcEzcDxB3Q=="],
 
-    "fleethub-core": ["fleethub-core@1.12.21", "", { "peerDependencies": { "equipment-bonus": "^7.13.26" } }, "sha512-a5MtDzIG9xeWL4kV4laYphxU8J6BYOVPdD6xW7xhIoKwH+ELWPTPVjG5ET4DBzDlGpCWTHW9HC2BCe5paJUtkQ=="],
+    "fleethub-core": ["fleethub-core@1.12.22", "", { "peerDependencies": { "equipment-bonus": "^7.13.26" } }, "sha512-Ge0pLA5kPNQ0X7enMqFDqF/l49QlB70cXLUq9QgVK3TDdO+QQVS18s8dCyO96S2Fr3MhfHrLznvdoYZu8BCeyw=="],
 
     "foreground-child": ["foreground-child@3.3.1", "", { "dependencies": { "cross-spawn": "^7.0.6", "signal-exit": "^4.0.1" } }, "sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw=="],
 
