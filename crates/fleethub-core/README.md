@@ -26,6 +26,6 @@ Rust 1.99 / edition 2024 を前提に、遅延初期化は標準の `LazyLock`�
 
 `equipment-bonus` は `peerDependencies` に `^7.13.26` として宣言し、利用側と同じパッケージを使用します。利用側では `fleethub-core` と `equipment-bonus` を直接依存として追加します。このリポジトリでは両方を `latest` で指定し、実際の解決バージョンを `bun.lock` に記録します。コアの開発・ネイティブテストでは、ルートの `devDependencies` にある `equipment-bonus` を使用します。
 
-公開前には `build:core` と `test:core` を実行し、生成済みの `pkg/` と `node/` を npm パッケージへ含めてください。ローカルで Wasm を再ビルドしても、サイトが参照する npm 依存は置き換わりません。新しい公開版をサイトで使う場合は、ルートで `bun update equipment-bonus fleethub-core` を実行し、検証後に `bun.lock` をコミットしてください。
+公開前には `build:core` と `test:core` を実行し、生成済みの `pkg/` と `node/` を npm パッケージへ含めてください。ローカルで Wasm を再ビルドしても、サイトが参照する npm 依存は置き換わりません。新しい公開版をサイトで使う場合は、ルートで `bun update --recursive equipment-bonus fleethub-core` を実行し、検証後に `bun.lock` をコミットしてください。
 
 `fleethub-core@1.12.21` から `equipment-bonus` は peer 依存です。旧版の固定依存を置き換えるための override は不要になります。更新時には配布パッケージのテストで、peer のバージョン範囲を満たし、アプリとコアが同じ `equipment-bonus` を解決することを確認してください。

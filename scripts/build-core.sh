@@ -12,11 +12,9 @@ for tool in bun cargo wasm-pack; do
 done
 
 BUILD_PATH=crates/fleethub-core
-# A failed earlier build can leave manifests that wasm-pack tries to merge.
-rm -f "$BUILD_PATH"/{pkg,node}/package.json
-
-wasm-pack build "$BUILD_PATH" --target bundler -- --locked
-wasm-pack build "$BUILD_PATH" --target nodejs --out-dir node -- --locked
+wasm-pack build "$BUILD_PATH" --target bundler --no-pack -- --locked
+wasm-pack build "$BUILD_PATH" --target nodejs --out-dir node --no-pack -- --locked
 bun run oxfmt "$BUILD_PATH"/{pkg,node}/fleethub_core.d.ts
 
-rm -f "$BUILD_PATH"/{pkg,node}/{package.json,README.md,.gitignore}
+# wasm-pack's catch-all .gitignore would make npm pack drop the build output.
+rm -f "$BUILD_PATH"/{pkg,node}/.gitignore
