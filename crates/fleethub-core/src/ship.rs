@@ -384,7 +384,7 @@ impl Ship {
                 true
             } else {
                 self.planes()
-                    .filter(|plane| plane.is_carrier_shelling_plane())
+                    .filter(|plane| plane.remains() && plane.is_carrier_shelling_plane())
                     .all(|plane| plane.gear_type == GearType::CbTorpedoBomber)
             }
         } else if self.ship_type.is_submarine() {
@@ -518,15 +518,26 @@ impl Ship {
 
         let is_abyssal = self.is_abyssal();
 
-        // 改式では敵軽空母の場合flagshipのみ対潜に参加するが、ブラウザでは軽母ヌ級改eliteなどの例外が存在する。
-        // 深海攻撃哨戒鷹系統を所持している敵軽空母の場合、対戦に参加する？
-        // @see https://wikiwiki.jp/kancolle/敵艦船
+        // 軽母ヌ級 elite は深海攻撃哨戒鷹を積んでいても潜水艦を撃つ。
         if is_abyssal
             && self.ship_type == CVL
-            && (self.master.yomi.ne("flagship")
-                || self.has_non_zero_slot_gear_by(|gear| gear.is_abyssal_patrolling_attack_hawk()))
+            && !matches!(self.master.yomi.as_str(), "flagship" | "elite")
         {
             return None;
+        }
+
+        // https://x.com/KanColle_STAFF/status/2016477841656078794
+        // 第百一号輸送艦も同じく、爆雷の分類の装備を積むときだけ潜水艦を撃つ。
+        if self.ctype == ctype!("二等輸送艦")
+            || matches_ship_id!(
+                self.ship_id,
+                "明石改" | "朝日改" | "迅鯨改" | "長鯨改" | "平安丸改"
+            )
+        {
+            return self
+                .gears
+                .has_type(GearType::DepthCharge)
+                .then_some(AswAttackType::DepthCharge);
         }
 
         if !phase.is_night() {
@@ -553,13 +564,20 @@ impl Ship {
             return None;
         }
 
+        // https://x.com/hedgehog_hasira/status/1542969503193018368
+        if self.ship_id == ship_id!("加賀改二護") {
+            return Some(if phase.is_night() {
+                AswAttackType::DepthCharge
+            } else {
+                AswAttackType::Aerial
+            });
+        }
+
         let is_anti_sub_ship = if self.is_escort_light_carrier() {
             // 夜戦砲撃を行う護衛空母は対潜攻撃が優先される？
             self.can_do_normal_night_attack()
         } else {
-            matches!(self.ship_type, DE | DD | CL | CLT | CT | AO)
-                || self.ship_id == ship_id!("加賀改二護")
-                || is_abyssal
+            matches!(self.ship_type, DE | DD | CL | CLT | CT | AO) || is_abyssal
         };
 
         is_anti_sub_ship.then_some(AswAttackType::DepthCharge)
@@ -628,8 +646,10 @@ impl Ship {
             ..
         } = self;
 
-        if matches_ship_id!(ship_id, "五十鈴改二" | "龍田改二" | "夕張改二丁")
-            || ctype == ctype!("Fletcher級")
+        if matches_ship_id!(
+            ship_id,
+            "五十鈴改二" | "龍田改二" | "夕張改二丁" | "吹雪改三護(六式)" | "Visby" | "Visby改"
+        ) || ctype == ctype!("Fletcher級")
             || (ctype == ctype!("J級") && self.remodel_rank() >= 2)
             || (ctype == ctype!("John C.Butler級") && self.remodel_rank() >= 2)
         {
@@ -723,23 +743,22 @@ impl Ship {
         old_mod * new_mod
     }
 
+    // https://x.com/syoukuretin/status/880259618819129344
     pub fn asw_armor_penetration(&self) -> f64 {
-        let total = self.gears.sum_by(|gear| {
-            if gear.has_attr(GearAttr::ApDepthCharge) {
-                let asw = gear.asw as f64;
-                (asw - 2.0).max(0.0).sqrt()
-            } else {
-                0.0
-            }
-        });
-
         let ship_type_bonus = if self.ship_type == ShipType::DE {
             1.0
         } else {
             0.0
         };
 
-        total + ship_type_bonus
+        self.gears.sum_by(|gear| {
+            if gear.has_attr(GearAttr::ApDepthCharge) {
+                let asw = gear.asw as f64;
+                (asw - 2.0).max(0.0).sqrt() + ship_type_bonus
+            } else {
+                0.0
+            }
+        })
     }
 
     pub fn calc_observation_term(

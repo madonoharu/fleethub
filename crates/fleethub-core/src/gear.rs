@@ -437,15 +437,6 @@ impl Gear {
         self.gear_id == gear_id!("深海烏賊魚雷")
     }
 
-    pub fn is_abyssal_patrolling_attack_hawk(&self) -> bool {
-        matches!(
-            self.gear_id,
-            gear_id!("深海攻撃哨戒鷹")
-                | gear_id!("深海攻撃哨戒鷹改")
-                | gear_id!("深海攻撃哨戒鷹改二")
-        )
-    }
-
     pub fn expedition_bonus(&self) -> f64 {
         match self.gear_id {
             gear_id!("大発動艇") | gear_id!("特大発動艇") => 0.05,
