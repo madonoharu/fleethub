@@ -49,6 +49,10 @@ export async function updateMasterDataBySpreadsheet(): Promise<void> {
   await Promise.all([
     updates && storage.writeMasterData(nextMd),
     spreadsheet.writeMasterData(tables, nextMd),
+    storage.updateJson(storage.KC3_BONUSES_PATH, () => kc3BonusFiles, {
+      public: true,
+      immutable: true,
+    }),
   ]);
 }
 
