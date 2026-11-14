@@ -72,9 +72,12 @@ where
             attacker.conditions(),
             target.conditions(),
         );
-        let historical_params =
-            self.battle_defs
-                .get_historical_params(self.node_state, &attacker, &target.as_ref());
+        let historical_params = self.battle_defs.get_historical_params(
+            attack_type,
+            self.node_state,
+            &attacker,
+            &target.as_ref(),
+        );
 
         let style = match attack_type {
             NightPhaseAttackType::Night(attack_type) => {
