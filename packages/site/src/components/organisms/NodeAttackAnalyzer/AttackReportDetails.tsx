@@ -45,7 +45,8 @@ const AttackReportDetails: React.FCX<Props> = ({
   const { t } = useTranslation("common");
 
   const report = analysis[tag];
-  const { attacker_is_player, attacker_ship_id, target_ship_id, historical_params } = analysis;
+  const { attacker_is_player, attacker_ship_id, target_ship_id } = analysis;
+  const { historical_params } = report;
 
   const attackerName = useShipName(attacker_ship_id, attacker_ship_id > 1500);
   const targetName = useShipName(target_ship_id, target_ship_id > 1500);
