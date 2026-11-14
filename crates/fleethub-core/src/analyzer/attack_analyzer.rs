@@ -228,7 +228,7 @@ impl AttackAnalyzer<'_> {
             })
             .collect();
 
-        ActionReport::new(vec)
+        ActionReport::new(vec, historical_params)
     }
 
     pub fn analyze_night_phase_action(&self) -> ActionReport<NightPhaseAttackStyle> {
@@ -268,7 +268,7 @@ impl AttackAnalyzer<'_> {
             })
             .collect::<Vec<_>>();
 
-        ActionReport::new(data)
+        ActionReport::new(data, historical_params)
     }
 
     fn analyze_night_attack(
@@ -364,7 +364,10 @@ impl AttackAnalyzer<'_> {
         }
         .calc_attack_params();
 
-        ActionReport::new(vec![self.report(style, Some(1.0), params)])
+        ActionReport::new(
+            vec![self.report(style, Some(1.0), params)],
+            historical_params,
+        )
     }
 
     fn analyze_opening_asw(&self) -> ActionReport<AswAttackStyle> {
@@ -400,7 +403,10 @@ impl AttackAnalyzer<'_> {
         }
         .calc_attack_params();
 
-        ActionReport::new(vec![self.report(style, Some(1.0), params)])
+        ActionReport::new(
+            vec![self.report(style, Some(1.0), params)],
+            historical_params,
+        )
     }
 
     fn analyze_support_shelling(&self) -> ActionReport<SupportShellingStyle> {
@@ -428,6 +434,9 @@ impl AttackAnalyzer<'_> {
         .calc_attack_params();
 
         let style = SupportShellingStyle { attack_type };
-        ActionReport::new(vec![self.report(style, Some(1.0), params)])
+        ActionReport::new(
+            vec![self.report(style, Some(1.0), params)],
+            HistoricalParams::default(),
+        )
     }
 }

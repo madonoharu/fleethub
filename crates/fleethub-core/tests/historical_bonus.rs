@@ -2,6 +2,7 @@ mod common;
 
 use common::battle_definitions;
 use fleethub_core::{
+    analyzer::{AttackAnalyzer, AttackAnalyzerConfig, DensityDetail},
     member::BattleMember,
     ship::Ship,
     types::{
@@ -142,19 +143,58 @@ fn test_aerial_only_bonus_does_not_apply_to_opening_asw() {
     }]));
     let attacker = ship! { ship_id = "大鷹改二" g1 = "流星" ss1 = 1 };
     let target = ship! { ship_id = "潜水カ級" };
-    let enemy_position = ShipPosition {
-        org_type: OrgType::EnemySingle,
-        ..Default::default()
-    };
 
-    let params = defs.get_opening_asw_historical_params(
-        NodeState {
-            map: MAP,
+    let analysis = AttackAnalyzer {
+        battle_defs: &defs,
+        config: AttackAnalyzerConfig {
+            node_state: NodeState {
+                map: MAP,
+                ..Default::default()
+            },
             ..Default::default()
         },
-        &BattleMember::new(&attacker, Default::default(), Formation::default(), None),
-        &BattleMember::new(&target, enemy_position, Formation::default(), None),
-    );
+        attacker: &attacker,
+        target: &target,
+        density_detail: DensityDetail::Total,
+    }
+    .analyze();
 
-    assert_eq!(params.power_mod.a, 1.0);
+    assert!(analysis.day.is_active && analysis.opening_asw.is_active);
+    assert_eq!(analysis.day.historical_params.power_mod.a, 1.2);
+    assert_eq!(analysis.opening_asw.historical_params.power_mod.a, 1.0);
+}
+
+#[test]
+fn test_each_action_reports_the_historical_params_used_by_its_attacks() {
+    let attacker = ship! {
+        ship_id = "Graf Zeppelin改"
+        g1 = "流星"
+        ss1 = 1
+    };
+    let target = ship! { ship_id = "駆逐イ級" };
+    let defs = defs(serde_json::json!([{
+        "map": MAP,
+        "aerial_only": true,
+        "power_mod": { "a": 1.2 },
+    }]));
+
+    let analysis = AttackAnalyzer {
+        battle_defs: &defs,
+        config: AttackAnalyzerConfig {
+            node_state: NodeState {
+                map: MAP,
+                ..Default::default()
+            },
+            ..Default::default()
+        },
+        attacker: &attacker,
+        target: &target,
+        density_detail: DensityDetail::Total,
+    }
+    .analyze();
+
+    assert!(analysis.day.is_active && analysis.night.is_active);
+    assert_eq!(analysis.day.historical_params.power_mod.a, 1.2);
+    assert_eq!(analysis.night.historical_params.power_mod.a, 1.0);
+    assert_eq!(analysis.support_shelling.historical_params.power_mod.a, 1.0);
 }
