@@ -422,6 +422,11 @@ impl AttackAnalyzer<'_> {
         };
 
         let formation_params = self.get_formation_params(attack_type);
+        let historical_params = self.battle_defs.get_support_historical_params(
+            self.config.node_state,
+            attacker,
+            target,
+        );
 
         let params = SupportShellingAttackParams {
             attack_type,
@@ -430,13 +435,14 @@ impl AttackAnalyzer<'_> {
             engagement: self.config.engagement,
             formation_params,
             node_state: self.config.node_state,
+            historical_params,
         }
         .calc_attack_params();
 
         let style = SupportShellingStyle { attack_type };
         ActionReport::new(
             vec![self.report(style, Some(1.0), params)],
-            HistoricalParams::default(),
+            historical_params,
         )
     }
 }

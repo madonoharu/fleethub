@@ -2,12 +2,12 @@ mod common;
 
 use common::battle_definitions;
 use fleethub_core::{
-    analyzer::{AttackAnalyzer, AttackAnalyzerConfig, DensityDetail},
+    analyzer::{ActionReport, AttackAnalyzer, AttackAnalyzerConfig, DensityDetail},
     member::BattleMember,
     ship::Ship,
     types::{
         AswAttackType, AttackType, BattleDefinitions, Formation, NightAttackType, NodeState,
-        OrgType, ShellingType, ShipPosition,
+        OrgType, ShellingType, ShipPosition, SupportShellingStyle,
     },
 };
 
@@ -197,4 +197,48 @@ fn test_each_action_reports_the_historical_params_used_by_its_attacks() {
     assert_eq!(analysis.day.historical_params.power_mod.a, 1.2);
     assert_eq!(analysis.night.historical_params.power_mod.a, 1.0);
     assert_eq!(analysis.support_shelling.historical_params.power_mod.a, 1.0);
+}
+
+#[test]
+fn test_support_shelling_takes_only_the_armor_reduction() {
+    let attacker = ship! { ship_id = "長門" };
+    let target = ship! { ship_id = "戦艦棲姫" };
+    let defs = defs(serde_json::json!([
+        { "map": MAP, "power_mod": { "a": 1.2 } },
+        { "map": MAP, "debuff": true, "armor_penetration": 100.0 },
+    ]));
+
+    let analyze = |debuff: bool| {
+        AttackAnalyzer {
+            battle_defs: &defs,
+            config: AttackAnalyzerConfig {
+                node_state: NodeState {
+                    map: MAP,
+                    debuff,
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            attacker: &attacker,
+            target: &target,
+            density_detail: DensityDetail::Total,
+        }
+        .analyze()
+        .support_shelling
+    };
+    let max_damage = |report: &ActionReport<SupportShellingStyle>| {
+        report
+            .data
+            .values()
+            .map(|r| r.damage.as_ref().unwrap().normal_damage_max)
+            .max()
+            .unwrap()
+    };
+
+    let debuffed = analyze(true);
+    let intact = analyze(false);
+
+    assert_eq!(debuffed.historical_params.power_mod.a, 1.0);
+    assert_eq!(debuffed.historical_params.armor_penetration, 100.0);
+    assert!(max_damage(&debuffed) > max_damage(&intact));
 }

@@ -298,6 +298,24 @@ impl BattleDefinitions {
         self.historical_params(false, node_state, attacker, target)
     }
 
+    /// https://github.com/KC3Kai/kancolle-replay/blob/master/js/simulator-ui/bonus.js の `applyAutoDebuff`
+    /// https://x.com/kancolle_aki/status/1837730242489729049
+    ///
+    /// 支援艦隊は特効を受けないが、敵の装甲減少は支援の攻撃にも効く。
+    pub fn get_support_historical_params(
+        &self,
+        node_state: NodeState,
+        attacker: &BattleMemberRef,
+        target: &BattleMemberRef,
+    ) -> HistoricalParams {
+        HistoricalParams {
+            armor_penetration: self
+                .historical_params(false, node_state, attacker, target)
+                .armor_penetration,
+            ..Default::default()
+        }
+    }
+
     fn historical_params(
         &self,
         attacks_with_planes: bool,

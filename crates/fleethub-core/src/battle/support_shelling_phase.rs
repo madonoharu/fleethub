@@ -72,6 +72,12 @@ where
             target.conditions(),
         );
 
+        let historical_params = self.battle_defs.get_support_historical_params(
+            self.node_state,
+            &attacker,
+            &target.as_ref(),
+        );
+
         SupportShellingAttackParams {
             attack_type,
             engagement,
@@ -79,6 +85,7 @@ where
             target: &target.as_ref(),
             formation_params,
             node_state: self.node_state,
+            historical_params,
         }
         .to_attack()
         .apply(self.rng, &mut target)
