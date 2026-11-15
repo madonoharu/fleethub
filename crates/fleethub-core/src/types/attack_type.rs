@@ -86,6 +86,15 @@ impl AttackType {
     pub fn is_support_shelling(self) -> bool {
         matches!(self, Self::SupportShelling(_))
     }
+
+    pub fn is_aerial(self) -> bool {
+        match self {
+            Self::Shelling(t) => t == ShellingType::Aerial,
+            Self::Night(t) => matches!(t, NightAttackType::Aerial | NightAttackType::Swordfish),
+            Self::Asw(_) | Self::Torpedo => false,
+            Self::SupportShelling(t) => *t == ShellingType::Aerial,
+        }
+    }
 }
 
 impl From<AswAttackType> for AttackType {

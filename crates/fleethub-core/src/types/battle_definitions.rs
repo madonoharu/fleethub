@@ -10,8 +10,8 @@ use tsify::Tsify;
 use crate::member::BattleMemberRef;
 
 use super::{
-    AttackPowerModifier, AttackType, CompiledEvaler, DayCutin, DayCutinLike, Formation, NightCutin,
-    NightCutinLike, NodeState, ShipConditions, gear_id,
+    AswAttackType, AttackPowerModifier, AttackType, CompiledEvaler, DayCutin, DayCutinLike,
+    Formation, NightCutin, NightCutinLike, NodeState, ShipConditions, ShipType, gear_id,
 };
 
 #[serde_as]
@@ -164,6 +164,7 @@ pub struct HistoricalBonusDef {
     debuff: bool,
     ship: CompiledEvaler,
     enemy: CompiledEvaler,
+    aerial_only: bool,
     pub power_mod: AttackPowerModifier,
     pub armor_penetration: f64,
     #[serde(default = "num_traits::one")]
@@ -178,13 +179,27 @@ impl HistoricalBonusDef {
         node_state: NodeState,
         ship: &BattleMemberRef,
         enemy: &BattleMemberRef,
+        attacks_with_planes: bool,
     ) -> bool {
         self.map == node_state.map
+            && (!self.aerial_only || attacks_with_planes)
             && (self.node.is_empty() || self.node.matches(&mut node_state.node.ns()))
             && (self.phase == 0 || self.phase == node_state.phase)
             && (!self.debuff || self.debuff == node_state.debuff)
             && (self.ship.is_empty() || self.ship.matches(&mut ship.ns()))
             && (self.enemy.is_empty() || self.enemy.matches(&mut enemy.ns()))
+    }
+}
+
+/// https://github.com/KC3Kai/kancolle-replay/blob/master/js/kcsim.js の `getBonusSpecialPlane` の `isAir`
+///
+/// 艦載機で撃つ昼の対潜も含む。正規空母と補給艦の対潜は含まない。
+fn attacks_with_planes(attack_type: AttackType, attacker: &BattleMemberRef) -> bool {
+    match attack_type {
+        AttackType::Asw(t) => {
+            t == AswAttackType::Aerial && !matches!(attacker.ship_type, ShipType::CV | ShipType::AO)
+        }
+        _ => attack_type.is_aerial(),
     }
 }
 
@@ -264,6 +279,46 @@ impl BattleDefinitions {
 
     pub fn get_historical_params(
         &self,
+        attack_type: impl Into<AttackType>,
+        node_state: NodeState,
+        attacker: &BattleMemberRef,
+        target: &BattleMemberRef,
+    ) -> HistoricalParams {
+        let attacks_with_planes = attacks_with_planes(attack_type.into(), attacker);
+        self.historical_params(attacks_with_planes, node_state, attacker, target)
+    }
+
+    /// kancolle-replay は先制対潜に、艦載機の攻撃だけに掛かる補正を掛けない。
+    pub fn get_opening_asw_historical_params(
+        &self,
+        node_state: NodeState,
+        attacker: &BattleMemberRef,
+        target: &BattleMemberRef,
+    ) -> HistoricalParams {
+        self.historical_params(false, node_state, attacker, target)
+    }
+
+    /// https://github.com/KC3Kai/kancolle-replay/blob/master/js/simulator-ui/bonus.js の `applyAutoDebuff`
+    /// https://x.com/kancolle_aki/status/1837730242489729049
+    ///
+    /// 支援艦隊は特効を受けないが、敵の装甲減少は支援の攻撃にも効く。
+    pub fn get_support_historical_params(
+        &self,
+        node_state: NodeState,
+        attacker: &BattleMemberRef,
+        target: &BattleMemberRef,
+    ) -> HistoricalParams {
+        HistoricalParams {
+            armor_penetration: self
+                .historical_params(false, node_state, attacker, target)
+                .armor_penetration,
+            ..Default::default()
+        }
+    }
+
+    fn historical_params(
+        &self,
+        attacks_with_planes: bool,
         node_state: NodeState,
         attacker: &BattleMemberRef,
         target: &BattleMemberRef,
@@ -283,7 +338,7 @@ impl BattleDefinitions {
         if attacker.position.org_type.is_player() {
             self.historical_bonuses
                 .iter()
-                .filter(|def| def.matches(node_state, attacker, target))
+                .filter(|def| def.matches(node_state, attacker, target, attacks_with_planes))
                 .for_each(|def| {
                     params.power_mod.merge(def.power_mod.a, def.power_mod.b);
                     params.armor_penetration += def.armor_penetration;
@@ -292,7 +347,7 @@ impl BattleDefinitions {
         } else {
             self.historical_bonuses
                 .iter()
-                .filter(|def| def.matches(node_state, target, attacker))
+                .filter(|def| def.matches(node_state, target, attacker, false))
                 .for_each(|def| {
                     params.target_evasion_mod *= def.evasion_mod;
                 })

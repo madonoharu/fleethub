@@ -11,3 +11,4 @@ export * from "./copy";
 export * from "./measure";
 export * from "./compress";
 export * from "./locales";
+export * from "./kc3Bonus";

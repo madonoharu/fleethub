@@ -81,9 +81,12 @@ where
             attacker.conditions(),
             target.conditions(),
         );
-        let historical_params =
-            self.battle_defs
-                .get_historical_params(self.node_state, &attacker, &target.as_ref());
+        let historical_params = self.battle_defs.get_historical_params(
+            AttackType::Torpedo,
+            self.node_state,
+            &attacker,
+            &target.as_ref(),
+        );
 
         let attack = TorpedoAttackParams {
             attacker: &attacker,

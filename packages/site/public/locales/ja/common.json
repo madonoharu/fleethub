@@ -7,6 +7,7 @@
   "SpecialThanksToGkcoi": "画像生成にはgkcoiを利用しています。",
   "SpecialThanksToKcnav": "マップデータにはKCNavを利用しています。また開発者のChami氏からAPIをご提供いただきました。",
   "SpecialThanksToKc3": "翻訳データの生成にはkc3-translationsを利用しています。",
+  "SpecialThanksToKancolleReplay": "史実補正のデータの生成にはkancolle-replayを利用しています。",
   "AboutLocalization": "誤訳があったら教えてください。",
   "CreateComp": "編成を作成",
   "CreateFolder": "フォルダを作成",
