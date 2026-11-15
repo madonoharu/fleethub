@@ -1,6 +1,6 @@
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { Alert, Typography } from "@mui/material";
-import type { AttackAnalysis, Comp } from "fleethub-core";
+import type { AttackAnalysis, Comp, HistoricalParams } from "fleethub-core";
 import { useTranslation } from "next-i18next/pages";
 import React from "react";
 
@@ -10,6 +10,9 @@ import DamageStateDensityBarChart from "../AttackTable/DamageStateDensityBarChar
 import DamageDensitySection from "../DamageDensitySection";
 import DamageTable from "../DamageTable";
 import { cn } from "../../../styles";
+
+/** 公開済みの fleethub-core の ActionReport に historical_params が載るまでの拡張 */
+type ActionReportWithHistoricalParams = { historical_params?: HistoricalParams };
 
 interface Props {
   tag: "day" | "night" | "closing_torpedo" | "opening_asw" | "support_shelling";
@@ -46,7 +49,8 @@ const AttackReportDetails: React.FCX<Props> = ({
 
   const report = analysis[tag];
   const { attacker_is_player, attacker_ship_id, target_ship_id } = analysis;
-  const { historical_params } = report;
+  const historical_params =
+    (report as ActionReportWithHistoricalParams).historical_params ?? analysis.historical_params;
 
   const attackerName = useShipName(attacker_ship_id, attacker_ship_id > 1500);
   const targetName = useShipName(target_ship_id, target_ship_id > 1500);
