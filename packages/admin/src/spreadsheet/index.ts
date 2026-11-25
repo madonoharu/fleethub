@@ -1,6 +1,8 @@
 import { MasterData } from "fleethub-core";
 import { Start2 } from "kc-tools";
 
+import { Kc3BonusFile, createHistoricalBonusDefs } from "../historicalBonuses";
+
 import { SpreadsheetTable, SheetKey } from "./SpreadsheetTable";
 import { createBattleDefinitions } from "./createBattleDefinitions";
 import { createEquippability } from "./equippability";
@@ -13,13 +15,15 @@ export function createMasterData(
   start2: Start2,
   ctypeNames: string[],
   tables: Record<Exclude<SheetKey, "ship_classes">, SpreadsheetTable>,
+  kc3BonusFiles: Kc3BonusFile[],
 ): MasterData {
   const nationalityMap = new NationalityMap(tables.nationalities);
   const parser = new ExprParser(start2, ctypeNames, nationalityMap);
 
   const shipData = createShipData(parser, tables);
   const gearData = createGearData(parser, tables);
-  const defs = createBattleDefinitions(parser, tables);
+  const historicalBonuses = createHistoricalBonusDefs(kc3BonusFiles, shipData.ships);
+  const defs = createBattleDefinitions(tables, historicalBonuses);
   const equippability = createEquippability(parser, tables.equippability);
 
   return {

@@ -106,6 +106,15 @@ const WelcomePage: React.FCX = () => {
             </ListItemIcon>
             <ListItemText primary="kc3-translations" secondary={t("SpecialThanksToKc3")} />
           </ListItemButton>
+          <ListItemButton component={Link} href="https://github.com/KC3Kai/kancolle-replay">
+            <ListItemIcon>
+              <GitHubIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="kancolle-replay"
+              secondary={t("SpecialThanksToKancolleReplay")}
+            />
+          </ListItemButton>
         </List>
 
         <Typography variant="h5" className="mt-8">

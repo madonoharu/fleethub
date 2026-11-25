@@ -21,6 +21,7 @@ export type Metadata = {
 export const BUCKET_NAME = "kcfleethub";
 export const GCS_PREFIX_URL = `https://storage.googleapis.com/${BUCKET_NAME}`;
 export const MASTER_DATA_PATH = process.env["MASTER_DATA_PATH"] || "data/master_data.json";
+export const KC3_BONUSES_PATH = "data/kc3_bonuses.json";
 
 const getBucket = () => getStorage(getApp()).bucket();
 

@@ -3,8 +3,8 @@
 use crate::{
     member::BattleMemberRef,
     types::{
-        AttackPowerModifier, Engagement, FormationParams, NodeState, ShellingType,
-        SupportShellingType,
+        AttackPowerModifier, Engagement, FormationParams, HistoricalParams, NodeState,
+        ShellingType, SupportShellingType,
     },
 };
 
@@ -21,6 +21,7 @@ pub struct SupportShellingAttackParams<'a> {
     pub engagement: Engagement,
     pub formation_params: FormationParams,
     pub node_state: NodeState,
+    pub historical_params: HistoricalParams,
 }
 
 impl SupportShellingAttackParams<'_> {
@@ -29,7 +30,11 @@ impl SupportShellingAttackParams<'_> {
     }
 
     pub fn calc_attack_params(&self) -> AttackParams {
-        let defense_params = DefenseParams::from_target(self.target, self.target.side(), 0.0);
+        let defense_params = DefenseParams::from_target(
+            self.target,
+            self.target.side(),
+            self.historical_params.armor_penetration,
+        );
 
         AttackParams {
             attack_power_params: self.calc_attack_power_params(),
@@ -82,7 +87,7 @@ impl SupportShellingAttackParams<'_> {
             aerial_power,
             proficiency_critical_mod: 1.0,
             remaining_ammo_mod,
-            armor_penetration: 0.0,
+            armor_penetration: self.historical_params.armor_penetration,
             balloon_mod: 1.0,
             special_enemy_mods,
             historical_mod: Default::default(),

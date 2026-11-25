@@ -15,17 +15,21 @@ const start2 = {
   api_mst_stype: [],
   api_mst_slotitem_equiptype: [],
 } as unknown as Start2;
-const parser = new ExprParser(start2, [], new NationalityMap(emptyTable));
-
-function definitions(tables: Partial<Record<keyof MasterBattleDefinitions, SpreadsheetTable>>) {
-  return createBattleDefinitions(parser, {
-    anti_air_cutin: emptyTable,
-    day_cutin: emptyTable,
-    night_cutin: emptyTable,
-    formation: emptyTable,
-    historical_bonuses: emptyTable,
-    ...tables,
-  });
+function definitions(
+  tables: Partial<
+    Record<Exclude<keyof MasterBattleDefinitions, "historical_bonuses">, SpreadsheetTable>
+  >,
+) {
+  return createBattleDefinitions(
+    {
+      anti_air_cutin: emptyTable,
+      day_cutin: emptyTable,
+      night_cutin: emptyTable,
+      formation: emptyTable,
+      ...tables,
+    },
+    [],
+  );
 }
 
 describe("spreadsheet master definitions", () => {
@@ -137,34 +141,6 @@ describe("spreadsheet master definitions", () => {
       },
     ]);
     expect(formation).toEqual(before);
-  });
-
-  it("parses historical expressions and excludes records without a map", () => {
-    expect(
-      definitions({
-        historical_bonuses: {
-          sheetId: 7,
-          headerValues: ["map", "ship", "enemy", "power_mod.a", "debuff"],
-          rows: [
-            {
-              map: 51,
-              ship: "ship_id == 1\n&& ctype == 2",
-              enemy: "stype == 11",
-              "power_mod.a": 1.2,
-              debuff: false,
-            },
-            { ship: "ship_id == 1", "power_mod.a": 9 },
-          ],
-        },
-      }).historical_bonuses,
-    ).toEqual([
-      {
-        map: 51,
-        ship: "ship_id == 1 && ctype == 2",
-        enemy: "stype == 11",
-        power_mod: { a: 1.2 },
-      },
-    ]);
   });
 
   it("applies ship array paths and zeroes while ignoring empty/false overrides", () => {

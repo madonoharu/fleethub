@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use tsify::Tsify;
 
 use crate::{
-    types::{AttackStyleKey, DamageState},
+    types::{AttackStyleKey, DamageState, HistoricalParams},
     utils::Histogram,
 };
 
@@ -14,6 +14,7 @@ pub struct ActionReport<T: AttackStyleKey> {
     pub data: HashMap<String, AttackReport<T>>,
     pub damage_state_density: Option<Histogram<DamageState, f64>>,
     pub is_active: bool,
+    pub historical_params: HistoricalParams,
 }
 
 impl<T: AttackStyleKey> ActionReport<T> {
@@ -22,10 +23,11 @@ impl<T: AttackStyleKey> ActionReport<T> {
             data: HashMap::new(),
             damage_state_density: None,
             is_active: false,
+            historical_params: HistoricalParams::default(),
         }
     }
 
-    pub fn new(vec: Vec<AttackReport<T>>) -> Self {
+    pub fn new(vec: Vec<AttackReport<T>>, historical_params: HistoricalParams) -> Self {
         if vec.is_empty() {
             return Self::empty();
         }
@@ -52,6 +54,7 @@ impl<T: AttackStyleKey> ActionReport<T> {
             data,
             damage_state_density,
             is_active: true,
+            historical_params,
         }
     }
 }

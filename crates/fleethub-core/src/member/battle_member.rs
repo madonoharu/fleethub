@@ -4,8 +4,9 @@ use std::{
 };
 
 use crate::{
+    plane::PlaneImpl,
     ship::Ship,
-    types::{Formation, ShipAttr, ShipConditions, ShipPosition},
+    types::{Formation, GearType, ShipAttr, ShipConditions, ShipPosition},
 };
 
 use super::comp_member::CompMember;
@@ -121,6 +122,20 @@ where
                         .count_by(|gear| gear.gear_id == gear_id && gear.stars >= stars)
                         as f64
                 }
+
+                "count_remaining_planes" => self
+                    .planes()
+                    .filter(|plane| plane.remains() && args.contains(&plane.gear_id.into()))
+                    .count() as f64,
+                "count_remaining_planes_by_gear_type" => self
+                    .planes()
+                    .filter(|plane| {
+                        plane.remains()
+                            && args
+                                .iter()
+                                .any(|&arg| plane.gear_type == GearType::from(arg))
+                    })
+                    .count() as f64,
 
                 "has_historical_aircraft" => {
                     let arg = *args.first()?;
