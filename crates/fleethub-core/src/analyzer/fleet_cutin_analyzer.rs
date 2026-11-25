@@ -121,9 +121,12 @@ impl<'a> FleetCutinAnalyzer<'a> {
                         attacker.conditions(),
                         target.conditions(),
                     ),
-                    historical_params: self
-                        .battle_defs
-                        .get_historical_params(node_state, &attacker, target),
+                    historical_params: self.battle_defs.get_historical_params(
+                        AttackType::Shelling(Default::default()),
+                        node_state,
+                        &attacker,
+                        target,
+                    ),
                     node_state,
                     balloons,
                 }
@@ -194,6 +197,7 @@ impl<'a> FleetCutinAnalyzer<'a> {
                         target.conditions(),
                     ),
                     historical_params: self.battle_defs.get_historical_params(
+                        attack_type,
                         self.node_state,
                         &attacker,
                         target,
